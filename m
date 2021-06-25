@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115663B46A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B0E3B469F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFYPe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:34:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39747 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229994AbhFYPep (ORCPT
+        id S229864AbhFYPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhFYPec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:34:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624635144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CyUuFYaAoVveXOt5smrSbQaSHQszxWEWMgmcLEywPtc=;
-        b=i4EDn/0QxuAIE6Q93U31zVi7EYCu7p8Sa/yNgW3d+Gb18OreVUuiicEJwt/GWJFj1hP6CB
-        psZsnKULnNc8pz3Leds871Xqp3q8uzchd2vr6JG9V8ZoIZ0m0RVl3G9kOMwQ4KftAspAAZ
-        uU9JTSNRhpkw52Kq9weaUzH7Oo5puaM=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201--mnxXNU_OSyeRMUAVN7V8A-1; Fri, 25 Jun 2021 11:32:23 -0400
-X-MC-Unique: -mnxXNU_OSyeRMUAVN7V8A-1
-Received: by mail-il1-f200.google.com with SMTP id x2-20020a056e021bc2b02901ee78f516b4so631247ilv.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:23 -0700 (PDT)
+        Fri, 25 Jun 2021 11:34:32 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B79CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:11 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id p8-20020a7bcc880000b02901dbb595a9f1so6112228wma.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mFzT6pv8CC87cHK04Jv1CeT+CD9fTxFZC5Ewe+N2u6w=;
+        b=gQrCisuq9gjWqBNWWKG7GepHgNrfhn+FOh73iZdGcRt00yUL0Vj7uhpwoHP/HIHkdo
+         UXwKN/jKsjkHUJywh1EueezAxT4Cr3bNrCi9ze6hBESIRM2ItMvO7p+0+321gp5lrMhp
+         /xzjHHN84l6+emHuoOq2SlRMlOe6RcU1t0IQYlTDgo44yGGrt3huvmB7neSV7Bx4U5W7
+         uEjgC7tyYxlFEARE7x9lY/++4JD848cYNZBiNNkuU/t7UJBZEr/RjE+T3hZhXER1+IcE
+         eTlQFPTH7ItNXtDrGG0WjkVjCgyYCQEp/BD0yy/Att/uy5AF8forzFwoUBUXBOR/BzhP
+         stQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CyUuFYaAoVveXOt5smrSbQaSHQszxWEWMgmcLEywPtc=;
-        b=GqmCdG13WHWjbRvSbGE76GZrRMurDQ7sMEw8Frh9GcFMKqED2MnOHhxpLzWLCZxfkw
-         Q17JUNXu2yZcShX5g/h4Tys8wUmTSsnVoFaKzQDgvkBUVzNZ7tGVrrQ2T1XuKdO/gdRT
-         9mW0+jg1j4CvR7Npk/0QkX3Hu1ZJd83F/jayATSz8pKJic9LA8yPp/Rb+bdeE9mK8TWY
-         jRuWttG0A5Q6Mkm0ZANEX9jgJuKrt2+fvKqwQdf/5mrcjiX0dS5UXH+lr1EvkcC3uTVb
-         aYpX71uIHaiuhavcyrWL3H8JDQMJn8Y+DJbH79T4lE8bfAu8WiDgjkOT4CJ0/95C/Ly0
-         HJpw==
-X-Gm-Message-State: AOAM531Ceb4k3045j7daGtPKV+ng8n+rhf+RHPgn0Pb855EzcBYEGffU
-        rd7r+pt635xokDPVbCJPTMoW9fEYcOAY7dsN0EJLzGGMrVoHs8f7/9WALAyHJ4ItW0wpbrxbZTQ
-        1hXcY1/YpW3d4dsHLpcxztF15ZjAduY5Z5P3vUZCvbMzp5+PO5jvxB32sQ+oKyzBif+1PyNb+cw
-        ==
-X-Received: by 2002:a02:628b:: with SMTP id d133mr9920054jac.27.1624635142004;
-        Fri, 25 Jun 2021 08:32:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9YNK4wl19El0hz9j0y8hwec2iaaS6VyEe/RlX8sikVF2hwYG4LnksdMqlMXL8QScakdtIwQ==
-X-Received: by 2002:a02:628b:: with SMTP id d133mr9920020jac.27.1624635141672;
-        Fri, 25 Jun 2021 08:32:21 -0700 (PDT)
-Received: from t490s.redhat.com (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
-        by smtp.gmail.com with ESMTPSA id s8sm3668772ilj.51.2021.06.25.08.32.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 08:32:20 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, peterx@redhat.com,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v2 3/9] KVM: Allow to have arch-specific per-vm debugfs files
-Date:   Fri, 25 Jun 2021 11:32:08 -0400
-Message-Id: <20210625153214.43106-4-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210625153214.43106-1-peterx@redhat.com>
-References: <20210625153214.43106-1-peterx@redhat.com>
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=mFzT6pv8CC87cHK04Jv1CeT+CD9fTxFZC5Ewe+N2u6w=;
+        b=r+Sj9jMX0tu78NeP+3gj5VxUeDnVQSVA27ruCNGwZT+H79Yv96ulNJiPUFQjHVyxIo
+         aG4rv0WutujL+nsWb9rpgWDBUSlECfmc7rkmwpC5xb5qAzj35O98O/Y0JsoejO2KiaG7
+         fUKhqvPZJXC8hhg0rV2bKZ+3WBm0gyYYapYbaeVAvrEFH9azxumOtQc+go+EHw2eh2PU
+         e9IsRT59IFtBGsM0e+aamXfkd29hVk9rnKYiWExVpMAmChlzD3YxEG/vn6+8foo29Y5D
+         w0N6RSpAu0A74BnJirFoW0nk0EMHfTmxrNAY34BUEfpwsQZJRZ6v2dmpRIBp9Ec2R3/0
+         2KsQ==
+X-Gm-Message-State: AOAM5316B7bdCD0EkdiCZJ5Q5wBOLOh0aOjHfYXTsKpmHrbVaND8dI9D
+        r87SU/6MNnSd0PCYXxeFS6JTCQ==
+X-Google-Smtp-Source: ABdhPJz/6Upyz/UC5eot3d9nnDv9G36yvRoecBp+33QVzZIe9nLdoe2QUFh8lE3k63kot9hiyufr+g==
+X-Received: by 2002:a05:600c:1d1a:: with SMTP id l26mr11249715wms.21.1624635129852;
+        Fri, 25 Jun 2021 08:32:09 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:78f3:e334:978:3783? ([2a01:e0a:410:bb00:78f3:e334:978:3783])
+        by smtp.gmail.com with ESMTPSA id p13sm4865079wrx.30.2021.06.25.08.32.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 08:32:09 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: Issues during assigning addresses on point to point interfaces
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Phil Sutter <phil@nwl.cc>
+References: <20210606151008.7dwx5ukrlvxt4t3k@pali>
+ <20210624124545.2b170258@dellmb>
+ <d3995a21-d9fe-9393-a10e-8eddccec2f47@6wind.com>
+ <20210625084031.c33yovvximtabmf4@pali>
+ <d3dd210c-bf0f-7b48-6562-23e87c2ad55a@6wind.com>
+ <20210625152737.6gslduccvguyrr77@pali>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <c4b854ef-6646-7ae8-b4a7-cb04b7b73222@6wind.com>
+Date:   Fri, 25 Jun 2021 17:32:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210625152737.6gslduccvguyrr77@pali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow archs to create arch-specific nodes under kvm->debugfs_dentry directory
-besides the stats fields.  The new interface kvm_arch_create_vm_debugfs() is
-defined but not yet used.  It's called after kvm->debugfs_dentry is created, so
-it can be referenced directly in kvm_arch_create_vm_debugfs().  Arch should
-define their own versions when they want to create extra debugfs nodes.
+Le 25/06/2021 à 17:27, Pali Rohár a écrit :
+[snip]
+>>> Hello Nicolas!
+>>>
+>>> See my original email where I put also rtnetlink packets (how strace see
+>>> them). Seems that there is a bug in handling them (or bug in iproute2)
+>>> as setting just peer (remote) IPv6 address is ignored:
+>>> https://lore.kernel.org/netdev/20210606151008.7dwx5ukrlvxt4t3k@pali/
+>>>
+>>> Do you have any idea if this is affected by that "issue in the uAPI"?
+>>> And what is the way how to fix it?
+>> What about forcing IFA_LOCAL address to :: in your case?
+> 
+> It does not work. ip address returns error:
+> 
+>     $ sudo ip address add :: peer fe80::8 dev ppp0
+>     RTNETLINK answers: Cannot assign requested address
+So this trick could probably be used to handle your case, without breaking
+anything, as it's not a valid command today.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/kvm_host.h |  1 +
- virt/kvm/kvm_main.c      | 20 +++++++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index c6fcd75dd8b9..8521d3492eb2 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1035,6 +1035,7 @@ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu);
- bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu);
- int kvm_arch_post_init_vm(struct kvm *kvm);
- void kvm_arch_pre_destroy_vm(struct kvm *kvm);
-+int kvm_arch_create_vm_debugfs(struct kvm *kvm);
- 
- #ifndef __KVM_HAVE_ARCH_VM_ALLOC
- /*
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 79b0c1b7b284..516ba8d25bda 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -895,7 +895,7 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- 	char dir_name[ITOA_MAX_LEN * 2];
- 	struct kvm_stat_data *stat_data;
- 	const struct _kvm_stats_desc *pdesc;
--	int i;
-+	int i, ret;
- 	int kvm_debugfs_num_entries = kvm_vm_stats_header.num_desc +
- 				      kvm_vcpu_stats_header.num_desc;
- 
-@@ -940,6 +940,13 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- 				    kvm->debugfs_dentry, stat_data,
- 				    &stat_fops_per_vm);
- 	}
-+
-+	ret = kvm_arch_create_vm_debugfs(kvm);
-+	if (ret) {
-+		kvm_destroy_vm_debugfs(kvm);
-+		return i;
-+	}
-+
- 	return 0;
- }
- 
-@@ -960,6 +967,17 @@ void __weak kvm_arch_pre_destroy_vm(struct kvm *kvm)
- {
- }
- 
-+/*
-+ * Called after per-vm debugfs created.  When called kvm->debugfs_dentry should
-+ * be setup already, so we can create arch-specific debugfs entries under it.
-+ * Cleanup should be automatic done in kvm_destroy_vm_debugfs() recursively, so
-+ * a per-arch destroy interface is not needed.
-+ */
-+int __weak kvm_arch_create_vm_debugfs(struct kvm *kvm)
-+{
-+	return 0;
-+}
-+
- static struct kvm *kvm_create_vm(unsigned long type)
- {
- 	struct kvm *kvm = kvm_arch_alloc_vm();
--- 
-2.31.1
-
+Regards,
+Nicolas
