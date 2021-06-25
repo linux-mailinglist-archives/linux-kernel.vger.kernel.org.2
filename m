@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40B23B407E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03603B4081
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhFYJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:31:03 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:59729 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230217AbhFYJbC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:31:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UdcBifd_1624613309;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UdcBifd_1624613309)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Jun 2021 17:28:39 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     paul.walmsley@sifive.com
-Cc:     palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] riscv: xip: Fix duplicate included asm/pgtable.h
-Date:   Fri, 25 Jun 2021 17:28:24 +0800
-Message-Id: <1624613304-119429-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231294AbhFYJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:31:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45141 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhFYJb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:31:29 -0400
+IronPort-SDR: dleT7UTL/dM7xS07NuxzoiRt2oHlrE9bYL3svqXyE8xdDrTxtj4F0f0J2tvXukUK62z9cAiMPa
+ jNtI/t4t3gtQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="194934721"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="194934721"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:29:08 -0700
+IronPort-SDR: kUTDCduX01Qi/Pr7H1QfMHw8nhF3ptuEP/84jT1JJGZHNzgDfKJ09QrWcrh3dX7gW3kdWHQjyy
+ j4g9oyjw/VAQ==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="453751946"
+Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 02:29:05 -0700
+Date:   Fri, 25 Jun 2021 17:29:02 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 05/54] Revert "KVM: x86/mmu: Drop
+ kvm_mmu_extended_role.cr4_la57 hack"
+Message-ID: <20210625092902.o4kqx67zvvbudggh@linux.intel.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-6-seanjc@google.com>
+ <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
+ <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the following includecheck warning:
+On Fri, Jun 25, 2021 at 10:57:51AM +0200, Paolo Bonzini wrote:
+> On 25/06/21 10:47, Yu Zhang wrote:
+> > > But if L1 is crafty, it can load a new CR4 on VM-Exit and toggle LA57
+> > > without having to bounce through an unpaged section.  L1 can also load a
+> > 
+> > May I ask how this is done by the guest? Thanks!
+> 
+> It can set HOST_CR3 and HOST_CR4 to a value that is different from the one
+> on vmentry.
 
-./arch/riscv/kernel/vmlinux-xip.lds.S: asm/pgtable.h is included more
-than once.
+Thanks, Paolo.
 
-No functional change.
+Do you mean the L1 can modify its paging mode by setting HOST_CR3 as root of
+a PML5 table in VMCS12 and HOST_CR4 with LA57 flipped in VMCS12, causing the
+GUEST_CR3/4 being changed in VMCS01, and eventually updating the CR3/4 when 
+L0 is injecting a VM Exit from L2? 
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- arch/riscv/kernel/vmlinux-xip.lds.S | 1 -
- 1 file changed, 1 deletion(-)
+B.R.
+Yu
 
-diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-index a3ff09c..af776555 100644
---- a/arch/riscv/kernel/vmlinux-xip.lds.S
-+++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-@@ -12,7 +12,6 @@
- 
- #include <asm/vmlinux.lds.h>
- #include <asm/page.h>
--#include <asm/pgtable.h>
- #include <asm/cache.h>
- #include <asm/thread_info.h>
- 
--- 
-1.8.3.1
+  
 
+> Paolo
+> 
