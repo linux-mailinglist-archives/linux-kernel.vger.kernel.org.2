@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DC83B3C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819543B3C5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhFYFs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:48:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2680 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhFYFs5 (ORCPT
+        id S233108AbhFYFvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:51:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30085 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhFYFvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:48:57 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P5ihlx117234;
-        Fri, 25 Jun 2021 01:46:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Hnp9sEc1Zv51a6wVxJRQy5Y96XTuyf8F08yDG+Cs3LE=;
- b=lcigLJMAr7dZx/RLIWptyaB0QQCN8r7lzUHtwsO2u2/3snR5Uz6Z8GO2ze/py7cSI8sG
- S2zsDZ6gC7PHlBsW0m4neAkamGq2na4CUxP479vBZch+srlcZ5/LFdPWqaypKZCWAA9J
- sizV+fyNelyjZ2XLjoM36QjZ1JRcOHBk1wgbVgp56YHJcX9YSLjTifXIfUh8hzHS5Kha
- FuRme/lsjQqP74MHa8zjT15TUzXzGp2q4nfeiLemTzfVcAuN4khwWBD6DX/R99vy7Ur3
- Fl5HhukZ0z3J/0TaoKIoRlSYhi0AZ+PuJNKS9w9fa3M6x7Pp3Zm+ZgFV1WlsiWHtdLqc Eg== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39d98s815w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 01:46:16 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15P5dP3m006730;
-        Fri, 25 Jun 2021 05:46:14 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3997uhhk9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 05:46:13 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15P5kBWk24904124
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 05:46:11 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FF8952050;
-        Fri, 25 Jun 2021 05:46:11 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 82E5C52059;
-        Fri, 25 Jun 2021 05:46:09 +0000 (GMT)
-Date:   Fri, 25 Jun 2021 11:16:08 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Bharata B Rao <bharata@linux.ibm.com>
-Cc:     linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
- linux-next-20210623 during secondary CPUs bringup
-Message-ID: <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <YNSq3UQTjm6HWELA@in.ibm.com>
+        Fri, 25 Jun 2021 01:51:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624600129;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yfSRy3LBTClFsGu8oNyaqbl4mMdEaxbSEBNPy5g4V3Y=;
+        b=RmBSlda6I1m0P/9N5Uo+QULgzV2CcovhPSyDBwTQjGo/GjV1kfE74Op/6UPI7h5+bHEQ3p
+        8v4M2574V4071b7EcBL8flQ0dR2cMLny4I22HHVI0pr6GUcD20JEOmjOXMgzZYoagKCLeV
+        bj/7/iUM4RJ3/SO1R0FYwLACF5ce4do=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-sGunTVXxNrCVK9Ure6jdcQ-1; Fri, 25 Jun 2021 01:48:47 -0400
+X-MC-Unique: sGunTVXxNrCVK9Ure6jdcQ-1
+Received: by mail-wr1-f71.google.com with SMTP id c15-20020a056000184fb0290124a352153cso2387543wri.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:48:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yfSRy3LBTClFsGu8oNyaqbl4mMdEaxbSEBNPy5g4V3Y=;
+        b=I444s2d4X/AV0ZFqrHad63pwdw7rUlgKU/dYcWdyYnqqGb9NowztaJsPkvgQPNkmGw
+         /BQVc0etLb5V0Nmg6kr6bGZ5xBj961I/eCvlURJb7yfvUaSumdLlkgbmgZfFqCcxlMHx
+         lsf0XWLQ7qiTBRrfCjsDhcKY+5sVj1EYFGAWwTlTdl6lnTO95vf5tu9z42dqreNpA+E3
+         qSBn/IdlqSCSSCj5Xi5jJcaLfDZjgBzgPVTmLvdNzMeMwBftJyzIvhhCPgIh0b6RFjiG
+         chWwKdDwe+EtFnepcV1OcEsXg5ZsMLNO5vOnW9uWDH5P0AJeJpXXYITzgpvcE5PLMuOX
+         OSyA==
+X-Gm-Message-State: AOAM531lFBxQv9vM6UliTN2PeQb/PkFd3Do8p2dQKJeCHWGbtUvA9N8Z
+        x4CRLapa7zyd9GIrcdTZ914hl4zoJDfOBbX5rjsuzr7rxOpnnaimN0QMZUkPaysRBhQqNDVj6gc
+        UZXg4Z9IpXdicP2KJTzhe+qYL
+X-Received: by 2002:adf:f990:: with SMTP id f16mr8665200wrr.139.1624600126883;
+        Thu, 24 Jun 2021 22:48:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxC49i99qglHyKTzRuKfUjTtISrLrKFTj8sdmYEK88RDeBexaogLqWoo/ueooLbzQlf77nM9Q==
+X-Received: by 2002:adf:f990:: with SMTP id f16mr8665187wrr.139.1624600126712;
+        Thu, 24 Jun 2021 22:48:46 -0700 (PDT)
+Received: from redhat.com ([77.124.79.210])
+        by smtp.gmail.com with ESMTPSA id s62sm10733370wms.13.2021.06.24.22.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 22:48:46 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 01:48:42 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        alexander.duyck@gmail.com, david@redhat.com,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
+Subject: Re: [PATCH v4 3/4] mm/page_reporting: Allow driver to specify
+ reporting order
+Message-ID: <20210625014653-mutt-send-email-mst@kernel.org>
+References: <20210625014710.42954-1-gshan@redhat.com>
+ <20210625014710.42954-4-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNSq3UQTjm6HWELA@in.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0Xidfmp9vCkq_Tn5j92Sq7EKuh_HE11t
-X-Proofpoint-GUID: 0Xidfmp9vCkq_Tn5j92Sq7EKuh_HE11t
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-25_01:2021-06-24,2021-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
- bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106250030
+In-Reply-To: <20210625014710.42954-4-gshan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Bharata B Rao <bharata@linux.ibm.com> [2021-06-24 21:25:09]:
-
-> A PowerPC KVM guest gets the following BUG message when booting
-> linux-next-20210623:
+On Fri, Jun 25, 2021 at 09:47:09AM +0800, Gavin Shan wrote:
+> The page reporting order (threshold) is sticky to @pageblock_order
+> by default. The page reporting can never be triggered because the
+> freeing page can't come up with a free area like that huge. The
+> situation becomes worse when the system memory becomes heavily
+> fragmented.
 > 
-> smp: Bringing up secondary CPUs ...
-> BUG: scheduling while atomic: swapper/1/0/0x00000000
-> no locks held by swapper/1/0.
-> Modules linked in:
-> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-rc7-next-20210623
-> Call Trace:
-> [c00000000ae5bc20] [c000000000badc64] dump_stack_lvl+0x98/0xe0 (unreliable)
-> [c00000000ae5bc60] [c000000000210200] __schedule_bug+0xb0/0xe0
-> [c00000000ae5bcd0] [c000000001609e28] __schedule+0x1788/0x1c70
-> [c00000000ae5be20] [c00000000160a8cc] schedule_idle+0x3c/0x70
-> [c00000000ae5be50] [c00000000022984c] do_idle+0x2bc/0x420
-> [c00000000ae5bf00] [c000000000229d88] cpu_startup_entry+0x38/0x40
-> [c00000000ae5bf30] [c0000000000666c0] start_secondary+0x290/0x2a0
-> [c00000000ae5bf90] [c00000000000be54] start_secondary_prolog+0x10/0x14
+> For example, the following configurations are used on ARM64 when 64KB
+> base page size is enabled. In this specific case, the page reporting
+> won't be triggered until the freeing page comes up with a 512MB free
+> area. That's hard to be met, especially when the system memory becomes
+> heavily fragmented.
 > 
-> <The above repeats for all the secondary CPUs>
+>    PAGE_SIZE:          64KB
+>    HPAGE_SIZE:         512MB
+>    pageblock_order:    13       (512MB)
+>    MAX_ORDER:          14
 > 
-> smp: Brought up 2 nodes, 16 CPUs
-> numa: Node 0 CPUs: 0-7
-> numa: Node 1 CPUs: 8-15
+> This allows the drivers to specify the page reporting order when the
+> page reporting device is registered. It falls back to @pageblock_order
+> if it's not specified by the driver. The existing users (hv_balloon
+> and virtio_balloon) don't specify it and @pageblock_order is still
+> taken as their page reporting order. So this shouldn't introduce any
+> functional changes.
 > 
-> This seems to have started from next-20210521 and isn't seen on
-> next-20210511.
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> ---
+>  include/linux/page_reporting.h | 3 +++
+>  mm/page_reporting.c            | 6 ++++++
+>  2 files changed, 9 insertions(+)
 > 
+> diff --git a/include/linux/page_reporting.h b/include/linux/page_reporting.h
+> index 3b99e0ec24f2..fe648dfa3a7c 100644
+> --- a/include/linux/page_reporting.h
+> +++ b/include/linux/page_reporting.h
+> @@ -18,6 +18,9 @@ struct page_reporting_dev_info {
+>  
+>  	/* Current state of page reporting */
+>  	atomic_t state;
+> +
+> +	/* Minimal order of page reporting */
+> +	unsigned int order;
+>  };
+>  
+>  /* Tear-down and bring-up for page reporting devices */
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index 34bf4d26c2c4..382958eef8a9 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -329,6 +329,12 @@ int page_reporting_register(struct page_reporting_dev_info *prdev)
+>  		goto err_out;
+>  	}
+>  
+> +	/*
+> +	 * Update the page reporting order if it's specified by driver.
+> +	 * Otherwise, it falls back to @pageblock_order.
+> +	 */
+> +	page_reporting_order = prdev->order ? : pageblock_order;
+> +
 
-Bharata,
+Hmm. So on ARM achitectures with 64K pages, the command line parameter
+is silently ignored?
 
-I think the regression is due to Commit f1a0a376ca0c ("sched/core:
-Initialize the idle task with preemption disabled")
+Isn't this a problem?
 
-Can you please try with the above commit reverted?
+>  	/* initialize state and work structures */
+>  	atomic_set(&prdev->state, PAGE_REPORTING_IDLE);
+>  	INIT_DELAYED_WORK(&prdev->work, &page_reporting_process);
+> -- 
+> 2.23.0
 
--- 
-Thanks and Regards
-Srikar Dronamraju
