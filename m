@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992493B4298
+	by mail.lfdr.de (Postfix) with ESMTP id 287A63B4297
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhFYLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:35:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43942 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229498AbhFYLfN (ORCPT
+        id S231235AbhFYLfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhFYLfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Jun 2021 07:35:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624620772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pozbymbWvFQuGp2tlGCuk4zDQGB354qvNygqlie95bg=;
-        b=OkJh50NQSM+scrA32nE0U5q7YDEWpfStVkICUTQrZKIlqjUgGI2+Nhx7zo6Na/sfzLpp8U
-        n5/EjHDqIoobXkc7FnrZwW/WIajhwd/HFqTBVVHLB1EcTq501YyWszOkxhj+4GFEnArUa3
-        ev6f8w8RZQQ0nmgvvvZYdCbBMRSuQuQ=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-hCL1ZHu3NQCqeRsCktoSqA-1; Fri, 25 Jun 2021 07:32:50 -0400
-X-MC-Unique: hCL1ZHu3NQCqeRsCktoSqA-1
-Received: by mail-oo1-f72.google.com with SMTP id b1-20020a4ac2810000b029024bec618157so5632640ooq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:32:50 -0700 (PDT)
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A18C061574;
+        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id a127so7782940pfa.10;
+        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F1FYj5t4XYoxvLoXBqTjudiXE+LHqymCGK2OtEnIdlM=;
+        b=Vug1MX4WgKzGeIKZiGV5dxk5+sQypFDvIqvNce+do+Xf1qJI5YDIW5x+EkBUMKbFZv
+         061HMvrNuq2wndVfN9CQuQF33iB4BmdWea+nTuChqpiQgKd7EsXGWHy2nBgydestG4El
+         +lXae4pXaHOS5LBVFJcIMtnDiRN5AquOufxLJ4U597XCdmPUvfmxqJIeoTABhhB4aZlM
+         lOSgROHM9u/ewbFS3Pz/JGILAWewkl0Gtct8bJs0WBhgsseUQwFQkKEhWaYBGQH2KWAJ
+         BTG/+8SvHSZ1Ct82Z0RdQ50KtUuaQNUPcSJwcqYGFaeNUl9irWFRDv4086PzBdiJQkB3
+         ULjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pozbymbWvFQuGp2tlGCuk4zDQGB354qvNygqlie95bg=;
-        b=llTpzAFF8lEkD2KuCTHyt9h1DRdgQc3l7FjP8jLQJaSUqq4LwamKTffpzfUhvuYkCp
-         3uenqzd8npIn+3AEkg+dLNNcNAnYE6WOP0/DerukiMFBGiWIMh1o4ObWiPFWjp58oc0w
-         ECqNfnF2kPBro+NOv9iXb7PXNB4sp08RiqvrYyQWNJcCP3eXBaeNItBr/XWM5Zkekpnw
-         2G9Ixgnhao5jY3cajZ3gnU4jLz+7uotqHosqYdTmKZw3mm7VgZdHyrepIgsmbJFby5s4
-         2H2aTQvWqB6+TORU1N8dxmQ4O/QYa2m49QlRkAC1J0ygm1kXSWwwfLfJ8tjBVyjPmGff
-         huJA==
-X-Gm-Message-State: AOAM533F5aB0CCG/U28/cmBiCrIG9zggQ9Up/VkP79d8GVujYvGafkMS
-        me+2WHwxd0WIey3Bi+EC66CeFMRQNisNe41K9OpkWXlzH7IhKYRl9SVsXQuUoxpAZ2mkN2nZpf6
-        I6On2zZOGT9zGHt+kYL0AJ5J+XV1dRuseBqPBrni8
-X-Received: by 2002:a05:6830:19c2:: with SMTP id p2mr9181288otp.234.1624620770241;
-        Fri, 25 Jun 2021 04:32:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyv1FbCBHCGpmdqo1fUppwBHGWam/MkhlCGgMNVBccHnGUGe0DAJDDSLRic7kaHq1Ql9gP2fzTcW4/tMx+h2l0=
-X-Received: by 2002:a05:6830:19c2:: with SMTP id p2mr9181273otp.234.1624620770015;
- Fri, 25 Jun 2021 04:32:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F1FYj5t4XYoxvLoXBqTjudiXE+LHqymCGK2OtEnIdlM=;
+        b=rxe41zgyDujC5eO7PNriJrTdil11Bi+oIl7XOilgd1Lw6hcIiGPU0RTM2GnHBYXYGT
+         nYY2ZLHkemy7Q9pvAJeq8/d9zMRFrjp66njXtDpETi+5bFp3neLQExWk0gkQxW7HDaKS
+         zcGQbpvcDOcZHpVJvzrTwGi6vbboBHljGm/kf1LMJoGAYZe81PwM3w7PN0YnwvDZ3Ktw
+         GqY8+2Ih76tR8qVYn0YKwuJ/tIGZF2beuzpYWN6DGVt/+/8oPL+3cBbjOIfh97bLy5ci
+         DhpZPu2+D1z0s6aCfgs8cmCxGNyYgp9hwk/8H5bsYuvXzIomaqMg4bsjDITjFVwq+nyb
+         2z4A==
+X-Gm-Message-State: AOAM532WeNWSJ/cdjy3M+Q92S9jPTBGVIGufBqBVD7iKdbjrNQZo/JGj
+        LC4HtuEpCt0CDWKovrqYb3WBAor74EE=
+X-Google-Smtp-Source: ABdhPJyCNRv0sPV9O1TfxSLrNyApdRWlKjaBdFiSvyJknsyaKQa3mPDUVQAcCZlLu7/LKuopSdCBOA==
+X-Received: by 2002:a63:3d8a:: with SMTP id k132mr9302612pga.7.1624620771620;
+        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id j20sm4999136pfc.85.2021.06.25.04.32.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 04:32:51 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "Wu X.C." <bobwxc@email.cn>, Jonathan Corbet <corbet@lwn.net>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+ <20210625065524.GA11219@bobwxc.top> <20210625095059.7f97fd62@coco.lan>
+ <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+ <20210625122423.4435c5e9@coco.lan>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
+Date:   Fri, 25 Jun 2021 20:32:47 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CA+QYu4pXLd9rGTh5o6BS+E0iA3H2ADArFM=N_yN1WWm_PngWnA@mail.gmail.com>
- <20210624122728.82625-1-odin@uged.al>
-In-Reply-To: <20210624122728.82625-1-odin@uged.al>
-From:   Bruno Goncalves <bgoncalv@redhat.com>
-Date:   Fri, 25 Jun 2021 13:32:39 +0200
-Message-ID: <CA+QYu4qN80P9_uMeq4auTvKBGqrvE=c=2cp3j_W45-N=gJJhvg@mail.gmail.com>
-Subject: Re: FAIL: Test report for kernel 5.13.0-rc6 (mainline.kernel.org, cba5e972)
-To:     Odin Ugedal <odin@uged.al>
-Cc:     bsegall@google.com, CKI Project <cki-project@redhat.com>,
-        Erik Hamera <ehamera@redhat.com>, Fine Fan <ffan@redhat.com>,
-        Jianhong Yin <jiyin@redhat.com>,
-        Juri Lelli <jlelli@redhat.com>,
-        Jan Stancek <jstancek@redhat.com>,
-        linux-kernel@vger.kernel.org, Memory Management <mm-qe@redhat.com>,
-        nathan@kernel.org, skt-results-master@redhat.com,
-        Xiong Zhou <xzhou@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210625122423.4435c5e9@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 2:30 PM Odin Ugedal <odin@uged.al> wrote:
->
-> Hello,
->
-> > Since this commit (Commit: cba5e97280f5 - Merge tag
-> > 'sched_urgent_for_v5.13_rc6') we started to see some problem when
-> > running the LTP "cfs_bandwidth01" test case.
->
-> We got a similar report here, together with some discussion:
-> https://lore.kernel.org/lkml/9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com/
->
-> It should be fixed by this patch, so feel free to test and report back:
-> https://lore.kernel.org/lkml/20210621174330.11258-1-vincent.guittot@linaro.org/
+On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
+> Em Fri, 25 Jun 2021 18:22:26 +0900
+> Akira Yokosawa <akiyks@gmail.com> escreveu:
+> 
+>> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
+[...]
+>>
+>> One minor problem might be that the Sarasa font needs manual
+>> download (and install).
+>>
+>>         Thanks, Akira
+> 
+> If this is not yet packaged as part of texlive packages
+> on distros, this won't be a minor issue, as we'll need
+> to find procedures and test it for all distros supported
+> by the script.
 
-Thank you for the reply, I've tested the patch and it works well.
+Existence of "Sarasa Mono SC" can be checked by the command:
 
-Bruno
+    fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
 
->
-> It has already made its way into tip;
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=sched/urgent
->
-> Thanks
-> Odin
->
+If the result is *not* "0", you have the font somewhere in your
+fontconfig path.
 
+I think this is portable across distros.
+Wouldn't this suffice for sphinx-pre-install?
+
+        Thanks, Akira
+> 
+> Thanks,
+> Mauro
+> 
