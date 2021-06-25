@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764FD3B3FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB8C3B3FF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 11:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFYJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 05:05:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:50704 "EHLO foss.arm.com"
+        id S231236AbhFYJHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 05:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhFYJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 05:05:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA2A731B;
-        Fri, 25 Jun 2021 02:02:51 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6DE63F719;
-        Fri, 25 Jun 2021 02:02:50 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Bharata B Rao <bharata@linux.ibm.com>, linux-next@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on linux-next-20210623 during secondary CPUs bringup
-In-Reply-To: <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
-References: <YNSq3UQTjm6HWELA@in.ibm.com> <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com> <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
-Date:   Fri, 25 Jun 2021 10:02:45 +0100
-Message-ID: <87k0mi8gga.mognet@arm.com>
+        id S230456AbhFYJHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 05:07:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7245E6141C;
+        Fri, 25 Jun 2021 09:05:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624611910;
+        bh=otHxBpDBSop9Vu+CWimJLGtUnn6jB/btdPZODo1/bNM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hpatg0MeehRMjlBO5brXCCmjs1/Y30GNT56nPMUN8MUKRZmz7GHf5Zocu0Ec6npG8
+         JhxGUlhQN4vH5j64vToKa478E08qv2M4qCeV21D7K9RVn8zI2FmldfxX8djzGAQoMN
+         LWXEeygdxjOC9+nJncSJCPPNsn0H6QjKykTYmHbXLmRG97XQYl2ylQFErBqkiFHv67
+         TPIEjoLEvP8aq0+RzQUvx1MTqsll/V74svDSS06atMv7fZ2hTdjXXQbUfQnCp7bjAn
+         Hjm9jopC91aH2zFoK0sxjjZRcgjjPeN58ezrlQjfC1RFYhdaJiA/bvxV6bahzPekJ3
+         kv7HcaTDj1mLQ==
+Received: by pali.im (Postfix)
+        id 446B360E; Fri, 25 Jun 2021 11:05:08 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] PCI: aardvark: Interrupt fixes
+Date:   Fri, 25 Jun 2021 11:03:12 +0200
+Message-Id: <20210625090319.10220-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/21 09:28, Peter Zijlstra wrote:
-> On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
->> Bharata,
->>
->> I think the regression is due to Commit f1a0a376ca0c ("sched/core:
->> Initialize the idle task with preemption disabled")
->
-> So that extra preempt_disable() that got removed would've incremented it
-> to 1 and then things would've been fine.
->
-> Except.. Valentin changed things such that preempt_count() should've
-> been inittialized to 1, instead of 0, but for some raisin that didn't
-> stick.. what gives.
->
-> So we have init_idle(p) -> init_idle_preempt_count(p) ->
-> task_thread_info(p)->preempt_count = PREEMPT_DISABLED;
->
-> But somehow, by the time you're running start_secondary(), that's gotten
-> to be 0 again. Does DEBUG_PREEMPT give more clues?
+Per Lorenzo's request [1] I'm resending [2] some other aardvark patches
+which fixes just interrupts.
 
-Given the preempt_count isn't reset between hotplugs anymore, you might be
-able to find the culprit with a hotplug cycle and ftrace with
-trace_prempt_off and trace_preempt_on events (requires PREEMPT_TRACER
-IIRC).
+I addressed review comments from [2], updated patches and added Acked-by
+tags.
 
-It's doable at boot time too, but that will mean sifting through many more
-events than you'd like...
+[1] - https://lore.kernel.org/linux-pci/20210603151605.GA18917@lpieralisi/
+[2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
+
+Pali Rohár (7):
+  PCI: aardvark: Do not touch status bits of masked interrupts in
+    interrupt handler
+  PCI: aardvark: Check for virq mapping when processing INTx IRQ
+  PCI: aardvark: Remove irq_mask_ack callback for INTx interrupts
+  PCI: aardvark: Don't mask irq when mapping
+  PCI: aardvark: Fix support for MSI interrupts
+  PCI: aardvark: Correctly clear and unmask all MSI interrupts
+  PCI: aardvark: Fix setting MSI address
+
+ drivers/pci/controller/pci-aardvark.c | 82 ++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 38 deletions(-)
+
+-- 
+2.20.1
+
