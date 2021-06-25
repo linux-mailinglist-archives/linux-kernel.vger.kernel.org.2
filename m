@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226243B4171
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA7D3B4176
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhFYKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:22:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230082AbhFYKWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02FCC61431;
-        Fri, 25 Jun 2021 10:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624616395;
-        bh=a2a1veiOGKp2laMSFdMlJEur+feJy9K0G00EltWwnL8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qDTWP1qeakO4qgYoNKsJ6busUIEiSF8tJbhblVtPnb6abzNbr+Rj9ZJHRUyoLknhb
-         hCqzx719rAGZ4DbPrkxiKbyVWo0z8bivev9Z8x+J+2VBcf88F4zLvldH+HcZRUNfKD
-         bRCB9UsqIxxJibeV0boueoHRi7G2cBvDeA8fAXk0=
-Date:   Fri, 25 Jun 2021 12:19:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, guohanjun@huawei.com,
-        sudeep.holla@arm.com, song.bao.hua@hisilicon.com, ardb@kernel.org,
-        anshuman.khandual@arm.com, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Li Huafei <lihuafei1@huawei.com>
-Subject: Re: [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide ZONE_DMA
-Message-ID: <YNWtyJaDY17829g9@kroah.com>
-References: <827b317d7f5da6e048806922098291faacdb19f9.camel@suse.de>
- <YETwL6QGWFyJTAzk@kroah.com>
- <604597E3.5000605@huawei.com>
- <YEX1OcbVNSqwwusF@kroah.com>
- <31cd8432-2466-555d-7617-ae48cbcd4244@huawei.com>
- <8b0a4f25-0803-9341-f3a4-277d16802295@huawei.com>
- <YNLe4CGtOgVvTOMN@kroah.com>
- <e47df0fd-0ddd-408b-2972-1b6d0a786f00@huawei.com>
- <YNLkDJ8zHGRZ5iG8@kroah.com>
- <f692a6e5-9e07-8b96-b7d3-213e6e3d071b@huawei.com>
+        id S231429AbhFYKWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:22:53 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:51280 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230082AbhFYKWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:22:48 -0400
+Received: from netfilter.org (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 86567607EB;
+        Fri, 25 Jun 2021 12:20:24 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 12:20:21 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] netfilter: nf_tables: Fix dereference of null
+ pointer flow
+Message-ID: <20210625102021.GA32352@salvia>
+References: <20210624195718.170796-1-colin.king@canonical.com>
+ <20210625095901.GH2040@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f692a6e5-9e07-8b96-b7d3-213e6e3d071b@huawei.com>
+In-Reply-To: <20210625095901.GH2040@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:01:10PM +0800, Kefeng Wang wrote:
-> 
-> 
-> On 2021/6/23 15:34, Greg KH wrote:
-> > On Wed, Jun 23, 2021 at 03:25:10PM +0800, Kefeng Wang wrote:
-> > > 
-> > > 
-> > > On 2021/6/23 15:12, Greg KH wrote:
-> > > > On Wed, Jun 23, 2021 at 02:59:59PM +0800, Kefeng Wang wrote:
-> > > > > Hi Greg,
-> > > > > 
-> > > > > There are two more patches about the ZONE_DMA[32] changes,
-> > > > 
-> > > > What ZONE_DMA changes?
-> > > 
-> > > See the subject, [PATCH stable v5.10 0/7] arm64: Default to 32-bit wide
-> > > ZONE_DMA, We asked the ARM64 ZONE_DMA change backport before, link[1]
-> 
-> Let's inline the link:
-> https://lore.kernel.org/lkml/20210303073319.2215839-1-jingxiangfeng@huawei.com/
-> 
-> The following 7 patches(we asked from link) has merged into lts5.10(tag:
-> v5.10.22)
-> 
->   4d7ed9a49b0c mm: Remove examples from enum zone_type comment
->   8eaef922e938 arm64: mm: Set ZONE_DMA size based on early IORT scan
->   35ec3d09ff6a arm64: mm: Set ZONE_DMA size based on devicetree's dma-ranges
->   a9861e7fa4f8 of: unittest: Add test for of_dma_get_max_cpu_address()
->   18bf6e998d08 of/address: Introduce of_dma_get_max_cpu_address()
->   3fbe62ffbb54 arm64: mm: Move zone_dma_bits initialization into
-> zone_sizes_init()
->   407b173adfac arm64: mm: Move reserve_crashkernel() into mem_init()
-> 
-> but the patch "arm64: mm: Move reserve_crashkernel() into mem_init()"
-> has some issue, see the following discussion from Catalin,
-> 
-> https://lore.kernel.org/linux-devicetree/e60d643e-4879-3fc3-737d-2c145332a6d7@arm.com/
-> https://lore.kernel.org/linux-arm-kernel/20201119175556.18681-1-catalin.marinas@arm.com/
-> 
-> and yes, we met crash in lts5.10 when kexec boot due to "arm64: mm: Move
-> reserve_crashkernel() into mem_init()" too, which could be fixed by
-> commit 2687275a5843 "arm64: Force NO_BLOCK_MAPPINGS if crashkernel
-> reservation is required", and the commit 791ab8b2e3db "arm64: Ignore any DMA
-> offsets in the max_zone_phys() calculation" also about DMA set,
-> So I only asked the two patches(both in v5.11) related ARM64 ZONE_DMA
-> changes backported into lts5.10.
+Hi,
 
-Thanks, all now queued up.
+On Fri, Jun 25, 2021 at 12:59:01PM +0300, Dan Carpenter wrote:
+> Btw, why is there no clean up if nft_table_validate() fails?
 
-greg k-h
+See below.
+
+> net/netfilter/nf_tables_api.c
+>   3432                                  list_add_tail_rcu(&rule->list, &old_rule->list);
+>   3433                          else
+>   3434                                  list_add_rcu(&rule->list, &chain->rules);
+>   3435                  }
+>   3436          }
+>   3437          kvfree(expr_info);
+>   3438          chain->use++;
+>   3439  
+>   3440          if (flow)
+>   3441                  nft_trans_flow_rule(trans) = flow;
+>   3442  
+>   3443          if (nft_net->validate_state == NFT_VALIDATE_DO)
+>   3444                  return nft_table_validate(net, table);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> The cleanup for this would be quite involved unfortunately...  Not
+> necessarily something to attempt without being able to test the code.
+
+At this stage, the transaction has been already registered in the
+list, and the nf_tables_abort() path takes care of undoing what has
+been updated in the preparation phase.
+
+Having said this, Colin patch is correct, it's fixing up the error
+path.
