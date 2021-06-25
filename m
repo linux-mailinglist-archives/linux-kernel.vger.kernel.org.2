@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495D33B471F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703BF3B470D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhFYQCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:02:37 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3305 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhFYQCg (ORCPT
+        id S229994AbhFYP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:57:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45728 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhFYP5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:02:36 -0400
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GBLzw2hKqz6G8jp;
-        Fri, 25 Jun 2021 23:50:04 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 25 Jun 2021 18:00:13 +0200
-Received: from [10.47.26.115] (10.47.26.115) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 25 Jun
- 2021 17:00:12 +0100
-Subject: Re: [PATCH v7 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-To:     Qi Liu <liuqi115@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangshaokun@hisilicon.com>
-References: <1624532384-43002-1-git-send-email-liuqi115@huawei.com>
- <1624532384-43002-3-git-send-email-liuqi115@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <485dcb90-01bc-766a-466a-f32563e2076f@huawei.com>
-Date:   Fri, 25 Jun 2021 16:53:35 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 25 Jun 2021 11:57:45 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1A6A821CEA;
+        Fri, 25 Jun 2021 15:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624636524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1HmjupcRz3JaQfNq8HfL9gsd0zczzHm8Vkl0SLmvU3I=;
+        b=Cfo47BpXwTuQyIkermF36Mz6Go/NxmItV2XTmAuUvXXYB2AQwW4PPZ53ShpoAhVlOH+pJO
+        PEQFOPS4ryan0JBVlJl8uw02JGPeJmiXZefue/JSb2Tc2/nuqrY+39WqrmInIsgdcDmrw6
+        ittbSCEihOI1rEfSTJWdZMFeDCQgbiU=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id E03A111A97;
+        Fri, 25 Jun 2021 15:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624636524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1HmjupcRz3JaQfNq8HfL9gsd0zczzHm8Vkl0SLmvU3I=;
+        b=Cfo47BpXwTuQyIkermF36Mz6Go/NxmItV2XTmAuUvXXYB2AQwW4PPZ53ShpoAhVlOH+pJO
+        PEQFOPS4ryan0JBVlJl8uw02JGPeJmiXZefue/JSb2Tc2/nuqrY+39WqrmInIsgdcDmrw6
+        ittbSCEihOI1rEfSTJWdZMFeDCQgbiU=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 2n7IM2v81WAYPQAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Fri, 25 Jun 2021 15:55:23 +0000
+Date:   Fri, 25 Jun 2021 17:55:22 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Philipp Hahn <pmhahn+lkml@pmhahn.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: Prevent inode/dentry trashing?
+Message-ID: <YNX8anv2yCnkVPXy@blackbook>
+References: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
 MIME-Version: 1.0
-In-Reply-To: <1624532384-43002-3-git-send-email-liuqi115@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.26.115]
-X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GRfnHW8roRpdCmLl"
+Content-Disposition: inline
+In-Reply-To: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/2021 11:59, Qi Liu wrote:
-> +
-> +/*
-> + * Events with the "dl" suffix in their names count performance in DL layer,
-> + * otherswise, events count performance in TL layer.
-> + */
-> +static struct attribute *hisi_pcie_pmu_events_attr[] = {
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mwr, 0x010004),
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mrd, 0x100005),
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mwr, 0x010005),
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mrd, 0x200004),
-> +	HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mwr, 0x000010),
-> +	HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mrd, 0x020010),
-> +	HISI_PCIE_PMU_EVENT_ATTR(lat_tx_mrd, 0x000011),
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_rx_dl, 0x010084),
-> +	HISI_PCIE_PMU_EVENT_ATTR(bw_tx_dl, 0x030084),
-> +	NULL
-> +};
-> +
-> +static struct attribute_group hisi_pcie_pmu_events_group = {
-> +	.name = "events",
-> +	.attrs = hisi_pcie_pmu_events_attr,
-> +};
-> +
-> +static struct attribute *hisi_pcie_pmu_format_attr[] = {
-> +	HISI_PCIE_PMU_FORMAT_ATTR(event, "config:0-15"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(subevent, "config:16-23"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(thr_len, "config1:0-3"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(thr_mode, "config1:4"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(trig_len, "config1:5-8"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(trig_mode, "config1:9"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(port, "config2:0-15"),
-> +	HISI_PCIE_PMU_FORMAT_ATTR(bdf, "config2:16-31"),
-> +	NULL
-> +};
 
-I am just wondering how this now works.
+--GRfnHW8roRpdCmLl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So if the user programs the following:
-./perf stat -v -e hisi_pcieX/lat_rx_mrd/
+Hello Phillip.
 
-Then the value (incremented) in HISI_PCIE_CNT (I think that's the right 
-one) is returned as the event count. But one would expect bandwidth from 
-that event, while we only return here the delay cycles - how is the 
-count in HISI_PCIE_CNT_EXT exposed, so userspace can do the calc for bw?
+On Mon, Jun 07, 2021 at 02:39:35PM +0200, Philipp Hahn <pmhahn+lkml@pmhahn.=
+de> wrote:
+> The trashed caches affect all other processes running in parallel or the
+> first processes started each morning.
+>=20
+> Is it possible to prevent inode/dentry trashing for example by limiting t=
+he
+> cache per process(-group)?
 
-Thanks,
-John
+Yes. Unless you have disabled it with CONFIG_MEMCG_KMEM or
+cgroup.memory=3Dnokmem, dentries and inodes are charged to respective
+cgroups. And you can limit overall memory of a cgroup, see
+memory.{max,high} attributes. (You suggest this inode/dentry consumption
+is dominant enough to affect other jobs, so the limit would keep it
+constrained as you intend).
+
+HTH,
+Michal
+
+--GRfnHW8roRpdCmLl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDV/GQACgkQia1+riC5
+qShfZA//ZacjmyfT7nNWjlUA6bEyGPVXkjxHZedOUfWqCr2SGXbwd57ND+ROHSwA
+EbSVYP3TaN7+BJBPrL3y8NjnKFaRJsLosiRiKsA6VWS9pibmgVKzSiW5H5aS03/S
+nl6GDIp0mt8sg2DDjn/raS+AopLt/iD7awWIT8LAugfs2h4AueUZ/kC01Cmzja7F
+5F5C2vG1T8pKinSMow3OCtZVMmMl18U+JEFiNWKqrQkMlAHu6GlwUTIEtEc6X4hS
+h/GKJ/xplD/avp1rjJSr+FUFZG4+jPTnQu0LqUdwR80VEO9gdiSvavJCARCjbKvb
+54qPhiPtovHk9UfZJe8fcN807cdYNrWNHY0n6/Z2M/28oq6gF81Ra7Ig4/3I2DfU
+qT6+vXrvjF7ZEO9y8okJiGfdpYInlsJbNIQvkjaL156Uz70HLosGFsg5NAnYY0Mc
+9HJXhnIQCRke4O/JccAAftxdmDoPVDmJvl7QMMD7D2AoGVEALv8XTzdxpequUK/q
+PFW4qoelNaEx2NNs01Wzr76fphdav5zWn1+ctdGRbKCyAAv2ZMTLwNut4p1K58gg
+CZpYLN6S8fioX45P4uRaO6VTbWf+o5W+URJM06n/o94ha+cRlIU7uonqb3gx0eU2
+ucM216qE2TT/NdqAqfE3sWAKaM1BhA8HNNpMsiZgwGEbOIUFdRE=
+=I/eJ
+-----END PGP SIGNATURE-----
+
+--GRfnHW8roRpdCmLl--
