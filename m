@@ -2,112 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA6E3B3E0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9977F3B3E22
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFYHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFYHyj (ORCPT
+        id S229996AbhFYIDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:03:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17256 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229878AbhFYIC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:54:39 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53360C061574;
-        Fri, 25 Jun 2021 00:52:19 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id k6so7363490pfk.12;
-        Fri, 25 Jun 2021 00:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fmnMOH13s9fHpp424cL+5TDyRw9czufBkKSD0sxgjcg=;
-        b=IES7naOlxzpgwuI/xJPxIJOesXyQiZ7O4ibSZkj96clDB/0dvvZYHKbhQxLb58ih7p
-         m0ijuQCxyDRy9YhoiZvFujgC2viTikR3BYL/Is5ahOy9hl0Z1QGzXS/pmZZb9GKtSwPu
-         pUkHZf6vItsRKhz4ZoR80QAwR7tVVJf+wa4E2izzYWc7971UsgRNeJd/yJprLwmEMOjw
-         +qRWJfpwd3h896Dz/ENDZm1oJYdBxxbf+P2ZNYTsHkhnA7KY1QjkFRA+owZP36X1564Q
-         SBg35fSXF7vIS8ndS6bflCBXUK1GCcz4nLJXhR4UNnfiAJqY0w7lxjUiFuK/tIKdRYVS
-         ie2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fmnMOH13s9fHpp424cL+5TDyRw9czufBkKSD0sxgjcg=;
-        b=q1X3NqhGyIY3I+uknrJ2lfko7fuCrwFZ5ZiDf4pBPxZT4wozfSoZ/sa5q0Ul+GmtHX
-         a3ANF0/DRRGHZ78+1nLvrpQGqmF6qfkesLOvhEAaVopOQpovosOq8ZOUVHUJ3Sr0JZ2d
-         VtscRBxWqEYeue0yNq5qCJ5mDBsc0NguEdSJZh8kVa6XQyk7iB6jPkcZ+AwTj3/Ujx/Z
-         bj0Wierv2Bf5Uwu4beeAmpg/Pt9ti3SmlGY+0xXh0CLF3K9farkH9UQSrlCk2esH6c9s
-         yKHclGS5XL6q2RYh8RLyOQVNHocdBODRvwyTSHh+WJSBRHWzQvR50+PJzeUHDtPr1bzE
-         v4uA==
-X-Gm-Message-State: AOAM533DPoC5Cv78l8Tb54uWWD1sfluiIowQ+FWGSOhL2UBqtdiSZWJ2
-        L7Qbqeqa/JnTC4/Nat2PErs=
-X-Google-Smtp-Source: ABdhPJxMcBZ7FY3IvPyG2MonIOQe818xdSVSqXg0UYxMc9UlT2SD7Ue8J/ixZoaWuiFuPm9WTpakHA==
-X-Received: by 2002:a65:5c4a:: with SMTP id v10mr8400622pgr.142.1624607538832;
-        Fri, 25 Jun 2021 00:52:18 -0700 (PDT)
-Received: from [192.168.0.118] ([103.242.196.10])
-        by smtp.gmail.com with ESMTPSA id 195sm5041416pfw.133.2021.06.25.00.52.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 00:52:17 -0700 (PDT)
-Subject: Re: [PATCH] tty: serial: owl: Fix data race in owl_uart_remove
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-References: <20210617110443.6526-1-saubhik.mukherjee@gmail.com>
- <YMswdqNpjb9n1pdW@kroah.com> <ceebf511-9971-6deb-a6dd-458d69de2bbd@gmail.com>
- <YNLfxMZZ0a80qKLg@hovoldconsulting.com>
- <a9d43126-acd7-efb0-bf1a-86b06965f0e2@gmail.com>
- <YNR6uEbCJOa9s3hG@hovoldconsulting.com>
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Message-ID: <ff208383-aefa-17d0-891c-ee5a10edd1fe@gmail.com>
-Date:   Fri, 25 Jun 2021 13:22:11 +0530
+        Fri, 25 Jun 2021 04:02:58 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P7XgSr163083;
+        Fri, 25 Jun 2021 03:58:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=dKTZ5LGvIvXYN5hrxescceB4a+549WmZAfPHPpWY4Mw=;
+ b=aWt4tRZtCOJ+mGxI9BelzcO6ojLT44Ap4RkL67WA0yRy5mvyPnuqGbe+PsHDDjroEZnK
+ FS+4fhDv0x9lSbkNQ20IeeRSmOX20wRyZcHQ60otM2zfSiJweJ3Z8Vf45GOaUWPzobb8
+ MejQbpDGQafNC4WT9B02wBAo9AqLsXQSkd3kwHpc2q95cCQ3DYomcOnUvl4WYqwEFnXX
+ NYXfv0TrMrf05Ba4xE1Em4vtML0qExLnMyxGpsyQy0dYdt+OQzr/RXLybgWT/YTrvmqL
+ ED/DcP4NIOtA5OjUKTQweH+acU1yfsolWy4TgAu7HFWO35IHHhU+QmU/Ed6/r0QvScw+ bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39d9h6bhph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 03:58:34 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15P7Xs32163940;
+        Fri, 25 Jun 2021 03:58:34 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39d9h6bhnp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 03:58:33 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15P7rV4f015718;
+        Fri, 25 Jun 2021 07:58:31 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 399878awsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 07:58:31 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15P7wTYI22413732
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 07:58:29 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71C89AE057;
+        Fri, 25 Jun 2021 07:58:29 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA31DAE04D;
+        Fri, 25 Jun 2021 07:58:27 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.31.44])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Jun 2021 07:58:27 +0000 (GMT)
+Subject: Re: [PATCH v2 1/5] KVM: do not allow mapping valid but non-refcounted
+ pages
+To:     David Stevens <stevensd@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nick Piggin <npiggin@gmail.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+References: <20210625073616.2184426-1-stevensd@google.com>
+ <20210625073616.2184426-2-stevensd@google.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <183b71c1-6bb0-8d05-e2ce-e452253259a8@de.ibm.com>
+Date:   Fri, 25 Jun 2021 09:58:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YNR6uEbCJOa9s3hG@hovoldconsulting.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210625073616.2184426-2-stevensd@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: BdtyyjbTQMfPEY6MWTdYEs3ooRdifkK5
+X-Proofpoint-GUID: vG6ohtKq4JE7ZH-Uvo7-8RgtHyEscIYL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-25_02:2021-06-24,2021-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106250043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/24/21 5:59 PM, Johan Hovold wrote:
-> On Thu, Jun 24, 2021 at 05:37:38PM +0530, Saubhik Mukherjee wrote:
->> On 6/23/21 12:46 PM, Johan Hovold wrote:
->>> On Wed, Jun 23, 2021 at 11:06:53AM +0530, Saubhik Mukherjee wrote:
->>>> On 6/17/21 4:52 PM, Greg KH wrote:
->>>>> On Thu, Jun 17, 2021 at 04:34:43PM +0530, Saubhik Mukherjee wrote:
->>>>>> Suppose the driver is registered and a UART port is added. Once an
->>>>>> application opens the port, owl_uart_startup is called which registers
->>>>>> the interrupt handler owl_uart_irq.
->>>>>>
->>>>>> We could have the following race condition:
->>>>>>
->>>>>> When device is removed, owl_uart_remove is called, which calls
->>>>>> uart_remove_one_port, which calls owl_uart_release_port, which writes
->>>>>> NULL to port->membase. At this point parallely, an interrupt could be
->>>>>> handled by owl_uart_irq which reads port->membase.
->>>>>>
->>>>>> This is because it is possible to remove device without closing a port.
->>>>>> Thus, we need to check it and call owl_uart_shutdown in owl_uart_remove.
->>>
->>> No, this makes no sense at all. The port is deregistered and hung up by
->>> uart_remove_one_port() (and the interrupt line is consequently disabled
->>> by the driver) before it is released so this can never happen.
->>
->> Thanks for the reply. I am not sure I understand. I could not find any
->> interrupt disabling in owl_uart_remove. Could you point out where/how is
->> the interrupt line is disabled before releasing the port?
-> 
-> The interrupt line is disabled by owl_uart_shutdown(), which is called
-> when uart_remove_one_port() hangs up an open tty. And as I mentioned
-> this happens after deregistering the port (so no new opens) and before
-> releasing the port.
-> 
-> Johan
-> 
 
-Thank you very much for the explanation. So, indeed shutdown is called 
-before releasing port. There is no need for a patch.
+
+On 25.06.21 09:36, David Stevens wrote:
+> From: Nicholas Piggin <npiggin@gmail.com>
+> 
+> It's possible to create a region which maps valid but non-refcounted
+> pages (e.g., tail pages of non-compound higher order allocations). These
+> host pages can then be returned by gfn_to_page, gfn_to_pfn, etc., family
+> of APIs, which take a reference to the page, which takes it from 0 to 1.
+> When the reference is dropped, this will free the page incorrectly.
+> 
+> Fix this by only taking a reference on the page if it was non-zero,
+> which indicates it is participating in normal refcounting (and can be
+> released with put_page).
+> 
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+
+I guess this would be the small fix for stable? Do we want to add that cc?
+
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> ---
+>   virt/kvm/kvm_main.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 3dcc2abbfc60..f7445c3bcd90 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2175,6 +2175,13 @@ static bool vma_is_valid(struct vm_area_struct *vma, bool write_fault)
+>   	return true;
+>   }
+> 
+> +static int kvm_try_get_pfn(kvm_pfn_t pfn)
+> +{
+> +	if (kvm_is_reserved_pfn(pfn))
+> +		return 1;
+> +	return get_page_unless_zero(pfn_to_page(pfn));
+> +}
+> +
+>   static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>   			       unsigned long addr, bool *async,
+>   			       bool write_fault, bool *writable,
+> @@ -2224,13 +2231,21 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>   	 * Whoever called remap_pfn_range is also going to call e.g.
+>   	 * unmap_mapping_range before the underlying pages are freed,
+>   	 * causing a call to our MMU notifier.
+> +	 *
+> +	 * Certain IO or PFNMAP mappings can be backed with valid
+> +	 * struct pages, but be allocated without refcounting e.g.,
+> +	 * tail pages of non-compound higher order allocations, which
+> +	 * would then underflow the refcount when the caller does the
+> +	 * required put_page. Don't allow those pages here.
+>   	 */
+> -	kvm_get_pfn(pfn);
+> +	if (!kvm_try_get_pfn(pfn))
+> +		r = -EFAULT;
+> 
+>   out:
+>   	pte_unmap_unlock(ptep, ptl);
+>   	*p_pfn = pfn;
+> -	return 0;
+> +
+> +	return r;
+>   }
+> 
+>   /*
+> 
