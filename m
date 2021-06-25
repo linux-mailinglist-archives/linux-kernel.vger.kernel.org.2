@@ -2,136 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521643B42FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722CB3B4306
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhFYMQd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 08:16:33 -0400
-Received: from out28-99.mail.aliyun.com ([115.124.28.99]:51152 "EHLO
-        out28-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhFYMQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:16:31 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07444078|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.157598-0.00389005-0.838512;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KXvfCQt_1624623247;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KXvfCQt_1624623247)
-          by smtp.aliyun-inc.com(10.147.42.198);
-          Fri, 25 Jun 2021 20:14:08 +0800
-Date:   Fri, 25 Jun 2021 20:14:06 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Re: [PATCH v3 4/4] MIPS: CI20: Add second percpu timer for SMP.
-Message-ID: <20210625201406.1373aff5@zhouyanjie-virtual-machine>
-In-Reply-To: <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
-References: <1624547189-61079-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624547189-61079-5-git-send-email-zhouyanjie@wanyeetech.com>
-        <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S231127AbhFYMUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:20:15 -0400
+Received: from m12-14.163.com ([220.181.12.14]:43756 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230274AbhFYMUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 08:20:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Ll5wP
+        2RKhdsiju9OyGOyhweozs4U8+CZxPAsBohFRCY=; b=V1Hs0sYlL5KZVdtxOFYU+
+        SzxieUkk44Dwk8s9xYNGepXzKWhoJC60060K0EUP2B/hGLg5cy1Aa4ZrBP0AfeJ3
+        bRe6gVvmcAXJ3bk1zF80ruvf6CD1tC/HUupE1Mw13B6qBFCKpLGQrT/JHN5AWK0/
+        m5bCICrKBNXgNKJ4zWjYRo=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowACnrCguydVgUprnQg--.54887S2;
+        Fri, 25 Jun 2021 20:16:46 +0800 (CST)
+From:   13145886936@163.com
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+Subject: [PATCH] ASoC: fsl_xcvr: remove unnecessary print function dev_err()
+Date:   Fri, 25 Jun 2021 05:16:36 -0700
+Message-Id: <20210625121636.453231-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowACnrCguydVgUprnQg--.54887S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWUCF45ur1kKr4UGrWruFg_yoW3Crb_tw
+        10kwnYq3yrJryIva4kGw43AFy7XwsrCFWUWrs8KF17J345Jw4rXa4UGF4kurs8uw4xA34x
+        WFyYvrZ3Cr1SyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5JR67UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBzh+8g1QHNBM05gAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-于 Fri, 25 Jun 2021 12:31:17 +0100
-Paul Cercueil <paul@crapouillou.net> 写道:
+From: gushengxian <gushengxian@yulong.com>
 
-> Hi Zhou,
-> 
-> Le jeu., juin 24 2021 at 23:06:29 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
-> > 1.Add a new TCU channel as the percpu timer of core1, this is to
-> >   prepare for the subsequent SMP support. The newly added channel
-> >   will not adversely affect the current single-core state.
-> > 2.Adjust the position of TCU node to make it consistent with the
-> >   order in jz4780.dtsi file.  
-> 
-> That's a bit superfluous, the order matters when adding new nodes,
-> but once they are added, moving them around only cause annoyance.
-> 
-> > 
-> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > ---
-> > 
-> > Notes:
-> >     v2:
-> >     New patch.
-> > 
-> >     v2->v3:
-> >     No change.
-> > 
-> >  arch/mips/boot/dts/ingenic/ci20.dts | 21 +++++++++++----------
-> >  1 file changed, 11 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
-> > b/arch/mips/boot/dts/ingenic/ci20.dts
-> > index 8877c62..70005cc 100644
-> > --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> > +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> > @@ -118,6 +118,17 @@
-> >  	assigned-clock-rates = <48000000>;
-> >  };
-> > 
-> > +&tcu {
-> > +	/*
-> > +	 * 750 kHz for the system timers and 3 MHz for the
-> > clocksources,
-> > +	 * use channel #0 and #1 for the per cpu system timers,
-> > and use
-> > +	 * channel #2 for the clocksource.
-> > +	 */
-> > +	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
-> > TCU_CLK_TIMER1>,
-> > +					  <&tcu TCU_CLK_TIMER2>,
-> > <&tcu TCU_CLK_OST>;
-> > +	assigned-clock-rates = <750000>, <750000>, <3000000>,
-> > <3000000>;  
-> 
-> Ideally you'd set TIMER1 to 3 MHz and TIMER2 to 750 kHz, otherwise it 
-> kind of breaks support for older kernels (they would still boot, but 
-> with a very slow clocksource). So in the new DTS you could use the 
-> timer0 clock for CPU #0, timer1 for the clocksource, and timer2+ for 
-> cpus > 0.
+The print function dev_err() is redundant because
+platform_get_irq() already prints an error.
 
-Sure, I will change it in v4.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks and best regards!
-
-> 
-> Cheers,
-> -Paul
-> 
-> > +};
-> > +
-> >  &mmc0 {
-> >  	status = "okay";
-> > 
-> > @@ -522,13 +533,3 @@
-> >  		bias-disable;
-> >  	};
-> >  };
-> > -
-> > -&tcu {
-> > -	/*
-> > -	 * 750 kHz for the system timer and 3 MHz for the
-> > clocksource,
-> > -	 * use channel #0 for the system timer, #1 for the
-> > clocksource.
-> > -	 */
-> > -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
-> > TCU_CLK_TIMER1>,
-> > -					  <&tcu TCU_CLK_OST>;
-> > -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
-> > -};
-> > --
-> > 2.7.4
-> >   
-> 
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 6cb558165848..e34d57ad66fb 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1189,10 +1189,8 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
+ 
+ 	/* get IRQs */
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0) {
+-		dev_err(dev, "no irq[0]: %d\n", irq);
++	if (irq < 0)
+ 		return irq;
+-	}
+ 
+ 	ret = devm_request_irq(dev, irq, irq0_isr, 0, pdev->name, xcvr);
+ 	if (ret) {
+-- 
+2.25.1
 
