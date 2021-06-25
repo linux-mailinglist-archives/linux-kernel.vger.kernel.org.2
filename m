@@ -2,188 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D43B4211
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFF53B4272
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbhFYLGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:06:10 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:22745 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhFYLGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:06:08 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210625110346epoutp03be7a7052d9372658f24818aa8eb2696d~LzmW0H6ya0970909709epoutp03m
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 11:03:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210625110346epoutp03be7a7052d9372658f24818aa8eb2696d~LzmW0H6ya0970909709epoutp03m
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624619026;
-        bh=qSA7CE5B0fTuLAuGBrmFV7sheZb8ie8/MT7rYYQ+iaw=;
-        h=To:Cc:From:Subject:Date:References:From;
-        b=qXCOkHLfl9yHtaWAvD5ZLU+ZHvucmql+Z5zPOiz1Kaii8K/fTj2zsaELoGS1SUhHu
-         hDcISZeXq8fUfJw5eUHhqwT5AAY/545ktpXT/hISxl8LbfnkffyfqHxWvHoTM32gH/
-         Z8lQEzPP1zHWRVC1hKr+Gf5SAnlzBGP2+urtZ7V4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210625110345epcas1p369f65824c86ddb45f66bbed839915a17~LzmWB6mpw0251802518epcas1p3v;
-        Fri, 25 Jun 2021 11:03:45 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4GBDdV4zXvz4x9Pw; Fri, 25 Jun
-        2021 11:03:42 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7C.DE.09551.E08B5D06; Fri, 25 Jun 2021 20:03:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210625110341epcas1p32171bda25f6020b090537e15e763d5eb~LzmSQDL8t1935219352epcas1p3X;
-        Fri, 25 Jun 2021 11:03:41 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210625110341epsmtrp1142e527f455e5893a032e681b99cb043~LzmSPTCdG2779327793epsmtrp1s;
-        Fri, 25 Jun 2021 11:03:41 +0000 (GMT)
-X-AuditID: b6c32a36-2b3ff7000000254f-73-60d5b80e1dcc
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.28.08289.D08B5D06; Fri, 25 Jun 2021 20:03:41 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210625110341epsmtip2d0b98f150c9f992c1e6376f6356b4f49~LzmSAEopC2210222102epsmtip2N;
-        Fri, 25 Jun 2021 11:03:41 +0000 (GMT)
-To:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [GIT PULL] devfreq next for v5.14
-Organization: Samsung Electronics
-Message-ID: <b020c243-3175-3e31-8b7c-e1b30572e6d9@samsung.com>
-Date:   Fri, 25 Jun 2021 20:22:54 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S231193AbhFYLZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:25:43 -0400
+Received: from mga04.intel.com ([192.55.52.120]:1752 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhFYLZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:25:41 -0400
+IronPort-SDR: x8tVQ55SwbdSwPl2aCpLthoXwOyvWQBnMaRy/MxE1B/owIon5sG7+/q8DqRw/8WmC2WCubB01P
+ Vrv33MWlcPjg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="205825523"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="205825523"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 04:23:20 -0700
+IronPort-SDR: dPfPo6GYQkxkecwpT1I+fRhs3VVyqD6TTNKZhpm7JmpiNcbRKTHdcA17ZQlfbFeDG0qprXoj3Y
+ 793jmGben/Gg==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="453786104"
+Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 04:23:17 -0700
+Date:   Fri, 25 Jun 2021 19:23:14 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 05/54] Revert "KVM: x86/mmu: Drop
+ kvm_mmu_extended_role.cr4_la57 hack"
+Message-ID: <20210625112314.nn6llnk7dtovjg4e@linux.intel.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-6-seanjc@google.com>
+ <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
+ <09a49caf-6ff5-295b-d1ab-023549f6a23b@redhat.com>
+ <20210625092902.o4kqx67zvvbudggh@linux.intel.com>
+ <885018ab-206b-35c7-a75a-e4fccb663fc3@redhat.com>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMJsWRmVeSWpSXmKPExsWy7bCmri7fjqsJBks2K1pMvHGFxeL6l+es
-        Fmeb3rBbXN41h83ic+8RRovbjSvYLM6cvsTqwO6xaVUnm8eWq+0sHn1bVjF6fN4kF8ASlW2T
-        kZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA3SBkkJZYk4p
-        UCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAskCvODG3uDQvXS85P9fK0MDAyBSoMCE749X7
-        jYwFHyQq3mx6z9bA+Fu4i5GTQ0LARKLzzxf2LkYuDiGBHYwSR768ZwZJCAl8YpSYdbQEIvGZ
-        UWL717lMMB1HX82B6tjFKHHi4EQWCOc9o8Sv7l6gdg4OEQF7iY4PmSBxZoELTBIXN7WxgnSz
-        CWhJ7H9xgw3EFgayr11ZCRbnF1CUuPrjMSOIzStgJ/GpG+IMFgFViZbPR9lBbFGBMImT21qg
-        agQlTs58wgJiMwuIS9x6Mp8JwpaX2P52DjPIYgmBv+wSbx8chjrbRWLCmrXsELawxKvjW6Bs
-        KYmX/W1QdrXEypNH2CCaOxgltuy/wAqRMJbYv3QyE8hnzAKaEut36UOEFSV2/p7LCLGYT+Ld
-        1x5WkBIJAV6JjjYhiBJlicsP7kKdICmxuL2TDcL2kFg/6xDbBEbFWUjemYXknVlI3pmFsHgB
-        I8sqRrHUguLc9NRiwwIj5NjexAhOnVpmOxgnvf2gd4iRiYPxEKMEB7OSCO+jlksJQrwpiZVV
-        qUX58UWlOanFhxhNgQE8kVlKNDkfmLzzSuINTY2MjY0tTAzNTA0NlcR5d7IdShASSE8sSc1O
-        TS1ILYLpY+LglGpgUnPpTg32K1hdmSA8dcbhXl/epKSaSRYGsWEP6iX0ZP55Bu7xytR38c+T
-        sF9QuayQa9furINpdgtWpws1XpGblHHu2LQn7FV7vTaa/GJu6k1U7HWe5H7o68zFrfsnCbPP
-        75z0/cjqwHvcwSzc6x7yCJxny8r28l70JY11wr2arT6J/A/mfo/fdMG95++fV/G30o4qNh9c
-        erX9Feu/TSyfA65Y3XRlVJ2R1/jGWEh62pEprz8G8cgmsrVOv2lZuJsl9vTDAO1tCuFSGdvK
-        vrTXeh2uu+NcrX3c521+tVnD7b4l7sW67jmPv7Bm3y9131lQdPLTTGa3t19WRkfZbWD0qrig
-        qh2zbeY89WjGizZKLMUZiYZazEXFiQAgihJLJgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWy7bCSvC7vjqsJBu1rjCwm3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsFmdOX2J1YPfYtKqTzWPL1XYWj74tqxg9Pm+SC2CJ4rJJ
-        Sc3JLEst0rdL4Mp49X4jY8EHiYo3m96zNTD+Fu5i5OSQEDCROPpqDnsXIxeHkMAORokv8xYw
-        QyQkJaZdPApkcwDZwhKHDxdD1LxllNi/9Qc7SFxEwF6i40MmSJxZ4BKTxMYzN9hBetkEtCT2
-        v7jBBmILA9nXrqxkBbH5BRQlrv54zAhi8wrYSXzqfg+2i0VAVaLl81GwXlGBMImdSx4zQdQI
-        Spyc+YQFxGYWUJf4M+8SM4QtLnHryXwmCFteYvvbOcwTGAVnIWmZhaRlFpKWWUhaFjCyrGKU
-        TC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI4JLa0djHtWfdA7xMjEwXiIUYKDWUmE91HL
-        pQQh3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamM5znQ2e
-        82z7mcZvH2wams0+mc20yVa4oHRZ/FGW+Drpz2Fea3Nv3Lhpe1ZtqZGz2Gkfg1295740Cc3f
-        pdD63pKTdVflJieXozYO7wxPFe77Z35wN+P8NQIlq2Nl2wxEykMOqU9tuqPoaOjqUf1tY/IX
-        hk36gl9lNK4uE+6Qm7fwz1xn+Ron8db9nDskT6zqWB0hbFK11H/a1eIHNzaKlX/7dc/0ZrrG
-        rubsiYqrmm9ZSX049+7n/2M/lyu3LX0pINNeyDY/03pFVQHL3m0vFrc37BafGfFp5oeXF10k
-        DK/Z3furHZ16K+Cl36sZTpdXNAW2//9WU/hqj+j6dsFTE5NEbL9LVlf0RN7icv8/96ESS3FG
-        oqEWc1FxIgBoRIND+AIAAA==
-X-CMS-MailID: 20210625110341epcas1p32171bda25f6020b090537e15e763d5eb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210625110341epcas1p32171bda25f6020b090537e15e763d5eb
-References: <CGME20210625110341epcas1p32171bda25f6020b090537e15e763d5eb@epcas1p3.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <885018ab-206b-35c7-a75a-e4fccb663fc3@redhat.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Rafael,
+On Fri, Jun 25, 2021 at 12:25:46PM +0200, Paolo Bonzini wrote:
+> On 25/06/21 11:29, Yu Zhang wrote:
+> > Thanks, Paolo.
+> > 
+> > Do you mean the L1 can modify its paging mode by setting HOST_CR3 as root of
+> > a PML5 table in VMCS12 and HOST_CR4 with LA57 flipped in VMCS12, causing the
+> > GUEST_CR3/4 being changed in VMCS01, and eventually updating the CR3/4 when
+> > L0 is injecting a VM Exit from L2?
+> 
+> Yes, you can even do that without a "full" vmentry by setting invalid guest
+> state in vmcs12. :)
 
-This is devfreq-next pull request for v5.14-rc1. I add detailed description of
-this pull request on the following tag. Please pull devfreq with following updates.
+Hah.. Interesting. :) I think this is what load_vmcs12_host_state() does. Anyway,
+thanks a lot for the explanation!
 
-Best Regards,
-Chanwoo Choi
+Also my reviewed-by for this one.
 
+Rviewed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
 
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
-
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.14
-
-for you to fetch changes up to 8c37d01e1a86073d15ea7084390fba58d9a1665f:
-
-  PM / devfreq: passive: Fix get_target_freq when not using required-opp (2021-06-24 10:37:35 +0900)
-
-----------------------------------------------------------------
-Detailed description for this pull request:
-
-1. Update devfreq core
-- Use DEVICE_ATTR_RW macro for devfreq userspace governor
-
-- Add missing error code in devfreq_add_device()
-
-- Fix get_target_freq when not using required-opp
-
-- The 86ad9a24f21e ("PM / devfreq: Add required OPPs support to passive governor")
-supported the required-opp property for using devfreq passive governor.
-But, 86ad9a24f21e has caused the problem on use-case when required-opp
-is not used. So that fix the passive governor for supporting the case of when
-required-opp is not used.
-
-2. Update devfreq driver
-- Remove unneeded get_dev_status and polling_ms from imx-bus.c because
-imx-bus.c doesn't support simple_ondemand.
-
-- Remove unneeded DEVFREQ_GOV_SIMPLE_ONDEMAND dependecy from imx8m-ddrc.c
-because it doesn't support simple_ondemand governor.
-
-- Use tegra30-devfreq.c as thermal cooling device
-- Convert dt-binding doc style to yaml and add cooling-cells property
-information to dt-binding doc for tegra30-devfreq.c
-----------------------------------------------------------------
-
-Chanwoo Choi (1):
-      PM / devfreq: passive: Fix get_target_freq when not using required-opp
-
-Dmitry Osipenko (3):
-      PM / devfreq: tegra30: Support thermal cooling
-      dt-bindings: devfreq: tegra30-actmon: Convert to schema
-      dt-bindings: devfreq: tegra30-actmon: Add cooling-cells
-
-Dong Aisheng (2):
-      PM / devfreq: imx-bus: Remove imx_bus_get_dev_status
-      PM / devfreq: imx8m-ddrc: Remove DEVFREQ_GOV_SIMPLE_ONDEMAND dependency
-
-YueHaibing (2):
-      PM / devfreq: Add missing error code in devfreq_add_device()
-      PM / devfreq: userspace: Use DEVICE_ATTR_RW macro
-
- .../bindings/arm/tegra/nvidia,tegra30-actmon.txt   |  57 ----------
- .../bindings/devfreq/nvidia,tegra30-actmon.yaml    | 126 +++++++++++++++++++++
- drivers/devfreq/Kconfig                            |   1 -
- drivers/devfreq/devfreq.c                          |   1 +
- drivers/devfreq/governor_passive.c                 |   3 +-
- drivers/devfreq/governor_userspace.c               |  10 +-
- drivers/devfreq/imx-bus.c                          |  14 ---
- drivers/devfreq/tegra30-devfreq.c                  |   1 +
- 8 files changed, 135 insertions(+), 78 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
- create mode 100644 Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+B.R.
+Yu
+ 
