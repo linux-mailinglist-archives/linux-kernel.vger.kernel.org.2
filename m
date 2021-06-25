@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569063B48A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5797D3B48A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFYSNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 14:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhFYSNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 14:13:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ECC761945;
-        Fri, 25 Jun 2021 18:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624644677;
-        bh=ljavae+JwaMWTTQ9gygPEjViWVs4hBz7ZeLQPoxemTY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BtBGEBiLA4QWxTwWKGcURCb6ZGAEdJW1tceujDj4yTvRZC971UrZvBafL3Xm8Qz6B
-         FXDcDKImQrAIUPFeYjohdpyBqHJbGp0O0AotAWtvMOLxCwrXEVg7kQ/kHLQLAMeXuC
-         AhEzn+dvPGwY/9nvm+n+hMrEa7E2Q3EAGkmVWv2lx18PYhT077sVjNXD4GU2olCxgK
-         QV27lBaIb2QIyqHtLg3KAalFJCc5jhHoZkD+IXvC8MVC/0B2XOoN0ucGkPndJmjmlx
-         5ob63RczVcAtATiPVtPHbVQLgTNxn83tx4whIgOEPt36xCYwIM+8grzWAVtSg9qeI+
-         9a3PYOvU45rPA==
-Date:   Fri, 25 Jun 2021 20:11:13 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     "Wu X.C." <bobwxc@email.cn>, Jonathan Corbet <corbet@lwn.net>,
-        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK
- ascii-art
-Message-ID: <20210625201113.337b3ecd@coco.lan>
-In-Reply-To: <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
-References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
-        <20210625065524.GA11219@bobwxc.top>
-        <20210625095059.7f97fd62@coco.lan>
-        <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
-        <20210625122423.4435c5e9@coco.lan>
-        <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230180AbhFYSOT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 14:14:19 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:33708 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230036AbhFYSOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 14:14:16 -0400
+Received: by mail-vs1-f43.google.com with SMTP id j8so5966312vsd.0;
+        Fri, 25 Jun 2021 11:11:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UGCjOlRMxleh7mNgzuADGgNle/wDqmHHRKvIHdKcwLI=;
+        b=jpTpeP6zT58bEt7MvbfkpJ8IUJtlVT7BT4i8BDyE+1sZbt8w3Rqd1iNCk+wSj7cA1z
+         XB8wE4KhK1v5kBPrmQ44LvjAaY/LAUk50CQg47jL6hI+dz2QaNtQppeLcqRcqIcJfO81
+         iDCuWNJpWAoO6euHKjuwwismkYWb433UZlN9B1sZpj35h00WKyP6P+LJZq6rN5sbHA3M
+         UTpoG+CxzvoHcWjjLFtYjcK2PpVetKdDaQYrv8vaUXjJFaGKxwWKbwB733oRuBY3LYQU
+         afgRBNnGbRcfjErvraM67W58o6DAl8HCO8AkrW3j37ryxmH8BMXmRVNS1GHH5JgjXcp1
+         DYwQ==
+X-Gm-Message-State: AOAM5336877mfT1EgMW5PD346B5qmIsxeZq0WyxaKjasj5MhcEOL/xAT
+        HZf9HjlHO4X0JxYKYlju2J8TIcrug0r1o+r+opA=
+X-Google-Smtp-Source: ABdhPJxL0voD6OURz4cp/fmkQKvGuot8ADooEYP7MmZj/8kbo2Udiga87FuIglb2ROpcwkxvqA7qBF8c2PE52dNe8Xc=
+X-Received: by 2002:a05:6102:301c:: with SMTP id s28mr9984120vsa.18.1624644714273;
+ Fri, 25 Jun 2021 11:11:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210624224909.6350-1-pali@kernel.org> <20210625143617.12826-1-pali@kernel.org>
+ <20210625143617.12826-8-pali@kernel.org> <CAMuHMdUCEHtqNk-nGJhPK_=NrgSoRhmC99J9pdGqQxcWpoFqGg@mail.gmail.com>
+ <20210625153803.u6uesckcqyvvo7dl@pali> <20210625155008.GB16901@1wt.eu>
+ <CAMuHMdWfE7UKkp6=MdAVgHywFjDK3SN4m9+d_6AmJTB=qBEqFw@mail.gmail.com> <20210625174448.kje4pvg5ixpu3vaw@pali>
+In-Reply-To: <20210625174448.kje4pvg5ixpu3vaw@pali>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Jun 2021 20:11:43 +0200
+Message-ID: <CAMuHMdXSXZXQiDupPqqmH-o_pDnn9EF=SLP4Oc5zwK=EFxF3Ew@mail.gmail.com>
+Subject: Re: [PATCH v2 07/11] math64: New DIV_U64_ROUND_CLOSEST helper
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 25 Jun 2021 20:32:47 +0900
-Akira Yokosawa <akiyks@gmail.com> escreveu:
+Hi Pali,
 
-> On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
-> > Em Fri, 25 Jun 2021 18:22:26 +0900
-> > Akira Yokosawa <akiyks@gmail.com> escreveu:
-> >   
-> >> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:  
-> [...]
-> >>
-> >> One minor problem might be that the Sarasa font needs manual
-> >> download (and install).
-> >>
-> >>         Thanks, Akira  
-> > 
-> > If this is not yet packaged as part of texlive packages
-> > on distros, this won't be a minor issue, as we'll need
-> > to find procedures and test it for all distros supported
-> > by the script.  
-> 
-> Existence of "Sarasa Mono SC" can be checked by the command:
-> 
->     fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
-> 
-> If the result is *not* "0", you have the font somewhere in your
-> fontconfig path.
-> 
-> I think this is portable across distros.
-> Wouldn't this suffice for sphinx-pre-install?
+On Fri, Jun 25, 2021 at 7:44 PM Pali Rohár <pali@kernel.org> wrote:
+> On Friday 25 June 2021 19:39:10 Geert Uytterhoeven wrote:
+> > On Fri, Jun 25, 2021 at 5:50 PM Willy Tarreau <w@1wt.eu> wrote:
+> > > On Fri, Jun 25, 2021 at 05:38:03PM +0200, Pali Rohár wrote:
+> > > > On Friday 25 June 2021 17:22:31 Geert Uytterhoeven wrote:
+> > > > > > +/*
+> > > > > > + * DIV_U64_ROUND_CLOSEST - unsigned 64bit divide with 32bit divisor rounded to nearest integer
+> > > > > > + * @dividend: unsigned 64bit dividend
+> > > > > > + * @divisor: unsigned 32bit divisor
+> > > > > > + *
+> > > > > > + * Divide unsigned 64bit dividend by unsigned 32bit divisor
+> > > > > > + * and round to closest integer.
+> > > > > > + *
+> > > > > > + * Return: dividend / divisor rounded to nearest integer
+> > > > > > + */
+> > > > > > +#define DIV_U64_ROUND_CLOSEST(dividend, divisor)       \
+> > > > > > +       ({ u32 _tmp = (divisor); div_u64((u64)(dividend) + _tmp / 2, _tmp); })
+> > > > >
+> > > > > Given "dividend" should already be an unsigned 64-bit value, I don't
+> > > > > think the cast to "u64" is needed. Similar macros in this file also
+> > > > > don't have the cast.
+> > > >
+> > > > It is just to ensure that plus operation between dividend and _tmp is
+> > > > evaluated in 64-bit context to prevent overflow. Just a case when user
+> > > > calls this macro with 32-bit dividend param. As it is a macro (and not
+> > > > inline function) type is not automatically enforced.
+> > >
+> > > I agree, a large u32 argument added to _tmp/2 could overflow and remain
+> > > 32 bits, yielding an incorrect result. The cast is mandatory here (and
+> > > will either emit no code, or be useful).
+> >
+> > Fair enough.
+> > So we want to add a cast to DIV64_U64_ROUND_CLOSEST() above, too?
+>
+> For DIV64_U64_ROUND_CLOSEST() it is not needed. divisor is copied into
+> u64 _tmp variable and therefore "(dividend) + _tmp / 2" is already
+> evaluated in 64-bit context even when dividend is only 32-bit.
 
-No. The sphinx-pre-install tool generate a list of commands
-needed to install the pre-reqs on a given distro.
+Thanks, I stand corrected.  Time to enter weekend mode...
 
-For instance, if you run on opensuse without texlive, it would
-print:
+Gr{oetje,eeting}s,
 
+                        Geert
 
-	# ./scripts/sphinx-pre-install 
-	Detected OS: openSUSE Tumbleweed 20210515.
-	Sphinx version: 3.5.4
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	Warning: better to also install "latexmk".
-...
-	Warning: better to also install "xelatex".
-	You should run:
-
-	sudo zypper install --no-recommends texlive-latexmk-bin texlive-amscls texlive-amsfonts texlive-amsmath texlive-anyfontsize texlive-babel-english texlive-capt-of texlive-caption texlive-cmap texlive-colortbl texlive-courier texlive-dvips texlive-ec texlive-eqparbox texlive-euenc texlive-fancybox texlive-fancyvrb texlive-float texlive-fncychap texlive-framed texlive-helvetic texlive-luatex85 texlive-makeindex texlive-mdwtools texlive-metafont texlive-metapost texlive-multirow texlive-needspace texlive-oberdiek texlive-palatino texlive-parskip texlive-polyglossia texlive-preview texlive-psnfss texlive-tabulary texlive-threeparttable texlive-times texlive-titlesec texlive-tools texlive-ucs texlive-upquote texlive-wrapfig texlive-zapfchan texlive-zapfding texlive-xetex-bin
-
-The same command, when executed on a different distro will
-print a different set of packages and commands.
-
-Thanks,
-Mauro
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
