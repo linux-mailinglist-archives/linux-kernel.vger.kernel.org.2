@@ -2,77 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B7C3B4264
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5403B426B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhFYLVK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 07:21:10 -0400
-Received: from aposti.net ([89.234.176.197]:38932 "EHLO aposti.net"
+        id S230152AbhFYLX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:23:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhFYLVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:21:07 -0400
-Date:   Fri, 25 Jun 2021 12:18:35 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 2/4] dt-bindings: clock: Add documentation for MAC PHY
- control bindings.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <ZQ89VQ.GVBTUGJHI7O93@crapouillou.net>
-In-Reply-To: <1624547189-61079-3-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1624547189-61079-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624547189-61079-3-git-send-email-zhouyanjie@wanyeetech.com>
+        id S229458AbhFYLXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:23:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B04C16147E;
+        Fri, 25 Jun 2021 11:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624620095;
+        bh=XG6sWGf+ywXRBvy3yOOyGZ2Ixhj+khw+9AMf73Acy/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TVhMwdMKoU1+Iz0AxUizueL8aXt47d8ZUzNb72STRceK2tG5sm2U+jF/9dYqcmuFl
+         YVWSCtsDgecmXnV8WXB227N6dLtySn1xXsYMxnNMp/Ehbef29JPpzkAnfrs3L0RIHT
+         z1Q5AHYhpZI9zWZwImGs4ibJ0XHZLw2Qj9fHXS86gWebgqjyj9FnizGX10GVJRIlGC
+         uY2XVtdlHwUzLOVhFVQd7IZ9CWHzG570j2B3EHgGq+MbiLJ5L0P3G2Nw76TdGpCjDo
+         cob3n66oHHBj4wAvetYNospFALOYnkyNHgODd+kLX77DCh0Ya3YTTmGfcyvkZAypmC
+         dPiHReCoeUtzw==
+Received: by pali.im (Postfix)
+        id 64AEA60E; Fri, 25 Jun 2021 13:21:32 +0200 (CEST)
+Date:   Fri, 25 Jun 2021 13:21:32 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/3] PCI: aardvark: Fix checking for PIO status
+Message-ID: <20210625112132.r7p7gqcyajpnnvjp@pali>
+References: <20210624213345.3617-1-pali@kernel.org>
+ <20210624213345.3617-3-pali@kernel.org>
+ <20210625110429.GA17337@lpieralisi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625110429.GA17337@lpieralisi>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Friday 25 June 2021 12:04:29 Lorenzo Pieralisi wrote:
+> On Thu, Jun 24, 2021 at 11:33:44PM +0200, Pali Rohár wrote:
+> 
+> [...]
+> 
+> > -static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+> > +static int advk_pcie_check_pio_status(struct advk_pcie *pcie, u32 *val)
+> >  {
+> >  	struct device *dev = &pcie->pdev->dev;
+> >  	u32 reg;
+> > @@ -472,15 +476,50 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+> >  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
+> >  		PIO_COMPLETION_STATUS_SHIFT;
+> >  
+> > -	if (!status)
+> > -		return;
+> > -
+> > +	/*
+> > +	 * According to HW spec, the PIO status check sequence as below:
+> > +	 * 1) even if COMPLETION_STATUS(bit9:7) indicates successful,
+> > +	 *    it still needs to check Error Status(bit11), only when this bit
+> > +	 *    indicates no error happen, the operation is successful.
+> > +	 * 2) value Unsupported Request(1) of COMPLETION_STATUS(bit9:7) only
+> > +	 *    means a PIO write error, and for PIO read it is successful with
+> > +	 *    a read value of 0xFFFFFFFF.
+> > +	 * 3) value Completion Retry Status(CRS) of COMPLETION_STATUS(bit9:7)
+> > +	 *    only means a PIO write error, and for PIO read it is successful
+> > +	 *    with a read value of 0xFFFF0001.
+> > +	 * 4) value Completer Abort (CA) of COMPLETION_STATUS(bit9:7) means
+> > +	 *    error for both PIO read and PIO write operation.
+> > +	 * 5) other errors are indicated as 'unknown'.
+> > +	 */
+> >  	switch (status) {
+> > +	case PIO_COMPLETION_STATUS_OK:
+> > +		if (reg & PIO_ERR_STATUS) {
+> > +			strcomp_status = "COMP_ERR";
+> > +			break;
+> > +		}
+> > +		/* Get the read result */
+> > +		if (val)
+> > +			*val = advk_readl(pcie, PIO_RD_DATA);
+> > +		/* No error */
+> > +		strcomp_status = NULL;
+> > +		break;
+> >  	case PIO_COMPLETION_STATUS_UR:
+> > -		strcomp_status = "UR";
+> > +		if (val) {
+> > +			/* For reading, UR is not an error status */
+> > +			*val = CFG_RD_UR_VAL;
+> > +			strcomp_status = NULL;
+> > +		} else {
+> > +			strcomp_status = "UR";
+> > +		}
+> >  		break;
+> >  	case PIO_COMPLETION_STATUS_CRS:
+> > -		strcomp_status = "CRS";
+> > +		if (val) {
+> > +			/* For reading, CRS is not an error status */
+> > +			*val = CFG_RD_CRS_VAL;
+> 
+> Need Bjorn's input on this.
 
-Le jeu., juin 24 2021 at 23:06:27 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Update the CGU binding documentation, add mac-phy-ctrl as a
-> pattern property.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Ok.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+> I don't think this is what is expected from
+> from a root complex according to the PCI specifications (depending on
+> whether CSR software visibility is supported or not).
 
-Cheers,
--Paul
+This patch / logic was written and reviewed by Marvell people as is
+mentioned in commit description. But I was not able to get any feedback
+from them about aardvark, so I have not put them into recipients of this
+patch...
 
-> ---
-> 
-> Notes:
->     v3:
->     New patch.
-> 
->  Documentation/devicetree/bindings/clock/ingenic,cgu.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml 
-> b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> index c65b945..ee9b5fb 100644
-> --- a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> +++ b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-> @@ -93,6 +93,8 @@ required:
->  patternProperties:
->    "^usb-phy@[a-f0-9]+$":
->      allOf: [ $ref: "../phy/ingenic,phy-usb.yaml#" ]
-> +  "^mac-phy-ctrl@[a-f0-9]+$":
-> +    allOf: [ $ref: "../net/ingenic,mac.yaml#" ]
-> 
->  additionalProperties: false
-> 
-> --
-> 2.7.4
-> 
+> Here we are fabricating a CRS completion value for all PCI config read
+> transactions that are hitting a CRS completion status (and that's not
+> the expected behaviour according to the PCI specifications and I don't
+> think that's correct).
 
+I see what what you mean. I think that for PCI_VENDOR_ID read request it
+is correct. But question is what we should return for other read
+requests.
 
+> > +			strcomp_status = NULL;
+> > +		} else {
+> > +			strcomp_status = "CRS";
+> > +		}
+> >  		break;
+> >  	case PIO_COMPLETION_STATUS_CA:
+> >  		strcomp_status = "CA";
+> > @@ -490,6 +529,9 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+> >  		break;
+> >  	}
+> >  
+> > +	if (!strcomp_status)
+> > +		return 0;
+> > +
+> >  	if (reg & PIO_NON_POSTED_REQ)
+> >  		str_posted = "Non-posted";
+> >  	else
+> > @@ -497,6 +539,8 @@ static void advk_pcie_check_pio_status(struct advk_pcie *pcie)
+> >  
+> >  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
+> >  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
+> > +
+> > +	return -EFAULT;
+> >  }
+> >  
+> >  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+> > @@ -703,8 +747,17 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> >  						 size, val);
+> >  
+> >  	if (advk_pcie_pio_is_running(pcie)) {
+> > -		*val = 0xffffffff;
+> > -		return PCIBIOS_SET_FAILED;
+> > +		/*
+> > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
+> > +		 * so caller tries to issue the request again insted of failing
+> > +		 */
+> > +		if (where == PCI_VENDOR_ID) {
+> > +			*val = CFG_RD_CRS_VAL;
+> > +			return PCIBIOS_SUCCESSFUL;
+> 
+> Mmmm..here we are faking a CRS completion value to coerce the kernel
+> into believing a CRS completion was received (which is not necessarily
+> true) ?
+
+This part of patch was written by me. I chose to return "fake CRS" to
+let kernel / software to issue a new PCI_VENDOR_ID read request again
+after timeout. After some timeout previous PIO transfer should complete
+and therefore advk_pcie_pio_is_running returns false.
+
+> if advk_pcie_pio_is_running(pcie) == true, is that an HW error ?
+
+No. It indicates that software (kernel) was impatient for previous
+config read / write request and did not wait for previous completion. So
+at the time when kernel tried to issue a new (this) config read request,
+previous one was still running (advk_pcie_pio_is_running returned true)
+and therefore driver was not able to issue a new config read request.
+
+In patch 3/3 I increased wait timeout so this situation when
+advk_pcie_pio_is_running returns true should not happen. Or rather to
+say, I was not able to reproduce it anymore.
+
+> Lorenzo
+> 
+> > +		} else {
+> > +			*val = 0xffffffff;
+> > +			return PCIBIOS_SET_FAILED;
+> > +		}
+> >  	}
+> >  
+> >  	/* Program the control register */
+> > @@ -729,15 +782,27 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> >  	advk_writel(pcie, 1, PIO_START);
+> >  
+> >  	ret = advk_pcie_wait_pio(pcie);
+> > +	if (ret < 0) {
+> > +		/*
+> > +		 * For PCI_VENDOR_ID register, return Completion Retry Status
+> > +		 * so caller tries to issue the request again instead of failing
+> > +		 */
+> > +		if (where == PCI_VENDOR_ID) {
+> > +			*val = CFG_RD_CRS_VAL;
+> > +			return PCIBIOS_SUCCESSFUL;
+> > +		} else {
+> > +			*val = 0xffffffff;
+> > +			return PCIBIOS_SET_FAILED;
+> > +		}
+> > +	}
+> > +
+> > +	/* Check PIO status and get the read result */
+> > +	ret = advk_pcie_check_pio_status(pcie, val);
+> >  	if (ret < 0) {
+> >  		*val = 0xffffffff;
+> >  		return PCIBIOS_SET_FAILED;
+> >  	}
+> >  
+> > -	advk_pcie_check_pio_status(pcie);
+> > -
+> > -	/* Get the read result */
+> > -	*val = advk_readl(pcie, PIO_RD_DATA);
+> >  	if (size == 1)
+> >  		*val = (*val >> (8 * (where & 3))) & 0xff;
+> >  	else if (size == 2)
+> > @@ -801,7 +866,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+> >  	if (ret < 0)
+> >  		return PCIBIOS_SET_FAILED;
+> >  
+> > -	advk_pcie_check_pio_status(pcie);
+> > +	ret = advk_pcie_check_pio_status(pcie, NULL);
+> > +	if (ret < 0)
+> > +		return PCIBIOS_SET_FAILED;
+> >  
+> >  	return PCIBIOS_SUCCESSFUL;
+> >  }
+> > -- 
+> > 2.20.1
+> > 
