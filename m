@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46663B4345
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F2C3B4347
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhFYMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:35:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229934AbhFYMfI (ORCPT
+        id S231334AbhFYMfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:35:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50268 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230346AbhFYMfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:35:08 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PC6Dv5041356;
-        Fri, 25 Jun 2021 08:32:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=FoqHMAo4aVfUw7gRnFnF1SD6HsPYwczaCD7oSLM5WBA=;
- b=nUMMTBqDvJIih/X7JDOZmrS8GdPnkabPWcS6DUypfccsgqEf/TYCugWJi38V//M93xXc
- wqz3WJei/Qi0Hd5LMzr7ByGIKp7+Kn0KGG18gm/VKHVtdhx7FVlPlwi1z0OpFmRlCSpp
- lKim+Z9jvKtFjf/LAbQKXqu8Rxsp4CF7ejnd0jjC2SgXSMRBeQQ7kykwG1dw+/33HB4B
- VH/z5zJv+J9WfZ3qK69CLDYV96gDfSDK5D5r7/InCwV0+F0WHiHOM0Ij1micY85kTC4Q
- R8MZ998B50+VcGKMGnp515Q3+qAePAckuefIP1Wr6cLTvOXGBDIDIDzRtb5QDjE6YBNa qQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39dd7hcn90-1
+        Fri, 25 Jun 2021 08:35:10 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PCHKMQ036463;
+        Fri, 25 Jun 2021 08:32:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QmJW1TEjLltLt3gjE040AZI8l4ZEE20ZP+jcNWMeBtw=;
+ b=GzzniETtTqD+QaZktyai9jMDkfr4tPaSxbfit8wofRZnhwrot+XIKY59XdiGBX5VG/t1
+ oYFkaJqL1h+oGQ1VByu42w25kUE/9zdAxTz1LcE7bCZgLVQB7N+vJgdpGhxPJ1aY5Ctb
+ rw2Z+VPfQTEFfogKQ7LKtwYdQixkJ1Z6SXzKNSxeWcmzK7d1nWbvQvHFzbu8pp//AAmm
+ GrTBQo9dGMELD1NPmr7l2uF3CcDThA6cm6uIJQdiuqv5G5g63ngmFii9uzn+vFcUciq7
+ 3oQo/fYqOaYmK5nI1vL0lbp6Eyjat5n6FoxSHlW0d19qSKE9qv5vbLLUyhrVG6AFNe/c 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39df13ggbq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 25 Jun 2021 08:32:40 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15PCSuIG002538;
-        Fri, 25 Jun 2021 12:32:37 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 399878b1fs-1
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15PCJ2cw042623;
+        Fri, 25 Jun 2021 08:32:40 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39df13ggay-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 12:32:37 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15PCWZWk32571762
+        Fri, 25 Jun 2021 08:32:40 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15PCSnE9012616;
+        Fri, 25 Jun 2021 12:32:39 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03wdc.us.ibm.com with ESMTP id 39987a1r5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Jun 2021 12:32:39 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15PCWc6c25493890
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 12:32:35 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76B01A4051;
-        Fri, 25 Jun 2021 12:32:35 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24D93A4053;
-        Fri, 25 Jun 2021 12:32:34 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.85.119.88])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 25 Jun 2021 12:32:33 +0000 (GMT)
-Date:   Fri, 25 Jun 2021 18:02:31 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
- linux-next-20210623 during secondary CPUs bringup
-Message-ID: <YNXM33OD8/qLkygG@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <YNSq3UQTjm6HWELA@in.ibm.com>
- <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
- <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
- <YNWZfKK+KBQSUdG5@in.ibm.com>
- <YNWtFKdSuoYTfSon@hirez.programming.kicks-ass.net>
+        Fri, 25 Jun 2021 12:32:38 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E4496A04F;
+        Fri, 25 Jun 2021 12:32:38 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0BD86A054;
+        Fri, 25 Jun 2021 12:32:37 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Jun 2021 12:32:37 +0000 (GMT)
+Subject: Re: [PATCH] certs: Redirect openssl error message to null device
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, jarkko@kernel.org
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
+        nayna@linux.ibm.com, jeyu@kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, kernel test robot <lkp@intel.com>
+References: <20210625122902.4058783-1-stefanb@linux.vnet.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <9e925935-529e-49c9-e499-3eac43bddb66@linux.ibm.com>
+Date:   Fri, 25 Jun 2021 08:32:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNWtFKdSuoYTfSon@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210625122902.4058783-1-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: znBsyfVCmurmTMEpzxmyjHoqgWGHADw-
-X-Proofpoint-GUID: znBsyfVCmurmTMEpzxmyjHoqgWGHADw-
+X-Proofpoint-GUID: mJ_gYx9xhzKLOCBO2vEy_PDzYlCjrdOn
+X-Proofpoint-ORIG-GUID: xYF0E2_P0chFY1Pedk_eyxdNimRYAPAs
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-25_04:2021-06-25,2021-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- phishscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- priorityscore=1501 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106250069
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106250069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:16:52PM +0200, Peter Zijlstra wrote:
-> You mean: CONFIG_PREEMPTION=n, what about CONFIG_PREEMPT_COUNT?
-> 
-> Because if both are =n, then I don't see how that warning could trigger.
-> in_atomic_preempt_off() would then result in prempt_count() == 0, and
-> per the print above, it *is* 0.
+On 6/25/21 8:29 AM, Stefan Berger wrote:
 
-CONFIG_PREEMPTION isn't set.
+> From: Stefan Berger <stefanb@linux.ibm.com>
+>
+> Address the following issue detected by the kernel test robot when
+> there's no certificate file at the time when checking for the type
+> of key in the cert:
+>
+> Can't open certs/signing_key.pem for reading, No such file or directory
+>
+> The simplest solution is to redirect openssl's stderr output to /dev/null.
+>
+> Fixes: 28d62d945ded ("certs: Trigger creation of RSA module signing key if it's not an RSA key")
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Also other PREEMPT related options are as under:
 
-# CONFIG_PREEMPT_NONE is not set
-CONFIG_PREEMPT_VOLUNTARY=y
-# CONFIG_PREEMPT is not set
-CONFIG_PREEMPT_COUNT=y
-CONFIG_PREEMPT_NOTIFIERS=y
-CONFIG_PREEMPTIRQ_TRACEPOINTS=y
-# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+Jarkko,
 
-Regards,
-Bharata.
+can you please squash this patch into the one it fixes. Unfortunately 
+when rebasing you will have to fix the subsequent patch from this merge 
+error
+
+ifeq ($(openssl_available),yes)
+<<<<<<< HEAD
+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text 
+2>/dev/null)
+=======
+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
+endif
+ >>>>>>> 87e968848116 (certs: Add support for using elliptic curve keys 
+for signing modules)
+
+to this:
+
+
+ifeq ($(openssl_available),yes)
+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text 
+2>/dev/null)
+endif
+
+Thanks.
+
+    Stefan
+
+
