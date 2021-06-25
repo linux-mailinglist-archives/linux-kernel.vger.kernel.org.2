@@ -2,87 +2,612 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A7E3B4118
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B503B411A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhFYKHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230082AbhFYKHL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:07:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E856C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YWOhXI1iic/2oVNDa9dMTdaVjRWbXCXhDOxlrjM4OSs=; b=sjBGTl3QwcUDoE/bhWTh0C8CfL
-        UAdqCt4iSCggkb1hMQuJb9afTJv5bKjNFfKLxISid4+a1CTqVam3RYIpLHvXwGCS5zW8TroDd1k+s
-        xhPsuwWA1r8zr52WEay7pkJJllNgh5ioqcfRwjE7Z9LSgCIMUG9H+kvaAxpD7OQRlLphP1wLZT0X7
-        tQ6pnHD9YR3j4j4/kY0a+xgvxisAThQGl4+Pl+lRHMlcGLuVM5UVxwLktOZp4pgaqzdVUhcR423jX
-        1gZgAwKhP+IaIhmzW7SsmcXFA1DtB+ruRm6iQzjM/zQfj7MsQ9frnNVFJU7C4IhUSjcKnp48JMTKg
-        GKXfd1fw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwihN-00HXc5-Jd; Fri, 25 Jun 2021 10:04:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S231264AbhFYKHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:07:45 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35885 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230082AbhFYKHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:07:43 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 305C8300252;
-        Fri, 25 Jun 2021 12:04:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DAF2F203C0A78; Fri, 25 Jun 2021 12:04:32 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 12:04:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Subject: Re: [PATCH] sched/debug: Don't update sched_domain debug directories
- before sched_debug_init()
-Message-ID: <YNWqMK34S29Nxy8t@hirez.programming.kicks-ass.net>
-References: <20210518130725.3563132-1-valentin.schneider@arm.com>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GBCL91t4xz9sWw;
+        Fri, 25 Jun 2021 20:05:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624615521;
+        bh=a32Hta40b36XJ2G0RXr/aodzpv3RbFBTBavk+K8FXRs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VSCBa2sdHXRymz1jkZ6jQnkHnSBjG/Sbu+gYv2Ghi+wAOgfVjhu8O2cMaerZnK1l0
+         /yXmuMEqiNO15cUiM9IsKrXW3sl4TXOBu6j9fWxeX0Im94PJzVS4wjXddjhyL0oX1W
+         Ha+Ott4UigBKtllMTjJQq/Hb6Pu0OljiOWCiWFRyz21QDHt0TDAfo0e1q5s2TBflZf
+         DsPV2LoF3pfrmW3z3ufC0qBYWN/7k1UL21/oTYKxLFXpBb3jT1cMgaP94hagWqE6K7
+         ntFTg1w/7pB7SQ7G3lCgr0DJiStBACR+nBCeiwVefO/kizuJ74lASl2S4PiHll4VjQ
+         UzmYq5h3EtKRw==
+Date:   Fri, 25 Jun 2021 20:05:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the kunit-fixes tree
+Message-ID: <20210625200520.7e44f38e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518130725.3563132-1-valentin.schneider@arm.com>
+Content-Type: multipart/signed; boundary="Sig_/HXgcK5qwpLsG7yyWUgFQbpW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 02:07:25PM +0100, Valentin Schneider wrote:
-> Since CPU capacity asymmetry can stem purely from maximum frequency
-> differences (e.g. Pixel 1), a rebuild of the scheduler topology can be
-> issued upon loading cpufreq, see:
-> 
->   arch_topology.c::init_cpu_capacity_callback()
-> 
-> Turns out that if this rebuild happens *before* sched_debug_init() is
-> run (which is a late initcall), we end up messing up the sched_domain debug
-> directory: passing a NULL parent to debugfs_create_dir() ends up creating
-> the directory at the debugfs root, which in this case creates
-> /sys/kernel/debug/domains (instead of /sys/kernel/debug/sched/domains).
-> 
-> This currently doesn't happen on asymmetric systems which use cpufreq-scpi
-> or cpufreq-dt drivers, as those are loaded via
-> deferred_probe_initcall() (it is also a late initcall, but appears to be
-> ordered *after* sched_debug_init()).
-> 
-> Ionela has been working on detecting maximum frequency asymmetry via ACPI,
-> and that actually happens via a *device* initcall, thus before
-> sched_debug_init(), and causes the aforementionned debugfs mayhem.
-> 
-> One option would be to punt sched_debug_init() down to
-> fs_initcall_sync(). Preventing update_sched_domain_debugfs() from running
-> before sched_debug_init() appears to be the safer option.
-> 
-> Link: http://lore.kernel.org/r/20210514095339.12979-1-ionela.voinescu@arm.com
-> Fixes: 3b87f136f8fc ("sched,debug: Convert sysctl sched_domains to debugfs")
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+--Sig_/HXgcK5qwpLsG7yyWUgFQbpW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+Hi all,
+
+After merging the kunit-fixes tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
+
+In file included from drivers/thunderbolt/test.c:9:
+drivers/thunderbolt/test.c: In function 'tb_test_path_single_hop_walk':
+drivers/thunderbolt/test.c:455:25: error: 'typeof' applied to a bit-field
+  455 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:455:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  455 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:466:25: error: 'typeof' applied to a bit-field
+  466 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:466:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  466 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_daisy_chain_walk':
+drivers/thunderbolt/test.c:512:25: error: 'typeof' applied to a bit-field
+  512 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:512:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  512 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:523:25: error: 'typeof' applied to a bit-field
+  523 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:523:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  523 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_simple_tree_walk':
+drivers/thunderbolt/test.c:573:25: error: 'typeof' applied to a bit-field
+  573 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:573:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  573 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:584:25: error: 'typeof' applied to a bit-field
+  584 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:584:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  584 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_complex_tree_walk':
+drivers/thunderbolt/test.c:655:25: error: 'typeof' applied to a bit-field
+  655 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:655:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  655 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:666:25: error: 'typeof' applied to a bit-field
+  666 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:666:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  666 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_max_length_walk':
+drivers/thunderbolt/test.c:756:25: error: 'typeof' applied to a bit-field
+  756 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:756:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  756 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:767:25: error: 'typeof' applied to a bit-field
+  767 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |                         ^
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:767:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  767 |   KUNIT_EXPECT_EQ(test, p->config.type, test_data[i].type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_not_bonded_lane0':
+drivers/thunderbolt/test.c:850:25: error: 'typeof' applied to a bit-field
+  850 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:850:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  850 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:853:25: error: 'typeof' applied to a bit-field
+  853 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:853:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  853 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_not_bonded_lane1':
+drivers/thunderbolt/test.c:910:25: error: 'typeof' applied to a bit-field
+  910 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:910:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  910 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:913:25: error: 'typeof' applied to a bit-field
+  913 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:913:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  913 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_not_bonded_lane1_chai=
+n':
+drivers/thunderbolt/test.c:988:25: error: 'typeof' applied to a bit-field
+  988 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:988:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  988 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:991:25: error: 'typeof' applied to a bit-field
+  991 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:991:3: note: in expansion of macro 'KUNIT_EXPECT=
+_EQ'
+  991 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_not_bonded_lane1_chai=
+n_reverse':
+drivers/thunderbolt/test.c:1066:25: error: 'typeof' applied to a bit-field
+ 1066 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1066:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1066 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1069:25: error: 'typeof' applied to a bit-field
+ 1069 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1069:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1069 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_mixed_chain':
+drivers/thunderbolt/test.c:1156:25: error: 'typeof' applied to a bit-field
+ 1156 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1156:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1156 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1159:25: error: 'typeof' applied to a bit-field
+ 1159 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1159:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1159 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c: In function 'tb_test_path_mixed_chain_reverse':
+drivers/thunderbolt/test.c:1246:25: error: 'typeof' applied to a bit-field
+ 1246 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |                         ^~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1246:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1246 |   KUNIT_EXPECT_EQ(test, in_port->config.type, test_data[i].in_type);
+      |   ^~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1249:25: error: 'typeof' applied to a bit-field
+ 1249 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |                         ^~~~~~~~
+include/kunit/test.h:804:9: note: in definition of macro 'KUNIT_BASE_BINARY=
+_ASSERTION'
+  804 |  typeof(left) __left =3D (left);            \
+      |         ^~~~
+include/kunit/test.h:918:2: note: in expansion of macro 'KUNIT_BASE_EQ_MSG_=
+ASSERTION'
+  918 |  KUNIT_BASE_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:928:2: note: in expansion of macro 'KUNIT_BINARY_EQ_MS=
+G_ASSERTION'
+  928 |  KUNIT_BINARY_EQ_MSG_ASSERTION(test,           \
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/kunit/test.h:1291:2: note: in expansion of macro 'KUNIT_BINARY_EQ_A=
+SSERTION'
+ 1291 |  KUNIT_BINARY_EQ_ASSERTION(test, KUNIT_EXPECTATION, left, right)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/thunderbolt/test.c:1249:3: note: in expansion of macro 'KUNIT_EXPEC=
+T_EQ'
+ 1249 |   KUNIT_EXPECT_EQ(test, out_port->config.type, test_data[i].out_typ=
+e);
+      |   ^~~~~~~~~~~~~~~
+
+Caused by commit
+
+  8f0877c26e4b ("thunderbolt: test: Remove some casts which are no longer r=
+equired")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HXgcK5qwpLsG7yyWUgFQbpW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVqmAACgkQAVBC80lX
+0GwgKgf8Co1BajrWFo5xzMFGpwgRHOX8I2V5mAKFXkW3k3eb2N9/xxlaNcy0WXZn
+RYQ5ccS/n7T+A06bGQk1DQ6dqKAm3h4dieLQvYx02l9IAevewiV8rLG2LboQ0+lb
+EjpHkFX2B2ewpYRS+VjoE0e3Y1jnAGbr5pVsorhsW4CpQop2awGPweM+D+6e/v2Y
+6DnCK6AtuP08OekKkgwSfWtJC4upgNEmJqD+f9PxsVi/JJ3h614FJuVdRYaMJBoU
+VTu14/RmP2LDr2Z8psLjll4+rfMdF9EWQRIi7meM98HQDtpRBJc2moc2W0enSUWu
+z/kDTbK7TJnb1fwTJanXtqU9aUAcVQ==
+=gQn+
+-----END PGP SIGNATURE-----
+
+--Sig_/HXgcK5qwpLsG7yyWUgFQbpW--
