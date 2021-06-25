@@ -2,164 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346723B4538
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D523B453B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhFYOEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        id S231579AbhFYOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFYOEX (ORCPT
+        with ESMTP id S229700AbhFYOGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:04:23 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBEEDC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:02:01 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id hq39so15285871ejc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:02:01 -0700 (PDT)
+        Fri, 25 Jun 2021 10:06:07 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE43C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:03:45 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id n2so4168509eju.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:03:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D1tsMvDAeuRYczhDgVUkekdSjLDiyIzg0pQFMOQgYwE=;
-        b=USDJkxqNofnXE1O9aVxZ2a0KZfneORrPKVeXjdKXYnGUruc9otkm3oF7JI+punj3Dr
-         PbD5yqeoc5mwE6fxs2HShcb4dNHkt6hDqvI6KBv76WUWDf5Q6KV5J+j1JQSRlKzfaa75
-         9UKuh524GKV40adPXM5eKskCd8H1/UFjltCW46l1UawkrSas2EpYPSGUUBxqc/v4086A
-         sNxyGbNNRxU/omf83drSmMmMN55S2tV5VTG1rUIYQ15aEpFRhtHD6sIVC5K1yKPvBfk3
-         gxUvIXrbr/Vh5Szu9f8k0jTdp4fvkwc1ZHTP9hYxC+S3Xun2jwUosazOdAjxDPURe79x
-         NXEQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KCBPWXjUtJqDX481tplGmByedXmi+6SSSYQlopDVlm8=;
+        b=g2xI4G+YbXPOBweU0Dfhxgv8sAgTFjbLRxRY9HnhBIJ7t5750aZ2AnfPNLCZChITxz
+         e9Yo/swOJ5U1cF9kBUv8dI/7589kD4AZiZBgJwj+exGZnoVksbjpyl7e0/BN5vAQfWv6
+         /VXekcwiU8mYzSd1XvznpHZOiHKkHaZiSiQ+oCpAVQCWkYKQs79Xt0o7EPj4sXlIUNO3
+         1WhKzAfHJucTboztqcpWrkg3AIrya5Bjw25wWjYqzOZSch6BNQkAuqg7m1wQhDCzFOTI
+         V2Ulu0v2PpcsdfkXJBJ29grL9PL7XZ9xga6QgiyEoU5CU3O4wWbre7BvkL66xvJL9OiJ
+         UNtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D1tsMvDAeuRYczhDgVUkekdSjLDiyIzg0pQFMOQgYwE=;
-        b=Jb3yIMRAnZLxQiIRVwKK2sJhVlJINPLSyeb1DF5bwPYwaaaofmTB4qe3zgpPsgpo/7
-         JPBSQCyLLj5adwiZnJgyjONg9nLO+aP6lI2TJGPVyqXayS5DLFz4OI169yAhBLWUk9Sc
-         qYJN5PjZxUqqgKPTSJpJgjA7XKQoDSw9U5PyI0CvO+5PMSk/4xgR4apOHDq/c85SLLsz
-         S4oGWJL5WshghqdamZ9vWg+JQE6KvtfDHX1shbRe6v/nJpPYhivy58B1Y2HTh16Hz3ga
-         ZLd5XMUJQ8Em8AtaLkGNLrrolGgBXBf/3PSDcEBVL6X6attGxwxlAfYcjDMAAqTwkmX2
-         tYpw==
-X-Gm-Message-State: AOAM533h7r9i6MaQEUh4F31x7tNRx4DTVMFMjK7ivuJtbTGxKTlni5I0
-        QPgWq18uWX5Kmx4Wjdnp7BhCcg==
-X-Google-Smtp-Source: ABdhPJw+7UXY5n7f8Utlr/NO8COcUPMZqLn2DvnPK4SgD9CtKDtIGgFdQKNUGUdVd7f62pNtSBumlw==
-X-Received: by 2002:a17:907:9813:: with SMTP id ji19mr11118539ejc.318.1624629720334;
-        Fri, 25 Jun 2021 07:02:00 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id g23sm2767853ejh.116.2021.06.25.07.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 07:01:59 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 2/2] iio: accel: bma220: make suspend state setting more robust
-Date:   Fri, 25 Jun 2021 17:01:37 +0300
-Message-Id: <20210625140137.362282-2-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210625140137.362282-1-aardelean@deviqon.com>
-References: <20210625140137.362282-1-aardelean@deviqon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KCBPWXjUtJqDX481tplGmByedXmi+6SSSYQlopDVlm8=;
+        b=n+ukTLneJxaIeVGC/O75n9lxNJZ4JK1cu07hqlR01RocEuhsTRX72BRYswQypPOJNF
+         dUH2Yd/UgKchZ/ieREY/DulzuK46HEv6EpaeFJOdxB2Du7vAUZYeHrZVMWebm0llr5y1
+         7+653Le1dXCdGAZXxhhSROHatTzc4SOIH76dpIeMFpe6YEFyGDBEL8Tv58MfGVZUa/bL
+         QX1tIccq7a/tzQQQzN47ltp0C98nzyQB+ZEx0+8Jpg+wJKY6K7P5MFr9z8SangWeNw8W
+         tIlCmGvbmeF/L3DiKE8ZSqMuzmPKvNzVYYM+IJkfprhWs3mxr+BI8ar8UT4Gb4zfQ0SB
+         UKJw==
+X-Gm-Message-State: AOAM5333oJUywMeC+uT1mBn7XMLHnswG53qK+Jp9cQbeLNoqwrq/lhEr
+        o9KFi+/nhkCM+oxgW4p/eD6fVLO1IZq8Txx31AA=
+X-Google-Smtp-Source: ABdhPJwRxAwp1s4YjTUqcX/AAdgKGNstFB5jd3lyos+3LPa3ijtjUuFxbmNzJUzvo6qSGiT+GSa9ZkA6wg579vc/N0Q=
+X-Received: by 2002:a17:906:6d16:: with SMTP id m22mr11315367ejr.333.1624629824272;
+ Fri, 25 Jun 2021 07:03:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210624112624.31215-1-yee.lee@mediatek.com> <20210624112624.31215-2-yee.lee@mediatek.com>
+In-Reply-To: <20210624112624.31215-2-yee.lee@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Fri, 25 Jun 2021 17:03:21 +0300
+Message-ID: <CA+fCnZe0fng4-53U1=5MiYszCMi97twKut3eQNaNHgPV2HOVug@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] kasan: Add memzero init for unaligned size under
+ SLUB debug
+To:     yee.lee@mediatek.com
+Cc:     wsd_upstream@mediatek.com,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The datasheet mentions that the suspend mode is toggled by reading the
-suspend register. The reading returns value 0xFF if the system was in
-suspend mode, otherwise it returns value 0x00.
+On Thu, Jun 24, 2021 at 2:26 PM <yee.lee@mediatek.com> wrote:
+>
+> From: Yee Lee <yee.lee@mediatek.com>
+>
+> Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
+> the redzone of object with unaligned size.
+>
+> An additional memzero_explicit() path is added to replacing init by
+> hwtag instruction for those unaligned size at SLUB debug mode.
+>
+> Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+> ---
+>  mm/kasan/kasan.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8f450bc28045..d1054f35838f 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -387,6 +387,12 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
+>
+>         if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
+>                 return;
+> +#if IS_ENABLED(CONFIG_SLUB_DEBUG)
 
-The bma220_deinit() function does up to 2 reads, in case the device was in
-suspend mode, which suggests a level of paranoia that makes the logic in
-bma220_suspend() and bma220_resume() look insufficient.
+Is this an issue only with SLUB? SLAB also uses redzones.
 
-This change implements a bma220_power() function which does up to 2 reads
-of the suspend register to make sure that the chip enters a desired
-(suspended or normal) mode.
+> +       if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
 
-If the transition fails, then -EBUSY is returned.
+This needs a comment along the lines of:
 
-Since only a reference to SPI device is required, we can remove the
-spi_set_drvdata() call and get the SPI device object from the base device
-object in the suspend/resume routines.
+/* Explicitly initialize the memory with the precise object size to
+avoid overwriting the SLAB redzone. This disables initialization in
+the arch code and may thus lead to performance penalty. The penalty is
+accepted since SLAB redzones aren't enabled in production builds. */
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/accel/bma220_spi.c | 41 ++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/iio/accel/bma220_spi.c b/drivers/iio/accel/bma220_spi.c
-index 0095931a11f8..bc4c626e454d 100644
---- a/drivers/iio/accel/bma220_spi.c
-+++ b/drivers/iio/accel/bma220_spi.c
-@@ -218,14 +218,33 @@ static int bma220_init(struct spi_device *spi)
- 	return 0;
- }
- 
--static void bma220_deinit(void *spi)
-+static int bma220_power(struct spi_device *spi, bool up)
- {
--	int ret;
-+	int i, ret;
-+
-+	/**
-+	 * The chip can be suspended/woken up by a simple register read.
-+	 * So, we need up to 2 register reads of the suspend register
-+	 * to make sure that the device is in the desired state.
-+	 */
-+	for (i = 0; i < 2; i++) {
-+		ret = bma220_read_reg(spi, BMA220_REG_SUSPEND);
-+		if (ret < 0)
-+			return ret;
- 
--	/* Make sure the chip is powered off */
--	ret = bma220_read_reg(spi, BMA220_REG_SUSPEND);
--	if (ret == BMA220_SUSPEND_SLEEP)
--		bma220_read_reg(spi, BMA220_REG_SUSPEND);
-+		if (up && ret == BMA220_SUSPEND_SLEEP)
-+			return 0;
-+
-+		if (!up && ret == BMA220_SUSPEND_WAKE)
-+			return 0;
-+	}
-+
-+	return -EBUSY;
-+}
-+
-+static void bma220_deinit(void *spi)
-+{
-+	bma220_power(spi, false);
- }
- 
- static int bma220_probe(struct spi_device *spi)
-@@ -242,7 +261,6 @@ static int bma220_probe(struct spi_device *spi)
- 
- 	data = iio_priv(indio_dev);
- 	data->spi_device = spi;
--	spi_set_drvdata(spi, indio_dev);
- 	mutex_init(&data->lock);
- 
- 	indio_dev->info = &bma220_info;
-@@ -273,17 +291,16 @@ static int bma220_probe(struct spi_device *spi)
- 
- static __maybe_unused int bma220_suspend(struct device *dev)
- {
--	struct bma220_data *data = iio_priv(dev_get_drvdata(dev));
-+	struct spi_device *spi = to_spi_device(dev);
- 
--	/* The chip can be suspended/woken up by a simple register read. */
--	return bma220_read_reg(data->spi_device, BMA220_REG_SUSPEND);
-+	return bma220_power(spi, false);
- }
- 
- static __maybe_unused int bma220_resume(struct device *dev)
- {
--	struct bma220_data *data = iio_priv(dev_get_drvdata(dev));
-+	struct spi_device *spi = to_spi_device(dev);
- 
--	return bma220_read_reg(data->spi_device, BMA220_REG_SUSPEND);
-+	return bma220_power(spi, true);
- }
- static SIMPLE_DEV_PM_OPS(bma220_pm_ops, bma220_suspend, bma220_resume);
- 
--- 
-2.31.1
-
+> +               init = false;
+> +               memzero_explicit((void *)addr, size);
+> +       }
+> +#endif
+>         size = round_up(size, KASAN_GRANULE_SIZE);
+>
+>         hw_set_mem_tag_range((void *)addr, size, tag, init);
+> --
+> 2.18.0
+>
