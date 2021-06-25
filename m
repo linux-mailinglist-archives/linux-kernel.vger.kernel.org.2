@@ -2,311 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B513B4A9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AA13B4AA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhFYWjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 18:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60578 "EHLO mail.kernel.org"
+        id S230035AbhFYWmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 18:42:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4984 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229776AbhFYWjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 18:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F03161606;
-        Fri, 25 Jun 2021 22:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624660651;
-        bh=UDmebdVAymNlAe+OW5HvCKCPX1qgMcGjn/2lHdDAUDY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=McnPO14oDIS1t0moCyryR+ZZ4oBrIFy2d7d6WxephmDW1QYJTzbtAn6GLHdJW7xiZ
-         MbJvtBuFRmyFY38GEjIV436d84dxsQAOtM1WubTMTUQ1rog9voQLWSGoqml0amrp4c
-         bYKI39IwELB3d1wKh6oQg5xLrHuGqgdr2zC3i/qfePLb+pbR43raAdaBY+yvfPCG+B
-         nPD9fAmGFt1suPfluccTK6f1GqrA1eKhImxRWx3fdhkvwfsIyaaFhZsAzRWG18rY/A
-         y45QL1DJvtGhLfSbVMSQQp9BpGWYgws6C+ZhCuACRNM/2jg6fZeCCcY/0Mbw2pTRKh
-         gvuSxww6ElwJw==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S229776AbhFYWmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 18:42:16 -0400
+IronPort-SDR: L5pC4HqH+CxmHzX2qlId1e1/Y6yb6Qv1dW2+ujVzBMzmV7VZ3Xo7DwX12DQkEssMWTspngbQa4
+ HxuhUDO3bz0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="229352042"
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="229352042"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 15:39:55 -0700
+IronPort-SDR: iaWiARF49Otwm8wfe8MZ1z4JPgkEz2rq20DGGzIwHOceDnq6IZ+KNONkv2W7ErV6u4kpMC0/Ic
+ 4/9waOLgtKtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="445784415"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 25 Jun 2021 15:39:53 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Fri, 25 Jun 2021 15:39:52 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Fri, 25 Jun 2021 15:39:52 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Fri, 25 Jun 2021 15:39:52 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Fri, 25 Jun 2021 15:39:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F8aB8xAy0Knvp0zBclaZOyxq6NBvkBCyW05uf7xh2/TyBzGcjkIsjI9T7B3zzWwRPDbbBONnQXVOg+9IBu0Begw6D1aTJ0cQVR9FN3PoyGUOq6FjSFl3Hh7jjyLDLy7pmQ43vnM0X+TU8J9jRv0+Li91+en5MCN0vCtg8b4oC0kiLBjW4EadBaS/9Ev9gZINMgay2IP8LKfQf02SIcXw61s/kg0CnkxnhGAx9oGH8FH2zuHV75c/TGDulDedfa19pau3GiDvi6JZeaqvT3unS38lUtEicllO3ivTTiZAvR7Q7+N9OFNzsESIgAIPJzGC+L9DAW8hDmHASK/heWpwiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKsdvgkYgodoe04lpIELI9z03We/n2R6OVTBxh2mzSY=;
+ b=gxPOAQiA98tfiUhmfks4PngkvsqASJY7tbKutAuHBdbVR+OF6Tl9dI8eTzNg0bP1SFMp4rYBis8cR/s/IwnosVokJd53CYeMq00Wyx5GuFDjyCxGY5DIBemXBwiXNnP5ol9Mp2PJ9E6qNZfh1wIYDBN+VcAlnaUqrkPJGnnizfCqSvCJmeInXXb9Hgyxw1p3Ojtsw1fXTIdJXNH5A0nOuE9kBlvM7aettban0pKR9MmIpLJ1AgzCFwIHv0H+1C3Q6CfBXZ2ylFsV+v5VmzNQt0mFhMPEjcK00Y/0SC3YIN7Pn866yyn0xo8wJHoV7R+2RA2nLpBs3iyJ64yR6+ueHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TKsdvgkYgodoe04lpIELI9z03We/n2R6OVTBxh2mzSY=;
+ b=ugSHFtvPgyzRBqh7Ig40SJ09cVbYXy/cqlrPsRt8Yl21P+p+4+c7gSKthetkpQrdOcD91l5PtRAjd5UBzJFFErE89RbcWAw9xEJYKPSCicV7pY+OU1F67htD6xeTfO4TVIkqw0iDQdBQqcVp1not2Ql7JleZoExlwRDqfnejklY=
+Received: from SJ0PR11MB5662.namprd11.prod.outlook.com (2603:10b6:a03:3af::7)
+ by SJ0PR11MB5598.namprd11.prod.outlook.com (2603:10b6:a03:304::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Fri, 25 Jun
+ 2021 22:39:44 +0000
+Received: from SJ0PR11MB5662.namprd11.prod.outlook.com
+ ([fe80::58ac:cdd:41f6:93c2]) by SJ0PR11MB5662.namprd11.prod.outlook.com
+ ([fe80::58ac:cdd:41f6:93c2%7]) with mapi id 15.20.4264.023; Fri, 25 Jun 2021
+ 22:39:44 +0000
+From:   "Brelinski, TonyX" <tonyx.brelinski@intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
+        "alexander.h.duyck@intel.com" <alexander.h.duyck@intel.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH] igb: Fix an error handling path in
+ 'igb_probe()'
+Thread-Topic: [Intel-wired-lan] [PATCH] igb: Fix an error handling path in
+ 'igb_probe()'
+Thread-Index: AQHXX8fRAo3sf3HdIk6YWZVzvMyzm6slZl0g
+Date:   Fri, 25 Jun 2021 22:39:44 +0000
+Message-ID: <SJ0PR11MB56620F7C26BCA6EC7D798FABFA069@SJ0PR11MB5662.namprd11.prod.outlook.com>
+References: <0b5cab7b74ca2544d3c616da89f50635e827bc6f.1623528463.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <0b5cab7b74ca2544d3c616da89f50635e827bc6f.1623528463.git.christophe.jaillet@wanadoo.fr>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.6.0.76
+dlp-reaction: no-action
+authentication-results: wanadoo.fr; dkim=none (message not signed)
+ header.d=none;wanadoo.fr; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [71.236.132.75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ededc152-6b50-4c19-28cf-08d9382a213a
+x-ms-traffictypediagnostic: SJ0PR11MB5598:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB559849AE2FD5563879DCF242FA069@SJ0PR11MB5598.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ezwrpln9wBlkgKxOpc1JMQlVv/0Gaix5Q8oM8kO7FYWACvCT5kY84QosIAEv3/Dzytk6vgczw5EzXlriWCladD1XWzwMkM1blq7FP4+Z5h6eBvrZBRtWQCsLQ3J/Zq/J4SFnfJKNtVnXMHCKQvO1IVrudVsSFleHQ1sbW4GP8Z0m/DL5jvu7Qnn0IBm+842GcxrjUgIUrRvKx3hC6sxkO57LXGsQIgsZEW9m/3AEG1XOnAc+bAs2Qx3P1coENpgDg/dkz7ynzm/Wt8lBoyN/1jNQsKdI0p8GnC8YZ8h4L5Y3b0LvNI5MYDytfM+VQM/NDVeMHPBvNTBLF9D65KDlyPMf/kD0Uxx+J/qd9KXZfa8+GKRxjD8Db7fSUWyrQssGhVDSWFR4iF/bqRP4SONpeMPxGpAuYLKBr7EaZI4HlyN8g+3GQ1Eh0wSnPeUfz/yc7W29Ve/xA9Ic/D3WZxb9EYqC1u2hl5uRIN4ligB/K+x5GVCNvXG28RcmABjT4h9THiLReBDlhNJcjF//n4rQHPDSv0QOTmPk02HmYdC2RSm2Y3puXxX7y30odO+7uq3MByqNtbaewOUQNzidIR2qZ0L2DEamg8T2YfpxPgaHZLM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5662.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(346002)(396003)(366004)(4744005)(4326008)(316002)(110136005)(54906003)(478600001)(83380400001)(8676002)(7696005)(66476007)(64756008)(38100700002)(66556008)(8936002)(66446008)(66946007)(5660300002)(2906002)(76116006)(122000001)(52536014)(6636002)(26005)(9686003)(53546011)(86362001)(6506007)(186003)(33656002)(71200400001)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Pdjh5L+aa1kHI2AW8ltO2OMYtFtwC7lmdP0SP8FIPRX2Om1IfL7Yr1QRUmnP?=
+ =?us-ascii?Q?4OuHK03iRWmuODFKkH5RrEuuSnf396K/doWtX0vR43UB6lh9CBFvI2sx8j9c?=
+ =?us-ascii?Q?Er5KNeQlaccEy2NDegX4NX1E/QjwWeY3MMKfOV3VUeIfFF0xABuPrPVJg4w6?=
+ =?us-ascii?Q?X/+V/c6NwDvhBWkC4PIg8unMklYCcykeT8E6bJzZ1ifTW+6O/rRLZm/UV4X1?=
+ =?us-ascii?Q?X2Bo2UolHqGperTyeZ6kuI95QODwjXoN0cMHMd3VVP9V50WnCyZrE3ES1mCK?=
+ =?us-ascii?Q?4FU6gyF9ynvca3aK+SWlECUT16wMNNur7y+qxTuxBP939g7LsleDdfiYzeau?=
+ =?us-ascii?Q?RwkOyTvH6+3OSQLkc2qtwMDzE6KDSTHV9f7p2od02ZtH8seJaYZggvNVcYKC?=
+ =?us-ascii?Q?TXyY1qmQM+ci3Xs1Ictnqd7mLqpyxSDPMyVkB5yhp//cC+V2DTTjyUjv8dUB?=
+ =?us-ascii?Q?VZd2lUCAEHMtInAfGaO6upCs8dvOYmYesKqAxTzQm/o/QSyhEsp8ek4CaqdK?=
+ =?us-ascii?Q?aBEAbEjT2y20WrxhKtIZiN6e3fuhvhbP9oF+ZfKsbjscyWbyoxBtHRC7B4fg?=
+ =?us-ascii?Q?orQ/KNMfVekl9evXPY1tDthwUtfNrIAME/te4QeTIzKPHYchsIW3kwSXP9SK?=
+ =?us-ascii?Q?9BrNzGfQ8eTykf8wXwJg4YoZlqoYEYYFswzQD+sDrL5kQTpfxJle0EcKy3JG?=
+ =?us-ascii?Q?/1SX8F6EXLZfoRuIHjA0MHQ5ILuuLJrZ3+Xgysj1qyxf3r10Yehqt2ZEFsqx?=
+ =?us-ascii?Q?5S7TB/Q8f0w1OoprXe6gqMo3ZVIs9Xma2FaCeW7QoDKhjNmtLmhY4zNu/A2x?=
+ =?us-ascii?Q?y003Wek2l/c82gRBuOSj1TEAidu6NXd//Z03VDH7e51Mi0U3Hfg+98T8f6ly?=
+ =?us-ascii?Q?aWSNpV7WwVZHhf2E8aq1tPjsB5SEx8FumIS3QUNWpZwoJDc7e2J3+JQqCPWv?=
+ =?us-ascii?Q?9wK5lRMOEQnjv+I2i20N+Y9oigQ6jxrIArHuJiOhzfCMjzMBB88i6HQQ5wVU?=
+ =?us-ascii?Q?8jnfK3ElbhEjm0KvqjqDYZz16ExWXxkI39M73e7br2sigfDwznk0lMwDPDEb?=
+ =?us-ascii?Q?Ouz7KtIESmlQhY4ekvUsUkaqmt5NYnNh3bad28aEnyEgXScYg8FoXlg63pDE?=
+ =?us-ascii?Q?UClHb1Z7LXQghHZc1FYxivRT7mI7ldudbWVbvXS2f/OpcYTyGeJbjpQ8Qygt?=
+ =?us-ascii?Q?8pFUpOh20UAJTg4hlzjAgYPknN7Ida2bJdT81fjfblBCqSsTwQpys09A2wI7?=
+ =?us-ascii?Q?7Vwm8CcptD8aIg/yKZ0s8AJroFlgFFqEVuHuyRlY6kELSh9WUXBgsOQ9ln26?=
+ =?us-ascii?Q?ihD3eEoI8TrtZ3EtRFFW9ZVj?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210407034456.516204-3-saravanak@google.com>
-References: <20210407034456.516204-1-saravanak@google.com> <20210407034456.516204-3-saravanak@google.com>
-Subject: Re: [PATCH v1 2/2] clk: Add support for sync_state()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Saravana Kannan <saravanak@google.com>
-Date:   Fri, 25 Jun 2021 15:37:30 -0700
-Message-ID: <162466065014.3259633.8331957079895473498@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5662.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ededc152-6b50-4c19-28cf-08d9382a213a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2021 22:39:44.6220
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vzT4moypAEgF/3Ug3NWvFybk7i7z/qQZNwEBLSDfQAeGLTeG2epw9MujqYG+aVeWDcTmw2r38dsdM2pkjeiXZH4y16AQFYOfzBo8mwdYb40=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5598
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late review. This patch got lost during the merge window.
-
-Quoting Saravana Kannan (2021-04-06 20:44:55)
-> Clocks can be turned on (by the hardware, bootloader, etc) upon a
-> reset/boot of a hardware platform. These "boot clocks" could be clocking
-> devices that are active before the kernel starts running. For example,
-> clocks needed for the interconnects, UART console, display, CPUs, DDR,
-> etc.
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Christophe JAILLET
+> Sent: Saturday, June 12, 2021 1:09 PM
+> To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; davem@davemloft.net; kuba@kernel.org;
+> jeffrey.t.kirsher@intel.com; alexander.h.duyck@intel.com
+> Cc: netdev@vger.kernel.org; kernel-janitors@vger.kernel.org; Christophe
+> JAILLET <christophe.jaillet@wanadoo.fr>; intel-wired-lan@lists.osuosl.org=
+;
+> linux-kernel@vger.kernel.org
+> Subject: [Intel-wired-lan] [PATCH] igb: Fix an error handling path in
+> 'igb_probe()'
 >=20
-> When a boot clock is used by more than one consumer or multiple boot
-> clocks share a parent clock, the boot clock (or the common parent) can
-> be turned off when the first consumer probes. This can crash the device
-
-probes and calls clk_disable{,_unprepare}().
-
-> or cause poor user experience.
+> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it m=
+ust be
+> undone by a corresponding 'pci_disable_pcie_error_reporting()'
+> call, as already done in the remove function.
 >=20
-> Fix this by explicitly enabling the boot clocks during clock
-> registration and then removing the enable vote when the clock provider
-> device gets its sync_state() callback. Since sync_state() callback comes
-> only when all the consumers of a device (not a specific clock) have
-> probed, this ensures the boot clocks are kept on at least until all
-> their consumers have had a chance to vote on them (in their respective
-
-s/vote/enable/
-
-> probe functions).
->=20
-> Also, if a clock provider is loaded as a module and it has some boot
-> clocks, they get turned off only when a consumer explicitly turns them
-> off. So clocks that are boot clocks and are unused never get turned off
-
-Is this more like "After this change boot clocks that are unused get
-turned off"?
-
-> because the logic to turn off unused clocks has already run during
-> late_initcall_sync(). Adding sync_state() support also makes sure these
-> unused boot clocks are turned off once all the consumers have probed.
->=20
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Fixes: 40a914fa72ab ("igb: Add support for pci-e Advanced Error Reporting=
+")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/clk/clk.c            | 84 +++++++++++++++++++++++++++++++++++-
->  include/linux/clk-provider.h |  1 +
->  2 files changed, 84 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index d6301a3351f2..cd07f4d1254c 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -72,6 +72,8 @@ struct clk_core {
->         unsigned long           flags;
->         bool                    orphan;
->         bool                    rpm_enabled;
-> +       bool                    need_sync;
-> +       bool                    boot_enabled;
+>  drivers/net/ethernet/intel/igb/igb_main.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Nothing wrong with this patch but we really should document struct
-clk_core!
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com> (A Contingent Worker =
+at Intel)
 
->         unsigned int            enable_count;
->         unsigned int            prepare_count;
->         unsigned int            protect_count;
-> @@ -1215,6 +1217,15 @@ static void __init clk_unprepare_unused_subtree(st=
-ruct clk_core *core)
->         hlist_for_each_entry(child, &core->children, child_node)
->                 clk_unprepare_unused_subtree(child);
-> =20
-> +       /*
-> +        * Orphan clocks might still not have their state held if one of =
-their
-> +        * ancestors hasn't been registered yet. We don't want to turn off
-> +        * these orphan clocks now as they will be turned off later when =
-their
-> +        * device gets a sync_state() call.
-> +        */
-> +       if (dev_has_sync_state(core->dev))
-> +               return;
-> +
->         if (core->prepare_count)
->                 return;
-> =20
-> @@ -1246,6 +1257,15 @@ static void __init clk_disable_unused_subtree(stru=
-ct clk_core *core)
->         hlist_for_each_entry(child, &core->children, child_node)
->                 clk_disable_unused_subtree(child);
-> =20
-> +       /*
-> +        * Orphan clocks might still not have their state held if one of =
-their
-> +        * ancestors hasn't been registered yet. We don't want to turn off
-> +        * these orphan clocks now as they will be turned off later when =
-their
-> +        * device gets a sync_state() call.
-> +        */
-> +       if (dev_has_sync_state(core->dev))
 
-Do we need to inject this logic here? Maybe it would be better to up the
-prepare/enable count (by two?) at clk registration time if
-dev_has_sync_state() and the clk is a boot clk. Then the unused logic
-wouldn't need to change and it could still decrement the count. Or we
-could set the flag CLK_IGNORE_UNUSED if dev_has_sync_state and then we
-know it doesn't run the disable unused logic. With the flag we could
-increment by one instead of two.
-
-Thinking some more about it, if we reuse the prepare/enable count then
-we allow clk consumers to decrement the count during boot more than the
-number of times they incremented it. That would be bad, and quite
-annoying to debug. Ideally we prevent that somehow but then I wonder if
-keeping the clk enabled throughout boot is correct. What do we do if
-drivers really need to turn off the clk during their driver probe
-because they can't have the clk on during a hardware reset? If we bump
-up the count at registration time they won't be able to do that, unless
-they somehow know that the clk is on at boot and then disable the proper
-amount.
-
-> +               return;
-> +
->         if (core->flags & CLK_OPS_PARENT_ENABLE)
->                 clk_core_prepare_enable(core->parent);
-> =20
-> @@ -1319,6 +1339,38 @@ static int __init clk_disable_unused(void)
->  }
->  late_initcall_sync(clk_disable_unused);
-> =20
-> +static void clk_unprepare_disable_dev_subtree(struct clk_core *core,
-> +                                             struct device *dev)
-
-const dev?
-
-> +{
-> +       struct clk_core *child;
-> +
-> +       lockdep_assert_held(&prepare_lock);
-> +
-> +       hlist_for_each_entry(child, &core->children, child_node)
-> +               clk_unprepare_disable_dev_subtree(child, dev);
-> +
-> +       if (core->dev !=3D dev || !core->need_sync)
-> +               return;
-> +
-> +       clk_core_disable_unprepare(core);
-
-Maybe invert the logic
-
-	if (core->dev =3D=3D dev && core->need_sync)
-		clk_core_disable_unprepare(core);
-
-Also, this is recursing the tree down to the leaves and then back up to
-the root. Is there any way we can traverse the tree once, preferably not
-recursively? I always worry that the stack is eaten up by clk traversal
-logic.
-
-> +}
-> +
-> +void clk_sync_state(struct device *dev)
-
-Please add some kernel doc on this exported function.
-
-> +{
-> +       struct clk_core *core;
-> +
-> +       clk_prepare_lock();
-> +
-> +       hlist_for_each_entry(core, &clk_root_list, child_node)
-> +               clk_unprepare_disable_dev_subtree(core, dev);
-> +
-> +       hlist_for_each_entry(core, &clk_orphan_list, child_node)
-> +               clk_unprepare_disable_dev_subtree(core, dev);
-> +
-> +       clk_prepare_unlock();
-> +}
-> +EXPORT_SYMBOL_GPL(clk_sync_state);
-> +
->  static int clk_core_determine_round_nolock(struct clk_core *core,
->                                            struct clk_rate_request *req)
->  {
-> @@ -1725,6 +1777,30 @@ int clk_hw_get_parent_index(struct clk_hw *hw)
->  }
->  EXPORT_SYMBOL_GPL(clk_hw_get_parent_index);
-> =20
-> +static void clk_core_hold_state(struct clk_core *core)
-> +{
-> +       if (core->need_sync || !core->boot_enabled)
-> +               return;
-> +
-> +       if (core->orphan || !dev_has_sync_state(core->dev))
-> +               return;
-> +
-> +       core->need_sync =3D !clk_core_prepare_enable(core);
-> +}
-> +
-> +static void __clk_core_update_orphan_hold_state(struct clk_core *core)
-> +{
-> +       struct clk_core *child;
-> +
-> +       if (core->orphan)
-> +               return;
-> +
-> +       clk_core_hold_state(core);
-> +
-> +       hlist_for_each_entry(child, &core->children, child_node)
-> +               __clk_core_update_orphan_hold_state(child);
-> +}
-
-If I understand correctly, we're special casing orphans to know if we
-should carry over 'need_sync'? Maybe it would be better to propagate
-'boot_enabled' and/or 'need_sync' to any parent clks when adopting a
-clk? See the orphan logic in clk_reparent(). I suspect we need to do
-this sort of stuff in there instead of duplicating the logic here.
-
-> +
->  /*
->   * Update the orphan status of @core and all its children.
->   */
-> @@ -3392,6 +3468,7 @@ static void clk_core_reparent_orphans_nolock(void)
->                         __clk_set_parent_after(orphan, parent, NULL);
->                         __clk_recalc_accuracies(orphan);
->                         __clk_recalc_rates(orphan, 0);
-> +                       __clk_core_update_orphan_hold_state(orphan);
->                 }
->         }
->  }
-> @@ -3550,6 +3627,8 @@ static int __clk_core_init(struct clk_core *core)
->                 rate =3D 0;
->         core->rate =3D core->req_rate =3D rate;
-> =20
-> +       core->boot_enabled =3D clk_core_is_enabled(core);
-> +
->         /*
->          * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
->          * don't get accidentally disabled when walking the orphan tree a=
-nd
-> @@ -3572,6 +3651,7 @@ static int __clk_core_init(struct clk_core *core)
->                 }
->         }
-> =20
-> +       clk_core_hold_state(core);
->         clk_core_reparent_orphans_nolock();
-> =20
-> =20
-> @@ -3837,8 +3917,10 @@ __clk_register(struct device *dev, struct device_n=
-ode *np, struct clk_hw *hw)
->                 core->rpm_enabled =3D true;
->         core->dev =3D dev;
->         core->of_node =3D np;
-> -       if (dev && dev->driver)
-> +       if (dev && dev->driver) {
->                 core->owner =3D dev->driver->owner;
-> +               dev_set_drv_sync_state(dev, clk_sync_state);
-
-How do we know that the driver isn't going to want to hook the sync
-state callback itself? I suppose this is OK because if the driver wanted
-to do something special for sync_state they would have set the pointer
-already and dev_set_drv_sync_state() doesn't allow it to be overwritten
-here?
-
-One last thing, what do we do about clk providers that never use a
-struct device? Is there a 'sync_state' callback for fwnode or DT only
-clk providers? We have quite a few of those right now and while this
-patch may incentivize those clk providers to move over to a struct
-device, some of the clks can't be registered with a device because
-they're needed before the device framework is ready, e.g. irqchip and
-clocksource/clockevent drivers.
-
-> +       }
->         core->hw =3D hw;
->         core->flags =3D init->flags;
->         core->num_parents =3D init->num_parents;
