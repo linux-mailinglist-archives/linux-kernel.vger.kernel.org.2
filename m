@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F11B3B3FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AEC3B3FB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhFYIpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:45:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60236 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFYIpe (ORCPT
+        id S230121AbhFYIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:48:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5078 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhFYIs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:45:34 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624610593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LmSyoyyEMIJp4af9Gw12TH4tDtwX0VdKMNAYZNcVDm4=;
-        b=AHhjaAphGowU0pTeCjnJZBJhc7RMpOXvnz7Jt+/Cir61tfBTJQHV8RmcP+0Sd4I5165grH
-        8KPyOWmPcsw8G3AGa6FJsrR/FnrWZMyDl5ug54a4N/NTgAQbCtBXH0pieKNXdhB7QKktJZ
-        RInPKgF+l4oR+s6OUsdOU2DeLmSD0l3PtWP+8vcmF+TMxxpVD2aQ4OgAsERGHXb0DwblZw
-        LhW16coCVxJuWrccmqvp4bcJSIeKjdP/P7Pt/9eTtOyxoGYiIiPrBYeILh44OtLnZDZtUL
-        g56JUPauHwhIaSE0C31xFnmZgXRsLXfDIlXNwnqClstL6soTQpkr0dsIB85o5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624610593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LmSyoyyEMIJp4af9Gw12TH4tDtwX0VdKMNAYZNcVDm4=;
-        b=gHFW4IDg4490PWojrbqW+tDv1+7J+vzUU1hputd/LpqH1bHZNkjSAETMfcWItcvT6bTHPR
-        NLKzY4/iKpkbtwBA==
-To:     "Tian\, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, KVM <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: RE: Virtualizing MSI-X on IMS via VFIO
-In-Reply-To: <BN9PR11MB5433063F826F5CEC93BCE0E38C069@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <MWHPR11MB1886E14C57689A253D9B40C08C079@MWHPR11MB1886.namprd11.prod.outlook.com> <8735t7wazk.ffs@nanos.tec.linutronix.de> <20210624154434.11809b8f.alex.williamson@redhat.com> <BN9PR11MB5433063F826F5CEC93BCE0E38C069@BN9PR11MB5433.namprd11.prod.outlook.com>
-Date:   Fri, 25 Jun 2021 10:43:13 +0200
-Message-ID: <87o8buuyfy.ffs@nanos.tec.linutronix.de>
+        Fri, 25 Jun 2021 04:48:56 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB9TD4CcTzXkcs;
+        Fri, 25 Jun 2021 16:41:20 +0800 (CST)
+Received: from [10.174.177.120] (10.174.177.120) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 25 Jun 2021 16:46:33 +0800
+Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
+ atomic ops in zs_pool_dec_isolated()
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, <ngupta@vflare.org>,
+        <senozhatsky@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <20210624123930.1769093-1-linmiaohe@huawei.com>
+ <20210624123930.1769093-3-linmiaohe@huawei.com>
+ <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+ <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
+ <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <01117bc0-53b1-d81a-a4d8-2a1dbe5dcd94@huawei.com>
+Date:   Fri, 25 Jun 2021 16:46:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.120]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25 2021 at 05:21, Kevin Tian wrote:
->> From: Alex Williamson <alex.williamson@redhat.com>
->> So caching/latching occurs on unmask for MSI-X, but I can't find
->> similar statements for MSI.  If you have, please note them.  It's
->> possible MSI is per interrupt.
->
-> I checked PCI Local Bus Specification rev3.0. At that time MSI and
-> MSI-X were described/compared together in almost every paragraph 
-> in 6.8.3.4 (Per-vector Masking and Function Masking). The paragraph
-> that you cited is the last one in that section. It's a pity that MSI is
-> not clarified in this paragraph but it gives me the impression that 
-> MSI function is not permitted to cache address and data values. 
-> Later after MSI and MSI-X descriptions were split into separate 
-> sections in PCIe spec, this impression is definitely weakened a lot.
->
-> If true, this even implies that software is free to change data/addr
-> when MSI is unmasked, which is sort of counter-intuitive to most
-> people.
+On 2021/6/25 15:29, Muchun Song wrote:
+> On Fri, Jun 25, 2021 at 2:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>
+>> On 2021/6/25 13:01, Muchun Song wrote:
+>>> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>>>>
+>>>> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
+>>>> atomic_long_read() == 0. Use it to make code more succinct.
+>>>
+>>> Actually, they are not equal. atomic_long_dec_and_test implies a
+>>> full memory barrier around it but atomic_long_dec and atomic_long_read
+>>> don't.
+>>>
+>>
+>> Many thanks for comment. They are indeed not completely equal as you said.
+>> What I mean is they can do the same things we want in this specified context.
+>> Thanks again.
+> 
+> I don't think so. Using individual operations can eliminate memory barriers.
+> We will pay for the barrier if we use atomic_long_dec_and_test here.
 
-Yes, software is free to do that and it has to deal with the
-consequences. See arch/x86/kernel/apic/msi.c::msi_set_affinity().
+The combination of atomic_long_dec and atomic_long_read usecase is rare and looks somehow
+weird. I think it's worth to do this with the cost of barrier.
 
-> Then I further found below thread:
->
-> https://lore.kernel.org/lkml/1468426713-31431-1-git-send-email-marc.zyngier@arm.com/
->
-> It identified a device which does latch the message content in a
-> MSI-capable device, forcing the kernel to startup irq early before
-> enabling MSI capability.
->
-> So, no answer and let's see whether Thomas can help identify
-> a better proof.
+> 
+>>
+>>> That RMW operations that have a return value is equal to the following.
+>>>
+>>> smp_mb__before_atomic()
+>>> non-RMW operations or RMW operations that have no return value
+>>> smp_mb__after_atomic()
+>>>
+>>> Thanks.
+>>>
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  mm/zsmalloc.c | 3 +--
+>>>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+>>>> index 1476289b619f..0b4b23740d78 100644
+>>>> --- a/mm/zsmalloc.c
+>>>> +++ b/mm/zsmalloc.c
+>>>> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
+>>>>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+>>>>  {
+>>>>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+>>>> -       atomic_long_dec(&pool->isolated_pages);
+>>>>         /*
+>>>>          * There's no possibility of racing, since wait_for_isolated_drain()
+>>>>          * checks the isolated count under &class->lock after enqueuing
+>>>>          * on migration_wait.
+>>>>          */
+>>>> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+>>>> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
+>>>>                 wake_up_all(&pool->migration_wait);
+>>>>  }
+>>>>
+>>>> --
+>>>> 2.23.0
+>>>>
+>>> .
+>>>
+>>
+> .
+> 
 
-As I said to Alex: The MSI specification is and always was blury and the
-behaviour in detail is implementation defined. IOW, what might work on
-device A is not guaranteed to work on device B.
-
-> p.s. one question to Thomas. As Alex cited above, software must 
-> not modify the Address, Data, or Steering Tag fields of an MSI-X
-> entry while it is unmasked. However this rule might be violated
-> today in below flow:
->
-> request_irq()
->     __setup_irq()
->         irq_startup()
->             __irq_startup()
->                 irq_enable()
->                     unmask_irq() <<<<<<<<<<<<<
->         irq_setup_affinity()
->             irq_do_set_affinity()
->                 msi_set_affinity() // when IR is disabled
->                     irq_msi_update_msg()
->                         pci_msi_domain_write_msg() <<<<<<<<<<<<<<
->
-> Isn't above have msi-x entry updated after it's unmasked? 
-
-Dammit, I could swear that we had masking at the core or PCI level at
-some point. Let me dig into this.
-
-Thanks,
-
-        tglx
