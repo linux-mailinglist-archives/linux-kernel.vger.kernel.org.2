@@ -2,168 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9266C3B4558
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6C73B455B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhFYOPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhFYOPG (ORCPT
+        id S231925AbhFYOQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:16:17 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:41841 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhFYOQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:15:06 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B598CC061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:12:45 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dae0049fb297996de39ad.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:49fb:2979:96de:39ad])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E813B1EC0595;
-        Fri, 25 Jun 2021 16:12:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624630363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fH0w06KluhpHxyJhF5il1CGHZj2eD9M/LitHHY//GKQ=;
-        b=TKq7F01Tc2vIogaK1X0l3FzrG3qk36r0XQG+wpnSK+YvmGle211A8h5oEll0ZdubSWNhpB
-        PhSdqbLnEnMYRyviJEoZZAZcBbkg3hhU4PcnL5+Lne8S5v23ZDy2Y8sKdY5PVDv00hiXT9
-        sxKvjVEcE51Eaie3O6PysMJQWsvD8yM=
-Date:   Fri, 25 Jun 2021 16:12:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
-Message-ID: <YNXkVBcmBvZL7khv@zn.tnic>
-References: <YNRzSy3NuwBDYWwr@kroah.com>
- <YNR7aw+C+7AJnBIG@zn.tnic>
- <YNXG472lXPHlbuCF@kroah.com>
+        Fri, 25 Jun 2021 10:16:16 -0400
+Received: by mail-oo1-f46.google.com with SMTP id k21-20020a4a2a150000b029024955603642so2548794oof.8;
+        Fri, 25 Jun 2021 07:13:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eb2oox1oUIO8Ak6tDnGLYRSFQXaa3Y9McJsZ/3tyhSA=;
+        b=Vwea9orpl0WkDz0W+2MbJxUK5dNaK8XpmPnoO16gKOOm0r2a2liejsGnhXqz5AJe6/
+         3fs5G1Ik5NCS3LhE8RXy0T0qtxoU9g9kPnIfmkAYYxVeaw2ORx/bWLcg/I/MoIu5WeDn
+         s7rrak/htNhSr1uviZG7bSoWq0tGOkzz6jR825Tx/QGorFyF0PHeYDUXOooXxpVIrYox
+         Z5bxiN1pokycEiK2mQoqDS+Tp02hyaO7AIWDfmWTRExG3H2K47/Btjfv5kTEWKF1/4C/
+         4C2l6RRWM6hk3b5/UGclPkr3ilYQI98us+7t/MnXBbW7AjX+J1jC9xI+7stb+TLJZ0J2
+         y+zA==
+X-Gm-Message-State: AOAM5301SQPdgvIPLkBkEpmruh9ag1MsyTqCh5dIlta9Ou8Zwp2WXjzF
+        4lem/EZlqZtsp0MroQcs+kVwpnD2IWMLnif0yzk=
+X-Google-Smtp-Source: ABdhPJw8M9hdAhNOk4vX0DAD2iZIO6vcnGIazvppe7fETJt+EqtFocDXvQ0NnG7QX7KzoyLNjT2n3Qd0MJYwqB/iyoo=
+X-Received: by 2002:a4a:5285:: with SMTP id d127mr9265501oob.2.1624630432823;
+ Fri, 25 Jun 2021 07:13:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YNXG472lXPHlbuCF@kroah.com>
+References: <20210625134129.11885-1-tung-chen.shih@mediatek.com>
+In-Reply-To: <20210625134129.11885-1-tung-chen.shih@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 25 Jun 2021 16:13:41 +0200
+Message-ID: <CAJZ5v0hdbML+J5yYQpoEeQJhO_QriDmmRuUhcsWDBxK1t4sknA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] cpufreq: fix the target freq not in the range of
+ policy->min & max
+To:     TungChen Shih <tung-chen.shih@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 02:06:59PM +0200, Greg Kroah-Hartman wrote:
-> Casting seems to be the only way to make this "quiet" that I can tell.
-> 
-> Unless someone else has a good idea?
+On Fri, Jun 25, 2021 at 3:41 PM TungChen Shih
+<tung-chen.shih@mediatek.com> wrote:
+>
+>     In cpufreq_frequency_table_target(), this function will try to find
+> an index for @target_freq in freq_table, and the frequency of selected
+> index should be in the range [policy->min, policy->max], which means:
+>
+>     policy->min <= policy->freq_table[idx].frequency <= policy->max
+>
+>     Though "clamp_val(target_freq, policy->min, policy->max);" would
+> have been called to check this condition, when policy->max or min is
+> not exactly one of the frequency in the frequency table,
+> policy->freq_table[idx].frequency may still go out of the range
+>
+>     For example, if our sorted freq_table is [3000, 2000, 1000], and
+> suppose we have:
+>
+>     @target_freq = 2500
+>     @policy->min = 2000
+>     @policy->max = 2200
+>     @relation = CPUFREQ_RELATION_L
+>
+> 1. After clamp_val(target_freq, policy->min, policy->max); @target_freq
+> becomes 2200
+> 2. Since we use CPUFREQ_REALTION_L, final selected freq will be 3000 which
+> beyonds policy->max
 
-Hmm, so in Documentation/core-api/printk-formats.rst we say that for
-printk() with different size types, we should "use a format specifier of
-its largest possible type and explicitly cast to it."
+As you accurately observed, the policy limits affect the target, not
+the frequency that will be used, and "RELATION_L" means "the closest
+frequency equal to or above the target".
 
-And that kinda sounds ok to me because we don't potentially lose through
-the casting.
+You are not fixing a bug here IMO, you're changing the documented behavior.
 
-IOW, I guess something like this below.
-
----
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 04c5a44b9682..42b0f425a2c7 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -389,7 +389,7 @@ static void read_ehdr(FILE *fp)
- 		Elf_Shdr shdr;
- 
- 		if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0)
--			die("Seek to %d failed: %s\n", ehdr.e_shoff, strerror(errno));
-+			die("Seek to %lu failed: %s\n", (unsigned long)ehdr.e_shoff, strerror(errno));
- 
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
- 			die("Cannot read initial ELF section header: %s\n", strerror(errno));
-@@ -412,17 +412,17 @@ static void read_shdrs(FILE *fp)
- 
- 	secs = calloc(shnum, sizeof(struct section));
- 	if (!secs) {
--		die("Unable to allocate %d section headers\n",
-+		die("Unable to allocate %ld section headers\n",
- 		    shnum);
- 	}
- 	if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0) {
--		die("Seek to %d failed: %s\n",
--			ehdr.e_shoff, strerror(errno));
-+		die("Seek to %lu failed: %s\n",
-+		    (unsigned long)ehdr.e_shoff, strerror(errno));
- 	}
- 	for (i = 0; i < shnum; i++) {
- 		struct section *sec = &secs[i];
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
--			die("Cannot read ELF section headers %d/%d: %s\n",
-+			die("Cannot read ELF section headers %d/%ld: %s\n",
- 			    i, shnum, strerror(errno));
- 		sec->shdr.sh_name      = elf_word_to_cpu(shdr.sh_name);
- 		sec->shdr.sh_type      = elf_word_to_cpu(shdr.sh_type);
-@@ -450,12 +450,12 @@ static void read_strtabs(FILE *fp)
- 		}
- 		sec->strtab = malloc(sec->shdr.sh_size);
- 		if (!sec->strtab) {
--			die("malloc of %d bytes for strtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %lu bytes for strtab failed\n",
-+			    (unsigned long)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %lu failed: %s\n",
-+			    (unsigned long)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->strtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -475,12 +475,12 @@ static void read_symtabs(FILE *fp)
- 		}
- 		sec->symtab = malloc(sec->shdr.sh_size);
- 		if (!sec->symtab) {
--			die("malloc of %d bytes for symtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %lu bytes for symtab failed\n",
-+			    (unsigned long)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %lu failed: %s\n",
-+			    (unsigned long)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -508,12 +508,12 @@ static void read_relocs(FILE *fp)
- 		}
- 		sec->reltab = malloc(sec->shdr.sh_size);
- 		if (!sec->reltab) {
--			die("malloc of %d bytes for relocs failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %lu bytes for relocs failed\n",
-+			    (unsigned long)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %lu failed: %s\n",
-+			    (unsigned long)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->reltab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-diff --git a/arch/x86/tools/relocs.h b/arch/x86/tools/relocs.h
-index 43c83c0fd22c..4c49c82446eb 100644
---- a/arch/x86/tools/relocs.h
-+++ b/arch/x86/tools/relocs.h
-@@ -17,6 +17,7 @@
- #include <regex.h>
- #include <tools/le_byteshift.h>
- 
-+__attribute__((__format__(printf, 1, 2)))
- void die(char *fmt, ...) __attribute__((noreturn));
- 
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: TungChen Shih <tung-chen.shih@mediatek.com>
+> ---
+>  include/linux/cpufreq.h | 25 ++++++++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 353969c7acd3..60cb15740fdf 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -975,21 +975,40 @@ static inline int cpufreq_frequency_table_target(struct cpufreq_policy *policy,
+>                                                  unsigned int target_freq,
+>                                                  unsigned int relation)
+>  {
+> +       int idx = 0;
+>         if (unlikely(policy->freq_table_sorted == CPUFREQ_TABLE_UNSORTED))
+>                 return cpufreq_table_index_unsorted(policy, target_freq,
+>                                                     relation);
+>
+>         switch (relation) {
+>         case CPUFREQ_RELATION_L:
+> -               return cpufreq_table_find_index_l(policy, target_freq);
+> +               idx = cpufreq_table_find_index_l(policy, target_freq);
+> +               break;
+>         case CPUFREQ_RELATION_H:
+> -               return cpufreq_table_find_index_h(policy, target_freq);
+> +               idx = cpufreq_table_find_index_h(policy, target_freq);
+> +               break;
+>         case CPUFREQ_RELATION_C:
+> -               return cpufreq_table_find_index_c(policy, target_freq);
+> +               idx = cpufreq_table_find_index_c(policy, target_freq);
+> +               break;
+>         default:
+>                 WARN_ON_ONCE(1);
+>                 return 0;
+>         }
+> +
+> +       /* target index verification */
+> +       if (policy->freq_table[idx].frequency > policy->max) {
+> +               if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
+> +                       idx--;
+> +               else
+> +                       idx++;
+> +       } else if (policy->freq_table[idx].frequency < policy->min) {
+> +               if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
+> +                       idx++;
+> +               else
+> +                       idx--;
+> +       }
+> +
+> +       return idx;
+>  }
+>
+>  static inline int cpufreq_table_count_valid_entries(const struct cpufreq_policy *policy)
+> --
+> 2.18.0
+>
