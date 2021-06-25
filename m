@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E783B4311
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078853B4313
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 14:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFYMXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 08:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhFYMXu (ORCPT
+        id S231182AbhFYMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 08:24:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45434 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhFYMYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:23:50 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE956C061574;
-        Fri, 25 Jun 2021 05:21:28 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id bj15so18777906qkb.11;
-        Fri, 25 Jun 2021 05:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L4Q8/3z6OXZZ/9ZPmsJ32/nlpjgIm8YhI1f+Jp/7/2Y=;
-        b=WL+io1HK1tNOQKxbIBVMbIy/T9/bxFpeWFQvqPXHqNMk5T4+AzsEpeX0jFWiv9/8JZ
-         jZtyRkg67eHuVI9mrtSDtLdoKttYBAd0QtM+kiimuZXFrImzRoEIj4tiiCiZuZWVK3at
-         /2AQyUybsp5Wvx+iUGQt65JBdrZ4UBQ+4YsR+UmhadndSpBw46mHRT+rxy1HlaLvPWmD
-         lk6c6KCfWGhg9b0ALrbaPrmS5kl3oyUk15k5Q/4T2sPvGaUwZXqkpGQrqPVjsMUrl/VF
-         Aw166696i0P9ahVNEqPGnX1zw3YB7HbKbk5AxMmT1p/qUnAHnZvv8Rqr9wjh4N2KBZsq
-         nGvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L4Q8/3z6OXZZ/9ZPmsJ32/nlpjgIm8YhI1f+Jp/7/2Y=;
-        b=WjZGKOXbtkk5rE2Y2IKfbJsfDPIN/ldzTISdruO8cG3RyD17bJAyWfW9edo8AEraH0
-         kaw0QpwNmWix8L27DV361ejsLmQIfFpIYpN+oEpXdZfcMJZCjSqITf2MEyzQsRPAIXm9
-         fExhZCzFG5UXWbE0NjgA+2JYP0HBJDaQgmAU2T6DooLqea14spAiNjkX13liEiiHwE81
-         zG30yGzrsuod9TptlCZxurR8ymXE5HFrl+w/D2nxIA+H4kc/jqi6Xe0LMVw3zgtpVLt5
-         p3nj5ARdAZBvoi3nr+kIZZ2Gs4JHYhG5IKGyq3j5wBdcNvP8WqAephuzQcmmWQSWQFCR
-         tulA==
-X-Gm-Message-State: AOAM531/3NqTRrJ4mGhGn+HTaPbkbMT3tVE28fBRbtm6RIhuxduDrK7V
-        mXdBU/59lTOjjeMhMFQlm8I2Rpslmwb6KEVJ74Y=
-X-Google-Smtp-Source: ABdhPJx/f94SRCZdAiHGi/ly1dG35ye7G0aXHvgj8OgWk+mDDpVCnednOPUsuVtmlcQHWovAMDoeKz0kkOsoi5QKHGA=
-X-Received: by 2002:a37:9005:: with SMTP id s5mr10980983qkd.108.1624623687811;
- Fri, 25 Jun 2021 05:21:27 -0700 (PDT)
+        Fri, 25 Jun 2021 08:24:18 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D04B421C99;
+        Fri, 25 Jun 2021 12:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624623716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
+        b=xyc6A4xctkd1tWu+GXqPEdu8UDgKldkATgON6UUtpNfDsstz8y7+RMNMAPpMdKgiD/Koce
+        F8x6TQD1OA2Geetl2U4zF2ZnQNM82njAjVvey26iyUOURCUX2JRuXuoNFTO0BliMlAZ0vq
+        XmkRALVOoiaGm9frJudpdSZvVXlMy6A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624623716;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
+        b=kfcmTV4mrN8XaQoL843ZMEYuw2Xgtc3ZZTjlz7IJmlEXmhN0pJSl7OlAy4Lk/v/iW5Cwjs
+        X1lvSo5naec9mnCQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id BEB6511A97;
+        Fri, 25 Jun 2021 12:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624623716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
+        b=xyc6A4xctkd1tWu+GXqPEdu8UDgKldkATgON6UUtpNfDsstz8y7+RMNMAPpMdKgiD/Koce
+        F8x6TQD1OA2Geetl2U4zF2ZnQNM82njAjVvey26iyUOURCUX2JRuXuoNFTO0BliMlAZ0vq
+        XmkRALVOoiaGm9frJudpdSZvVXlMy6A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624623716;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pAj1upETTIyHAZ/PkSRbshacc33JaBnwwpRJoNDa32c=;
+        b=kfcmTV4mrN8XaQoL843ZMEYuw2Xgtc3ZZTjlz7IJmlEXmhN0pJSl7OlAy4Lk/v/iW5Cwjs
+        X1lvSo5naec9mnCQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id /xKJLWTK1WBmRQAALh3uQQ
+        (envelope-from <dwagner@suse.de>); Fri, 25 Jun 2021 12:21:56 +0000
+Date:   Fri, 25 Jun 2021 14:21:56 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH 0/2] Handle update hardware queues and queue freeze more
+ carefully
+Message-ID: <20210625122156.x5yzoobuaaec5hss@beryllium.lan>
+References: <20210625101649.49296-1-dwagner@suse.de>
 MIME-Version: 1.0
-References: <20210614201620.30451-1-richard@nod.at> <20210614201620.30451-2-richard@nod.at>
-In-Reply-To: <20210614201620.30451-2-richard@nod.at>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Fri, 25 Jun 2021 14:21:16 +0200
-Message-ID: <CAFLxGvyyybqsgXOQ2f2BmpTCnC=7UdWhwnCpGfZMxYuK-AQ-_w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] crypto: mxs-dcp: Add support for hardware provided keys
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     keyrings@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fabio Estevam <festevam@gmail.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625101649.49296-1-dwagner@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert,
+On Fri, Jun 25, 2021 at 12:16:47PM +0200, Daniel Wagner wrote:
+> this is a followup on the crash I reported in
+> 
+>   https://lore.kernel.org/linux-block/20210608183339.70609-1-dwagner@suse.de/
+> 
+> By moving the hardware check up the crash was gone. Unfortuntatly, I
+> don't understand why this fixes the crash. The per-cpu access is
+> crashing but I can't see why the blk_mq_update_nr_hw_queues() is
+> fixing this problem.
+> 
+> Even though I can't explain why it fixes it, I think it makes sense to
+> update the hardware queue mapping bevore we recreate the IO
+> queues. Thus I avoided in the commit message to say it fixes
+> something.
 
-On Mon, Jun 14, 2021 at 10:18 PM Richard Weinberger <richard@nod.at> wrote:
->
-> DCP is capable to performing AES with hardware-bound keys.
-> These keys are not stored in main memory and are therefore not directly
-> accessible by the operating system.
->
-> So instead of feeding the key into DCP, we need to place a
-> reference to such a key before initiating the crypto operation.
-> Keys are referenced by a one byte identifiers.
->
-> DCP supports 6 different keys: 4 slots in the secure memory area,
-> a one time programmable key which can be burnt via on-chip fuses
-> and an unique device key.
->
-> Using these keys is restricted to in-kernel users that use them as building
-> block for other crypto tools such as trusted keys. Allowing userspace
-> (e.g. via AF_ALG) to use these keys to crypt or decrypt data is a security
-> risk, because there is no access control mechanism.
->
-> Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> Cc: David Gstir <david@sigma-star.at>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Co-developed-by: David Gstir <david@sigma-star.at>
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/crypto/mxs-dcp.c | 110 ++++++++++++++++++++++++++++++++++-----
->  include/linux/mxs-dcp.h  |  19 +++++++
->  2 files changed, 117 insertions(+), 12 deletions(-)
->  create mode 100644 include/linux/mxs-dcp.h
+I just discussed this with Hannes and we figured out how the crash is
+fixed by moving the blk_mq_update_nr_hw_queues() before the
+nvme_fc_create_hw_io_queues()/nvme_fc_connect_io_queues().
 
-This patch was judged as not applicable in your patchwork.
-Is something missing? How can we proceed?
+First of all, blk_mq_update_nr_hw_queues() operates on the normal
+tag_set and not the admin_tag_set. That means when we move the
+blk_mq_update_nr_hw_queues() before the nvme_fc_connect_io_queues(), we
+update the mapping to only CPUs and hwctx which are available. When we
+then do the connect call nvmf_connect_io_queue() we will only allocate
+tags from queues which are not in the BLK_MQ_S_INACTIVE anymore. Hence
+we skip the blk_mq_put_tag() call.
 
--- 
-Thanks,
-//richard
+> Also during testing I observed the we hang indivinetly in
+> blk_mq_freeze_queue_wait(). Again I can't explain why we get stuck
+> there but given a common pattern for the nvme_wait_freeze() is to use
+> it with a timeout I think the timeout should be used too :)
+
+The nvme_wait_freeeze() is probably not needed at all,
+__blk_mq_update_nr_hw_queues() already calls blk_mq_freeze_queue(). So
+there this is not needed at all. Furthermore, if we move
+blk_mq_update_nr_hw_queues() in front of nvme_fc_create_hw_io_queues()
+there can't be any pending I/Os because there are not queues.
