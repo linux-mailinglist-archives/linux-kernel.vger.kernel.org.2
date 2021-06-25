@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1159A3B3C42
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207B43B3C45
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhFYFcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:32:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60300 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbhFYFcV (ORCPT
+        id S232996AbhFYFgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhFYFgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:32:21 -0400
-Received: from 1-171-95-206.dynamic-ip.hinet.net ([1.171.95.206] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lwePW-0003qp-A4; Fri, 25 Jun 2021 05:29:50 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Koba Ko <koba.ko@canonical.com>,
-        linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] Revert "nvme-pci: use simple suspend when a HMB is enabled"
-Date:   Fri, 25 Jun 2021 13:29:44 +0800
-Message-Id: <20210625052944.4140054-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 25 Jun 2021 01:36:14 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A88FC061574;
+        Thu, 24 Jun 2021 22:33:54 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id g24so4810691pji.4;
+        Thu, 24 Jun 2021 22:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQoN7+7QargeetsXxpA8OHPMu1/ktlz7NWRsGKdKNks=;
+        b=nx6MokHwnQzz6LZVX6pkU7VOZNuGvAGmX3H+HeWsFUdFoyzNhct2Qf3Zg2XuR82Iys
+         MZBni6BR7UFS3wIgfsXbcR6j00TwISBVzd1NxacKnxhXioMqc3ohwQfgHpeWVIoAtfSb
+         TF65R+ihL/RzvJhJrDLg97r7w/CI6NQ65juyJmZeJ17+EgRrFQ5/2spnORKS2FHGb58F
+         IJ9f7yxEPU1Hv0ZXbzLvaFDXP9TRF7Z/s5gTq/V/DjABMZj2iSpEmLkI/uKwPW1Qk9PC
+         ewDLn659KgUDVKJQ4gMvI9Ars3yK6ORb67cF6BdX8e+mfKjkq7S10xx+PiM2yszoydJQ
+         pqpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQoN7+7QargeetsXxpA8OHPMu1/ktlz7NWRsGKdKNks=;
+        b=ciPsGpUysUXcTdxgIxgZ90Kdr02wjJtxRW9tzc6vfhEoo4P+8L04TR9Nc2CesFTR3Q
+         W+UGlAHANb583NHtXsIG/cIFsIZW2gcK0PMk8U+Yh6iKMZQcP1T+SpBTD7SShV8budbJ
+         sJVSgPItE0Q2OJ2rCdVD4ykFEINCQpo2LQRkGah4u9HA33PNOTeYTQnn1JpBoyoTpjRL
+         CXCdKcenZYG5jy+z0JrX9eThJZXbDKbhggL5trRURW3m3TJjLArhgIHLANO3BA62NyWY
+         325I267aYOwMzw68XdMr9jAFS9mLbjR3WY2yO4BtY5xeqcRsn2IIz/sSy7+6w9p91jrN
+         Ex5Q==
+X-Gm-Message-State: AOAM533uzILT3pLw2YEpesCob9gJn5QO/m3NajuWY8vT2S9p+s7xJIKA
+        Rv5rFDfTgcb/RLUbIR0B1ck=
+X-Google-Smtp-Source: ABdhPJxApS8W7KWk7eF40vYnGjkm69GxpeZIw7ZJJ/Ed0bYqTzt3c/R7TvUQsvQ1ul3TZwPQgASO2w==
+X-Received: by 2002:a17:90b:1809:: with SMTP id lw9mr9378757pjb.128.1624599233471;
+        Thu, 24 Jun 2021 22:33:53 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.130])
+        by smtp.gmail.com with ESMTPSA id v13sm4802883pja.44.2021.06.24.22.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 22:33:52 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+Date:   Fri, 25 Jun 2021 13:33:27 +0800
+Message-Id: <20210625053335.466325-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b97120b15ebd3de51325084136d3b9c3cce656d6.
+If dibusb_read_eeprom_byte fails, the mac address is not initialized.
+And nova_t_read_mac_address does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-There are at least two issues introduced by that commit.
-Config space becomes inaccessible after s2idle:
-[  827.776792] nvme 0000:58:00.0: can't change power state from D3cold to D0 (config space inaccessible)
-The NVMe in question is recovered correctly but PCIe ASPM setting is lost as result.
+Fix this by handling the failure of dibusb_read_eeprom_byte.
 
-The second one is more severe, the NVMe becomes unreliable and cause the
-rootfs unreadable after s2idle.
-
-Since reset DMA is not possible on suspend/resume, revert the commit to
-solve the regression.
-
-Cc: Koba Ko <koba.ko@canonical.com>
-BugLink: https://bugs.launchpad.net/bugs/1912057
-BugLink: https://bugs.launchpad.net/bugs/1927866
-Fixes: b97120b15ebd ("nvme-pci: use simple suspend when a HMB is enabled")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- drivers/nvme/host/pci.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index a29b170701fc6..72d2121f82068 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3079,15 +3079,9 @@ static int nvme_suspend(struct device *dev)
- 	 * the PCI bus layer to put it into D3 in order to take the PCIe link
- 	 * down, so as to allow the platform to achieve its minimum low-power
- 	 * state (which may not be possible if the link is up).
--	 *
--	 * If a host memory buffer is enabled, shut down the device as the NVMe
--	 * specification allows the device to access the host memory buffer in
--	 * host DRAM from all power states, but hosts will fail access to DRAM
--	 * during S3.
- 	 */
- 	if (pm_suspend_via_firmware() || !ctrl->npss ||
- 	    !pcie_aspm_enabled(pdev) ||
--	    ndev->nr_host_mem_descs ||
- 	    (ndev->ctrl.quirks & NVME_QUIRK_SIMPLE_SUSPEND))
- 		return nvme_disable_prepare_reset(ndev, true);
+diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+index e7b290552b66..07d3d68612e7 100644
+--- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
++++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+@@ -130,7 +130,7 @@ static int nova_t_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
  
+ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ {
+-	int i;
++	int i, ret;
+ 	u8 b;
+ 
+ 	mac[0] = 0x00;
+@@ -139,7 +139,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ 
+ 	/* this is a complete guess, but works for my box */
+ 	for (i = 136; i < 139; i++) {
+-		dibusb_read_eeprom_byte(d,i, &b);
++		ret = dibusb_read_eeprom_byte(d,i, &b);
++		if (ret)
++			return ret;
+ 
+ 		mac[5 - (i - 136)] = b;
+ 	}
 -- 
-2.31.1
+2.25.1
 
