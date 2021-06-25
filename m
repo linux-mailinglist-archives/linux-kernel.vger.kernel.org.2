@@ -2,102 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CE13B4400
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA38A3B4411
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 15:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFYNGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 09:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFYNGM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 09:06:12 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9719BC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h4so7532387pgp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rtsnu8VD33EKMaZf3cpQ8efCBZxp+xhAKR5JoGpX5Eo=;
-        b=QyicnVxC5A1fEGp5XtFu3wD2OgDufaG+KE0JJ9KpzGa7lNZMm/POMik2AXOxX1zkTG
-         3J1IUFt9eeLSs/W1TxbtnzkxWiHFHRoseNrxBhaRZHMOz6MBCT6fQt7ROrqIOUqttUZw
-         QU8itF6xaMwH0rMf7sAxh58f2tTPEKeert6XLTeTlx+kPxk4jBP6NSAlQUCkl/f4Rl/o
-         tvN7rnm43Rwy6RxxZbZnRGq2tHOSGNX4NtjwUxcvJixa4Efap/fpKanlZ1kQGKEU1pLX
-         z1blAIpYshe2WZpwUDCgSw2TaFR3hgGkF+y0iIHjiodOYRZzn+PQyEuiGu3LF/YpNVya
-         xC6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rtsnu8VD33EKMaZf3cpQ8efCBZxp+xhAKR5JoGpX5Eo=;
-        b=W1g80D/zyjinI6P/btPGn+/126jk137LYS/0U0fWkQ7mxnpdXmdLgYnKaYqLJZJL81
-         /1f01fdmBDxaBi13RiAkg+YgC7hocmmnYrEwdLPzCrdDrrY1sqgbstDp6KaMqzQ8XemT
-         C9MnbITUYhsUutuS8HC82oQzDbQW0vFPFcKAaUTEEef1GRsxgbP5uM6oYjoAmvSoTm0z
-         D01qJYcVojN0sKFLfIa3RN6hUnqyoq63ywe0HsRS98x//YTWD5S5RxY7atSWvEe795E5
-         V9AOXzws+ebumWJAxrmEIwdsBj5tnU6mcne/MoLA3HS1elxDRxRDbju0EKAy/TZ3WHlC
-         aneA==
-X-Gm-Message-State: AOAM532f4G/e2F7h5Jr08mn3a9Cg2HU0JcRv/w7GEGxO7e/KWeG8N+v7
-        BqzRZPxWGZbKjlvXUfE34rQ2t9NpY0op
-X-Google-Smtp-Source: ABdhPJwUAHDHJd41dGZtRGQ/ranfWCHDBM1qzYWPFiEQHKE+umUBbxrpcg2Kbl/SsPWdegV92WZ1kg==
-X-Received: by 2002:a63:185b:: with SMTP id 27mr9809644pgy.164.1624626231083;
-        Fri, 25 Jun 2021 06:03:51 -0700 (PDT)
-Received: from thinkpad ([2409:4072:600b:2a0:ed5d:53e7:c64e:1bac])
-        by smtp.gmail.com with ESMTPSA id e4sm5903958pfa.29.2021.06.25.06.03.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 06:03:50 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 18:33:43 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org,
-        stable@vger.kernel.org, Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: Re: [PATCH 06/10] bus: mhi: core: Set BHI and BHIe pointers to NULL
- in clean-up
-Message-ID: <20210625130343.GA13833@thinkpad>
-References: <20210625123355.11578-1-manivannan.sadhasivam@linaro.org>
- <20210625123355.11578-7-manivannan.sadhasivam@linaro.org>
- <YNXOYkj9TWZgYAG3@kroah.com>
+        id S231585AbhFYNKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 09:10:51 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41218 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231405AbhFYNKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 09:10:49 -0400
+IronPort-SDR: qRkwrRss2th95lxgt9XcPMw1Z2ly7BriQYfCpa9LX1jZcC1EmrbOggQ/nQKPAEP8ZvTUtvvF6X
+ caG0DEAkWo0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="194959000"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="194959000"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:08:27 -0700
+IronPort-SDR: s6RkTRgaDA+cJvb6/2gklVNWp93vUMlbVjufSQGHUDSChyDrbbRi/SHht3j7xptkEZg4Fhgj7x
+ AihtYKa5qM1g==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="453809539"
+Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 06:08:24 -0700
+Date:   Fri, 25 Jun 2021 21:08:21 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 09/54] KVM: x86/mmu: Unconditionally zap unsync SPs when
+ creating >4k SP at GFN
+Message-ID: <20210625130821.eo7q25kish4fhg24@linux.intel.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-10-seanjc@google.com>
+ <20210625095106.mvex6n23lsnnsowe@linux.intel.com>
+ <bb6885fa-4ad3-8da4-8d8e-ebfee30ad159@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNXOYkj9TWZgYAG3@kroah.com>
+In-Reply-To: <bb6885fa-4ad3-8da4-8d8e-ebfee30ad159@redhat.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 02:38:58PM +0200, Greg KH wrote:
-> On Fri, Jun 25, 2021 at 06:03:51PM +0530, Manivannan Sadhasivam wrote:
-> > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > 
-> > Set the BHI and BHIe pointers to NULL as part of clean-up. This
-> > makes sure that stale pointers are not accessed after powering
-> > MHI down.
-> > 
-> > Cc: stable@vger.kernel.org
+On Fri, Jun 25, 2021 at 12:26:10PM +0200, Paolo Bonzini wrote:
+> On 25/06/21 11:51, Yu Zhang wrote:
+> > While reading the sync pages code, I just realized that patch
+> > https://lkml.org/lkml/2021/2/9/212 has not be merged in upstream(
+> > though it is irrelevant to this one). May I ask the reason? Thanks!
 > 
-> Why is this needed for stable, but patch 5/10 is not?
-> 
+> I hadn't noticed it, thanks for reminding me.
 
-Shoot! This one relies on 5/10 and fixes a corner case where the BHI/BHIe
-pointers might be used after MHI powerdown. But this requires backporting
-the patches 5-10 cleanly (a series).
+It's just a cleanup patch. And I forgot it too.:) Thanks!
 
-So I guess the stable tag should be removed for this patch. We will test this
-series on stable kernels (on how far) and make sure this doesn't break anything.
-Then we can share the commit IDs to be backported with details?
-
-Thanks,
-Mani 
-
-> And what commit does this fix?  How far back should it go?
-> 
-> And is this really fixing anything?
-> 
-> thanks,
-> 
-> greg k-h
+B.R.
+Yu
