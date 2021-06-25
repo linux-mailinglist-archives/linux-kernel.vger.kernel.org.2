@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A603B3FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DB03B3FB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhFYItB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
+        id S230404AbhFYIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:50:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:56702 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhFYIs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:48:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C89E6141C;
-        Fri, 25 Jun 2021 08:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624610798;
-        bh=k0YWqkCUy3RGtdCsOBfK8gvBJN3ud9zj7lvL3kFNjAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VDR5ci+oNRMJ4uzMyayoa0PvasYVgTmfXR2pSWETboH7V7+cS51AASr0Z6aR92gAN
-         MTCp5Vjd4rERsvOesewcd8MV1yCzn/AvJJJpTCuRHy90L1OJRHkBwrL6/BuYj1ivLq
-         ol2b4fBev5kO1MLHZLiBIdcNpQuP8WWv5vbblAdA=
-Date:   Fri, 25 Jun 2021 10:46:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
-Subject: Re: [PATCH v10 13/16] arm64: Advertise CPUs capable of running
- 32-bit applications in sysfs
-Message-ID: <YNWX64TIVkGyNsbs@kroah.com>
-References: <20210623173848.318-1-will@kernel.org>
- <20210623173848.318-14-will@kernel.org>
+        id S229839AbhFYIuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:50:02 -0400
+IronPort-SDR: hiWmSReGk0SA1O0BBSQNvcuBMuX0o4Mp/EYvu1Uers/bXko7qqa20zilmuA2y9N7mZE0DDJFeq
+ YPy2djOUqrjQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10025"; a="204625928"
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="204625928"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 01:47:41 -0700
+IronPort-SDR: 4x8bWtAhRzajnMb31YCDA9o2+hWWzAt5mwBRz6uvcgk8xiHeMPty+Qna7pDzV5x9UKegZ4+20z
+ TyG5hWVZmU/w==
+X-IronPort-AV: E=Sophos;i="5.83,298,1616482800"; 
+   d="scan'208";a="642574659"
+Received: from junyuton-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.170.209])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 01:47:38 -0700
+Date:   Fri, 25 Jun 2021 16:47:36 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 05/54] Revert "KVM: x86/mmu: Drop
+ kvm_mmu_extended_role.cr4_la57 hack"
+Message-ID: <20210625084644.ort4oojvd27oy4ca@linux.intel.com>
+References: <20210622175739.3610207-1-seanjc@google.com>
+ <20210622175739.3610207-6-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623173848.318-14-will@kernel.org>
+In-Reply-To: <20210622175739.3610207-6-seanjc@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 06:38:45PM +0100, Will Deacon wrote:
-> Since 32-bit applications will be killed if they are caught trying to
-> execute on a 64-bit-only CPU in a mismatched system, advertise the set
-> of 32-bit capable CPUs to userspace in sysfs.
+On Tue, Jun 22, 2021 at 10:56:50AM -0700, Sean Christopherson wrote:
+> Restore CR4.LA57 to the mmu_role to fix an amusing edge case with nested
+> virtualization.  When KVM (L0) is using TDP, CR4.LA57 is not reflected in
+> mmu_role.base.level because that tracks the shadow root level, i.e. TDP
+> level.  Normally, this is not an issue because LA57 can't be toggled
+> while long mode is active, i.e. the guest has to first disable paging,
+> then toggle LA57, then re-enable paging, thus ensuring an MMU
+> reinitialization.
 > 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
+> But if L1 is crafty, it can load a new CR4 on VM-Exit and toggle LA57
+> without having to bounce through an unpaged section.  L1 can also load a
+
+May I ask how this is done by the guest? Thanks!
+
+> new CR3 on exit, i.e. it doesn't even need to play crazy paging games, a
+> single entry PML5 is sufficient.  Such shenanigans are only problematic
+> if L0 and L1 use TDP, otherwise L1 and L2 share an MMU that gets
+> reinitialized on nested VM-Enter/VM-Exit due to mmu_role.base.guest_mode.
+> 
+> Note, in the L2 case with nested TDP, even though L1 can switch between
+> L2s with different LA57 settings, thus bypassing the paging requirement,
+> in that case KVM's nested_mmu will track LA57 in base.level.
+> 
+> This reverts commit 8053f924cad30bf9f9a24e02b6c8ddfabf5202ea.
+> 
+> Fixes: 8053f924cad3 ("KVM: x86/mmu: Drop kvm_mmu_extended_role.cr4_la57 hack")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  .../ABI/testing/sysfs-devices-system-cpu      |  9 +++++++++
->  arch/arm64/kernel/cpufeature.c                | 19 +++++++++++++++++++
->  2 files changed, 28 insertions(+)
+>  arch/x86/include/asm/kvm_host.h | 1 +
+>  arch/x86/kvm/mmu/mmu.c          | 1 +
+>  2 files changed, 2 insertions(+)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> index fe13baa53c59..899377b2715a 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> @@ -494,6 +494,15 @@ Description:	AArch64 CPU registers
->  		'identification' directory exposes the CPU ID registers for
->  		identifying model and revision of the CPU.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index e11d64aa0bcd..916e0f89fdfc 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -320,6 +320,7 @@ union kvm_mmu_extended_role {
+>  		unsigned int cr4_pke:1;
+>  		unsigned int cr4_smap:1;
+>  		unsigned int cr4_smep:1;
+> +		unsigned int cr4_la57:1;
+>  		unsigned int maxphyaddr:6;
+>  	};
+>  };
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 0db12f461c9d..5024318dec45 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4537,6 +4537,7 @@ static union kvm_mmu_extended_role kvm_calc_mmu_role_ext(struct kvm_vcpu *vcpu)
+>  	ext.cr4_smap = !!kvm_read_cr4_bits(vcpu, X86_CR4_SMAP);
+>  	ext.cr4_pse = !!is_pse(vcpu);
+>  	ext.cr4_pke = !!kvm_read_cr4_bits(vcpu, X86_CR4_PKE);
+> +	ext.cr4_la57 = !!kvm_read_cr4_bits(vcpu, X86_CR4_LA57);
+>  	ext.maxphyaddr = cpuid_maxphyaddr(vcpu);
 >  
-> +What:		/sys/devices/system/cpu/aarch32_el0
-> +Date:		May 2021
-> +Contact:	Linux ARM Kernel Mailing list <linux-arm-kernel@lists.infradead.org>
-> +Description:	Identifies the subset of CPUs in the system that can execute
-> +		AArch32 (32-bit ARM) applications. If present, the same format as
-> +		/sys/devices/system/cpu/{offline,online,possible,present} is used.
-> +		If absent, then all or none of the CPUs can execute AArch32
-> +		applications and execve() will behave accordingly.
-> +
->  What:		/sys/devices/system/cpu/cpu#/cpu_capacity
->  Date:		December 2016
->  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 2f9fe57ead97..23eaa7f06f76 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -67,6 +67,7 @@
->  #include <linux/crash_dump.h>
->  #include <linux/sort.h>
->  #include <linux/stop_machine.h>
-> +#include <linux/sysfs.h>
->  #include <linux/types.h>
->  #include <linux/minmax.h>
->  #include <linux/mm.h>
-> @@ -1319,6 +1320,24 @@ const struct cpumask *system_32bit_el0_cpumask(void)
->  	return cpu_possible_mask;
->  }
->  
-> +static ssize_t aarch32_el0_show(struct device *dev,
-> +				struct device_attribute *attr, char *buf)
-> +{
-> +	const struct cpumask *mask = system_32bit_el0_cpumask();
-> +
-> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(mask));
-> +}
-> +static const DEVICE_ATTR_RO(aarch32_el0);
+>  	ext.valid = 1;
+> -- 
+> 2.32.0.288.g62a8d224e6-goog
+> 
 
-I just realized that we have a problem with this type of representation
-overflowing PAGE_SIZE on larger systems.  There is ongoing work to fix
-this up but that requires converting these to binary sysfs files, which
-is a pain to preserve the original format here.
-
-Yes, for now you will be fine on these arm32 systems, but in the future
-this will have to be changed.  Because of that, should you just make
-this an individual cpu attribute (one file per cpu) and not a single
-file that lists all cpus?
-
-what tool is going to read this and why can't they just pick it up from
-the individual cpu files instead?
-
-thanks,
-
-greg k-h
+B.R.
+Yu
