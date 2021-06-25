@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABED3B4ADA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5513B4ADD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFYXW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhFYXW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:22:26 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC175C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:20:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id bv12-20020a17090af18cb029016fb18e04cfso1155364pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 16:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WW8u/s/RwN9LA/+V7EDlUcg5hd+g4HfKjzv3HZqNazI=;
-        b=XCmBVfN1F8v5/kQ+C5gaJ57Hc4hCPmBNddwkH7ybxfw05KXFtpn/pWo7h5i51+ovdp
-         QDhkgAqpIuvEXC/ha/LBYeLHDnd8lDTe7f05fxFel6VjagTVnJQ3UzKxFiDaZYrIlIzW
-         StzYLS6bqmqkSionlUJVOxWtJEizjyHFAlyyc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WW8u/s/RwN9LA/+V7EDlUcg5hd+g4HfKjzv3HZqNazI=;
-        b=hcOBpISQYSlCAWupyLLkBsP2PnIQHs18faACWCcXdNeuLmp9tsNet+LYh6jbRJ53Wo
-         pBdHdQFJARnrKiMDqYtYa+NKFv11Jbu/8CdzO66fQMJu5dg25UFVD9FgAD4vyqkYbIMf
-         Ah74QOXK3o65Lw3ENcvPUhsN+ZwTs1tjFxb7a7DPYL4W8xbxDIXmQUjhcj3ksIVEaw4r
-         zfPCb25w6tJ5NusPD6Ine8d5GGEdX1bFe2nH0OGkiqq/mfPYUifsbVZsoFRGlCS5rJJM
-         2zfEDXn0GSsg9KXCJfleAw9bmzp0SfvJeBFHbwo3MJOLw2McdI4tIRGnWblBuJPT0o8K
-         BDCQ==
-X-Gm-Message-State: AOAM5321/iyGYhDd20m91N0wmy0w5Rb/Ljfjc+8Eskjdd1/gDTs9lilc
-        mkg5UR0+Vt2M25gJXxy4QVRKjw==
-X-Google-Smtp-Source: ABdhPJxWeDUCoSLRK9FE/s31h1zNNeTdYapRWfF+gc13a8LbRk/gK4Ju1R1BU4tOcNkwRazh8HB3DQ==
-X-Received: by 2002:a17:90a:9308:: with SMTP id p8mr13750390pjo.119.1624663203356;
-        Fri, 25 Jun 2021 16:20:03 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
-        by smtp.gmail.com with UTF8SMTPSA id x27sm699132pgl.74.2021.06.25.16.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 16:20:02 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 16:20:00 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 1/9] dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS
- support
-Message-ID: <YNZkoMIFJXOlSI6t@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-2-git-send-email-sibis@codeaurora.org>
- <YNYOkmja0kfuzLpF@google.com>
- <ca7ca4df465f50c6db03a4642102c636@codeaurora.org>
+        id S229922AbhFYXYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhFYXYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:24:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F21906194B;
+        Fri, 25 Jun 2021 23:21:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624663306;
+        bh=E8jAfVUJB6TzVURJo+kpSr0AUCgn6UTEIehIezltKdU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=p8Xjhy+4yQgeG5YlTRv92TZvPhnNOzHG2MJCQuVZRpNwQ+DDA/Q0y6wDeuJxoEQ8n
+         cxW/x8FrAO+mY7p6UPi+7MJPLrp/g7DIPIGovOSvdC/FL1vSEj67QrmU8mNC+HHLYL
+         iU5Vdx0yn2Cvbh1yZzXJYB5Gt4dvz0vK+F/rGlJ+31OQ43Aq+yBLbDYegJzPS2U+xS
+         Iv2Stau90rBjDJm3DUkHTjhNhJfQHUpBtNlrsbAfOs7QCSV1lhU7pR0a+8zA38OYYx
+         L/t15ESoWoQgppBiEEEQ5R1QnUc2YSJmoGgXJFUhSNdGHSZcRj44bWm8iBxMfClcID
+         Srp4xigOXk3Gg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ca7ca4df465f50c6db03a4642102c636@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210624121633.22179-2-rajan.vaja@xilinx.com>
+References: <20210624121633.22179-1-rajan.vaja@xilinx.com> <20210624121633.22179-2-rajan.vaja@xilinx.com>
+Subject: Re: [PATCH v5 1/4] clk: zynqmp: Use firmware specific common clock flags
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>
+To:     Rajan Vaja <rajan.vaja@xilinx.com>, kristo@kernel.org,
+        lee.jones@linaro.org, michal.simek@xilinx.com,
+        mturquette@baylibre.com, quanyang.wang@windriver.com
+Date:   Fri, 25 Jun 2021 16:21:43 -0700
+Message-ID: <162466330370.3259633.11293469583164120084@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 10:58:45PM +0530, Sibi Sankar wrote:
-> On 2021-06-25 22:42, Matthias Kaehlcke wrote:
-> > On Fri, Jun 25, 2021 at 01:17:30AM +0530, Sibi Sankar wrote:
-> > > Add MPSS PAS support for SC7280 SoCs.
-> > > 
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > 
-> > On which tree is this series based? I guess it must be the remoteproc
-> > tree
-> > since the conversion of the binding to YAML isn't in Linus' tree yet,
-> > however the patch doesn't apply cleanly against remoteproc/for-next:
-> > 
-> >   patching file
-> > Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-> >   Hunk #2 succeeded at 144 (offset -4 lines).
-> >   Hunk #3 succeeded at 285 (offset -4 lines).
-> >   Hunk #4 succeeded at 416 with fuzz 2 (offset 23 lines).
-> >   Hunk #5 succeeded at 492 (offset 25 lines).
-> >   Hunk #6 FAILED at 485.
-> 
-> https://patchwork.kernel.org/project/linux-arm-msm/cover/1624560727-6870-1-git-send-email-sibis@codeaurora.org/
-> 
-> sry for wasting your time I missed
-> mentioning that it was dependent on
-> ^^ series.
+Quoting Rajan Vaja (2021-06-24 05:16:30)
+> diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
+> index db8d0d7161ce..af06a195ec46 100644
+> --- a/drivers/clk/zynqmp/clkc.c
+> +++ b/drivers/clk/zynqmp/clkc.c
+> @@ -271,6 +271,34 @@ static int zynqmp_pm_clock_get_topology(u32 clock_id=
+, u32 index,
+>         return ret;
+>  }
+> =20
+> +unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag)
+> +{
+> +       unsigned long ccf_flag =3D 0;
+> +
+> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_GATE)
+> +               ccf_flag |=3D CLK_SET_RATE_GATE;
+> +       if (zynqmp_flag & ZYNQMP_CLK_SET_PARENT_GATE)
+> +               ccf_flag |=3D CLK_SET_PARENT_GATE;
+> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_PARENT)
+> +               ccf_flag |=3D CLK_SET_RATE_PARENT;
+> +       if (zynqmp_flag & ZYNQMP_CLK_IGNORE_UNUSED)
+> +               ccf_flag |=3D CLK_IGNORE_UNUSED;
+> +       if (zynqmp_flag & ZYNQMP_CLK_GET_RATE_NOCACHE)
+> +               ccf_flag |=3D CLK_GET_RATE_NOCACHE;
 
-Ah, thanks!
+Does the firmware really use all these flags? Ideally we get rid of the
+above two.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_NO_REPARENT)
+> +               ccf_flag |=3D CLK_SET_RATE_NO_REPARENT;
+> +       if (zynqmp_flag & ZYNQMP_CLK_GET_ACCURACY_NOCACHE)
+> +               ccf_flag |=3D CLK_GET_ACCURACY_NOCACHE;
+> +       if (zynqmp_flag & ZYNQMP_CLK_RECALC_NEW_RATES)
+> +               ccf_flag |=3D CLK_RECALC_NEW_RATES;
+
+And this one.
+
+> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_UNGATE)
+> +               ccf_flag |=3D CLK_SET_RATE_UNGATE;
+> +       if (zynqmp_flag & ZYNQMP_CLK_IS_CRITICAL)
+> +               ccf_flag |=3D CLK_IS_CRITICAL;
+
+And this one.
+
+I worry that supporting all these flags will mean we can never get rid
+of them. And we currently don't support setting critical via DT, which
+is essentially another firmware interface like this one.
+
+> +
+> +       return ccf_flag;
+> +}
+> +
+>  /**
+>   * zynqmp_clk_register_fixed_factor() - Register fixed factor with the
+>   *                                     clock framework
