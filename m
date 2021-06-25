@@ -2,122 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC643B3C5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330B33B3C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 07:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhFYFwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 01:52:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7082 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhFYFwt (ORCPT
+        id S233117AbhFYFzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 01:55:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhFYFzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 01:52:49 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15P5j6eH118498;
-        Fri, 25 Jun 2021 01:50:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=HxbJJArdxQqEJfa3XAkD4jiouEa0fm+K5xZwxjTLTTo=;
- b=Bw/p3P0n5m5WCpOnT0mtTDEiD2HS5iIldUE81bp6zIJySph70ciyJT7MvexR/IuFZpds
- 7e/TW30J8jM+i5EkgxXfv8Id9x2jqZ6wWOydiF5wO73LUU9GHPHm2R1PHskwcErtTNLl
- Dqquu7NscS7IFwjkTMAKWi/kvELaBsz5nhlltoLIdJKT236nx1Jlr70Io3cSyhHW8wYf
- q5yPsVtTVhhyGawja0vgvSClFKSt6RngJ19XjsrKpjQI2HMrEXLMz6CF9VeTfqz1adW9
- UsSgogEPopaIW0Sqy3SyuHr24UN33KkIY3RiCfpcqgElHiyM2F+qcPafke+0mSXtB5iW eg== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39d98s84my-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 01:50:18 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15P5oFD1015646;
-        Fri, 25 Jun 2021 05:50:15 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3997uhhkaf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Jun 2021 05:50:15 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15P5oD4M32375074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Jun 2021 05:50:13 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1FBBA11C050;
-        Fri, 25 Jun 2021 05:50:13 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96E7D11C064;
-        Fri, 25 Jun 2021 05:50:11 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.85.119.88])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 25 Jun 2021 05:50:11 +0000 (GMT)
-Date:   Fri, 25 Jun 2021 11:20:09 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     linux-next@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
- linux-next-20210623 during secondary CPUs bringup
-Message-ID: <YNVukVCgPjCksagq@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <YNSq3UQTjm6HWELA@in.ibm.com>
- <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
+        Fri, 25 Jun 2021 01:55:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624600404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=42YjOqbIy9DlhDO/iMrmfgYXOpw7YyaWJVvHtjTwroY=;
+        b=iJY0flUQF+LTRn5fh9KHDToYf3l4eIuts7pXkWpOtYbVXzoxfu0Z0bcRsgUiIEqVjAIaZZ
+        RaRzreDpHwf5+1sH6sF1QeybBIGMGGyG3pHZFGYFl7fd78k+PH1hur3fPwRj7ukJKGEuwy
+        4M+4BxX+SJW4s/OhDi844X8krTvZFaw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-Q3FSaUNPMO6TZY4Lid6WIQ-1; Fri, 25 Jun 2021 01:53:20 -0400
+X-MC-Unique: Q3FSaUNPMO6TZY4Lid6WIQ-1
+Received: by mail-wm1-f71.google.com with SMTP id k16-20020a7bc3100000b02901d849b41038so3730229wmj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 22:53:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=42YjOqbIy9DlhDO/iMrmfgYXOpw7YyaWJVvHtjTwroY=;
+        b=Kzzjv4ZCViBPst7noQ6sueUbRAJuK+0Rt77j7DCtKf7EwySh3G/fCpO9hzzhMvacxE
+         UUnmV/djt+ogujbx5uanRTI1mRKyhvX4xIIIMhe3cqCUnDXQVAeqDhdar4taFxjFoYzw
+         qWrWEmCLIQjtQ8yk0PXCh7Ew0y9IF4Oilq77TjlbigcEXwkYRybVHmPG4xMy6Jo0wXiL
+         eMEOP5xexGNPuJX8uIUkODcH705MI3Kl+fmSOtJ13jreG+Yi044HVDmOLEinTvXUm6gT
+         qZ6D3NghwhTqRQTAjJWIjQlneI2uQ+vReI6t8Oc9BxPwJ+zb5REOQabSDxvpgvvyTlAY
+         HGpQ==
+X-Gm-Message-State: AOAM533rBbvtlBXhocQbKhyPlu3MbHEbVM0L6Ur7PE4d9o5rCTPkSMJc
+        H6MiCyp1f44sBuN4cOMb8DM+D5fIxsXmYbh4ssPzjj3TNHzsaxAUHuQyu1pYBVZtt2n+/f0CXlF
+        OF3Rh8kNt2JII8U6Pyzmrmrm1
+X-Received: by 2002:a05:600c:4145:: with SMTP id h5mr8281435wmm.108.1624600398993;
+        Thu, 24 Jun 2021 22:53:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcUHFPpvQ43FOWnrf0yQ88HiSNzzAPe6FNjsxlny7a3arjXm7gb+2d0KpRQeI2D2XiGqHyMg==
+X-Received: by 2002:a05:600c:4145:: with SMTP id h5mr8281417wmm.108.1624600398838;
+        Thu, 24 Jun 2021 22:53:18 -0700 (PDT)
+Received: from redhat.com ([77.124.79.210])
+        by smtp.gmail.com with ESMTPSA id x18sm5070450wrw.19.2021.06.24.22.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 22:53:18 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 01:53:15 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        alexander.duyck@gmail.com, david@redhat.com,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
+Subject: Re: [PATCH v4 2/4] mm/page_reporting: Export reporting order as
+ module parameter
+Message-ID: <20210625014928-mutt-send-email-mst@kernel.org>
+References: <20210625014710.42954-1-gshan@redhat.com>
+ <20210625014710.42954-3-gshan@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fego09511Jl2BHF_EjJlLB_hSs1T0pDr
-X-Proofpoint-GUID: fego09511Jl2BHF_EjJlLB_hSs1T0pDr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-25_01:2021-06-24,2021-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
- bulkscore=0 adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106250030
+In-Reply-To: <20210625014710.42954-3-gshan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
-> * Bharata B Rao <bharata@linux.ibm.com> [2021-06-24 21:25:09]:
+On Fri, Jun 25, 2021 at 09:47:08AM +0800, Gavin Shan wrote:
+> The macro PAGE_REPORTING_MIN_ORDER is defined as the page reporting
+> threshold. It can't be adjusted at runtime.
 > 
-> > A PowerPC KVM guest gets the following BUG message when booting
-> > linux-next-20210623:
-> > 
-> > smp: Bringing up secondary CPUs ...
-> > BUG: scheduling while atomic: swapper/1/0/0x00000000
-> > no locks held by swapper/1/0.
-> > Modules linked in:
-> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-rc7-next-20210623
-> > Call Trace:
-> > [c00000000ae5bc20] [c000000000badc64] dump_stack_lvl+0x98/0xe0 (unreliable)
-> > [c00000000ae5bc60] [c000000000210200] __schedule_bug+0xb0/0xe0
-> > [c00000000ae5bcd0] [c000000001609e28] __schedule+0x1788/0x1c70
-> > [c00000000ae5be20] [c00000000160a8cc] schedule_idle+0x3c/0x70
-> > [c00000000ae5be50] [c00000000022984c] do_idle+0x2bc/0x420
-> > [c00000000ae5bf00] [c000000000229d88] cpu_startup_entry+0x38/0x40
-> > [c00000000ae5bf30] [c0000000000666c0] start_secondary+0x290/0x2a0
-> > [c00000000ae5bf90] [c00000000000be54] start_secondary_prolog+0x10/0x14
-> > 
-> > <The above repeats for all the secondary CPUs>
-> > 
-> > smp: Brought up 2 nodes, 16 CPUs
-> > numa: Node 0 CPUs: 0-7
-> > numa: Node 1 CPUs: 8-15
-> > 
-> > This seems to have started from next-20210521 and isn't seen on
-> > next-20210511.
-> > 
+> This introduces a variable (@page_reporting_order) to replace the
+> marcro (PAGE_REPORTING_MIN_ORDER). MAX_ORDER is assigned to it initially,
+> meaning the page reporting is disabled. It will be specified by driver
+> if valid one is provided. Otherwise, it will fall back to @pageblock_order.
+> It's also exported so that the page reporting order can be adjusted at
+> runtime.
 > 
-> Bharata,
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
+>  mm/page_reporting.c                             | 9 +++++++--
+>  mm/page_reporting.h                             | 5 ++---
+>  3 files changed, 15 insertions(+), 5 deletions(-)
 > 
-> I think the regression is due to Commit f1a0a376ca0c ("sched/core:
-> Initialize the idle task with preemption disabled")
-> 
-> Can you please try with the above commit reverted?
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index cb89dbdedc46..566c4b9af3cd 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3566,6 +3566,12 @@
+>  			off: turn off poisoning (default)
+>  			on: turn on poisoning
+>  
+> +	page_reporting.page_reporting_order=
+> +			[KNL] Minimal page reporting order
+> +			Format: <integer>
+> +			Adjust the minimal page reporting order. The page
+> +			reporting is disabled when it exceeds (MAX_ORDER-1).
 
-Yes, reverting that commit helps.
+Which the admin knows how? Run grep in the kernel source?
 
-Regards,
-Bharata.
+> +
+>  	panic=		[KNL] Kernel behaviour on panic: delay <timeout>
+>  			timeout > 0: seconds before rebooting
+>  			timeout = 0: wait forever
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index df9c5054e1b4..34bf4d26c2c4 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -4,12 +4,17 @@
+>  #include <linux/page_reporting.h>
+>  #include <linux/gfp.h>
+>  #include <linux/export.h>
+> +#include <linux/module.h>
+>  #include <linux/delay.h>
+>  #include <linux/scatterlist.h>
+>  
+>  #include "page_reporting.h"
+>  #include "internal.h"
+>  
+> +unsigned int page_reporting_order = MAX_ORDER;
+> +module_param(page_reporting_order, uint, 0644);
+> +MODULE_PARM_DESC(page_reporting_order, "Set page reporting order");
+> +
+>  #define PAGE_REPORTING_DELAY	(2 * HZ)
+>  static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
+>  
+> @@ -229,7 +234,7 @@ page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+>  
+>  	/* Generate minimum watermark to be able to guarantee progress */
+>  	watermark = low_wmark_pages(zone) +
+> -		    (PAGE_REPORTING_CAPACITY << PAGE_REPORTING_MIN_ORDER);
+> +		    (PAGE_REPORTING_CAPACITY << page_reporting_order);
+
+
+Looks like this makes it easy to trigger undefined behaviour. Just use
+any value > 31.
+
+>  
+>  	/*
+>  	 * Cancel request if insufficient free memory or if we failed
+> @@ -239,7 +244,7 @@ page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+>  		return err;
+>  
+>  	/* Process each free list starting from lowest order/mt */
+> -	for (order = PAGE_REPORTING_MIN_ORDER; order < MAX_ORDER; order++) {
+> +	for (order = page_reporting_order; order < MAX_ORDER; order++) {
+>  		for (mt = 0; mt < MIGRATE_TYPES; mt++) {
+>  			/* We do not pull pages from the isolate free list */
+>  			if (is_migrate_isolate(mt))
+> diff --git a/mm/page_reporting.h b/mm/page_reporting.h
+> index 2c385dd4ddbd..c51dbc228b94 100644
+> --- a/mm/page_reporting.h
+> +++ b/mm/page_reporting.h
+> @@ -10,10 +10,9 @@
+>  #include <linux/pgtable.h>
+>  #include <linux/scatterlist.h>
+>  
+> -#define PAGE_REPORTING_MIN_ORDER	pageblock_order
+> -
+>  #ifdef CONFIG_PAGE_REPORTING
+>  DECLARE_STATIC_KEY_FALSE(page_reporting_enabled);
+> +extern unsigned int page_reporting_order;
+>  void __page_reporting_notify(void);
+>  
+>  static inline bool page_reported(struct page *page)
+> @@ -38,7 +37,7 @@ static inline void page_reporting_notify_free(unsigned int order)
+>  		return;
+>  
+>  	/* Determine if we have crossed reporting threshold */
+> -	if (order < PAGE_REPORTING_MIN_ORDER)
+> +	if (order < page_reporting_order)
+>  		return;
+>  
+>  	/* This will add a few cycles, but should be called infrequently */
+> -- 
+> 2.23.0
+
