@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1775A3B3D56
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823903B3D61
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFYHal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        id S229774AbhFYHch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhFYHak (ORCPT
+        with ESMTP id S229721AbhFYHce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:30:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A036C061574;
-        Fri, 25 Jun 2021 00:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5NOt14/R44u0IlgyCS4cWDsu+ALJWOxhITZR4eZIO04=; b=mbmpQJtIGPMRrIGs53GWr7Cg4k
-        hU39jO9r4qRRBj9MAEIo15s/NNq2xWQpbqpoJqw26Hw/81AMfVIqZ0MaTrig4GIKpGYEgDu35LjpK
-        DKQR4icxmN6osxi72wAD1lDAQnNaqcFljxKRANiK+SL9e62PiT6KpF6dyjtsn7VEB9UrVuz4ico3Z
-        pw+9iPXbn38iSJoIpE5AJXH3P0U8i2/U9/rRI+37YuJhtnj8XWFAAeF1ZcNVmlRs++B8G+e/plX40
-        262JorqFmnQolqCavRCQwWemTpNZSt75mrvVmIYSNQmW4XlXa6rIwjw+WeEO1aRBRbgXDTinZV8h8
-        8TUaMCUA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwgFv-00BVV0-A4; Fri, 25 Jun 2021 07:28:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 774AF300252;
-        Fri, 25 Jun 2021 09:28:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 33509200B393D; Fri, 25 Jun 2021 09:28:09 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 09:28:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Bharata B Rao <bharata@linux.ibm.com>, linux-next@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: PowerPC guest getting "BUG: scheduling while atomic" on
- linux-next-20210623 during secondary CPUs bringup
-Message-ID: <YNWFiZii+MINhUC3@hirez.programming.kicks-ass.net>
-References: <YNSq3UQTjm6HWELA@in.ibm.com>
- <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
+        Fri, 25 Jun 2021 03:32:34 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5DDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:30:14 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id g192so7343933pfb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dk863fuzW21r4G77h5O77SvX4KOoOky/K7FqkqXXvqA=;
+        b=P+hZ4H0VeB859TjMuIVl1zKuXnANOsqkQ+jKS7xhIpN7i4b0Eb5zgSUiqK8s82mHsc
+         Dk6IjeAJemBp4GB/cZ+Hg62qc6XvUMp5iueM82lUygukZIVJjPkL+WDvrvDpbMtSzlGt
+         gkaThWphg3pcmhDZ+DFvpu4IBoACoSOFULZmTLTeV/V2BrrCmMYdNagVd4DT4cbSCX/c
+         M0/or4/1OaSJ9zrJilpLZuROTTV6m18Cp1O1Zvd576AsaI+bAiuLUcvHXwrig0trTXjV
+         Q78rpBJyTLbo8r5AMKdWIrym0Nz9UI43nizDjm4yRdvCzERC4ISIG0EmDzcBHnyA1in5
+         1BPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dk863fuzW21r4G77h5O77SvX4KOoOky/K7FqkqXXvqA=;
+        b=JPNXLgByN8gJL7P7CUaJcL/JkOl3RcveBLNbn6rqzwk/lk6+aZHGeb7UytudiXV631
+         vFper9xbl04GTuuIUHjMuwIFcW/tmXld6COU8Uoq1YG4kVq5oSUgryl5xlxuplkRJ/EW
+         77Ty9D3iuXGVJYG3fcl343PglaGF2hMjsCE+QOQMH1WAzV+ViIlVvwRtXijeY2mNcrkt
+         GNO3kW8w8+0Q2CYol1CdegywYC0y98vcGukYOpu4ya9GiaIoDi15MBqvk7K+aGyF/ZaH
+         /5LbOLwDxws3zGFa8cLVdY/Z+uk7wQCBxrBG9rY8A4x2J7PR9elIPhiVGfYjffZsPn/y
+         x++w==
+X-Gm-Message-State: AOAM533TlxTXkr9yaSup6skywJi8602ieDMzCPFR/zkv9K1rm1zyjF3N
+        lEh1tK1V/Gf2+dNSy2qata0hIVzhMBDOBuTZrzWdiA==
+X-Google-Smtp-Source: ABdhPJwojrxOtYNSZ/h1aOkE1Huj/+abO15E/b7QA85zSXAzjcAkkCH60ACB4mUEEjEqbTh1wmgYQkcYr9+uWTYnxi4=
+X-Received: by 2002:a65:63ce:: with SMTP id n14mr8327870pgv.273.1624606213877;
+ Fri, 25 Jun 2021 00:30:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625054608.fmwt7lxuhp7inkjx@linux.vnet.ibm.com>
+References: <20210624123930.1769093-1-linmiaohe@huawei.com>
+ <20210624123930.1769093-3-linmiaohe@huawei.com> <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
+ <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
+In-Reply-To: <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 25 Jun 2021 15:29:37 +0800
+Message-ID: <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
+Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
+ atomic ops in zs_pool_dec_isolated()
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, ngupta@vflare.org,
+        senozhatsky@chromium.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:16:08AM +0530, Srikar Dronamraju wrote:
-> * Bharata B Rao <bharata@linux.ibm.com> [2021-06-24 21:25:09]:
-> 
-> > A PowerPC KVM guest gets the following BUG message when booting
-> > linux-next-20210623:
-> > 
-> > smp: Bringing up secondary CPUs ...
-> > BUG: scheduling while atomic: swapper/1/0/0x00000000
+On Fri, Jun 25, 2021 at 2:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> On 2021/6/25 13:01, Muchun Song wrote:
+> > On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+> >>
+> >> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
+> >> atomic_long_read() == 0. Use it to make code more succinct.
+> >
+> > Actually, they are not equal. atomic_long_dec_and_test implies a
+> > full memory barrier around it but atomic_long_dec and atomic_long_read
+> > don't.
+> >
+>
+> Many thanks for comment. They are indeed not completely equal as you said.
+> What I mean is they can do the same things we want in this specified context.
+> Thanks again.
 
-'funny', your preempt_count is actually too low. The check here is for
-preempt_count() == DISABLE_OFFSET (aka. 1 when PREEMPT=y), but you have
-0.
+I don't think so. Using individual operations can eliminate memory barriers.
+We will pay for the barrier if we use atomic_long_dec_and_test here.
 
-> > no locks held by swapper/1/0.
-> > Modules linked in:
-> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-rc7-next-20210623
-> > Call Trace:
-> > [c00000000ae5bc20] [c000000000badc64] dump_stack_lvl+0x98/0xe0 (unreliable)
-> > [c00000000ae5bc60] [c000000000210200] __schedule_bug+0xb0/0xe0
-> > [c00000000ae5bcd0] [c000000001609e28] __schedule+0x1788/0x1c70
-> > [c00000000ae5be20] [c00000000160a8cc] schedule_idle+0x3c/0x70
-> > [c00000000ae5be50] [c00000000022984c] do_idle+0x2bc/0x420
-> > [c00000000ae5bf00] [c000000000229d88] cpu_startup_entry+0x38/0x40
-> > [c00000000ae5bf30] [c0000000000666c0] start_secondary+0x290/0x2a0
-> > [c00000000ae5bf90] [c00000000000be54] start_secondary_prolog+0x10/0x14
-> > 
-> > <The above repeats for all the secondary CPUs>
-> > 
-> > smp: Brought up 2 nodes, 16 CPUs
-> > numa: Node 0 CPUs: 0-7
-> > numa: Node 1 CPUs: 8-15
-> > 
-> > This seems to have started from next-20210521 and isn't seen on
-> > next-20210511.
-> > 
-> 
-> Bharata,
-> 
-> I think the regression is due to Commit f1a0a376ca0c ("sched/core:
-> Initialize the idle task with preemption disabled")
-
-So that extra preempt_disable() that got removed would've incremented it
-to 1 and then things would've been fine.
-
-Except.. Valentin changed things such that preempt_count() should've
-been inittialized to 1, instead of 0, but for some raisin that didn't
-stick.. what gives.
-
-So we have init_idle(p) -> init_idle_preempt_count(p) ->
-task_thread_info(p)->preempt_count = PREEMPT_DISABLED;
-
-But somehow, by the time you're running start_secondary(), that's gotten
-to be 0 again. Does DEBUG_PREEMPT give more clues?
+>
+> > That RMW operations that have a return value is equal to the following.
+> >
+> > smp_mb__before_atomic()
+> > non-RMW operations or RMW operations that have no return value
+> > smp_mb__after_atomic()
+> >
+> > Thanks.
+> >
+> >>
+> >> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >> ---
+> >>  mm/zsmalloc.c | 3 +--
+> >>  1 file changed, 1 insertion(+), 2 deletions(-)
+> >>
+> >> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> >> index 1476289b619f..0b4b23740d78 100644
+> >> --- a/mm/zsmalloc.c
+> >> +++ b/mm/zsmalloc.c
+> >> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
+> >>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+> >>  {
+> >>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+> >> -       atomic_long_dec(&pool->isolated_pages);
+> >>         /*
+> >>          * There's no possibility of racing, since wait_for_isolated_drain()
+> >>          * checks the isolated count under &class->lock after enqueuing
+> >>          * on migration_wait.
+> >>          */
+> >> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+> >> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
+> >>                 wake_up_all(&pool->migration_wait);
+> >>  }
+> >>
+> >> --
+> >> 2.23.0
+> >>
+> > .
+> >
+>
