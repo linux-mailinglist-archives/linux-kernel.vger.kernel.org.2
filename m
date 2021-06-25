@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAF43B3E4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231743B3E4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhFYISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhFYISA (ORCPT
+        id S229900AbhFYIRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:17:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:23671 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229748AbhFYIRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:18:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D15C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 01:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rm+JBREWSoPp+eGQlwLQzs0H9esWidtlooHK2hgns4w=; b=XldmmK2DLpgAF4FpYtgEttHm7+
-        YRsBDRNgJe4edQWG2iUNJh30O0fy019MerrqhWk7VWSMl7DpV4mG2VbStMkjbW6dvl+sDr0BpqVT3
-        D8Mpkjuh24vGupzRwG/sAahuJ9x3IYBvBX4V6gVbmypY/7zPK/1CA6v9aiu0Kv7J/FCdfrABkOiK0
-        EdqY8P82TLKTiEV9iHmz0mSR1MYHJglAzwMmMK8v7DWxs8Ab7rKqpavtm6cWV6uy39/OIP7vufCs7
-        vHe/sCjOcXpCBgmPlE+TOdSfjWxnbQZtGh7mPlc5j1AwymXm5eARnH6me+TS0zG1QDMRqzUFglug8
-        3557h4QA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwgzG-00HS0n-3c; Fri, 25 Jun 2021 08:14:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2682300252;
-        Fri, 25 Jun 2021 10:14:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5EC2020171CE8; Fri, 25 Jun 2021 10:14:53 +0200 (CEST)
-Date:   Fri, 25 Jun 2021 10:14:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
-Message-ID: <YNWQfZfMNyEsiKTb@hirez.programming.kicks-ass.net>
-References: <20210608231132.32012-1-joshdon@google.com>
+        Fri, 25 Jun 2021 04:17:36 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-42-I7doZoJKNZWecWq3x0a12w-1; Fri, 25 Jun 2021 09:15:10 +0100
+X-MC-Unique: I7doZoJKNZWecWq3x0a12w-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 25 Jun
+ 2021 09:15:10 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Fri, 25 Jun 2021 09:15:10 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jens Axboe' <axboe@kernel.dk>,
+        Olivier Langlois <olivier@trillion01.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4] io_uring: reduce latency by reissueing the operation
+Thread-Topic: [PATCH v4] io_uring: reduce latency by reissueing the operation
+Thread-Index: AQHXaVtl2q0tMJQtUkiOWyGROZvBO6skYO6g
+Date:   Fri, 25 Jun 2021 08:15:10 +0000
+Message-ID: <c85e28df251d4c66a511dc157b795b13@AcuMS.aculab.com>
+References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+ <16c91f57-9b6f-8837-94af-f096d697f5fb@kernel.dk>
+In-Reply-To: <16c91f57-9b6f-8837-94af-f096d697f5fb@kernel.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608231132.32012-1-joshdon@google.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 04:11:32PM -0700, Josh Don wrote:
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8ab69d01dab4..a82f5d3b85d3 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -10234,6 +10234,18 @@ static int cpu_weight_nice_write_s64(struct cgroup_subsys_state *css,
->  
->  	return sched_group_set_shares(css_tg(css), scale_load(weight));
->  }
-> +
-> +static s64 cpu_idle_read_s64(struct cgroup_subsys_state *css,
-> +			       struct cftype *cft)
-> +{
-> +	return css_tg(css)->idle;
-> +}
-> +
-> +static int cpu_idle_write_s64(struct cgroup_subsys_state *css,
-> +				struct cftype *cft, s64 idle)
-> +{
-> +	return sched_group_set_idle(css_tg(css), idle);
-> +}
->  #endif
->  
->  static void __maybe_unused cpu_period_quota_print(struct seq_file *sf,
-> @@ -10306,6 +10318,12 @@ static struct cftype cpu_files[] = {
->  		.read_s64 = cpu_weight_nice_read_s64,
->  		.write_s64 = cpu_weight_nice_write_s64,
->  	},
-> +	{
-> +		.name = "idle",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.read_s64 = cpu_idle_read_s64,
-> +		.write_s64 = cpu_idle_write_s64,
-> +	},
->  #endif
->  #ifdef CONFIG_CFS_BANDWIDTH
->  	{
-
-You should probably also make cpu_weight_*write_?64() return -EINVAL when
-IDLE. Similar to how SCHED_IDLE doesn't do nice.
+RnJvbTogSmVucyBBeGJvZQ0KPiBTZW50OiAyNSBKdW5lIDIwMjEgMDE6NDUNCj4gDQo+IE9uIDYv
+MjIvMjEgNjoxNyBBTSwgT2xpdmllciBMYW5nbG9pcyB3cm90ZToNCj4gPiBJdCBpcyBxdWl0ZSBm
+cmVxdWVudCB0aGF0IHdoZW4gYW4gb3BlcmF0aW9uIGZhaWxzIGFuZCByZXR1cm5zIEVBR0FJTiwN
+Cj4gPiB0aGUgZGF0YSBiZWNvbWVzIGF2YWlsYWJsZSBiZXR3ZWVuIHRoYXQgZmFpbHVyZSBhbmQg
+dGhlIGNhbGwgdG8NCj4gPiB2ZnNfcG9sbCgpIGRvbmUgYnkgaW9fYXJtX3BvbGxfaGFuZGxlcigp
+Lg0KPiA+DQo+ID4gRGV0ZWN0aW5nIHRoZSBzaXR1YXRpb24gYW5kIHJlaXNzdWluZyB0aGUgb3Bl
+cmF0aW9uIGlzIG11Y2ggZmFzdGVyDQo+ID4gdGhhbiBnb2luZyBhaGVhZCBhbmQgcHVzaCB0aGUg
+b3BlcmF0aW9uIHRvIHRoZSBpby13cS4NCj4gPg0KPiA+IFBlcmZvcm1hbmNlIGltcHJvdmVtZW50
+IHRlc3RpbmcgaGFzIGJlZW4gcGVyZm9ybWVkIHdpdGg6DQo+ID4gU2luZ2xlIHRocmVhZCwgMSBU
+Q1AgY29ubmVjdGlvbiByZWNlaXZpbmcgYSA1IE1icHMgc3RyZWFtLCBubyBzcXBvbGwuDQo+ID4N
+Cj4gPiA0IG1lYXN1cmVtZW50cyBoYXZlIGJlZW4gdGFrZW46DQo+ID4gMS4gVGhlIHRpbWUgaXQg
+dGFrZXMgdG8gcHJvY2VzcyBhIHJlYWQgcmVxdWVzdCB3aGVuIGRhdGEgaXMgYWxyZWFkeSBhdmFp
+bGFibGUNCj4gPiAyLiBUaGUgdGltZSBpdCB0YWtlcyB0byBwcm9jZXNzIGJ5IGNhbGxpbmcgdHdp
+Y2UgaW9faXNzdWVfc3FlKCkgYWZ0ZXIgdmZzX3BvbGwoKSBpbmRpY2F0ZWQgdGhhdCBkYXRhDQo+
+IHdhcyBhdmFpbGFibGUNCj4gPiAzLiBUaGUgdGltZSBpdCB0YWtlcyB0byBleGVjdXRlIGlvX3F1
+ZXVlX2FzeW5jX3dvcmsoKQ0KPiA+IDQuIFRoZSB0aW1lIGl0IHRha2VzIHRvIGNvbXBsZXRlIGEg
+cmVhZCByZXF1ZXN0IGFzeW5jaHJvbm91c2x5DQo+ID4NCj4gPiAyLjI1JSBvZiBhbGwgdGhlIHJl
+YWQgb3BlcmF0aW9ucyBkaWQgdXNlIHRoZSBuZXcgcGF0aC4NCg0KSG93IG11Y2ggc2xvd2VyIGlz
+IGl0IHdoZW4gdGhlIGRhdGEgdG8gY29tcGxldGUgdGhlIHJlYWQgaXNuJ3QNCmF2YWlsYWJsZT8N
+Cg0KSSBzdXNwZWN0IHRoZXJlIGFyZSBkaWZmZXJlbnQgd29ya2Zsb3dzIHdoZXJlIHRoYXQgaXMg
+YWxtb3N0DQphbHdheXMgdHJ1ZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
+YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
+LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
