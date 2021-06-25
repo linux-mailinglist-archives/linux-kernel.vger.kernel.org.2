@@ -2,245 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7FC3B3F5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0B93B3F69
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhFYIgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:36:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11095 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFYIgG (ORCPT
+        id S230073AbhFYIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:39:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229839AbhFYIjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:36:06 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB9Dx51skzZjdq;
-        Fri, 25 Jun 2021 16:30:41 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 25 Jun 2021 16:33:41 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 25 Jun
- 2021 16:33:41 +0800
-Subject: Re: [PATCH net-next v2 2/2] ptr_ring: make __ptr_ring_empty()
- checking more reliable
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <jasowang@redhat.com>,
-        <brouer@redhat.com>, <paulmck@kernel.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1624591136-6647-1-git-send-email-linyunsheng@huawei.com>
- <1624591136-6647-3-git-send-email-linyunsheng@huawei.com>
- <20210625022128-mutt-send-email-mst@kernel.org>
- <c6975b2d-2b4a-5b3f-418c-1a59607b9864@huawei.com>
- <20210625032508-mutt-send-email-mst@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <4ced872f-da7a-95a3-2ef1-c281dfb84425@huawei.com>
-Date:   Fri, 25 Jun 2021 16:33:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 25 Jun 2021 04:39:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624610219;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jiGTpqScPyn0OOpdftLJOFCY/HfTcmoXaeFMThRMK7I=;
+        b=IzzraJoCxwNFW/ACzBZf7FcaYAXzrwjljoWRTW9qAZzg9KchHLPwjP6vpgn+pRMhYVOBvM
+        nDXDj2YMmFX9ZrN1lbV6PKFFtxiV91awGglXdFQp7EZVgZzgmdcTD4LdSLDtrYFdvUerW3
+        H4xhMela17dbOjxPFsk/miirf8pSB1Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-fCPG14BiMzud5_W5JH6jiA-1; Fri, 25 Jun 2021 04:36:58 -0400
+X-MC-Unique: fCPG14BiMzud5_W5JH6jiA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23C48100C662;
+        Fri, 25 Jun 2021 08:36:57 +0000 (UTC)
+Received: from [10.64.54.233] (vpn2-54-233.bne.redhat.com [10.64.54.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 66BA960E3A;
+        Fri, 25 Jun 2021 08:36:50 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
+References: <20210625052338.4875-1-gshan@redhat.com>
+ <20210625070217.4ffmfe7nwlusbbjc@gator>
+ <20210625070656.j373hveemf5cdch4@gator>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
+Date:   Fri, 25 Jun 2021 18:36:48 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210625032508-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210625070656.j373hveemf5cdch4@gator>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/25 15:30, Michael S. Tsirkin wrote:
-> On Fri, Jun 25, 2021 at 03:21:33PM +0800, Yunsheng Lin wrote:
->> On 2021/6/25 14:32, Michael S. Tsirkin wrote:
->>> On Fri, Jun 25, 2021 at 11:18:56AM +0800, Yunsheng Lin wrote:
->>>> Currently r->queue[] is cleared after r->consumer_head is moved
->>>> forward, which makes the __ptr_ring_empty() checking called in
->>>> page_pool_refill_alloc_cache() unreliable if the checking is done
->>>> after the r->queue clearing and before the consumer_head moving
->>>> forward.
+On 6/25/21 5:06 PM, Andrew Jones wrote:
+> On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
+>> On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
+>>> The empty memory nodes, where no memory resides in, are allowed.
+>>> For these empty memory nodes, the 'len' of 'reg' property is zero.
+>>> The NUMA node IDs are still valid and parsed, but memory can be
+>>> added to them through hotplug afterwards. I finds difficulty to
+>>> get where it's properly documented.
 >>>
+>>> So lets add note to empty memory nodes in the NUMA binding doc.
 >>>
->>> Well the documentation for __ptr_ring_empty clearly states is
->>> is not guaranteed to be reliable.
+>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>> ---
+>>>   Documentation/devicetree/bindings/numa.txt | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+>>> index 21b35053ca5a..0fc882e44270 100644
+>>> --- a/Documentation/devicetree/bindings/numa.txt
+>>> +++ b/Documentation/devicetree/bindings/numa.txt
+>>> @@ -109,6 +109,10 @@ Example:
+>>>   Dual socket system consists of 2 boards connected through ccn bus and
+>>>   each board having one socket/soc of 8 cpus, memory and pci bus.
+>>>   
+>>> +Note that empty memory nodes, which no memory resides in, are allowed.
+>>> +The NUMA node IDs in these empty memory nodes are still valid, but
+>>> +memory can be added into them through hotplug afterwards.
 >>
->> Yes, this patch does not make __ptr_ring_empty() strictly reliable
->> without taking the r->consumer_lock, as the disscuission in [1].
+>> Please change the second sentence to:
 >>
->> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1622032173-11883-1-git-send-email-linyunsheng@huawei.com/#24207011
+>>    The NUMA node IDs in these empty memory nodes are still valid and
+>>    memory may be added into them through hotplug afterwards.
 >>
->>>
->>>  *
->>>  * NB: This is only safe to call if ring is never resized.
->>>  *
->>>  * However, if some other CPU consumes ring entries at the same time, the value
->>>  * returned is not guaranteed to be correct.
->>>  *
->>>  * In this case - to avoid incorrectly detecting the ring
->>>  * as empty - the CPU consuming the ring entries is responsible
->>>  * for either consuming all ring entries until the ring is empty,
->>>  * or synchronizing with some other CPU and causing it to
->>>  * re-test __ptr_ring_empty and/or consume the ring enteries
->>>  * after the synchronization point.
->>>  *
->>>
->>> Is it then the case that page_pool_refill_alloc_cache violates
->>> this requirement? How?
+>> But, this doesn't look like the right place for this paragraph. You're
+>> adding the paragraph to the example section, but the example doesn't have
+>> any empty memory nodes.
 >>
->> As my understanding:
->> page_pool_refill_alloc_cache() uses __ptr_ring_empty() to avoid
->> taking r->consumer_lock, when the above data race happens, it will
->> exit out and allocate page from the page allocator instead of reusing
->> the page in ptr_ring, which *may* not be happening if __ptr_ring_empty()
->> is more reliable.
+>> I think the paragraph should be added to section "2 - numa-node-id" and an
 > 
-> Question is how do we know it's more reliable?
-> It would be nice if we did actually made it more reliable,
-> as it is we are just shifting races around.
+> Or maybe even create a new section for it.
 > 
-> 
->>>
->>> It looks like you are trying to make the guarantee stronger and ensure
->>> no false positives.
->>>
->>> If yes please document this as such, update the comment so all
->>> code can be evaluated with the eye towards whether the new stronger
->>> guarantee is maintained. In particular I think I see at least one
->>> issue with this immediately.
->>>
->>>
->>>> Move the r->queue[] clearing after consumer_head moving forward
->>>> to make __ptr_ring_empty() checking more reliable.
->>>>
->>>> As a side effect of above change, a consumer_head checking is
->>>> avoided for the likely case, and it has noticeable performance
->>>> improvement when it is tested using the ptr_ring_test selftest
->>>> added in the previous patch.
->>>>
->>>> Using "taskset -c 1 ./ptr_ring_test -s 1000 -m 0 -N 100000000"
->>>> to test the case of single thread doing both the enqueuing and
->>>> dequeuing:
->>>>
->>>>  arch     unpatched           patched       delta
->>>> arm64      4648 ms            4464 ms       +3.9%
->>>>  X86       2562 ms            2401 ms       +6.2%
->>>>
->>>> Using "taskset -c 1-2 ./ptr_ring_test -s 1000 -m 1 -N 100000000"
->>>> to test the case of one thread doing enqueuing and another thread
->>>> doing dequeuing concurrently, also known as single-producer/single-
->>>> consumer:
->>>>
->>>>  arch      unpatched             patched         delta
->>>> arm64   3624 ms + 3624 ms   3462 ms + 3462 ms    +4.4%
->>>>  x86    2758 ms + 2758 ms   2547 ms + 2547 ms    +7.6%
->>>>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> ---
->>>> V2: Add performance data.
->>>> ---
->>>>  include/linux/ptr_ring.h | 25 ++++++++++++++++---------
->>>>  1 file changed, 16 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
->>>> index 808f9d3..db9c282 100644
->>>> --- a/include/linux/ptr_ring.h
->>>> +++ b/include/linux/ptr_ring.h
->>>> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->>>>  	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
->>>>  	 * to work correctly.
->>>>  	 */
->>>> -	int consumer_head = r->consumer_head;
->>>> -	int head = consumer_head++;
->>>> +	int consumer_head = r->consumer_head + 1;
->>>>  
->>>>  	/* Once we have processed enough entries invalidate them in
->>>>  	 * the ring all at once so producer can reuse their space in the ring.
->>>> @@ -271,19 +270,27 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->>>>  	 */
->>>>  	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
->>>>  		     consumer_head >= r->size)) {
->>>> +		int tail = r->consumer_tail;
->>>> +
->>>> +		if (unlikely(consumer_head >= r->size)) {
->>>> +			r->consumer_tail = 0;
->>>> +			WRITE_ONCE(r->consumer_head, 0);
->>>> +		} else {
->>>> +			r->consumer_tail = consumer_head;
->>>> +			WRITE_ONCE(r->consumer_head, consumer_head);
->>>> +		}
->>>> +
->>>>  		/* Zero out entries in the reverse order: this way we touch the
->>>>  		 * cache line that producer might currently be reading the last;
->>>>  		 * producer won't make progress and touch other cache lines
->>>>  		 * besides the first one until we write out all entries.
->>>>  		 */
->>>> -		while (likely(head >= r->consumer_tail))
->>>> -			r->queue[head--] = NULL;
->>>> -		r->consumer_tail = consumer_head;
->>>> -	}
->>>> -	if (unlikely(consumer_head >= r->size)) {
->>>> -		consumer_head = 0;
->>>> -		r->consumer_tail = 0;
->>>> +		while (likely(--consumer_head >= tail))
->>>> +			r->queue[consumer_head] = NULL;
->>>> +
->>>> +		return;
->>>
->>>
->>> So if now we need this to be reliable then
->>> we also need smp_wmb before writing r->queue[consumer_head],
->>> there could be other gotchas.
+>> example empty memory node should be provided. Also, the commit message
+>> talks about the length of 'reg' being zero, which is an important
+>> distinction which should also be documented.
 >>
->> Yes, This patch does not make it strictly reliable.
->> T think I could mention that in the commit log?
-> 
-> OK so it's not that it makes it more reliable - this patch simply makes
-> a possible false positive less likely while making  a false negative
-> more likely. Our assumption is that a false negative is cheaper then?
-> 
-> How do we know that it is?
-> 
-> And even if we prove the ptr_ring itself is faster now,
-> how do we know what affects callers in a better way a
-> false positive or a false negative?
-> 
-> I would rather we worked on actually making it reliable
-> e.g. if we can guarantee no false positives, that would be
-> a net win.
-I thought deeper about the case you mentioned above, it
-seems for the above to happen, the consumer_head need to
-be rolled back to zero and incremented to the point when
-caller of __ptr_ring_empty() is still *not* able to see the
-r->queue[] which has been set to NULL in __ptr_ring_discard_one().
 
-It seems smp_wmb() only need to be done once when consumer_head
-is rolled back to zero, and maybe that is enough to make sure the
-case you mentioned is fixed too?
+Drew, thanks for your comments. Yeah, it sounds sensible to create
+a new section for it and an example would be more helpful. Please
+check if below changes are fine to you. I probably need Randy's review
+again.
 
-And the smp_wmb() is only done once in a round of producing/
-consuming, so the performance impact should be minimized?(of
-course we need to test it too).
+I'm trying to avoid too many revisions for this sort of trivial patch,
+even though I already had. However, it's time frame for v5.14 and I'm
+pushing this to be merged during the cycle.
 
-> 
->>
->>>
->>>>  	}
->>>> +
->>>>  	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
->>>>  	WRITE_ONCE(r->consumer_head, consumer_head);
->>>>  }
->>>> -- 
->>>> 2.7.4
->>>
->>>
->>> .
->>>
-> 
-> 
-> .
-> 
+--- a/Documentation/devicetree/bindings/numa.txt
++++ b/Documentation/devicetree/bindings/numa.txt
+@@ -103,7 +103,65 @@ Example:
+  		};
+  
+  ==============================================================================
+-4 - Example dts
++4 - Empty memory node
++==============================================================================
++
++Empty memory nodes, which no memory resides in, are allowed. The 'length'
++field of 'reg' property is zero, but 'base-address' is dummy and invalid
++for these empty memory nodes. However, the NUMA node IDs and distance maps
++for them are still valid, but memory may be added into them through hotplug
++afterwards.
++
++Example:
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x80000000>;
++		numa-node-id = <0>;
++	};
++
++	memory@0x80000000 {
++		device_type = "memory";
++		reg = <0x0 0x80000000 0x0 0x80000000>;
++		numa-node-id = <1>;
++	};
++
++	/* Empty memory node */
++	memory@0x100000000 {
++		device_type = "memory";
++		reg = <0x1 0x0 0x0 0x0>;
++		numa-node-id = <2>;
++	};
++
++	/* Empty memory node */
++	memory@0x180000000 {
++		device_type = "memory";
++		reg = <0x1 0x80000000 0x0 0x0>;
++		numa-node-id = <3>;
++	};
++
++	distance-map {
++		compatible = "numa-distance-map-v1";
++		distance-matrix = <0 0  10>,
++				  <0 1  20>,
++				  <0 2  40>,
++				  <0 3  20>,
++				  <1 0  20>,
++				  <1 1  10>,
++				  <1 2  20>,
++				  <1 3  40>,
++				  <2 0  40>,
++				  <2 1  20>,
++				  <2 2  10>,
++				  <2 3  20>,
++				  <3 0  20>,
++				  <3 1  40>,
++				  <3 2  20>,
++				  <3 3  10>;
++	};
++
++==============================================================================
++5 - Example dts
+  ==============================================================================
+  
+  Dual socket system consists of 2 boards connected through ccn bus and
+
+
+Thanks,
+Gavin
+
 
