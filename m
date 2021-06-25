@@ -2,164 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E053B39EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BE13B39EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhFYAFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
+        id S232845AbhFYAKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhFYAFI (ORCPT
+        with ESMTP id S229521AbhFYAKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:05:08 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5856FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:02:48 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so7514474oth.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:02:48 -0700 (PDT)
+        Thu, 24 Jun 2021 20:10:22 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAE0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:01 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id u8so997167qvg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bF01hBVUbua6rxe/NO/VbUhjq8aqFR4Q3DHqf+MoijU=;
-        b=xBdo4W1x6y65z8YFSmxubuT+E3psR48/xCimbLK7uDOLU3KHBBLzWH5xaavRSecJZd
-         R/j9KGTjC8GNNcgvuzVPiSCfotO776mQPgJgtjapj184dy0pDrugPgn1izFcJbzlZppZ
-         dA14h0IusDnBpW3C6sJD9ZdXy3QBC+Nme8GVfB+Ov/LOAUAXMRMMQGyUaewouK5JgQJP
-         Wpy8isLvNL0GaAdBm2KbgHM6qtO5Glp8T+k+WuEmiRi7NNYG4B3BfIwN77GzSI/NXAsl
-         dPTzFA+P0T6mxIW/ZsRkgtMAfz9qw0XDRTww/w9af1sXbJO27WEQBc/mnEytrO76kD28
-         s6EQ==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LU8t8n/y6U/YMGuulzehFo/mO+G15t7XeGsTRxbtGWk=;
+        b=Z0PV5x5OIqcWh17O23MwOZQnaQCa3qNCvXdlnhcWU/sFC1LZNKA7VkdQa3rp7wuqow
+         ItwfhxYIT2bNlTdoK5Gn7Bz1X/9cn0sX0xOkol6G6klTMem1uoJCWpuzRT1tl/T5LpdV
+         Ee47iqRP/4GuIWxO0GjePXqlSaGhhpbIFVgb0wCtiojCPxq0HCNot396Bq87EwE3oM+9
+         MKKFcZI2q0IJJfZkn0HXOu41tx7t0YdhdBZOUmfrVnjB+KUuyQYsL/3vNiiEltW3s9+V
+         eenjcXzU6pi+tfgP83Q15wJ7ziO0NXxALinGjtVzyAyQxFTRKomWgLd59ZPqi2sB6ogF
+         4lHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bF01hBVUbua6rxe/NO/VbUhjq8aqFR4Q3DHqf+MoijU=;
-        b=eNUz1qGatPGQSQox3fO0Z01o0oQr0ViQOMQrLW7Vi8+ApzJVscc27n4iBUQ45N4zoi
-         FgjczeRhsH0sQlkBOKDickillEH/MP6Id6EyyM1lY4WLEys9TdrqDQKz3ydIuRcYlOda
-         YdoG/I3IszRv+H6stEABsXCJ5I6cE4ugXvn8VpDlZI6wlc35RoFVdViMOAiCEs0Lw4Gc
-         MmxmrqJVkYKtaS/sAT67k/ALarJNqqXSkXwi+0/rM8xn5hDqezo9dl4C4fv2govNl8Wd
-         yj0cqkdimeeGhjj2NYX4LdXnSeSB37tOPPreBDl5knVUNrx06/u5k4bn1pZ/Zubu3Uva
-         yHIg==
-X-Gm-Message-State: AOAM530439UyV2FHSIxgF7KaIEPLLMhoxENHZ8D3lif2K7Ab1DeYrC8x
-        aRqjkFMd3H9aGuk+pn/QRvbpE6FfCRuWaA==
-X-Google-Smtp-Source: ABdhPJw4ScjEMbY6bXVtDZoUUUZod40SM3yRKVyull+VqTCNZWVHQPfWNBtQi2KKd49EoWSsJ4cQxA==
-X-Received: by 2002:a05:6830:88:: with SMTP id a8mr7197095oto.14.1624579367592;
-        Thu, 24 Jun 2021 17:02:47 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f12sm1011320ooh.38.2021.06.24.17.02.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LU8t8n/y6U/YMGuulzehFo/mO+G15t7XeGsTRxbtGWk=;
+        b=nswSKi2cOxK00aS4QN/lNYJ91AydxxuUXFwV4OTigrgj1JRrLhSchEduV/hbsmnneW
+         qBnzfCazOutRYQod955UkzsnIwwWLKJR4s3vxigQjRyLQeBZ+fQ5UpIwz5hkIcWBVAPm
+         URIuOT3VS1SYLK1Cm1X8YGecW4qDEgpQTF1Er+CHJJHcKCKqjc0pJ9T/dQc/CWCihz0P
+         UMDsKgh6jSeQvFxX0RfvX4glltRvXfU9gZOnTAyjzH7ybfc+vXYDzxJ8PE3uMcBt+i3W
+         r/vnpensfySg22h3usKBUu7UwrK4VVSRL3Fj2EyfsLoubi1RdCrXOzvI7kBHtqtjxUjF
+         bzGA==
+X-Gm-Message-State: AOAM5328KAdVva6w6CB8uV6EWHsrMR5c9jAhYy7crrYUuwmynodjuF/E
+        hdvDnUiDf3m8e7I3tfvmKwuTgw==
+X-Google-Smtp-Source: ABdhPJxkygGYfwIZm3iN298xnfG/dxxBbCoq4FUOYU+iYHuxkfiNrkZiCuMOqBoUVry/gq6QYtg8Qw==
+X-Received: by 2002:ad4:4852:: with SMTP id t18mr8372496qvy.33.1624579680330;
+        Thu, 24 Jun 2021 17:08:00 -0700 (PDT)
+Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
+        by smtp.gmail.com with ESMTPSA id m187sm3629014qkd.131.2021.06.24.17.07.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 17:02:47 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 19:02:44 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
-Message-ID: <YNUdJC1y8lWHg114@yoga>
-References: <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
- <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
- <YNEiUMBqGAx1zLVX@yoga>
- <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
- <YNFKpvhXyZbs8RE1@yoga>
- <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
- <YNFegmmCzk6JUTN+@yoga>
- <9aae3092-2e2b-9261-f4e7-864b873eb2d4@somainline.org>
- <YNT0HPOJEoJYipyE@yoga>
- <b0ed9294-e4e1-3185-d81f-63e6e8d45692@somainline.org>
+        Thu, 24 Jun 2021 17:07:59 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH 00/23] staging: rtl8188eu: remove include/rtw_debug.h
+Date:   Fri, 25 Jun 2021 01:07:33 +0100
+Message-Id: <20210625000756.6313-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0ed9294-e4e1-3185-d81f-63e6e8d45692@somainline.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Jun 17:59 CDT 2021, AngeloGioacchino Del Regno wrote:
+This patch series removes all RT_TRACE calls from the driver, and the
+associated macro from include/rtw_debug.h, as well as cleaning up the
+last few other parts of this header that are still used. It then removes
+the whole file, thereby cleaning up the driver's codebase substantially.
 
-> Il 24/06/21 23:07, Bjorn Andersson ha scritto:
-> > On Tue 22 Jun 09:36 CDT 2021, AngeloGioacchino Del Regno wrote:
-[..]
-> > > Hello Jassi, Bjorn
-> > > 
-> > > I've read the entire thread and I can't say that Jassi is entirely wrong
-> > > but I also agree with Bjorn on this matter.
-> > > 
-> > > This driver is here to "simply" manage the register offset in the APCS
-> > > IP, which is a pretty straightforward operation.
-> > > If you check in this driver, you will see that there's not much
-> > > duplication between the various qcom_apcs_ipc_data that we have for
-> > > all the different SoCs.
-> > > 
-> > > Checking further, we can effectively reduce the amount of compatibles
-> > > in this driver by simply removing some "duplicated" instances and in
-> > > particular:
-> > > ipq6018, ipq8074, msm8916, msm8994, msm8998, sdm660
-> > > 
-> > > and eventually replacing them with either of:
-> > > - 8bits_apcs_data    qcom,apcs-apps-global-8bit
-> > >                       qcom,apcs-kpss-global-8bit
-> > 
-> > I don't like those compatibles, simply because the binding is supposed
-> > to describe the hardware block, not the fact that Linux _currently_ only
-> > pokes this one register.
-> > 
-> 
-> Since you've immediately misunderstood my naming, yeah, that wouldn't be
-> the best thing to use as a compatible.
-> 
+Phillip Potter (23):
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    os_dep/ioctl_linux.c
+  staging: rtl8188eu: remove all RT_TRACE calls from os_dep/xmit_linux.c
+  staging: rtl8188eu: remove all RT_TRACE calls from os_dep/os_intfs.c
+  staging: rtl8188eu: remove all RT_TRACE calls from os_dep/mlme_linux.c
+  staging: rtl8188eu: remove all RT_TRACE calls from os_dep/recv_linux.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_security.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_sta_mgt.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_mlme_ext.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_mlme.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_led.c
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    core/rtw_wlan_util.c
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    core/rtw_ieee80211.c
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    core/rtw_ioctl_set.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_recv.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_pwrctrl.c
+  staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_xmit.c
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    hal/rtl8188eu_xmit.c
+  staging: rtl8188eu: remove all RT_TRACE calls from hal/hal_intf.c
+  staging: rtl8188eu: remove all RT_TRACE calls from
+    hal/rtl8188eu_recv.c
+  staging: rtl8188eu: remove RT_TRACE macro
+  staging: rtl8188eu: remove DRIVER_PREFIX preprocessor definition
+  staging: rtl8188eu: remove GlobalDebugLevel variable
+  staging: rtl8188eu: remove include/rtw_debug.h header
 
-Sorry, that was certainly not my intention.
+ .../staging/rtl8188eu/core/rtw_ieee80211.c    |  71 +-----
+ .../staging/rtl8188eu/core/rtw_ioctl_set.c    |  89 +-------
+ drivers/staging/rtl8188eu/core/rtw_led.c      |  17 +-
+ drivers/staging/rtl8188eu/core/rtw_mlme.c     | 133 ++---------
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c |  41 +---
+ drivers/staging/rtl8188eu/core/rtw_pwrctrl.c  |  27 +--
+ drivers/staging/rtl8188eu/core/rtw_recv.c     | 215 ++----------------
+ drivers/staging/rtl8188eu/core/rtw_security.c |  21 +-
+ drivers/staging/rtl8188eu/core/rtw_sta_mgt.c  |  21 +-
+ .../staging/rtl8188eu/core/rtw_wlan_util.c    |  27 +--
+ drivers/staging/rtl8188eu/core/rtw_xmit.c     | 101 +-------
+ drivers/staging/rtl8188eu/hal/hal_intf.c      |   3 -
+ drivers/staging/rtl8188eu/hal/odm.c           |   2 -
+ .../staging/rtl8188eu/hal/rtl8188eu_recv.c    |   2 -
+ .../staging/rtl8188eu/hal/rtl8188eu_xmit.c    |   9 -
+ drivers/staging/rtl8188eu/include/drv_types.h |   1 -
+ drivers/staging/rtl8188eu/include/rtw_debug.h |  70 ------
+ drivers/staging/rtl8188eu/include/rtw_mlme.h  |   2 -
+ .../staging/rtl8188eu/include/rtw_mlme_ext.h  |   4 +-
+ .../staging/rtl8188eu/os_dep/ioctl_linux.c    |  52 +----
+ drivers/staging/rtl8188eu/os_dep/mlme_linux.c |   4 -
+ drivers/staging/rtl8188eu/os_dep/os_intfs.c   |  43 +---
+ drivers/staging/rtl8188eu/os_dep/recv_linux.c |   8 +-
+ .../staging/rtl8188eu/os_dep/rtw_android.c    |   1 -
+ drivers/staging/rtl8188eu/os_dep/xmit_linux.c |  12 +-
+ 25 files changed, 69 insertions(+), 907 deletions(-)
+ delete mode 100644 drivers/staging/rtl8188eu/include/rtw_debug.h
 
-> > We could probably "qcom,apss-global" as a catch-all for at least sc7180,
-> > sc7280, sdm845, sm8150, sm8250 and sm8350.
-> > 
-> 
-> Doesn't look like a bad idea, but if we want to *enforce* writing also
-> the platform-specific compatible, I can see patch series going back
-> and forth and getting refused because this will not be really understood
-> by everyone, I think.
-> In this case, if writing the platform compatible is something mandatory,
-> the only way to really make sure to avoid losing time with reviews like
-> "[...] here you have to write also the platform compatible", is to just
-> keep the thing as it is.
-> 
+-- 
+2.31.1
 
-My understanding from the DT maintainers is that the dts would be
-checked by the schema, but I suspect that you're right in that we might
-have some back and forth on the DT binding, but I don't think that's a
-big deal.
-
-> > But look at 8996 and 8998, both named "something-hmss-something", with
-> > different register layout. And a quick glance seems to indicate that
-> > sdm660 isn't a hmss after all :/
-> > 
-> 
-> Starting from the fact that I don't clearly remember what-when-why of
-> my research done more than one year ago, I do remember that conclusion
-> was that, in this regard, SDM630/660 were "mostly the same" as MSM8998.
-> In any case, this is something that, at this point, is better get
-> verified, maybe.
-> 
-
-Yeah, I presume that someone with the documentation would need to go
-through each one of these and see what kind of grouping there might be.
-
-And I also presume that there might be cases where the CPU clocks has
-moved into the secure world, so that even though the hardware block is
-the same the presence of a in-kernel clock driver in the implementation
-might differ.
-
-
-But just to clarify, I find it annoying having to sprinkle compatibles
-all over the place every time I try to get a new board up. So I am not
-against us trying to figure this out.
-
-Regards,
-Bjorn
