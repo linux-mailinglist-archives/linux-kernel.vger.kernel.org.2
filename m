@@ -2,199 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A823B471B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16763B4720
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFYQBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:01:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56052 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229922AbhFYQBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:01:24 -0400
-IronPort-SDR: 8O0rm2mMnUcgOiUoTEmKHVIpEMgFKwSP0+NZuynJqmk78a5ALORAcUiOiGX9A47ppjxcehERLi
- 3BYxikoOc1LQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="194989788"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="194989788"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 08:58:21 -0700
-IronPort-SDR: we/+YVfX6jEoKyEbiTtdpQ/Sskj4AjvNF5dfqVAw5oLBvsEeDOfjEGrvqHCqtaPH31zlu+E686
- dihq8zWxoxnQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="640154377"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Jun 2021 08:58:20 -0700
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Fri, 25 Jun 2021 08:58:19 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Fri, 25 Jun 2021 08:58:19 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Fri, 25 Jun 2021 08:58:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HJsk7ukU7C9hHLvKpWII6/SrbRCwQj0uLMgYhNmlDWi5Pp3MoOzNAmDThhf3PLP788Q8A4/6j0f4LQ3reVcGNUfRNAyC8QQP+Z6KdHwvGOaiLxmnWPaBgWawsu284zFU+f3JVzvKTpnnqcP01uYr6WDpc9jK0AtbDqoTPAv9F+g3ltDu48l6zfeyACPDzeVw2Mi9bJeHa2bSi5qt+bcL4L3cXRU4wwkiV9syM47DUlJtCpXkXcVKrjagL2kahEEJ82JcnswINsmQ0nsbhCKujLRh/fWq+wPo3CFzFAoxuebk22vWXsE9vG7/VszaHCXRKA5OEdJQfxcAlbiYjM9wGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U4JQDvkJsAY8XeKNZugXw1WP7iBq3vHQmMhkK7To72c=;
- b=hIXAidj38IJNgaPDMMQc18XNOLF3Q7eah211vIqgbsckksoeoe2tiw6+TBFbR9XFDbljjSEM6vbkmMcMApGJQTVlNQEIEN5bN7dD24sSFSaZxQHTVlykGK6vdYHvepYj4k5ETcRk6Ge5RNhM1V9ABToYI8DLk2DxmjbwxwVmwJ/aYksb89SiTStB2ZXCDOEJsW8pXfFYIK5TPAmRXCDe5+wTg71f/SY0cuSuZhulYX5riVRzxjje61UElEzNELcEMBeqlDnfDAw7biaZbWTykzgHxdw3LYtnOdagOAei0iPH6OplO4jbJ9CUUo3P5mX8fHwi2cxg6mbyIRkI05llJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U4JQDvkJsAY8XeKNZugXw1WP7iBq3vHQmMhkK7To72c=;
- b=hTBCFQXoyED2kNoqqYWTISRtLw1wR738gbGvSGb6ewoJ+/cfc8RkmNkm6DLaGcV39ynSzwc4D5QrJSi6TD41nxJniKM70O8StsZ7Oz5hxd/U3itSo6gh5Zs3TXiu95ILOc8s7IFJXJvL4ny5K7XHwknE2APQno9WeanOnzmVJO0=
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com (2603:10b6:610:bb::5)
- by CH2PR11MB4344.namprd11.prod.outlook.com (2603:10b6:610:3a::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.23; Fri, 25 Jun
- 2021 15:58:18 +0000
-Received: from CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d52:3043:fef4:ebcd]) by CH0PR11MB5380.namprd11.prod.outlook.com
- ([fe80::d52:3043:fef4:ebcd%4]) with mapi id 15.20.4264.023; Fri, 25 Jun 2021
- 15:58:18 +0000
-From:   "Voon, Weifeng" <weifeng.voon@intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "Ling, Pei Lee" <pei.lee.ling@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "Jose Abreu" <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        "Wong, Vee Khee" <vee.khee.wong@intel.com>,
-        "Tan, Tee Min" <tee.min.tan@intel.com>,
-        "Sit, Michael Wei Hong" <michael.wei.hong.sit@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Thread-Topic: [PATCH net-next V1 3/4] net: stmmac: Reconfigure the PHY WOL
- settings in stmmac_resume()
-Thread-Index: AQHXZoJFBtZ0uXgSn0S7qboFjm+Joqseb0UAgALh+bCAAK/dgIAA5rbAgABIGwCAAagL0A==
-Date:   Fri, 25 Jun 2021 15:58:17 +0000
-Message-ID: <CH0PR11MB53806D16AF301F16A298C70C88069@CH0PR11MB5380.namprd11.prod.outlook.com>
-References: <20210621094536.387442-1-pei.lee.ling@intel.com>
- <20210621094536.387442-4-pei.lee.ling@intel.com> <YNCOqGCDgSOy/yTP@lunn.ch>
- <CH0PR11MB53806E2DC74B2B9BE8F84D7088089@CH0PR11MB5380.namprd11.prod.outlook.com>
- <YNONPZAfmdyBMoL5@lunn.ch>
- <CH0PR11MB538084AFEA548F4B453C624F88079@CH0PR11MB5380.namprd11.prod.outlook.com>
- <YNSLQpNsNhLkK8an@lunn.ch>
-In-Reply-To: <YNSLQpNsNhLkK8an@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [161.142.208.90]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ce1edfd9-d7df-49de-3164-08d937f20c84
-x-ms-traffictypediagnostic: CH2PR11MB4344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR11MB4344768627C51586938AB48788069@CH2PR11MB4344.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ojA+ja7aViic1Gq6xB9ddGEBKKdbjUoEsb5e8A8o6oJx4VJGkue/e0TLH/mh914t2YW+VirSApA6GUd8XtutJB6u6T3f3LyTQdguC3GCGU08UhEK0ZagMaB+eoIehk/GKtSIvX4lYzuR4V22/5diMZfMZPVg9r+NcVd4mUHKnSr5K0EB7Dytw8gwsJoTlKomavfytdKT+97oBTieNC8c3TYFtTdXWsdvOw5aLzC/7mbKP73K2H6gWV4FXqEG/Q735bxmOsQposgF2/MsGDCtxu7tF6fx2eGeXHwH1cO6tlnIGMyuUKh+E8WBV9AV04/8gWqRmIO9pH2BUpWEQf9I5CRN0xAvuvOEx59qdAyWrn29kk5hQjYVmRBXJI0mopZel8qNFYXePwsDpMSf3KSdbFE5AezUF5l/OEPxyXtOJ2sYnSPLXmOO6djHgYl+MTjnLi7Ryi71IcLY7QGGeSrqRzTOOCIy04PasThWTkKeVVUFkrmZPIstjWYcm1Vv07YykWMYhrvSmpGK/DC0UxyThgRByhZnNN68jlU5vu29BweDR26S/An7IKe6+3JWWGkKBQbrjBKW1feqAfv0iMI6KkHoAtVJEjuYfa6oeygwVDc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5380.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(396003)(39860400002)(136003)(6506007)(8676002)(71200400001)(83380400001)(86362001)(66446008)(64756008)(66556008)(66476007)(186003)(5660300002)(26005)(122000001)(7696005)(316002)(76116006)(54906003)(66946007)(8936002)(6916009)(9686003)(7416002)(38100700002)(4326008)(478600001)(55016002)(33656002)(2906002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jA5S6FSfvKIQU1RslB12DYfYW/whWfkQ/IWq5Z8CobEDPohlODVRGlCjp/Mm?=
- =?us-ascii?Q?sVokx6COn/dn0dCJAG5G2s1c/tfATFAj5v6RkOE/xGo3GA9VIktfRGLmb+ss?=
- =?us-ascii?Q?+z9s4vdG9UdCSZwaIRmENmCZ0EWShqxnrI2S9ffiik/gLsW9Z1/wGXrB0h52?=
- =?us-ascii?Q?8Gw9oazZbkO9NV9a11KL0gqjilRClTSrqV2eAnKw2LlE11AY2cX84FzJLLEv?=
- =?us-ascii?Q?suOGfW3QlLqYKNWybB6BYBn6Uvxqa+KYXOepK+QxbXU0oFFZIOF/+pldLVrH?=
- =?us-ascii?Q?GYPz+zNKe3FHusRObm9inBSjs8j14lDKY2VwzhwHoZ2L0sO8gPEUnHCBxtHT?=
- =?us-ascii?Q?g6gXC2jVH2Wa+6gpTmXPwA7hSiAnaMjhjrCFWsYGsOZ4RmkuY5zwnHKbNwhp?=
- =?us-ascii?Q?UIVXOFzIA3nafcKKXa8jojqf0Wr1AaF2rDgxUWvM63+bItREQkH/V54JQu4N?=
- =?us-ascii?Q?eN78kPv0F+/vj3NIVMyoZH6PDOiOfYt2eg3rLFC5PA94HuSFqhEWmQQ45md+?=
- =?us-ascii?Q?wFlBighh3ASNA6DCHpc0tItqxxItkxP3CKK+puKImogteO1gkyQrg93tUGVh?=
- =?us-ascii?Q?v3rLHzbHMnUFad9zBy0j0XJTetnUv193g2g5fdPBE120EZ1UY+riEXyYy2qw?=
- =?us-ascii?Q?naZXVtD4R1qLLx1baIDgfDMRiLVP0DrAG5EySGhcqFSDCcrzvAaH33hpJHuW?=
- =?us-ascii?Q?1d9CCgUg6Tw3Y5b1hfbGI6M5PnDa3ZGXOmd33/q8cpwILTx63q9HU6tUUq8c?=
- =?us-ascii?Q?bMpM2+BoiOMOV76If3h3ClKt+dMENVC6u/0uf85sKmmsJW+Fx4Vb8PmQiB/S?=
- =?us-ascii?Q?Trmn5+XT2Kp+fjnzITDKMDCxX++3+NOAICVPqDIwM3kTBIFGpF/DlObkJXIy?=
- =?us-ascii?Q?w/H80TOMDicEtrQySsTHxMg45hPT/5ew55huFTxKRBKEhbaBpm9p9YkybH/F?=
- =?us-ascii?Q?rI8LYm6MyyCgotgx5D6gCRO5udB2iwuMVBJ1okGOrxd+VUlGVdrtTLxJv9Hz?=
- =?us-ascii?Q?iyZmlQV4LYN4vcS5+ICiytUFrXanUYbYxo/mn24uxND8nTCtBDksQkk5ZJmJ?=
- =?us-ascii?Q?mBZFMUGCHAhGEor04hCNmzfRrf7AMXn27UHPLiYyewA4O+NACgLRGK7evsic?=
- =?us-ascii?Q?qgn8hN+0aZJpsv9KPkOiANqC6+dVO2bkgQ//i9Sdq0ZNxTsdANPWgLPHhWFq?=
- =?us-ascii?Q?LiLi6cQZK/nSvvK9ZZRzcz21illFdJlAzr2HMpwj+q9Ithk0pVbhtoEWXEfk?=
- =?us-ascii?Q?6XtJUokoNC/xCxeOZfKr8+8sY+xR6R6NB9TrAvuV8C/+EHhjuvq1YZBdAbRt?=
- =?us-ascii?Q?08uGORubmPmYiK3Ps8hPMJ6V?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230101AbhFYQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhFYQCi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:02:38 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D54C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:00:17 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id q16so2871884lfr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EvBgoVSYdUacoPuIYm7Otm8kYW0WxxqkXTPERoAOXsA=;
+        b=tWy3mGIYOacDsycsL9Xqx+V+wGrzXUaMHYEV5mxjUylDI1qZcE0lgbLZ+FS1D6yJ0+
+         ANrMQlRkO44nuBbcaS+7DgE2X7f3dfOD4bGWg1va/x91w8mv0VT2ez1rzKAZwGbl3LtP
+         jRdKLBHZsYhO9g4EidQGDKTjKOuvXcQlicbe19tE23bvynXXv17fpKZXx6Z4sotmIu4H
+         3JlVVzEyCktfy+UbZWY5ShRUJEga7vjDnCLX+biayN4ATmKfyQy/0HenREPG1rOXUZ6L
+         RTU+fBB4YZqsdHvbzqxBaxll6PYCK/cYz4tX+v0rBf8PrurgajBe86dUQZL+zpB31fyS
+         Vv7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EvBgoVSYdUacoPuIYm7Otm8kYW0WxxqkXTPERoAOXsA=;
+        b=XycrsGtXItq6nhTjunyxFWGRoR8mtKYwjdLNqu5wvAvQLlyeP/KxHT5oyz6O7u3EC+
+         iC2++5dHzfnz8lU5L1KLh0KaEUqn3PLHu974ffw43nPikJRD8ALkjzSmyDfoBMhEIhso
+         dMvXOeYtJyoUtzyigqwZs53qhgyWC0Ba/va4vCQbw/5RU9JG8c/bDlWShj0Z5I8n8PHM
+         XGpejrKRoORuQP4xz+bEoyzyPtVdMNzT6q9N2ONaiKTek19eUnKSSRCKnht5R+KJ/Q0i
+         Y8FVFct0bBs/JuAEDMfkFOOlAXDmNnsqh7Jt15S9TOjOrwdBTukEUgo4uv4TSgEoRj4F
+         lUng==
+X-Gm-Message-State: AOAM530myv/+bpGbmnOP+Yk6oTBTgtX1X1d8CIz06KrH6uQMKnCU29vb
+        oV3g491YqedZdTbjqwEr5pY=
+X-Google-Smtp-Source: ABdhPJxLsVzbMd+G5IHEV8Tryh7jEFlgbqmWOqfyLTLBOP8TIEcsoA7EdeBOL/HMbEByul/pEW+n7g==
+X-Received: by 2002:a05:6512:44b:: with SMTP id y11mr8556810lfk.84.1624636814445;
+        Fri, 25 Jun 2021 09:00:14 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id w29sm536138lfu.160.2021.06.25.09.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 09:00:13 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 25 Jun 2021 18:00:11 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
+Message-ID: <20210625160011.GA50201@pc638.lan>
+References: <20210622225030.478384-1-aquini@redhat.com>
+ <YNR4ZkwF+Bh11XMC@dhcp22.suse.cz>
+ <20210624142339.GA2267@pc638.lan>
+ <YNWY/IY+ftszkjM5@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5380.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce1edfd9-d7df-49de-3164-08d937f20c84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2021 15:58:18.0014
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: B2YIvP3/ni2WsArmBttox10vQvuhE4rkzj7Zh/6TE1Sc7dLEbwB1DUrfKVgaSiHG81CX/+AZNJpVv1udKxOyQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR11MB4344
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNWY/IY+ftszkjM5@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > No, the interrupt will not be discarded. If the PHY is in interrupt
-> > mode, the interrupt handler will triggers and ISR will clear the WOL
-> status bit.
-> > The condition here is when the PHY is in polling mode, the PHY driver
-> > does not have any other mechanism to clear the WOL interrupt status bit=
-.
-> > Hence, we need to go through the PHY set_wol() again.
->=20
-> I would say you have a broken setup. If you are explicitly using the
-> interrupt as a wakeup source, you need to be servicing the interrupt. You
-> cannot use polled mode.
-=20
-Sorry for the confusion. But I would like to clarify the I should use the
-term of "WOL event status" rather than "WOL interrupt status".=20
-For interrupt mode, clearing the "WOL interrupt status" register will auto
-clear the "WOL event status".
-For polling mode, the phy driver can manually clear the "WOL event status" =
-by
-setting 1 to "Clear WOL Status" bit. =20
+On Fri, Jun 25, 2021 at 10:51:08AM +0200, Michal Hocko wrote:
+> On Thu 24-06-21 16:23:39, Uladzislau Rezki wrote:
+> > On Thu, Jun 24, 2021 at 02:21:21PM +0200, Michal Hocko wrote:
+> > > On Tue 22-06-21 18:50:30, Rafael Aquini wrote:
+> > > > On non-preemptible kernel builds the watchdog can complain
+> > > > about soft lockups when vfree() is called against large
+> > > > vmalloc areas:
+> > > > 
+> > > > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
+> > > > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
+> > > > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
+> > > > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
+> > > > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
+> > > > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
+> > > > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
+> > > > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
+> > > > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
+> > > > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
+> > > > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
+> > > > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
+> > > > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
+> > > > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
+> > > > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
+> > > > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > [  238.903397] PKRU: 55555554
+> > > > [  238.906417] Call Trace:
+> > > > [  238.909149]  __vunmap+0x17c/0x220
+> > > > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
+> > > > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
+> > > > [  238.923746]  do_syscall_64+0x39/0x80
+> > > > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > 
+> > > > Like in other range zapping routines that iterate over
+> > > > a large list, lets just add cond_resched() within __vunmap()'s
+> > > > page-releasing loop in order to avoid the watchdog splats.
+> > > 
+> > > cond_resched makes a lot of sense. We do not want vmalloc to be visible
+> > > the userspace (e.g. by stalling it) so all time consuming operations
+> > > should yield regularly whenever possible. I would expect that any
+> > > susbsystem which needs huge vmalloc areas would have it for the whole
+> > > boot life time so such large vfrees should be really rare.
+> > > 
+> > There is at least one more place with potentially similar issue. I see that
+> > the bulk allocator disables irqs during obtaining pages and filling an array.
+> > 
+> > So i suspect if we request a huge size to allocate over vmalloc same soft
+> > lockup should occur. For example 10G alloactions simultaneously on different
+> > CPUs.
+> 
+> I haven't payed a close attention to the changes regarding the bulk
+> allocator but my high level understanding is that it only allocates from
+> from pcp lists so the amount of allocatable pages is quite limited.
 
+I am able to trigger it. To simulate it i run 10 threads to allocate and vfree
+~1GB(262144 pages) of vmalloced memory at the same time: 
 
-I would like to rephase the commit message to make things clear:
+<snip>
+[   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
+[   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
+[   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
+[   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
+[   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
+[   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
+[   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
+[   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
+[   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
+[   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
+[   62.512641] Call Trace:
+[   62.512646]  __vmalloc_node_range+0x11c/0x2d0
+[   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
+[   62.512654]  __vmalloc_node+0x4b/0x70
+[   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
+[   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
+[   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
+[   62.512668]  kthread+0x11a/0x140
+[   62.512671]  ? set_kthread_struct+0x40/0x40
+[   62.512672]  ret_from_fork+0x22/0x30
+<snip>
 
-After PHY received a magic packet, the PHY WOL event will be
-triggered. At the same time, the "Magic Packet Match Detected" bit
-is set. In order for the PHY WOL event to be triggered again, the=20
-WOL event status of "Magic Packet Match Detected" bit needs to be=20
-cleared. When the PHY is in polling mode, the WOL event status needs
-to be manually cleared.
+As for how much a bulk allocator can allocate, it is quite a lot. In my case i see
+that 262144 pages can be obtained per one bulk call, if pcp-list is empty it is
+refilled.
 
-Ethtool settings will remain with WOL enabled after a S3/S4
-suspend resume cycle as expected. Hence, the driver should
-reconfigure the PHY settings to reenable/disable WOL
-depending on the ethtool WOL settings in the MAC resume flow.
-The PHY set_wol flow would clear the WOL event status.
+From the other hand allocating 1GB on 10 CPUs simultaneously is not common test
+case in real world.
 
-Weifeng
+Not sure if we can do something with it and if it is worth to fix. At least we can
+invoke a bulk allocator several times doing it per specific batch, for example 50
+pages.
 
+Any thoughts about it?
 
-
+--
+Vlad Rezki
