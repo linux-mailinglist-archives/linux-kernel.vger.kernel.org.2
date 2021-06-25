@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5513B4ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485543B4AE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhFYXYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:24:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45990 "EHLO mail.kernel.org"
+        id S229944AbhFYXZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:25:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhFYXYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:24:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F21906194B;
-        Fri, 25 Jun 2021 23:21:45 +0000 (UTC)
+        id S229826AbhFYXZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:25:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8248261949;
+        Fri, 25 Jun 2021 23:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624663306;
-        bh=E8jAfVUJB6TzVURJo+kpSr0AUCgn6UTEIehIezltKdU=;
+        s=k20201202; t=1624663402;
+        bh=AjDRQs5MIIcedMMdECS/CdvchLXuzlzMyKZFaSAcvcE=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=p8Xjhy+4yQgeG5YlTRv92TZvPhnNOzHG2MJCQuVZRpNwQ+DDA/Q0y6wDeuJxoEQ8n
-         cxW/x8FrAO+mY7p6UPi+7MJPLrp/g7DIPIGovOSvdC/FL1vSEj67QrmU8mNC+HHLYL
-         iU5Vdx0yn2Cvbh1yZzXJYB5Gt4dvz0vK+F/rGlJ+31OQ43Aq+yBLbDYegJzPS2U+xS
-         Iv2Stau90rBjDJm3DUkHTjhNhJfQHUpBtNlrsbAfOs7QCSV1lhU7pR0a+8zA38OYYx
-         L/t15ESoWoQgppBiEEEQ5R1QnUc2YSJmoGgXJFUhSNdGHSZcRj44bWm8iBxMfClcID
-         Srp4xigOXk3Gg==
+        b=NomHh4tafrBF/py5lKSiIQB/MSFhJwidAHa9kEOy5dRBoBFA0L4zg5UwWl1rYlipo
+         eAazffRBAPfYibw+Kka9RaaTSaMV2aB7gv83aU/rbyX/QDv6pBBHTMQFZfrry+kbFz
+         zyS0mCHLdp2C1+xBS1uCpP/7vIULFaVUlC6Czdr/ZooZKUEYPbVCXyezSdxYbRaQwn
+         TevaoEierZzgMCP5GmrY7dzDQdRce282NJElLKDumpu8aPXOPBKWS1/VL/m5FHgo5b
+         Fn59m0aPXjnmPr/Hg/wTgS/JTkpLq8BClruaO0ANZS1OYyA+xhCjcV27EeqKe72wDU
+         sREkYG7eMROWQ==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210624121633.22179-2-rajan.vaja@xilinx.com>
-References: <20210624121633.22179-1-rajan.vaja@xilinx.com> <20210624121633.22179-2-rajan.vaja@xilinx.com>
-Subject: Re: [PATCH v5 1/4] clk: zynqmp: Use firmware specific common clock flags
+In-Reply-To: <YNRzFOIKtUZfnsu7@orome.fritz.box>
+References: <20210624084737.42336-1-aardelean@deviqon.com> <YNRzFOIKtUZfnsu7@orome.fritz.box>
+Subject: Re: [PATCH] clk: tegra: clk-tegra124-dfll-fcpu: don't use devm functions for regulator
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>
-To:     Rajan Vaja <rajan.vaja@xilinx.com>, kristo@kernel.org,
-        lee.jones@linaro.org, michal.simek@xilinx.com,
-        mturquette@baylibre.com, quanyang.wang@windriver.com
-Date:   Fri, 25 Jun 2021 16:21:43 -0700
-Message-ID: <162466330370.3259633.11293469583164120084@swboyd.mtv.corp.google.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, pdeschrijver@nvidia.com,
+        pgaikwad@nvidia.com, jonathanh@nvidia.com
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        mturquette@baylibre.com
+Date:   Fri, 25 Jun 2021 16:23:20 -0700
+Message-ID: <162466340054.3259633.8766268265703754283@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajan Vaja (2021-06-24 05:16:30)
-> diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
-> index db8d0d7161ce..af06a195ec46 100644
-> --- a/drivers/clk/zynqmp/clkc.c
-> +++ b/drivers/clk/zynqmp/clkc.c
-> @@ -271,6 +271,34 @@ static int zynqmp_pm_clock_get_topology(u32 clock_id=
-, u32 index,
->         return ret;
->  }
-> =20
-> +unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag)
-> +{
-> +       unsigned long ccf_flag =3D 0;
-> +
-> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_GATE)
-> +               ccf_flag |=3D CLK_SET_RATE_GATE;
-> +       if (zynqmp_flag & ZYNQMP_CLK_SET_PARENT_GATE)
-> +               ccf_flag |=3D CLK_SET_PARENT_GATE;
-> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_PARENT)
-> +               ccf_flag |=3D CLK_SET_RATE_PARENT;
-> +       if (zynqmp_flag & ZYNQMP_CLK_IGNORE_UNUSED)
-> +               ccf_flag |=3D CLK_IGNORE_UNUSED;
-> +       if (zynqmp_flag & ZYNQMP_CLK_GET_RATE_NOCACHE)
-> +               ccf_flag |=3D CLK_GET_RATE_NOCACHE;
+Quoting Thierry Reding (2021-06-24 04:57:08)
+> On Thu, Jun 24, 2021 at 11:47:37AM +0300, Alexandru Ardelean wrote:
+> > The purpose of the device-managed functions is to bind the life-time of=
+ an
+> > object to that of a parent device object.
+> >=20
+> > This is not the case for the 'vdd-cpu' regulator in this driver. A
+> > reference is obtained via devm_regulator_get() and immediately released
+> > with devm_regulator_put().
+> >=20
+> > In this case, the usage of devm_ functions is slightly excessive, as the
+> > un-managed versions of these functions is a little cleaner (and slightly
+> > more economical in terms of allocation).
+> >=20
+> > This change converts the devm_regulator_{get,put}() to
+> > regulator_{get,put}() in the get_alignment_from_regulator() function of
+> > this driver.
+> >=20
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >  drivers/clk/tegra/clk-tegra124-dfll-fcpu.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> Indeed, this seems unnecessary:
+>=20
+> Reviewed-by: Thierry Reding <treding@nvidia.com>
+>=20
+> Mike, Stephen: do you want to pick this up directly or would you prefer
+> if I collected this into a clk branch for the next cycle?
+>=20
 
-Does the firmware really use all these flags? Ideally we get rid of the
-above two.
-
-> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_NO_REPARENT)
-> +               ccf_flag |=3D CLK_SET_RATE_NO_REPARENT;
-> +       if (zynqmp_flag & ZYNQMP_CLK_GET_ACCURACY_NOCACHE)
-> +               ccf_flag |=3D CLK_GET_ACCURACY_NOCACHE;
-> +       if (zynqmp_flag & ZYNQMP_CLK_RECALC_NEW_RATES)
-> +               ccf_flag |=3D CLK_RECALC_NEW_RATES;
-
-And this one.
-
-> +       if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_UNGATE)
-> +               ccf_flag |=3D CLK_SET_RATE_UNGATE;
-> +       if (zynqmp_flag & ZYNQMP_CLK_IS_CRITICAL)
-> +               ccf_flag |=3D CLK_IS_CRITICAL;
-
-And this one.
-
-I worry that supporting all these flags will mean we can never get rid
-of them. And we currently don't support setting critical via DT, which
-is essentially another firmware interface like this one.
-
-> +
-> +       return ccf_flag;
-> +}
-> +
->  /**
->   * zynqmp_clk_register_fixed_factor() - Register fixed factor with the
->   *                                     clock framework
+No worries. I got it.
