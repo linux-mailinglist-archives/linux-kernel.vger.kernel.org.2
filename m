@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B8E3B4839
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DFA3B483E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhFYRbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:31:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53517 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFYRbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:31:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624642127; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Vo8cdOnBvL4ILFl2F7aCfrak2qNnWkdcHomLwpZ2oAI=;
- b=g9RvtXqPCSo4h/ifKo6djLccVmxcbtmrE4EepKNsTz6LLFEmJsG6i6x2dt95fNuMX5SOPHF8
- BX41ObtsLFBjKgicutW72MI01OFyWEq5EJNeLi89fPNKdFwWhJCqLD3W8BKrarkFvCff/OCY
- u53GTB81jNWcBaPQYAFGsTtt1T4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60d6124f06ea41c941bdca48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 17:28:47
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36100C4323A; Fri, 25 Jun 2021 17:28:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4325EC433F1;
-        Fri, 25 Jun 2021 17:28:45 +0000 (UTC)
+        id S230091AbhFYRdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYRdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:33:12 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C292C061574;
+        Fri, 25 Jun 2021 10:30:51 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id p9so8294169pgb.1;
+        Fri, 25 Jun 2021 10:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AEVXAtzRdBnXjTYBUkXKyLLq/QP8vZTU+6eBNnFCfNY=;
+        b=JsNQ1EOdCmRHmdIUMwk7W+3dSlif5ZBdGuIrCU8FRyUfISBFd88dg511IEs/lMsHdL
+         LV9N0ecJcHXNEXDQfGQkEGsfuJjznIUkVg+8s+omlLDP3TxJ6A5yMAIE+CZQBjJyIEVz
+         Rz9/drioEC6VrGur/BAVgAjVXvPI67EKYTP5d/jXaLn952AjsxZdMsWVI1Mpr5KJaN4z
+         68wrlMzUIS7LmmgVj5IfkfOuTLDSRCqB9SuTV+kZif8MzkFwQD7WvGx610ND2q966zcW
+         WYqQRK1QWoog9mca9wdW1eP93dN4aGk5DFi8kdrS78VttsAP7Y5lVigkE7uRfxFQuysm
+         SAqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AEVXAtzRdBnXjTYBUkXKyLLq/QP8vZTU+6eBNnFCfNY=;
+        b=I4nbjTYREcCtsRoDHsd1op2TgKjJZyhMpfA1Kr5f5zxM+2xGRHcseVKjOuPMV13r+j
+         x1qCdP9ixJTwuUQOkgmUe6PpUk1wt05mUqqzu0xe5dGPMwlI12oxyz6WE3+VmgqRnPIB
+         djW1/fiRK6/zlR2rJ5LONqBus+H3LN3nVMdz8DHlDt4rJhFRd5LZHVFAweU2DR4BH2FE
+         wgjeDu+LPHeCfPyN9M5WMd1369XuNDPbcLDeCoawqdEWF0ER7pRG2o8Jcalmt1+BbvMW
+         kgxJZtTTG9n0R1XZFjQujianSCrd7eIMqQQbKi9ZfLvP+sSfS2WSl10tohqngPgSsBNz
+         ql6g==
+X-Gm-Message-State: AOAM5326TwwVaz7g6l1Maz7IdAr+xgHAF6Fb8MC0+zJH0H7aLe7ksBhC
+        keulOouQHwKN6yXVvFQyTsg=
+X-Google-Smtp-Source: ABdhPJzluJfbq3Os5qaSBw+XQr/q4Y3cVOkWhKV4j4z/zfh1dpyOtoQhTFB7QOgto30AvTYLOOyS1Q==
+X-Received: by 2002:a63:fc51:: with SMTP id r17mr8472427pgk.403.1624642250621;
+        Fri, 25 Jun 2021 10:30:50 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id s13sm6216158pgi.36.2021.06.25.10.30.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 10:30:49 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] ARM: dts: NSP: Add DT files for Meraki MX64 series
+To:     Matthew Hagan <mnhagan88@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210625095000.3358973-1-mnhagan88@gmail.com>
+ <20210625095000.3358973-3-mnhagan88@gmail.com>
+ <CAK8P3a3NAOgBa1j+Zsm6FwSm2ux49rFcnTEYJJsmSF8TggRnYA@mail.gmail.com>
+ <bbf38c31-ed75-69d2-39ed-94f324b1f220@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <21e895e9-0211-0c97-5e9e-781e6d2fe6dd@gmail.com>
+Date:   Fri, 25 Jun 2021 10:30:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <bbf38c31-ed75-69d2-39ed-94f324b1f220@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 25 Jun 2021 22:58:45 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 1/9] dt-bindings: remoteproc: qcom: pas: Add SC7280 MPSS
- support
-In-Reply-To: <YNYOkmja0kfuzLpF@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-2-git-send-email-sibis@codeaurora.org>
- <YNYOkmja0kfuzLpF@google.com>
-Message-ID: <ca7ca4df465f50c6db03a4642102c636@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-25 22:42, Matthias Kaehlcke wrote:
-> On Fri, Jun 25, 2021 at 01:17:30AM +0530, Sibi Sankar wrote:
->> Add MPSS PAS support for SC7280 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+On 6/25/21 10:26 AM, Matthew Hagan wrote:
+> On 25/06/2021 10:59, Arnd Bergmann wrote:
 > 
-> On which tree is this series based? I guess it must be the remoteproc 
-> tree
-> since the conversion of the binding to YAML isn't in Linus' tree yet,
-> however the patch doesn't apply cleanly against remoteproc/for-next:
+>> On Fri, Jun 25, 2021 at 11:52 AM Matthew Hagan <mnhagan88@gmail.com> wrote:
+>>> MX64 & MX64W Hardware info:
+>>>   - CPU: Broadcom BCM58625 Cortex A9 @ 1200Mhz
+>>>   - RAM: 2 GB (4 x 4Gb SK Hynix H5TC4G83CFR)
+>>>   - Storage: 1 GB (Micron MT29F8G08ABACA)
+>>>   - Networking: BCM58625 internal switch (5x 1GbE ports)
+>>>   - USB: 1x USB2.0
+>>>   - Serial: Internal header
+>>>   - WLAN(MX64W only): 2x Broadcom BCM43520KMLG on the PCI bus
+>>>
+>>> This patch adds the Meraki MX64 series-specific bindings. Since some
+>>> devices make use of the older A0 SoC, changes need to be made to
+>>> accommodate this case, including removal of coherency options and
+>>> modification to the secondary-boot-reg.
+>>>
+>>> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+>> Removing the dma-coherent flags in the dts file seemed really odd until
+>> I read the text above. It would seem more logical to me to have a .dtsi file
+>> that has all the a0 revision specific changes, and include that from the
+>> dts file.
 > 
->   patching file 
-> Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->   Hunk #2 succeeded at 144 (offset -4 lines).
->   Hunk #3 succeeded at 285 (offset -4 lines).
->   Hunk #4 succeeded at 416 with fuzz 2 (offset 23 lines).
->   Hunk #5 succeeded at 492 (offset 25 lines).
->   Hunk #6 FAILED at 485.
+> How about having separate bcm-nsp-ax and bcm-nsp-bx dtsi files with the
+> appropriate secondary-boot-reg and dma-coherent (or lack of)
+> properties, which then include bcm-nsp.dtsi. Thus we can also avoid use
+> of /delete-property/. Would this be preferable?
 
-https://patchwork.kernel.org/project/linux-arm-msm/cover/1624560727-6870-1-git-send-email-sibis@codeaurora.org/
+Is there any way that the Ax platforms could use a small shim between
+the boot loader and the kernel which could all of the necessary DT
+adaptation so the kernel only contains a single Device Tree source?
 
-sry for wasting your time I missed
-mentioning that it was dependent on
-^^ series.
+Using something like this:
+
+https://github.com/zonque/pxa-impedance-matcher/
+
+could be useful.
+
+> 
+>>
+>> On the other hand, the /chosen, /aliases and  /memory nodes that you have
+>> in the .dtsi file should probably get moved into the .dts files, as these tend
+>> to be board specific settings, even if the examples you have are all
+>> the same.
+> 
+> I did not come across any convention regarding this, though there are
+> plenty of cases where the /chosen, /aliases and /memory nodes are
+> defined in a .dtsi file and used by multiple similar boards. Also note
+> in this case /aliases is defined in bcm-nsp.dtsi, not by me. Would we
+> not prefer to avoid having 6x duplication?
+> 
+>>        Arnd
+>>
+> Matthew
+> 
+
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Florian
