@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EC33B41B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A129F3B41B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhFYKdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:33:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:52532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhFYKdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:33:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E888ED1;
-        Fri, 25 Jun 2021 03:31:00 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E8BB3F719;
-        Fri, 25 Jun 2021 03:31:00 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 11:30:58 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
+        id S231490AbhFYKgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:36:02 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26518 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230379AbhFYKfv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:35:51 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15PAC0Lx003048;
+        Fri, 25 Jun 2021 10:33:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7kXzU6VQY7lM9RFtj3Mn30bxf9x5MvbukVSQFWdLIZY=;
+ b=shLe6ys8iFsFYHDOZvl26wehMyAZpyOcBMPgpa/Y9ApffGJJCBLvHj8/3wXmktB5glND
+ ysiu+bscHge3edzw3lyRnjyM+9P51rLe23FPQn5oLzViS3jk+MiXIFBckxBdV7C+V2JF
+ 2EsXHayTySklTvB0+CGC+dZ92Y2WriziuC+hCJNqZ6t481Sr+/UuQCBJcVbgfw1xyrSC
+ Qv5ufAYKO1ZK8bX7jruIKBgmm6SYEqENjwHLoP26Z7X3Jjv+uZClpO3n/aoE/5TPjvKT
+ uDlnT40DTd5dWz0ckpeDS92XXF7/H/n2qoK5jLMx12Xl0iU07VHKG7pWpjbB+/skrHzs Ng== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39d2kxs0v1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 10:33:19 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15PABQ2i094051;
+        Fri, 25 Jun 2021 10:33:18 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 39dbb15rpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 10:33:18 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15PASHaK149866;
+        Fri, 25 Jun 2021 10:33:17 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 39dbb15rng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Jun 2021 10:33:17 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 15PAXFOI031239;
+        Fri, 25 Jun 2021 10:33:16 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Jun 2021 03:33:14 -0700
+Date:   Fri, 25 Jun 2021 13:33:04 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Colin King <colin.king@canonical.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 2/4] cpufreq: cppc: Pass structure instance by
- reference
-Message-ID: <20210625103058.GC15540@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
- <20210623134533.GB12411@arm.com>
- <20210624022252.zrxsftrvcd43eqra@vireshk-i7>
+Subject: Re: [PATCH][next] netfilter: nf_tables: Fix dereference of null
+ pointer flow
+Message-ID: <20210625103304.GI2040@kadam>
+References: <20210624195718.170796-1-colin.king@canonical.com>
+ <20210625095901.GH2040@kadam>
+ <20210625102021.GA32352@salvia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624022252.zrxsftrvcd43eqra@vireshk-i7>
+In-Reply-To: <20210625102021.GA32352@salvia>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: agBZSEvUiaAafEXSUMxVl_YcRlBC2KJn
+X-Proofpoint-ORIG-GUID: agBZSEvUiaAafEXSUMxVl_YcRlBC2KJn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
-
-On Thursday 24 Jun 2021 at 07:52:52 (+0530), Viresh Kumar wrote:
-> On 23-06-21, 14:45, Ionela Voinescu wrote:
-> > On Monday 21 Jun 2021 at 14:49:35 (+0530), Viresh Kumar wrote:
-> > > Don't pass structure instance by value, pass it by reference instead.
-> > >
-> > 
-> > Might be best to justify the change a bit :)
+On Fri, Jun 25, 2021 at 12:20:21PM +0200, Pablo Neira Ayuso wrote:
+> Hi,
 > 
-> I had it and removed later as I thought it would be obvious :)
+> On Fri, Jun 25, 2021 at 12:59:01PM +0300, Dan Carpenter wrote:
+> > Btw, why is there no clean up if nft_table_validate() fails?
 > 
-> > For me this is a judgement call, and I don't really see the reasons for
-> > changing it: we don't care if the structure is modified or not, as we're
-> > not reusing the data after the call to cppc_get_rate_from_fbctrs().
-> > More so, in this scenario we might not even want for the called function
-> > to modify the counter values. Also there is no further call to a function
-> > in cppc_get_rate_from_fbctrs(), that might require references to the
-> > fb_ctrs.
-> > 
-> > So what is the reason behind this change?
+> See below.
 > 
-> How about this commit log then:
+> > net/netfilter/nf_tables_api.c
+> >   3432                                  list_add_tail_rcu(&rule->list, &old_rule->list);
+> >   3433                          else
+> >   3434                                  list_add_rcu(&rule->list, &chain->rules);
+> >   3435                  }
+> >   3436          }
+> >   3437          kvfree(expr_info);
+> >   3438          chain->use++;
+> >   3439  
+> >   3440          if (flow)
+> >   3441                  nft_trans_flow_rule(trans) = flow;
+> >   3442  
+> >   3443          if (nft_net->validate_state == NFT_VALIDATE_DO)
+> >   3444                  return nft_table_validate(net, table);
+> >                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > The cleanup for this would be quite involved unfortunately...  Not
+> > necessarily something to attempt without being able to test the code.
 > 
-> Theoretically speaking, call by reference is cheaper/faster than call by value
-> for structures as the later requires the compiler to make a new copy of the
-> whole structure (which has four u64 values here), to be used by the called
-> function, while with call by reference we just need to pass a single pointer
-> (u64 on 64-bit architectures) to the existing structure.
-> 
-> Yes, on modern architectures, the compilers will likely end up using the
-> processor registers for passing this structure as it isn't doesn't have lot of
-> fields and it shouldn't be bad eventually, but nevertheless the code should do
-> the right thing without assuming about the compiler's or architecture's
-> optimizations.
+> At this stage, the transaction has been already registered in the
+> list, and the nf_tables_abort() path takes care of undoing what has
+> been updated in the preparation phase.
 > 
 
-Yes, that's why "judgement call", which I'll let you make. The code is
-sane and I like the longer commit message.
+Ah...  Thanks.
 
-Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+regards,
+dan carpenter
 
-> Don't pass structure instance by value, pass it by reference instead.
-> 
-> -- 
-> viresh
