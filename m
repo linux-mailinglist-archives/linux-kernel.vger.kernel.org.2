@@ -2,352 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC1E3B4232
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCBF3B4237
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 13:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhFYLLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 07:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFYLLf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 07:11:35 -0400
-Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [IPv6:2001:1600:4:17::190a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD43EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 04:09:12 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GBDlq2Rv0zMq45w;
-        Fri, 25 Jun 2021 13:09:11 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GBDln20D4zlmrrr;
-        Fri, 25 Jun 2021 13:09:09 +0200 (CEST)
-Subject: Re: [PATCH v1] crypto: Make the DRBG compliant with NIST SP800-90A
- rev1
-To:     Stephan Mueller <smueller@chronox.de>,
-        James Morris <jamorris@linux.microsoft.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        John Haxby <john.haxby@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Simo Sorce <simo@redhat.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        hpa@zytor.com, tytso@mit.edu
-References: <20210623120751.3033390-1-mic@digikod.net>
- <9dbbf4e751cb4953fe63079cdc917a0bb3a91670.camel@chronox.de>
- <a4e1c071-32af-9650-e6fd-8943b3a79bb0@linux.microsoft.com>
- <8811360.37IJKxs2K1@positron.chronox.de>
- <9ca2fdb4-8cee-3667-c90a-358255fb8f54@digikod.net>
- <7acf0d4a63f7c94d8355101dd03cbfeb58c05d17.camel@chronox.de>
- <afce411f-7ddb-557d-e039-83d4d84b87d7@digikod.net>
- <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <248b1aae-effc-f511-03af-65a71f176cf1@digikod.net>
-Date:   Fri, 25 Jun 2021 13:09:26 +0200
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <9590fe0e9482e212f2a3223ffae872104659cc4b.camel@chronox.de>
-Content-Type: text/plain; charset=utf-8
+        id S231209AbhFYLME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 07:12:04 -0400
+Received: from mail-db8eur05on2042.outbound.protection.outlook.com ([40.107.20.42]:29536
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229573AbhFYLMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 07:12:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a4UvFZqUaRLJ1egnS/4Y/OA5m+DCAbUUVwvyUZpfSqz6K2e1QgpQ1+VK30aUERXkTikfxnxMfT67FKnh4QAjr1HT/ZWzCRB0cR4OHPHACxuA937ehRqvFsPDWg5lRF+/KnnysEdRvSP5O7wKndGsDdLlHtGQmkw6MCqC9AD8CUTpJvZMBS2AWdi/px7vk6FoOFlQ2ptUGZ9llwdcHyE93isDsZwnEpX5/oIiKBbh3Q8+UZlV/LNPU5gP5KARxm7AfCUUXAz6wfp1ngx+K9KAwlFiqGHpvO1POJ2F62+wZhjjCmo4LwPmIhSbjKov1G0ZX2hDjd0ZIeNxqFfGZx/lOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r7YZ6yWBD7Xv+D+fCg6H/dMJ4rZo5qHphfw74vp7A8M=;
+ b=h3THvcY6uK3qvOJkyyZv8BNcMD8pjhqjaczRjuhOaTzVVZx/5vafDFk+m75mx3jIEUidxrE+hL2m4ELFsE/ZgFDu+JYyM7gYK4RwD/6Hgd4IwnSlq7HjPDrCuSpioYh4qgxDSj0qcBG0DC/DZTzrb/p44KbFbCDOvX+aQlK/DdHqmF9Vvbyc+z8cgwYRH0B/za4L2H37ai+XIJnEETuwWXYmDCz5J7Hv2Dq7LzuroTnL1jIUJ/jGhM5+Kr0gCSEskEOdBjqH/XE77scxvRdD+Xa2IpghvO66ABh93sP8z7d9ORRhoBXpH2L/O+QFi5fskUWt13dZJBwjnEILoRw6ug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r7YZ6yWBD7Xv+D+fCg6H/dMJ4rZo5qHphfw74vp7A8M=;
+ b=YCozTnXXb9LH1lAahrKvKs4w/iYkdaG1w6kt9FKTmLR4K3IMEBY21GEOX/WnGrLix8gm6MOCUsnghgyO7VZ1aAaaT+s3do++KfvNPmcTvJHsVpUdGwHUlOVgGCjuZhDwcmOwFtoJlOsUQb5wCkGoxir0EFs4585wiAfRCU7bpt4=
+Received: from DB7PR04MB5017.eurprd04.prod.outlook.com (2603:10a6:10:1b::21)
+ by DB8PR04MB6779.eurprd04.prod.outlook.com (2603:10a6:10:11b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Fri, 25 Jun
+ 2021 11:09:39 +0000
+Received: from DB7PR04MB5017.eurprd04.prod.outlook.com
+ ([fe80::605f:7d36:5e2d:ebdd]) by DB7PR04MB5017.eurprd04.prod.outlook.com
+ ([fe80::605f:7d36:5e2d:ebdd%7]) with mapi id 15.20.4264.022; Fri, 25 Jun 2021
+ 11:09:39 +0000
+From:   "Y.b. Lu" <yangbo.lu@nxp.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "mptcp@lists.linux.dev" <mptcp@lists.linux.dev>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: RE: [net-next, v3, 02/10] ptp: support ptp physical/virtual clocks
+ conversion
+Thread-Topic: [net-next, v3, 02/10] ptp: support ptp physical/virtual clocks
+ conversion
+Thread-Index: AQHXYcnwaUvaYN3/1UWKJ0RWryDTcKsYiVqAgAdTHVCABMRZEA==
+Date:   Fri, 25 Jun 2021 11:09:38 +0000
+Message-ID: <DB7PR04MB5017347E573293D98A60FB30F8069@DB7PR04MB5017.eurprd04.prod.outlook.com>
+References: <20210615094517.48752-1-yangbo.lu@nxp.com>
+ <20210615094517.48752-3-yangbo.lu@nxp.com> <20210617182745.GC4770@localhost>
+ <DB7PR04MB5017355B61A31D61340A52A3F8099@DB7PR04MB5017.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB5017355B61A31D61340A52A3F8099@DB7PR04MB5017.eurprd04.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 419a680f-b048-4c1e-0ed6-08d937c9b9a4
+x-ms-traffictypediagnostic: DB8PR04MB6779:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB6779FD38316869BB0571B6F7F8069@DB8PR04MB6779.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xEqLp+amPLPyL7CIxn4wTP+EfVQ5DLFQLWAU4D6vTwtBi8qqhvSHGSRvlxVhRf+QP0gghCeoU5DhZwMorePlG4fI0bh5Iwe2Q8LCuwLi2v/c7X8mzReWeCIN6B8CqJTHfAeSrbywYZmuHjCrzYw0H9BfYpZ0ykakCCPSEWe+oP1SYg/ZvrCk3xnQJ9dwMyLV/kPgklN5HeegTEURUv2SC8tBqi5gsbIQTIyRFAhSwDAB2eTzPp1/nbf4QNQ7+njttyQVoNfbmA9QLxA9uRQXOYFeomQWnWHPzfUA8pYHcVDEnEip8Bs4xMKbXxLA0JOl0eGY2kbdKiCX14WBj6CezBbMJgosLb9c7VS5CUfN+AV7hyADRAog/dAdGFz+cYzQ8D3QJEzexFWH6eCMloc1BKrtD37m0xWP1CSIA3pKyPSH69PERQFxA2aYtcM1Mhl61JYPf0mxmF0F2E0ttjJ1AQk/ParQL2KmemFj9quqlPP89Wudx8xbFuqkggT7ksbVt8uNBrmDEEQ4exaZ6W37/pi/lPet5RjMV8hjuMuqYMUVdbKZ7IP109mckm4d3eLRSC//DuTVOnoOfGKRTUCFEeWnJ3uCzFF6g1kDv+hOxoE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5017.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(346002)(366004)(38100700002)(55016002)(8676002)(186003)(71200400001)(9686003)(7696005)(5660300002)(122000001)(8936002)(6916009)(54906003)(7416002)(316002)(66946007)(6506007)(53546011)(66446008)(52536014)(2906002)(76116006)(478600001)(33656002)(4326008)(64756008)(66556008)(66476007)(83380400001)(26005)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?V3EyOHNNUHpVWnlhWmpUZDR4WlBYS1crQi9wMkVmbUNvRGYrUWM5Y1UxRWNn?=
+ =?gb2312?B?MEJNbm5qdElJcGRYd1Y5UGw4S1ByTTVLb3dIb0ZnMkJRR2F5Rm5kdnNPSUVp?=
+ =?gb2312?B?VVR4UTBDQlJzNkUxRndXNjlOT2JEN0tpeTVJbzVQbkN3RW1kZG0wVllpN0Q0?=
+ =?gb2312?B?KzhUQTd4RGlKdVJFKy9NM2gvN2ZKcU1McjZXT1ZjUk9pOERsSzNUbHBDeVd4?=
+ =?gb2312?B?WDJkYVk3UktKU3ZxR3B1NlFvWVRRajFZTmlSSk5jVGlCanlYRWx6MkxyS0lU?=
+ =?gb2312?B?d1JiQmRBSmxPSzJ1QmdzYVNwWkxRUVVVRmRpbGZSSVJnSVUyclloVmhKNzJL?=
+ =?gb2312?B?elJTcFF5RUJpWGhtWUhuM0o0U1NJT1hDbThKUkZVOGNaNDBBckRoU1pRNU03?=
+ =?gb2312?B?SVA2aHdQa3RlcjlMRmkwNmNuQzQzQkFWMjl1bE1pWjFrZ2xVOFZ6aytqUzFJ?=
+ =?gb2312?B?QXZxUHRFQ3NmdWNJcU92aWdhM2UzOFpMSFdxZ2VEMXB4aXdIYzZIMWhuR2JZ?=
+ =?gb2312?B?aUszeW1Vd2FibVJZZ2tySi9XRmhlUWlTaGRhZUU4VFEycEZPeEpldTd6TW5K?=
+ =?gb2312?B?cDErYitBOXlFaHlyRWdmbUhjaHY2cmMzLzVxbUtBRVZTdVNOK0psWURPMklV?=
+ =?gb2312?B?WUxadEZFZzBRdENPYi9yUThIcUJtODlvVllkYWY3czlXZlpkbHNRaHA1NUxt?=
+ =?gb2312?B?NE9lY3ZnaDgram5jN2ZrKzNFTmtYb1F5MjhwTURLNzVJVG4xcm9HU2dCV3E5?=
+ =?gb2312?B?R2cwU05iYWRSVDhROUNoOEl1RzdEeWRNWjRPUEVHVEpMRUU4cFBFVGMycDJL?=
+ =?gb2312?B?ZXlHOXVSQTRwMkZRenA4TENVdXBwMkNJRjJydDlpSUdsZ25IZFgrVWxMNm5t?=
+ =?gb2312?B?bDZSelJwam5oV0V4ZStzREVjemFhZURWL0ptUHY2UnBMQjhiVWZiWVB3bjgz?=
+ =?gb2312?B?ZzhFQm54c3ZFbmlpcnBiOVlDUkNIczIzOXVkcFI1T3JEV25pcXFsTTdzVjJo?=
+ =?gb2312?B?dzR1UkFQQ3dNbjJnbHZuZHBEbklhdVhUQXJzeG9aU0dKMUJkcjJoSmE2QWRS?=
+ =?gb2312?B?eVQ0cHYyallJRHRBa0NLY0pKNWhjY0RqbHhXSFdWRGhZTXdoaGF0TlpvSEU3?=
+ =?gb2312?B?RHRzOERpVFFaRTIwV0lOTWhoT1ozQmpMSmJzOXkrM1NTZ2IzN0NFdFBFWXhC?=
+ =?gb2312?B?bXM1L0JFWEZyYjVYSkNqazY0SXB2SlNUN1pCMGJZVmlnc25zSlhsdXJJWUs3?=
+ =?gb2312?B?ckFQcElTTGRKTmJScXljdDZYaWRrOVltbkRSd2hWd0txVnJDZWZyWkdWN05a?=
+ =?gb2312?B?SWVZejVOWW5Gc3AydWd3b1BwWTFLc3BZRU12SXZjNVZLVXNyZ21zVnp5UVlK?=
+ =?gb2312?B?VnEwRHpFUkhLL0prREpRT3J5OS8yMkZlSGU4V2QwYkp3emxONXIvUzl2amcy?=
+ =?gb2312?B?QXFTUHdUWDVYNjJnVU51M1MrOEllWWJxSlhsOTRrSnZraGxqTEIwSnJEckp2?=
+ =?gb2312?B?YjBFbzFLd3FleE14T3REUkU2K1JxMHRSU3lkc0M0S0lMQkVpWVZOeFRiOG45?=
+ =?gb2312?B?bzJ3enRPK1k5cmd4WHFrS3JGZ1A4TmtOUXlCeGF5Nng0M1ErZy9nUFVzdEdk?=
+ =?gb2312?B?N3paRzFaWXRrNHZqUGlhb25nTGFJK0hVc0dGVzRpbkJYK2NoVGdBUEpnRFYx?=
+ =?gb2312?B?TXMveFB4cCsrRmtTQ1QxZW9oT2N6OUpsU3BxL2ZKL2hhZzJvTmV3c0M3Q1c4?=
+ =?gb2312?Q?oXr7D7V8EKgMMcTbHYaF5zh2WL7diZ5gauAPbSH?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5017.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 419a680f-b048-4c1e-0ed6-08d937c9b9a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2021 11:09:39.0567
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DeAiEeyFZ0Yt9WS+0kbNyI+gEhPb2fdL5+G6GLi0N/X3g3WbmgjL9SK0PKGA4f0lrvdg/HsDyU0dti9Cmo9QQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6779
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 24/06/2021 13:50, Stephan Mueller wrote:
-> Am Donnerstag, dem 24.06.2021 um 12:13 +0200 schrieb Mickaël Salaün:
->>
->> On 23/06/2021 21:10, Stephan Mueller wrote:
->>> Am Mittwoch, dem 23.06.2021 um 20:04 +0200 schrieb Mickaël Salaün:
->>>>
->>>> On 23/06/2021 19:27, Stephan Müller wrote:
->>>>> Am Mittwoch, 23. Juni 2021, 19:00:29 CEST schrieb James Morris:
->>>>>
->>>>> Hi James,
->>>>>
->>>>>> On Wed, 23 Jun 2021, Stephan Mueller wrote:
->>>>>>>> These changes replace the use of the Linux RNG with the Jitter
->>>>>>>> RNG,
->>>>>>>> which is NIST SP800-90B compliant, to get a proper entropy input
->>>>>>>> and a
->>>>>>>> nonce as defined by FIPS.
->>>>>>>
->>>>>>> Can you please help me understand what is missing in the current
->>>>>>> code
->>>>>>> which
->>>>>>> seemingly already has achieved this goal?
->>>>>>
->>>>>> The advice we have is that if an attacker knows the internal state of
->>>>>> the
->>>>>> CPU, then the output of the Jitter RNG can be predicted.
->>>>>
->>>>> Thank you for the hint. And I think such goal is worthwhile (albeit I
->>>>> have
->>>>> to 
->>>>> admit that if an attacker is able to gain the internal state of a CPU, I
->>>>> would 
->>>>> assume we have more pressing problems that a bit of entropy).
->>>>>
->>>>> Anyways, the current code does:
->>>>>
->>>>> - in regular mode: seed the DRBG with 384 bits of data from
->>>>> get_random_bytes
->>>>>
->>>>> - in FIPS mode: seed the DRBG with 384 bits of data from
->>>>> get_random_bytes 
->>>>> concatenated with 384 bits from the Jitter RNG
->>>>>
->>>>>
->>>>> If I understand the suggested changes right, I would see the following
->>>>> changes 
->>>>> in the patch:
->>>>>
->>>>> - in the regular case: 640 bits from get_random_bytes
->>>>
->>>> Why 640 bits?
->>>
->>>                 if (!reseed)
->>>                         entropylen = ((entropylen + 1) / 2) * 3;
->>>
->>> -> Entropylen is 384 in case of a security strength of 256 bits.
->>>
->>> Your code does the following if the Jitter RNG is not allocated (i.e. in
->>> non-
->>> fips mode):
->>>
->>> ret = drbg_get_random_bytes(drbg, entropy, entropylen + strength);
->>>
->>> so: entropylen + strength = 384 + 256, no?
->>
->> Correct (for entropy + nonce + pers), I thought you were referring to
->> just the entropy + nonce part. This change is not needed for FIPS of
->> course but I changed it too to use the same algorithm and lengths as
->> when Jitter RNG is available.
->>
->> Do you prefer to keep the current lengths (384 bits) when there is no
->> Jitter RNG? It seems to me that this change makes sense and could only
->> strengthen this case though.
->>
->>>
->>>>
->>>>>
->>>>> - in FIPS mode: 256 bits of data from get_random_bytes concatenated with
->>>>> 384
->>>>> bits from the Jitter RNG
->>>>
->>>> In both cases there are 256 bits for the entropy input and 128 bits for
->>>> the nonce.
->>>
->>> I see in the code path with the Jitter RNG:
->>>
->>> ret = crypto_rng_get_bytes(drbg->jent, entropy,
->>>                                                    entropylen);
->>>
->>> --> 384 bits from the Jitter RNG
->>>
->>> ret = drbg_get_random_bytes(drbg, entropy + entropylen,
->>> +                                                   strength);
->>>
->>> --> 256 bits from get_random_bytes
->>>
->>> What am I missing here?
->>
->> OK, it is just a misunderstanding of what is where. To simplify the code
->> (with a fixed-length entropy array) I used the "entropy" array to store
->> the entropy + nonce + the automatically generated personalization string
->> or additional input. The user-supplied personalization string or
->> additional input is stored (unchanged) in the pers drbg_string. I
->> (briefly) explained this in the comments.
->>
->> Another difference brought by this change is that the Jitter RNG data
->> (i.e. entropy source) is used at the beginning (of the entropy array)
->> and the urandom data (i.e. random source) at the end. This strictly
->> follows the algorithm described in SP800-90Ar1 sections 8.6.1, 8.6.2,
->> 10.1.1.2 and 10.1.1.3 .
->>
->>>
->>>
->>>>  If Jitter RNG is not available, then urandom is used instead,
->>>> which means that the system is not FIPS compliant.
->>>
->>> Agreed, the existing does does exactly the same with the exception that it
->>> pulls 384 bits from get_random_bytes instead of 640 in non-FIPS mode (i.e.
->>> when the Jitter RNG is not allocated).
->>>
->>> In FIPS mode, the current code draws 384 bits from get_random_bytes and
->>> separately 384 bits from the Jitter RNG. So, each data block from either
->>> entropy source could completely satisfy the SP800-90A requirement.
->>
->> What is the rational of using 384 (strength * 1.5) bits to draw from
->> get_random_bytes?
->>
->> We noticed that (as explained above) the order of these sources doesn't
->> follows SP800-90Ar1.
->> It is not clear which part and source is used for the entropy, nonce and
->> (maybe) personalization string.
->> If the random source is indeed the personalization string or the
->> additional input, then the pers length may not fit with the maximum
->> lengths specified in SP800-90Ar1 table 2 and 3.
->>
->>>
->>>>
->>>> This follows the SP800-90Ar1, section 8.6.7: [a nonce shall be] "A value
->>>> with at least (security_strength/2) bits of entropy".
->>>
->>> Agreed, but what is your code doing different than the existing code?
->>
->> It just fits with strength/2 for the length of the nonce.
->>
->>>>
->>>>>
->>>>> So, I am not fully sure what the benefit of the difference is: in FIPS
->>>>> mode 
->>>>> (where the Jitter RNG is used), the amount of data pulled from 
->>>>> get_random_bytes seems to be now reduced.
->>>>
->>>> We can increase the amount of data pulled from get_random_bytes (how to
->>>> decide the amount?), but as we understand the document, this should be
->>>> part of the personalization string and additional input, not the nonce.
->>>
->>> There is no need to have a personalization string or additional input. Note,
->>> those two values are intended to be provided by a caller or some other
->>> environment.
->>
->> Right, but the intent here is to strictly follow SP800-90Ar1 (hence the
->> use of Jitter RNG for entropy and nonce) but to still use the urandom
->> source, which seems to only fit in the personalization string according
->> to SP800-90Ar1.
->>
->>>
->>> If you want to stuff more seed into the DRBG, you simply enlarge the seed
->>> buffer and pull more from the entropy sources. I have no objections doing
->>> that. All I am trying to point out is that the 90A standard does not require
->>> more entropy than 256 bits during initialization plus 128 bits of nonce ==
->>> 384
->>> bits of data. But the DRBGs all allow providing more data as seed.
->>
->> Agreed, the user-supplied personalization string can be used to add more
->> data. We also want to harden the default use (i.e. without user-provided
->> personalization string) by automatically using non-entropy source
->> (urandom) though.
->>
->>>
->>>> I guess it may not change much according to the implementation, as for
->>>> the order of random and entropy concatenation, but these changes align
->>>> with the specifications and it should help FIPS certifications.
->>>
->>> Are you saying the order of data from the entropy sources matters in the
->>> entropy buffer? I have not seen that in the standard, but if you say this is
->>> the goal, then allow me to understand which order you want to see?
->>>
->>> The current code contains the order of:
->>>
->>> <384 bits get_random_bytes> || <384 bits Jitter RNG>
->>    ^                              ^
->>    personalization string?        entropy+nonce
->>
->> As described in SP800-90Ar1 section 10.1.1.2:
->> seed_material = entropy_input || nonce || personalization_string
->>
->> As described in SP800-90Ar1 section 10.1.1.3:
->> seed_material = 0x01 || V || entropy_input || additional_input
->>
->> And SP800-90Ar1 section 5 defining "X || Y" as "Concatenation of two
->> strings X and Y. X and Y are either both bitstrings, or both byte strings".
->>
->> According to that, we would like at least:
->> <384 bits Jitter RNG> || <256 bits get_random_bytes>
->> and also enforcing the maximum length for the whole personalization
->> string and the additional input.
-> 
-> And I think here we found the misconception.
-> 
-> - SP800-90A section 8.7.1 clearly marks that a personalization string is
-> optional. If it is not provided, the personalization string is treated as a
-> zero-bit string in the formulas you mentioned above. This is also consistent
-> with the CAVP testing of DRBGs conducted by NIST which allows testing of the
-> DRBG without a personalization string. See [1] as an example (search for DRBG
-> and click on it to see the tested options - there you see the testing with
-> zero personalization string).
-> 
-> - SP800-90A section 9.1 specifies that the entropy_input is: "The maximum
-> length of the entropy_input is implementation dependent, but shall be less
-> than or equal to the specified maximum length for the selected DRBG
-> mechanism". For all DRBGs except the CTR DRBG without derivation function the
-> maximum length is 2^35 as defined in table 2. As we do not have a CTR DRBG
-> without derivation function, we can ignore that special case.
-> 
-> With these considerations, the current DRBG code
-> 
-> - does not mandate a personalization string or even create one by itself but
-> allows the caller to specify one
-
-OK
-
-> 
-> - applies an entropy_input len of 512 bits during initial seeding
-> 
-> - applies a nonce of 128 bits during initial seeding
-> 
-> entropy_input == <384 bits get_random_bytes> || <256 bits Jitter RNG>
-
-We think that using "<384 bits get_random_bytes> || " makes this DRBG
-non-compliant with SP800-90A rev1 because get_random_bytes doesn't use a
-vetted conditioning component (but ChaCha20 instead):
-
-SP800-90Ar1, section 8.6.5 says "A DRBG mechanism requires an approved
-randomness source during instantiation and reseeding [...]. An approved
-randomness source is an entropy source that conforms to [SP 800-90B], or
-an RBG that conforms to [SP 800-90C] − either a DRBG or an NRBG".
-The FIPS 140-2 Implementation Guidance
-(https://csrc.nist.gov/csrc/media/projects/cryptographic-module-validation-program/documents/fips140-2/fips1402ig.pdf),
-section 7.19 says "As of November 7, 2020, all newly submitted modules
-requiring an entropy evaluation must demonstrate compliance to SP 800-90B".
-In resolution 3 it says "all processing of the raw data output from the
-noise sources that happens before it is ultimately output from the
-entropy source *shall* occur within a conditioning chain". Data from
-get_random_bytes may come from multiple noise sources, but they are
-hashed with ChaCha20.
-In resolution 6 it says "a vetted conditioning component may optionally
-take a finite amount of supplemental data [...] in addition to the data
-from the primary noise source", which would be OK if get_random_bytes
-used a vetted algorithm, but it is not the case for now.
-
-
-> 
-> nonce = 128 bits Jitter RNG
-
-OK
-
-> 
-> 
-> You asked why 384 bits from get_random_bytes. Well, the answer is exactly to
-> cover your initial concern also raised by James Morris: some folks may not
-> trust the Jitter RNG. Yet we need it here as it only provides 90B compliance.
-> But folks who dislike it can treat its data providing no entropy and assume
-> get_random_bytes provides the entropy.
-
-Agreed, this is the reason we want to keep using urandom, but not as the
-entropy input.
-
-> 
-> As both, the get_random_bytes and Jitter RNG data is concatenated, we do not
-> destroy entropy by this operation. This implies we cover different view points
-> at the same time.
-
-The entropy is not destroyed but doesn't seems compliant with the
-specification (and IG).
-
-> 
-> [1]
-> https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program/details?validation=33056
-> 
-> Ciao
-> Stephan
-> 
->>
->> Thanks,
->>  Mickaël
-> 
-> 
+SGkgUmljaGFyZCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBZLmIu
+IEx1DQo+IFNlbnQ6IDIwMjHE6jbUwjIyyNUgMTg6MzUNCj4gVG86IFJpY2hhcmQgQ29jaHJhbiA8
+cmljaGFyZGNvY2hyYW5AZ21haWwuY29tPg0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsg
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta3NlbGZ0ZXN0QHZnZXIua2Vy
+bmVsLm9yZzsgbXB0Y3BAbGlzdHMubGludXguZGV2OyBEYXZpZCBTIC4gTWlsbGVyDQo+IDxkYXZl
+bUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IE1hdCBN
+YXJ0aW5lYXUNCj4gPG1hdGhldy5qLm1hcnRpbmVhdUBsaW51eC5pbnRlbC5jb20+OyBNYXR0aGll
+dSBCYWVydHMNCj4gPG1hdHRoaWV1LmJhZXJ0c0B0ZXNzYXJlcy5uZXQ+OyBTaHVhaCBLaGFuIDxz
+aHVhaEBrZXJuZWwub3JnPjsgTWljaGFsDQo+IEt1YmVjZWsgPG1rdWJlY2VrQHN1c2UuY3o+OyBG
+bG9yaWFuIEZhaW5lbGxpIDxmLmZhaW5lbGxpQGdtYWlsLmNvbT47DQo+IEFuZHJldyBMdW5uIDxh
+bmRyZXdAbHVubi5jaD47IFJ1aSBTb3VzYSA8cnVpLnNvdXNhQG54cC5jb20+OyBTZWJhc3RpZW4N
+Cj4gTGF2ZXplIDxzZWJhc3RpZW4ubGF2ZXplQG54cC5jb20+DQo+IFN1YmplY3Q6IFJFOiBbbmV0
+LW5leHQsIHYzLCAwMi8xMF0gcHRwOiBzdXBwb3J0IHB0cCBwaHlzaWNhbC92aXJ0dWFsIGNsb2Nr
+cw0KPiBjb252ZXJzaW9uDQo+IA0KPiBIaSBSaWNoYXJkLA0KPiANCj4gPiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IFJpY2hhcmQgQ29jaHJhbiA8cmljaGFyZGNvY2hyYW5A
+Z21haWwuY29tPg0KPiA+IFNlbnQ6IDIwMjHE6jbUwjE4yNUgMjoyOA0KPiA+IFRvOiBZLmIuIEx1
+IDx5YW5nYm8ubHVAbnhwLmNvbT4NCj4gPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gPiBsaW51eC1rc2VsZnRlc3RAdmdlci5rZXJu
+ZWwub3JnOyBtcHRjcEBsaXN0cy5saW51eC5kZXY7IERhdmlkIFMgLg0KPiA+IE1pbGxlciA8ZGF2
+ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+OyBNYXQN
+Cj4gPiBNYXJ0aW5lYXUgPG1hdGhldy5qLm1hcnRpbmVhdUBsaW51eC5pbnRlbC5jb20+OyBNYXR0
+aGlldSBCYWVydHMNCj4gPiA8bWF0dGhpZXUuYmFlcnRzQHRlc3NhcmVzLm5ldD47IFNodWFoIEto
+YW4gPHNodWFoQGtlcm5lbC5vcmc+OyBNaWNoYWwNCj4gPiBLdWJlY2VrIDxta3ViZWNla0BzdXNl
+LmN6PjsgRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+Ow0KPiA+IEFuZHJl
+dyBMdW5uIDxhbmRyZXdAbHVubi5jaD47IFJ1aSBTb3VzYSA8cnVpLnNvdXNhQG54cC5jb20+Ow0K
+PiBTZWJhc3RpZW4NCj4gPiBMYXZlemUgPHNlYmFzdGllbi5sYXZlemVAbnhwLmNvbT4NCj4gPiBT
+dWJqZWN0OiBSZTogW25ldC1uZXh0LCB2MywgMDIvMTBdIHB0cDogc3VwcG9ydCBwdHAgcGh5c2lj
+YWwvdmlydHVhbA0KPiA+IGNsb2NrcyBjb252ZXJzaW9uDQo+ID4NCj4gPiBPbiBUdWUsIEp1biAx
+NSwgMjAyMSBhdCAwNTo0NTowOVBNICswODAwLCBZYW5nYm8gTHUgd3JvdGU6DQo+ID4NCj4gPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3B0cC9wdHBfcHJpdmF0ZS5oIGIvZHJpdmVycy9wdHAvcHRw
+X3ByaXZhdGUuaA0KPiA+ID4gaW5kZXggM2YzODhkNjM5MDRjLi42OTQ5YWZjOWQ3MzMgMTAwNjQ0
+DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3B0cC9wdHBfcHJpdmF0ZS5oDQo+ID4gPiArKysgYi9kcml2
+ZXJzL3B0cC9wdHBfcHJpdmF0ZS5oDQo+ID4gPiBAQCAtNDYsNiArNDYsOSBAQCBzdHJ1Y3QgcHRw
+X2Nsb2NrIHsNCj4gPiA+ICAJY29uc3Qgc3RydWN0IGF0dHJpYnV0ZV9ncm91cCAqcGluX2F0dHJf
+Z3JvdXBzWzJdOw0KPiA+ID4gIAlzdHJ1Y3Qga3RocmVhZF93b3JrZXIgKmt3b3JrZXI7DQo+ID4g
+PiAgCXN0cnVjdCBrdGhyZWFkX2RlbGF5ZWRfd29yayBhdXhfd29yazsNCj4gPiA+ICsJdTggbl92
+Y2xvY2tzOw0KPiA+DQo+ID4gSG0sIHR5cGUgaXMgdTgsIGJ1dCAuLi4NCj4gPg0KPiA+ID4gKwlz
+dHJ1Y3QgbXV0ZXggbl92Y2xvY2tzX211eDsgLyogcHJvdGVjdCBjb25jdXJyZW50IG5fdmNsb2Nr
+cyBhY2Nlc3MgKi8NCj4gPiA+ICsJYm9vbCB2Y2xvY2tfZmxhZzsNCj4gPiA+ICB9Ow0KPiA+ID4N
+Cj4gPg0KPiA+ID4gICNkZWZpbmUgaW5mb190b192Y2xvY2soZCkgY29udGFpbmVyX29mKChkKSwg
+c3RydWN0IHB0cF92Y2xvY2ssDQo+ID4gPiBpbmZvKSBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBp
+L2xpbnV4L3B0cF9jbG9jay5oDQo+ID4gPiBiL2luY2x1ZGUvdWFwaS9saW51eC9wdHBfY2xvY2su
+aCBpbmRleCAxZDEwOGQ1OTdmNjYuLjRiOTMzZGMxYjgxYg0KPiA+ID4gMTAwNjQ0DQo+ID4gPiAt
+LS0gYS9pbmNsdWRlL3VhcGkvbGludXgvcHRwX2Nsb2NrLmgNCj4gPiA+ICsrKyBiL2luY2x1ZGUv
+dWFwaS9saW51eC9wdHBfY2xvY2suaA0KPiA+ID4gQEAgLTY5LDYgKzY5LDExIEBADQo+ID4gPiAg
+ICovDQo+ID4gPiAgI2RlZmluZSBQVFBfUEVST1VUX1YxX1ZBTElEX0ZMQUdTCSgwKQ0KPiA+ID4N
+Cj4gPiA+ICsvKg0KPiA+ID4gKyAqIE1heCBudW1iZXIgb2YgUFRQIHZpcnR1YWwgY2xvY2tzIHBl
+ciBQVFAgcGh5c2ljYWwgY2xvY2sgICovDQo+ID4gPiArI2RlZmluZSBQVFBfTUFYX1ZDTE9DS1MJ
+CQkyMA0KPiA+DQo+ID4gT25seSAyMCBjbG9ja3MgYXJlIGFsbG93ZWQ/ICBXaHk/DQo+IA0KPiBJ
+bml0aWFsbHkgSSB0aGluayB2Y2xvY2sgY2FuIGJlIHVzZWQgZm9yIHB0cCBtdWx0aXBsZSBkb21h
+aW5zIHN5bmNocm9uaXphdGlvbi4NCj4gU2luY2UgdGhlIFBUUCBkb21haW5WYWx1ZSBpcyB1OCwg
+dTggdmNsb2NrIG51bWJlciBpcyBsYXJnZSBlbm91Z2guDQo+IFRoaXMgaXMgbm90IGEgZ29vZCBp
+ZGVhIHRvIGhhcmQtY29kZSBhIFBUUF9NQVhfVkNMT0NLUyB2YWx1ZS4gQnV0IGl0IGxvb2tzIGEN
+Cj4gbGl0dGxlIGNyYXp5IHRvIGNyZWF0ZSBudW1iZXJzIG9mIHZjbG9ja3MgdmlhIG9uZSBjb21t
+YW5kIChlY2hvIG4gPg0KPiAvc3lzL2NsYXNzL3B0cC9wdHAwL25fdmNsb2NrcykuDQo+IE1heWJl
+IGEgdHlwbyBjcmVhdGVzIGh1bmRyZWRzIG9mIHZjbG9ja3Mgd2UgZG9uoa90IG5lZWQuDQo+IERv
+IHlvdSB0aGluayB3ZSBzaG91bGQgYmUgY2FyZSBhYm91dCBzZXR0aW5nIGEgbGltaXRhdGlvbiBv
+ZiB2Y2xvY2sgbnVtYmVyPw0KPiBBbnkgc3VnZ2VzdGlvbiBmb3IgaW1wbGVtZW50YXRpb24/DQo+
+IFRoYW5rcy4NCg0KSSBzZW50IHY0LiBJIHJlbW92ZWQgdGhlIHU4IGxpbWl0YXRpb24gZm9yIHZj
+bG9ja3MgbnVtYmVyLCB1c2luZyB1bnNpZ25lZCBpbnQgaW5zdGVhZC4NCkkgaW50cm9kdWNlZCBt
+YXhfdmNsb2NrcyBhdHRyaWJ1dGUgd2hpY2ggY291bGQgYmUgcmUtY29uZmlndXJlZC4NClBsZWFz
+ZSBoZWxwIHRvIHJldmlldy4NClRoYW5rcy4NCg0KPiANCj4gPg0KPiA+IFRoYW5rcywNCj4gPiBS
+aWNoYXJkDQo=
