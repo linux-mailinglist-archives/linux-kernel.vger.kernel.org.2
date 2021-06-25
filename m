@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650783B49BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 22:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ED43B49BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 22:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFYU0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 16:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhFYU0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 16:26:15 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989B8C061574;
-        Fri, 25 Jun 2021 13:23:53 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id d2so14121118ljj.11;
-        Fri, 25 Jun 2021 13:23:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CI9kYZ5ZpRaDM0UxDOABOKTjftV26nJRscJMXYprTWE=;
-        b=K3Q30s+HDeC9XxbnuFtZPvl+etSlFEFPnM+uW0Oq6TYAH0c1woqkk5C4cr7Jo5BDQO
-         N6lABcGq3KnptaeW/ec3cShkx2xMnvca+PPxqEtHDWP0YB73plLXOFo4OXtYsyTqA/WB
-         dqNbCgDUNcm02kc7iwK8b4TcbRonSC26dDWkR/msBEMTOyhIqppKT3YYBxz3rOjAtRE4
-         mobOHFWRbxWUWznlCGbUIpiMwAsMBCJToX6HnRBucrQRyKfUvk6sJVf5a+DugBfH3bU1
-         meXGvPn/00IUTOTIVONqCJYLjr8HC20M+guhRDC/v5fkLhdGLUuV+C2kjZQ2rlq/HBF6
-         zo7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CI9kYZ5ZpRaDM0UxDOABOKTjftV26nJRscJMXYprTWE=;
-        b=mcWgxEdZP26DKXUztmiuJVLsxqnQeXs5Mlv4aGyRfXB3wSXW3QZnPPwgIgIdtSm/Li
-         CQeyekbw3Q35sbw+DuIoxrxBpNh4xitoxjTSp8mxyvBqy/SepSO+suXjSnOCcUfDGIv9
-         ZnpnDjhrjZW0PXIeoGdpAqEeqYDKOOuRg7JAcwrWrtSEdUNLJzv9ehGr2hltF+BgB+9C
-         ZFjesM8knd/QgBYElHVtxIBLg1iOc6qFlnBBo3mZc2NayH3bzEJhLMVVrm5M1YqQd3iP
-         UPTfJeLKx2WvXcoO8MgQLDzpd61xwiTf1RJfzYVvuuFFcdOYnvGbXnl7gDKgZlfXYPoS
-         cAAg==
-X-Gm-Message-State: AOAM531c/Ur8h+LZRDLc6m6jpKPtChDg/jtgrRqa6a1w6hFuwbMu0GX8
-        FVVCFe7wZbhVmueQDdI1ssI=
-X-Google-Smtp-Source: ABdhPJyhpuE6ABebmByQKV8lihGqXyNOafRyMacrajKeyJ1TbFs7HyihR5nWGsKWaGITqfks4eWPIA==
-X-Received: by 2002:a2e:9f4c:: with SMTP id v12mr7233089ljk.179.1624652631812;
-        Fri, 25 Jun 2021 13:23:51 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id v14sm599897lfi.83.2021.06.25.13.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 13:23:51 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Subject: [PATCH] net: sched: fix warning in tcindex_alloc_perfect_hash
-Date:   Fri, 25 Jun 2021 23:23:48 +0300
-Message-Id: <20210625202348.24560-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S229878AbhFYU22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 16:28:28 -0400
+Received: from m.b4.vu ([203.16.231.148]:53606 "EHLO m.b4.vu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhFYU21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 16:28:27 -0400
+Received: by m.b4.vu (Postfix, from userid 1000)
+        id E89B461E5F02; Sat, 26 Jun 2021 05:56:04 +0930 (ACST)
+Date:   Sat, 26 Jun 2021 05:56:04 +0930
+From:   "Geoffrey D. Bennett" <g@b4.vu>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v4] ALSA: usb-audio: scarlett2: Fix for loop increment in
+ scarlett2_usb_get_config
+Message-ID: <20210625202604.GB23780@m.b4.vu>
+References: <20210625200549.1061113-1-nathan@kernel.org>
+ <20210625201150.1523987-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625201150.1523987-1-nathan@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported warning in tcindex_alloc_perfect_hash. The problem
-was in too big cp->hash, which triggers warning in kmalloc. Since
-cp->hash comes from userspace, there is no need to warn if value
-is not correct
+On Fri, Jun 25, 2021 at 01:11:51PM -0700, Nathan Chancellor wrote:
+> Clang warns:
+> 
+> sound/usb/mixer_scarlett_gen2.c:1189:32: warning: expression result
+> unused [-Wunused-value]
+>                         for (i = 0; i < count; i++, (u16 *)buf++)
+>                                                     ^      ~~~~~
+> 1 warning generated.
+> 
+> It appears the intention was to cast the void pointer to a u16 pointer
+> so that the data could be iterated through like an array of u16 values.
+> However, the cast happens after the increment because a cast is an
+> rvalue, whereas the post-increment operator only works on lvalues, so
+> the loop does not iterate as expected.
 
-Fixes: b9a24bb76bf6 ("net_sched: properly handle failure case of tcf_exts_init()")
-Reported-and-tested-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/sched/cls_tcindex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Your note about no bug which was added in v2 went missing in v3:
 
-diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
-index c4007b9cd16d..5b274534264c 100644
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -304,7 +304,7 @@ static int tcindex_alloc_perfect_hash(struct net *net, struct tcindex_data *cp)
- 	int i, err = 0;
- 
- 	cp->perfect = kcalloc(cp->hash, sizeof(struct tcindex_filter_result),
--			      GFP_KERNEL);
-+			      GFP_KERNEL | __GFP_NOWARN);
- 	if (!cp->perfect)
- 		return -ENOMEM;
- 
--- 
-2.32.0
+> > the loop does not iterate as expected. This is not a bug in practice
+> > because count is not greater than one at the moment but this could
+> > change in the future so this should be fixed.
 
+> Replace the cast with a temporary variable of the proper type, which is
+> less error prone and fixes the iteration. Do the same thing for the
+> 'u8 *' below this if block.
+> 
+> Fixes: ac34df733d2d ("ALSA: usb-audio: scarlett2: Update get_config to do endian conversion")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1408
+> Acked-by: Geoffrey D. Bennett <g@b4.vu>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+> 
+> v1 -> v2:
+> 
+> * Use temporary variables of proper type rather than casting, as
+>   requested by Takashi.
+> 
+> * Mention that there is not a bug at the moment per Geoffrey's comment.
+> 
+> v2 -> v3:
+> 
+> * Restrict scope of buf_16 more, as requested by Geoffrey.
+> 
+> * Add Geoffrey's ack.
+> 
+> v3 -> v4:
+> 
+> * Fix stray newline added below
+> 
+>   if (config_item->size >= 8) {
+> 
+>   leftover from buf_16's declaration.
+> 
+>  sound/usb/mixer_scarlett_gen2.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> index fcba682cd422..161d832cafef 100644
+> --- a/sound/usb/mixer_scarlett_gen2.c
+> +++ b/sound/usb/mixer_scarlett_gen2.c
+> @@ -1177,6 +1177,7 @@ static int scarlett2_usb_get_config(
+>  	const struct scarlett2_config *config_item =
+>  		&scarlett2_config_items[info->has_mixer][config_item_num];
+>  	int size, err, i;
+> +	u8 *buf_8;
+>  	u8 value;
+>  
+>  	/* For byte-sized parameters, retrieve directly into buf */
+> @@ -1185,9 +1186,12 @@ static int scarlett2_usb_get_config(
+>  		err = scarlett2_usb_get(mixer, config_item->offset, buf, size);
+>  		if (err < 0)
+>  			return err;
+> -		if (size == 2)
+> -			for (i = 0; i < count; i++, (u16 *)buf++)
+> -				*(u16 *)buf = le16_to_cpu(*(__le16 *)buf);
+> +		if (size == 2) {
+> +			u16 *buf_16 = buf;
+> +
+> +			for (i = 0; i < count; i++, buf_16++)
+> +				*buf_16 = le16_to_cpu(*(__le16 *)buf_16);
+> +		}
+>  		return 0;
+>  	}
+>  
+> @@ -1197,8 +1201,9 @@ static int scarlett2_usb_get_config(
+>  		return err;
+>  
+>  	/* then unpack from value into buf[] */
+> +	buf_8 = buf;
+>  	for (i = 0; i < 8 && i < count; i++, value >>= 1)
+> -		*(u8 *)buf++ = value & 1;
+> +		*buf_8++ = value & 1;
+>  
+>  	return 0;
+>  }
+> 
+> base-commit: 0cbbeaf370221fc469c95945dd3c1198865c5fe4
+> -- 
+> 2.32.0.93.g670b81a890
+> 
