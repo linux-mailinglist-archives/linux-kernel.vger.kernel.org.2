@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482CF3B4817
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698133B4819
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 19:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFYRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 13:20:16 -0400
-Received: from m32-153.88.com ([43.250.32.153]:53551 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229630AbhFYRUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 13:20:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=gAQcYyYOZgA8snHnTQ9W804vBE1CSX6RvN2TW
-        zUm50c=; b=VG6aM9kgK6LSFTxXwMHG1WxBSWBJYBHLfginN7HcWsRjbos5nl5T5
-        suX5fPXI2aD2aeLm88emP6poRRbtpqqyuvLONA6scR5Wsx061HguNtrpr5wiKqg1
-        H54l2vgnqAP4ZYpJr7Ey6P3ajiQpWC0Iag7Go1yA/Yywfu0jcj09UI=
-Received: from bobwxc.top (unknown [112.96.165.31])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDHnfy9D9ZgnV0rAA--.26199S2;
-        Sat, 26 Jun 2021 01:17:51 +0800 (CST)
-Date:   Sat, 26 Jun 2021 01:17:48 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
-Message-ID: <20210625171748.GA27602@bobwxc.top>
-References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
- <20210625065524.GA11219@bobwxc.top>
- <20210625095059.7f97fd62@coco.lan>
- <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
- <20210625122423.4435c5e9@coco.lan>
- <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
+        id S230063AbhFYRUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 13:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhFYRUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 13:20:40 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234D0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:18:19 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id c2so5566509qvs.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 10:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=siE1epn+L3LEogU7I1mjth/qAGMeZkKTvnoymSTcs6c=;
+        b=t9Hr2wERvksnNIIXbbNLYC8013rau1+cspy+iLOaqOjLrwLyX5f9cKWMtjCkkcsBcE
+         QAYhLBYKt+1lMLRxRd0LPsdPE49lU8jFeWAhAq8qEy/19GHgTCdEftmZDgfG5pWoMQvC
+         Q/3fW4qY8mom/IcoXAUGpC0k0cv3iaHjBKVMbFT4zTfTxuyqCB0rpwvJQEOzFRg/vBBB
+         ntsdEEBAe7qF8w305bdxSezi+/CO1kFTlUZTiaWXkz3kNMvXWwokwncN1eTtfRbvwcaq
+         ZUBvhfo4EsS5N0ZMo9yloBnlOiRF9g3ukEzCOsRRsmcKvjletpv9PF93qFrXIu+kgB/F
+         EKSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=siE1epn+L3LEogU7I1mjth/qAGMeZkKTvnoymSTcs6c=;
+        b=INBjdXjUFtjsckMMr8Y7Pn8JVqcIKUY1nPXohV+QmhjZ8EhiH5n1iLVAUjasXifVT0
+         8UUGdJAV3ruUwv9EUZ/D1CqdjvgB1IFKIQEYz4MAPU4xrqLMrsd1ZVbKUukPZjjNj5zo
+         izHCU5a1nRPBELNNnSwC59nsoelr1gOPhG5XoesYpUsdJsLWagTqakpDtMVMG7J2Ut2R
+         QUf+0SBruBkl1JxdIHFr//6NWBzlj+x1l6/C7+ny65IIqHWg90swOQTOMAk+fzbyCB/N
+         j5q8ruMJSM7GC0ov1zeqjt2Zk0tujUKE031RB10UAm5sU0zGBPbn2kCchn47srF9HSNj
+         BlyA==
+X-Gm-Message-State: AOAM531KjJNRcjEbBnorj1QqdRdorbAqgPyeyZijg+I3CObjeSLRhRfW
+        w3Z3Z3ZIVTuiuQbVfomxeBrlFbHYK/dOHiAHIfi+eqUF9e8=
+X-Google-Smtp-Source: ABdhPJyDrxwptFBzZu95ukspWmOhoRNz2DCZa+4AlwV4VvfZDJcQW7QHwfm5Ct/4sT82zwYNmNDhOQWKHBwQPyYaiJU=
+X-Received: by 2002:a05:6214:c89:: with SMTP id r9mr3466579qvr.40.1624641498324;
+ Fri, 25 Jun 2021 10:18:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgDHnfy9D9ZgnV0rAA--.26199S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Gr1xJrWkZF4kZFy8JryxXwb_yoW8Jr45pF
-        4kXa47Jan5Kw1vyrZF9w4Ig34Syr4fJryUJ3W5JryFyFy5WF12vryxXa1akFZrWr1kCa4j
-        9FyDXF4ku3y5CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgYb7Iv0xC_tr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzx
-        vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1U
-        Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkIecxEwVAFwVW8MxAIw28Icx
-        kI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
-        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
-        v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
-        x2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
-        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZF
-        pf9x07UTxRDUUUUU=
-X-Originating-IP: [112.96.165.31]
-X-CM-SenderInfo: pere453f6hztlloou0/
+References: <20210621200459.3558199-1-mw@semihalf.com> <CAPv3WKctDU7WOxHzeHc49-G_h42qX-pUpinJN2CVHNoRH86QHw@mail.gmail.com>
+In-Reply-To: <CAPv3WKctDU7WOxHzeHc49-G_h42qX-pUpinJN2CVHNoRH86QHw@mail.gmail.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Fri, 25 Jun 2021 19:18:06 +0200
+Message-ID: <CAPv3WKf=ufj-RbqOKm3cjOQcG1PDAEAkVLdLQUkRK94=_vtj9w@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: SPCR: Add new 16550-compatible Serial Port Subtype
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        devel@acpica.org
+Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Grzegorz Bernacki <gjb@semihalf.com>, upstream@semihalf.com,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Jon Nettleton <jon@solid-run.com>,
+        Tomasz Nowicki <tn@semihalf.com>, rjw@rjwysocki.net,
+        lenb@kernel.org, erik.kaneda@intel.com, robert.moore@intel.com,
+        Marcin Wojtas <mw@semihalf.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 08:32:47PM +0900, Akira Yokosawa wrote:
-> On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
-> > Em Fri, 25 Jun 2021 18:22:26 +0900
-> > Akira Yokosawa <akiyks@gmail.com> escreveu:
-> > 
-> >> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
-> [...]
-> >>
-> >> One minor problem might be that the Sarasa font needs manual
-> >> download (and install).
+Hi,
 
-It is officially releasing on Github:
-<https://github.com/be5invis/Sarasa-Gothic>
-Under OFL-1.1 License and provide both ttf and ttc format.
-Then install 'sarasa-mono-sc-regular.ttf/c' in the compressed pack.
+pon., 21 cze 2021 o 22:06 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(a):
+>
+> Apologies for the patch prefix, of course it's a first version and
+> unrelated to the networking subsystem.
+>
+> Best regards,
+> Marcin
+>
+>
+> pon., 21 cze 2021 o 22:05 Marcin Wojtas <mw@semihalf.com> napisa=C5=82(a)=
+:
+> >
+> > The Microsoft Debug Port Table 2 (DBG2) specification revision
+> > May 31, 2017 adds support for 16550-compatible Serial Port
+> > Subtype with parameters defined in Generic Address Structure (GAS) [1]
+> >
+> > Add its support in SPCR parsing routine.
+> >
+> > [1] https://docs.microsoft.com/en-us/windows-hardware/drivers/bringup/a=
+cpi-debug-port-table
+> >
+> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> > ---
+> >  include/acpi/actbl1.h | 1 +
+> >  drivers/acpi/spcr.c   | 1 +
+> >  2 files changed, 2 insertions(+)
+> >
+> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> > index ce59903c2695..f746012eba8d 100644
+> > --- a/include/acpi/actbl1.h
+> > +++ b/include/acpi/actbl1.h
+> > @@ -498,6 +498,7 @@ struct acpi_dbg2_device {
+> >  #define ACPI_DBG2_ARM_SBSA_GENERIC  0x000E
+> >  #define ACPI_DBG2_ARM_DCC           0x000F
+> >  #define ACPI_DBG2_BCM2835           0x0010
+> > +#define ACPI_DBG2_16550_WITH_GAS    0x0012
+> >
+> >  #define ACPI_DBG2_1394_STANDARD     0x0000
+> >
+> > diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
+> > index 88460bacd5ae..25c2d0be953e 100644
+> > --- a/drivers/acpi/spcr.c
+> > +++ b/drivers/acpi/spcr.c
+> > @@ -136,6 +136,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bo=
+ol enable_console)
+> >                 break;
+> >         case ACPI_DBG2_16550_COMPATIBLE:
+> >         case ACPI_DBG2_16550_SUBSET:
+> > +       case ACPI_DBG2_16550_WITH_GAS:
+> >                 uart =3D "uart";
+> >                 break;
+> >         default:
+> > --
 
-Above could be a part of tip message.
+Do you have any comments / remarks to the patch?
 
-Thanks,
-	Wu
-> >>
-> >>         Thanks, Akira
-> > 
-> > If this is not yet packaged as part of texlive packages
-> > on distros, this won't be a minor issue, as we'll need
-> > to find procedures and test it for all distros supported
-> > by the script.
-> 
-> Existence of "Sarasa Mono SC" can be checked by the command:
-> 
->     fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
-> 
-> If the result is *not* "0", you have the font somewhere in your
-> fontconfig path.
-> 
-> I think this is portable across distros.
-> Wouldn't this suffice for sphinx-pre-install?
-> 
->         Thanks, Akira
-> > 
-> > Thanks,
-> > Mauro
-> > 
-
+Best regards,
+Marcin
