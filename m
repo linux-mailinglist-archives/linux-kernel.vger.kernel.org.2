@@ -2,141 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD213B457F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899713B4588
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbhFYO2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:28:46 -0400
-Received: from mga06.intel.com ([134.134.136.31]:49233 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFYO2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:28:45 -0400
-IronPort-SDR: zeGIoIFPrwk+tZY8WomOVEMvlOhj8DY01XhJ1rkPgXjafJXF8zv5nCTfl+WuxE72i9b46RE4YD
- d3RB7I99cXgw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="268807684"
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="268807684"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:26:23 -0700
-IronPort-SDR: t1ciLaHXHmE5d53DxdoYNoH5tj3VqZOCVm/p5ULIys5uixWa4lWFSdTEvCXxBvaw4hObQHCeBX
- WrfY1n+wPDvQ==
-X-IronPort-AV: E=Sophos;i="5.83,299,1616482800"; 
-   d="scan'208";a="488202480"
-Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.249.230.200]) ([10.249.230.200])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 07:26:21 -0700
-Subject: Re: [PATCH] x86: eas should not be NULL when it is referenced
-To:     "Liang, Kan" <kan.liang@linux.intel.com>, 13145886936@163.com,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210624070442.34291-1-13145886936@163.com>
- <40e66cf9-398b-20d7-ce4d-433be6e08921@linux.intel.com>
- <f313e0d9-b18e-5dd8-cadf-ee0a689f20ea@linux.intel.com>
- <f3e4b37b-ff84-ac4f-ff56-f03313a22cda@linux.intel.com>
- <7d4862ae-7ac6-11e8-5c8d-74610eabd5b5@linux.intel.com>
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-Message-ID: <ba5f35f9-5ed0-b6be-4e19-45fef717a160@linux.intel.com>
-Date:   Fri, 25 Jun 2021 17:26:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231615AbhFYOaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFYOae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:30:34 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E64AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:28:13 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f13so1439632qtb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 07:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ZgLDmf4P91A2RHgxZba0+RJ1N9ppXcf6PPDNksXoJw=;
+        b=oB537cv+7rW36nLqzmSKurcx8XeCx4ShtN2KTeKpAFXu3Ce6WvWOu+DaKvJIk+2nnA
+         OBiAZXWbhyc+cm0cmprCWN3oDK+44jpDq74w8EIIrtuFA6m4dMkC2vMBuwy3OZOtnP+9
+         8oIua2zsmZ4h5osGPMO25wQmXkHc3vg+SI1P/x42tqLR6JKeyVqqPxLW1SVN2OU/67O4
+         ZXHJSlqcTUotXHjVT9uOkS2YlfnK5O7j+zRJqdUY4ZN57e2Ws3KGaOGNfiWYBwWIYpKL
+         DYxBd80wA+gnnnOK1X+eeKJ7WR9yvkXHZxKAJ67JPWsg2a0zKNhmgV5hKaH9CXlLWHKM
+         6GMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ZgLDmf4P91A2RHgxZba0+RJ1N9ppXcf6PPDNksXoJw=;
+        b=sB7pIFGQeFzJqLSJzuqgD7J0Ubr2YxbWjVMQlI9n1ha5YAf8tiK8zD9ntvrXtsYJst
+         2k/oGuZJ5clYGXUcuqGYX8BwoICr27rdUAS7KoHQk5wfIVkiouJ+oPQ4DcYoUJwKqmX5
+         B0MTknthMyx2Hv9K9XHOpAsw4QPTmfCC4O+My5cJKgRqkXhSDyG/cDZG5Opnheh3Q+zi
+         0wzzw7yIyd/yQGdkak5FNp/NA5i2eHsqaWhJnc3Pe9PHfJpGGEJZzHV7LT5TYXjzwTKV
+         Cm45HNSWouuY14O69mnB21HUVJyDSSLrdJ3AH6eUWHzedzd6wrylPREzKCI7q82wJdE1
+         SAZg==
+X-Gm-Message-State: AOAM532JXMa2YJCMEiowSLZ6wICq7zdhy2m4Os+VmE9k5guyMA0S3O/C
+        bvysjrxGXLY6xY8c6+WUl2XzZYoCxexFLqzbHV0/lw==
+X-Google-Smtp-Source: ABdhPJzYL8s1lJU9KzPzunn0ci7SYPyzALfsn/DFxLj6mqn8o0QuAynGEZnBOhCg11vT14u8xnOJKacmUn3UJ6axiwY=
+X-Received: by 2002:ac8:7616:: with SMTP id t22mr9473960qtq.43.1624631292305;
+ Fri, 25 Jun 2021 07:28:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7d4862ae-7ac6-11e8-5c8d-74610eabd5b5@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <000000000000911d3905b459824c@google.com> <000000000000e56a2605b616b2d9@google.com>
+ <YD0UjWjQmYgY4Qgh@nuc10> <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
+ <YD1RE3O4FBkKK32l@nuc10> <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
+ <YG4/PEhZ9CnKo1K3@nuc10> <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
+ <YG9Rz4R5bx+FnkaF@nuc10> <YMYhcMVTxThJYxMo@nuc10> <YNTAqiE7CWJhOK2M@nuc10>
+In-Reply-To: <YNTAqiE7CWJhOK2M@nuc10>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 25 Jun 2021 16:28:00 +0200
+Message-ID: <CACT4Y+Z4fjZZhCEM8eRRpw3qSpKY+nRoVcjtPQKsM7uYUL7xbQ@mail.gmail.com>
+Subject: Re: memory leak in bpf
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jun 24, 2021 at 7:28 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > > On Wed, Apr 7, 2021 at 4:24 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Mar 01, 2021 at 09:43:00PM +0100, Dmitry Vyukov wrote:
+> > > > > > On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
+> > > > > > > > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
+> > > > > > > > > > syzbot has found a reproducer for the following issue on:
+> > > > > > > > > >
+> > > > > > > > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+> > > > > > > > > > git tree:       upstream
+> > > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
+> > > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+> > > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+> > > > > > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
+> > > > > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
+> > > > > > > > > >
+> > > > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
+> > > > > > > > > >
+> > > > > > > > > > Debian GNU/Linux 9 syzkaller ttyS0
+> > > > > > > > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
+> > > > > > > > > > executing program
+> > > > > > > > > > executing program
+> > > > > > > > > > executing program
+> > > > > > > > > > BUG: memory leak
+> > > > > > > > > > unreferenced object 0xffff88810efccc80 (size 64):
+> > > > > > > > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
+> > > > > > > > > >   hex dump (first 32 bytes):
+> > > > > > > > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
+> > > > > > > > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
+> > > > > > > > > >   backtrace:
+> > > > > > > > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
+> > > > > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+> > > > > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+> > > > > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+> > > > > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+> > > > > > > > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+> > > > > > > > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
+> > > > > > > > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+> > > > > > > > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > > > > > > > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > i am pretty sure that this one is a false positive
+> > > > > > > > > the problem with reproducer is that it does not terminate all of the
+> > > > > > > > > child processes that it spawns
+> > > > > > > > >
+> > > > > > > > > i confirmed that it is a false positive by tracing __fput() and
+> > > > > > > > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
+> > > > > > > > > manually killed those running leftover processes from reproducer and
+> > > > > > > > > then both functions were executed and memory was freed
+> > > > > > > > >
+> > > > > > > > > i am marking this one as:
+> > > > > > > > > #syz invalid
+> > > > > > > >
+> > > > > > > > Hi Rustam,
+> > > > > > > >
+> > > > > > > > Thanks for looking into this.
+> > > > > > > >
+> > > > > > > > I wonder how/where are these objects referenced? If they are not
+> > > > > > > > leaked and referenced somewhere, KMEMLEAK should not report them as
+> > > > > > > > leaks.
+> > > > > > > > So even if this is a false positive for BPF, this is a true positive
+> > > > > > > > bug and something to fix for KMEMLEAK ;)
+> > > > > > > > And syzbot will probably re-create this bug report soon as this still
+> > > > > > > > happens and is not a one-off thing.
+> > > > > > >
+> > > > > > > hi Dmitry, i haven't thought of it this way, but i guess you are right,
+> > > > > > > it is a kmemleak bug, ideally kmemleak should be aware that there are
+> > > > > > > still running processes holding references to bpf fd/anonymous inodes
+> > > > > > > which in their turn hold references to allocated bpf maps
+> > > > > >
+> > > > > > KMEMLEAK scans whole memory, so if there are pointers to the object
+> > > > > > anywhere in memory, KMEMLEAK should not report them as leaked. Running
+> > > > > > processes have no direct effect on KMEMLEAK logic.
+> > > > > > So the question is: where are these pointers to these objects? If we
+> > > > > > answer this, we can check how/why KMEMLEAK misses them. Are they
+> > > > > > mangled in some way?
+> > > > > thank you for your comments, they make sense, and indeed, the pointer
+> > > > > gets vmaped.
+> > > > > i should have looked into this sooner, becaused syzbot did trigger the
+> > > > > issue again, and Andrii had to look into the same bug, sorry about that.
+> > > >
+> > > > No worries! I actually forgot about this thread :) Let's leave the
+> > > > link to my today's investigation ([0]) just for completeness.
+> > > >
+> > > >   [0] https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com/
+> > > >
+> > > > > if i am understanding this correctly here is what the fix should be:
+> > > > > ---
+> > > > >  kernel/bpf/ringbuf.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> > > > > index f25b719ac786..30400e74abe2 100644
+> > > > > --- a/kernel/bpf/ringbuf.c
+> > > > > +++ b/kernel/bpf/ringbuf.c
+> > > > > @@ -8,6 +8,7 @@
+> > > > >  #include <linux/vmalloc.h>
+> > > > >  #include <linux/wait.h>
+> > > > >  #include <linux/poll.h>
+> > > > > +#include <linux/kmemleak.h>
+> > > > >  #include <uapi/linux/btf.h>
+> > > > >
+> > > > >  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+> > > > > @@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+> > > > >         rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+> > > > >                   VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+> > > > >         if (rb) {
+> > > > > +               kmemleak_not_leak((void *) pages);
+> > > >
+> > > > If that makes kmemleak happy, I have no problems with this. But maybe
+> > > > leave some comment explaining why this is needed at all?
+> > > >
+> > > > And for my understanding, how vmap changes anything? Those pages are
+> > > > still referenced from rb, which is referenced from some struct file in
+> > > > the system. Sorry if that's a naive question.
+> > > >
+> > > valid question, it does look like kmemleak should be scanning
+> > > vmalloc()/vmap() memory, i will research this further
+> >
+> > a quick update, i see a problem in kmemleak code, and i have simplified
+> > the reproducer by getting rid of a vmap().
+> > i will reach out to maintainer and mm and afterwards i will update this
+> > bug, cheers!
+> >
+>
+> Andrii, we have discovered that kmemleak scans struct page, but it does
+> not scan page contents and this is by design. if we allocate some memory
+> with kmalloc(), then allocate page with alloc_page(), and if we put
+> kmalloc pointer somewhere inside that page, kmemleak will report kmalloc
+> pointer as a false positive.
+> we can instruct kmemleak to scan the memory area by calling
+> kmemleak_alloc()/kmemleak_free() as shown below. if we don't need that
+> memory to be scanned then we can use kmemleak_not_leak().
+> if we use the former then i guess we need to be careful since we do not
+> want/need to scan the memory that is being used by user-space.
 
-On 6/25/2021 5:11 PM, Liang, Kan wrote:
->
->
-> On 6/25/2021 9:33 AM, Alexander Antonov wrote:
->> Hello Kan,
->>> On 6/24/2021 3:03 PM, Liang, Kan wrote:
->>>> I think the NULL pointer dereference of eas should not happen, 
->>>> because die is -1 if eas is NULL. But the whole error handling path 
->>>> looks fragile.
->>>>
->>>> We already fixed one issue caused by it in commit ID f797f05d917f 
->>>> ("perf/x86/intel/uncore: Fix for iio mapping on Skylake Server")
->>>> https://lore.kernel.org/lkml/160149233331.7002.10919231011379055356.tip-bot2@tip-bot2/ 
->>>>
->>>>
->>>> Maybe something as below?
->>>>
->>>>  From 3de81ba3b04262ef3346297d82f6c4ffb4af7029 Mon Sep 17 00:00:00 
->>>> 2001
->>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>> Date: Thu, 24 Jun 2021 11:17:57 -0700
->>>> Subject: [PATCH] perf/x86/intel/uncore: Clean up error handling 
->>>> path of iio mapping
->>>>
->>>> The error handling path of iio mapping looks fragile. We already fixed
->>>> one issue caused by it, commit ID f797f05d917f 
->>>> ("perf/x86/intel/uncore:
->>>> Fix for iio mapping on Skylake Server"). Clean up the error handling
->>>> path and make the code robust.
->> I didn't catch why does the current error handling path look fragile?
->> Are there cases when it works incorrect?
->>
->
->
-> I don't think it causes any severe problem for now, e.g., crash, 
-> because current code checks die before the dereference.
-> But I think it violates the Linux kernel coding style (one err bug) 
-> and may bring potential issues.
->
-> https://www.kernel.org/doc/html/v4.10/process/coding-style.html
->
-> Thanks,
-> Kan
+Thanks for your heroic digging and persistence on this issue, Rustam!
 
-OK,
-Thank you for the explanation.
-
-- Alexander
+> ---
+>  kernel/bpf/ringbuf.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
->> Thanks,
->> Alexander
->>>>
->>>> Reported-by: gushengxian <gushengxian@yulong.com>
->>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->>>> ---
->>>>   arch/x86/events/intel/uncore_snbep.c | 6 ++++--
->>>>   1 file changed, 4 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/arch/x86/events/intel/uncore_snbep.c 
->>>> b/arch/x86/events/intel/uncore_snbep.c
->>>> index 7622762..6d4a5a9 100644
->>>> --- a/arch/x86/events/intel/uncore_snbep.c
->>>> +++ b/arch/x86/events/intel/uncore_snbep.c
->>>> @@ -3802,11 +3802,11 @@ pmu_iio_set_mapping(struct 
->>>> intel_uncore_type *type, struct attribute_group *ag)
->>>>       /* One more for NULL. */
->>>>       attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), 
->>>> GFP_KERNEL);
->>>>       if (!attrs)
->>>> -        goto err;
->>>> +        goto clear_topology;
->>>>
->>>>       eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
->>>>       if (!eas)
->>>> -        goto err;
->>>> +        goto clear_attrs;
->>>>
->>>>       for (die = 0; die < uncore_max_dies(); die++) {
->>>>           sprintf(buf, "die%ld", die);
->>>> @@ -3827,7 +3827,9 @@ pmu_iio_set_mapping(struct intel_uncore_type 
->>>> *type, struct attribute_group *ag)
->>>>       for (; die >= 0; die--)
->>>>           kfree(eas[die].attr.attr.name);
->>>>       kfree(eas);
->>>> +clear_attrs:
->>>>       kfree(attrs);
->>>> +clear_topology:
->>>>       kfree(type->topology);
->>>>   clear_attr_update:
->>>>       type->attr_update = NULL;
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 84b3b35fc0d0..cf7ce10b4fb1 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/vmalloc.h>
+>  #include <linux/wait.h>
+>  #include <linux/poll.h>
+> +#include <linux/kmemleak.h>
+>  #include <uapi/linux/btf.h>
+>
+>  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+> @@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+>         rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+>                   VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+>         if (rb) {
+> +               kmemleak_alloc(rb, PAGE_SIZE, 1, flags);
+>                 rb->pages = pages;
+>                 rb->nr_pages = nr_pages;
+>                 return rb;
+> @@ -184,6 +186,7 @@ static void bpf_ringbuf_free(struct bpf_ringbuf *rb)
+>         struct page **pages = rb->pages;
+>         int i, nr_pages = rb->nr_pages;
+>
+> +       kmemleak_free(rb);
+>         vunmap(rb);
+>         for (i = 0; i < nr_pages; i++)
+>                 __free_page(pages[i]);
+> --
+> 2.30.2
+>
