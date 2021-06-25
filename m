@@ -2,136 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E683B4618
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2093B461B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhFYOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFYOvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:51:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4BBC061574;
-        Fri, 25 Jun 2021 07:48:59 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dae0049fb297996de39ad.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:49fb:2979:96de:39ad])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C72C91EC0595;
-        Fri, 25 Jun 2021 16:48:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624632537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ENHDjrvHsrLVlBAdGgAmMkR2KuwDaPAvXCPilbbBf7A=;
-        b=LSXOwsdhUEbhG7vaRlM3tlHXlIL2v/KBN+RiZWsEAiLf8BjJ9w+dKv3EgevZlFNctBQ91L
-        kihWVCGWyB74ZmIbVG0UFqLQZu5TOOgdIAz2KLjcURGT5bgtWTYQC9esnD34CSJRSM4rZm
-        Ez3S06oseaAAUrkfLls9v8mOe0j+Sqk=
-Date:   Fri, 25 Jun 2021 16:48:53 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YNXs1XRu31dFiR2Z@zn.tnic>
-References: <YMw4UZn6AujpPSZO@zn.tnic>
- <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
- <YMy2OGwsRzrR5bwD@zn.tnic>
- <162442264313.98837.16983159316116149849@amd.com>
- <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
- <YNQz7ZxEaSWjcjO2@zn.tnic>
- <20210624123447.zbfkohbtdusey66w@amd.com>
- <YNSAlJnXMjigpqu1@zn.tnic>
- <20210624141111.pzvb6gk5lzfelx26@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624141111.pzvb6gk5lzfelx26@amd.com>
+        id S231668AbhFYOvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:51:36 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:39225 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230172AbhFYOvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:51:32 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GBKdg18ZBzB8tk;
+        Fri, 25 Jun 2021 16:49:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jpgq9w31e-LE; Fri, 25 Jun 2021 16:49:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GBKdg0HtwzB8tY;
+        Fri, 25 Jun 2021 16:49:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 736948B810;
+        Fri, 25 Jun 2021 16:49:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Fvob1dSR849e; Fri, 25 Jun 2021 16:49:10 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3BE178B80D;
+        Fri, 25 Jun 2021 16:49:10 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id CF5F46635D; Fri, 25 Jun 2021 14:49:09 +0000 (UTC)
+Message-Id: <d48bf0184a1de185eb0ed3282247f8a294710674.1624632537.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/interrupt: Use names in check_return_regs_valid()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 25 Jun 2021 14:49:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 09:11:11AM -0500, Michael Roth wrote:
->   We don't need anything in setup_data/setup_header. We can access the
->   CC blob table via EFI config table. However, parsing EFI config table
->   early in uncompressed/proper kernel has the complications I mentioned in my
->   initial response.
+trap->regs == 0x3000 is trap_is_scv()
 
-So since you want to parse the EFI table in the boot stage, that tells
-me that you need the blob in the early, boot kernel too, correct?
+trap 0x500 is INTERRUPT_EXTERNAL
 
-> This is where using a new boot_params field comes into
->   play (similar to acpi_rsdp_addr), so boot/compressed can pass
->   uncompressed/proper kernel a pointer to the pre-parsed CC blob so it doesn't
->   need to re-parse EFI config table during early boot.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/interrupt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ack.
-
-> For non-EFI case:
-> 
->   We need a "proper" mechanism that bootloaders can use. My
->   understanding is this would generally be via setup_data or
->   setup_header, and that a direct boot_params field would be frowned
->   upon.
-
-So, you need to pass only an address, right?
-
-How workable would it be if you had a cmdline option:
-
-	cc_blob_address=0xb1a
-
-with which you tell the kernel where that thing is?
-
-Because then you can use this in both cases - EFI and !EFI.
-
-Or is this blob platform-dependent and the EFI table contains it and
-something needs to get it out of there, even if it were a user to
-type in the cmdline cc_blob_address or some script when it comes to
-containers...?
-
-In any case, setup_data is kinda the generic way to pass arbitrary data
-to the kernel so in this case, you can prioritize the EFI table in the
-EFI case and fall back to setup_data if there's no EFI table...
-
-> So your understanding of the situation seems correct.
-> 
-> By bringing up the non-EFI case I only meant to point out that by using a
-> field in setup_header, we could re-use that field for the EFI case as well,
-> and wouldn't need a seperate boot_params field to handle the
-> boot/compressed->uncompressed passing of the pre-parsed CC blob address
-> in the EFI case. But I don't think it makes a big difference as far as
-> my stuff goes at least. Maybe for TDX though this needs more thought.
-
-Yah, let's see what requirements they'd come back with.
-
-Thx.
-
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 1b4a99ecb7e5..0052702ee5ac 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -222,12 +222,12 @@ static void check_return_regs_valid(struct pt_regs *regs)
+ 	u8 *validp;
+ 	char *h;
+ 
+-	if (regs->trap == 0x3000)
++	if (trap_is_scv(regs))
+ 		return;
+ 
+ 	trap = regs->trap;
+ 	// EE in HV mode sets HSRRs like 0xea0
+-	if (cpu_has_feature(CPU_FTR_HVMODE) && trap == 0x500)
++	if (cpu_has_feature(CPU_FTR_HVMODE) && trap == INTERRUPT_EXTERNAL)
+ 		trap = 0xea0;
+ 
+ 	switch (trap) {
 -- 
-Regards/Gruss,
-    Boris.
+2.25.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
