@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0763B4A21
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26F33B4A26
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhFYV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 17:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        id S229987AbhFYV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 17:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYV24 (ORCPT
+        with ESMTP id S229940AbhFYV3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 17:28:56 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACB7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:26:33 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id a11so18495680lfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:26:32 -0700 (PDT)
+        Fri, 25 Jun 2021 17:29:37 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9792AC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:27:16 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x16so8420061pfa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 14:27:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7t7D/1J/bOKgBQ+E9q4Uy0N2GZHjAbWkoMyygvcYg8Y=;
-        b=X7p8RIA2xPal9jCN6NmRKzdl1VHHJFNPhLAFX0APZphiwG/aMwD704fy688xj/3cUm
-         ae/VP1vEl4Uxh1Z0R+27u31XVSGL1dSYDyR1vecv2hnLmxHTocNYVUblMBaCZitENkC9
-         ODliPZAmuUesicpdUPmRt1FL12g+y7BOVzw7jla1JjeY7BVNJb13oB88mMoeSxRwEWS/
-         fhCOm8U5PLn10k7L/CxUE/xBgS+Xol707SQHcj5Fi+cOi6vX3k9jBXHhgTTRnoVtNlQu
-         133/sAJkefCob8PomQIq8STX24PxKNAt9XlGUUb36XQvphmsMoKGzyZ0kDEogz6n3JHw
-         rQbA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xRxE71rC/IWPeumP7C1MZE8K9Wv2pifNDPEqkqJ42DQ=;
+        b=fRwIMlDaWV0fntevPeIwqIuwZA9SOE+D3GJyYH4A5O3MEchBAxYKHVqyzp+eXW4VT6
+         wkaJlszvY8HnkF2duefyJC1I3qVf+p1ig/BgstcUWTRUVWul6Oo3rP7bs9ApaUaWR57a
+         i1sqycmWuqiX4+9R/GcLQAbrcWSMKP3JcKrGbbxKYF74XMqLPxckIlosyP1sfnD5unHM
+         G4t5VwXQ0Z91lF1lVVeeYJGmplujg8vw5ac9Uczs83849SpRl9uKdLtYz6IAxTGck7vD
+         yGl4xBs5TFy7nkqOqJEwPi/srgDSom6k7oU2oYvhoXlul5zFOmjkXkOvhoEoTQXSC1dN
+         Xxuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7t7D/1J/bOKgBQ+E9q4Uy0N2GZHjAbWkoMyygvcYg8Y=;
-        b=r4xvAbZ/KwrQu/Wv66GvxmTEfiW1QgtnC01jGPWNOFyT3Xn2Hc7Wp9+MdIrEqw8xo3
-         o3ckIY0AM+yuWE9v3ae07cEz++m5le0ivRCwqVxD3EAxoK1tOBSAP80tvI5X/Eau4ZbL
-         beW4NNOhgxx8qR9BP5eWrO8K8E3abStiO0pkEm3juWOiVaFnX/21KwY+uqrL0Sa0q7rX
-         yWES18+z+45dI5xnDKQX0coRc6+gwRooGHYJUhKxkCH+GCtztzuhCcWNP03ZHSEY2HTZ
-         NXmzO+dl8ztEPujbbZPmo64AiUTuS5SIFkL6poEZguL0hU0b/NxXFS3bqfea6j65XyBm
-         WKzw==
-X-Gm-Message-State: AOAM5315xHh6Ig0tfc8DMdCnW5yBKqFHgloLyleTvoq5F0YswCVUdfsN
-        z8do3dO+YS9i1W5Kfl5Ca8ZjgVxnLfr+sw==
-X-Google-Smtp-Source: ABdhPJzyJsmvcyRKSkjbbb0IYNhkZj+n4BR7pYe1DCLl6o1t/q+vPZOxQ7EOWGKdCGqRpU/qWKl72A==
-X-Received: by 2002:ac2:48b1:: with SMTP id u17mr9549252lfg.646.1624656391311;
-        Fri, 25 Jun 2021 14:26:31 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id t30sm605776lfg.289.2021.06.25.14.26.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 14:26:30 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] net: ethernet: fix UAF in ltq_etop_init
-Date:   Sat, 26 Jun 2021 00:26:28 +0300
-Message-Id: <20210625212628.14514-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xRxE71rC/IWPeumP7C1MZE8K9Wv2pifNDPEqkqJ42DQ=;
+        b=mf94EkLfJ6LUZhIE7TuBX8FoA+nXqHw1YWiWrt0kFj3tHtjhKSdvrczB0GmgTB1gCh
+         Va0b3W2q0fpPM/wVnJpSPef8uCQTNslsAK7RTNqlfZRXRLE1zVHe1LZWELTA8SwHh6In
+         lYMvY9EylHi+7ak2qLKKmzhpQskZIy4TRTenBupmyVWLG0yBkgxhpNGht68Apjyb01QZ
+         H91YkTuR5640jmClbynYHqUSZ0FMQbUCDWZbhCOF6a1jTXl6J2Hx+BvhR1cMxN5Rze1Q
+         rh7Cxhdhm/+gcIy17Th2EeK4c4wm5FA/NJozvkNZOgycaeBpywHc6Zb6gPvwtELwNZfE
+         UF+A==
+X-Gm-Message-State: AOAM532pDxMPVqOW43LK3JF+hg6EyXzgSUXnRJE5UYo6G4pfF6CwUl6u
+        HR+rwLmh70wL/rSLxVXwaQc/LFqCAFuvdh+XsJ5vQw==
+X-Google-Smtp-Source: ABdhPJwCGwSk6BZTuRmUOtwJhakAAFLWcIBXw8yjzjt+AT3O/BJZ7dHeP6UboGbcWP27Q9QqLf2aHP6UNR6pscUXNeo=
+X-Received: by 2002:a63:d0d:: with SMTP id c13mr11573133pgl.384.1624656435782;
+ Fri, 25 Jun 2021 14:27:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1623824363.git.mchehab+huawei@kernel.org> <6fde409079959a95b62b9b2692503608d7ff0dbd.1623824363.git.mchehab+huawei@kernel.org>
+In-Reply-To: <6fde409079959a95b62b9b2692503608d7ff0dbd.1623824363.git.mchehab+huawei@kernel.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 25 Jun 2021 14:27:04 -0700
+Message-ID: <CAFd5g443AK+vxaupGiBQC5wB-5PG+5vV11y1NjevUh8don+VJQ@mail.gmail.com>
+Subject: Re: [PATCH v2 10/29] docs: dev-tools: kunit: avoid using ReST
+ :doc:`foo` markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ltq_etop_init() netdev was used after free_netdev():
+On Tue, Jun 15, 2021 at 11:27 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> The :doc:`foo` tag is auto-generated via automarkup.py.
+> So, use the filename at the sources, instead of :doc:`foo`.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+> Acked-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-err_netdev:
-	unregister_netdev(dev);
-	free_netdev(dev);
-err_hw:
-	ltq_etop_hw_exit(dev);
-	return err;
+Hi, can you please rebase and resend your patch on top of
 
-It causes use-after-free read/write in ltq_etop_hw_exit().
-Fix it by rewriting error handling path in this function. No logic
-changes, only small refactoring.
-
-Fixes: ("MIPS: Lantiq: Add ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/ethernet/lantiq_etop.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
-index 2d0c52f7106b..807a671ebcf8 100644
---- a/drivers/net/ethernet/lantiq_etop.c
-+++ b/drivers/net/ethernet/lantiq_etop.c
-@@ -553,8 +553,10 @@ ltq_etop_init(struct net_device *dev)
- 
- 	dev->watchdog_timeo = 10 * HZ;
- 	err = ltq_etop_hw_init(dev);
--	if (err)
--		goto err_hw;
-+	if (err) {
-+		ltq_etop_hw_exit(dev);
-+		return err;
-+	}
- 	ltq_etop_change_mtu(dev, 1500);
- 
- 	memcpy(&mac, &priv->pldata->mac, sizeof(struct sockaddr));
-@@ -580,9 +582,8 @@ ltq_etop_init(struct net_device *dev)
- 
- err_netdev:
- 	unregister_netdev(dev);
--	free_netdev(dev);
--err_hw:
- 	ltq_etop_hw_exit(dev);
-+	free_netdev(dev);
- 	return err;
- }
- 
--- 
-2.32.0
-
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=kunit-fixes
