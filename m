@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1C23B4A57
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 23:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796D23B4A5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 00:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFYWAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 18:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S229944AbhFYWEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 18:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhFYWAM (ORCPT
+        with ESMTP id S229630AbhFYWDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 18:00:12 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410BDC061574;
-        Fri, 25 Jun 2021 14:57:50 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id v7so9303493pgl.2;
-        Fri, 25 Jun 2021 14:57:50 -0700 (PDT)
+        Fri, 25 Jun 2021 18:03:53 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC99C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:01:31 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y13so5400837plc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 15:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gt2NmkR1E5ZgvFdUpFs+L6Ez4R0M8YKSRPJbGflzW5Q=;
-        b=XuoU/qgBb3OcQGUz8euB/lXSxAns36t6fFbFU8gJcU+7z6TuYSC1vb6wyVDDIgsfQu
-         +nPrNoTKgdFchB7ek0pISMJKCEhvP3jPDsgY09cOhzBqJqcigIWspBu5B+hTcF3WtukL
-         aizq4GEnySkLO7KojwnY/kwG9DS4G72Q8nebRy+87vTnCfHpGsnfGsLy5ONWSkhgugn5
-         VVasFk5b1oUhcBrOUbAl3ZXClBKoNoRrGJXLszWe0s9sSSF/nJVxMtWs0cxLzvl+os0H
-         DJ4jxp39UhpRnLxwdQJ0bjwoMfZErE/5q9N4AnGXR0GWJK53InKb5eAIUUsgECfPe8VL
-         QiwQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SMD41VYFXQVqp0cPLtj6+yt8JTpkYNMg+rAFqmHCirw=;
+        b=VP/Vzb6qs7JTdj4hwNxwy0c1Khz5Xixvj0w2gKxikp8MlWvpEBFrNb+Wvd6Zd7GXSq
+         5ItkFoUcGwTO6nJ79jj1ZzRqnAkM4TK6e5YWwgMbx1ZwYva+O8wcpVqFRkNfrZ7nWB6g
+         DzPC4/6Bhw4+olLR5/pm/3T9PvccSH8pGjcqk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gt2NmkR1E5ZgvFdUpFs+L6Ez4R0M8YKSRPJbGflzW5Q=;
-        b=gYGS6lAIj19o3t+kVeYu+y9ah7zDZB341iHYcD7wAdvniVhiu5mwcjwC9fN9bI9vII
-         6LQHyHROxgg15ahjern88LzAd5F3c3kiUIwzURUmq8ON4t0G+nhMKZD9WP9t9b2+V751
-         xeXU+qjcaJHJvsK3HfD3/O8dQybNtvTeyZJp59pl669EnK2XdxssC2Zef8suuCITi8vc
-         zqHb54EFfHFBU2BJfuoaE61GLVi/KeRHCpz2iBpj+IyenZ0jOe6ZPkePGsRlSHJRuROA
-         PaChvDVwrNUCC67s2rfh76zSwAQCJqN18b+fGWuWjwuw1W+0Tl96W1YiY8RI+7ARSN8/
-         XOuQ==
-X-Gm-Message-State: AOAM533qNadAqvLP7SipfgAkhbqvnmzPzfQR61l7KkOI5XuKbVO7oM7c
-        3VZEYk2tw/t7mZpaC+UjtNc=
-X-Google-Smtp-Source: ABdhPJykHG2bZ4LXTTPKxn60d03hXgbQSzv1+nBaf3Juf7TROkeYfemSG0lpZ0/gYnJ/nefnofOuDg==
-X-Received: by 2002:a62:5105:0:b029:305:324:17ae with SMTP id f5-20020a6251050000b0290305032417aemr12691434pfb.28.1624658269783;
-        Fri, 25 Jun 2021 14:57:49 -0700 (PDT)
-Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x16sm6598067pfq.74.2021.06.25.14.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 14:57:49 -0700 (PDT)
-From:   Doug Berger <opendmb@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Doug Berger <opendmb@gmail.com>
-Subject: [PATCH net] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
-Date:   Fri, 25 Jun 2021 14:57:32 -0700
-Message-Id: <20210625215732.209588-1-opendmb@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SMD41VYFXQVqp0cPLtj6+yt8JTpkYNMg+rAFqmHCirw=;
+        b=LKnqmDiRkrMJCP/QZAlSIMZmGq4S//gZC5vH4CX5sTQjS2i4KXmOrABV2HFltBlUmO
+         fYvwc+75aMxuj5iVqZZBsR4aieFkmKC6O2gQBLPGNeC/3f2alAw0aHl273xtaUVCgP15
+         sO5UzrV1/zH7b0Li+eOSBmADeu4VPZbQNhYwpmHrwqoFaVeEYd6pRJBiFWWVW51vFqo4
+         VnPDiC43xSVXjr/D/AxiXh6t+mT/UoNbteCVLEhnqbzet2y2xb0ER2FK/iR18BPqHPAm
+         juWNW1dE6UbKLfVRjCZMEUJ4QdcHsybUfV+SSBvgn/ZoLJEXmM+WHOZ18KLIHcUt66Wr
+         MgOQ==
+X-Gm-Message-State: AOAM533Sq+Dgm9V9/ePtFvOOtQfCIM/g6dHzSfZwcKQ7EdVsmF6/Iu9A
+        bzsPTn/yohkCHeFMjV0DFn9k2g==
+X-Google-Smtp-Source: ABdhPJzParOOHJNvX2jGfbfqx7imK+dVIIvvB890LsT4DrwRRGE0klwbfmo7d7J5Jpcf4y/1b+CJPw==
+X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr22962696pjh.188.1624658490746;
+        Fri, 25 Jun 2021 15:01:30 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:cc13:a7dd:f4b5:2160])
+        by smtp.gmail.com with UTF8SMTPSA id c5sm6823468pfn.144.2021.06.25.15.01.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 15:01:30 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 15:01:27 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        swboyd@chromium.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
+        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v3 11/13] soc: qcom: aoss: Drop power domain support
+Message-ID: <YNZSN2wXomiZHsz4@google.com>
+References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
+ <1624560727-6870-12-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624560727-6870-12-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
-logic of the internal PHY to prevent the system from sleeping. Some
-internal PHYs will report that energy is detected when the network
-interface is closed which can prevent the system from going to sleep
-if WoL is enabled when the interface is brought down.
+On Fri, Jun 25, 2021 at 12:22:05AM +0530, Sibi Sankar wrote:
+> The load state resources are expected to follow the life cycle of the
+> remote processor it tracks. However, modeling load state resources as
+> power-domains result in them getting turned off during system suspend
+> and thereby falling out of sync with the remote processors that are still
+> on. Fix this by replacing load state resource control through the generic
+> qmp message send interface instead.
 
-Since the driver does not support waking the system on this logic,
-this commit clears the bit whenever the internal PHY is powered up
-and the other logic for manipulating the bit is removed since it
-serves no useful function.
+nit: the above sounds as if this patch does all of that, when it only
+removes power domain support. Instead you could start with saying what
+the patch actually does (remove power domain support), followed by why
+PD support isn't needed anymore (now done by sending QMP messages directly).
 
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
----
- drivers/net/ethernet/broadcom/genet/bcmgenet.c    | 15 ++-------------
- .../net/ethernet/broadcom/genet/bcmgenet_wol.c    |  6 ------
- 2 files changed, 2 insertions(+), 19 deletions(-)
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  drivers/soc/qcom/qcom_aoss.c | 109 ++-----------------------------------------
+>  1 file changed, 3 insertions(+), 106 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 998ee7605eb2..f0c3726e8c46 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+>
+> ...
+>
+> @@ -650,13 +550,11 @@ static int qmp_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_close_qmp;
+>  
+> -	ret = qmp_pd_add(qmp);
+> -	if (ret)
+> -		goto err_remove_qdss_clk;
+> -
+>  	ret = qmp_cooling_devices_register(qmp);
+> -	if (ret)
+> +	if (ret) {
+>  		dev_err(&pdev->dev, "failed to register aoss cooling devices\n");
+> +		goto err_remove_qdss_clk;
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 41f7f078cd27..0260cbaf0197 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -1640,7 +1640,8 @@ static void bcmgenet_power_up(struct bcmgenet_priv *priv,
- 
- 	switch (mode) {
- 	case GENET_POWER_PASSIVE:
--		reg &= ~(EXT_PWR_DOWN_DLL | EXT_PWR_DOWN_BIAS);
-+		reg &= ~(EXT_PWR_DOWN_DLL | EXT_PWR_DOWN_BIAS |
-+			 EXT_ENERGY_DET_MASK);
- 		if (GENET_IS_V5(priv)) {
- 			reg &= ~(EXT_PWR_DOWN_PHY_EN |
- 				 EXT_PWR_DOWN_PHY_RD |
-@@ -3318,12 +3319,6 @@ static int bcmgenet_open(struct net_device *dev)
- 
- 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
- 
--	if (priv->internal_phy) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg |= EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	/* Disable RX/TX DMA and flush TX queues */
- 	dma_ctrl = bcmgenet_dma_disable(priv);
- 
-@@ -4176,12 +4171,6 @@ static int bcmgenet_resume(struct device *d)
- 		if (rule->state != BCMGENET_RXNFC_STATE_UNUSED)
- 			bcmgenet_hfb_create_rxnfc_filter(priv, rule);
- 
--	if (priv->internal_phy) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg |= EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	/* Disable RX/TX DMA and flush TX queues */
- 	dma_ctrl = bcmgenet_dma_disable(priv);
- 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-index facde824bcaa..e31a5a397f11 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-@@ -186,12 +186,6 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- 	reg |= CMD_RX_EN;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
- 
--	if (priv->hw_params->flags & GENET_HAS_EXT) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg &= ~EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	reg = UMAC_IRQ_MPD_R;
- 	if (hfb_enable)
- 		reg |=  UMAC_IRQ_HFB_SM | UMAC_IRQ_HFB_MM;
--- 
-2.25.1
+This isn't really related with the PD removal, right? I wonder if it was
+intentional to have _probe() succeed even when the cooling device
+registration failed, since the cooling devices aren't essential.
 
+If it is still desirable to fail the change should be done in a separate
+patch, unless it is actually related with removing PD support.
