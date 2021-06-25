@@ -2,257 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BD13B4677
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87FD3B467D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhFYPV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYPV0 (ORCPT
+        id S229889AbhFYPWJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Jun 2021 11:22:09 -0400
+Received: from out28-219.mail.aliyun.com ([115.124.28.219]:56018 "EHLO
+        out28-219.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhFYPWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:21:26 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9F5C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:19:04 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id m2so7826338pgk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 08:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IYXfHZ621u1RKXLl6fRVJ5qE+Ta1mKaJ04yv+bL3cZM=;
-        b=fElIZVV9zJ5EbpAzGjhWJ974z9nJG/IlwupqN1aYKTdJGEM1+A4PWgy+BDUfZyl+Op
-         tpPZqRZYesdfaSjGLC2NY1hyFU+cAHoEdOSPSzCiHxWvaISGZx7XF47dTkIE/AbbULCc
-         vEUcXHGszPvP4ZIgz+uhTatwuApAUyBY8bOww=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IYXfHZ621u1RKXLl6fRVJ5qE+Ta1mKaJ04yv+bL3cZM=;
-        b=S1vJN1LtOFXu1ABIGW6pokedh+611bnY4A7q1vS+zmU03gXFjuzkLC9FDR85Dlh/+p
-         sr5lfh2O3tobTc+Fnv0dEgvNuKXHp+Nosdmxs1NsNGe62GrVtCyWKVfwewgiWOBmHaTD
-         1iabMVIn7HXLrRM32jvWiDfERpaotUu8O4pRF0L3UAdOfL0eaQcl+dX4/W8f+7cQm9Dc
-         llUTO3cPxH9cXHCqXRdNPtoUSDtAiqFO3nro+P2RBFePbt+vq7+OfaNBDiceepcOQkJm
-         /na1sC4pFkBgcv2yygQ4rZVaRlO0tPVVkEFyK+tPLqnz0wVI7Kg8fAgBcDG7ZK2dtW9H
-         cQ4w==
-X-Gm-Message-State: AOAM530ku1oLgzrHWcFV/uVc5fDSbqwVtvZA89/nXy8pyGFPQrlOyA0N
-        duy9nHTwfSPZ3gjW3SM7Ww+XhQ==
-X-Google-Smtp-Source: ABdhPJyLf0gK5OV/R74bM1YQmGfHnzB9zzX4T8MUiMNVrYeGBOizHd2ZtDhIRFLsGyG3GZMdFNfWSg==
-X-Received: by 2002:a63:db43:: with SMTP id x3mr10054474pgi.383.1624634344441;
-        Fri, 25 Jun 2021 08:19:04 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:cbea:f502:729d:7fa5])
-        by smtp.gmail.com with ESMTPSA id t3sm6205024pfl.44.2021.06.25.08.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 08:19:04 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] HID: i2c-hid: goodix: Tie the reset line to true state of the regulator
-Date:   Fri, 25 Jun 2021 08:18:36 -0700
-Message-Id: <20210625081818.v2.1.I358cae5e33f742765fd38485d6ddf1a4a978644d@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Fri, 25 Jun 2021 11:22:07 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437938|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.153526-0.00393891-0.842535;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KY-7FRG_1624634383;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KY-7FRG_1624634383)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Fri, 25 Jun 2021 23:19:43 +0800
+Date:   Fri, 25 Jun 2021 23:19:42 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH v3 4/4] MIPS: CI20: Add second percpu timer for SMP.
+Message-ID: <20210625231942.32945490@zhouyanjie-virtual-machine>
+In-Reply-To: <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
+References: <1624547189-61079-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1624547189-61079-5-git-send-email-zhouyanjie@wanyeetech.com>
+        <5C99VQ.EJKI9MPO7XXO1@crapouillou.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The regulator for the touchscreen could be:
-* A dedicated regulator just for the touchscreen.
-* A regulator shared with something else in the system.
-* An always-on regulator.
+Hi Paul,
 
-How we want the "reset" line to behave depends a bit on which of those
-three cases we're in. Currently the code is written with the
-assumption that it has a dedicated regulator, but that's not really
-guaranteed to be the case.
+于 Fri, 25 Jun 2021 12:31:17 +0100
+Paul Cercueil <paul@crapouillou.net> 写道:
 
-The problem we run into is that if we leave the touchscreen powered on
-(because someone else is requesting the regulator or it's an always-on
-regulator) and we assert reset then we apparently burn an extra 67 mW
-of power. That's not great.
+> Hi Zhou,
+> 
+> Le jeu., juin 24 2021 at 23:06:29 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > 1.Add a new TCU channel as the percpu timer of core1, this is to
+> >   prepare for the subsequent SMP support. The newly added channel
+> >   will not adversely affect the current single-core state.
+> > 2.Adjust the position of TCU node to make it consistent with the
+> >   order in jz4780.dtsi file.  
+> 
+> That's a bit superfluous, the order matters when adding new nodes,
+> but once they are added, moving them around only cause annoyance.
+> 
+> > 
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > ---
+> > 
+> > Notes:
+> >     v2:
+> >     New patch.
+> > 
+> >     v2->v3:
+> >     No change.
+> > 
+> >  arch/mips/boot/dts/ingenic/ci20.dts | 21 +++++++++++----------
+> >  1 file changed, 11 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> > b/arch/mips/boot/dts/ingenic/ci20.dts
+> > index 8877c62..70005cc 100644
+> > --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> > +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> > @@ -118,6 +118,17 @@
+> >  	assigned-clock-rates = <48000000>;
+> >  };
+> > 
+> > +&tcu {
+> > +	/*
+> > +	 * 750 kHz for the system timers and 3 MHz for the
+> > clocksources,
+> > +	 * use channel #0 and #1 for the per cpu system timers,
+> > and use
+> > +	 * channel #2 for the clocksource.
+> > +	 */
+> > +	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > +					  <&tcu TCU_CLK_TIMER2>,
+> > <&tcu TCU_CLK_OST>;
+> > +	assigned-clock-rates = <750000>, <750000>, <3000000>,
+> > <3000000>;  
+> 
+> Ideally you'd set TIMER1 to 3 MHz and TIMER2 to 750 kHz, otherwise it 
+> kind of breaks support for older kernels (they would still boot, but 
+> with a very slow clocksource). So in the new DTS you could use the 
+> timer0 clock for CPU #0, timer1 for the clocksource, and timer2+ for 
+> cpus > 0.
 
-Let's instead tie the control of the reset line to the true state of
-the regulator as reported by regulator notifiers. If we have an
-always-on regulator our notifier will never be called. If we have a
-shared regulator then our notifier will be called when the touchscreen
-is truly turned on or truly turned off.
+I checked the ingenic-timer driver, and it seems that the last TCU
+channel is always used as the clocksource in the driver, so it seems
+that we can only use timer2 as the clocksource in smp mode. Maybe we
+should add a note for smp is closed in the comment. And I found that I
+missed a problem, Nikolaus Schaller once reported that because the
+frequency of the tcu timer (only 16bit) used to provide the clocksource
+is too high, there will be a chance that the system will get stuck
+before the clocksource is switched to ost. And reducing the clocksource
+to 750kz can prevent it from happening. I will add this part to v4.
+When this part is added, both clockevent and clocksource will be
+750kHz, but the 750kHz clocksource is only temporary, because it will
+then switch to the clocksource provided by ost, and ost works at 3MHz.
 
-Using notifiers like this nicely handles all the cases without
-resorting to hacks like pretending that there is no "reset" GPIO if we
-have an always-on regulator.
+Thanks and best regards!
 
-NOTE: if the regulator is on a shared line it's still possible that
-things could be a little off. Specifically, this case is not handled
-even after this patch:
-1. Suspend goodix (send "sleep", goodix stops requesting regulator on)
-2. Other regulator user turns off (regulator fully turns off).
-3. Goodix driver gets notified and asserts reset.
-4. Other regulator user turns on.
-5. Goodix driver gets notified and deasserts reset.
-6. Nobody resumes goodix.
-
-With that set of steps we'll have reset deasserted but we will have
-lost the results of the I2C_HID_PWR_SLEEP from the suspend path. That
-means we might be in higher power than we could be even if the goodix
-driver thinks things are suspended. Presumably, however, we're still
-in better shape than if we were asserting "reset" the whole time. If
-somehow the above situation is actually affecting someone and we want
-to do better we can deal with it when we have a real use case.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-Changes in v2:
-- Drop the lock before returning in error case
-
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 92 +++++++++++++++++++++----
- 1 file changed, 79 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-index ee0225982a82..31a4c229fdb7 100644
---- a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-@@ -26,28 +26,29 @@ struct i2c_hid_of_goodix {
- 	struct i2chid_ops ops;
- 
- 	struct regulator *vdd;
-+	struct notifier_block nb;
-+	struct mutex regulator_mutex;
- 	struct gpio_desc *reset_gpio;
- 	const struct goodix_i2c_hid_timing_data *timings;
- };
- 
--static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+static void goodix_i2c_hid_deassert_reset(struct i2c_hid_of_goodix *ihid_goodix,
-+					  bool regulator_just_turned_on)
- {
--	struct i2c_hid_of_goodix *ihid_goodix =
--		container_of(ops, struct i2c_hid_of_goodix, ops);
--	int ret;
--
--	ret = regulator_enable(ihid_goodix->vdd);
--	if (ret)
--		return ret;
--
--	if (ihid_goodix->timings->post_power_delay_ms)
-+	if (regulator_just_turned_on && ihid_goodix->timings->post_power_delay_ms)
- 		msleep(ihid_goodix->timings->post_power_delay_ms);
- 
- 	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 0);
- 	if (ihid_goodix->timings->post_gpio_reset_delay_ms)
- 		msleep(ihid_goodix->timings->post_gpio_reset_delay_ms);
-+}
- 
--	return 0;
-+static int goodix_i2c_hid_power_up(struct i2chid_ops *ops)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(ops, struct i2c_hid_of_goodix, ops);
-+
-+	return regulator_enable(ihid_goodix->vdd);
- }
- 
- static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
-@@ -55,20 +56,54 @@ static void goodix_i2c_hid_power_down(struct i2chid_ops *ops)
- 	struct i2c_hid_of_goodix *ihid_goodix =
- 		container_of(ops, struct i2c_hid_of_goodix, ops);
- 
--	gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
- 	regulator_disable(ihid_goodix->vdd);
- }
- 
-+static int ihid_goodix_vdd_notify(struct notifier_block *nb,
-+				    unsigned long event,
-+				    void *ignored)
-+{
-+	struct i2c_hid_of_goodix *ihid_goodix =
-+		container_of(nb, struct i2c_hid_of_goodix, nb);
-+	int ret = NOTIFY_OK;
-+
-+	mutex_lock(&ihid_goodix->regulator_mutex);
-+
-+	switch (event) {
-+	case REGULATOR_EVENT_PRE_DISABLE:
-+		gpiod_set_value_cansleep(ihid_goodix->reset_gpio, 1);
-+		break;
-+
-+	case REGULATOR_EVENT_ENABLE:
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, true);
-+		break;
-+
-+	case REGULATOR_EVENT_ABORT_DISABLE:
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, false);
-+		break;
-+
-+	default:
-+		ret = NOTIFY_DONE;
-+		break;
-+	}
-+
-+	mutex_unlock(&ihid_goodix->regulator_mutex);
-+
-+	return ret;
-+}
-+
- static int i2c_hid_of_goodix_probe(struct i2c_client *client,
- 				   const struct i2c_device_id *id)
- {
- 	struct i2c_hid_of_goodix *ihid_goodix;
--
-+	int ret;
- 	ihid_goodix = devm_kzalloc(&client->dev, sizeof(*ihid_goodix),
- 				   GFP_KERNEL);
- 	if (!ihid_goodix)
- 		return -ENOMEM;
- 
-+	mutex_init(&ihid_goodix->regulator_mutex);
-+
- 	ihid_goodix->ops.power_up = goodix_i2c_hid_power_up;
- 	ihid_goodix->ops.power_down = goodix_i2c_hid_power_down;
- 
-@@ -84,6 +119,37 @@ static int i2c_hid_of_goodix_probe(struct i2c_client *client,
- 
- 	ihid_goodix->timings = device_get_match_data(&client->dev);
- 
-+	/*
-+	 * We need to control the "reset" line in lockstep with the regulator
-+	 * actually turning on an off instead of just when we make the request.
-+	 * This matters if the regulator is shared with another consumer.
-+	 * - If the regulator is off then we must assert reset. The reset
-+	 *   line is active low and on some boards it could cause a current
-+	 *   leak if left high.
-+	 * - If the regulator is on then we don't want reset asserted for very
-+	 *   long. Holding the controller in reset apparently draws extra
-+	 *   power.
-+	 */
-+	mutex_lock(&ihid_goodix->regulator_mutex);
-+	ihid_goodix->nb.notifier_call = ihid_goodix_vdd_notify;
-+	ret = regulator_register_notifier(ihid_goodix->vdd, &ihid_goodix->nb);
-+	if (ret) {
-+		mutex_unlock(&ihid_goodix->regulator_mutex);
-+		return dev_err_probe(&client->dev, ret,
-+			"regulator notifier request failed\n");
-+	}
-+
-+	/*
-+	 * If someone else is holding the regulator on (or the regulator is
-+	 * an always-on one) we might never be told to deassert reset. Do it
-+	 * now. Here we'll assume that someone else might have _just
-+	 * barely_ turned the regulator on so we'll do the full
-+	 * "post_power_delay" just in case.
-+	 */
-+	if (ihid_goodix->reset_gpio && regulator_is_enabled(ihid_goodix->vdd))
-+		goodix_i2c_hid_deassert_reset(ihid_goodix, true);
-+	mutex_unlock(&ihid_goodix->regulator_mutex);
-+
- 	return i2c_hid_core_probe(client, &ihid_goodix->ops, 0x0001);
- }
- 
--- 
-2.32.0.93.g670b81a890-goog
+> 
+> Cheers,
+> -Paul
+> 
+> > +};
+> > +
+> >  &mmc0 {
+> >  	status = "okay";
+> > 
+> > @@ -522,13 +533,3 @@
+> >  		bias-disable;
+> >  	};
+> >  };
+> > -
+> > -&tcu {
+> > -	/*
+> > -	 * 750 kHz for the system timer and 3 MHz for the
+> > clocksource,
+> > -	 * use channel #0 for the system timer, #1 for the
+> > clocksource.
+> > -	 */
+> > -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > -					  <&tcu TCU_CLK_OST>;
+> > -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
+> > -};
+> > --
+> > 2.7.4
+> >   
+> 
 
