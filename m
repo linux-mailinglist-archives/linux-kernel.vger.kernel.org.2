@@ -2,167 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF33E3B41D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C2E3B41D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhFYKlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
+        id S230436AbhFYKl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhFYKlL (ORCPT
+        with ESMTP id S229956AbhFYKlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:41:11 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5286C061574;
-        Fri, 25 Jun 2021 03:38:49 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id d16so10905192ejm.7;
-        Fri, 25 Jun 2021 03:38:49 -0700 (PDT)
+        Fri, 25 Jun 2021 06:41:55 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D797C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:39:34 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id q16so1346602lfr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1/eMB3oQaBdiNnJ8Y7zIUo7wsM74vurfSXPEhMmhvYs=;
-        b=S6gTqGkyCpj6tWjYvKcj2hxMaFjtOKlftr3pLPzXRS/qJMKpoizgtjxrHLuQxGyBBZ
-         aT+hsLuIanjKqN3JJMjY+BCLS+82VHoQ6qRB1LVP6z+LNVcUa5pH3yZVEbtj8GJybIdD
-         bS37wQRe8oGOis5ty6gaRv9w+PTZjBHOK3sYQdf7LcJceHoSPGFcPRTUXiBqK8HPK4VK
-         8vWIbCcmtjkoSNn4ueDCqm2+ustdOXgQZOWKdh+TK6dcrjwPBkLDR5yb8A9phu8wBjr3
-         dM27CY1v/c36Ucb7Ss/8dy/xYpQYRf8coz2svmF38P6cI4dBxGirXcxYelHzfCEXC7F8
-         7nxA==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1JLbEN1TKhcX6p1OYtPD1Zi9vVkvH8zkhA8ECcL2ejY=;
+        b=DKf/xYNZ2nh5nqt4QzVC4uXOqBWlKYDEY+ltNsaqEpEP9l+kOCUkfSH0HyZmse3q92
+         aCzhzis54jooC+1QzM/ooR50X75/DtXvTjeD8fw+71ZdHxenG/L3pcFhl8AMO8I1Xm8i
+         xZwOIZUji5yGV/S5hDkdpEn5SPoawuM2wxwlb16+xVuSjP2psVZXgYSbYyxxV/6dkOtB
+         vnGZVHQa94IH6xOIXchx3vah6k+W3jpLT6JobcZ1fOcDgyMcf97vJbMYhQhK4TakF1Ag
+         Tfp24EtceRbh+NEytKcZpYO9oJopRdzlIEtH07Z0L92lwlMvflXWp+kpyfWvxdkNE4sv
+         nZgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1/eMB3oQaBdiNnJ8Y7zIUo7wsM74vurfSXPEhMmhvYs=;
-        b=bu3rX1BDOlv2PPumqxC8/+4sEdnfQwTL2O9PY85fplTvKXaHfyE2BtlxRNew6ou+jM
-         fYOG67c3CVdiIP6rAPCclK5jLRE9I8yRefm0RL/78TycJ5gCRB70yzcC9g3PWqPRZBih
-         1fsxBnobar7drjo+vH1nwYuZAUz9201LtJft9b7Han0sScOotzaYmnYcVmQkS/kxDNav
-         MNrYt/PqGi5UEhWT2kfTy5k3wU0hfDj0l0fl/O4F+K/sNsuDB/dRnGMc8SPf0KqrnAOM
-         50Iv7+hveQUnMjpQS9E8fRpiOPwPaHNThfXd2vBJd+TFvh+SfX3Nf6V9uOnITrbrow7j
-         Fnvg==
-X-Gm-Message-State: AOAM533HYpJAzU/qGqN7iju7tcNjh3aw1hHu2ysbg3HMwUpGbl0iWfGE
-        ve8LEo64qEzF1e3Va10O8SA=
-X-Google-Smtp-Source: ABdhPJy3Xru8aPPdjqoS2npd604GtoiksX0HIHMgARWGwYa+NMWrAjYQPNV4yRdyiJty+RcEM1364Q==
-X-Received: by 2002:a17:906:3a8e:: with SMTP id y14mr10204723ejd.153.1624617528371;
-        Fri, 25 Jun 2021 03:38:48 -0700 (PDT)
-Received: from [192.168.74.106] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id h24sm2492325ejf.20.2021.06.25.03.38.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 03:38:47 -0700 (PDT)
-Subject: Re: [PATCH v1 3/3] phy: qcom-qusb2: Add configuration for SM4250 and
- SM6115
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-usb@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20210622203240.559979-1-iskren.chernev@gmail.com>
- <20210622203240.559979-4-iskren.chernev@gmail.com> <YNKshSbsf5d5Uyew@yoga>
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-Message-ID: <d42b6bfd-4010-29d2-1701-41979e19d987@gmail.com>
-Date:   Fri, 25 Jun 2021 13:38:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=1JLbEN1TKhcX6p1OYtPD1Zi9vVkvH8zkhA8ECcL2ejY=;
+        b=a41qWZzB/yucRUvMOTs+6f+SFfyxjAkIwnqZJ7hf4Rv89wBQQ2ile7pUaIZjmCqcqU
+         bzWoXwHH60WbOIWFmE519NzdnzDbEXb1G3dM0boXbd+hL/J3WR+TglrxBz6/6xXGhkh9
+         WZdrjgCVDkot37wjwvi07My8fWvdEwt2KgOZPj8VOlMnQyYCgzSOEJXJHQgjzOc0b4dC
+         dqXiMvtCqi61inCsbh6cA8OmNJhAxcchm733mWqqkmjw8tl/sVIXoru8M8fJNGZjKO6W
+         w/9E0RzcrEgG3/PfcjihYO3Le8I2mPGdr1g0RTWWBJ4E63FZBKjgDLn2rrfZt6QsJDgc
+         2QJA==
+X-Gm-Message-State: AOAM530Uxhaom3VsZQjz0iu7x1JoeTFrE/qsQZrqp3+Qy8xT62MgJ7mP
+        8d53X+u4fBV8WDkLPxs9tSUW1zppi8WdrA==
+X-Google-Smtp-Source: ABdhPJyiBoBGGeHRTJdLmgIaGdr9qWi+4S5VWMPTU24b2f9ktoe2IGiWy+Ip1Pxk0RreYXfSJoSC2w==
+X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr7257061lfb.40.1624617572852;
+        Fri, 25 Jun 2021 03:39:32 -0700 (PDT)
+Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id f17sm479884lfl.161.2021.06.25.03.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 03:39:32 -0700 (PDT)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, jon@solid-run.com,
+        tn@semihalf.com, jaz@semihalf.com, hkallweit1@gmail.com,
+        andrew@lunn.ch, nathan@kernel.org, sfr@canb.auug.org.au,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [net-next: PATCH] net: mdiobus: withdraw fwnode_mdbiobus_register
+Date:   Fri, 25 Jun 2021 12:38:53 +0200
+Message-Id: <20210625103853.459277-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <YNKshSbsf5d5Uyew@yoga>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The newly implemented fwnode_mdbiobus_register turned out to be
+problematic - in case the fwnode_/of_/acpi_mdio are built as
+modules, a dependency cycle can be observed during the depmod phase of
+modules_install, eg.:
 
+depmod: ERROR: Cycle detected: fwnode_mdio -> of_mdio -> fwnode_mdio
+depmod: ERROR: Found 2 modules in dependency cycles!
 
-On 6/23/21 6:37 AM, Bjorn Andersson wrote:
-> On Tue 22 Jun 15:32 CDT 2021, Iskren Chernev wrote:
-> 
->> The SM4250 and SM6115 uses the same register layout as MSM8996, but the
->> tune sequence is a bit different.
->>
-> 
-> Didn't review the initialization sequence, but it's different from the
-> existing ones so adding a new compatible and init_tbl seems to be the
-> right choice.
+OR:
 
-Here is the init sequence I'm using [1]
+depmod: ERROR: Cycle detected: acpi_mdio -> fwnode_mdio -> acpi_mdio
+depmod: ERROR: Found 2 modules in dependency cycles!
 
-[1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250/blob/oneplus/SM4250_Q_10.0/arch/arm64/boot/dts/vendor/20882/bengal-qrd.dtsi#L130
+A possible solution could be to rework fwnode_mdiobus_register,
+so that to merge the contents of acpi_mdiobus_register and
+of_mdiobus_register. However feasible, such change would
+be very intrusive and affect huge amount of the of_mdiobus_register
+users.
 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> Regards,
-> Bjorn
-> 
->> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
->> ---
->>  drivers/phy/qualcomm/phy-qcom-qusb2.c | 34 +++++++++++++++++++++++++++
->>  1 file changed, 34 insertions(+)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
->> index 8f1bf7e2186b..3c1d3b71c825 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
->> @@ -219,6 +219,22 @@ static const struct qusb2_phy_init_tbl msm8998_init_tbl[] = {
->>  	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_DIGITAL_TIMERS_TWO, 0x19),
->>  };
->>  
->> +static const struct qusb2_phy_init_tbl sm6115_init_tbl[] = {
->> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE1, 0xf8),
->> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE2, 0x53),
->> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE3, 0x81),
->> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TUNE4, 0x17),
->> +
->> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_TUNE, 0x30),
->> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_USER_CTL1, 0x79),
->> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_USER_CTL2, 0x21),
->> +
->> +	QUSB2_PHY_INIT_CFG_L(QUSB2PHY_PORT_TEST2, 0x14),
->> +
->> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_AUTOPGM_CTL1, 0x9f),
->> +	QUSB2_PHY_INIT_CFG(QUSB2PHY_PLL_PWR_CTRL, 0x00),
->> +};
->> +
->>  static const unsigned int qusb2_v2_regs_layout[] = {
->>  	[QUSB2PHY_PLL_CORE_INPUT_OVERRIDE] = 0xa8,
->>  	[QUSB2PHY_PLL_STATUS]		= 0x1a0,
->> @@ -342,6 +358,18 @@ static const struct qusb2_phy_cfg sdm660_phy_cfg = {
->>  	.autoresume_en	 = BIT(3),
->>  };
->>  
->> +static const struct qusb2_phy_cfg sm6115_phy_cfg = {
->> +	.tbl		= sm6115_init_tbl,
->> +	.tbl_num	= ARRAY_SIZE(sm6115_init_tbl),
->> +	.regs		= msm8996_regs_layout,
->> +
->> +	.has_pll_test	= true,
->> +	.se_clk_scheme_default = true,
->> +	.disable_ctrl	= (CLAMP_N_EN | FREEZIO_N | POWER_DOWN),
->> +	.mask_core_ready = PLL_LOCKED,
->> +	.autoresume_en	 = BIT(3),
->> +};
->> +
->>  static const char * const qusb2_phy_vreg_names[] = {
->>  	"vdda-pll", "vdda-phy-dpdm",
->>  };
->> @@ -888,6 +916,12 @@ static const struct of_device_id qusb2_phy_of_match_table[] = {
->>  	}, {
->>  		.compatible	= "qcom,sdm660-qusb2-phy",
->>  		.data		= &sdm660_phy_cfg,
->> +	}, {
->> +		.compatible	= "qcom,sm4250-qusb2-phy",
->> +		.data		= &sm6115_phy_cfg,
->> +	}, {
->> +		.compatible	= "qcom,sm6115-qusb2-phy",
->> +		.data		= &sm6115_phy_cfg,
->>  	}, {
->>  		/*
->>  		 * Deprecated. Only here to support legacy device
->> -- 
->> 2.31.1
->>
+Since there are currently 2 users of ACPI and MDIO
+(xgmac_mdio and mvmdio), withdraw the fwnode_mdbiobus_register
+and roll back to a simple 'if' condition in affected drivers.
+
+Fixes: 62a6ef6a996f ("net: mdiobus: Introduce fwnode_mdbiobus_register()")
+Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+---
+ drivers/net/ethernet/freescale/Kconfig      |  4 +++-
+ drivers/net/ethernet/freescale/xgmac_mdio.c | 11 +++++++++--
+ drivers/net/ethernet/marvell/mvmdio.c       | 10 ++++++++--
+ drivers/net/mdio/fwnode_mdio.c              | 22 ---------------------
+ include/linux/fwnode_mdio.h                 | 12 -----------
+ 5 files changed, 20 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
+index 92a390576b88..2d1abdd58fab 100644
+--- a/drivers/net/ethernet/freescale/Kconfig
++++ b/drivers/net/ethernet/freescale/Kconfig
+@@ -67,7 +67,9 @@ config FSL_PQ_MDIO
+ 
+ config FSL_XGMAC_MDIO
+ 	tristate "Freescale XGMAC MDIO"
+-	depends on FWNODE_MDIO
++	select PHYLIB
++	depends on OF
++	select OF_MDIO
+ 	help
+ 	  This driver supports the MDIO bus on the Fman 10G Ethernet MACs, and
+ 	  on the FMan mEMAC (which supports both Clauses 22 and 45)
+diff --git a/drivers/net/ethernet/freescale/xgmac_mdio.c b/drivers/net/ethernet/freescale/xgmac_mdio.c
+index 2d99edc8a647..0b68852379da 100644
+--- a/drivers/net/ethernet/freescale/xgmac_mdio.c
++++ b/drivers/net/ethernet/freescale/xgmac_mdio.c
+@@ -13,7 +13,7 @@
+  */
+ 
+ #include <linux/acpi.h>
+-#include <linux/fwnode_mdio.h>
++#include <linux/acpi_mdio.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/mdio.h>
+@@ -246,6 +246,7 @@ static int xgmac_mdio_read(struct mii_bus *bus, int phy_id, int regnum)
+ 
+ static int xgmac_mdio_probe(struct platform_device *pdev)
+ {
++	struct fwnode_handle *fwnode;
+ 	struct mdio_fsl_priv *priv;
+ 	struct resource *res;
+ 	struct mii_bus *bus;
+@@ -290,7 +291,13 @@ static int xgmac_mdio_probe(struct platform_device *pdev)
+ 	priv->has_a011043 = device_property_read_bool(&pdev->dev,
+ 						      "fsl,erratum-a011043");
+ 
+-	ret = fwnode_mdiobus_register(bus, pdev->dev.fwnode);
++	fwnode = pdev->dev.fwnode;
++	if (is_of_node(fwnode))
++		ret = of_mdiobus_register(bus, to_of_node(fwnode));
++	else if (is_acpi_node(fwnode))
++		ret = acpi_mdiobus_register(bus, fwnode);
++	else
++		ret = -EINVAL;
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "cannot register MDIO bus\n");
+ 		goto err_registration;
+diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
+index 7537ee3f6622..62a97c46fba0 100644
+--- a/drivers/net/ethernet/marvell/mvmdio.c
++++ b/drivers/net/ethernet/marvell/mvmdio.c
+@@ -18,9 +18,9 @@
+  */
+ 
+ #include <linux/acpi.h>
++#include <linux/acpi_mdio.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+-#include <linux/fwnode_mdio.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -371,7 +371,13 @@ static int orion_mdio_probe(struct platform_device *pdev)
+ 		goto out_mdio;
+ 	}
+ 
+-	ret = fwnode_mdiobus_register(bus, pdev->dev.fwnode);
++	/* For the platforms not supporting DT/ACPI fall-back
++	 * to mdiobus_register via of_mdiobus_register.
++	 */
++	if (is_acpi_node(pdev->dev.fwnode))
++		ret = acpi_mdiobus_register(bus, pdev->dev.fwnode);
++	else
++		ret = of_mdiobus_register(bus, pdev->dev.of_node);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Cannot register MDIO bus (%d)\n", ret);
+ 		goto out_mdio;
+diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
+index ae0bf71a9932..1becb1a731f6 100644
+--- a/drivers/net/mdio/fwnode_mdio.c
++++ b/drivers/net/mdio/fwnode_mdio.c
+@@ -7,10 +7,8 @@
+  */
+ 
+ #include <linux/acpi.h>
+-#include <linux/acpi_mdio.h>
+ #include <linux/fwnode_mdio.h>
+ #include <linux/of.h>
+-#include <linux/of_mdio.h>
+ #include <linux/phy.h>
+ 
+ MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
+@@ -144,23 +142,3 @@ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ 	return 0;
+ }
+ EXPORT_SYMBOL(fwnode_mdiobus_register_phy);
+-
+-/**
+- * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO bus and
+- *	attach them to it.
+- * @bus: Target MDIO bus.
+- * @fwnode: Pointer to fwnode of the MDIO controller.
+- *
+- * Return values are determined accordingly to acpi_/of_ mdiobus_register()
+- * operation.
+- */
+-int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode)
+-{
+-	if (is_acpi_node(fwnode))
+-		return acpi_mdiobus_register(bus, fwnode);
+-	else if (is_of_node(fwnode))
+-		return of_mdiobus_register(bus, to_of_node(fwnode));
+-	else
+-		return -EINVAL;
+-}
+-EXPORT_SYMBOL(fwnode_mdiobus_register);
+diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+index f62817c23137..faf603c48c86 100644
+--- a/include/linux/fwnode_mdio.h
++++ b/include/linux/fwnode_mdio.h
+@@ -16,7 +16,6 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ 				struct fwnode_handle *child, u32 addr);
+ 
+-int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
+ #else /* CONFIG_FWNODE_MDIO */
+ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+ 				       struct phy_device *phy,
+@@ -31,17 +30,6 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ {
+ 	return -EINVAL;
+ }
+-
+-static inline int fwnode_mdiobus_register(struct mii_bus *bus,
+-					  struct fwnode_handle *fwnode)
+-{
+-	/*
+-	 * Fall back to mdiobus_register() function to register a bus.
+-	 * This way, we don't have to keep compat bits around in drivers.
+-	 */
+-
+-	return mdiobus_register(bus);
+-}
+ #endif
+ 
+ #endif /* __LINUX_FWNODE_MDIO_H */
+-- 
+2.29.0
+
