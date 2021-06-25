@@ -2,131 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5F13B4197
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336AC3B4193
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 12:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhFYK1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 06:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhFYK1L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 06:27:11 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBE3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:24:51 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c5so7671288pfv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 03:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2KwSMGzrjG0d9zXmhqtipfkU8z6/nsyvvAQ1+pXQ/ew=;
-        b=ytg97sPLtLPlJKWLEx+0YPHiyXOnx7jFacu45wsLZEPjJZ5SC9J0ntLvABE/zEFnAK
-         CFk//6RYn8Yn6i+2U+3/XkHZ0xRonpMnqxp50+ot4Xb1XJBMN6SUuJjRu00tSW34J9D2
-         GN5p7jZ0x9nEchXgQTJ6XU6FvQBczKdRkRKcxuECopGBo7SJdabh35JsPBvLHLebYGR7
-         +dLBEPBS7B4y8Frhn2lfd45ju+vgNvpqikZGGdbgzZFwIj33CDmn/eVDsTCxhNMWVCDg
-         GJp2qbK3QV3InaYwhgRA4qqCCpzCN7645bE6aVWCGe7IXZpQmhZk0RvqcweU0vTt2Tv6
-         nP1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2KwSMGzrjG0d9zXmhqtipfkU8z6/nsyvvAQ1+pXQ/ew=;
-        b=CgOauEtvZUpUolakdsEDi3VtphsN+wUfTkzxL1J1ZAEX32zEuXQjerc23NgzS789F9
-         wiu4FkPZBBzRcvrgrqnU4RJrQt+TdOd0IMqKwfu6SHQ0rm/n59OZi+u61SkE6iWTp1db
-         dOacPehRe6bXO+kHgRuTm2wjZErqT1CE0vC7/HnPdb8AB6J9nsMGkj7z8FOLXrRYBwVZ
-         cy3culmctWxyZDbSl5PFcXyDthG2zG7WhAqIIf0LC2nSkzzEyfIKtxc1Vy2evGxBgzVH
-         NBKNCwzwJNgPJeNMTauhXXmkDgjT9n4714hfpJ4lQHeGFd48Ths+PMKjO5xIwRg/nkbE
-         hA6w==
-X-Gm-Message-State: AOAM532JIRgtfxbZ6uxMSA7RSUeML3OKy3to/iHVFii14a8gqekWQCkf
-        ArhMMFqtLxP/pIu/hOicfGiCyTpkfiV7ke7AQN2yZw==
-X-Google-Smtp-Source: ABdhPJyXI8BHwWlE/zuSM4O5ASeaXOtu7t2Eju1dY+edUACoe9WILvtdmQJi9HmeRopa1iEWCoLBpfbA6UmKpq9zgMU=
-X-Received: by 2002:a65:63ce:: with SMTP id n14mr8930484pgv.273.1624616690717;
- Fri, 25 Jun 2021 03:24:50 -0700 (PDT)
+        id S231246AbhFYK05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 06:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230415AbhFYK0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 06:26:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF7A6143A;
+        Fri, 25 Jun 2021 10:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624616668;
+        bh=JOa2aODdvv5nC4XSkenIOmeGwvK4PewRAGSrpjXeLM0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AOMvPMSGDWnxWfbU8uTMmCA5dgJIm1k2JHo9sF411sSHSvSTn4g84b/ZpyGbyVPcj
+         gzJX8da29H7/szVsel2p1h+I7rtOsoVyyefCqLD2sb7wBPwh9FRlFbbqI7iYS9iOFc
+         1xntmeKZMC1prvDYVpEXF7L018msd/qea6yRYVccrdac4l52UWyGgwya7eQl00Br7Y
+         THL7OHInjROnrnB5pEWmCgWNPuVLrqBI1KmoUmKLFSiyXFnOKTVTn9qm3m5fWOk9oK
+         OYyHOu346xZDQiD3+AhCKLYKQjDsNg1mxsrjU4IwewBFw0qYnp3CFpmeYKUzdeL+t9
+         y7pb8affg5tqw==
+Date:   Fri, 25 Jun 2021 12:24:23 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     "Wu X.C." <bobwxc@email.cn>, Jonathan Corbet <corbet@lwn.net>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK
+ ascii-art
+Message-ID: <20210625122423.4435c5e9@coco.lan>
+In-Reply-To: <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+        <20210625065524.GA11219@bobwxc.top>
+        <20210625095059.7f97fd62@coco.lan>
+        <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210625084748.18128-1-wangqiang.wq.frank@bytedance.com>
-In-Reply-To: <20210625084748.18128-1-wangqiang.wq.frank@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 25 Jun 2021 18:24:12 +0800
-Message-ID: <CAMZfGtWPi4CuVOtmUpy2N9J_mvp+5=gSAFvqV1nmvDKP+CAvQA@mail.gmail.com>
-Subject: Re: [Phishing Risk] [PATCH] kprobe: fix kretprobe stack backtrace
-To:     Qiang Wang <wangqiang.wq.frank@bytedance.com>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 4:49 PM Qiang Wang
-<wangqiang.wq.frank@bytedance.com> wrote:
->
-> We found that we couldn't get the correct kernel stack from
-> kretprobe. For example:
->
-> bpftrace -e 'kr:submit_bio {print(kstack)}'
-> Attaching 1 probe...
->
->         kretprobe_trampoline+0
->
->         kretprobe_trampoline+0
->
-> The problem is caused by the wrong instruction register which
-> points to the address of kretprobe_trampoline in regs.
-> So we set the real return address in instruction register.
-> Finally, we tested and successfully fixed it.
->
-> bpftrace -e 'kr:submit_bio {print(kstack)}'
-> Attaching 1 probe...
->
->         ext4_mpage_readpages+475
->         read_pages+139
->         page_cache_ra_unbounded+417
->         filemap_get_pages+245
->         filemap_read+169
->         __kernel_read+327
->         bprm_execve+648
->         do_execveat_common.isra.39+409
->         __x64_sys_execve+50
->         do_syscall_64+54
->         entry_SYSCALL_64_after_hwframe+68
->
-> Reported-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Qiang Wang <wangqiang.wq.frank@bytedance.com>
+Em Fri, 25 Jun 2021 18:22:26 +0900
+Akira Yokosawa <akiyks@gmail.com> escreveu:
 
-Seems like a bug. Maybe we should add a "Fixes" tag here.
+> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:
+> > Em Fri, 25 Jun 2021 14:55:24 +0800
+> > "Wu X.C." <bobwxc@email.cn> escreveu:
+> >  =20
+> >> On Thu, Jun 24, 2021 at 09:06:59PM +0900, Akira Yokosawa wrote: =20
+> >>> Subject: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK asci=
+i-art
+> >>>
+> >>> Hi all,   =20
+> >>
+> >> Hi Akira,
+> >> =20
+> >>>
+> >>> This is another attempt to improve translations' pdf output.
+> >>> I see there is a mismatch in the font choice for CJK documents, which
+> >>> causes poor-looking ascii-art where CJK characters and Latin letters
+> >>> are mixed used.
+> >>>
+> >>> One of noticeable examples of such ascii-art can be found in
+> >>> Korean translation of memory-barriers.txt.
+> >>>
+> >>> Hence the author of Korean translation of memory-barriers.txt is
+> >>> in the CC list.
+> >>>
+> >>> At first, I thought the issue could be fixed by simply selecting
+> >>> "Noto Sans Mono CJK SC" as both of monofont and CJKmonofont.
+> >>> It fixed the mis-alignment in the Chinese translation, but failed
+> >>> in the Korean translation.
+> >>>
+> >>> It turns out that Hangul characters in "Noto Sans Mono CJK SC"
+> >>> are slightly narrower than Chinese and Japanese counterparts.
+> >>> I have no idea why the so-called "mono" font has non-uniform
+> >>> character widths.
+> >>>
+> >>> GNU Unifont is an alternative monospace font which covers
+> >>> almost all Unicode codepoints.
+> >>> However, due to its bitmap-font nature, the resulting document
+> >>> might not be acceptable to Korean readers, I guess.   =20
+> >>
+> >> OK, it works.
+> >>
+> >> But I still want to say that the display effect of Unifont is really
+> >> not good. Unifont's lattice is too small, and only one size.
+> >> http://fars.ee/QA1k.jpg	    http://fars.ee/GAAv.jpg
+> >> Looks like computers 20 years ago, LOL :)
+> >>
+> >> It there any chance to use other fonts, like *Sarasa Mono* ?
+> >>                                               =E7=AD=89=E8=B7=9D=E6=9B=
+=B4=E7=B4=97=E9=BB=91=E9=AB=94
+> >> Looks more beautifull http://fars.ee/DTT6.jpg
+> >> But I guess not many people installed it. =20
+>=20
+> Thank you for the nice suggestion.
+> Yes, Hangul characters in "Sarasa Mono" have the same widths.
+>=20
+> >=20
+> > Does Sarasa mono looks nice for Japanese, Chinese and Korean
+> > (plus latin)? =20
+>=20
+> Yes, I tested "Sarasa Mono SC" and it covers all CJK fonts.
+> The SC variant has Simple Chinese glyph where other languages
+> have their own preferred glyph, but that is same in "Noto Sans
+> Mono SC".
+>=20
+> Currently, there is no verbatim/literal blocks in the Japanese
+> translation, so I tested with only a short Japanese sentence.
+>=20
+> I'll post a v2 which uses "Sarasa Mono SC" instead of Unifont.
+>=20
+> >=20
+> > If so, I guess it shouldn't be a problem to use it, as the
+> > ./scripts/sphinx-pre-install can be patched to recommend
+> > its install. =20
+>=20
+> One minor problem might be that the Sarasa font needs manual
+> download (and install).
+>=20
+>         Thanks, Akira
 
-> ---
->  kernel/kprobes.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 745f08fdd..1130381ca 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1899,6 +1899,9 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
->         current->kretprobe_instances.first = node->next;
->         node->next = NULL;
->
-> +       /* Kretprobe handler expects address is the real return address */
-> +       instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
-> +
->         /* Run them..  */
->         while (first) {
->                 ri = container_of(first, struct kretprobe_instance, llist);
-> --
-> 2.20.1
->
+If this is not yet packaged as part of texlive packages
+on distros, this won't be a minor issue, as we'll need
+to find procedures and test it for all distros supported
+by the script.
+
+Thanks,
+Mauro
