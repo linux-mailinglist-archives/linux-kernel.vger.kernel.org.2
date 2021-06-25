@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE3C3B39F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377B93B39F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 02:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhFYAKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 20:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        id S233036AbhFYAK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 20:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbhFYAKb (ORCPT
+        with ESMTP id S232949AbhFYAKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 20:10:31 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB696C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:10 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id f16so4310248qvs.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:10 -0700 (PDT)
+        Thu, 24 Jun 2021 20:10:32 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C3AC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:12 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id q190so17374500qkd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 17:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M7CMwbgaLq1F207AcMD6q9WIwa6zEqp22bELH0ZCw5w=;
-        b=jJfRGrC7OmQRGd1k/fC0xNg4BuRmv4RaxqOZmwtYNXmtBdwO9Qspl29xQBud5OG4+j
-         0r+QjPPFNFkZLdUn8bQSWON/hptktS5CashQoy2IC7Pwkl8/18RSB1rddXYL2Pmd1CSe
-         dj9i/3+94E+RCSEOQNgyFkZkd/ktFqTHXalMyr5BNzPeSwU2SeIMQ9qSHutLsQLWIR/l
-         xFWiva0ejcV60z94MbwzhZ/CUP4YT/uBUMxTDMfUDDTX+Ew3s6i5ZieMuG29SpiKPodp
-         UaxGEywztgcnhdNjE4span9PMZC4ijGQtdGDJRSXHes5ZG4+8D5SWKBZBBdjtyhz0Cdm
-         a91g==
+        bh=d9HXLuVJMBfkOLzdHoGxnO6Harm4a4VlL+MT9SSRGjE=;
+        b=p4d4PA8Rr4uMRNIvZBUYukiTciA/BxQ2LPDJskggM5bJtxgEkPQ05GD6SzkrvoTAWh
+         12jLc6NuV9y0OyxdEfFYbD6WLKxi40fzej/0mZJk+uJIAfzMle138A/LJkyF3MEJFCEw
+         rq9hYFRmY/lARp14YJm57Srejgd97z1ptwedLb7OcY6JmYtjtMwcl/gWa84wK6atXXDq
+         Z/21jetjx36aDstJEZCIE86fgkf8zLvOiCqNQcYmjD/fUfGb3+kKOCaLf4N3NNFqs1lQ
+         gfJ+Yw4AQnykAqRsJXIUW2sjpxjCtKWD8QOabsYXHrwg6FKOW/0QLuRjYeKEJ2RMKO/G
+         fFCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M7CMwbgaLq1F207AcMD6q9WIwa6zEqp22bELH0ZCw5w=;
-        b=bYMEct7ZKm8u/quMa9f4EGu/pDaVJlifPDIl73/7hiIlzVGEDMRttrV+lFZkalkJWW
-         X/0gX98Gxm72niMduZuvFjinVaOtrpHbNeU71jIzx20p5I5TB4ECM8bimDLqjHtYvMAQ
-         FlBb6q9wbay0A2w1tyd5yPt5ew1iR663vZ6cVvpxNEupTyhnR9vVOsJb7YEjApZzW9Q0
-         avTWCv0J8wv9W2eAQmLEhmAkqlP8Q+umQPP0IsSGee9XH7CPlLg9JPIJ2r9ofQ4YjoD7
-         liu1tZqFFWSO3a4FLMbryJPJuTFnv/xgOy4DH482eJBuXjGfnKCB1yZZyb1VObRRipiZ
-         8IJQ==
-X-Gm-Message-State: AOAM533Ssg2shPFckdrRxog/ydXfnH2a9G6dV8Yt5c7Ofrc/E1n3Y1b3
-        AKefhgomMjr9Z7npkXN1XGV9rV9NRNnnug==
-X-Google-Smtp-Source: ABdhPJzGLI9c95PNHHqQdG98O+VHepcd/mPy7A3ocqaNBMW8ORigvvAU3aE2890upPGS0k2bE+UwiQ==
-X-Received: by 2002:a0c:ff48:: with SMTP id y8mr8319633qvt.29.1624579689919;
-        Thu, 24 Jun 2021 17:08:09 -0700 (PDT)
+        bh=d9HXLuVJMBfkOLzdHoGxnO6Harm4a4VlL+MT9SSRGjE=;
+        b=t33wkSmpTTeWpoQE+/YDA+9eH8/REZjcwOABdndL9cZG7NEoysS+vRRP3hqIIxfv+t
+         ipDOi3Nrm55/WSPALbcKzbcuJMuIBCe7bEbwwcBF2tuHwokcRRDHuAhG2OKKusGu3/RC
+         +coQfd8M8WXPG7dZO6iB3yglXqUnMaBgBr1A6iGxKT6SrolvQHNwDr05jP4Dvmhi/iNe
+         U6yFl4F5ARNEXA0B3feyE/kPJcJYSKccwJxGgO1OC4Z8CygmCH7r0yW8zzckIHyVsJDy
+         /0OhvsxYMO7gW0Xoq7DGgA+XRmoXdNp7NZTD+1kuCklnIx+2FC08WxIE1OVFLE1NtdCW
+         8MVg==
+X-Gm-Message-State: AOAM531v9ct0IEljFSTdYR7jEk4fUlv1asgKCBLC7R+XzieV+1bvnEr5
+        Pfjo3uTxRl5pKJL7ZWqs/q/ZPw==
+X-Google-Smtp-Source: ABdhPJze/8+le6yvQg4AvNeTbXrJvUn+BCqWQl89m8kKF3b9cOj5JBu5TB+BzC+zoVGYoiC7/9CVjw==
+X-Received: by 2002:ae9:e8d5:: with SMTP id a204mr8784868qkg.245.1624579691365;
+        Thu, 24 Jun 2021 17:08:11 -0700 (PDT)
 Received: from kerneldevvm.. (5.6.a.8.a.a.b.f.c.9.4.c.a.9.a.a.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0:aa9a:c49c:fbaa:8a65])
-        by smtp.gmail.com with ESMTPSA id m187sm3629014qkd.131.2021.06.24.17.08.08
+        by smtp.gmail.com with ESMTPSA id m187sm3629014qkd.131.2021.06.24.17.08.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 17:08:09 -0700 (PDT)
+        Thu, 24 Jun 2021 17:08:11 -0700 (PDT)
 From:   Phillip Potter <phil@philpotter.co.uk>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
         linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH 06/23] staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_security.c
-Date:   Fri, 25 Jun 2021 01:07:39 +0100
-Message-Id: <20210625000756.6313-7-phil@philpotter.co.uk>
+Subject: [PATCH 07/23] staging: rtl8188eu: remove all RT_TRACE calls from core/rtw_sta_mgt.c
+Date:   Fri, 25 Jun 2021 01:07:40 +0100
+Message-Id: <20210625000756.6313-8-phil@philpotter.co.uk>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210625000756.6313-1-phil@philpotter.co.uk>
 References: <20210625000756.6313-1-phil@philpotter.co.uk>
@@ -64,100 +64,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove all RT_TRACE calls from core/rtw_security.c as this macro is
+Remove all RT_TRACE calls from core/rtw_sta_mgt.c as this macro is
 unnecessary, and these calls are dubious in terms of necessity.
 Removing all calls will ultimately allow the removal of the macro
 itself.
 
 Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- drivers/staging/rtl8188eu/core/rtw_security.c | 21 ++-----------------
+ drivers/staging/rtl8188eu/core/rtw_sta_mgt.c | 21 ++------------------
  1 file changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index 2c863facd812..1b2cb6196463 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -591,8 +591,6 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 			stainfo = rtw_get_stainfo(&padapter->stapriv, &pattrib->ra[0]);
+diff --git a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+index cd48e6f2a6f6..19eddf573fd8 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
++++ b/drivers/staging/rtl8188eu/core/rtw_sta_mgt.c
+@@ -179,13 +179,8 @@ struct sta_info *rtw_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
+ 	_rtw_init_stainfo(psta);
+ 	memcpy(psta->hwaddr, hwaddr, ETH_ALEN);
+ 	index = wifi_mac_hash(hwaddr);
+-	RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_info_,
+-		 ("%s: index=%x", __func__, index));
+-	if (index >= NUM_STA) {
+-		RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_,
+-			 ("ERROR => %s: index >= NUM_STA", __func__));
++	if (index >= NUM_STA)
+ 		return NULL;
+-	}
+ 	phash_list = &pstapriv->sta_hash[index];
  
- 		if (stainfo) {
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo!= NULL!!!\n", __func__));
+ 	spin_lock_bh(&pstapriv->sta_hash_lock);
+@@ -205,10 +200,6 @@ struct sta_info *rtw_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
+ 		memcpy(&psta->sta_recvpriv.rxcache.tid_rxseq[i],
+ 		       &wRxSeqInitialValue, 2);
+ 
+-	RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_info_,
+-		 ("alloc number_%d stainfo  with hwaddr = %pM\n",
+-		  pstapriv->asoc_sta_count, hwaddr));
 -
- 			if (is_multicast_ether_addr(pattrib->ra))
- 				prwskey = psecuritypriv->dot118021XGrpKey[psecuritypriv->dot118021XGrpKeyid].skey;
- 			else
-@@ -611,9 +609,6 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
+ 	init_addba_retry_timer(pstapriv->padapter, psta);
  
- 				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
--					RT_TRACE(_module_rtl871x_security_c_, _drv_info_,
--						 ("pattrib->iv_len=%x, pattrib->icv_len=%x\n",
--						 pattrib->iv_len, pattrib->icv_len));
- 					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
+ 	/* for A-MPDU Rx reordering buffer control */
+@@ -279,11 +270,6 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+ 	spin_unlock_bh(&pxmitpriv->lock);
  
- 					arcfour_init(&mycontext, rc4key, 16);
-@@ -631,7 +626,6 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 				}
- 			}
- 		} else {
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo==NULL!!!\n", __func__));
- 			res = _FAIL;
- 		}
- 	}
-@@ -668,7 +662,6 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
- 				}
- 				prwskey = psecuritypriv->dot118021XGrpKey[prxattrib->key_index].skey;
- 			} else {
--				RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo!= NULL!!!\n", __func__));
- 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
- 			}
+ 	list_del_init(&psta->hash_list);
+-	RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_,
+-		 ("\n free number_%d stainfo with hwaddr=0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x 0x%.2x\n",
+-		 pstapriv->asoc_sta_count, psta->hwaddr[0], psta->hwaddr[1],
+-		 psta->hwaddr[2], psta->hwaddr[3], psta->hwaddr[4],
+-		 psta->hwaddr[5]));
+ 	pstapriv->asoc_sta_count--;
  
-@@ -694,14 +687,9 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
- 			if (crc[3] != payload[length - 1] ||
- 			    crc[2] != payload[length - 2] ||
- 			    crc[1] != payload[length - 3] ||
--			    crc[0] != payload[length - 4]) {
--				RT_TRACE(_module_rtl871x_security_c_, _drv_err_,
--					 ("rtw_wep_decrypt:icv error crc (%4ph)!=payload (%4ph)\n",
--					 &crc, &payload[length - 4]));
-+			    crc[0] != payload[length - 4])
- 				res = _FAIL;
--			}
- 		} else {
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo==NULL!!!\n", __func__));
- 			res = _FAIL;
- 		}
- 	}
-@@ -743,10 +731,8 @@ u32 rtw_aes_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 	else
- 		stainfo = rtw_get_stainfo(&padapter->stapriv, &pattrib->ra[0]);
+ 	/*  re-init sta_info; 20061114 */
+@@ -438,11 +424,8 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
  
--	if (!stainfo) {
--		RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo==NULL!!!\n", __func__));
-+	if (!stainfo)
+ 	psta = rtw_alloc_stainfo(pstapriv, bc_addr);
+ 
+-	if (!psta) {
+-		RT_TRACE(_module_rtl871x_sta_mgt_c_, _drv_err_,
+-			 ("rtw_alloc_stainfo fail"));
++	if (!psta)
  		return _FAIL;
 -	}
  
- 	crypto_ops = lib80211_get_crypto_ops("CCMP");
- 
-@@ -771,8 +757,6 @@ u32 rtw_aes_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 		goto exit_crypto_ops_deinit;
- 	}
- 
--	RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo!= NULL!!!\n", __func__));
--
- 	for (curfragnum = 0; curfragnum < pattrib->nr_frags; curfragnum++) {
- 		if (curfragnum + 1 == pattrib->nr_frags)
- 			length = pattrib->last_txcmdsz;
-@@ -877,7 +861,6 @@ u32 rtw_aes_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
- 			if (crypto_ops && crypto_private)
- 				crypto_ops->deinit(crypto_private);
- 		} else {
--			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("rtw_aes_encrypt: stainfo==NULL!!!\n"));
- 			res = _FAIL;
- 		}
- 	}
+ 	/*  default broadcast & multicast use macid 1 */
+ 	psta->mac_id = 1;
 -- 
 2.31.1
 
