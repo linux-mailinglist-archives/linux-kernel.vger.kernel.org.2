@@ -2,190 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72723B3AFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 04:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837093B3B09
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 05:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhFYC50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Jun 2021 22:57:26 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:14263 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhFYC5Y (ORCPT
+        id S233034AbhFYDI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Jun 2021 23:08:56 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11483 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232917AbhFYDIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Jun 2021 22:57:24 -0400
-Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210625025502epoutp02ee45f006d169594492a0878c99070b76~Ls7oRsE_G0045600456epoutp020
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 02:55:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210625025502epoutp02ee45f006d169594492a0878c99070b76~Ls7oRsE_G0045600456epoutp020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624589702;
-        bh=DPiBchNmpbOw5Sq1Tqs2itJVDCXaLTb9mJUrRA353v0=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=WvAksahSh3mRkwxIc3w9OmMiRPx7TTbB8YCreVSveYgmWxS432RBT3K4bq2NhmHdx
-         eiN3JtPzxJ7XAVrQFjPqYvXPwBuEmuYX3pGORFi1no7+qgoKSFDSPCmKW4JVT+A7XL
-         kVNpO1G0MfWRXfgwisyJiSbcZJzIbse6b3l6claw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
-        20210625025501epcas3p414beb364bcb4cea839d3834e3c301cd5~Ls7nrJ_Mo1935119351epcas3p46;
-        Fri, 25 Jun 2021 02:55:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4GB1nd4c2Zz4x9Q6; Fri, 25 Jun 2021 02:55:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "joe@perches.com" <joe@perches.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Pedro Sousa <sousa@synopsys.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <abd587ed-6666-34b8-b545-8ea97bcf0515@intel.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01624589701638.JavaMail.epsvc@epcpadp3>
-Date:   Fri, 25 Jun 2021 11:38:47 +0900
-X-CMS-MailID: 20210625023847epcms2p1bd03c89ef4a22865053e673a895b62b7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
-References: <abd587ed-6666-34b8-b545-8ea97bcf0515@intel.com>
-        <42c2978f-f0ca-3efb-7762-cac813a0a5fe@intel.com>
-        <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
-        <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-        <37380050.31624517282371.JavaMail.epsvc@epcpadp4>
-        <1891546521.01624533302400.JavaMail.epsvc@epcpadp3>
-        <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p1>
+        Thu, 24 Jun 2021 23:08:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624590395; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xfGgurIpwSu27EL1saU4CIi4CGBgN5thvMAw704wMaA=; b=fDqDtMJ4d+fuONC27HxZlHnDqL1vY3UDvTTbvqclMc2oAs0SawbQQAg0rd/7e6xL0/7yGVja
+ Hgl/7OjU1SO0sOix+6DXgqj+60pHgRCHZAsQQtPnWDx0z6rUAftK1Y1YqE6VcO83Uhz+PF2Q
+ A4JDgHaQW7xyJ6xINPYDYLHYync=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60d548351938941955d1f851 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Jun 2021 03:06:29
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9628C43460; Fri, 25 Jun 2021 03:06:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67A46C433F1;
+        Fri, 25 Jun 2021 03:06:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67A46C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4] bus: mhi: core: Add support for processing priority of event ring
+Date:   Thu, 24 Jun 2021 20:06:19 -0700
+Message-Id: <1624590379-12319-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 24/06/21 1:44 pm, Keoseong Park wrote:
->>> On 24/06/21 9:41 am, Keoseong Park wrote:
->>>>> On 21/06/21 11:51 am, Keoseong Park wrote:
->>>>>> Change conditional compilation to IS_ENABLED macro,
->>>>>> and simplify if else statement to return statement.
->>>>>> No functional change.
->>>>>>
->>>>>> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
->>>>>> ---
->>>>>>  drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
->>>>>>  1 file changed, 8 insertions(+), 9 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->>>>>> index c98d540ac044..6d239a855753 100644
->>>>>> --- a/drivers/scsi/ufs/ufshcd.h
->>>>>> +++ b/drivers/scsi/ufs/ufshcd.h
->>>>>> @@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
->>>>>>  
->>>>>>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->>>>>>  {
->>>>>> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
->>>>>> -#ifndef CONFIG_SCSI_UFS_DWC
->>>>>> -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->>>>>> -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
->>>>>> +	/*
->>>>>> +	 * DWC UFS Core has the Interrupt aggregation feature
->>>>>> +	 * but is not detectable.
->>>>>> +	 */
->>>>>> +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
->>>>>
->>>>> Why is this needed?  It seems like you could just set UFSHCD_CAP_INTR_AGGR
->>>>> and clear UFSHCD_QUIRK_BROKEN_INTR_AGGR instead?
->>>>
->>>> Hello Adrian,
->>>> Sorry for late reply.
->>>>
->>>> The code that returns true when CONFIG_SCSI_UFS_DWC is set in the original code 
->>>> is only changed using the IS_ENABLED macro.
->>>> (Linux kernel coding style, 21) Conditional Compilation)
->>>>
->>>> When CONFIG_SCSI_UFS_DWC is not defined, the code for checking quirk 
->>>> and caps has been moved to the newly added return statement below.
->>>
->>> Looking closer I cannot find CONFIG_SCSI_UFS_DWC at all.  It seems like it
->>> never existed.
->>>
->>> Why should we not remove the code related to CONFIG_SCSI_UFS_DWC entirely?
->> 
->> You're right. What do you think of deleting the code related to CONFIG_SCSI_UFS_DWC 
->> and changing it to the patch below?
->
->Yes, but cc Joao Pinto <jpinto@synopsys.com> who introduced the code
+From: Hemant Kumar <hemantk@codeaurora.org>
 
-Thanks for your advice. I will upload next version patch by adding cc.
+Event ring priorities are currently set to 1 and are unused.
+Default processing priority for event rings is set to regular
+tasklet. Controllers can choose to use high priority tasklet
+scheduling for certain event rings critical for processing such
+as ones transporting control information if they wish to avoid
+system scheduling delays for those packets. In order to support
+these use cases, allow controllers to set event ring priority to
+high. This patch only adds support and does not enable usage of
+these priorities.
 
-Thanks,
-Keoseong
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+v4:
+-Update fixed priority for all events to default to fix bug in v3
+-Supply changelog
 
->
->> 
->> ---
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index c98d540ac044..c9faca237290 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -893,16 +893,8 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
->> 
->>  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->>  {
->> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
->> -#ifndef CONFIG_SCSI_UFS_DWC
->> -       if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->> -           !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
->> -               return true;
->> -       else
->> -               return false;
->> -#else
->> -return true;
->> -#endif
->> +       return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->> +               !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
->>  }
->> 
->>>
->>>
->>>>
->>>> Thanks,
->>>> Keoseong
->>>>
->>>>>
->>>>>>  		return true;
->>>>>> -	else
->>>>>> -		return false;
->>>>>> -#else
->>>>>> -return true;
->>>>>> -#endif
->>>>>> +
->>>>>> +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
->>>>>> +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
->>>>>>  }
->>>>>>  
->>>>>>  static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
->>>>>>
->>>>>
->>>
->
+v3:
+-Revert to enum approach
+-Use 0 as default and 1 as high in enum
+-Do not use config values for event rings
+
+v2:
+-Use boolean approach for easy maintenance as controllers do not need updates
+
+ drivers/bus/mhi/core/init.c     |  4 ++--
+ drivers/bus/mhi/core/internal.h |  2 +-
+ drivers/bus/mhi/core/main.c     | 19 ++++++++++++++++---
+ include/linux/mhi.h             | 14 ++++++++++++--
+ 4 files changed, 31 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index c81b377..23386b8 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -673,8 +673,8 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
+ 				&mhi_cntrl->mhi_chan[mhi_event->chan];
+ 		}
+ 
+-		/* Priority is fixed to 1 for now */
+-		mhi_event->priority = 1;
++		/* Priority is fixed to deafult for now */
++		mhi_event->priority = MHI_ER_PRIORITY_DEFAULT;
+ 
+ 		mhi_event->db_cfg.brstmode = event_cfg->mode;
+ 		if (MHI_INVALID_BRSTMODE(mhi_event->db_cfg.brstmode))
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 672052f..666e102 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -535,7 +535,7 @@ struct mhi_event {
+ 	u32 intmod;
+ 	u32 irq;
+ 	int chan; /* this event ring is dedicated to a channel (optional) */
+-	u32 priority;
++	enum mhi_er_priority priority;
+ 	enum mhi_er_data_type data_type;
+ 	struct mhi_ring ring;
+ 	struct db_cfg db_cfg;
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 8ac73f9..bfc9776 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -425,10 +425,11 @@ void mhi_create_devices(struct mhi_controller *mhi_cntrl)
+ 	}
+ }
+ 
+-irqreturn_t mhi_irq_handler(int irq_number, void *dev)
++irqreturn_t mhi_irq_handler(int irq_number, void *priv)
+ {
+-	struct mhi_event *mhi_event = dev;
++	struct mhi_event *mhi_event = priv;
+ 	struct mhi_controller *mhi_cntrl = mhi_event->mhi_cntrl;
++	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 	struct mhi_event_ctxt *er_ctxt =
+ 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
+ 	struct mhi_ring *ev_ring = &mhi_event->ring;
+@@ -454,8 +455,20 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+ 
+ 		if (mhi_dev)
+ 			mhi_notify(mhi_dev, MHI_CB_PENDING_DATA);
+-	} else {
++
++		return IRQ_HANDLED;
++	}
++
++	switch (mhi_event->priority) {
++	case MHI_ER_PRIORITY_HI:
++		tasklet_hi_schedule(&mhi_event->task);
++		break;
++	case MHI_ER_PRIORITY_DEFAULT:
+ 		tasklet_schedule(&mhi_event->task);
++		break;
++	default:
++		dev_err(dev, "Skip event of unknown priority\n");
++		break;
+ 	}
+ 
+ 	return IRQ_HANDLED;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 86cea52..62ddead 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -198,6 +198,16 @@ enum mhi_er_data_type {
+ };
+ 
+ /**
++ * enum mhi_er_priority - Event ring processing priority
++ * @MHI_ER_PRIORITY_DEFAULT: processed by regular tasklet
++ * @MHI_ER_PRIORITY_HI: processed by hi-priority tasklet
++ */
++enum mhi_er_priority {
++	MHI_ER_PRIORITY_DEFAULT,
++	MHI_ER_PRIORITY_HI,
++};
++
++/**
+  * enum mhi_db_brst_mode - Doorbell mode
+  * @MHI_DB_BRST_DISABLE: Burst mode disable
+  * @MHI_DB_BRST_ENABLE: Burst mode enable
+@@ -250,7 +260,7 @@ struct mhi_channel_config {
+  * @irq_moderation_ms: Delay irq for additional events to be aggregated
+  * @irq: IRQ associated with this ring
+  * @channel: Dedicated channel number. U32_MAX indicates a non-dedicated ring
+- * @priority: Priority of this ring. Use 1 for now
++ * @priority: Processing priority of this ring.
+  * @mode: Doorbell mode
+  * @data_type: Type of data this ring will process
+  * @hardware_event: This ring is associated with hardware channels
+@@ -262,7 +272,7 @@ struct mhi_event_config {
+ 	u32 irq_moderation_ms;
+ 	u32 irq;
+ 	u32 channel;
+-	u32 priority;
++	enum mhi_er_priority priority;
+ 	enum mhi_db_brst_mode mode;
+ 	enum mhi_er_data_type data_type;
+ 	bool hardware_event;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
