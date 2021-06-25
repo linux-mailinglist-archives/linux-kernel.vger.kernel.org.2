@@ -2,80 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D043B45F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3659D3B45F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 16:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhFYOnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 10:43:10 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55916 "EHLO vps0.lunn.ch"
+        id S231698AbhFYOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 10:43:57 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:7570 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231521AbhFYOnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 10:43:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=w4IQO6DFVyzsolvAWmphYfHy/rPQ4YAG/FamYX4clww=; b=aAf3o6P+jbEuvDCewlGhAv0jYi
-        Zc2Sx7la0Q//AkKE293wyg0aHPhF9/9XBKoM9dwYLoMZggjZkrwhJmSejyann22FOYQMZcc+/arjS
-        N2RR5RRYjrLbq0aTs5r+4flsIKxF7rNwDt7cJuR3TPQ1DTM62X1cZtrWif9Vf2BBpGT4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lwn0H-00B79E-MB; Fri, 25 Jun 2021 16:40:21 +0200
-Date:   Fri, 25 Jun 2021 16:40:21 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <YNXq1bp7XH8jRyx0@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
- <20210622144111.19647-3-lukma@denx.de>
- <YNH7vS9FgvEhz2fZ@lunn.ch>
- <20210623133704.334a84df@ktm>
- <YNOTKl7ZKk8vhcMR@lunn.ch>
- <20210624125304.36636a44@ktm>
- <YNSJyf5vN4YuTUGb@lunn.ch>
- <20210624163542.5b6d87ee@ktm>
- <YNSuvJsD0HSSshOJ@lunn.ch>
- <20210625115935.132922ff@ktm>
+        id S230088AbhFYOn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 10:43:56 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GBKSt3fK8zB8jy;
+        Fri, 25 Jun 2021 16:41:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2wu15M1LQ-9d; Fri, 25 Jun 2021 16:41:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GBKSt2k8yzB8jY;
+        Fri, 25 Jun 2021 16:41:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4F34D8B80D;
+        Fri, 25 Jun 2021 16:41:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id To1U6mEIX-B7; Fri, 25 Jun 2021 16:41:34 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C03868B7FF;
+        Fri, 25 Jun 2021 16:41:33 +0200 (CEST)
+Subject: Re: [PATCH 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and
+ WARN_ON() on PPC32
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618244758.git.christophe.leroy@csgroup.eu>
+Message-ID: <c2525223-ad29-6126-afa1-d70b8e29d721@csgroup.eu>
+Date:   Fri, 25 Jun 2021 16:41:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625115935.132922ff@ktm>
+In-Reply-To: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618244758.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I do believe that I can just extend the L2 switch driver (fec_mtip.c
-> file to be precise) to provide full blown L2 switch functionality
-> without touching the legacy FEC more than in this patch set.
+Hi Michael,
+
+What happened to this series ? It has been flagged 'under review' in Patchwork since mid April but I 
+never saw it in next-test.
+
+Thanks
+Christophe
+
+Le 12/04/2021 à 18:26, Christophe Leroy a écrit :
+> powerpc BUG_ON() and WARN_ON() are based on using twnei instruction.
 > 
-> Would you consider applying this patch series then?
-
-What is most important is the ABI. If something is merged now, we need
-to ensure it does not block later refactoring to a clean new
-driver. The DT binding is considered ABI. So the DT binding needs to
-be like a traditional switchdev driver. Florian already pointed out,
-you can use a binding very similar to DSA. ti,cpsw-switch.yaml is
-another good example.
-
-So before considering merging your changes, i would like to see a
-usable binding.
-
-I also don't remember seeing support for STP. Without that, your
-network has broadcast storm problems when there are loops. So i would
-like to see the code needed to put ports into blocking, listening,
-learning, and forwarding states.
-
-	  Andrew
+> For catching simple conditions like a variable having value 0, this
+> is efficient because it does the test and the trap at the same time.
+> But most conditions used with BUG_ON or WARN_ON are more complex and
+> forces GCC to format the condition into a 0 or 1 value in a register.
+> This will usually require 2 to 3 instructions.
+> 
+> The most efficient solution would be to use __builtin_trap() because
+> GCC is able to optimise the use of the different trap instructions
+> based on the requested condition, but this is complex if not
+> impossible for the following reasons:
+> - __builtin_trap() is a non-recoverable instruction, so it can't be
+> used for WARN_ON
+> - Knowing which line of code generated the trap would require the
+> analysis of DWARF information. This is not a feature we have today.
+> 
+> As mentioned in commit 8d4fbcfbe0a4 ("Fix WARN_ON() on bitfield ops")
+> the way WARN_ON() is implemented is suboptimal. That commit also
+> mentions an issue with 'long long' condition. It fixed it for
+> WARN_ON() but the same problem still exists today with BUG_ON() on
+> PPC32. It will be fixed by using the generic implementation.
+> 
+> By using the generic implementation, gcc will naturally generate a
+> branch to the unconditional trap generated by BUG().
+> 
+> As modern powerpc implement zero-cycle branch,
+> that's even more efficient.
+> 
+> And for the functions using WARN_ON() and its return, the test
+> on return from WARN_ON() is now also used for the WARN_ON() itself.
+> 
+> On PPC64 we don't want it because we want to be able to use CFAR
+> register to track how we entered the code that trapped. The CFAR
+> register would be clobbered by the branch.
+> 
+> A simple test function:
+> 
+> 	unsigned long test9w(unsigned long a, unsigned long b)
+> 	{
+> 		if (WARN_ON(!b))
+> 			return 0;
+> 		return a / b;
+> 	}
+> 
+> Before the patch:
+> 
+> 	0000046c <test9w>:
+> 	 46c:	7c 89 00 34 	cntlzw  r9,r4
+> 	 470:	55 29 d9 7e 	rlwinm  r9,r9,27,5,31
+> 	 474:	0f 09 00 00 	twnei   r9,0
+> 	 478:	2c 04 00 00 	cmpwi   r4,0
+> 	 47c:	41 82 00 0c 	beq     488 <test9w+0x1c>
+> 	 480:	7c 63 23 96 	divwu   r3,r3,r4
+> 	 484:	4e 80 00 20 	blr
+> 
+> 	 488:	38 60 00 00 	li      r3,0
+> 	 48c:	4e 80 00 20 	blr
+> 
+> After the patch:
+> 
+> 	00000468 <test9w>:
+> 	 468:	2c 04 00 00 	cmpwi   r4,0
+> 	 46c:	41 82 00 0c 	beq     478 <test9w+0x10>
+> 	 470:	7c 63 23 96 	divwu   r3,r3,r4
+> 	 474:	4e 80 00 20 	blr
+> 
+> 	 478:	0f e0 00 00 	twui    r0,0
+> 	 47c:	38 60 00 00 	li      r3,0
+> 	 480:	4e 80 00 20 	blr
+> 
+> So we see before the patch we need 3 instructions on the likely path
+> to handle the WARN_ON(). With the patch the trap goes on the unlikely
+> path.
+> 
+> See below the difference at the entry of system_call_exception where
+> we have several BUG_ON(), allthough less impressing.
+> 
+> With the patch:
+> 
+> 	00000000 <system_call_exception>:
+> 	   0:	81 6a 00 84 	lwz     r11,132(r10)
+> 	   4:	90 6a 00 88 	stw     r3,136(r10)
+> 	   8:	71 60 00 02 	andi.   r0,r11,2
+> 	   c:	41 82 00 70 	beq     7c <system_call_exception+0x7c>
+> 	  10:	71 60 40 00 	andi.   r0,r11,16384
+> 	  14:	41 82 00 6c 	beq     80 <system_call_exception+0x80>
+> 	  18:	71 6b 80 00 	andi.   r11,r11,32768
+> 	  1c:	41 82 00 68 	beq     84 <system_call_exception+0x84>
+> 	  20:	94 21 ff e0 	stwu    r1,-32(r1)
+> 	  24:	93 e1 00 1c 	stw     r31,28(r1)
+> 	  28:	7d 8c 42 e6 	mftb    r12
+> 	...
+> 	  7c:	0f e0 00 00 	twui    r0,0
+> 	  80:	0f e0 00 00 	twui    r0,0
+> 	  84:	0f e0 00 00 	twui    r0,0
+> 
+> Without the patch:
+> 
+> 	00000000 <system_call_exception>:
+> 	   0:	94 21 ff e0 	stwu    r1,-32(r1)
+> 	   4:	93 e1 00 1c 	stw     r31,28(r1)
+> 	   8:	90 6a 00 88 	stw     r3,136(r10)
+> 	   c:	81 6a 00 84 	lwz     r11,132(r10)
+> 	  10:	69 60 00 02 	xori    r0,r11,2
+> 	  14:	54 00 ff fe 	rlwinm  r0,r0,31,31,31
+> 	  18:	0f 00 00 00 	twnei   r0,0
+> 	  1c:	69 60 40 00 	xori    r0,r11,16384
+> 	  20:	54 00 97 fe 	rlwinm  r0,r0,18,31,31
+> 	  24:	0f 00 00 00 	twnei   r0,0
+> 	  28:	69 6b 80 00 	xori    r11,r11,32768
+> 	  2c:	55 6b 8f fe 	rlwinm  r11,r11,17,31,31
+> 	  30:	0f 0b 00 00 	twnei   r11,0
+> 	  34:	7d 8c 42 e6 	mftb    r12
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>   arch/powerpc/include/asm/bug.h | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
+> index d1635ffbb179..101dea4eec8d 100644
+> --- a/arch/powerpc/include/asm/bug.h
+> +++ b/arch/powerpc/include/asm/bug.h
+> @@ -68,7 +68,11 @@
+>   	BUG_ENTRY("twi 31, 0, 0", 0);				\
+>   	unreachable();						\
+>   } while (0)
+> +#define HAVE_ARCH_BUG
+> +
+> +#define __WARN_FLAGS(flags) BUG_ENTRY("twi 31, 0, 0", BUGFLAG_WARNING | (flags))
+>   
+> +#ifdef CONFIG_PPC64
+>   #define BUG_ON(x) do {						\
+>   	if (__builtin_constant_p(x)) {				\
+>   		if (x)						\
+> @@ -78,8 +82,6 @@
+>   	}							\
+>   } while (0)
+>   
+> -#define __WARN_FLAGS(flags) BUG_ENTRY("twi 31, 0, 0", BUGFLAG_WARNING | (flags))
+> -
+>   #define WARN_ON(x) ({						\
+>   	int __ret_warn_on = !!(x);				\
+>   	if (__builtin_constant_p(__ret_warn_on)) {		\
+> @@ -93,9 +95,10 @@
+>   	unlikely(__ret_warn_on);				\
+>   })
+>   
+> -#define HAVE_ARCH_BUG
+>   #define HAVE_ARCH_BUG_ON
+>   #define HAVE_ARCH_WARN_ON
+> +#endif
+> +
+>   #endif /* __ASSEMBLY __ */
+>   #else
+>   #ifdef __ASSEMBLY__
+> 
