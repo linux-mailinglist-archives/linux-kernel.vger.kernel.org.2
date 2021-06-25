@@ -2,202 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7777D3B3DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF963B3DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 09:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFYHpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 03:45:21 -0400
-Received: from first.geanix.com ([116.203.34.67]:35012 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230111AbhFYHpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 03:45:13 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 72B074C41C4;
-        Fri, 25 Jun 2021 07:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1624606970; bh=aDUZ0AgR1EgGJ3Ugg1Y9UNyeqVYYqsdMlaYYv9bnPXw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Vq8Lf5C3zgGgYY35Qkf84P22g/37c+nirj2U3tJfxzyi9ImOViewZJzEUhnVVmwQA
-         Fx/ukZlckLV31Cos5HjAKp9VrpKl44IltFaq0WTQCOQ3u+UAVQq1f3c8LO1U0UcyxO
-         JkgVub8okvYHVoffx+8sMnvsFoboFxwUhRVayV9R6BKxu2jOrbOWnikZX9BHwCKOkJ
-         UQptN6QYHazRxog44x/8MXjJrH1uiRKxloCkkDkWNmTHtPAl5P5VGpmLoMpDSxBiGN
-         6/RAHqMqyNYZYf1irEig1Z/q+T1q1wJgernm3HS+d/CzIX16SVbbMxrHrawwko8UTH
-         kHzFRItenWF8w==
-From:   =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
-To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
-Date:   Fri, 25 Jun 2021 09:42:13 +0200
-Message-Id: <20210625074213.654274-6-martin@geanix.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210625074213.654274-1-martin@geanix.com>
-References: <20210625074213.654274-1-martin@geanix.com>
+        id S229975AbhFYHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 03:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFYHqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 03:46:25 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1063C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:44:03 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w13so6171208edc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 00:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0oSVleYVjbJ0iAd6D04N2IadYoidHNoFrcmT8l8IGEo=;
+        b=IgOpAYl4F5RE1hLnxr9LfWgzygYiRzQBELuycEavw1ixs6p97ue1GFZT/FxYEzVgnZ
+         OTsIuRuGjw+007BDnex5YYxdiaEC0DfkoELnJWqGOUf3/CRtOC1JiJvwk5+Gw6GLjKPa
+         hB9ZolGEptFiB2gGRkLyu79fBFwDHemb7FlU4jEWVDxIW+pOSFN5rfvV23bI5QXzmO3d
+         y2Krzh9QYLPX7Vw3NocUywZv6hSIYOJVoolAinGp8OEcgIYS7nSfPUhgRG+d7lbz8buF
+         dc4Crl+vYALtYWx3Fqtoyz0K2liU6xh6BA5ScqFpfuT9hBihSeGYJa1NIRvqVBM1uSYN
+         UPNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0oSVleYVjbJ0iAd6D04N2IadYoidHNoFrcmT8l8IGEo=;
+        b=dQZdaosYBlXQQo8kke0+c6X+lhzfze9gzrjSeCSPt0Q5P19wkTf4w8NDKNeRL0fkPC
+         wCNcep5t3zlcjznqDq+RHTOblOlYjFXx6+P0sKJQV/ktbbfjf623IkGmKWVofKrsu3WT
+         /rZipLduuWl6gwX2aaCPweFMiLsskNM9/T0s7GJpmgEKinx3s+U6t1JpX8Oi+SwfXfBx
+         HuT5bS1dtcDsC6u+jmwBZK7EU5OYx+khLz1Anv1s8xNmF7DQqtRmMe4qm7iGbWM83P/W
+         c/fCEWaFPENKhrPvYIxfAiJV1gsoQnvKuznQhY43xp5wPLsNQGplhOnrV19iA/qEwTWR
+         dRuA==
+X-Gm-Message-State: AOAM530a91A2LPq9TyWnbKgmOtsa1DaYvuf4kHwSPd61weqr/8dox8y5
+        WSpBOYfAFHf0ijBJxCDcWRryPA==
+X-Google-Smtp-Source: ABdhPJyYrBWE8qukWNfXA7mG/1kJPWEPVuNcDjy9Vqsju5EwUDJS9aU+F2sWtVIhyKHPk6mtpjdkOg==
+X-Received: by 2002:a05:6402:120b:: with SMTP id c11mr12832968edw.209.1624607042538;
+        Fri, 25 Jun 2021 00:44:02 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id x17sm3472471edr.88.2021.06.25.00.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 00:44:02 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: adc: fsl-imx25-gcq: initialize regulators as needed
+Date:   Fri, 25 Jun 2021 10:43:25 +0300
+Message-Id: <20210625074325.9237-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.4 required=4.0 tests=ALL_TRUSTED,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Hundebøll <mhu@silicom.dk>
+The driver tries to initialize all possible regulators from the DT, then
+match the external regulators with each channel and then release all unused
+regulators.
 
-Add the list of sensors supported by the Silicom n5010 PAC, and enable
-the drivers as a subtype of the intel-m10-bmc multi-function driver.
+We can change the logic a bit to initialize regulators only when at least
+one channel needs them.
 
-Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+This change creates a mx25_gcq_ext_regulator_setup() function that is
+called only for the external regulators. If there's already a reference to
+an external regulator, the function will just exit early with no error.
+
+This way, the driver doesn't need to keep any track of these regulators
+during init.
+
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
+ drivers/iio/adc/fsl-imx25-gcq.c | 57 ++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 29 deletions(-)
 
-Changes since v1:
- * Patch split out to separate hwmon changes
-
- drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
-
-diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-index bd7ed2ed3a1e..7a08e4c44a4b 100644
---- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-+++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-@@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
- 	.hinfo = d5005bmc_hinfo,
+diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+index ab5139e911c3..31776f80f847 100644
+--- a/drivers/iio/adc/fsl-imx25-gcq.c
++++ b/drivers/iio/adc/fsl-imx25-gcq.c
+@@ -172,13 +172,37 @@ static const struct regmap_config mx25_gcq_regconfig = {
+ 	.reg_stride = 4,
  };
  
-+static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
-+	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
-+	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
-+	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
-+	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
-+	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
-+	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
-+	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
-+	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
-+	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
-+	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
-+	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
-+	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
-+	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
-+	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
-+	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
-+	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
-+	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
-+};
++static int mx25_gcq_ext_regulator_setup(struct device *dev,
++					struct mx25_gcq_priv *priv, u32 refp)
++{
++	char reg_name[12];
++	int ret;
 +
-+static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
-+	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
-+	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
-+	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
-+	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
-+	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
-+	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
-+	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
-+	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
-+	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
-+	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
-+	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
-+	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
-+	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
-+};
++	if (priv->vref[refp])
++		return 0;
 +
-+static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
-+	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
-+	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
-+	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
-+	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
-+	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
-+	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
-+	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
-+	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
-+	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
-+	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
-+	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
-+	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
-+	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
-+};
++	ret = snprintf(reg_name, sizeof(reg_name), "vref-%s",
++		       mx25_gcq_refp_names[refp]);
++	if (ret < 0)
++		return ret;
 +
-+static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL),
-+	HWMON_CHANNEL_INFO(in,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL),
-+	HWMON_CHANNEL_INFO(curr,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL),
-+	NULL
-+};
++	priv->vref[refp] = devm_regulator_get_optional(dev, reg_name);
++	if (IS_ERR(priv->vref[refp])) {
++		dev_err(dev,
++			"Error, trying to use external voltage reference without a %s regulator.",
++			reg_name);
++		return PTR_ERR(priv->vref[refp]);
++	}
 +
-+static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
-+	.tables = {
-+		[hwmon_temp] = n5010bmc_temp_tbl,
-+		[hwmon_in] = n5010bmc_in_tbl,
-+		[hwmon_curr] = n5010bmc_curr_tbl,
-+	},
++	return 0;
++}
 +
-+	.hinfo = n5010bmc_hinfo,
-+};
-+
- static umode_t
- m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
- 			u32 attr, int channel)
-@@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
- 		.name = "d5005bmc-hwmon",
- 		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
- 	},
-+	{
-+		.name = "n5010bmc-hwmon",
-+		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
-+	},
- 	{ }
- };
+ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			       struct mx25_gcq_priv *priv)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct device_node *child;
+ 	struct device *dev = &pdev->dev;
+-	unsigned int refp_used[4] = {};
+ 	int ret, i;
+ 
+ 	/*
+@@ -194,19 +218,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			     MX25_ADCQ_CFG_IN(i) |
+ 			     MX25_ADCQ_CFG_REFN_NGND2);
+ 
+-	/*
+-	 * First get all regulators to store them in channel_vref_mv if
+-	 * necessary. Later we use that information for proper IIO scale
+-	 * information.
+-	 */
+-	priv->vref[MX25_ADC_REFP_INT] = NULL;
+-	priv->vref[MX25_ADC_REFP_EXT] =
+-		devm_regulator_get_optional(&pdev->dev, "vref-ext");
+-	priv->vref[MX25_ADC_REFP_XP] =
+-		devm_regulator_get_optional(&pdev->dev, "vref-xp");
+-	priv->vref[MX25_ADC_REFP_YP] =
+-		devm_regulator_get_optional(&pdev->dev, "vref-yp");
+-
+ 	for_each_child_of_node(np, child) {
+ 		u32 reg;
+ 		u32 refp = MX25_ADCQ_CFG_REFP_INT;
+@@ -233,11 +244,10 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 		case MX25_ADC_REFP_EXT:
+ 		case MX25_ADC_REFP_XP:
+ 		case MX25_ADC_REFP_YP:
+-			if (IS_ERR(priv->vref[refp])) {
+-				dev_err(dev, "Error, trying to use external voltage reference without a vref-%s regulator.",
+-					mx25_gcq_refp_names[refp]);
++			ret = mx25_gcq_ext_regulator_setup(&pdev->dev, priv, refp);
++			if (ret) {
+ 				of_node_put(child);
+-				return PTR_ERR(priv->vref[refp]);
++				return ret;
+ 			}
+ 			priv->channel_vref_mv[reg] =
+ 				regulator_get_voltage(priv->vref[refp]);
+@@ -253,8 +263,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 			return -EINVAL;
+ 		}
+ 
+-		++refp_used[refp];
+-
+ 		/*
+ 		 * Shift the read values to the correct positions within the
+ 		 * register.
+@@ -285,15 +293,6 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+ 	regmap_write(priv->regs, MX25_ADCQ_CR,
+ 		     MX25_ADCQ_CR_PDMSK | MX25_ADCQ_CR_QSM_FQS);
+ 
+-	/* Remove unused regulators */
+-	for (i = 0; i != 4; ++i) {
+-		if (!refp_used[i]) {
+-			if (!IS_ERR_OR_NULL(priv->vref[i]))
+-				devm_regulator_put(priv->vref[i]);
+-			priv->vref[i] = NULL;
+-		}
+-	}
+-
+ 	return 0;
+ }
  
 -- 
-2.31.0
+2.31.1
 
