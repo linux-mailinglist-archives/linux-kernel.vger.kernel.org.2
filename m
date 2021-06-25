@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5266F3B4ACD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5B3B4ACE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFYXIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        id S229997AbhFYXIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 19:08:52 -0400
+Received: from mga06.intel.com ([134.134.136.31]:35147 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhFYXIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:08:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5E69761945;
-        Fri, 25 Jun 2021 23:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624662358;
-        bh=lcuTG6ZjgFiCKHUGCcKJQdJ2CR+vrhu/bH7yQ62d6oI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KldSj1c2wTzMWEfTKNZeq6GyvIkhgbxx9WmtXsf9nHPUaXiE9VTA9PgdBHS/6obdy
-         DWF+dSETUTwFBTlqodEYYXzfC5pZ0i+PScHr6qAZI0EmqbKR3Kgm9nmAx0LAIRNfFk
-         0Ulvrq2VanieepYPDy78q3CUAod//oUUy1+xlfXt69fzMcVLrAVf5r0dhHU4U2E5f7
-         7RTauWkcLzTV2aV2t7M+VqhfFiEla8+eSuSsJMqX5WYSahg9FZvOpCckgpgt/a9hPn
-         b/mYnpmwWZyJJHe2154KRn9Llzjfqp74tvNNvU0lsjIVxa1IGLAWWXgReSVKT5hdje
-         2XOLsIb5rCJ3A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A40A60A3C;
-        Fri, 25 Jun 2021 23:05:58 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.13-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <85a6f026d0ed9dddcdddcc03a59968c46b09b94f.camel@HansenPartnership.com>
-References: <85a6f026d0ed9dddcdddcc03a59968c46b09b94f.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <85a6f026d0ed9dddcdddcc03a59968c46b09b94f.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: d1b7f92035c6fb42529ada531e2cbf3534544c82
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e2f527b58e8115dae15ae344215accdd7a42e5ba
-Message-Id: <162466235824.24705.11314261824838167773.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Jun 2021 23:05:58 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S229940AbhFYXIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 19:08:51 -0400
+IronPort-SDR: b59YcC4ebousSZQS/Qd1jwcNwrAy6LKwnHc9Ocofgdm5NbgFRO4sj/vcTbsdmvdTCi+AXSGBsR
+ Qb9VAhOLPj3A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="268884449"
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="268884449"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 16:06:29 -0700
+IronPort-SDR: NasZmMKfyZRgQ/AzAbvWlT5BK95VDtBndp4qsjWAJg98PDXH3SAoWJ5KlcPWZAnWxQ7fEhDPqL
+ iEkuzgkXtFtw==
+X-IronPort-AV: E=Sophos;i="5.83,300,1616482800"; 
+   d="scan'208";a="407110962"
+Received: from slahiri1-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.213.179.195])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2021 16:06:26 -0700
+Message-ID: <2be5bb5342ae568c198d61f5e8a8b4515b61ba66.camel@intel.com>
+Subject: Re: [PATCH v2] x86/sgx: Add missing xa_destroy() when virtual EPC
+ is destroyed
+From:   Kai Huang <kai.huang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
+        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        Yang Zhong <yang.zhong@intel.com>
+Date:   Sat, 26 Jun 2021 11:06:23 +1200
+In-Reply-To: <YNXej3ru9kxQugvR@zn.tnic>
+References: <20210616003634.320206-1-kai.huang@intel.com>
+         <20210623132844.heleuoxogrpz3cpm@kernel.org>
+         <925090f035b8e749ea7aca8c857690c8afba7349.camel@intel.com>
+         <YNWR+oSGfulOWziI@zn.tnic>
+         <6df0600b755ca067a6c4ff82af47297feafa088a.camel@intel.com>
+         <YNXej3ru9kxQugvR@zn.tnic>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Jun 2021 15:06:51 -0700:
+On Fri, 2021-06-25 at 15:47 +0200, Borislav Petkov wrote:
+> On Sat, Jun 26, 2021 at 12:04:53AM +1200, Kai Huang wrote:
+> > Oh sorry I thought the patch would go via x86/sgx branch
+> 
+> We usually send fixes through tip's urgent branches because they go
+> straight to Linus and not wait for the merge window.
+> 
+> > and I didn't monitor the tip-bot2 mail which was moved to my local x86
+> > folder.
+> 
+> That's not optimal because those tip-bot notifications are *exactly* for
+> that - to let the involved parties know that the patch has been queued.
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Got it. Thanks for remaindering.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e2f527b58e8115dae15ae344215accdd7a42e5ba
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
