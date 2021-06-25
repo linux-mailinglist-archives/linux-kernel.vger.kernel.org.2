@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0663B3B60
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA353B3B69
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhFYEDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 00:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
+        id S230207AbhFYEKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 00:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhFYEDk (ORCPT
+        with ESMTP id S229498AbhFYEKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 00:03:40 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DA3C061574;
-        Thu, 24 Jun 2021 21:01:18 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j2so14026974lfg.9;
-        Thu, 24 Jun 2021 21:01:18 -0700 (PDT)
+        Fri, 25 Jun 2021 00:10:36 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552CBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:08:15 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id g7so4419378wri.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:08:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=S1GTNN1z/IkduZ5kkv4dtHHucdV9KwV0K8dsnXmmNYM=;
-        b=CuIJ9nSdpHWKq9ctkFdCqNdG6yzAF5jDIHs1A/xH0zZQkVq8Gn3LiGIN29hqy1idpG
-         cSX7DiU33QGYIZ3KTMuCU1M4dprCB5SEUroXbHJjLoClYSj95w3IUJVURdbQiAsYVDqv
-         qQuC1V9NFP1afIPDroAABoY9AgTVMy14Hju5OAmxqCEjA/EhsMaDfMcWwJo2kIyp19Qo
-         9e7hIRiUGX0swPjBzn1QbMZpuumDLDMXgVQJLv4mp26I2VrlAZ8rV6vdQ72q2kG7BVTu
-         xFZaLVzup1MyidHbZHrx3EljAkGuyhdds7irHGBP6cf/6r7y1TN7Hx8GA6SCp5lobMLJ
-         n2zQ==
+        bh=Wtb2ef1+Onk4FkYj1WTTNjN9qcUMzBKmdDiK41PBwCo=;
+        b=P5ZQzzEtVw32Z7+DdWiYMF9W3ByIMIzM/WNQjjiNvFtNfBECqKgHgrKsuB77VF+vQm
+         KrrG+5fMzjNHLvVs54Hi6R2MLmoky8ex8xOYcUT30gFcc999JVt+iKCFgwGlw3ptwQWV
+         6wSFWfBP7ycBNvDZmhfN8CekUAVsf2SVHGiCu19QcRQGIbpFgL/Ml4ZdwFb8W7nugqnw
+         UIQ/MfwBwmNQGZfdluQeCWzG+OvybfssXsvWT8TXIJsaJXI2xaq90uW/ww1OufxTmDRs
+         KUYEUevD3JrB341dc4U6AuxtN6SSavtiOZxfnAiV3GK5w6aYTI0Vb/qr7ihGSKjRR03O
+         OrGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=S1GTNN1z/IkduZ5kkv4dtHHucdV9KwV0K8dsnXmmNYM=;
-        b=cZlAr1rsJunjl8NYAb/NeEvu3MIPtjmgvzcad1hto5tQUf60NOU/MpshMkKZyymLuy
-         GxljL4UPAQH8kou06vrnOcE8lFHrpCyYTmS0LHswJlTZPzI+zE1f+AsAOO4jAsv9Yinm
-         1LCJlpwwasfG5TfGtq/bNIBTJjspe+zvUV283SqXqOcU9Pyx74//kph7uesl+3Wk6CKr
-         BZcFSR3wMtHTI8ilzvU28cocAQShakxSqcOiqix/seI5CAzA8BFCZf986/Y2IOimlgep
-         tas92vHycii+mLW/Fs9vHcusKEYwWwkqkKWtqEnJI5caO/jfTMLSDZxotAzrfn9DHQvi
-         4gqw==
-X-Gm-Message-State: AOAM533/hzLaROUc+z1WH/YBT7SFDHj/0/fDxzEVMgweEBoN86wBAA3x
-        BNgRD3DJuGEp0VfLYJ9We9rlZjxOnd+cvViV3H8=
-X-Google-Smtp-Source: ABdhPJzLYV7rYqObjx7O7ZdxD6gFN8Z948ZlrxW66doL5t0jNv0vm1dKo9zaOXnzTdIOIksLAOVQIG8maiiCJoOneU8=
-X-Received: by 2002:a05:6512:10cb:: with SMTP id k11mr6375062lfg.182.1624593677206;
- Thu, 24 Jun 2021 21:01:17 -0700 (PDT)
+        bh=Wtb2ef1+Onk4FkYj1WTTNjN9qcUMzBKmdDiK41PBwCo=;
+        b=lCujjWB+BcxjqHkjlzkTAU0L7TSs/opi5+/au7waOrSvJwu3wwJk5nuoi+Zla0XSRE
+         xpuJOygSRVKbf8zPqTTLh35Bd7qLsnzQ4M2tTR7AlufmaTzfYvVkAPfeAf5EkbxkgJx1
+         KEBk6kDf6d4HhtCYWguqGiwo4vwOUqpeNsY4yj8GRp0GgogcbJsWWAi5FrpO+z5liBXa
+         UVk+LAFHNsVsnYtal8UN7aGlzLvK4h7PhBZFRjzcPH5QQWWG5Z49qenuubsrK5aIc3zm
+         zhtA8aF3b6oBgMUQDEHgLkMyrxpzM+u+mQ1Ql1IVZ5f8KGvtwzqN1odKu9DdMUajM5Cz
+         eoiw==
+X-Gm-Message-State: AOAM533nxg4tGXbBeZmXzGVEquIK7zC5XifkwcKHl9KbdhcUS4MLAZiS
+        7spUw57C6AE6ihXgwb0T3gNUmf9Wkccnrv0oIa7KTQ==
+X-Google-Smtp-Source: ABdhPJxcx1eoU3WmQgAS+epQWrUgX6YHSAX3v4EPioVlfbNsRX//a6JQn2GwTJ0l0p4S+IhH3g+VKja3Yh2iuD8ZFak=
+X-Received: by 2002:a5d:480e:: with SMTP id l14mr8651762wrq.33.1624594093763;
+ Thu, 24 Jun 2021 21:08:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
- <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
-In-Reply-To: <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 24 Jun 2021 21:01:05 -0700
-Message-ID: <CAADnVQKLwEEZJ=_=g8RfgOrt9b1XN=dM9bt515pOrru=ADQR1Q@mail.gmail.com>
-Subject: Re: [PATCH] x86 bpf: Fix extable offset calculation
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+References: <20210623201721.980348-1-dlatypov@google.com>
+In-Reply-To: <20210623201721.980348-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 25 Jun 2021 12:08:02 +0800
+Message-ID: <CABVgOSnffgiapw04a-naZZtuzHfcKaZPcqNiPxhYObdbNgJf2Q@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: drop obsolete note about uml_abort
+ for coverage
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 4:01 AM Ravi Bangoria
-<ravi.bangoria@linux.ibm.com> wrote:
+On Thu, Jun 24, 2021 at 4:17 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> commit 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks
-> for PROBE_LDX instructions.") is emitting couple of instructions
-> before actual load. Consider those additional instructions while
-> calculating extable offset.
+> Commit b6d5799b0b58 ("kunit: Add 'kunit_shutdown' option") changes KUnit
+> to call kernel_halt() by default when done testing.
 >
-> Fixes: 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks for PROBE_LDX instructions.")
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> This fixes the issue with not having .gcda files due to not calling
+> atexit() handlers, and therefore we can stop recommending people
+> manually tweak UML code.
+>
+> The need to use older versions of GCC (<=6) remains however, due to
+> linktime issues, same as before. Note: There also might still be issues
+> with .gcda files as well in newer versions.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
->  arch/x86/net/bpf_jit_comp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 2a2e290fa5d8..231a8178cc11 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1297,7 +1297,7 @@ st:                       if (is_imm8(insn->off))
->                         emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
->                         if (BPF_MODE(insn->code) == BPF_PROBE_MEM) {
->                                 struct exception_table_entry *ex;
-> -                               u8 *_insn = image + proglen;
-> +                               u8 *_insn = image + proglen + (u8)(start_of_ldx - temp);
 
-Great debugging and the fix. Thanks a lot.
-I've dropped (u8) cast, kept (), and applied to bpf tree.
-I think it looks cleaner without that cast.
-Could you send a followup patch with a selftest, so I don't make
-the same mistake again ? ;)
+This looks good to me, thanks! Now if only we could fix the issues
+with newer gcc versions...
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+
+-- David
+
+>  Documentation/dev-tools/kunit/running_tips.rst | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
+> index 7d99386cf94a..d1626d548fa5 100644
+> --- a/Documentation/dev-tools/kunit/running_tips.rst
+> +++ b/Documentation/dev-tools/kunit/running_tips.rst
+> @@ -86,19 +86,7 @@ Generating code coverage reports under UML
+>  .. note::
+>         TODO(brendanhiggins@google.com): There are various issues with UML and
+>         versions of gcc 7 and up. You're likely to run into missing ``.gcda``
+> -       files or compile errors. We know one `faulty GCC commit
+> -       <https://github.com/gcc-mirror/gcc/commit/8c9434c2f9358b8b8bad2c1990edf10a21645f9d>`_
+> -       but not how we'd go about getting this fixed. The compile errors still
+> -       need some investigation.
+> -
+> -.. note::
+> -       TODO(brendanhiggins@google.com): for recent versions of Linux
+> -       (5.10-5.12, maybe earlier), there's a bug with gcov counters not being
+> -       flushed in UML. This translates to very low (<1%) reported coverage. This is
+> -       related to the above issue and can be worked around by replacing the
+> -       one call to ``uml_abort()`` (it's in ``os_dump_core()``) with a plain
+> -       ``exit()``.
+> -
+> +       files or compile errors.
+>
+>  This is different from the "normal" way of getting coverage information that is
+>  documented in Documentation/dev-tools/gcov.rst.
+>
+> base-commit: 87c9c16317882dd6dbbc07e349bc3223e14f3244
+> --
+> 2.32.0.93.g670b81a890-goog
+>
