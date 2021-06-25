@@ -2,77 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A18D3B3B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C853B3B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 06:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhFYEVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 00:21:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:52717 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhFYEVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 00:21:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GB3fH1gyKz9sTD;
-        Fri, 25 Jun 2021 14:18:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624594727;
-        bh=ikfYLnjPlLd+16TrxJyxnsOauAGnGc0HzllFk0+kFQg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qr4VM32SHdtXQtpLAn4wt7u7pwHGcEcx5zZDZG1mGAHrs6t1Gs4sYlQn1NWiLQFoC
-         VLg5j15SRzsKDRinoOiTHj2Rpy+DJMCWVEha2Rh8CsBEE6idO8iKBCkO/NGVcH2tjP
-         4lqTj49RalIDmxtJeAJhAa04cFoxN81ixs3ZbajGrJxYLHx8J7BLUrijwlHOEpicgM
-         C7CntQjZSXWTWAdrpqGKBVbni4rua5x3q5EayKIQZ6AxZARBnyLWOf5+TiH1xufuoS
-         Ov1BB6PiyZo8IctQCkwXUNc9KB0vWwSBCbo7OgITD2t9eMROMF/08ZUBybLcftrW0N
-         6At/8XlW0ax2Q==
-Date:   Fri, 25 Jun 2021 14:18:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the rcu tree
-Message-ID: <20210625141844.2f196aeb@canb.auug.org.au>
+        id S231673AbhFYEVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 00:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhFYEVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 00:21:48 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F306C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:19:27 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id yy20so5231385ejb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 21:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q34vFqngnB3t5A6Nz3+eYIAGYGv8OAQnO0GJ9ith6+k=;
+        b=YyvepM16teRAmW69CrgpPvH41Kv8BofJj0cnZwPg1pUt8Kynigzda5WiVGgo+EUKSl
+         MmN7Bs8/AinjxpLcVb8drAzPGwoEC/8SqEctQaOrgknExBKqugTu3nDd7XqY74F2MnUL
+         +aOfvmk2a2zM5gOZvVHKyqfJUj9GoDM5evNKgotF30eKzWH9zKild6AjUCaJxDdxo3/0
+         JIVSRc7orj7IUOn29Px1/HUAF2D7/UPboHOswMrNZPwXJ0Ib9KZYxz+XAxuLo/GeSNS5
+         6Ws2t1iATvhbQUuJEkMXTiXk+zAp+ud2KhPhyz3bAmKGDboR4fY7Tvr/053rCSMrbt+9
+         gKOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q34vFqngnB3t5A6Nz3+eYIAGYGv8OAQnO0GJ9ith6+k=;
+        b=pWiHwKPPQXoF6I8FhgueF7jaNmQpYAIBNW4yhLTssmDEo5f64rzTsrHN9p2VGyrkHW
+         OlJW7hPJaWAywlxPhDf1bLVJsTn5+v4gfKWlO1Rpusl6xuK6j/GE2HwvNF66PaPWTYUa
+         6f7HVsxQWWT4dq/vFzRr6wHVqmL79MIph+kBXAKEBKLtA0XMuMSyPidojfGqOzqAMYM5
+         8h17wFs4W/8m7hgRRnDWp3OJyADxnwuXEfOJRaA8VGuhP+YfhZ6yR3Yuwvomg5ft++r+
+         OSJ2qnboK7yx0QooO0bg71i4gc82YZ5qHF7jUThIjRtu5hzI8QPNMsZakz9EETtRliwg
+         xx1w==
+X-Gm-Message-State: AOAM531qYSCa15GyZRKiiuqDOwnMMYLTBgCpw78TCq47d2IWSDY/j1nu
+        TZ9BEgqK/TtytW9Bjfwq/cs7B9SCefCXnA0PTFUI
+X-Google-Smtp-Source: ABdhPJwWo7LxCs+JJy5P3HQmX5kV8JvQwPmXrDO588SF0T6G/cjPM3gzbPTywA6iLqaSgqpcRjYDZsFvg/0Ua/XTQNc=
+X-Received: by 2002:a17:906:7142:: with SMTP id z2mr8520729ejj.427.1624594765939;
+ Thu, 24 Jun 2021 21:19:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KzyL5UbGINWFyPN/FlOnA6X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
+ <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
+ <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
+ <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
+ <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
+ <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com> <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
+ <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com> <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
+ <b10b3916-74d4-3171-db92-be0afb479a1c@redhat.com>
+In-Reply-To: <b10b3916-74d4-3171-db92-be0afb479a1c@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Fri, 25 Jun 2021 12:19:15 +0800
+Message-ID: <CACycT3vpMFbc9Fzuo9oksMaA-pVb1dEVTEgjNoft16voryPSWQ@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KzyL5UbGINWFyPN/FlOnA6X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 25, 2021 at 11:09 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/24 =E4=B8=8B=E5=8D=885:16, Yongji Xie =E5=86=99=E9=81=93=
+:
+> > On Thu, Jun 24, 2021 at 4:14 PM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> =E5=9C=A8 2021/6/24 =E4=B8=8B=E5=8D=8812:46, Yongji Xie =E5=86=99=E9=
+=81=93:
+> >>>> So we need to deal with both FEATURES_OK and reset, but probably not
+> >>>> DRIVER_OK.
+> >>>>
+> >>> OK, I see. Thanks for the explanation. One more question is how about
+> >>> clearing the corresponding status bit in get_status() rather than
+> >>> making set_status() fail. Since the spec recommends this way for
+> >>> validation which is done in virtio_dev_remove() and
+> >>> virtio_finalize_features().
+> >>>
+> >>> Thanks,
+> >>> Yongji
+> >>>
+> >> I think you can. Or it would be even better that we just don't set the
+> >> bit during set_status().
+> >>
+> > Yes, that's what I mean.
+> >
+> >> I just realize that in vdpa_reset() we had:
+> >>
+> >> static inline void vdpa_reset(struct vdpa_device *vdev)
+> >> {
+> >>           const struct vdpa_config_ops *ops =3D vdev->config;
+> >>
+> >>           vdev->features_valid =3D false;
+> >>           ops->set_status(vdev, 0);
+> >> }
+> >>
+> >> We probably need to add the synchronization here. E.g re-read with a
+> >> timeout.
+> >>
+> > Looks like the timeout is already in set_status().
+>
+>
+> Do you mean the VDUSE's implementation?
+>
 
-Hi all,
+Yes.
 
-Commits
+>
+> >   Do we really need a
+> > duplicated one here?
+>
+>
+> 1) this is the timeout at the vDPA layer instead of the VDUSE layer.
 
-  c6f5e7e1ac95 ("tools/nolibc: Implement msleep()")
-  d7c47ea32af0 ("tools: include: nolibc: Fix a typo occured to occurred in =
-the file nolibc.h")
+OK, I get it.
 
-are missing a Signed-off-by from their committer.
+> 2) it really depends on what's the meaning of the timeout for set_status
+> of VDUSE.
+>
+> Do we want:
+>
+> 2a) for set_status(): relay the message to userspace and wait for the
+> userspace to quiescence the datapath
+>
+> or
+>
+> 2b) for set_status(): simply relay the message to userspace, reply is no
+> needed. Userspace will use a command to update the status when the
+> datapath is stop. The the status could be fetched via get_stats().
+>
+> 2b looks more spec complaint.
+>
 
---=20
-Cheers,
-Stephen Rothwell
+Looks good to me. And I think we can use the reply of the message to
+update the status instead of introducing a new command.
 
---Sig_/KzyL5UbGINWFyPN/FlOnA6X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> > And how to handle failure? Adding a return value
+> > to virtio_config_ops->reset() and passing the error to the upper
+> > layer?
+>
+>
+> Something like this.
+>
 
------BEGIN PGP SIGNATURE-----
+OK.
 
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDVWSQACgkQAVBC80lX
-0GydSgf40c1XCZG4umdyorsrcTicJ21aKghAcfYp+WavcK+0935lD5UOI/Fc6yFA
-Z0aItjAKnZ8NFazrugWIXspmrvzKifzTOQPL8y0fjmWEQ3OvBZ8FUXCxx99nLob2
-jA0MOnQz8S63n6956+EPG1FEKYr2Dk/BRJCLE8x95NMeMGwgexxGF99iWe91Bkso
-uAvwcZQYW7OxoNZEeh+uDs6omzqjbBRvn07skGmeQMlwLbCO6vYOG6zttTC3IyBg
-TgUC17rRXnEZoAjsImzOupVo20jeSqxkPuWx7ZYtxB0AlLl03Toj0WJG2P/jrTj6
-U3aFqrMiKUO24510qmoxw99ttGjT
-=2nd1
------END PGP SIGNATURE-----
-
---Sig_/KzyL5UbGINWFyPN/FlOnA6X--
+Thanks,
+Yongji
