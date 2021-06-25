@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AEC3B3FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A603B3FB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 10:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhFYIs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 04:48:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5078 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhFYIs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 04:48:56 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GB9TD4CcTzXkcs;
-        Fri, 25 Jun 2021 16:41:20 +0800 (CST)
-Received: from [10.174.177.120] (10.174.177.120) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 25 Jun 2021 16:46:33 +0800
-Subject: Re: [Phishing Risk] [External] [PATCH 2/3] mm/zsmalloc.c: combine two
- atomic ops in zs_pool_dec_isolated()
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, <ngupta@vflare.org>,
-        <senozhatsky@chromium.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20210624123930.1769093-1-linmiaohe@huawei.com>
- <20210624123930.1769093-3-linmiaohe@huawei.com>
- <CAMZfGtUNtR3ZPv4m5bBCGdE5GuMR5Bw18_n7YzqB4s6QHyV+Pg@mail.gmail.com>
- <1b38b33f-316e-1816-216f-9923f612ceb6@huawei.com>
- <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <01117bc0-53b1-d81a-a4d8-2a1dbe5dcd94@huawei.com>
-Date:   Fri, 25 Jun 2021 16:46:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230296AbhFYItB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 04:49:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhFYIs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 04:48:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C89E6141C;
+        Fri, 25 Jun 2021 08:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624610798;
+        bh=k0YWqkCUy3RGtdCsOBfK8gvBJN3ud9zj7lvL3kFNjAY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VDR5ci+oNRMJ4uzMyayoa0PvasYVgTmfXR2pSWETboH7V7+cS51AASr0Z6aR92gAN
+         MTCp5Vjd4rERsvOesewcd8MV1yCzn/AvJJJpTCuRHy90L1OJRHkBwrL6/BuYj1ivLq
+         ol2b4fBev5kO1MLHZLiBIdcNpQuP8WWv5vbblAdA=
+Date:   Fri, 25 Jun 2021 10:46:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v10 13/16] arm64: Advertise CPUs capable of running
+ 32-bit applications in sysfs
+Message-ID: <YNWX64TIVkGyNsbs@kroah.com>
+References: <20210623173848.318-1-will@kernel.org>
+ <20210623173848.318-14-will@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtXnYxumuNau2rvk+ivPEa-ows0KD4EWFBjCiM6e_iagtg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.120]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623173848.318-14-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/25 15:29, Muchun Song wrote:
-> On Fri, Jun 25, 2021 at 2:32 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>
->> On 2021/6/25 13:01, Muchun Song wrote:
->>> On Thu, Jun 24, 2021 at 8:40 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>>>
->>>> atomic_long_dec_and_test() is equivalent to atomic_long_dec() and
->>>> atomic_long_read() == 0. Use it to make code more succinct.
->>>
->>> Actually, they are not equal. atomic_long_dec_and_test implies a
->>> full memory barrier around it but atomic_long_dec and atomic_long_read
->>> don't.
->>>
->>
->> Many thanks for comment. They are indeed not completely equal as you said.
->> What I mean is they can do the same things we want in this specified context.
->> Thanks again.
+On Wed, Jun 23, 2021 at 06:38:45PM +0100, Will Deacon wrote:
+> Since 32-bit applications will be killed if they are caught trying to
+> execute on a 64-bit-only CPU in a mismatched system, advertise the set
+> of 32-bit capable CPUs to userspace in sysfs.
 > 
-> I don't think so. Using individual operations can eliminate memory barriers.
-> We will pay for the barrier if we use atomic_long_dec_and_test here.
-
-The combination of atomic_long_dec and atomic_long_read usecase is rare and looks somehow
-weird. I think it's worth to do this with the cost of barrier.
-
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  .../ABI/testing/sysfs-devices-system-cpu      |  9 +++++++++
+>  arch/arm64/kernel/cpufeature.c                | 19 +++++++++++++++++++
+>  2 files changed, 28 insertions(+)
 > 
->>
->>> That RMW operations that have a return value is equal to the following.
->>>
->>> smp_mb__before_atomic()
->>> non-RMW operations or RMW operations that have no return value
->>> smp_mb__after_atomic()
->>>
->>> Thanks.
->>>
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/zsmalloc.c | 3 +--
->>>>  1 file changed, 1 insertion(+), 2 deletions(-)
->>>>
->>>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
->>>> index 1476289b619f..0b4b23740d78 100644
->>>> --- a/mm/zsmalloc.c
->>>> +++ b/mm/zsmalloc.c
->>>> @@ -1828,13 +1828,12 @@ static void putback_zspage_deferred(struct zs_pool *pool,
->>>>  static inline void zs_pool_dec_isolated(struct zs_pool *pool)
->>>>  {
->>>>         VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
->>>> -       atomic_long_dec(&pool->isolated_pages);
->>>>         /*
->>>>          * There's no possibility of racing, since wait_for_isolated_drain()
->>>>          * checks the isolated count under &class->lock after enqueuing
->>>>          * on migration_wait.
->>>>          */
->>>> -       if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
->>>> +       if (atomic_long_dec_and_test(&pool->isolated_pages) && pool->destroying)
->>>>                 wake_up_all(&pool->migration_wait);
->>>>  }
->>>>
->>>> --
->>>> 2.23.0
->>>>
->>> .
->>>
->>
-> .
-> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> index fe13baa53c59..899377b2715a 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> @@ -494,6 +494,15 @@ Description:	AArch64 CPU registers
+>  		'identification' directory exposes the CPU ID registers for
+>  		identifying model and revision of the CPU.
+>  
+> +What:		/sys/devices/system/cpu/aarch32_el0
+> +Date:		May 2021
+> +Contact:	Linux ARM Kernel Mailing list <linux-arm-kernel@lists.infradead.org>
+> +Description:	Identifies the subset of CPUs in the system that can execute
+> +		AArch32 (32-bit ARM) applications. If present, the same format as
+> +		/sys/devices/system/cpu/{offline,online,possible,present} is used.
+> +		If absent, then all or none of the CPUs can execute AArch32
+> +		applications and execve() will behave accordingly.
+> +
+>  What:		/sys/devices/system/cpu/cpu#/cpu_capacity
+>  Date:		December 2016
+>  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 2f9fe57ead97..23eaa7f06f76 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -67,6 +67,7 @@
+>  #include <linux/crash_dump.h>
+>  #include <linux/sort.h>
+>  #include <linux/stop_machine.h>
+> +#include <linux/sysfs.h>
+>  #include <linux/types.h>
+>  #include <linux/minmax.h>
+>  #include <linux/mm.h>
+> @@ -1319,6 +1320,24 @@ const struct cpumask *system_32bit_el0_cpumask(void)
+>  	return cpu_possible_mask;
+>  }
+>  
+> +static ssize_t aarch32_el0_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	const struct cpumask *mask = system_32bit_el0_cpumask();
+> +
+> +	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(mask));
+> +}
+> +static const DEVICE_ATTR_RO(aarch32_el0);
 
+I just realized that we have a problem with this type of representation
+overflowing PAGE_SIZE on larger systems.  There is ongoing work to fix
+this up but that requires converting these to binary sysfs files, which
+is a pain to preserve the original format here.
+
+Yes, for now you will be fine on these arm32 systems, but in the future
+this will have to be changed.  Because of that, should you just make
+this an individual cpu attribute (one file per cpu) and not a single
+file that lists all cpus?
+
+what tool is going to read this and why can't they just pick it up from
+the individual cpu files instead?
+
+thanks,
+
+greg k-h
