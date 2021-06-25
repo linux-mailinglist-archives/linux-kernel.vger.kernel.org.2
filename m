@@ -2,69 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CB73B4795
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD243B4798
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhFYQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:55:40 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:46280 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhFYQzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:55:38 -0400
-Received: from zn.tnic (p200300ec2f0dae005eaeb42c95705db7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:ae00:5eae:b42c:9570:5db7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9C82C1EC0595;
-        Fri, 25 Jun 2021 18:53:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624639996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5oglbtDoCqv1rrsijHZLgwPJuabYmtu6XSdtgQz57Bw=;
-        b=Fz6hzC/dAe73l8J3h7q3W3oJDTQQpeP/857Y2zyrbsLL6+qYVWP+/UkwBW/QQDM+QOP+ms
-        o4LDOjLomxx6O+e9IpcyV+uxmFgfQK3qa6i1WRKlyvO/AEg9ybDRAXAirPkfthyU8Tj2vl
-        V8mUpspV+w9CN+2Tc/RmZFS98UH5GNM=
-Date:   Fri, 25 Jun 2021 18:53:10 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
-Message-ID: <YNYJ9vVQPVWqCvVq@zn.tnic>
-References: <YNRzSy3NuwBDYWwr@kroah.com>
- <YNR7aw+C+7AJnBIG@zn.tnic>
- <YNXG472lXPHlbuCF@kroah.com>
- <YNXkVBcmBvZL7khv@zn.tnic>
- <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
+        id S230015AbhFYQ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFYQ4o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:56:44 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A138C061766
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:54:22 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id u2so5025818plf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 09:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=l7dX5dgpmPFuySJbZwA/qhXdydYfRA2CAHeZv6VJOdk=;
+        b=iqLixdZ4UQzIfrMpWEvBZKk5Fvm5nRLt8h9LHj6PsJATVMPi7t0AV1zK5ok8y6mRpP
+         +M8ZOCK/fdssvSFI6zERVDwSO0CDJKSow466MIVRQOMvAPt/3YvcZMXzOmooS3BsNUz8
+         aZsOdhZi6YjFTNoNOv1FnZgYDkyYti0HOxNk6ztUJX2NweNGCSJ8iJE762SgA7Loi333
+         S0LK6OC2LSk9yFqBz/NtkI0obfj2RJSGpHwnYt3uFzpzz5dFzr+CKvb95L5lGFpMROQn
+         Nqw/9cNf3YHkpLw0oADqyiPOY42p4HIc0IHJMdkevGMH5NNE0TklGkeGQNzXcUxWFWBy
+         5Hfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l7dX5dgpmPFuySJbZwA/qhXdydYfRA2CAHeZv6VJOdk=;
+        b=CP374hbK4hOIkMkh5acw7ECZteRsLxGf+l4peq1NdLwY9I/IUXvS65XcB6TzRYyIHa
+         PvhxHe8LJxL02FkcZBbHCGIe7/Amqx/OQ0o5GV58gj/msSFRMmfjVzNOhbrzl/sa8VT3
+         NlMzduHGzryuctVbrT7t20p18+cp7plPqVCTmX6o480udw8kDF9MpsMQ4qD3Oc+hHG2z
+         csIi8k/qDLCzMCaYIZQAJEiGbAuK5IcXnL6FniCOMoWqMX+sxF3aMvH2qJdavVfAruDN
+         SigS+RgoYvqB7+Bq7hl9RB63gW5u49PXA6rTGo2d64pTYNVeOkZVYMLMCZaQwwtmOgnQ
+         9cRA==
+X-Gm-Message-State: AOAM531K9ZMdO7zj3QG7JA0cIA14voa+1FqenoD8OA3I4kTcBSYGYww6
+        jrWM+NB0sG6J3EyXJ0dgMVz0lQ==
+X-Google-Smtp-Source: ABdhPJxoBHY6Quyfae50dLrV3dw6N6ydOo0cfw07RcLuzRCsFLfKsBPoKFLzrHhyox7gDhH1l8Cn4w==
+X-Received: by 2002:a17:90b:1809:: with SMTP id lw9mr12225978pjb.128.1624640061688;
+        Fri, 25 Jun 2021 09:54:21 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id b9sm5826453pfm.124.2021.06.25.09.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 09:54:21 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 22:24:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 4/4] cpufreq: CPPC: Add support for frequency
+ invariance
+Message-ID: <20210625165418.shi3gkebumqllxma@vireshk-i7>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
+ <20210624094812.GA6095@arm.com>
+ <20210624130418.poiy4ph66mbv3y67@vireshk-i7>
+ <20210625085454.GA15540@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
+In-Reply-To: <20210625085454.GA15540@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:19:38AM -0700, H. Peter Anvin wrote:
-> You can use PRIu32/64 or cast to unsigned long long; it's not like the
-> performance for this case is going to matter one iota.
+On 25-06-21, 09:54, Ionela Voinescu wrote:
+> Hey,
+> 
+> On Thursday 24 Jun 2021 at 18:34:18 (+0530), Viresh Kumar wrote:
+> > On 24-06-21, 10:48, Ionela Voinescu wrote:
+> > > On Monday 21 Jun 2021 at 14:49:37 (+0530), Viresh Kumar wrote:
+> > > > The Frequency Invariance Engine (FIE) is providing a frequency scaling
+> > > > correction factor that helps achieve more accurate load-tracking.
+> > > [..]
+> > > > +static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
+> > > > +{
+> > > > +	struct cppc_freq_invariance *cppc_fi;
+> > > > +	int cpu;
+> > > > +
+> > > > +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> > > > +		return;
+> > > > +
+> > > > +	/* policy->cpus will be empty here, use related_cpus instead */
+> > > > +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, policy->related_cpus);
+> > > > +
+> > > > +	for_each_cpu(cpu, policy->related_cpus) {
+> > > > +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
+> > > 
+> > > Do you think it might be worth having here something like:
+> > > 
+> > > 		if (!cppc_fi->cpu_data)
+> > > 			continue;
+> > > 
+> > > This would be to protect against cases where the platform does not boot
+> > > with all CPUs or the module is loaded after some have already been
+> > > offlined. Unlikely, but..
+> > 
+> > Even in that case policy->cpus will contain all offline+online CPUs (at ->init()
+> > time), isn't it ?
+> > 
+> 
+> Right, my bad. I missed cpumask_and(policy->cpus, policy->cpus,
+> cpu_online_mask) being done after init(). It logically seems a bit
+> wrong, but drivers are in control of setting policy->cpus and acting on
+> it, and in this case the driver does the right thing.
 
-Why "unsigned long long"?
-
-Those fields are typedeffed as:
-
-typedef __u32	Elf32_Off;
-
-or
-
-typedef __u64	Elf64_Off;
-
-respectively so they should fit in an "unsigned long" on the respective
-width.
+Do you want me to re-add your Reviewed-by here ?
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+viresh
