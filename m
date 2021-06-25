@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7B53B4746
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF293B4751
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 18:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFYQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 12:17:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:59834 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhFYQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 12:17:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE74D1063;
-        Fri, 25 Jun 2021 09:15:35 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FEFA3F719;
-        Fri, 25 Jun 2021 09:15:33 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 17:15:28 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
-Message-ID: <20210625161528.GA21595@lpieralisi>
-References: <20210616211630.GA3007203@bjorn-Precision-5520>
- <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
+        id S229882AbhFYQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 12:20:34 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:54731 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229615AbhFYQUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 12:20:33 -0400
+Received: from [IPv6:2601:646:8602:8be1:493a:1894:bb79:383b] ([IPv6:2601:646:8602:8be1:493a:1894:bb79:383b])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 15PGHlpw2433485
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 25 Jun 2021 09:17:49 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 15PGHlpw2433485
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021052901; t=1624637869;
+        bh=o04MLK9yGLA91PjsTYSeSl4Z+P8FWRubaxv247wpYzE=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=KmSsBcjFUJ5KzU2FQD23Pns9dlirB1BA1whGPg1iw/nG7pSf22ephHLVaCOQva+0/
+         8/BZertootOCsOUgu3Cxqn4dR60KnSQcHew4sNguJb27++gN/Sqvdh3OcOAVUDixmM
+         nAiJIpATP6M6+L11iGqMyG66XqgOYiVeY3o1F44Wia/aENgaIwsPn3fhDfc53uOBBk
+         V08ZFMzWxC053uul6r7+6CbQb+pQJ4ApLTu3O2a28Jua4GFkfbXUx9+TEuco6RYrFq
+         C+kGrRLmC71KE6A7idetzt7d9ioZwsqYTtwnyt5vOKp39Sv6q17JW+b7HDLeH0tsJK
+         TO1FGM/APUZ9Q==
+Date:   Fri, 25 Jun 2021 09:17:40 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YNSaMnRDwan+aYT4@kroah.com>
+References: <YNRzSy3NuwBDYWwr@kroah.com> <YNR7aw+C+7AJnBIG@zn.tnic> <YNSaMnRDwan+aYT4@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Borislav Petkov <bp@alien8.de>
+CC:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <58B9D76E-306C-4CE5-BAAA-E5D38832BE23@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:30:09PM +0530, Kishon Vijay Abraham I wrote:
-> Hi Lorenzo,
-> 
-> On 17/06/21 2:46 am, Bjorn Helgaas wrote:
-> > On Wed, Jun 16, 2021 at 07:35:33PM +0530, Kishon Vijay Abraham I wrote:
-> >> Hi Lorenzo, Bjorn,
-> >>
-> >> On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
-> >>> Patch series
-> >>> *) Adds support to add virtual functions to enable endpoint controller
-> >>>    which supports SR-IOV capability
-> >>> *) Add support in Cadence endpoint driver to configure virtual functions
-> >>> *) Enable pci_endpoint_test driver to create pci_device for virtual
-> >>>    functions
-> >>>
-> >>> v1 of the patch series can be found at [1]
-> >>> v2 of the patch series can be found at [2]
-> >>> v3 of the patch series can be found at [3]
-> >>> v4 of the patch series can be found at [4]
-> >>> v5 of the patch series can be found at [5]
-> >>>
-> >>> Here both physical functions and virtual functions use the same
-> >>> pci_endpoint_test driver and existing pcitest utility can be used
-> >>> to test virtual functions as well.
-> >>>
-> >>> Changes from v5:
-> >>> *) Rebased to 5.13-rc1
-> >>>
-> >>> Changes from v4:
-> >>> *) Added a fix in Cadence driver which was overwriting BAR configuration
-> >>>    of physical function.
-> >>> *) Didn't include Tom's Acked-by since Cadence driver is modified in
-> >>>    this revision.
-> >>>
-> >>> Changes from v3:
-> >>> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
-> >>>
-> >>> Changes from v2:
-> >>> *) Fixed DT binding documentation comment by Rob
-> >>> *) Fixed the error check in pci-epc-core.c
-> >>>
-> >>> Changes from v1:
-> >>> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
-> >>>    binding for EP)
-> >>>
-> >>> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
-> >>> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
-> >>> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
-> >>> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
-> >>> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
-> >>
-> >> Can this series be merged for 5.14? It already includes Ack from Rob for
-> >> dt-binding changes and Ack from Tom for Cadence driver changes.
-> > 
-> > Sorry, I think this was assigned to me in patchwork, but Lorenzo
-> > usually takes care of the endpoint stuff.  He's away this week, but no
-> > doubt will look at it when he returns.
-> 
-> Can you consider merging this series for 5.14?
+%zu wouldn't DTRT for cross build=2E
 
-I am running late this cycle on reviews and the merge window is about
-to open, I will review it and queue it first thing for the next cycle.
+On June 24, 2021 7:44:02 AM PDT, Greg Kroah-Hartman <gregkh@linuxfoundatio=
+n=2Eorg> wrote:
+>On Thu, Jun 24, 2021 at 02:32:43PM +0200, Borislav Petkov wrote:
+>> On Thu, Jun 24, 2021 at 01:58:03PM +0200, Greg Kroah-Hartman wrote:
+>> > There are a number of printf "mismatches" in the use of die() in
+>> > x86/tools/relocs=2Ec=2E  Fix them up and add the printf attribute to
+>the
+>> > reloc=2Eh header file to prevent them from ever coming back=2E
+>> >=20
+>> > Cc: Thomas Gleixner <tglx@linutronix=2Ede>
+>> > Cc: Ingo Molnar <mingo@redhat=2Ecom>
+>> > Cc: Borislav Petkov <bp@alien8=2Ede>
+>> > Cc: "H=2E Peter Anvin" <hpa@zytor=2Ecom>
+>> > Cc: linux-kernel@vger=2Ekernel=2Eorg
+>> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation=2Eorg>
+>> > ---
+>> >  arch/x86/tools/relocs=2Ec | 21 +++++++++++----------
+>> >  arch/x86/tools/relocs=2Eh |  1 +
+>> >  2 files changed, 12 insertions(+), 10 deletions(-)
+>> >=20
+>> > Originally sent back in Feb, but it seems to have been missed:
+>> >
+>	https://lore=2Ekernel=2Eorg/r/20210227095356=2E603513-1-gregkh@linuxfoun=
+dation=2Eorg
+>> >=20
+>> >=20
+>> > diff --git a/arch/x86/tools/relocs=2Ec b/arch/x86/tools/relocs=2Ec
+>> > index ce7188cbdae5=2E=2Ec3105a8c6cde 100644
+>> > --- a/arch/x86/tools/relocs=2Ec
+>> > +++ b/arch/x86/tools/relocs=2Ec
+>> > @@ -389,7 +389,8 @@ static void read_ehdr(FILE *fp)
+>> >  		Elf_Shdr shdr;
+>> > =20
+>> >  		if (fseek(fp, ehdr=2Ee_shoff, SEEK_SET) < 0)
+>> > -			die("Seek to %d failed: %s\n", ehdr=2Ee_shoff, strerror(errno));
+>> > +			die("Seek to %d failed: %s\n",
+>> > +			    (int)ehdr=2Ee_shoff, strerror(errno));
+>>=20
+>> Instead of casting all those, I think you should use %zu as,
+>apparently,
+>> we're using unsigned types for Elf{32,64}_Off and Elf{32,64}_Xword,
+>etc=2E
+>
+>Odd, I thought I tried that and something did not work=2E  Let me try it
+>again=2E=2E=2E
 
-Apologies.
-
-Lorenzo
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
