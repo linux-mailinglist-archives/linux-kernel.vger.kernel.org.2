@@ -2,106 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F1E3B46FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD85F3B46FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 17:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhFYPyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 11:54:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhFYPyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:54:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E28C56195D;
-        Fri, 25 Jun 2021 15:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624636312;
-        bh=Q6AwIy7XeT7mjSj18u1iyC3ch7ZFJBonoUlzckIGJz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pPYAhl3YvsV9Mx6354i5NxPxvzH84VwzuxVv6pFzswdd4gal4OHM9RH6y8ra0PUMb
-         dyx7Jy+fparTreYxynyFKh+dXu3NkK71FXlJ7cxU22kb7SiVJjinngh1OVXY+a1Dhu
-         Xtjmm1KEUUdLSHpivR3oxXlhK+EkVXsRIY/CBlVuxQ1a6O8290ZsLyKUqnrypn3XrY
-         R+QIHzZvs3BSAS+2u712PXr6jdHCfnYnZTXhO8SxKl5cdRa6XvS6UOA0AlW+3x23Q0
-         eLgen7qddzwPa3nSVhaOA0nYl5pKZfZ4eew9dLHWCcRtV0q5SlLQ3H266GX8YC+yz3
-         jcL7OCDZ0FfdQ==
-Date:   Fri, 25 Jun 2021 16:51:27 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com, catalin.marinas@arm.com,
-        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
-        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-Message-ID: <20210625155127.GC4492@sirena.org.uk>
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210526214917.20099-2-madvenka@linux.microsoft.com>
- <20210624144021.GA17937@C02TD0UTHF1T.local>
- <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
+        id S229922AbhFYP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 11:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhFYPz7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 11:55:59 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA70AC061574;
+        Fri, 25 Jun 2021 08:53:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso8764422wmh.4;
+        Fri, 25 Jun 2021 08:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=op7/BKaoe3ba3IUt03EQ5cjTqeRTBFIYUGw/dUxAGL4=;
+        b=q0uUfUxC0KdzZbWw/l1Pcca3vOQ53lpCkqNkgcEQ6IP0Go2uEiAjho9E3h+BWZVpQ9
+         q7TW6ZTIQI0StuCgSYE09CtSXmy7T3JY+p+k9tw8+qggpBXD+dc+XQbvUIPq1hhu/8/a
+         p0ctSkcdadFrp6UqmMJNEGOogr5Cjo0Gw/MfnSkPlOVLKuUENsJLyrWMU7K6fQxk5cKJ
+         Fux1fu5KLsQu+9ysXUW8J0kkmzs3R0kwcrHxwvx2T9fzETAHopl64EeoT3j4WPHd6jvd
+         Xo4uZ7tofjgH1XhASa14enA1xjTK0Jvsg7co7I0MQE1r68sloG/UyNycAHz2WeLSE/84
+         p/YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=op7/BKaoe3ba3IUt03EQ5cjTqeRTBFIYUGw/dUxAGL4=;
+        b=XzUrFqwpDAHbNsiz9DSG0PQNNwQli2TlwoEUhTVKMKQw17lY9X4d5mYE1gsjyxaVwp
+         St4/jP/OKo2OGE5cwwJQC/nWYu9tDM7+uEyvKHjlzMsY/ZlCJo7vVTued1WvWzjBiTVH
+         M4EWwnvnAVcHjydUKiqdaLXeCcv9gUPA8/tSZvJcXGwD8yKKzruOMNlGODBpU2tB33OJ
+         Vwdgra3ebC2pW02GXdtvtriy/vCAln7LVQIEMLD3DwmeapiK79a7vGtodWPWEvX2ZBAh
+         OPIBm/dnhh44/IlKbXJ1hQ81gfIyYhm0KRGTftvsbmMWEHFDQcNczqytonazDfczzpfc
+         uqsg==
+X-Gm-Message-State: AOAM532DnxUGZy53pmGU2u8ayUSslPRQn8i7FToLdchnEvD65ecHctRs
+        qfqS4qx9iUva2S1pu5xFz70=
+X-Google-Smtp-Source: ABdhPJzAaw8NfKvCZwdairN0hP8iTy4QtFHY6JzeVoW4ioCNPL3wL3kSLacIiyhbgpuD1lIhQIK8Mg==
+X-Received: by 2002:a1c:2142:: with SMTP id h63mr11764885wmh.84.1624636417356;
+        Fri, 25 Jun 2021 08:53:37 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.44.148])
+        by smtp.gmail.com with ESMTPSA id 4sm5786229wmf.34.2021.06.25.08.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 08:53:36 -0700 (PDT)
+Message-ID: <f3bf33bfe2365241fc872ca781109f1b69374840.camel@gmail.com>
+Subject: Re: [PATCH v2] perf annotate: allow 's' on source code lines
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin Liska <mliska@suse.cz>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 25 Jun 2021 17:53:35 +0200
+In-Reply-To: <CAP-5=fXWFvcvNOA+wJMSCp2Qz7EVruufvFBLWEXfdezeEJGUTA@mail.gmail.com>
+References: <20210624223423.189550-1-rickyman7@gmail.com>
+         <CAP-5=fXWFvcvNOA+wJMSCp2Qz7EVruufvFBLWEXfdezeEJGUTA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Izn7cH1Com+I3R9J"
-Content-Disposition: inline
-In-Reply-To: <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
-X-Cookie: HELLO, everybody, I'm a HUMAN!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ian,
+ 
+On Thu, 2021-06-24 at 22:37 -0700, Ian Rogers wrote:
+> On Thu, Jun 24, 2021 at 3:37 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
+> > 
+> > In perf annotate, when 's' is pressed on a line containing
+> > source code, it shows the message "Only available for assembly
+> > lines".
+> > This patch gets rid of the error, moving the cursr to the next
+> > available asm line (or the closest previous one if no asm line
+> > is found moving forwards), before hiding source code lines.
+> > 
+> > Changes in v2:
+> >  - handle case of no asm line found in
+> >    annotate_browser__find_next_asm_line by returning NULL and
+> >    handling error in caller.
+> > 
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> 
+> > ---
+> >  tools/perf/ui/browsers/annotate.c | 32 ++++++++++++++++++++++++++++---
+> >  1 file changed, 29 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/perf/ui/browsers/annotate.c
+> > b/tools/perf/ui/browsers/annotate.c
+> > index ad0a70f0edaf..f5509a958e38 100644
+> > --- a/tools/perf/ui/browsers/annotate.c
+> > +++ b/tools/perf/ui/browsers/annotate.c
+> > @@ -343,6 +343,29 @@ static void annotate_browser__calc_percent(struct
+> > annotate_browser *browser,
+> >         browser->curr_hot = rb_last(&browser->entries);
+> >  }
+> > 
+> > +static struct annotation_line *annotate_browser__find_next_asm_line(
+> > +                                       struct annotate_browser *browser,
+> > +                                       struct annotation_line *al)
+> > +{
+> > +       struct annotation_line *it = al;
+> > +
+> > +       /* find next asm line */
+> > +       list_for_each_entry_continue(it, browser->b.top, node) {
+> > +               if (it->idx_asm >= 0)
+> > +                       return it;
+> > +       }
+> > +
+> > +       /* no asm line found forwards, try backwards */
+> > +       it = al;
+> > +       list_for_each_entry_continue_reverse(it, browser->b.top, node) {
+> > +               if (it->idx_asm >= 0)
+> > +                       return it;
+> > +       }
+> > +
+> > +       /* There are no asm lines */
+> > +       return NULL;
+> > +}
+> > +
+> >  static bool annotate_browser__toggle_source(struct annotate_browser
+> > *browser)
+> >  {
+> >         struct annotation *notes = browser__annotation(&browser->b);
+> > @@ -363,9 +386,12 @@ static bool annotate_browser__toggle_source(struct
+> > annotate_browser *browser)
+> >                 browser->b.index = al->idx;
+> >         } else {
+> >                 if (al->idx_asm < 0) {
+> > -                       ui_helpline__puts("Only available for assembly
+> > lines.");
+> > -                       browser->b.seek(&browser->b, -offset, SEEK_CUR);
+> > -                       return false;
+> > +                       /* move cursor to next asm line */
+> 
+> comment nit, perhaps prefer "closest" rather than "next" due to
+> searching backward.
 
---Izn7cH1Com+I3R9J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The backward search is just a fallback in case the forward one finds no asm
+line, which I believe is unlikely. Maybe it's also impossible, but I don't
+really know how those lines are generated, so I put a fallback in place.
+Furthermore, "closest" would imply that a previous asm line could be chosen over
+a subsequent one if closer, even if the latter is present.
 
-On Fri, Jun 25, 2021 at 10:39:57AM -0500, Madhavan T. Venkataraman wrote:
-> On 6/24/21 9:40 AM, Mark Rutland wrote:
+Thanks,
+Riccardo 
 
-> > At a high-level, I'm on-board with keeping track of this per unwind
-> > step, but if we do that then I want to be abel to use this during
-> > regular unwinds (e.g. so that we can have a backtrace idicate when a
-> > step is not reliable, like x86 does with '?'), and to do that we need to
-> > be a little more accurate.
+> 
+> Thanks,
+> Ian
+> 
+> > +                       al = annotate_browser__find_next_asm_line(browser,
+> > al);
+> > +                       if (!al) {
+> > +                               browser->b.seek(&browser->b, -offset,
+> > SEEK_CUR);
+> > +                               return false;
+> > +                       }
+> >                 }
+> > 
+> >                 if (al->idx_asm < offset)
+> > --
+> > 2.31.1
+> > 
 
-> The only consumer of frame->reliable is livepatch. So, in retrospect, my
-> original per-frame reliability flag was an overkill. I was just trying to
-> provide extra per-frame debug information which is not really a requirement
-> for livepatch.
 
-It's not a requirement for livepatch but if it's there a per frame
-reliability flag would have other uses - for example Mark has mentioned
-the way x86 prints a ? next to unreliable entries in oops output for
-example, that'd be handy for people debugging issues and would have the
-added bonus of ensuring that there's more constant and widespread
-exercising of the reliability stuff than if it's just used for livepatch
-which is a bit niche.
-
-> So, let us separate the two. I will rename frame->reliable to frame->livepatch_safe.
-> This will apply to the whole stacktrace and not to every frame.
-
-I'd rather keep it as reliable, even with only the livepatch usage I
-think it's clearer.
-
-> Finally, it might be a good idea to perform reliability checks even in
-> start_backtrace() so we don't assume that the starting frame is reliable even
-> if the caller passes livepatch_safe=true. What do you think?
-
-That makes sense to me.
-
---Izn7cH1Com+I3R9J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDV+34ACgkQJNaLcl1U
-h9Ch+wf7BDR5lejSlhWSQ/gqNm01WBJhVAeZE6s4y9+c0vbutI3yLY2OcMHxA4n7
-AqJifvW72eAeiGM4ZvtlFWdOTOjLc6vSMId9hn69OU5hI//Jdlrg2uC8pntVuIP3
-qMPKXD54YRlIKNPvyDYaxOr9LbrCRzjA7Ixoobo5i35gnqp/506vX1Lc5dP3/XBR
-b3jfNzy+XgnDAhNqaCwOCrzEhP4JbbmQsSF5/MiwAFkFmyMFR7hyjO9ElkFY2hOW
-n3Tmzc5gXdR8mm7nFO9d3OrvmW5/xHGcnr8Y24d5aX3/QLMtl1koMw++rlgtBFKn
-fiqKgwytD3K3JoHK4WsStDCWOsS3ug==
-=dFiB
------END PGP SIGNATURE-----
-
---Izn7cH1Com+I3R9J--
