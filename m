@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4053B3C81
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DCE3B3C83
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Jun 2021 08:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhFYGMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 02:12:16 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:39718 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhFYGMP (ORCPT
+        id S233187AbhFYGMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 02:12:55 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34447 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230192AbhFYGMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 02:12:15 -0400
-Received: by mail-wr1-f47.google.com with SMTP id b3so9268513wrm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Jun 2021 23:09:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JxZJNH/ldnqJ3IT7+jiuzqAO/ABMSxBK7lr/weQ/9tY=;
-        b=N9DIlmkP8/VtLcQ3bGGM53o644G4W3JiffolOTKJZtDB1HkJ1rBvnwGkDN0Ry2n7iP
-         6vGELeZgAa+UkJvjjlUNDndEdLPMfS2c8uiJq/xE/4lm2DirYtiefGWlDtWRLjKc3F9A
-         IAilGfaP8Jm1ISRSFFPQw9T3VN46YRgx3LoathtFMQnNnDeUQ92LcUNIVXCSHqpsB0sk
-         rmct9hAni7SBUo5Ls88J31odJM1qQjt/gbMwCR9bBJbn0vOipd3hZgPKQ+o+buBkxj1m
-         7wExl1sjZu7aP3y05EeGVTLKshkn+bcSYSJX1y0mIhf5IxNe0KO0V/0VKgSUIX7+YR8M
-         zsuQ==
-X-Gm-Message-State: AOAM532/5cRK9DRfzTN9eorj9EfX70Ifve65dNroADya/5r+yiIawWML
-        4/S0d/Ur1GkPRbCXPOMmXUE=
-X-Google-Smtp-Source: ABdhPJzhD1ART1YBSqcC0L6yYmWIJUEGZMAPGlMWljMNEK/lm7JmStund9dhjWz8I3fweQjgfISjVw==
-X-Received: by 2002:a5d:5388:: with SMTP id d8mr8604923wrv.423.1624601394637;
-        Thu, 24 Jun 2021 23:09:54 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id y13sm4974387wmj.18.2021.06.24.23.09.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 23:09:54 -0700 (PDT)
-Subject: Re: [PATCH v4] tty: Fix out-of-bound vmalloc access in imageblit
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-References: <20210624202725.20415-1-igormtorrente@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <6d3d27d2-36e2-d95b-98e4-df08dedc34e2@kernel.org>
-Date:   Fri, 25 Jun 2021 08:09:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 25 Jun 2021 02:12:52 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9A56F5C0136;
+        Fri, 25 Jun 2021 02:10:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 25 Jun 2021 02:10:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=LUduNXh8afYXbZaxuU0n9BSi4R
+        cIQyqyuYJqZGn4aX4=; b=A7w4iBn7/mLLqz57kL7lTTwksg0IDY0v6ZkbuqPMvz
+        ZQS6WHcPu2pvenIJMpdCRd3fwsR/eLdkPJJhkp66B7fnOM5niS5FQZWs2SmpNbuq
+        lwiatYzxCkHVzpYchDeN9dXmWdcbPknMR9xRO51xQBAvE08T3EnMLmXp2Isty6ty
+        mSwbeladtcJkyeQdEAlSw2fyZswXSE0uPghTx6o6bbVhyWQKiOhEH+LOItT/9DiJ
+        xexvHTz4kPon+bfuXIpmMu1qdNg7rROm6I7M5RYLmWki52Egqck8jma5BZJc91Le
+        BdX6vh7Tg9WyuT0w6iW3KF9hjHN/sIxRoVovxCUQKJoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LUduNXh8afYXbZaxu
+        U0n9BSi4RcIQyqyuYJqZGn4aX4=; b=Q5K7HNpydhuqt3xq/2HoSb8JAyO1BVkRj
+        8vOfbllhHjDDEd3PeNjNrvik/6yFaWnrhlasXCZ6pfUyg7C1Yacp8ZX7VHOmyl8X
+        q05WiDF9LwMh0uSmhrzgE4DASLWil7C6618qyLdH21IFBmlzwrDIdUi6tjX4pJLK
+        fcBkWkd7nSoUtD1p5wrKM5+Untm8F/V2qYPFYr0t9IzPEIXT4rqMNiePZFjw9/rp
+        0qbCc7SG9MYgmQYIKtudB1v6Yq0/cMBhjC+fdwACysN6hm1aWbpzvi3AFzMQvEJV
+        eL7ykRu1sUhzeipk23RiJTWA04KLLsrLtjA+Ki+R3jScJKbjMq2Jw==
+X-ME-Sender: <xms:VXPVYEYaYNDXcXN5gEboqhIaL-qf4pW2_NMr9wZ6AOP-HWUZm8cigA>
+    <xme:VXPVYPYvBEWYCj8GhPsv-lWQck6rdD_DDQqyT5D7otVHHj33XQTU_e_u7k5hHehM7
+    5BuvCosAuX6i2CNrw>
+X-ME-Received: <xmr:VXPVYO_HB6hePwbBJ5lqMOk6OIiUt1SRRwpri6xb3RQbLIGM8wuvmmWdkikdpmjPgzBmMkP85ln5uWT5r1W3lt7CBqx46ajz3NQZsdsPYDMzkAJp6cQ3A03BaLlgyEJ78dFUMQI2usFU8Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegiedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
+    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeekhfeiffejveefveehtdeiiefhfedvje
+    elvddvtdehffetudejtefhueeuleeftdenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:VXPVYOpGKGDsj-ny5DcIJwp6pc36kAGNibwSOHIhQRaQkg0JVEHmog>
+    <xmx:VXPVYPox2Kge905tLt-o4kQxBUtW3_EGZJlMtmcydTDQCABgVy4Z0A>
+    <xmx:VXPVYMR_UoDv1kQRUNq1qD8AhMDdnm0dNHcbGiBx92e_uYIupChymA>
+    <xmx:VnPVYAAkG84Dwse1LP-Cfax3AKsqfFzLDT8b7kZhwK0EDPRmOhvEaw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Jun 2021 02:10:26 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     joel@jms.id.au, robh+dt@kernel.org, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: tacoma: Add phase corrections for eMMC
+Date:   Fri, 25 Jun 2021 15:40:17 +0930
+Message-Id: <20210625061017.1149942-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210624202725.20415-1-igormtorrente@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24. 06. 21, 22:27, Igor Matheus Andrade Torrente wrote:
-> This issue happens when a userspace program does an ioctl
-> FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
-> containing only the fields xres, yres, and bits_per_pixel
-> with values.
-> 
-> If this struct is the same as the previous ioctl, the
-> vc_resize() detects it and doesn't call the resize_screen(),
-> leaving the fb_var_screeninfo incomplete. And this leads to
-> the updatescrollmode() calculates a wrong value to
-> fbcon_display->vrows, which makes the real_y() return a
-> wrong value of y, and that value, eventually, causes
-> the imageblit to access an out-of-bound address value.
-> 
-> To solve this issue I made the resize_screen() be called
-> even if the screen does not need any resizing, so it will
-> "fix and fill" the fb_var_screeninfo independently.
-> 
-> Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
-> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-> ---
->   drivers/tty/vt/vt.c | 17 ++++++++++++++++-
->   1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index fa1548d4f94b..e342f5c905bc 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -1220,7 +1220,22 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
->   	new_screen_size = new_row_size * new_rows;
->   
->   	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
-> -		return 0;
-> +		/* This function is being called here to cover the case
+The degree values were reversed out from the magic tap values of 7 (in)
+and 15 + inversion (out) initially suggested by Aspeed.
 
-This was already commented on v3:
-<quote>
-  Please do not use networking style comments, use normal ones:
-                 /*
-                  * This function...
-</quote>
+With the patch tacoma survives several gigabytes of reads and writes
+using dd while without it locks up randomly during the boot process.
 
-> +		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
-> +		 * passing the same fb_var_screeninfo containing the fields:
-> +		 * yres/xres equal to a number non-multiple of vc_font.height
-> +		 * and yres_virtual/xres_virtual equal to number lesser than the
-> +		 * vc_font.height and yres/xres.
-> +		 * In the second call, the struct fb_var_screeninfo isn't
-> +		 * being modified by the underlying driver because of the
-> +		 * if above, and this causes the fbcon_display->vrows to become
-> +		 * negative and it eventually leads to out-of-bound
-> +		 * access by the imageblit function.
-> +		 * To give the correct values to the struct and to not have
-> +		 * to deal with possible errors from the code below, we call
-> +		 * the resize_screen here as well.
-> +		 */
-> +		return resize_screen(vc, new_cols, new_rows, user);
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-I suppose you need to add { } after the if given how its body grew.
-
-With what all console drivers have you tested this with?
-
->   
->   	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
->   		return -EINVAL;
-> 
-
-
+diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+index c1478d2db602..670080bb80eb 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+@@ -189,6 +189,7 @@ &emmc_controller {
+ 
+ &emmc {
+ 	status = "okay";
++	clk-phase-mmc-hs200 = <36>, <270>;
+ };
+ 
+ &fsim0 {
 -- 
-js
-suse labs
+2.30.2
+
