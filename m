@@ -2,244 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CB23B4E73
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 14:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FF13B4E7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 14:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFZMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 08:19:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35582 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229518AbhFZMTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 08:19:16 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15QC3r6j194927;
-        Sat, 26 Jun 2021 08:16:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=+iHJ0gO2gZVxl9dnU2tCTxtUS9+IXL1VspTpXvSJzHU=;
- b=FHfMu9cw3goGsZTNc9Clz36EuIVNFl/R6Uw0DRG90hll8y/ZPpxL1m+gum8yetcmTlqE
- 7CHSWQjI9K2nsmeMLYf7s2SZGe5BAmaRi3qKD2nsUgVldz8Uu69j7393/7pZEXL5/OOB
- 5/s1OKeyUHPhUzoQ4nWkz9OxVgnhL3nrZ3KTG/YEqHgXaZ2jetNVepvP3WwsCPA0MQmU
- hAD1ERDbmJTRY7bEPzgnXTi1X0Ld2mBhHjDSpqO3cSUqp6RP/06Y8nUKxUuPHWbcxfnF
- fcY+4I6hoZ0CGQzLd0yN4GgNl5l3Vx4Bg88eYVLNvbdSzdmodWcGF2M00w2HNO+FJxK0 Zw== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39e1frvbrn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Jun 2021 08:16:53 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15QC9ASs010725;
-        Sat, 26 Jun 2021 12:16:51 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 39duv8823s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Jun 2021 12:16:51 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15QCGmGC33161534
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 26 Jun 2021 12:16:48 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2D935AE051;
-        Sat, 26 Jun 2021 12:16:48 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D45B1AE04D;
-        Sat, 26 Jun 2021 12:16:47 +0000 (GMT)
-Received: from localhost (unknown [9.171.68.59])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 26 Jun 2021 12:16:47 +0000 (GMT)
-Date:   Sat, 26 Jun 2021 14:16:46 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 fixes for 5.13-rc8
-Message-ID: <your-ad-here.call-01624709806-ext-4573@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AybLx7clQQLX53e3Wt0AZjlGyo8ntIZk
-X-Proofpoint-ORIG-GUID: AybLx7clQQLX53e3Wt0AZjlGyo8ntIZk
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S229933AbhFZMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 08:47:57 -0400
+Received: from mout.gmx.net ([212.227.17.21]:41569 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhFZMrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 08:47:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624711527;
+        bh=8LHWMyoaHjAiRhzE3/yHqA0zS5lJDmkMRsc5koSzjMM=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=fYz3Q/eLeUC3C6SkafFZ6Jh8EuDLMtW3fVh+WMt2s5X8OGG1TsOZfkDyQBKiWJA95
+         /xEdYVETAnceienIQ+0Qo/TzZAUrUzgR4fEAQL93HfVgECkkfBzLpETR5/QuuZJ0s7
+         A621/NM+b2SHICqdpeTdyBq3efiiXWJNlDT9lRiU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.216.49]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVvLB-1lmzBK331p-00RtuJ; Sat, 26
+ Jun 2021 14:45:27 +0200
+Message-ID: <3d6a6c593eed6f5d59209ba2d8db29fadcc72ad7.camel@gmx.de>
+Subject: Re: [ANNOUNCE] rt-tests-2.0
+From:   Mike Galbraith <efault@gmx.de>
+To:     John Kacur <jkacur@redhat.com>,
+        RT <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Clark Williams <williams@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Johnathan Schwender <schwenderjonathan@gmail.com>,
+        Peter Xu <peterx@redhat.com>
+Date:   Sat, 26 Jun 2021 14:45:27 +0200
+In-Reply-To: <1c1966dd51ae6f8ddcd892cba485c332281fbd37.camel@gmx.de>
+References: <20210625160801.9283-1-jkacur@redhat.com>
+         <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de>
+         <1c1966dd51ae6f8ddcd892cba485c332281fbd37.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-26_06:2021-06-25,2021-06-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 clxscore=1015 mlxlogscore=999
- suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106260081
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6ny9VOzVEszgmFQ5/XsnJLZ1cx0eiaLQBUNqZ4Eq5b+kUxxTULS
+ WZgzFbgb4pJvfOICNlCz3uZrrQ4COSAo9BeC8Rtyatuff3wXIiHOEV4HLuBdu1Rpi6S+R2c
+ K+ztKjy3T4AwYeRbqO7Tf9Z7/jZGnOoE4eJXWXr5z6St9fD4T8LSNfmu6SBxJvuP4s80k7Z
+ 0PKqOypvXrPG4rJQoESHg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DEzdbTuDez0=:BAIFzIS7OSY961nBwSbxK6
+ nX0YwG8cg62WPjzgdMkCvP0xkPLVQBobwcfxaG8i7iutb468VLbhkTqwwyQUCLeDddFN2+soW
+ 3abdHtll0o1RsFT51bWZLqGjkk/rn4xTcdIcHwILxIRJkfJaW5iatGpzG2HRlnom76DJHl/Dr
+ PySFpnefiVlI3WI9vBA8Dw36j4rcBVAaNBF1u0SgyNUxaxkEiLj6nRdMOK7asfKjOnMo2cnnk
+ 4q3QD04/+Bi79H4KlRcwGdqRypHPuKo4jtL1RIRwi0LWR86S+2O/+T3NGEcJwU9e0JsWHnSyE
+ JhOvekNg9htDyQoC3UDbxfmA1XRf3Y8EMgy8d6hS78Ukbt5I/2qmJG1K+y1fFcSRaIlec4VzV
+ K8HZ8w0s7OSIxJKB9YaQwabgMGh+CHU2NjB+WqcQl4Nkl4kkZjyfAj0ES+6OsajjRUwQiSSKy
+ PlXDimL35k1bo21L0GCjlT/IE76BAtlw4/Z9mahZsQByvzncb2xhZO00RdllvlAzU0EviCS4J
+ LH6ZoYjBgdwnaq9VLSMtEYE8DP2roTmkSvCIu7m8k+NunSqplKqyTU74LMfwbtDWIfAHph3KG
+ 3QNGGZEpJXWcGIJXiHaakHO6UwDqe1N73OrNA4octGGCgSCXcOAsLcgnaon0cF2axNNWL7toH
+ yKU/UjT6/QBtiX83Gic95SxaxtZvMHcw1pQ0B9m3oJHAlxqHOANpITG4H9GeKJkmujoYu3LUC
+ Kc6N2HbSeXF1QCJ4dyh1GsieEYG6lJexV8uWHxYVx6vnEf8CZt0I4zgVTxjzoYSVUYb340MMs
+ QmCvcMYEYa6ZjAOsKZC+jEmKtHKr09PjKxoNkVFrV6z6ZQhcyYGSKCgR9ecqJ0EgGr31i1g7K
+ fBe66n8iGKXMg56aHvtt/kjKP+LOSnLY0+CugaUGxQIYs3b6gZXMGk5e3icgUfWKAqB+kpKP7
+ 9foR9vhQhZPIQEfrjSHsSWJ86vy+lriBpKG+fzkRhry4jsJKTT3JnR7AGNbyjbFvHZ65JQ72A
+ 7a1BmYXddkhxDRM9/zdec50SNBfR0Bt7lvAL+4Q9hQ1rQ8xVxP8jU+iXzc7/czQNJFSXFnpXF
+ IJMXaaxe+iJ+A2xWQhw6LNIqJI2sFHdWpGH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Sat, 2021-06-26 at 13:47 +0200, Mike Galbraith wrote:
+> On Sat, 2021-06-26 at 08:55 +0200, Mike Galbraith wrote:
+> > On Fri, 2021-06-25 at 12:08 -0400, John Kacur wrote:
+> > > I'm pleased to announce rt-tests-2.0
+> >
+> > Greetings,
+> >
+> > cyclictest seems to have grown an mlock related regression.
+>
+> Ok, chores done, I did a quick bisect/confirm.  I didn't go stare
+> at rt_test_start() to ponder what the mlockall connection may be.
 
-please pull s390 fixes for 5.13-rc8.
+Moving the call above "Get current time" stops it mucking things up.
 
-Thank you,
-Vasily
+	-Mike
 
-The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
-
-  Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-5
-
-for you to fetch changes up to 67147e96a332b56c7206238162771d82467f86c0:
-
-  s390/stack: fix possible register corruption with stack switch helper (2021-06-21 11:19:18 +0200)
-
-----------------------------------------------------------------
-- Fix couple of late pt_regs flags handling findings of conversion to
-  generic entry.
-
-- Fix potential register clobbering in stack switch helper.
-
-- Fix thread/group masks for offline cpus.
-
-- Fix cleanup of mdev resources when remove callback is invoked in vfio-ap
-  code.
-
-----------------------------------------------------------------
-Heiko Carstens (1):
-      s390/stack: fix possible register corruption with stack switch helper
-
-Sven Schnelle (3):
-      s390: fix system call restart with multiple signals
-      s390: clear pt_regs::flags on irq entry
-      s390/topology: clear thread/group maps for offline cpus
-
-Tony Krowiak (1):
-      s390/vfio-ap: clean up mdev resources when remove callback invoked
-
- arch/s390/include/asm/stacktrace.h | 18 +++++++++++-------
- arch/s390/kernel/entry.S           |  1 +
- arch/s390/kernel/signal.c          |  1 -
- arch/s390/kernel/topology.c        | 12 +++++++++---
- drivers/s390/crypto/vfio_ap_ops.c  | 10 ----------
- 5 files changed, 21 insertions(+), 21 deletions(-)
-
-diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
-index 2b543163d90a..76c6034428be 100644
---- a/arch/s390/include/asm/stacktrace.h
-+++ b/arch/s390/include/asm/stacktrace.h
-@@ -91,12 +91,16 @@ struct stack_frame {
- 	CALL_ARGS_4(arg1, arg2, arg3, arg4);				\
- 	register unsigned long r4 asm("6") = (unsigned long)(arg5)
- 
--#define CALL_FMT_0 "=&d" (r2) :
--#define CALL_FMT_1 "+&d" (r2) :
--#define CALL_FMT_2 CALL_FMT_1 "d" (r3),
--#define CALL_FMT_3 CALL_FMT_2 "d" (r4),
--#define CALL_FMT_4 CALL_FMT_3 "d" (r5),
--#define CALL_FMT_5 CALL_FMT_4 "d" (r6),
-+/*
-+ * To keep this simple mark register 2-6 as being changed (volatile)
-+ * by the called function, even though register 6 is saved/nonvolatile.
-+ */
-+#define CALL_FMT_0 "=&d" (r2)
-+#define CALL_FMT_1 "+&d" (r2)
-+#define CALL_FMT_2 CALL_FMT_1, "+&d" (r3)
-+#define CALL_FMT_3 CALL_FMT_2, "+&d" (r4)
-+#define CALL_FMT_4 CALL_FMT_3, "+&d" (r5)
-+#define CALL_FMT_5 CALL_FMT_4, "+&d" (r6)
- 
- #define CALL_CLOBBER_5 "0", "1", "14", "cc", "memory"
- #define CALL_CLOBBER_4 CALL_CLOBBER_5
-@@ -118,7 +122,7 @@ struct stack_frame {
- 		"	brasl	14,%[_fn]\n"				\
- 		"	la	15,0(%[_prev])\n"			\
- 		: [_prev] "=&a" (prev), CALL_FMT_##nr			\
--		  [_stack] "R" (stack),					\
-+		: [_stack] "R" (stack),					\
- 		  [_bc] "i" (offsetof(struct stack_frame, back_chain)),	\
- 		  [_frame] "d" (frame),					\
- 		  [_fn] "X" (fn) : CALL_CLOBBER_##nr);			\
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 9cc71ca9a88f..e84f495e7eb2 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -418,6 +418,7 @@ ENTRY(\name)
- 	xgr	%r6,%r6
- 	xgr	%r7,%r7
- 	xgr	%r10,%r10
-+	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
- 	mvc	__PT_R8(64,%r11),__LC_SAVE_AREA_ASYNC
- 	stmg	%r8,%r9,__PT_PSW(%r11)
- 	tm	%r8,0x0001		# coming from user space?
-diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
-index 90163e6184f5..080e7aed181f 100644
---- a/arch/s390/kernel/signal.c
-+++ b/arch/s390/kernel/signal.c
-@@ -512,7 +512,6 @@ void arch_do_signal_or_restart(struct pt_regs *regs, bool has_signal)
- 
- 	/* No handlers present - check for system call restart */
- 	clear_pt_regs_flag(regs, PIF_SYSCALL);
--	clear_pt_regs_flag(regs, PIF_SYSCALL_RESTART);
- 	if (current->thread.system_call) {
- 		regs->int_code = current->thread.system_call;
- 		switch (regs->gprs[2]) {
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index bfcc327acc6b..26aa2614ee35 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -66,7 +66,10 @@ static void cpu_group_map(cpumask_t *dst, struct mask_info *info, unsigned int c
- {
- 	static cpumask_t mask;
- 
--	cpumask_copy(&mask, cpumask_of(cpu));
-+	cpumask_clear(&mask);
-+	if (!cpu_online(cpu))
-+		goto out;
-+	cpumask_set_cpu(cpu, &mask);
- 	switch (topology_mode) {
- 	case TOPOLOGY_MODE_HW:
- 		while (info) {
-@@ -83,10 +86,10 @@ static void cpu_group_map(cpumask_t *dst, struct mask_info *info, unsigned int c
- 	default:
- 		fallthrough;
- 	case TOPOLOGY_MODE_SINGLE:
--		cpumask_copy(&mask, cpumask_of(cpu));
- 		break;
- 	}
- 	cpumask_and(&mask, &mask, cpu_online_mask);
-+out:
- 	cpumask_copy(dst, &mask);
- }
- 
-@@ -95,7 +98,10 @@ static void cpu_thread_map(cpumask_t *dst, unsigned int cpu)
- 	static cpumask_t mask;
- 	int i;
- 
--	cpumask_copy(&mask, cpumask_of(cpu));
-+	cpumask_clear(&mask);
-+	if (!cpu_online(cpu))
-+		goto out;
-+	cpumask_set_cpu(cpu, &mask);
- 	if (topology_mode != TOPOLOGY_MODE_HW)
- 		goto out;
- 	cpu -= cpu % (smp_cpu_mtid + 1);
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index b2c7e10dfdcd..122c85c22469 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -366,16 +366,6 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
- 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
- 
- 	mutex_lock(&matrix_dev->lock);
--
--	/*
--	 * If the KVM pointer is in flux or the guest is running, disallow
--	 * un-assignment of control domain.
--	 */
--	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
--		mutex_unlock(&matrix_dev->lock);
--		return -EBUSY;
--	}
--
- 	vfio_ap_mdev_reset_queues(mdev);
- 	list_del(&matrix_mdev->node);
- 	kfree(matrix_mdev);
