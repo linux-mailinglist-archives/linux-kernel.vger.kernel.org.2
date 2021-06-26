@@ -2,125 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0DC3B4B57
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 01:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE283B4B6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 02:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFYXvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 19:51:14 -0400
-Received: from mail-mw2nam08on2070.outbound.protection.outlook.com ([40.107.101.70]:21600
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230137AbhFYXum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 19:50:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cqHReTvPOfyqJ3NO3JdGRmrVsHpLGHKJ6ujujDK2fNoaNmT9zDBnnMwcGMrDAhq2yoRZ8ifLyyFoNP0UEYjAisenukM6xcSqu+H6ntakDNnQPeCDFkPnAU/wfW9mJdZjYmkZNWlCx1j8lX4ZYkLknD44mT6O5hPKaYKYAJGUWl6LoArDmDOLv8mk0/jtf+OCtxO4C6H8vRnW0b8pmhQ3pKt7HSk86ehfMUsBiyM/E1QIdNgM/BJHBippIEWPp/20uqowVAk2ialjuFo3d9kP9URrKwJM0ECbZGjGB7/wYPNT5I7WCkzIRzX3CgO/BO2dqoLFr/jrF4qpfhgmliNZDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V8FTLM7KteR//C/rKZXf2MJCR/ZihWfFQMwp9poEZRM=;
- b=hEhMFhzoKzzwC+vaL4N+t2CQ91U6Hb62TUdEhm+aM5kG4DAr93TdGEj9Qi9Yk0mLbk44qplG8LBEi3cx/tuXOQ/szW44Deij3Sf3kJ36kMstXI8SERarg6UQ5oMACjEGI6tMGIXGeLMyVghYg7HrG1UhMlNPHRyAROlhqgnoJZO9NeUkl2qBUkOoi09jH7R1PmXV9bj6ahCrbpbQxjLMGKKfKLYuAB0zuALEJ/sX63cY4Ng7xwLuXpxHT/Geaen7q3yDPvA2n5K9ihfkCrjBzXEOZSutnYjvsL7pNBTBPw4Wz/fpytxRYkZf+iMziqDfw8nMYgpUWhcP3UijO1V3pg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V8FTLM7KteR//C/rKZXf2MJCR/ZihWfFQMwp9poEZRM=;
- b=Kyy7aVOPnn21H+qkXPAvewMZcZhO1wQ3G9mHKei5IqQLuTQJYsFnRw4WiitqXwxvqIhcTFABDMwF1W9OZmOrPBO2AJ6m5WAbQ9C5dsTrtEzbuk2PGLK/qwxNd6uykKoK5ReOH548adoIH4Tn2mc08KV+9xCE+Gomgow0nYDImW7u+cNgpG/zEk2ck8TzmyhD6ubQarbjDec2JfSFXhrStqtiy41jVUqF4s0kkeKzhdN70hfHXdK5hFy0i16GlcELEl3vG/g3gSbbz2CU0KUpA7bdOQQCqxDypyZAZ84m3zn/JTJAe1nGQPTPjiW3tMxGk9j0vbArYEPGew3ulCmqSA==
-Received: from DM6PR04CA0014.namprd04.prod.outlook.com (2603:10b6:5:334::19)
- by MN2PR12MB4013.namprd12.prod.outlook.com (2603:10b6:208:163::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Fri, 25 Jun
- 2021 23:48:18 +0000
-Received: from DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:334:cafe::8) by DM6PR04CA0014.outlook.office365.com
- (2603:10b6:5:334::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend
- Transport; Fri, 25 Jun 2021 23:48:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- DM6NAM11FT062.mail.protection.outlook.com (10.13.173.40) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4264.18 via Frontend Transport; Fri, 25 Jun 2021 23:48:18 +0000
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Jun
- 2021 23:48:16 +0000
-Received: from dipenp.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Jun 2021 23:48:16 +0000
-From:   Dipen Patel <dipenp@nvidia.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <dipenp@nvidia.com>, <robh+dt@kernel.org>
-Subject: [RFC 11/11] MAINTAINERS: Added HTE Subsystem
-Date:   Fri, 25 Jun 2021 16:55:32 -0700
-Message-ID: <20210625235532.19575-12-dipenp@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210625235532.19575-1-dipenp@nvidia.com>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
-X-NVConfidentiality: public
+        id S229906AbhFZAE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 20:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFZAE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 20:04:58 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1EDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 17:02:36 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id b5so11217432ilc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 17:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jrvTfUcAePeGVobBi7vfx79f3CxK6+aYL8bEbt4l0GA=;
+        b=sJUcMBMUS826vrxyt4uvbaYSo5AEPcfPuvUqne0EbWjGLsTEIi++TSxCKY+ucoEmhx
+         UJLnLBjGBdrWyg+scRonymuhfk2sbLZaRU7X7f0rHwi8f+6IkZg7OlXEsW92ctOF/29P
+         Z6ZgUezaIXtmNyXOhsoaAr5i4Y4CeCaHyd0QGOzLoDW1aHjWC2rSWenumCwT35lgo/Ez
+         NIoxZJ2dE7uibvXMXVnb5THktVNNnYDLvn+D92htvcLKFsfw1P5eNyh+w3OMRmeBQBzZ
+         /F6kfCvPx/2/SCMvfgp+ZaZHPhTznPTbseMEZJ8i5WVPUT7Q+rbhmGfohrGenwUgUXI7
+         c4Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jrvTfUcAePeGVobBi7vfx79f3CxK6+aYL8bEbt4l0GA=;
+        b=CQH7Bh4km7DbOKFcsOz2pe0yt+0E1IdkJasD/4pcs0gX/z5JF3GSY4MZ7HcPgdQken
+         IIGr9BaURDRw79BZLasnMPtB5LGOW+8S4fogKn+K5sRbnbGq0/B3w03ut/1HOhLCtmWK
+         k9cJok969I5geULb3pDg1fKQnq1OFD1GOtlG/UfkLaLTpXlmz18aJKUyV1HvYib94rZ3
+         ny9V8/ypMQGB7s0+zBqreHA0fwZzIPCgqsw6lfLvvdlATMLbAKwFqT4lpbh2Mx3mHE8i
+         rTpzk/cg8BMLUEiQhUv9cC6jwkAJkTHfVoO75I4OoLT/CHPhyNf7lbpEEmU1TX18CJeF
+         /NbA==
+X-Gm-Message-State: AOAM533v4WS/kxEJfL6YOlbBogdoWmCfcMY9MMcqOV65YH1cKCJPAtFV
+        tj9Ai6EsoCPaGK6kPDpJMOjLCBcrie9QOGfDYktxPw==
+X-Google-Smtp-Source: ABdhPJzMvbegLP5Ie4MhYzekaU2lN5Wg02rSZ4M47WU85xBy+0bte6jHqwlKKwzu4klVF4FSamC1I7A7HJEwxYxGteM=
+X-Received: by 2002:a92:d3d1:: with SMTP id c17mr682742ilh.292.1624665755857;
+ Fri, 25 Jun 2021 17:02:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 342f9a54-6565-4873-a90d-08d93833b536
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4013:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4013432E0BAA8DC5DE6BFE80AE069@MN2PR12MB4013.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y5geudkZv/njWc6HaJo/XUjZMTuHcr6c/JdwOpVVxGo2HWaS5CzY+mE6jozm6tXu0qyayzYlsWhy+rq7Brxn6OjpGKGfduzeZ5g6I/xO/x8btYotAP9Tnux+aHsX0NSV+mIxCCKr1v1igLv1xNDtHpJ4dRKyoNxVHuz3f8Ex0X3j8+mwBJkyyhJlip+opSK8RgxKsW1KhHbAt+1SXO/EARs5Kv8Xo2gEkH7YPCnBEdmIOcgmv15IpIXk9bC6ocSlOlmG6YRhoykXxDoU8ghaPuTTQdU5XApvSEN+KZyarv09DrBJ1aiwgi6+m2kV5FVNhahZNPuLJ+5ga8DfgRZ6SESlu+EVQtAb/pSlUu512KphuxdmphZ8XOPKWo0/dnwjI3A3b06LVOAqjEjg11B5XRLFZ+iFP7cwA6to5Q4tffDDuJ7uX4VkAgV7+9R/EOI1MZphQ6e/zrUmhTklX5zUh/8Ybkxj9p1XeMu39WuCTV5JD1YsJUSLj++9+dcwvpk+G/rI4YquCjTPwo46B9v2tTUoadPU6ewnbAnuWvl4J2Dnf3zqAF1Y5yuAwtrjF2KVGuqgdns4AdgDpzC2Y5ybODkNXIzGZJ3tkNGCgT8zcsBuTqV4AR3HQhGKjWI0eNcllj8TgYSpAoyg+/VGt6/ocoZW8pSNu8CzwN3pnKDaAhfLVzzI2tEqUSbTHSTXFRKVT/qkI0M2zOZWVOovDpHK6AvNPFNO5MqBipZOF8+e7/vtKQ3cECJm14JEPKFxD+pT6Zd+t2i6fG/BjUXRxCxMsw==
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(36840700001)(46966006)(4744005)(7416002)(356005)(86362001)(7636003)(316002)(110136005)(1076003)(478600001)(2906002)(5660300002)(2616005)(921005)(36756003)(70206006)(7696005)(8936002)(336012)(8676002)(70586007)(82740400003)(6666004)(186003)(26005)(426003)(36860700001)(82310400003)(47076005)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2021 23:48:18.2452
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 342f9a54-6565-4873-a90d-08d93833b536
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4013
+References: <20210625073204.1005986-1-ying.huang@intel.com> <20210625073204.1005986-8-ying.huang@intel.com>
+In-Reply-To: <20210625073204.1005986-8-ying.huang@intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Fri, 25 Jun 2021 17:02:25 -0700
+Message-ID: <CAAPL-u8J8A2G=QO24hhn-Em+PXE7Q82OObpPJxNUWznfO-0XRQ@mail.gmail.com>
+Subject: Re: [PATCH -V9 7/9] mm/vmscan: Consider anonymous pages without swap
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added myself as a maintainer for this new Hardware Timestamping Engine
-(HTE) subsystem.
+On Fri, Jun 25, 2021 at 12:33 AM Huang Ying <ying.huang@intel.com> wrote:
+>
+> From: Keith Busch <kbusch@kernel.org>
+>
+> Reclaim anonymous pages if a migration path is available now that
+> demotion provides a non-swap recourse for reclaiming anon pages.
+>
+> Note that this check is subtly different from the
+> anon_should_be_aged() checks.  This mechanism checks whether a
+> specific page in a specific context *can* actually be reclaimed, given
+> current swap space and cgroup limits
+>
+> anon_should_be_aged() is a much simpler and more preliminary check
+> which just says whether there is a possibility of future reclaim.
+>
+> Cc: Keith Busch <kbusch@kernel.org>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: Wei Xu <weixugc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+>
+> --
+>
+> Changes since 20210618:
+>  * Consider whether demotion is disabled
+>
+> Changes from Dave 202010:
+>  * remove 'total_swap_pages' modification
+>
+> Changes from Dave 202006:
+>  * rename reclaim_anon_pages()->can_reclaim_anon_pages()
+>
+> Note: Keith's Intel SoB is commented out because he is no
+> longer at Intel and his @intel.com mail will bounce.
+> ---
+>  mm/vmscan.c | 37 ++++++++++++++++++++++++++++++++++---
+>  1 file changed, 34 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 55f6192b2a51..fce43c7970d7 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -519,6 +519,36 @@ static long add_nr_deferred(long nr, struct shrinker *shrinker,
+>         return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
+>  }
+>
+> +static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+> +                                         int node_id,
+> +                                         struct scan_control *sc)
+> +{
+> +       if (memcg == NULL) {
+> +               /*
+> +                * For non-memcg reclaim, is there
+> +                * space in any swap device?
+> +                */
+> +               if (get_nr_swap_pages() > 0)
+> +                       return true;
+> +       } else {
+> +               /* Is the memcg below its swap limit? */
+> +               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+> +                       return true;
+> +       }
+> +
+> +       /*
+> +        * The page can not be swapped.
+> +        *
+> +        * Can it be reclaimed from this node via demotion?
+> +        */
+> +       if ((!sc || !sc->no_demotion) &&
+> +           next_demotion_node(node_id) != NUMA_NO_NODE)
+> +               return true;
 
-Signed-off-by: Dipen Patel <dipenp@nvidia.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+It is better to abstract these checks into a function, e.g.
+can_demote_anon_pages(), to share with anon_can_be_aged().
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ba0cc0a67b32..29e79e7f5a50 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8390,6 +8390,14 @@ L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	drivers/input/touchscreen/htcpen.c
- 
-+HTE SUBSYSTEM
-+M:	dipenp@nvidia.com
-+S:	Maintained
-+F:	drivers/hte/*
-+F:	include/linux/hte.h
-+F:	Documentation/hte/*
-+F:	Documentation/devicetree/bindings/hte/*
-+
- HTS221 TEMPERATURE-HUMIDITY IIO DRIVER
- M:	Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>
- L:	linux-iio@vger.kernel.org
--- 
-2.17.1
-
+> +       /* No way to reclaim anon pages */
+> +       return false;
+> +}
+> +
+>  /*
+>   * This misses isolated pages which are not accounted for to save counters.
+>   * As the data only determines if reclaim or compaction continues, it is
+> @@ -530,7 +560,7 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
+>
+>         nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
+>                 zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
+> -       if (get_nr_swap_pages() > 0)
+> +       if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
+>                 nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
+>                         zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
+>
+> @@ -2531,6 +2561,7 @@ enum scan_balance {
+>  static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>                            unsigned long *nr)
+>  {
+> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>         unsigned long anon_cost, file_cost, total_cost;
+>         int swappiness = mem_cgroup_swappiness(memcg);
+> @@ -2541,7 +2572,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>         enum lru_list lru;
+>
+>         /* If we have no swap space, do not bother scanning anon pages. */
+> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
+> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
+>                 scan_balance = SCAN_FILE;
+>                 goto out;
+>         }
+> @@ -2916,7 +2947,7 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
+>          */
+>         pages_for_compaction = compact_gap(sc->order);
+>         inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
+> -       if (get_nr_swap_pages() > 0)
+> +       if (can_reclaim_anon_pages(NULL, pgdat->node_id, sc))
+>                 inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
+>
+>         return inactive_lru_pages > pages_for_compaction;
+> --
+> 2.30.2
+>
