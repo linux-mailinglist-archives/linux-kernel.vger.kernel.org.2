@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D053B4F71
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326EA3B4F7C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhFZQ0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 12:26:16 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43586 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229890AbhFZQ0P (ORCPT
+        id S230194AbhFZQp3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Jun 2021 12:45:29 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:43759 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhFZQp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 12:26:15 -0400
-X-UUID: 9c6cadf2445d4918b45d29e5eb155797-20210627
-X-UUID: 9c6cadf2445d4918b45d29e5eb155797-20210627
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <tung-chen.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2102777713; Sun, 27 Jun 2021 00:23:48 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 27 Jun 2021 00:23:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 27 Jun 2021 00:23:47 +0800
-From:   TungChen Shih <tung-chen.shih@mediatek.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <matthias.bgg@gmail.com>
-CC:     <wsd_upstream@mediatek.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        TungChen Shih <tung-chen.shih@mediatek.com>
-Subject: [PATCH v2 1/1] cpufreq: fix the target freq not in the range of policy->min & max
-Date:   Sun, 27 Jun 2021 00:23:25 +0800
-Message-ID: <20210626162324.8236-1-tung-chen.shih@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Sat, 26 Jun 2021 12:45:28 -0400
+Received: by mail-ot1-f42.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso12961870otu.10;
+        Sat, 26 Jun 2021 09:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0SqgqCzvVZTB2+9gkf+mL/AkjbUz31GJoyV1zAWO3Mw=;
+        b=t8cenyweKJ52AkIV3bBmQxopq2zFcEXPaghJiHTpctrED66ZmfQDcfX2uGRkdKZmMg
+         MZecnzaxDqRwDH5Jj4Gs9nOQofmgd/bWihy1iBSJp9uhd3mrdKiTbPMoKSTOW4BuTP8e
+         I3pDLEt7Ajd2NHML5o16OnweGn8s6fp+ynIq3H/JzpCigxi0YNfX+JdAvepFdeXmdlWe
+         TAfE1LZZfjrwiWWsn7qMzOSOyteVJF+Fdw/pfFuXhT5ldXi61RVR4EZv4uTRrlO6TAv7
+         tAUJ3PsH+OJFjiGM/JXiquKVW+SHWAtMdYox+5Kt8hX6Hxo/N2BoljMxQQYNnOJ4nNE/
+         0xEA==
+X-Gm-Message-State: AOAM530nbfxiYeDvaoVVJIJt3MegHxz3771JQxohc5Y+jeOWEO3/PtAl
+        BuNyAJ7dRKeKAQjxoeMzVyEuIrFBRC3JsJ5+5GXjhcExe41zdQ==
+X-Google-Smtp-Source: ABdhPJzf7jrdWtaiV6n2ZBW78g3OBAIr0hGbIRYFOVKYj85gbHhD+PmJssQAYoR0yLRsqcf2kOevf9t4EoZK4O5N9Mo=
+X-Received: by 2002:a05:6830:241d:: with SMTP id j29mr15129902ots.371.1624725785294;
+ Sat, 26 Jun 2021 09:43:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <alpine.DEB.2.21.2106260509300.37803@angie.orcam.me.uk> <alpine.DEB.2.21.2106260516220.37803@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2106260516220.37803@angie.orcam.me.uk>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Sat, 26 Jun 2021 18:42:53 +0200
+Message-ID: <CAAdtpL7oCMK+AxRH6qn0GCbV1bDkN4Y5XOqdyJGC52y2N2ZxAw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] serial: 8250: Mask out floating 16/32-bit bus bits
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    The function cpufreq_driver_resolve_freq() should return the lowest
-supported freq greater than or equal to the given target_freq, subject
-to policy (min/max) and driver limitations. However, the index returned
-by cpufreq_frequency_table_target() won't subject to policy min/max in
-some cases.
+On Sat, Jun 26, 2021 at 6:11 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+>
+> Make sure only actual 8 bits of the IIR register are used in determining
+> the port type in `autoconfig'.
+>
+> The `serial_in' port accessor returns the `unsigned int' type, meaning
+> that with UPIO_AU, UPIO_MEM16, UPIO_MEM32, and UPIO_MEM32BE access types
+> more than 8 bits of data are returned, of which the high order bits will
+> often come from bus lines that are left floating in the data phase.  For
+> example with the MIPS Malta board's CBUS UART, where the registers are
+> aligned on 8-byte boundaries and which uses 32-bit accesses, data as
+> follows is returned:
+>
+> YAMON> dump -32 0xbf000900 0x40
+>
+> BF000900: 1F000942 1F000942 1F000900 1F000900  ...B...B........
+> BF000910: 1F000901 1F000901 1F000900 1F000900  ................
+> BF000920: 1F000900 1F000900 1F000960 1F000960  ...........`...`
+> BF000930: 1F000900 1F000900 1F0009FF 1F0009FF  ................
+>
+> YAMON>
+>
+> Evidently high-order 24 bits return values previously driven in the
+> address phase (the 3 highest order address bits used with the command
+> above are masked out in the simple virtual address mapping used here and
+> come out at zeros on the external bus), a common scenario with bus lines
+> left floating, due to bus capacitance.
+>
+> Consequently when the value of IIR, mapped at 0x1f000910, is retrieved
+> in `autoconfig', it comes out at 0x1f0009c1 and when it is right-shifted
+> by 6 and then assigned to 8-bit `scratch' variable, the value calculated
+> is 0x27, not one of 0, 1, 2, 3 expected in port type determination.
+>
+> Fix the issue then, by assigning the value returned from `serial_in' to
+> `scratch' first, which masks out 24 high-order bits retrieved, and only
+> then right-shift the resulting 8-bit data quantity, producing the value
+> of 3 in this case, as expected.  Fix the same issue in `serial_dl_read'.
+>
+> The problem first appeared with Linux 2.6.9-rc3 which predates our repo
+> history, but the origin could be identified with the old MIPS/Linux repo
+> also at: <git://git.kernel.org/pub/scm/linux/kernel/git/ralf/linux.git>
+> as commit e0d2356c0777 ("Merge with Linux 2.6.9-rc3."), where code in
+> `serial_in' was updated with this case:
+>
+> +       case UPIO_MEM32:
+> +               return readl(up->port.membase + offset);
+> +
+>
+> which made it produce results outside the unsigned 8-bit range for the
+> first time, though obviously it is system dependent what actual values
+> appear in the high order bits retrieved and it may well have been zeros
+> in the relevant positions with the system the change originally was
+> intended for.  It is at that point that code in `autoconf' should have
+> been updated accordingly, but clearly it was overlooked.
+>
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org # v2.6.12+
+> ---
+> Changes from v1:
+>
+> - Comments added as to truncation of bits above 7 required.
+> ---
+>  drivers/tty/serial/8250/8250_port.c |   12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 
-    In cpufreq_frequency_table_target(), this function will try to find
-an index for @target_freq in freq_table, and the frequency of selected
-index should be in the range [policy->min, policy->max], which means:
-
-    policy->min <= policy->freq_table[idx].frequency <= policy->max
-
-    Though "clamp_val(target_freq, policy->min, policy->max);" would
-have been called to check this condition, when policy->max or min is
-not exactly one of the frequency in the frequency table,
-policy->freq_table[idx].frequency may still go out of the range
-
-    For example, if our sorted freq_table is [3000, 2000, 1000], and
-suppose we have:
-
-    @target_freq = 2500
-    @policy->min = 2000
-    @policy->max = 2200
-    @relation = CPUFREQ_RELATION_L
-
-1. After clamp_val(target_freq, policy->min, policy->max); @target_freq
-becomes 2200
-2. Since we use CPUFREQ_REALTION_L, final selected freq will be 3000 which
-beyonds policy->max
-
-Signed-off-by: TungChen Shih <tung-chen.shih@mediatek.com>
----
- drivers/cpufreq/cpufreq.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 802abc925b2a..8e3a17781618 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -544,8 +544,23 @@ unsigned int cpufreq_driver_resolve_freq(struct cpufreq_policy *policy,
- 	if (cpufreq_driver->target_index) {
- 		unsigned int idx;
- 
-+		/*  to find the frequency >= target_freq */
- 		idx = cpufreq_frequency_table_target(policy, target_freq,
- 						     CPUFREQ_RELATION_L);
-+
-+		/* frequency should subject to policy (min/max) */
-+		if (policy->freq_table[idx].frequency > policy->max) {
-+			if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
-+				idx--;
-+			else
-+				idx++;
-+		} else if (policy->freq_table[idx].frequency < policy->min) {
-+			if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
-+				idx++;
-+			else
-+				idx--;
-+		}
-+
- 		policy->cached_resolved_idx = idx;
- 		return policy->freq_table[idx].frequency;
- 	}
--- 
-2.18.0
-
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
