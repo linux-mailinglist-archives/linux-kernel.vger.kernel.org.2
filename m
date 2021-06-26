@@ -2,138 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3283B4F43
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3503B4F49
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhFZPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 11:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229796AbhFZPpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 11:45:18 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EE6C61941;
-        Sat, 26 Jun 2021 15:42:55 +0000 (UTC)
-Date:   Sat, 26 Jun 2021 11:41:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
-Message-ID: <20210626114157.765d9371@rorschach.local.home>
-In-Reply-To: <7297f336-70e5-82d3-f8d3-27f08c7d1548@i-love.sakura.ne.jp>
-References: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
-        <20210626101834.55b4ecf1@rorschach.local.home>
-        <7297f336-70e5-82d3-f8d3-27f08c7d1548@i-love.sakura.ne.jp>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230092AbhFZPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 11:55:28 -0400
+Received: from mail-dm6nam11on2068.outbound.protection.outlook.com ([40.107.223.68]:52929
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229657AbhFZPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 11:55:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aJxcxH5+aVjUJ5HIYhDLgzItV9NbsiJWAqBT+sxcGWhzK4md1FV9aGpf+82YdZjYWlcjnnZK6xYhjDTWo7daSX9HWaLYV9SabmH8Ptp8A99FrO/DzDdJFBMqQynxUhcM0NUgZVCbj3cc7v0OK+CMF6k+P+ss9RnybgVfOtKikgy0FNAFrf817Fr/pz6iSLyeo9pl7QD7P29OtBiwGwxl5XtigWmahf5fbm/5lW8LttdYOR2dm8pyENQXIbTCkyMB4+q0YwDyYI/xt42PEc2N0GwSwXpR+NereZ4PwT+L/s7rzPoExmCPUMZXunzv2mzIiCTvF02Q4ZkUVb54S7tdsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=70ugJnymheOG6ilWzQRbRZL8yPp7e6Ssfyd37HgUhrA=;
+ b=muTnjZR2VjxucXhtjTFzH8PDHCGDehQ0X8xWveMY6HK6NfqK02cJVVW6sE86vAUZoZMjv0jcTECGYpjSGwO+chbm3ZzCYPUfVqxxF/Oi6jR1UenOaSvcGtzJSFHyNmWcmTUcjz/3CiAaZtvDlEG67QDBDN71YR8uQ3pYqGEBagmTb9hxO8N1xhqVv2v6PQyns8QcVZt/rK1u6I7htmYc480eFvXE5C6bvxVgEhTOMQsZywdK8Dd4AM06KJ7sT1EVXPDYicAoWDZnJNfqLVLP9FB13i0J8wOK2n9tZkPCLLUJmKqZI60YYtjaBCE2fLwGzNkg65dDdcG1XzuCghg1Hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=70ugJnymheOG6ilWzQRbRZL8yPp7e6Ssfyd37HgUhrA=;
+ b=ZvIrBAsgpqUUjlbxoFYldf+00qVKY7mbnKVlLjHyF9D66P+SqZ/uhpnA+GPA4gm4wYjrvahxpyQzDlHJIMD5OffLOXDL+coJu0prRy43m+rRvaS0J62qeHufH7D1Fq2UZz/J/+9VqWAhhkBMopsJSsrx2Qwm0LVGUU+nZAy4EKM=
+Received: from DM5PR17CA0053.namprd17.prod.outlook.com (2603:10b6:3:13f::15)
+ by BYAPR02MB3992.namprd02.prod.outlook.com (2603:10b6:a02:f3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Sat, 26 Jun
+ 2021 15:53:01 +0000
+Received: from DM3NAM02FT052.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:13f:cafe::5f) by DM5PR17CA0053.outlook.office365.com
+ (2603:10b6:3:13f::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend
+ Transport; Sat, 26 Jun 2021 15:53:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT052.mail.protection.outlook.com (10.13.5.134) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4264.18 via Frontend Transport; Sat, 26 Jun 2021 15:53:01 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 08:52:57 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Sat, 26 Jun 2021 08:52:57 -0700
+Envelope-to: git@xilinx.com,
+ robh+dt@kernel.org,
+ mdf@kernel.org,
+ trix@redhat.com,
+ arnd@arndb.de,
+ gregkh@linuxfoundation.org,
+ zou_wei@huawei.com,
+ iwamatsu@nigauri.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=59432 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1lxAc3-0000uY-Se; Sat, 26 Jun 2021 08:52:56 -0700
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>, <mdf@kernel.org>,
+        <trix@redhat.com>, <nava.manne@xilinx.com>, <arnd@arndb.de>,
+        <rajan.vaja@xilinx.com>, <gregkh@linuxfoundation.org>,
+        <amit.sunil.dhamne@xilinx.com>, <tejas.patel@xilinx.com>,
+        <zou_wei@huawei.com>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <ravi.patel@xilinx.com>, <iwamatsu@nigauri.org>,
+        <wendy.liang@xilinx.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <git@xilinx.com>, <chinnikishore369@gmail.com>
+Subject: [PATCH v8 0/5]Add Bitstream configuration support for Versal
+Date:   Sat, 26 Jun 2021 21:22:43 +0530
+Message-ID: <20210626155248.5004-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b50da772-016d-45eb-79b2-08d938ba7a3a
+X-MS-TrafficTypeDiagnostic: BYAPR02MB3992:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB399280D262789A7ACAEDF8A6C2059@BYAPR02MB3992.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: umOc5gYXXMJfNhbq7SdnrLcHI39imN5ZYsWRLLNyEKqeypXuYfXoQeWmidnNnPCYUdFdXbsFaMS8FcDYGDE0VwuCga4WBF7DAzVyamxpSEAqBListqd+AZ3Infqitgd3U1ljQOh0+SEH/6Xhfuo140MYsu2xMXqpf/qdI+SC6JGADzfzSV4iI3kSEOPlrO79+2lKhhlakYOCHaveqjz7PAL5wXBxylTwqT5vt1DI26TKlY2j3IkZtHBCjbxofaQUII+/v+x2XLDpq4oSIIxGKgQPu9iITmM1Vg3sfP48BCvT6ed79dGsUS1qbxEMo8ewrXQH2zii5zLoB6u7KwrqSNqUDuKkVnHhhloIn2ck5ggPlj9cGNYMbHWad043rOMSzTrdOvJDb81Kxlqg39QQcjHYc9fslg2QZYpgXKBUGF2HoWhzp4WXCEaw1ARD9RahbmT4JXxrxLnSY9MAsFwYAILIYopLWSl0z9cSJPoU7ufbltQRKUmE4TgYk2HkZJYoiz1SS7GYZp8yDn0uGHSAizjVs713LBztvGx0t3/PzccAzTKhDb8lvFdMoRhMF/gWGYDT5SZO1xtWIIYjNkkhilk50pFJI2HnLHMCJOKFg7UkoqQVF+uw8L/k0E5DqDP0DSCrm9frfJm9bNy33s21frE1ih9VQsdeVufOgASlR5D6j5YFUaC7dcRjxZ+34nrNTenLQRc7/F7hp6HLkKR2V7ACUQNaPUN0TkxULSt3O/r2ZY+Agi8xpTp0BZYskIGMxwwi0FE66Kw1KeJDiI+ljEN3OXCXUpBJdcVULalY4oFcEh/XVfz4mkDC3BBIyRmYBHRcZaBzGo6Lkl4MpZDqu691JfSv/rPT5lJSUtY20+M=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39850400004)(376002)(346002)(136003)(396003)(46966006)(36840700001)(36906005)(47076005)(6666004)(7696005)(5660300002)(1076003)(8676002)(921005)(110136005)(2616005)(316002)(36860700001)(36756003)(2906002)(70586007)(426003)(26005)(70206006)(186003)(7416002)(83380400001)(356005)(82740400003)(7636003)(336012)(9786002)(8936002)(478600001)(966005)(82310400003)(102446001)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2021 15:53:01.4461
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b50da772-016d-45eb-79b2-08d938ba7a3a
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT052.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB3992
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 00:13:17 +0900
-Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
+This series Adds FPGA manager driver support for Xilinx Versal SoC.
+it uses the firmware interface to configure the programmable logic.
 
-> On 2021/06/26 23:18, Steven Rostedt wrote:
-> > On Sat, 26 Jun 2021 22:58:45 +0900
-> > Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
-> >   
-> >> syzbot is hitting WARN_ON_ONCE() at tracepoint_add_func() [1], but
-> >> func_add() returning -EEXIST and func_remove() returning -ENOENT are
-> >> not kernel bugs that can justify crashing the system.  
-> > 
-> > There should be no path that registers a tracepoint twice. That's a bug
-> > in the kernel. Looking at the link below, I see the backtrace:
-> > 
-> > Call Trace:
-> >  tracepoint_probe_register_prio kernel/tracepoint.c:369 [inline]
-> >  tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:389
-> >  __bpf_probe_register kernel/trace/bpf_trace.c:2154 [inline]
-> >  bpf_probe_register+0x15a/0x1c0 kernel/trace/bpf_trace.c:2159
-> >  bpf_raw_tracepoint_open+0x34a/0x720 kernel/bpf/syscall.c:2878
-> >  __do_sys_bpf+0x2586/0x4f40 kernel/bpf/syscall.c:4435
-> >  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-> > 
-> > So BPF is allowing the user to register the same tracepoint more than
-> > once? That looks to be a bug in the BPF code where it shouldn't be
-> > allowing user space to register the same tracepoint multiple times.  
-> 
-> I didn't catch your question.
-> 
->   (1) func_add() can reject an attempt to add same tracepoint multiple times
->       by returning -EINVAL to the caller.
->   (2) But tracepoint_add_func() (the caller of func_add()) is calling WARN_ON_ONCE()
->       if func_add() returned -EINVAL.
+Changes for v4:
+                -Rebase the patch series on linux-next.
+                https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-That's because (before BPF) there's no place in the kernel that tries
-to register the same tracepoint multiple times, and was considered a
-bug if it happened, because there's no ref counters to deal with adding
-them multiple times.
+Changes for v5:
+                -Updated binding doc's.
 
-If the tracepoint is already registered (with the given function and
-data), then something likely went wrong.
+Changes for v6:
+                -Updated firmware binding doc.
 
->   (3) And tracepoint_add_func() is triggerable via request from userspace.
+Changes for v7:
+               -Updated versal-fpga.c driver to remove unwated priv
+                struct dependency.
 
-Only via BPF correct?
+Changes for v8:
+                -Removed xlnx,zynqmp-firmware.txt and fixed some minor issues
+                 in xlnx,zynqmp-firmware.yaml file as suggested by rob.
 
-I'm not sure how it works, but can't BPF catch that it is registering
-the same tracepoint again?
 
-We could add this patch, but then we need to add the WARN_ON_ONCE() to
-all the other callers, because for the other callers it's a bug if the
-tracepoint was registered twice with the same callback and data.
+Appana Durga Kedareswara rao (1):
+  dt-bindings: fpga: Add binding doc for versal fpga manager
 
-Or we can add another interface that wont warn, and BPF can use that.
+Nava kishore Manne (4):
+  drivers: firmware: Add PDI load API support
+  dt-bindings: firmware: Add bindings for xilinx firmware
+  dt-bindings: firmware: Remove xlnx,zynqmp-firmware.txt file
+  fpga: versal-fpga: Add versal fpga manager driver
 
->   (4) tracepoint_probe_register_prio() serializes tracepoint_add_func() call
->       triggered by concurrent request from userspace using tracepoints_mutex mutex.
+ .../firmware/xilinx/xlnx,zynqmp-firmware.txt  | 44 ---------
+ .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 89 +++++++++++++++++
+ .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++
+ drivers/firmware/xilinx/zynqmp.c              | 17 ++++
+ drivers/fpga/Kconfig                          |  9 ++
+ drivers/fpga/Makefile                         |  1 +
+ drivers/fpga/versal-fpga.c                    | 96 +++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          | 10 ++
+ 8 files changed, 255 insertions(+), 44 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.txt
+ create mode 100644 Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml
+ create mode 100644 Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+ create mode 100644 drivers/fpga/versal-fpga.c
 
-You keep saying user space. Is it a BPF program?
+-- 
+2.17.1
 
->   (5) But tracepoint_add_func() does not check whether same tracepoint multiple
->       is already registered before calling func_add().
-
-Because it's considered a bug in the kernel if that is the case.
-
->   (6) As a result, tracepoint_add_func() receives -EINVAL from func_add(), and
->       calls WARN_ON_ONCE() and the system crashes due to panic_on_warn == 1.
-> 
-> Why this is a bug in the BPF code? The BPF code is not allowing userspace to
-> register the same tracepoint multiple times. I think that tracepoint_add_func()
-
-Then how is the same tracepoint being registered multiple times?
-
-You keep saying "user space" but the only way user space is doing this
-is through BPF. Or am I missing something?
-
-> is stupid enough to crash the kernel instead of rejecting when an attempt to
-> register the same tracepoint multiple times is made.
-
-Because its a bug in the kernel, and WARN_ON_ONCE() is what is used
-when you detect something that is considered a bug in the kernel. If
-you don't want warnings to crash the kernel, you don't add
-"panic_on_warning".
-
-If BPF is expected to register the same tracepoint with the same
-callback and data more than once, then let's add a call to do that
-without warning. Like I said, other callers expect the call to succeed
-unless it's out of memory, which tends to cause other problems.
-
-FYI, this warning has caught bugs in my own code, that triggered my
-tests to fail, and had me go fix that bug before pushing it further.
-And my tests fail only on a full warning.
-
--- Steve
