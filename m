@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBA43B4C2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D93B4C32
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhFZD0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 23:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhFZD03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 23:26:29 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9053C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b3so5711552plg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZYiH9nK6crmHzzEefhGaKJK98dSESEicqRD9TcJugLA=;
-        b=DcagL9ukyAri4GHOF/R0Zf3Iu0Lo6msYVkx5FGprR+PMGBy9p9RQixD9ErVc1gzXH6
-         mSli7Te1XBpclsd+1tAr6ijhr8hce6Hp3XBsdEJyda/f94I0H+WZ5DnF+oq1N6s+TGRd
-         RJdvcGL/FQ4D2d/B27HhdT/IBBdxghruULKz4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZYiH9nK6crmHzzEefhGaKJK98dSESEicqRD9TcJugLA=;
-        b=blr161Z4RskHvIj1h2ZNFc2/FKgXJ1tqwyGeyTxTkVTEEMM6xl7hoXAHvXbBxAgpQ7
-         Ahsjt+/SYegeGE2z9FJ4L5FNTCnjyZ4zxfMfhTwJwq6fmQ0JvYuqWim2nWVjow9ALk3g
-         Wpy6rL+wW1woap00Njgq0o6HWL6JXX9i3iUKTjnGbxqCTyQ0X8bzRQu6Gp3FJAm/kG+U
-         067eILHjWsVAJDm8uYQGvW6rrvlMJKsNs4CeIwKHHAciFX6EQKDK/N4DMv0kizWIjYXo
-         TrFgMQ5YjOWokjKdJ8KTv0QXcYwowAFeY6N0dP4/IRDV2EDy5uqlYrTmuGwU1E1a97Pg
-         1Lhw==
-X-Gm-Message-State: AOAM530+cLypuKdU1efLDe/cYik448J2SQjCbhhvScJYIb5viVfVpekP
-        Cd2DX61m0eAx6uges0JAQB000g==
-X-Google-Smtp-Source: ABdhPJzaO+QEnFQnNol01zQxJCk+8I37gEbzWkLNj3gUl/PIejMlM+53/MOUevmSyYRVKywcyg4+IA==
-X-Received: by 2002:a17:902:e850:b029:127:a2ed:9924 with SMTP id t16-20020a170902e850b0290127a2ed9924mr8346735plg.57.1624677846193;
-        Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k7sm1724628pfp.65.2021.06.25.20.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 20:24:05 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 20:24:04 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 4/9] signal: Factor start_group_exit out of
- complete_signal
-Message-ID: <202106252022.79A9A1A@keescook>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133>
- <875yy3850g.fsf_-_@disp2133>
- <87czsb6q9r.fsf_-_@disp2133>
+        id S230031AbhFZDfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 23:35:14 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:53904 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229873AbhFZDfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 23:35:13 -0400
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 15Q3W99d016678
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Jun 2021 20:32:10 -0700
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 25 Jun 2021 20:32:09 -0700
+Received: from pek-lpd-ccm2.wrs.com (128.224.179.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2242.10 via Frontend Transport; Fri, 25 Jun 2021 20:32:08 -0700
+From:   Yun Zhou <yun.zhou@windriver.com>
+To:     <rostedt@goodmis.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <kernel-hardening@lists.openwall.com>, <ying.xue@windriver.com>,
+        <zhiquan.li@windriver.com>
+Subject: [PATCH 1/2] seq_buf: fix overflow in seq_buf_putmem_hex()
+Date:   Sat, 26 Jun 2021 11:21:55 +0800
+Message-ID: <20210626032156.47889-1-yun.zhou@windriver.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czsb6q9r.fsf_-_@disp2133>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:01:20PM -0500, Eric W. Biederman wrote:
-> +static void start_group_exit_locked(struct signal_struct *signal, int exit_code)
-> +{
-> +	/*
-> +	 * Start a group exit and wake everybody up.
-> +	 * This way we don't have other threads
-> +	 * running and doing things after a slower
-> +	 * thread has the fatal signal pending.
-> +	 */
-> +	struct task_struct *t;
-> +
-> +	signal->flags = SIGNAL_GROUP_EXIT;
-> +	signal->group_exit_code = exit_code;
-> +	signal->group_stop_count = 0;
-> +	__for_each_thread(signal, t) {
-> +		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
-> +
-> +		/* Don't bother with already dead threads */
-> +		if (t->exit_state)
-> +			continue;
-> +		sigaddset(&t->pending.signal, SIGKILL);
-> +		signal_wake_up(t, 1);
-> +	}
+There's two variables being increased in that loop (i and j), and i
+follows the raw data, and j follows what is being written into the buffer.
+We should compare 'i' to MAX_MEMHEX_BYTES or compare 'j' to HEX_CHARS.
+Otherwise, if 'j' goes bigger than HEX_CHARS, it will overflow the
+destination buffer.
 
-This both extracts it and changes it. For ease-of-review, maybe split
-this patch into the move and then the logic changes?
+This bug exists in the original code (commit 5e3ca0ec76fce 'ftrace:
+introduce the "hex" output method'). Although its original design did
+not support more than 8 bytes, the only check on length seems to have
+mistaken the comparison object, 'len' should compare to 'HEX_CHARS/2'.
+    BUG_ON(len >= HEX_CHARS);
 
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+---
+ lib/seq_buf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+index 6aabb609dd87..223fbc3bb958 100644
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -228,8 +228,10 @@ int seq_buf_putmem_hex(struct seq_buf *s, const void *mem,
+ 
+ 	WARN_ON(s->size == 0);
+ 
++	BUILD_BUG_ON(MAX_MEMHEX_BYTES * 2 >= HEX_CHARS);
++
+ 	while (len) {
+-		start_len = min(len, HEX_CHARS - 1);
++		start_len = min(len, MAX_MEMHEX_BYTES);
+ #ifdef __BIG_ENDIAN
+ 		for (i = 0, j = 0; i < start_len; i++) {
+ #else
 -- 
-Kees Cook
+2.26.1
+
