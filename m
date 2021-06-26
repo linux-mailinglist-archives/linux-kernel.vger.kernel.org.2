@@ -2,126 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A413B3B4CCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 07:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05EA3B4CDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 07:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhFZFTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 01:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        id S229759AbhFZFnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 01:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhFZFTn (ORCPT
+        with ESMTP id S229451AbhFZFns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 01:19:43 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA05C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 22:17:21 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id g14so9206672qtv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 22:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=omobQP/IX1kTmQx8gX/JOAH5N2ogu7UgIhNdX+iiGPw=;
-        b=XVUAzVFO4ejjsVn2v4yE0HpHhdDrJC74CZ0lITmtjBWjMsS8L8H0PNv+R8v4Nn4fDY
-         AX6SjDhw7BUZf21YPdmzTVJuMzElkjcQAelFxXoA/YrCaIa4FnYPEDC4vIHsnjpoz8Sh
-         g3viJym1kD0xNNtb0o49l+xijO5fhxV+TJG0ADH/Hq5IMJU6hAijJ2xpRod9kfxb1Tf1
-         mA19mP8+aYnPoUjzXKrHZURIB94v7hV1/qF3fx3gqB9d2OTfJayq516D8jszqchQ/g1R
-         NAdd4zOAdg++JOxDFs8VCTofHoHZLyUhoJW2G4mG+IFa8XTCDNGb/aiptEW/FlCBDHIi
-         aXgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=omobQP/IX1kTmQx8gX/JOAH5N2ogu7UgIhNdX+iiGPw=;
-        b=NbP5Ad5bSBP+g9o92AiN9dsXs5U4Wxgvt4F0rzR9sRDv0TzxRBCGD0pvhcNZSiYt2q
-         S4n0dt1beppc3fLex3gNQMdeBp90iSPoIfBzuJXDlsisw9ArjoNMHzqdXRieTtBgITjy
-         o5xXR8CgAi/q9vY7S7K0owiYNO21mFWyegKPW0jFQ8RnCCaTQltoFYeldr3OmiW7LR5c
-         q1vE0mSVmIkW5UDHYPV/s233ZlKE9WaPLU6vlO5qVar0d19g+a4gyXs4crRl9B/8sN1z
-         2X/kVXIvz3bb5EgamzjjBYdHpIi7OqwlZLyz6DMJmaN697ptf3AQqPStQ2QufXQ+tU3b
-         9/DA==
-X-Gm-Message-State: AOAM530qIbAqb+xaQSHQw+v9ubuTvmp8vS9+K7NRL8dXvwJAORTl8AVd
-        XJHRnFzWxV4d8x2jrzGhHdAs9IkfSUB7DXFozO8y6njodGH/EA==
-X-Google-Smtp-Source: ABdhPJzeZDAid/Zb7FvSg7V29Ap5PUijaOGz/hE//oPP/EehDlz6d1lqjVtLAeFSHLSHK/W3TgO4Ii7umxmoTCJqobo=
-X-Received: by 2002:a05:622a:15cc:: with SMTP id d12mr12416182qty.67.1624684640111;
- Fri, 25 Jun 2021 22:17:20 -0700 (PDT)
+        Sat, 26 Jun 2021 01:43:48 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4B9C061574;
+        Fri, 25 Jun 2021 22:41:26 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id F1E9441AC8;
+        Sat, 26 Jun 2021 05:41:19 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Jean Delvare <jdelvare@suse.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        stable@vger.kernel.org
+Subject: [PATCH v3] i2c: i801: Safely share SMBus with BIOS/ACPI
+Date:   Sat, 26 Jun 2021 14:41:13 +0900
+Message-Id: <20210626054113.246309-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <000000000000ef5d1b05c57c2262@google.com> <87fsx7akyf.fsf@disp2133>
- <CACT4Y+YM8wONCrOq75-TFwA86Sg5gRHDK81LQH_O_+yWsdTr=g@mail.gmail.com> <87lf6x4vp1.fsf@disp2133>
-In-Reply-To: <87lf6x4vp1.fsf@disp2133>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 26 Jun 2021 07:17:09 +0200
-Message-ID: <CACT4Y+YdFpx7-f-YwTnhj6Yy_aYGW7qkj+XV-7QT73DB2a=cmQ@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: out-of-bounds Read in do_exit
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     syzbot <syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, ast@kernel.org, christian@brauner.io,
-        jnewsome@torproject.org, linux-kernel@vger.kernel.org,
-        minchan@kernel.org, oleg@redhat.com,
-        syzkaller-bugs@googlegroups.com, Ingo Molnar <mingo@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 8:59 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Dmitry Vyukov <dvyukov@google.com> writes:
->
-> > On Thu, Jun 24, 2021 at 7:31 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >>
-> >> syzbot <syzbot+b80bbdcca4c4dfaa189e@syzkaller.appspotmail.com> writes:
-> >>
-> >> > Hello,
-> >> >
-> >> > syzbot found the following issue on:
-> >>
-> >> This looks like dueling debug mechanism.  At a quick glance
-> >> stack_no_used is deliberately looking for an uninitialized part of the
-> >> stack.
-> >>
-> >> Perhaps the fix is to make KASAN and DEBUG_STACK_USAGE impossible to
-> >> select at the same time in Kconfig?
-> >
-> > +kasan-dev
-> >
-> > Hi Eric,
-> >
-> > Thanks for looking into this.
-> >
-> > I see several strange things about this KASAN report:
-> > 1. KASAN is not supposed to leave unused stack memory as "poisoned".
-> > Function entry poisons its own frame and function exit unpoisions it.
-> > Longjmp-like things can leave unused stack poisoned. We have
-> > kasan_unpoison_task_stack_below() for these, so maybe we are missing
-> > this annotation somewhere.
-> >
-> > 2. This stand-alone shadow pattern "07 07 07 07 07 07 07 07" looks fishy.
-> > It means there are 7 good bytes, then 1 poisoned byte, then 7 good
-> > bytes and so on. I am not sure what can leave such a pattern. Both
-> > heap and stack objects have larger redzones in between. I am not sure
-> > about globals, but stack should not overlap with globals (and there
-> > are no modules on syzbot).
-> >
-> > So far this happened only once and no reproducer. If nobody sees
-> > anything obvious, I would say we just wait for more info.
->
->
-> I may be mixing things up but on second glance this entire setup
-> feels very familiar.  I think this is the second time I have made
-> this request that the two pieces of debugging code play nice.
->
-> Perhaps it is a different piece of debugging code and KASAN that
-> I am remembering but I think this is the second time this issue has come
-> up.
+The i801 controller provides a locking mechanism that the OS is supposed
+to use to safely share the SMBus with ACPI AML or other firmware.
 
-This is the only mention of DEBUG_STACK_USAGE on kasan-dev:
-https://groups.google.com/g/kasan-dev/search?q=DEBUG_STACK_USAGE
+Previously, Linux attempted to get out of the way of ACPI AML entirely,
+but left the bus locked if it used it before the first AML access. This
+causes AML implementations that *do* attempt to safely share the bus
+to time out if Linux uses it first; notably, this regressed ACPI video
+backlight controls on 2015 iMacs after 01590f361e started instantiating
+SPD EEPROMs on boot.
 
-Searching lore:
-https://lore.kernel.org/lkml/?q=KASAN+%22DEBUG_STACK_USAGE%22
+Commit 065b6211a8 fixed the immediate problem of leaving the bus locked,
+but we can do better. The controller does have a proper locking mechanism,
+so let's use it as intended. Since we can't rely on the BIOS doing this
+properly, we implement the following logic:
 
-I found mention of:
-kernel-hacking: move SCHED_STACK_END_CHECK after DEBUG_STACK_USAGE
+- If ACPI AML uses the bus at all, we make a note and disable power
+  management. The latter matches already existing behavior.
+- When we want to use the bus, we attempt to lock it first. If the
+  locking attempt times out, *and* ACPI hasn't tried to use the bus at
+  all yet, we cautiously go ahead and assume the BIOS forgot to unlock
+  the bus after boot. This preserves existing behavior.
+- We always unlock the bus after a transfer.
+- If ACPI AML tries to use the bus (except trying to lock it) while
+  we're in the middle of a transfer, or after we've determined
+  locking is broken, we know we cannot safely share the bus and give up.
 
-Maybe you remember these 2?
+Upon first usage of SMBus by ACPI AML, if nothing has gone horribly
+wrong so far, users will see:
+
+i801_smbus 0000:00:1f.4: SMBus controller is shared with ACPI AML. This seems safe so far.
+
+If locking the SMBus times out, users will see:
+
+i801_smbus 0000:00:1f.4: BIOS left SMBus locked
+
+And if ACPI AML tries to use the bus concurrently with Linux, or it
+previously used the bus and we failed to subsequently lock it as
+above, the driver will give up and users will get:
+
+i801_smbus 0000:00:1f.4: BIOS uses SMBus unsafely
+i801_smbus 0000:00:1f.4: Driver SMBus register access inhibited
+
+This fixes the regression introduced by 01590f361e, and further allows
+safely sharing the SMBus on 2015 iMacs. Tested by running `i2cdump` in a
+loop while changing backlight levels via the ACPI video device.
+
+Fixes: 01590f361e ("i2c: i801: Instantiate SPD EEPROMs automatically")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hector Martin <marcan@marcan.st>
+---
+ drivers/i2c/busses/i2c-i801.c | 96 ++++++++++++++++++++++++++++-------
+ 1 file changed, 79 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index 04a1e38f2a6f..03be6310d6d7 100644
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -287,11 +287,18 @@ struct i801_priv {
+ #endif
+ 	struct platform_device *tco_pdev;
+ 
++	/* BIOS left the controller marked busy. */
++	bool inuse_stuck;
+ 	/*
+-	 * If set to true the host controller registers are reserved for
+-	 * ACPI AML use. Protected by acpi_lock.
++	 * If set to true, ACPI AML uses the host controller registers.
++	 * Protected by acpi_lock.
+ 	 */
+-	bool acpi_reserved;
++	bool acpi_usage;
++	/*
++	 * If set to true, ACPI AML uses the host controller registers in an
++	 * unsafe way. Protected by acpi_lock.
++	 */
++	bool acpi_unsafe;
+ 	struct mutex acpi_lock;
+ };
+ 
+@@ -854,10 +861,37 @@ static s32 i801_access(struct i2c_adapter *adap, u16 addr,
+ 	int hwpec;
+ 	int block = 0;
+ 	int ret = 0, xact = 0;
++	int timeout = 0;
+ 	struct i801_priv *priv = i2c_get_adapdata(adap);
+ 
++	/*
++	 * The controller provides a bit that implements a mutex mechanism
++	 * between users of the bus. First, try to lock the hardware mutex.
++	 * If this doesn't work, we give up trying to do this, but then
++	 * bail if ACPI uses SMBus at all.
++	 */
++	if (!priv->inuse_stuck) {
++		while (inb_p(SMBHSTSTS(priv)) & SMBHSTSTS_INUSE_STS) {
++			if (++timeout >= MAX_RETRIES) {
++				dev_warn(&priv->pci_dev->dev,
++					 "BIOS left SMBus locked\n");
++				priv->inuse_stuck = true;
++				break;
++			}
++			usleep_range(250, 500);
++		}
++	}
++
+ 	mutex_lock(&priv->acpi_lock);
+-	if (priv->acpi_reserved) {
++	if (priv->acpi_usage && priv->inuse_stuck && !priv->acpi_unsafe) {
++		priv->acpi_unsafe = true;
++
++		dev_warn(&priv->pci_dev->dev, "BIOS uses SMBus unsafely\n");
++		dev_warn(&priv->pci_dev->dev,
++			 "Driver SMBus register access inhibited\n");
++	}
++
++	if (priv->acpi_unsafe) {
+ 		mutex_unlock(&priv->acpi_lock);
+ 		return -EBUSY;
+ 	}
+@@ -1639,6 +1673,16 @@ static bool i801_acpi_is_smbus_ioport(const struct i801_priv *priv,
+ 	       address <= pci_resource_end(priv->pci_dev, SMBBAR);
+ }
+ 
++static acpi_status
++i801_acpi_do_access(u32 function, acpi_physical_address address,
++				u32 bits, u64 *value)
++{
++	if ((function & ACPI_IO_MASK) == ACPI_READ)
++		return acpi_os_read_port(address, (u32 *)value, bits);
++	else
++		return acpi_os_write_port(address, (u32)*value, bits);
++}
++
+ static acpi_status
+ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 		     u64 *value, void *handler_context, void *region_context)
+@@ -1648,17 +1692,38 @@ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 	acpi_status status;
+ 
+ 	/*
+-	 * Once BIOS AML code touches the OpRegion we warn and inhibit any
+-	 * further access from the driver itself. This device is now owned
+-	 * by the system firmware.
++	 * Non-i801 accesses pass through.
+ 	 */
+-	mutex_lock(&priv->acpi_lock);
++	if (!i801_acpi_is_smbus_ioport(priv, address))
++		return i801_acpi_do_access(function, address, bits, value);
+ 
+-	if (!priv->acpi_reserved && i801_acpi_is_smbus_ioport(priv, address)) {
+-		priv->acpi_reserved = true;
++	if (!mutex_trylock(&priv->acpi_lock)) {
++		mutex_lock(&priv->acpi_lock);
++		/*
++		 * This better be a read of the status register to acquire
++		 * the lock...
++		 */
++		if (!priv->acpi_unsafe &&
++			!(address == SMBHSTSTS(priv) &&
++			 (function & ACPI_IO_MASK) == ACPI_READ)) {
++			/*
++			 * Uh-oh, ACPI AML is trying to do something with the
++			 * controller without locking it properly.
++			 */
++			priv->acpi_unsafe = true;
++
++			dev_warn(&pdev->dev, "BIOS uses SMBus unsafely\n");
++			dev_warn(&pdev->dev,
++				 "Driver SMBus register access inhibited\n");
++		}
++	}
+ 
+-		dev_warn(&pdev->dev, "BIOS is accessing SMBus registers\n");
+-		dev_warn(&pdev->dev, "Driver SMBus register access inhibited\n");
++	if (!priv->acpi_usage) {
++		priv->acpi_usage = true;
++
++		if (!priv->acpi_unsafe)
++			dev_info(&pdev->dev,
++				 "SMBus controller is shared with ACPI AML. This seems safe so far.\n");
+ 
+ 		/*
+ 		 * BIOS is accessing the host controller so prevent it from
+@@ -1667,10 +1732,7 @@ i801_acpi_io_handler(u32 function, acpi_physical_address address, u32 bits,
+ 		pm_runtime_get_sync(&pdev->dev);
+ 	}
+ 
+-	if ((function & ACPI_IO_MASK) == ACPI_READ)
+-		status = acpi_os_read_port(address, (u32 *)value, bits);
+-	else
+-		status = acpi_os_write_port(address, (u32)*value, bits);
++	status = i801_acpi_do_access(function, address, bits, value);
+ 
+ 	mutex_unlock(&priv->acpi_lock);
+ 
+@@ -1706,7 +1768,7 @@ static void i801_acpi_remove(struct i801_priv *priv)
+ 		ACPI_ADR_SPACE_SYSTEM_IO, i801_acpi_io_handler);
+ 
+ 	mutex_lock(&priv->acpi_lock);
+-	if (priv->acpi_reserved)
++	if (priv->acpi_usage)
+ 		pm_runtime_put(&priv->pci_dev->dev);
+ 	mutex_unlock(&priv->acpi_lock);
+ }
+-- 
+2.32.0
+
