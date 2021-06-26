@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC403B4EA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 15:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2423B4EA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 15:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhFZNIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 09:08:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
+        id S230327AbhFZNIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 09:08:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230092AbhFZNIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230093AbhFZNIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 26 Jun 2021 09:08:00 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30F0761C47;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6085361C3C;
         Sat, 26 Jun 2021 13:05:38 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lx809-000ElZ-7g; Sat, 26 Jun 2021 09:05:37 -0400
-Message-ID: <20210626130537.073880448@goodmis.org>
+        id 1lx809-000Em9-Dq; Sat, 26 Jun 2021 09:05:37 -0400
+Message-ID: <20210626130537.271428380@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 26 Jun 2021 09:04:18 -0400
+Date:   Sat, 26 Jun 2021 09:04:19 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -41,7 +41,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-doc@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [for-next][PATCH 14/24] trace/hwlat: Implement the per-cpu mode
+Subject: [for-next][PATCH 15/24] trace: Add a generic function to read/write u64 values from tracefs
 References: <20210626130404.033700863@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,19 +51,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-Implements the per-cpu mode in which a sampling thread is created for
-each cpu in the "cpus" (and tracing_mask).
+The hwlat detector and (in preparation for) the osnoise/timerlat tracers
+have a set of u64 parameters that the user can read/write via tracefs.
+For instance, we have hwlat_detector's window and width.
 
-The per-cpu mode has the potention to speed up the hwlat detection by
-running on multiple CPUs at the same time, at the cost of higher cpu
-usage with irqs disabled. Use with care.
+To reduce the code duplication, hwlat's window and width share the same
+read function. However, they do not share the write functions because
+they do different parameter checks. For instance, the width needs to
+be smaller than the window, while the window needs to be larger
+than the window. The same pattern repeats on osnoise/timerlat, and
+a large portion of the code was devoted to the write function.
 
-[
-  Changed get_cpu_data() to static.
-  Reported-by: kernel test robot <lkp@intel.com>
-]
+Despite having different checks, the write functions have the same
+structure:
 
-Link: https://lkml.kernel.org/r/ec06d0ab340e8460d293772faba19ad8a5c371aa.1624372313.git.bristot@redhat.com
+   read a user-space buffer
+   take the lock that protects the value
+   check for minimum and maximum acceptable values
+      save the value
+   release the lock
+   return success or error
+
+To reduce the code duplication also in the write functions, this patch
+provides a generic read and write implementation for u64 values that
+need to be within some minimum and/or maximum parameters, while
+(potentially) being protected by a lock.
+
+To use this interface, the structure trace_min_max_param needs to be
+filled:
+
+ struct trace_min_max_param {
+         struct mutex    *lock;
+         u64             *val;
+         u64             *min;
+         u64             *max;
+ };
+
+The desired value is stored on the variable pointed by *val. If *min
+points to a minimum acceptable value, it will be checked during the
+write operation. Likewise, if *max points to a maximum allowable value,
+it will be checked during the write operation. Finally, if *lock points
+to a mutex, it will be taken at the beginning of the operation and
+released at the end.
+
+The definition of a trace_min_max_param needs to passed as the
+(private) *data for tracefs_create_file(), and the trace_min_max_fops
+(added by this patch) as the *fops file_operations.
+
+Link: https://lkml.kernel.org/r/3e35760a7c8b5c55f16ae5ad5fc54a0e71cbe647.1624372313.git.bristot@redhat.com
 
 Cc: Phil Auld <pauld@redhat.com>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -84,349 +119,132 @@ Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace/hwlat_detector.rst |   3 +-
- kernel/trace/trace_hwlat.c             | 186 ++++++++++++++++++++-----
- 2 files changed, 152 insertions(+), 37 deletions(-)
+ kernel/trace/trace.c | 85 ++++++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace.h | 18 ++++++++++
+ 2 files changed, 103 insertions(+)
 
-diff --git a/Documentation/trace/hwlat_detector.rst b/Documentation/trace/hwlat_detector.rst
-index 4d952df0586a..de94b499b0bc 100644
---- a/Documentation/trace/hwlat_detector.rst
-+++ b/Documentation/trace/hwlat_detector.rst
-@@ -78,10 +78,11 @@ in /sys/kernel/tracing:
-  - hwlat_detector/window	- amount of time between (width) runs (usecs)
-  - hwlat_detector/mode	- the thread mode
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index d352fb4b7709..27bf203ef05a 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7583,6 +7583,91 @@ static const struct file_operations snapshot_raw_fops = {
  
--By default, the hwlat detector's kernel thread will migrate across each CPU
-+By default, one hwlat detector's kernel thread will migrate across each CPU
- specified in cpumask at the beginning of a new window, in a round-robin
- fashion. This behavior can be changed by changing the thread mode,
- the available options are:
+ #endif /* CONFIG_TRACER_SNAPSHOT */
  
-  - none:        do not force migration
-  - round-robin: migrate across each CPU specified in cpumask [default]
-+ - per-cpu:     create one thread for each cpu in tracing_cpumask
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index bae74b95cf55..3957b36826e2 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -54,9 +54,6 @@ static struct trace_array	*hwlat_trace;
- #define DEFAULT_SAMPLE_WIDTH	500000			/* 0.5s */
- #define DEFAULT_LAT_THRESHOLD	10			/* 10us */
- 
--/* sampling thread*/
--static struct task_struct *hwlat_kthread;
--
- static struct dentry *hwlat_sample_width;	/* sample width us */
- static struct dentry *hwlat_sample_window;	/* sample window us */
- static struct dentry *hwlat_thread_mode;	/* hwlat thread mode */
-@@ -64,18 +61,26 @@ static struct dentry *hwlat_thread_mode;	/* hwlat thread mode */
- enum {
- 	MODE_NONE = 0,
- 	MODE_ROUND_ROBIN,
-+	MODE_PER_CPU,
- 	MODE_MAX
- };
--static char *thread_mode_str[] = { "none", "round-robin" };
-+static char *thread_mode_str[] = { "none", "round-robin", "per-cpu" };
- 
- /* Save the previous tracing_thresh value */
- static unsigned long save_tracing_thresh;
- 
--/* NMI timestamp counters */
--static u64 nmi_ts_start;
--static u64 nmi_total_ts;
--static int nmi_count;
--static int nmi_cpu;
-+/* runtime kthread data */
-+struct hwlat_kthread_data {
-+	struct task_struct	*kthread;
-+	/* NMI timestamp counters */
-+	u64			nmi_ts_start;
-+	u64			nmi_total_ts;
-+	int			nmi_count;
-+	int			nmi_cpu;
++/*
++ * trace_min_max_write - Write a u64 value to a trace_min_max_param struct
++ * @filp: The active open file structure
++ * @ubuf: The userspace provided buffer to read value into
++ * @cnt: The maximum number of bytes to read
++ * @ppos: The current "file" position
++ *
++ * This function implements the write interface for a struct trace_min_max_param.
++ * The filp->private_data must point to a trace_min_max_param structure that
++ * defines where to write the value, the min and the max acceptable values,
++ * and a lock to protect the write.
++ */
++static ssize_t
++trace_min_max_write(struct file *filp, const char __user *ubuf, size_t cnt, loff_t *ppos)
++{
++	struct trace_min_max_param *param = filp->private_data;
++	u64 val;
++	int err;
++
++	if (!param)
++		return -EFAULT;
++
++	err = kstrtoull_from_user(ubuf, cnt, 10, &val);
++	if (err)
++		return err;
++
++	if (param->lock)
++		mutex_lock(param->lock);
++
++	if (param->min && val < *param->min)
++		err = -EINVAL;
++
++	if (param->max && val > *param->max)
++		err = -EINVAL;
++
++	if (!err)
++		*param->val = val;
++
++	if (param->lock)
++		mutex_unlock(param->lock);
++
++	if (err)
++		return err;
++
++	return cnt;
++}
++
++/*
++ * trace_min_max_read - Read a u64 value from a trace_min_max_param struct
++ * @filp: The active open file structure
++ * @ubuf: The userspace provided buffer to read value into
++ * @cnt: The maximum number of bytes to read
++ * @ppos: The current "file" position
++ *
++ * This function implements the read interface for a struct trace_min_max_param.
++ * The filp->private_data must point to a trace_min_max_param struct with valid
++ * data.
++ */
++static ssize_t
++trace_min_max_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++{
++	struct trace_min_max_param *param = filp->private_data;
++	char buf[U64_STR_SIZE];
++	int len;
++	u64 val;
++
++	if (!param)
++		return -EFAULT;
++
++	val = *param->val;
++
++	if (cnt > sizeof(buf))
++		cnt = sizeof(buf);
++
++	len = snprintf(buf, sizeof(buf), "%llu\n", val);
++
++	return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
++}
++
++const struct file_operations trace_min_max_fops = {
++	.open		= tracing_open_generic,
++	.read		= trace_min_max_read,
++	.write		= trace_min_max_write,
 +};
 +
-+struct hwlat_kthread_data hwlat_single_cpu_data;
-+DEFINE_PER_CPU(struct hwlat_kthread_data, hwlat_per_cpu_data);
+ #define TRACING_LOG_ERRS_MAX	8
+ #define TRACING_LOG_LOC_MAX	128
  
- /* Tells NMIs to call back to the hwlat tracer to record timestamps */
- bool trace_hwlat_callback_enabled;
-@@ -112,6 +117,14 @@ static struct hwlat_data {
- 	.thread_mode		= MODE_ROUND_ROBIN
- };
- 
-+static struct hwlat_kthread_data *get_cpu_data(void)
-+{
-+	if (hwlat_data.thread_mode == MODE_PER_CPU)
-+		return this_cpu_ptr(&hwlat_per_cpu_data);
-+	else
-+		return &hwlat_single_cpu_data;
-+}
-+
- static bool hwlat_busy;
- 
- static void trace_hwlat_sample(struct hwlat_sample *sample)
-@@ -149,7 +162,9 @@ static void trace_hwlat_sample(struct hwlat_sample *sample)
- 
- void trace_hwlat_callback(bool enter)
- {
--	if (smp_processor_id() != nmi_cpu)
-+	struct hwlat_kthread_data *kdata = get_cpu_data();
-+
-+	if (!kdata->kthread)
- 		return;
- 
- 	/*
-@@ -158,13 +173,13 @@ void trace_hwlat_callback(bool enter)
- 	 */
- 	if (!IS_ENABLED(CONFIG_GENERIC_SCHED_CLOCK)) {
- 		if (enter)
--			nmi_ts_start = time_get();
-+			kdata->nmi_ts_start = time_get();
- 		else
--			nmi_total_ts += time_get() - nmi_ts_start;
-+			kdata->nmi_total_ts += time_get() - kdata->nmi_ts_start;
- 	}
- 
- 	if (enter)
--		nmi_count++;
-+		kdata->nmi_count++;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index cd80d046c7a5..22f8c652ef8b 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1952,4 +1952,22 @@ static inline bool is_good_name(const char *name)
+ 	return true;
  }
  
- /**
-@@ -176,6 +191,7 @@ void trace_hwlat_callback(bool enter)
-  */
- static int get_sample(void)
- {
-+	struct hwlat_kthread_data *kdata = get_cpu_data();
- 	struct trace_array *tr = hwlat_trace;
- 	struct hwlat_sample s;
- 	time_type start, t1, t2, last_t2;
-@@ -188,9 +204,8 @@ static int get_sample(void)
- 
- 	do_div(thresh, NSEC_PER_USEC); /* modifies interval value */
- 
--	nmi_cpu = smp_processor_id();
--	nmi_total_ts = 0;
--	nmi_count = 0;
-+	kdata->nmi_total_ts = 0;
-+	kdata->nmi_count = 0;
- 	/* Make sure NMIs see this first */
- 	barrier();
- 
-@@ -260,15 +275,15 @@ static int get_sample(void)
- 		ret = 1;
- 
- 		/* We read in microseconds */
--		if (nmi_total_ts)
--			do_div(nmi_total_ts, NSEC_PER_USEC);
-+		if (kdata->nmi_total_ts)
-+			do_div(kdata->nmi_total_ts, NSEC_PER_USEC);
- 
- 		hwlat_data.count++;
- 		s.seqnum = hwlat_data.count;
- 		s.duration = sample;
- 		s.outer_duration = outer_sample;
--		s.nmi_total_ts = nmi_total_ts;
--		s.nmi_count = nmi_count;
-+		s.nmi_total_ts = kdata->nmi_total_ts;
-+		s.nmi_count = kdata->nmi_count;
- 		s.count = count;
- 		trace_hwlat_sample(&s);
- 
-@@ -364,21 +379,40 @@ static int kthread_fn(void *data)
- }
- 
- /*
-- * start_kthread - Kick off the hardware latency sampling/detector kthread
-+ * stop_stop_kthread - Inform the hardware latency sampling/detector kthread to stop
++/*
++ * This is a generic way to read and write a u64 value from a file in tracefs.
 + *
-+ * This kicks the running hardware latency sampling/detector kernel thread and
-+ * tells it to stop sampling now. Use this on unload and at system shutdown.
++ * The value is stored on the variable pointed by *val. The value needs
++ * to be at least *min and at most *max. The write is protected by an
++ * existing *lock.
 + */
-+static void stop_single_kthread(void)
-+{
-+	struct hwlat_kthread_data *kdata = get_cpu_data();
-+	struct task_struct *kthread = kdata->kthread;
++struct trace_min_max_param {
++	struct mutex	*lock;
++	u64		*val;
++	u64		*min;
++	u64		*max;
++};
 +
-+	if (!kthread)
-+		return;
++#define U64_STR_SIZE		24	/* 20 digits max */
 +
-+	kthread_stop(kthread);
-+	kdata->kthread = NULL;
-+}
++extern const struct file_operations trace_min_max_fops;
 +
-+
-+/*
-+ * start_single_kthread - Kick off the hardware latency sampling/detector kthread
-  *
-  * This starts the kernel thread that will sit and sample the CPU timestamp
-  * counter (TSC or similar) and look for potential hardware latencies.
-  */
--static int start_kthread(struct trace_array *tr)
-+static int start_single_kthread(struct trace_array *tr)
- {
-+	struct hwlat_kthread_data *kdata = get_cpu_data();
- 	struct cpumask *current_mask = &save_cpumask;
- 	struct task_struct *kthread;
- 	int next_cpu;
- 
--	if (hwlat_kthread)
-+	if (kdata->kthread)
- 		return 0;
- 
--
- 	kthread = kthread_create(kthread_fn, NULL, "hwlatd");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
-@@ -400,24 +434,97 @@ static int start_kthread(struct trace_array *tr)
- 
- 	sched_setaffinity(kthread->pid, current_mask);
- 
--	hwlat_kthread = kthread;
-+	kdata->kthread = kthread;
- 	wake_up_process(kthread);
- 
- 	return 0;
- }
- 
- /*
-- * stop_kthread - Inform the hardware latency sampling/detector kthread to stop
-+ * stop_cpu_kthread - Stop a hwlat cpu kthread
-+ */
-+static void stop_cpu_kthread(unsigned int cpu)
-+{
-+	struct task_struct *kthread;
-+
-+	kthread = per_cpu(hwlat_per_cpu_data, cpu).kthread;
-+	if (kthread)
-+		kthread_stop(kthread);
-+}
-+
-+/*
-+ * stop_per_cpu_kthreads - Inform the hardware latency sampling/detector kthread to stop
-  *
-- * This kicks the running hardware latency sampling/detector kernel thread and
-+ * This kicks the running hardware latency sampling/detector kernel threads and
-  * tells it to stop sampling now. Use this on unload and at system shutdown.
-  */
--static void stop_kthread(void)
-+static void stop_per_cpu_kthreads(void)
- {
--	if (!hwlat_kthread)
--		return;
--	kthread_stop(hwlat_kthread);
--	hwlat_kthread = NULL;
-+	unsigned int cpu;
-+
-+	get_online_cpus();
-+	for_each_online_cpu(cpu)
-+		stop_cpu_kthread(cpu);
-+	put_online_cpus();
-+}
-+
-+/*
-+ * start_cpu_kthread - Start a hwlat cpu kthread
-+ */
-+static int start_cpu_kthread(unsigned int cpu)
-+{
-+	struct task_struct *kthread;
-+	char comm[24];
-+
-+	snprintf(comm, 24, "hwlatd/%d", cpu);
-+
-+	kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-+	if (IS_ERR(kthread)) {
-+		pr_err(BANNER "could not start sampling thread\n");
-+		return -ENOMEM;
-+	}
-+
-+	per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
-+	wake_up_process(kthread);
-+
-+	return 0;
-+}
-+
-+/*
-+ * start_per_cpu_kthreads - Kick off the hardware latency sampling/detector kthreads
-+ *
-+ * This starts the kernel threads that will sit on potentially all cpus and
-+ * sample the CPU timestamp counter (TSC or similar) and look for potential
-+ * hardware latencies.
-+ */
-+static int start_per_cpu_kthreads(struct trace_array *tr)
-+{
-+	struct cpumask *current_mask = &save_cpumask;
-+	unsigned int cpu;
-+	int retval;
-+
-+	get_online_cpus();
-+	/*
-+	 * Run only on CPUs in which hwlat is allowed to run.
-+	 */
-+	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
-+
-+	for_each_online_cpu(cpu)
-+		per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
-+
-+	for_each_cpu(cpu, current_mask) {
-+		retval = start_cpu_kthread(cpu);
-+		if (retval)
-+			goto out_error;
-+	}
-+	put_online_cpus();
-+
-+	return 0;
-+
-+out_error:
-+	put_online_cpus();
-+	stop_per_cpu_kthreads();
-+	return retval;
- }
- 
- /*
-@@ -600,7 +707,8 @@ static void hwlat_tracer_stop(struct trace_array *tr);
-  * The "none" sets the allowed cpumask for a single hwlatd thread at the
-  * startup and lets the scheduler handle the migration. The default mode is
-  * the "round-robin" one, in which a single hwlatd thread runs, migrating
-- * among the allowed CPUs in a round-robin fashion.
-+ * among the allowed CPUs in a round-robin fashion. The "per-cpu" mode
-+ * creates one hwlatd thread per allowed CPU.
-  */
- static ssize_t hwlat_mode_write(struct file *filp, const char __user *ubuf,
- 				 size_t cnt, loff_t *ppos)
-@@ -724,14 +832,20 @@ static void hwlat_tracer_start(struct trace_array *tr)
- {
- 	int err;
- 
--	err = start_kthread(tr);
-+	if (hwlat_data.thread_mode == MODE_PER_CPU)
-+		err = start_per_cpu_kthreads(tr);
-+	else
-+		err = start_single_kthread(tr);
- 	if (err)
- 		pr_err(BANNER "Cannot start hwlat kthread\n");
- }
- 
- static void hwlat_tracer_stop(struct trace_array *tr)
- {
--	stop_kthread();
-+	if (hwlat_data.thread_mode == MODE_PER_CPU)
-+		stop_per_cpu_kthreads();
-+	else
-+		stop_single_kthread();
- }
- 
- static int hwlat_tracer_init(struct trace_array *tr)
-@@ -760,7 +874,7 @@ static int hwlat_tracer_init(struct trace_array *tr)
- 
- static void hwlat_tracer_reset(struct trace_array *tr)
- {
--	stop_kthread();
-+	hwlat_tracer_stop(tr);
- 
- 	/* the tracing threshold is static between runs */
- 	last_tracing_thresh = tracing_thresh;
+ #endif /* _LINUX_KERNEL_TRACE_H */
 -- 
 2.30.2
