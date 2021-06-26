@@ -2,109 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DFE3B4FCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75933B4FCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhFZSPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 14:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhFZSPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 14:15:49 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C383C061574;
-        Sat, 26 Jun 2021 11:13:26 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id y14so11167979pgs.12;
-        Sat, 26 Jun 2021 11:13:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TV7x7IS13z58V9cXUOKO7Vtfv5hKhMKE2dU8ZRmdcpY=;
-        b=BVUp+YEKBA3bkrL4t3ui4SsWqUQ0to10QuCaXovLFBkgILegsQK8Rf7H4+HPAMZenl
-         DGuwA7CcYfPKBdyNrVLt0ngEheuqnzzWp2Jon3Z+eTxW/OJ0rv/IAqVh26a+a0op5mVy
-         /ADdL4FP4x6h23UA+TgEKXYZ4R+giSdQYT/zvm8GSe0yHqHdO9qsrnM3pqVdzujt70yw
-         xKGnlwsVQWYiG80KZXFrR8W9B77bpOqY6/0nazZOGg8yeP09lgcU9pD7CEHTb5yHW72U
-         3XNkz6w5zSlq0oTHvF6a6q+ASVmeCppcymVDtUIqKA8Nye8QWAOlXQRZfO0qbXw6RErc
-         VPVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TV7x7IS13z58V9cXUOKO7Vtfv5hKhMKE2dU8ZRmdcpY=;
-        b=KASqoyFeaQCYqOK1+2ODdCtlni0WO6CJ7wx6+nGSZmzhaogUvpGqg4ChSqRzQ0nOKH
-         X83RyTQyFEQUx7CKo/5D7msKJlyQHr6HMCvw7uQVY5tc+Z6Eh1ZxAgy5Vsv+yOaAaBAT
-         qFB2B0F+lfnY8ZxqA20Iu2W1zGg4RRvnyyjrbhDiMUwA/BMgCuhCYIrjQ0GSa4O3BgcR
-         nusE2eRcZjM20/N7kuDBGdSCWia1wZeb2Rpg/H2/q9Z1kPEub2yGqKoJwtOtSxsfurZU
-         4GsWFyWONA3QlNsgrieiG5WEUn5D1bCFU6+dAtAPSC58PZYRNJz+slO6XT/2lslW4O6Q
-         RPuQ==
-X-Gm-Message-State: AOAM5334uZrNVDSay54nPkObuujN3qFVPhYK0XkSzs1yv2hNSyVm7ArI
-        7+9UWIPl3QkwPSX7JPuGXFw=
-X-Google-Smtp-Source: ABdhPJwK1XYlG8c0j3EYeBpApLydcISYk3DFOUyHKpcI9RLi0rypE1a34F/Jk0ClVkM5xAtFCwZ7pQ==
-X-Received: by 2002:a63:f346:: with SMTP id t6mr15337732pgj.277.1624731205748;
-        Sat, 26 Jun 2021 11:13:25 -0700 (PDT)
-Received: from nuc10.. (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id h22sm9109705pfc.21.2021.06.26.11.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Jun 2021 11:13:25 -0700 (PDT)
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH] bpf: fix false positive kmemleak report in bpf_ringbuf_area_alloc()
-Date:   Sat, 26 Jun 2021 11:11:56 -0700
-Message-Id: <20210626181156.1873604-1-rkovhaev@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S230273AbhFZSTG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Jun 2021 14:19:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24457 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230046AbhFZSTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 14:19:06 -0400
+IronPort-SDR: prJq7r1+XMAZR8VU3gpIR1kHBHidLh0dqZDvOmHxRyjAk/T2VC23ilw+/w2d3DfRT0B7tgohCw
+ 3XV9qetHGjfA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="207838717"
+X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
+   d="scan'208";a="207838717"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 11:16:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
+   d="scan'208";a="491898075"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Jun 2021 11:16:42 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Sat, 26 Jun 2021 11:16:41 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ HASMSX602.ger.corp.intel.com (10.184.107.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Sat, 26 Jun 2021 21:16:39 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2242.008;
+ Sat, 26 Jun 2021 21:16:39 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Jinchao Wang <wjc@cdjrlc.com>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+Subject: RE: [PATCH] watchdog: Replace symbolic permissions with octal
+ permissions
+Thread-Topic: [PATCH] watchdog: Replace symbolic permissions with octal
+ permissions
+Thread-Index: AQHXanNnnh/DveEuoE+7tRq0pv1lN6smmbMw
+Date:   Sat, 26 Jun 2021 18:16:39 +0000
+Message-ID: <46c74dfb182e4fd880ed4b9759a586eb@intel.com>
+References: <20210626100922.54218-1-wjc@cdjrlc.com>
+In-Reply-To: <20210626100922.54218-1-wjc@cdjrlc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak scans struct page, but it does not scan the page content.
-if we allocate some memory with kmalloc(), then allocate page with
-alloc_page(), and if we put kmalloc pointer somewhere inside that page,
-kmemleak will report kmalloc pointer as a false positive.
+> Subject: [PATCH] watchdog: Replace symbolic permissions with octal
+> permissions
+> 
+> Resolve following checkpatch issue,
+> Replace symbolic permissions with octal permissions
 
-we can instruct kmemleak to scan the memory area by calling
-kmemleak_alloc()/kmemleak_free(), but part of struct bpf_ringbuf is
-mmaped to user space, and if struct bpf_ringbuf changes we would have to
-revisit and review size argument in kmemleak_alloc(), because we do not
-want kmemleak to scan the user space memory.
-let's simplify things and use kmemleak_not_leak() here.
 
-Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10/
-Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com/
-Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-Reported-and-tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
----
- kernel/bpf/ringbuf.c | 2 ++
- 1 file changed, 2 insertions(+)
+Ack for mei_wdt.c 
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 84b3b35fc0d0..9e0c10c6892a 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -8,6 +8,7 @@
- #include <linux/vmalloc.h>
- #include <linux/wait.h>
- #include <linux/poll.h>
-+#include <linux/kmemleak.h>
- #include <uapi/linux/btf.h>
- 
- #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
- 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
-+		kmemleak_not_leak(pages);
- 		rb->pages = pages;
- 		rb->nr_pages = nr_pages;
- 		return rb;
--- 
-2.30.2
+> Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
+> ---
+>  drivers/watchdog/mei_wdt.c     | 4 ++--
+>  drivers/watchdog/ni903x_wdt.c  | 2 +-
+>  drivers/watchdog/sbsa_gwdt.c   | 2 +-
+>  drivers/watchdog/sun4v_wdt.c   | 2 +-
+>  drivers/watchdog/xen_wdt.c     | 4 ++--
+>  drivers/watchdog/ziirave_wdt.c | 8 ++++----
+>  6 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/watchdog/mei_wdt.c b/drivers/watchdog/mei_wdt.c
+> index c7a7235e6224..3ee5b9e83c7e 100644
+> --- a/drivers/watchdog/mei_wdt.c
+> +++ b/drivers/watchdog/mei_wdt.c
+> @@ -545,9 +545,9 @@ static void dbgfs_register(struct mei_wdt *wdt)
+>  	dir = debugfs_create_dir(KBUILD_MODNAME, NULL);
+>  	wdt->dbgfs_dir = dir;
+> 
+> -	debugfs_create_file("state", S_IRUSR, dir, wdt, &dbgfs_fops_state);
+> +	debugfs_create_file("state", 0400, dir, wdt, &dbgfs_fops_state);
+> 
+> -	debugfs_create_file("activation", S_IRUSR, dir, wdt,
+> +	debugfs_create_file("activation", 0400, dir, wdt,
+>  			    &dbgfs_fops_activation);
+>  }
+> 
+> diff --git a/drivers/watchdog/ni903x_wdt.c
+> b/drivers/watchdog/ni903x_wdt.c index 4cebad324b20..4d85082e0ce9
+> 100644
+> --- a/drivers/watchdog/ni903x_wdt.c
+> +++ b/drivers/watchdog/ni903x_wdt.c
+> @@ -48,7 +48,7 @@ MODULE_PARM_DESC(timeout,
+>  		 __MODULE_STRING(NIWD_DEFAULT_TIMEOUT) ")");
+> 
+>  static int nowayout = WATCHDOG_NOWAYOUT; -module_param(nowayout,
+> int, S_IRUGO);
+> +module_param(nowayout, int, 0444);
+>  MODULE_PARM_DESC(nowayout,
+>  		 "Watchdog cannot be stopped once started (default="
+>  		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")"); diff --
+> git a/drivers/watchdog/sbsa_gwdt.c b/drivers/watchdog/sbsa_gwdt.c index
+> ee9ff38929eb..369d2f922ecc 100644
+> --- a/drivers/watchdog/sbsa_gwdt.c
+> +++ b/drivers/watchdog/sbsa_gwdt.c
+> @@ -112,7 +112,7 @@ MODULE_PARM_DESC(action, "after watchdog gets
+> WS0 interrupt, do: "
+>  		 "0 = skip(*)  1 = panic");
+> 
+>  static bool nowayout = WATCHDOG_NOWAYOUT; -
+> module_param(nowayout, bool, S_IRUGO);
+> +module_param(nowayout, bool, 0444);
+>  MODULE_PARM_DESC(nowayout,
+>  		 "Watchdog cannot be stopped once started (default="
+>  		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")"); diff --
+> git a/drivers/watchdog/sun4v_wdt.c b/drivers/watchdog/sun4v_wdt.c index
+> 8db86ad5ee3d..22ee4b6093a2 100644
+> --- a/drivers/watchdog/sun4v_wdt.c
+> +++ b/drivers/watchdog/sun4v_wdt.c
+> @@ -30,7 +30,7 @@ MODULE_PARM_DESC(timeout, "Watchdog timeout in
+> seconds (default="
+>  	__MODULE_STRING(WDT_TIMEOUT) ")");
+> 
+>  static bool nowayout = WATCHDOG_NOWAYOUT; -
+> module_param(nowayout, bool, S_IRUGO);
+> +module_param(nowayout, bool, 0444);
+>  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once
+> started (default="
+>  	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> 
+> diff --git a/drivers/watchdog/xen_wdt.c b/drivers/watchdog/xen_wdt.c
+> index b343f421dc72..d9e8408ce60d 100644
+> --- a/drivers/watchdog/xen_wdt.c
+> +++ b/drivers/watchdog/xen_wdt.c
+> @@ -28,12 +28,12 @@ static time64_t wdt_expires;
+> 
+>  #define WATCHDOG_TIMEOUT 60 /* in seconds */  static unsigned int
+> timeout; -module_param(timeout, uint, S_IRUGO);
+> +module_param(timeout, uint, 0444);
+>  MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds "
+>  	"(default=" __MODULE_STRING(WATCHDOG_TIMEOUT) ")");
+> 
+>  static bool nowayout = WATCHDOG_NOWAYOUT; -
+> module_param(nowayout, bool, S_IRUGO);
+> +module_param(nowayout, bool, 0444);
+>  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once
+> started "
+>  	"(default=" __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> 
+> diff --git a/drivers/watchdog/ziirave_wdt.c
+> b/drivers/watchdog/ziirave_wdt.c index c5a9b820d43a..aa6dcb604ab0
+> 100644
+> --- a/drivers/watchdog/ziirave_wdt.c
+> +++ b/drivers/watchdog/ziirave_wdt.c
+> @@ -451,7 +451,7 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct
+> device *dev,
+>  	return ret;
+>  }
+> 
+> -static DEVICE_ATTR(firmware_version, S_IRUGO,
+> ziirave_wdt_sysfs_show_firm,
+> +static DEVICE_ATTR(firmware_version, 0444, ziirave_wdt_sysfs_show_firm,
+>  		   NULL);
+> 
+>  static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev, @@ -475,7
+> +475,7 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
+>  	return ret;
+>  }
+> 
+> -static DEVICE_ATTR(bootloader_version, S_IRUGO,
+> ziirave_wdt_sysfs_show_boot,
+> +static DEVICE_ATTR(bootloader_version, 0444,
+> +ziirave_wdt_sysfs_show_boot,
+>  		   NULL);
+> 
+>  static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev, @@ -
+> 497,7 +497,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device
+> *dev,
+>  	return ret;
+>  }
+> 
+> -static DEVICE_ATTR(reset_reason, S_IRUGO,
+> ziirave_wdt_sysfs_show_reason,
+> +static DEVICE_ATTR(reset_reason, 0444, ziirave_wdt_sysfs_show_reason,
+>  		   NULL);
+> 
+>  static ssize_t ziirave_wdt_sysfs_store_firm(struct device *dev, @@ -552,7
+> +552,7 @@ static ssize_t ziirave_wdt_sysfs_store_firm(struct device *dev,
+>  	return err ? err : count;
+>  }
+> 
+> -static DEVICE_ATTR(update_firmware, S_IWUSR, NULL,
+> +static DEVICE_ATTR(update_firmware, 0200, NULL,
+>  		   ziirave_wdt_sysfs_store_firm);
+> 
+>  static struct attribute *ziirave_wdt_attrs[] = {
+> --
+> 2.31.1
+> 
+> 
 
