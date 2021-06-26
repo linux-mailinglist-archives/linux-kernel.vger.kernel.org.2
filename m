@@ -2,95 +2,501 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB0B3B5028
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 22:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F583B5030
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 23:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFZVAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 17:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFZVAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 17:00:20 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E795C061574;
-        Sat, 26 Jun 2021 13:57:57 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u190so11486274pgd.8;
-        Sat, 26 Jun 2021 13:57:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kL8a5X8847gaiK8cm1v6YoBD+G5PGJOSZdwZTVAMOac=;
-        b=Im8KCO09dnHkgi6D5ICIB9NGGQaLMkJx9+10Ko9+HHPEyCs3qx2WbDkz0qKxy8Xk7R
-         ASslWM2cLEkC61O8gX7XU8LAwNF123aZC5/0XhhSalv8d3kISNUctvRH/K5k8N1j5gO7
-         HRZ+kcPdf43jU+XNN9SKvfxMUHRY2Z8NYS1RnmJDwRYQ/+GNXnaPNratj48K0apw1jr5
-         PUuqamElD7ioHzOc8gBvYykv64AjvnC5DClNJGa2hSaAm3Zx9XVQE1DbW56JIIPWicH/
-         kPmIMmDr1FSNxeh8lZNaYQ+UoyZQiojsPGnswtwgiOmIRGMeFRCGfBystTaAZ+xr06Ea
-         258w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kL8a5X8847gaiK8cm1v6YoBD+G5PGJOSZdwZTVAMOac=;
-        b=QH7Xx6I//BuCmuSofVoEX+FVO/3OHPmxBfIR7w6rI/Q31CV7SIGCN8FQOS1cHj9p4I
-         aI5+gHjvpBYSAqhqsI/2r6Qln6RBSe5jRnTmM2Dka2vVXEwCbhgL5BJYGthl88r+Nmaj
-         X6db+5lIRMBRPV6wiUpiJMLhP1g4ZK6v1w9kHzSEOw+MSF8ctzmwSwUGWCcx6NB166Lk
-         LtH2fMylyxqCs6LU2vnykzWajv5XqGoKhBu8/d5VO/XtB5DHJdTiJ5V+2O6luQWIx5/T
-         oW6V+VMm9sQgwQowwc6R27fUnF2ukHZwJPIDMPFa055Bia2G1FNLLWgSqDcb+8HRv+0t
-         PQaQ==
-X-Gm-Message-State: AOAM532NGmO/17kwq4Z1DbYJcsFRBJwksxexSFczluJn7UQ612sV8HdT
-        WUtdc5cU+27nEDn3KX2hQTF+/iGP6ZttNXb9Uio=
-X-Google-Smtp-Source: ABdhPJz8gtEda/evPb5lW8OwWUD9DR8xplBbIiB6agd+6iY32dPxGWzlsjWgiVAmxYAhrQgLhGwoMw==
-X-Received: by 2002:a62:ea18:0:b029:307:6f4:ee98 with SMTP id t24-20020a62ea180000b029030706f4ee98mr17054720pfh.29.1624741076276;
-        Sat, 26 Jun 2021 13:57:56 -0700 (PDT)
-Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id e1sm9616539pfd.16.2021.06.26.13.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Jun 2021 13:57:55 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] Fix possible memory leak in function cfg80211_bss_update
-Date:   Sun, 27 Jun 2021 04:57:51 +0800
-Message-Id: <20210626205751.454201-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230295AbhFZVVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 17:21:11 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:47270 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230136AbhFZVVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 17:21:09 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 7CB4B4137F;
+        Sat, 26 Jun 2021 21:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :references:in-reply-to:x-mailer:message-id:date:date:subject
+        :subject:from:from:received:received:received; s=mta-01; t=
+        1624742323; x=1626556724; bh=+Csb1ypFrD0J9dXnsR6ulq+FUFtQsaF/34c
+        mF9R3yvo=; b=PNo2s0B07CmEv4fTrsrNWo9tANdvMzpcYiq62du7kLpbdrQRD4I
+        3Gs5CWk3xmUIMbRia6T2Gm8lUEgaL4y7PBosDdYmEAsNHkkVKVCBe6QESOF1zRCQ
+        7alUJ5KcJk4pGVHS2AcEmjlUaA/3iSHU4voFtDP8UenLie8wuC3/wwUM=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kupWmCyUKUW2; Sun, 27 Jun 2021 00:18:43 +0300 (MSK)
+Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 628C24127F;
+        Sun, 27 Jun 2021 00:18:43 +0300 (MSK)
+Received: from localhost.localdomain (10.199.0.6) by T-EXCH-03.corp.yadro.com
+ (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Sun, 27
+ Jun 2021 00:18:42 +0300
+From:   Igor Kononenko <i.kononenko@yadro.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <openbmc@lists.ozlabs.org>, Igor Kononenko <i.kononenko@yadro.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/6] usb:gadget:mass-storage: Improve the signature of SCSI handler function
+Date:   Sun, 27 Jun 2021 00:18:14 +0300
+Message-ID: <20210626211820.107310-2-i.kononenko@yadro.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210626211820.107310-1-i.kononenko@yadro.com>
+References: <20210626211820.107310-1-i.kononenko@yadro.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.0.6]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we exceed the limit of BSS entries, this function will free the
-new entry, however, at this time, it is the last door to access the
-inputed ies, so these ies will be unreferenced objects and cause memory
-leak.
-Therefore we should free its ies before deallocating the new entry, beside
-of dropping it from hidden_list.
-These stuffs could be done by using bss_free function.
+SCSI command handlers currently have an ambiguous return value. This
+return value may indicate the length of the data written to the response
+buffer and the command's processing status. Thus, the understanding of
+command handling may be implicit.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+After this patch, the output buffer's size will be set in the
+'data_size_to_handle' field of 'struct fsg_common', and the command
+handler's return value indicates only the processing status.
+
+Tested: By probing the USBGadget Mass-Storage on the YADRO VEGMAN
+BMC(AST2500) sample, each SCSI command was sent through HOST->BMC; the
+USBGadget MassStorage debug print showed all sent commands works
+properly.
+
+Signed-off-by: Igor Kononenko <i.kononenko@yadro.com>
 ---
- net/wireless/scan.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/usb/gadget/function/f_mass_storage.c | 176 ++++++++++---------
+ 1 file changed, 95 insertions(+), 81 deletions(-)
 
-diff --git a/net/wireless/scan.c b/net/wireless/scan.c
-index f03c7ac8e184..b5f62bbe539a 100644
---- a/net/wireless/scan.c
-+++ b/net/wireless/scan.c
-@@ -1761,9 +1761,7 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
+diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+index 4a4703634a2a..e9a7f87b4df3 100644
+--- a/drivers/usb/gadget/function/f_mass_storage.c
++++ b/drivers/usb/gadget/function/f_mass_storage.c
+@@ -296,6 +296,7 @@ struct fsg_common {
+ 	enum data_direction	data_dir;
+ 	u32			data_size;
+ 	u32			data_size_from_cmnd;
++	u32			data_size_to_handle;
+ 	u32			tag;
+ 	u32			residue;
+ 	u32			usb_amount_left;
+@@ -1066,7 +1067,8 @@ static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
+ 		memset(buf, 0, 36);
+ 		buf[0] = TYPE_NO_LUN;	/* Unsupported, no device-type */
+ 		buf[4] = 31;		/* Additional length */
+-		return 36;
++		common->data_size_to_handle = 36;
++		return 0;
+ 	}
  
- 		if (rdev->bss_entries >= bss_entries_limit &&
- 		    !cfg80211_bss_expire_oldest(rdev)) {
--			if (!list_empty(&new->hidden_list))
--				list_del(&new->hidden_list);
--			kfree(new);
-+			bss_free(new);
- 			goto drop;
+ 	buf[0] = curlun->cdrom ? TYPE_ROM : TYPE_DISK;
+@@ -1083,7 +1085,8 @@ static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	else
+ 		memcpy(buf + 8, common->inquiry_string,
+ 		       sizeof(common->inquiry_string));
+-	return 36;
++	common->data_size_to_handle = 36;
++	return 0;
+ }
+ 
+ static int do_request_sense(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1136,7 +1139,8 @@ static int do_request_sense(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	buf[7] = 18 - 8;			/* Additional sense length */
+ 	buf[12] = ASC(sd);
+ 	buf[13] = ASCQ(sd);
+-	return 18;
++	common->data_size_to_handle = 18;
++	return 0;
+ }
+ 
+ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1155,7 +1159,8 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	put_unaligned_be32(curlun->num_sectors - 1, &buf[0]);
+ 						/* Max logical block */
+ 	put_unaligned_be32(curlun->blksize, &buf[4]);/* Block length */
+-	return 8;
++	common->data_size_to_handle = 8;
++	return 0;
+ }
+ 
+ static int do_read_header(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1177,7 +1182,8 @@ static int do_read_header(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	memset(buf, 0, 8);
+ 	buf[0] = 0x01;		/* 2048 bytes of user data, rest is EC */
+ 	store_cdrom_address(&buf[4], msf, lba);
+-	return 8;
++	common->data_size_to_handle = 8;
++	return 0;
+ }
+ 
+ static int do_read_toc(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1204,7 +1210,8 @@ static int do_read_toc(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	buf[13] = 0x16;			/* Lead-out track is data */
+ 	buf[14] = 0xAA;			/* Lead-out track number */
+ 	store_cdrom_address(&buf[16], msf, curlun->num_sectors);
+-	return 20;
++	common->data_size_to_handle = 20;
++	return 0;
+ }
+ 
+ static int do_mode_sense(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1290,7 +1297,8 @@ static int do_mode_sense(struct fsg_common *common, struct fsg_buffhd *bh)
+ 		buf0[0] = len - 1;
+ 	else
+ 		put_unaligned_be16(len - 2, buf0);
+-	return len;
++	common->data_size_to_handle = len;
++	return 0;
+ }
+ 
+ static int do_start_stop(struct fsg_common *common)
+@@ -1381,7 +1389,8 @@ static int do_read_format_capacities(struct fsg_common *common,
+ 						/* Number of blocks */
+ 	put_unaligned_be32(curlun->blksize, &buf[4]);/* Block length */
+ 	buf[4] = 0x02;				/* Current capacity */
+-	return 12;
++	common->data_size_to_handle = 12;
++	return 0;
+ }
+ 
+ static int do_mode_select(struct fsg_common *common, struct fsg_buffhd *bh)
+@@ -1796,7 +1805,7 @@ static int do_scsi_command(struct fsg_common *common)
+ {
+ 	struct fsg_buffhd	*bh;
+ 	int			rc;
+-	int			reply = -EINVAL;
++	int			status = -EINVAL;
+ 	int			i;
+ 	static char		unknown[16];
+ 
+@@ -1813,104 +1822,107 @@ static int do_scsi_command(struct fsg_common *common)
+ 	common->short_packet_received = 0;
+ 
+ 	down_read(&common->filesem);	/* We're using the backing file */
++	/* flash all unhandled data */
++	common->data_size_to_handle = 0;
++
+ 	switch (common->cmnd[0]) {
+ 
+ 	case INQUIRY:
+ 		common->data_size_from_cmnd = common->cmnd[4];
+-		reply = check_command(common, 6, DATA_DIR_TO_HOST,
++		status = check_command(common, 6, DATA_DIR_TO_HOST,
+ 				      (1<<4), 0,
+ 				      "INQUIRY");
+-		if (reply == 0)
+-			reply = do_inquiry(common, bh);
++		if (status == 0)
++			status = do_inquiry(common, bh);
+ 		break;
+ 
+ 	case MODE_SELECT:
+ 		common->data_size_from_cmnd = common->cmnd[4];
+-		reply = check_command(common, 6, DATA_DIR_FROM_HOST,
++		status = check_command(common, 6, DATA_DIR_FROM_HOST,
+ 				      (1<<1) | (1<<4), 0,
+ 				      "MODE SELECT(6)");
+-		if (reply == 0)
+-			reply = do_mode_select(common, bh);
++		if (status == 0)
++			status = do_mode_select(common, bh);
+ 		break;
+ 
+ 	case MODE_SELECT_10:
+ 		common->data_size_from_cmnd =
+ 			get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command(common, 10, DATA_DIR_FROM_HOST,
++		status = check_command(common, 10, DATA_DIR_FROM_HOST,
+ 				      (1<<1) | (3<<7), 0,
+ 				      "MODE SELECT(10)");
+-		if (reply == 0)
+-			reply = do_mode_select(common, bh);
++		if (status == 0)
++			status = do_mode_select(common, bh);
+ 		break;
+ 
+ 	case MODE_SENSE:
+ 		common->data_size_from_cmnd = common->cmnd[4];
+-		reply = check_command(common, 6, DATA_DIR_TO_HOST,
++		status = check_command(common, 6, DATA_DIR_TO_HOST,
+ 				      (1<<1) | (1<<2) | (1<<4), 0,
+ 				      "MODE SENSE(6)");
+-		if (reply == 0)
+-			reply = do_mode_sense(common, bh);
++		if (status == 0)
++			status = do_mode_sense(common, bh);
+ 		break;
+ 
+ 	case MODE_SENSE_10:
+ 		common->data_size_from_cmnd =
+ 			get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command(common, 10, DATA_DIR_TO_HOST,
++		status = check_command(common, 10, DATA_DIR_TO_HOST,
+ 				      (1<<1) | (1<<2) | (3<<7), 0,
+ 				      "MODE SENSE(10)");
+-		if (reply == 0)
+-			reply = do_mode_sense(common, bh);
++		if (status == 0)
++			status = do_mode_sense(common, bh);
+ 		break;
+ 
+ 	case ALLOW_MEDIUM_REMOVAL:
+ 		common->data_size_from_cmnd = 0;
+-		reply = check_command(common, 6, DATA_DIR_NONE,
++		status = check_command(common, 6, DATA_DIR_NONE,
+ 				      (1<<4), 0,
+ 				      "PREVENT-ALLOW MEDIUM REMOVAL");
+-		if (reply == 0)
+-			reply = do_prevent_allow(common);
++		if (status == 0)
++			status = do_prevent_allow(common);
+ 		break;
+ 
+ 	case READ_6:
+ 		i = common->cmnd[4];
+ 		common->data_size_from_cmnd = (i == 0) ? 256 : i;
+-		reply = check_command_size_in_blocks(common, 6,
++		status = check_command_size_in_blocks(common, 6,
+ 				      DATA_DIR_TO_HOST,
+ 				      (7<<1) | (1<<4), 1,
+ 				      "READ(6)");
+-		if (reply == 0)
+-			reply = do_read(common);
++		if (status == 0)
++			status = do_read(common);
+ 		break;
+ 
+ 	case READ_10:
+ 		common->data_size_from_cmnd =
+ 				get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command_size_in_blocks(common, 10,
++		status = check_command_size_in_blocks(common, 10,
+ 				      DATA_DIR_TO_HOST,
+ 				      (1<<1) | (0xf<<2) | (3<<7), 1,
+ 				      "READ(10)");
+-		if (reply == 0)
+-			reply = do_read(common);
++		if (status == 0)
++			status = do_read(common);
+ 		break;
+ 
+ 	case READ_12:
+ 		common->data_size_from_cmnd =
+ 				get_unaligned_be32(&common->cmnd[6]);
+-		reply = check_command_size_in_blocks(common, 12,
++		status = check_command_size_in_blocks(common, 12,
+ 				      DATA_DIR_TO_HOST,
+ 				      (1<<1) | (0xf<<2) | (0xf<<6), 1,
+ 				      "READ(12)");
+-		if (reply == 0)
+-			reply = do_read(common);
++		if (status == 0)
++			status = do_read(common);
+ 		break;
+ 
+ 	case READ_CAPACITY:
+ 		common->data_size_from_cmnd = 8;
+-		reply = check_command(common, 10, DATA_DIR_TO_HOST,
++		status = check_command(common, 10, DATA_DIR_TO_HOST,
+ 				      (0xf<<2) | (1<<8), 1,
+ 				      "READ CAPACITY");
+-		if (reply == 0)
+-			reply = do_read_capacity(common, bh);
++		if (status == 0)
++			status = do_read_capacity(common, bh);
+ 		break;
+ 
+ 	case READ_HEADER:
+@@ -1918,11 +1930,11 @@ static int do_scsi_command(struct fsg_common *common)
+ 			goto unknown_cmnd;
+ 		common->data_size_from_cmnd =
+ 			get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command(common, 10, DATA_DIR_TO_HOST,
++		status = check_command(common, 10, DATA_DIR_TO_HOST,
+ 				      (3<<7) | (0x1f<<1), 1,
+ 				      "READ HEADER");
+-		if (reply == 0)
+-			reply = do_read_header(common, bh);
++		if (status == 0)
++			status = do_read_header(common, bh);
+ 		break;
+ 
+ 	case READ_TOC:
+@@ -1930,53 +1942,53 @@ static int do_scsi_command(struct fsg_common *common)
+ 			goto unknown_cmnd;
+ 		common->data_size_from_cmnd =
+ 			get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command(common, 10, DATA_DIR_TO_HOST,
++		status = check_command(common, 10, DATA_DIR_TO_HOST,
+ 				      (7<<6) | (1<<1), 1,
+ 				      "READ TOC");
+-		if (reply == 0)
+-			reply = do_read_toc(common, bh);
++		if (status == 0)
++			status = do_read_toc(common, bh);
+ 		break;
+ 
+ 	case READ_FORMAT_CAPACITIES:
+ 		common->data_size_from_cmnd =
+ 			get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command(common, 10, DATA_DIR_TO_HOST,
++		status = check_command(common, 10, DATA_DIR_TO_HOST,
+ 				      (3<<7), 1,
+ 				      "READ FORMAT CAPACITIES");
+-		if (reply == 0)
+-			reply = do_read_format_capacities(common, bh);
++		if (status == 0)
++			status = do_read_format_capacities(common, bh);
+ 		break;
+ 
+ 	case REQUEST_SENSE:
+ 		common->data_size_from_cmnd = common->cmnd[4];
+-		reply = check_command(common, 6, DATA_DIR_TO_HOST,
++		status = check_command(common, 6, DATA_DIR_TO_HOST,
+ 				      (1<<4), 0,
+ 				      "REQUEST SENSE");
+-		if (reply == 0)
+-			reply = do_request_sense(common, bh);
++		if (status == 0)
++			status = do_request_sense(common, bh);
+ 		break;
+ 
+ 	case START_STOP:
+ 		common->data_size_from_cmnd = 0;
+-		reply = check_command(common, 6, DATA_DIR_NONE,
++		status = check_command(common, 6, DATA_DIR_NONE,
+ 				      (1<<1) | (1<<4), 0,
+ 				      "START-STOP UNIT");
+-		if (reply == 0)
+-			reply = do_start_stop(common);
++		if (status == 0)
++			status = do_start_stop(common);
+ 		break;
+ 
+ 	case SYNCHRONIZE_CACHE:
+ 		common->data_size_from_cmnd = 0;
+-		reply = check_command(common, 10, DATA_DIR_NONE,
++		status = check_command(common, 10, DATA_DIR_NONE,
+ 				      (0xf<<2) | (3<<7), 1,
+ 				      "SYNCHRONIZE CACHE");
+-		if (reply == 0)
+-			reply = do_synchronize_cache(common);
++		if (status == 0)
++			status = do_synchronize_cache(common);
+ 		break;
+ 
+ 	case TEST_UNIT_READY:
+ 		common->data_size_from_cmnd = 0;
+-		reply = check_command(common, 6, DATA_DIR_NONE,
++		status = check_command(common, 6, DATA_DIR_NONE,
+ 				0, 1,
+ 				"TEST UNIT READY");
+ 		break;
+@@ -1987,44 +1999,44 @@ static int do_scsi_command(struct fsg_common *common)
+ 	 */
+ 	case VERIFY:
+ 		common->data_size_from_cmnd = 0;
+-		reply = check_command(common, 10, DATA_DIR_NONE,
++		status = check_command(common, 10, DATA_DIR_NONE,
+ 				      (1<<1) | (0xf<<2) | (3<<7), 1,
+ 				      "VERIFY");
+-		if (reply == 0)
+-			reply = do_verify(common);
++		if (status == 0)
++			status = do_verify(common);
+ 		break;
+ 
+ 	case WRITE_6:
+ 		i = common->cmnd[4];
+ 		common->data_size_from_cmnd = (i == 0) ? 256 : i;
+-		reply = check_command_size_in_blocks(common, 6,
++		status = check_command_size_in_blocks(common, 6,
+ 				      DATA_DIR_FROM_HOST,
+ 				      (7<<1) | (1<<4), 1,
+ 				      "WRITE(6)");
+-		if (reply == 0)
+-			reply = do_write(common);
++		if (status == 0)
++			status = do_write(common);
+ 		break;
+ 
+ 	case WRITE_10:
+ 		common->data_size_from_cmnd =
+ 				get_unaligned_be16(&common->cmnd[7]);
+-		reply = check_command_size_in_blocks(common, 10,
++		status = check_command_size_in_blocks(common, 10,
+ 				      DATA_DIR_FROM_HOST,
+ 				      (1<<1) | (0xf<<2) | (3<<7), 1,
+ 				      "WRITE(10)");
+-		if (reply == 0)
+-			reply = do_write(common);
++		if (status == 0)
++			status = do_write(common);
+ 		break;
+ 
+ 	case WRITE_12:
+ 		common->data_size_from_cmnd =
+ 				get_unaligned_be32(&common->cmnd[6]);
+-		reply = check_command_size_in_blocks(common, 12,
++		status = check_command_size_in_blocks(common, 12,
+ 				      DATA_DIR_FROM_HOST,
+ 				      (1<<1) | (0xf<<2) | (0xf<<6), 1,
+ 				      "WRITE(12)");
+-		if (reply == 0)
+-			reply = do_write(common);
++		if (status == 0)
++			status = do_write(common);
+ 		break;
+ 
+ 	/*
+@@ -2042,27 +2054,29 @@ static int do_scsi_command(struct fsg_common *common)
+ unknown_cmnd:
+ 		common->data_size_from_cmnd = 0;
+ 		sprintf(unknown, "Unknown x%02x", common->cmnd[0]);
+-		reply = check_command(common, common->cmnd_size,
++		status = check_command(common, common->cmnd_size,
+ 				      DATA_DIR_UNKNOWN, ~0, 0, unknown);
+-		if (reply == 0) {
++		if (status == 0) {
+ 			common->curlun->sense_data = SS_INVALID_COMMAND;
+-			reply = -EINVAL;
++			status = -EINVAL;
  		}
+ 		break;
+ 	}
+ 	up_read(&common->filesem);
  
+-	if (reply == -EINTR || signal_pending(current))
++	if (status == -EINTR || signal_pending(current))
+ 		return -EINTR;
+ 
+-	/* Set up the single reply buffer for finish_reply() */
+-	if (reply == -EINVAL)
+-		reply = 0;		/* Error reply length */
+-	if (reply >= 0 && common->data_dir == DATA_DIR_TO_HOST) {
+-		reply = min((u32)reply, common->data_size_from_cmnd);
+-		bh->inreq->length = reply;
++	/* Set up the single status buffer for finish_reply() */
++	if (status == -EINVAL)
++		status = 0;		/* Error reply length */
++	if (status == 0 && common->data_dir == DATA_DIR_TO_HOST) {
++		common->data_size_to_handle =
++			min_t(u32, common->data_size_to_handle,
++			      common->data_size_from_cmnd);
++		bh->inreq->length = common->data_size_to_handle;
+ 		bh->state = BUF_STATE_FULL;
+-		common->residue -= reply;
++		common->residue -= common->data_size_to_handle;
+ 	}				/* Otherwise it's already set */
+ 
+ 	return 0;
 -- 
-2.25.1
+2.32.0
 
