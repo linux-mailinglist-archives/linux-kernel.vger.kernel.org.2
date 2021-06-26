@@ -2,244 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFC33B4CE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 07:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215A63B4CEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 07:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhFZFxH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Jun 2021 01:53:07 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:52989 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhFZFxE (ORCPT
+        id S229933AbhFZF6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 01:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFZF6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 01:53:04 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 57624CED1E;
-        Sat, 26 Jun 2021 07:50:41 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH 1/1] Bluetooth: btusb: Support Bluetooth Reset for
- Mediatek Chip.
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210622160255.14906-1-mark-yw.chen@mediatek.com>
-Date:   Sat, 26 Jun 2021 07:50:40 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        michaelfsun@google.com, shawnku@google.com, jemele@google.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <24BB7F3A-340A-454A-B20C-B75BDACCDB68@holtmann.org>
-References: <20210622160255.14906-1-mark-yw.chen@mediatek.com>
-To:     Mark-YW.Chen@mediatek.com
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Sat, 26 Jun 2021 01:58:46 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE7EC061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q192so9192938pfc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
+        b=A0yt7bNf9bzrq08PyG2aWZjlGPFVe0ZpT3tW8adQohWogD9fk2WCcLhhkas3T6XpYM
+         5zw7na5G33E3mATJXbN88ODE3XlfK/wvPQPp30QBD0XIcitdPyC4az4AnuLWNRZwkDCb
+         rIXHvb2WHF2H5nrZiw0p4AH0mwXyLrBfZw8ek=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
+        b=kGl9/Dd3wX2hiye3jyCd3GgjVhDnG1zH1tFMufsOO97AbGL9+oJFjGlDwk+K1qMlKE
+         /R2Yv9x6OP4b/lw6U0d268m9KomRXUj7p68yGDTSKS11TF8XvfjEGCu7dhYmX7EXvJsW
+         By/YCxwTxlPPNJeWSrEjCHJA+0Yx3FGlPFPQfKPSrk7epVTAH6EVSSS/YF04PtmLC/Y4
+         shwERS9lTfIHmi2Ihdfi0EHq0/4o0lEpOZosCKDtdBZuyWzTx7DagVY/0xn5PGXIR4Vv
+         n5QaEkGlkYrMwMivvQPR+5XS4/gz3DWcAirgENhfjyVbZw5+uI4iK/dx4d/73xdNKAHt
+         4PJA==
+X-Gm-Message-State: AOAM533+x5cu3PxiEa/MeStluf3r7LjPCEQ2yiMznL510dNcIllhKxFO
+        iqw66vanDgCg6uPxV4SdOTtezQ==
+X-Google-Smtp-Source: ABdhPJzv/1HY9hsQM4WghbagiFbCcefyqd4jDNtq/4dPy/G575HLa46mXqbb9A/VOKW/6Ajxv5mTbw==
+X-Received: by 2002:a63:f20a:: with SMTP id v10mr647186pgh.415.1624686982817;
+        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v129sm7662740pfc.31.2021.06.25.22.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 22:56:21 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 8/9] signal/task_exit: Use start_task_exit in place of
+ do_exit
+Message-ID: <202106252255.32CE2711@keescook>
+References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133>
+ <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133>
+ <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133>
+ <875yy3850g.fsf_-_@disp2133>
+ <87pmwb5blu.fsf_-_@disp2133>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmwb5blu.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-> This change enable Mediatek reset mechanism via USB, it's a specific
-> reset mechanism with Mediatek chips. To handle error recovery, it use
-> the cmd_timoeut to reset Mediatek Bluetooth.
+On Thu, Jun 24, 2021 at 02:03:25PM -0500, Eric W. Biederman wrote:
 > 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+> Reuse start_task_exit_locked to implement start_task_exit.
+> 
+> Simplify the exit logic by having all exits go through get_signal.
+> This simplifies the analysis of syncrhonization during exit and
+> gurantees a full set of registers will be available for ptrace to
+> examine at PTRACE_EVENT_EXIT.
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 > ---
-> drivers/bluetooth/btusb.c | 138 ++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 138 insertions(+)
+>  include/linux/sched/signal.h |  1 +
+>  kernel/exit.c                |  4 +++-
+>  kernel/seccomp.c             |  2 +-
+>  kernel/signal.c              | 12 ++++++++++++
+>  4 files changed, 17 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 0a86713f496b..e8ad8ca4d346 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -3076,6 +3076,18 @@ static int btusb_shutdown_intel_new(struct hci_dev *hdev)
-> 	return 0;
-> }
-> 
-> +/* UHW CR mapping */
-> +#define BT_MISC			0x70002510
-> +#define BT_SUBSYS_RST		0x70002610
-> +#define UDMA_INT_STA_BT		0x74000024
-> +#define UDMA_INT_STA_BT1	0x74000308
-> +#define BT_WDT_STATUS		0x740003A0
-> +#define EP_RST_OPT		0x74011890
-> +#define EP_RST_IN_OUT_OPT	0x00010001
-> +#define BT_RST_DONE		0x00000100
-> +#define BT_RESET_WAIT_MS	100
-> +#define BT_RESET_NUM_TRIES	10
-> +
-> #define FIRMWARE_MT7663		"mediatek/mt7663pr2h.bin"
-> #define FIRMWARE_MT7668		"mediatek/mt7668pr2h.bin"
-> 
-> @@ -3650,6 +3662,63 @@ static int btusb_mtk_func_query(struct hci_dev *hdev)
-> 	return status;
-> }
-> 
-> +static int btusb_mtk_uhw_reg_write(struct btusb_data *data, u32 reg, u32 val)
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index a958381ba4a9..3f4e69c019b7 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -430,6 +430,7 @@ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
+>  
+>  void start_group_exit(int exit_code);
+>  void start_task_exit_locked(struct task_struct *task, int exit_code);
+> +void start_task_exit(int exit_code);
+>  
+>  void task_join_group_stop(struct task_struct *task);
+>  
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index 635f434122b7..51e0c82b3f7d 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -889,7 +889,9 @@ EXPORT_SYMBOL(complete_and_exit);
+>  
+>  SYSCALL_DEFINE1(exit, int, error_code)
+>  {
+> -	do_exit((error_code&0xff)<<8);
+> +	start_task_exit((error_code&0xff)<<8);
+> +	/* get_signal will call do_exit */
+> +	return 0;
+>  }
+>  
+>  
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index b1c06fd1b205..e0c4c123a8bf 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1248,7 +1248,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  			force_sig_seccomp(this_syscall, data, true);
+>  		} else {
+>  			if (action == SECCOMP_RET_KILL_THREAD)
+> -				do_exit(SIGSYS);
+> +				start_task_exit(SIGSYS);
+>  			else
+>  				start_group_exit(SIGSYS);
+>  		}
+
+Looks good, yeah.
+
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index afbc001220dd..63fda9b6bbf9 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1424,6 +1424,18 @@ void start_task_exit_locked(struct task_struct *task, int exit_code)
+>  	}
+>  }
+>  
+> +void start_task_exit(int exit_code)
 > +{
-> +	struct hci_dev *hdev = data->hdev;
-> +	int pipe, err;
-> +	void *buf;
-> +
-> +	buf = kzalloc(4, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	put_unaligned_le32(val, buf);
-> +
-> +	pipe = usb_sndctrlpipe(data->udev, 0);
-> +	err = usb_control_msg(data->udev, pipe, 0x02,
-> +			      0x5E,
-> +			      reg >> 16, reg & 0xffff,
-> +			      buf, 4, USB_CTRL_SET_TIMEOUT);
-> +	if (err < 0) {
-> +		bt_dev_err(hdev, "Failed to write uhw reg(%d)", err);
-> +		goto err_free_buf;
+> +	struct task_struct *task = current;
+> +	if (!fatal_signal_pending(task)) {
+> +		struct sighand_struct *const sighand = task->sighand;
+> +		spin_lock_irq(&sighand->siglock);
+> +		if (!fatal_signal_pending(current))
+
+efficiency nit: "task" instead of "current" here, yes?
+
+> +			start_task_exit_locked(task, exit_code);
+> +		spin_unlock_irq(&sighand->siglock);
 > +	}
-> +
-> +err_free_buf:
-> +	kfree(buf);
-> +
-> +	return err;
 > +}
 > +
-> +static int btusb_mtk_uhw_reg_read(struct btusb_data *data, u32 reg, u32 *val)
-> +{
-> +	struct hci_dev *hdev = data->hdev;
-> +	int pipe, err;
-> +	void *buf;
-> +
-> +	buf = kzalloc(4, GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	pipe = usb_rcvctrlpipe(data->udev, 0);
-> +	err = usb_control_msg(data->udev, pipe, 0x01,
-> +			      0xDE,
-> +			      reg >> 16, reg & 0xffff,
-> +			      buf, 4, USB_CTRL_SET_TIMEOUT);
-> +	if (err < 0) {
-> +		bt_dev_err(hdev, "Failed to read uhw reg(%d)", err);
-> +		goto err_free_buf;
-> +	}
-> +
-> +	*val = get_unaligned_le32(buf);
-> +	bt_dev_info(hdev, "%s: reg=%x, value=0x%08x", __func__, reg, *val);
-
-these are a) no _info messages and b) we are not adding __func__ anywhere. Please turn them into bt_dev_dbg or remove them.
-
-> +
-> +err_free_buf:
-> +	kfree(buf);
-> +
-> +	return err;
-> +}
-> +
-> static int btusb_mtk_reg_read(struct btusb_data *data, u32 reg, u32 *val)
-> {
-> 	int pipe, err, size = sizeof(u32);
-> @@ -3729,6 +3798,9 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
-> 			 dev_id & 0xffff, (fw_version & 0xff) + 1);
-> 		err = btusb_mtk_setup_firmware_79xx(hdev, fw_bin_name);
+>  struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
+>  					   unsigned long *flags)
+>  {
+> -- 
+> 2.20.1
 > 
-> +		/* It's Device EndPoint Reset Option Register */
-> +		btusb_mtk_uhw_reg_write(data, EP_RST_OPT, EP_RST_IN_OUT_OPT);
-> +
-> 		/* Enable Bluetooth protocol */
-> 		param = 1;
-> 		wmt_params.op = BTMTK_WMT_FUNC_CTRL;
-> @@ -3852,6 +3924,71 @@ static int btusb_mtk_shutdown(struct hci_dev *hdev)
-> 	return 0;
-> }
-> 
-> +static void btusb_mtk_cmd_timeout(struct hci_dev *hdev)
-> +{
-> +	struct btusb_data *data = hci_get_drvdata(hdev);
-> +	u32 val;
-> +	int err, retry = 0;
-> +
-> +	/* It's MediaTek specific bluetooth reset mechanism via USB */
-> +	if (test_and_set_bit(BTUSB_HW_RESET_ACTIVE, &data->flags)) {
-> +		bt_dev_err(hdev, "last reset failed? Not resetting again");
-> +		return;
-> +	}
-> +
-> +	if (enable_autosuspend)
-> +		usb_disable_autosuspend(data->udev);
-> +
-> +	data->sco_num = 0;
 
-don’t touch this one. If you have to, then something in the core is wrong.
-
-> +
-> +	btusb_stop_traffic(data);
-> +	usb_kill_anchored_urbs(&data->tx_anchor);
-> +
-> +	/* It's Device EndPoint Reset Option Register */
-> +	bt_dev_info(hdev, "Initiating reset mechanism via uhw");
-> +	btusb_mtk_uhw_reg_write(data, EP_RST_OPT, EP_RST_IN_OUT_OPT);
-> +	btusb_mtk_uhw_reg_read(data, BT_WDT_STATUS, &val);
-> +
-> +	/* MediaTek Bluetooht Reset */
-> +	btusb_mtk_uhw_reg_write(data, BT_SUBSYS_RST, 1);
-> +	btusb_mtk_uhw_reg_write(data, UDMA_INT_STA_BT, 0x000000FF);
-> +	btusb_mtk_uhw_reg_read(data, UDMA_INT_STA_BT, &val);
-> +	btusb_mtk_uhw_reg_write(data, UDMA_INT_STA_BT1, 0x000000FF);
-> +	btusb_mtk_uhw_reg_read(data, UDMA_INT_STA_BT1, &val);
-> +	msleep(20);
-> +	btusb_mtk_uhw_reg_write(data, BT_SUBSYS_RST, 0);
-> +	btusb_mtk_uhw_reg_read(data, BT_SUBSYS_RST, &val);
-> +
-> +	/* Poll the register until reset is completed */
-> +	do {
-> +		btusb_mtk_uhw_reg_read(data, BT_MISC, &val);
-> +		if ((val & 0x00000100) == BT_RST_DONE) {
-> +			bt_dev_info(hdev, "Bluetooth Reset Successfully");
-> +			break;
-> +		}
-> +
-> +		bt_dev_dbg(hdev, "Polling Bluetooth Reset CR");
-> +		retry++;
-> +		msleep(BT_RESET_WAIT_MS);
-> +	} while (retry < BT_RESET_NUM_TRIES);
-> +
-> +	btusb_mtk_id_get(data, 0x70010200, &val);
-> +	bt_dev_info(hdev, "device id (%x)", val);
-> +
-> +	/* Re-Setup Mediatek device */
-> +	err = btusb_mtk_setup(hdev);
-> +	if (err < 0) {
-> +		bt_dev_err(hdev, "mtk_setup failed, err = %d", err);
-> +		return;
-> +	}
-
-And we are not going to do that. You need to indicate somehow to the core that the device has to re-run hdev->setup. This is not the way.
-
-Please stop hacking this together. I would advise to actually describe how your hardware works and what are the steps needed to bring it back to life. It looks like you could that in the commit message or in a comment, but this is not going to work. And you put all the work on me to untangle it.
-
-> +	hci_reset_dev(hdev);
-> +
-> +	if (enable_autosuspend)
-> +		usb_enable_autosuspend(data->udev);
-> +
-> +	clear_bit(BTUSB_HW_RESET_ACTIVE, &data->flags);
-> +}
-> +
-> static int btusb_recv_acl_mtk(struct hci_dev *hdev, struct sk_buff *skb)
-> {
-> 	struct btusb_data *data = hci_get_drvdata(hdev);
-> @@ -4689,6 +4826,7 @@ static int btusb_probe(struct usb_interface *intf,
-> 		hdev->setup = btusb_mtk_setup;
-> 		hdev->shutdown = btusb_mtk_shutdown;
-> 		hdev->manufacturer = 70;
-> +		hdev->cmd_timeout = btusb_mtk_cmd_timeout;
-> 		data->recv_acl = btusb_recv_acl_mtk;
-> 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
-> 	}
-
-Regards
-
-Marcel
-
+-- 
+Kees Cook
