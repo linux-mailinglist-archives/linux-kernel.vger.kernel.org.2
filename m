@@ -2,121 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2615D3B4D44
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7833B4D43
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFZG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 02:58:03 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58683 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFZG6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:58:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624690535;
-        bh=jSpWKAZvfuSmdJcaGlMl2mDrf1PcSKHFOfCTFtzz/zQ=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=XLFGx5PCI+8iwEqeS4Qz3tpkaTRPsW2eH5uMJU8wUAz3/nMnWzXZPn9UPHAwnJ0zI
-         4h3cxwt9nA4TlH6Q5V8AkuhRuvAp1Xh+BjvuigE0Bstca5N163HSiSoytqhdswOkLZ
-         0ALTXFs5McH/KMWW0iAGGmEtQtUMMA1+AIMAAJuk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.49]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mg6Zw-1lJqvZ1kze-00hfkt; Sat, 26
- Jun 2021 08:55:35 +0200
-Message-ID: <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de>
-Subject: Re: [ANNOUNCE] rt-tests-2.0
-From:   Mike Galbraith <efault@gmx.de>
-To:     John Kacur <jkacur@redhat.com>,
-        RT <linux-rt-users@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Clark Williams <williams@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Johnathan Schwender <schwenderjonathan@gmail.com>,
-        Peter Xu <peterx@redhat.com>
-Date:   Sat, 26 Jun 2021 08:55:34 +0200
-In-Reply-To: <20210625160801.9283-1-jkacur@redhat.com>
-References: <20210625160801.9283-1-jkacur@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S229944AbhFZG5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 02:57:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8305 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZG5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 02:57:43 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GBkyP0rXnz1BR6s;
+        Sat, 26 Jun 2021 14:50:05 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 14:55:19 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 14:55:18 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
+Date:   Sat, 26 Jun 2021 15:03:04 +0800
+Message-ID: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FkFbtuYdaz+FDJba47sWBYnoxlqgSsBlmEuoHqmObWz+xvYRwh+
- Zw7PqEtC+ft0mugS21RGRksO1FXGIcOTd8D9J1E/dtI6s0Mlh3ajNz6YZlNMy1MJzmFLMfA
- Nze7Pg9WtpL56yse76R+NTGabCAZAb39FAxerxeBJZE0xMLtd1leU0PKtimqbmbWQFawbmo
- nykINkWbhQwWwmQuIObDw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aYdCFY/i/Zs=:1PxWCLq78k6M78YPcef63e
- b7UYUGzuDiEiozkScndyhqANus+Q981tMDla8M/CzkerL+8l9/I3JD9sxgN/luGFlL5gws0xk
- Rfk+PTU3W1VSAQS/n07tRWx2yigSeaed0nxjpmyu40ipjFWF5a1jyyBUW2ttahDAItrpxEloo
- Nxa4L0V6326RKYm7eHAxocRwWqgJSu108Ug7NIs90toSpGSeX7VHOYbBsO3x6v8EqtmsqZegC
- prZKBnqLL8g4faZttVfaYbc+uTih05Y9WAHHqCX5YfF8JH/1qzcnmt4Yt5LfkHL6AL5u+Ms40
- MDkUIicm1vda5ZyOq2LwIyMTQSVvEGeXjT5/EFC97vpxRtREwP3O7wO9eTv+6klltXL43GqWL
- ucrqhGBq2qJPWS+zsbmAg2x243odM4TVSXneP1WfEusQXcIqKZlGj85XGy+st+dHmhGt3QSMf
- k+4cGzgP/VrQf5v+CIKI7ekBv9szlF6cMJUmIVgrz0wlFznr/fQftkugN2TVPKULBwwWW1+2R
- 7jsa/pS2LyyIdkW5H/ShAczmFjrY2T6okfenDRyDkcGR2V5gwY7ho04WPfhicMoR/or+FGwTW
- vox+gk90UPLaHFnHU4K9AqJ8AhtkL+i+4o+VgnUNM5SdghvyCbrFBNjWZA8BeiyJDX2nLrQqH
- 4g9eTnBk4y+4mAXqOAb25/jaMCKIMQXWAIZila3YM0zHJZOsdYzVGVrVJHj81zZFLdkOsUA9U
- bKvid8hqYIf3w5MuuJCYdwFPMxWvYpKSrPzQ3Qr34xWVFVSFDxXY+i3jxaO4f4N55q1exNsay
- +RZIQpLqNUecjF2WzaOrkE1Lp8KZfJvnUZNki4dfmmahQtrGz0zaiKAFEChcE9BJV9nQZYQqV
- sTOjuXb929Xbdmh7JSGXoY5MNcqaBxevtxdyhIoTEeWdXVZGR8sS/A5C9hFwnSCvwg6jTNaiU
- SHxpnYi14BZtLASVXmXJZwqSJ0Eeq5YhDIry0XGGge16wtxuXM30sC0CuqHBcrQSyFdb4w+zM
- je4DxiEw4xGPaXCDx218VEux7O1BGWNySbdEL2mOtx4HtauLwwbTFwbR5hmyDKXsBj2TFw8/r
- 3+oFbuKOWYdi1JnY82ZT/M+bIADEC+SHIMv
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-25 at 12:08 -0400, John Kacur wrote:
-> I'm pleased to announce rt-tests-2.0
+BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
 
-Greetings,
+CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
+ show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x110/0x164 lib/dump_stack.c:118
+ print_address_description+0x78/0x5c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report+0x148/0x1e4 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:183 [inline]
+ __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
+ kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+ kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-cyclictest seems to have grown an mlock related regression.
+Allocated by task 4269:
+ stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
+ kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
+ kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:664 [inline]
+ kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
+ kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-homer:..git/rt-tests # ./cyclictest -Smp99
-# /dev/cpu_dma_latency set to 0us
-policy: fifo: loadavg: 1.01 1.04 0.51 1/838 4411
+Freed by task 4269:
+ stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x38/0x6c mm/kasan/common.c:56
+ kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
+ __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
+ kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook mm/slub.c:1577 [inline]
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0x104/0x38c mm/slub.c:4124
+ coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
+ kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
+ kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
+ kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
+ kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+ __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+ el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+ do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+ el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+ el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+ el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 
-T: 0 ( 4404) P:99 I:1000 C:   1536 Min:      1 Act:    1 Avg:    3 Max:   =
- 3846
-T: 1 ( 4405) P:99 I:1500 C:   1021 Min:      1 Act:    1 Avg:    6 Max:   =
- 5912
-T: 2 ( 4406) P:99 I:2000 C:    765 Min:      1 Act:    1 Avg:    8 Max:   =
- 5368
-T: 3 ( 4407) P:99 I:2500 C:    611 Min:      1 Act:    1 Avg:    9 Max:   =
- 4862
-T: 4 ( 4408) P:99 I:3000 C:    508 Min:      1 Act:    1 Avg:    9 Max:   =
- 4394
-T: 5 ( 4409) P:99 I:3500 C:    436 Min:      1 Act:    1 Avg:    5 Max:   =
- 1699
-T: 6 ( 4410) P:99 I:4000 C:    381 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 7 ( 4411) P:99 I:4500 C:    338 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
+If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
+inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
+and free the dev, but kvm_iodevice_destructor() is called again, it will lead
+the above issue.
 
-Leave off -m switch...
+Let's check the the return value of kvm_io_bus_unregister_dev(), only call
+kvm_iodevice_destructor() if the return value is 0.
 
-homer:..git/rt-tests # ./cyclictest -Sp99
-# /dev/cpu_dma_latency set to 0us
-policy: fifo: loadavg: 1.19 1.02 0.55 1/833 4447
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ virt/kvm/coalesced_mmio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-T: 0 ( 4440) P:99 I:1000 C:   1533 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 1 ( 4441) P:99 I:1500 C:   1022 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 2 ( 4442) P:99 I:2000 C:    766 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 3 ( 4443) P:99 I:2500 C:    613 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 4 ( 4444) P:99 I:3000 C:    511 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 5 ( 4445) P:99 I:3500 C:    438 Min:      1 Act:    1 Avg:    1 Max:   =
-    3
-T: 6 ( 4446) P:99 I:4000 C:    383 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-T: 7 ( 4447) P:99 I:4500 C:    340 Min:      1 Act:    1 Avg:    1 Max:   =
-    4
-
-...and v2.0 regression goes away.
-
-	-Mike
+diff --git a/virt/kvm/coalesced_mmio.c b/virt/kvm/coalesced_mmio.c
+index f08f5e82460b..0be80c213f7f 100644
+--- a/virt/kvm/coalesced_mmio.c
++++ b/virt/kvm/coalesced_mmio.c
+@@ -186,7 +186,6 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
+ 		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
+ 			r = kvm_io_bus_unregister_dev(kvm,
+ 				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
+-			kvm_iodevice_destructor(&dev->dev);
+ 
+ 			/*
+ 			 * On failure, unregister destroys all devices on the
+@@ -196,6 +195,7 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
+ 			 */
+ 			if (r)
+ 				break;
++			kvm_iodevice_destructor(&dev->dev);
+ 		}
+ 	}
+ 
+-- 
+2.26.2
 
