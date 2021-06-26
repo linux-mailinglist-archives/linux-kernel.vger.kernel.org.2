@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7373B4D0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE833B4D15
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFZGV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 02:21:26 -0400
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:45760 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhFZGVS (ORCPT
+        id S229812AbhFZGcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 02:32:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:52266 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhFZGcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:21:18 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07512549|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.191992-0.0014541-0.806554;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KYGAXY7_1624688322;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KYGAXY7_1624688322)
-          by smtp.aliyun-inc.com(10.147.41.143);
-          Sat, 26 Jun 2021 14:18:53 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, paul@crapouillou.net, robh+dt@kernel.org
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-Subject: [PATCH v4 5/5] MIPS: CI20: Add second percpu timer for SMP.
-Date:   Sat, 26 Jun 2021 14:18:41 +0800
-Message-Id: <1624688321-69131-6-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Sat, 26 Jun 2021 02:32:50 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 751F620B6C50; Fri, 25 Jun 2021 23:30:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 751F620B6C50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1624689028;
+        bh=8LT0s6KbHdrBhgtawNcOwyleERYGr9I4Roa+ATtvzs0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hiJo7OWYqDJbYrFrzPJaJ4QtXwjUr7JN3VueE2h9rw62UT9TIW63S2HvMFYD8pQWi
+         b7Jqp/I7vSPHbiR1A+q+XDtnBdXr4qfTGBfi1pYPSAd+Gste71fZGoE1Akr+tx6yx6
+         C+uIDsRNfF06SKBmJ3GSmmd5xwr6oG/gMHKvaCU4=
+From:   longli@linuxonhyperv.com
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [Patch v2 0/3] Introduce a driver to support host accelerated access to Microsoft Azure Blob
+Date:   Fri, 25 Jun 2021 23:30:17 -0700
+Message-Id: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add a new TCU channel as the percpu timer of core1, this is to
-  prepare for the subsequent SMP support. The newly added channel
-  will not adversely affect the current single-core state.
-2.Adjust the position of TCU node to make it consistent with the
-  order in jz4780.dtsi file.
+From: Long Li <longli@microsoft.com>
 
-Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+Microsoft Azure Blob storage service exposes a REST API to applications
+for data access. While it's flexible and works on most platforms, it's
+not as efficient as native network stack.
 
-Notes:
-    v2:
-    New patch.
-    
-    v2->v3:
-    No change.
-    
-    v3->v4:
-    Improve TCU related notes.
+This patchset implements a VSC that communicates with a VSP on the host
+to execute blob storage access via native network stack on the host.
 
- arch/mips/boot/dts/ingenic/ci20.dts | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+Reference:
+https://azure.microsoft.com/en-us/services/storage/blobs/#overview
 
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 3a4eaf1..61c153b 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -118,6 +118,20 @@
- 	assigned-clock-rates = <48000000>;
- };
- 
-+&tcu {
-+	/*
-+	 * 750 kHz for the system timers and clocksource,
-+	 * use channel #0 and #1 for the per cpu system timers,
-+	 * and use channel #2 for the clocksource.
-+	 *
-+	 * 3000 kHz for the OST timer to provide a higher
-+	 * precision clocksource.
-+	 */
-+	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
-+					  <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
-+	assigned-clock-rates = <750000>, <750000>, <750000>, <3000000>;
-+};
-+
- &mmc0 {
- 	status = "okay";
- 
-@@ -522,13 +536,3 @@
- 		bias-disable;
- 	};
- };
--
--&tcu {
--	/*
--	 * 750 kHz for the system timer and clocksource,
--	 * use channel #0 for the system timer, #1 for the clocksource.
--	 */
--	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
--					  <&tcu TCU_CLK_OST>;
--	assigned-clock-rates = <750000>, <750000>, <3000000>;
--};
+
+Long Li (3):
+  Drivers: hv: vmbus: add support to ignore certain PCIE devices
+  Drivers: hv: add Azure Blob driver
+  Drivers: hv: add to maintainer
+
+Changes:
+
+v2:
+Refactored the code in vmbus to scan devices
+Reworked Azure Blob driver and moved user-mode interfaces to uapi
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   2 +
+ MAINTAINERS                                        |   1 +
+ drivers/hv/Kconfig                                 |  10 +
+ drivers/hv/Makefile                                |   1 +
+ drivers/hv/azure_blob.c                            | 621 +++++++++++++++++++++
+ drivers/hv/channel_mgmt.c                          |  55 +-
+ include/linux/hyperv.h                             |   9 +
+ include/uapi/misc/azure_blob.h                     |  31 +
+ 8 files changed, 724 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/hv/azure_blob.c
+ create mode 100644 include/uapi/misc/azure_blob.h
+
 -- 
-2.7.4
+1.8.3.1
 
