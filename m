@@ -2,126 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C2B3B5047
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 23:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4281A3B504C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 23:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhFZV36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 17:29:58 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:42475 "EHLO mout02.posteo.de"
+        id S230329AbhFZVhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 17:37:04 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:36052 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230161AbhFZV3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 17:29:50 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id CCD5C2400FD
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 23:27:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1624742845; bh=41rpbSn2Uyn0qALHKbYOc9/feymQyErjP+9elyuLFbA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bvIgsWtJyxdeZctJnYvxWGSrZkSp6GCM+gRxywmYrAsrxvdIiTN2jZ8Bpdmw6feVr
-         q0oAhT4o5GwqR//64oIF8NWv3eDtLxt7WPhwUQ0zlekHXa258m7ywtnijON1ql5Sse
-         2Y9x9BDRm4rq4h07Yz9TYR9HPSBSwIbEGFztQ6cdxKYgPxM2JF1NWEcKSAdJy0fQwr
-         mviXH07Yx9r5sKgyeQGQE/P1xD/xA2UgBXCa9T4UJTzrjf6BWj5jzj9cxAxD+O6h7j
-         hqADP6VO/WAvoVkNdS+snLgj517Tu2fDmYvPmmHRFhYxExHKqxKw0pkNTndSUNyTCZ
-         gIlnEPlODTBHQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4GC6Qg0r7lz9rxL;
-        Sat, 26 Jun 2021 23:27:23 +0200 (CEST)
-Date:   Sat, 26 Jun 2021 21:27:22 +0000
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: nintendo-otp: Document the Wii and
- Wii U OTP support
-Message-ID: <YNebuj3J51FbWC1n@latitude>
-References: <20210519095044.4109-1-linkmauve@linkmauve.fr>
- <20210519095044.4109-3-linkmauve@linkmauve.fr>
+        id S230151AbhFZVhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 17:37:03 -0400
+X-Greylist: delayed 393 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Jun 2021 17:37:02 EDT
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GC6RS169Gz9Y;
+        Sat, 26 Jun 2021 23:28:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1624742886; bh=dWImk9HkBNe+ekrV1q/6KaJflIfNimOeYdfY4Tj38xI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LKk9nIcEmjV5Nq+benxCQN+lYrKITijaeNnuNK0IUsPJU3DvfyEDg7I/yzUs9S5BY
+         p3aNJD0zCYme2nf8TS10+wYBd10cJ6EPm1YBLSG/AnNvnyp7eCiL1qxM+87dOwVi/3
+         4ENk1Dn2NVShk5z90uslVBLNL2h0syepGaYMKtzNwumKdwG11Iad+B52upuLMn7iZG
+         XlM5yqZNYNLphntLWTWmX525dYh9qJS7XrwioXjLR2qPaZHJcuHMbbgB8GiqPSfpOR
+         12y5T1uZ5vwffbd1qcQJocow5KrdipPgIhuf6PuYt0FVaye5wjhhYVgc55Aao2U31z
+         idlPWKnV6ofcw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.2 at mail
+Date:   Sat, 26 Jun 2021 23:28:02 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Jinchao Wang <wjc@cdjrlc.com>
+Cc:     ulf.hansson@linaro.org, udovic.desroches@microchip.com,
+        nicolas.ferre@microchip.com, s.hauer@pengutronix.de,
+        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
+        inux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] mmc: Prefer unsigned int to bare use of unsigned
+Message-ID: <YNeb4rJizAyr4y5y@qmqm.qmqm.pl>
+References: <20210626083657.49475-1-wjc@cdjrlc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7j5plNaFnrRdIOyG"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <20210519095044.4109-3-linkmauve@linkmauve.fr>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210626083657.49475-1-wjc@cdjrlc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jun 26, 2021 at 04:36:57PM +0800, Jinchao Wang wrote:
+> Fix checkpatch warnings:
+>     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+[...]
+>  int mmc_send_adtc_data(struct mmc_card *card, struct mmc_host *host, u32 opcode,
+> -		       u32 args, void *buf, unsigned len)
+> +		       u32 args, void *buf, unsigned int len)
 
---7j5plNaFnrRdIOyG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd suggest size_t for the 'size' and 'len' arguments while at it.
 
-Hello and sorry for the delay,
+> --- a/drivers/mmc/host/cb710-mmc.c
+[...]
 
-On Wed, May 19, 2021 at 11:50:42AM +0200, Emmanuel Gil Peyrot wrote:
-> Both of these consoles use the exact same two registers, even at the
-> same address, but the Wii=C2=A0U has eight banks of 128=C2=A0bytes memory=
- while
-> the Wii only has one, hence the two compatible strings.
->=20
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+For cb710 part:
 
-A link to the (third-party) documentation for the OTP device would be nice.
+Acked-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
 
+BTW, I think you should directly Cc: driver maintainers with each driver
+having its separate patch. I noticed code for cb710 in this patch purely
+by chance.
 
-Best regards,
-Jonathan Neusch=C3=A4fer
-
-> ---
->  .../devicetree/bindings/nvmem/nintendo-otp.txt     | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/nintendo-otp.=
-txt
->=20
-> diff --git a/Documentation/devicetree/bindings/nvmem/nintendo-otp.txt b/D=
-ocumentation/devicetree/bindings/nvmem/nintendo-otp.txt
-> new file mode 100644
-> index 000000000000..b26d705ec52d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/nintendo-otp.txt
-> @@ -0,0 +1,14 @@
-> +Nintendo Wii and Wii=C2=A0U OTP
-> +
-> +Required Properties:
-> +- compatible: depending on the console this should be one of:
-> +	- "nintendo,hollywood-otp" for the Wii
-> +	- "nintendo,latte-otp" for the Wii=C2=A0U
-> +- reg: base address and size of the OTP registers
-> +
-> +
-> +Example:
-> +	otp@d8001ec {
-> +		compatible =3D "nintendo,latte-otp";
-> +		reg =3D <0x0d8001ec 0x8>;
-> +	};
-> --=20
-> 2.31.1
->=20
-
---7j5plNaFnrRdIOyG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDXm4sACgkQCDBEmo7z
-X9veGhAAy2IY+Vkls/q+6+hkbYXDroy+O6Ogd0JYudibYnde3Y0McY0c+7nRHSBP
-jFIcSJfAEzdBk1X+g18nVJsB/ysvDZ3eMbWjGoOb2e5nNhT+G/Xhvpl0bSInHpel
-SqhHoCj3iSCzmZGlUiyKewjGEVboi1/iQR7Wq5gFctNgpDmwapb8w6RRYY8vjg/E
-+iI4gSDqgWLkWkDqQengP9AP3X+IKYgs2Xg+ZbXyGl1kx3ZRwxT2G1UEao1T2l1o
-WKlUAAdlB30+qigZVuCkFkuGTMUn7eSLVyWm3gAzu1toHtMChz3faac4ZnYIxcjl
-1kJKnu3dcMySRO8ITQIPsbIxwweWoSoRST0kEGueFylSzo5Kgh93DCBeChoGIcCG
-WeyP7gspFkcm3c6iR4yG+7W+VdKmO3nhSMlMNnttH8mRIO66quV8qV9k0tfVD6DH
-litoyTLmNT4f34T1+kTo0lzo3sRDRcRYt4ZikEqFXVQOHCCAylo6MLjvXLbaFAFd
-3PGKz9tYf7RtT82DDuvnVje1S13hTZ10eOO6HDvSGWPB5zbTks15zNEAE6H2Un3Y
-Xy1Jewlg/9EgaQTM6JzQjz9DG5/z3v26QpfJYo3Kpqg0ssCr9TXkJ/SPSCtq5w7e
-Qmf5ZZpL5hbPj32UremiOB9lLHloav3l8w8E7HS0lVv6tszVyk8=
-=CJPN
------END PGP SIGNATURE-----
-
---7j5plNaFnrRdIOyG--
+Best Regards
+Micha³ Miros³aw
