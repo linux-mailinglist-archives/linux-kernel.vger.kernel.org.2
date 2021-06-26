@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071CE3B5005
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 21:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D08E3B500B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 22:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhFZT5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 15:57:36 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62501 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230107AbhFZT5e (ORCPT
+        id S230334AbhFZUSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 16:18:23 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:44850
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230107AbhFZUSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 15:57:34 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AWCpddK7gk3eYPT+84APXwNPXdLJyesId70hD?=
- =?us-ascii?q?6qkXc3xom62j9vxG885w6faZskdyZJhCo7690de7MBDhHPdOiOF7AV7IZmXbUQ?=
- =?us-ascii?q?WTQb2KobGM/wHd?=
+        Sat, 26 Jun 2021 16:18:21 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A7ODs7KEPDnBm+VZOpLqE78eALOsnbusQ8zAX?=
+ =?us-ascii?q?PiFKOHhom6Oj/PxG8M5w6fawslcssRIb6LW90cu7IU80nKQdibX5f43SPzUO01?=
+ =?us-ascii?q?HHEGgN1+ffKnHbak/D398Y5ONbf69yBMaYNzVHpMzxiTPWL+od?=
 X-IronPort-AV: E=Sophos;i="5.83,302,1616454000"; 
-   d="scan'208";a="516829491"
+   d="scan'208";a="386249508"
 Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 21:55:10 +0200
-Date:   Sat, 26 Jun 2021 21:55:10 +0200 (CEST)
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 22:15:57 +0200
+Date:   Sat, 26 Jun 2021 22:15:56 +0200 (CEST)
 From:   Julia Lawall <julia.lawall@inria.fr>
 X-X-Sender: jll@hadrien
 To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
@@ -30,7 +30,7 @@ cc:     Julia.Lawall@inria.fr, Gilles.Muller@inria.fr,
 Subject: Re: [PATCH] Coccinelle: Update and rename
  api/alloc/pci_free_consistent.cocci
 In-Reply-To: <edc2fdb429d184d05a70956ced00845bca2d4fe9.1623871406.git.christophe.jaillet@wanadoo.fr>
-Message-ID: <alpine.DEB.2.22.394.2106262154280.3562@hadrien>
+Message-ID: <alpine.DEB.2.22.394.2106262215080.3562@hadrien>
 References: <edc2fdb429d184d05a70956ced00845bca2d4fe9.1623871406.git.christophe.jaillet@wanadoo.fr>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
@@ -45,15 +45,25 @@ On Wed, 16 Jun 2021, Christophe JAILLET wrote:
 
 > 'pci_alloc_consistent()' is about to be removed from the kernel.
 > It is now more useful to check for dma_alloc_coherent/dma_free_coherent.
+>
+> So change the script accordingly and rename it.
 
-dma_alloc_coherent has four arguments, and in the script there are only
-three.  Is the number of arguments to dma_alloc_coherent going to change?
+There also seem to be a lot of false positives, where the value is used in
+unexpected ways, such as:
+
+        for (i = 0; i < nr_pages; ++i) {
+                cpu_addr = dma_alloc_coherent(dma_dev, PAGE_SIZE, &dma_addr,
+                                              CIO_DMA_GFP);
+                if (!cpu_addr)
+                        return gp_dma;
+                gen_pool_add_virt(gp_dma, (unsigned long) cpu_addr,
+                                  dma_addr, PAGE_SIZE, -1);
+        }
+
+Maybe the rule should be dropped?
 
 julia
 
-
->
-> So change the script accordingly and rename it.
 >
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
