@@ -2,226 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9863B4F6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84CC3B4F6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhFZQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 12:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S230173AbhFZQV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 12:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhFZQUq (ORCPT
+        with ESMTP id S229796AbhFZQVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 12:20:46 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C1DC061574;
-        Sat, 26 Jun 2021 09:18:23 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso7658546wmc.1;
-        Sat, 26 Jun 2021 09:18:23 -0700 (PDT)
+        Sat, 26 Jun 2021 12:21:24 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E73C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 09:19:02 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso8754439pjx.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 09:19:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EiwvhxHHYnXlQFAfyvbb660HqmLBRhfzVtQYXOX3ilo=;
-        b=XNlmYzSufIMXd8MIV8JFtm/dgAJl17OSEvYTbpSPvJuBrgpmw6hZnFyS1S0+/r++5x
-         VoRhbbFGCJqP19L1ZH5zmqhG2hio7c7vZC3XcjP2A9Rl6749QE65mVK/d75cWDIPDLU7
-         DfT5mlMg3dCcuD27Dr5hjLyBsTj8GhYNzgqqzPG7WkL6/GuQBcJEO1oaeuKJA0P5odLR
-         uwcW0Bh7ZG0hxZiwjTKsZee2qLLsDPizhER1dDi6h0BPN/SuxyPC1eYcqANpfuGCc9J2
-         bAA4/53O5oDdUf2eUF/ezepe+D+Oq+FsAV3RlKvTjUwXs7+/HQ6mlFL5hs1CI2AtMNks
-         Pafg==
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=7FPqJOHK0r/nDcT4Wvf4/Qf/C23DNea/ZKsuhjqXUwA=;
+        b=L7fvNelx3wHobG3XEB5D4mQMMFvl8Xu+Im1qBURZdJYlcqlCCz4+tgOJZNPm/6I3vB
+         8KVUnOF2u8iAL1IOS6QobqBt+D2+7dqOXHNigUtNX2cAm08KmJ9tkwUNrv7cN4jv/nf5
+         Pmla4MyZ7lhrYJJ6g0gmk3dGnk+GonOtyqzrQhNLLaT3qzuUQAUXASJUyaB/UNhfzDO8
+         cRXXOMPCJF4GZPjX9vaEgx6HPJp/mSg7VEmz+d69ck5gAe9UpHGZQkiXsdI+cytRDsUL
+         Lvu3VCgm3iQwP6XA3OTFBBetzDAWZppCckQPP4v/En8KdWkeqR8HwAUw/jy+S2FHtyBm
+         nLRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EiwvhxHHYnXlQFAfyvbb660HqmLBRhfzVtQYXOX3ilo=;
-        b=t/0fGvwRo6XAu+lRIMybqswBKECQ4M+BetTwtB2uCh9fb3utI3KWSlg7OTNB9m50tp
-         KEimnig3rp77dCNln/FY8EDCZub8tCCmD9k84YuDRDzR/c5Lnt9rB9h1zfS6LsZn5ipG
-         T1GMdnf7/7RDahyqLKqtz50eXzVoswJjrPn2VqUVx27WQc8eAbL2rZ4VTOXGHawP7VW5
-         bbti6ZeTp1jHThVPzgWE7YcAXTCkqg4zFK2MEhZGk0D5b1Jng881Kp79dWfmf039wt1m
-         4jO7Np01MFBAhjrSNrehkjLySpdVTFATg7yOj/8acRh+Yp6ZuIBZ2o9RW3gLc2a70p44
-         iXVg==
-X-Gm-Message-State: AOAM5306fhpvsSq5aQxcgoIXB2IxNxfT8oqLIa92AVkAKBC9y6Xg9uCq
-        WDv9p7IXYrnrCF+oHwIX2JPII4KYI5o9pw==
-X-Google-Smtp-Source: ABdhPJzwQFyIjjRy8sHFRg4X6d0e3lOZsP5GWKBcDoPtLK71iSp5Up0JWIobwb6UVyqA/8pdpVPgiQ==
-X-Received: by 2002:a7b:c0d7:: with SMTP id s23mr2830841wmh.111.1624724302020;
-        Sat, 26 Jun 2021 09:18:22 -0700 (PDT)
-Received: from localhost.localdomain (98.red-81-38-58.dynamicip.rima-tde.net. [81.38.58.98])
-        by smtp.gmail.com with ESMTPSA id c18sm8961944wrt.83.2021.06.26.09.18.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 26 Jun 2021 09:18:20 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-gpio@vger.kernel.org
-Cc:     bgolaszewski@baylibre.com, matthias.bgg@gmail.com,
-        linus.walleij@linaro.org, git@johnthomson.fastmail.com.au,
-        linux-kernel@vger.kernel.org, neil@brown.name,
-        opensource@vdorst.com, hofrat@osadl.org
-Subject: [PATCH v2] gpio: mt7621: support gpio-line-names property
-Date:   Sat, 26 Jun 2021 18:18:19 +0200
-Message-Id: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=7FPqJOHK0r/nDcT4Wvf4/Qf/C23DNea/ZKsuhjqXUwA=;
+        b=V+HHE+9V0sjsEAXyCdlcdUVkL2yHntkHnQoKeoOkUlgL1hmn22prHifGM+JNisDeXD
+         AUJ4VZIkQRRLIIZHUqrpBgbQCMhYIWc/U3TgRsfIhJedY4wvpL/Tfv/iUsgSBZeWD6oK
+         JQ71y7NFw7kSohiZeXS2als2l2PhJ9O4El9gBZXSEVMCmt/C6BNPLGPHAN6fwMDbPFgT
+         sezAxiTHEXULZmj1tzXPI9DYNmsy7+2EKg+nGkQvNt+b3HdQWCkYYLH7oFCY5XJuCCmz
+         Psxpr8sVNvR0xKnaecx5QdkvF/tMrKhPGwqcH3bSkUyxlcQ99wEzYnHC+ue0+COukXZB
+         Lsdg==
+X-Gm-Message-State: AOAM531QlHbNcFiy4NJho1D67/z1VfLQqPY3DW4xImvXCUPJPsRN5Xc8
+        A+C3eJZvAKtirAAur5lXJbXdFA==
+X-Google-Smtp-Source: ABdhPJz86CL7LsEjJnymKcvMKqw1e7bQiYmtjQlSf89+KLhFE/ClCJGVg3Y2+L5FMybOLkhScQyuNg==
+X-Received: by 2002:a17:90b:1509:: with SMTP id le9mr27055714pjb.35.1624724341791;
+        Sat, 26 Jun 2021 09:19:01 -0700 (PDT)
+Received: from anisinha-lenovo ([115.96.123.144])
+        by smtp.googlemail.com with ESMTPSA id i3sm9817786pgc.92.2021.06.26.09.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Jun 2021 09:19:01 -0700 (PDT)
+From:   Ani Sinha <ani@anisinha.ca>
+X-Google-Original-From: Ani Sinha <anisinha@anisinha.ca>
+Date:   Sat, 26 Jun 2021 21:48:40 +0530 (IST)
+X-X-Sender: anisinha@anisinha-lenovo
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org,
+        anirban.sinha@nokia.com, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH v3] Add kernel logs when sched clock unstable and NO_HZ_FULL
+ is not possible
+In-Reply-To: <87r1gudj87.ffs@nanos.tec.linutronix.de>
+Message-ID: <alpine.DEB.2.22.394.2106262136340.2111427@anisinha-lenovo>
+References: <20210620101312.1757363-1-ani@anisinha.ca> <87r1gudj87.ffs@nanos.tec.linutronix.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default handling of the gpio-line-names property by the
-gpiolib-of implementation does not work with the multiple
-gpiochip banks per device structure used by the gpio-mt7621
-driver.
 
-This commit adds driver level support for the device tree
-property so that GPIO lines can be assigned friendly names.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
-Hi,
+On Tue, 22 Jun 2021, Thomas Gleixner wrote:
 
-This driver has three gpiochips with 32 gpios each. Core implmentation
-got gpio's repeated along each gpio chip if chip.names is not assigned.
-To avoid this behaviour driver will set this names as empty or
-with desired friendly line names. Consider the following sample with
-minimal entries for the first chip with this patch changes applied:
+> On Sun, Jun 20 2021 at 15:43, Ani Sinha wrote:
+>
+> > Commit 4f49b90abb4aca ("sched-clock: Migrate to use new tick
+> > dependency mask model") had also removed the kernel warning
+> > message informing the user that it was not possible to turn
+> > on NO_HZ_FULL. Adding back that log message here. It is
+> > unhelpful when the kernel turns off NO_HZ_FULL silently
+> > without informing anyone.
+> > Also added a kernel log when sched clock is marked as unstable.
+>
+> Don't do two things at once. See Documentation/process/....
 
-&gpio {
-    gpio-line-names = "", "", "", "",
-                      "", "", "SFP LOS", "extcon port5 PoE compat",
-                      "SFP module def0", "LED blue SFP", "SFP tx disable", "",
-                      "switch USB power", "mode", "", "buzzer",
-                      "LED blue pwr", "switch port5 PoE out", "reset";
-};
+Ok I will split up this patch into two.
 
-gpioinfo
-gpiochip0 - 32 lines:
-  line   0:      unnamed       unused  output  active-high
-  line   1:      unnamed       unused   input  active-high
-  line   2:      unnamed       unused   input  active-high
-  line   3:      unnamed       unused   input  active-high
-  line   4:      unnamed       unused   input  active-high
-  line   5:      unnamed       unused   input  active-high
-  line   6:    "SFP LOS"        "los"   input  active-high [used]
-  line   7: "extcon port5 PoE compat" unused input active-high
-  line   8: "SFP module def0" "mod-def0" input active-low [used]
-  line   9: "LED blue SFP" "blue:sfp" output active-high [used]
-  line  10: "SFP tx disable" "tx-disable" output active-high [used]
-  line  11:      unnamed       unused  output  active-high
-  line  12: "switch USB power" "usb_power" output active-high [used]
-  line  13:       "mode"       "mode"   input  active-high [used]
-  line  14:      unnamed       unused   input  active-high
-  line  15:     "buzzer"     "buzzer"  output  active-high [used]
-  line  16: "LED blue pwr" "blue:pwr" output active-high [used]
-  line  17: "switch port5 PoE out" "sysfs" input active-high [used]
-  line  18:      "reset"      "reset"   input  active-high [used]
-  line  19:      unnamed       unused   input  active-high
-  line  20:      unnamed       unused   input  active-high
-  line  21:      unnamed       unused   input  active-high
-  line  22:      unnamed       unused   input  active-high
-  line  23:      unnamed       unused   input  active-high
-  line  24:      unnamed       unused   input  active-high
-  line  25:      unnamed       unused   input  active-high
-  line  26:      unnamed       unused   input  active-high
-  line  27:      unnamed       unused   input  active-high
-  line  28:      unnamed       unused   input  active-high
-  line  29:      unnamed       unused   input  active-high
-  line  30:      unnamed       unused   input  active-high
-  line  31:      unnamed       unused   input  active-high 
-gpiochip1 - 32 lines:
-  line   0:      unnamed       unused   input  active-high
-  line   1:      unnamed       unused   input  active-high 
-  ...
-  line  31:      unnamed       unused   input  active-high 
-gpiochip2 - 32 lines:
-  line   0:      unnamed       unused   input  active-high
-  line   1:      unnamed       unused   input  active-high 
-  ...
-  line  31:      unnamed       unused   input  active-high 
+>
+> Also your subject line want's a proper prefix.
 
-To avoid gpiochip1 and gpiochip2 entries repeated with this
-minimal lines definition change, we assign empty reserved
-'names' in driver code.
+OK will fix.
 
-Note that we also don't want to to prevent the driver from
-succeeding at probe due to an error in the gpio-line-names
-property and the ENODATA error is considered a valid result
-to terminate any further labeling so there is no need for
-an error message in that case. Other error results are
-unexpected so an error message indicating the consequence
-of the error is appropriate here.
+>
+> > diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+> > index c2b2859ddd82..9f9fe658f8a5 100644
+> > --- a/kernel/sched/clock.c
+> > +++ b/kernel/sched/clock.c
+> > @@ -192,8 +192,11 @@ void clear_sched_clock_stable(void)
+> >
+> >  	smp_mb(); /* matches sched_clock_init_late() */
+> >
+> > -	if (static_key_count(&sched_clock_running.key) == 2)
+> > +	if (static_key_count(&sched_clock_running.key) == 2) {
+> > +		WARN_ONCE(sched_clock_stable(),
+> > +			  "sched clock is now marked unstable.");
+>
+> What's the WARN for here? That backtrace is largely uninteresting.
 
-Changes in v2:
- - 'mediatek_gpio_set_names' returns -ENOMEM in case of OOM.
- - Caller checks 'mediatek_gpio_set_names' return value.
+OK to be consistent with other parts of the code, I will replace this with
+pr_warn()
 
-Thanks in advance for your time.
+>
+> > -	if (can_stop_full_tick(cpu, ts))
+> > +	if (can_stop_full_tick(cpu, ts)) {
+> >  		tick_nohz_stop_sched_tick(ts, cpu);
+> > -	else if (ts->tick_stopped)
+> > -		tick_nohz_restart_sched_tick(ts, ktime_get());
+> > +	} else {
+> > +		/*
+> > +		 * Don't allow the user to think they can get
+> > +		 * full NO_HZ with this machine.
+> > +		 */
+> > +		WARN_ONCE(tick_nohz_full_running,
+> > +			  "NO_HZ_FULL will not work for the current system.");
+>
+> can_stop_full_tick() returning false can be transient and then the user
+> still has no idea _why_ this is printed.
+>
+> Also assume the user/admin starts perf and knows he's going to disturb
+> NOHZ full, then _why_ would he be interested in that warning.
+>
 
-Best regards,
-    Sergio Paracuellos
+If NOHZ is disabled intentionally, that is not an interesting case. I am
+worried about the situation where the user specifies NOHZ option in the
+kernel commandline and the kernel silently disabled this because of one or
+more limitations in the system. I want to address this. All the reasons
+specified in the following commit is still true:
 
- drivers/gpio/gpio-mt7621.c | 45 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+commit e12d0271774fea9fddf1e2a7952a0bffb2ee8e8b
+Author: Steven Rostedt <rostedt@goodmis.org>
+Date:   Fri May 10 17:12:28 2013 -0400
 
-diff --git a/drivers/gpio/gpio-mt7621.c b/drivers/gpio/gpio-mt7621.c
-index 82fb20dca53a..7fc9e3c1ce10 100644
---- a/drivers/gpio/gpio-mt7621.c
-+++ b/drivers/gpio/gpio-mt7621.c
-@@ -206,6 +206,47 @@ mediatek_gpio_xlate(struct gpio_chip *chip,
- 	return gpio % MTK_BANK_WIDTH;
- }
- 
-+static int
-+mediatek_gpio_set_names(struct device *dev, struct mtk_gc *rg)
-+{
-+	struct device_node *np = dev->of_node;
-+	const char **names;
-+	int nstrings, base;
-+	unsigned int i;
-+
-+	names = devm_kcalloc(dev, MTK_BANK_WIDTH, sizeof(*names),
-+			     GFP_KERNEL);
-+	if (!names)
-+		return -ENOMEM;
-+
-+	base = rg->bank * MTK_BANK_WIDTH;
-+	nstrings = of_property_count_strings(np, "gpio-line-names");
-+	if (nstrings <= base)
-+		goto assign_names;
-+
-+	for (i = 0; i < MTK_BANK_WIDTH; i++) {
-+		const char *name;
-+		int ret;
-+
-+		ret = of_property_read_string_index(np, "gpio-line-names",
-+						    base + i, &name);
-+		if (ret) {
-+			if (ret != -ENODATA)
-+				dev_err(dev, "unable to name line %d: %d\n",
-+					base + i, ret);
-+			break;
-+		}
-+
-+		if (*name)
-+			names[i] = name;
-+	}
-+
-+assign_names:
-+	rg->chip.names = names;
-+
-+	return 0;
-+}
-+
- static int
- mediatek_gpio_bank_probe(struct device *dev,
- 			 struct device_node *node, int bank)
-@@ -241,6 +282,10 @@ mediatek_gpio_bank_probe(struct device *dev,
- 	if (!rg->chip.label)
- 		return -ENOMEM;
- 
-+	ret = mediatek_gpio_set_names(dev, rg);
-+	if (ret)
-+		return ret;
-+
- 	rg->irq_chip.name = dev_name(dev);
- 	rg->irq_chip.parent_device = dev;
- 	rg->irq_chip.irq_unmask = mediatek_gpio_irq_unmask;
--- 
-2.25.1
+    nohz: Warn if the machine can not perform nohz_full
 
+    If the user configures NO_HZ_FULL and defines nohz_full=XXX on the
+    kernel command line, or enables NO_HZ_FULL_ALL, but nohz fails
+    due to the machine having a unstable clock, warn about it.
+
+    We do not want users thinking that they are getting the benefit
+    of nohz when their machine can not support it.
+
+    Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+    Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+    Cc: Ingo Molnar <mingo@kernel.org>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: H. Peter Anvin <hpa@zytor.com>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Borislav Petkov <bp@alien8.de>
+    Cc: Li Zhong <zhong@linux.vnet.ibm.com>
+    Signed-off-by: Frederic Weisbecker <fweisbec@gmail.com>
+
+This log was removed from the kernel in commit
+
+commit 4f49b90abb4aca6fe677c95fc352fd0674d489bd
+Author: Frederic Weisbecker <fweisbec@gmail.com>
+Date:   Wed Jul 22 17:03:52 2015 +0200
+
+    sched-clock: Migrate to use new tick dependency mask model
+
+    Instead of checking sched_clock_stable from the nohz subsystem to
+verify
+    its tick dependency, migrate it to the new mask in order to include it
+    to the all-in-one check.
+
+
+and it seems to me that the removal of the log defeats the purpose that
+commit e12d0271774fea9fddf tried to serve.
+
+Please enlighten me as to how to achieve this and I will cook up
+something.
+
+Ani
