@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463BF3B4F5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB503B4F6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhFZQBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 12:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        id S230031AbhFZQQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 12:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFZQBD (ORCPT
+        with ESMTP id S229657AbhFZQQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 12:01:03 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD2DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 08:58:38 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v12so6319318plo.10
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 08:58:38 -0700 (PDT)
+        Sat, 26 Jun 2021 12:16:35 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F53C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 09:14:13 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id gn32so20434728ejc.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 09:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=z2zRyBuCyuLZys6i1b2AqM0hkjmyNcoVBYJnGdBI8Pc=;
-        b=lbMdk9t0iT2GxQb6+2WLD/lQAAjx1RelzUvkjlQ340vXxuAqa5KKSLsN5RPeMRDf1U
-         QCmUO6p0AYN3sEmLH1hUljVV1npDjEmg5HerhV4wnugiIF/qWWrWIr/9kydAQ6eCTjk0
-         oEeMcWHKcS3pAIyT6yKonCUCJRPdN0Yn+/D3tQHE19chSSlhgeQCpe9y98pxXrrOGQNB
-         53PJ8GHUIXi3iAiTyE3HGCN2gLByCwaQtKfsS518EZd0OsI+ocPk4y7yau+Wzaf+d6wa
-         +JJQBhUn4oRgc9nmp/TUAzRK5oKqR0aot7x1/SbNjA7rP0ozVpqyEOTr8IGBXRHPpYtm
-         uZVA==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Hei0V6wT99GLvsAxKSgNLrGQxmkr107H5QExI+On0gg=;
+        b=DrZ5yA6bp+fkrI6C8+9cVZb+q1vSbMNZktUXsgYgqWVjSq4v1gOouJfZxh61JJ/dd6
+         dviKn9g1yu+xqeNfJvc/kmJNzbiXECFkBPSNIZfq3rev3P8pqgOMwy+JkIPaLcvetGgr
+         sCGuBWRQpoKL3Vx6xiRzcfo1z4z3VHDw0zq3BM5ZkqKmMC5/1bWjWok82rIPkIHtdcY9
+         umVBr+3TOOe4Stccfsi2wwTQg0+U56icOzz/G0++D3q6kXWHnPHCY8gjawsVcxAhgthC
+         G7x6XRVF5eBUK8zAiqsXbsB+Rc/FprZSNw4XTgoA9cX1QuJFJeX1Yo3pfF2RhEXG/OSV
+         0vyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=z2zRyBuCyuLZys6i1b2AqM0hkjmyNcoVBYJnGdBI8Pc=;
-        b=MlZ3/hTSBPgdYjtHanEkaKR7YYh4hOkXaKJiwxG4ND7oGnlFRxRA+nE/wpOPyBsNJx
-         ZoNm9zfFU+vworlZXcvz3FXsfyCmsq4R0PK8xHCuDOfjVLdbyVftEg+KRlWdrGSaCwp0
-         ruTX6EhivsJ8BV+MPO5KXeT/puR6elTZR73yWuF0EjXWkmXxDyLBGrARoWryWuS3CSIh
-         30Yo8V46vTNTPUTdsnMMOdpJPjg0DNgDI256/2l4FwVz15nNveQ1Hpq9RGZlj64C8+WK
-         glJLeKhGUoI7dsFs0BuxOEkCVOOQU4C/UjzZU5X/uOP2yqhhXauoH7dhuEw5bTzcdc4n
-         OdAA==
-X-Gm-Message-State: AOAM5324brzL4VfYsaHn5TW1fQA2H6j5aUaETaZQ4GEvlK0DqekqFxUC
-        i2kHCkQaug+jmedhONqRZx0=
-X-Google-Smtp-Source: ABdhPJzNdyJcHwtC+v/Kn/QiLyobYLLDxg4yOPLBi7N71HB0qxN/5P1ohMJEji6MJIIZyuQTdJQCOg==
-X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr26923494pjj.165.1624723118208;
-        Sat, 26 Jun 2021 08:58:38 -0700 (PDT)
-Received: from localhost.localdomain (1-171-6-245.dynamic-ip.hinet.net. [1.171.6.245])
-        by smtp.gmail.com with ESMTPSA id n59sm2164807pji.46.2021.06.26.08.58.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 26 Jun 2021 08:58:37 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     broonie@kernel.org
-Cc:     axel.lin@ingics.com, cy_huang@richtek.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: rtmv20: Fix wrong mask for strobe-polarity-high
-Date:   Sat, 26 Jun 2021 23:58:32 +0800
-Message-Id: <1624723112-26653-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hei0V6wT99GLvsAxKSgNLrGQxmkr107H5QExI+On0gg=;
+        b=E7rtwy4BguOS/ZwwZWWLhumA2Ukpnv/UYZ8mp3+cGPynZd3cP0APhZZFqohN4V707t
+         6GpaMTsL4qVLluLsdoCSFBqavXtCxDNcwX3SIWSF0esvZXY3e93Q4QQMZBap64MdHqZm
+         01yCjisrCpUdMnRq06JSBZytFYINNdJZK9fJtvrnxoVMFbPYwF03fNXUeEfUrjHJSJxR
+         HcA64X82nwz6Xg44saG4Rv/jwOOuRndwZhl9f2N1UKCM6c61inkLftN/DE2U74QTaGCx
+         BKnNpid7aihshia2Wl3QiMEEATYisRe6pV8V36ri9NU3vkk4Bs0mz/BB/gNc7vACcva0
+         lhQg==
+X-Gm-Message-State: AOAM530abmB1z1Gb5b/04R6IPJeBUDWhdRWzgyTyQJU1wvuKhdPbLr35
+        mb69W9hNsmwDIcOvUns/6073HOEvPcdh35G/EKfu1Q==
+X-Google-Smtp-Source: ABdhPJxG+8w5JRFzXvl9u4N6VewdeznVF2wDKF5bH24xwpqmM14Nd1ixJkkPvnlHNi/3WoalV4ImmVNHPatstERs5mk=
+X-Received: by 2002:a17:906:dbf2:: with SMTP id yd18mr16327188ejb.406.1624724051083;
+ Sat, 26 Jun 2021 09:14:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <1624723112-26653-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <1624723112-26653-1-git-send-email-u0084500@gmail.com>
+From:   Axel Lin <axel.lin@ingics.com>
+Date:   Sun, 27 Jun 2021 00:13:35 +0800
+Message-ID: <CAFRkauDT6px6JTRMhXPqbUNdDyHjvfQdfWC9WA2VtDFSC6pbiA@mail.gmail.com>
+Subject: Re: [PATCH] regulator: rtmv20: Fix wrong mask for strobe-polarity-high
+To:     cy_huang <u0084500@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
-
-Fix wrong mask for strobe-polarity-high.
-
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-In-reply-to: <CAFRkauB=0KwrJW19nJTTagdHhBR=V2R8YFWG3R3oVXt=rBRsqw@mail.gmail.com>
----
-Sorry, it's really the typo.
-This mask must be bit 0 not 1.
----
- drivers/regulator/rtmv20-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/regulator/rtmv20-regulator.c b/drivers/regulator/rtmv20-regulator.c
-index 4bca64d..2ee3341 100644
---- a/drivers/regulator/rtmv20-regulator.c
-+++ b/drivers/regulator/rtmv20-regulator.c
-@@ -37,7 +37,7 @@
- #define RTMV20_WIDTH2_MASK	GENMASK(7, 0)
- #define RTMV20_LBPLVL_MASK	GENMASK(3, 0)
- #define RTMV20_LBPEN_MASK	BIT(7)
--#define RTMV20_STROBEPOL_MASK	BIT(1)
-+#define RTMV20_STROBEPOL_MASK	BIT(0)
- #define RTMV20_VSYNPOL_MASK	BIT(1)
- #define RTMV20_FSINEN_MASK	BIT(7)
- #define RTMV20_ESEN_MASK	BIT(6)
--- 
-2.7.4
-
+cy_huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8826=E6=97=A5 =
+=E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8811:58=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: ChiYuan Huang <cy_huang@richtek.com>
+>
+> Fix wrong mask for strobe-polarity-high.
+>
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+Reviewed-by: Axel Lin <axel.lin@ingics.com>
