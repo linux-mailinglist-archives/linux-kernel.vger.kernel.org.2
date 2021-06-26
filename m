@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A88C3B4E63
+	by mail.lfdr.de (Postfix) with ESMTP id C34DF3B4E64
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 13:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhFZLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 07:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZLcx (ORCPT
+        id S229984AbhFZLpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 07:45:01 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:33122 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZLpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 07:32:53 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115C0C061574;
-        Sat, 26 Jun 2021 04:30:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so7135581pji.0;
-        Sat, 26 Jun 2021 04:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=17yjFWpV5LaTQXQYRjJtUi+sXaiDlDLeKKNbuSlzlx0=;
-        b=kJ+xFniWGC9k9BvWDrq8mM0kge4O65m8573p/mFcdQxFG/DUGRu8fMW3/xD1e1eu4b
-         oBcq+24sUrR4k+Kea+mjt20WSpuEyVXsWFnZAUdUO8LVzPgRz+cN5cNBE6JX08HwgUBC
-         dyA52EYh1+4ulGt3q3ttsZEGV4d9Wul5h8wQnp17/wE/w12KAGFNuxCar95JCh6n0/vd
-         YcUvMI/5w7MKud0eHyCQGe29T5A7IcoKqDy3Yu6qrF3Pk6FX1EW9fZUGlJVUn+a0dRVN
-         blk3+hw4dUvHGU3BYljbE76RNn84v4Z1rpNMv2mDZn1FVHMmgAQLDz+kibwnrTkxCjol
-         uUmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=17yjFWpV5LaTQXQYRjJtUi+sXaiDlDLeKKNbuSlzlx0=;
-        b=QMgECDFDw/cvoW+k3c6FfQ5bqG2yLoFYDbo9bRJTLyM6c6O4NAtUVmxUz6f3+A2/gB
-         2Zy4Nxfou0LoLsT1UtOYb6BbxHEtCLyw5biKWoTJJVUvpytQConERSSiKxNqT86oD9U6
-         EW0/JAEsPUhSB/wUZ/J58vrNHYQ/NDUu0Eu2SH/bEfweb3EHWJ9NoFns135sYhwWTG77
-         G8aclH4sLAJMEoPs9QUAF5CL4tAZMTAS+WklEtUl6LT6VoMBQs66GtSh63QobBO7E0lH
-         jD7Q972wKIphhZsCKJXins4UNhcsKhXHKCHBAQ8+Th9q6HdEvR27dafrct9KsNTI2fT7
-         +WoQ==
-X-Gm-Message-State: AOAM533ENJYxLRJFE51IB5scxm80m90umtiiWVgYMIlgQLuxP8malXUI
-        Oue2hnndMZHJI8PsjDoGPHI=
-X-Google-Smtp-Source: ABdhPJxXx55UhpU/bj+BcousF2vwV9QT+8tGc0gmZkQioSwjTk1lupLMV+Ch/b1AenNfnKptkWVYIw==
-X-Received: by 2002:a17:902:d2c1:b029:122:ef41:c4cc with SMTP id n1-20020a170902d2c1b0290122ef41c4ccmr13285456plc.83.1624707029191;
-        Sat, 26 Jun 2021 04:30:29 -0700 (PDT)
-Received: from nishal-pc ([183.87.54.190])
-        by smtp.gmail.com with ESMTPSA id d2sm7854344pgh.59.2021.06.26.04.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Jun 2021 04:30:28 -0700 (PDT)
-Date:   Sat, 26 Jun 2021 17:00:21 +0530
-From:   Nishal Kulkarni <nishalkulkarni@gmail.com>
-To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        Sat, 26 Jun 2021 07:45:00 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lx6hf-00014S-BY; Sat, 26 Jun 2021 07:42:27 -0400
+Message-ID: <bd6320bb038f02d2bad0bb07ecf2b23f3cda9167.camel@surriel.com>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+From:   Rik van Riel <riel@surriel.com>
+To:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>
+Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: qlge: Remove unnecessary parentheses around
- references
-Message-ID: <YNcPzWXkKkmip95x@nishal-pc>
+Date:   Sat, 26 Jun 2021 07:42:27 -0400
+In-Reply-To: <YNWPBDH/mQdojEu9@hirez.programming.kicks-ass.net>
+References: <20210608231132.32012-1-joshdon@google.com>
+         <YMobzbLecaFYuLtq@slm.duckdns.org>
+         <YNWPBDH/mQdojEu9@hirez.programming.kicks-ass.net>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-Q8vGBBKE25AsRlE5mV6U"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes checkpatch.pl warning:
 
-CHECK: Unnecessary parentheses around mpi_coredump->mpi_global_header
+--=-Q8vGBBKE25AsRlE5mV6U
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Nishal Kulkarni <nishalkulkarni@gmail.com>
----
- drivers/staging/qlge/qlge_dbg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, 2021-06-25 at 10:08 +0200, Peter Zijlstra wrote:
+> On Wed, Jun 16, 2021 at 11:42:05AM -0400, Tejun Heo wrote:
+> > A high-level problem that I see with the proposal is that this
+> > would bake
+> > the current recursive implementation into the interface. The
+> > semantics of
+> > the currently exposed interface, at least the weight based part, is
+> > abstract
+> > and doesn't necessarily dictate how the scheduling is actually
+> > performed.
+> > Adding this would mean that we're now codifying the current
+> > behavior of
+> > fully nested scheduling into the interface.
+>=20
+> It's a direct concequence of the hierarchical requirement. The
+> approach
+> is the only valid one. The other relative controllers that don't do
+> this, are simply broken.
+>=20
+> Absolute controllers have it easier, they can be trivially flattened.
 
-diff --git a/drivers/staging/qlge/qlge_dbg.c b/drivers/staging/qlge/qlge_dbg.c
-index 37e593f0fd82..66d28358342f 100644
---- a/drivers/staging/qlge/qlge_dbg.c
-+++ b/drivers/staging/qlge/qlge_dbg.c
-@@ -733,7 +733,7 @@ int qlge_core_dump(struct qlge_adapter *qdev, struct qlge_mpi_coredump *mpi_core
- 	}
- 
- 	/* Insert the global header */
--	memset(&(mpi_coredump->mpi_global_header), 0,
-+	memset(&mpi_coredump->mpi_global_header, 0,
- 	       sizeof(struct mpi_coredump_global_header));
- 	mpi_coredump->mpi_global_header.cookie = MPI_COREDUMP_COOKIE;
- 	mpi_coredump->mpi_global_header.header_size =
-@@ -1221,7 +1221,7 @@ static void qlge_gen_reg_dump(struct qlge_adapter *qdev,
- {
- 	int i, status;
- 
--	memset(&(mpi_coredump->mpi_global_header), 0,
-+	memset(&mpi_coredump->mpi_global_header, 0,
- 	       sizeof(struct mpi_coredump_global_header));
- 	mpi_coredump->mpi_global_header.cookie = MPI_COREDUMP_COOKIE;
- 	mpi_coredump->mpi_global_header.header_size =
--- 
-2.31.1
+I'm pretty sure CFS can be mostly flattened too, just not
+trivially :)
+
+Doing the delta_exectime to vruntime accounting in a somewhat
+delayed fashion, with never more than one or two timeslices
+worth of vruntime at a time being accounted, should make the
+flat CFS runqueue model work.
+
+--=20
+All Rights Reversed.
+
+--=-Q8vGBBKE25AsRlE5mV6U
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmDXEqMACgkQznnekoTE
+3oNYbAf+P0FWX2/jiL/fCScDjNZOIEnpTWFyOoVumMs46Zly1HaiKJidykHivnyr
+EcfXp5v8OFfFV27/tIgW6LjA5V86XI/dv0Q1eqlo/rGnE/Xr3B5X2JxyzRg+H6ye
+hOk44vStRPVj71nd/5+kbb9Mdu3atmzyF2RzRX4/28GSVDF78l02bT+bUbj9sPbf
+Sf6QqzyT9BTR3szKRCC5cDY1BkV6u9id77mm/z+7ugZpR9xnLIoKSPHKoLBsS5vc
+700Cg3FGeVRX7biCVAKx5qI/GXjM1PWEiJsYlYZz2z+OFk4vYKYvYSBdT1J/YfRw
+/PaH1mou1EyaoK9B6L5xSPnNDB9V9Q==
+=wO7c
+-----END PGP SIGNATURE-----
+
+--=-Q8vGBBKE25AsRlE5mV6U--
 
