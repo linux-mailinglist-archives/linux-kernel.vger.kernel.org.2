@@ -2,81 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEFF3B4E70
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 14:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CB23B4E73
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 14:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFZMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 08:14:28 -0400
-Received: from m12-12.163.com ([220.181.12.12]:41747 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhFZMO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 08:14:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tImSK
-        /F39bvmRrrsa16KUI/wi6srsYxbkDnedrKfqkE=; b=cRVjAVyIrrXDY/RoAwomI
-        emgzkBBTUup6mMHLPMa60aPYYwRmfUJ2jpSkbXA1rY3NctTOcLKphTYv83Lz3Xo6
-        EhYoBAVW9ZIskepD430WHnZx3xO7mzw/D4S7cdFudJx6gXpSWuFxbq7om4H+14GI
-        qkQo16Nfjneb1h7TloiCq4=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAB3DivcFddgBaeYLw--.7765S2;
-        Sat, 26 Jun 2021 19:56:13 +0800 (CST)
-From:   13145886936@163.com
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        gushengxian <13145886936@163.com>
-Subject: [PATCH] flow_offload: action should not be NULL when it is referenced
-Date:   Sat, 26 Jun 2021 04:56:06 -0700
-Message-Id: <20210626115606.1243151-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230015AbhFZMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 08:19:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35582 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229518AbhFZMTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 08:19:16 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15QC3r6j194927;
+        Sat, 26 Jun 2021 08:16:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=+iHJ0gO2gZVxl9dnU2tCTxtUS9+IXL1VspTpXvSJzHU=;
+ b=FHfMu9cw3goGsZTNc9Clz36EuIVNFl/R6Uw0DRG90hll8y/ZPpxL1m+gum8yetcmTlqE
+ 7CHSWQjI9K2nsmeMLYf7s2SZGe5BAmaRi3qKD2nsUgVldz8Uu69j7393/7pZEXL5/OOB
+ 5/s1OKeyUHPhUzoQ4nWkz9OxVgnhL3nrZ3KTG/YEqHgXaZ2jetNVepvP3WwsCPA0MQmU
+ hAD1ERDbmJTRY7bEPzgnXTi1X0Ld2mBhHjDSpqO3cSUqp6RP/06Y8nUKxUuPHWbcxfnF
+ fcY+4I6hoZ0CGQzLd0yN4GgNl5l3Vx4Bg88eYVLNvbdSzdmodWcGF2M00w2HNO+FJxK0 Zw== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39e1frvbrn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Jun 2021 08:16:53 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15QC9ASs010725;
+        Sat, 26 Jun 2021 12:16:51 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 39duv8823s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Jun 2021 12:16:51 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15QCGmGC33161534
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Jun 2021 12:16:48 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D935AE051;
+        Sat, 26 Jun 2021 12:16:48 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D45B1AE04D;
+        Sat, 26 Jun 2021 12:16:47 +0000 (GMT)
+Received: from localhost (unknown [9.171.68.59])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 26 Jun 2021 12:16:47 +0000 (GMT)
+Date:   Sat, 26 Jun 2021 14:16:46 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 fixes for 5.13-rc8
+Message-ID: <your-ad-here.call-01624709806-ext-4573@work.hours>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AybLx7clQQLX53e3Wt0AZjlGyo8ntIZk
+X-Proofpoint-ORIG-GUID: AybLx7clQQLX53e3Wt0AZjlGyo8ntIZk
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAB3DivcFddgBaeYLw--.7765S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7XFW5Wr1kuw1ktFW8tFWkZwb_yoW8JryrpF
-        ZrCry7CrZ7WryfCrZ3Za4IyrWUZrZxJr45tFWjq34fC343Kan5KFWkKry8Z34UJrW5ua4Y
-        vasxuFyrJ3y5AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jyMKXUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiXB29g1Xl0GGcWQAAs7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-26_06:2021-06-25,2021-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 mlxlogscore=999
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106260081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+Hello Linus,
 
-"action" should not be NULL when it is referenced.
+please pull s390 fixes for 5.13-rc8.
 
-Signed-off-by: gushengxian <13145886936@163.com>
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- include/net/flow_offload.h | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Thank you,
+Vasily
 
-diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-index dc5c1e69cd9f..69c9eabf8325 100644
---- a/include/net/flow_offload.h
-+++ b/include/net/flow_offload.h
-@@ -319,12 +319,14 @@ flow_action_mixed_hw_stats_check(const struct flow_action *action,
- 	if (flow_offload_has_one_action(action))
- 		return true;
+The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
+
+  Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-5
+
+for you to fetch changes up to 67147e96a332b56c7206238162771d82467f86c0:
+
+  s390/stack: fix possible register corruption with stack switch helper (2021-06-21 11:19:18 +0200)
+
+----------------------------------------------------------------
+- Fix couple of late pt_regs flags handling findings of conversion to
+  generic entry.
+
+- Fix potential register clobbering in stack switch helper.
+
+- Fix thread/group masks for offline cpus.
+
+- Fix cleanup of mdev resources when remove callback is invoked in vfio-ap
+  code.
+
+----------------------------------------------------------------
+Heiko Carstens (1):
+      s390/stack: fix possible register corruption with stack switch helper
+
+Sven Schnelle (3):
+      s390: fix system call restart with multiple signals
+      s390: clear pt_regs::flags on irq entry
+      s390/topology: clear thread/group maps for offline cpus
+
+Tony Krowiak (1):
+      s390/vfio-ap: clean up mdev resources when remove callback invoked
+
+ arch/s390/include/asm/stacktrace.h | 18 +++++++++++-------
+ arch/s390/kernel/entry.S           |  1 +
+ arch/s390/kernel/signal.c          |  1 -
+ arch/s390/kernel/topology.c        | 12 +++++++++---
+ drivers/s390/crypto/vfio_ap_ops.c  | 10 ----------
+ 5 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
+index 2b543163d90a..76c6034428be 100644
+--- a/arch/s390/include/asm/stacktrace.h
++++ b/arch/s390/include/asm/stacktrace.h
+@@ -91,12 +91,16 @@ struct stack_frame {
+ 	CALL_ARGS_4(arg1, arg2, arg3, arg4);				\
+ 	register unsigned long r4 asm("6") = (unsigned long)(arg5)
  
--	flow_action_for_each(i, action_entry, action) {
--		if (i && action_entry->hw_stats != last_hw_stats) {
--			NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
--			return false;
-+	if (action) {
-+		flow_action_for_each(i, action_entry, action) {
-+			if (i && action_entry->hw_stats != last_hw_stats) {
-+				NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
-+				return false;
-+			}
-+			last_hw_stats = action_entry->hw_stats;
- 		}
--		last_hw_stats = action_entry->hw_stats;
+-#define CALL_FMT_0 "=&d" (r2) :
+-#define CALL_FMT_1 "+&d" (r2) :
+-#define CALL_FMT_2 CALL_FMT_1 "d" (r3),
+-#define CALL_FMT_3 CALL_FMT_2 "d" (r4),
+-#define CALL_FMT_4 CALL_FMT_3 "d" (r5),
+-#define CALL_FMT_5 CALL_FMT_4 "d" (r6),
++/*
++ * To keep this simple mark register 2-6 as being changed (volatile)
++ * by the called function, even though register 6 is saved/nonvolatile.
++ */
++#define CALL_FMT_0 "=&d" (r2)
++#define CALL_FMT_1 "+&d" (r2)
++#define CALL_FMT_2 CALL_FMT_1, "+&d" (r3)
++#define CALL_FMT_3 CALL_FMT_2, "+&d" (r4)
++#define CALL_FMT_4 CALL_FMT_3, "+&d" (r5)
++#define CALL_FMT_5 CALL_FMT_4, "+&d" (r6)
+ 
+ #define CALL_CLOBBER_5 "0", "1", "14", "cc", "memory"
+ #define CALL_CLOBBER_4 CALL_CLOBBER_5
+@@ -118,7 +122,7 @@ struct stack_frame {
+ 		"	brasl	14,%[_fn]\n"				\
+ 		"	la	15,0(%[_prev])\n"			\
+ 		: [_prev] "=&a" (prev), CALL_FMT_##nr			\
+-		  [_stack] "R" (stack),					\
++		: [_stack] "R" (stack),					\
+ 		  [_bc] "i" (offsetof(struct stack_frame, back_chain)),	\
+ 		  [_frame] "d" (frame),					\
+ 		  [_fn] "X" (fn) : CALL_CLOBBER_##nr);			\
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index 9cc71ca9a88f..e84f495e7eb2 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -418,6 +418,7 @@ ENTRY(\name)
+ 	xgr	%r6,%r6
+ 	xgr	%r7,%r7
+ 	xgr	%r10,%r10
++	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
+ 	mvc	__PT_R8(64,%r11),__LC_SAVE_AREA_ASYNC
+ 	stmg	%r8,%r9,__PT_PSW(%r11)
+ 	tm	%r8,0x0001		# coming from user space?
+diff --git a/arch/s390/kernel/signal.c b/arch/s390/kernel/signal.c
+index 90163e6184f5..080e7aed181f 100644
+--- a/arch/s390/kernel/signal.c
++++ b/arch/s390/kernel/signal.c
+@@ -512,7 +512,6 @@ void arch_do_signal_or_restart(struct pt_regs *regs, bool has_signal)
+ 
+ 	/* No handlers present - check for system call restart */
+ 	clear_pt_regs_flag(regs, PIF_SYSCALL);
+-	clear_pt_regs_flag(regs, PIF_SYSCALL_RESTART);
+ 	if (current->thread.system_call) {
+ 		regs->int_code = current->thread.system_call;
+ 		switch (regs->gprs[2]) {
+diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
+index bfcc327acc6b..26aa2614ee35 100644
+--- a/arch/s390/kernel/topology.c
++++ b/arch/s390/kernel/topology.c
+@@ -66,7 +66,10 @@ static void cpu_group_map(cpumask_t *dst, struct mask_info *info, unsigned int c
+ {
+ 	static cpumask_t mask;
+ 
+-	cpumask_copy(&mask, cpumask_of(cpu));
++	cpumask_clear(&mask);
++	if (!cpu_online(cpu))
++		goto out;
++	cpumask_set_cpu(cpu, &mask);
+ 	switch (topology_mode) {
+ 	case TOPOLOGY_MODE_HW:
+ 		while (info) {
+@@ -83,10 +86,10 @@ static void cpu_group_map(cpumask_t *dst, struct mask_info *info, unsigned int c
+ 	default:
+ 		fallthrough;
+ 	case TOPOLOGY_MODE_SINGLE:
+-		cpumask_copy(&mask, cpumask_of(cpu));
+ 		break;
  	}
- 	return true;
+ 	cpumask_and(&mask, &mask, cpu_online_mask);
++out:
+ 	cpumask_copy(dst, &mask);
  }
--- 
-2.25.1
-
-
+ 
+@@ -95,7 +98,10 @@ static void cpu_thread_map(cpumask_t *dst, unsigned int cpu)
+ 	static cpumask_t mask;
+ 	int i;
+ 
+-	cpumask_copy(&mask, cpumask_of(cpu));
++	cpumask_clear(&mask);
++	if (!cpu_online(cpu))
++		goto out;
++	cpumask_set_cpu(cpu, &mask);
+ 	if (topology_mode != TOPOLOGY_MODE_HW)
+ 		goto out;
+ 	cpu -= cpu % (smp_cpu_mtid + 1);
+diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+index b2c7e10dfdcd..122c85c22469 100644
+--- a/drivers/s390/crypto/vfio_ap_ops.c
++++ b/drivers/s390/crypto/vfio_ap_ops.c
+@@ -366,16 +366,6 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+ 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+ 
+ 	mutex_lock(&matrix_dev->lock);
+-
+-	/*
+-	 * If the KVM pointer is in flux or the guest is running, disallow
+-	 * un-assignment of control domain.
+-	 */
+-	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+-		mutex_unlock(&matrix_dev->lock);
+-		return -EBUSY;
+-	}
+-
+ 	vfio_ap_mdev_reset_queues(mdev);
+ 	list_del(&matrix_mdev->node);
+ 	kfree(matrix_mdev);
