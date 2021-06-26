@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837353B4BD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 03:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E5A3B4BD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 03:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFZBaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 21:30:20 -0400
-Received: from m12-15.163.com ([220.181.12.15]:32891 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhFZBaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 21:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=f2CyK
-        mMlq7uRwuz/k0ZEXMT/kyFKnpFPhfQx5RLJFFE=; b=X0JL8oYZnEJoN0jWp2jwv
-        9vLopB3eObQ0Qr/SvfvcObndRIzSCHBbJ4eyJcmJw+OEa+sEn6u0YTyGhu8GxQ5e
-        p5t+WzYSijB3MdrvxKaZAlc87XKMwvtuhtOmQRdfsNy8d6JHKwy7cIMXMGDJPFaT
-        RUENN8pj4hMsvOlTeR5pgM=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp11 (Coremail) with SMTP id D8CowABnh99kgtZg40LOAQ--.4S2;
-        Sat, 26 Jun 2021 09:27:38 +0800 (CST)
-From:   13145886936@163.com
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] tools/testing/nvdimm: Remove NULL test before vfree
-Date:   Fri, 25 Jun 2021 18:26:55 -0700
-Message-Id: <20210626012655.515279-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S230003AbhFZBfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 21:35:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5081 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhFZBfL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 21:35:11 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBbpG09ggzXlCG;
+        Sat, 26 Jun 2021 09:27:34 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 09:32:47 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 26 Jun
+ 2021 09:32:47 +0800
+Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20210617082759.1008-1-thunder.leizhen@huawei.com>
+ <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
+Date:   Sat, 26 Jun 2021 09:32:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowABnh99kgtZg40LOAQ--.4S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4fJw1xuF1fGryUGF4Durg_yoW3Awb_Cr
-        47trn7KFZ5JFy2ka12yrn8urZ7Ca1UuFs7Ww4UtF13ZrWUtr45Kwn7Grs5XF4Sgr98KFZF
-        yF95CrnxJr12kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU54T5JUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/xtbBzhq9g1QHNBgHrAABs-
+In-Reply-To: <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
 
-This NULL test is redundant since vfree() checks for NULL.
-Reported by Coccinelle.
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- tools/testing/nvdimm/test/nfit.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2021/6/26 7:31, Stephen Boyd wrote:
+> Quoting Zhen Lei (2021-06-17 01:27:59)
+>> When krealloc() fails to expand the memory and returns NULL, the original
+>> memory is not released. In this case, the original "timings" scale should
+>> be maintained.
+>>
+>> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+> 
+> Looks correct, but when does krealloc() return NULL? My read of the
+> kerneldoc is that it would return the original memory if the new
+> allocation "failed".
 
-diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
-index 54f367cbadae..cb86f0cbb11c 100644
---- a/tools/testing/nvdimm/test/nfit.c
-+++ b/tools/testing/nvdimm/test/nfit.c
-@@ -1641,8 +1641,8 @@ static void *__test_alloc(struct nfit_test *t, size_t size, dma_addr_t *dma,
-  err:
- 	if (*dma && size >= DIMM_SIZE)
- 		gen_pool_free(nfit_pool, *dma, size);
--	if (buf)
--		vfree(buf);
-+
-+	vfree(buf);
- 	kfree(nfit_res);
- 	return NULL;
- }
--- 
-2.25.1
+That must be the wrong description in the document. For example, the original
+100-byte memory needs to be expanded to 200 bytes. If the memory allocation fails,
+a non-null pointer is returned. People must think they've applied for it and
+continue to use it, the end result is memory crashed.
+
+I don't think the kernel needs to be different from libc's realloc().
+
+The implementation of __do_krealloc() illustrates this as well:
+        /* If the object still fits, repoison it precisely. */
+        if (ks >= new_size) {
+                p = kasan_krealloc((void *)p, new_size, flags);
+                return (void *)p;
+        }
+
+        ret = kmalloc_track_caller(new_size, flags);			//enlarge, allocate new memory
+	if (ret && p) {
+                memcpy(ret, kasan_reset_tag(p), ks);			//copy the old content from 'p' to new memory 'ret'
+        }
+
+	return ret;							//ret may be NULL, if kmalloc_track_caller() failed
+
+
+
+> 
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> 
+> .
+> 
 
