@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB553B4D30
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885653B4D41
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFZGqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 02:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZGqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:46:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EF5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 23:44:29 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j1so13159233wrn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 23:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xUzuk+g5+JYkMXXTgrkNLdDVSSyLreEfsj7n014KbL4=;
-        b=WpuHkHjEENbMWHHxERePxuikek9bVaKGbtJTQqR1484T71CXhLPwkyuJKaZdiSJare
-         Z2Xfd5u6L3yuOn1g07sGNbdVnDYCgXBKH02LhAnKiKa8rQhBvos3Zq1SQ1BLaP8rBS8u
-         GNjIpPdz1RSEy3hcAzJTOr4tUAOfDecBa98Ib5JtyIfbNXAW3xKelLCSnm1biVEgt1Pq
-         n4Nys3H4eWyjrMrcDUFlYJpj03szQ41/VkH+x2vkM4Arkv6SDyK9bTKmFxyAqYLwzipk
-         rtMSEujjRwO2luaSSM+/f6LFznzo4M2UwetD75QKDBuVBI5jIGGNbsYN6r0A7t6VOkak
-         Aknw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xUzuk+g5+JYkMXXTgrkNLdDVSSyLreEfsj7n014KbL4=;
-        b=HUIUmPw8xbEk2NFJa2T0CvQs7ZbuFKtSRELdjK4//PlV1hT/gfLRC0RUDdUFjC/d7/
-         3Hw4OYXBpan7DRtKtdJItXapH311fZaBkIzN1pIyCiunpMf9j5qw52cqXK6gu2CEUk6L
-         xLfk3iIArOjIuXphBDcreKq+HJfAHTj6GuUuZ298hmRbiUTEAjrZciblCt/dph3/it55
-         dI+ob9jbGv/r87MZ+rfP5BI4XsbvKLHkMdlUrPATRqewkUlkwdMTLxey3bO5zAvveN3V
-         3rvcUCkUOkYB1Sr8JnY1oKcgDBJXQHNzWrsgq1Wiw8FjEY8ZHAGOB1ZCwM4xdrrviYrg
-         67Ww==
-X-Gm-Message-State: AOAM531LWR13Lc7cAMEo5TBwXJYRYwHvARtfZnnfsXNVqjZXfBXz45MT
-        lGVi0d4N0wpIwmcAsouwnw==
-X-Google-Smtp-Source: ABdhPJxO9xW1HulRij+0e3g+5kn8dME9xrmOhEm3ZhsI4RvL0qFnh+vuT2LWKkXqMbMwtuJDn1HUaA==
-X-Received: by 2002:a5d:548a:: with SMTP id h10mr15464725wrv.234.1624689867789;
-        Fri, 25 Jun 2021 23:44:27 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.254.84])
-        by smtp.gmail.com with ESMTPSA id c133sm12530270wmf.0.2021.06.25.23.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 23:44:27 -0700 (PDT)
-Date:   Sat, 26 Jun 2021 09:44:25 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH] ELF: add and use SUPRESS_WARN_UNUSED_RESULT\
-Message-ID: <YNbMyXR476FvEPaA@localhost.localdomain>
-References: <YNYz+hVeqsQmiEqN@localhost.localdomain>
- <CANiq72=qtAcsyReu85AVT-cSf3dcvbnTpQYEF1JhxCRP0WgHUw@mail.gmail.com>
- <YNZGNvGn/pkMhsx+@localhost.localdomain>
- <CANiq72=HCKAyuLD3anAuSug4s0MKMHwRXdMPt0pNs-mTxD1CXg@mail.gmail.com>
+        id S229894AbhFZG44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 02:56:56 -0400
+Received: from mout.gmx.net ([212.227.15.15]:41927 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhFZG4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 02:56:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624690469;
+        bh=kFRlnSJzJgyhHhg4Rh+NKUGJzI3tZPEzSxXMORNGKAI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=gw+xeMkL7ByA81cMQ8atBe9aIElg+n8ztBhgkpYzTfAOWlQmwL02asgemU4Cks+qI
+         KvnH7fxx5Xh5FU28eBPr5z92o597U0MB5d6ft262MDohRZeR+EQ/jjQfzjTV/Ra1Ns
+         rJNFPYBzg2j1Gxj3F5Tt3mdFkPv/hy3O+laiQRQ8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from surftab ([77.20.254.179]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MkYXs-1lX4JP2RUE-00m7IU; Sat, 26
+ Jun 2021 08:54:29 +0200
+From:   Julian Schulte <schu.ju@gmx.net>
+To:     hadess@hadess.net, dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Julian Schulte <schu.ju@gmx.net>
+Subject: [PATCH] fix Touchscreen X Axis inversion on Trekstor Surftab W1
+Date:   Sat, 26 Jun 2021 08:54:17 +0200
+Message-Id: <20210626065417.8818-1-schu.ju@gmx.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiq72=HCKAyuLD3anAuSug4s0MKMHwRXdMPt0pNs-mTxD1CXg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:KqVF4NJWDk8WXtlIu49CD/DAkXvqF85E720jguRJxxomufRNTFz
+ O2MqC43/MkGvPDw6YhEricxYabzKF9Fo7kJBT600cbGwN8ubWsT1D2AYVirn0Ht8YBp0nWl
+ v3MglQAT9Nf1sTtr8qWL0mcob848I5I3RCIHH/brY/WqfknnpHWlURSujDS+kbF3MxtTNp1
+ mebizRxoo0rqmQfrgMmtA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3+pNHCt4Py0=:f5vK/oADrqumpX4ktCEm72
+ +6sfKlar6oXkuR7kCXJOwjFAYEbr4O9NUzugMgIZHQ6MKI8Au3KNB15M/z/AIEV5DvDHYoRWC
+ KX99G2+LBBxRfyn04a0/QArBGWQxbrhV6Svm00W02ZyIGx6OfC9di1cg84t55fOIVYqN1VNrN
+ Q7jhJf1x5GlckpgtWc5k+nME+fqZTyANOJVXDmuwhP3bl9qZPYxk30kjfLFE9yr1aRu8Q8ts6
+ Q/5Q7pOCDoU6+QVSg8ebFTlfik+le4Iy3aQO75NFpvPAXN14yF3RRN6z6eMSogNsu3QIoTqCi
+ 4/CkVHWk2EYrEP53Gk15NJUj7JX+OBJKijtEmZNOMLwCYSyavmnyb5vP5Xb+aWcbQzM4uLmuY
+ SKxKHUE42VRkzvwBZni5L7YKGcaLcMXPj+KpjcGFfEoZx7Kv/LnhfdPDjch83MIX1+nmmUt4P
+ 3cxz7ismJfng1yACl8d7FOP9++HasauNvWMpeCJcLd77uQdxnNupWC2hItV3eEzQtWF5R60fB
+ DLKAtWB9mdSRju+gNJSSg6eC5lHUu2BrEtGb2QH9E1sZOk2hDTi/hr95BbXn+VjioMWMFbtdA
+ w1n7uuSmeH1lDNj/OnEk7MRroSF1XwZDxGSYsGOXot8F2GDMLBXlfVLRmZNpLXBqR5Td0lZFd
+ xBa2wvcf94XU5sWDWkUsEoEGlAKDzw5XPgHi+EAZyda4wB6fVB4tC8u0XbkBq4VMKXrTheFSx
+ eOEbEW6Cs+hOJO/MpiaILgWxX95R0EPdalClzCjDTiMmYfSxx2mkUQSFiMVa/haN1lQhKTsFW
+ ZX5kyefVi9462Gcea+2RF2JCqLy9tGm77IJYH/Uomr2zFbxRk9F5uoUEPprp0u03OjdQyCqkd
+ vaJpLKFoyQSY3RDe9uTEfyUhny1wHPqnda9PFJSKtWLvSNsFvJiSkOEHo5Vy7vT3OWUjXZvW0
+ pNeJJ1YNfrTnwSkB7A/qFLYabut2XwaSeyLn1nXDD7psP4km2DQGNnYesDtVSt9ykHTejjLgU
+ lQ7Ic+GY2jHIWz21qsl234wGbx0oPcaj3QHWgj0ygfTxOuCtwGUEUvV630DY5vtETJwpEz8dv
+ 8BLwWrdwmNsxzV4Qb1CgXaqR+xnrr1RqC5m
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:57:21PM +0200, Miguel Ojeda wrote:
-> On Fri, Jun 25, 2021 at 11:10 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> >
-> > This is natural place. If you're supressing WUR, then the WUR macro
-> > itself is defined implying that the header has been included.
-> 
-> I am not sure I understand -- I guess you are saying that your macro
-> is only ever needed if `__must_check` is defined, which is what I
-> meant by "related".
-> 
-> But this header was intentionally created to untangle others by
-> keeping only attributes here.
+Signed-off-by: Julian Schulte <schu.ju@gmx.net>
+=2D--
+ drivers/input/touchscreen/goodix.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Sure. But then developer needs to include another header to use SUPRESS_WUR.
-As posted, attribute and its suppressor go hand to hand.
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscree=
+n/goodix.c
+index c682b028f..cec5f7bdc 100644
+=2D-- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -248,6 +248,13 @@ static const struct dmi_system_id inverted_x_screen[]=
+ =3D {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "I15-TC")
+ 		},
+ 	},
++	{
++		.ident =3D "TrekStor SurfTab duo W1 10.1 (VT4)",
++		.matches =3D {
++			DMI_MATCH(DMI_SYS_VENDOR, "TrekStor"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "SurfTab duo W1 10.1 (VT4)")
++		},
++	},
+ #endif
+ 	{}
+ };
+=2D-
+2.30.2
+
