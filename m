@@ -2,445 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF9E3B4F23
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB783B4F26
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhFZPO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 11:14:29 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22924 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230104AbhFZPOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 11:14:18 -0400
-IronPort-SDR: Kuq0Z2uHtLn2HXj7YrpYM/0T0HJVcMV8l64dyiYX63CDVxsZBfnsgJapwZ+JYRiKRKh/IUF0qP
- grIFBtohbmHQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="207613935"
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
-   d="scan'208";a="207613935"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 08:11:56 -0700
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
-   d="scan'208";a="642895568"
-Received: from mlubyani-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.8.25])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 08:11:55 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Subject: [PATCH v1 6/6] tools/tdx: Add a sample attestation user app
-Date:   Sat, 26 Jun 2021 08:11:46 -0700
-Message-Id: <19cdd6c81bfabd0c4fd3543419540cd1ad94aacf.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <cover.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S230267AbhFZPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 11:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhFZPOl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 11:14:41 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D63C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 08:12:18 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id hz1so20206282ejc.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 08:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d/h1uJ7qFN4vR9+WQkLvQTgqKrkSpgOks6V+odHZLsI=;
+        b=sM5nFsqf8c+w6mnFgw1BXqUe7DmuTC/3ntixqyE6Yvd+j8oKkZ3nWY9A64glBNpE8/
+         rUmDsIEwg97VZiARE5lQn/NzioBzDBXKdcdxRf2MPGjIxx1lvwDgx3RoYymWxkxls1Xv
+         NG3zB/1Dm+H+I5WnWZcflfg1gCKV+wThFltBPJsAK2CixQ+L6CvrH0rL3o5EoSI42JIz
+         Y4PiDXKWN32o5EyZpKnDNVtKlKB1kGC2u7DweS125eD6BTlO4VD4EXEsUxUvupRQvw+M
+         FtbwjcqzBneFCRJRkiLl55MMO6a311jcngViIL9WE/+NdbfnKN9NxGL+Kj4HloYdGmaG
+         7+yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d/h1uJ7qFN4vR9+WQkLvQTgqKrkSpgOks6V+odHZLsI=;
+        b=C+amdHynRLTHOTSfFUpMYy5camlP4GBoyr9jroQAJopM9kxZnA+Q1jzWx2aCXv3vvv
+         Hou+Y1F54++r1JdcpL9i76FDBA0kya0wLcSOuDId5f7k1cAYfMBbf3bxxo+Szg9ARVJM
+         GhN8uvSe1j7W34nLAx1FWvH2/gAnUIDj4QOlCI0bv/gvtvEdhL6piBm66Vdjazz67Q0F
+         zJ7FqaEhXjTB8jSN2sp2VQYEYVep0wX/Y9+InIAs6W7FObIDu/lh9MqWBTbCTOgKXvND
+         9PwGYwGZiG/ABFjIxSZyNfSYoOV/Ylge/dXCGnMYo7OTTXdIe2DkGAMBlW6A1jQwy4ke
+         +xOQ==
+X-Gm-Message-State: AOAM531RFzpbIaWbnStuage2SKPEY/llXoGhTx64kDNVxyXFK2yjidyY
+        7F5GBELzr6Q2Vn9OqnzQ0cdQBBGlSBE3FqtrfKg=
+X-Google-Smtp-Source: ABdhPJzkrt8KTHMK9yAmdtZg8EfjgY3ZK0nbWO86hcQW6c6vKKd5HuZK3lRbkuybHxKoGVXtigR4tqvbBwCwr6iqX3g=
+X-Received: by 2002:a17:906:9452:: with SMTP id z18mr16652221ejx.227.1624720337395;
+ Sat, 26 Jun 2021 08:12:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210626100931.22794-1-Kuan-Ying.Lee@mediatek.com> <20210626100931.22794-3-Kuan-Ying.Lee@mediatek.com>
+In-Reply-To: <20210626100931.22794-3-Kuan-Ying.Lee@mediatek.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Sat, 26 Jun 2021 18:12:06 +0300
+Message-ID: <CA+fCnZfy-C+J_wdMm7Wao+4iUcN1YUAmxX9wjNKDGRq=4YgAng@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] kasan: integrate the common part of two KASAN
+ tag-based modes
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, wsd_upstream@mediatek.com,
+        chinwen.chang@mediatek.com, nicholas.tang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This application uses the misc device /dev/tdx-attest to get TDREPORT
-from the TDX Module or request quote from the VMM.
+On Sat, Jun 26, 2021 at 1:09 PM Kuan-Ying Lee
+<Kuan-Ying.Lee@mediatek.com> wrote:
+>
+> 1. Move kasan_get_free_track() and kasan_set_free_info()
+>    into tags.c and combine these two functions for
+>    SW_TAGS and HW_TAGS kasan mode.
+> 2. Move kasan_get_bug_type() to report_tags.c and
+>    make this function compatible for SW_TAGS and
+>    HW_TAGS kasan mode.
+>
+> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> Suggested-by: Marco Elver <elver@google.com>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  mm/kasan/Makefile         |  4 +--
+>  mm/kasan/hw_tags.c        | 22 ---------------
+>  mm/kasan/report_hw_tags.c |  5 ----
+>  mm/kasan/report_sw_tags.c | 43 ----------------------------
+>  mm/kasan/report_tags.c    | 51 +++++++++++++++++++++++++++++++++
+>  mm/kasan/sw_tags.c        | 41 ---------------------------
+>  mm/kasan/tags.c           | 59 +++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 112 insertions(+), 113 deletions(-)
+>  create mode 100644 mm/kasan/report_tags.c
+>  create mode 100644 mm/kasan/tags.c
+>
+> diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+> index 9fe39a66388a..adcd9acaef61 100644
+> --- a/mm/kasan/Makefile
+> +++ b/mm/kasan/Makefile
+> @@ -37,5 +37,5 @@ CFLAGS_sw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+>
+>  obj-$(CONFIG_KASAN) := common.o report.o
+>  obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o report_generic.o shadow.o quarantine.o
+> -obj-$(CONFIG_KASAN_HW_TAGS) += hw_tags.o report_hw_tags.o
+> -obj-$(CONFIG_KASAN_SW_TAGS) += init.o report_sw_tags.o shadow.o sw_tags.o
+> +obj-$(CONFIG_KASAN_HW_TAGS) += hw_tags.o report_hw_tags.o tags.o report_tags.o
+> +obj-$(CONFIG_KASAN_SW_TAGS) += init.o report_sw_tags.o shadow.o sw_tags.o tags.o report_tags.o
+> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+> index ed5e5b833d61..4ea8c368b5b8 100644
+> --- a/mm/kasan/hw_tags.c
+> +++ b/mm/kasan/hw_tags.c
+> @@ -216,28 +216,6 @@ void __init kasan_init_hw_tags(void)
+>         pr_info("KernelAddressSanitizer initialized\n");
+>  }
+>
+> -void kasan_set_free_info(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (alloc_meta)
+> -               kasan_set_track(&alloc_meta->free_track[0], GFP_NOWAIT);
+> -}
+> -
+> -struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return NULL;
+> -
+> -       return &alloc_meta->free_track[0];
+> -}
+> -
+>  void kasan_alloc_pages(struct page *page, unsigned int order, gfp_t flags)
+>  {
+>         /*
+> diff --git a/mm/kasan/report_hw_tags.c b/mm/kasan/report_hw_tags.c
+> index 42b2168755d6..5dbbbb930e7a 100644
+> --- a/mm/kasan/report_hw_tags.c
+> +++ b/mm/kasan/report_hw_tags.c
+> @@ -15,11 +15,6 @@
+>
+>  #include "kasan.h"
+>
+> -const char *kasan_get_bug_type(struct kasan_access_info *info)
+> -{
+> -       return "invalid-access";
+> -}
+> -
+>  void *kasan_find_first_bad_addr(void *addr, size_t size)
+>  {
+>         return kasan_reset_tag(addr);
+> diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
+> index 821a14a19a92..d2298c357834 100644
+> --- a/mm/kasan/report_sw_tags.c
+> +++ b/mm/kasan/report_sw_tags.c
+> @@ -29,49 +29,6 @@
+>  #include "kasan.h"
+>  #include "../slab.h"
+>
+> -const char *kasan_get_bug_type(struct kasan_access_info *info)
+> -{
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       struct kmem_cache *cache;
+> -       struct page *page;
+> -       const void *addr;
+> -       void *object;
+> -       u8 tag;
+> -       int i;
+> -
+> -       tag = get_tag(info->access_addr);
+> -       addr = kasan_reset_tag(info->access_addr);
+> -       page = kasan_addr_to_page(addr);
+> -       if (page && PageSlab(page)) {
+> -               cache = page->slab_cache;
+> -               object = nearest_obj(cache, page, (void *)addr);
+> -               alloc_meta = kasan_get_alloc_meta(cache, object);
+> -
+> -               if (alloc_meta) {
+> -                       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> -                               if (alloc_meta->free_pointer_tag[i] == tag)
+> -                                       return "use-after-free";
+> -                       }
+> -               }
+> -               return "out-of-bounds";
+> -       }
+> -
+> -#endif
+> -       /*
+> -        * If access_size is a negative number, then it has reason to be
+> -        * defined as out-of-bounds bug type.
+> -        *
+> -        * Casting negative numbers to size_t would indeed turn up as
+> -        * a large size_t and its value will be larger than ULONG_MAX/2,
+> -        * so that this can qualify as out-of-bounds.
+> -        */
+> -       if (info->access_addr + info->access_size < info->access_addr)
+> -               return "out-of-bounds";
+> -
+> -       return "invalid-access";
+> -}
+> -
+>  void *kasan_find_first_bad_addr(void *addr, size_t size)
+>  {
+>         u8 tag = get_tag(addr);
+> diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
+> new file mode 100644
+> index 000000000000..8a319fc16dab
+> --- /dev/null
+> +++ b/mm/kasan/report_tags.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+> + * Copyright (c) 2020 Google, Inc.
+> + */
+> +
+> +#include "kasan.h"
+> +#include "../slab.h"
+> +
+> +const char *kasan_get_bug_type(struct kasan_access_info *info)
+> +{
+> +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> +       struct kasan_alloc_meta *alloc_meta;
+> +       struct kmem_cache *cache;
+> +       struct page *page;
+> +       const void *addr;
+> +       void *object;
+> +       u8 tag;
+> +       int i;
+> +
+> +       tag = get_tag(info->access_addr);
+> +       addr = kasan_reset_tag(info->access_addr);
+> +       page = kasan_addr_to_page(addr);
+> +       if (page && PageSlab(page)) {
+> +               cache = page->slab_cache;
+> +               object = nearest_obj(cache, page, (void *)addr);
+> +               alloc_meta = kasan_get_alloc_meta(cache, object);
+> +
+> +               if (alloc_meta) {
+> +                       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> +                               if (alloc_meta->free_pointer_tag[i] == tag)
+> +                                       return "use-after-free";
+> +                       }
+> +               }
+> +               return "out-of-bounds";
+> +       }
+> +#endif
+> +
+> +       /*
+> +        * If access_size is a negative number, then it has reason to be
+> +        * defined as out-of-bounds bug type.
+> +        *
+> +        * Casting negative numbers to size_t would indeed turn up as
+> +        * a large size_t and its value will be larger than ULONG_MAX/2,
+> +        * so that this can qualify as out-of-bounds.
+> +        */
+> +       if (info->access_addr + info->access_size < info->access_addr)
+> +               return "out-of-bounds";
+> +
+> +       return "invalid-access";
+> +}
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index dd05e6c801fa..bd3f540feb47 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -167,47 +167,6 @@ void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size)
+>  }
+>  EXPORT_SYMBOL(__hwasan_tag_memory);
+>
+> -void kasan_set_free_info(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       u8 idx = 0;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return;
+> -
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       idx = alloc_meta->free_track_idx;
+> -       alloc_meta->free_pointer_tag[idx] = tag;
+> -       alloc_meta->free_track_idx = (idx + 1) % KASAN_NR_FREE_STACKS;
+> -#endif
+> -
+> -       kasan_set_track(&alloc_meta->free_track[idx], GFP_NOWAIT);
+> -}
+> -
+> -struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+> -                               void *object, u8 tag)
+> -{
+> -       struct kasan_alloc_meta *alloc_meta;
+> -       int i = 0;
+> -
+> -       alloc_meta = kasan_get_alloc_meta(cache, object);
+> -       if (!alloc_meta)
+> -               return NULL;
+> -
+> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> -       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> -               if (alloc_meta->free_pointer_tag[i] == tag)
+> -                       break;
+> -       }
+> -       if (i == KASAN_NR_FREE_STACKS)
+> -               i = alloc_meta->free_track_idx;
+> -#endif
+> -
+> -       return &alloc_meta->free_track[i];
+> -}
+> -
+>  void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
+>                         unsigned long ret_ip)
+>  {
+> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+> new file mode 100644
+> index 000000000000..8f48b9502a17
+> --- /dev/null
+> +++ b/mm/kasan/tags.c
+> @@ -0,0 +1,59 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * This file contains common tag-based KASAN code.
+> + *
+> + * Copyright (c) 2018 Google, Inc.
+> + * Copyright (c) 2020 Google, Inc.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/kasan.h>
+> +#include <linux/kernel.h>
+> +#include <linux/memory.h>
+> +#include <linux/mm.h>
+> +#include <linux/static_key.h>
+> +#include <linux/string.h>
+> +#include <linux/types.h>
+> +
+> +#include "kasan.h"
+> +
+> +void kasan_set_free_info(struct kmem_cache *cache,
+> +                               void *object, u8 tag)
+> +{
+> +       struct kasan_alloc_meta *alloc_meta;
+> +       u8 idx = 0;
+> +
+> +       alloc_meta = kasan_get_alloc_meta(cache, object);
+> +       if (!alloc_meta)
+> +               return;
+> +
+> +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> +       idx = alloc_meta->free_track_idx;
+> +       alloc_meta->free_pointer_tag[idx] = tag;
+> +       alloc_meta->free_track_idx = (idx + 1) % KASAN_NR_FREE_STACKS;
+> +#endif
+> +
+> +       kasan_set_track(&alloc_meta->free_track[idx], GFP_NOWAIT);
+> +}
+> +
+> +struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
+> +                               void *object, u8 tag)
+> +{
+> +       struct kasan_alloc_meta *alloc_meta;
+> +       int i = 0;
+> +
+> +       alloc_meta = kasan_get_alloc_meta(cache, object);
+> +       if (!alloc_meta)
+> +               return NULL;
+> +
+> +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> +       for (i = 0; i < KASAN_NR_FREE_STACKS; i++) {
+> +               if (alloc_meta->free_pointer_tag[i] == tag)
+> +                       break;
+> +       }
+> +       if (i == KASAN_NR_FREE_STACKS)
+> +               i = alloc_meta->free_track_idx;
+> +#endif
+> +
+> +       return &alloc_meta->free_track[i];
+> +}
+> --
+> 2.18.0
+>
 
-It tests following attestation features:
-
-  - Get report using TDX_CMD_GET_TDREPORT IOCTL.
-  - Using report data request quote from VMM using TDX_CMD_GEN_QUOTE IOCTL.
-  - Get the quote size using TDX_CMD_GET_QUOTE_SIZE IOCTL.
-
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: bpf@vger.kernel.org
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- tools/Makefile                     |  13 +-
- tools/tdx/Makefile                 |  19 +++
- tools/tdx/attest/.gitignore        |   2 +
- tools/tdx/attest/Makefile          |  24 +++
- tools/tdx/attest/tdx-attest-test.c | 232 +++++++++++++++++++++++++++++
- 5 files changed, 284 insertions(+), 6 deletions(-)
- create mode 100644 tools/tdx/Makefile
- create mode 100644 tools/tdx/attest/.gitignore
- create mode 100644 tools/tdx/attest/Makefile
- create mode 100644 tools/tdx/attest/tdx-attest-test.c
-
-diff --git a/tools/Makefile b/tools/Makefile
-index 7e9d34ddd74c..5d68084511cb 100644
---- a/tools/Makefile
-+++ b/tools/Makefile
-@@ -30,6 +30,7 @@ help:
- 	@echo '  selftests              - various kernel selftests'
- 	@echo '  bootconfig             - boot config tool'
- 	@echo '  spi                    - spi tools'
-+	@echo '  tdx                    - TDX related test tools'
- 	@echo '  tmon                   - thermal monitoring and tuning tool'
- 	@echo '  tracing                - misc tracing tools'
- 	@echo '  turbostat              - Intel CPU idle stats and freq reporting tool'
-@@ -65,7 +66,7 @@ acpi: FORCE
- cpupower: FORCE
- 	$(call descend,power/$@)
- 
--cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
-+cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing tdx: FORCE
- 	$(call descend,$@)
- 
- bpf/%: FORCE
-@@ -104,7 +105,7 @@ all: acpi cgroup cpupower gpio hv firewire liblockdep \
- 		perf selftests bootconfig spi turbostat usb \
- 		virtio vm bpf x86_energy_perf_policy \
- 		tmon freefall iio objtool kvm_stat wmi \
--		pci debugging tracing
-+		pci debugging tracing tdx
- 
- acpi_install:
- 	$(call descend,power/$(@:_install=),install)
-@@ -112,7 +113,7 @@ acpi_install:
- cpupower_install:
- 	$(call descend,power/$(@:_install=),install)
- 
--cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
-+cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install tdx_install:
- 	$(call descend,$(@:_install=),install)
- 
- liblockdep_install:
-@@ -139,7 +140,7 @@ install: acpi_install cgroup_install cpupower_install gpio_install \
- 		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
- 		tmon_install freefall_install objtool_install kvm_stat_install \
- 		wmi_install pci_install debugging_install intel-speed-select_install \
--		tracing_install
-+		tracing_install tdx_install
- 
- acpi_clean:
- 	$(call descend,power/acpi,clean)
-@@ -147,7 +148,7 @@ acpi_clean:
- cpupower_clean:
- 	$(call descend,power/cpupower,clean)
- 
--cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
-+cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean tdx_clean:
- 	$(call descend,$(@:_clean=),clean)
- 
- liblockdep_clean:
-@@ -186,6 +187,6 @@ clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
- 		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
- 		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
- 		gpio_clean objtool_clean leds_clean wmi_clean pci_clean firmware_clean debugging_clean \
--		intel-speed-select_clean tracing_clean
-+		intel-speed-select_clean tracing_clean tdx_clean
- 
- .PHONY: FORCE
-diff --git a/tools/tdx/Makefile b/tools/tdx/Makefile
-new file mode 100644
-index 000000000000..e2564557d463
---- /dev/null
-+++ b/tools/tdx/Makefile
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0
-+include ../scripts/Makefile.include
-+
-+all: attest
-+
-+clean: attest_clean
-+
-+install: attest_install
-+
-+attest:
-+	$(call descend,attest)
-+
-+attest_install:
-+	$(call descend,attest,install)
-+
-+attest_clean:
-+	$(call descend,attest,clean)
-+
-+.PHONY: all install clean attest latency_install latency_clean
-diff --git a/tools/tdx/attest/.gitignore b/tools/tdx/attest/.gitignore
-new file mode 100644
-index 000000000000..5f819a8a6c49
---- /dev/null
-+++ b/tools/tdx/attest/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+tdx-attest-test
-diff --git a/tools/tdx/attest/Makefile b/tools/tdx/attest/Makefile
-new file mode 100644
-index 000000000000..bf47ba718386
---- /dev/null
-+++ b/tools/tdx/attest/Makefile
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Makefile for vm tools
-+#
-+VAR_CFLAGS := $(shell pkg-config --cflags libtracefs 2>/dev/null)
-+VAR_LDLIBS := $(shell pkg-config --libs libtracefs 2>/dev/null)
-+
-+TARGETS = tdx-attest-test
-+CFLAGS = -static -Wall -Wextra -g -O2 $(VAR_CFLAGS)
-+LDFLAGS = -lpthread $(VAR_LDLIBS)
-+
-+all: $(TARGETS)
-+
-+%: %.c
-+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
-+
-+clean:
-+	$(RM) tdx-attest-test
-+
-+prefix ?= /usr/local
-+sbindir ?= ${prefix}/sbin
-+
-+install: all
-+	install -d $(DESTDIR)$(sbindir)
-+	install -m 755 -p $(TARGETS) $(DESTDIR)$(sbindir)
-diff --git a/tools/tdx/attest/tdx-attest-test.c b/tools/tdx/attest/tdx-attest-test.c
-new file mode 100644
-index 000000000000..7634ec6a084c
---- /dev/null
-+++ b/tools/tdx/attest/tdx-attest-test.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tdx-attest-test.c - utility to test TDX attestation feature.
-+ *
-+ * Copyright (C) 2020 - 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-+ *
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <stdio.h>
-+#include <ctype.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <limits.h>
-+#include <stdbool.h>
-+#include <getopt.h>
-+#include <stdint.h> /* uintmax_t */
-+#include <sys/mman.h>
-+#include <unistd.h> /* sysconf */
-+#include <time.h>
-+
-+#include "../../../include/uapi/misc/tdx.h"
-+
-+#define devname		"/dev/tdx-attest"
-+
-+#define HEX_DUMP_SIZE	16
-+#define MAX_ROW_SIZE	70
-+
-+#define ATTESTATION_TEST_BIN_VERSION "0.1"
-+
-+struct tdx_attest_args {
-+	bool is_dump_data;
-+	bool is_get_tdreport;
-+	bool is_get_quote_size;
-+	bool is_gen_quote;
-+	bool debug_mode;
-+	char *out_file;
-+};
-+
-+static void print_hex_dump(const char *title, const char *prefix_str,
-+			   const void *buf, int len)
-+{
-+	const __u8 *ptr = buf;
-+	int i, rowsize = HEX_DUMP_SIZE;
-+
-+	if (!len || !buf)
-+		return;
-+
-+	printf("\t\t%s", title);
-+
-+	for (i = 0; i < len; i++) {
-+		if (!(i % rowsize))
-+			printf("\n%s%.8x:", prefix_str, i);
-+		printf(" %.2x", ptr[i])
-+	}
-+
-+	printf("\n");
-+}
-+
-+static void gen_report_data(__u8 *report_data, bool dump_data)
-+{
-+	int i;
-+
-+	srand(time(NULL));
-+
-+	for (i = 0; i < TDX_REPORT_DATA_LEN; i++)
-+		report_data[i] = rand();
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX report data\n", " ",
-+			       report_data, TDX_REPORT_DATA_LEN);
-+}
-+
-+static int get_tdreport(int devfd, bool dump_data, __u8 *report_data)
-+{
-+	__u8 tdrdata[TDX_TDREPORT_LEN] = {0};
-+	int ret;
-+
-+	if (!report_data)
-+		report_data = tdrdata;
-+
-+	gen_report_data(report_data, dump_data);
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_TDREPORT, report_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX tdreport data\n", " ", report_data,
-+			       TDX_TDREPORT_LEN);
-+
-+	return 0;
-+}
-+
-+static __u64 get_quote_size(int devfd)
-+{
-+	int ret;
-+	__u64 quote_size;
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_QUOTE_SIZE, &quote_size);
-+	if (ret) {
-+		printf("TDX_CMD_GET_QUOTE_SIZE ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	printf("Quote size: %lld\n", quote_size);
-+
-+	return quote_size;
-+}
-+
-+static int gen_quote(int devfd, bool dump_data)
-+{
-+	__u8 *quote_data;
-+	__u64 quote_size;
-+	int ret;
-+
-+	quote_size = get_quote_size(devfd);
-+
-+	quote_data = malloc(sizeof(char) * quote_size);
-+	if (!quote_data) {
-+		printf("%s queue data alloc failed\n", devname);
-+		return -ENOMEM;
-+	}
-+
-+	ret = get_tdreport(devfd, dump_data, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	ret = ioctl(devfd, TDX_CMD_GEN_QUOTE, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GEN_QUOTE ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	print_hex_dump("\n\t\tTDX Quote MMIO data\n", " ", quote_data,
-+		       quote_size);
-+
-+done:
-+	free(quote_data);
-+
-+	return ret;
-+}
-+
-+static void usage(void)
-+{
-+	puts("\nUsage:\n");
-+	puts("tdx_attest [options] \n");
-+
-+	puts("Attestation device test utility.");
-+
-+	puts("\nOptions:\n");
-+	puts(" -d, --dump                Dump tdreport/tdquote data");
-+	puts(" -r, --get-tdreport        Get TDREPORT data");
-+	puts(" -g, --gen-quote           Generate TDQUOTE");
-+	puts(" -s, --get-quote-size      Get TDQUOTE size");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int ret, devfd;
-+	struct tdx_attest_args args = {0};
-+
-+	static const struct option longopts[] = {
-+		{ "dump",           no_argument,       NULL, 'd' },
-+		{ "get-tdreport",   required_argument, NULL, 'r' },
-+		{ "gen-quote",      required_argument, NULL, 'g' },
-+		{ "gen-quote-size", required_argument, NULL, 's' },
-+		{ "version",        no_argument,       NULL, 'V' },
-+		{ NULL,             0, NULL, 0 }
-+	};
-+
-+	while ((ret = getopt_long(argc, argv, "hdrgsV", longopts,
-+				  NULL)) != -1) {
-+		switch (ret) {
-+		case 'd':
-+			args.is_dump_data = true;
-+			break;
-+		case 'r':
-+			args.is_get_tdreport = true;
-+			break;
-+		case 'g':
-+			args.is_gen_quote = true;
-+			break;
-+		case 's':
-+			args.is_get_quote_size = true;
-+			break;
-+		case 'h':
-+			usage();
-+			return 0;
-+		case 'V':
-+			printf("Version: %s\n", ATTESTATION_TEST_BIN_VERSION);
-+			return 0;
-+		default:
-+			printf("Invalid options\n");
-+			usage();
-+			return -EINVAL;
-+		}
-+	}
-+
-+	devfd = open(devname, O_RDWR | O_SYNC);
-+	if (devfd < 0) {
-+		printf("%s open() failed\n", devname);
-+		return -ENODEV;
-+	}
-+
-+	if (args.is_get_quote_size)
-+		get_quote_size(devfd);
-+
-+	if (args.is_get_tdreport)
-+		get_tdreport(devfd, args.is_dump_data, NULL);
-+
-+	if (args.is_gen_quote)
-+		gen_quote(devfd, args.is_dump_data);
-+
-+	close(devfd);
-+
-+	return 0;
-+}
--- 
-2.25.1
-
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
