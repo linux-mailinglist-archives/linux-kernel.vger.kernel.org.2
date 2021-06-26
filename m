@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FD83B4E59
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 13:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1DF3B4E5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 13:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhFZLEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 07:04:48 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:12033 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhFZLEf (ORCPT
+        id S230177AbhFZLE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 07:04:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8442 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhFZLEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 07:04:35 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBrTm3lznzZj8Z;
+        Sat, 26 Jun 2021 07:04:36 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GBrTm6X88zZkCw;
         Sat, 26 Jun 2021 18:59:08 +0800 (CST)
 Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 26 Jun 2021 19:02:11 +0800
+ 15.1.2176.2; Sat, 26 Jun 2021 19:02:12 +0800
 Received: from thunder-town.china.huawei.com (10.174.179.0) by
  dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -30,9 +30,9 @@ To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         iommu <iommu@lists.linux-foundation.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH RFC 6/8] iommu/arm-smmu-v3: Ensure that a set of associated commands are inserted in the same ECMDQ
-Date:   Sat, 26 Jun 2021 19:01:28 +0800
-Message-ID: <20210626110130.2416-7-thunder.leizhen@huawei.com>
+Subject: [PATCH RFC 7/8] iommu/arm-smmu-v3: Add arm_smmu_ecmdq_issue_cmdlist() for non-shared ECMDQ
+Date:   Sat, 26 Jun 2021 19:01:29 +0800
+Message-ID: <20210626110130.2416-8-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20210626110130.2416-1-thunder.leizhen@huawei.com>
 References: <20210626110130.2416-1-thunder.leizhen@huawei.com>
@@ -47,145 +47,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SYNC command only ensures that the command that precedes it in the
-same ECMDQ must be executed, but cannot synchronize the commands in other
-ECMDQs. If an unmap involves multiple commands, some commands are executed
-on one core, and the other commands are executed on another core. In this
-case, after the SYNC execution is complete, the execution of all preceded
-commands can not be ensured.
-
-Prevent the process that performs a set of associated commands insertion
-from being migrated to other cores ensures that all commands are inserted
-into the same ECMDQ.
+When a core can exclusively own an ECMDQ, competition with other cores
+does not need to be considered during command insertion. Therefore, we can
+delete the part of arm_smmu_cmdq_issue_cmdlist() that deals with
+multi-core contention and generate a more efficient ECMDQ-specific
+function arm_smmu_ecmdq_issue_cmdlist().
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 40 +++++++++++++++++----
- 1 file changed, 33 insertions(+), 7 deletions(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 85 +++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  1 +
+ 2 files changed, 86 insertions(+)
 
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index d7b590e911a879d..d5205030710bd1a 100644
+index d5205030710bd1a..a088f2479fc6223 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -233,6 +233,18 @@ static int queue_remove_raw(struct arm_smmu_queue *q, u64 *ent)
- 	return 0;
+@@ -769,6 +769,87 @@ static void arm_smmu_cmdq_write_entries(struct arm_smmu_cmdq *cmdq, u64 *cmds,
+ 	}
  }
  
-+static void arm_smmu_preempt_disable(struct arm_smmu_device *smmu)
++/*
++ * The function is used when the current core exclusively occupies an ECMDQ.
++ * This is a reduced version of arm_smmu_cmdq_issue_cmdlist(), which eliminates
++ * a lot of unnecessary inter-core competition considerations.
++ */
++static int arm_smmu_ecmdq_issue_cmdlist(struct arm_smmu_device *smmu,
++					struct arm_smmu_cmdq *cmdq,
++					u64 *cmds, int n, bool sync)
 +{
-+	if (smmu->ecmdq_enabled)
-+		preempt_disable();
++	u32 prod;
++	unsigned long flags;
++	struct arm_smmu_ll_queue llq = {
++		.max_n_shift = cmdq->q.llq.max_n_shift,
++	}, head;
++	int ret = 0;
++
++	/* 1. Allocate some space in the queue */
++	local_irq_save(flags);
++	llq.val = READ_ONCE(cmdq->q.llq.val);
++	do {
++		u64 old;
++
++		while (!queue_has_space(&llq, n + sync)) {
++			local_irq_restore(flags);
++			if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
++				dev_err_ratelimited(smmu->dev, "ECMDQ timeout\n");
++			local_irq_save(flags);
++		}
++
++		head.cons = llq.cons;
++		head.prod = queue_inc_prod_n(&llq, n + sync);
++
++		old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
++		if (old == llq.val)
++			break;
++
++		llq.val = old;
++	} while (1);
++
++	/* 2. Write our commands into the queue */
++	arm_smmu_cmdq_write_entries(cmdq, cmds, llq.prod, n);
++	if (sync) {
++		u64 cmd_sync[CMDQ_ENT_DWORDS];
++
++		prod = queue_inc_prod_n(&llq, n);
++		arm_smmu_cmdq_build_sync_cmd(cmd_sync, smmu, &cmdq->q, prod);
++		queue_write(Q_ENT(&cmdq->q, prod), cmd_sync, CMDQ_ENT_DWORDS);
++	}
++
++	/* 3. Ensuring commands are visible first */
++	dma_wmb();
++
++	/* 4. Advance the hardware prod pointer */
++	read_lock(&cmdq->q.ecmdq_lock);
++	writel_relaxed(head.prod | cmdq->q.ecmdq_prod, cmdq->q.prod_reg);
++	read_unlock(&cmdq->q.ecmdq_lock);
++
++	/* 5. If we are inserting a CMD_SYNC, we must wait for it to complete */
++	if (sync) {
++		llq.prod = queue_inc_prod_n(&llq, n);
++		ret = arm_smmu_cmdq_poll_until_sync(smmu, &llq);
++		if (ret) {
++			dev_err_ratelimited(smmu->dev,
++					    "CMD_SYNC timeout at 0x%08x [hwprod 0x%08x, hwcons 0x%08x]\n",
++					    llq.prod,
++					    readl_relaxed(cmdq->q.prod_reg),
++					    readl_relaxed(cmdq->q.cons_reg));
++		}
++
++		/*
++		 * Update cmdq->q.llq.cons, to improve the success rate of
++		 * queue_has_space() when some new commands are inserted next
++		 * time.
++		 */
++		WRITE_ONCE(cmdq->q.llq.cons, llq.cons);
++	}
++
++	local_irq_restore(flags);
++	return ret;
 +}
 +
-+static void arm_smmu_preempt_enable(struct arm_smmu_device *smmu)
-+{
-+	if (smmu->ecmdq_enabled)
-+		preempt_enable();
-+}
+ /*
+  * This is the actual insertion function, and provides the following
+  * ordering guarantees to callers:
+@@ -798,6 +879,9 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+ 	}, head = llq;
+ 	int ret = 0;
+ 
++	if (!cmdq->shared)
++		return arm_smmu_ecmdq_issue_cmdlist(smmu, cmdq, cmds, n, sync);
 +
- /* High-level queue accessors */
- static int arm_smmu_cmdq_build_cmd(u64 *cmd, struct arm_smmu_cmdq_ent *ent)
- {
-@@ -1016,6 +1028,7 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
- 		},
- 	};
+ 	/* 1. Allocate some space in the queue */
+ 	local_irq_save(flags);
+ 	llq.val = READ_ONCE(cmdq->q.llq.val);
+@@ -3001,6 +3085,7 @@ static int arm_smmu_cmdq_init(struct arm_smmu_device *smmu)
+ 	unsigned int nents = 1 << cmdq->q.llq.max_n_shift;
+ 	atomic_long_t *bitmap;
  
-+	arm_smmu_preempt_disable(smmu);
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
- 	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
- 		for (i = 0; i < master->num_streams; i++) {
-@@ -1026,6 +1039,7 @@ static void arm_smmu_sync_cd(struct arm_smmu_domain *smmu_domain,
- 	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
++	cmdq->shared = 1;
+ 	atomic_set(&cmdq->owner_prod, 0);
+ 	atomic_set(&cmdq->lock, 0);
  
- 	arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
- }
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 3f3a867a4626fcd..c6efbea3c0a1cda 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -569,6 +569,7 @@ struct arm_smmu_cmdq {
+ 	atomic_long_t			*valid_map;
+ 	atomic_t			owner_prod;
+ 	atomic_t			lock;
++	int				shared;
+ };
  
- static int arm_smmu_alloc_cd_leaf_table(struct arm_smmu_device *smmu,
-@@ -1814,30 +1828,36 @@ arm_smmu_atc_inv_to_cmd(int ssid, unsigned long iova, size_t size,
- 
- static int arm_smmu_atc_inv_master(struct arm_smmu_master *master)
- {
--	int i;
-+	int i, ret;
- 	struct arm_smmu_cmdq_ent cmd;
- 	struct arm_smmu_cmdq_batch cmds = {};
-+	struct arm_smmu_device *smmu = master->smmu;
- 
- 	arm_smmu_atc_inv_to_cmd(0, 0, 0, &cmd);
- 
-+	arm_smmu_preempt_disable(smmu);
- 	for (i = 0; i < master->num_streams; i++) {
- 		cmd.atc.sid = master->streams[i].id;
--		arm_smmu_cmdq_batch_add(master->smmu, &cmds, &cmd);
-+		arm_smmu_cmdq_batch_add(smmu, &cmds, &cmd);
- 	}
- 
--	return arm_smmu_cmdq_batch_submit(master->smmu, &cmds);
-+	ret = arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
-+
-+	return ret;
- }
- 
- int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 			    unsigned long iova, size_t size)
- {
--	int i;
-+	int i, ret;
- 	unsigned long flags;
- 	struct arm_smmu_cmdq_ent cmd;
- 	struct arm_smmu_master *master;
- 	struct arm_smmu_cmdq_batch cmds = {};
-+	struct arm_smmu_device *smmu = smmu_domain->smmu;
- 
--	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_ATS))
-+	if (!(smmu->features & ARM_SMMU_FEAT_ATS))
- 		return 0;
- 
- 	/*
-@@ -1859,6 +1879,7 @@ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 
- 	arm_smmu_atc_inv_to_cmd(ssid, iova, size, &cmd);
- 
-+	arm_smmu_preempt_disable(smmu);
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
- 	list_for_each_entry(master, &smmu_domain->devices, domain_head) {
- 		if (!master->ats_enabled)
-@@ -1866,12 +1887,15 @@ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- 
- 		for (i = 0; i < master->num_streams; i++) {
- 			cmd.atc.sid = master->streams[i].id;
--			arm_smmu_cmdq_batch_add(smmu_domain->smmu, &cmds, &cmd);
-+			arm_smmu_cmdq_batch_add(smmu, &cmds, &cmd);
- 		}
- 	}
- 	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
- 
--	return arm_smmu_cmdq_batch_submit(smmu_domain->smmu, &cmds);
-+	ret = arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
-+
-+	return ret;
- }
- 
- /* IO_PGTABLE API */
-@@ -1924,6 +1948,7 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 		num_pages = size >> tg;
- 	}
- 
-+	arm_smmu_preempt_disable(smmu);
- 	while (iova < end) {
- 		if (smmu->features & ARM_SMMU_FEAT_RANGE_INV) {
- 			/*
-@@ -1955,6 +1980,7 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 		iova += inv_range;
- 	}
- 	arm_smmu_cmdq_batch_submit(smmu, &cmds);
-+	arm_smmu_preempt_enable(smmu);
- }
- 
- static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+ struct arm_smmu_ecmdq {
 -- 
 2.26.0.106.g9fadedd
 
