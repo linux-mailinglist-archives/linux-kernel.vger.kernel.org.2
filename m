@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDE13B4DAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 10:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A5F3B4DAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 10:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhFZIVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 04:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        id S229796AbhFZI0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 04:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZIVf (ORCPT
+        with ESMTP id S229518AbhFZI0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 04:21:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879DCC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 01:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vwVyjVuZDLq7eykpKBvO8M67kULOyIrzylMDKI5H34o=; b=tWWyrG5K2AhpcKEULF5Mr33Tfr
-        PoIun19f3SzDd+WN4kxJ0xFh0vpGapOBOTGNfrfgfmE7nBv2jxi5BaKDDwyP96xbCNeF/CcMvWdLt
-        /nLTjQKK8J7Ki8ZudveH9sZBffHED0rWWdxDQVuhuyUsAauJ1Ze15vC3od5UQTsqI6KL5i1L76V59
-        GdXcOFkJ0bNZwGbzGEjj3TUp7aXpQB3jjCrX9ARgG87kO9VV12BKQy+5rYrerTrX3Xn30PiCFiMUI
-        TtOaqMwgdwqts5ijX+sxCS7hQnn874M2bqg+LPDhiYoCGlBcB1qDvoEkBzOTn/dax4urADZ7LXDXW
-        JnStbuvw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lx3W2-000rja-TL; Sat, 26 Jun 2021 08:18:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 924BA30020C;
-        Sat, 26 Jun 2021 10:18:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 716882BC35BC0; Sat, 26 Jun 2021 10:18:12 +0200 (CEST)
-Date:   Sat, 26 Jun 2021 10:18:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     jpoimboe@redhat.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
-        mbenes@suse.com, dvyukov@google.com, elver@google.com
-Subject: Re: [PATCH v2 03/24] objtool: Handle __sanitize_cov*() tail calls
-Message-ID: <YNbixBy+s4ca6PU+@hirez.programming.kicks-ass.net>
-References: <20210624094059.886075998@infradead.org>
- <20210624095147.818783799@infradead.org>
- <20210625093824.03eb3cf7@oasis.local.home>
+        Sat, 26 Jun 2021 04:26:36 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1390BC061574;
+        Sat, 26 Jun 2021 01:24:14 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso8416096pjx.1;
+        Sat, 26 Jun 2021 01:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ocF7LIpSwj3vsZpHqVHvaq9IL3YwB/xApDMByqK67ds=;
+        b=Ok6ehZ3ywSEcP84JHiXhZnSr6kLHfiTzdhMbOwlbhFnO9JmqUDic3JM4CSYCs5yx3l
+         3UVfAKtH25NmZ48EcJgC5jMTnn0f/oKkD2rbRwzUz3OfbhLPPQeBT3Cnh7Lakx0AdL2h
+         CjHM6qYnHGKNYS3uZMGroZC+7ezaXW3DbDXETdNqR3vZUhiIN9NKqkOyR3mcVdF9JKlA
+         xC0nUeLcDrGklkcGMEFqvVAFC0YOvZ12bTYwoIDObSK4zxYJOtShYfVRn8WI3OmV7cQq
+         WhoynDe40Nwyrtww/YWL5JfBfrDhE9TzlKu3NvGs1nd3v/45PAxWZQ8VU/sb9MyWNvOt
+         wo0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ocF7LIpSwj3vsZpHqVHvaq9IL3YwB/xApDMByqK67ds=;
+        b=C/xjNCSkLyAF3Rdoa7GX3m9bNWaVZ/zm7nLL+Vk+Pw0R/8RwWHukdYuOIayMvfNlTf
+         8E4GWZd8NyAhXHHe/RNyMujpo/axXFKdlAbxInqj7bQ6vL/+6FWl3kqXRSIR522DKIkF
+         ZOM4//lo7+uf6ABrcs4sYodkdk5MguCRrOcdOC/8s9XXdHUVEM2zU8LTlNEBYLMlZiDz
+         ANzVYXJUIbT3L/yADx8ISP/gISJHKPS+aseVyGyJ3Efvru7o7XMrHhYpuPEBKXrS4jq3
+         7sQ6qNW3VoCZHOVIl7cZMbSdicE5DgaRAheXxx4yzfG+en8Y4XvQEBTf9fBObxxjwbSp
+         AFMg==
+X-Gm-Message-State: AOAM5311uQOXT5bK+eNmbGx9pRIGNIaEjxVZdC08uHvRmo4U39Z2AePd
+        DZfhZ6zuX2bBKhDcMsVhEBQ=
+X-Google-Smtp-Source: ABdhPJyXzXcAr0JT1E0Xnx8dUGgzY6WxtABUW/NHoZY8c2ZH8/gIcc0pHDu/rbEPJttRTk/mVga8GQ==
+X-Received: by 2002:a17:90b:3449:: with SMTP id lj9mr26237121pjb.123.1624695853420;
+        Sat, 26 Jun 2021 01:24:13 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6d7c:6bfd:dac8:eafe:7bde])
+        by smtp.googlemail.com with ESMTPSA id h8sm8064995pfn.0.2021.06.26.01.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Jun 2021 01:24:12 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     axboe@kernel.dk, hch@infradead.org
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
+Subject: [PATCH v2] loop: fix setting arbitrarily large block size
+Date:   Sat, 26 Jun 2021 13:54:06 +0530
+Message-Id: <20210626082406.348821-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
+References: <20210623050933.140572-1-chouhan.shreyansh630@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625093824.03eb3cf7@oasis.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:38:24AM -0400, Steven Rostedt wrote:
-> On Thu, 24 Jun 2021 11:41:02 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > +static void add_call_dest(struct objtool_file *file, struct instruction *insn,
-> > +			  struct symbol *dest, bool sibling)
-> > +{
-> > +	struct reloc *reloc = insn_reloc(file, insn);
-> > +
-> > +	insn->call_dest = dest;
-> > +	if (!dest)
-> > +		return;
-> > +
-> > +	if (insn->call_dest->static_call_tramp) {
-> > +		list_add_tail(&insn->call_node,
-> > +			      &file->static_call_list);
-> > +	}
-> > +
-> > +	if (insn->sec->noinstr &&
-> > +	    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
-> > +		if (reloc) {
-> > +			reloc->type = R_NONE;
-> > +			elf_write_reloc(file->elf, reloc);
-> > +		}
-> > +
-> > +		elf_write_insn(file->elf, insn->sec,
-> > +			       insn->offset, insn->len,
-> > +			       sibling ? arch_ret_insn(insn->len)
-> > +			               : arch_nop_insn(insn->len));
-> > +
-> > +		insn->type = sibling ? INSN_RETURN : INSN_NOP;
-> > +	}
-> > +
-> > +	if (mcount && !strcmp(insn->call_dest->name, "__fentry__")) {
-> > +		if (sibling)
-> > +			WARN_FUNC("Tail call to __fentry__ !?!?", insn->sec, insn->offset);
-> 
-> Have you ever triggered the above?
+loop_validate_block_size took an unsigned short argument. Passing an
+argument with size greater than the size of unsigned short would cause
+an overflow and could potentially render the upper bound check on the
+block size useless, allowing to set an arbitrarily large block size.
 
-No, that would be really daft. But since this function is to be called
-for both regular and tail calls, I figured I'd at least pretend to
-handle the case.
+Reported-by: syzbot+cf89d662483d6a1a0790@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+---
+
+Changes from v1: Fixed the spelling of reported-by tag. Fixed the
+commit message.
+
+ drivers/block/loop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 9a758cf66507..635baff0dd66 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -236,7 +236,7 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
+  * @bsize: size to validate
+  */
+ static int
+-loop_validate_block_size(unsigned short bsize)
++loop_validate_block_size(unsigned long bsize)
+ {
+ 	if (bsize < 512 || bsize > PAGE_SIZE || !is_power_of_2(bsize))
+ 		return -EINVAL;
+-- 
+2.31.1
+
