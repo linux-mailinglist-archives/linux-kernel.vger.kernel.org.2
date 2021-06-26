@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ED63B4F01
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 16:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76843B4F02
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 16:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFZOdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 10:33:21 -0400
-Received: from mout.gmx.net ([212.227.15.15]:53779 "EHLO mout.gmx.net"
+        id S230085AbhFZOfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 10:35:15 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16420 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhFZOdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 10:33:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624717836;
-        bh=q1xyXqBOrhwD5gZND37RRmGI/O0LWaj0MVp1LAHNDn4=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=RjDUK6/aVKCvYOhjUFv7aMo1lVWjjkl5D/8hsweHavk+Sy7yjn6Uc/vUvsW985/Us
-         CCcZmOgChG0cUF3wlyhM5SVDwymVLAWSIlLkX9ZuSskqhmgvo7Ct2tEo79Mui0gtkm
-         akX5OsLabmN95G/TL2W8QATq+qHchvt4Y3pjCq0o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTAFh-1loedI3rVn-00Ua6O; Sat, 26
- Jun 2021 16:30:36 +0200
-Date:   Sat, 26 Jun 2021 16:30:10 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-Cc:     John Wood <john.wood@gmx.com>, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mt76/mt7915: Fix unsigned compared against zero
-Message-ID: <20210626143010.GA2936@ubuntu>
-References: <20210612143505.7637-1-john.wood@gmx.com>
+        id S229518AbhFZOfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 10:35:14 -0400
+IronPort-SDR: sAWbm2P2PtJrwX31yLqimy1iB65MYdXYFZvtEgSEhz/UtwvYG58YBdKRAuNh7hA7opLZ71KDEd
+ wSqT3RYL231w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="188174862"
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="188174862"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 07:32:51 -0700
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="475134343"
+Received: from mlubyani-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.8.25])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 07:32:50 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/4] Add TDX Guest Support (Debug support)
+Date:   Sat, 26 Jun 2021 07:32:40 -0700
+Message-Id: <cover.1624717684.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210612143505.7637-1-john.wood@gmx.com>
-X-Provags-ID: V03:K1:tQ2f+TzIa4cFuYvRr3c0vPwUbF+5UbFFSq+mpcgXQdaJ2U//YOI
- QOyCOm+E6AURnA+9aCQ31jRi8UiTJl8lE1yyJjyZhckYBRACLhoKYME+3IQn9CCh+ek0WVH
- NSTlQAUrpM90MAeFRndo8hdW8bXh5pS2UXh0CXaE64VlrKCvoj8a9XhB1MAVT1h70Bl8p1R
- Va3BYV6ljtqROkiyeT9IQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d10Rb6Q5FAg=:kA+y8IL3xQ9/OlFRJewcGQ
- p7/uCmxRHhAaqwnaSZqFKwWckGdZJY51F+MwAiaXdbR/OQ4q+X6Xyoha1JJCgmoLG3AJUqUsU
- o2/Io9kSfF19KQ3XGyWqioK3iA9orJNmrmePk+/c7hPSz42JoW+Z+dQOnh4iR/d3zOeN3SwQE
- inrZjvAFA3jr5g9CbK+JzDbhfw9YrxGhfmeYABPMiIq6aAB453dwF8jh0fUIiaSzUDm3xyxZo
- ExgyBLWekuyPy+gYSV5uRXgk3DckvDVrjvphtev5I/EMn4jOd9T/paCfwbIy2Gais9qYApNGQ
- +TJ8tCLtGznnw7iYoBKjbztv2CLv/6w97/s6p8c2FJX1YeJjc/fx1lcfxuyGuJUjlIS0ARNpJ
- DKR433pFX3bUcgSXi8UA8nUZoPDGxjFEGFts0MSIDgY7lPvq6RGwLRUvxkIRmQajzHz1H9CIv
- HX645b1SxR0FC0Pny3wZN0CWYRfnxjXt6s6PaPJCmnAx3D8GnAQcwm0fGaFsvZiFhs1sYrcV5
- yKoInr3F1Etu7EY2tBYKV6CmD+IdHrG1lTUY1IS6qmiiaG79nuyOVBeL66wAPnTyAzJ5wDgDY
- fXvHY0b0NNQg55CHrtZ9aCOGQASkM7IPJp5Ye/em+RAVgB3wzlHfN30kqlp6N6zxdeNdhqJYB
- Rar9hOYq1cK7VVGs+2p0p0b8NOyIi5PlJT4gxOJeraxHleXzUZZ58Fj0e5LADoXs3F+YG7QIQ
- axxKz89rAgEB+cRQgRpXPJS/Ir+dG2sQZT3O2HxHItfzwehqtAagw95QFd6J/Vt918NQbOQRZ
- PUpB2cs594tUX4mv7Jr9BuYCeKHtw2TOICM/+3t3Qu0lykswrmZTD3ffgtMX1rNd41yTVkdNK
- ldiHZOPLHuEzeriwhxNQqoe8I+CwQVsea3O+PL6j4f4mj1xdIJgkhkkw38Un1ksF8sf0j0t1W
- XgxIuvS/czpvBeiI4BQy3Njbuu9nGvPVxuqLvhFjQsXNWFiErxYCID6Ima5DJuAKQQCmPW2yL
- FIdla+obJH26Iep49T/huw3wJpNwbsdTpb4UUfrOkzj9ES3sxJkeExD+HE8XVIRUAM5jlg3EN
- rM/elr9C8s+mU2nnzgCeZM0oFltmMc1FlIP
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 04:35:05PM +0200, John Wood wrote:
-> The mt7915_dpd_freq_idx() function can return a negative value but this
-> value is assigned to an unsigned variable named idx. Then, the code
-> tests if this variable is less than zero. This can never happen with an
-> unsigned type.
->
-> So, change the idx type to a signed one.
->
-> Addresses-Coverity-ID: 1484753 ("Unsigned compared against 0")
-> Fixes: 495184ac91bb8 ("mt76: mt7915: add support for applying pre-calibr=
-ation data")
+Hi All,
 
-Has anyone had time to review this patch?. Any comment on this?
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks.
 
-Thanks,
-John Wood
+Following patches adds tracepoint support for TDX Guest TDCALL requests
+and #VE exceptions. It also includes helper function to detect TD-DEBUG
+mode which will be used by patches in other TDX series to add TD-DEBUG
+mode specific features support.
+
+This series is the continuation of the following TDX guest related patches.
+
+[set 1] - https://lore.kernel.org/patchwork/project/lkml/list/?series=505232
+[set 2] - https://lore.kernel.org/patchwork/project/lkml/list/?series=506230
+[set 3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=506231
+[set 4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=506232
+
+Also please note that this series alone is not necessarily fully
+functional. You need to apply all the above 4 patch series to get 
+a fully functional TDX guest.
+
+
+
+Kuppuswamy Sathyanarayanan (3):
+  x86/tdx: Add TDCALL tracepoint
+  x86/tdx: Expose TDX Guest #VE count in /proc/interrupts
+  x86/tdx: Add tdg_debug_enabled() interface
+
+Sean Christopherson (1):
+  x86/tdx: Add #VE tracepoint
+
+ arch/x86/include/asm/hardirq.h   |   3 +
+ arch/x86/include/asm/tdx.h       |   1 +
+ arch/x86/include/asm/trace/tdx.h | 150 +++++++++++++++++++++++++++++++
+ arch/x86/kernel/irq.c            |   6 ++
+ arch/x86/kernel/tdx.c            |  71 ++++++++++++---
+ arch/x86/kernel/traps.c          |   2 +
+ 6 files changed, 220 insertions(+), 13 deletions(-)
+ create mode 100644 arch/x86/include/asm/trace/tdx.h
+
+-- 
+2.25.1
+
