@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426513B4BF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 04:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F41E3B4BF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 04:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhFZCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 22:08:48 -0400
-Received: from m12-17.163.com ([220.181.12.17]:38758 "EHLO m12-17.163.com"
+        id S229996AbhFZCMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 22:12:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhFZCIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 22:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5CAK0
-        +ktE6BZ4jyQ2xXHcEmvm7SgPXIFo2AsgHUAxzY=; b=GlEkUG9bVD2T2pjRgfmP9
-        xUEW8rpnTHI9sBZIXJoVqBN5R/cog3AcScHfBDdWHp1atcChOCvA5EirhHMhWR8A
-        Fc9CI2KXI5iKjpK1UtMni726jv83KtPSV2+n5iCxyHRqtUL/aMgV7rorQbTsLDE9
-        xwa5tWwDylz8vPQ3kVA+6A=
-Received: from ubuntu.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowABHJW2Xi9Zg9NBd9g--.54253S2;
-        Sat, 26 Jun 2021 10:06:16 +0800 (CST)
-From:   13145886936@163.com
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>,
-        gushengxian <13145886936@163.com>
-Subject: [PATCH] ndtest: Remove NULL test before vfree
-Date:   Fri, 25 Jun 2021 19:06:13 -0700
-Message-Id: <20210626020613.517758-1-13145886936@163.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowABHJW2Xi9Zg9NBd9g--.54253S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF4fJw47ur1UGr4fWF15urg_yoWfJrb_AF
-        42qr92kFWkJryxCa17Arn8uFWIka15urs7W3ya9FnxA34jy3y5KwnrWrn5GF4xWr95GF9r
-        tr9YyrsxGr12kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0Tv3UUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiGhi9g1aD+Pi3YgAAs8
+        id S229906AbhFZCMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Jun 2021 22:12:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6FC7F61941;
+        Sat, 26 Jun 2021 02:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624673402;
+        bh=LWj40Z4yKsLe4e4OkelHtGTuR65Xje+sfgl8wSxT9yc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=AciPhdbvhU8x3Py1Et6Oscy0XjXYCzrvhgYBLxHdMETw7ebOtH4TLxFrrHY7v3Z9m
+         mfbZnik5Zm5RevBnIMmBxNUjLeQ7OZsFfOSjygDk5TT4tIhjyapktIQM6J89xCkn8H
+         wWGKsL3TtfxyoXKxeLaO+MlXYHk8Rp7e6bEm1If3txeCkGYV3QnTE1HLwZQhgAiuqW
+         WCnGCGLwq/IHnD07mkvI1ZdrsxJOQTY7NmPy/zsnkDpRjjA5KuUYTGlB9Pi4s3iPC9
+         6Yc+ZV6tU8bDWhjsNt6AVnXp2YkWaVtFAyZRqw9xPu4ICCHaG6Ohane1BPVxcVhxfh
+         8Slf9d2G18GDQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C3A060A3C;
+        Sat, 26 Jun 2021 02:10:02 +0000 (UTC)
+Subject: Re: [GIT PULL] Last pin control fixes for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CACRpkdaVqdFPKTxOuhFt=auFYjxCivRmRz7mQ7ank6rbcVQsQw@mail.gmail.com>
+References: <CACRpkdaVqdFPKTxOuhFt=auFYjxCivRmRz7mQ7ank6rbcVQsQw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdaVqdFPKTxOuhFt=auFYjxCivRmRz7mQ7ank6rbcVQsQw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.13-3
+X-PR-Tracked-Commit-Id: 67e2996f72c71ebe4ac2fcbcf77e54479bb7aa11
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b7050b242430f3170e0b57f5f55136e44cb8dc66
+Message-Id: <162467340230.13453.14696485961492233602.pr-tracker-bot@kernel.org>
+Date:   Sat, 26 Jun 2021 02:10:02 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Fabien Dessenne <fabien.dessenne@foss.st.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+The pull request you sent on Sat, 26 Jun 2021 01:34:01 +0200:
 
-This NULL test is redundant since vfree() checks for NULL.
-Reported by Coccinelle.
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.13-3
 
-Signed-off-by: gushengxian <13145886936@163.com>
-Signed-off-by: gushengxian <gushengxian@yulong.com>
----
- tools/testing/nvdimm/test/ndtest.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b7050b242430f3170e0b57f5f55136e44cb8dc66
 
-diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
-index 6862915f1fb0..b1025c08ba92 100644
---- a/tools/testing/nvdimm/test/ndtest.c
-+++ b/tools/testing/nvdimm/test/ndtest.c
-@@ -487,8 +487,8 @@ static void *ndtest_alloc_resource(struct ndtest_priv *p, size_t size,
- buf_err:
- 	if (__dma && size >= DIMM_SIZE)
- 		gen_pool_free(ndtest_pool, __dma, size);
--	if (buf)
--		vfree(buf);
-+
-+	vfree(buf);
- 	kfree(res);
- 
- 	return NULL;
+Thank you!
+
 -- 
-2.25.1
-
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
