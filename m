@@ -2,230 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CD03B4FD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BC23B4FD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFZSYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 14:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhFZSYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 14:24:38 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 137386147F;
-        Sat, 26 Jun 2021 18:22:14 +0000 (UTC)
-Date:   Sat, 26 Jun 2021 14:22:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
-Message-ID: <20210626142213.6dee5c60@rorschach.local.home>
-In-Reply-To: <20210626114157.765d9371@rorschach.local.home>
-References: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
-        <20210626101834.55b4ecf1@rorschach.local.home>
-        <7297f336-70e5-82d3-f8d3-27f08c7d1548@i-love.sakura.ne.jp>
-        <20210626114157.765d9371@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230235AbhFZS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 14:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhFZS2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 14:28:36 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7E2C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 11:26:14 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so3458147ood.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 11:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DI2G5sC+Fy/uFtOTYjG+9gP3jQj4m7g2L2nJ6Mw5TXQ=;
+        b=qP4eOuoypEx1BjN1liacNmSJs0DwEOd4ewbRhNVkEvHaS7kCfQY007YSBT1z81iZXi
+         bvpM2oHMQ7PxghLDc6yoXlS5OploeVHnz55zswD0gNdrSizVpDpXlUI2GaSK3vcuxRwA
+         wogbQGMVUfyD3c5Tqd0jgpKOiHtthlpmL62AUGgPM5SFMqCQXBhuvWW39OKatUuuIikA
+         HU1IKAhRkeHbyPuEFNnWiewhtmNZJW3VH20oR72wLqgIOYrLVFZRtWy3iLk8sdndVKlp
+         KAId1zng2aXCbJvheW2K+FwcOBtmWnWMvk+U5nGknfaRW274/ZVZqK3JJuVX3tf1EuJW
+         MhqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DI2G5sC+Fy/uFtOTYjG+9gP3jQj4m7g2L2nJ6Mw5TXQ=;
+        b=FUeT3Ne3GAWunyU5aXK5SBRoZppl3C7z2x7Y8Ll2kilG14N54BppcHqIw/POCtQD0N
+         F42aeAq6QjCB+g8E3PLnCk2VJQOeXM5u7u5f3IyLhPsjzrXzyCrqWktLfiu1pzqsS+vf
+         aq2BJZ5UDv8ZmYOGOmrfDcdLYSwRcQ9mWIKoHPtdUAiM+xFSImnoLCp4O07cVxnLKUBf
+         6jRfopxagwygedOz13+XRk7GGy/+L7ICXfjVOKvqt25PYkNWwqxoY/B8AAQNIJ9oOVTc
+         Y59mp18R5t/89/zAKnszV+JRTNllJNQL6YmiKWr42pT5rfRgQIH+D3dYdWa2hw+Rp+CM
+         /Q3g==
+X-Gm-Message-State: AOAM530w3N16Iw2g71LTQNmq3zeAueU4dz2nZEVPMm+2Wb6WAIrExp+e
+        yOXPQh9itAE6DwbsKEyLr2G9rEIgMObfGIwh2ncL7A==
+X-Google-Smtp-Source: ABdhPJzNDHIr64wdhMId/mbxHV/ll0JwmQkAF6D6aJGefkDeTU5iD/2EuvjzpmsJ8rRcOfQ8todbK3ox4gloezWhfBY=
+X-Received: by 2002:a4a:6c0c:: with SMTP id q12mr13837143ooc.81.1624731973541;
+ Sat, 26 Jun 2021 11:26:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210625220311.527549-1-bhupesh.sharma@linaro.org>
+ <20210625220311.527549-2-bhupesh.sharma@linaro.org> <YNZaOK3XcsQq8H+B@yoga>
+In-Reply-To: <YNZaOK3XcsQq8H+B@yoga>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Sat, 26 Jun 2021 23:56:02 +0530
+Message-ID: <CAH=2NtyLchPaz6g5jHcgOUrgXFHiy9DwxcgFviNfgGD0k5B_mA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: Use consistent naming for dwc3 usb
+ nodes for sm8150
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        balbi@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Jun 2021 11:41:57 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Bjorn,
 
-> If BPF is expected to register the same tracepoint with the same
-> callback and data more than once, then let's add a call to do that
-> without warning. Like I said, other callers expect the call to succeed
-> unless it's out of memory, which tends to cause other problems.
+On Sat, 26 Jun 2021 at 04:05, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Fri 25 Jun 17:03 CDT 2021, Bhupesh Sharma wrote:
+>
+> > The dwc3 usb nodes in sm8150.dtsi are currently named differently,
+> > leading to some confusion when one sees the entries in sysfs or
+> > dmesg:
+> > [    1.943482] dwc3 a600000.usb: Adding to iommu group 1
+> > [    2.266127] dwc3 a800000.dwc3: Adding to iommu group 2
+> >
+> > Name both the nodes as dwc3@<addr> for consistency.
+> >
+> > While at it also arrange the two usb controller, hs-phy and
+> > ss-phy nodes closer in the dts for better readability.
+> >
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 30 ++++++++++++++--------------
+> >  1 file changed, 15 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > index 612dda0fef43..3be6d093a99b 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> > @@ -2205,6 +2205,20 @@ glink-edge {
+> >                       };
+> >               };
+> >
+> > +             dc_noc: interconnect@9160000 {
+> > +                     compatible = "qcom,sm8150-dc-noc";
+> > +                     reg = <0 0x09160000 0 0x3200>;
+> > +                     #interconnect-cells = <1>;
+> > +                     qcom,bcm-voters = <&apps_bcm_voter>;
+> > +             };
+> > +
+> > +             gem_noc: interconnect@9680000 {
+> > +                     compatible = "qcom,sm8150-gem-noc";
+> > +                     reg = <0 0x09680000 0 0x3e200>;
+> > +                     #interconnect-cells = <1>;
+> > +                     qcom,bcm-voters = <&apps_bcm_voter>;
+> > +             };
+> > +
+> >               usb_1_hsphy: phy@88e2000 {
+> >                       compatible = "qcom,sm8150-usb-hs-phy",
+> >                                    "qcom,usb-snps-hs-7nm-phy";
+> > @@ -2266,20 +2280,6 @@ usb_1_ssphy: lanes@88e9200 {
+> >                       };
+> >               };
+> >
+> > -             dc_noc: interconnect@9160000 {
+> > -                     compatible = "qcom,sm8150-dc-noc";
+> > -                     reg = <0 0x09160000 0 0x3200>;
+> > -                     #interconnect-cells = <1>;
+> > -                     qcom,bcm-voters = <&apps_bcm_voter>;
+> > -             };
+> > -
+> > -             gem_noc: interconnect@9680000 {
+> > -                     compatible = "qcom,sm8150-gem-noc";
+> > -                     reg = <0 0x09680000 0 0x3e200>;
+> > -                     #interconnect-cells = <1>;
+> > -                     qcom,bcm-voters = <&apps_bcm_voter>;
+> > -             };
+> > -
+> >               usb_2_qmpphy: phy@88eb000 {
+> >                       compatible = "qcom,sm8150-qmp-usb3-uni-phy";
+> >                       reg = <0 0x088eb000 0 0x200>;
+> > @@ -2344,7 +2344,7 @@ usb_1: usb@a6f8800 {
+> >
+> >                       resets = <&gcc GCC_USB30_PRIM_BCR>;
+> >
+> > -                     usb_1_dwc3: usb@a600000 {
+> > +                     usb_1_dwc3: dwc3@a600000 {
+>
+> "usb@" is actually the right one, per the rather recent standardization
+> across the dwc3 bindings.
 
-If BPF is OK with registering the same probe more than once if user
-space expects it, we can add this patch, which allows the caller (in
-this case BPF) to not warn if the probe being registered is already
-registered, and keeps the idea that a probe registered twice is a bug
-for all other use cases.
+Ok, yes that makes more sense.
+Although a grep for the keyword 'dwc3@', does lead up to quite a few
+qcom dts files which use 'dwc3@ 'instead of 'usb@', which seem
+inconsistent as per the bindings doc (see [1]).
 
--- Steve
+Maybe I can fix those in v2 as well.
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 13f65420f188..656d22cf42fc 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -36,10 +36,11 @@ struct trace_eval_map {
- extern struct srcu_struct tracepoint_srcu;
- 
- extern int
--tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
-+tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data,
-+			  bool no_warn);
- extern int
- tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
--			       int prio);
-+			       int prio, bool no_warn);
- extern int
- tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
- extern void
-@@ -250,14 +251,16 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 	register_trace_##name(void (*probe)(data_proto), void *data)	\
- 	{								\
- 		return tracepoint_probe_register(&__tracepoint_##name,	\
--						(void *)probe, data);	\
-+						(void *)probe, data,	\
-+						 false);		\
- 	}								\
- 	static inline int						\
- 	register_trace_prio_##name(void (*probe)(data_proto), void *data,\
- 				   int prio)				\
- 	{								\
- 		return tracepoint_probe_register_prio(&__tracepoint_##name, \
--					      (void *)probe, data, prio); \
-+					      (void *)probe, data,	\
-+					      prio, false);		\
- 	}								\
- 	static inline int						\
- 	unregister_trace_##name(void (*probe)(data_proto), void *data)	\
-diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
-index 8bcffbdef3d3..b76738e61eee 100644
---- a/kernel/kcsan/kcsan_test.c
-+++ b/kernel/kcsan/kcsan_test.c
-@@ -1160,7 +1160,7 @@ static void register_tracepoints(struct tracepoint *tp, void *ignore)
- {
- 	check_trace_callback_type_console(probe_console);
- 	if (!strcmp(tp->name, "console"))
--		WARN_ON(tracepoint_probe_register(tp, probe_console, NULL));
-+		WARN_ON(tracepoint_probe_register(tp, probe_console, NULL, false));
- }
- 
- __no_kcsan
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7a52bc172841..3d3a80db40b5 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1840,7 +1840,7 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
- 	if (prog->aux->max_tp_access > btp->writable_size)
- 		return -EINVAL;
- 
--	return tracepoint_probe_register(tp, (void *)btp->bpf_func, prog);
-+	return tracepoint_probe_register(tp, (void *)btp->bpf_func, prog, true);
- }
- 
- int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 80e96989770e..07986569b1b9 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -500,7 +500,7 @@ int trace_event_reg(struct trace_event_call *call,
- 	case TRACE_REG_REGISTER:
- 		return tracepoint_probe_register(call->tp,
- 						 call->class->probe,
--						 file);
-+						 file, false);
- 	case TRACE_REG_UNREGISTER:
- 		tracepoint_probe_unregister(call->tp,
- 					    call->class->probe,
-@@ -511,7 +511,7 @@ int trace_event_reg(struct trace_event_call *call,
- 	case TRACE_REG_PERF_REGISTER:
- 		return tracepoint_probe_register(call->tp,
- 						 call->class->perf_probe,
--						 call);
-+						 call, false);
- 	case TRACE_REG_PERF_UNREGISTER:
- 		tracepoint_probe_unregister(call->tp,
- 					    call->class->perf_probe,
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 9f478d29b926..3c3a517b229e 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -273,7 +273,8 @@ static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func
-  * Add the probe function to a tracepoint.
-  */
- static int tracepoint_add_func(struct tracepoint *tp,
--			       struct tracepoint_func *func, int prio)
-+			       struct tracepoint_func *func, int prio,
-+			       bool no_warn)
- {
- 	struct tracepoint_func *old, *tp_funcs;
- 	int ret;
-@@ -288,7 +289,7 @@ static int tracepoint_add_func(struct tracepoint *tp,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_add(&tp_funcs, func, prio);
- 	if (IS_ERR(old)) {
--		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-+		WARN_ON_ONCE(!no_warn && PTR_ERR(old) != -ENOMEM);
- 		return PTR_ERR(old);
- 	}
- 
-@@ -349,6 +350,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
-  * @probe: probe handler
-  * @data: tracepoint data
-  * @prio: priority of this function over other registered functions
-+ * @no_warn: Do not warn if the tracepoint is already registered
-  *
-  * Returns 0 if ok, error value on error.
-  * Note: if @tp is within a module, the caller is responsible for
-@@ -357,7 +359,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
-  * within module exit functions.
-  */
- int tracepoint_probe_register_prio(struct tracepoint *tp, void *probe,
--				   void *data, int prio)
-+				   void *data, int prio, bool no_warn)
- {
- 	struct tracepoint_func tp_func;
- 	int ret;
-@@ -366,7 +368,7 @@ int tracepoint_probe_register_prio(struct tracepoint *tp, void *probe,
- 	tp_func.func = probe;
- 	tp_func.data = data;
- 	tp_func.prio = prio;
--	ret = tracepoint_add_func(tp, &tp_func, prio);
-+	ret = tracepoint_add_func(tp, &tp_func, prio, no_warn);
- 	mutex_unlock(&tracepoints_mutex);
- 	return ret;
- }
-@@ -377,6 +379,7 @@ EXPORT_SYMBOL_GPL(tracepoint_probe_register_prio);
-  * @tp: tracepoint
-  * @probe: probe handler
-  * @data: tracepoint data
-+ * @no_warn: Do not warn if the tracepoint is already registered
-  *
-  * Returns 0 if ok, error value on error.
-  * Note: if @tp is within a module, the caller is responsible for
-@@ -384,9 +387,11 @@ EXPORT_SYMBOL_GPL(tracepoint_probe_register_prio);
-  * performed either with a tracepoint module going notifier, or from
-  * within module exit functions.
-  */
--int tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data)
-+int tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data,
-+			      bool no_warn)
- {
--	return tracepoint_probe_register_prio(tp, probe, data, TRACEPOINT_DEFAULT_PRIO);
-+	return tracepoint_probe_register_prio(tp, probe, data,
-+					      TRACEPOINT_DEFAULT_PRIO, no_warn);
- }
- EXPORT_SYMBOL_GPL(tracepoint_probe_register);
- 
-diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-index 4acf4251ee04..a9331c967690 100644
---- a/mm/kfence/kfence_test.c
-+++ b/mm/kfence/kfence_test.c
-@@ -820,7 +820,7 @@ static void register_tracepoints(struct tracepoint *tp, void *ignore)
- {
- 	check_trace_callback_type_console(probe_console);
- 	if (!strcmp(tp->name, "console"))
--		WARN_ON(tracepoint_probe_register(tp, probe_console, NULL));
-+		WARN_ON(tracepoint_probe_register(tp, probe_console, NULL, true));
- }
- 
- static void unregister_tracepoints(struct tracepoint *tp, void *ignore)
+[1]. Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+
+Thanks,
+Bhupesh
+>
+> >                               compatible = "snps,dwc3";
+> >                               reg = <0 0x0a600000 0 0xcd00>;
+> >                               interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> > --
+> > 2.31.1
+> >
