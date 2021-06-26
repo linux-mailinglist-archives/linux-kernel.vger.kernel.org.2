@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022343B4D52
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 09:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E5B3B4D60
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 09:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhFZH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 03:28:10 -0400
-Received: from mta-06-3.privateemail.com ([198.54.127.59]:10489 "EHLO
-        MTA-06-3.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZH2J (ORCPT
+        id S230011AbhFZH3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 03:29:32 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5431 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhFZH3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 03:28:09 -0400
-Received: from MTA-06.privateemail.com (localhost [127.0.0.1])
-        by MTA-06.privateemail.com (Postfix) with ESMTP id 3187F6009C;
-        Sat, 26 Jun 2021 03:25:46 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.246])
-        by MTA-06.privateemail.com (Postfix) with ESMTPA id F20106009A;
-        Sat, 26 Jun 2021 03:25:43 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sean Paul <sean@poorly.run>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Karthik B S <karthik.b.s@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH] drm/i915/display: replace boilerplate code with helper macros
-Date:   Sat, 26 Jun 2021 03:25:09 -0400
-Message-Id: <20210626072513.41049-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 26 Jun 2021 03:29:25 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GBlj962tnz74RW;
+        Sat, 26 Jun 2021 15:23:41 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 15:26:58 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 15:26:57 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Arnd Bergmann <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-s390@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <bpf@vger.kernel.org>
+Subject: [PATCH 0/9] sections: Unify kernel sections range check and use
+Date:   Sat, 26 Jun 2021 15:34:30 +0800
+Message-ID: <20210626073439.150586-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per commit 22be87401289 ("drm: TODO: Add DRM_MODESET_LOCK_ALL*
-conversion to todo.rst"),
-drm_modeset_lock_all()/drm_modeset_unlock_all() and boilerplate code
-surronding instances of drm_modeset_lock_all_ctx() with a local acquire
-context should be replaced with the relevant helper macros.
+There are three head files(kallsyms.h, kernel.h and sections.h) which
+include the kernel sections range check, let's make some cleanup and
+unify them.
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
- drivers/gpu/drm/i915/display/intel_display.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+1. cleanup arch specific text/data check and fix address boundary check in kallsyms.h
+2. make all the basic kernel range check function into sections.h
+3. update all the callers, and use the helper in sections.h to simplify the code
+4. use memory_intersects() in sections.h instead of private overlap for dma-debug
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-index 64e9107d70f7..e8cb2881d2b4 100644
---- a/drivers/gpu/drm/i915/display/intel_display.c
-+++ b/drivers/gpu/drm/i915/display/intel_display.c
-@@ -40,6 +40,7 @@
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_fourcc.h>
-+#include "drm/drm_modeset_lock.h"
- #include <drm/drm_plane_helper.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_rect.h>
-@@ -11836,6 +11837,7 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
- 	struct drm_device *dev = &i915->drm;
- 	enum pipe pipe;
- 	struct intel_crtc *crtc;
-+	struct drm_modeset_acquire_ctx ctx;
- 	int ret;
- 
- 	intel_init_pm(i915);
-@@ -11884,9 +11886,9 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
- 	intel_vga_disable(i915);
- 	intel_setup_outputs(i915);
- 
--	drm_modeset_lock_all(dev);
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 	intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
--	drm_modeset_unlock_all(dev);
-+	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
- 
- 	for_each_intel_crtc(dev, crtc) {
- 		struct intel_initial_plane_config plane_config = {};
-@@ -12795,22 +12797,14 @@ void intel_display_resume(struct drm_device *dev)
- 	if (state)
- 		state->acquire_ctx = &ctx;
- 
--	drm_modeset_acquire_init(&ctx, 0);
--
--	while (1) {
--		ret = drm_modeset_lock_all_ctx(dev, &ctx);
--		if (ret != -EDEADLK)
--			break;
--
--		drm_modeset_backoff(&ctx);
--	}
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 
- 	if (!ret)
- 		ret = __intel_display_resume(dev, state, &ctx);
- 
- 	intel_enable_ipc(dev_priv);
--	drm_modeset_drop_locks(&ctx);
--	drm_modeset_acquire_fini(&ctx);
-+
-+	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
- 
- 	if (ret)
- 		drm_err(&dev_priv->drm,
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-arch@vger.kernel.org 
+Cc: iommu@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org 
+
+Kefeng Wang (9):
+  kallsyms: Remove arch specific text and data check
+  kallsyms: Fix address-checks for kernel related range
+  sections: Move and rename core_kernel_data() to is_kernel_data()
+  sections: Move is_kernel_inittext() into sections.h
+  kallsyms: Rename is_kernel() and is_kernel_text()
+  sections: Add new is_kernel() and is_kernel_text()
+  s390: kprobes: Use is_kernel() helper
+  powerpc/mm: Use is_kernel_text() and is_kernel_inittext() helper
+  dma-debug: Use memory_intersects() directly
+
+ arch/powerpc/mm/pgtable_32.c   |  7 +---
+ arch/s390/kernel/kprobes.c     |  9 +----
+ arch/x86/kernel/unwind_orc.c   |  2 +-
+ arch/x86/net/bpf_jit_comp.c    |  2 +-
+ include/asm-generic/sections.h | 71 ++++++++++++++++++++++++++--------
+ include/linux/kallsyms.h       | 21 +++-------
+ include/linux/kernel.h         |  2 -
+ kernel/cfi.c                   |  2 +-
+ kernel/dma/debug.c             | 14 +------
+ kernel/extable.c               | 33 ++--------------
+ kernel/locking/lockdep.c       |  3 --
+ kernel/trace/ftrace.c          |  2 +-
+ mm/kasan/report.c              |  2 +-
+ net/sysctl_net.c               |  2 +-
+ 14 files changed, 76 insertions(+), 96 deletions(-)
+
 -- 
-2.32.0
+2.26.2
 
