@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C60A3B4D71
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 09:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8C83B4D72
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 09:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFZHfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 03:35:17 -0400
-Received: from mta-07-4.privateemail.com ([68.65.122.27]:32048 "EHLO
-        MTA-07-4.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFZHfQ (ORCPT
+        id S229894AbhFZHg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 03:36:56 -0400
+Received: from smtpbg704.qq.com ([203.205.195.105]:37162 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229657AbhFZHgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 03:35:16 -0400
-Received: from MTA-07.privateemail.com (localhost [127.0.0.1])
-        by MTA-07.privateemail.com (Postfix) with ESMTP id BA1B7600FF;
-        Sat, 26 Jun 2021 03:32:52 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.203])
-        by MTA-07.privateemail.com (Postfix) with ESMTPA id DFBB0600E2;
-        Sat, 26 Jun 2021 03:32:50 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sean Paul <sean@poorly.run>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Karthik B S <karthik.b.s@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/i915/display: replace boilerplate code with helper macros
-Date:   Sat, 26 Jun 2021 03:32:27 -0400
-Message-Id: <20210626073230.41803-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 26 Jun 2021 03:36:51 -0400
+X-Greylist: delayed 98386 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Jun 2021 03:36:51 EDT
+X-QQ-mid: bizesmtp39t1624692865tf2rwugi
+Received: from localhost.localdomain (unknown [182.148.13.245])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 26 Jun 2021 15:34:15 +0800 (CST)
+X-QQ-SSF: 0100000000200060B000B00A0000000
+X-QQ-FEAT: lm51M56XDGzx/nKTqaxLkaV6Z51EBtBm8OwMuLO1WEF0xwDM1vmtJckw+7nUB
+        i3ptBLz7GUQY5rsfigmVOPeDYSbz9yE05dvPsGwX6ISmIPKe13Dji5DvtuF9Xdt48jgNC9k
+        tu7/ZyXekLnrvBKJtIzXI+GtEPiH1rLodO8hBHXSnBVQFGswQOyjgn14wCYcKHfsP79Clc7
+        cLA77IEX4tjpHM34VC7nZnAhGxGXuL4ZypsLg6tOk5FURiq+7f4Pf9knIFiEA/tQN6Xp85r
+        /v31JW3xNZruiJxUEdcQwM6Vc2h7PYkz/pbLJVxMtT7deFzew8fo0zlZiNrKJkPhxqICM8U
+        5k5wkfP
+X-QQ-GoodBg: 0
+From:   Jinchao Wang <wjc@cdjrlc.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jinchao Wang <wjc@cdjrlc.com>
+Subject: [PATCH] driver: base: Prefer unsigned int to bare use of unsigned
+Date:   Sat, 26 Jun 2021 15:34:08 +0800
+Message-Id: <20210626073408.12448-1-wjc@cdjrlc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per commit 22be87401289 ("drm: TODO: Add DRM_MODESET_LOCK_ALL*
-conversion to todo.rst"),
-drm_modeset_lock_all()/drm_modeset_unlock_all() and boilerplate code
-surrounding instances of drm_modeset_lock_all_ctx() with a local acquire
-context should be replaced with the relevant helper macros.
+Fix checkpatch warnings:
+    WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
 ---
- drivers/gpu/drm/i915/display/intel_display.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+ drivers/base/cpu.c                   |  4 ++--
+ drivers/base/map.c                   | 12 ++++++------
+ drivers/base/node.c                  |  8 ++++----
+ drivers/base/regmap/regmap-debugfs.c |  2 +-
+ drivers/base/regmap/regmap-mmio.c    |  2 +-
+ drivers/base/regmap/regmap.c         |  6 +++---
+ 6 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-index 64e9107d70f7..e8cb2881d2b4 100644
---- a/drivers/gpu/drm/i915/display/intel_display.c
-+++ b/drivers/gpu/drm/i915/display/intel_display.c
-@@ -40,6 +40,7 @@
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_fourcc.h>
-+#include "drm/drm_modeset_lock.h"
- #include <drm/drm_plane_helper.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_rect.h>
-@@ -11836,6 +11837,7 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
- 	struct drm_device *dev = &i915->drm;
- 	enum pipe pipe;
- 	struct intel_crtc *crtc;
-+	struct drm_modeset_acquire_ctx ctx;
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 5ef14db97904..5fc258073bc7 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -388,7 +388,7 @@ int register_cpu(struct cpu *cpu, int num)
+ 	return 0;
+ }
+ 
+-struct device *get_cpu_device(unsigned cpu)
++struct device *get_cpu_device(unsigned int cpu)
+ {
+ 	if (cpu < nr_cpu_ids && cpu_possible(cpu))
+ 		return per_cpu(cpu_sys_devices, cpu);
+@@ -484,7 +484,7 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
+ 	NULL,
+ };
+ 
+-bool cpu_is_hotpluggable(unsigned cpu)
++bool cpu_is_hotpluggable(unsigned int cpu)
+ {
+ 	struct device *dev = get_cpu_device(cpu);
+ 	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
+diff --git a/drivers/base/map.c b/drivers/base/map.c
+index 5650ab2b247a..83aeb09ca161 100644
+--- a/drivers/base/map.c
++++ b/drivers/base/map.c
+@@ -33,9 +33,9 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
+ 	     struct module *module, kobj_probe_t *probe,
+ 	     int (*lock)(dev_t, void *), void *data)
+ {
+-	unsigned n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
+-	unsigned index = MAJOR(dev);
+-	unsigned i;
++	unsigned int n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
++	unsigned int index = MAJOR(dev);
++	unsigned int i;
+ 	struct probe *p;
+ 
+ 	if (n > 255)
+@@ -67,9 +67,9 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
+ 
+ void kobj_unmap(struct kobj_map *domain, dev_t dev, unsigned long range)
+ {
+-	unsigned n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
+-	unsigned index = MAJOR(dev);
+-	unsigned i;
++	unsigned int n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
++	unsigned int index = MAJOR(dev);
++	unsigned int i;
+ 	struct probe *found = NULL;
+ 
+ 	if (n > 255)
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 4a4ae868ad9f..2bc9089f3e78 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -75,7 +75,7 @@ static DEVICE_ATTR_RO(cpulist);
+ struct node_access_nodes {
+ 	struct device		dev;
+ 	struct list_head	list_node;
+-	unsigned		access;
++	unsigned int		access;
+ #ifdef CONFIG_HMEM_REPORTING
+ 	struct node_hmem_attrs	hmem_attrs;
+ #endif
+@@ -122,7 +122,7 @@ static void node_access_release(struct device *dev)
+ }
+ 
+ static struct node_access_nodes *node_init_node_access(struct node *node,
+-						       unsigned access)
++						       unsigned int access)
+ {
+ 	struct node_access_nodes *access_node;
+ 	struct device *dev;
+@@ -187,7 +187,7 @@ static struct attribute *access_attrs[] = {
+  * @access: The access class the for the given attributes
+  */
+ void node_set_perf_attrs(unsigned int nid, struct node_hmem_attrs *hmem_attrs,
+-			 unsigned access)
++			 unsigned int access)
+ {
+ 	struct node_access_nodes *c;
+ 	struct node *node;
+@@ -711,7 +711,7 @@ int register_cpu_under_node(unsigned int cpu, unsigned int nid)
+  */
+ int register_memory_node_under_compute_node(unsigned int mem_nid,
+ 					    unsigned int cpu_nid,
+-					    unsigned access)
++					    unsigned int access)
+ {
+ 	struct node *init_node, *targ_node;
+ 	struct node_access_nodes *initiator, *target;
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+index 211a335a608d..ad684d37c2da 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -368,7 +368,7 @@ static ssize_t regmap_reg_ranges_read_file(struct file *file,
+ 	char *buf;
+ 	char *entry;
  	int ret;
+-	unsigned entry_len;
++	unsigned int entry_len;
  
- 	intel_init_pm(i915);
-@@ -11884,9 +11886,9 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
- 	intel_vga_disable(i915);
- 	intel_setup_outputs(i915);
+ 	if (*ppos < 0 || !count)
+ 		return -EINVAL;
+diff --git a/drivers/base/regmap/regmap-mmio.c b/drivers/base/regmap/regmap-mmio.c
+index f9cd51afb9d2..71f16be7e717 100644
+--- a/drivers/base/regmap/regmap-mmio.c
++++ b/drivers/base/regmap/regmap-mmio.c
+@@ -15,7 +15,7 @@
  
--	drm_modeset_lock_all(dev);
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 	intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
--	drm_modeset_unlock_all(dev);
-+	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
+ struct regmap_mmio_context {
+ 	void __iomem *regs;
+-	unsigned val_bytes;
++	unsigned int val_bytes;
+ 	bool relaxed_mmio;
  
- 	for_each_intel_crtc(dev, crtc) {
- 		struct intel_initial_plane_config plane_config = {};
-@@ -12795,22 +12797,14 @@ void intel_display_resume(struct drm_device *dev)
- 	if (state)
- 		state->acquire_ctx = &ctx;
+ 	bool attached_clk;
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index fe3e38dd5324..904e1022d12e 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1126,9 +1126,9 @@ struct regmap *__regmap_init(struct device *dev,
+ 		/* Make sure, that this register range has no selector
+ 		   or data window within its boundary */
+ 		for (j = 0; j < config->num_ranges; j++) {
+-			unsigned sel_reg = config->ranges[j].selector_reg;
+-			unsigned win_min = config->ranges[j].window_start;
+-			unsigned win_max = win_min +
++			unsigned int sel_reg = config->ranges[j].selector_reg;
++			unsigned int win_min = config->ranges[j].window_start;
++			unsigned int win_max = win_min +
+ 					   config->ranges[j].window_len - 1;
  
--	drm_modeset_acquire_init(&ctx, 0);
--
--	while (1) {
--		ret = drm_modeset_lock_all_ctx(dev, &ctx);
--		if (ret != -EDEADLK)
--			break;
--
--		drm_modeset_backoff(&ctx);
--	}
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 
- 	if (!ret)
- 		ret = __intel_display_resume(dev, state, &ctx);
- 
- 	intel_enable_ipc(dev_priv);
--	drm_modeset_drop_locks(&ctx);
--	drm_modeset_acquire_fini(&ctx);
-+
-+	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
- 
- 	if (ret)
- 		drm_err(&dev_priv->drm,
+ 			/* Allow data window inside its own virtual range */
 -- 
-2.32.0
+2.31.1
+
+
 
