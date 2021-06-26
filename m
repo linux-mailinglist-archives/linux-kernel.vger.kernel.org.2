@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ED43B4DCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 11:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAE13B4DDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 11:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFZJXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 05:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
+        id S229741AbhFZJ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 05:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZJXo (ORCPT
+        with ESMTP id S229518AbhFZJ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 05:23:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C20C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 02:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=5tE7gWvpvwFlyaG2zRUYzBcE9B7dXwCRVgZyQuAA+1k=; b=SyBMxvB2RafWxopZbDER7nZv2
-        rWwf/m9jrVM9tPSxLy0FYvUr4vtjcrLfs0qsFb69yN2H32RQpMs+7mO6SK0lSIvPQq580fefQ/uG1
-        uGOK3pkHNAOQWFI5S/qlAJHGtyWnRDbgxF6fsn2bESb5QeU38DX33BIPQO/lHY5ls6GiwmWW3+i3d
-        CH3DHjtheUWiLXhnfAJizpzvGuN1Qo6HKArk+7ioUzpPL5FVmbC1xavbo9U9KpxWMVA0o/FW6aTFM
-        v3L2muixt+zFNcHMnqdk9TfhLmT5RCMf0FzFX7lHnsMGtTRku2pNAY/h0k28ceDdH3Tf+zdy2vwrH
-        RxFK8CvPA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45374)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lx4V1-0001d4-Fq; Sat, 26 Jun 2021 10:21:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lx4Uz-0007X1-HF; Sat, 26 Jun 2021 10:21:13 +0100
-Date:   Sat, 26 Jun 2021 10:21:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jinchao Wang <wjc@cdjrlc.com>
-Cc:     guillaume.tucker@collabora.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: mm: Prefer unsigned int to bare use of unsigned
-Message-ID: <20210626092113.GZ22278@shell.armlinux.org.uk>
-References: <20210626065833.6653-1-wjc@cdjrlc.com>
+        Sat, 26 Jun 2021 05:59:57 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FE8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 02:57:34 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id w21so21812645qkb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 02:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cjbdKcJqbGe8eTFHsQaTP4RfgkdJNUUzz4KYzjGwNSs=;
+        b=gwh+27RTWHvOcAZhnXRAdQPqj2vzOnGf78tVLcJEDHmB3Cq8x3Z1Ri72oGBHVRDaTf
+         DTKp5N+xtfnTlsBz1BQx7gg40cPFjOkC9rCRG7whZBGg+6fK4pTyzF5sXjzsdu0eVQR9
+         cb4PiTsR5QWI7n8NvCFLvHwjhLz18VPS1rVhAHn+H4SuP04Bl42N/1KOna5dP6QavgYM
+         TYoi97Cx2Z1XRaC6ZsTsc2od3rTsxmOHSAAyb8A/Zc+7aGG2IrZtAAfVnqosdsUIyNwR
+         jsadUYU/TXXZ/9olz02kTmvMMRo3TCbCZQbFTQlwFSYSuMpKQECgIMXGb5N0DhkoXHJb
+         XiJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=cjbdKcJqbGe8eTFHsQaTP4RfgkdJNUUzz4KYzjGwNSs=;
+        b=hI0Gh99VEOUFa2Te39DduGbSK9p0RfVJeu5hN9J09fI+fcLKjSSK3nxt7xY4e186Pi
+         PFiPhPNkGOI6Wc6cLJp+gE+OHGrY61vfDdKga8HoeV0uYWl1IGufz6S15xgjJCeAc7eW
+         uVKkzMtz7hUETTmmqR5+3hNVUUbwhrXYhHKd3495/jsSuTZTAVvV3pXedF7/txPvQfex
+         wJ7GPGX7yaNr7SQt31c/7+T7oAV8DvuRL2/jdLDJyDoZepe0/g6iuOsKK4OiVpTkbvcF
+         A3HFqynVB+phm5TVJknacCVoeDshr+wNZrYPnmhp3zBu6xobVBXn6yWqTdEmo5P2g3tQ
+         /crQ==
+X-Gm-Message-State: AOAM530OTwBnm3ZMIIDmFKRxwZZacpJhMt5yMsQNBZ+Er1ErFO5jBCke
+        T8v0IsPmEI3746e98WSqNMA=
+X-Google-Smtp-Source: ABdhPJxRKNw4gG5Nx0IQKhkhA9TsAUF6hw+Frao37+2PwZUUXn6U2BzhjCJZWWl5L03dp1SH157DCw==
+X-Received: by 2002:a37:6c4:: with SMTP id 187mr10859499qkg.421.1624701453458;
+        Sat, 26 Jun 2021 02:57:33 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:cde6])
+        by smtp.gmail.com with ESMTPSA id t187sm6775535qkc.56.2021.06.26.02.57.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Jun 2021 02:57:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sat, 26 Jun 2021 05:57:28 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
+Message-ID: <YNb6CL6Q9CJnbB2R@mtj.duckdns.org>
+References: <20210608231132.32012-1-joshdon@google.com>
+ <YMobzbLecaFYuLtq@slm.duckdns.org>
+ <CABk29NtcRUwskBjrvLKkEKQ0hpNPSrdzrGAGZy+bHSfnznOUSg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210626065833.6653-1-wjc@cdjrlc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CABk29NtcRUwskBjrvLKkEKQ0hpNPSrdzrGAGZy+bHSfnznOUSg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 02:58:33PM +0800, Jinchao Wang wrote:
->   * By default, we write directly to secure registers.  Platforms must
->   * override this if they are running non-secure.
->   */
-> -static void l2c_write_sec(unsigned long val, void __iomem *base, unsigned reg)
-> +static void l2c_write_sec(unsigned long val, void __iomem *base, unsigned int reg)
+Hello,
 
-... and then I'll get another patch because this now goes over 80
-characters. No thanks.
+On Wed, Jun 16, 2021 at 06:01:59PM -0700, Josh Don wrote:
+> Consider a tree like
+> 
+>                   root
+>              /             \
+>             A              C
+>         /      \             |
+>       B       idle       t4
+>      |           |     \
+>      t1         t2   t3
+> 
+> Here, 'idle' is our cpu.idle cgroup. The following properties would
+> not be possible if we moved t2/t3 into SCHED_IDLE without the cgroup
+> interface:
+> - t1 always preempts t2/t3 on wakeup, but t4 does not
+> - t2 and t3 have different, non-minimum weights. Technically we could
+> also achieve this by adding another layer of nested cgroups, but that
+> starts to make the hierarchy much more complex.
+> - I've also discussed with Peter a possible extension (vruntime
+> adjustments) to the current SCHED_IDLE semantics. Similarly to the
+> first bullet here, we'd need a cgroup idle toggle to achieve certain
+> scheduling behaviors with this.
 
-There is nothing inherently wrong with "unsigned" - it's always been
-legal C, and I'd prefer to keep the code as-is under arch/arm in
-regard of this.
+Would you care to share some concrete use cases?
 
-Thanks.
+Thank you.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+tejun
