@@ -2,257 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705813B4F34
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D163B4F3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhFZP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 11:27:41 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:33257 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFZP1h (ORCPT
+        id S230048AbhFZPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 11:37:35 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:34524 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhFZPhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 11:27:37 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d78 with ME
-        id MrR62500921Fzsu03rR6lY; Sat, 26 Jun 2021 17:25:11 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Jun 2021 17:25:11 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org
-Cc:     ath9k-devel@qca.qualcomm.com, ath10k@lists.infradead.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ath: switch from 'pci_' to 'dma_' API
-Date:   Sat, 26 Jun 2021 17:25:04 +0200
-Message-Id: <9150bd6cde9ad592aff8ee3ad94dffa90b004e89.1624720959.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 26 Jun 2021 11:37:34 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B379320B6C50;
+        Sat, 26 Jun 2021 08:35:10 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B379320B6C50
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624721711;
+        bh=It/KkJfIsGta+X2x7LB/RSvqpRgJlj14fdfL2eXBuSE=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=MKlWLhoqqcHWZUN2qMeWfzkf8RRE2weSeCIxWeMHczmGwQGz17DkK5K+xh2BQI5A8
+         ScQV3w/Mkpi3lFq9LhAGYVpwN/5P9h3tukGl9dzXhuon/c3PBVte5U1MZutXiJ5G3C
+         DWNVaAfuUBIWF7Ko7hhXKdbjzQOmbpNirzks8eos=
+Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
+ <20210526214917.20099-1-madvenka@linux.microsoft.com>
+ <20210526214917.20099-2-madvenka@linux.microsoft.com>
+ <20210624144021.GA17937@C02TD0UTHF1T.local>
+ <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
+Message-ID: <1d01e3c9-fca5-06a8-7489-556fbe90d5b4@linux.microsoft.com>
+Date:   Sat, 26 Jun 2021 10:35:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+I will send out the next version without frame->reliable as implementing
+a per-frame reliability thing obviously needs other changes and needs
+Mark Rutland's code reorg.
 
-The patch has been generated with the coccinelle script below.
+Thanks!
 
-While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
-updated to a much less verbose 'dma_set_mask_and_coherent()'.
+Madhavan
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/ath/ath10k/pci.c |  9 +--------
- drivers/net/wireless/ath/ath11k/pci.c | 10 ++--------
- drivers/net/wireless/ath/ath5k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath9k/pci.c  |  8 +-------
- 4 files changed, 5 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 71878ab35b93..4d4e2f91e15c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3393,19 +3393,12 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 	}
- 
- 	/* Target expects 32 bit DMA. Enforce it. */
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		ath10k_err(ar, "failed to set dma mask to 32-bit: %d\n", ret);
- 		goto err_region;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret) {
--		ath10k_err(ar, "failed to set consistent dma mask to 32-bit: %d\n",
--			   ret);
--		goto err_region;
--	}
--
- 	pci_set_master(pdev);
- 
- 	/* Arrange for access to Target SoC registers. */
-diff --git a/drivers/net/wireless/ath/ath11k/pci.c b/drivers/net/wireless/ath/ath11k/pci.c
-index 646ad79f309c..5abb38cc3b55 100644
---- a/drivers/net/wireless/ath/ath11k/pci.c
-+++ b/drivers/net/wireless/ath/ath11k/pci.c
-@@ -933,20 +933,14 @@ static int ath11k_pci_claim(struct ath11k_pci *ab_pci, struct pci_dev *pdev)
- 		goto disable_device;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
-+	ret = dma_set_mask_and_coherent(&pdev->dev,
-+					DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
- 	if (ret) {
- 		ath11k_err(ab, "failed to set pci dma mask to %d: %d\n",
- 			   ATH11K_PCI_DMA_MASK, ret);
- 		goto release_region;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ATH11K_PCI_DMA_MASK));
--	if (ret) {
--		ath11k_err(ab, "failed to set pci consistent dma mask to %d: %d\n",
--			   ATH11K_PCI_DMA_MASK, ret);
--		goto release_region;
--	}
--
- 	pci_set_master(pdev);
- 
- 	ab->mem_len = pci_resource_len(pdev, ATH11K_PCI_BAR_NUM);
-diff --git a/drivers/net/wireless/ath/ath5k/pci.c b/drivers/net/wireless/ath/ath5k/pci.c
-index 43b4ae86e5fb..86b8cb975b1a 100644
---- a/drivers/net/wireless/ath/ath5k/pci.c
-+++ b/drivers/net/wireless/ath/ath5k/pci.c
-@@ -191,7 +191,7 @@ ath5k_pci_probe(struct pci_dev *pdev,
- 	}
- 
- 	/* XXX 32-bit addressing only */
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		dev_err(&pdev->dev, "32-bit DMA not available\n");
- 		goto err_dis;
-diff --git a/drivers/net/wireless/ath/ath9k/pci.c b/drivers/net/wireless/ath/ath9k/pci.c
-index cff9af3af38d..a074e23013c5 100644
---- a/drivers/net/wireless/ath/ath9k/pci.c
-+++ b/drivers/net/wireless/ath/ath9k/pci.c
-@@ -896,18 +896,12 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (pcim_enable_device(pdev))
- 		return -EIO;
- 
--	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		pr_err("32-bit DMA not available\n");
- 		return ret;
- 	}
- 
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret) {
--		pr_err("32-bit DMA consistent DMA enable failed\n");
--		return ret;
--	}
--
- 	/*
- 	 * Cache line size is used to size and align various
- 	 * structures used to communicate with the hardware.
--- 
-2.30.2
-
+On 6/25/21 10:39 AM, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 6/24/21 9:40 AM, Mark Rutland wrote:
+>> Hi Madhavan,
+>>
+>> On Wed, May 26, 2021 at 04:49:16PM -0500, madvenka@linux.microsoft.com wrote:
+>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>>
+>>> The unwinder should check for the presence of various features and
+>>> conditions that can render the stack trace unreliable and mark the
+>>> the stack trace as unreliable for the benefit of the caller.
+>>>
+>>> Introduce the first reliability check - If a return PC is not a valid
+>>> kernel text address, consider the stack trace unreliable. It could be
+>>> some generated code.
+>>>
+>>> Other reliability checks will be added in the future.
+>>>
+>>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+>>
+>> At a high-level, I'm on-board with keeping track of this per unwind
+>> step, but if we do that then I want to be abel to use this during
+>> regular unwinds (e.g. so that we can have a backtrace idicate when a
+>> step is not reliable, like x86 does with '?'), and to do that we need to
+>> be a little more accurate.
+>>
+> 
+> The only consumer of frame->reliable is livepatch. So, in retrospect, my
+> original per-frame reliability flag was an overkill. I was just trying to
+> provide extra per-frame debug information which is not really a requirement
+> for livepatch.
+> 
+> So, let us separate the two. I will rename frame->reliable to frame->livepatch_safe.
+> This will apply to the whole stacktrace and not to every frame.
+> 
+> Pass a livepatch_safe flag to start_backtrace(). This will be the initial value
+> of frame->livepatch_safe. So, if the caller knows that the starting frame is
+> unreliable, he can pass "false" to start_backtrace().
+> 
+> Whenever a reliability check fails, frame->livepatch_safe = false. After that
+> point, it will remain false till the end of the stacktrace. This keeps it simple.
+> 
+> Also, once livepatch_safe is set to false, further reliability checks will not
+> be performed (what would be the point?).
+> 
+> Finally, it might be a good idea to perform reliability checks even in
+> start_backtrace() so we don't assume that the starting frame is reliable even
+> if the caller passes livepatch_safe=true. What do you think?
+> 
+>> I think we first need to do some more preparatory work for that, but
+>> regardless, I have some comments below.
+>>
+> 
+> I agree that some more work is required to provide per-frame debug information
+> and tracking. That can be done later. It is not a requirement for livepatch.
+> 
+>>> ---
+>>>  arch/arm64/include/asm/stacktrace.h |  9 +++++++
+>>>  arch/arm64/kernel/stacktrace.c      | 38 +++++++++++++++++++++++++----
+>>>  2 files changed, 42 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+>>> index eb29b1fe8255..4c822ef7f588 100644
+>>> --- a/arch/arm64/include/asm/stacktrace.h
+>>> +++ b/arch/arm64/include/asm/stacktrace.h
+>>> @@ -49,6 +49,13 @@ struct stack_info {
+>>>   *
+>>>   * @graph:       When FUNCTION_GRAPH_TRACER is selected, holds the index of a
+>>>   *               replacement lr value in the ftrace graph stack.
+>>> + *
+>>> + * @reliable:	Is this stack frame reliable? There are several checks that
+>>> + *              need to be performed in unwind_frame() before a stack frame
+>>> + *              is truly reliable. Until all the checks are present, this flag
+>>> + *              is just a place holder. Once all the checks are implemented,
+>>> + *              this comment will be updated and the flag can be used by the
+>>> + *              caller of unwind_frame().
+>>
+>> I'd prefer that we state the high-level semantic first, then drill down
+>> into detail, e.g.
+>>
+>> | @reliable: Indicates whether this frame is beleived to be a reliable
+>> |            unwinding from the parent stackframe. This may be set
+>> |            regardless of whether the parent stackframe was reliable.
+>> |            
+>> |            This is set only if all the following are true:
+>> | 
+>> |            * @pc is a valid text address.
+>> | 
+>> |            Note: this is currently incomplete.
+>>
+> 
+> I will change the name of the flag. I will change the comment accordingly.
+> 
+>>>   */
+>>>  struct stackframe {
+>>>  	unsigned long fp;
+>>> @@ -59,6 +66,7 @@ struct stackframe {
+>>>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>>>  	int graph;
+>>>  #endif
+>>> +	bool reliable;
+>>>  };
+>>>  
+>>>  extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+>>> @@ -169,6 +177,7 @@ static inline void start_backtrace(struct stackframe *frame,
+>>>  	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
+>>>  	frame->prev_fp = 0;
+>>>  	frame->prev_type = STACK_TYPE_UNKNOWN;
+>>> +	frame->reliable = true;
+>>>  }
+>>
+>> I think we need more data than this to be accurate.
+>>
+>> Consider arch_stack_walk() starting from a pt_regs -- the initial state
+>> (the PC from the regs) is accurate, but the first unwind from that will
+>> not be, and we don't account for that at all.
+>>
+>> I think we need to capture an unwind type in struct stackframe, which we
+>> can pass into start_backtrace(), e.g.
+>>
+> 
+>> | enum unwind_type {
+>> |         /*
+>> |          * The next frame is indicated by the frame pointer.
+>> |          * The next unwind may or may not be reliable.
+>> |          */
+>> |         UNWIND_TYPE_FP,
+>> | 
+>> |         /*
+>> |          * The next frame is indicated by the LR in pt_regs.
+>> |          * The next unwind is not reliable.
+>> |          */
+>> |         UNWIND_TYPE_REGS_LR,
+>> | 
+>> |         /*
+>> |          * We do not know how to unwind to the next frame.
+>> |          * The next unwind is not reliable.
+>> |          */
+>> |         UNWIND_TYPE_UNKNOWN
+>> | };
+>>
+>> That should be simple enough to set up around start_backtrace(), but
+>> we'll need further rework to make that simple at exception boundaries.
+>> With the entry rework I have queued for v5.14, we're *almost* down to a
+>> single asm<->c transition point for all vectors, and I'm hoping to
+>> factor the remainder out to C for v5.15, whereupon we can annotate that
+>> BL with some metadata for unwinding (with something similar to x86's
+>> UNWIND_HINT, but retained for runtime).
+>>
+> 
+> I understood UNWIND_TYPE_FP and UNWIND_TYPE_REGS_LR. When would UNWIND_TYPE_UNKNOWN
+> be passed to start_backtrace? Could you elaborate?
+> 
+> Regardless, the above comment applies only to per-frame tracking when it is eventually
+> implemented. For livepatch, it is not needed. At exception boundaries, if stack metadata
+> is available, then use that to unwind safely. Else, livepatch_safe = false. The latter
+> is what is being done in my patch series. So, we can go with that until stack metadata
+> becomes available.
+> 
+> For the UNWIND_TYPE_REGS_LR and UNWIND_TYPE_UNKNOWN cases, the caller will
+> pass livepatch_safe=false to start_backtrace(). For UNWIND_TYPE_FP, the caller will
+> pass livepatch_safe=true. So, only UNWIND_TYPE_FP matters for livepatch.
+> 
+>>>  
+>>>  #endif	/* __ASM_STACKTRACE_H */
+>>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+>>> index d55bdfb7789c..9061375c8785 100644
+>>> --- a/arch/arm64/kernel/stacktrace.c
+>>> +++ b/arch/arm64/kernel/stacktrace.c
+>>> @@ -44,21 +44,29 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>>>  	unsigned long fp = frame->fp;
+>>>  	struct stack_info info;
+>>>  
+>>> +	frame->reliable = true;
+>>
+>> I'd prefer to do this the other way around, e.g. here do:
+>>
+>> |        /*
+>> |         * Assume that an unwind step is unreliable until it has passed
+>> |         * all relevant checks.
+>> |         */
+>> |        frame->reliable = false;
+>>
+>> ... then only set this to true once we're certain the step is reliable.
+>>
+>> That requires fewer changes below, and would also be more robust as if
+>> we forget to update this we'd accidentally mark an entry as unreliable
+>> rather than accidentally marking it as reliable.
+>>
+> 
+> For livepatch_safe, the initial statement setting it to true at the
+> beginning of unwind_frame() goes away. But whenever a reliability check fails,
+> livepatch_safe has to be set to false.
+> 
+>>> +
+>>>  	/* Terminal record; nothing to unwind */
+>>>  	if (!fp)
+>>>  		return -ENOENT;
+>>>  
+>>> -	if (fp & 0xf)
+>>> +	if (fp & 0xf) {
+>>> +		frame->reliable = false;
+>>>  		return -EINVAL;
+>>> +	}
+>>>  
+>>>  	if (!tsk)
+>>>  		tsk = current;
+>>>  
+>>> -	if (!on_accessible_stack(tsk, fp, &info))
+>>> +	if (!on_accessible_stack(tsk, fp, &info)) {
+>>> +		frame->reliable = false;
+>>>  		return -EINVAL;
+>>> +	}
+>>>  
+>>> -	if (test_bit(info.type, frame->stacks_done))
+>>> +	if (test_bit(info.type, frame->stacks_done)) {
+>>> +		frame->reliable = false;
+>>>  		return -EINVAL;
+>>> +	}
+>>>  
+>>>  	/*
+>>>  	 * As stacks grow downward, any valid record on the same stack must be
+>>> @@ -74,8 +82,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>>>  	 * stack.
+>>>  	 */
+>>>  	if (info.type == frame->prev_type) {
+>>> -		if (fp <= frame->prev_fp)
+>>> +		if (fp <= frame->prev_fp) {
+>>> +			frame->reliable = false;
+>>>  			return -EINVAL;
+>>> +		}
+>>>  	} else {
+>>>  		set_bit(frame->prev_type, frame->stacks_done);
+>>>  	}
+>>> @@ -100,14 +110,32 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>>>  		 * So replace it to an original value.
+>>>  		 */
+>>>  		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
+>>> -		if (WARN_ON_ONCE(!ret_stack))
+>>> +		if (WARN_ON_ONCE(!ret_stack)) {
+>>> +			frame->reliable = false;
+>>>  			return -EINVAL;
+>>> +		}
+>>>  		frame->pc = ret_stack->ret;
+>>>  	}
+>>>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+>>>  
+>>>  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
+>>>  
+>>> +	/*
+>>> +	 * Check the return PC for conditions that make unwinding unreliable.
+>>> +	 * In each case, mark the stack trace as such.
+>>> +	 */
+>>> +
+>>> +	/*
+>>> +	 * Make sure that the return address is a proper kernel text address.
+>>> +	 * A NULL or invalid return address could mean:
+>>> +	 *
+>>> +	 *	- generated code such as eBPF and optprobe trampolines
+>>> +	 *	- Foreign code (e.g. EFI runtime services)
+>>> +	 *	- Procedure Linkage Table (PLT) entries and veneer functions
+>>> +	 */
+>>> +	if (!__kernel_text_address(frame->pc))
+>>> +		frame->reliable = false;
+>>
+>> I don't think we should mention PLTs here. They appear in regular kernel
+>> text, and on arm64 they are generally not problematic for unwinding. The
+>> case in which they are problematic are where they interpose an
+>> trampoline call that isn't following the AAPCS (e.g. ftrace calls from a
+>> module, or calls to __hwasan_tag_mismatch generally), and we'll have to
+>> catch those explciitly (or forbid RELIABLE_STACKTRACE with HWASAN).
+>>
+> 
+> I will remove the mention of PLTs.
+> 
+>> >From a backtrace perspective, the PC itself *is* reliable, but the next
+>> unwind from this frame will not be, so I'd like to mark this as
+>> reliable and the next unwind as unreliable. We can do that with the
+>> UNWIND_TYPE_UNKNOWN suggestion above.
+>>
+> 
+> In the livepatch_safe approach, it can be set to false as soon as the unwinder
+> realizes that there is unreliability, even if the unreliability is in the next
+> frame. Actually, this would avoid one extra unwind step for livepatch.
+> 
+>> For the comment here, how about:
+>>
+>> |	/*
+>> |	 * If the PC is not a known kernel text address, then we cannot
+>> |	 * be sure that a subsequent unwind will be reliable, as we
+>> |	 * don't know that the code follows our unwind requirements.
+>> |	 */
+>> |	if (!__kernel_text_address(frame-pc))
+>> |		frame->unwind = UNWIND_TYPE_UNKNOWN;
+>>
+> 
+> OK. I can change the comment.
+> 
+> Thanks!
+> 
+> Madhavan
+> 
