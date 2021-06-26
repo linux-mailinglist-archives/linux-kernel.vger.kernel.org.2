@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450CC3B8228
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5313B8230
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhF3MdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:33:07 -0400
-Received: from relay.sw.ru ([185.231.240.75]:59178 "EHLO relay.sw.ru"
+        id S234660AbhF3MfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234481AbhF3MdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:33:02 -0400
-X-Greylist: delayed 14684 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Jun 2021 08:33:02 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=kwk7jyLXbh21vjpq/Pu++X60kzhkvJVqtiZH2jwiitw=; b=q7Di/Ms0g1hwt7cFI
-        CqZ1FxQpNKUAVVopFI5NqxSCznfizggec4qHSK5LyNPTmidtC/vfvHu+a3qpBEDIY5KdS6gxZ5GLi
-        ym/0l2i72GBP0USRmplwDDetqP50P/3pH0OvDH9cX8ztta/BlCHVczZxZ36PKEaZzWAv2s3NihZz4
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1lYGPe-002P32-NO; Wed, 30 Jun 2021 15:30:31 +0300
-Subject: Re: [PATCH NETFILTER] netfilter: nfnetlink: suspicious RCU usage in
- ctnetlink_dump_helpinfo
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Taehee Yoo <ap420073@gmail.com>, Julian Anastasov <ja@ssi.bg>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org
-References: <65205a04-f1a3-9901-f6b7-eab8f482f37f@virtuozzo.com>
- <20210630094949.GA18022@breakpoint.cc> <20210630120947.GA12739@salvia>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <8a892a24-62f2-fb43-aad6-62ada13143e7@virtuozzo.com>
-Date:   Wed, 30 Jun 2021 15:30:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234679AbhF3MfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:35:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F9A561607
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:32:38 +0000 (UTC)
+Envelope-to: broonie@sirena.co.uk
+Delivery-date: Sat, 26 Jun 2021 11:25:23 +0100
+Received: from mail.kernel.org ([198.145.29.99])
+        by cassiel.sirena.org.uk with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <SRS0=kbgQ=LU=cdjrlc.com=wjc@kernel.org>)
+        id 1lx5V3-007oEx-0Z
+        for broonie@sirena.co.uk; Sat, 26 Jun 2021 11:25:23 +0100
+Received: by mail.kernel.org (Postfix)
+        id 57A6F6192F; Sat, 26 Jun 2021 10:25:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 510F361926
+        for <broonie@kernel.org>; Sat, 26 Jun 2021 10:25:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 510F361926
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cdjrlc.com
+Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=wjc@cdjrlc.com
+X-QQ-mid: bizesmtp37t1624703103tpmlyk5h
+Received: from localhost.localdomain (unknown [182.148.13.245])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 26 Jun 2021 18:25:00 +0800 (CST)
+X-QQ-SSF: 0100000000200060B000C00A0000000
+X-QQ-FEAT: Uuh1NBTppyEyK2SURCp4CsrfBl2RcZ1GetA5kdx6TEwQjznuezS5eNfsGn8pN
+        x5iI9nEj+bX/KICmTDYHaPk6Im8UVUq+77x7Lf6Z1F4BReqsqvRjva8PMUC7+Zi8F6/63oF
+        obSqvxGaH6vNRi3Lf3x1VsvCPeskEtYlK+jrIffnBoTNInRCs4tCAMSXXrV8oS3gpQWsI6C
+        YcdMbzdsJe4jhAAmL/Z/kzJaz9TUjmL2dSXyhd2wxLUCmu7P8aRh+coatrC5q40wgP4YJDw
+        HgfjjIsmBWx+iBLOukudtAIw5foSelJr6DLrEBzasqwjZoV4UNgyoTiT3y8Z1+KsYmVyGXd
+        uXkHlxbDTv5PCJ0+ro=
+X-QQ-GoodBg: 0
+From:   Jinchao Wang <wjc@cdjrlc.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, wjc@cdjrlc.com
+Date:   Sat, 26 Jun 2021 18:24:54 +0800
+Message-Id: <20210626102454.54931-1-wjc@cdjrlc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210630120947.GA12739@salvia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
+X-SA-Exim-Connect-IP: 198.145.29.99
+X-SA-Exim-Mail-From: SRS0=kbgQ=LU=cdjrlc.com=wjc@kernel.org
+Subject: [PATCH] regulator: Replace symbolic permissions with octal permissions
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: No (on cassiel.sirena.org.uk); Unknown failure
+X-TUID: zFq4QFtMDGGG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 3:09 PM, Pablo Neira Ayuso wrote:
-> 
-> On Wed, Jun 30, 2021 at 11:49:49AM +0200, Florian Westphal wrote:
->> Vasily Averin <vvs@virtuozzo.com> wrote:
->>> Two patches listed below removed ctnetlink_dump_helpinfo call from under
->>> rcu_read_lock. Now its rcu_dereference generates following warning:
->>> =============================
->>> WARNING: suspicious RCU usage
->>> 5.13.0+ #5 Not tainted
->>> -----------------------------
->>> net/netfilter/nf_conntrack_netlink.c:221 suspicious rcu_dereference_check() usage!
->>
->> Reviewed-by: Florian Westphal <fw@strlen.de>
-> 
-> I don't see this patch in netfilter's patchwork nor in
-> netfilter-devel@vger.kernel.org
-> 
-> Where did they go?
+Resolve following checkpatch issue,
+Replace symbolic permissions with octal permissions
 
-My original letter was graylisted.
+Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
+---
+ drivers/regulator/dbx500-prcmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-"
-A message that you sent could not be delivered to one or more of its
-recipients. This is a permanent error. The following address(es) failed:
+diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
+index 8b70bfe88019..a45c1e1ac7ef 100644
+--- a/drivers/regulator/dbx500-prcmu.c
++++ b/drivers/regulator/dbx500-prcmu.c
+@@ -117,11 +117,11 @@ ux500_regulator_debug_init(struct platform_device *pdev,
+ 	rdebug.dir = debugfs_create_dir("ux500-regulator", NULL);
+ 
+ 	/* create "status" file */
+-	debugfs_create_file("status", S_IRUGO, rdebug.dir, &pdev->dev,
++	debugfs_create_file("status", 0444, rdebug.dir, &pdev->dev,
+ 			    &ux500_regulator_status_fops);
+ 
+ 	/* create "power-state-count" file */
+-	debugfs_create_file("power-state-count", S_IRUGO, rdebug.dir,
++	debugfs_create_file("power-state-count", 0444, rdebug.dir,
+ 			    &pdev->dev, &ux500_regulator_power_state_cnt_fops);
+ 
+ 	rdebug.regulator_array = regulator_info;
+-- 
+2.31.1
 
-coreteam@netfilter.org
-host mail.netfilter.org [217.70.188.207]
-SMTP error from remote mail server after RCPT TO:<coreteam@netfilter.org>:
-450 4.2.0 <coreteam@netfilter.org>: Recipient address rejected:
-Greylisted for 60 seconds: retry timeout exceeded
-kadlec@netfilter.org
-host mail.netfilter.org [217.70.188.207]
-SMTP error from remote mail server after RCPT TO:<kadlec@netfilter.org>:
-450 4.2.0 <kadlec@netfilter.org>: Recipient address rejected:
-Greylisted for 60 seconds: retry timeout exceeded
-pablo@netfilter.org
-host mail.netfilter.org [217.70.188.207]
-SMTP error from remote mail server after RCPT TO:<pablo@netfilter.org>:
-450 4.2.0 <pablo@netfilter.org>: Recipient address rejected:
-Greylisted for 60 seconds: retry timeout exceeded
-linux-kernel@vger.kernel.org
-host vger.kernel.org [23.128.96.18]
-SMTP error from remote mail server after RCPT TO:<linux-kernel@vger.kernel.org>:
-451 4.7.1 Hello [185.231.240.75], for recipient address <linux-kernel@vger.kernel.org> the policy analysis reported:
-Greylisted, see http://postgrey.schweikert.ch/help/vger.kernel.org.html:
-retry timeout exceeded
-netfilter-devel@vger.kernel.org
-host vger.kernel.org [23.128.96.18]
-SMTP error from remote mail server after RCPT TO:<netfilter-devel@vger.kernel.org>:
-451 4.7.1 Hello [185.231.240.75], for recipient address <netfilter-devel@vger.kernel.org> the policy analysis reported:
-Greylisted, see http://postgrey.schweikert.ch/help/vger.kernel.org.html:
-retry timeout exceeded
-"
-I'm expect it will be re-send in few hours.
-othrevise I'll resend it once again via another mail server.
-
-Thank you,
-	Vasily Averin
 
 
