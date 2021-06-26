@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849E33B4ED7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 15:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853C23B4EDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFZOBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 10:01:23 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57147 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZOBW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 10:01:22 -0400
-Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15QDwxmG005391;
-        Sat, 26 Jun 2021 22:58:59 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
- Sat, 26 Jun 2021 22:58:59 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
-Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15QDwsVn005110
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 26 Jun 2021 22:58:59 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Steven Rostedt <rostedt@goodmis.org>,
+        id S230049AbhFZOTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 10:19:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:42501 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhFZOTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 10:19:50 -0400
+IronPort-SDR: jEot+H6du7ncBWYAn1westkHTTOfRRGCLtpqLYkIGEBpNhhVXeYBKlZgcfuPYm5YoynekYumT6
+ /v6IJN1fjJlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="207729768"
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="207729768"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 07:17:27 -0700
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="624775835"
+Received: from mlubyani-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.8.25])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 07:17:26 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
-Date:   Sat, 26 Jun 2021 22:58:45 +0900
-Message-Id: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: git-send-email 2.18.4
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/10] Add TDX Guest Support (#VE handler support)
+Date:   Sat, 26 Jun 2021 07:17:08 -0700
+Message-Id: <cover.1624716673.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is hitting WARN_ON_ONCE() at tracepoint_add_func() [1], but
-func_add() returning -EEXIST and func_remove() returning -ENOENT are
-not kernel bugs that can justify crashing the system.
+Hi All,
 
-Commit d66a270be3310d7a ("tracepoint: Do not warn on ENOMEM") says that
-tracepoint should only warn when a kernel API user does not respect the
-required preconditions (e.g. same tracepoint enabled twice, or called
-to remove a tracepoint that does not exist). But WARN*() must be used to
-denote kernel bugs and not to print simple warnings. If someone wants to
-print warnings, pr_warn() etc. should be used instead.
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds #VE handler support,
+for port I/O, MMIO and MWAIT/MONITOR features in TDX guest.
 
-Link: https://syzkaller.appspot.com/bug?id=41f4318cf01762389f4d1c1c459da4f542fe5153 [1]
-Reported-by: syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
----
- kernel/tracepoint.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+This series is the continuation of the patch series titled "Add TDX Guest
+Support (Initial support)" which added initial support for TDX guests. You
+can find the patchset in the following link.
 
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 9f478d29b926..3cfa37a3d05c 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -287,10 +287,8 @@ static int tracepoint_add_func(struct tracepoint *tp,
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_add(&tp_funcs, func, prio);
--	if (IS_ERR(old)) {
--		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-+	if (IS_ERR(old))
- 		return PTR_ERR(old);
--	}
- 
- 	/*
- 	 * rcu_assign_pointer has as smp_store_release() which makes sure
-@@ -320,7 +318,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_remove(&tp_funcs, func);
--	if (WARN_ON_ONCE(IS_ERR(old)))
-+	if (IS_ERR(old))
- 		return PTR_ERR(old);
- 
- 	if (tp_funcs == old)
+[set 1] - https://lore.kernel.org/patchwork/project/lkml/list/?series=505232
+
+Also please note that this series alone is not necessarily fully
+functional.
+
+You can find TDX related documents in the following link.
+
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+
+Changes since v1:
+ * Rebased on top of TDX guest set 1 patches (which had some core API changes).
+ * Moved "x86/tdx: Add early_is_tdx_guest() interface" patch from set 1 patch
+   series to this patchset (since it is only used in early I/O support case).
+ * Rest of changelogs are included in patches in-line.
+
+Andi Kleen (1):
+  x86/tdx: Handle early IO operations
+
+Kirill A. Shutemov (6):
+  x86/io: Allow to override inX() and outX() implementation
+  x86/tdx: Handle port I/O
+  x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
+  x86/insn-eval: Introduce insn_decode_mmio()
+  x86/sev-es: Use insn_decode_mmio() for MMIO implementation
+  x86/tdx: Handle in-kernel MMIO
+
+Kuppuswamy Sathyanarayanan (3):
+  x86/tdx: Add early_is_tdx_guest() interface
+  x86/tdx: Handle port I/O in decompression code
+  x86/tdx: Handle MWAIT and MONITOR
+
+ arch/x86/boot/compressed/Makefile |   2 +
+ arch/x86/boot/compressed/tdcall.S |   3 +
+ arch/x86/boot/compressed/tdx.c    |  31 +++++
+ arch/x86/boot/cpuflags.c          |  12 +-
+ arch/x86/boot/cpuflags.h          |   2 +
+ arch/x86/include/asm/insn-eval.h  |  13 ++
+ arch/x86/include/asm/io.h         |  23 +++-
+ arch/x86/include/asm/tdx.h        |  66 ++++++++++
+ arch/x86/kernel/head64.c          |   3 +
+ arch/x86/kernel/sev.c             | 171 ++++++-------------------
+ arch/x86/kernel/tdx.c             | 204 ++++++++++++++++++++++++++++++
+ arch/x86/lib/insn-eval.c          | 102 +++++++++++++++
+ 12 files changed, 493 insertions(+), 139 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/tdcall.S
+ create mode 100644 arch/x86/boot/compressed/tdx.c
+
 -- 
-2.18.4
+2.25.1
 
