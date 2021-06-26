@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9573B4BBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 03:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9F23B4BBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 03:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFZBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 21:02:18 -0400
-Received: from smtp.silvertouch.com ([14.143.90.230]:34224 "EHLO
-        smtp.silvertouch.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229831AbhFZBCR (ORCPT
+        id S229978AbhFZBGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 21:06:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5080 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFZBF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 21:02:17 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by smtp.silvertouch.com (Postfix) with ESMTP id D993D4549FC3B;
-        Sat, 26 Jun 2021 02:50:41 +0530 (IST)
-Received: from smtp.silvertouch.com ([127.0.0.1])
-        by localhost (smtp.silvertouch.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dStuP_5MZuOq; Sat, 26 Jun 2021 02:50:41 +0530 (IST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by smtp.silvertouch.com (Postfix) with ESMTP id 1BBCD45436F6D;
-        Sat, 26 Jun 2021 02:44:45 +0530 (IST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.silvertouch.com 1BBCD45436F6D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silvertouch.com;
-        s=65E9FDA4-B454-11E5-BE3F-174CD9C10EBF; t=1624655685;
-        bh=+1RIjGRd3S4Fd5oMp1V5Uhq2v8p00t2MUjhJVU9hTxo=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=avg9TFT3OvtdgK98MKLjRggJumS0MWWipORGMxOomCZ5ruQJCz2+w9drhYquf2vAu
-         kf2W7EChzJUkZFf7PAFvdAwHPVL5UAdTCBESIGfjaPLgbs81uXhPBweZoCQPlvOCOx
-         wwWFQKA2Jp3ZHjg2/sZohT8nF6LTKSoWm+jgA/SA=
-X-Virus-Scanned: amavisd-new at smtp.silvertouch.com
-Received: from smtp.silvertouch.com ([127.0.0.1])
-        by localhost (smtp.silvertouch.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9NeVagdc4xoX; Sat, 26 Jun 2021 02:44:45 +0530 (IST)
-Received: from [172.20.10.8] (unknown [45.130.83.98])
-        (Authenticated sender: kunal_shah@silvertouch.com)
-        by smtp.silvertouch.com (Postfix) with ESMTPSA id 6E1484538F891;
-        Sat, 26 Jun 2021 02:38:15 +0530 (IST)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 25 Jun 2021 21:05:58 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBb8Y29BQzXlBy;
+        Sat, 26 Jun 2021 08:58:21 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 09:03:35 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 09:03:34 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH V2 net-next 0/2] net: hns3: add new debugfs commands
+Date:   Sat, 26 Jun 2021 09:00:15 +0800
+Message-ID: <1624669217-38264-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid-19-Bargeldhilfe_f=C3=BCr_Sie_Covid-19_support_for_you?=
-To:     Recipients <kunal_shah@silvertouch.com>
-From:   "Sittler Wolfgang " <kunal_shah@silvertouch.com>
-Date:   Sat, 26 Jun 2021 05:08:03 +0800
-Reply-To: Sittlerwolfgang107@gmail.com
-Message-Id: <20210625210816.6E1484538F891@smtp.silvertouch.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, aufgrund des Ausbruchs des Convid-19-Virus wurden Sie von Herrn Sitt=
-ler Wolfgang f=C3=BCr eine Spende in H=C3=B6he von 520.000 =E2=82=AC ausgew=
-=C3=A4hlt. Wenden Sie sich an Ihre pers=C3=B6nliche E-Mail-Adresse, um Rich=
-tlinien zum Erhalt Ihrer Spende zu erhalten. Sittlerwolfgang107@gmail.com
-Freundliche Gr=C3=BC=C3=9Fe
+This series adds three new debugfs commands for the HNS3 ethernet driver.
+
+change log:
+V1 -> V2:
+1. remove patch "net: hns3: add support for link diagnosis info in debugfs"
+   and use ethtool extended link state to implement similar function
+   according to Jakub Kicinski's opinion.
 
 
 
-Covid-19 cash assistance for you
-Hello, due to the outbreak of the Convid-19 virus, you have been selected b=
-y Mr. Sittler Wolfgang for a donation of =E2=82=AC 520,000. Contact your pe=
-rsonal email address for guidelines on how to receive your donation. Sittle=
-rwolfgang107@gmail.com
-Best regards
+Jian Shen (2):
+  net: hns3: add support for FD counter in debugfs
+  net: hns3: add support for dumping MAC umv counter in debugfs
+
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  2 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c | 14 +++++
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |  9 +++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 71 ++++++++++++++++++++++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 10 ++-
+ 5 files changed, 104 insertions(+), 2 deletions(-)
+
+-- 
+2.8.1
+
