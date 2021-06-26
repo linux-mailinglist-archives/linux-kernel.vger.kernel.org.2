@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CD93B5091
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 01:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF093B5094
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 01:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhFZXku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 19:40:50 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:52653 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229850AbhFZXkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 19:40:49 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 9AEB12400FF
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 01:38:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1624750705; bh=s6esWgU/Xlf7w6ZVBczhpdMCl7wS0e60yh65YUkUMHg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=q2f+UyV2GZN1y9xf4Par16MlJVGpK4axnyczLWB9F1rxzQsPQ2Ije04U9zXMFPNi7
-         aWelrLcwRckqP2+UaBq+K8Av7ZpJSwm5oEkI6R+QxTEoAvOUYBMgVbPSp9MCV116FZ
-         5DfmWSyNcJhuHueblZLQyBoob52CvqPC/aEe/dcoMUnVhCioAmutwZsFNoIZqnVwYB
-         QSO4OTdwTIC/vnv8lahkjce2UP2zb0dby6cKAnyo7gVUMAi49VU9+EhFHW8vHEh92k
-         rY4OyfL5Gnm48o6Jany7vZAn1eErsCFzEOoA0xsxL0lopvY4M+F+RkfuF7Y3qSt8G1
-         CGuxlOp2o6iGw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4GC9Kr45dPz6tm9;
-        Sun, 27 Jun 2021 01:38:24 +0200 (CEST)
-Date:   Sat, 26 Jun 2021 23:38:24 +0000
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] powerpc: wii_defconfig: Enable OTP by default
-Message-ID: <YNe6cPIhtc1Yh6Lf@latitude>
-References: <20210519095044.4109-1-linkmauve@linkmauve.fr>
- <20210519095044.4109-5-linkmauve@linkmauve.fr>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SVeRRa6GP7W+F48g"
-Content-Disposition: inline
-In-Reply-To: <20210519095044.4109-5-linkmauve@linkmauve.fr>
+        id S230215AbhFZXvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 19:51:36 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:38108 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229556AbhFZXvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 19:51:35 -0400
+Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15QNdPTP029050;
+        Sat, 26 Jun 2021 23:48:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id; s=pps0720;
+ bh=KSH85L5/d4ls/oo5uSxRdbVkC4cWcVHyeaA780T1o94=;
+ b=eTXpXDTliyJR0RUnjNrR+O/VWBEu9iH/TU8MY9TOhxJH9VTjLXebmGfWm3VguIjIV/qf
+ 61FC4MTBxDDYG4mcxnaWDoWKjz2JTKyjzFJ4ost+j0WBeAf3vc7EbUfpGfgoV1O7Uq/z
+ MapTJej5IPmQgtKbVMwRE5rMWdeKLhiae4Io6moz5PkbG1CNiX3RUF4GN/YWCXXHBX6Z
+ ayLBnqr55sOkf/gAsDs7et/loxfiFUAtD64CynctWnU8wUtjYHwlwcE6MIFnUDlriEW3
+ EliuClmXua0C3ieMueXhmca7AtxKSlYYJteg1QNFvNO2W7qmLy0QDMr25EHNSyjJPD08 vg== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0b-002e3701.pphosted.com with ESMTP id 39dwmkvdgg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Jun 2021 23:48:58 +0000
+Received: from hpnsw-phaguraws.rose.rdlabs.hpecorp.net (unknown [16.93.60.123])
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 4E8CD81;
+        Sat, 26 Jun 2021 23:48:56 +0000 (UTC)
+From:   Curtis Klein <curtis.klein@hpe.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Curtis Klein <curtis.klein@hpe.com>
+Subject: [PATCH] watchdog: only run driver set_pretimeout op if device supports it
+Date:   Sat, 26 Jun 2021 16:47:45 -0700
+Message-Id: <1624751265-24785-1-git-send-email-curtis.klein@hpe.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-GUID: of6wWYXuINwng-3tMKg5NVE19IlKfPy3
+X-Proofpoint-ORIG-GUID: of6wWYXuINwng-3tMKg5NVE19IlKfPy3
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-26_15:2021-06-25,2021-06-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106260170
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some watchdog devices might conditionally support pretimeouts (e.g. if
+an interrupt is exposed for the device) but some watchdog drivers might
+still define the set_pretimeout operation (e.g. the mtk_wdt driver) and
+indicate support at runtime through the WDIOF_PRETIMEOUT flag. If the
+kernel is compiled with CONFIG_WATCHDOG_HRTIMER_PRETIMEOUT enabled,
+watchdog_set_pretimeout would run the driver specific set_pretimeout
+even if WDIOF_PRETIMEOUT is not set which might have unintended
+consequences.
 
---SVeRRa6GP7W+F48g
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So this change checks that the device flags and only runs the driver
+operation if pretimeouts are supported.
 
-On Wed, May 19, 2021 at 11:50:44AM +0200, Emmanuel Gil Peyrot wrote:
-> This selects the nintendo-otp module when building for this platform, if
-> CONFIG_NVMEM is also selected.
+Signed-off-by: Curtis Klein <curtis.klein@hpe.com>
+---
+ drivers/watchdog/watchdog_dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The 'if' is a bit confusing. CONFIG_NVRAM=3Dy has indeed been in
-wii_defconfig since 2009.
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 3bab324..5bf795c 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -401,7 +401,7 @@ static int watchdog_set_pretimeout(struct watchdog_device *wdd,
+ 	if (watchdog_pretimeout_invalid(wdd, timeout))
+ 		return -EINVAL;
+ 
+-	if (wdd->ops->set_pretimeout)
++	if (wdd->ops->set_pretimeout && (wdd->info->options & WDIOF_PRETIMEOUT))
+ 		err = wdd->ops->set_pretimeout(wdd, timeout);
+ 	else
+ 		wdd->pretimeout = timeout;
+-- 
+2.7.4
 
-
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---SVeRRa6GP7W+F48g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDXum8ACgkQCDBEmo7z
-X9uYFxAArusbDqw9HFJIducCUsMF4cBXIOa+foSnzOZNuBQx64g58pTVNi9MZyK0
-ehLYLSwfsTMj/J10u/y55NkoVXPyOoLlbEgikH0VX5nixGIZP6XqxsKVp2eViTX8
-UZnRwTTPkocRABRALNBqIy2Vr3Xu0sc5cLj7Wr9mnME3EOdtj0529kt30qNLxFNa
-QgnEtfT9v2Xk8ZtcNcobYMbEqhAvACSB559cuVki4G1SsnHfVjBrJzYUFsPRSLty
-hLVcYrCnkoAL9MTYcnrI+vzdivZiDRxtj7OjcKiX/z34xKe74qNs+ZEaS9oe8xXM
-J/FF+Ur1BeDw0gGvXKr8zFgTAxPWy4F7TGjnqXRYVYWJuhHhSlJ4uH4YfTTplodG
-FB6KME8ERasehlObLt67QTbuxNoqbyz6GMBtNZ/41nvwnY+c14+rIsT8zNVrX7g1
-zTJ7x0lQO99aOMUD20MDKcwJy5tF9kILEKK5IE9ZdtSBZMctBNU8fjvPLswshHTV
-5OWpFee08odl3X3ItG2wbBZuDnGgtU/McM2aeCYJ13nAU0k4SlBw3MBx/sDfehI0
-tLnVgLWVnv612sV9haKgHbA4JdK1PeldbzDgZuf/xe2GEq6x6SZ56XLvw/1zA3po
-dOGetYL9Kwsmo+LBa0ooUM+Gl9b9ERG9ZEd/WsalsyjgMH1zhGs=
-=frcq
------END PGP SIGNATURE-----
-
---SVeRRa6GP7W+F48g--
