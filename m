@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1A33B4FDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A5F3B4FE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhFZSbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 14:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhFZSbi (ORCPT
+        id S230343AbhFZSsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 14:48:39 -0400
+Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:42016 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230046AbhFZSsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 14:31:38 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1958EC061767
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 11:29:15 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c19-20020a9d6c930000b0290464c2cdfe2bso1913282otr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 11:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xsfNESfqMuHVR/3TWEKQgeF1cU+m5Si9kUXhTtiYi2M=;
-        b=AUVNQ6pPe4FF/zaIXnkLzesJs02J5fe9cvA6qVX9vqGnmRLKlVRNk2b7820AUsu0TM
-         t/lc6GywsJN1N4kLgz2qOaad3f555GN75Rqlf4mYrF7DT2gndEbx0zR+DCZwJ/1kP+nQ
-         wSrE9eWMEmYprGC9PZJ+egb2KQLDzZIyOJUn62dd6Z1+xSF3MP90/xOUkHG9aVPM8eHk
-         ca/DAqSRA1LyiFucGgCNOzoQ7FjdW5zXr7nBGwMhWaqBwueSsDcKfCgbeohBkEaFywLk
-         dotnFrJApzg9sDzJEka/le6GZUzU06ObsF+K+jPmm64iw8f7SIGw5jHTgqpsPRf3Q1SP
-         xIgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xsfNESfqMuHVR/3TWEKQgeF1cU+m5Si9kUXhTtiYi2M=;
-        b=nX1Kt8Z9W31LmCTl53O0FN4lhTQT7L9kHrxTo51sCtUl+Y+/fIdPhaOkbUuU3Iwwzq
-         czjiB80VJQPkFXQUHN6dsz+wBEHQl+MakPepC9/tinvRdVCBJfp8Sg+C762y8BeKg4xW
-         SMiiQHNQY3tPmmdCNLVP72z3QNsLn3B0GTCNcCutwgCyR/2kS8j2L4SgWM3PJ76g/fD5
-         hBHN525ownV2T8ukGTZpN/5PUzWeXh+hju4sx64XCUVrFD2kABwYhPLj5XYS0lBeEDPD
-         LGPAc0Bil6vTdAhJVOEj8PR3CV2Neg9pD9jgJUURc8iAnDE/1Fd6opR0hwTKjwIQWF32
-         4TwQ==
-X-Gm-Message-State: AOAM5334yi7ifscADNYJyTJZcxfs760lS7jcJ69fUAFE79f6L/i0q8Ih
-        xTwRbdRBAneA9zBGARuYfaQMoC+bzSHv66JnPXoG5A==
-X-Google-Smtp-Source: ABdhPJzEYyfnyegOz/k5HDxQyXJRDyKFyA6MoFz3oNGViR9pD0HqIr10ZJLT3l532va7kK+4+T+2jtpiik5jFTu1KDM=
-X-Received: by 2002:a05:6830:15d3:: with SMTP id j19mr14303580otr.51.1624732154316;
- Sat, 26 Jun 2021 11:29:14 -0700 (PDT)
+        Sat, 26 Jun 2021 14:48:38 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 467C8182CED2A;
+        Sat, 26 Jun 2021 18:46:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id B698C1D42F7;
+        Sat, 26 Jun 2021 18:46:14 +0000 (UTC)
+Message-ID: <b8758249e142da8c2db9920e4cf71596ff7f9570.camel@perches.com>
+Subject: Re: [PATCH 2/3] checkpatch: tweak extern in C warning
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <20210626034016.170306-3-jim.cromie@gmail.com>
+References: <20210626034016.170306-1-jim.cromie@gmail.com>
+         <20210626034016.170306-3-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 MIME-Version: 1.0
-References: <20210617053432.350486-1-bhupesh.sharma@linaro.org>
- <20210617053432.350486-2-bhupesh.sharma@linaro.org> <CACRpkdY9=Exgaqf4KdsfwH7gK=KGh0HVJSWD_FTqLtwd+pOBYQ@mail.gmail.com>
-In-Reply-To: <CACRpkdY9=Exgaqf4KdsfwH7gK=KGh0HVJSWD_FTqLtwd+pOBYQ@mail.gmail.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Sat, 26 Jun 2021 23:59:03 +0530
-Message-ID: <CAH=2Ntwef4SpAF+zAxkNvy2pjBfuQZONpUgJavMKfGuV-2uzow@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] dt-bindings: pinctrl: qcom,pmic-gpio: Arrange
- compatibles alphabetically
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 25 Jun 2021 21:31:42 -0700
+User-Agent: Evolution 3.40.0-1 
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.88
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: B698C1D42F7
+X-Stat-Signature: nf4ctxqg3ixp5bytmftenw4ymfn3x7da
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18RUbBjK/SrVIuSA5z5BGzXkWaU6qoejjo=
+X-HE-Tag: 1624733174-238155
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 2021-06-25 at 21:40 -0600, Jim Cromie wrote:
+> The extern-in-C rule has one important exception: the symbol is
+> defined in/by the linker script.  By convention, these almost always
+> contain: _start, _stop, _end.  Suppress the warning on such symbols.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> @@ -6910,7 +6910,8 @@ sub process {
+>  		    $stat =~ /^.\s*extern\s+/)
+>  		{
+>  			WARN("AVOID_EXTERNS",
+> -			     "externs should be avoided in .c files\n" .  $herecurr);
+> +			     "externs should be avoided in .c files\n($stat)\n" .  $herecurr)
+> +			    unless $stat =~ /_start|_stop|_end/;
 
-On Sat, 26 Jun 2021 at 05:21, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Thu, Jun 17, 2021 at 7:34 AM Bhupesh Sharma
-> <bhupesh.sharma@linaro.org> wrote:
->
-> > Arrange the compatibles inside qcom-pmic gpio device tree
-> > bindings alphabetically.
-> >
-> > While at it, also make some minor cosmetic changes to allow
-> > future compatible addition to the bindings simpler.
-> >
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
->
-> These patches do not apply on the current devel branch in the pin control
-> tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
->
-> Please rebase and resend!
+nak.
 
-Sure, Let me rebase and resend the pinctrl patchset.
+As far as I can tell, there's no reason these symbols
+should not be in .h files.
 
-Thanks,
-Bhupesh
+besides that:
+
+output is single line, $stat should not be used and
+using unless is not desired.
+
+
