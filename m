@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B2D3B4CEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 07:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FE63B4CF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFZGB5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Jun 2021 02:01:57 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:39068 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFZGBx (ORCPT
+        id S229916AbhFZGPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 02:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFZGPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:01:53 -0400
-Received: from smtpclient.apple (p5b3d2eb8.dip0.t-ipconnect.de [91.61.46.184])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 7AAA8CED1E;
-        Sat, 26 Jun 2021 07:59:30 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH 1/1] Bluetooth: btusb: Record debug log for Mediatek Chip.
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210616191540.4487-1-mark-yw.chen@mediatek.com>
-Date:   Sat, 26 Jun 2021 07:59:30 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        michaelfsun@google.com, shawnku@google.com, jemele@google.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <73A590F6-4EAF-44AC-8803-769F7919712C@holtmann.org>
-References: <20210616191540.4487-1-mark-yw.chen@mediatek.com>
-To:     Mark-YW.Chen@mediatek.com
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Sat, 26 Jun 2021 02:15:12 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD4CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 23:12:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gd24-20020a17090b0fd8b02901702bcb0d90so2512287pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 23:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z3D1KelqTQqcByU+iX/g4zMb1AQ1QyzDSkN4oTccG6E=;
+        b=dPYF37dHsGEYSEl9eqOPnMnSYV23hgoNW6zFFCEdWj5Q1w4OSIZ374aV2gk9AR51sH
+         4QhogOUV0JirtFhghh4Sx4J7XwTYVMRFXKsFzP6gdNmxkPDTn6w8BfKYRi8dFTN6JbSf
+         hBlzTMo6KZE2D3sg78jc5Rf9MdUxh59Adb2yQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z3D1KelqTQqcByU+iX/g4zMb1AQ1QyzDSkN4oTccG6E=;
+        b=FgzglP/rOtgzzSpQ54VC5jb6jd/wTPw+MgGifT2Z9zdHi9TTvJakzW1v7+gH3wGf7D
+         KPKV/h4McvRP5kBw9kguqoUDcVOur52QNuby8AXVsn4Y4yBntmYg/Ef6bh6ZYjk5v9Q9
+         7JbCVgRSN/LbUru3Q14uAV4yyTxdWaHVtsropno63Cs7v570IHPEzA3B+Gb2AQ+5MZIY
+         C9/pblRHowfWO/dDR+uDM/Pzj7qutOLPyw7SgYwi1G+4U9odavshFfagvOaij7UYPESX
+         jw4Zldr78uPLWHKyCNmDBG5E4JtI2xaBXPL2dF23H5pv8wlbcZ3sILuv9yr7QFrIKm6W
+         mdOQ==
+X-Gm-Message-State: AOAM531FunMxcd7uDW5Z2VWzVE+3gXEQ7KqJbe0ufYgFhfW2fmYhCIVW
+        W93fikOicnHa+MTcpv9DRxuDDg==
+X-Google-Smtp-Source: ABdhPJyf87SbQDubTJ9J8aMC+55dXrh4eLcutSx+3zpg0JmnRltlhc687c4pmI8apq44mFLXSlbVNQ==
+X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr24743998pjh.188.1624687968729;
+        Fri, 25 Jun 2021 23:12:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c24sm7895781pgj.11.2021.06.25.23.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 23:12:47 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 23:12:46 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Laight <David.Laight@aculab.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        kernelci@groups.io, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: [PATCH 0/9] LKDTM: Improvements for kernelci.org
+Message-ID: <202106252311.14501F2F@keescook>
+References: <20210623203936.3151093-1-keescook@chromium.org>
+ <030c022b-985a-16eb-b9d7-73b6fed2d5a9@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <030c022b-985a-16eb-b9d7-73b6fed2d5a9@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-> Mediatek Bluetooth Controller send the fw log via EP2, this patch
-> create callback(data->recv_acl) for processing acl packet.
+On Fri, Jun 25, 2021 at 07:22:01AM +0100, Guillaume Tucker wrote:
+> On 23/06/2021 21:39, Kees Cook wrote:
+> > This is a bunch of LKDTM clean-ups to improve and expand testing,
+> > given feedback from testing at kernelci.org. Adds a few new tests as
+> > well.
+> > 
+> > (If a pull-request is preferred, please let me know.)
+> > 
+> > Thanks!
+> > 
+> > -Kees
+> > 
+> > Kees Cook (9):
+> >   selftests/lkdtm: Avoid needing explicit sub-shell
+> >   selftests/lkdtm: Fix expected text for CR4 pinning
+> >   selftests/lkdtm: Fix expected text for free poison
+> >   lkdtm/bugs: XFAIL UNALIGNED_LOAD_STORE_WRITE
+> >   lkdtm/heap: Add vmalloc linear overflow test
+> >   lkdtm: Enable DOUBLE_FAULT on all architectures
+> >   lkdtm: Add CONFIG hints in errors where possible
+> >   selftests/lkdtm: Enable various testable CONFIGs
+> >   lkdtm/heap: Add init_on_alloc tests
 > 
-> 1. create callback(data->recv_acl) for processing acl packet.
-> 2. Add btusb_recv_acl_mtk to dispatch acl packet.
-> 3. Send mediatek debug log and coredump via hci_recv_diag channel.
-> 4. The upper layerd can use hci_channel_minitor to receive
->   these packets.
+> Tested-by: "kernelci.org bot" <bot@kernelci.org>
 > 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
-> ---
-> drivers/bluetooth/btusb.c | 23 ++++++++++++++++++++++-
-> 1 file changed, 22 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index b015dcecfb13..0a86713f496b 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -569,6 +569,7 @@ struct btusb_data {
-> 	int suspend_count;
+> This whole series was tested on top of next-20210623, here are a
+> couple of sample results from KernelCI staging:
 > 
-> 	int (*recv_event)(struct hci_dev *hdev, struct sk_buff *skb);
-> +	int (*recv_acl)(struct hci_dev *hdev, struct sk_buff *skb);
-> 	int (*recv_bulk)(struct btusb_data *data, void *buffer, int count);
+> Clang 13 on AMD x86_64:
+> https://staging.kernelci.org/test/plan/id/60d4a5ce3d2bc535d924bf25/
 > 
-> 	int (*setup_on_usb)(struct hci_dev *hdev);
-> @@ -776,7 +777,7 @@ static int btusb_recv_bulk(struct btusb_data *data, void *buffer, int count)
+> GCC 8 on Intel x86_64:
+> https://staging.kernelci.org/test/plan/id/60d570711a3d6beefe24bf26/
 > 
-> 		if (!hci_skb_expect(skb)) {
-> 			/* Complete frame */
-> -			hci_recv_frame(data->hdev, skb);
-> +			data->recv_acl(data->hdev, skb);
-> 			skb = NULL;
-> 		}
-> 	}
-> @@ -3851,6 +3852,24 @@ static int btusb_mtk_shutdown(struct hci_dev *hdev)
-> 	return 0;
-> }
-> 
-> +static int btusb_recv_acl_mtk(struct hci_dev *hdev, struct sk_buff *skb)
-> +{
-> +	struct btusb_data *data = hci_get_drvdata(hdev);
-> +	int err;
-> +
+> And this is where the series was applied:
+> https://github.com/kernelci/linux/commits/a9f4387015268e426c77fd51ed846c9756938828
 
-since this is guaranteed to be a complete ACL packet now, use the ACL header struct and compare the handle. Which also means you can nicely use a switch statement here.
+Fantastic! Thanks; this looks great. :)
 
-> +	if (skb->data[0] == 0x6f && skb->data[1] == 0xfc) {
-
-This needs a comment on why you disable auto-suspend here.
-
-> +		usb_disable_autosuspend(data->udev);
-> +		err = hci_recv_diag(data->hdev, skb);
-> +	} else if ((skb->data[0] == 0xff || skb->data[0] == 0xfe) &&
-> +		   skb->data[1] == 0x05) {
-> +		err = hci_recv_diag(data->hdev, skb);
-
-I would also comment on what type of diagnostic message each of these are.
-
-> +	} else {
-> +		err = hci_recv_frame(data->hdev, skb);
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> MODULE_FIRMWARE(FIRMWARE_MT7663);
-> MODULE_FIRMWARE(FIRMWARE_MT7668);
-> 
-> @@ -4542,6 +4561,7 @@ static int btusb_probe(struct usb_interface *intf,
-> 		data->recv_event = hci_recv_frame;
-> 		data->recv_bulk = btusb_recv_bulk;
-> 	}
-
-Extra empty line before this statement.
-
-> +	data->recv_acl = hci_recv_frame;
-> 
-> 	hdev = hci_alloc_dev();
-> 	if (!hdev)
-> @@ -4669,6 +4689,7 @@ static int btusb_probe(struct usb_interface *intf,
-> 		hdev->setup = btusb_mtk_setup;
-> 		hdev->shutdown = btusb_mtk_shutdown;
-> 		hdev->manufacturer = 70;
-> +		data->recv_acl = btusb_recv_acl_mtk;
-> 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
-> 	}
-
-Regards
-
-Marcel
-
+-- 
+Kees Cook
