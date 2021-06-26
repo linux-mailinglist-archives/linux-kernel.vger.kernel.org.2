@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33913B4DC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 10:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ED43B4DCC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 11:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFZI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 04:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhFZI7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 04:59:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94AF661920;
-        Sat, 26 Jun 2021 08:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624697823;
-        bh=qmG1JfvdGzsA0YlwqYbabUV+AHbdvuyoe9DUjculXA8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZMUoH0PVIaYf1Uix6rrjUT5KrcQKsvOWAgPMXRrykwR0NU+uTmfW6bZRysxzxn8P0
-         OiBKET2vFg0BZ2lqa9qIW15uFYVQY7mVULDZDAG6GAjLAjjoxzVlHQHhJqPrFkrEhy
-         npHIeNS17+gXb4XfgioqT8jv9DcrcgRaKRrJd7bVMzkqSq1a0GeiI5Fxa+QRD/dnnx
-         +CIpI1Qj7+TtWOoVUuaSIVe6OHGrAtrCYgM+jMqMuJKflN1vx4cWH6bGQY2ZSFyyl/
-         GgJEb8RDnTFOPnkTGJWC+k3LIts337H4K72bdNPjNcb1nAuHeqfccqy0PD+cMV1LHZ
-         +yQJ3gato9zCw==
-Date:   Sat, 26 Jun 2021 16:56:55 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     rogerq@kernel.org, a-govindraju@ti.com, gregkh@linuxfoundation.org,
-        felipe.balbi@linux.intel.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kishon@ti.com, kurahul@cadence.com,
-        sparmar@cadence.com, stable@vger.kernel.org
-Subject: Re: [PATCH] usb: cdns3: Fixed incorrect gadget state
-Message-ID: <20210626085655.GA13671@Peter>
-References: <20210623070247.46151-1-pawell@gli-login.cadence.com>
+        id S229764AbhFZJXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 05:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZJXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 05:23:44 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C20C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 02:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=5tE7gWvpvwFlyaG2zRUYzBcE9B7dXwCRVgZyQuAA+1k=; b=SyBMxvB2RafWxopZbDER7nZv2
+        rWwf/m9jrVM9tPSxLy0FYvUr4vtjcrLfs0qsFb69yN2H32RQpMs+7mO6SK0lSIvPQq580fefQ/uG1
+        uGOK3pkHNAOQWFI5S/qlAJHGtyWnRDbgxF6fsn2bESb5QeU38DX33BIPQO/lHY5ls6GiwmWW3+i3d
+        CH3DHjtheUWiLXhnfAJizpzvGuN1Qo6HKArk+7ioUzpPL5FVmbC1xavbo9U9KpxWMVA0o/FW6aTFM
+        v3L2muixt+zFNcHMnqdk9TfhLmT5RCMf0FzFX7lHnsMGtTRku2pNAY/h0k28ceDdH3Tf+zdy2vwrH
+        RxFK8CvPA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45374)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lx4V1-0001d4-Fq; Sat, 26 Jun 2021 10:21:15 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lx4Uz-0007X1-HF; Sat, 26 Jun 2021 10:21:13 +0100
+Date:   Sat, 26 Jun 2021 10:21:13 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jinchao Wang <wjc@cdjrlc.com>
+Cc:     guillaume.tucker@collabora.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: mm: Prefer unsigned int to bare use of unsigned
+Message-ID: <20210626092113.GZ22278@shell.armlinux.org.uk>
+References: <20210626065833.6653-1-wjc@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623070247.46151-1-pawell@gli-login.cadence.com>
+In-Reply-To: <20210626065833.6653-1-wjc@cdjrlc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-23 09:02:47, Pawel Laszczak wrote:
-> From: Pawel Laszczak <pawell@cadence.com>
-> 
-> For delayed status phase, the usb_gadget->state was set
-> to USB_STATE_ADDRESS and it has never been updated to
-> USB_STATE_CONFIGURED.
-> Patch updates the gadget state to correct USB_STATE_CONFIGURED.
-> As a result of this bug the controller was not able to enter to
-> Test Mode while using MSC function.
+On Sat, Jun 26, 2021 at 02:58:33PM +0800, Jinchao Wang wrote:
+>   * By default, we write directly to secure registers.  Platforms must
+>   * override this if they are running non-secure.
+>   */
+> -static void l2c_write_sec(unsigned long val, void __iomem *base, unsigned reg)
+> +static void l2c_write_sec(unsigned long val, void __iomem *base, unsigned int reg)
 
-Pawel, would you please describe more about this issue? I remember the cdns3
-controller at i.mx series SoC could enter test mode by using current
-code.
+... and then I'll get another patch because this now goes over 80
+characters. No thanks.
 
-Peter
+There is nothing inherently wrong with "unsigned" - it's always been
+legal C, and I'd prefer to keep the code as-is under arch/arm in
+regard of this.
 
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> ---
->  drivers/usb/cdns3/cdns3-ep0.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-ep0.c b/drivers/usb/cdns3/cdns3-ep0.c
-> index 9a17802275d5..ec5bfd8944c3 100644
-> --- a/drivers/usb/cdns3/cdns3-ep0.c
-> +++ b/drivers/usb/cdns3/cdns3-ep0.c
-> @@ -731,6 +731,7 @@ static int cdns3_gadget_ep0_queue(struct usb_ep *ep,
->  		request->actual = 0;
->  		priv_dev->status_completion_no_call = true;
->  		priv_dev->pending_status_request = request;
-> +		usb_gadget_set_state(&priv_dev->gadget, USB_STATE_CONFIGURED);
->  		spin_unlock_irqrestore(&priv_dev->lock, flags);
->  
->  		/*
-> -- 
-> 2.25.1
-> 
+Thanks.
 
 -- 
-
-Thanks,
-Peter Chen
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
