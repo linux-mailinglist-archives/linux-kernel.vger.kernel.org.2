@@ -2,163 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7833B4D43
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30423B4D4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 09:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhFZG5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 02:57:46 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8305 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZG5n (ORCPT
+        id S229906AbhFZHFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 03:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZHFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:57:43 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GBkyP0rXnz1BR6s;
-        Sat, 26 Jun 2021 14:50:05 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 26 Jun 2021 14:55:19 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 26 Jun 2021 14:55:18 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] KVM: mmio: Fix use-after-free Read in kvm_vm_ioctl_unregister_coalesced_mmio
-Date:   Sat, 26 Jun 2021 15:03:04 +0800
-Message-ID: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 26 Jun 2021 03:05:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A2BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 00:03:27 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624691004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rzu8FRL+CWUI4jBrCwo+n7segzdf3IKWI66QDPYtHEo=;
+        b=qAjQW440QHEIYD95OkySuCRRWN+cKtd9NMVn51Jkq5Zujex4z+2PytQP5dd7WDWsA3chtY
+        sllHEpZ5Tw1a6zcwZMY5nTzZBERi1XN+kMcqbuEuXs3UIuiFptDGUXxIUYt/NSIZWNPCbU
+        9xYm4bn/5a3y0izyaKHTjUE97xIITm587qjEcpMPHTFdIcdPWhiGDQEgxb8MCDU1Jts7l6
+        /kkffDxLZBD9c/ViNtBBsmq+G6h7tPEdoX0l/FO/Iss7vGKiCAMU0uARVTlmwhUDGj9UeF
+        QzwewIkrtcnVLA+hCCJrpMXVtsUQBLlhQA9rFb9DTjGVXd/2lBH0w8PzZaH5YA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624691004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rzu8FRL+CWUI4jBrCwo+n7segzdf3IKWI66QDPYtHEo=;
+        b=uQjnC3n2sTGmCa8t4Uo81Kt3eiesXGrvAjgNOVtzg9IdGc+cJk1pqIEGiUVdaN5T8lXxcA
+        /OiuPxvzg59/fYCA==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Subject: Re: [RFC PATCH 1/4] x86/entry/nmi: Switch to the entry stack before switching to the thread stack
+In-Reply-To: <YNW3O1YxZx9XkZqU@hirez.programming.kicks-ass.net>
+References: <20210601065217.23540-1-jiangshanlai@gmail.com> <20210601065217.23540-2-jiangshanlai@gmail.com> <87bl81h3ih.ffs@nanos.tec.linutronix.de> <444d7139-e47a-4831-93d0-8eb5b9680fdc@www.fastmail.com> <YNWytd64PzMwZKQX@hirez.programming.kicks-ass.net> <YNW3O1YxZx9XkZqU@hirez.programming.kicks-ass.net>
+Date:   Sat, 26 Jun 2021 09:03:23 +0200
+Message-ID: <87a6ndumys.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
-Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
+On Fri, Jun 25 2021 at 13:00, Peter Zijlstra wrote:
+> On Fri, Jun 25, 2021 at 12:40:53PM +0200, Peter Zijlstra wrote:
+>> On Sat, Jun 19, 2021 at 08:13:15PM -0700, Andy Lutomirski wrote:
+>> >=20
+>> >=20
+>> > On Sat, Jun 19, 2021, at 3:51 PM, Thomas Gleixner wrote:
+>> > > On Tue, Jun 01 2021 at 14:52, Lai Jiangshan wrote:
+>> > > > From: Lai Jiangshan <laijs@linux.alibaba.com>
+>> > > >
+>> > > > Current kernel has no code to enforce data breakpoint not on the t=
+hread
+>> > > > stack.  If there is any data breakpoint on the top area of the thr=
+ead
+>> > > > stack, there might be problem.
+>> > >=20
+>> > > And because the kernel does not prevent data breakpoints on the thre=
+ad
+>> > > stack we need to do more complicated things in the already horrible
+>> > > entry code instead of just doing the obvious and preventing data
+>> > > breakpoints on the thread stack?
+>> >=20
+>> > Preventing breakpoints on the thread stack is a bit messy: it=E2=80=99s
+>> > possible for a breakpoint to be set before the address in question is
+>> > allocated for the thread stack.
+>>=20
+>> How about we call into C from the entry stack and have the from-user
+>> stack swizzle there. The from-kernel entries land on the ISTs and those
+>> are already excluded.
+>>=20
+>> > None of this is NMI-specific. #DB itself has the same problem.  We
+>> > could plausibly solve it differently by disarming breakpoints in the
+>> > entry asm before switching stacks. I=E2=80=99m not sure how much I lik=
+e that
+>> > approach.
+>>=20
+>> I'm not sure I see how, from-user #DB already doesn't clear DR7, and if
+>> we recurse, we'll get a from-kernel trap, which will land on the IST,
+>> whcih is excluded, and then we clear DR7 there.
+>>=20
+>> IST and entry stack are excluded, the only problem we have is thread
+>> stack, and that can be solved by calling into C from the entry stack.
+>>=20
+>> I should put teaching objtool about .data references from .noinstr.text
+>> and .entry.text higher on the todo list I suppose ...
+>
+> Also, I think we can run the from-user exceptions on the entry stack,
+> without ever switching to the kernel stack, except for #PF, which is
+> magical and schedules.
 
-CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
- show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x110/0x164 lib/dump_stack.c:118
- print_address_description+0x78/0x5c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report+0x148/0x1e4 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:183 [inline]
- __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
- kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
+No. Pretty much any exception coming from user space can schedule and
+even if it does not voluntary it can be preempted.
 
-Allocated by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
- kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
- kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:664 [inline]
- kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
- kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
+Thanks,
 
-Freed by task 4269:
- stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x38/0x6c mm/kasan/common.c:56
- kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
- __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
- kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook mm/slub.c:1577 [inline]
- slab_free mm/slub.c:3142 [inline]
- kfree+0x104/0x38c mm/slub.c:4124
- coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
- kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
- kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
- kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
- kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
- __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
- el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
- do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
- el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
- el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
- el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
-
-If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
-inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
-and free the dev, but kvm_iodevice_destructor() is called again, it will lead
-the above issue.
-
-Let's check the the return value of kvm_io_bus_unregister_dev(), only call
-kvm_iodevice_destructor() if the return value is 0.
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- virt/kvm/coalesced_mmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/virt/kvm/coalesced_mmio.c b/virt/kvm/coalesced_mmio.c
-index f08f5e82460b..0be80c213f7f 100644
---- a/virt/kvm/coalesced_mmio.c
-+++ b/virt/kvm/coalesced_mmio.c
-@@ -186,7 +186,6 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
- 		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
- 			r = kvm_io_bus_unregister_dev(kvm,
- 				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
--			kvm_iodevice_destructor(&dev->dev);
- 
- 			/*
- 			 * On failure, unregister destroys all devices on the
-@@ -196,6 +195,7 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
- 			 */
- 			if (r)
- 				break;
-+			kvm_iodevice_destructor(&dev->dev);
- 		}
- 	}
- 
--- 
-2.26.2
+        tglx
 
