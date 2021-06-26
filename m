@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140493B4E6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 13:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEFF3B4E70
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 14:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhFZL5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 07:57:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47572 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZL5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 07:57:38 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A54491FFB0;
-        Sat, 26 Jun 2021 11:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624708515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3tsXj0ckczdXNLo28w180OGZ1Ag37mne0edOW2OmEM=;
-        b=P6zW6YmZq4P5l+Outbvrj+dlh2gWNWNGEdSR4kI1PIBC3VZLw2lbzWoiv91JCHt9iwbJ2N
-        CNw2jyIiYatsCtUKokQOW3UqvecQWPlBBYDI8YHxxFIvwfYQXTa0iNko/FNB6tz2t1D1Gl
-        C5tmOwo9i/CE3XFuV2d7gEKXdSeogQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624708515;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3tsXj0ckczdXNLo28w180OGZ1Ag37mne0edOW2OmEM=;
-        b=A31LPgglbxvOszpDqXGnRz96m2Lh/KsSZZ4d2aDkVqZFVQPGOStET2g4YPZenYdmQgu7V3
-        nYA2kGTQjnso1KAg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 851A3118DD;
-        Sat, 26 Jun 2021 11:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624708515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3tsXj0ckczdXNLo28w180OGZ1Ag37mne0edOW2OmEM=;
-        b=P6zW6YmZq4P5l+Outbvrj+dlh2gWNWNGEdSR4kI1PIBC3VZLw2lbzWoiv91JCHt9iwbJ2N
-        CNw2jyIiYatsCtUKokQOW3UqvecQWPlBBYDI8YHxxFIvwfYQXTa0iNko/FNB6tz2t1D1Gl
-        C5tmOwo9i/CE3XFuV2d7gEKXdSeogQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624708515;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3tsXj0ckczdXNLo28w180OGZ1Ag37mne0edOW2OmEM=;
-        b=A31LPgglbxvOszpDqXGnRz96m2Lh/KsSZZ4d2aDkVqZFVQPGOStET2g4YPZenYdmQgu7V3
-        nYA2kGTQjnso1KAg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id eabaH6MV12CJLwAALh3uQQ
-        (envelope-from <hare@suse.de>); Sat, 26 Jun 2021 11:55:15 +0000
-Subject: Re: [PATCH] scsi: Delete scsi_{get,free}_host_dev()
-To:     John Garry <john.garry@huawei.com>, martin.petersen@oracle.com,
-        jejb@linux.ibm.com
-Cc:     bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, ming.lei@redhat.com
-References: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <044a31ed-f6e9-3017-4973-3a02765933e0@suse.de>
-Date:   Sat, 26 Jun 2021 13:55:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229987AbhFZMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 08:14:28 -0400
+Received: from m12-12.163.com ([220.181.12.12]:41747 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhFZMO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 08:14:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=tImSK
+        /F39bvmRrrsa16KUI/wi6srsYxbkDnedrKfqkE=; b=cRVjAVyIrrXDY/RoAwomI
+        emgzkBBTUup6mMHLPMa60aPYYwRmfUJ2jpSkbXA1rY3NctTOcLKphTYv83Lz3Xo6
+        EhYoBAVW9ZIskepD430WHnZx3xO7mzw/D4S7cdFudJx6gXpSWuFxbq7om4H+14GI
+        qkQo16Nfjneb1h7TloiCq4=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowAB3DivcFddgBaeYLw--.7765S2;
+        Sat, 26 Jun 2021 19:56:13 +0800 (CST)
+From:   13145886936@163.com
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>,
+        gushengxian <13145886936@163.com>
+Subject: [PATCH] flow_offload: action should not be NULL when it is referenced
+Date:   Sat, 26 Jun 2021 04:56:06 -0700
+Message-Id: <20210626115606.1243151-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowAB3DivcFddgBaeYLw--.7765S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7XFW5Wr1kuw1ktFW8tFWkZwb_yoW8JryrpF
+        ZrCry7CrZ7WryfCrZ3Za4IyrWUZrZxJr45tFWjq34fC343Kan5KFWkKry8Z34UJrW5ua4Y
+        vasxuFyrJ3y5AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jyMKXUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiXB29g1Xl0GGcWQAAs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 6:58 PM, John Garry wrote:
-> Functions scsi_{get,free}_host_dev() no longer have any in-tree users, so
-> delete them.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
-> An alt agenda of this patch is to get clarification on whether this API
-> should be used for Hannes' reserved commands series.
-> 
-> Originally the recommendation was to use it, but now it seems to be to
-> not use it:
-> https://lore.kernel.org/linux-scsi/55918d68-7385-0153-0bd9-d822d3ce4c21@suse.de/
-> 
-Please don't.
+From: gushengxian <gushengxian@yulong.com>
 
-Before we're doing something like this I would like to have 
-clarification from Christoph which way he prefers for reserved commands. 
-Personally I _do_ like the host dev approach for reserved commands as it 
-allows us to re-use existing infrastructure.
+"action" should not be NULL when it is referenced.
 
-Christoph?
+Signed-off-by: gushengxian <13145886936@163.com>
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ include/net/flow_offload.h | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Cheers,
-
-Hannes
+diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
+index dc5c1e69cd9f..69c9eabf8325 100644
+--- a/include/net/flow_offload.h
++++ b/include/net/flow_offload.h
+@@ -319,12 +319,14 @@ flow_action_mixed_hw_stats_check(const struct flow_action *action,
+ 	if (flow_offload_has_one_action(action))
+ 		return true;
+ 
+-	flow_action_for_each(i, action_entry, action) {
+-		if (i && action_entry->hw_stats != last_hw_stats) {
+-			NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
+-			return false;
++	if (action) {
++		flow_action_for_each(i, action_entry, action) {
++			if (i && action_entry->hw_stats != last_hw_stats) {
++				NL_SET_ERR_MSG_MOD(extack, "Mixing HW stats types for actions is not supported");
++				return false;
++			}
++			last_hw_stats = action_entry->hw_stats;
+ 		}
+-		last_hw_stats = action_entry->hw_stats;
+ 	}
+ 	return true;
+ }
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.25.1
+
+
