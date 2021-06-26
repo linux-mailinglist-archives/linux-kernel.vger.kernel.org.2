@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731B43B5022
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 22:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB0B3B5028
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 22:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFZUwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 16:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
+        id S230351AbhFZVAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 17:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFZUwS (ORCPT
+        with ESMTP id S230136AbhFZVAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 16:52:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E91C061574;
-        Sat, 26 Jun 2021 13:49:55 -0700 (PDT)
-Date:   Sat, 26 Jun 2021 20:49:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624740591;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=fkNDRwD+9YQ86N3dSd8BIzKrxCgJt2LslfoixRBHjKI=;
-        b=hpnLMS+f0fyngm+lbSo1sX1rsXyX+txZtHWR6NXH7Cn6ioHQkmAFDhrQjjxNwiZxq9WgWD
-        FoZgpI8t4c5uaoUqsg64DDjh3tGNn6CIvOvmqeaZxlU/UlI5UWF0qRPhf2N9XMMmnrUZCW
-        f+ELlLebLRF+rnwXUVWrth72yxDrUueckD14O8su/pY14ogMnf7dSI10luSPhqsdMwxn4q
-        ptX15KWsmR3emigkjX0rSIFr3tTJSMaz/guh6Db1qv2F5iyCMiv7e959anH/Qi18IAC9od
-        5TRtzSeallv+1akDLaWT2/uhO/sxRmZFN1snXIxCxpsMWEpLLj831OsjCyD+lQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624740591;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=fkNDRwD+9YQ86N3dSd8BIzKrxCgJt2LslfoixRBHjKI=;
-        b=y29ZGSREQAvIS7muFkE2EK5GPh3cLnokJq/K4zp14VD8EWQm5cwU54ee7MrziuLwD97Pi0
-        k4U4lPLu7ZylzrBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] time/kunit: Add missing MODULE_LICENSE()
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Sat, 26 Jun 2021 17:00:20 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E795C061574;
+        Sat, 26 Jun 2021 13:57:57 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id u190so11486274pgd.8;
+        Sat, 26 Jun 2021 13:57:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kL8a5X8847gaiK8cm1v6YoBD+G5PGJOSZdwZTVAMOac=;
+        b=Im8KCO09dnHkgi6D5ICIB9NGGQaLMkJx9+10Ko9+HHPEyCs3qx2WbDkz0qKxy8Xk7R
+         ASslWM2cLEkC61O8gX7XU8LAwNF123aZC5/0XhhSalv8d3kISNUctvRH/K5k8N1j5gO7
+         HRZ+kcPdf43jU+XNN9SKvfxMUHRY2Z8NYS1RnmJDwRYQ/+GNXnaPNratj48K0apw1jr5
+         PUuqamElD7ioHzOc8gBvYykv64AjvnC5DClNJGa2hSaAm3Zx9XVQE1DbW56JIIPWicH/
+         kPmIMmDr1FSNxeh8lZNaYQ+UoyZQiojsPGnswtwgiOmIRGMeFRCGfBystTaAZ+xr06Ea
+         258w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kL8a5X8847gaiK8cm1v6YoBD+G5PGJOSZdwZTVAMOac=;
+        b=QH7Xx6I//BuCmuSofVoEX+FVO/3OHPmxBfIR7w6rI/Q31CV7SIGCN8FQOS1cHj9p4I
+         aI5+gHjvpBYSAqhqsI/2r6Qln6RBSe5jRnTmM2Dka2vVXEwCbhgL5BJYGthl88r+Nmaj
+         X6db+5lIRMBRPV6wiUpiJMLhP1g4ZK6v1w9kHzSEOw+MSF8ctzmwSwUGWCcx6NB166Lk
+         LtH2fMylyxqCs6LU2vnykzWajv5XqGoKhBu8/d5VO/XtB5DHJdTiJ5V+2O6luQWIx5/T
+         oW6V+VMm9sQgwQowwc6R27fUnF2ukHZwJPIDMPFa055Bia2G1FNLLWgSqDcb+8HRv+0t
+         PQaQ==
+X-Gm-Message-State: AOAM532NGmO/17kwq4Z1DbYJcsFRBJwksxexSFczluJn7UQ612sV8HdT
+        WUtdc5cU+27nEDn3KX2hQTF+/iGP6ZttNXb9Uio=
+X-Google-Smtp-Source: ABdhPJz8gtEda/evPb5lW8OwWUD9DR8xplBbIiB6agd+6iY32dPxGWzlsjWgiVAmxYAhrQgLhGwoMw==
+X-Received: by 2002:a62:ea18:0:b029:307:6f4:ee98 with SMTP id t24-20020a62ea180000b029030706f4ee98mr17054720pfh.29.1624741076276;
+        Sat, 26 Jun 2021 13:57:56 -0700 (PDT)
+Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id e1sm9616539pfd.16.2021.06.26.13.57.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Jun 2021 13:57:55 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] Fix possible memory leak in function cfg80211_bss_update
+Date:   Sun, 27 Jun 2021 04:57:51 +0800
+Message-Id: <20210626205751.454201-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <162474059066.395.17544610641097100087.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+When we exceed the limit of BSS entries, this function will free the
+new entry, however, at this time, it is the last door to access the
+inputed ies, so these ies will be unreferenced objects and cause memory
+leak.
+Therefore we should free its ies before deallocating the new entry, beside
+of dropping it from hidden_list.
+These stuffs could be done by using bss_free function.
 
-Commit-ID:     34c7342ac1b4e496315fb615d2a1309df8400403
-Gitweb:        https://git.kernel.org/tip/34c7342ac1b4e496315fb615d2a1309df8400403
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 26 Jun 2021 22:44:11 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 26 Jun 2021 22:47:32 +02:00
-
-time/kunit: Add missing MODULE_LICENSE()
-
-Reported-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 ---
- kernel/time/time_test.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/wireless/scan.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-index 341ebfa..a064a7c 100644
---- a/kernel/time/time_test.c
-+++ b/kernel/time/time_test.c
-@@ -96,3 +96,4 @@ static struct kunit_suite time_test_suite = {
- };
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index f03c7ac8e184..b5f62bbe539a 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -1761,9 +1761,7 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
  
- kunit_test_suite(time_test_suite);
-+MODULE_LICENSE(GPL);
+ 		if (rdev->bss_entries >= bss_entries_limit &&
+ 		    !cfg80211_bss_expire_oldest(rdev)) {
+-			if (!list_empty(&new->hidden_list))
+-				list_del(&new->hidden_list);
+-			kfree(new);
++			bss_free(new);
+ 			goto drop;
+ 		}
+ 
+-- 
+2.25.1
+
