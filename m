@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1203B4BFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 04:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0C03B4BFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 04:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFZCb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 22:31:56 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:2457 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229782AbhFZCby (ORCPT
+        id S230013AbhFZCe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 22:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFZCe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 22:31:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1624674573; x=1656210573;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=OzVDDKY5xaLH3FGbd2mDr5h3AyjjviKx2toZSojncrg=;
-  b=irO7A5ACWUHR/cSxmXi6bWGOeyX8ob/elhPHO+TG6D3Ne4B5nD6RFI1c
-   3g1RoJeEDyOZ+ezCQEL0JMRmu4dnVgN/fu8UIERvFoB06lKFAlWkZkvz1
-   xm8eEpJmW99nQ3ew4gkY1lOo6Tx3SMlz3YuRPMd3xhnryJEdrnn5FMLP6
-   0=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jun 2021 19:29:30 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 25 Jun 2021 19:29:30 -0700
-Received: from [10.111.161.13] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 25 Jun
- 2021 19:29:27 -0700
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-CC:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <09a39f5c-b47b-a931-bf23-dc43229fb2dd@quicinc.com>
- <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
- <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
- <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
- <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
- <20210624104734.GA11487@arm.com>
- <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
- <20210625102113.GB15540@arm.com>
- <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
- <20210625143713.GA7092@arm.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <888b0178-00cc-ffa4-48a2-8563cef557a4@quicinc.com>
-Date:   Fri, 25 Jun 2021 22:29:26 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Fri, 25 Jun 2021 22:34:57 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EADC061574;
+        Fri, 25 Jun 2021 19:32:33 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id f10so5684099plg.0;
+        Fri, 25 Jun 2021 19:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZguJBm7Ta8v5rmyq9vcmT0p9z/70jaqs5v+8tFBCC0w=;
+        b=RMkDBj7HJ7fRxNyucm2kOo9eHGixwr1iziXt6EBDgrmXVmdEtXr5iaZAoJsdJHG8+c
+         4XUcs7t+WIhHBegyAwCG89rm0NM2FeZthckQ4qZ6V3ACbxFU/4KU1DEq0ZjVWJAdtNCh
+         IbFMOyZNH2VBsAhgPTdDQolZuPeLRfhkNdlX4Hh4TmRe49BARRoDK66B9wjCc6mcbt+/
+         lawRyqAZdRey/ogRl7Qz6HhlvJ41f+LLziZEd7Sd26650LTz5ydxGa4vfoNWi9WBbEEe
+         yaWvHf6wkWtEXXP8Ukk98olwtv4kAhkNHd2bw7SlZDoeW/vT6Tg5Fl0kou/aIwZwFIYK
+         plkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZguJBm7Ta8v5rmyq9vcmT0p9z/70jaqs5v+8tFBCC0w=;
+        b=bc3+LGko9epKmj84mOdq8bvLjdt4vLshsxbgpzqNayHZNwWn64Mq9Ou4x3X0AtX4/L
+         1lGagi46YV8Ap5Gq+iqpxRWT002n1Nm/yQ1TJ/bqspe+sejeXEgoeiz1CCG5m0vVsmAr
+         dUg5yikpS0f6Skn3QUQyzUIK94jj6IzdWVl3aanQhi+cocM/CYhYXV7Evhfztdh2+6NX
+         BM0chSvA0uDEKqS7P3L7s2TcxfvY/wxVa4DjoVHrgqjiqHfz+FOtANfrHW0E+vXExveC
+         TbCN1i2QFx21rKkeHZrk+aUzPiJEi9IYbbm6Js8gKxU6KakesDK/u/emds4n6KiBD5yZ
+         DBtQ==
+X-Gm-Message-State: AOAM530fpZ4xd4+dcp7OM63Ae+JdgqAXnZd1zwCrUTLWSMzd6Q9biJcX
+        RkbTHpLGC3vHNzzLXm4u4CM=
+X-Google-Smtp-Source: ABdhPJyvO4oOozSsX2gbNhMQN+t5UfASsRZAzIqt3v74HVCIYkpUjls8fbYJkPEDwnBcv/4Yn1Kaeg==
+X-Received: by 2002:a17:902:6b42:b029:11d:a147:bb7b with SMTP id g2-20020a1709026b42b029011da147bb7bmr11997765plt.9.1624674752896;
+        Fri, 25 Jun 2021 19:32:32 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id a25sm6773878pff.54.2021.06.25.19.32.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 19:32:32 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] docs: pdfdocs: Improve alignment of CJK ascii-art
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "Wu X.C." <bobwxc@email.cn>, Jonathan Corbet <corbet@lwn.net>,
+        SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <386938dc-6290-239c-4b4f-c6153f3d98c5@gmail.com>
+ <20210625065524.GA11219@bobwxc.top> <20210625095059.7f97fd62@coco.lan>
+ <ae0a7623-7ec4-937b-4b93-8435f2e94eb9@gmail.com>
+ <20210625122423.4435c5e9@coco.lan>
+ <b6ea891e-b6f3-318a-1b40-268f436c6860@gmail.com>
+ <20210625201113.337b3ecd@coco.lan>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <0cfd8dfb-b304-4073-973c-930a93d19a17@gmail.com>
+Date:   Sat, 26 Jun 2021 11:32:29 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210625143713.GA7092@arm.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210625201113.337b3ecd@coco.lan>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03h.na.qualcomm.com (10.85.0.50) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 6/25/2021 10:37 AM, Ionela Voinescu wrote:
-> Quick questions for you:
+On Fri, 25 Jun 2021 20:11:13 +0200, Mauro Carvalho Chehab wrote:
+> Em Fri, 25 Jun 2021 20:32:47 +0900
+> Akira Yokosawa <akiyks@gmail.com> escreveu:
 > 
-> 1. When you say you tried a 5.4 kernel, did you try it with these
-> patches backported? They also have some dependencies with the recent
-> changes in the arch topology driver and cpufreq so they would not be
-> straight forward to backport.
+>> On Fri, 25 Jun 2021 12:24:23 +0200, Mauro Carvalho Chehab wrote:
+>>> Em Fri, 25 Jun 2021 18:22:26 +0900
+>>> Akira Yokosawa <akiyks@gmail.com> escreveu:
+>>>   
+>>>> On Fri, 25 Jun 2021 09:50:59 +0200, Mauro Carvalho Chehab wrote:  
+>> [...]
+>>>>
+>>>> One minor problem might be that the Sarasa font needs manual
+>>>> download (and install).
+>>>>
+>>>>         Thanks, Akira  
+>>>
+>>> If this is not yet packaged as part of texlive packages
+>>> on distros, this won't be a minor issue, as we'll need
+>>> to find procedures and test it for all distros supported
+>>> by the script.  
+>>
+>> Existence of "Sarasa Mono SC" can be checked by the command:
+>>
+>>     fc-list | grep "Sarasa Mono SC," | grep "style=Regular" | wc -l
+>>
+>> If the result is *not* "0", you have the font somewhere in your
+>> fontconfig path.
+>>
+>> I think this is portable across distros.
+>> Wouldn't this suffice for sphinx-pre-install?
 > 
-> If the 5.4 kernel you tried did not have these patches, it might be best
-> to try next/master that has these patches, but with
-> CONFIG_ACPI_CPPC_CPUFREQ_FIE=n, just to eliminate the possibility that
-> an incorrect frequency scale factor here would affect utilization that
-> would then affect the schedutil frequency selection. I would not expect
-> this behavior even if the scale factor was wrong, but it would be good
-> to rule out.
+> No. The sphinx-pre-install tool generate a list of commands
+> needed to install the pre-reqs on a given distro.
 > 
-> 2. Is your platform booting with all CPUs? Are any hotplug operations
-> done in your scenario?
+> For instance, if you run on opensuse without texlive, it would
+> print:
+> 
+> 
+> 	# ./scripts/sphinx-pre-install 
+> 	Detected OS: openSUSE Tumbleweed 20210515.
+> 	Sphinx version: 3.5.4
+> 
+> 	Warning: better to also install "latexmk".
+> ...
+> 	Warning: better to also install "xelatex".
+> 	You should run:
+> 
+> 	sudo zypper install --no-recommends texlive-latexmk-bin texlive-amscls texlive-amsfonts texlive-amsmath texlive-anyfontsize texlive-babel-english texlive-capt-of texlive-caption texlive-cmap texlive-colortbl texlive-courier texlive-dvips texlive-ec texlive-eqparbox texlive-euenc texlive-fancybox texlive-fancyvrb texlive-float texlive-fncychap texlive-framed texlive-helvetic texlive-luatex85 texlive-makeindex texlive-mdwtools texlive-metafont texlive-metapost texlive-multirow texlive-needspace texlive-oberdiek texlive-palatino texlive-parskip texlive-polyglossia texlive-preview texlive-psnfss texlive-tabulary texlive-threeparttable texlive-times texlive-titlesec texlive-tools texlive-ucs texlive-upquote texlive-wrapfig texlive-zapfchan texlive-zapfding texlive-xetex-bin
+> 
+> The same command, when executed on a different distro will
+> print a different set of packages and commands.
 
-Ionela, I found that set ACPI_PROCESSOR=y instead of ACPI_PROCESSOR=m will fix the previous mentioned issues here (any explanations of that?) even though the scaling down is not perfect. Now, we have the following on this idle system:
+I see...
 
-# cat /sys/devices/system/cpu/*/cpufreq/cpuinfo_cur_freq | sort | uniq  -c
- 	79 1000000
-  	1 1160000
- 	73 1400000
-  	1 2000000
-  	4 2010000
-  	1 2800000
-  	1 860000
+So let's forget Unifont and "Sarasa Mono" for the time being.
 
-Even if I rerun a few times, there could still have a few CPUs running lower than lowest_perf (1GHz). Also, even though I set all CPUs to use "userspace" governor and set freq to the lowest. A few CPUs keep changing at will.
+By adding some custom configuration of fontconfig, "Noto Sans Mono
+CJK SC" can be made an alias of "Sarasa Mono", "Unifont", or whatever
+alternative font one wants to try.
 
-# cat /sys/devices/system/cpu/*/cpufreq/cpuinfo_cur_freq | sort | uniq  -c
-	156 1000000
-  	3 2000000
-  	1 760000
+An alternative *true* monospace font is just a nice-to-have for
+those who concern PDF of Korean translation, and as I have said
+earlier, it has another major issue of white spaces being ignored
+by xeCJK.
+
+I'll do a v2 along this line.
+
+        Thanks, Akira
+
+> 
+> Thanks,
+> Mauro
+> 
