@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9943B4EAD
+	by mail.lfdr.de (Postfix) with ESMTP id DE9933B4EAF
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 15:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhFZNIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 09:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34210 "EHLO mail.kernel.org"
+        id S231302AbhFZNJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 09:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230108AbhFZNIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 09:08:01 -0400
+        id S229796AbhFZNIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 09:08:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7A2861C50;
+        by mail.kernel.org (Postfix) with ESMTPSA id E2D6061C57;
         Sat, 26 Jun 2021 13:05:39 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lx80A-000Eq5-Po; Sat, 26 Jun 2021 09:05:38 -0400
-Message-ID: <20210626130538.648729939@goodmis.org>
+        id 1lx80A-000Eqe-Vs; Sat, 26 Jun 2021 09:05:38 -0400
+Message-ID: <20210626130538.823006612@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 26 Jun 2021 09:04:26 -0400
+Date:   Sat, 26 Jun 2021 09:04:27 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -41,7 +41,7 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-doc@vger.kernel.org,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [for-next][PATCH 22/24] trace/hwlat: Protect kdata->kthread with get/put_online_cpus
+Subject: [for-next][PATCH 23/24] trace/hwlat: Support hotplug operations
 References: <20210626130404.033700863@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,12 +51,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-In preparation to the hotplug support, protect kdata->kthread
-with get/put_online_cpus() to avoid concurrency with hotplug
-operations.
+Enable and disable hwlat thread during cpu hotplug online
+and offline operations, respectivelly.
 
 Link: https://lore.kernel.org/linux-doc/20210621134636.5b332226@oasis.local.home/
-Link: https://lkml.kernel.org/r/8bdb2a56f46abfd301d6fffbf43448380c09a6f5.1624372313.git.bristot@redhat.com
+Link: https://lkml.kernel.org/r/52012d25ea35491a0f8088b947864d8df8e25157.1624372313.git.bristot@redhat.com
 
 Cc: Phil Auld <pauld@redhat.com>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -78,67 +77,98 @@ Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_hwlat.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ kernel/trace/trace_hwlat.c | 65 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
 diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index a625bfdb844e..20e31f79ebd9 100644
+index 20e31f79ebd9..a6c0cdaf4b87 100644
 --- a/kernel/trace/trace_hwlat.c
 +++ b/kernel/trace/trace_hwlat.c
-@@ -396,13 +396,19 @@ static int kthread_fn(void *data)
- static void stop_single_kthread(void)
- {
- 	struct hwlat_kthread_data *kdata = get_cpu_data();
--	struct task_struct *kthread = kdata->kthread;
-+	struct task_struct *kthread;
-+
-+	get_online_cpus();
-+	kthread = kdata->kthread;
- 
- 	if (!kthread)
--		return;
-+		goto out_put_cpus;
- 
- 	kthread_stop(kthread);
- 	kdata->kthread = NULL;
-+
-+out_put_cpus:
-+	put_online_cpus();
+@@ -466,6 +466,7 @@ static void stop_cpu_kthread(unsigned int cpu)
+ 	kthread = per_cpu(hwlat_per_cpu_data, cpu).kthread;
+ 	if (kthread)
+ 		kthread_stop(kthread);
++	per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
  }
  
- 
-@@ -419,20 +425,19 @@ static int start_single_kthread(struct trace_array *tr)
- 	struct task_struct *kthread;
- 	int next_cpu;
- 
-+	get_online_cpus();
- 	if (kdata->kthread)
--		return 0;
-+		goto out_put_cpus;
- 
- 	kthread = kthread_create(kthread_fn, NULL, "hwlatd");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
-+		put_online_cpus();
- 		return -ENOMEM;
- 	}
- 
--
- 	/* Just pick the first CPU on first iteration */
--	get_online_cpus();
- 	cpumask_and(current_mask, cpu_online_mask, tr->tracing_cpumask);
--	put_online_cpus();
- 
- 	if (hwlat_data.thread_mode == MODE_ROUND_ROBIN) {
- 		next_cpu = cpumask_first(current_mask);
-@@ -446,6 +451,8 @@ static int start_single_kthread(struct trace_array *tr)
- 	kdata->kthread = kthread;
- 	wake_up_process(kthread);
- 
-+out_put_cpus:
-+	put_online_cpus();
+ /*
+@@ -506,6 +507,68 @@ static int start_cpu_kthread(unsigned int cpu)
  	return 0;
  }
  
++#ifdef CONFIG_HOTPLUG_CPU
++static void hwlat_hotplug_workfn(struct work_struct *dummy)
++{
++	struct trace_array *tr = hwlat_trace;
++	unsigned int cpu = smp_processor_id();
++
++	mutex_lock(&trace_types_lock);
++	mutex_lock(&hwlat_data.lock);
++	get_online_cpus();
++
++	if (!hwlat_busy || hwlat_data.thread_mode != MODE_PER_CPU)
++		goto out_unlock;
++
++	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
++		goto out_unlock;
++
++	start_cpu_kthread(cpu);
++
++out_unlock:
++	put_online_cpus();
++	mutex_unlock(&hwlat_data.lock);
++	mutex_unlock(&trace_types_lock);
++}
++
++static DECLARE_WORK(hwlat_hotplug_work, hwlat_hotplug_workfn);
++
++/*
++ * hwlat_cpu_init - CPU hotplug online callback function
++ */
++static int hwlat_cpu_init(unsigned int cpu)
++{
++	schedule_work_on(cpu, &hwlat_hotplug_work);
++	return 0;
++}
++
++/*
++ * hwlat_cpu_die - CPU hotplug offline callback function
++ */
++static int hwlat_cpu_die(unsigned int cpu)
++{
++	stop_cpu_kthread(cpu);
++	return 0;
++}
++
++static void hwlat_init_hotplug_support(void)
++{
++	int ret;
++
++	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "trace/hwlat:online",
++				hwlat_cpu_init, hwlat_cpu_die);
++	if (ret < 0)
++		pr_warn(BANNER "Error to init cpu hotplug support\n");
++
++	return;
++}
++#else /* CONFIG_HOTPLUG_CPU */
++static void hwlat_init_hotplug_support(void)
++{
++	return;
++}
++#endif /* CONFIG_HOTPLUG_CPU */
++
+ /*
+  * start_per_cpu_kthreads - Kick off the hardware latency sampling/detector kthreads
+  *
+@@ -822,6 +885,8 @@ __init static int init_hwlat_tracer(void)
+ 	if (ret)
+ 		return ret;
+ 
++	hwlat_init_hotplug_support();
++
+ 	init_tracefs();
+ 
+ 	return 0;
 -- 
 2.30.2
