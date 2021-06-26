@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718F13B4C1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD673B4C23
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFZDQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 23:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S230019AbhFZDUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 23:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFZDQB (ORCPT
+        with ESMTP id S229975AbhFZDUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 23:16:01 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37413C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:13:39 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id a15so11940729lfr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:13:39 -0700 (PDT)
+        Fri, 25 Jun 2021 23:20:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6A6C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:17:54 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x16so8950049pfa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TkyzL4Oc3lzO4SmvL1uZ5kh/tlw7Tnkl30zzFvAnsHU=;
-        b=BRUo2gzr89us7y2+/oL9vvZc/Vz15VUEx4jF4hxEgfybERK9O9kUd9bOmZ3yq2So56
-         v4HTTw3Tw5KzH2TlpiOiOw7KHGHHjzfeH9f+26fFMAY0GnX2je4A5hHC7AO+O1sWxHX8
-         NmQaIBG8tAChmaAf2FqaNm1DjPcuTJ/8ps0Z8=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aM4y0UrWCLTv7rcBz2RIFnjL7rxnHwV/LKZu/4UV0wk=;
+        b=nH6MyPY34BEZoiZq9gMd9L04Gprl6YIaeAZoBnp0GSMt6LQrC+9wF5uB7Gs9IBvMc7
+         YHwFB8GDL7VOOkWUb/0Ni1Z+5TYZZGjbbN6/MIr6MnfKoetN0ss2z+DZofF60z2LgDtF
+         eWrJMT5xunVz9YpztTCkxHoQKtZEc1cqE6z1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TkyzL4Oc3lzO4SmvL1uZ5kh/tlw7Tnkl30zzFvAnsHU=;
-        b=ji6zQivcpe+oXx53qC2RIYccV+TrHY8zec85rhSOJHCVFAMh7K6jqE1VX5pYL9Djm8
-         /3KmvBZZaAHvFfMUFlR0xSTJMg9K/GnARM4G9Ta4VZmJ1mB0ohTjtIaX3BAEIgf78T4/
-         WSf4/WvOqp8VObajv42uR6+64CZozosdRztdcwvvcLQ+EAVjzB5l27vp55OwnGdpURq7
-         dcEbWhznoLxqSIdq4JTFFzZAKFpPC5XFAw91hpofodIugoa4X5BlAviCJZ+bBYxZPfGL
-         hjmX1iXwGV49Vy8ZYAA6h91r/bLAlYtxMa2917KUaczavHD/62vLanzk4Sn4bSGIcMli
-         zA/w==
-X-Gm-Message-State: AOAM533zirW5aNP+PHePj/nvDp2a3sPUNBi1O/eOxYQ6Z0MmQ0F9ad/p
-        ugUER8xT+8XT6cRmiR9Tw+lX6Ex0USr5vyLE
-X-Google-Smtp-Source: ABdhPJxNos9Ip5BXMtEtwT6E+n6gki/vBDa3cjGABWtVJUO13blraqP8pEyF+0MsnTzHoMY3iiCB1w==
-X-Received: by 2002:ac2:5e38:: with SMTP id o24mr10654085lfg.652.1624677217329;
-        Fri, 25 Jun 2021 20:13:37 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id t16sm665263lfq.275.2021.06.25.20.13.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Jun 2021 20:13:36 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id d2so15285267ljj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:13:36 -0700 (PDT)
-X-Received: by 2002:a2e:850e:: with SMTP id j14mr9011286lji.251.1624677216398;
- Fri, 25 Jun 2021 20:13:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <YNYz+hVeqsQmiEqN@localhost.localdomain> <YNZG6N0W/7gjG7Gm@localhost.localdomain>
- <20210625163040.a15af04872959da9af161fca@linux-foundation.org>
- <CAHk-=whVa=nm_GW=NVfPHqcxDbWt4JjjK1YWb0cLjO4ZSGyiDA@mail.gmail.com> <YNaS5AZDDpL3gJfe@zeniv-ca.linux.org.uk>
-In-Reply-To: <YNaS5AZDDpL3gJfe@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 25 Jun 2021 20:13:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgitzn6sqXZ0YjFW-pYadEXU808QPJZ5OXvM5oB47K_Lw@mail.gmail.com>
-Message-ID: <CAHk-=wgitzn6sqXZ0YjFW-pYadEXU808QPJZ5OXvM5oB47K_Lw@mail.gmail.com>
-Subject: Re: [PATCH v2] ELF: add and use SUPPRESS_WARN_UNUSED_RESULT
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aM4y0UrWCLTv7rcBz2RIFnjL7rxnHwV/LKZu/4UV0wk=;
+        b=D1bgn3oEzXUcw/NVWp6BPEWFbb3OGfQs9JE47DGaAedYNaatWo5gwDaTNyQVSaS5VO
+         tfhLQV93LTxzRsEAixKGhuRdbeYhWYG94TA4BeF5M5mkuotQOeZx/jxshaCAfwChSIRN
+         qyCxOrWeJkBzISUeP0PyD0TwWXgtXYSCrhYYio9BVCk0tBWvhXUfPjRq9AocSJ35UZxl
+         goq/wNLh1oWVGnS1Y3pGJkt1fnTSXEZowPCy2+OnzSOMsFLOU7uJ+2lNj7F1HYZcmkW3
+         ju9R8fPcRBF0qCTmqeoDZX1iV4i8d27gRO1V5uUKOBQhhCTuKj25QWrphmE2l8pVJ2uS
+         kbeA==
+X-Gm-Message-State: AOAM532q21cNTkrOexnxxAXwFB1WQz39CP6BJrOhmHDW82bG24nkmOY9
+        c+QuVhYSCkqHak+pMoiuHZcilg==
+X-Google-Smtp-Source: ABdhPJxUN9p2EsCZz7BIQjod4EcoDqz9OBJQC6bGOc2LMhvw/VqcEhhLzzrJgDkNPO2ksaq2j/1KWw==
+X-Received: by 2002:a63:4c2:: with SMTP id 185mr12584370pge.236.1624677473974;
+        Fri, 25 Jun 2021 20:17:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c2sm6473987pjv.10.2021.06.25.20.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 20:17:53 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 20:17:51 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 2/9] signal/seccomp: Refactor seccomp signal and coredump
+ generation
+Message-ID: <202106252014.5AE600929@keescook>
+References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133>
+ <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133>
+ <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133>
+ <875yy3850g.fsf_-_@disp2133>
+ <87r1gr6qc4.fsf_-_@disp2133>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1gr6qc4.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 7:37 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Wasn't there some emulator (dosemu? wine?) that relied upon that?
-> Said that, I could be easily wrong - half-asleep right now...
+On Thu, Jun 24, 2021 at 01:59:55PM -0500, Eric W. Biederman wrote:
+> 
+> Factor out force_sig_seccomp from the seccomp signal generation and
+> place it in kernel/signal.c.  The function force_sig_seccomp takes a
+> paramter force_coredump to indicate that the sigaction field should be
+> reset to SIGDFL so that a coredump will be generated when the signal
+> is delivered.
 
-Different issue.
+Ah! This is the part I missed when I was originally trying to figure
+out the coredump stuff. It's the need for setting a default handler
+(i.e. doing a coredump)?
 
-dosemu used to use vm86 mode to do hardware acceleration of 16-bit
-emulation. And the way vm86 mode works, it all has to be mapped
-beginning at address 0.
+> force_sig_seccomp is then used to replace both seccomp_send_sigsys
+> and seccomp_init_siginfo.
+> 
+> force_sig_info_to_task gains an extra parameter to force using
+> the default signal action.
+> 
+> With this change seccomp is no longer a special case and there
+> becomes exactly one place do_coredump is called from.
 
-So yes, dosemu used to do a mmap at address 0 too, but it didn't use
-this ELF mmap MMAP_PAGE_ZERO personality thing to do it, it just did
-its own (it also wants a lot more than one page).
+Looks good to me. This may benefit from force_sig_seccomp() to be wrapped
+in an #ifdef CONFIG_SECCOMP.
 
-Nobody uses vm86 mode any more, because hardware acceleration of
-16-bit code just isn't relevant any more. Any 16-bit code you have
-doesn't need special hw modes to run sufficiently fast.
+(This patch reminds me that the seccomp self tests don't check for core
+dumps...)
 
-Plus x86-64 doesn't support vm86 mode at all (well, technically you
-can do it in a VM that runs a 32-bit OS if you really really want to,
-but see above as to why you don't really need it).
-
-There are other things that have mmap'ed things at zero. I think all
-PA-RISC HP-UX binaries used to do the same thing iBCS2 did, and the
-compiler would actually hoist loads to before the NULL pointer test,
-so it was pretty much "architectural". Afaik, that's the same reason
-why iBCS2 did that zero mapping too, but PA-RISC just required it a
-lot more.
-
-It's a horrible thing to do, and only makes debugging harder (because
-you won't actually get a SIGSEGV on a NULL pointer load, you'll just
-silently get a zero value and your buggy program will continue
-running).
-
-                 Linus
+-- 
+Kees Cook
