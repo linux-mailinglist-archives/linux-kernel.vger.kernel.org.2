@@ -2,362 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D163B4F3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5A63B4F3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 17:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhFZPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 11:37:35 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34524 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFZPhe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 11:37:34 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B379320B6C50;
-        Sat, 26 Jun 2021 08:35:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B379320B6C50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1624721711;
-        bh=It/KkJfIsGta+X2x7LB/RSvqpRgJlj14fdfL2eXBuSE=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=MKlWLhoqqcHWZUN2qMeWfzkf8RRE2weSeCIxWeMHczmGwQGz17DkK5K+xh2BQI5A8
-         ScQV3w/Mkpi3lFq9LhAGYVpwN/5P9h3tukGl9dzXhuon/c3PBVte5U1MZutXiJ5G3C
-         DWNVaAfuUBIWF7Ko7hhXKdbjzQOmbpNirzks8eos=
-Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210526214917.20099-2-madvenka@linux.microsoft.com>
- <20210624144021.GA17937@C02TD0UTHF1T.local>
- <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
-Message-ID: <1d01e3c9-fca5-06a8-7489-556fbe90d5b4@linux.microsoft.com>
-Date:   Sat, 26 Jun 2021 10:35:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <da0a2d95-a8cd-7b39-7bba-41cfa8782eaa@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
+        id S230098AbhFZPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 11:40:40 -0400
+Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:20704
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229657AbhFZPkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 11:40:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWwpQr/2/iKV0zsjDIiz04alMLzqBtWla6AhbSCdvBstUtejw49lg+re7Si5He89VZLBKPNe+poi6Y3WyIitji0cmsfiVuZx/T/ZsiocIOC3vIqsEwSl1CViE7AbCHTbAdw2QFMu0PHz97A5occG3I8fg6M26LpZV9LqPcqvypabt7m7qV0Ruuuz8oK9yWRaPA2szWMIKS9YMGgCJbg80jy6+voqJ3q1PZMNRVSyDs9/ptpufEhwadjLJB1Z2uPqGbvP1TCqalO6XseMonEcS4W/7oq/c4WffOC28pDYfIO1Q3+Q2rjzkcVxc1DuyAcGejsKVTbEUp6vwUfgC7yMyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FILdz8TiwhkKk5gwqOsr38XQJWAoEqQBLMz/+O9atPM=;
+ b=dFmdbUjfH+0G/iceJODG9XNKVqRst/q8OvSmpqkpVfNYUet1DOCJ/nGNK/OeVOdgT/HIwPFCg/5G9QW/p/duUgUK8HdyvvaF9UKdr/5+1jv2viEFXOrJ+z1a7pjPlAhmiV3z8zz8w5sfx4JZWZTWwgtIhTx3ZaRpuEkpF8Anzb8fAkYTTYZoc+h7v4n3I5I5IWRJFYXTgRXp9aBkhLeJjje/F8Q39q8tQulPyGr1/RVPTl3yTQ0wRc/CdRsx6ixV98ZJUh1rEkaOy6buaI3tM4RFdSnS7YlLlVW1oFRj3ISRhFN8Rdbn3h/OfZg4gbBWha+QUfLNK/EuX+s+fDCo5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FILdz8TiwhkKk5gwqOsr38XQJWAoEqQBLMz/+O9atPM=;
+ b=AmvyVfTZplkBbwWgDVPg7REpZfBRtlyoGZbB8EY78/QwLQDylIFq1TmvpZfLVB4QB4os9F/bdyikFFbqRDBNwEatVvDRPyrJKi20AslxDBF+xhY2dkHgeuCr10Ztu6oMshH5pFn/KnwGfLX2OQwQOH0SxLCHokwGrCR7tyFjeSM=
+Received: from PH0PR02MB7336.namprd02.prod.outlook.com (2603:10b6:510:d::6) by
+ PH0PR02MB7381.namprd02.prod.outlook.com (2603:10b6:510:1e::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4264.19; Sat, 26 Jun 2021 15:38:01 +0000
+Received: from PH0PR02MB7336.namprd02.prod.outlook.com
+ ([fe80::a8bd:e49f:7daf:fb1e]) by PH0PR02MB7336.namprd02.prod.outlook.com
+ ([fe80::a8bd:e49f:7daf:fb1e%9]) with mapi id 15.20.4264.024; Sat, 26 Jun 2021
+ 15:38:00 +0000
+From:   Nava kishore Manne <navam@xilinx.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Michal Simek <michals@xilinx.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Amit Sunil Dhamne <amitsuni@xlnx.xilinx.com>,
+        Tejas Patel <tejasp@xlnx.xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Ravi Patel <RAVIPATE@xilinx.com>,
+        "iwamatsu@nigauri.org" <iwamatsu@nigauri.org>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
+Subject: RE: [PATCH v7 3/4] dt-bindings: firmware: Add bindings for xilinx
+ firmware
+Thread-Topic: [PATCH v7 3/4] dt-bindings: firmware: Add bindings for xilinx
+ firmware
+Thread-Index: AQHXWTWLvlOlGYH4vk6tnK9on7ZPFKsNcfIAgBkc6RA=
+Date:   Sat, 26 Jun 2021 15:38:00 +0000
+Message-ID: <PH0PR02MB733685A0EE25D098C7A080A2C2059@PH0PR02MB7336.namprd02.prod.outlook.com>
+References: <20210604113332.1394-1-nava.manne@xilinx.com>
+ <20210604113332.1394-4-nava.manne@xilinx.com>
+ <20210610160342.GA1883933@robh.at.kernel.org>
+In-Reply-To: <20210610160342.GA1883933@robh.at.kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 91835715-5912-4b34-21f9-08d938b86171
+x-ms-traffictypediagnostic: PH0PR02MB7381:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR02MB73811088115D16EA2F8101E9C2059@PH0PR02MB7381.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EWSoeOmg1oyWYbrv+KE9I8bH6nHUBVq/b0Jt27vKUmZOf1OSI4adsxaAEalzc9Q/z1YSSJM+P8fc8tA6W8PHswUFbVi20Muoyx5Oko1Xzx2xRcX+R4IY1TnfvjpyFFh1BYePGBe1N1nXQs2/4byAq+MQsma1aR4T0r/k5wWQqzAzDQnYjndCegZSUWvw5WWdopldK2W7kwUOq8ddX9dxDUvp5UNAhsU5F2NhbPcchLbLghUt6OEM09EreideklWJi/WDJ4grOpuk7Pz7ChPJsZyo22+1Rfl2UprKyjRCm4Oj09IwA6HmvnjIRwUm8z+W1xeJwvKvNEze5+aqLLzGMjqqsT6O410oDFU72qU6cXCRZ5DYNpFpLRk6MbqCVjrEueBZy7qs5McGGoIb9s5Y/a/4hVRuC0Y7QNra7sc6Ly6I9hqQ7EcoktcoBwVliH+wJrh3f9yDm1Wja10b095q4KRt7AMfYz9iFsAPXDomwlEEOK5AnXCgEvqSC4b2wtHtIYyKd9nGEVrdK3+PR7PSovKGzFQU6nUVNC23gK7ZtXFQ9CrcsnN9nRnKZEaoMUpUM0MTT0cEER7gf8SHxtlvy4FgLs0BByuS0NM00P+i0Nwk2SdSbQQpQUs3g0GzjwiRpV5U2KMkQfzFohG7MFZ8kfJTKtsDcMUbemyXWDjidPMcIV1u9wERj5pX+JLr1EUrNnOdRcbqaYgJplbBFLEIOGzRMKvc3QrPKh/FBqULWpwKPQJRPhea0Y0qKubD8O/QsZoTkdj2qHMivtRn9GyEfNL5u9Z2HqjOKZAfCj2MDP4ajAaRJJpCl8Kx9crUeNq1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR02MB7336.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(396003)(136003)(346002)(376002)(54906003)(33656002)(9686003)(2906002)(186003)(478600001)(966005)(316002)(71200400001)(7696005)(6506007)(6916009)(26005)(4326008)(53546011)(86362001)(55016002)(7416002)(66946007)(8676002)(76116006)(8936002)(52536014)(38100700002)(83380400001)(5660300002)(66446008)(66556008)(64756008)(66476007)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mhWxlyQHt2qAWXbsmy6QnSDfLgL0l3XVdGQLkwl0mWFDDsoMWiFtAxLiWF1d?=
+ =?us-ascii?Q?93Y1nhI4jLcJkMc6+2kku8hbAHN5m9DZmKbWpKif6qjPMd+AE3vYKCYKIgFC?=
+ =?us-ascii?Q?zXf3Yd9uAp+U8+kcgEvrSs2tereWAtwxmA4ZSXMZXMpcXHvReGSaDUQ2yoUr?=
+ =?us-ascii?Q?yIdBKHXOgP7Ny7oW3P16uTB81eOAi4pOFSQ9+nGZ7OW2xHLd8EXc9SCk0AmF?=
+ =?us-ascii?Q?EuQJepqYsZeLJBqx7LpNDK9YzVJQS7bV2A0Sh7hIu4GG6NwU3fm6SrRn5gBV?=
+ =?us-ascii?Q?1I+kANwQfjuI2UPHRhnR46jD8oMW8aX7aYKgK/JdjZX0znl5SJ6zqjzKjmRq?=
+ =?us-ascii?Q?o4ozUGG6k0T03EDLiIiRZTASsY/SoXo/3DODtyfpD9LoJ8XtfjxBSC2/dR37?=
+ =?us-ascii?Q?YRlqXBeq9N2kc8I/CMri+1TTNElRqetjL3iqPM/+0Dohr6G1gHgPz26OTffB?=
+ =?us-ascii?Q?q9wCkSH6zqDsiA42yQwowCpgQ9yxU5eDogEsRzjZInzDW4ktOUx6AGg2l899?=
+ =?us-ascii?Q?HcXI+JHDSO7hMZcDkVDj+zfgO0NEQTnUUftNmz3Rwp1VGaWh0erhAZAUvDdh?=
+ =?us-ascii?Q?H+X94oTdU9tafdotFer8bzj9Xkn4TMf/nZVMJEwVscv5ANEBp41geJpd5ZiJ?=
+ =?us-ascii?Q?gwQU5jMHFW9t0TfYykSqpwSwUDgc1hBi6oPvMfTiFCHOdDP/xOa4sh2hQwFa?=
+ =?us-ascii?Q?x7pfjuoXLtB/yTbUyS79l6gjO1wDb+DqQTDojUoXCj91tzaf2BYYkiOtypsT?=
+ =?us-ascii?Q?0HpqYdNN9DzJIE5qfZw+VMpYOOyAMhpa9q0u35A8/or2jrMZgTH/Q1WOuOfi?=
+ =?us-ascii?Q?ukVmz7hgfGcMi2TIhH7OBFamxLREhg9ul+b4a4p6gOil0cWkjPTDoUIGS/dH?=
+ =?us-ascii?Q?GquX33Z4f/n8FQLrG07Fj/bZoLS1kzoEmbYDQoXprZC8+9KcQwyE2qeqy16Q?=
+ =?us-ascii?Q?9nxY9cF3n/zWNZMobNMipdU8cJSuYawbPzrQcw8NLJupUG06SFWHro1sc+g3?=
+ =?us-ascii?Q?b7LXgzRhswj3KqliR88kMj1f8EnrgmqwtmhkJMotEwF8bEUJUQzkJ9cU3dIG?=
+ =?us-ascii?Q?At41QSt0QNFxj/wOi3z80J5yEnjdGo5bCzZOQCu22FwujYe5AC7nFUOF2hV/?=
+ =?us-ascii?Q?Qdz5bUIxH5X7bjPsNAS1ke5JF0dm7BTcmL+41yByP05yURo67jkOxlcgqoiF?=
+ =?us-ascii?Q?75XAvhdqoeDzsNKCMF3ZGT96U7aXR8u2YQ2A2SRNti0EN36sef+v6j4MfilX?=
+ =?us-ascii?Q?D7Z31jOQkrTT8t4DCdm5mULbrTsbRev/i727btAjK648mhLGaQt8zvgl6he1?=
+ =?us-ascii?Q?6/KigVdLDN1gdwZL3VI/EU9n?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR02MB7336.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91835715-5912-4b34-21f9-08d938b86171
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2021 15:38:00.6551
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yufclNAFvgHqoMSeuwOAZkonIXNDgXwNWVfApubei5ifQZdALP2D6CDeBgCdcrltbc/ilRB2i60p17A1VPfC9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will send out the next version without frame->reliable as implementing
-a per-frame reliability thing obviously needs other changes and needs
-Mark Rutland's code reorg.
+Hi Rob,
 
-Thanks!
+	Please find my response inline.
 
-Madhavan
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Thursday, June 10, 2021 9:34 PM
+> To: Nava kishore Manne <navam@xilinx.com>
+> Cc: Michal Simek <michals@xilinx.com>; mdf@kernel.org; trix@redhat.com;
+> arnd@arndb.de; Rajan Vaja <RAJANV@xilinx.com>;
+> gregkh@linuxfoundation.org; Amit Sunil Dhamne
+> <amitsuni@xlnx.xilinx.com>; Tejas Patel <tejasp@xlnx.xilinx.com>;
+> zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>; Ravi
+> Patel <RAVIPATE@xilinx.com>; iwamatsu@nigauri.org; Jiaying Liang
+> <jliang@xilinx.com>; devicetree@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+> fpga@vger.kernel.org; git <git@xilinx.com>; chinnikishore369@gmail.com
+> Subject: Re: [PATCH v7 3/4] dt-bindings: firmware: Add bindings for xilin=
+x
+> firmware
+>=20
+> On Fri, Jun 04, 2021 at 05:03:31PM +0530, Nava kishore Manne wrote:
+> > Add documentation to describe Xilinx firmware driver bindings.
+> > Firmware driver provides an interface to firmware APIs.
+> > Interface APIs can be used by any driver to communicate to Platform
+> > Management Unit.
+> >
+> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > ---
+> > Changes for v4:
+> >               -Added new yaml file for xilinx firmware
+> >                as suggested by Rob.
+> >
+> > Changes for v5:
+> >               -Fixed some minor issues and updated the fpga node name t=
+o
+> versal_fpga.
+> >
+> > Changes for v6:
+> >               -Added AES and Clk nodes as a sub nodes to the firmware n=
+ode.
+> >
+> > Changes for v7:
+> >               -Fixed child nodes format ssues.
+> >
+> >  .../firmware/xilinx/xlnx,zynqmp-firmware.yaml | 94
+> > +++++++++++++++++++
+> >  1 file changed, 94 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-
+> firmware
+> > .yaml
+>=20
+> You need to remove xlnx,zynqmp-firmware.txt
+>=20
 
-On 6/25/21 10:39 AM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 6/24/21 9:40 AM, Mark Rutland wrote:
->> Hi Madhavan,
->>
->> On Wed, May 26, 2021 at 04:49:16PM -0500, madvenka@linux.microsoft.com wrote:
->>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>>
->>> The unwinder should check for the presence of various features and
->>> conditions that can render the stack trace unreliable and mark the
->>> the stack trace as unreliable for the benefit of the caller.
->>>
->>> Introduce the first reliability check - If a return PC is not a valid
->>> kernel text address, consider the stack trace unreliable. It could be
->>> some generated code.
->>>
->>> Other reliability checks will be added in the future.
->>>
->>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->>
->> At a high-level, I'm on-board with keeping track of this per unwind
->> step, but if we do that then I want to be abel to use this during
->> regular unwinds (e.g. so that we can have a backtrace idicate when a
->> step is not reliable, like x86 does with '?'), and to do that we need to
->> be a little more accurate.
->>
-> 
-> The only consumer of frame->reliable is livepatch. So, in retrospect, my
-> original per-frame reliability flag was an overkill. I was just trying to
-> provide extra per-frame debug information which is not really a requirement
-> for livepatch.
-> 
-> So, let us separate the two. I will rename frame->reliable to frame->livepatch_safe.
-> This will apply to the whole stacktrace and not to every frame.
-> 
-> Pass a livepatch_safe flag to start_backtrace(). This will be the initial value
-> of frame->livepatch_safe. So, if the caller knows that the starting frame is
-> unreliable, he can pass "false" to start_backtrace().
-> 
-> Whenever a reliability check fails, frame->livepatch_safe = false. After that
-> point, it will remain false till the end of the stacktrace. This keeps it simple.
-> 
-> Also, once livepatch_safe is set to false, further reliability checks will not
-> be performed (what would be the point?).
-> 
-> Finally, it might be a good idea to perform reliability checks even in
-> start_backtrace() so we don't assume that the starting frame is reliable even
-> if the caller passes livepatch_safe=true. What do you think?
-> 
->> I think we first need to do some more preparatory work for that, but
->> regardless, I have some comments below.
->>
-> 
-> I agree that some more work is required to provide per-frame debug information
-> and tracking. That can be done later. It is not a requirement for livepatch.
-> 
->>> ---
->>>  arch/arm64/include/asm/stacktrace.h |  9 +++++++
->>>  arch/arm64/kernel/stacktrace.c      | 38 +++++++++++++++++++++++++----
->>>  2 files changed, 42 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
->>> index eb29b1fe8255..4c822ef7f588 100644
->>> --- a/arch/arm64/include/asm/stacktrace.h
->>> +++ b/arch/arm64/include/asm/stacktrace.h
->>> @@ -49,6 +49,13 @@ struct stack_info {
->>>   *
->>>   * @graph:       When FUNCTION_GRAPH_TRACER is selected, holds the index of a
->>>   *               replacement lr value in the ftrace graph stack.
->>> + *
->>> + * @reliable:	Is this stack frame reliable? There are several checks that
->>> + *              need to be performed in unwind_frame() before a stack frame
->>> + *              is truly reliable. Until all the checks are present, this flag
->>> + *              is just a place holder. Once all the checks are implemented,
->>> + *              this comment will be updated and the flag can be used by the
->>> + *              caller of unwind_frame().
->>
->> I'd prefer that we state the high-level semantic first, then drill down
->> into detail, e.g.
->>
->> | @reliable: Indicates whether this frame is beleived to be a reliable
->> |            unwinding from the parent stackframe. This may be set
->> |            regardless of whether the parent stackframe was reliable.
->> |            
->> |            This is set only if all the following are true:
->> | 
->> |            * @pc is a valid text address.
->> | 
->> |            Note: this is currently incomplete.
->>
-> 
-> I will change the name of the flag. I will change the comment accordingly.
-> 
->>>   */
->>>  struct stackframe {
->>>  	unsigned long fp;
->>> @@ -59,6 +66,7 @@ struct stackframe {
->>>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>>  	int graph;
->>>  #endif
->>> +	bool reliable;
->>>  };
->>>  
->>>  extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
->>> @@ -169,6 +177,7 @@ static inline void start_backtrace(struct stackframe *frame,
->>>  	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
->>>  	frame->prev_fp = 0;
->>>  	frame->prev_type = STACK_TYPE_UNKNOWN;
->>> +	frame->reliable = true;
->>>  }
->>
->> I think we need more data than this to be accurate.
->>
->> Consider arch_stack_walk() starting from a pt_regs -- the initial state
->> (the PC from the regs) is accurate, but the first unwind from that will
->> not be, and we don't account for that at all.
->>
->> I think we need to capture an unwind type in struct stackframe, which we
->> can pass into start_backtrace(), e.g.
->>
-> 
->> | enum unwind_type {
->> |         /*
->> |          * The next frame is indicated by the frame pointer.
->> |          * The next unwind may or may not be reliable.
->> |          */
->> |         UNWIND_TYPE_FP,
->> | 
->> |         /*
->> |          * The next frame is indicated by the LR in pt_regs.
->> |          * The next unwind is not reliable.
->> |          */
->> |         UNWIND_TYPE_REGS_LR,
->> | 
->> |         /*
->> |          * We do not know how to unwind to the next frame.
->> |          * The next unwind is not reliable.
->> |          */
->> |         UNWIND_TYPE_UNKNOWN
->> | };
->>
->> That should be simple enough to set up around start_backtrace(), but
->> we'll need further rework to make that simple at exception boundaries.
->> With the entry rework I have queued for v5.14, we're *almost* down to a
->> single asm<->c transition point for all vectors, and I'm hoping to
->> factor the remainder out to C for v5.15, whereupon we can annotate that
->> BL with some metadata for unwinding (with something similar to x86's
->> UNWIND_HINT, but retained for runtime).
->>
-> 
-> I understood UNWIND_TYPE_FP and UNWIND_TYPE_REGS_LR. When would UNWIND_TYPE_UNKNOWN
-> be passed to start_backtrace? Could you elaborate?
-> 
-> Regardless, the above comment applies only to per-frame tracking when it is eventually
-> implemented. For livepatch, it is not needed. At exception boundaries, if stack metadata
-> is available, then use that to unwind safely. Else, livepatch_safe = false. The latter
-> is what is being done in my patch series. So, we can go with that until stack metadata
-> becomes available.
-> 
-> For the UNWIND_TYPE_REGS_LR and UNWIND_TYPE_UNKNOWN cases, the caller will
-> pass livepatch_safe=false to start_backtrace(). For UNWIND_TYPE_FP, the caller will
-> pass livepatch_safe=true. So, only UNWIND_TYPE_FP matters for livepatch.
-> 
->>>  
->>>  #endif	/* __ASM_STACKTRACE_H */
->>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
->>> index d55bdfb7789c..9061375c8785 100644
->>> --- a/arch/arm64/kernel/stacktrace.c
->>> +++ b/arch/arm64/kernel/stacktrace.c
->>> @@ -44,21 +44,29 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>  	unsigned long fp = frame->fp;
->>>  	struct stack_info info;
->>>  
->>> +	frame->reliable = true;
->>
->> I'd prefer to do this the other way around, e.g. here do:
->>
->> |        /*
->> |         * Assume that an unwind step is unreliable until it has passed
->> |         * all relevant checks.
->> |         */
->> |        frame->reliable = false;
->>
->> ... then only set this to true once we're certain the step is reliable.
->>
->> That requires fewer changes below, and would also be more robust as if
->> we forget to update this we'd accidentally mark an entry as unreliable
->> rather than accidentally marking it as reliable.
->>
-> 
-> For livepatch_safe, the initial statement setting it to true at the
-> beginning of unwind_frame() goes away. But whenever a reliability check fails,
-> livepatch_safe has to be set to false.
-> 
->>> +
->>>  	/* Terminal record; nothing to unwind */
->>>  	if (!fp)
->>>  		return -ENOENT;
->>>  
->>> -	if (fp & 0xf)
->>> +	if (fp & 0xf) {
->>> +		frame->reliable = false;
->>>  		return -EINVAL;
->>> +	}
->>>  
->>>  	if (!tsk)
->>>  		tsk = current;
->>>  
->>> -	if (!on_accessible_stack(tsk, fp, &info))
->>> +	if (!on_accessible_stack(tsk, fp, &info)) {
->>> +		frame->reliable = false;
->>>  		return -EINVAL;
->>> +	}
->>>  
->>> -	if (test_bit(info.type, frame->stacks_done))
->>> +	if (test_bit(info.type, frame->stacks_done)) {
->>> +		frame->reliable = false;
->>>  		return -EINVAL;
->>> +	}
->>>  
->>>  	/*
->>>  	 * As stacks grow downward, any valid record on the same stack must be
->>> @@ -74,8 +82,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>  	 * stack.
->>>  	 */
->>>  	if (info.type == frame->prev_type) {
->>> -		if (fp <= frame->prev_fp)
->>> +		if (fp <= frame->prev_fp) {
->>> +			frame->reliable = false;
->>>  			return -EINVAL;
->>> +		}
->>>  	} else {
->>>  		set_bit(frame->prev_type, frame->stacks_done);
->>>  	}
->>> @@ -100,14 +110,32 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>  		 * So replace it to an original value.
->>>  		 */
->>>  		ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
->>> -		if (WARN_ON_ONCE(!ret_stack))
->>> +		if (WARN_ON_ONCE(!ret_stack)) {
->>> +			frame->reliable = false;
->>>  			return -EINVAL;
->>> +		}
->>>  		frame->pc = ret_stack->ret;
->>>  	}
->>>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
->>>  
->>>  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
->>>  
->>> +	/*
->>> +	 * Check the return PC for conditions that make unwinding unreliable.
->>> +	 * In each case, mark the stack trace as such.
->>> +	 */
->>> +
->>> +	/*
->>> +	 * Make sure that the return address is a proper kernel text address.
->>> +	 * A NULL or invalid return address could mean:
->>> +	 *
->>> +	 *	- generated code such as eBPF and optprobe trampolines
->>> +	 *	- Foreign code (e.g. EFI runtime services)
->>> +	 *	- Procedure Linkage Table (PLT) entries and veneer functions
->>> +	 */
->>> +	if (!__kernel_text_address(frame->pc))
->>> +		frame->reliable = false;
->>
->> I don't think we should mention PLTs here. They appear in regular kernel
->> text, and on arm64 they are generally not problematic for unwinding. The
->> case in which they are problematic are where they interpose an
->> trampoline call that isn't following the AAPCS (e.g. ftrace calls from a
->> module, or calls to __hwasan_tag_mismatch generally), and we'll have to
->> catch those explciitly (or forbid RELIABLE_STACKTRACE with HWASAN).
->>
-> 
-> I will remove the mention of PLTs.
-> 
->> >From a backtrace perspective, the PC itself *is* reliable, but the next
->> unwind from this frame will not be, so I'd like to mark this as
->> reliable and the next unwind as unreliable. We can do that with the
->> UNWIND_TYPE_UNKNOWN suggestion above.
->>
-> 
-> In the livepatch_safe approach, it can be set to false as soon as the unwinder
-> realizes that there is unreliability, even if the unreliability is in the next
-> frame. Actually, this would avoid one extra unwind step for livepatch.
-> 
->> For the comment here, how about:
->>
->> |	/*
->> |	 * If the PC is not a known kernel text address, then we cannot
->> |	 * be sure that a subsequent unwind will be reliable, as we
->> |	 * don't know that the code follows our unwind requirements.
->> |	 */
->> |	if (!__kernel_text_address(frame-pc))
->> |		frame->unwind = UNWIND_TYPE_UNKNOWN;
->>
-> 
-> OK. I can change the comment.
-> 
-> Thanks!
-> 
-> Madhavan
-> 
+Will fix in v8.
+
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-
+> firmwa
+> > re.yaml
+> > b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-
+> firmwa
+> > re.yaml
+> > new file mode 100644
+> > index 000000000000..8e0241c4c137
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-fi
+> > +++ rmware.yaml
+> > @@ -0,0 +1,94 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
+> > +---
+> > +$id:
+> > +http://devicetree.org/schemas/firmware/xilinx/xlnx,zynqmp-firmware.ya
+> > +ml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Xilinx firmware driver
+> > +
+> > +maintainers:
+> > +  - Nava kishore Manne <nava.manne@xilinx.com>
+> > +
+> > +description:
+> > +  The zynqmp-firmware node describes the interface to platform
+> firmware.
+> > +  ZynqMP has an interface to communicate with secure firmware.
+> > +Firmware
+> > +  driver provides an interface to firmware APIs. Interface APIs can
+> > +be
+> > +  used by any driver to communicate to PMUFW(Platform Management
+> Unit).
+> > +  These requests include clock management, pin control, device
+> > +control,
+> > +  power management service, FPGA service and other platform
+> > +management
+> > +  services.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - description:
+> > +          For implementations complying for Zynq Ultrascale+ MPSoC.
+> > +        const: xlnx,zynqmp-firmware
+> > +
+> > +      - description:
+> > +          For implementations complying for Versal.
+> > +        const: xlnx,versal-firmware
+> > +
+> > +  method:
+> > +    description: |
+> > +                 The method of calling the PM-API firmware layer.
+> > +                 Permitted values are.
+> > +                 - "smc" : SMC #0, following the SMCCC
+> > +                 - "hvc" : HVC #0, following the SMCCC
+> > +
+> > +    $ref: /schemas/types.yaml#/definitions/string-array
+> > +    enum:
+> > +      - smc
+> > +      - hvc
+> > +
+> > +  "versal_fpga":
+>=20
+> Don't need quotes
+>=20
+
+Will fix in v8.
+
+> > +    $ref: /schemas/fpga/xlnx,versal-fpga.yaml#
+> > +    description: Compatible of the FPGA device.
+> > +    type: object
+> > +
+> > +  "zynqmp-aes":
+>=20
+> Don't need quotes
+>=20
+
+Will fix in v8.
+
+> > +    $ref: /schemas/crypto/xlnx,zynqmp-aes.yaml#
+> > +    description: |
+> > +                 The ZynqMP AES-GCM hardened cryptographic accelerator=
+ is
+> > +                 used to encrypt or decrypt the data with provided key=
+ and
+> > +                 initialization vector.
+>=20
+> Don't need '|' here (there's no formatting) and indent 2 more than
+> 'description'.
+>=20
+
+Will fix in v8.
+
+Regards,
+Navakishore.
