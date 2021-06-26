@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885653B4D41
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2615D3B4D44
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 08:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhFZG44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 02:56:56 -0400
-Received: from mout.gmx.net ([212.227.15.15]:41927 "EHLO mout.gmx.net"
+        id S229978AbhFZG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 02:58:03 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58683 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhFZG4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 02:56:53 -0400
+        id S229573AbhFZG6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 02:58:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624690469;
-        bh=kFRlnSJzJgyhHhg4Rh+NKUGJzI3tZPEzSxXMORNGKAI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=gw+xeMkL7ByA81cMQ8atBe9aIElg+n8ztBhgkpYzTfAOWlQmwL02asgemU4Cks+qI
-         KvnH7fxx5Xh5FU28eBPr5z92o597U0MB5d6ft262MDohRZeR+EQ/jjQfzjTV/Ra1Ns
-         rJNFPYBzg2j1Gxj3F5Tt3mdFkPv/hy3O+laiQRQ8=
+        s=badeba3b8450; t=1624690535;
+        bh=jSpWKAZvfuSmdJcaGlMl2mDrf1PcSKHFOfCTFtzz/zQ=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=XLFGx5PCI+8iwEqeS4Qz3tpkaTRPsW2eH5uMJU8wUAz3/nMnWzXZPn9UPHAwnJ0zI
+         4h3cxwt9nA4TlH6Q5V8AkuhRuvAp1Xh+BjvuigE0Bstca5N163HSiSoytqhdswOkLZ
+         0ALTXFs5McH/KMWW0iAGGmEtQtUMMA1+AIMAAJuk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from surftab ([77.20.254.179]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MkYXs-1lX4JP2RUE-00m7IU; Sat, 26
- Jun 2021 08:54:29 +0200
-From:   Julian Schulte <schu.ju@gmx.net>
-To:     hadess@hadess.net, dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Julian Schulte <schu.ju@gmx.net>
-Subject: [PATCH] fix Touchscreen X Axis inversion on Trekstor Surftab W1
-Date:   Sat, 26 Jun 2021 08:54:17 +0200
-Message-Id: <20210626065417.8818-1-schu.ju@gmx.net>
-X-Mailer: git-send-email 2.30.2
+Received: from homer.fritz.box ([185.191.216.49]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mg6Zw-1lJqvZ1kze-00hfkt; Sat, 26
+ Jun 2021 08:55:35 +0200
+Message-ID: <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de>
+Subject: Re: [ANNOUNCE] rt-tests-2.0
+From:   Mike Galbraith <efault@gmx.de>
+To:     John Kacur <jkacur@redhat.com>,
+        RT <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Clark Williams <williams@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Johnathan Schwender <schwenderjonathan@gmail.com>,
+        Peter Xu <peterx@redhat.com>
+Date:   Sat, 26 Jun 2021 08:55:34 +0200
+In-Reply-To: <20210625160801.9283-1-jkacur@redhat.com>
+References: <20210625160801.9283-1-jkacur@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KqVF4NJWDk8WXtlIu49CD/DAkXvqF85E720jguRJxxomufRNTFz
- O2MqC43/MkGvPDw6YhEricxYabzKF9Fo7kJBT600cbGwN8ubWsT1D2AYVirn0Ht8YBp0nWl
- v3MglQAT9Nf1sTtr8qWL0mcob848I5I3RCIHH/brY/WqfknnpHWlURSujDS+kbF3MxtTNp1
- mebizRxoo0rqmQfrgMmtA==
+X-Provags-ID: V03:K1:FkFbtuYdaz+FDJba47sWBYnoxlqgSsBlmEuoHqmObWz+xvYRwh+
+ Zw7PqEtC+ft0mugS21RGRksO1FXGIcOTd8D9J1E/dtI6s0Mlh3ajNz6YZlNMy1MJzmFLMfA
+ Nze7Pg9WtpL56yse76R+NTGabCAZAb39FAxerxeBJZE0xMLtd1leU0PKtimqbmbWQFawbmo
+ nykINkWbhQwWwmQuIObDw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3+pNHCt4Py0=:f5vK/oADrqumpX4ktCEm72
- +6sfKlar6oXkuR7kCXJOwjFAYEbr4O9NUzugMgIZHQ6MKI8Au3KNB15M/z/AIEV5DvDHYoRWC
- KX99G2+LBBxRfyn04a0/QArBGWQxbrhV6Svm00W02ZyIGx6OfC9di1cg84t55fOIVYqN1VNrN
- Q7jhJf1x5GlckpgtWc5k+nME+fqZTyANOJVXDmuwhP3bl9qZPYxk30kjfLFE9yr1aRu8Q8ts6
- Q/5Q7pOCDoU6+QVSg8ebFTlfik+le4Iy3aQO75NFpvPAXN14yF3RRN6z6eMSogNsu3QIoTqCi
- 4/CkVHWk2EYrEP53Gk15NJUj7JX+OBJKijtEmZNOMLwCYSyavmnyb5vP5Xb+aWcbQzM4uLmuY
- SKxKHUE42VRkzvwBZni5L7YKGcaLcMXPj+KpjcGFfEoZx7Kv/LnhfdPDjch83MIX1+nmmUt4P
- 3cxz7ismJfng1yACl8d7FOP9++HasauNvWMpeCJcLd77uQdxnNupWC2hItV3eEzQtWF5R60fB
- DLKAtWB9mdSRju+gNJSSg6eC5lHUu2BrEtGb2QH9E1sZOk2hDTi/hr95BbXn+VjioMWMFbtdA
- w1n7uuSmeH1lDNj/OnEk7MRroSF1XwZDxGSYsGOXot8F2GDMLBXlfVLRmZNpLXBqR5Td0lZFd
- xBa2wvcf94XU5sWDWkUsEoEGlAKDzw5XPgHi+EAZyda4wB6fVB4tC8u0XbkBq4VMKXrTheFSx
- eOEbEW6Cs+hOJO/MpiaILgWxX95R0EPdalClzCjDTiMmYfSxx2mkUQSFiMVa/haN1lQhKTsFW
- ZX5kyefVi9462Gcea+2RF2JCqLy9tGm77IJYH/Uomr2zFbxRk9F5uoUEPprp0u03OjdQyCqkd
- vaJpLKFoyQSY3RDe9uTEfyUhny1wHPqnda9PFJSKtWLvSNsFvJiSkOEHo5Vy7vT3OWUjXZvW0
- pNeJJ1YNfrTnwSkB7A/qFLYabut2XwaSeyLn1nXDD7psP4km2DQGNnYesDtVSt9ykHTejjLgU
- lQ7Ic+GY2jHIWz21qsl234wGbx0oPcaj3QHWgj0ygfTxOuCtwGUEUvV630DY5vtETJwpEz8dv
- 8BLwWrdwmNsxzV4Qb1CgXaqR+xnrr1RqC5m
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aYdCFY/i/Zs=:1PxWCLq78k6M78YPcef63e
+ b7UYUGzuDiEiozkScndyhqANus+Q981tMDla8M/CzkerL+8l9/I3JD9sxgN/luGFlL5gws0xk
+ Rfk+PTU3W1VSAQS/n07tRWx2yigSeaed0nxjpmyu40ipjFWF5a1jyyBUW2ttahDAItrpxEloo
+ Nxa4L0V6326RKYm7eHAxocRwWqgJSu108Ug7NIs90toSpGSeX7VHOYbBsO3x6v8EqtmsqZegC
+ prZKBnqLL8g4faZttVfaYbc+uTih05Y9WAHHqCX5YfF8JH/1qzcnmt4Yt5LfkHL6AL5u+Ms40
+ MDkUIicm1vda5ZyOq2LwIyMTQSVvEGeXjT5/EFC97vpxRtREwP3O7wO9eTv+6klltXL43GqWL
+ ucrqhGBq2qJPWS+zsbmAg2x243odM4TVSXneP1WfEusQXcIqKZlGj85XGy+st+dHmhGt3QSMf
+ k+4cGzgP/VrQf5v+CIKI7ekBv9szlF6cMJUmIVgrz0wlFznr/fQftkugN2TVPKULBwwWW1+2R
+ 7jsa/pS2LyyIdkW5H/ShAczmFjrY2T6okfenDRyDkcGR2V5gwY7ho04WPfhicMoR/or+FGwTW
+ vox+gk90UPLaHFnHU4K9AqJ8AhtkL+i+4o+VgnUNM5SdghvyCbrFBNjWZA8BeiyJDX2nLrQqH
+ 4g9eTnBk4y+4mAXqOAb25/jaMCKIMQXWAIZila3YM0zHJZOsdYzVGVrVJHj81zZFLdkOsUA9U
+ bKvid8hqYIf3w5MuuJCYdwFPMxWvYpKSrPzQ3Qr34xWVFVSFDxXY+i3jxaO4f4N55q1exNsay
+ +RZIQpLqNUecjF2WzaOrkE1Lp8KZfJvnUZNki4dfmmahQtrGz0zaiKAFEChcE9BJV9nQZYQqV
+ sTOjuXb929Xbdmh7JSGXoY5MNcqaBxevtxdyhIoTEeWdXVZGR8sS/A5C9hFwnSCvwg6jTNaiU
+ SHxpnYi14BZtLASVXmXJZwqSJ0Eeq5YhDIry0XGGge16wtxuXM30sC0CuqHBcrQSyFdb4w+zM
+ je4DxiEw4xGPaXCDx218VEux7O1BGWNySbdEL2mOtx4HtauLwwbTFwbR5hmyDKXsBj2TFw8/r
+ 3+oFbuKOWYdi1JnY82ZT/M+bIADEC+SHIMv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Julian Schulte <schu.ju@gmx.net>
-=2D--
- drivers/input/touchscreen/goodix.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Fri, 2021-06-25 at 12:08 -0400, John Kacur wrote:
+> I'm pleased to announce rt-tests-2.0
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscree=
-n/goodix.c
-index c682b028f..cec5f7bdc 100644
-=2D-- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -248,6 +248,13 @@ static const struct dmi_system_id inverted_x_screen[]=
- =3D {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "I15-TC")
- 		},
- 	},
-+	{
-+		.ident =3D "TrekStor SurfTab duo W1 10.1 (VT4)",
-+		.matches =3D {
-+			DMI_MATCH(DMI_SYS_VENDOR, "TrekStor"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "SurfTab duo W1 10.1 (VT4)")
-+		},
-+	},
- #endif
- 	{}
- };
-=2D-
-2.30.2
+Greetings,
+
+cyclictest seems to have grown an mlock related regression.
+
+homer:..git/rt-tests # ./cyclictest -Smp99
+# /dev/cpu_dma_latency set to 0us
+policy: fifo: loadavg: 1.01 1.04 0.51 1/838 4411
+
+T: 0 ( 4404) P:99 I:1000 C:   1536 Min:      1 Act:    1 Avg:    3 Max:   =
+ 3846
+T: 1 ( 4405) P:99 I:1500 C:   1021 Min:      1 Act:    1 Avg:    6 Max:   =
+ 5912
+T: 2 ( 4406) P:99 I:2000 C:    765 Min:      1 Act:    1 Avg:    8 Max:   =
+ 5368
+T: 3 ( 4407) P:99 I:2500 C:    611 Min:      1 Act:    1 Avg:    9 Max:   =
+ 4862
+T: 4 ( 4408) P:99 I:3000 C:    508 Min:      1 Act:    1 Avg:    9 Max:   =
+ 4394
+T: 5 ( 4409) P:99 I:3500 C:    436 Min:      1 Act:    1 Avg:    5 Max:   =
+ 1699
+T: 6 ( 4410) P:99 I:4000 C:    381 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 7 ( 4411) P:99 I:4500 C:    338 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+
+Leave off -m switch...
+
+homer:..git/rt-tests # ./cyclictest -Sp99
+# /dev/cpu_dma_latency set to 0us
+policy: fifo: loadavg: 1.19 1.02 0.55 1/833 4447
+
+T: 0 ( 4440) P:99 I:1000 C:   1533 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 1 ( 4441) P:99 I:1500 C:   1022 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 2 ( 4442) P:99 I:2000 C:    766 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 3 ( 4443) P:99 I:2500 C:    613 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 4 ( 4444) P:99 I:3000 C:    511 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 5 ( 4445) P:99 I:3500 C:    438 Min:      1 Act:    1 Avg:    1 Max:   =
+    3
+T: 6 ( 4446) P:99 I:4000 C:    383 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+T: 7 ( 4447) P:99 I:4500 C:    340 Min:      1 Act:    1 Avg:    1 Max:   =
+    4
+
+...and v2.0 regression goes away.
+
+	-Mike
 
