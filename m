@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE603B4EFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 16:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ED63B4F01
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 16:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhFZOcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 10:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZOcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 10:32:31 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE56C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 07:30:08 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id b64so9486197yba.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 07:30:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SLJ4iP2lmTeTTHk2X4PtVqFQeH+zVixpyO5Oj7RolW4=;
-        b=m+8wB5fMPcLr5kUHfaHhvYsT0BVD8j1cr1UmLg40EXT4yxN0/XoSyYUEzDXXj32LyB
-         zqfn2nBRUGDWpoOMu+p8oqbqaF3o6o8yz6GJvetdy9WPvoJDq4//vPDKCzu+qaaSMUSS
-         mYvAczRRCTcdIP9mBIEsng7QXyjvNF1OCZis66xVyhv+UQOzXIsyNPz/Jz/2w3RCM4Q0
-         3sqzPlX+xECm7rfsY6TWxj/JX76UqZfcmIhZySUZGJT24Dkw49HEf7bfc5w1HZeLG9sr
-         EfEMYt6EeGeEBsF+u+1Zp295uqv0WqF1+uKvPnz/ILDclk5SvljhHahFnO5IiylvbeLk
-         oF4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SLJ4iP2lmTeTTHk2X4PtVqFQeH+zVixpyO5Oj7RolW4=;
-        b=gTbMX7clF+H2VZRdL+2BNDB/zlNn5NKagadLPS1hW4K/ctqKj3W8c8HG86QUGOP9S9
-         UmJmS94BDKVSub6LtTU8uAGBGSZek7w9lV9ARK7rGsXDCdldGu90FJOQM8ehUYaxVMXK
-         9vIHKlTncTfuKVbnY2Iy2OtNdUkv+Zevy//2o/69qlNvl1uFa18gN14J4rH/SoHgSLV0
-         8ZuFf0YjzIM1zPP79oA8jgla+K/o2bt8detNzrNEf0pWJcyssjwQ08qllra1/yFuX5un
-         XOTNlboaHAV2ao9Pt5qr6aWqKPYOuxY0Brz9itRP2Ue4j4LZW/+rAz0LfvLkWuy2l0TW
-         jCpg==
-X-Gm-Message-State: AOAM532PoONNJNZh7cxBZ6xhCsWASn4m8rBe8BkYoy6Tlmk3CgWrcDiO
-        sQyKrOM/tojYD+dmfSPSXtYyq+EEfQIGlVAINqU0AyIR+jQ=
-X-Google-Smtp-Source: ABdhPJzq6dOQ4VBu1IrkfIzybpz0O655Q3Jz4fPeibQBH96gHuJ0EJCGQX8HoxUnvce3NeeDYB0F5oSCk5jBFaFT06U=
-X-Received: by 2002:a25:7704:: with SMTP id s4mr20237026ybc.115.1624717807520;
- Sat, 26 Jun 2021 07:30:07 -0700 (PDT)
+        id S230073AbhFZOdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 10:33:21 -0400
+Received: from mout.gmx.net ([212.227.15.15]:53779 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhFZOdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 10:33:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624717836;
+        bh=q1xyXqBOrhwD5gZND37RRmGI/O0LWaj0MVp1LAHNDn4=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=RjDUK6/aVKCvYOhjUFv7aMo1lVWjjkl5D/8hsweHavk+Sy7yjn6Uc/vUvsW985/Us
+         CCcZmOgChG0cUF3wlyhM5SVDwymVLAWSIlLkX9ZuSskqhmgvo7Ct2tEo79Mui0gtkm
+         akX5OsLabmN95G/TL2W8QATq+qHchvt4Y3pjCq0o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTAFh-1loedI3rVn-00Ua6O; Sat, 26
+ Jun 2021 16:30:36 +0200
+Date:   Sat, 26 Jun 2021 16:30:10 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+Cc:     John Wood <john.wood@gmx.com>, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt76/mt7915: Fix unsigned compared against zero
+Message-ID: <20210626143010.GA2936@ubuntu>
+References: <20210612143505.7637-1-john.wood@gmx.com>
 MIME-Version: 1.0
-References: <YNYz+hVeqsQmiEqN@localhost.localdomain> <CANiq72=qtAcsyReu85AVT-cSf3dcvbnTpQYEF1JhxCRP0WgHUw@mail.gmail.com>
- <YNZGNvGn/pkMhsx+@localhost.localdomain> <CANiq72=HCKAyuLD3anAuSug4s0MKMHwRXdMPt0pNs-mTxD1CXg@mail.gmail.com>
- <YNbMyXR476FvEPaA@localhost.localdomain>
-In-Reply-To: <YNbMyXR476FvEPaA@localhost.localdomain>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 26 Jun 2021 16:29:56 +0200
-Message-ID: <CANiq72mXfLKLWTdRc2LpH-FyvsgKedEw6=Yr2mchE8MhFUOEqg@mail.gmail.com>
-Subject: Re: [PATCH] ELF: add and use SUPRESS_WARN_UNUSED_RESULT\
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612143505.7637-1-john.wood@gmx.com>
+X-Provags-ID: V03:K1:tQ2f+TzIa4cFuYvRr3c0vPwUbF+5UbFFSq+mpcgXQdaJ2U//YOI
+ QOyCOm+E6AURnA+9aCQ31jRi8UiTJl8lE1yyJjyZhckYBRACLhoKYME+3IQn9CCh+ek0WVH
+ NSTlQAUrpM90MAeFRndo8hdW8bXh5pS2UXh0CXaE64VlrKCvoj8a9XhB1MAVT1h70Bl8p1R
+ Va3BYV6ljtqROkiyeT9IQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d10Rb6Q5FAg=:kA+y8IL3xQ9/OlFRJewcGQ
+ p7/uCmxRHhAaqwnaSZqFKwWckGdZJY51F+MwAiaXdbR/OQ4q+X6Xyoha1JJCgmoLG3AJUqUsU
+ o2/Io9kSfF19KQ3XGyWqioK3iA9orJNmrmePk+/c7hPSz42JoW+Z+dQOnh4iR/d3zOeN3SwQE
+ inrZjvAFA3jr5g9CbK+JzDbhfw9YrxGhfmeYABPMiIq6aAB453dwF8jh0fUIiaSzUDm3xyxZo
+ ExgyBLWekuyPy+gYSV5uRXgk3DckvDVrjvphtev5I/EMn4jOd9T/paCfwbIy2Gais9qYApNGQ
+ +TJ8tCLtGznnw7iYoBKjbztv2CLv/6w97/s6p8c2FJX1YeJjc/fx1lcfxuyGuJUjlIS0ARNpJ
+ DKR433pFX3bUcgSXi8UA8nUZoPDGxjFEGFts0MSIDgY7lPvq6RGwLRUvxkIRmQajzHz1H9CIv
+ HX645b1SxR0FC0Pny3wZN0CWYRfnxjXt6s6PaPJCmnAx3D8GnAQcwm0fGaFsvZiFhs1sYrcV5
+ yKoInr3F1Etu7EY2tBYKV6CmD+IdHrG1lTUY1IS6qmiiaG79nuyOVBeL66wAPnTyAzJ5wDgDY
+ fXvHY0b0NNQg55CHrtZ9aCOGQASkM7IPJp5Ye/em+RAVgB3wzlHfN30kqlp6N6zxdeNdhqJYB
+ Rar9hOYq1cK7VVGs+2p0p0b8NOyIi5PlJT4gxOJeraxHleXzUZZ58Fj0e5LADoXs3F+YG7QIQ
+ axxKz89rAgEB+cRQgRpXPJS/Ir+dG2sQZT3O2HxHItfzwehqtAagw95QFd6J/Vt918NQbOQRZ
+ PUpB2cs594tUX4mv7Jr9BuYCeKHtw2TOICM/+3t3Qu0lykswrmZTD3ffgtMX1rNd41yTVkdNK
+ ldiHZOPLHuEzeriwhxNQqoe8I+CwQVsea3O+PL6j4f4mj1xdIJgkhkkw38Un1ksF8sf0j0t1W
+ XgxIuvS/czpvBeiI4BQy3Njbuu9nGvPVxuqLvhFjQsXNWFiErxYCID6Ima5DJuAKQQCmPW2yL
+ FIdla+obJH26Iep49T/huw3wJpNwbsdTpb4UUfrOkzj9ES3sxJkeExD+HE8XVIRUAM5jlg3EN
+ rM/elr9C8s+mU2nnzgCeZM0oFltmMc1FlIP
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 8:44 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Sat, Jun 12, 2021 at 04:35:05PM +0200, John Wood wrote:
+> The mt7915_dpd_freq_idx() function can return a negative value but this
+> value is assigned to an unsigned variable named idx. Then, the code
+> tests if this variable is less than zero. This can never happen with an
+> unsigned type.
 >
-> Sure. But then developer needs to include another header to use SUPRESS_WUR.
-> As posted, attribute and its suppressor go hand to hand.
+> So, change the idx type to a signed one.
+>
+> Addresses-Coverity-ID: 1484753 ("Unsigned compared against 0")
+> Fixes: 495184ac91bb8 ("mt76: mt7915: add support for applying pre-calibr=
+ation data")
 
-These headers are automatically included in most places.
+Has anyone had time to review this patch?. Any comment on this?
 
-Cheers,
-Miguel
+Thanks,
+John Wood
