@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEBE3B4C3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9513B4C41
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 05:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFZDmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Jun 2021 23:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhFZDmt (ORCPT
+        id S230037AbhFZDoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Jun 2021 23:44:12 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:35660 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFZDoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Jun 2021 23:42:49 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44783C061766
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:40:28 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so11632818otl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Jun 2021 20:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tYg1Jg0R/kLPAS1GJHcswaDvowOMqmlpAdA+14k20dc=;
-        b=IZsMFcYhofCo91soP0FzmZUajIRqbM7jIthWPMsHwnO0x8QyX6dwAedUTxys8iqG7P
-         gyoRXWgDOPwocd16WmnPbB0N6Z887RPyer2AMTLbPCCj2WoNzdjpDNfBJKGN0X/+yiii
-         JEWKs18KX3b7bK6gozJR5qjTlTuQw114JWk6lRYy/KXhgGWuDz3qaTEiVmeKc5f33Pdm
-         5rIRFJU62ipJWX6mM4C+adcs2QEL8OTuoX8xbhhcXXwj6CFeFP0wNjl1+15ePOmSEPGc
-         zsjupMMvO18DQmMQW8ZHH/knh3EdCu4tuvNBHq/hNKlJkNLozWkewKm/jC63uDJOSJRt
-         XPKg==
+        Fri, 25 Jun 2021 23:44:10 -0400
+Received: by mail-ed1-f47.google.com with SMTP id df12so16223575edb.2;
+        Fri, 25 Jun 2021 20:41:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tYg1Jg0R/kLPAS1GJHcswaDvowOMqmlpAdA+14k20dc=;
-        b=Wv7zIt+qKJumwLpBY3y4n4ncWok3XwxQr57vHl512YXaNkIjahLXYpWcuZ2kWZ/mpq
-         j35jcVqvrVR8aeRws9uvs99dfBtTBOh+gsbjT9huBid9LSvRpZgDg0CV8+n9s2WWc8aL
-         EqsZLpP1Xc5I5GHGsZQq7PLnqgGV06LH6mKjtVREdVDXcYh2DMc+X5XlJ7Z684FRHxJL
-         He6URQSbcvAaH94BRTfOvWjDpM4v6icDDl0sjJOwoCi9wHRxfFF7GkureLMs3kcZFYm1
-         O/DROVWsUDDY+TEQOT56S005mWDCkAZ5FnDnrhNHSEy2DmIV+a8y1nX7V4Lf4cDWrn/v
-         d7ig==
-X-Gm-Message-State: AOAM532S45/eXXSiF06U5OQJT1L6nyi4f4EL/eDbiNij5aAb4BblAY7q
-        agX0/Yu/jp2sUiVs2SAetaY=
-X-Google-Smtp-Source: ABdhPJxXLfiIbv+TtVKb1udXcVfhp/0D8If4gz6zvVPfp6e6HKMNwH5TFQcJ9aiN8pEmtOZrnxaT9Q==
-X-Received: by 2002:a9d:4b02:: with SMTP id q2mr12904110otf.370.1624678827653;
-        Fri, 25 Jun 2021 20:40:27 -0700 (PDT)
-Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id k26sm1174817ook.0.2021.06.25.20.40.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 20:40:27 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     joe@perches.com, linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 3/3] checkpatch: suppress BUG_ON warn when it is named in commitmsg
-Date:   Fri, 25 Jun 2021 21:40:16 -0600
-Message-Id: <20210626034016.170306-4-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210626034016.170306-1-jim.cromie@gmail.com>
-References: <20210626034016.170306-1-jim.cromie@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kb4tD9QFzLlnC9axfCwl7b++Nsd4PGLa4yuvLPb9qjs=;
+        b=ao5aTtmjma7bYgPvBvcekOtJHkp9LI0XHIID+aMA2S5DprLH+PBQBzODJ9ESextEdw
+         bfp54WEQqD29OGatiPipHzMisF3bt3kd25wiQ+5PIPIoFO4Py9Xv7yJxYqJ5or2IO04P
+         oVxAcHYljXW3kCe/b51Z2MRd6FE8WhISnuh6PdMjE1kCDDqvqxFakNvNtg7tKQIhWc6r
+         sKuFtcVES5lDKRWdehqITuxSogiUReY+SztXCbNsvw4jDgRXdgw0dOX5figLJi4n+XvC
+         CtlBYWIHSWaGastzRFF2LYCoVIAJ5VGDPAl7OLrv/x2GrcsT20shBA7OANH/sjSCW3be
+         ocDg==
+X-Gm-Message-State: AOAM532WLfZHo5InzB4x6mXBOoWxhEpAh00GJQvYLAhLvSf95SVKPx5n
+        K50LT9JGIh+6LUFr4naHgd07n1xboQs=
+X-Google-Smtp-Source: ABdhPJyNFnJznUGR7p/hbof71VsAm7mCex525DNY+/yNfWza1N6fLesQUW178AnukhFCrRth1+tgVw==
+X-Received: by 2002:a50:a447:: with SMTP id v7mr19323859edb.183.1624678906979;
+        Fri, 25 Jun 2021 20:41:46 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id d13sm2470177edt.31.2021.06.25.20.41.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 20:41:46 -0700 (PDT)
+Subject: Re: [PATCH v2] serial: amba-pl011: add RS485 support
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux@armlinux.org.uk,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210618145153.1906-1-LinoSanfilippo@gmx.de>
+ <YNSA1H0cFKiPUn6N@kroah.com> <5d7a4351-2adc-ea31-3290-91d91bd5a5d4@gmx.de>
+ <db436292-4115-0755-57d8-d63986f84453@kernel.org>
+ <trinity-163a08b4-6e39-4d15-bde2-815342f13fc4-1624620116191@3c-app-gmx-bs05>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <a89dec92-e764-c833-bbeb-ba3d84381e78@kernel.org>
+Date:   Sat, 26 Jun 2021 05:41:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <trinity-163a08b4-6e39-4d15-bde2-815342f13fc4-1624620116191@3c-app-gmx-bs05>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-allow mention of BUG_ON in the preamble/commitmsg/intro to silence the
-warning normally issued when one is added.  This presumes the commit
-message will adequately explain the reason "BUG_ON" is appropriate.
+Hi,
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- scripts/checkpatch.pl | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+On 25. 06. 21, 13:21, Lino Sanfilippo wrote:
+> Thats right, the logic has slightly changed. I thought this does not matter as long as
+> we make sure that exactly one of both ON_SEND or AFTER_SEND is set.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a8dfba53b593..32612f39d742 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2560,6 +2560,18 @@ sub exclude_global_initialisers {
- 		$realfile =~ m@/bpf/.*\.bpf\.c$@;
- }
- 
-+sub commitmsg_refers_to {	# see if $srch is in commit message
-+	my ($srch, $lines) = @_;
-+	#print "ok checking for $srch in $lines lines\n";
-+	for my $i (0..$lines) {
-+		if ($rawlines[$i] =~ /$srch/) {
-+			print "\thmm: $srch mentioned in preamble, presuming it is explained\n";
-+			return 1;
-+		}
-+	}
-+	return 0;
-+}
-+
- sub process {
- 	my $filename = shift;
- 
-@@ -2586,6 +2598,7 @@ sub process {
- 	my $has_patch_separator = 0;	#Found a --- line
- 	my $has_commit_log = 0;		#Encountered lines before patch
- 	my $commit_log_lines = 0;	#Number of commit log lines
-+	my $eopreamble = 0;		# above truncates at =~ /^\. \w+/
- 	my $commit_log_possible_stack_dump = 0;
- 	my $commit_log_long_line = 0;
- 	my $commit_log_has_diff = 0;
-@@ -2731,6 +2744,7 @@ sub process {
- 		    ($line =~ /^rename (?:from|to) \S+\s*$/ ||
- 		     $line =~ /^diff --git a\/[\w\/\.\_\-]+ b\/\S+\s*$/))) {
- 			$is_patch = 1;
-+			$eopreamble = $linenr;
- 		}
- 
- #extract the line range in the file after the patch is applied
-@@ -4654,7 +4668,7 @@ sub process {
- 		}
- 
- # avoid BUG() or BUG_ON()
--		if ($line =~ /\b(?:BUG|BUG_ON)\b/) {
-+		if ($line =~ /\b(BUG|BUG_ON)\b/ && !commitmsg_refers_to($1, $eopreamble)) {
- 			my $msg_level = \&WARN;
- 			$msg_level = \&CHK if ($file);
- 			&{$msg_level}("AVOID_BUG",
+I actually don't know. But I would remain consistent with other drivers.
+
+> We can stick with the logic
+> in serial8250_em485_config() (i.e. always set ON_SEND and delete AFTER_SEND in case
+> of an invalid setting), but I think this will require more than the four lines that we
+> have now (especially if we want to avoid the !!).
+
+What if you used only a single !?
+
+thanks,
 -- 
-2.31.1
-
+js
+suse labs
