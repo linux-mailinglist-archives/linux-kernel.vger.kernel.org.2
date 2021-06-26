@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8673B4E48
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 12:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF303B4E55
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 13:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFZK4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 06:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhFZK4L (ORCPT
+        id S230014AbhFZLEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 07:04:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5770 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhFZLEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 06:56:11 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFA3C061574;
-        Sat, 26 Jun 2021 03:53:48 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id j6so6009826qvp.3;
-        Sat, 26 Jun 2021 03:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5IakmMrURhycOrgMfR07LYIjzM4DIOC86+dJLV+QXtE=;
-        b=tJM12ZzFZGep9dgrfo5utS8xjiFj8xNgXdKhGD3A9SmaJVv55z2dbAFR71Tbmn6Sea
-         IygyNuEsD+k0js/M1w4rmHPEwGAIilhGD+DNFHa8L+iIXBZipBJ9EHHHqNYTIXeg4Fex
-         1EG9vUpbZN5Quo1q3/NZTu9X6LlyML8XgkDM1Ubf3CVPwWLHNe1HfkCnMVt449oWv9zB
-         ei8oGQnjwQ3R4FpWQKR9KiXEY+NSGqxidKhNSsGscePbTanOWZrgBfdBgs9Ls2RuMv7Z
-         qg7pkDppgBYjycxMvMR5DhVz7Fk/CB+AT5rvnP0oGp3kI/M7eHMhvJS8OX7yYZPQDhsr
-         CAZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5IakmMrURhycOrgMfR07LYIjzM4DIOC86+dJLV+QXtE=;
-        b=fqwK3xMRHPj0p1gJUnEp7UPn3xII2DpJ6RCjPbUlqp0lb8Os9fTBcE70BTEOF2nNZu
-         lKmtbB+6BgnAPV+9icpN82lBkZ96XFsfxDSFQ08ldXfyBKYMmC0eHtFmcb+ueAzqf8j/
-         yYkF4O73JLKZFCCZJs2q/5S5lSE0cxJcY/TjhFpB9XsNcY+90Jzs/Db2MCyz5UrYH1Rn
-         ojOTIQjhqtovick9gM8A/2O19Noo+Hgr0DorHNQs0pejx7UCIj/XUc1t0MxiyGqKxXiL
-         F9EuzoXaIvEeRgVck85ZdmZ5AogGokHo59l6CLcHtkBd/81z3srvOh27foo5fwmao0qz
-         qHVQ==
-X-Gm-Message-State: AOAM532E/+c8Jxw/ano0SF0fIDY993JvDd8yaY7o9S3aeYWc3L/QnUg/
-        aiF1HVDj5riIIRoojlvjAis=
-X-Google-Smtp-Source: ABdhPJxAO5H8E1B0+d8SzThxc1r9kU7/5m1zewXew59PcHar/YlNWyF8Ut7yR+4xSgYn0Oo3jNv58A==
-X-Received: by 2002:a0c:f543:: with SMTP id p3mr12291007qvm.58.1624704827706;
-        Sat, 26 Jun 2021 03:53:47 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id i3sm5365745qtp.2.2021.06.26.03.53.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Jun 2021 03:53:47 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 26 Jun 2021 06:53:45 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-Message-ID: <YNcHOe3o//pIiByh@mtj.duckdns.org>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
+        Sat, 26 Jun 2021 07:04:34 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GBrRC6pVGzXkWv;
+        Sat, 26 Jun 2021 18:56:55 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 19:02:08 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 26 Jun 2021 19:02:07 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH RFC 0/8] iommu/arm-smmu-v3: add support for ECMDQ register mode
+Date:   Sat, 26 Jun 2021 19:01:22 +0800
+Message-ID: <20210626110130.2416-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621184924.27493-3-longman@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Waiman.
+SMMU v3.3 added a new feature, which is Enhanced Command queue interface
+for reducing contention when submitting Commands to the SMMU, in this
+patch set, ECMDQ is the abbreviation of Enhanced Command Queue.
 
-On Mon, Jun 21, 2021 at 02:49:20PM -0400, Waiman Long wrote:
->  1) A partition root can't be changed to member if it has child partition
->     roots.
->  2) Removing CPUs from cpuset.cpus that causes it to become invalid is
->     not allowed.
+When the hardware supports ECMDQ and each core can exclusively use one ECMDQ,
+each core does not need to compete with other cores when using its own ECMDQ.
+This means that each core can insert commands in parallel. If each ECMDQ can
+execute commands in parallel, the overall performance may be better. However,
+our hardware currently does not support multiple ECMDQ execute commands in
+parallel.
 
-I'm not a fan of this approach. No matter what we have to be able to handle
-CPU removals which are user-iniated operations anyway, so I don't see why
-we're adding a different way of handling a different set of operations. Just
-handle them the same?
+In order to reuse existing code, I originally still call arm_smmu_cmdq_issue_cmdlist()
+to insert commands. Even so, however, there was a performance improvement of nearly 12%
+in strict mode.
 
-Thanks.
+The test environment is the EMU, which simulates the connection of the 200 Gbit/s NIC.
+Number of queues:    passthrough   lazy   strict(ECMDQ)  strict(CMDQ)
+      6                  188        180       162           145        --> 11.7% improvement
+      8                  188        188       184           183        --> 0.55% improvement
+
+In recent days, I implemented a new function without competition with other
+cores to replace arm_smmu_cmdq_issue_cmdlist() when a core can have an ECMDQ.
+I'm guessing it might get better performance results. Because the EMU is too
+slow, it will take a while before the relevant data is available.
+
+
+Zhen Lei (8):
+  iommu/arm-smmu-v3: Use command queue batching helpers to improve
+    performance
+  iommu/arm-smmu-v3: Add and use static helper function
+    arm_smmu_cmdq_issue_cmd_with_sync()
+  iommu/arm-smmu-v3: Add and use static helper function
+    arm_smmu_get_cmdq()
+  iommu/arm-smmu-v3: Extract reusable function
+    __arm_smmu_cmdq_skip_err()
+  iommu/arm-smmu-v3: Add support for ECMDQ register mode
+  iommu/arm-smmu-v3: Ensure that a set of associated commands are
+    inserted in the same ECMDQ
+  iommu/arm-smmu-v3: Add arm_smmu_ecmdq_issue_cmdlist() for non-shared
+    ECMDQ
+  iommu/arm-smmu-v3: Add support for less than one ECMDQ per core
+
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 483 ++++++++++++++++++--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  37 ++
+ 2 files changed, 489 insertions(+), 31 deletions(-)
 
 -- 
-tejun
+2.26.0.106.g9fadedd
+
+
