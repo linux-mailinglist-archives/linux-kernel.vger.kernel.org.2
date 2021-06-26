@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D9E3B4F94
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B373B4FB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Jun 2021 18:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhFZQye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 12:54:34 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:44926 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhFZQy2 (ORCPT
+        id S230379AbhFZQzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 12:55:06 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:41584 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhFZQzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 12:54:28 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 26 Jun 2021 09:52:06 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Jun 2021 09:52:04 -0700
-X-QCInternal: smtphost
-Received: from rajeevny-linux.qualcomm.com ([10.204.66.121])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 26 Jun 2021 22:21:33 +0530
-Received: by rajeevny-linux.qualcomm.com (Postfix, from userid 2363605)
-        id A295721478; Sat, 26 Jun 2021 22:21:30 +0530 (IST)
-From:   Rajeev Nandan <rajeevny@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        sam@ravnborg.org, robdclark@gmail.com, dianders@chromium.org,
-        lyude@redhat.com, jani.nikula@intel.com, robh@kernel.org,
-        laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
-        daniel.thompson@linaro.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org,
-        kalyan_t@codeaurora.org, mkrishn@codeaurora.org
-Subject: [v8 6/6] drm/panel-simple: Add Samsung ATNA33XC20
-Date:   Sat, 26 Jun 2021 22:21:08 +0530
-Message-Id: <1624726268-14869-7-git-send-email-rajeevny@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624726268-14869-1-git-send-email-rajeevny@codeaurora.org>
-References: <1624726268-14869-1-git-send-email-rajeevny@codeaurora.org>
+        Sat, 26 Jun 2021 12:55:04 -0400
+Received: by mail-oi1-f173.google.com with SMTP id t40so15415941oiw.8;
+        Sat, 26 Jun 2021 09:52:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RjZxnCKisu/yuzm/zETycG8rc5tC3RzprLyQlbTug+k=;
+        b=Isftq1UNErzdesqAEC5Xpl6aw+KheApI5VPBxaacd0pDFZ5gIow9ns7L6D1Uvo6cKG
+         nL3QVSKLtRpfBTKW6Qrl+q7vgIdObvvF8s7FQIcbQq6GvPqSNnvEgWqfICwhJcn/6tYG
+         RYlENqDVpCvt/nT9f8Bp1THsHgGBEGqbthe3KAyFy+KnAwiBfmCQCp3of9rwE9HJUb1r
+         ZRiurocZejtE9Z4GopvXYMZVpN7ojGGYGdIxqGxlFCAcY/NJem1Yc586aTL6gb8GZKv8
+         jo2yBxYgxkplYtyGpkgxv78pJBZxmg3JA8VD4sMSzjHoMf21PFr6EiFlJWP6OMAGPsvg
+         RRKg==
+X-Gm-Message-State: AOAM53386eepEm5CnR07snW7zwT9u+H8t8F6g2Bm3/6O/c5tgLmaDAPH
+        pd6OYU5/2Q3pMMm3ngCu3YXd03M6YbN3rmovj1k=
+X-Google-Smtp-Source: ABdhPJyC5a301nKdQKjA2vzaDvUaVKdwf4Qr5aWApiVCV+yMVGfkYFXsZGAJvjRNQhA8AeUHlFWL/Eit5p59ZFQn3tk=
+X-Received: by 2002:aca:c60c:: with SMTP id w12mr15647925oif.46.1624726359841;
+ Sat, 26 Jun 2021 09:52:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210625110419.24503-1-lukas.bulwahn@gmail.com> <20210625110419.24503-4-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210625110419.24503-4-lukas.bulwahn@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Sat, 26 Jun 2021 18:52:28 +0200
+Message-ID: <CAAdtpL6CMAbBPJr3La31Y3AYY48TjLZhDHjKWjUJxXdBS--Xmw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arch: mips: remove dead references
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Samsung 13.3" FHD eDP AMOLED panel.
+On Fri, Jun 25, 2021 at 1:05 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> The domain lookup for linux-mips.org fails for quite some time now.
+> Further, the two links:
+>
+>   http://decstation.unix-ag.org/
 
-Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
----
+https://web.archive.org/web/20061010210936/http://decstation.unix-ag.org/
 
-(No changes since v7)
+>   http://www.computer-refuge.org/classiccmp/ftp.digital.com/pub/DEC/TriAdd/
 
-Changes in v4:
-- New
+https://web.archive.org/web/20050205114151/ftp.digital.com/pub/DEC/TriAdd/
 
-Changes in v5:
-- Remove "uses_dpcd_backlight" property, not required now. (Douglas)
+> refer to old webpages or contain no further technical information.
 
-Changes in v7:
-- Update disable_to_power_off and power_to_enable delays. (Douglas)
+FWIW the information is still online somewhere.
 
- drivers/gpu/drm/panel/panel-simple.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index f966b562..e541257 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3560,6 +3560,36 @@ static const struct panel_desc rocktech_rk101ii01d_ct = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct drm_display_mode samsung_atna33xc20_mode = {
-+	.clock = 138770,
-+	.hdisplay = 1920,
-+	.hsync_start = 1920 + 48,
-+	.hsync_end = 1920 + 48 + 32,
-+	.htotal = 1920 + 48 + 32 + 80,
-+	.vdisplay = 1080,
-+	.vsync_start = 1080 + 8,
-+	.vsync_end = 1080 + 8 + 8,
-+	.vtotal = 1080 + 8 + 8 + 16,
-+	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
-+};
-+
-+static const struct panel_desc samsung_atna33xc20 = {
-+	.modes = &samsung_atna33xc20_mode,
-+	.num_modes = 1,
-+	.bpc = 10,
-+	.size = {
-+		.width = 294,
-+		.height = 165,
-+	},
-+	.delay = {
-+		.disable_to_power_off = 200,
-+		.power_to_enable = 400,
-+		.hpd_absent_delay = 200,
-+		.unprepare = 500,
-+	},
-+	.connector_type = DRM_MODE_CONNECTOR_eDP,
-+};
-+
- static const struct drm_display_mode samsung_lsn122dl01_c01_mode = {
- 	.clock = 271560,
- 	.hdisplay = 2560,
-@@ -4561,6 +4591,9 @@ static const struct of_device_id platform_of_match[] = {
- 		.compatible = "rocktech,rk101ii01d-ct",
- 		.data = &rocktech_rk101ii01d_ct,
- 	}, {
-+		.compatible = "samsung,atna33xc20",
-+		.data = &samsung_atna33xc20,
-+	}, {
- 		.compatible = "samsung,lsn122dl01-c01",
- 		.data = &samsung_lsn122dl01_c01,
- 	}, {
--- 
-2.7.4
-
+> Remove all those dead references.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  arch/mips/Kconfig             |  8 +-------
+>  arch/mips/jazz/Kconfig        | 12 +++---------
+>  tools/include/nolibc/nolibc.h |  3 +--
+>  3 files changed, 5 insertions(+), 18 deletions(-)
