@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B6D3B5400
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D375C3B5404
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhF0PcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 11:32:19 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:39919 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhF0PcS (ORCPT
+        id S231302AbhF0PfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 11:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhF0PfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:32:18 -0400
-Received: by mail-lj1-f180.google.com with SMTP id c11so20957724ljd.6
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 08:29:52 -0700 (PDT)
+        Sun, 27 Jun 2021 11:35:08 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B0EC061574;
+        Sun, 27 Jun 2021 08:32:43 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id h9so18582354oih.4;
+        Sun, 27 Jun 2021 08:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=59hequDqZ0EZ8M0y3xtHrgqpE3wu/Nxv4aJHXZdBkE0=;
+        b=ZmKffNrAS6Am31vp81Nr5z9YoX5qBKEMg0qjI07jV5SmAO8U7KKIJUw55pGIwY4487
+         IT5vy3B4xijfN14HGhix6A1Tv/m5hRbnDdRu7INCP4PC9aECh/xqad+ZYow4vrlwQIyR
+         C0ZAsqsubBIPWuqsLNkgYQgs0jBDw2oLGs0a97PkOi+zzXf3Nwt0m7UqSDABo+BFUIlY
+         6k1xnaE3+Sah7ZVVtPoNfqXcfYwY49U70I31Kcwm2Hv8Clct0iTtMSrB20tS+PbTj9/J
+         WOU+hbmceS/gtADYoCfVZ672XDyrBSpJcu4nDfl6yQTZZQZ9Ix/5jHwMNQcYsCSBxNZA
+         U/ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n3zC9vct0BKnSbcykuX2t4D1DXK+99mTvL/jzo8DFs4=;
-        b=XVMXweTFrVdKe80reSpWSFpKbChiR+bpglqSsqaW3qoRCkVdyQfB5Kob5KxMsvIRRR
-         LHuCpFHc9CVnDGUyGMfOi0sCE3d2Wq+XuUSaNl51aytq6BqQvgKlVOys1COkZJrwKPh6
-         VfIHtd1v5yHyQQCWbvz+D1g+92b/DUGBoCXKH8dOXEuq3umlJENuM0S54W4S48Igukdj
-         rH0emdEOYgMc7JMyJoRdiiNP7m92PkKLMX37nlVH1TOHgXX/7gpSUMRBzJ78cTIOIddx
-         7kTHiuT4HrxYb5lnLFuUOZ1MAIZ3l+5ROf/72dyecFkQO22bkwQNSJvfIzPDcfmlz+aB
-         s19w==
-X-Gm-Message-State: AOAM530PY8xlIpTRPKIPE72VEITxUQvG6br6K7wLkQx2XXWDtir7Bf8K
-        9j/fiYYrJGMhaI9FK0WU4iq9X62yNoqP28zXkDo=
-X-Google-Smtp-Source: ABdhPJzyQticJUoe1xUnMcKbKFqjT5MaalHuyAvRwaHjC8jJdz8Q2+b/1/VVfZ9SykRP6lb4lcuYMTPfD/e5rMtdIa0=
-X-Received: by 2002:a2e:5c42:: with SMTP id q63mr15906539ljb.23.1624807792158;
- Sun, 27 Jun 2021 08:29:52 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=59hequDqZ0EZ8M0y3xtHrgqpE3wu/Nxv4aJHXZdBkE0=;
+        b=NHWIbbtyvugEBHVSBRDt1c2rZOMnNiXxh9LSJalm3FA2t9CrWMCldIfr9jmw1YsLdt
+         ePIpgGy2sHwoimWg54+Dhx5qKaf7XeWyUue52v62Lay95ISrcihkQ+n6HAJ4WQhFHPRJ
+         RA7SglyDRdgA62Wny2bd3HvN4Ot5iU42qUBoGOXG243zD677+Bg6aDU8oduHIPHdDfgq
+         UfrOuJp/wAMF5snmMC9uksBUt7aHEo8bRI0ItMgZ/oLuVe0aDowo+mA+3t0DrdfdRnFr
+         h3W0b4Q72NSZPypylpmJ8T6EsA77o9Ifbm3n1LxQjYIajU/bESNtfZs7hHhIIc+ZK7/S
+         UtDg==
+X-Gm-Message-State: AOAM532VPSOx6Yawmp91u4vPBibRYe0a7NfgJAcn6mY2VH9etq1Ne63O
+        gQWym8j088ybEi0WZRjb0n4=
+X-Google-Smtp-Source: ABdhPJz/m9LPxwXU9P6BNkse7ot38gJ9WqZx+oTpUKJzoj/34NxviIaZLf8P2yg/7O06hph6WNM8ug==
+X-Received: by 2002:aca:a812:: with SMTP id r18mr7474599oie.35.1624807963007;
+        Sun, 27 Jun 2021 08:32:43 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w132sm2605164oig.38.2021.06.27.08.32.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Jun 2021 08:32:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 2/5] watchdog: meson_gxbb_wdt: add timeout module param
+To:     Artem Lapkin <email2tema@gmail.com>, narmstrong@baylibre.com
+Cc:     wim@linux-watchdog.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20210623024429.1346349-1-art@khadas.com>
+ <20210623024429.1346349-3-art@khadas.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <f4bac702-9121-fc84-e138-27f3f662f443@roeck-us.net>
+Date:   Sun, 27 Jun 2021 08:32:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org>
-In-Reply-To: <20210625071826.608504-1-namhyung@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 27 Jun 2021 08:29:40 -0700
-Message-ID: <CAM9d7ci=S2p4_Baqo_vY8sVnST1jKL-HxcHNtcfKzuv0fA-R+Q@mail.gmail.com>
-Subject: Re: [PATCHSET v4 0/4] perf stat: Enable BPF counters with --for-each-cgroup
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210623024429.1346349-3-art@khadas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hello,
->
-> This is to add BPF support for --for-each-cgroup to handle many cgroup
-> events on big machines.  You can use the --bpf-counters to enable the
-> new behavior.
->
->  * changes in v4
->   - convert cgrp_readings to a per-cpu array map
->   - remove now-unused cpu_idx map
->   - move common functions to a header file
->   - reuse bpftool bootstrap binary
->   - fix build error in the cgroup code
->
->  * changes in v3
->   - support cgroup hierarchy with ancestor ids
->   - add and trigger raw_tp BPF program
->   - add a build rule for vmlinux.h
->
->  * changes in v2
->   - remove incorrect use of BPF_F_PRESERVE_ELEMS
->   - add missing map elements after lookup
->   - handle cgroup v1
->
-> Basic idea is to use a single set of per-cpu events to count
-> interested events and aggregate them to each cgroup.  I used bperf
-> mechanism to use a BPF program for cgroup-switches and save the
-> results in a matching map element for given cgroups.
->
-> Without this, we need to have separate events for cgroups, and it
-> creates unnecessary multiplexing overhead (and PMU programming) when
-> tasks in different cgroups are switched.  I saw this makes a big
-> difference on 256 cpu machines with hundreds of cgroups.
->
-> Actually this is what I wanted to do it in the kernel [1], but we can
-> do the job using BPF!
+On 6/22/21 7:44 PM, Artem Lapkin wrote:
+> Added timeout module param same as in other modules
+> 
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> ---
+>   drivers/watchdog/meson_gxbb_wdt.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+> index 3f86530c33b0..ecd1fc6f48ba 100644
+> --- a/drivers/watchdog/meson_gxbb_wdt.c
+> +++ b/drivers/watchdog/meson_gxbb_wdt.c
+> @@ -29,6 +29,11 @@
+>   #define GXBB_WDT_TCNT_SETUP_MASK		(BIT(16) - 1)
+>   #define GXBB_WDT_TCNT_CNT_SHIFT			16
+>   
+> +static unsigned int timeout = DEFAULT_TIMEOUT;
+> +module_param(timeout, uint, 0);
+> +MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds="
+> +		 __MODULE_STRING(DEFAULT_TIMEOUT) ")");
+> +
+>   struct meson_gxbb_wdt {
+>   	void __iomem *reg_base;
+>   	struct watchdog_device wdt_dev;
+> @@ -174,7 +179,7 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+>   	data->wdt_dev.ops = &meson_gxbb_wdt_ops;
+>   	data->wdt_dev.max_hw_heartbeat_ms = GXBB_WDT_TCNT_SETUP_MASK;
+>   	data->wdt_dev.min_timeout = 1;
+> -	data->wdt_dev.timeout = DEFAULT_TIMEOUT;
+> +	data->wdt_dev.timeout = timeout;
 
-Ugh, I found the current kernel bpf verifier doesn't accept the
-bpf_get_current_ancestor_cgroup_id() helper.  Will send the fix
-to BPF folks.
+This is wrong. A timeout module parameter should be set with a call to
+watchdog_init_timeout(), the initial value should be 0, and data->wdt_dev.timeout
+should be kept as-is. This ensures that the module parameter is validated.
 
-Thanks,
-Namhyung
+Guenter
+
+>   	watchdog_set_drvdata(&data->wdt_dev, data);
+>   
+>   	/* Setup with 1ms timebase */
+> 
+
