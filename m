@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B23B55E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 01:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4573B55E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 01:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhF0XqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 19:46:07 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42831 "EHLO ozlabs.org"
+        id S231740AbhF0Xqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 19:46:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231508AbhF0XqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 19:46:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GCnPR5Q0Tz9sW7;
-        Mon, 28 Jun 2021 09:43:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624837419;
-        bh=OHpdAbTQLet7qOxWfN8qjTyOIqguqvCQBStulRo/pXE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kfj2zGAalXTsTuSe1HmlQ4TYQwnb3oiChN8zV8y0gzwUldZ60CUzTJBjyfsmK5vLd
-         qBl0kD0V/yV0e6Qv41sXotFPlKDjYFwI/mvnjFG64vamJgy0OndFRGRV/NxbfdhSnC
-         CkGHRsDYwbULDwut4PoCOIu05XfLmyhFrfuwR+T+z+lirq9uYk2rL0CFXtHiO6b7ko
-         t3+8Oarg7whqcZIN22ebCXlut3UKPAzDzP0ZqGvQEe1ZpFNp09cH/2fpjHSBdLrKit
-         cz5rtffRZo9tBQ30kyz0AeYuOrPgu4mLo4Kwga0w52al4JPmqUxuNfXGhlVPTTMPrG
-         RfOnDVjYypD1g==
-Date:   Mon, 28 Jun 2021 09:43:29 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Marshall <hubcap@omnibond.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the orangefs tree
-Message-ID: <20210628094329.56de86cb@canb.auug.org.au>
+        id S231508AbhF0Xqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 19:46:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1950E619BE;
+        Sun, 27 Jun 2021 23:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624837446;
+        bh=5VsR+0w8pl5LW2dTD4q+zkdKeWHhj2NNR2zU1t1Sq40=;
+        h=In-Reply-To:References:Subject:From:To:Date:From;
+        b=c+K4wAO5W/AOWCAGdDJbk1Eah4xXrDKoM8Y/VoJgWEPL6u/UPLgqGcTwsKdbeqOrj
+         d0uOpVEGKGHoAYWTuWYjxh262DXItr/mDNWvDBpkSZ7uqZTkTlLLH/ztk1R4oL/aq7
+         khU1/H7fRjBM2sSU0ezTdZ7eHaprd+d1dZ3AMcBriB0Bv99CafCwRVqXeUpDBmYvzM
+         69koO2Af1TsgwUrTeJTR+yBVkQbnz/k6IcT+LDYceMAsc5u1p3b8OIEgUEAr28WU4Y
+         WKSxmVph/eiIAgXsGYYMg2A2HPmlMf/aOGFp0/mbb5/gqDCnkhFhqX4ovncLYbGWJN
+         FHoKlSQRGnoAQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2Wf+LRNEMqK3Ab+g8mvEfw3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
+References: <20210617082759.1008-1-thunder.leizhen@huawei.com> <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com> <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
+Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Leizhen (ThunderTown) <thunder.leizhen@huawei.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Date:   Sun, 27 Jun 2021 16:44:04 -0700
+Message-ID: <162483744494.3259633.12565750309559171999@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2Wf+LRNEMqK3Ab+g8mvEfw3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Quoting Leizhen (ThunderTown) (2021-06-25 18:32:46)
+>=20
+>=20
+> On 2021/6/26 7:31, Stephen Boyd wrote:
+> > Quoting Zhen Lei (2021-06-17 01:27:59)
+> >> When krealloc() fails to expand the memory and returns NULL, the origi=
+nal
+> >> memory is not released. In this case, the original "timings" scale sho=
+uld
+> >> be maintained.
+> >>
+> >> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> ---
+> >=20
+> > Looks correct, but when does krealloc() return NULL? My read of the
+> > kerneldoc is that it would return the original memory if the new
+> > allocation "failed".
+>=20
+> That must be the wrong description in the document. For example, the orig=
+inal
 
-Hi all,
-
-After merging the orangefs tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
-
-fs/orangefs/inode.c: In function 'orangefs_readahead':
-fs/orangefs/inode.c:252:15: warning: unused variable 'file' [-Wunused-varia=
-ble]
-  252 |  struct file *file =3D rac->file;
-      |               ^~~~
-
-Introduced by commit
-
-  030bd4f13d75 ("orangefs: readahead adjustment")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2Wf+LRNEMqK3Ab+g8mvEfw3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDZDSEACgkQAVBC80lX
-0Gxbqwf/T+9YP4eIaK1ao0yJIoQytRP27DadMjmkYLiWypvnOAFL2QQFmaSuZtex
-FBGucp8UtiVYMvOQOkEFv0xgF9H9L+j1c03szVQV/BsRwh7SQKeW/gXegsIRapFp
-iWdBPzTUmas6fBiDdGpGBbg+zW7r9/O9/BazsH4YiDW51mdebZN+N+53bVWbq7xI
-aMeExYm4L/svRZ3B6CjBotta9cphhw+N+gcf3QlMsmbQ/qLxTG1qychHQdBvAGjc
-CWQkNbBWiQH7kiqym13qfrgoTohGFOWGe9I1RpO2abta+TMaB3o6vzMdZQU1AADp
-+h8oYaAjyNW5C3NURwzPq30ug7wQdg==
-=9dJ9
------END PGP SIGNATURE-----
-
---Sig_/2Wf+LRNEMqK3Ab+g8mvEfw3--
+Can you fix the kernel doc then?
