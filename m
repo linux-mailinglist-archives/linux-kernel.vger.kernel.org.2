@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4573B55E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 01:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27513B55EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 01:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhF0Xqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 19:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
+        id S231718AbhF0Xsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 19:48:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231508AbhF0Xqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 19:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1950E619BE;
-        Sun, 27 Jun 2021 23:44:06 +0000 (UTC)
+        id S231508AbhF0Xsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 19:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED7960FEF;
+        Sun, 27 Jun 2021 23:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624837446;
-        bh=5VsR+0w8pl5LW2dTD4q+zkdKeWHhj2NNR2zU1t1Sq40=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=c+K4wAO5W/AOWCAGdDJbk1Eah4xXrDKoM8Y/VoJgWEPL6u/UPLgqGcTwsKdbeqOrj
-         d0uOpVEGKGHoAYWTuWYjxh262DXItr/mDNWvDBpkSZ7uqZTkTlLLH/ztk1R4oL/aq7
-         khU1/H7fRjBM2sSU0ezTdZ7eHaprd+d1dZ3AMcBriB0Bv99CafCwRVqXeUpDBmYvzM
-         69koO2Af1TsgwUrTeJTR+yBVkQbnz/k6IcT+LDYceMAsc5u1p3b8OIEgUEAr28WU4Y
-         WKSxmVph/eiIAgXsGYYMg2A2HPmlMf/aOGFp0/mbb5/gqDCnkhFhqX4ovncLYbGWJN
-         FHoKlSQRGnoAQ==
+        s=k20201202; t=1624837577;
+        bh=+nT0mJER1hBQ1oFK+9lqRvtBnr1c3IDijt7DiiL+dgo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=tOYVv9a/dFAYjoIF9QmL8ELvSIaocp8NVF8LbXSnc+ZvWrXYhoQWBk4qRIobOMFFS
+         Lq4kYj3kSsoKHGmWkvG3yQxHpWeDpzsMNndM1IgX5Kj3hU+Lz2QoLsXMBE70f9Leax
+         c89fsL8ik0lh0SYaLencJiwMfc0hV8pJWiVyLTEACCwrqQ7ni4JVKjArVrQuJqiGba
+         onQJkJyfulPymd64pA4OYtayuO/CzO75ybVyvCbfGgyUzo94WbL59kLCnQjzIvOYxr
+         kIX88TX0LObzVe8JJvlhNqRChTtDX4fbiiQBzlMbzaR/InzeQPfEVwUBrgSi8QMpIN
+         5xwoG2xiM2skQ==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
-References: <20210617082759.1008-1-thunder.leizhen@huawei.com> <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com> <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
-Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
+In-Reply-To: <1624449471-9984-1-git-send-email-tdas@codeaurora.org>
+References: <1624449471-9984-1-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v2] clk: qcom: gcc: Add support for a new frequency for SC7280
 From:   Stephen Boyd <sboyd@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Leizhen (ThunderTown) <thunder.leizhen@huawei.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Date:   Sun, 27 Jun 2021 16:44:04 -0700
-Message-ID: <162483744494.3259633.12565750309559171999@swboyd.mtv.corp.google.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Sun, 27 Jun 2021 16:46:16 -0700
+Message-ID: <162483757601.3259633.7788849421892603556@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Leizhen (ThunderTown) (2021-06-25 18:32:46)
+Quoting Taniya Das (2021-06-23 04:57:51)
+> There is a requirement to support 52MHz for qup clocks for bluetooth
+> usecase, thus update the frequency table to support the frequency.
 >=20
->=20
-> On 2021/6/26 7:31, Stephen Boyd wrote:
-> > Quoting Zhen Lei (2021-06-17 01:27:59)
-> >> When krealloc() fails to expand the memory and returns NULL, the origi=
-nal
-> >> memory is not released. In this case, the original "timings" scale sho=
-uld
-> >> be maintained.
-> >>
-> >> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >=20
-> > Looks correct, but when does krealloc() return NULL? My read of the
-> > kerneldoc is that it would return the original memory if the new
-> > allocation "failed".
->=20
-> That must be the wrong description in the document. For example, the orig=
-inal
+> Fixes: a3cc092196ef ("clk: qcom: Add Global Clock controller (GCC) driver=
+ for SC7280")
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+> ---
 
-Can you fix the kernel doc then?
+Applied to clk-next
