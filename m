@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CAB3B5269
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A8C3B526B
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhF0HbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 03:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhF0HbF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 03:31:05 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE22C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 00:28:42 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bb20so8029099pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 00:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=90yc8ERBtTGvPRz+l3K+T9KPtKwKwwOE79jyoGwACLc=;
-        b=qhQwcD0jq6KPfdwgNsS3f8raiI8bp5JiBC4OeCk3auMe7COx6IJCMaCXEZV2pxFh6M
-         7uH1SbWP6tmn1l7i3m+mmyaTEjhM/007qFf/KuoUTu5TnBahTPNwceeZu+jqV4iKCxjF
-         zvnUWdX/1TdBwx+lWx0Bbkz8kj7ZjDjVcuRG9qHhJTEWcOqrwxDHbqFsK9mFniRqTcWf
-         FBB1LRukgK+S3393eoFO9VFnT8YBHTwYIXUv9KLX4n/RphwzywowAPNrq3EF9WdcdZYK
-         R4gScqKnxwnLn5oqc/AzFFuGzLDBvhueCjcHlhwvD+FiN7BV6kIeoJXRgC3JA4ya0p1b
-         SAow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=90yc8ERBtTGvPRz+l3K+T9KPtKwKwwOE79jyoGwACLc=;
-        b=YOjYLg8OguYbQB92JC3oqnmlMHhDHnSkusYQjRxH43JqwapBeBVWxbY9SSToAXJIgR
-         EK9AaBXyO+YMVzPt/7O7Xspg2TJthe085BfoqfsfMzaXufNPYKADkBcFtWE8Vi3QFGUe
-         qnPUn4g+3JRcYlBWa7b0fnRlWDPjxOwNZEiy0Gw/ua95alnheYDzMLXi4CMHyUFcLPpW
-         V70wWe7QNRZuGvAHwn5wMU/UHIh8MxVfTYifg54w1i2fAgCPwXpY+0qw/oXt6j39CtNE
-         qONQa+E/pyOCtRRYnNlwMWbi5a3+iB5z9m0AtgVp3+iZu8pgebBtgeG99zsn67eRD+3+
-         dMcA==
-X-Gm-Message-State: AOAM532GtXcsTAiykY5rsf6mOwm8DEa8K5vlM5qxo43poWw61p8hkYD/
-        YSq0KARfasVCff96nw6lyEidxOsBOnrv3w==
-X-Google-Smtp-Source: ABdhPJxYvGV45vVGzx3xGajiq6RBM4rR8/9x1i06MoIokZHUvtKOlTc/a+zu2vd6eGyJnh6evvbWWA==
-X-Received: by 2002:a17:90a:2f41:: with SMTP id s59mr21260336pjd.19.1624778921142;
-        Sun, 27 Jun 2021 00:28:41 -0700 (PDT)
-Received: from anisinha-lenovo.ba.nuagenetworks.net ([115.96.154.39])
-        by smtp.googlemail.com with ESMTPSA id l10sm15678496pjg.26.2021.06.27.00.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 00:28:40 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-To:     linux-kernel@vger.kernel.org
-Cc:     anirban.sinha@nokia.com, tglx@linutronix.de,
-        Ani Sinha <ani@anisinha.ca>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v1] Add info log when user enables NOHZ in commandline but NOHZ is not possible
-Date:   Sun, 27 Jun 2021 12:58:33 +0530
-Message-Id: <20210627072833.2199463-1-ani@anisinha.ca>
-X-Mailer: git-send-email 2.25.1
+        id S230093AbhF0Hd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 03:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhF0Hd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 03:33:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1161161C17;
+        Sun, 27 Jun 2021 07:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624779063;
+        bh=q511T8tgjpycuiF9Uy6fhTCaiui1eZRwQqAaYLuYPHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DTi7MMqm994FZasb0KBvnViTAYDjvgalW3uQMP37UhaxINo+drUsz7i13KxO2koA/
+         Z+FnoTWBwkeuEdeCtizvZjTpUAaOW71xbf3EAYrQuPA3jFwCZuK/6FWvEfd4MgPTsn
+         x/bVvkdP7gAhEbE5Aagkfy3AaRhbApzU6Fm5F9oKuMu5nyPT0Q3e2lbk4B/k661HH9
+         8Sht+f5uLw+A/98pmSgdssMxBV7YllkjcjOibmy3c/i1X5BbADXd6R2yWMezhs+KsN
+         jyYrjApk5YlGtmfjpu6xcX4tbAiQmcqQQUU9xyzgvlsK/UdOjP8RHHTdCHdVjL7TLu
+         T6AdM87DvAfwQ==
+Date:   Sun, 27 Jun 2021 10:30:59 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Honggang LI <honli@redhat.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YNgpM+007Sm/SWhw@unreal>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <9c5b7ae5-8578-3008-5e78-02e77e121cda@nvidia.com>
+ <YNQoY7MRdYMNAUPg@unreal>
+ <1ef0ac51-4c7d-d79d-cb30-2e219f74c8c1@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ef0ac51-4c7d-d79d-cb30-2e219f74c8c1@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 4f49b90abb4aca ("sched-clock: Migrate to use new tick
-dependency mask model") had also removed the kernel warning
-message informing the user that it was not possible to turn
-on NO_HZ_FULL. This warning was added in commit e12d0271774fe
-("nohz: Warn if the machine can not perform nohz_full") in order
-to warn users when they enabled NOHZ using the kernel commandline
-but kernel could not enable NOHZ. Removal of this log defeats this
-purpose because we still do not want users thinking that they are
-getting the benefit of nohz when their machine can not support it.
-Hence this patch brings back the information log.
+On Thu, Jun 24, 2021 at 10:39:16AM +0300, Max Gurtovoy wrote:
+> 
+> On 6/24/2021 9:38 AM, Leon Romanovsky wrote:
+> > On Thu, Jun 24, 2021 at 02:06:46AM +0300, Max Gurtovoy wrote:
+> > > On 6/9/2021 2:05 PM, Leon Romanovsky wrote:
+> > > > From: Avihai Horon <avihaih@nvidia.com>
+> > > > 
+> > > > Relaxed Ordering is a capability that can only benefit users that support
+> > > > it. All kernel ULPs should support Relaxed Ordering, as they are designed
+> > > > to read data only after observing the CQE and use the DMA API correctly.
+> > > > 
+> > > > Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
+> > > > 
+> > > > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > ---
+> > > > Changelog:
+> > > > v2:
+> > > >    * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
+> > > >      eth side of mlx5 driver.
+> > > > v1: https://lore.kernel.org/lkml/cover.1621505111.git.leonro@nvidia.com
+> > > >    * Enabled by default RO in IB/core instead of changing all users
+> > > > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
+> > > > ---
+> > > >    drivers/infiniband/hw/mlx5/mr.c | 10 ++++++----
+> > > >    drivers/infiniband/hw/mlx5/wr.c |  5 ++++-
+> > > >    2 files changed, 10 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> > > > index 3363cde85b14..2182e76ae734 100644
+> > > > --- a/drivers/infiniband/hw/mlx5/mr.c
+> > > > +++ b/drivers/infiniband/hw/mlx5/mr.c
+> > > > @@ -69,6 +69,7 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> > > >    					  struct ib_pd *pd)
+> > > >    {
+> > > >    	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> > > > +	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
+> > > >    	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+> > > >    	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+> > > > @@ -78,10 +79,10 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+> > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_write,
+> > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
+> > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+> > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+> > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_read,
+> > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
+> > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+> > > Jason,
+> > > 
+> > > If it's still possible to add small change, it will be nice to avoid
+> > > calculating "acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled" twice.
+> > The patch is part of for-next now, so feel free to send followup patch.
+> > 
+> > Thanks
+> > 
+> > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> > index c1e70c99b70c..c4f246c90c4d 100644
+> > --- a/drivers/infiniband/hw/mlx5/mr.c
+> > +++ b/drivers/infiniband/hw/mlx5/mr.c
+> > @@ -69,7 +69,8 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> >                                            struct ib_pd *pd)
+> >   {
+> >          struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> > -       bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
+> > +       bool ro_pci_enabled = acc & IB_ACCESS_RELAXED_ORDERING &&
+> > +                             pcie_relaxed_ordering_enabled(dev->mdev->pdev);
+> > 
+> >          MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+> >          MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+> > @@ -78,11 +79,9 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> >          MLX5_SET(mkc, mkc, lr, 1);
+> > 
+> >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+> > -               MLX5_SET(mkc, mkc, relaxed_ordering_write,
+> > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
+> > +               MLX5_SET(mkc, mkc, relaxed_ordering_write, ro_pci_enabled);
+> >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+> > -               MLX5_SET(mkc, mkc, relaxed_ordering_read,
+> > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
+> > +               MLX5_SET(mkc, mkc, relaxed_ordering_read, ro_pci_enabled);
+> > 
+> >          MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+> >          MLX5_SET(mkc, mkc, qpn, 0xffffff);
+> > (END)
+> > 
+> Yes this looks good.
+> 
+> Can you/Avihai create a patch from this ? or I'll do it ?
 
-If at some point the conditions that prevented NOHZ from being
-enabled goes away and the previous info log was printed, we print
-another log informing the user that NOHZ was again possible.
+Feel free to send it directly.
 
-Signed-off-by: Ani Sinha <ani@anisinha.ca>
----
- kernel/time/tick-sched.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+Thanks
 
-See also thread: https://lkml.org/lkml/2021/6/20/32
-
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 828b091501ca..fbef95b57b1d 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -930,6 +930,7 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
- {
- #ifdef CONFIG_NO_HZ_FULL
- 	int cpu = smp_processor_id();
-+	static bool no_tick_warned;
- 
- 	if (!tick_nohz_full_cpu(cpu))
- 		return;
-@@ -937,10 +938,24 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
- 	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
- 		return;
- 
--	if (can_stop_full_tick(cpu, ts))
-+	if (can_stop_full_tick(cpu, ts)) {
- 		tick_nohz_stop_sched_tick(ts, cpu);
--	else if (ts->tick_stopped)
--		tick_nohz_restart_sched_tick(ts, ktime_get());
-+		if (no_tick_warned) {
-+			pr_info("NO_HZ_FULL is now enabled in the system.\n");
-+			no_tick_warned = false;
-+		}
-+	} else {
-+		/*
-+		 * Don't allow the user to think they can get
-+		 * full NO_HZ with this machine.
-+		 */
-+		if (!no_tick_warned && tick_nohz_full_running) {
-+			pr_info("NO_HZ_FULL has been disabled in the system.");
-+			no_tick_warned = true;
-+		}
-+		if (ts->tick_stopped)
-+			tick_nohz_restart_sched_tick(ts, ktime_get());
-+	}
- #endif
- }
- 
--- 
-2.25.1
-
+> 
+> 
+> > > 
