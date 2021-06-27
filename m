@@ -2,138 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B693B5507
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 21:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60FC3B551A
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 22:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhF0TtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 15:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        id S231569AbhF0UJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 16:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhF0TtG (ORCPT
+        with ESMTP id S231468AbhF0UJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 15:49:06 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4460FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 12:46:42 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id p10-20020a05600c430ab02901df57d735f7so12128488wme.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 12:46:42 -0700 (PDT)
+        Sun, 27 Jun 2021 16:09:47 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7248CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 13:07:21 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id yy20so17808100ejb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 13:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DAErNgS/j8DCnY2ERck8XX1Z4inkZWw1VYk+KrVuhjw=;
-        b=d3IvLBXijKA9l46yQ/gF3Sl1dZ7mbgqFHBwnWpWr0Ym1mERWL/B66G89f8LmQSiiT2
-         K/qvUkVswZ1mIdDkAKfDo21D1T64OGmQAneu160iTTLF9eBUEYDfnlU7nlxmtZjsMfqz
-         cGoRO4sYs9ltL4MPR1ImZ5SxlHJbesXhhb+tcdQAgK1XPS+SM7yv+ptRaMEg/+Cb5IWo
-         75Ulw3Sn9OmM8hrx3jHbKwm+z2pxtTw+VZFbnOkdjotJsXkSMr3P3ohzgJKcwx75S0Hh
-         DFVL8d19ZdAMSPMotGz50prA4xdu5F235mEdABJfa3Ql0F7iZk+CUhRdoV+E8SLWhFOV
-         i7OQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4GZy7C/9sgJCYlkJRGJmqppC27IF56G6yPi0fir+u+U=;
+        b=de4EKYnhin6OAMnO4NukNewMbCn4Zn1bjZgwVULo2pw+OtuWKDioNaQhBcWfz8B6cl
+         oycpWnt9HXe1QFrQq64XdbXJzCoUK3FQeGs9srdADy379zwTm+DqZRwoGpcnAfewgdL5
+         gTdfcnqTAkI3Zg82deaEmUuV0dbKEcf7mydBk02Cj4C/044Q1OhbaZMFJ4vclbT4LBNA
+         y8iQn2mFj2Jvf26lrUhkSL/zS6WLpwvtCkfCvqI/0pwVU5b5lvPTSyFcIWqbChg0l8wp
+         mqokW+gvWBt7e3CjvhgjWR6UrLn4bwXZ5E99FuwMZTWVjoVcBRNrNqQLAii68EyCyh8Z
+         6qEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DAErNgS/j8DCnY2ERck8XX1Z4inkZWw1VYk+KrVuhjw=;
-        b=fDuxWHjanIh9pDE6oIkkzSfncnheZMhkm7/fsj51u5sYMpFK9WvyZ1OJQ2M9EFGUL8
-         U5WcKXLvHW/TvJe27UELypgDnIrGPVCSB0i91ylIPiUuCaq7Vg80lzh2Viz6AHIcW3Kn
-         zg5BniqtolyDIyVpgyd6B82O3jSciz1ottv/XwR7kHhvDxm13qewYsL663Lr8JLbWu8v
-         FWNHCr6QqcLCMl/CPnEvVl1tXhPQxr4gH9sheWgq+QZ17eDJTXowK2VPOdzMsaf50MsD
-         7ugPE43bke12ZpnZikdIANNLFJIF7kOhOa2VMjNiy6VJIRddYHa0dD2Swh9h/QAE7Th6
-         wzMA==
-X-Gm-Message-State: AOAM532zertTrldODdCqsBKxMJVBOGMJXc9TVWLrZfpTq2d0mvV8bxfz
-        SOTLmc9WDcW49TSUNKCA9FVqY81hUOc=
-X-Google-Smtp-Source: ABdhPJxRN2p0uVsep9uFsS1xMSmExZeXxLSkk0jSME26BDXwBp/th5Be0d6L+/yjmnRb05ilkTMgjQ==
-X-Received: by 2002:a05:600c:a45:: with SMTP id c5mr23077064wmq.153.1624823200906;
-        Sun, 27 Jun 2021 12:46:40 -0700 (PDT)
-Received: from [10.8.0.150] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id g17sm7466428wrw.31.2021.06.27.12.46.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 12:46:40 -0700 (PDT)
-Subject: Re: [RFC] strcpys(): New function for copying strings safely
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-To:     glibc <libc-alpha@sourceware.org>
-Cc:     tech@openbsd.org, Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <755875ec-baae-6cab-52a8-3c9530db1ce6@gmail.com>
-Message-ID: <38428d5e-ead2-bf18-e198-cecd4caeb3e7@gmail.com>
-Date:   Sun, 27 Jun 2021 21:46:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4GZy7C/9sgJCYlkJRGJmqppC27IF56G6yPi0fir+u+U=;
+        b=IGxAaC2Cn8OSItH8FR3ep/vOpPlP99pEXzfDiA4UKaSSIW2o1lSEDwwJqC4cH69ppN
+         IgvQ5NvWEKwpWbrpsGIWTPs83MvDIDlNXWCa9nUQoGNNSxacz27Zw/cJeqqRObtGLkl+
+         5G7g/xgUIRiVUF1khjW0OeJqDmyIdNG8/722BKc5x2Adlg72thBTmGhysUzRBLSY1SEn
+         rGpyKGXY80LNv6MlrI+o7qC+V/KrWYeOfbf/wME0yw7SApcglqqfq6fRqyTlUnNVK1cK
+         o4m0SR1kqw3YUcRCxqxVsrx2P6SPtYSgegVh2BS+44DUbzlX68coGgjRV4iKuIm1ivDN
+         ZoEg==
+X-Gm-Message-State: AOAM5307dG2NywwmMYlRKe4M6MMZIE1zBqaWiUuL34mRivg1HNMFQFH+
+        VuPASBh7Ua1A+Kh+qDwy5+UbKU8SUDNQ2vAfblA=
+X-Google-Smtp-Source: ABdhPJz3tOQ8PoogIkkWY4d9SpFZHJZzPxU5NFlcG/A9Se/KywrauH1fHDuTX8VG/enLAVqFiT0qZLkI6kfBd0EyAuo=
+X-Received: by 2002:a17:907:1dd9:: with SMTP id og25mr20771185ejc.108.1624824440004;
+ Sun, 27 Jun 2021 13:07:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <755875ec-baae-6cab-52a8-3c9530db1ce6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-7-linux.amoon@gmail.com>
+ <CAFBinCCE+6G7QtDoxfbcZVVRf-MDX-epSo=_k_PJZgWX+_Whvg@mail.gmail.com>
+ <CANAwSgRqixugUr-t2OheLBVwD=EOkaLqxnGkT-Bx=p_A4Nyr8Q@mail.gmail.com>
+ <CAFBinCALsnpbJGEb4LBLd_jy3E8fOZAQaacz-P7ijfkeyYg2dA@mail.gmail.com>
+ <CANAwSgRABOyWYJPrrw64Wa6j2D94T4tybn7MHGCTbBowt7UncA@mail.gmail.com>
+ <CAFBinCD91eYNXSqnmDKoAvJHWqqRbXVjnaq9RuRNCnip9kKqkw@mail.gmail.com> <CANAwSgRzY+699aSS9MVGAJYVR6_0Ni75JPhO9=LKunHQK0p=oA@mail.gmail.com>
+In-Reply-To: <CANAwSgRzY+699aSS9MVGAJYVR6_0Ni75JPhO9=LKunHQK0p=oA@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Mon, 28 Jun 2021 01:37:08 +0530
+Message-ID: <CANAwSgQktfn9Q=PJhx5Uq0UQ2dHqJwjKu1RWyb2k=-dA9=+BSQ@mail.gmail.com>
+Subject: Re: [RFCv1 6/8] phy: amlogic: meson8b-usb2: Use phy reset callback function
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/27/21 9:26 PM, Alejandro Colomar (man-pages) wrote:
-> 
-> It is designed so that usage requires the minimum number of lines of 
-> code for complete usage (including error handling checks):
-> 
-> [[
-> // When we already checked that 'size' is >= 1
-> // and truncation is not an issue:
-> 
-> strcpys_np(size, dest, src, NULL);
+Hi Martin,
 
-Also, given how unlikely this case is, I have in my code:
-`[[gnu::warn_unused_result]]`
+On Thu, 24 Jun 2021 at 20:24, Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> Hi Martin,
+>
+> On Wed, 23 Jun 2021 at 01:42, Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> >
+> > Hi Anand,
+> >
+> > On Mon, Jun 21, 2021 at 9:16 AM Anand Moon <linux.amoon@gmail.com> wrote:
+> > [...]
+> > > Ok Thanks for the inputs. got your point.
+> > >
+> > > I was also looking into Amlogic source code for reset. (aml_cbus_update_bits)
+> > > [0] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/drivers/amlogic/usb/phy/phy-aml-new-usb.c
+> > > is there some feature to iomap the USB with cbus?
+> > for that specific code: that's what we do inside drivers/reset/reset-meson.c
+> > Amlogic's vendor kernel uses an increment of 4 bytes per value, so
+> > 0x1102 translates to 0x4408
+> >
+> > then in mainline's meson8b.dtsi we have:
+> >     compatible = "amlogic,meson8b-reset";
+> >     reg = <0x4404 0x9c>;
+> > as you can see 0x4408 is part of the reset controller node.
+> >
+> > next in include/dt-bindings/reset/amlogic,meson8b-reset.h we have:
+> >     #define RESET_USB_OTG                 34
+> >
+> > the register used for reset line 34 is translated using:
+> >     0x4404 (first register) + 4 (4 * reset line / 32 = 1) = 0x4408
+> > then the bit inside this register is translated using:
+> >     reset line % 32 = 2
+> >
+> > that's how we express aml_cbus_update_bits(0x1102, 0x1<<2, 0x1<<2); in
+> > the mainline kernel (by going through the reset subsystem)
+> >
+>
+> Thank you very much for clearing my long-standing doubt on *reset
+> logic* on Amlogic SoC.
+>
+> > [...]
+> > > > > > > -       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+> > > > > > > +       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
+> > > > > > I think this breaks compatibility with existing .dtbs and our
+> > > > > > dt-bindings (as we're not documenting a "reset-names" property).
+> > > > > > What is the goal of this one?
+> > > > > >
+> > > > >
+> > > > > OK, If we pass NULL over here there is the possibility
+> > > > > USB phy will not get registered.
+> > > > I don't understand why - with NULL everything is working fine for me.
+> > > > Also no matter which name you give to the reset line (in reset-names),
+> > > > it will be the same reset line in all cases. If it's the same reset
+> > > > line before and after: why is this needed?
+> > > >
+> > > I need to investigate this reset feature. With my setup with current changes
+> > > after I update the below.
+> > > -       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
+> > > +       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
+> > >         if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
+> > >                 return PTR_ERR(priv->reset);
+> > >
+> > > Reset will break the USB initialization, see below output.
+> > interesting, I have not seen that USB problem before and neither is
+> > Kernel CI seeing it: [0]
+> > Is it only happening with this patch or did you also see it before?
+> >
+> Yes, it could happen with this patch but It could be also linked to
+> reorder the phy configuration.
+> See below logs, when core reset fails on USB PHY no USB is getting registered.
+>
+> [    1.267620] dwc2 c9040000.usb: mapped PA c9040000 to VA (ptrval)
+> [    1.267768] dwc2 c9040000.usb: Looking up vusb_d-supply from device tree
+> [    1.267783] dwc2 c9040000.usb: Looking up vusb_d-supply property in
+> node /soc/usb@c9040000 failed
+> [    1.267814] dwc2 c9040000.usb: supply vusb_d not found, using dummy regulator
+> [    1.267940] dwc2 c9040000.usb: Looking up vusb_a-supply from device tree
+> [    1.267954] dwc2 c9040000.usb: Looking up vusb_a-supply property in
+> node /soc/usb@c9040000 failed
+> [    1.267975] dwc2 c9040000.usb: supply vusb_a not found, using dummy regulator
+> [    1.268037] dwc2 c9040000.usb: registering common handler for irq35
+> [    1.268090] dwc2 c9040000.usb: Looking up vbus-supply from device tree
+> [    1.268102] dwc2 c9040000.usb: Looking up vbus-supply property in
+> node /soc/usb@c9040000 failed
+> [    1.269267] dwc2 c9040000.usb: Core Release: 3.10a (snpsid=4f54310a)
+> [    1.273185] dwc2 c9040000.usb: dwc2_core_reset: HANG! Soft Reset
+> timeout GRSTCTL_CSFTRST
+> [    1.273510] dwc2: probe of c9040000.usb failed with error -16
+> [    1.275474] dwc2 c90c0000.usb: mapped PA c90c0000 to VA (ptrval)
+> [    1.275603] dwc2 c90c0000.usb: Looking up vusb_d-supply from device tree
+> [    1.275617] dwc2 c90c0000.usb: Looking up vusb_d-supply property in
+> node /soc/usb@c90c0000 failed
+> [    1.275646] dwc2 c90c0000.usb: supply vusb_d not found, using dummy regulator
+> [    1.275784] dwc2 c90c0000.usb: Looking up vusb_a-supply from device tree
+> [    1.275798] dwc2 c90c0000.usb: Looking up vusb_a-supply property in
+> node /soc/usb@c90c0000 failed
+> [    1.275819] dwc2 c90c0000.usb: supply vusb_a not found, using dummy regulator
+> [    1.275877] dwc2 c90c0000.usb: registering common handler for irq36
+> [    1.275930] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
+> [    1.275942] dwc2 c90c0000.usb: Looking up vbus-supply property in
+> node /soc/usb@c90c0000 failed
+> [    1.277125] dwc2 c90c0000.usb: Core Release: 3.10a (snpsid=4f54310a)
+> [    1.281042] dwc2 c90c0000.usb: dwc2_core_reset: HANG! Soft Reset
+> timeout GRSTCTL_CSFTRST
+ > [    1.281353] dwc2: probe of c90c0000.usb failed with error -16
+ >
 
-I forgot to talk about it in the definition I sent.  I would put that 
-attribute in the glibc definition, if this is added to glibc.
+Sorry for the delay.
+We could switch the reset logic to
+*devm_reset_control_get_optional_exclusive* as below
+to fix the reset line, since both the dwc2 c90c0000.usb and c9040000.usb
+will have their own context to reset control register, it means the
+reset line is not share
+between two USB PHY nodes.
 
-To ignore it, a simple cast of the result to `(void)` should be enough 
-(or a more complex macro, like `UNUSED(strcpys_np(...));`).
-> 
-> [[
-> 
-> #include <string.h>
-> #include <sys/types.h>
-> 
-> 
-> [[gnu::nonnull]]
-> ssize_t strscpy_np(ssize_t size,
->                     char dest[static restrict size],
->                     const char src[static restrict size])
-> {
->      ssize_t len;
-> 
->      if (size <= 0)
->          return -1;
-> 
->      len = strnlen(src, size - 1);
->      memcpy(dest, src, len);
->      dest[len] = '\0';
-> 
->      return len;
-> }
-> 
-> [[gnu::nonnull(2, 3)]]
-[[gnu::warn_unused_result]]
-> int strcpys_np(ssize_t size,
->                 char dest[static restrict size],
->                 const char src[static restrict size],
->                 ssize_t *restrict len)
-> {
->      ssize_t l;
-> 
->      l = strscpy_np(size, dest, src);
->      if (len)
->          *len = l;
-> 
->      if (l == -1)
->          return -1;
->      if (l >= size)
->          return 1;
->      return 0;
-> }
-> 
-> ]]
+-       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
++       priv->reset = devm_reset_control_get_optional_exclusive(&pdev->dev,
++                                                               "reset");
 
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+> >
+> > Best regards,
+> > Martin
+> >
+> >
+> > [0] https://storage.staging.kernelci.org/next/master/next-20210617/arm/multi_v7_defconfig+ltp-ima/gcc-8/lab-baylibre/baseline-meson8b-odroidc1.html
+
+Thanks
+-Anand
