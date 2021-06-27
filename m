@@ -2,125 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE32D3B5463
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 18:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9603B546F
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 18:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhF0Ql7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 12:41:59 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:37949 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230315AbhF0Ql6 (ORCPT
+        id S231248AbhF0Qty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 12:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229820AbhF0Qtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 12:41:58 -0400
-Received: (qmail 629122 invoked by uid 1000); 27 Jun 2021 12:39:33 -0400
-Date:   Sun, 27 Jun 2021 12:39:33 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "i.kononenko" <i.kononenko@yadro.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] usb:gadget:mass-storage: Improve the signature of
- SCSI handler function
-Message-ID: <20210627163933.GA628603@rowland.harvard.edu>
-References: <20210626211820.107310-1-i.kononenko@yadro.com>
- <20210626211820.107310-2-i.kononenko@yadro.com>
- <20210627141836.GC624763@rowland.harvard.edu>
- <ded6e647-6dd9-ebd0-0ea5-b20e113bf57f@yadro.com>
+        Sun, 27 Jun 2021 12:49:53 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA11C061574;
+        Sun, 27 Jun 2021 09:47:28 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d5so11718325qtd.5;
+        Sun, 27 Jun 2021 09:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IGinKwiNSfxrJd+RUlITcVgWE2FaXzN4ff0xutRXDaU=;
+        b=DeEb2ecHoc+9I/oFeMO1TfS4y4+YwjybIHliznobdI/nxpUlDavt/JLpost/dY8G3R
+         8cJOtmQqUlYDxeTfYaNQ1/1g1TYrdNZ/A32GllgnS0hha2/HadzrYR0ZR/tRkdZpbxH8
+         IzXE19/om+0BCtDEh+5G/TinS7EBlwCBx9XnhCN27I7baiLvgEtBOZ5RxX86Pt8qGGrL
+         ti6MAYW24ozYHGBBcO1pRe0GOzYwFWDEmrfrVRXyBEeul012dxIt8kEK88EQW2k3Go1b
+         IUG+ysf0WhcqHZpAScjamKwVwTjwtbeNNXEkL9mP8x8n8wShaIzm/RqO9jBhmSlRJ8kA
+         7pag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IGinKwiNSfxrJd+RUlITcVgWE2FaXzN4ff0xutRXDaU=;
+        b=e3LpLYkSR+04tXSLRo8Bpz1Yn61xqdA83l4ZT0YEwJhSm/q8FfM9A7b0x/4SW3Ld4X
+         DBXA2Lg8lrG/veUwANwu+zlMJzC8hBklgCb0Lzik0nMBM6avT9iYZIWtPJWtKjFt040n
+         Hllusz+IzsxzFXu79Ti5/VOPMDfsBZcVhM4+a3BnYeETFuYuJx07lTC/S0B4kfipTahl
+         mC10cELeMTDGwK2Pu4ELDaV0k65Oa6nvJ/Ch+fb3JLShsvPZLhYsBGhpWsgkgv00ntOz
+         T9+KwDdnvOQS5pWg5osfP7esASDaUVIPLl4KaxoYFhPn7RQCEGiChVW+sYendkRp4huF
+         aDgg==
+X-Gm-Message-State: AOAM531bUtiCWbCERNhrdnHiNJUFxHQt8lw9cRAoll+BqsWKtdx/cK5A
+        dq0xeGk1EcAdrHdl0Baw17k=
+X-Google-Smtp-Source: ABdhPJzXp6YlfGmAUiYHzOtD1PJTSLr3XCovAHLZvis1ouC9/p4U2/5jfgoQakO2n+2S85GDybfXYQ==
+X-Received: by 2002:a05:622a:11cd:: with SMTP id n13mr18281355qtk.233.1624812447049;
+        Sun, 27 Jun 2021 09:47:27 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id 202sm7563423qki.83.2021.06.27.09.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 09:47:26 -0700 (PDT)
+Date:   Sun, 27 Jun 2021 09:47:25 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 2/3] find: micro-optimize for_each_{set,clear}_bit()
+Message-ID: <YNirnaYw1GSxg1jK@yury-ThinkPad>
+References: <20210618195735.55933-1-yury.norov@gmail.com>
+ <20210618195735.55933-3-yury.norov@gmail.com>
+ <87bl81ddqo.wl-maz@kernel.org>
+ <YM4pJpNphEwvUF2F@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ded6e647-6dd9-ebd0-0ea5-b20e113bf57f@yadro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YM4pJpNphEwvUF2F@yury-ThinkPad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 06:32:03PM +0300, i.kononenko wrote:
-> Good morning, Alan!
-> 
-> First of all, thank you for your time to review my first patchset for 
-> the Linux Kernel and valuable advice on the right way of patchwriting!
-> 
-> On 27.06.2021 17:18, Alan Stern wrote:
-> > On Sun, Jun 27, 2021 at 12:18:14AM +0300, Igor Kononenko wrote:
-> >> SCSI command handlers currently have an ambiguous return value. This
+On Sat, Jun 19, 2021 at 10:28:07AM -0700, Yury Norov wrote:
+> On Sat, Jun 19, 2021 at 05:24:15PM +0100, Marc Zyngier wrote:
+> > On Fri, 18 Jun 2021 20:57:34 +0100,
+> > Yury Norov <yury.norov@gmail.com> wrote:
+> > > 
+> > > The macros iterate thru all set/clear bits in a bitmap. They search a
+> > > first bit using find_first_bit(), and the rest bits using find_next_bit().
+> > > 
+> > > Since find_next_bit() is called shortly after find_first_bit(), we can
+> > > save few lines of I-cache by not using find_first_bit().
 > > 
-> > (I dislike very much this way of writing patch descriptions.  Unless
-> > the reader has already looked at the email subject line and remembers
-> > that this patch affects the mass-storage gadget, he will think the
-> > sentence above is talking about command handlers in the SCSI core -- a
-> > completely different part of the kernel.  When writing patch
-> > descriptions, please do not assume that the reader already knows what
-> > the patch is about.)
+> > Really?
 > > 
-> >> return value may indicate the length of the data written to the response
-> >> buffer and the command's processing status. Thus, the understanding of
-> >> command handling may be implicit.
-> 
-> First of all, thank you for your time to review my first patchset for the
-> Linux Kernel and valuable advice on the right way of patchwriting!
-> 
-> I noticed that the status/datasize return value pattern is pervasive for 
-> Linux and used through many subsystems. But for the f_mass_storage.c,
-> such approach use case is not documented anywhere, and implementation has 
-> too many magic-constant, e.g.
-> ```
-> static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
-> {
->    ....
->    return 36;
-> }
-> ```
-> IMHO, this way is not giving the developer an explicit understanding of 
-> 'what is the 36' and its origin.
-> If moving to the suggested way is unwanted, I'd keep the implementation 
-> as is with additional documentation for each function where uses this 
-> approach.
-
-Since every one of the command handler functions uses this convention, 
-it would be wasteful to have separate documentation of the return value 
-for each function.  A single documentation comment that covers all the 
-command handlers would be acceptable.
-
-> Additionally, I guess, define clarify macros of return value instead of 
-> magic numbers is required.
-
-If you want, okay.  That should go in a separate patch from the 
-documentation patch.
-
-Also, since the return values are different for each command handler, I 
-suggest that the macro definitions be placed along with the handler 
-functions and not in a separate header file.  Having a separate file for 
-these macros would not make any sense, because the values do not need to 
-be shared across multiple functions or source files.
-
-> > The return value is _not_ ambiguous.  If the value is >= 0 then it is
-> > a data length, otherwise it is a status.  Yes, this is implicit, but it
-> > is a very common pattern used throughout the kernel and everyone
-> > understands it.
+> > > 
+> > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > > ---
+> > >  include/linux/find.h | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/include/linux/find.h b/include/linux/find.h
+> > > index 4500e8ab93e2..ae9ed52b52b8 100644
+> > > --- a/include/linux/find.h
+> > > +++ b/include/linux/find.h
+> > > @@ -280,7 +280,7 @@ unsigned long find_next_bit_le(const void *addr, unsigned
+> > >  #endif
+> > >  
+> > >  #define for_each_set_bit(bit, addr, size) \
+> > > -	for ((bit) = find_first_bit((addr), (size));		\
+> > > +	for ((bit) = find_next_bit((addr), (size), 0);		\
 > > 
-> >> After this patch, the output buffer's size will be set in the
-> >> 'data_size_to_handle' field of 'struct fsg_common', and the command
-> >> handler's return value indicates only the processing status.
-> > 
-> > What is the reason for making this change?  Does it fix any problems
-> > or prepare the way for any future patches?  It seems like this is
-> > completely unnecessary.
+> > On which architecture do you observe a gain? Only 32bit ARM and m68k
+> > implement their own version of find_first_bit(), and everyone else
+> > uses the canonical implementation:
 > 
-> Yes, the patch uses as part of the incoming implementation of refactoring
-> 'usb:gadget:mass-storage:scsi' command handling.
+> And those who enable GENERIC_FIND_FIRST_BIT - x86, arm64, arc, mips
+> and s390.
+> 
+> > #ifndef find_first_bit
+> > #define find_first_bit(addr, size) find_next_bit((addr), (size), 0)
+> > #endif
+> > 
+> > These architectures explicitly have different implementations for
+> > find_first_bit() and find_next_bit() because they can do better
+> > (whether that is true or not is another debate). I don't think you
+> > should remove this optimisation until it has been measured on these
+> > two architectures.
+> 
+> This patch is based on a series that enables separate implementation
+> of find_first_bit() for all architectures; according to my tests,
+> find_first* is ~ twice faster than find_next* on arm64 and x86.
+> 
+> https://lore.kernel.org/lkml/20210612123639.329047-1-yury.norov@gmail.com/T/#t
+> 
+> After applying the series, I noticed that my small kernel module that
+> calls for_each_set_bit() is now using find_first_bit() to just find
+> one bit, and find_next_bit() for all others. I think it's better to
+> always use find_next_bit() in this case to minimize the chance of
+> cache miss. But if it's not that obvious, I'll try to write some test.
 
-That incoming implementation uses the refactored command handling but 
-doesn't depend on the refactoring.  It could just as easily use the 
-existing command handling.
+This test measures the difference between for_each_set_bit() and
+for_each_set_bit_from().
 
-> I believed the suggested improvement would be useful for the community as 
-> an improvement of code.
+diff --git a/lib/find_bit_benchmark.c b/lib/find_bit_benchmark.c
+index 5637c5711db9..1f37e99090b0 100644
+--- a/lib/find_bit_benchmark.c
++++ b/lib/find_bit_benchmark.c
+@@ -111,6 +111,59 @@ static int __init test_find_next_and_bit(const void *bitmap,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_X86_64
++#define flush_cache_all() wbinvd()
++#endif
++
++static int __init test_for_each_set_bit(int flags)
++{
++#ifdef flush_cache_all
++	DECLARE_BITMAP(bm, BITS_PER_LONG * 2);
++	unsigned long i, cnt = 0;
++	ktime_t time;
++
++	bm[0] = 1; bm[1] = 0;
++
++	time = ktime_get();
++	while (cnt < 1000) {
++		if (flags)
++			flush_cache_all();
++		for_each_set_bit(i, bm, BITS_PER_LONG * 2)
++			cnt++;
++	}
++
++	time = ktime_get() - time;
++
++	pr_err("for_each_set_bit:   %18llu ns, %6ld iterations\n",  time, cnt);
++#endif
++	return 0;
++}
++
++static int __init test_for_each_set_bit_from(int flags)
++{
++#ifdef flush_cache_all
++	DECLARE_BITMAP(bm, BITS_PER_LONG * 2);
++	unsigned long i, cnt = 0;
++	ktime_t time;
++
++	bm[0] = 1; bm[1] = 0;
++
++	time = ktime_get();
++	while (cnt < 1000) {
++		if (flags)
++			flush_cache_all();
++		i = 0;
++		for_each_set_bit_from(i, bm, BITS_PER_LONG * 2)
++			cnt++;
++	}
++
++	time = ktime_get() - time;
++
++	pr_err("for_each_set_bit_from:%16llu ns, %6ld iterations\n", time, cnt);
++#endif
++	return 0;
++}
++
+ static int __init find_bit_test(void)
+ {
+ 	unsigned long nbits = BITMAP_LEN / SPARSE;
+@@ -147,6 +200,16 @@ static int __init find_bit_test(void)
+ 	test_find_first_bit(bitmap, BITMAP_LEN);
+ 	test_find_next_and_bit(bitmap, bitmap2, BITMAP_LEN);
+ 
++	pr_err("\nStart testing for_each_bit()\n");
++
++	test_for_each_set_bit(0);
++	test_for_each_set_bit_from(0);
++
++	pr_err("\nStart testing for_each_bit() with cash flushing\n");
++
++	test_for_each_set_bit(1);
++	test_for_each_set_bit_from(1);
++
+ 	/*
+ 	 * Everything is OK. Return error just to let user run benchmark
+ 	 * again without annoying rmmod.
 
-Unless you can provide a convincing reason for this change, it doesn't 
-seem like an improvement to me.  It's no easier to read or understand, 
-and it doesn't improve execution speed on a critical pathway.  It just 
-seems like pointless code churn.
+Here on each iteration: 
+ - for_each_set_bit() calls find_first_bit() once, and find_next_bit() once.
+ - for_each_set_bit_from() calls  find_next_bit() twice.
 
-Alan Stern
+On my AMD Ryzen 7 4700U, the result is like this:
+
+Start testing for_each_bit()
+for_each_set_bit:                15296 ns,   1000 iterations
+for_each_set_bit_from:           15225 ns,   1000 iterations
+
+Start testing for_each_bit() with cash flushing
+for_each_set_bit:               547626 ns,   1000 iterations
+for_each_set_bit_from:          497899 ns,   1000 iterations
+
+for_each_set_bit_from() is ~10% faster than for_each_set_bit() in
+case of cold caches, and no significant difference was observed if
+flush_cache_all() is not called.
+
+So, it looks reasonable to switch for_each_set_bit() to use
+find_next_bit() only.
+
+Thanks,
+Yury
