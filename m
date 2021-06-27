@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4ED3B50AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 02:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017643B50AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 02:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhF0AtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 20:49:09 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:36844 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhF0AtI (ORCPT
+        id S230367AbhF0Avu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 20:51:50 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:41930 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhF0Avt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 20:49:08 -0400
-Received: by mail-lj1-f181.google.com with SMTP id a16so18679682ljq.3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 17:46:44 -0700 (PDT)
+        Sat, 26 Jun 2021 20:51:49 -0400
+Received: by mail-lf1-f44.google.com with SMTP id j4so23989652lfc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 17:49:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kD/uNyJ/CzZaPM4W7/GAySoRafgefnn+ZSZ1SRftAJQ=;
-        b=cMdpCtG2Ybf2mL1NHZOfyWXGdKbLZJJXPOZFk3G91+0i7YHwbdnTOr3NspC6Oti7cn
-         7xtU7g+oeZ10fpSa5RpTL1ZHtLm5Aj4KMb3BvYSJ4g9toiTCIwv69uFo1ZZpbhgTeXpF
-         D8e3cOn2hf1IDbYGz/uLGP3Mr5+i4d+wTMhSqCD4CToaa6aP2gaR9Mtj1E9qSBxMFojH
-         xDADSpYxQDp0R8i+a9gxypwFKJ9QOo9NsiNCddtTIfZ0XfCbwyu93I/I+iwm05BnSALy
-         I5SzuCl0eLoebqTUbKHzyaxoZ293wJwOiLfSq4uc/gmZtjHxH+T544MQmfED0yY4CEdn
-         Suxw==
-X-Gm-Message-State: AOAM53298DxrQF0cMtD8Sn0Ez43b+SdXGMk3PSb7LLkrH7xmm2/hZ6zY
-        po3xM1aq2QsKZGs9xRBZOTVBF0hDWDzazEft+ZVQJHbYl6g=
-X-Google-Smtp-Source: ABdhPJy04Z1LvhkZCfBquWqEc7h1S38lA1cAH7xD4jHN32DPqb1qXZRTuVDeKVAiyruFiFT5oEQb1vtzrM/27eZ8qJA=
-X-Received: by 2002:a2e:9984:: with SMTP id w4mr13475690lji.393.1624754803255;
- Sat, 26 Jun 2021 17:46:43 -0700 (PDT)
+        bh=jQccB20CQF5Dr5LsObv3HRFh/UxoVEFfeObD4BLsXKY=;
+        b=gWbxf83r3lrfcCgW4h/laqRJGtNeLMvDuNsYAzTssoJE4yQHG8KMxKfi0tVUlbwWBm
+         9+AgINwoVl5rslJj0AEdubdl1RuG/L3kFlf1wdrUT6tUyD1SIoOHS+Fh5308Y0qkaTHI
+         8XYcCMVhdyoztC6W4uQf9O9zPAoaBVJyt5XKgyzY1KVUtuTiaLL5dwBFRZ5axkxQ2go8
+         uHm1tVeLUloC429waMhL99G9QfP/UVctAR9KfKAGlqThKOFHdtxSlJEb/+TBtBSfRaCa
+         iI52Ngn9kHEq4183YmseN9cEnblv+e4rbz/B0aY6tdSlKSLJA/DNvNYJ2qY7R6ytwszt
+         a8HA==
+X-Gm-Message-State: AOAM531zJte8bnRszyyXIC4Exqi1TU5hyfBdmZ9ItztSmOOCxedliBFz
+        q2fM5/aJfEPe6C/eRpTeloEqPFyOSph/gYanzg4=
+X-Google-Smtp-Source: ABdhPJyUNBTc/qh3LL075sZxc2OLFebC8zgHnNtcQQB4r7HMeJtizgRB3aJnw48cxIBU6sUlVPdv4vFs+WWvl9tIKrA=
+X-Received: by 2002:a05:6512:1291:: with SMTP id u17mr7613772lfs.300.1624754964035;
+ Sat, 26 Jun 2021 17:49:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
-In-Reply-To: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com> <32d8135b4d3b5df28c234bab774b65e7f0b85727.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+In-Reply-To: <32d8135b4d3b5df28c234bab774b65e7f0b85727.1624350588.git.alexey.v.bayduraev@linux.intel.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 26 Jun 2021 17:46:32 -0700
-Message-ID: <CAM9d7ciOMPTbwTzHwDp2sjn59KButCQpPOpQsqttopodGC7_kg@mail.gmail.com>
-Subject: Re: [PATCH v7 00/20] Introduce threaded trace streaming for basic
- perf record operation
+Date:   Sat, 26 Jun 2021 17:49:13 -0700
+Message-ID: <CAM9d7ci0OF3MLRoH3sZ=kYgfw0C7PBeYqgmun0mmas2U84NwkA@mail.gmail.com>
+Subject: Re: [PATCH v7 19/20] perf session: Load single file for analysis
 To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -55,184 +54,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, Jun 22, 2021 at 1:42 AM Alexey Bayduraev
+On Tue, Jun 22, 2021 at 1:43 AM Alexey Bayduraev
 <alexey.v.bayduraev@linux.intel.com> wrote:
 >
-> Changes in v7:
-> - fixed possible crash after out_free_threads label
-> - added missing pthread_attr_destroy() call
-> - added check of correctness of user masks
-> - fixed zsts_data finalization
+> Adding eof flag to reader state and moving the check to reader__mmap.
+> Separating reading code of single event into reader__read_event function.
+> Adding basic reader return codes to simplify the code and introducing
+> reader remmap/read_event loop based on them.
 >
-> v6: https://lore.kernel.org/lkml/cover.1622025774.git.alexey.v.bayduraev@linux.intel.com/
->
-> Changes in v6:
-> - fixed leaks and possible double free in record__thread_mask_alloc()
-> - fixed leaks in record__init_thread_user_masks()
-> - fixed final mmaps flushing for threads id > 0
-> - merged with origin/perf/core
->
-> v5: https://lore.kernel.org/lkml/cover.1619781188.git.alexey.v.bayduraev@linux.intel.com/
->
-> Changes in v5:
-> - fixed leaks in record__init_thread_masks_spec()
-> - fixed leaks after failed realloc
-> - replaced "%m" to strerror()
-> - added masks examples to the documentation
-> - captured Acked-by: tags by Andi Kleen
-> - do not allow --thread option for full_auxtrace mode
-> - split patch 06/12 to 06/20 and 07/20
-> - split patch 08/12 to 09/20 and 10/20
-> - split patches 11/12 and 11/12 to 13/20-20/20
->
-> v4: https://lore.kernel.org/lkml/6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com/
->
-> Changes in v4:
-> - renamed 'comm' structure to 'pipes'
-> - moved thread fd/maps messages to verbose=2
-> - fixed leaks during allocation of thread_data structures
-> - fixed leaks during allocation of thread masks
-> - fixed possible fails when releasing thread masks
->
-> v3: https://lore.kernel.org/lkml/7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com/
->
-> Changes in v3:
-> - avoided skipped redundant patch 3/15
-> - applied "data file" and "data directory" terms allover the patch set
-> - captured Acked-by: tags by Namhyung Kim
-> - avoided braces where don't needed
-> - employed thread local variable for serial trace streaming
-> - added specs for --thread option - core, socket, numa and user defined
-> - added parallel loading of data directory files similar to the prototype [1]
->
-> v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
->
-> Changes in v2:
-> - explicitly added credit tags to patches 6/15 and 15/15,
->   additionally to cites [1], [2]
-> - updated description of 3/15 to explicitly mention the reason
->   to open data directories in read access mode (e.g. for perf report)
-> - implemented fix for compilation error of 2/15
-> - explicitly elaborated on found issues to be resolved for
->   threaded AUX trace capture
->
-> v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
->
-> Patch set provides parallel threaded trace streaming mode for basic
-> perf record operation. Provided mode mitigates profiling data losses
-> and resolves scalability issues of serial and asynchronous (--aio)
-> trace streaming modes on multicore server systems. The design and
-> implementation are based on the prototype [1], [2].
->
-> Parallel threaded mode executes trace streaming threads that read kernel
-> data buffers and write captured data into several data files located at
-> data directory. Layout of trace streaming threads and their mapping to data
-> buffers to read can be configured using a value of --thread command line
-> option. Specification value provides masks separated by colon so the masks
-> define cpus to be monitored by one thread and thread affinity mask is
-> separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
-> specifies parallel threads layout that consists of two threads with
-> corresponding assigned cpus to be monitored. Specification value can be
-> a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
-> thread for monitoring every cpu, whole core or socket. The option provided
-> with no or empty value defaults to "cpu" layout creating data streaming
-> thread for every cpu being monitored. Specification masks are filtered
-> by the mask provided via -C option.
->
-> Parallel streaming mode is compatible with Zstd compression/decompression
-> (--compression-level) and external control commands (--control). The mode
-> is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
-> related and derived modes like --snapshot or --aux-sample. --switch-output-*
-> and --timestamp-filename options are not enabled for parallel streaming.
-> Initial intent to enable AUX area tracing faced the need to define some
-> optimal way to store index data in data directory. --switch-output-* and
-> --timestamp-filename use cases are not clear for data directories.
-> Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
-> mutually exclusive to parallel streaming mode.
->
-> Basic analysis of data directories is provided in perf report mode.
-> Raw dump and aggregated reports are available for data directories,
-> still with no memory consumption optimizations.
->
-> Tested:
->
-> tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -a
-> tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
-> tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
->
-> tools/perf/perf report -i prof.data
-> tools/perf/perf report -i prof.data --call-graph=callee
-> tools/perf/perf report -i prof.data --stdio --header
-> tools/perf/perf report -i prof.data -D --header
+> Design and implementation are based on the prototype [1], [2].
 >
 > [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
 > [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
 >
-> Alexey Bayduraev (20):
->   perf record: Introduce thread affinity and mmap masks
->   perf record: Introduce thread specific data array
->   perf record: Introduce thread local variable
->   perf record: Stop threads in the end of trace streaming
->   perf record: Start threads in the beginning of trace streaming
->   perf record: Introduce data file at mmap buffer object
->   perf record: Introduce data transferred and compressed stats
->   perf record: Init data file at mmap buffer object
->   tools lib: Introduce bitmap_intersects() operation
->   perf record: Introduce --threads=<spec> command line option
->   perf record: Document parallel data streaming mode
->   perf report: Output data file name in raw trace dump
->   perf session: Move reader structure to the top
->   perf session: Introduce reader_state in reader object
->   perf session: Introduce reader objects in session object
->   perf session: Introduce decompressor into trace reader object
->   perf session: Move init into reader__init function
->   perf session: Move map/unmap into reader__mmap function
->   perf session: Load single file for analysis
->   perf session: Load data directory files for analysis
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> ---
+>  tools/perf/util/session.c | 71 ++++++++++++++++++++++++---------------
+>  1 file changed, 44 insertions(+), 27 deletions(-)
+>
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 7d91205a6a47..fe25abf83b80 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -64,6 +64,12 @@ struct reader_state {
+>         u64      file_offset;
+>         u64      data_size;
+>         u64      head;
+> +       bool     eof;
+> +};
+> +
+> +enum {
+> +       READER_EOF      =  0,
+> +       READER_OK       =  1,
 
-Thanks for your work, mostly looks good now.
-
-I have a question, where are the synthesized records saved?
-Is it the data.0 file?
+Just a nitpick, it might be better to add READER_NODATA state
+to differentiate it from the real end-of-file state.
 
 Thanks,
 Namhyung
 
 
+>  };
 >
->  tools/include/linux/bitmap.h             |   11 +
->  tools/lib/api/fd/array.c                 |   17 +
->  tools/lib/api/fd/array.h                 |    1 +
->  tools/lib/bitmap.c                       |   14 +
->  tools/perf/Documentation/perf-record.txt |   30 +
->  tools/perf/builtin-inject.c              |    3 +-
->  tools/perf/builtin-record.c              | 1094 ++++++++++++++++++++--
->  tools/perf/util/evlist.c                 |   16 +
->  tools/perf/util/evlist.h                 |    1 +
->  tools/perf/util/mmap.c                   |    6 +
->  tools/perf/util/mmap.h                   |    6 +
->  tools/perf/util/ordered-events.h         |    1 +
->  tools/perf/util/record.h                 |    2 +
->  tools/perf/util/session.c                |  500 +++++++---
->  tools/perf/util/session.h                |    5 +
->  tools/perf/util/tool.h                   |    3 +-
->  16 files changed, 1508 insertions(+), 202 deletions(-)
+>  struct reader {
+> @@ -2245,6 +2251,11 @@ reader__mmap(struct reader *rd, struct perf_session *session)
+>         char *buf, **mmaps = st->mmaps;
+>         u64 page_offset;
 >
+> +       if (st->file_pos >= st->data_size) {
+> +               st->eof = true;
+> +               return READER_EOF;
+> +       }
+> +
+>         mmap_prot  = PROT_READ;
+>         mmap_flags = MAP_SHARED;
+>
+> @@ -2273,36 +2284,26 @@ reader__mmap(struct reader *rd, struct perf_session *session)
+>         mmaps[st->mmap_idx] = st->mmap_cur = buf;
+>         st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
+>         st->file_pos = st->file_offset + st->head;
+> -       return 0;
+> +       return READER_OK;
+>  }
+>
+>  static int
+> -reader__process_events(struct reader *rd, struct perf_session *session,
+> -                      struct ui_progress *prog)
+> +reader__read_event(struct reader *rd, struct perf_session *session,
+> +                  struct ui_progress *prog)
+>  {
+>         struct reader_state *st = &rd->state;
+> -       u64 size;
+> -       int err = 0;
+> +       int err = READER_OK;
+>         union perf_event *event;
+> +       u64 size;
+>         s64 skip;
+>
+> -remap:
+> -       err = reader__mmap(rd, session);
+> -       if (err)
+> -               goto out;
+> -       if (session->one_mmap) {
+> -               session->one_mmap_addr   = rd->state.mmap_cur;
+> -               session->one_mmap_offset = rd->state.file_offset;
+> -       }
+> -
+> -more:
+>         event = fetch_mmaped_event(st->head, st->mmap_size, st->mmap_cur,
+>                                    session->header.needs_swap);
+>         if (IS_ERR(event))
+>                 return PTR_ERR(event);
+>
+>         if (!event)
+> -               goto remap;
+> +               return READER_EOF;
+>
+>         session->active_reader = rd;
+>         size = event->header.size;
+> @@ -2324,18 +2325,12 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>         st->head += size;
+>         st->file_pos += size;
+>
+> -       err = __perf_session__process_decomp_events(session);
+> -       if (err)
+> -               goto out;
+> +       skip = __perf_session__process_decomp_events(session);
+> +       if (skip)
+> +               err = skip;
+>
+>         ui_progress__update(prog, size);
+>
+> -       if (session_done())
+> -               goto out;
+> -
+> -       if (st->file_pos < st->data_size)
+> -               goto more;
+> -
+>  out:
+>         session->active_reader = NULL;
+>         return err;
+> @@ -2379,9 +2374,31 @@ static int __perf_session__process_events(struct perf_session *session)
+>         err = reader__init(rd, &session->one_mmap);
+>         if (err)
+>                 goto out_err;
+> -       err = reader__process_events(rd, session, &prog);
+> -       if (err)
+> +       err = reader__mmap(rd, session);
+> +       if (err != READER_OK) {
+> +               if (err == READER_EOF)
+> +                       err = -EINVAL;
+>                 goto out_err;
+> +       }
+> +       if (session->one_mmap) {
+> +               session->one_mmap_addr   = rd->state.mmap_cur;
+> +               session->one_mmap_offset = rd->state.file_offset;
+> +       }
+> +
+> +       while (true) {
+> +               if (session_done())
+> +                       break;
+> +
+> +               err = reader__read_event(rd, session, &prog);
+> +               if (err < 0)
+> +                       break;
+> +               if (err == READER_EOF) {
+> +                       err = reader__mmap(rd, session);
+> +                       if (err <= 0)
+> +                               break;
+> +               }
+> +       }
+> +
+>         /* do the final flush for ordered samples */
+>         err = ordered_events__flush(oe, OE_FLUSH__FINAL);
+>         if (err)
 > --
 > 2.19.0
 >
