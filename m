@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED173B537C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 15:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661453B5389
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 15:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhF0Ntx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 09:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        id S231127AbhF0Nv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 09:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhF0Ntt (ORCPT
+        with ESMTP id S229927AbhF0Nvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 09:49:49 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31543C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 06:47:25 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so8618181pji.0
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 06:47:25 -0700 (PDT)
+        Sun, 27 Jun 2021 09:51:55 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04480C061574;
+        Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id b5so14699326ilc.12;
+        Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fJSoA46EGJPMh4KCGh0AvMNTym/VRIZfvgO78Nh3WHY=;
-        b=XFUj04S1IvtMBMrNxSHUrQdfjMsTK6ceV/VmG9GdcBQK5aWjQ5+rf3Bk8ABUqyq23x
-         /cPSijpfIZl2ccuqgsz+Ik5g/4Q2qB2I6k60ILhUViJmUOZoJs3lCPwNxugWrCLe9ufg
-         +G9rfB+d84i69spQRtCf+7paphH+5I4seXk9WyYmjaPyllIDKEFKBemcokIRTCMr+cbn
-         4tUaBMm65rRMBNxmAHiqs2p4YM++/Td1PM1Tb92KktIpC+6kIIfMBCYu3hSofxuL9++o
-         DVxmsHWThe9fA6Y3rQTzepjOwb2HoMXdimzpgiLR9VZrcWLjllVbNL0RsnQlXcEiQAF/
-         vLcg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
+        b=jSx1jWRNMlAT68tgB7bCsuZqgDYgfiNEwJ1mD2Za+4v4gYkEgHIsfr7NLcl/pPu17E
+         sMc7eWOadn89rncqJblRCe2nilMIVe9+Lr0KL+CbAUtDY2ukpo7/iwZ9MCTOworuIwiH
+         STBBr6guaR+2aQXcvf7lerOIhVDZWCDmuWp6R4Jv4BwYxFgPZTyv53kg0xQ8/VfTwaJp
+         JHRC80ddtc2TbByE27FVpuS/MB4VoLb+XNQQ0kvnqfs1ibZToIoi5tPVhQKdn3uswlkQ
+         SW+TyonxdygwCu6jods4Mn3ql5Ei8/OiH53q17/MtCKvNkPl+64lanBnagGZjHi4lnWg
+         AD5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fJSoA46EGJPMh4KCGh0AvMNTym/VRIZfvgO78Nh3WHY=;
-        b=MJoaR5r+tV/6wbHdmUbRwSsJe1pYDWClRAl65cvMqjLhrZ6cLDvs8cg02JJrlAPz0M
-         1Q5fu0B31ys13JIlsdpgGj+ZsZ84mbLNk/tKL6tjTP+irSDq3rNEbx1aW/8AfdqgoKpl
-         uJ5lQP2D7N+y/I3cbVEx8a42yN3jAsDiptArrW3+XkmWcLtA/Em8hkOfA2JJ+hcY66rH
-         /FG7nWpLXWnl9U5zq1R6Z6V9L1cOR/27anlkjSiJJiMiA23lV3K6D5hMp92o7Lizhevd
-         Tiol0HDYZcqRqgcpOHuv4WGm2o+W7j58GL2Of7YgNeG0/7tEEb7ENuUefbkb1B4jjofA
-         jxtw==
-X-Gm-Message-State: AOAM530B7xQ65UhHFwdiCsBN7YV33P0zAoJ1tWIBnzbTOOZG4ZwGapm/
-        biHeu68gDvldJdallHUOgRg=
-X-Google-Smtp-Source: ABdhPJy7Va7MAOwfFxr4qQ1sx90Yqi7htESGJULb092qSsZzQo6foZOwzrp2UiAU39FKgAsVYAr2fQ==
-X-Received: by 2002:a17:90b:1d06:: with SMTP id on6mr21356378pjb.149.1624801644619;
-        Sun, 27 Jun 2021 06:47:24 -0700 (PDT)
-Received: from [192.168.1.30] (ip174-67-196-173.oc.oc.cox.net. [174.67.196.173])
-        by smtp.gmail.com with ESMTPSA id s20sm7628116pji.19.2021.06.27.06.47.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 06:47:24 -0700 (PDT)
-Subject: Re: [PATCH 1/2] nvme-fc: Update hardware queues before using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20210625101649.49296-1-dwagner@suse.de>
- <20210625101649.49296-2-dwagner@suse.de>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <f5c53785-077e-0e2a-ae3d-178b3e73b80b@gmail.com>
-Date:   Sun, 27 Jun 2021 06:47:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
+        b=hq9056m9lXtDmEVWZZACpz9+Fd5UlTq5ZnFCiWgh962ImJtv4mrkazt5trkebXVWyz
+         uIOqXUYMsh1JXAptviJN5wwNYONKUKbPQ9qJSE2abk/o2xogSEu0Bv0DJLGTGjdjAMOb
+         rQPwnHnf8sTp6A7bRhnsvX3qW/Eoz9PEr8pRZD19EEt/VrljwNRKD/nA4YFM9JUpWEtN
+         tacI0+TDp+Nn3Z2zyv10CLsHbsQk6LzooX4QWswH48I7K6Jkzcl86xZkif8QpH1Ywj/6
+         X58Hdhzv0so010IaN5rUuiVTWpBphfV4tA3dz0cRWNm4VIZlHXaOvrSr8k2bKIjpoB/X
+         YTGA==
+X-Gm-Message-State: AOAM531lT869KKvSBSsVJ2SB54URP0OdLtnYQiQqEgEjI9Qn6KYC8Em8
+        iWn5l6uIn4dqNtKjgArGbU7QhWaF2mUuag7GBqQ=
+X-Google-Smtp-Source: ABdhPJz1Ubb4xI0HYKINaSQPBvAxnz0e8JYIbsgs0KMkjdWkzp48dXCScptKhbn01OC2YzZmtwYq7A6g9xKqrnL9EGY=
+X-Received: by 2002:a92:d4c5:: with SMTP id o5mr8968854ilm.306.1624801770256;
+ Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210625101649.49296-2-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
+ <CAOuPNLhoLBwksNt+tJ2=hZr-TGHZgEiu7dgk66BUsraGA16Juw@mail.gmail.com> <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
+In-Reply-To: <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Sun, 27 Jun 2021 19:19:18 +0530
+Message-ID: <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
+Subject: Re: Query: UBIFS: How to detect empty volumes
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/2021 3:16 AM, Daniel Wagner wrote:
-> In case the number of hardware queues changes, do the update the
-> tagset and ctx to hctx first before using the mapping to recreate and
-> connnect the IO queues.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index 8a3c4814d21b..a9645cd89eca 100644
+On Sun, 27 Jun 2021 at 14:12, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+>
+> On Thu, Jun 24, 2021 at 6:09 PM Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> > I have one basic query related to UBIFS volumes on a system with NAND partition.
+>
+> There is no such thing as a UBIFS volume. Do you mean UBI volumes?
+>
+Yes I mean the ubi volumes which are created using the ubinize config file.
 
-Makes sense.  Thanks.   Although it does bring up that perhaps, if the 
-hw queue count changes, thus it no longer matches what was set on the 
-target, the new value should be set on the target to release resources 
-on the target.
+> > In short, how to detect a particular empty volume inside a system
+> > partition while flashing the partition image?
+>
+> What do you mean by system partition? A MTD partition?
+By this I mean the entire UBI partition that contains the magic header "UBI#"
+>
+> > Suppose I have one big system partition that consists of 4-5 ubi
+> > volumes inside it with varying sizes.
+> > Lets say:
+> > -- System Partition (ubi image)
+> >     - rootfs volume (ro, squashfs)
+> >     - data volume (rw, ubifs)
+> >     - firmware volume (ro, ubifs)
+> >     - some-other volume (ro, squashfs)
+>
+> So by system partition you mean the MTD partition that hosts UBI itself?
+>
+Yes the entire UBI partition that contains UBI volumes
 
-Note: the same behavior exists in the other transports as we all started 
-from the same lineage. So those should be updated as well.  Granted 
-you'll need to break out the queue count set and checking which was done 
-on fc but not on the other transports.
+> > Consider that all these could be flashed together as part of
+> > system.ubi image in a single shot from the bootloader.
+> > Now, suppose, one of the volume image (say firmware) is missing or
+> > remains empty (as you know we can have empty volumes).
+> >
+> > So, during system image flashing, we wanted to detect if one of the
+> > volume (firmware) is empty.
+> > Since this is an important volume, so we wanted to detect if this
+> > volume is empty/missing we will abort flashing the system partition.
+> > As there is no point in booting the system without this partition.
+> >
+> > So, I am exploring options, how can this be detected ?
+>
+> Read from the volume after flashing. If you get only 0xFF bytes it is empty.
+>
+I mean, without flashing the image, is it possible to determine/guess
+from the image content/header
+ that a volume in the image is empty.
+If it is empty then do not allow to flash the image.
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+> > I mean is there any kind of magic number or header information which
+> > we can read to detect a particular empty volume ?
+> > Can we get any information from just "system.ubi" image to indicate
+> > about the volume information ?
+>
+> You'll need to perform a proper UBI scan on all blocks.
+> If for the sad volume no LEBs have been found it is empty.
+>
+hmm, this seems reasonable. We have something called
+"ubi_scan_partition" that scans for bad blocks, during "ubi_open".
+And we also have ubi_find_volume that checks for vtbl record in an
+incoming image.
+Let me check about the LEB option here.
 
--- james
-
+> > Also it could be possible that 2 or more volumes are empty, but we are
+> > only concerned about one particular volume (firmware), so how to
+> > detect particular volume ?
+>
+> I don't understand the use case. Is your image creation process so error prone
+> that you can't be sure whether critical parts got included or not?
+>
+Actually our UBI creation process contains multiple volumes, in which
+one volume contains
+firmware image, that comes from another subsystem.
+So, it requires copying that firmware image manually before building
+the etire yocto image.
+But, it might be possible that some developer may miss/skip this
+firmware copying part, thus
+the resulting image may end up is having an empty firmware volume.
+However, this firmware volume is an important volume, without which
+the modem may not boot up.
