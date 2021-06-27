@@ -2,187 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF8B3B54B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D643B54B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhF0Sz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 14:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        id S231464AbhF0S6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 14:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbhF0Sz1 (ORCPT
+        with ESMTP id S231288AbhF0S6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 14:55:27 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386E5C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 11:53:03 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id d25so21564559lji.7
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 11:53:03 -0700 (PDT)
+        Sun, 27 Jun 2021 14:58:09 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7777AC061574;
+        Sun, 27 Jun 2021 11:55:44 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id a5-20020a7bc1c50000b02901e3bbe0939bso9518943wmj.0;
+        Sun, 27 Jun 2021 11:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y+E1ulirZppXJbjGpA3Hm56N/AqCsySDfUBGRIjaj1E=;
-        b=hoNv+TJrxoUEJnXqZcUwcImNMsyg4dEPHwS68x6I5/d+BZ1FkEs2uJN/p8wX0qONS5
-         5cpfnlo4RPZC4J0HB1U/JWYmka8cb7PT8K71L/dr0j6dAd6aWovQp5ejNLp8nDr4JpYH
-         mP7K7l0pPcLfmh4UAwFuKJucCFg88DEl48qDw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gAa5Undjg/T4By4J3ChgR8S1R2CwQn5rJM130hj+4IU=;
+        b=XemtwnJbPpP0NOMZzTrA3shACUa65X54mPuEkDUh8iaDyMRSFHyhbxXSjrMDcxiIv+
+         o1cAJngN7q5x2XRCk5vOHaCzR6ak2Sc/q8rIIpndyoTOy936Cm5a8rvZSZChrHHv2rlk
+         3CIKhnSYQFCQAOBKqcObHIUJ+am/EaF17wwMhaJm61TMo2tQeudJEw61VBEIR8wVlAo2
+         b/7/tKwdDv/5e01//eUV2Iigkd8nlXrYdSzkxWkJljRsEGxlE8uuUOZQ73KoCNvTmpKo
+         rDup3Jp9ZQzbuZjxdGRRUZ1oSkUEr6HM3jI7D31y5YY2Qgway4Q+pnBBBz5g7wn0z4VB
+         LR0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y+E1ulirZppXJbjGpA3Hm56N/AqCsySDfUBGRIjaj1E=;
-        b=CZtM7nKEUn4n+l29ykwAjFBvBs9a8PnwvIzCOgIwRZXJfPedzS2RO29NmLN3mXXyq/
-         FOjmC3tUxq52q7BMWe7SsIGQ//Rc03/wMiCNXmX9LLgXbmdFPhYtHbA1zb1dPdX44GjT
-         7Y1uO89hmpTB6kF6rs09xbsEBuPHQbpUmlT29h/Us9liUVAUUKZpQ4EJnQlxDeXq5oeJ
-         3joZsdiSMEU1TWkONp8KeuPRVSpuPb48Dfj8QboSCFAbIKiNKLo2eu3vVewaBfb8erp2
-         iXJJRvtcCyItSYEpsX00rS25IsYSJDrKHtwc0ypcoAZMjmHafxghcu5uR8XOEbYkN+DY
-         h+pw==
-X-Gm-Message-State: AOAM531JmwccToNRsyvVsXSjqFNo5/tNDcd0hXmwij6O4r6KKGD4zVBY
-        UAEY+pp4e7+gXAsx02kcIrRgUfWhPAuasbJq
-X-Google-Smtp-Source: ABdhPJx0IkFrVhFLIJBu7lOHahiNKkEfciV70qYuC7+vl8aAHcoxr8YtWd3RLbt1CggjVKzHXV3GCw==
-X-Received: by 2002:a2e:8e84:: with SMTP id z4mr16652072ljk.243.1624819981090;
-        Sun, 27 Jun 2021 11:53:01 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id v2sm1104147lfo.194.2021.06.27.11.53.00
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gAa5Undjg/T4By4J3ChgR8S1R2CwQn5rJM130hj+4IU=;
+        b=tm3f943Mi2WPYqfq6rbXmJNMeSD9I5QgpOrk19VKyk8oCSOmQqIyX5dw7VpXgKKgyf
+         SOYd5Gj4zSkU6nRpWy4LMnp6pnB9cGrHYzBo6uZouB7tyXY5P8NSgFwEwaOz7ifqntGJ
+         yqG+yVgPqpuqJgj8DfnZl4mDIxDs5GfxnN85Tds6/f9ty2APMEDloy2Ylm9o6aS1vlLA
+         9yfKUcI8fYvISLcjRQWaWegMOsFXNzqAV4HjuDzZATLqdIwy6bJSjfBwZvXxZ5aBoroU
+         tGAGCXGSqEoe62Ul1lct4dEw1yYPMH/HbMAaoecODKHia/bVz+nhd5P0j0RLnP/4Re4z
+         Pkeg==
+X-Gm-Message-State: AOAM530xlUyVeytEZ7xLV6M2e7FeRmo+dmynOJKYgGTqtBW8K0N20d12
+        +AN+d91UHyRlLN2oLn2M6qw=
+X-Google-Smtp-Source: ABdhPJwCOasxxJ/1Eing5sMd4n9+hul0QWT3erZJKRhPWVyx8HuMQDZzLJVf0bEVIe8l8TyC5952uw==
+X-Received: by 2002:a7b:cb55:: with SMTP id v21mr21489340wmj.19.1624820143108;
+        Sun, 27 Jun 2021 11:55:43 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id r6sm5931826wmq.37.2021.06.27.11.55.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 11:53:00 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id i13so27575187lfc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 11:53:00 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr15657017lfs.377.1624819979954;
- Sun, 27 Jun 2021 11:52:59 -0700 (PDT)
+        Sun, 27 Jun 2021 11:55:42 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v2 0/2] Add GCC for SM4250/6115
+Date:   Sun, 27 Jun 2021 21:55:36 +0300
+Message-Id: <20210627185538.690277-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <YNQwgTR3n3mSO9+3@gmail.com> <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
-In-Reply-To: <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 27 Jun 2021 11:52:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
-Message-ID: <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
-Subject: Re: [GIT PULL] sigqueue cache fix
-To:     Ingo Molnar <mingo@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Adding Christian and Oleg to participants ]
+This patch adds support for the Global Clock Controller on QCom SM4250 and
+SM6115, codename bengal. The code is taken from OnePlus repo [1]. The two
+platforms are identical so there is only one compat string.
 
-On Thu, Jun 24, 2021 at 9:29 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So I think the sigqueue cache is still potentially quite buggy, and I
-> think the bug is hidden by the READ/WRITE_ONCE games that are
-> misleading and not actually valid.
+[1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
 
-Guys, I haven't heard any reaction to this. Any comments?
+v1: https://lkml.org/lkml/2021/6/22/1131
 
-Because the more I look at it, the stranger it looks.
+Changes from v1:
+- remove sm4250 compat, there will be a single sm6115.dtsi for both platforms
 
-In particular: the code in sigqueue_cache_or_free() is a simple
+Iskren Chernev (2):
+  dt-bindings: clk: qcom: gcc-sm6115: Document SM6115 GCC
+  clk: qcom: Add Global Clock controller (GCC) driver for SM6115
 
-        if (!READ_ONCE(current->sigqueue_cache))
-                WRITE_ONCE(current->sigqueue_cache, q);
+ .../bindings/clock/qcom,gcc-sm6115.yaml       |   72 +
+ drivers/clk/qcom/Kconfig                      |    7 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-sm6115.c                 | 3623 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sm6115.h   |  201 +
+ 5 files changed, 3904 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm6115.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
 
-and it is documented to be safe because "current" is obviously single-threaded.
 
-Except that documented "obviously" is not so obvious at all. Yes,
-"current" is single-threaded, but only in task context. You can still
-have interrupts etc that see that same "current" that happen
-concurrently.
+base-commit: e71e3a48a7e89fa71fb70bf4602367528864d2ff
+--
+2.32.0
 
-So it's not at all obviously safe. It *may* be safe, but it worries me.
-
-It worries me _particularly_ with exactly this commit 399f8dd9a866
-("signal: Prevent sigqueue caching after task got released").
-
-Why? Because the alleged path is release_task() -> __exit_signal() ->
-exit_task_sigqueue_cache(). And by the time "release_task()" runs,
-that task it releases shouldn't be running. So how can release_task()
-race with this logic in sigqueue_cache_or_free()?
-
-IOW how can that change in commit 399f8dd9a866 _possibly_ fix
-anything? That would seem to be a serious problem if it's actually the
-case..
-
-So I think
-
- (a) sigqueue_cache_or_free() is fine only if no signal is ever
-released from interrupt/bh context.
-
- (b) commit 399f8dd9a866 looks dodgy to me - could we really ever do
-"release_task(current)" without it being a huge bug?
-
-Anyway, trying to really distill the logic of the sigqueue_cache, I've
-come up with
-
- - sigqueue_cache_or_free() only does something if saw NULL (and will
-turn it non-NULL)
-
- - __sigqueue_alloc() only does something if it saw a non-NULL value
-(and will turn it NULL)
-
-so they can't race with each other, because their initial values are disjoint.
-
-So then we have
-
- (a) sigqueue_cache_or_free() allegedly cannot race with itself
-because of "current".
-
- (b) __sigqueue_alloc() allegedly cannot race with itself because of
-sighand->siglock
-
-Now (b) I will actually believe, because __sigqueue_alloc() has only
-two callers, and the first one actually has
-
-        assert_spin_locked(&t->sighand->siglock);
-
-and the second one passes SIGQUEUE_PREALLOC as sigqueue_flags, and
-that will force it to not touch sigqueue_cache at all.
-
-So I think __sigqueue_alloc() is ok.
-
-Which makes me really suspect that (a) is the problem here.
-
-Looking at what calls __sigqueue_free() -> sigqueue_cache_or_free(), we have:
-
- - flush_sigqueue
-
- - flush_itimer_signals() -> __flush_itimer_signals()
-
- - dequeue_signal() -> __dequeue_signal -> collect_signal()
-
- - get_signal() -> dequeue_synchronous_signal() (and dequeue_signal())
-
- - send_signal() -> __send_signal() -> prepare_signal() -> flush_sigqueue_mask()
-
- - kill_pid_usb_asyncio() -> __send_signal() -> ..
-
- - do_notify_parent() -> __send_signal() -> ..
-
- - send_sigqueue() -> prepare_signal() -> flush_sigqueue_mask()
-
- - kernel_sigaction() -> flush_sigqueue_mask()
-
- - sigqueue_free()
-
-so there's a lot of things that can get into sigqueue_cache_or_free(),
-and it's worth noting that that path does *NOT* serialize on the
-sighand->siglock, but expressly purely on "current" being
-single-threaded (and 'current' has nothing to do with sighand->siglock
-anyway, the sighand lock is for the target of the signal, not the
-source of it).
-
-At at least that send_signal() path is very much called from
-interrupts (ie timers etc).
-
-Hmm?
-
-Ok, I may have confused myself looking at all this, but it does all
-make me think this is dodgy.
-
-                  Linus
