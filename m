@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7345E3B50CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 04:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A9C3B50D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 04:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhF0CvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 22:51:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23172 "EHLO m43-7.mailgun.net"
+        id S230476AbhF0CzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 22:55:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230318AbhF0CvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 22:51:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624762140; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=MRStp5Lf5S4mzb1+rC3cp0h9PtU2m4YOTYmUov94j2Y=;
- b=XrXoVaty5X4d0StJXJYqoyeJAGNzCV4xdqaylN2webhMH1crCuojcKkMg+3ZhtYGHVjGtrmH
- nvHmafxl5PsGQD7ZsHqjF1cDtjnDvq4pFnjbpT7kQZ8x29tamAmbnH1jVWc1NSFNU8XuY5/D
- efXM7lxRXK2168lcUlbj5cYYfVg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60d7e7192a2a9a9761c77f50 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 27 Jun 2021 02:48:57
- GMT
-Sender: linyyuan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B249FC43460; Sun, 27 Jun 2021 02:48:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S230186AbhF0Cy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jun 2021 22:54:59 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: linyyuan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CED2BC433F1;
-        Sun, 27 Jun 2021 02:48:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C20661C54;
+        Sun, 27 Jun 2021 02:52:34 +0000 (UTC)
+Date:   Sat, 26 Jun 2021 22:52:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
+Message-ID: <20210626225233.2baae8be@rorschach.local.home>
+In-Reply-To: <fc5d0f90-502d-b217-0ad6-0d17cae12ff7@i-love.sakura.ne.jp>
+References: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
+        <20210626101834.55b4ecf1@rorschach.local.home>
+        <7297f336-70e5-82d3-f8d3-27f08c7d1548@i-love.sakura.ne.jp>
+        <20210626114157.765d9371@rorschach.local.home>
+        <20210626142213.6dee5c60@rorschach.local.home>
+        <fc5d0f90-502d-b217-0ad6-0d17cae12ff7@i-love.sakura.ne.jp>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Sun, 27 Jun 2021 10:48:56 +0800
-From:   linyyuan@codeaurora.org
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH] usb: dwc3: fix race of usb_gadget_driver operation
-In-Reply-To: <20210626150304.GA601624@rowland.harvard.edu>
-References: <20210625104415.8072-1-linyyuan@codeaurora.org>
- <20210625163707.GC574023@rowland.harvard.edu>
- <b24825113327c72c742d55e89ec2726e@codeaurora.org>
- <20210626150304.GA601624@rowland.harvard.edu>
-Message-ID: <1d1f06763c7cdeb67264128537c6a8f4@codeaurora.org>
-X-Sender: linyyuan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-26 23:03, Alan Stern wrote:
-> On Sat, Jun 26, 2021 at 09:16:25AM +0800, linyyuan@codeaurora.org 
-> wrote:
->> On 2021-06-26 00:37, Alan Stern wrote:
->> > On Fri, Jun 25, 2021 at 06:44:15PM +0800, Linyu Yuan wrote:
-> 
->> > > --- a/drivers/usb/dwc3/ep0.c
->> > > +++ b/drivers/usb/dwc3/ep0.c
->> > > @@ -597,10 +597,11 @@ static int dwc3_ep0_set_address(struct dwc3
->> > > *dwc, struct usb_ctrlrequest *ctrl)
->> > >
->> > >  static int dwc3_ep0_delegate_req(struct dwc3 *dwc, struct
->> > > usb_ctrlrequest *ctrl)
->> > >  {
->> > > -	int ret;
->> > > +	int ret = 0;
->> > >
->> > >  	spin_unlock(&dwc->lock);
->> > > -	ret = dwc->gadget_driver->setup(dwc->gadget, ctrl);
->> > > +	if (dwc->async_callbacks)
->> > > +		ret = dwc->gadget_driver->setup(dwc->gadget, ctrl);
->> > >  	spin_lock(&dwc->lock);
->> >
->> > Here and in the other places, you should test dwc->async_callbacks
->> > _before_ dropping the spinlock.  Otherwise there is a race (the flag
->> > could be written at about the same time it is checked).
->> thanks for your comments,
->> 
->> if you think there is race here, how to make sure gadget_driver 
->> pointer is
->> safe,
->> this is closest place where we can confirm it is non-NULL by checking
->> async_callbacks ?
-> 
-> I explained this twice already: We know that gadget_driver is not
-> NULL because usb_gadget_remove_driver calls synchronize_irq before
-> doing usb_gadget_udc_stop.
-> 
-> Look at this timing diagram:
-> 
-> 	CPU0				CPU1
-> 	----				----
-> 	IRQ happens for setup packet
-> 	  Handler sees async_callbacks
-> 	    is enabled
-> 	  Handler unlocks dwc->lock
-> 					usb_gadget_remove_driver runs
-> 					  Disables async callbacks
-> 					  Calls synchronize_irq
-> 	  Handler calls dwc->		  . waits for IRQ handler to
-> 	    gadget_driver->setup	  .   return
-> 	  Handler locks dwc-lock	  .
-> 	  ...				  .
-> 	  Handler returns		  .
-> 					  . synchronize_irq returns
-> 					  Calls usb_gadget_udc_stop
-> 					    dwc->gadget_driver is
-> 					      set to NULL
-> 
-> As you can see, dwc->gadget_driver is non-NULL when CPU0 uses it,
-> even though async_callbacks gets cleared during the time when the
-> lock is released.
-thanks for your patient explanation,
-but from this part, seem it is synchronize_irq() help to avoid NULL 
-pointer crash.
+On Sun, 27 Jun 2021 10:10:24 +0900
+Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
 
-can you also explain how async_callbacks flag help here  ?
+> On 2021/06/27 3:22, Steven Rostedt wrote:
+> >> If BPF is expected to register the same tracepoint with the same
+> >> callback and data more than once, then let's add a call to do that
+> >> without warning. Like I said, other callers expect the call to succeed
+> >> unless it's out of memory, which tends to cause other problems.  
+> > 
+> > If BPF is OK with registering the same probe more than once if user
+> > space expects it, we can add this patch, which allows the caller (in
+> > this case BPF) to not warn if the probe being registered is already
+> > registered, and keeps the idea that a probe registered twice is a bug
+> > for all other use cases.  
 > 
-> Alan Stern
+> I think BPF will not register the same tracepoint with the same callback and
+> data more than once, for bpf(BPF_RAW_TRACEPOINT_OPEN) cleans the request up
+> by calling bpf_link_cleanup() and returns -EEXIST. But I think BPF relies on
+> tracepoint_add_func() returning -EEXIST without crashing the kernel.
+
+Which is the only user that does so, and what this patch addresses.
+
+> > That's because (before BPF) there's no place in the kernel that tries
+> > to register the same tracepoint multiple times, and was considered a
+> > bug if it happened, because there's no ref counters to deal with adding
+> > them multiple times.  
+> 
+> I see. But does that make sense? Since func_add() can fail with -ENOMEM,
+> all places (even before BPF) needs to be prepared for failures.
+
+Yes. -ENOMEM means that there's no resources to create a tracepoint.
+But if the tracepoint already exsits, that means the accounting for
+what tracepoints are running has been corrupted.
+
+> 
+> > 
+> > If the tracepoint is already registered (with the given function and
+> > data), then something likely went wrong.  
+> 
+> That can be prepared on the caller side of tracepoint_add_func() rather than
+> tracepoint_add_func() side.
+
+Not sure what you mean by that.
+
+> 
+> >   
+> >>   (3) And tracepoint_add_func() is triggerable via request from userspace.  
+> > 
+> > Only via BPF correct?
+> > 
+> > I'm not sure how it works, but can't BPF catch that it is registering
+> > the same tracepoint again?  
+> 
+> There is no chance to check whether some tracepoint is already registered, for
+> tracepoints_mutex is the only lock which gives us a chance to check whether
+> some tracepoint is already registered.
+> 
+> Should bpf() syscall hold a global lock (like tracepoints_mutex) which will serialize
+> the entire code in order to check whether some tracepoint is already registered?
+> That might severely damage concurrency.
+
+I think that the patch I posted handles what you want. For BPF it
+returns without warning, but for all other cases, it warns. Does it fix
+your issue?
+
+-- Steve
+
+
