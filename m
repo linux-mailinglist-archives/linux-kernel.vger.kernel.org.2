@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7F23B5221
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 06:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363F23B5225
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 07:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhF0FAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 01:00:06 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48611 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231159AbhF0FAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 01:00:02 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1959B5807B8;
-        Sun, 27 Jun 2021 00:57:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 27 Jun 2021 00:57:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=D/gKKIJSLN8Sd
-        LCMMyZTPruVUhA56RzKVtRcpwkT3HE=; b=CbC0jLOOUJrKwxTA9B9lfptslTpuP
-        qOrKXvOFbsv1o58X0dQBjfOMuhQB3M/LzTmR7nMg9qRwLf7OWYkdDatj8kMC8KKe
-        Kp94KjR7A7v/BIYD0kfOw1jlTMGG4VvkEhQ+A6DpqnpiRxDaYhEqhdgLCUb+bP+b
-        Dkfec7n6ruwzd/9ahxzboc9UThJcfoB2islIJQiZCIgAarSUFLCMZ05Faja2+Y5j
-        FnW5vNSV5Nvi/aAZt9/q6GdMQEHcs51V8SNBoo7CVU+sufFoevLENOzMOG2Vx7/Y
-        1BSOhW6u1+qoeFckrMfWkcpoilwUVFmqrWEWrqJlJ3k+19yXaYG0CzEdA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=D/gKKIJSLN8SdLCMMyZTPruVUhA56RzKVtRcpwkT3HE=; b=FPnBxpRC
-        mexCjznjvWGxOlpxtMV9xFYxIao11HJxxzFAtqcZhnDEDzTr/T7XxTWOREirB0YY
-        tRfrCM048cMxJgbakxs5Betl+Ma9IWswFW0G+Vsk4V9RMzDaTHAPMoRVblayru7W
-        /ZvL4kDejwQ3slHfDwjis01t6iAdyT9a5rvpy7EbyS4jBSEryLM5/6rtTHubmcUN
-        V9VKdhtgLIM16ofqTnbg5xqGB9wglvdADQWNoYGvxOPNWBhzxyjRoNA/WxOuOR/1
-        98ztGEzIRAX1Yj5gn4mNl1roYjilm+jp45BLC2pz25U4pAYnpYT2oKnsH77CtvlL
-        1msDEzcr0SxDtQ==
-X-ME-Sender: <xms:QQXYYAOJdOgzhNFFzXWIZe3vfgN3mZx2bam8xLXh_MElnYVLLYFYmw>
-    <xme:QQXYYG8kcd2tguf6KZ1WVrDMegDZIeCXID2iZPSSd2D9bH61kaaYKlHaGTOwUqmtv
-    VLSWC8iarEBu7uaa_c>
-X-ME-Received: <xmr:QQXYYHSVnL_7KERuoVd_jAq-Es7QHo6LPzPSMAJzrRlQFjfDnoXp6RyboDOgmbpsExcP8xWxBsw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehuddgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
-    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeejiefhgfetleekleffud
-    ektdehvedujedvgeekkeejfefhhffhtedutefgtdffueenucevlhhushhtvghrufhiiigv
-    pedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
-    horghtrdgtohhm
-X-ME-Proxy: <xmx:QgXYYItGxefVzu_40xvPKGDeujcqWzK1z9jCY36M_nhquBffKDweZw>
-    <xmx:QgXYYIevx7rlTyRQriQSH9IYiUn6zLveEuYArgO1_BWlRVvs06X6LA>
-    <xmx:QgXYYM2iE1IB5ImW2RclwpmoAXdq4j8Uup77FTf2EBePSoE77gp5dQ>
-    <xmx:QgXYYJUxpbWwUmrsYH0QU1LuKvsCw3PS81IlW3BD1i-LfeNoL4TW4Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 27 Jun 2021 00:57:33 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 9/9] MIPS: Make a alias for pistachio_defconfig
-Date:   Sun, 27 Jun 2021 12:56:31 +0800
-Message-Id: <20210627045631.2882-10-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210627045631.2882-1-jiaxun.yang@flygoat.com>
-References: <20210627045631.2882-1-jiaxun.yang@flygoat.com>
+        id S229588AbhF0FQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 01:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhF0FQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 01:16:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFF0561C18;
+        Sun, 27 Jun 2021 05:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624770840;
+        bh=8SJ0rdNiF1eGxKYghOID17R/TEXH/bxSrVL61q47o6g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tsvX004sWQ1Vml6hsSQVSayCX2z9ZKSHM9fz3et7JdxKmZ1cJiKkh1mflXfbEnQwK
+         muYfgh+F0tu0MSrKS2CGUF0eEU5C5axXUHbxuxCTxxO/pGnNECZosGR9xRLLFJZ3di
+         vSZ/jtVj1fpSB6bFV+QEQpSgNzPxavCaDIML/q3r/DsAcwuZ8+TJ7Fgx6ZiI3BNo+q
+         crO3gJBWo4DIHWmOIXn9Q7Jn5ls5tRkuPDl0057Yj+e/BGjHwqOol+xKrMR4KMVr6T
+         jlxFAT2ZtHN4qgYOOsmQATGDN7HAm6s/TeBfAPvvfidcf6Nd6PA3VFG0UtMC7a4Ndd
+         wwAA23J8lpUYw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Geoffrey D. Bennett" <g@b4.vu>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v5] ALSA: usb-audio: scarlett2: Fix for loop increment in scarlett2_usb_get_config
+Date:   Sat, 26 Jun 2021 22:12:03 -0700
+Message-Id: <20210627051202.1888250-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
+In-Reply-To: <20210625202604.GB23780@m.b4.vu>
+References: <20210625202604.GB23780@m.b4.vu>
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For those who miss the old defconfig, make a alias to generic
-kernel.
+Clang warns:
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+sound/usb/mixer_scarlett_gen2.c:1189:32: warning: expression result
+unused [-Wunused-value]
+                        for (i = 0; i < count; i++, (u16 *)buf++)
+                                                    ^      ~~~~~
+1 warning generated.
+
+It appears the intention was to cast the void pointer to a u16 pointer
+so that the data could be iterated through like an array of u16 values.
+However, the cast happens after the increment because a cast is an
+rvalue, whereas the post-increment operator only works on lvalues, so
+the loop does not iterate as expected. This is not a bug in practice
+because count is not greater than one at the moment but this could
+change in the future so this should be fixed.
+
+Replace the cast with a temporary variable of the proper type, which is
+less error prone and fixes the iteration. Do the same thing for the
+'u8 *' below this if block.
+
+Fixes: ac34df733d2d ("ALSA: usb-audio: scarlett2: Update get_config to do endian conversion")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1408
+Acked-by: Geoffrey D. Bennett <g@b4.vu>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- arch/mips/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 258234c35a09..9713f8d2fc99 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -563,6 +563,9 @@ sead3micro_defconfig-y		:= micro32r2el_defconfig BOARDS=sead-3
- legacy_defconfigs		+= xilfpga_defconfig
- xilfpga_defconfig-y		:= 32r2el_defconfig BOARDS=xilfpga
+v1 -> v2:
+
+* Use temporary variables of proper type rather than casting, as
+  requested by Takashi.
+
+* Mention that there is not a bug at the moment per Geoffrey's comment.
+
+v2 -> v3:
+
+* Restrict scope of buf_16 more, as requested by Geoffrey.
+
+* Add Geoffrey's ack.
+
+v3 -> v4:
+
+* Fix stray newline added below
+
+  if (config_item->size >= 8) {
+
+  leftover from buf_16's declaration.
+
+v4 -> v5 (or how many times does it take Nathan to get a patch right):
+
+* Re-add note about no bug that was dropped in v3 by accident, as
+  noticed by Geoffrey. My apologies for the multiple revisions.
+
+ sound/usb/mixer_scarlett_gen2.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index fcba682cd422..161d832cafef 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -1177,6 +1177,7 @@ static int scarlett2_usb_get_config(
+ 	const struct scarlett2_config *config_item =
+ 		&scarlett2_config_items[info->has_mixer][config_item_num];
+ 	int size, err, i;
++	u8 *buf_8;
+ 	u8 value;
  
-+legacy_defconfigs		+= pistachio_defconfig
-+xilfpga_defconfig-y		:= 32r2el_defconfig BOARDS=marduk
+ 	/* For byte-sized parameters, retrieve directly into buf */
+@@ -1185,9 +1186,12 @@ static int scarlett2_usb_get_config(
+ 		err = scarlett2_usb_get(mixer, config_item->offset, buf, size);
+ 		if (err < 0)
+ 			return err;
+-		if (size == 2)
+-			for (i = 0; i < count; i++, (u16 *)buf++)
+-				*(u16 *)buf = le16_to_cpu(*(__le16 *)buf);
++		if (size == 2) {
++			u16 *buf_16 = buf;
 +
- .PHONY: $(legacy_defconfigs)
- $(legacy_defconfigs):
- 	$(Q)$(MAKE) -f $(srctree)/Makefile $($@-y)
++			for (i = 0; i < count; i++, buf_16++)
++				*buf_16 = le16_to_cpu(*(__le16 *)buf_16);
++		}
+ 		return 0;
+ 	}
+ 
+@@ -1197,8 +1201,9 @@ static int scarlett2_usb_get_config(
+ 		return err;
+ 
+ 	/* then unpack from value into buf[] */
++	buf_8 = buf;
+ 	for (i = 0; i < 8 && i < count; i++, value >>= 1)
+-		*(u8 *)buf++ = value & 1;
++		*buf_8++ = value & 1;
+ 
+ 	return 0;
+ }
+
+base-commit: 0cbbeaf370221fc469c95945dd3c1198865c5fe4
 -- 
-2.32.0
+2.32.0.93.g670b81a890
 
