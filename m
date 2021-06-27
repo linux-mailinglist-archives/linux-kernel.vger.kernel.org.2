@@ -2,151 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABB03B5432
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 18:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4592A3B544D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 18:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhF0QWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 12:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhF0QWE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 12:22:04 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDCC061767
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 09:19:39 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id u20so4393898wmq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 09:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2Ya8bcE5B9mZqBLYjxYQKOGyjXrk4mCJTYJHXgJ9Ev4=;
-        b=0PLvLYBiPtLVvFHh8ba/btIkDxuHk1lDhsClFiz0uoTeYC6DpGbRtItFCe/cgciHPu
-         MfW4th291+fdJRQdQgk/7OHIvyWUI7gqF7QJWIdcSD6RS+9EGAdKH2gyLAJFjhVzPBSc
-         SzRIhtNzHtkUwXvh2swIwTFA0GF+7Ozflk37HrFPz1v4J3OaDkRilzHgWlDk14hHVw7U
-         SoQsrYQ7v/svrMpr7fImnIfGXM7TNHt4P0by2LjEAS5fD93SMYwl7TCSibuQZ5SxT2p2
-         g93mo54H57WTE7muNA/ak56aguktakndATpL3WLVjBRPbZWxdgSgzV/NHxWc4RU4GbRm
-         n2rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2Ya8bcE5B9mZqBLYjxYQKOGyjXrk4mCJTYJHXgJ9Ev4=;
-        b=uKx4pTnrlzUqrQGj1/bt4Khhvl6o0kXIsF+P11ccPfw9rOECLu3XmOoNiHrksyeH8L
-         6vQyDW70MOCKfLyrB2oNq79Wj1CsUO8CFkrki6XOpi1G1JNanMGtZTA/ZASjcghQWB4M
-         v4ZMtuBvNNgW5uoHiUwLMDFmsEAdTIXBDfrD/FeZK1p1sb3NBYRY5zvnM7axhCzzjPJ5
-         lILhq4MuLw+ff4ZYMA7eBA1LNUKGP4S/I6ksVMXwP0fYVv8BnDIl0UqwycYRUcYGs6Hv
-         TB5/htdrEzWOkeKWCdqaE+gciAUNWF0HBxpLE2x6cVxVJOdMzevmQMzxZ8rqRXnGh8yQ
-         BCYQ==
-X-Gm-Message-State: AOAM531k6VWyDSMQiR0LQaL1ERl6oQXNXT6dqeHWabt6xqq1L1quBZPH
-        AqLP1G6oK6aKwsP3G7GUE6uE3QQ+Uh5aIw==
-X-Google-Smtp-Source: ABdhPJwUZnE5/yNGwDmoRFsGxsQRevaEKbLKGJzC/0/NjhoTVNE40buQznz9x/qIMEX+t2xqQzTJSA==
-X-Received: by 2002:a7b:c4da:: with SMTP id g26mr21518677wmk.3.1624810777414;
-        Sun, 27 Jun 2021 09:19:37 -0700 (PDT)
-Received: from localhost.localdomain (p200300d9974f98002cd84be72c5877b5.dip0.t-ipconnect.de. [2003:d9:974f:9800:2cd8:4be7:2c58:77b5])
-        by smtp.googlemail.com with ESMTPSA id f22sm10820384wmb.46.2021.06.27.09.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 09:19:37 -0700 (PDT)
-From:   Manfred Spraul <manfred@colorfullife.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netfilter-devel@vger.kernel.org
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>, 1vier1@web.de,
-        Manfred Spraul <manfred@colorfullife.com>
-Subject: [PATCH 2/2] ipc/sem.c: use READ_ONCE()/WRITE_ONCE() for use_global_lock
-Date:   Sun, 27 Jun 2021 18:19:19 +0200
-Message-Id: <20210627161919.3196-3-manfred@colorfullife.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210627161919.3196-1-manfred@colorfullife.com>
-References: <20210627161919.3196-1-manfred@colorfullife.com>
+        id S231329AbhF0QdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 12:33:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:34180 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231294AbhF0QdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 12:33:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="194998871"
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="194998871"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 09:30:54 -0700
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="624998023"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.138.183]) ([10.212.138.183])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 09:30:54 -0700
+Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
+To:     Greg KH <greg@kroah.com>
+Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
+References: <YNQckpOuw80uCUa1@kroah.com>
+ <d25a0556-325f-9af0-a495-b9f222d63e10@linux.intel.com>
+ <YNSWtCSjJy8CytOL@kroah.com>
+ <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
+ <YNSlVPcjHInk4un6@kroah.com>
+ <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+ <YNVneO6exCS4ETRt@kroah.com>
+ <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
+ <YNXqXwq1+o09eHox@kroah.com>
+ <e670abe2-67b9-a602-410a-0c4170796ec7@linux.intel.com>
+ <YNhauAgaUxMfTa+c@kroah.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <bdeb80ea-99dd-d9ea-d508-9cb8d2c6fbf4@linux.intel.com>
+Date:   Sun, 27 Jun 2021 09:30:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YNhauAgaUxMfTa+c@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch solves three weaknesses in ipc/sem.c:
 
-1) The initial read of use_global_lock in sem_lock() is an
-intentional race. KCSAN detects these accesses and prints
-a warning.
+> Then do not break things by renaming the device name, as you all have
+> now stated that this name is part of the user/kernel api.
 
-2) The code assumes that plain C read/writes are not
-mangled by the CPU or the compiler.
+The renaming comes from the fallback mode on future systems. In the 
+fallback mode the driver doesn't know the true name, so it has to use  
+the numeric name. If you don't use the fallback mode and have the full 
+driver then yes you'll get the same names as always (or at least as they 
+make sense for the hardware).
 
-3) The comment it sysvipc_sem_proc_show() was hard to
-understand: The rest of the comments in ipc/sem.c speaks
-about sem_perm.lock, and suddenly this function speaks
-about ipc_lock_object().
+But we would like to have the fallback mode too to allow more people use 
+uncore monitoring, and that's where the need to for the second name 
+comes in.
 
-To solve 1) and 2), use READ_ONCE()/WRITE_ONCE().
-Plain C reads are used in code that owns sma->sem_perm.lock.
+>
+> But really, I do not see why this is an issue, why isn't userspace just
+> properly walking the list of devices and picking the one on this
+> specific system that they want to look at?
 
-The comment is updated to solve 3)
+perf is not an fully automated tool that knows what it wants to look at. 
+It's not like udev etc.
 
-Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
----
- ipc/sem.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+It's a tool to let the user specify what they want to measure on the 
+command line. And that specification is through the pmu name.
 
-diff --git a/ipc/sem.c b/ipc/sem.c
-index bf534c74293e..b7608502f9d8 100644
---- a/ipc/sem.c
-+++ b/ipc/sem.c
-@@ -217,6 +217,8 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
-  * this smp_load_acquire(), this is guaranteed because the smp_load_acquire()
-  * is inside a spin_lock() and after a write from 0 to non-zero a
-  * spin_lock()+spin_unlock() is done.
-+ * To prevent the compiler/cpu temporarily writing 0 to use_global_lock,
-+ * READ_ONCE()/WRITE_ONCE() is used.
-  *
-  * 2) queue.status: (SEM_BARRIER_2)
-  * Initialization is done while holding sem_lock(), so no further barrier is
-@@ -342,10 +344,10 @@ static void complexmode_enter(struct sem_array *sma)
- 		 * Nothing to do, just reset the
- 		 * counter until we return to simple mode.
- 		 */
--		sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-+		WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
- 		return;
- 	}
--	sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-+	WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
- 
- 	for (i = 0; i < sma->sem_nsems; i++) {
- 		sem = &sma->sems[i];
-@@ -371,7 +373,8 @@ static void complexmode_tryleave(struct sem_array *sma)
- 		/* See SEM_BARRIER_1 for purpose/pairing */
- 		smp_store_release(&sma->use_global_lock, 0);
- 	} else {
--		sma->use_global_lock--;
-+		WRITE_ONCE(sma->use_global_lock,
-+				sma->use_global_lock-1);
- 	}
- }
- 
-@@ -412,7 +415,7 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
- 	 * Initial check for use_global_lock. Just an optimization,
- 	 * no locking, no memory barrier.
- 	 */
--	if (!sma->use_global_lock) {
-+	if (!READ_ONCE(sma->use_global_lock)) {
- 		/*
- 		 * It appears that no complex operation is around.
- 		 * Acquire the per-semaphore lock.
-@@ -2435,7 +2438,8 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it)
- 
- 	/*
- 	 * The proc interface isn't aware of sem_lock(), it calls
--	 * ipc_lock_object() directly (in sysvipc_find_ipc).
-+	 * ipc_lock_object(), i.e. spin_lock(&sma->sem_perm.lock).
-+	 * (in sysvipc_find_ipc)
- 	 * In order to stay compatible with sem_lock(), we must
- 	 * enter / leave complex_mode.
- 	 */
--- 
-2.31.1
+Of course it walks the list to find the name, but it can only chose 
+based on the name the user specified.
+
+It's like the ftrace tool doesn't know what trace points to measure on 
+its own, it just knows what is specified on the command line. Or the ip 
+tool doesn't know on its own what network device names to use for some 
+network configuration, it has to get the information from the command line.
+
+
+>
+>>>> Anyways thinking about it if Greg doesn't want symlinks (even though sysfs
+>>>> already has symlinks elsewhere), maybe we could just create two devices
+>>>> without symlinks. Kan, do you think that would work?
+>>> Do not have 2 different structures represent the same hardware device,
+>>> that too is a shortcut to madness.
+>>>
+>>> What prevents userspace from handling device names changing today?  Why
+>>> are you forcing userspace to pick a specific device name at all?
+>> The way the perf tool works is that you have to specify the names on the
+>> command line:
+>>
+>> perf stat -a -e uncore_cha/event=1/ ...
+>>
+>> With the numeric identifiers it would be
+>>
+>> perf stat -a -e uncore_type_X_Y/event=1/
+>>
+>> The tool handles it all abstractly.
+> Great, and that device name is something that is unique per machine.
+> And per boot.
+
+No it's not unique and per boot. It's always the same on a given 
+platform, it's specified by firmware. I would expect the names to be 
+stable over all systems of a given chip.
+
+
+>   So why are you suddenly thinking that this name has to be
+> "stable"?
+It's about as stable as the existing names. The existing names change 
+sometimes too when the hardware changes (for example before Skylake we 
+had "uncore_cbo", since Skylake there is "uncore_cha"). The numeric 
+identifier should have similar stability (doesn't change as long as the 
+hardware doesn't change significantly)
+
+
+>
+> If you think it does have to be stable, that was your choice, so now you
+> must keep it stable.  Don't try to mess with symlinks and the like
+> please, as again, that way lies madness and unmaintainability for the
+> next 20+ years.
+
+We keep it as stable as possible, but in the fallback mode only the 
+numeric IDs are possible. In the "driver knows full hardware" mode it 
+keeps the existing names, as possible.
+
+
+>
+>> So yes the user tools itself can handle it. But the problem is that it is
+>> directly exposed to the users, so the users would need to change all their
+>> scripts when switching between the two cases. That is what we're trying to
+>> avoid -- provide them a way that works on both.
+> But these are different systems!  Why would anyone expect that the
+> device name is the same on different systems?
+
+The scenario is that you run the same system but with two different kernels.
+
+Kernel 1 doesn't know the model number and can only operate in fallback 
+mode:
+
+It only shows numeric IDs and that's what you have to use
+
+Kernel 2 knows the model number and has a full driver which supports the 
+full Linux standard naming.
+
+You can use the standard names (like uncore_cha)
+
+But the problem is that it would be impossible to write a script that 
+works on both Kernel 1 and Kernel 2 on the same system without the 
+symlink or equivalent.
+
+
+>   If you insist on keeping
+> the name identical for newer kernel versions, then again, that was your
+> choice and now you have to do that.  Do not try to work around your own
+> requirement by using a symlink.
+
+Are you suggesting to only use numerical names everywhere?
+
+That would be a big change for existing users. The idea was that people 
+who use the fully enabled driver can use the much nicer symbolic names. 
+But people who care about writing scripts that work everywhere can use 
+the more difficult to use numeric names.
+
+Anyways it looks like we're setting on using the "name" method suggested 
+by Kan. I must say I'm not a big fan of it though, it's just another 
+incompatible break in the perf ABI that would be totally avoidable.
+
+-Andi
 
