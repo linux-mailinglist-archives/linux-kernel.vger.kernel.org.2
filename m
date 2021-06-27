@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083663B54B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8833B54B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhF0SsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 14:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231288AbhF0SsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 14:48:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6B460238;
-        Sun, 27 Jun 2021 18:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624819552;
-        bh=3hhruk8vsdFYQE9Ix7WJ83E7zQ+QcT3hQRPYO9nBSIQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CBWdslT8I612HJasa5MRKDWsMgFYzySb+kj1GYAQtP49EAxdFwVq4sWMdQwOjOrjg
-         DL6JLizYG42iOUrqGIs268wxrvdQ/6g9HSsg8nt7kKTFYzSPZ3QUvrvu1Jo8t0wSX6
-         Kn6ySjWXlvBH6yU5tcNb6MRqDMlWq5G7CNLiuwiHdRwp600pWJ54m72kXvxSEQT3X4
-         wBAcc8G4K0olko4fiZd1Sdke6U7Bbv9om/VWqEoUIdfA25xRAtjooXSrDYZBQp+sZ1
-         WHMvmbhkP+yLCGOB2snAs0U1UWV3XEc+kNhYSRqF03sMvgkV7g1LCS7xhxPRCuSo4p
-         GrouzVj3EyuWw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>
-Cc:     UNGLinuxDriver@microchip.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH net-next] net: sparx5: Do not use mac_addr uninitialized in mchp_sparx5_probe()
-Date:   Sun, 27 Jun 2021 11:45:43 -0700
-Message-Id: <20210627184543.4122478-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890
+        id S231386AbhF0Svo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 14:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231288AbhF0Svo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 14:51:44 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6455C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 11:49:19 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so8880331pjo.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 11:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8/B0ymtcimNR7SfdkvPNRS/tYCD0gKLRQgRQfe/XPmk=;
+        b=P4EoSzRyJEioZVe1Gpfb78yHN60fDhkEfSk4YGJuRb6pPt4idQQyrEGqyqmeMLPOEf
+         pcWKNWkvtCaghG4Yx/dP12nURmjvezzN5wHlg8Zyxuy/jeFJg/BPVEGP/C2r7NeTBubk
+         22Xx5UaS/nlhfXVPPSAD4Lu8lf2G9XtnrQ/8miJnyQ0Qr+zkeNqJWP3GgvEMuqvUJ6ZX
+         HcFXp1/g6NLnr3eijk3ecOyF3dw8epjud+PyStYfQdnxi3YyMYcafS6ngaEFpuPdOjgX
+         weT054BLfmzxL1AGn0y3JfpwS32l0WwWNkENDoVWuDfICrDWcplaIoOCjJ5QHOdMxU6z
+         mUQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8/B0ymtcimNR7SfdkvPNRS/tYCD0gKLRQgRQfe/XPmk=;
+        b=FmAp4xWUXWV3OKwE4I/NX2Qa8sdbX092nK9KagTAW5htyGSd8wYIegFRrTd0mGdRWT
+         g9mRQWiLYYC4dLaMKBn8fE5CTAbrWeMgB9us0S7L7gZhvASdx0xNlQCE+8KnLM6RTN+r
+         Eub9/JnNiYHyIfDrEgGimUZ1DOVbGSvb6nAEMNcixep4kNBDM5q/uRmjHo+QtXEaXvep
+         pq+VosHdw1chDxIKWljAJazbP9+NhkdKdZBmXQU1B8Jq0A96uk3+/UvFHO+TXrOTGMKw
+         rA0Xa+t0fuRkRDuFWtHP41455jK9ywcBIgdZXkCpWqtqFqWEGgZ+6DeMIVU+J4q4gMHC
+         92yA==
+X-Gm-Message-State: AOAM531ZuInC0kq5wR6n6fQT2r0so8J6PxswUklmm2y3DxLACkNbxoCw
+        fruQNsd07GsYc1qX2u2+rws=
+X-Google-Smtp-Source: ABdhPJw97cx66Om7x89feuOt432t6MUO2oDleDfByZ0VBfQ4LSAHfT739STkD4Ap54OAmIiLmiRlyw==
+X-Received: by 2002:a17:90a:fa8c:: with SMTP id cu12mr8438049pjb.171.1624819759142;
+        Sun, 27 Jun 2021 11:49:19 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.3.74])
+        by smtp.gmail.com with ESMTPSA id y7sm12114478pfy.153.2021.06.27.11.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 11:49:18 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com, apw@canonical.com
+Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+Subject: [PATCH v2] checkpatch: Fix regex for do without braces
+Date:   Mon, 28 Jun 2021 00:19:09 +0530
+Message-Id: <20210627184909.6000-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+The regular expression for detecting do without braces
+also passes when checkpatch encounters the "double"
+keyword. This causes wrong recalculation of $stat in
+checkpatch which can cause false positives.
 
-drivers/net/ethernet/microchip/sparx5/sparx5_main.c:760:29: warning:
-variable 'mac_addr' is uninitialized when used here [-Wuninitialized]
-        if (of_get_mac_address(np, mac_addr)) {
-                                   ^~~~~~~~
-drivers/net/ethernet/microchip/sparx5/sparx5_main.c:669:14: note:
-initialize the variable 'mac_addr' to silence this warning
-        u8 *mac_addr;
-                    ^
-                     = NULL
-1 warning generated.
+Fix the regex to avoid the above. Also update the comments
+for the check.
 
-mac_addr is only used to store the value retrieved from
-of_get_mac_address(), which is then copied into the base_mac member of
-the sparx5 struct using ether_addr_copy(). It is easier to just use the
-base_mac address directly, which avoids the warning and the extra copy.
-
-Fixes: 3cfa11bac9bb ("net: sparx5: add the basic sparx5 driver")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1413
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: Alejandro Colomar <alx.manpages@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- drivers/net/ethernet/microchip/sparx5/sparx5_main.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-index a325f7c05a07..c73359de3fdd 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-@@ -666,7 +666,6 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
- 	struct reset_control *reset;
- 	struct sparx5 *sparx5;
- 	int idx = 0, err = 0;
--	u8 *mac_addr;
- 
- 	if (!np && !pdev->dev.platform_data)
- 		return -ENODEV;
-@@ -757,12 +756,10 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
- 	if (err)
- 		goto cleanup_config;
- 
--	if (of_get_mac_address(np, mac_addr)) {
-+	if (!of_get_mac_address(np, sparx5->base_mac)) {
- 		dev_info(sparx5->dev, "MAC addr was not set, use random MAC\n");
- 		eth_random_addr(sparx5->base_mac);
- 		sparx5->base_mac[5] = 0;
--	} else {
--		ether_addr_copy(sparx5->base_mac, mac_addr);
- 	}
- 
- 	sparx5->xtr_irq = platform_get_irq_byname(sparx5->pdev, "xtr");
+Changes in v2:
+- Check word boundary on both sides of do
 
-base-commit: ff8744b5eb116fdf9b80a6ff774393afac7325bd
+ scripts/checkpatch.pl | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 8d19beca3538..64036e7eff71 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5488,9 +5488,8 @@ sub process {
+ 			}
+ 		}
+ 
+-# Check for illegal assignment in if conditional -- and check for trailing
+-# statements after the conditional.
+-		if ($line =~ /do\s*(?!{)/) {
++# If we have sufficient context detect and handle do without braces ({).
++		if ($line =~ /\bdo\b\s*(?!{)/) {
+ 			($stat, $cond, $line_nr_next, $remain_next, $off_next) =
+ 				ctx_statement_block($linenr, $realcnt, 0)
+ 					if (!defined $stat);
+@@ -5511,6 +5510,9 @@ sub process {
+ 								$offset} = 1;
+ 			}
+ 		}
++
++# Check for illegal assignment in if conditional -- and check for trailing
++# statements after the conditional.
+ 		if (!defined $suppress_whiletrailers{$linenr} &&
+ 		    defined($stat) && defined($cond) &&
+ 		    $line =~ /\b(?:if|while|for)\s*\(/ && $line !~ /^.\s*#/) {
 -- 
-2.32.0.93.g670b81a890
+2.28.0
 
