@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4F63B558E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F7A3B558F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhF0Wiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 18:38:55 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:56627 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231737AbhF0Wix (ORCPT
+        id S231865AbhF0WjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 18:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhF0WjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 18:38:53 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lxdO7-003UK9-2K; Mon, 28 Jun 2021 00:36:27 +0200
-Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lxdO6-000IVS-Ry; Mon, 28 Jun 2021 00:36:27 +0200
-Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <be15fd85-1d35-0cba-5c27-8273f0647f94@physik.fu-berlin.de>
- <0c2c5638-09a7-d69b-7a0d-eb2abbe83738@infradead.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <87b6efe2-6562-db7e-076e-723faf9362a6@physik.fu-berlin.de>
-Date:   Mon, 28 Jun 2021 00:36:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 27 Jun 2021 18:39:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D187C061574;
+        Sun, 27 Jun 2021 15:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ZAptBywAoHBGwItSc5F6X3/jFjFcVjPnCyB17Chtz8A=; b=ffgjZk2YVg4c5jyGsWHCo1SfYB
+        r/MKcYi/mEchr0HKJskO8arPmLmFrs1VxZyXCz+Xs0nH7gQ4c1txTEFZkZNxbj3MMA68ZgofT5Qz7
+        3a3l2qof4b6YOrEpe7pg/X9Lvm5g60lIMQTZ2kKHXfQbC53wGsD8zfWDVoXKT9tgtObo2Yuznglsk
+        +U4WEu3NWP10zZi3pULm+SQ1Yq/Yucl+RMEbwnJfeRpTtZymsBzLkpReVmK54OE/WWeKbttnNGizQ
+        NCM7893RQnkLKLTyeXFcwU2jhQhlfjPgA3dFAnBTZH3YnrBF5/2bk0zBPqFnyJOVA5LVZo0F9TRl6
+        cQrGxNxg==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxdOK-006FR6-NC; Sun, 27 Jun 2021 22:36:40 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-sgx@vger.kernel.org
+Subject: [PATCH] x86/SGX: drop spurious kernel-doc notation
+Date:   Sun, 27 Jun 2021 15:36:39 -0700
+Message-Id: <20210627223639.27714-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <0c2c5638-09a7-d69b-7a0d-eb2abbe83738@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.150.76
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy!
+Drop mistaken kernel-doc notation where plain C comments
+should be used instead.
 
-On 6/28/21 12:30 AM, Randy Dunlap wrote:
->>> [PATCH 1/3 v2] sh: fix kconfig unmet dependency warning for FRAME_POINTER
->>> [PATCH 2/3 v2] sh: define __BIG_ENDIAN for math-emu
->>> [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
->>>
->>>  arch/sh/Kconfig.debug             |    1 
->>>  arch/sh/include/asm/sfp-machine.h |    8 +++++
->>>  arch/sh/math-emu/math.c           |   44 ++++++++++++++--------------
->>>  3 files changed, 31 insertions(+), 22 deletions(-)
->>
->> I'll test these tomorrow on my SH-7785LCR board. Would it be possible to queue
->> them up for linux-next after verification?
-> 
-> Thanks.  Hopefully they will be queued and put into linux-next,
-> but that's up to the arch/sh/ maintainers, and I haven't heard
-> from them lately.  :(
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: linux-sgx@vger.kernel.org
+---
+ arch/x86/kernel/cpu/sgx/encl.h  |    2 +-
+ arch/x86/kernel/cpu/sgx/encls.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Whoops, I was meant to direct the second part to Rich :-).
-
-Rich is still around and he reviews and merges patches. Sometimes he is a bit
-busy with other things, so response times can sometimes be a bit delayed.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+--- linux-next-20210625.orig/arch/x86/kernel/cpu/sgx/encl.h
++++ linux-next-20210625/arch/x86/kernel/cpu/sgx/encl.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
++/*
+  * Copyright(c) 2016-20 Intel Corporation.
+  *
+  * Contains the software defined data structures for enclaves.
+--- linux-next-20210625.orig/arch/x86/kernel/cpu/sgx/encls.h
++++ linux-next-20210625/arch/x86/kernel/cpu/sgx/encls.h
+@@ -11,7 +11,7 @@
+ #include <asm/traps.h>
+ #include "sgx.h"
+ 
+-/**
++/*
+  * ENCLS_FAULT_FLAG - flag signifying an ENCLS return code is a trapnr
+  *
+  * ENCLS has its own (positive value) error codes and also generates
