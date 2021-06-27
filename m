@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BF93B541F
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9EA3B5428
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 18:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhF0P5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 11:57:02 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:57036 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhF0P5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:57:00 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d54 with ME
-        id NFuY2500E21Fzsu03FuYhQ; Sun, 27 Jun 2021 17:54:33 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 27 Jun 2021 17:54:33 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com, digetx@gmail.com,
-        ulf.hansson@linaro.org, maz@kernel.org, gustavoars@kernel.org,
-        jckuo@nvidia.com
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] soc/tegra: Fix an error handling path in 'tegra_powergate_power_up()'
-Date:   Sun, 27 Jun 2021 17:54:31 +0200
-Message-Id: <46d3af4a83e2e7b680c857e8969167f0d2d94841.1624809134.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S231137AbhF0QPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 12:15:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:52163 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229820AbhF0QPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 12:15:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="194998132"
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="194998132"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 09:13:07 -0700
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="624994541"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.138.183]) ([10.212.138.183])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 09:13:06 -0700
+Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
+ dynamically loaded shared object
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210627131818.810-1-adrian.hunter@intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <e2a57ee8-6489-40d5-04d0-7d985eba961f@linux.intel.com>
+Date:   Sun, 27 Jun 2021 09:13:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210627131818.810-1-adrian.hunter@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful 'tegra_powergate_enable_clocks()'
-call, it must be undone by a 'tegra_powergate_disable_clocks()' call, as
-already done in the below and above error handling paths of this function.
 
-Update the 'goto' to branch at the correct place of the error handling
-path.
+On 6/27/2021 6:18 AM, Adrian Hunter wrote:
+> Hi
+>   
+> In some cases, users want to filter very large amounts of data (e.g. from
+> AUX area tracing like Intel PT) looking for something specific. While
+> scripting such as Python can be used, Python is 10 to 20 times slower than
+> C. So define a C API so that custom filters can be written and loaded.
 
-Fixes: a38045121bf4 ("soc/tegra: pmc: Add generic PM domain support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-/!\ This patch is speculative /!\
-Review with care.
----
- drivers/soc/tegra/pmc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+While I appreciate this for complex cases, in my experience filtering is 
+usually just a simple expression. It would be nice to also have a way to 
+do this reasonably fast without having to write a custom C file.   Is 
+the 10x-20x overhead just the python interpreter, or is it related to 
+perf? Maybe we could have some kind of python fast path just for 
+filters? Or maybe the alternative would be to have a frontend in perf 
+that can automatically generate/compile such a C filter based on a 
+simple expression, but I'm not sure if that would be much simpler.
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index ea62f84d1c8b..b8ef9506f3de 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -782,7 +782,7 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
- 
- 	err = reset_control_deassert(pg->reset);
- 	if (err)
--		goto powergate_off;
-+		goto disable_clks;
- 
- 	usleep_range(10, 20);
- 
--- 
-2.30.2
+-Andi
 
