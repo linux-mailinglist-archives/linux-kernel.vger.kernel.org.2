@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D7E3B54AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083663B54B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhF0Sbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 14:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhF0Sbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 14:31:49 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2F1C061574;
-        Sun, 27 Jun 2021 11:29:23 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id v3-20020a4ac9030000b029024c9d0bff49so191035ooq.0;
-        Sun, 27 Jun 2021 11:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I+z4qkVkifTb0Z2Fw0OduCD9k1E+MgQUYF/WWXgsuTw=;
-        b=uL7OKanIVKL7ppTZGqcwmPDmBXQ+Nxi+L132xY2K7ThGyNV39mFY8n7rekVwU4uA0B
-         TWWijxnmvB0euSuw32huegRqkIBHBfLPPuy3HdxuUJOZSBerKuhihbM1UN+48zQ7Sodb
-         5ciWhWmTgNdRa5ZMDVF+w7h/K8l/NCZR/iSwFbfnq/wyc0niJnMAGXiAzAlNUjnW1tDz
-         FKFpuJlPriSvCC04LnSG+OWuDlVshf0tTtAJwZps4NFYUvD8FLqYB+0HZevwy/tuJQa1
-         itzZ3+Td+yQ3f/1QFFhGOCYIh7FAwOvJum7V+izkmz2vvJHR2Wz9LSQEXy4cvl8pNpVu
-         ThMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+z4qkVkifTb0Z2Fw0OduCD9k1E+MgQUYF/WWXgsuTw=;
-        b=WVPDYzg8Cd2rLwMV+b81sU79+9sPfZxUB0y3IeTXC8Slc2iS87kYJ0lVxSB+h24hU4
-         HnhNGiY41otumb1JygeY9gsRv/eIvwjpVcI69VCWNfbtakbM3s/OHoENtDizUjlzfQv+
-         Z5decVwVrywE1Osg6dnJ+0ERlnqlbrPD/eP52XVFU3YVIx2tF3ps7LBStSdaykinvpGn
-         FxXuPTMSnGyH8ptuaAJ7OpvYwlVQ/Me2/IkKFMitEP5hvv3bjBI+wEr0yNAgZW6BOgRA
-         HPUByno1keHa64BV873/qbxdO2LUq2wRJXZq8XdQxM6iTePnZH88BTUNmUYfGYzFZtfE
-         xnpQ==
-X-Gm-Message-State: AOAM531ZoTKBOEqBcwwrCTlkn1TbqRDQKgSmQ6xkJAaW2/KWR8K19+r9
-        fFZMmkQhAKHc9C2cN3DZGFyZG9dezdsJ4RPWYXw=
-X-Google-Smtp-Source: ABdhPJzazxCs92rqGAer6fdtZqhbLUP05TPMWhrAmtWQstXFQdy0ixcwi5fvjdhLAyNrQ8N7bXapWEqOPO8mVcpvrT0=
-X-Received: by 2002:a4a:ae4b:: with SMTP id a11mr16609024oon.48.1624818563070;
- Sun, 27 Jun 2021 11:29:23 -0700 (PDT)
+        id S231454AbhF0SsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 14:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231288AbhF0SsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 14:48:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6B460238;
+        Sun, 27 Jun 2021 18:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624819552;
+        bh=3hhruk8vsdFYQE9Ix7WJ83E7zQ+QcT3hQRPYO9nBSIQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CBWdslT8I612HJasa5MRKDWsMgFYzySb+kj1GYAQtP49EAxdFwVq4sWMdQwOjOrjg
+         DL6JLizYG42iOUrqGIs268wxrvdQ/6g9HSsg8nt7kKTFYzSPZ3QUvrvu1Jo8t0wSX6
+         Kn6ySjWXlvBH6yU5tcNb6MRqDMlWq5G7CNLiuwiHdRwp600pWJ54m72kXvxSEQT3X4
+         wBAcc8G4K0olko4fiZd1Sdke6U7Bbv9om/VWqEoUIdfA25xRAtjooXSrDYZBQp+sZ1
+         WHMvmbhkP+yLCGOB2snAs0U1UWV3XEc+kNhYSRqF03sMvgkV7g1LCS7xhxPRCuSo4p
+         GrouzVj3EyuWw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>
+Cc:     UNGLinuxDriver@microchip.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH net-next] net: sparx5: Do not use mac_addr uninitialized in mchp_sparx5_probe()
+Date:   Sun, 27 Jun 2021 11:45:43 -0700
+Message-Id: <20210627184543.4122478-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
 MIME-Version: 1.0
-References: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
- <CAOuPNLhoLBwksNt+tJ2=hZr-TGHZgEiu7dgk66BUsraGA16Juw@mail.gmail.com>
- <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com> <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
-In-Reply-To: <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
-From:   Steve deRosier <derosier@gmail.com>
-Date:   Sun, 27 Jun 2021 11:28:47 -0700
-Message-ID: <CALLGbRKs0hRLpRFz1mUJyKZan7Lf0eGAArJbBpXwFu2TQzcmWQ@mail.gmail.com>
-Subject: Re: Query: UBIFS: How to detect empty volumes
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     Richard Weinberger <richard.weinberger@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 6:52 AM Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> But, it might be possible that some developer may miss/skip this
-> firmware copying part, thus
+Clang warns:
 
-This is your root problem.
+drivers/net/ethernet/microchip/sparx5/sparx5_main.c:760:29: warning:
+variable 'mac_addr' is uninitialized when used here [-Wuninitialized]
+        if (of_get_mac_address(np, mac_addr)) {
+                                   ^~~~~~~~
+drivers/net/ethernet/microchip/sparx5/sparx5_main.c:669:14: note:
+initialize the variable 'mac_addr' to silence this warning
+        u8 *mac_addr;
+                    ^
+                     = NULL
+1 warning generated.
 
-If your build system requires any "magic incantations" such that it is
-even possible that a developer can miss a step and result in this
-situation, you *must* solve this problem.  I don't know what you're
-doing, but honestly, this shouldn't be much more than adding a line or
-two into a Makefile or build.sh script.  Fix this first.
+mac_addr is only used to store the value retrieved from
+of_get_mac_address(), which is then copied into the base_mac member of
+the sparx5 struct using ether_addr_copy(). It is easier to just use the
+base_mac address directly, which avoids the warning and the extra copy.
 
-I'm not saying it's a bad thing for your on-target flashing system to
-sanity check the images, but that will never fix a broken process. Fix
-the broken process.
+Fixes: 3cfa11bac9bb ("net: sparx5: add the basic sparx5 driver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1413
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/net/ethernet/microchip/sparx5/sparx5_main.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-- Steve
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+index a325f7c05a07..c73359de3fdd 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+@@ -666,7 +666,6 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
+ 	struct reset_control *reset;
+ 	struct sparx5 *sparx5;
+ 	int idx = 0, err = 0;
+-	u8 *mac_addr;
+ 
+ 	if (!np && !pdev->dev.platform_data)
+ 		return -ENODEV;
+@@ -757,12 +756,10 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto cleanup_config;
+ 
+-	if (of_get_mac_address(np, mac_addr)) {
++	if (!of_get_mac_address(np, sparx5->base_mac)) {
+ 		dev_info(sparx5->dev, "MAC addr was not set, use random MAC\n");
+ 		eth_random_addr(sparx5->base_mac);
+ 		sparx5->base_mac[5] = 0;
+-	} else {
+-		ether_addr_copy(sparx5->base_mac, mac_addr);
+ 	}
+ 
+ 	sparx5->xtr_irq = platform_get_irq_byname(sparx5->pdev, "xtr");
+
+base-commit: ff8744b5eb116fdf9b80a6ff774393afac7325bd
+-- 
+2.32.0.93.g670b81a890
+
