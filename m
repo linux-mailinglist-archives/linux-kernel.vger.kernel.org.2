@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DAD3B5494
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 19:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B253B549E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 20:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhF0RqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 13:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhF0RqD (ORCPT
+        id S231403AbhF0SVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 14:21:33 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41100 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231288AbhF0SVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 13:46:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F232CC061574;
-        Sun, 27 Jun 2021 10:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=+KUJztB76RmAV0aA24uXY6Y2cMuNUIBfXToczeSdKns=; b=2M4mJDWbMmR1hn8uFPwoC4phCO
-        vKi5dLzYgXNgkavSJBryhZmrFh7c5o6zFghCoGr7wX4yQ37ME8DURfxQtPU3v2nwWuDtk2UzAtYfG
-        RgSArFLYCxUBn3oIN5eKtM9GdNbvDTwsfFwBA18DHicBoxfx6dFWXrNG3FTZbfvqxoXTk5S3zyUVb
-        braigbcF39XRT+kxKcLxw1cyPpvpEsMlZ15vety5GpmBXmODNNS6RGya/ApKaZ+it/1PBQoeYWrBc
-        nswVf/P9KpAypMAnElj4nL/8/gykNflxCJ12Rzu9q5qHs+wvZ5S1sZy27q5UJAgud9jRH3bzIm8CH
-        o6IgWakw==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxYok-005wmF-FT; Sun, 27 Jun 2021 17:43:38 +0000
-Subject: Re: [RFC 10/11] hte: Add tegra GPIO HTE test driver
-To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        warthog618@gmail.com, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, robh+dt@kernel.org
-References: <20210625235532.19575-1-dipenp@nvidia.com>
- <20210625235532.19575-11-dipenp@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6e83e300-5baa-0ddb-465f-8a38ab8bbca6@infradead.org>
-Date:   Sun, 27 Jun 2021 10:43:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 27 Jun 2021 14:21:32 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3EAB029A;
+        Sun, 27 Jun 2021 20:19:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624817946;
+        bh=wK+nrVwjt4OX8y71ZMQNFIWNMUXMqLqQiij/WmjWfnc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DNBuwmC7I/0peKCcsI23heE5BEUc3uq5lbUNBGL4nPDJTkM9RWpqInfdWZMvvvfNS
+         2hzBZhTR7tPMq92wpwFNh/jj5ZdTASPJ8Hv/sOyGaTHxba2Mhnia4DLhsSuHNVOVSa
+         XUUuiknu/EVpC6z+qi8nL8DXL8Y/j9wjbLJOLE4M=
+Date:   Sun, 27 Jun 2021 21:18:34 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        sam@ravnborg.org, robdclark@gmail.com, dianders@chromium.org,
+        lyude@redhat.com, jani.nikula@intel.com, robh@kernel.org,
+        a.hajda@samsung.com, daniel.thompson@linaro.org,
+        hoegsberg@chromium.org, abhinavk@codeaurora.org,
+        seanpaul@chromium.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [v8 4/6] drm/panel-simple: Update validation warnings for eDP
+ panel description
+Message-ID: <YNjA+jg9Khn+a9K+@pendragon.ideasonboard.com>
+References: <1624726268-14869-1-git-send-email-rajeevny@codeaurora.org>
+ <1624726268-14869-5-git-send-email-rajeevny@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210625235532.19575-11-dipenp@nvidia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1624726268-14869-5-git-send-email-rajeevny@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/21 4:55 PM, Dipen Patel wrote:
-> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
-> index c4d335c41254..e62077c1024c 100644
-> --- a/drivers/hte/Kconfig
-> +++ b/drivers/hte/Kconfig
-> @@ -38,4 +38,12 @@ config HTE_TEGRA194_IRQ_TEST
->            The NVIDIA Tegra194 GTE IRQ test driver demonstrates HTE subsystem
->  	  usage for the LIC IRQ hardware timestamp.
->  
-> +config HTE_TEGRA194_GPIO_TEST
-> +        tristate "NVIDIA Tegra194 HTE GPIO Test"
-> +        depends on HTE_TEGRA194
-> +        help
-> +          The NVIDIA Tegra194 GTE GPIO test driver demonstrates how to use HTE
-> +	  subsystem indirectly through gpiolib API calls for GPIO line for the
-> +	  hardware assisted timestamping.
-> +
->  endif
+Hi Rajeev,
 
-Fix indentation, please.
+On Sat, Jun 26, 2021 at 10:21:06PM +0530, Rajeev Nandan wrote:
+> Do not give a warning for the eDP panels if the "bus_format" is
+> not specified, since most eDP panels can support more than one
+> bus formats and this can be auto-detected.
+> Also, update the check to include bpc=10 for the eDP panel.
+> 
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> ---
+> 
+> Changes in v8:
+> - New patch, to address the review comments of Sam Ravnborg [1]
+> 
+> [1] https://lore.kernel.org/dri-devel/20210621184157.GB918146@ravnborg.org/
+> 
+>  drivers/gpu/drm/panel/panel-simple.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 86e5a45..f966b562 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -772,10 +772,8 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc,
+>  			desc->bpc != 8);
+>  		break;
+>  	case DRM_MODE_CONNECTOR_eDP:
+> -		if (desc->bus_format == 0)
+> -			dev_warn(dev, "Specify missing bus_format\n");
+> -		if (desc->bpc != 6 && desc->bpc != 8)
+> -			dev_warn(dev, "Expected bpc in {6,8} but got: %u\n", desc->bpc);
+> +		if (desc->bpc != 6 && desc->bpc != 8 && desc->bpc != 10)
+> +			dev_warn(dev, "Expected bpc in {6,8,10} but got: %u\n", desc->bpc);
+
+You'll still get a warning is bpc == 0, is that intentional ?
+
+>  		break;
+>  	case DRM_MODE_CONNECTOR_DSI:
+>  		if (desc->bpc != 6 && desc->bpc != 8)
 
 -- 
-~Randy
+Regards,
 
+Laurent Pinchart
