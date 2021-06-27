@@ -2,81 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0143B53F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27ADC3B53FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhF0PD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 11:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229927AbhF0PD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 776F96161C;
-        Sun, 27 Jun 2021 15:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624806091;
-        bh=7/B22glLEoCb0RDdvXFkykmhtwP4ub1qksrbrrnFj/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zmt08efp+LWSVmlXPfUtrB3FqAsKiIFdK94LlCfZSrMQoNxC9pG73A896qF1PWSAe
-         4eZz8va8vTMZQRrOW6tzCVrhnTtNKzPWcYbthSPKVyfLsFT2RMEOYtFqXUw3rsZjHP
-         BMRmUsbjMNyO9T3glDdouT46cwm+rBnd+xMSu5yI=
-Date:   Sun, 27 Jun 2021 17:01:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
-Message-ID: <YNiSyFNbAMVxN6wO@kroah.com>
-References: <YNRzSy3NuwBDYWwr@kroah.com>
- <YNR7aw+C+7AJnBIG@zn.tnic>
- <YNXG472lXPHlbuCF@kroah.com>
- <YNXkVBcmBvZL7khv@zn.tnic>
- <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
- <YNYJ9vVQPVWqCvVq@zn.tnic>
- <1EFF7FE1-D341-41DF-8681-D386A1BD6F7A@zytor.com>
- <YNZFkG/tuHkwpyug@zn.tnic>
+        id S231193AbhF0P0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 11:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhF0P0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 11:26:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4F3C061574;
+        Sun, 27 Jun 2021 08:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5TjA7PSFWDPnK1JEPwMyjrDO4IXpUkyVPH+qXipsLzI=; b=FB+cE5V6zlmQ3S9KW0NvTeKstw
+        zq39qvfjji5PrG/b2xqx0jDeddwlfPRG8kdCN5zAI9uE7og3NneIPqxJNS+Z8VBRqJUTbXqBPNJ6f
+        mp0NWmZOK6zAMqw9JBIZNHQf0W/cJniQ0Qtdbzn0vK1WUNMOjC2oStYpNsOdf3OeJO0g3Q/6Vqr8x
+        Xj5djUGWwSgQmdJHrYN6XDqMJvgJnkkDCmdMqDYJN5sgCk409U8NTVlYqSBl64AT8fsYX5j9CJ1A0
+        ShhzJ7ENznjKRUkm9EAuALLMhmTBrmyhjjt5wFZuMLJKhqw9CXG8mtUcfH9Pv3UFCA+qwt/BMPPNM
+        O/+TNZUw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxWd4-0020zz-Kw; Sun, 27 Jun 2021 15:23:31 +0000
+Date:   Sun, 27 Jun 2021 16:23:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Message-ID: <YNiX7nyQIS/eg+VC@casper.infradead.org>
+References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
+ <20210625165614.2284243-4-roberto.sassu@huawei.com>
+ <YNhYu3BXh7f9GkVk@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNZFkG/tuHkwpyug@zn.tnic>
+In-Reply-To: <YNhYu3BXh7f9GkVk@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:07:28PM +0200, Borislav Petkov wrote:
-> On Fri, Jun 25, 2021 at 01:38:51PM -0700, H. Peter Anvin wrote:
-> > 64-bit cross build on a 32-bit platform... or Windows.
+On Sun, Jun 27, 2021 at 12:53:47PM +0200, Greg KH wrote:
+> > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
+> > +
 > 
-> Meh, nobody cares about those... :)
-> 
-> Hmm, so looking at the PRI* inttypes.h things again, they're C99 and
-> they kinda look more elegant as they don't make us cast stuff.
-> 
-> So how does that look?
-> 
-> ---
-> 
-> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-> index 04c5a44b9682..2582991ba216 100644
-> --- a/arch/x86/tools/relocs.c
-> +++ b/arch/x86/tools/relocs.c
-> @@ -26,6 +26,9 @@ static struct relocs relocs32;
->  #if ELF_BITS == 64
->  static struct relocs relocs32neg;
->  static struct relocs relocs64;
-> +#define FMT PRIu64
-> +#else
-> +#define FMT PRIu32
->  #endif
+> For enums you export to userspace, you need to specify the values so
+> that all compilers get them right.
 
-<snip>
+I've never heard that rule before.  Where does it come from?
+https://en.cppreference.com/w/c/language/enum
+says:
 
-This works for me!  It should fix the static checking tool that keeps
-tripping over this pointless warning :)
+  If enumeration-constant is not followed by = constant-expression,
+  its value is the value one greater than the value of the previous
+  enumerator in the same enumeration. The value of the first enumerator
+  (if it does not use = constant-expression) is zero.
 
-Want to turn it into a real patch?
-
-thanks,
-
-greg k-h
