@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BFC3B52EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 12:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202663B52ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 12:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhF0K6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 06:58:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhF0K6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 06:58:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A630B61C32;
-        Sun, 27 Jun 2021 10:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624791375;
-        bh=xs0Ga7yyhZsNXROXIVVWoDIcx1qs2TkJkZ9M6S2q3is=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QeJiaGforAIEgOuVUs2OVikq7+3xW61O85Ga3O1dPpmiRD2Zcz4M+67mPufmkraj7
-         H+//MUoPUWptI9mbUvsWeiSFyrpTvRGJRTEpZOB+K9FsMH8oIYNvPrSMSiHoRio961
-         Zp332abaAzcYgbzLcGV2RBxsqwl4KDYv7cGidx8c=
-Date:   Sun, 27 Jun 2021 12:56:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     zohar@linux.ibm.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 04/12] digest_lists: Objects
-Message-ID: <YNhZTR5VSin7ABZP@kroah.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-5-roberto.sassu@huawei.com>
+        id S230222AbhF0K6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 06:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhF0K6x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 06:58:53 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79396C061574;
+        Sun, 27 Jun 2021 03:56:28 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id x12so8272426vsp.4;
+        Sun, 27 Jun 2021 03:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kLTwelHcXBJw8i+63n2Vewy+RJJirrdy+PrskcqPqcs=;
+        b=XgOTGXF1fwhkgJohN8gb5ThJ9aYZFVVG4V7G/W+CdVurrRa98CYshGXEnh3rhRGoWw
+         qC3ClikQkr2/YQWvBJKLdHZeK2qJjsKQgwXBJ1KEEtnftNnOwmIHPsqMD/MXbnPbbZES
+         souwmswV2i9epMJiRWy5vfrBZKQn4sPXUE9tuOoivBRlQ2geEbiSamjSY8f9dEmNWKux
+         StTIcIwSD4T6COqSEsIwm4z+skAdiXDaG8GW2rYt9R1//me0R6SbFTmw+AAnWHXU4iFC
+         TyBcG5M15FNmtSRWYVYAU0HZQFudht7ehHLlAeuts3tzBe+6J8zvLAr+IRUaUhj2+39A
+         B19w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kLTwelHcXBJw8i+63n2Vewy+RJJirrdy+PrskcqPqcs=;
+        b=O1s9L7/Op2+Ie+ShSZQ/8FYHYVWAnTK8UCOUtdQn+SM2TEWZX0BZFxRiZHYnzF7Ovl
+         ROl5VBSrXkqCVlcqHOty4fytx6CHXpw2GDvcyG62AyuLXoHgtYWHJVaB9f6Gr0gFazQO
+         kzsyUQE/wawo3gxzPnvjuWppCIEtZvuHtmyAqrSX9irlOkjZUHXtFsXq5SOkXXMtGI8r
+         n4BodG/E6h9OGTX48lgDu3mUdOCJ5MWBzYAJXMlrr1gIIjtRTKOjN6r5UHNf/2pUmoQ7
+         5xAaaI97BNg4KnqWVrh8B0nV09t3jX14MFDmsWKiodf2k5ZVP9jN3WrTK9fxU/6/5i3t
+         2GmQ==
+X-Gm-Message-State: AOAM533erNmGo/7Tq96mRyl74kn4byYuvcfAib4Bd788YUwO30+lhRXA
+        UOH7ItWPsand+2M9OthBpZx3pXRLERvzdDzhMu0=
+X-Google-Smtp-Source: ABdhPJzS7MsJrsOx8daq2JPR6u43D5Eth53kIY9wqlHvdk57uQP3KQk3GjJ0NczCeJMNSBCgxgFVS0MXwplX30PhEeM=
+X-Received: by 2002:a05:6102:90f:: with SMTP id x15mr14453075vsh.28.1624791387598;
+ Sun, 27 Jun 2021 03:56:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625165614.2284243-5-roberto.sassu@huawei.com>
+References: <20210626161819.30508-1-sergio.paracuellos@gmail.com>
+ <CAHp75VfM-35tQMRh98mtg2XmDOJFnmjdYRKZZoi9ADm=AT2xUw@mail.gmail.com>
+ <CAMhs-H_fcNDAOHm=tZB4ku9fzeea_7f4ZLg7w5KEmcNu+8wbQQ@mail.gmail.com> <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
+In-Reply-To: <CAHp75VeN+vww=Bj=g-nx9AT0FKSGAZ8CKQZn=ff2kfQWM+dxdw@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sun, 27 Jun 2021 12:56:15 +0200
+Message-ID: <CAMhs-H-WwCfPDspgxzN=W8QouZ7WPAeyJDYf_6=YezyCkTM=Vw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mt7621: support gpio-line-names property
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NeilBrown <neil@brown.name>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 06:56:06PM +0200, Roberto Sassu wrote:
-> +++ b/security/integrity/digest_lists/digest_lists.h
-> @@ -0,0 +1,117 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2005,2006,2007,2008 IBM Corporation
-> + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> + *
-> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation, version 2 of the
-> + * License.
-> + *
-> + * File: digest_lists.h
-> + *      Unexported definitions for digest lists.
+On Sun, Jun 27, 2021 at 12:51 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sun, Jun 27, 2021 at 12:47 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > On Sun, Jun 27, 2021 at 11:33 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Sat, Jun 26, 2021 at 7:18 PM Sergio Paracuellos
+> > > <sergio.paracuellos@gmail.com> wrote:
+> > > >
+> > > > The default handling of the gpio-line-names property by the
+> > > > gpiolib-of implementation does not work with the multiple
+> > > > gpiochip banks per device structure used by the gpio-mt7621
+> > > > driver.
+> > > >
+> > > > This commit adds driver level support for the device tree
+> > > > property so that GPIO lines can be assigned friendly names.
+>
+> > > > This driver has three gpiochips with 32 gpios each. Core implementation
+> > >
+> > > implementation
+> > >
+> > >
+> > > > got gpio's repeated along each gpio chip if chip.names is not assigned.
+> > > > To avoid this behaviour driver will set this names as empty or
+> > >
+> > > the driver
+> > > these names
+> > >
+> > > > with desired friendly line names. Consider the following sample with
+> > > > minimal entries for the first chip with this patch changes applied:
+> > >
+> > > The same comment as per v1:
+> > >
+> > > Any idea why it's not a duplicate of
+> > > https://elixir.bootlin.com/linux/v5.13-rc7/C/ident/devprop_gpiochip_set_names,
+> > > and why the latter is not called in your case?
+> >
+> > The core properly calls this function but not in the way expected.
+> > This driver implements three banks of 32 gpios each internally using
+> > one gpiochip per bank, all of them in the same device. So the core
+> > code you are pointing out here duplicates the same names along the
+> > three gpiochips which is not the expected behaviour. So implementing
+> > in this way and setting names at least reserved avoids the core code
+> > to be run and also avoids the duplication getting expected behaviour
+> > for all the banks and each line friendly name.
+>
+> Isn't it the problem of how we supply fwnode in that case?
+> Another possibility is to fix DT (although I'm not sure it's now possible).
 
-Unexported to whom?
+Since the fwnode is the same for all banks of the same device, each bank
+repeats the first MTK_BANK_WIDTH label names in each bank.
 
-> + */
-> +
-> +#ifndef __DIGEST_LISTS_INTERNAL_H
-> +#define __DIGEST_LISTS_INTERNAL_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/crypto.h>
-> +#include <linux/fs.h>
-> +#include <linux/security.h>
-> +#include <linux/hash.h>
-> +#include <linux/tpm.h>
-> +#include <linux/audit.h>
-> +#include <crypto/hash_info.h>
-> +#include <linux/hash_info.h>
-> +#include <uapi/linux/digest_lists.h>
-> +
-> +#define MAX_DIGEST_SIZE	64
-> +#define HASH_BITS 10
-> +#define MEASURE_HTABLE_SIZE (1 << HASH_BITS)
-> +
-> +struct digest_list_item {
-> +	loff_t size;
-> +	u8 *buf;
-> +	u8 actions;
-> +	u8 digest[64];
-> +	enum hash_algo algo;
-> +	const char *label;
-> +};
-> +
-> +struct digest_list_item_ref {
-> +	struct digest_list_item *digest_list;
-> +	loff_t digest_offset;
-> +	loff_t hdr_offset;
-> +};
-> +
-> +struct digest_item {
-> +	/* hash table pointers */
-> +	struct hlist_node hnext;
-> +	/* digest list references (protected by RCU) */
-> +	struct digest_list_item_ref *refs;
-> +};
-> +
-> +struct h_table {
-> +	atomic_long_t len;
+This commit populates the gc.names member of each bank from the
+device-tree node within the driver. This overrides the default behavior
+since devprop_gpiochip_set_names() will only be called if names is NULL.
 
-Why is this atomic?  Why would that matter?
+Best regards,
+    Sergio Paracuellos
 
-> +	struct hlist_head queue[MEASURE_HTABLE_SIZE];
-> +};
-> +
-> +static inline unsigned int hash_key(u8 *digest)
-> +{
-> +	return (digest[0] | digest[1] << 8) % MEASURE_HTABLE_SIZE;
-> +}
-
-Don't we have hashing functions in the kernel already?
-
-> +
-> +static inline struct compact_list_hdr *get_hdr(
-> +					struct digest_list_item *digest_list,
-> +					loff_t hdr_offset)
-> +{
-> +	return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
-> +}
-
-pointer math feels rough, are you shure you want to do this this way?
-
-thanks,
-
-greg k-h
+>
+> Have you considered the above?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
