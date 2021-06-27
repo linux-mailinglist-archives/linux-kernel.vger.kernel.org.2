@@ -2,198 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F369A3B5572
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589BD3B5579
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhF0WIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 18:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        id S231757AbhF0WQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 18:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhF0WIM (ORCPT
+        with ESMTP id S231700AbhF0WQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 18:08:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B67C061574;
-        Sun, 27 Jun 2021 15:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=N/w1aU+qVBv4lNTFdznqZeT9wglcp1r9+KgSLWCT+oA=; b=Cy2U+kCexLBHFaEiTQr0AEcb/J
-        Z0p4Nk99gV0UILHh4APaDWnWohAx4+FhGmTDpA97Jj1f5RWGZ/dr4ZYVhVCjyi5wLVycnOIGaOTO4
-        +m6ADMoMFWpoKtHIW4urdx5TqtFhul8XLzCJk1W7s0YdB0XcrHIWjcLkkKCbDoK9deuzocWywDihy
-        z1xVqq8cCh/7LmUxT6VaRIi7pVs2lwzyrYTWyYUPUYhrUk3QyXUypbjEmF8crucs5m4dO2ueVhf3Z
-        VnjxNkX7iZWPAEQlfZSvjatggzG8S9fPqZTbJKVVghgBVYx1yLDPqjk3uCmSmowaQWa5ohAPtGdEr
-        V4B8CaaQ==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxcuQ-006CHh-Oi; Sun, 27 Jun 2021 22:05:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Subject: [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
-Date:   Sun, 27 Jun 2021 15:05:44 -0700
-Message-Id: <20210627220544.8757-4-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210627220544.8757-1-rdunlap@infradead.org>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
+        Sun, 27 Jun 2021 18:16:32 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA4EC061574;
+        Sun, 27 Jun 2021 15:14:07 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxd1w-00D2bT-AL; Sun, 27 Jun 2021 22:13:32 +0000
+Date:   Sun, 27 Jun 2021 22:13:32 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 0/9] Refactoring exit
+Message-ID: <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133>
+ <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133>
+ <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133>
+ <875yy3850g.fsf_-_@disp2133>
+ <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h defines READ and WRITE, so rename the SH math-emu macros
-to MREAD and MWRITE.
+On Thu, Jun 24, 2021 at 10:45:23PM +0000, Al Viro wrote:
 
-Fixes these warnings:
+> 13) there's bdflush(1, whatever), which is equivalent to exit(0).
+> IMO it's long past the time to simply remove the sucker.
 
-../arch/sh/math-emu/math.c:54: warning: "WRITE" redefined
-   54 | #define WRITE(d,a) ({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:37: note: this is the location of the previous definition
-   37 | #define WRITE   1
-../arch/sh/math-emu/math.c:55: warning: "READ" redefined
-   55 | #define READ(d,a) ({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-In file included from ../arch/sh/math-emu/math.c:10:
-../include/linux/kernel.h:36: note: this is the location of the previous definition
-   36 | #define READ   0
+Incidentally, calling that from ptraced process on alpha leads to
+the same headache for tracer.  _If_ we leave it around, this is
+another candidate for "hit yourself with that special signal" -
+both alpha and m68k have that syscall, and IMO adding an asm
+wrapper for that one is over the top.
 
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2: renumber patches, otherwise no change;
+Said that, we really ought to bury that thing:
 
- arch/sh/math-emu/math.c |   44 +++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+commit 2f268ee88abb33968501a44368db55c63adaad40
+Author: Andrew Morton <akpm@digeo.com>
+Date:   Sat Dec 14 03:16:29 2002 -0800
 
---- linux-next-20210625.orig/arch/sh/math-emu/math.c
-+++ linux-next-20210625/arch/sh/math-emu/math.c
-@@ -51,8 +51,8 @@
- #define Rn	(regs->regs[n])
- #define Rm	(regs->regs[m])
- 
--#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
--#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MWRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
-+#define MREAD(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
- 
- #define PACK_S(r,f)	FP_PACK_SP(&r,f)
- #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
-@@ -157,11 +157,11 @@ fmov_idx_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + R0 + 4);
-+		MREAD(FRn, Rm + R0 + 4);
- 		n++;
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	} else {
--		READ(FRn, Rm + R0);
-+		MREAD(FRn, Rm + R0);
- 	}
- 
- 	return 0;
-@@ -173,11 +173,11 @@ fmov_mem_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 	}
- 
- 	return 0;
-@@ -189,12 +189,12 @@ fmov_inc_reg(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(n);
--		READ(FRn, Rm + 4);
-+		MREAD(FRn, Rm + 4);
- 		n++;
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 8;
- 	} else {
--		READ(FRn, Rm);
-+		MREAD(FRn, Rm);
- 		Rm += 4;
- 	}
- 
-@@ -207,11 +207,11 @@ fmov_reg_idx(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + R0 + 4);
-+		MWRITE(FRm, Rn + R0 + 4);
- 		m++;
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	} else {
--		WRITE(FRm, Rn + R0);
-+		MWRITE(FRm, Rn + R0);
- 	}
- 
- 	return 0;
-@@ -223,11 +223,11 @@ fmov_reg_mem(struct sh_fpu_soft_struct *
- {
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -240,12 +240,12 @@ fmov_reg_dec(struct sh_fpu_soft_struct *
- 	if (FPSCR_SZ) {
- 		FMOV_EXT(m);
- 		Rn -= 8;
--		WRITE(FRm, Rn + 4);
-+		MWRITE(FRm, Rn + 4);
- 		m++;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	} else {
- 		Rn -= 4;
--		WRITE(FRm, Rn);
-+		MWRITE(FRm, Rn);
- 	}
- 
- 	return 0;
-@@ -445,11 +445,11 @@ id_sys(struct sh_fpu_soft_struct *fregs,
- 	case 0x4052:
- 	case 0x4062:
- 		Rn -= 4;
--		WRITE(*reg, Rn);
-+		MWRITE(*reg, Rn);
- 		break;
- 	case 0x4056:
- 	case 0x4066:
--		READ(*reg, Rn);
-+		MREAD(*reg, Rn);
- 		Rn += 4;
- 		break;
- 	default:
+    [PATCH] deprecate use of bdflush()
+	
+    Patch from Robert Love <rml@tech9.net>
+		
+    We can never get rid of it if we do not deprecate it - so do so and
+    print a stern warning to those who still run bdflush daemons.
+
+Deprecated for 18.5 years by now - I seriously suspect that we have
+some contributors younger than that...
