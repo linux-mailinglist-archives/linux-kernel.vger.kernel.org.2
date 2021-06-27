@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1DC3B53F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0143B53F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhF0PDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 11:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhF0PDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:03:33 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F9AC061574;
-        Sun, 27 Jun 2021 08:01:07 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so13838221otk.7;
-        Sun, 27 Jun 2021 08:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3C9iHuFiHE/hLelyZ5mieqxqEshQNzel5N07H5HI+EY=;
-        b=Vsu+YGE1EDBNwI2YGAuJQJ4YiNtONthrIZO/lcqpkmqG578R22eSf0WTEVWfzmej+Q
-         EHnJcczE56jLXtnjuSyB69lUeshi5AQ2dmc0kIaZze4IxwcAeGpR2xfer2oL4HjKMTDU
-         lHzFjb9JtwwPFfTzTCe17IZkQayF7IkhWBezXWkFwWdK5HK7IcVhCHe99kkts1ddkWgZ
-         ZpxH5KAz0b+UJx24qAj4GWFRav7ps+WBrUcv6d5NjH93IM16tBKfwupPCeuGBvwxn2F+
-         sJAa2rbwZtvObSlFJylWkEZjc7fAwQhvVsmFfZqe6/LN7c7u3f0soDXSLG1L7IOl1knC
-         CQug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3C9iHuFiHE/hLelyZ5mieqxqEshQNzel5N07H5HI+EY=;
-        b=LZjuT1ay/H5M7MWXKok2aV3UDsy7UCXlNFsmy8+C7T1HHZXxjtf3ntg8WyI09FUbRu
-         aVqptMcwli6cyDqIUgbOARgCjdwHuXnbtAqrz4W/TJwT2YcxmeuC6Dj7r7RAukyBIoI8
-         p5ZTfq8OgH28d5r5TLX3+m+7KOHC58B8pI4aX8578qdJGEA9vLX/oBuHLnEzvll606zz
-         W6neizZXJkooqxfgSkiikzPyB+iPt8AOFGquclYM3HwlW8ZWcalMAzJuloS71OiKn/Rd
-         z5TLufWuR30veLtZaSotfUh4776cagYJVpqvClGBC2WqytdTMXyQ+rWFZUAsgtCg63mk
-         yh/Q==
-X-Gm-Message-State: AOAM530vjNRgeJ21db283ZuWETONlXYWOGAMPvI5BExzdYIjbedFkmdP
-        fneRFbhJh3A3G4hhU6VJJsxluYKNv1w=
-X-Google-Smtp-Source: ABdhPJynfKOnavEh6dV8drVTFwe67R/bPa26Pm3AZnkB9O5eYnZoB9dMUXBK1Mee6zWQXQ42ia2eaQ==
-X-Received: by 2002:a9d:d12:: with SMTP id 18mr13843134oti.309.1624806066893;
-        Sun, 27 Jun 2021 08:01:06 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z5sm2732839oth.6.2021.06.27.08.01.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 08:01:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Curtis Klein <curtis.klein@hpe.com>, wim@linux-watchdog.org
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1624751265-24785-1-git-send-email-curtis.klein@hpe.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] watchdog: only run driver set_pretimeout op if device
- supports it
-Message-ID: <42547712-88c9-b432-f049-f2db8447739d@roeck-us.net>
-Date:   Sun, 27 Jun 2021 08:01:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231130AbhF0PD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 11:03:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhF0PD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 11:03:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776F96161C;
+        Sun, 27 Jun 2021 15:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624806091;
+        bh=7/B22glLEoCb0RDdvXFkykmhtwP4ub1qksrbrrnFj/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zmt08efp+LWSVmlXPfUtrB3FqAsKiIFdK94LlCfZSrMQoNxC9pG73A896qF1PWSAe
+         4eZz8va8vTMZQRrOW6tzCVrhnTtNKzPWcYbthSPKVyfLsFT2RMEOYtFqXUw3rsZjHP
+         BMRmUsbjMNyO9T3glDdouT46cwm+rBnd+xMSu5yI=
+Date:   Sun, 27 Jun 2021 17:01:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] x86/tools/relocs: add __printf attribute to die()
+Message-ID: <YNiSyFNbAMVxN6wO@kroah.com>
+References: <YNRzSy3NuwBDYWwr@kroah.com>
+ <YNR7aw+C+7AJnBIG@zn.tnic>
+ <YNXG472lXPHlbuCF@kroah.com>
+ <YNXkVBcmBvZL7khv@zn.tnic>
+ <F8B4FDC6-851F-4EC5-A308-BBAB52A75EF3@zytor.com>
+ <YNYJ9vVQPVWqCvVq@zn.tnic>
+ <1EFF7FE1-D341-41DF-8681-D386A1BD6F7A@zytor.com>
+ <YNZFkG/tuHkwpyug@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <1624751265-24785-1-git-send-email-curtis.klein@hpe.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNZFkG/tuHkwpyug@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/26/21 4:47 PM, Curtis Klein wrote:
-> Some watchdog devices might conditionally support pretimeouts (e.g. if
-> an interrupt is exposed for the device) but some watchdog drivers might
-> still define the set_pretimeout operation (e.g. the mtk_wdt driver) and
-> indicate support at runtime through the WDIOF_PRETIMEOUT flag. If the
-> kernel is compiled with CONFIG_WATCHDOG_HRTIMER_PRETIMEOUT enabled,
-> watchdog_set_pretimeout would run the driver specific set_pretimeout
-> even if WDIOF_PRETIMEOUT is not set which might have unintended
-> consequences.
+On Fri, Jun 25, 2021 at 11:07:28PM +0200, Borislav Petkov wrote:
+> On Fri, Jun 25, 2021 at 01:38:51PM -0700, H. Peter Anvin wrote:
+> > 64-bit cross build on a 32-bit platform... or Windows.
 > 
-> So this change checks that the device flags and only runs the driver
-> operation if pretimeouts are supported.
+> Meh, nobody cares about those... :)
 > 
-> Signed-off-by: Curtis Klein <curtis.klein@hpe.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Hmm, so looking at the PRI* inttypes.h things again, they're C99 and
+> they kinda look more elegant as they don't make us cast stuff.
+> 
+> So how does that look?
+> 
 > ---
->   drivers/watchdog/watchdog_dev.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
-> index 3bab324..5bf795c 100644
-> --- a/drivers/watchdog/watchdog_dev.c
-> +++ b/drivers/watchdog/watchdog_dev.c
-> @@ -401,7 +401,7 @@ static int watchdog_set_pretimeout(struct watchdog_device *wdd,
->   	if (watchdog_pretimeout_invalid(wdd, timeout))
->   		return -EINVAL;
->   
-> -	if (wdd->ops->set_pretimeout)
-> +	if (wdd->ops->set_pretimeout && (wdd->info->options & WDIOF_PRETIMEOUT))
->   		err = wdd->ops->set_pretimeout(wdd, timeout);
->   	else
->   		wdd->pretimeout = timeout;
-> 
+> diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+> index 04c5a44b9682..2582991ba216 100644
+> --- a/arch/x86/tools/relocs.c
+> +++ b/arch/x86/tools/relocs.c
+> @@ -26,6 +26,9 @@ static struct relocs relocs32;
+>  #if ELF_BITS == 64
+>  static struct relocs relocs32neg;
+>  static struct relocs relocs64;
+> +#define FMT PRIu64
+> +#else
+> +#define FMT PRIu32
+>  #endif
 
+<snip>
+
+This works for me!  It should fix the static checking tool that keeps
+tripping over this pointless warning :)
+
+Want to turn it into a real patch?
+
+thanks,
+
+greg k-h
