@@ -2,64 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ADC3B53FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3439F3B53FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 17:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhF0P0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 11:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        id S231265AbhF0Pbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 11:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhF0P0W (ORCPT
+        with ESMTP id S231211AbhF0Pbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:26:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4F3C061574;
-        Sun, 27 Jun 2021 08:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5TjA7PSFWDPnK1JEPwMyjrDO4IXpUkyVPH+qXipsLzI=; b=FB+cE5V6zlmQ3S9KW0NvTeKstw
-        zq39qvfjji5PrG/b2xqx0jDeddwlfPRG8kdCN5zAI9uE7og3NneIPqxJNS+Z8VBRqJUTbXqBPNJ6f
-        mp0NWmZOK6zAMqw9JBIZNHQf0W/cJniQ0Qtdbzn0vK1WUNMOjC2oStYpNsOdf3OeJO0g3Q/6Vqr8x
-        Xj5djUGWwSgQmdJHrYN6XDqMJvgJnkkDCmdMqDYJN5sgCk409U8NTVlYqSBl64AT8fsYX5j9CJ1A0
-        ShhzJ7ENznjKRUkm9EAuALLMhmTBrmyhjjt5wFZuMLJKhqw9CXG8mtUcfH9Pv3UFCA+qwt/BMPPNM
-        O/+TNZUw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxWd4-0020zz-Kw; Sun, 27 Jun 2021 15:23:31 +0000
-Date:   Sun, 27 Jun 2021 16:23:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Message-ID: <YNiX7nyQIS/eg+VC@casper.infradead.org>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-4-roberto.sassu@huawei.com>
- <YNhYu3BXh7f9GkVk@kroah.com>
+        Sun, 27 Jun 2021 11:31:42 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0BFC061574;
+        Sun, 27 Jun 2021 08:29:16 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so15667451oti.2;
+        Sun, 27 Jun 2021 08:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5gFqnS/CoYLNlikXZlkgnwqo+7RmKH3b1Jf1rQbqAcs=;
+        b=czXaaYQlf6ff5fpTB7PrT/Q86P0SWfMniizjxTLZmaSWtQhUoaQoDlBkc1Q1qNKCjL
+         4BaaMGzno8CRjXE8AXURgq/j8qhtxBclOzYMMlYwYMhqrGnUDfUTXycfPPhXY7hi1dCi
+         ojoGjm0CPn6coxOjqWhN7BwrriQy+pDUkjb2xDvqQH1wNpnozZFWnboQwBGbN42pB+T0
+         QlHhYg4jjAgDZe4ffX/6qtGYXCrIHrqUHFiCclyu5Dm6ftOhxA9rV616jT7cSz02EsBt
+         stEqMMBWBMTCYCKU+hLyZ93UE02q/0NUEdED/wi5f2QAOIQZuWIB1UOxrlP5kCOHo8ZD
+         e9oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5gFqnS/CoYLNlikXZlkgnwqo+7RmKH3b1Jf1rQbqAcs=;
+        b=Er4xXMpgZwwqnPtnI5RQxXzPRu0OA1Y/KUpLm3+wAKl7Zhyx0THr8++d44a0ac7U23
+         fovsUSpX39n42mzQbrG9h0R1DsdlZdUsI6P/K5v17JIKsBp4V0Ua5iSu0dNlyNk1JjGO
+         Ugh2qaHT9gZjggdDTzkN9GUhBlqnwX01MWNEEPu7evYGoMM5viu0Zprx6LegBfvRXrcN
+         3PSX1f9qT/Xo58Gfk1EsprsuTj8VV75RwDex1UMdpwDntxiyP6yuE6/ZhZzBQL3qHGq3
+         JE5KQDTRGrYpB83OeZyQ4A/9nxJ14foq/QNSPyTtzElYj+3jjz1oAJ9sZ+M57FDiU7hR
+         kxuw==
+X-Gm-Message-State: AOAM533MR+YTprugicfAiZBpgisjUUHVaCxRXCz3xLWMXEiswu45m2cV
+        +YVDK4wa7qGx9zrFHDAWNkk=
+X-Google-Smtp-Source: ABdhPJyTo3B/5vnfM/5AaVmSpxZJ3xyn8xFTPpxA9Kfu2fxbMwY1kUWKm02TFV7syL5ywgeZrHE2aw==
+X-Received: by 2002:a05:6830:4a2:: with SMTP id l2mr1514306otd.267.1624807756137;
+        Sun, 27 Jun 2021 08:29:16 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t25sm2308002oij.47.2021.06.27.08.29.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Jun 2021 08:29:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/5] watchdog: meson_gxbb_wdt: remove
+ watchdog_stop_on_reboot
+To:     Artem Lapkin <email2tema@gmail.com>, narmstrong@baylibre.com
+Cc:     wim@linux-watchdog.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20210623024429.1346349-1-art@khadas.com>
+ <20210623024429.1346349-2-art@khadas.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <f8605141-348e-dcc2-1457-021c0c0ff7bf@roeck-us.net>
+Date:   Sun, 27 Jun 2021 08:29:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNhYu3BXh7f9GkVk@kroah.com>
+In-Reply-To: <20210623024429.1346349-2-art@khadas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 12:53:47PM +0200, Greg KH wrote:
-> > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
-> > +
+On 6/22/21 7:44 PM, Artem Lapkin wrote:
+> Remove watchdog_stop_on_reboot (still can be activated by
+> watchdog.stop_on_reboot=1) i think this driver configuration more useful
+> becouse we can get reboot waranty for abnormal situations on shutdown stage
 > 
-> For enums you export to userspace, you need to specify the values so
-> that all compilers get them right.
 
-I've never heard that rule before.  Where does it come from?
-https://en.cppreference.com/w/c/language/enum
-says:
+This is personal opinion. Driver authors would have to agree.
 
-  If enumeration-constant is not followed by = constant-expression,
-  its value is the value one greater than the value of the previous
-  enumerator in the same enumeration. The value of the first enumerator
-  (if it does not use = constant-expression) is zero.
+Guenter
+
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> ---
+>   drivers/watchdog/meson_gxbb_wdt.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+> index 5a9ca10fbcfa..3f86530c33b0 100644
+> --- a/drivers/watchdog/meson_gxbb_wdt.c
+> +++ b/drivers/watchdog/meson_gxbb_wdt.c
+> @@ -186,7 +186,6 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+>   
+>   	meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
+>   
+> -	watchdog_stop_on_reboot(&data->wdt_dev);
+>   	return devm_watchdog_register_device(dev, &data->wdt_dev);
+>   }
+>   
+> 
 
