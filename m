@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5B33B51EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 06:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C083B51EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 06:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhF0EyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 00:54:20 -0400
-Received: from ciao.gmane.io ([116.202.254.214]:35192 "EHLO ciao.gmane.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230318AbhF0EyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 00:54:19 -0400
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
-        id 1lxMlu-0009eI-TB
-        for linux-kernel@vger.kernel.org; Sun, 27 Jun 2021 06:51:54 +0200
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-kernel@vger.kernel.org
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+        id S230176AbhF0EyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 00:54:17 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:45779 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhF0EyQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 00:54:16 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d42 with ME
+        id N4rq2500221Fzsu034rqeR; Sun, 27 Jun 2021 06:51:51 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 27 Jun 2021 06:51:51 +0200
+X-ME-IP: 86.243.172.93
 Subject: Re: [PATCH] Coccinelle: Update and rename
  api/alloc/pci_free_consistent.cocci
-Date:   Sun, 27 Jun 2021 06:51:48 +0200
-Message-ID: <65419e5b-6c82-cf5a-071a-a3421f6b846a@wanadoo.fr>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Gilles.Muller@inria.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Newsgroups: gmane.linux.kernel,gmane.comp.version-control.coccinelle,gmane.linux.kernel.janitors
 References: <edc2fdb429d184d05a70956ced00845bca2d4fe9.1623871406.git.christophe.jaillet@wanadoo.fr>
  <alpine.DEB.2.22.394.2106262154280.3562@hadrien>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <65419e5b-6c82-cf5a-071a-a3421f6b846a@wanadoo.fr>
+Date:   Sun, 27 Jun 2021 06:51:48 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
+MIME-Version: 1.0
 In-Reply-To: <alpine.DEB.2.22.394.2106262154280.3562@hadrien>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Cc:     cocci@systeme.lip6.fr, kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -129,5 +135,4 @@ CJ
 >>
 >>
 > 
-
 
