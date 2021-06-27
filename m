@@ -2,297 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9843B55A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA423B55C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 01:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhF0Wsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 18:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S231864AbhF0XC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 19:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhF0Wse (ORCPT
+        with ESMTP id S231738AbhF0XC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 18:48:34 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45899C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 15:46:09 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id q4so13959835ljp.13
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 15:46:09 -0700 (PDT)
+        Sun, 27 Jun 2021 19:02:26 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812C3C061574;
+        Sun, 27 Jun 2021 16:00:01 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id e22so13735842pgv.10;
+        Sun, 27 Jun 2021 16:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FP4GHevXLc7+sHWGv3LiuwwfoofeUDyrdmRtLEq0Vls=;
-        b=VD6EdDGAG0MJZcQxRB/5jF5gUF+DLvok10jCIkBcne4iMzd4zQrp+QqB/5lRh53QYk
-         lU1rhs6AHfoNLqynHEOXBjfowk3WYaph2Os2qzipFu3rXL1zse0E6gsb/BGmiD5GAJgr
-         1clIF5JQVv69QP+TvO47ttiTVR4Xjjh1H+XFE=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=oObwvXsaqAUb8vB6GzYedHdtF/WzC8DIfOegRYh4rG0=;
+        b=JDL39NDUlYiMBJb05P0yCWBqka4BZu9M034XP0rS24lT7mC1/+6Bw7ZJXTU+AG6o8M
+         RNaOpJ1TaN1Cw7Xa+URDriIEFX6eK3YfA4pRlrQKAf7FcAPbE6QVbcrZdf112ya9IfIR
+         9A0jlmgONyxJgsH19758eWPXScyJCCK7nQ5UJXXw6LSFD4SlpY5NZDwjwkbiylTmOUKl
+         95+ELqsdWyUdc+A9eQ61PlfMibeJELEdciMmKIJ2QPBvZ/H+F+s73NQcvdmkoZEjpSbj
+         qJr//yVEMeRnbrzxKzZIxksmMkz4doZDdDWS5Qt/QJMxanzgZVtvjHRpfzH+m+J3T/yx
+         S6pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FP4GHevXLc7+sHWGv3LiuwwfoofeUDyrdmRtLEq0Vls=;
-        b=I0ilBi9NtJ/gbWfJ+T6y3Xm6oOcds0x41bNH6Iy2kRD/skE+afwXlr4XEKpjcw3Anu
-         58PZLoWPImcFCgS+RuxBvxwUov/Rm+ZohieZ3fws2yTaB6D7mzv0E7BHVY2srOixg2X6
-         eqcHU3MJCNO7sGOPVMOwXv/KBWgqvqAVtiesWDzaukc5RS1b9ra0xm4ZqTJi5iDQYYQH
-         JYfH5mvDCp79HXE83ql0IHNkUAOwCbG72V14DRNo6it4kCsnueGwFmYdlsjqHx0Qfcl/
-         Nccju7uziyKdPgtOeItUJqWU3If90zabV6tMJzgilapv9v2HuzzmyqZ+WQZAfVk3Zw/s
-         vE9Q==
-X-Gm-Message-State: AOAM533myY3jzwRZwrse2ACd9UlYDQ/vHiSklXAKn35CvHrdu+/uMVCP
-        4puDEmaTgLSi82X+xxpGsf2no8J6iZtKcudY
-X-Google-Smtp-Source: ABdhPJyJfmUBk9RT2HiPv6MzpCdEq7OKjjD8z6ORPhHJ/zoQ0j7BEB4KBV14wOr3Kngvy1mCDkky0w==
-X-Received: by 2002:a2e:4b11:: with SMTP id y17mr17269210lja.105.1624833967290;
-        Sun, 27 Jun 2021 15:46:07 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id k21sm1324758lji.107.2021.06.27.15.46.06
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oObwvXsaqAUb8vB6GzYedHdtF/WzC8DIfOegRYh4rG0=;
+        b=cjcSLvN74CmTeFndnWivKx5oFgBPiXOJ7jnwyl62kSCHxZKhX7S7J9+wUzxsSa8fZ5
+         fnJX4yYnR3lqKMV78tXtQzPsukWa8u3BI7q67Pb3Zj0GqkeCNgmsaLBWQzu0TV6to72F
+         ODYHzGV39SARIN8l47e9AGV4e+yp8CxAI+x/cRCO55tmxCytmTzLmn6RnmyPPXx68h++
+         ojdfF6CsAB3WKIvA7oY7kKuz36PQfNJ990RsEFFKpf65LnS78vrs1A2QfO0FHcdtfHr4
+         7lQvWENfH4onNVNRZZNHCLXcsMVPYHGO2OZ1yu0U/W1ERLAaH5hZa0k3ssNc6BEnWAue
+         NRnw==
+X-Gm-Message-State: AOAM532tmQNlwWAw6+FmOXLeVXEpAncCTWDcw7swpv+IdFhy95XrMajR
+        Aa0fqovkTxFX/HwR2XTtyOc=
+X-Google-Smtp-Source: ABdhPJzcHQPh4e+dugJRImDobQenA34an/On5VmG4UE2Be3WljLZZBLB0S4hUWgVr8QL2V05Wa7jPQ==
+X-Received: by 2002:a63:171e:: with SMTP id x30mr20899976pgl.368.1624834800983;
+        Sun, 27 Jun 2021 16:00:00 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:34c6:84ea:412f:b792? ([2001:df0:0:200c:34c6:84ea:412f:b792])
+        by smtp.gmail.com with ESMTPSA id c24sm10061304pfn.86.2021.06.27.15.59.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 15:46:06 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id r16so22292265ljk.9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 15:46:06 -0700 (PDT)
-X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr1833841ljp.251.1624833966495;
- Sun, 27 Jun 2021 15:46:06 -0700 (PDT)
+        Sun, 27 Jun 2021 16:00:00 -0700 (PDT)
+Subject: Re: [PATCH 0/9] Refactoring exit
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133>
+ <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133>
+ <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
+ <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+ <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
+Date:   Mon, 28 Jun 2021 10:59:51 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 27 Jun 2021 15:45:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj7E9iTGHbqfgtaTAM09WrVzwXjda2_D59MT8D_1=54Rg@mail.gmail.com>
-Message-ID: <CAHk-=wj7E9iTGHbqfgtaTAM09WrVzwXjda2_D59MT8D_1=54Rg@mail.gmail.com>
-Subject: Linux 5.13
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So we had quite the calm week since rc7, and I see no reason to delay
-5.13. The shortlog for the week is tiny, with just 88 non-merge
-commits (and a few of those are just reverts).  It's a fairly random
-mix of fixes, and being so small I'd just suggest people scan the
-appended shortlog for what happened.
+On 28/06/21 10:13 am, Al Viro wrote:
 
-Of course, if the last week was small and calm, 5.13 overall is
-actually fairly large. In fact, it's one of the bigger 5.x releases,
-with over 16k commits (over 17k if you count merges), from over 2k
-developers. But it's a "big all over" kind of thing, not something
-particular that stands out as particularly unusual. Some of the extra
-size might just be because 5.12 had that extra rc week.
+> On Thu, Jun 24, 2021 at 10:45:23PM +0000, Al Viro wrote:
+>
+>> 13) there's bdflush(1, whatever), which is equivalent to exit(0).
+>> IMO it's long past the time to simply remove the sucker.
+> Incidentally, calling that from ptraced process on alpha leads to
+> the same headache for tracer.  _If_ we leave it around, this is
+> another candidate for "hit yourself with that special signal" -
+> both alpha and m68k have that syscall, and IMO adding an asm
+> wrapper for that one is over the top.
+>
+> Said that, we really ought to bury that thing:
+>
+> commit 2f268ee88abb33968501a44368db55c63adaad40
+> Author: Andrew Morton <akpm@digeo.com>
+> Date:   Sat Dec 14 03:16:29 2002 -0800
+>
+>      [PATCH] deprecate use of bdflush()
+> 	
+>      Patch from Robert Love <rml@tech9.net>
+> 		
+>      We can never get rid of it if we do not deprecate it - so do so and
+>      print a stern warning to those who still run bdflush daemons.
+>
+> Deprecated for 18.5 years by now - I seriously suspect that we have
+> some contributors younger than that...
 
-And with 5.13 out the door, that obviously means that the merge window
-for 5.14 will be starting tomorrow. I already have a few pull requests
-for it pending, but as usual, I'd ask people to give the final 5.13 at
-least a quick test before moving on to the exciting new pending
-stuff..
+Haven't found that warning in over 7 years' worth of console logs, and 
+I'm a good candidate for running the oldest userland in existence for m68k.
 
-               Linus
+Time to let it go.
 
----
+Cheers,
 
-Aili Yao (1):
-      mm,hwpoison: return -EHWPOISON to denote that the page has
-already been poisoned
+     Michael
 
-Andreas Hecht (1):
-      i2c: dev: Add __user annotation
 
-Andy Shevchenko (1):
-      pinctrl: microchip-sgpio: Put fwnode in error case during ->probe()
-
-Arnd Bergmann (1):
-      ARM: 9081/1: fix gcc-10 thumb2-kernel regression
-
-Bumyong Lee (1):
-      swiotlb: manipulate orig_addr when tlb_addr has offset
-
-Christian K=C3=B6nig (4):
-      drm/nouveau: wait for moving fence after pinning v2
-      drm/radeon: wait for moving fence after pinning
-      drm/amdgpu: wait for moving fence after pinning
-      drm/nouveau: fix dma_address check for CPU/GPU sync
-
-Christoph Hellwig (1):
-      scsi: sd: Call sd_revalidate_disk() for ioctl(BLKRRPART)
-
-Claudio Imbrenda (2):
-      mm/vmalloc: add vmalloc_no_huge
-      KVM: s390: prepare for hugepage vmalloc
-
-Dan Carpenter (1):
-      i2c: cp2615: check for allocation failure in cp2615_i2c_recv()
-
-Dan Sneddon (2):
-      drm: atmel_hlcdc: Enable the crtc vblank prior to crtc usage.
-      drm/atmel-hlcdc: Allow async page flips
-
-Daniel Axtens (1):
-      mm/vmalloc: unbreak kasan vmalloc support
-
-Daniel Vetter (1):
-      Revert "drm: add a locked version of drm_is_current_master"
-
-David Howells (1):
-      afs: Fix afs_write_end() to handle short writes
-
-Desmond Cheong Zhi Xi (1):
-      drm: add a locked version of drm_is_current_master
-
-Fabien Dessenne (1):
-      pinctrl: stm32: fix the reported number of GPIO lines per bank
-
-Gabriel Knezek (1):
-      gpiolib: cdev: zero padding during conversion to gpioline_info_change=
-d
-
-Gleb Fotengauer-Malinovskiy (1):
-      userfaultfd: uapi: fix UFFDIO_CONTINUE ioctl request definition
-
-Haibo Chen (1):
-      spi: spi-nxp-fspi: move the register operation after the clock enable
-
-Heikki Krogerus (1):
-      software node: Handle software node injection to an existing
-device properly
-
-Heiko Carstens (1):
-      s390/stack: fix possible register corruption with stack switch helper
-
-Heiner Kallweit (1):
-      i2c: i801: Ensure that SMBHSTSTS_INUSE_STS is cleared when
-leaving i801_access
-
-Hugh Dickins (11):
-      mm: page_vma_mapped_walk(): use page for pvmw->page
-      mm: page_vma_mapped_walk(): settle PageHuge on entry
-      mm: page_vma_mapped_walk(): use pmde for *pvmw->pmd
-      mm: page_vma_mapped_walk(): prettify PVMW_MIGRATION block
-      mm: page_vma_mapped_walk(): crossing page table boundary
-      mm: page_vma_mapped_walk(): add a level of indentation
-      mm: page_vma_mapped_walk(): use goto instead of while (1)
-      mm: page_vma_mapped_walk(): get vma_address_end() earlier
-      mm/thp: fix page_vma_mapped_walk() if THP mapped by ptes
-      mm/thp: another PVMW_SYNC fix in page_vma_mapped_walk()
-      mm, futex: fix shared futex pgoff on shmem huge page
-
-Ilya Dryomov (2):
-      libceph: don't pass result into ac->ops->handle_reply()
-      libceph: set global_id as soon as we get an auth ticket
-
-Jeff Layton (3):
-      netfs: fix test for whether we can skip read when writing beyond EOF
-      ceph: must hold snap_rwsem when filling inode for async create
-      ceph: fix error handling in ceph_atomic_open and ceph_lookup
-
-Johan Hovold (1):
-      i2c: robotfuzz-osif: fix control-request directions
-
-Johannes Berg (1):
-      gpio: AMD8111 and TQMX86 require HAS_IOPORT_MAP
-
-Jon Hunter (1):
-      spi: tegra20-slink: Ensure SPI controller reset is deasserted
-
-Juergen Gross (1):
-      xen/events: reset active flag for lateeoi events later
-
-Krzysztof Kozlowski (1):
-      drm/panel: ld9040: reference spi_device_id table
-
-Linus Torvalds (2):
-      Revert "signal: Allow tasks to cache one sigqueue struct"
-      Linux 5.13
-
-Loic Poulain (1):
-      gpio: mxc: Fix disabled interrupt wake-up support
-
-ManYi Li (1):
-      scsi: sr: Return appropriate error code when disk is ejected
-
-Marek Beh=C3=BAn (2):
-      MAINTAINERS: fix Marek's identity again
-      mailmap: add Marek's other e-mail address and identity without diacri=
-tics
-
-Mark Brown (1):
-      ASoC: rt5645: Avoid upgrading static warnings to errors
-
-Maxime Ripard (2):
-      drm/vc4: hdmi: Move the HSM clock enable to runtime_pm
-      drm/vc4: hdmi: Make sure the controller is powered in detect
-
-Mel Gorman (1):
-      mm/page_alloc: do bulk array bounds check after checking
-populated elements
-
-Michel D=C3=A4nzer (1):
-      drm/amdgpu: Call drm_framebuffer_init last for framebuffer init
-
-Mimi Zohar (1):
-      module: limit enabling module.sig_enforce
-
-Naoya Horiguchi (1):
-      mm/hwpoison: do not lock page again when me_huge_page()
-successfully recovers
-
-Neil Armstrong (1):
-      mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
-
-Nicholas Piggin (1):
-      KVM: do not allow mapping valid but non-reference-counted pages
-
-Pavel Skripkin (1):
-      nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
-
-Peter Zijlstra (6):
-      objtool/x86: Ignore __x86_indirect_alt_* symbols
-      x86/entry: Fix noinstr fail in __do_fast_syscall_32()
-      x86/xen: Fix noinstr fail in xen_pv_evtchn_do_upcall()
-      x86/xen: Fix noinstr fail in exc_xen_unknown_trap()
-      x86: Always inline task_size_max()
-      locking/lockdep: Improve noinstr vs errors
-
-Petr Mladek (2):
-      kthread_worker: split code for canceling the delayed work timer
-      kthread: prevent deadlock when kthread_mod_delayed_work() races
-with kthread_cancel_delayed_work_sync()
-
-Rafael J. Wysocki (1):
-      Revert "PCI: PM: Do not read power state in pci_enable_device_flags()=
-"
-
-Rasmus Villemoes (1):
-      mm/page_alloc: __alloc_pages_bulk(): do bounds check before
-accessing array
-
-Rik van Riel (1):
-      sched/fair: Ensure that the CFS parent is added after unthrottling
-
-Sven Schnelle (3):
-      s390: fix system call restart with multiple signals
-      s390: clear pt_regs::flags on irq entry
-      s390/topology: clear thread/group maps for offline cpus
-
-Thomas Gleixner (4):
-      x86/fpu: Preserve supervisor states in sanitize_restored_user_xstate(=
-)
-      x86/fpu: Make init_fpstate correct with optimized XSAVE
-      signal: Prevent sigqueue caching after task got released
-      perf/x86/intel/lbr: Zero the xstate buffer on allocation
-
-Timur Tabi (1):
-      MAINTAINERS: remove Timur Tabi from Freescale SOC sound drivers
-
-Tony Krowiak (1):
-      s390/vfio-ap: clean up mdev resources when remove callback invoked
-
-Tony Luck (1):
-      mm/memory-failure: use a mutex to avoid memory_failure() races
-
-Yifan Zhang (2):
-      Revert "drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to
-cover full doorbell."
-      Revert "drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue.=
-"
-
-Zenghui Yu (1):
-      KVM: selftests: Fix mapping length truncation in m{,un}map()
-
-Zhen Lei (1):
-      drm/kmb: Fix error return code in kmb_hw_init()
