@@ -2,151 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2C63B526D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D673B5270
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhF0Hev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 03:34:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhF0Heu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 03:34:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86D6C61C17;
-        Sun, 27 Jun 2021 07:32:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624779147;
-        bh=zlru4aeecx66uG4AaBV7pSp7w2wfSyth2muFtppUKJg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q6HtdHwfeqgFFTFNjXYjvWEfjGx8bbFPSD71xc2+2IASbx2WI/r50aE184FSjBvj8
-         ynhhNv8T7kVbcUs5Fg96ob6F1fOJWZiJtseZIjpG9exInBx8A/PyoNwss5cb3UwH1t
-         FmjG+yrR0T5Ld6m3/7TtFEdijSLS8fhfweojK2egGMwCwbNTITjVvp7aauVThm+zMT
-         9+CGa5R/EgWC4rG+lESqtYaBI41RX2kY3ciJDTx33ITjrCXCb5v2rjv3Omr/vXXVz8
-         gXH4U9ZTg5SBZvzMcrWVf4vJjKHe6I2fjyZw0HCq45NM+o9E7ZKiHJuX6r7lTrf9HN
-         sf/RN+e/GFomw==
-Date:   Sun, 27 Jun 2021 10:32:23 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tom Talpey <tom@talpey.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Keith Busch <kbusch@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Honggang LI <honli@redhat.com>
-Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
- default for kernel ULPs
-Message-ID: <YNgph1jttXFybaIR@unreal>
-References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
- <9c5b7ae5-8578-3008-5e78-02e77e121cda@nvidia.com>
- <YNQoY7MRdYMNAUPg@unreal>
- <1ef0ac51-4c7d-d79d-cb30-2e219f74c8c1@nvidia.com>
- <20210624113607.GN2371267@nvidia.com>
+        id S230035AbhF0Hkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 03:40:43 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60092 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229519AbhF0Hkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 03:40:39 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0DfKthgFewYAA--.29429S2;
+        Sun, 27 Jun 2021 15:38:07 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] MIPS: Loongson64: Add Loongson-2K1000 reset support
+Date:   Sun, 27 Jun 2021 15:38:06 +0800
+Message-Id: <20210627073806.32564-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624113607.GN2371267@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxb0DfKthgFewYAA--.29429S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw17Wr1UWrWrAF1UCFWDCFg_yoW5Cw4xpr
+        9xC3WDKFWfuw18ZF1rtFyUtrWUuF9xArsrAFW2gF17G3sxW3s3tws5JFy8tF1kArW7ua4j
+        9rWrGrW8CF4fu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jewZ7UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:36:07AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 24, 2021 at 10:39:16AM +0300, Max Gurtovoy wrote:
-> > 
-> > On 6/24/2021 9:38 AM, Leon Romanovsky wrote:
-> > > On Thu, Jun 24, 2021 at 02:06:46AM +0300, Max Gurtovoy wrote:
-> > > > On 6/9/2021 2:05 PM, Leon Romanovsky wrote:
-> > > > > From: Avihai Horon <avihaih@nvidia.com>
-> > > > > 
-> > > > > Relaxed Ordering is a capability that can only benefit users that support
-> > > > > it. All kernel ULPs should support Relaxed Ordering, as they are designed
-> > > > > to read data only after observing the CQE and use the DMA API correctly.
-> > > > > 
-> > > > > Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
-> > > > > 
-> > > > > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > Changelog:
-> > > > > v2:
-> > > > >    * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
-> > > > >      eth side of mlx5 driver.
-> > > > > v1: https://lore.kernel.org/lkml/cover.1621505111.git.leonro@nvidia.com
-> > > > >    * Enabled by default RO in IB/core instead of changing all users
-> > > > > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
-> > > > >    drivers/infiniband/hw/mlx5/mr.c | 10 ++++++----
-> > > > >    drivers/infiniband/hw/mlx5/wr.c |  5 ++++-
-> > > > >    2 files changed, 10 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> > > > > index 3363cde85b14..2182e76ae734 100644
-> > > > > +++ b/drivers/infiniband/hw/mlx5/mr.c
-> > > > > @@ -69,6 +69,7 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > > > >    					  struct ib_pd *pd)
-> > > > >    {
-> > > > >    	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-> > > > > +	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > > >    	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
-> > > > >    	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
-> > > > > @@ -78,10 +79,10 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-> > > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_write,
-> > > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-> > > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
-> > > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-> > > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_read,
-> > > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-> > > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
-> > > > Jason,
-> > > > 
-> > > > If it's still possible to add small change, it will be nice to avoid
-> > > > calculating "acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled" twice.
-> > > The patch is part of for-next now, so feel free to send followup patch.
-> > > 
-> > > Thanks
-> > > 
-> > > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> > > index c1e70c99b70c..c4f246c90c4d 100644
-> > > +++ b/drivers/infiniband/hw/mlx5/mr.c
-> > > @@ -69,7 +69,8 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > >                                            struct ib_pd *pd)
-> > >   {
-> > >          struct mlx5_ib_dev *dev = to_mdev(pd->device);
-> > > -       bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > +       bool ro_pci_enabled = acc & IB_ACCESS_RELAXED_ORDERING &&
-> > > +                             pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > 
-> > >          MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
-> > >          MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
-> > > @@ -78,11 +79,9 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > >          MLX5_SET(mkc, mkc, lr, 1);
-> > > 
-> > >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-> > > -               MLX5_SET(mkc, mkc, relaxed_ordering_write,
-> > > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
-> > > +               MLX5_SET(mkc, mkc, relaxed_ordering_write, ro_pci_enabled);
-> > >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-> > > -               MLX5_SET(mkc, mkc, relaxed_ordering_read,
-> > > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
-> > > +               MLX5_SET(mkc, mkc, relaxed_ordering_read, ro_pci_enabled);
-> > > 
-> > >          MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
-> > >          MLX5_SET(mkc, mkc, qpn, 0xffffff);
-> > > (END)
-> > > 
-> > Yes this looks good.
-> > 
-> > Can you/Avihai create a patch from this ? or I'll do it ?
-> 
-> I'd be surpised if it matters.. CSE and all
+Add power management register operations to support reboot and poweroff.
 
-From bytecode/performance POV, It shouldn't change anything.
-However it looks better.
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-Thanks
+v1-v2:
+- Add pm block node
 
-> 
-> Jason
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 569e814def83..929e8ddf86eb 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -101,6 +101,14 @@ uart0: serial@1fe00000 {
+ 			no-loopback-test;
+ 		};
+ 
++		pm: power-controller {
++			device_type = "power management";
++			reg = <0 0x1fe0700c 0 0x8>,
++				<0 0x1fe07014 0 0x8>,
++				<0 0x1fe07030 0 0x8>;
++			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
++		};
++
+ 		pci@1a000000 {
+ 			compatible = "loongson,ls2k-pci";
+ 			device_type = "pci";
+diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+index c97bfdc8c922..ea125e925d44 100644
+--- a/arch/mips/loongson64/reset.c
++++ b/arch/mips/loongson64/reset.c
+@@ -10,6 +10,7 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kexec.h>
++#include <linux/of_address.h>
+ #include <linux/pm.h>
+ #include <linux/slab.h>
+ 
+@@ -20,12 +21,50 @@
+ #include <loongson.h>
+ #include <boot_param.h>
+ 
++static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
++
++static void __iomem *get_reg_byname(struct device_node *node, const char *name)
++{
++	int index = of_property_match_string(node, "reg-names", name);
++
++	if (index < 0)
++		return NULL;
++
++	return of_iomap(node, index);
++}
++
++static int  __init loongson_fdt_reset_init(void)
++{
++	struct device_node *np;
++	int i;
++
++	np = of_find_node_by_type(NULL, "power management");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
++		pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
++		if (!pm_reg_name[i])
++			iounmap(pm_reg_name[i]);
++	}
++
++	of_node_put(np);
++	return 0;
++}
++arch_initcall(loongson_fdt_reset_init);
++
+ static void loongson_restart(char *command)
+ {
++	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
++		writel(0x1, (void *)pm_reg_name[2]);
++	} else {
++		void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+ 
+-	void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
++		fw_restart();
++	}
+ 
+-	fw_restart();
+ 	while (1) {
+ 		if (cpu_wait)
+ 			cpu_wait();
+@@ -34,9 +73,18 @@ static void loongson_restart(char *command)
+ 
+ static void loongson_poweroff(void)
+ {
+-	void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
++	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
++		/* Clear */
++		writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void *)pm_reg_name[0]);
++		/* Sleep Enable | Soft Off*/
++		writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
++	} else {
++
++		void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
++
++		fw_poweroff();
++	}
+ 
+-	fw_poweroff();
+ 	while (1) {
+ 		if (cpu_wait)
+ 			cpu_wait();
+-- 
+2.31.0
+
