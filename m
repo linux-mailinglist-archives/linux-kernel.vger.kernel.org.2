@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F103B5548
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 23:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F5D3B5571
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhF0Vuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 17:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        id S231797AbhF0WIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 18:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhF0Vuh (ORCPT
+        with ESMTP id S231713AbhF0WIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 17:50:37 -0400
+        Sun, 27 Jun 2021 18:08:12 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465D8C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 14:48:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8FAC061766;
+        Sun, 27 Jun 2021 15:05:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=MLYOvRltrGYGM4EErUig26MFb1BxTBtmWA+8vA4b6fk=; b=ObdtBRd5dreinSr7m66Tj19DHG
-        vCxFWplGDpFhxejcNX6VmRzpDWrFaTO6ru4/lIBzAA1gro2L1Smdd43Gs51TiRlkvaLMnV5MShHad
-        Bxk8r+mkFUKL732p6wtPrI/ejMgmjKnGIHIYVO0WKt22tAnpu9T9LQ3k1OwKB2+OZ38I8S+11krDe
-        NE21B7UD4Ws6ey2Hgz8N3U7s+AjqyoUkd85vDMQSoJqSrnf0kub4N3FHQCZMLLi17ohNhnZxUKIG7
-        eGlMKNGMA4317XKMsmul7mJ4UKTW7TjUsloRo/r1hPfkGDyY6OvfcNEdKE2lDeZVrv/abUu6PbNhI
-        JgbyexMA==;
-Received: from [2601:1c0:6280:3f0::aefb]
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=b9tp+JdGeJfN/iWAAVHlO9/qdJRqaDOdraHTaeXVj5w=; b=OtZNB5uKW+Qg08MO8irtX6ZaDa
+        8xWDfA8z9lufCgddsb4FWbsUKOnGIEndYNavhGRGmCE8ARnfXkNOrkijRp7K4M2CYDhiRMp89ax+9
+        8imU0eVXrBCP/6ir6+0XRlVR5op2aAfQHvwyDfZdF/Yvem+fz4+ENdaJMAJayE5p2A/ff3Xs3hlkb
+        OGrQvMl44vhyBpdJR8AWG1kzhJGHh7NSO6v2gGIRkaVHU8yQSrf+zATMwipr0mSFY175haL6/rsQj
+        quWzjEQbs7QRPnb3lKhsZmql9gU5V3HgBvk4BgNkJAJRKw4FAxabHUCnEIyb4P+w9+vUvciNeuBLZ
+        Tx4eGnQA==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxccT-006AJv-My; Sun, 27 Jun 2021 21:47:13 +0000
-Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
- ARCH_ATOMIC
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
-        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
-        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
-        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-References: <20210525140232.53872-1-mark.rutland@arm.com>
- <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
- <20210618084847.GA93984@C02TD0UTHF1T.local>
+        id 1lxcuP-006CHh-DY; Sun, 27 Jun 2021 22:05:45 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
-Date:   Sun, 27 Jun 2021 14:47:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
+Date:   Sun, 27 Jun 2021 15:05:41 -0700
+Message-Id: <20210627220544.8757-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210618084847.GA93984@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 1:48 AM, Mark Rutland wrote:
-> On Fri, Jun 04, 2021 at 10:56:16PM -0700, Randy Dunlap wrote:
->> On 5/25/21 7:01 AM, Mark Rutland wrote:
->>> This series (based on v5.13-rc2) converts all architectures to
->>> ARCH_ATOMIC. This will allow the use of instrumented atomics on all
->>> architectures (e.g. for KASAN and similar), and simplifies the core
->>> atomic code (which should allow for easier rework of the fallbacks and
->>> other bits in future).
-> 
-> [...]
-> 
->> Hi Mark,
->> Sorry for the late reply. 
-> 
-> Hi Randy,
-> 
-> Likewise, apologies in the delay in getting to this!
-> 
->> I was just trying to update a patch
->> to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
->>
->> https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
->>
->> The patch simply converts xchg() to a GCC statement expression to
->> eliminate a build warning.
+Fix a few build warnings and one kconfig warning on SUPERH.
 
-Hm, with your locking/atomic patch series applied (in linux-next), I can
-no longer make arch/sh/ get this build warning:
+v2: add a previously-sent Kconfig patch
+    add a few more Cc's
 
-../fs/ocfs2/file.c: In function 'ocfs2_file_write_iter':
-../arch/sh/include/asm/cmpxchg.h:49:3: warning: value computed is not used [-Wunused-value]
-   49 |  ((__typeof__(*(ptr)))__xchg((ptr),(unsigned long)(x), sizeof(*(ptr))))
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
 
+[PATCH 1/3 v2] sh: fix kconfig unmet dependency warning for FRAME_POINTER
+[PATCH 2/3 v2] sh: define __BIG_ENDIAN for math-emu
+[PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
 
-so I will go ahead with the rest of my arch/sh/ patches and then contemplate
-what to do about this one.
-
-
->> Arnd has done this for m68k and I have done it for sparc in the past.
->>
->> Is there any (good) reason that all versions of arch_xchg() are not
->> statement expressions?  In this patch series, they seem to be quite
->> mixed (as they were before this patch series). I count 11 arches
->> that use a statement expression and 4 that do not (including arch/sh/).
-> 
-> Largely I tried to make the minimal change from what was there before,
-> and I didn't have any specific reason to either use or avoid statement
-> expressions.
-> 
-> This series has been queued in the tip tree's locking/core branch for a
-> while now, but we could spin a patch atop. Do you want to spin a patch
-> to convert the remaining 4 architectures in one go?
-
-I'll look at the 4 remaining arches later..
-
-thanks.
--- 
-~Randy
-
+ arch/sh/Kconfig.debug             |    1 
+ arch/sh/include/asm/sfp-machine.h |    8 +++++
+ arch/sh/math-emu/math.c           |   44 ++++++++++++++--------------
+ 3 files changed, 31 insertions(+), 22 deletions(-)
