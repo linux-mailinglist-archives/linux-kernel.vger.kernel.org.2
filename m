@@ -2,115 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9CD3B529D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 10:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A444C3B52A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 11:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhF0Iuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 04:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhF0Iuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 04:50:52 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D719BC061574;
-        Sun, 27 Jun 2021 01:48:26 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id f30so25712280lfj.1;
-        Sun, 27 Jun 2021 01:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4Dr7IlCFxFMjzD5ZoiWZkQrtRVuiEBN/27kUtcpWfMU=;
-        b=TI3aLnYRD0arKqMnRsDNfa/vCBd+Y0g1C5LivRwwsMLRUzUasYfwVo84CC2nFbxR24
-         fhHPFLaop/O7TnCXlmdBKuZ2dVxcliIfIeXm60w+g8tbxvByi8kGWz//SguzkuXGKi3e
-         hXsczrECSS/p45p3JFODhJYp1SVfWHVNClHNU3kDyy5v8MRF3W4qmwmsdXfCtRwl/USm
-         u7anhww0TYZ6mWGFScQibL/ofbOsLVkmpWUqHkcwoYyGNHvfjBPdosFyx2XezOXGzTZk
-         442gVwS0SglQ7JkDiucb0FPREfd58fRHflgDLQHfa7pK03paeVeJZWGxDG4uzXHffGMF
-         RsHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4Dr7IlCFxFMjzD5ZoiWZkQrtRVuiEBN/27kUtcpWfMU=;
-        b=nhRjVnI6z3zSVJsWEXJERfqgjv9fKS7M87d+L3Tb67rtH2rfE1EUam6fj9Gl4NhOBx
-         R9nOr2i5Tsi5WjWez8SOgkPBOHej2vLUEfkq/e/YlvfIcBYEJmgi2rdJWwPxiseIN6Yz
-         dbfH6T1qiypbBKILKjttAwglszya8zVREsMS4rPKx8576gM8dMrOl+azRUqis4BpQ3hI
-         yFH4mJeZWDZPDPXBlwh5MGdUBHsvtwRWPMBbMU3j/tMcCIGm/2WtqBz/eoweXwoQcGas
-         LNk39EnAC1Jf01r1qM4CuXDfHORc0W5hj5R8c6m9cH3WChM6TTosd+i1r4w++k7ZZDyD
-         JoSA==
-X-Gm-Message-State: AOAM5318ISyl5JhONODnjndFwh0v19fk0AsWuXVwa1amxOSxz8mA19ON
-        VRhxpnpKu93/vLKfysWn4tY=
-X-Google-Smtp-Source: ABdhPJzR+MkVprcpoGGzZSSVXUV+lH5UnwMEPYmOcsb2fn4Bud+wu9dT2w8b64laAvqaUxWHv5HElw==
-X-Received: by 2002:a05:6512:32a6:: with SMTP id q6mr15279057lfe.308.1624783705197;
-        Sun, 27 Jun 2021 01:48:25 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.89])
-        by smtp.gmail.com with ESMTPSA id b7sm982604lfb.121.2021.06.27.01.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 01:48:24 -0700 (PDT)
-Date:   Sun, 27 Jun 2021 11:48:16 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc:     gustavoars@kernel.org, sam@ravnborg.org, tomi.valkeinen@ti.com,
-        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] OMAP: DSS2: OMAPFB: fix potential GPF
-Message-ID: <20210627114816.5e9d042b@gmail.com>
-In-Reply-To: <20210626231423.GA38365@macbook.musicnaut.iki.fi>
-References: <20210625223323.13930-1-paskripkin@gmail.com>
-        <20210626231423.GA38365@macbook.musicnaut.iki.fi>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        id S230044AbhF0I5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 04:57:52 -0400
+Received: from mga17.intel.com ([192.55.52.151]:7096 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhF0I5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 04:57:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="188212051"
+X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
+   d="scan'208";a="188212051"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 01:55:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
+   d="scan'208";a="418832437"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 27 Jun 2021 01:55:26 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lxQZZ-00086o-ST; Sun, 27 Jun 2021 08:55:25 +0000
+Date:   Sun, 27 Jun 2021 16:54:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ 34c7342ac1b4e496315fb615d2a1309df8400403
+Message-ID: <60d83cca.G8pFlHybifbsPSgq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 02:14:23 +0300
-Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: 34c7342ac1b4e496315fb615d2a1309df8400403  time/kunit: Add missing MODULE_LICENSE()
 
-> Hi,
-> 
-> On Sat, Jun 26, 2021 at 01:33:23AM +0300, Pavel Skripkin wrote:
-> > In case of allocation failures, all code paths was jumping
-> > to this code:
-> > 
-> > err:
-> > 	kfree(fbi);
-> > 	kfree(var);
-> > 	kfree(fbops);
-> > 
-> > 	return r;
-> > 
-> > Since all 3 pointers placed on stack and don't initialized, they
-> > will be filled with some random values, which leads to
-> > deferencing random pointers in kfree(). Fix it by rewriting
-> > error handling path.
-> 
-> They are initialized before the first goto:
-> 
-> [...]
-> 	fbi = NULL;
-> 	var = NULL;
-> 	fbops = NULL;
-> 
-> 	fbi = kzalloc(sizeof(*fbi), GFP_KERNEL);
-> 	if (fbi == NULL) {
-> 		r = -ENOMEM;
-> 		goto err;
-> 	}
-> [...]
-> 
+elapsed time: 725m
 
-Hi! 
+configs tested: 99
+configs skipped: 2
 
-Im sorry for this, I should not stay to late night reviewing the code
-next time :(
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                        vdk_hs38_defconfig
+arm                           corgi_defconfig
+m68k                        m5407c3_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        trizeps4_defconfig
+arm                       omap2plus_defconfig
+mips                        maltaup_defconfig
+riscv                    nommu_virt_defconfig
+um                               alldefconfig
+powerpc                     stx_gp3_defconfig
+arm                        clps711x_defconfig
+nios2                         10m50_defconfig
+powerpc                      walnut_defconfig
+sh                   secureedge5410_defconfig
+sh                         ecovec24_defconfig
+arm                          imote2_defconfig
+mips                     decstation_defconfig
+mips                        jmr3927_defconfig
+mips                       capcella_defconfig
+powerpc                     tqm8548_defconfig
+xtensa                  nommu_kc705_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210627
+i386                 randconfig-a001-20210627
+i386                 randconfig-a003-20210627
+i386                 randconfig-a006-20210627
+i386                 randconfig-a005-20210627
+i386                 randconfig-a004-20210627
+x86_64               randconfig-a002-20210627
+x86_64               randconfig-a001-20210627
+x86_64               randconfig-a005-20210627
+x86_64               randconfig-a003-20210627
+x86_64               randconfig-a004-20210627
+x86_64               randconfig-a006-20210627
+i386                 randconfig-a011-20210627
+i386                 randconfig-a014-20210627
+i386                 randconfig-a013-20210627
+i386                 randconfig-a015-20210627
+i386                 randconfig-a012-20210627
+i386                 randconfig-a016-20210627
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-b001-20210627
+x86_64               randconfig-a012-20210627
+x86_64               randconfig-a016-20210627
+x86_64               randconfig-a015-20210627
+x86_64               randconfig-a014-20210627
+x86_64               randconfig-a013-20210627
+x86_64               randconfig-a011-20210627
 
-
-With regards,
-Pavel Skripkin
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
