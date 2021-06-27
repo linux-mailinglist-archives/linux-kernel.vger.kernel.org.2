@@ -2,177 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7363B52F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 12:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4EA3B52F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 12:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhF0K7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 06:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhF0K7c (ORCPT
+        id S229921AbhF0LAV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 27 Jun 2021 07:00:21 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40900 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhF0LAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 06:59:32 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA03C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 03:57:07 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id f13so20279641ljp.10
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 03:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OTEvR8vNZmSkCCvd7kXnIDqGnNbdwQ1baNJXm2EXJuU=;
-        b=yzdFGFOTrJISQhFLfqIYNb92VC4LFeeqggPC/JIl3EBFYPPxiO8a2k6IFEunTUrB2H
-         Xr0x8Erd8srzZR1Vu+Di1DnZ/gP3of5e3DXd2zIV4B3pB1AJyVqIuQNWm8b7CiaSSJYk
-         fe+WgfM3mNIqKhAfB7gXZUGQc89xHm6hXRm22Bx4u4kx5MciGEG+edOP43evKyoBsfnh
-         LqSlxZIoM7mGSNS1ZRB9c+TuCc8ClaTM00SWEZ4vQKRqi7FROihijgbc3NvVFtQRUz/B
-         yA8igIPPjX/GxtzQWvxn5aJbs5PvzPJ/K2YuSfiVqmOR5n9+iqXicbjDcKHiYNAaOr93
-         BaUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OTEvR8vNZmSkCCvd7kXnIDqGnNbdwQ1baNJXm2EXJuU=;
-        b=WUNffSLocdrYsFcdC5tS4YLGWscAv9+BQLjXzO+yrlySzsSjL7qN+mFWz1/0Y4uhvf
-         NKZHjRGIwOXvRAuCj4Di9PTJTYha+R1eI+rND1idq9SOSesJuKRoQupOmOVF4BjP7X5i
-         OrpTECeP4qdxYzLvkCTmHsuuzD0f/0+wKZMzRnvP0xxVRUAe20M6iN/8clhtNBYjzc3K
-         n4N5e9RYx/kb3MfdJCLwg4HFu5G/qIE2HwXKhGjjfXm03S3GnAzPTdycDcCNy4yO7Jj4
-         XCpulGU1ZluDqtDfBUfk3jpN/e6ygkl1kSGm7W3x0GSf9pGpkh6yn5V2TOfcmMQBvsiP
-         UTxw==
-X-Gm-Message-State: AOAM531Mtru4IcGbn36Rkdnr0opNRFFFK+u5UgjiCZrjP5CtYPIfizjB
-        KW2mdh27chE7IMrwdJQA1dj3drQfpSQ/bOUYWY7udg==
-X-Google-Smtp-Source: ABdhPJwGAHXPLyOn5EGBJgA8Jv9S+SbKC/9qd0ekxItP16IN3TWo7m1K6877Hzmkxr5RaxT1yaMQrVKbviDJ/sVu27c=
-X-Received: by 2002:a05:651c:603:: with SMTP id k3mr15449365lje.368.1624791425668;
- Sun, 27 Jun 2021 03:57:05 -0700 (PDT)
+        Sun, 27 Jun 2021 07:00:20 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-263-7lwpbNj6OtqYhchRB1BMHg-1; Sun, 27 Jun 2021 11:57:49 +0100
+X-MC-Unique: 7lwpbNj6OtqYhchRB1BMHg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 27 Jun
+ 2021 11:57:48 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Sun, 27 Jun 2021 11:57:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Marcos Del Sol Vives' <marcos@orca.pet>,
+        "x86@kernel.org" <x86@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] x86: add NOPL and CMOV emulation
+Thread-Topic: [PATCH v3] x86: add NOPL and CMOV emulation
+Thread-Index: AQHXaozP8c4yxHibnUSLg8MhMaAkx6snr31w
+Date:   Sun, 27 Jun 2021 10:57:48 +0000
+Message-ID: <4b8e1393929b47d29a996f07cd332c65@AcuMS.aculab.com>
+References: <YNWAwVfzSdML/WhO@hirez.programming.kicks-ass.net>
+ <20210626130313.1283485-1-marcos@orca.pet>
+In-Reply-To: <20210626130313.1283485-1-marcos@orca.pet>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210625235532.19575-1-dipenp@nvidia.com> <20210625235532.19575-5-dipenp@nvidia.com>
-In-Reply-To: <20210625235532.19575-5-dipenp@nvidia.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 27 Jun 2021 12:56:54 +0200
-Message-ID: <CACRpkdbazcGqapWMLnj8=UShU0j002SkKRTxgpprfDeaP_nAQQ@mail.gmail.com>
-Subject: Re: [RFC 04/11] dt-bindings: Add HTE bindings
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dipen,
+From: Marcos Del Sol Vives
+> Sent: 26 June 2021 14:03
+> 
+> NOPL and CMOV are a set of instructions that were introduced to the
+> x86 architecture with the i686 ISA in 1995, first implemented in the
+> Intel Pentium Pro and Pentium II processors.
+> 
+> While virtually all desktop and server systems are modern enough to
+> support these instructions, in the embedded market things are a little
+> bit different: DM&P is still manufacturing their i586-only Vortex86
+> SoCs, and many embedded devices still in use are stuck on legacy SoCs
+> that either are i586-only (AMD Elan, AMD Geode GX1) or implement i686
+> but lack the NOPL instructions (Transmeta devices, AMD Geode LX).
+> 
+> This is a problem because most modern Linux distributions, such as
+> Debian and all its derivatives, have started compiling targeting i686,
+> leaving old embedded devices using binary distributions without an
+> easy upgrade path.
+> 
+> This ultimately results in most of these embedded devices running
+> years old, insecure and obsolete installations, and this itself can be
+> seen on the DM&P's own supported OS page where the newest supported
+> desktop Linux distro is Ubuntu 18.04, already three years old.
+> 
+> The emulation of these instructions thus allow upgrading to newer
+> distributions just by replacing the kernel, keeping all precompiled
+> binaries intact.
+...
 
-thanks a lot for this very interesting patch set!
+Does this really help?
+1) Trapping and emulating the instructions will be slow.
+2) All 64bit cpus support these instructions - so these must be 32bit.
+   I believe the main distributions are about to drip 32bit support.
 
-I'm gonna try to review properly, just pointing out some conceptual
-things to begin with. Bindings is a good place to start.
+It also has to be said that using Ubuntu in an embedded device
+is about as sensible as running windows.
+There is far too much 'crud' running that you don't need and
+is only likely to result in security breaches.
 
-On Sat, Jun 26, 2021 at 1:48 AM Dipen Patel <dipenp@nvidia.com> wrote:
+Much better is something based on busybox+buildroot where you
+have (almost) complete control of the system userspace and
+can easily build a kernel that only has support for the required
+hardware from one of the LTS kernel trees.
 
-> +description: |
-> +  HTE properties should be named "htes". The exact meaning of each htes
-> +  property must be documented in the device tree binding for each device.
-> +  An optional property "hte-names" may contain a list of strings to label
-> +  each of the HTE devices listed in the "htes" property.
+	David
 
-I think this is a bit over-abbreviated. IIO has:
-io-channels =...
-io-channel-names =...
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Given DT:s infatuation with using english plural I would opt for:
-hardware-timestamps = ..
-hardware-timestamp-names = ...
-
-The "engine" part is a bit of an nVidia:ism I think and a too generic
-term. Could as well be "processor" or "automata" but nVidia just
-happened to name it an engine. (DMA engine would be a precedent
-though, so no hard preference from my side.)
-
-When reading this it is pretty intuitively evident what is going on.
-
-Other than that it looks really good!
-
-> +++ b/Documentation/devicetree/bindings/hte/hte.yaml
-
-I would name this hardware-timestamp-common.yamp or so.
-
-> +title: HTE providers
-
-Spell this out: Hardware timestamp providers
-
-> +properties:
-> +  $nodename:
-> +    pattern: "^hte(@.*|-[0-9a-f])*$"
-
-Likewise:
-hardware-timestamp@ ...
-
-I think this is good because it is very unambiguous.
-
-> +examples:
-> +  - |
-> +    tegra_hte_aon: hte@c1e0000 {
-> +              compatible = "nvidia,tegra194-gte-aon";
-> +              reg = <0xc1e0000 0x10000>;
-> +              interrupts = <0 13 0x4>;
-> +              int-threshold = <1>;
-> +              slices = <3>;
-> +              #hte-cells = <1>;
-> +    };
-
-The examples can be kept to the tegra194 bindings I think, this
-generic binding doesn't need an example as such.
-
-> +$id: http://devicetree.org/schemas/hte/nvidia,tegra194-hte.yaml#
-
-This one should be named like this, that is great.
-
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra194 on chip generic hardware timestamping engine (HTE)
-
-This is clear and nice.
-
-> +  int-threshold:
-> +    description:
-> +      HTE device generates its interrupt based on this u32 FIFO threshold
-> +      value. The recommended value is 1.
-> +    minimum: 1
-> +    maximum: 256
-
-Does this mean a single timestamp in the FIFO will generate an IRQ?
-Then spell that out so it is clear.
-
-> +  slices:
-> +   description:
-> +    HTE lines are arranged in 32 bit slice where each bit represents different
-> +    line/signal that it can enable/configure for the timestamp. It is u32
-> +    property and depends on the HTE instance in the chip.
-> +   oneOf:
-> +    - items:
-> +        - const: 3
-> +    - items:
-> +        - const: 11
-
-Can't you just use
-enum: [3, 11]
-?
-
-> +  '#hte-cells':
-> +    const: 1
-
-So IMO this would be something like
-#hardware-timestamp-cells
-
-Other than this it overall looks very nice to me!
-
-Yours,
-Linus Walleij
