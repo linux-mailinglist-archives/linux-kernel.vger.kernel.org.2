@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F163B5391
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 16:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08B63B5397
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhF0OHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 10:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhF0OHT (ORCPT
+        id S231157AbhF0OLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 10:11:30 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:51679 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230386AbhF0OL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 10:07:19 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFCAC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 07:04:54 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id i6so11809692pfq.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 07:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7IC+DTzBx0Yh5RP/xh0gD6mgUcbBwa/Ap670J7IrdFk=;
-        b=C1LC1+yt5BmDvVjWbUSEFUONlSQsg/cmELJVooFUXgSZNcw+r1sblrcwedoxVUVqzP
-         E+QB08JPXFLFWgn33wVq8DnFj5UvAtVo7hTsw0XjeWIRfdRbW+r98MRTzfskEirTD+EN
-         JaBLJDsBIeHijO0chNfokM/FG880TifMBab+lyPsqaBDplV5oDPZbovQhu8p8u0RGpoi
-         FS8/cc7XE07Gnu+QF8fdjDmCtFGI9oAqH4mI1A7guViLWSw0xyFeJ/qQ9swDw2Dut1gB
-         57Uu0SyFU4UiScXZk871WlTiPUM63zgVuj5YNg9NgQdpVSzz+l/RIggMwqVIiamo4oTn
-         i26w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7IC+DTzBx0Yh5RP/xh0gD6mgUcbBwa/Ap670J7IrdFk=;
-        b=pXPSPEszRL8hBWH/AlCJccPkxXsdluNuix+6xumrYKFftgchssXYOCiSD4gHyOlc+A
-         teDRJYyS175Bkvu5p59qeJPo4TUVSvsoiqOPz4LqmuhqA67SZaPrcK2UPxVml1nKw778
-         VcGXarsMuR0Po3kpZdpK1FB7O8nEhhzguRDR/XYZumjxyjhxkOQNmrvgSdXudLYWY8CJ
-         Voejqk9qOTohgv4FIQ2Tzgc0V6dX7C8VrLYNuhnTCp0AlQt5LUTGswVrHbi9SRYarV3M
-         oL3nnezPZ0RDSxMYF/cEein0r992KjiBkKEisrSkBEuDdWGga0S5RGrMl/Z83AS5cvl9
-         Ynfg==
-X-Gm-Message-State: AOAM532VnpmU1a4m/89BpO5JHAN3jCx+GUa95RyyUk6UpB607wPLRFhv
-        NlyE6mJBIDGUsAkXwm6fexE=
-X-Google-Smtp-Source: ABdhPJxTiOswHpwnAg5OcepBNu6oBL+sjCDLZSiGCQk4K/HXf6HmwBLFbpP2kQEPUI07EWDHFby8zQ==
-X-Received: by 2002:aa7:86cd:0:b029:30c:2b9b:2a77 with SMTP id h13-20020aa786cd0000b029030c2b9b2a77mr1420927pfo.47.1624802694527;
-        Sun, 27 Jun 2021 07:04:54 -0700 (PDT)
-Received: from [192.168.1.30] (ip174-67-196-173.oc.oc.cox.net. [174.67.196.173])
-        by smtp.gmail.com with ESMTPSA id j13sm11252849pfh.145.2021.06.27.07.04.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 07:04:54 -0700 (PDT)
-Subject: Re: [PATCH 2/2] nvme-fc: Wait with a timeout for queue to freeze
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20210625101649.49296-1-dwagner@suse.de>
- <20210625101649.49296-3-dwagner@suse.de>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <9362fb6c-8a98-3189-453a-69d4c0b622e3@gmail.com>
-Date:   Sun, 27 Jun 2021 07:04:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 27 Jun 2021 10:11:28 -0400
+Received: (qmail 625664 invoked by uid 1000); 27 Jun 2021 10:09:03 -0400
+Date:   Sun, 27 Jun 2021 10:09:03 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     linyyuan@codeaurora.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>
+Subject: Re: [PATCH] usb: dwc3: fix race of usb_gadget_driver operation
+Message-ID: <20210627140903.GB624763@rowland.harvard.edu>
+References: <20210625104415.8072-1-linyyuan@codeaurora.org>
+ <20210625163707.GC574023@rowland.harvard.edu>
+ <b24825113327c72c742d55e89ec2726e@codeaurora.org>
+ <20210626150304.GA601624@rowland.harvard.edu>
+ <1d1f06763c7cdeb67264128537c6a8f4@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210625101649.49296-3-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d1f06763c7cdeb67264128537c6a8f4@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/25/2021 3:16 AM, Daniel Wagner wrote:
-> Do not wait indifinitly for all queues to freeze. Instead use a
-> timeout and abort the operation if we get stuck.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index a9645cd89eca..d8db85aa5417 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -2955,7 +2955,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
->   		dev_info(ctrl->ctrl.device,
->   			"reconnect: revising io queue count from %d to %d\n",
->   			prior_ioq_cnt, nr_io_queues);
-> -		nvme_wait_freeze(&ctrl->ctrl);
-> +		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
-> +			/*
-> +			 * If we timed out waiting for freeze we are likely to
-> +			 * be stuck.  Fail the controller initialization just
-> +			 * to be safe.
-> +			 */
-> +			return -ENODEV;
-> +		}
->   		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
->   		nvme_unfreeze(&ctrl->ctrl);
->   	}
-> 
+On Sun, Jun 27, 2021 at 10:48:56AM +0800, linyyuan@codeaurora.org wrote:
+> On 2021-06-26 23:03, Alan Stern wrote:
+> > On Sat, Jun 26, 2021 at 09:16:25AM +0800, linyyuan@codeaurora.org wrote:
+> > > On 2021-06-26 00:37, Alan Stern wrote:
 
-Looks fine. This is one of those that changed in the other transports 
-but fc wasn't part of the patch set.
+> > > > Here and in the other places, you should test dwc->async_callbacks
+> > > > _before_ dropping the spinlock.  Otherwise there is a race (the flag
+> > > > could be written at about the same time it is checked).
+> > > thanks for your comments,
+> > > 
+> > > if you think there is race here, how to make sure gadget_driver
+> > > pointer is
+> > > safe,
+> > > this is closest place where we can confirm it is non-NULL by checking
+> > > async_callbacks ?
+> > 
+> > I explained this twice already: We know that gadget_driver is not
+> > NULL because usb_gadget_remove_driver calls synchronize_irq before
+> > doing usb_gadget_udc_stop.
+> > 
+> > Look at this timing diagram:
+> > 
+> > 	CPU0				CPU1
+> > 	----				----
+> > 	IRQ happens for setup packet
+> > 	  Handler sees async_callbacks
+> > 	    is enabled
+> > 	  Handler unlocks dwc->lock
+> > 					usb_gadget_remove_driver runs
+> > 					  Disables async callbacks
+> > 					  Calls synchronize_irq
+> > 	  Handler calls dwc->		  . waits for IRQ handler to
+> > 	    gadget_driver->setup	  .   return
+> > 	  Handler locks dwc-lock	  .
+> > 	  ...				  .
+> > 	  Handler returns		  .
+> > 					  . synchronize_irq returns
+> > 					  Calls usb_gadget_udc_stop
+> > 					    dwc->gadget_driver is
+> > 					      set to NULL
+> > 
+> > As you can see, dwc->gadget_driver is non-NULL when CPU0 uses it,
+> > even though async_callbacks gets cleared during the time when the
+> > lock is released.
+> thanks for your patient explanation,
+> but from this part, seem it is synchronize_irq() help to avoid NULL pointer
+> crash.
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+That's right.
 
--- james
+> can you also explain how async_callbacks flag help here  ?
 
+It doesn't help in the situation shown above, but it does help in other 
+situations.  Consider this timing diagram:
+
+	CPU0				CPU1
+	----				----
+					usb_gadget_remove_driver runs
+					  Disables async callbacks
+					  Calls synchronize_irq
+					    synchronize_irq returns
+					  Calls udc_driver_unbind
+	IRQ happens for disconnect
+	  Handler sees async_callbacks
+	    is disabled
+	  Handler returns
+					  Calls usb_gadget_udc_stop
+					    dwc->gadget_driver is
+					      set to NULL
+
+With the async_callbacks check, everything works okay.  But now look at 
+what would happen without the async_callbacks mechanism:
+
+	CPU0				CPU1
+	----				----
+					usb_gadget_remove_driver runs
+					  Calls synchronize_irq
+					    synchronize_irq returns
+					  Calls udc_driver_unbind
+	IRQ happens for disconnect
+	  Handler unlocks dwc->lock
+	  Calls dwc->gadget_driver->disconnect
+	    Gadget driver has already been unbound
+	      and is not prepared to handle a
+	      callback, so it crashes
+					  Calls usb_gadget_udc_stop
+					    dwc->gadget_driver is
+					      set to NULL
+
+Without the async_callbacks mechanism, the gadget driver can get a
+callback at the wrong time (after it has been unbound), which might 
+cause it to crash.
+
+Alan Stern
