@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661453B5389
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 15:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47E73B538B
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 15:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhF0Nv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 09:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        id S231150AbhF0Nxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 09:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhF0Nvz (ORCPT
+        with ESMTP id S229927AbhF0Nxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 09:51:55 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04480C061574;
-        Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id b5so14699326ilc.12;
-        Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
+        Sun, 27 Jun 2021 09:53:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8EEC061574;
+        Sun, 27 Jun 2021 06:51:27 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id kt19so423642pjb.2;
+        Sun, 27 Jun 2021 06:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
-        b=jSx1jWRNMlAT68tgB7bCsuZqgDYgfiNEwJ1mD2Za+4v4gYkEgHIsfr7NLcl/pPu17E
-         sMc7eWOadn89rncqJblRCe2nilMIVe9+Lr0KL+CbAUtDY2ukpo7/iwZ9MCTOworuIwiH
-         STBBr6guaR+2aQXcvf7lerOIhVDZWCDmuWp6R4Jv4BwYxFgPZTyv53kg0xQ8/VfTwaJp
-         JHRC80ddtc2TbByE27FVpuS/MB4VoLb+XNQQ0kvnqfs1ibZToIoi5tPVhQKdn3uswlkQ
-         SW+TyonxdygwCu6jods4Mn3ql5Ei8/OiH53q17/MtCKvNkPl+64lanBnagGZjHi4lnWg
-         AD5g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bTjmvU8yn2/k0kOaZkGNIygSTdPKkN7MOcxmayDA4lI=;
+        b=OdGpBXHtWVue7u4/yCfRuucDLA2lcAkTkuHNxW38YjfxpCkbjgrsqMQvzAVvwzpbje
+         NUAq5k3FZpGXY8LygkpAhG32cyPFaxj2z6HNiEjy8p1BNCvZhjSebCmuvnOvQwlGSxQu
+         9Ub9gbmhiEFgsUYrNYChAT56HHUNvoeRw0kQJbLgE8wJKawlVYuY5U1p+dRNyYpIhJ9O
+         FhDSmb9rQzHFG0svVN09s6BtJvfhn2MBda8/DIPGiy0pVsuvrWsu2AmFBHBvg1bjwgWo
+         QIsi/O9P+d5PAkU/paZmZiuSXHhJk9qyKqNdJV2lt04OndwQpmNTgUkJmYvzH/JDvLrM
+         CR+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BWGO+itUm6tMgujfJIGgElCIQmjPwoC/qMTdg68ZcXc=;
-        b=hq9056m9lXtDmEVWZZACpz9+Fd5UlTq5ZnFCiWgh962ImJtv4mrkazt5trkebXVWyz
-         uIOqXUYMsh1JXAptviJN5wwNYONKUKbPQ9qJSE2abk/o2xogSEu0Bv0DJLGTGjdjAMOb
-         rQPwnHnf8sTp6A7bRhnsvX3qW/Eoz9PEr8pRZD19EEt/VrljwNRKD/nA4YFM9JUpWEtN
-         tacI0+TDp+Nn3Z2zyv10CLsHbsQk6LzooX4QWswH48I7K6Jkzcl86xZkif8QpH1Ywj/6
-         X58Hdhzv0so010IaN5rUuiVTWpBphfV4tA3dz0cRWNm4VIZlHXaOvrSr8k2bKIjpoB/X
-         YTGA==
-X-Gm-Message-State: AOAM531lT869KKvSBSsVJ2SB54URP0OdLtnYQiQqEgEjI9Qn6KYC8Em8
-        iWn5l6uIn4dqNtKjgArGbU7QhWaF2mUuag7GBqQ=
-X-Google-Smtp-Source: ABdhPJz1Ubb4xI0HYKINaSQPBvAxnz0e8JYIbsgs0KMkjdWkzp48dXCScptKhbn01OC2YzZmtwYq7A6g9xKqrnL9EGY=
-X-Received: by 2002:a92:d4c5:: with SMTP id o5mr8968854ilm.306.1624801770256;
- Sun, 27 Jun 2021 06:49:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bTjmvU8yn2/k0kOaZkGNIygSTdPKkN7MOcxmayDA4lI=;
+        b=exZLffKMhzFMNVP0gFOTvdd+C/qc2Q72tutgiOTQv0d8MI717i4Yu5IVG74Nq7+yLd
+         pNq6WdoOkpU7utHOv/aK/JMaX3bY0zkzoXBdwdsrvdp7ut2/oKYYA8teSnHnrJD8wI+x
+         riurOKNvdwD3I2dtO9d6ChROOfH0RRWU+cyxQC8H1h5Rn2GppkdCqSCHrP1r1knXZiR/
+         IcPi1pjfFE0fNEcf1p0BNS4F4TAy1qu1cOgAeTdDx9bp5GP83x654OY4AP+b+xBnO1XL
+         uIOnsuWJwtdjhY8UUrYlqODgH8/6OCzr4r2iwQpz0dvHWgBmt6fyLgAOgPMBvgGNJNy3
+         oHHA==
+X-Gm-Message-State: AOAM532F+Y/AajCVFgXuYm/PRRv51ez2H3tyen4YG+ZgmiDCJl8Z3TqR
+        2LE3HgBU98eZzP+oyBRzf4I=
+X-Google-Smtp-Source: ABdhPJzjT7YC09scR8s5v2+ndh3rZPHMTmEYf67yRO7QQ/E4qz+CXAbP8Mm+trT56tLJrtzz3o+voA==
+X-Received: by 2002:a17:90a:b390:: with SMTP id e16mr22444595pjr.197.1624801887319;
+        Sun, 27 Jun 2021 06:51:27 -0700 (PDT)
+Received: from i9-aorus-gtx1080.localdomain (144.168.56.201.16clouds.com. [144.168.56.201])
+        by smtp.gmail.com with ESMTPSA id c5sm10870034pfv.47.2021.06.27.06.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 06:51:26 -0700 (PDT)
+From:   Bin Meng <bmeng.cn@gmail.com>
+To:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     stable@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>
+Subject: [PATCH] riscv: Fix 32-bit RISC-V boot failure
+Date:   Sun, 27 Jun 2021 21:51:17 +0800
+Message-Id: <20210627135117.28641-1-bmeng.cn@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAOuPNLiZL4wXc__+Zx+m7TMjUjNq10tykHow3R9AvCknSNR6bQ@mail.gmail.com>
- <CAOuPNLhoLBwksNt+tJ2=hZr-TGHZgEiu7dgk66BUsraGA16Juw@mail.gmail.com> <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
-In-Reply-To: <CAFLxGvw1UoC3whDoQ5w6zfDNe=cLYi278y6vvSadQhOV9MGvTA@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Sun, 27 Jun 2021 19:19:18 +0530
-Message-ID: <CAOuPNLj4ktYYieOqxd1EGUWt0DZamwQik_jg6cj2ZyqRaL9Amw@mail.gmail.com>
-Subject: Re: Query: UBIFS: How to detect empty volumes
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 at 14:12, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
->
-> On Thu, Jun 24, 2021 at 6:09 PM Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> > I have one basic query related to UBIFS volumes on a system with NAND partition.
->
-> There is no such thing as a UBIFS volume. Do you mean UBI volumes?
->
-Yes I mean the ubi volumes which are created using the ubinize config file.
+Commit dd2d082b5760 ("riscv: Cleanup setup_bootmem()") adjusted
+the calling sequence in setup_bootmem(), which invalidates the fix
+commit de043da0b9e7 ("RISC-V: Fix usage of memblock_enforce_memory_limit")
+did for 32-bit RISC-V unfortunately.
 
-> > In short, how to detect a particular empty volume inside a system
-> > partition while flashing the partition image?
->
-> What do you mean by system partition? A MTD partition?
-By this I mean the entire UBI partition that contains the magic header "UBI#"
->
-> > Suppose I have one big system partition that consists of 4-5 ubi
-> > volumes inside it with varying sizes.
-> > Lets say:
-> > -- System Partition (ubi image)
-> >     - rootfs volume (ro, squashfs)
-> >     - data volume (rw, ubifs)
-> >     - firmware volume (ro, ubifs)
-> >     - some-other volume (ro, squashfs)
->
-> So by system partition you mean the MTD partition that hosts UBI itself?
->
-Yes the entire UBI partition that contains UBI volumes
+So now 32-bit RISC-V does not boot again when testing booting kernel
+on QEMU 'virt' with '-m 2G', which was exactly what the original
+commit de043da0b9e7 ("RISC-V: Fix usage of memblock_enforce_memory_limit")
+tried to fix.
 
-> > Consider that all these could be flashed together as part of
-> > system.ubi image in a single shot from the bootloader.
-> > Now, suppose, one of the volume image (say firmware) is missing or
-> > remains empty (as you know we can have empty volumes).
-> >
-> > So, during system image flashing, we wanted to detect if one of the
-> > volume (firmware) is empty.
-> > Since this is an important volume, so we wanted to detect if this
-> > volume is empty/missing we will abort flashing the system partition.
-> > As there is no point in booting the system without this partition.
-> >
-> > So, I am exploring options, how can this be detected ?
->
-> Read from the volume after flashing. If you get only 0xFF bytes it is empty.
->
-I mean, without flashing the image, is it possible to determine/guess
-from the image content/header
- that a volume in the image is empty.
-If it is empty then do not allow to flash the image.
+Fixes: dd2d082b5760 ("riscv: Cleanup setup_bootmem()")
+Cc: stable@vger.kernel.org # v5.12+
+Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
+---
 
-> > I mean is there any kind of magic number or header information which
-> > we can read to detect a particular empty volume ?
-> > Can we get any information from just "system.ubi" image to indicate
-> > about the volume information ?
->
-> You'll need to perform a proper UBI scan on all blocks.
-> If for the sad volume no LEBs have been found it is empty.
->
-hmm, this seems reasonable. We have something called
-"ubi_scan_partition" that scans for bad blocks, during "ubi_open".
-And we also have ubi_find_volume that checks for vtbl record in an
-incoming image.
-Let me check about the LEB option here.
+ arch/riscv/mm/init.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > Also it could be possible that 2 or more volumes are empty, but we are
-> > only concerned about one particular volume (firmware), so how to
-> > detect particular volume ?
->
-> I don't understand the use case. Is your image creation process so error prone
-> that you can't be sure whether critical parts got included or not?
->
-Actually our UBI creation process contains multiple volumes, in which
-one volume contains
-firmware image, that comes from another subsystem.
-So, it requires copying that firmware image manually before building
-the etire yocto image.
-But, it might be possible that some developer may miss/skip this
-firmware copying part, thus
-the resulting image may end up is having an empty firmware volume.
-However, this firmware volume is an important volume, without which
-the modem may not boot up.
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 4c4c92ce0bb8..9b23b95c50cf 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -123,7 +123,7 @@ void __init setup_bootmem(void)
+ {
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+-	phys_addr_t dram_end = memblock_end_of_DRAM();
++	phys_addr_t dram_end;
+ 	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
+ 
+ #ifdef CONFIG_XIP_KERNEL
+@@ -146,6 +146,8 @@ void __init setup_bootmem(void)
+ #endif
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+ 
++	dram_end = memblock_end_of_DRAM();
++
+ 	/*
+ 	 * memblock allocator is not aware of the fact that last 4K bytes of
+ 	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+-- 
+2.25.1
+
