@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C4B3B558B
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4373B558C
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 00:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhF0WgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 18:36:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:32579 "EHLO mga12.intel.com"
+        id S231858AbhF0WgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 18:36:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:19337 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231644AbhF0WgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231742AbhF0WgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Jun 2021 18:36:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="187552463"
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="195159391"
 X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="gz'50?scan'50,208,50";a="187552463"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 15:33:43 -0700
+   d="gz'50?scan'50,208,50";a="195159391"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 15:33:43 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="gz'50?scan'50,208,50";a="418957354"
+   d="gz'50?scan'50,208,50";a="643144125"
 Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Jun 2021 15:33:41 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 27 Jun 2021 15:33:41 -0700
 Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lxdLQ-0008JN-J1; Sun, 27 Jun 2021 22:33:40 +0000
-Date:   Mon, 28 Jun 2021 06:32:43 +0800
+        id 1lxdLQ-0008JP-Jr; Sun, 27 Jun 2021 22:33:40 +0000
+Date:   Mon, 28 Jun 2021 06:32:55 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
@@ -32,9 +32,9 @@ Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
         Douglas Anderson <dianders@chromium.org>
 Subject: net/qrtr/ns.c:669:13: warning: stack frame size (2176) exceeds limit
  (2048) in function 'qrtr_ns_worker'
-Message-ID: <202106280638.18tOFxZV-lkp@intel.com>
+Message-ID: <202106280652.Bvhuphmk-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
+Content-Type: multipart/mixed; boundary="T4sUOijqQbZv57TR"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -42,9 +42,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---FCuugMFkClbJLl1L
+--T4sUOijqQbZv57TR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+
+Hi Manivannan,
+
+FYI, the error/warning still remains.
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   b4b27b9eed8ebdbf9f3046197d29d733c8c944f3
@@ -281,12 +285,12 @@ dfddb54043f0a3 Manivannan Sadhasivam 2020-04-21  708  					      sq.sq_node, sq.
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---FCuugMFkClbJLl1L
+--T4sUOijqQbZv57TR
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICNrv2GAAAy5jb25maWcAlFxLd9y2kt7nV/RxNncWSfSyIs8cLUAS7EaaJCgAbD02OO1W
+H4sICL312GAAAy5jb25maWcAlFxLd9y2kt7nV/RxNncWSfSyIs8cLUAS7EaaJCgAbD02OO1W
 y9FcSe3bauXG99dPFcAHAIKyJ4vYXVUovApVXxVA//zTzzPydtg9rw+Pm/XT07fZl+3Ldr8+
 bO9nD49P2/+ZZXxWcTWjGVO/gnDx+PL2929fd//e7r9uZh9//fTr0S/7zcVsud2/bJ9m6e7l
 4fHLGyh43L389PNPKa9yNtdpqldUSMYrreiNuvyweVq/fJn9td2/gtzs+PTXo1+PZv/48nj4
@@ -770,4 +774,4 @@ kRa4NA6sQWfLnBsc/zgssKtcPkbZpYTtMgZg8BUEAdVtCk0YF6VQlKx43pEWMfbopFWhqGuW
 1vk6MDXvci3oEJCj0CUgp08TaXg5UJgdJyaMfiEU+nwCK6dMiJy+8aiAFMIu1Z43PPbhnsa9
 Peiy+IKXttZyhnJU8wGAYYdTf13+yHaceqWVx/8Bq9EG2ImPAQA=
 
---FCuugMFkClbJLl1L--
+--T4sUOijqQbZv57TR--
