@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A444C3B52A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 11:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4957C3B52A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 11:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhF0I5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 04:57:52 -0400
-Received: from mga17.intel.com ([192.55.52.151]:7096 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhF0I5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 04:57:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="188212051"
-X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
-   d="scan'208";a="188212051"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 01:55:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,302,1616482800"; 
-   d="scan'208";a="418832437"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Jun 2021 01:55:26 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lxQZZ-00086o-ST; Sun, 27 Jun 2021 08:55:25 +0000
-Date:   Sun, 27 Jun 2021 16:54:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 34c7342ac1b4e496315fb615d2a1309df8400403
-Message-ID: <60d83cca.G8pFlHybifbsPSgq%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230109AbhF0JAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 05:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhF0JAg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 05:00:36 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC88C061574;
+        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso8331594pjp.2;
+        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sJzQYMfdLr/FWwnhoBx+HcrPD/wFgYM+uN9MRIrljR8=;
+        b=k8usj9rD4Us1Ta2dllTQVyixS/TGHTvls5PhYg2D8pvVJVVnKWHZ7qHavotUcT+kF5
+         8hbmY2v5C9rvFFZ136lNQ86JYIHN5n0BC0vxTtA/VK91AFvovH2d5Xje/wXeC3xqcZcQ
+         fHLu6RNMVXQ6ncA/dmnHeoxbUhN07tJKlmTyEjH5+T4yTPry2NTNwg6VuNLJCapovvLc
+         6pEVHw8LzpugSiw7i4zxvCbWCQTK13HCXD2rLBVPtNFPwdgylFDGW7yeyeLIkTFBpGEk
+         4iiUYLBJgb3Pevw+qrEGaQKrrhajwBWoL1zjC+udpgnK0S3sYF7cnG7ueduuWe5reWx2
+         z/hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sJzQYMfdLr/FWwnhoBx+HcrPD/wFgYM+uN9MRIrljR8=;
+        b=WgkV4RmZ24YoIPgOfTzcM7DxJFT4dDfPNSGXIGiIbJvR8uYc5+8YzLUUXBkZVTZKgo
+         jxZvam/Nt3YULuiFQwthoaXD2hLSTs0P49gfVbrw2AF+4Wklf2mp70GoqjHLfvahAkBb
+         Wps9vUu6OaYZbhoB0eRAryw9Q/bBw45MAgf8LWs7oQUGhDvb7Bu6Tv/OzA4gtodYxMiJ
+         D4mPvA0CvAWEQwFcLIJK3u5DU6r06xykuYMWEqnNmW3D5YpoGGTUZT4SKT9SZt2ilx/i
+         /VLKlX3/zdmAk9r8AD5LoySas3F/ZVZ+ZkuM4ldII9ValagSnRZ1CJQn76nXkz3oyf8k
+         7Nqw==
+X-Gm-Message-State: AOAM531MN90ReejY6HSTaXKQzIdQztalHQpf4qHOgVfY18+KBVanYsNQ
+        Vg8AKngddMXslF9ZwoeajfhJoVyKxyM=
+X-Google-Smtp-Source: ABdhPJzcGmGYVGnegTe6jQczhUbL6Z0LBn3xQX75wSkQVEK33XLVVPWIuMjkTMEkPJGsJsb4Q4orJQ==
+X-Received: by 2002:a17:90a:d09:: with SMTP id t9mr16134874pja.66.1624784291144;
+        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id n34sm4256697pji.45.2021.06.27.01.58.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 01:58:10 -0700 (PDT)
+Date:   Sun, 27 Jun 2021 16:57:59 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 045/146] net: make get_net_ns return error if NET_NS
+ is disabled
+Message-ID: <20210627085759.n75m3uulvll47bdf@mail.google.com>
+References: <20210621154911.244649123@linuxfoundation.org>
+ <20210621154912.823486108@linuxfoundation.org>
+ <20210623142635.GB27348@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210623142635.GB27348@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 34c7342ac1b4e496315fb615d2a1309df8400403  time/kunit: Add missing MODULE_LICENSE()
+On Wed, Jun 23, 2021 at 04:26:35PM +0200, Pavel Machek wrote:
+> Hi!
+> > 
+> > There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
+> > The reason is that nsfs tries to access ns->ops but the proc_ns_operations
+> > is not implemented in this case.
+> > 
+> > [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+> > [7.670268] pgd = 32b54000
+> > [7.670544] [00000010] *pgd=00000000
+> > [7.671861] Internal error: Oops: 5 [#1] SMP ARM
+> > [7.672315] Modules linked in:
+> > [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+> > [7.673309] Hardware name: Generic DT based system
+> > [7.673642] PC is at nsfs_evict+0x24/0x30
+> > [7.674486] LR is at clear_inode+0x20/0x9c
+> > 
+> > The same to tun SIOCGSKNS command.
+> > 
+> > To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
+> > disabled. Meanwhile move it to right place net/core/net_namespace.c.
+> 
+> -EINVAL sounds like wrong error code for valid operation kernel was
+> configured to do. -ENOTSUPP?
+>
+This is to align with the existing code which returns -EINVAL.
+For the issue we fixed, yes, -EOPNOTSUPP (not -ENOTSUPP) should be better.
 
-elapsed time: 725m
+> Best regards,
+> 								Pavel
+> 								
+> -- 
+> http://www.livejournal.com/~pavelmachek
 
-configs tested: 99
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                        vdk_hs38_defconfig
-arm                           corgi_defconfig
-m68k                        m5407c3_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        trizeps4_defconfig
-arm                       omap2plus_defconfig
-mips                        maltaup_defconfig
-riscv                    nommu_virt_defconfig
-um                               alldefconfig
-powerpc                     stx_gp3_defconfig
-arm                        clps711x_defconfig
-nios2                         10m50_defconfig
-powerpc                      walnut_defconfig
-sh                   secureedge5410_defconfig
-sh                         ecovec24_defconfig
-arm                          imote2_defconfig
-mips                     decstation_defconfig
-mips                        jmr3927_defconfig
-mips                       capcella_defconfig
-powerpc                     tqm8548_defconfig
-xtensa                  nommu_kc705_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210627
-i386                 randconfig-a001-20210627
-i386                 randconfig-a003-20210627
-i386                 randconfig-a006-20210627
-i386                 randconfig-a005-20210627
-i386                 randconfig-a004-20210627
-x86_64               randconfig-a002-20210627
-x86_64               randconfig-a001-20210627
-x86_64               randconfig-a005-20210627
-x86_64               randconfig-a003-20210627
-x86_64               randconfig-a004-20210627
-x86_64               randconfig-a006-20210627
-i386                 randconfig-a011-20210627
-i386                 randconfig-a014-20210627
-i386                 randconfig-a013-20210627
-i386                 randconfig-a015-20210627
-i386                 randconfig-a012-20210627
-i386                 randconfig-a016-20210627
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210627
-x86_64               randconfig-a012-20210627
-x86_64               randconfig-a016-20210627
-x86_64               randconfig-a015-20210627
-x86_64               randconfig-a014-20210627
-x86_64               randconfig-a013-20210627
-x86_64               randconfig-a011-20210627
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Cheers,
+Changbin Du
