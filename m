@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56CD3B53E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 16:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6B63B53DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 16:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhF0Ony (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 10:43:54 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:32102 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhF0Onx (ORCPT
+        id S231210AbhF0Oni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 10:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230309AbhF0Ong (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 10:43:53 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 27 Jun 2021 07:41:29 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 27 Jun 2021 07:41:27 -0700
-X-QCInternal: smtphost
-Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 27 Jun 2021 20:10:43 +0530
-Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
-        id B63A24E89; Sun, 27 Jun 2021 20:10:42 +0530 (IST)
-From:   Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Subject: [PATCH V2] mmc: sdhci: Update the software timeout value for sdhc
-Date:   Sun, 27 Jun 2021 20:10:40 +0530
-Message-Id: <1624804840-3479-1-git-send-email-sbhanu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Sun, 27 Jun 2021 10:43:36 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223D2C061766
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 07:41:11 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u13so26743004lfk.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 07:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=btdlc/ifZaWqLzJPrzCmNv9xr6UOVvnu4j5N5Ajddbc=;
+        b=yffTw/J5lSDtXKZKMbHb+LYAj2r+UxCDpeXnSWFKiXIFDF619yE7YIq5A87id2LvKa
+         Q87cqXc66jFqDBWZR4BnGNgqyAeXaRJjTLIOouA6vrFRvKqoIzkwlROs7MUhWp5znt6h
+         JzzRFwzMOT0YaxSY/d/NuW0vY9y6i6jZNOwKEWLjn+6Nb3WzhpE4oqLWDGhNx08GLZjt
+         CNv9E1//wPPkVcja7fOjXXz+STz7G9aCld7HIphWRNC/N0IgOh9XAlHPM/M82DG8nx4m
+         IR2WxqSeW6s3VK9QWzpCore1k2uJmhYWif/9sCm/yOTj8D8t97/Njy7uLQSVWNUtqi/J
+         rElA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=btdlc/ifZaWqLzJPrzCmNv9xr6UOVvnu4j5N5Ajddbc=;
+        b=WRZbYdPlOrqWPMfsJboFxV3iUi9QucU67/dFkiaZD7dxPX1Kl9EXyoy3uOSgoHXE+5
+         XF/N+UkVS1W+Tdk7FwoZUvX/nuhVqRt2kc7MUTcEwRFrcBOuhFX0EOsLxdxfuWRczn+J
+         6mROY2bho6QOzEqUriYCXx2uu2H++BMoZFV59N3xRonwkXtxJb3m1IIqBQY8nPT3lMiW
+         O/5ZHG5nAvdIoFJ4IsSoyib1DdI7/+/lW7egP228ThJY+mZ1gbxWWlkIYSFjkd7Fhqji
+         cAP80LCTbIp4GZ8STnuqLbcR2SfCSaj0JTnDdoDEYSyrpHsmwrB0FCRsonrL0ubtSOma
+         n5ug==
+X-Gm-Message-State: AOAM533Pw+ythTxPzTUYMlNtW37rvTh2TzJvMYiryltDihKAJ6St6TVa
+        obWGxFol/4T1cXBBJZiJWkstU1O22I2LQxO2grHnzg==
+X-Google-Smtp-Source: ABdhPJwomKfBSqwR+h+1fkMj/2by+2A/Vt84AAJQdmIrZY7Vy9QHtS+zQ27ySQ7/GVl60lvKYvUjV5vijNwRvQFpL60=
+X-Received: by 2002:ac2:4d25:: with SMTP id h5mr13083965lfk.291.1624804869321;
+ Sun, 27 Jun 2021 07:41:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210625235532.19575-1-dipenp@nvidia.com> <CAHp75Vf4TKjtC7cLNape4r+hE-AWnbxtbww2ofCcHQJf9zyh-g@mail.gmail.com>
+In-Reply-To: <CAHp75Vf4TKjtC7cLNape4r+hE-AWnbxtbww2ofCcHQJf9zyh-g@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 27 Jun 2021 16:40:58 +0200
+Message-ID: <CACRpkdbXE2A98P0_juA9PNEKTo89FcgywYmnqJSC5bV+Vox=Fw@mail.gmail.com>
+Subject: Re: [RFC 00/11] Intro to Hardware timestamping engine
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Ye Xiang <xiang.ye@intel.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Sandeep Singh <sandeep.singh@amd.com>
+Cc:     Dipen Patel <dipenp@nvidia.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-timeout value will be 21.47secs, which is approx. 22secs and we have
-a current software timeout value as 10secs. We have to set software
-timeout value more than the hardware data timeout value to avioid seeing
-the below register dumps.
+On Sun, Jun 27, 2021 at 3:08 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 
-[  332.953670] mmc2: Timeout waiting for hardware interrupt.
-[  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-[  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-[  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-[  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-[  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-[  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-[  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-[  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-[  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-[  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-[  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-[  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-[  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-[  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-[  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-[  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-0x0000000ffffff218
-[  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
------------
-[  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-0x6000642c | DLL cfg2: 0x0020a000
-[  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-0x00000000 | DDR cfg: 0x80040873
-[  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-0xf88218a8 Vndr func3: 0x02626040
-[  333.102371] mmc2: sdhci: ============================================
+> > To summarize upstream discussion:
+> > - It was heavily favoured by Linus and Kent to extend GPIOLIB and supporting
+> > GPIO drivers to add HTE functionality and I agreed to experiment with it.
+>
+> I guess this series should include more people from different
+> companies, especially documentation parts. This may be used by
+> different hardware and quite different vendors. Developing a framework
+> like this for only one vendor is no go in general.
 
-So, set software timeout value more than hardware timeout value.
+I forwarded patch 00 to the IIO list and Jonathan Cameron,
+and let's page Ye Xiang who made a bunch of contributions
+from Intel's side to IIO directly. (Hi Ye, please check this concept
+if you have time!)
 
-Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
----
+The actually most important target group would be people
+doing things like sensor fusion where a common timebase is
+important, I don't know who does really, but Sandeep Singh from
+AMD has contributed the AMD Sensor Fusion hub in
+drivers/hid/amd-sfh-hid and might know a few things about this
+though I don't think SFH would need this directly.
+https://en.wikipedia.org/wiki/Sensor_fusion
 
-Changes since V1:
-	- Moved software data timeout update part to qcom specific file as
-	  suggested by Veerabhadrarao Badiganti.
----
- drivers/mmc/host/sdhci-msm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Also Paging Drew Fustini, who knows a lot of maker and tinker
+people, he might know a bit about this or know someone who
+knows.
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index e44b7a6..58e651e 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -2089,6 +2089,14 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
- 	sdhci_cqe_disable(mmc, recovery);
- }
- 
-+static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
-+{
-+
-+	__sdhci_set_timeout(host, cmd);
-+	if (cmd && (cmd->data) && (host->clock > 400000) && (host->clock <= 50000000))
-+		host->data_timeout = 22 * NSEC_PER_SEC;
-+}
-+
- static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
- 	.enable		= sdhci_msm_cqe_enable,
- 	.disable	= sdhci_msm_cqe_disable,
-@@ -2438,6 +2446,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
- 	.irq	= sdhci_msm_cqe_irq,
- 	.dump_vendor_regs = sdhci_msm_dump_vendor_regs,
- 	.set_power = sdhci_set_power_noreg,
-+	.set_timeout = sdhci_msm_set_timeout,
- };
- 
- static const struct sdhci_pltfm_data sdhci_msm_pdata = {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Yours,
+Linus Walleij
