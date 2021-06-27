@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74133B5310
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 13:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA253B5315
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 13:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhF0Lkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 07:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        id S230019AbhF0LoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 07:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhF0Lkt (ORCPT
+        with ESMTP id S229817AbhF0LoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 07:40:49 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF20C061766
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 04:38:24 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id k8so20368185lja.4
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 04:38:23 -0700 (PDT)
+        Sun, 27 Jun 2021 07:44:19 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CADC061787
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 04:41:54 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u13so26196817lfk.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 04:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pQxWdYWHvbbp+2LcaBtIbSxJfMMlfDTA83HjiKw1VAs=;
-        b=gpCPcR/xeh65GpyTKLghTUCKCBUjZmZjSIw5/3lU3NKaN0qDV3NkoX8cWkQV11nz3B
-         40OLGXRRT97wWZApV5ufDcq691C0KWtf1RAgH8XW5aVRZQwl1eeEg0DXS3+W2fAT1X5m
-         m+hV9nIbmlXdEFaQN2Ou03/cQE/ayWqb2OdXUvtpJ5TuNplnDcPDJ6QsUknv4ctKXqDq
-         t8ivBcrq7AL1Ayxl34OP8qlhlpAvWs65z5y0bsXzRpvk8qH17qOwtOUgp++z/gVLriRV
-         u+jxcOzu0P0gL88faPMjewy77CjAJEe6iaBoE4TAU0I2NFbOVcs1TJuDXMsIzmidoOLu
-         umAQ==
+        bh=7nCcZa51W677BE+Hel0O/2f8nMv5K3UCI0TqVVzGVFE=;
+        b=tCpyfKk6mjwf5hKPeYWKLVMLc3+tab8zSmjQyuDhkNWsOLgj+9g24nsoJW7QJhLS10
+         BiL3k1UPE9CrxlKVByXTovHluLJn5rNHH3AWiWQBDRR9uHIGAotgaN1VwvK96gbSU1yx
+         b3Ev0DDKaY3HXR2KxsgNPpj7aoHjnmq0B04i7yq9ogCbqgJ0nYx2ATwuaztFuZhiSJdP
+         6WMuvUOMh128wnXcNZ27iO9Cwozg/WAB8+XEkgl06PdhkzT8FtiYrd0mQPd6hWsTAvc7
+         0wrkNGt4fdFTRnAkWOpQ0tHza14D7SyHpNEIaBLQQWX05CCVrn5eVDC9NZcbBejtDUVD
+         E2Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pQxWdYWHvbbp+2LcaBtIbSxJfMMlfDTA83HjiKw1VAs=;
-        b=Hrc2FXTCUi7oSX3rDVsnV40V9Ftsw/NeTlQBCWsL3HyLUBJe4rslfhI0AD4Wqcn8rb
-         wvBPBGxRveGLZ7uL3X/xrUdpgu/nWNUuGlUGoxS2cSze1n224k75LXE9w75MtbLBzvOX
-         VVsxR3VK7U6RcXLcBU8lN51s+hiU3GbXxOch+xOXzyCHOqMjitMxlm/5tOM+h2nhHxk3
-         nkUMmqLLHdcGXcHct9Q13X3KxZgxSW1XPfyE2fH8E3WdjVbCb22vQ3OTL9IqFICX4iYA
-         XXA2rIyJLPp0EB4hVzoTalyGbbe4VihxMwMBHll5hNux3+TJWUjNZ7cTkJadkUlTXr+e
-         yO1g==
-X-Gm-Message-State: AOAM530fdHTSANtXtyej7gazauFfyAZivfMl8R/gjECqmroA0oLd2odE
-        51mSli62I8qyjLSowNBZiLtvRQpXkvN1yZnV8B+8dA==
-X-Google-Smtp-Source: ABdhPJz/VCxte05fHrLvpJorkmglZCxD3yh2bBhdMx2Ohc3IjXk204q1B1o2taLMzCkh5u2qTWBzMxJNPZA0eNiYgis=
-X-Received: by 2002:a2e:9d15:: with SMTP id t21mr15808817lji.200.1624793900993;
- Sun, 27 Jun 2021 04:38:20 -0700 (PDT)
+        bh=7nCcZa51W677BE+Hel0O/2f8nMv5K3UCI0TqVVzGVFE=;
+        b=KPJTw2CCq6P9U9y3hyfESj5sDozW/+Tf+YNoVCYm+rS+KBWPDdudhj1K+0VQd+aJyR
+         vQBjU3nGUn0B5XcgMlQUfz4mWmfirdedcP4qgrLOW4mEQT4kdDonaW3ZaqSHtL7ACt43
+         A9QojnRt6O8Q8hmbcGcYyGCjAbexlVdaYhq5/9qdUd0HPCYin1DXh6L3xmhmFJGIQ6RT
+         Mgms/38hpnwKf7wPU7u0WNtDuYvXsPDxleMSDMCy12FV+vCrWWKna8Mv+X89VO8tdx3I
+         xEvGFzhWR5MnKJTDX8H8vdefN3qkKrg+rgv8laqVjmcHH659pEDZkTrSJ4wuJiTS+kOQ
+         5rew==
+X-Gm-Message-State: AOAM532GDsbr454F3jbJMS/UVByg+O7ZPegFQSM7Q6VR9izP9MCjixO7
+        R+kdLsdV95Fq7xYtKxiyp9ozT6B/ug6IB+3Utn7Ozg==
+X-Google-Smtp-Source: ABdhPJwC0em6P0FMbyE3aTSrQuokVtkD949HKWZUgn5a0hTZgddqfrKVTAN5GsS2H/A3hpIV/tZzJiFHzTuMA8lCZkc=
+X-Received: by 2002:a05:6512:1508:: with SMTP id bq8mr15370726lfb.529.1624794113085;
+ Sun, 27 Jun 2021 04:41:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210625235532.19575-1-dipenp@nvidia.com> <20210625235532.19575-9-dipenp@nvidia.com>
-In-Reply-To: <20210625235532.19575-9-dipenp@nvidia.com>
+References: <20210625235532.19575-1-dipenp@nvidia.com> <20210625235532.19575-7-dipenp@nvidia.com>
+In-Reply-To: <20210625235532.19575-7-dipenp@nvidia.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 27 Jun 2021 13:38:10 +0200
-Message-ID: <CACRpkdY=b44SLJNobNqfteYyuEcpB+aGZ3xRBwUSG7Yx116YuA@mail.gmail.com>
-Subject: Re: [RFC 08/11] gpiolib: cdev: Add hardware timestamp clock type
+Date:   Sun, 27 Jun 2021 13:41:42 +0200
+Message-ID: <CACRpkdb79ONmgBGh=YE9kXMa8_8_zCyyiPkg531NDCsX8jGx5Q@mail.gmail.com>
+Subject: Re: [RFC 06/11] gpiolib: Add HTE support
 To:     Dipen Patel <dipenp@nvidia.com>
 Cc:     "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
         Jon Hunter <jonathanh@nvidia.com>,
@@ -70,20 +70,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, Jun 26, 2021 at 1:48 AM Dipen Patel <dipenp@nvidia.com> wrote:
 
-> This patch adds new clock type for the GPIO controller which can
-> timestamp gpio lines using hardware means. To expose such
-> functionalities to the userspace, code has been added in this patch
-> where during line create call, it checks for new clock type and if
-> requested, calls hardware timestamp related API from gpiolib.c.
-> During line change event, it retrieves timestamp in nano seconds by
-> calling gpiod_get_hw_timestamp API from gpiolib.c. At the line release,
-> it disables this functionality by calling gpiod_hw_timestamp_control.
+> Some GPIO chip can provide hardware timestamp support on its GPIO lines
+> , in order to support that additional functions needs to be added which
+> can talk to both GPIO chip and HTE (hardware timestamping engine)
+> subsystem. This patch introduces functions which gpio consumer can use
+> to request hardware assisted timestamping. Below is the list of the APIs
+> that are added in gpiolib subsystem.
+>
+> - gpiod_hw_timestamp_control - to enable/disable HTE on specified GPIO
+> line. This API will return HTE specific descriptor for the specified
+> GPIO line during the enable call, it will be stored as pointer in the
+> gpio_desc structure as hw_ts_data.
+> - gpiod_is_hw_timestamp_enabled - to query if HTE is enabled on
+> specified GPIO line.
+> - gpiod_get_hw_timestamp - to retrieve hardware timestamps.
 >
 > Signed-off-by: Dipen Patel <dipenp@nvidia.com>
 
-This looks good to me, pretty much exactly as I imagine it should be
-done, and it is also nice that we only implement it
-for the v2 UAPI.
+This looks good to me.
+
+The chip driver can look up and provide a timestamp provider for a
+certain line, which is proper since the GPIO hardware will be tightly
+coupled with the timestamp hardware so we need to ask the hardware
+about this directly and delegate it to the GPIO driver.
 
 Yours,
 Linus Walleij
