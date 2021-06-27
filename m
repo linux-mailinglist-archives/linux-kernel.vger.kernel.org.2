@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D673B5270
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B693B527E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 09:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhF0Hkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 03:40:43 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60092 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229519AbhF0Hkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 03:40:39 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0DfKthgFewYAA--.29429S2;
-        Sun, 27 Jun 2021 15:38:07 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] MIPS: Loongson64: Add Loongson-2K1000 reset support
-Date:   Sun, 27 Jun 2021 15:38:06 +0800
-Message-Id: <20210627073806.32564-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
+        id S230064AbhF0H6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 03:58:42 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50373 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229507AbhF0H6k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 03:58:40 -0400
+X-UUID: e7ce929d298b4a2cbeb934bcd9bf50b0-20210627
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6TSr5TS0E7uuhhXK7oCAhWahR2YqxhAPByhuMU0eWFQ=;
+        b=ISGSo8j5gsAbxZjjM/6Xdqm3XzCIIbsEayzKNP2vvmglBf/ovC6FIj4wOJPECy9IpJPie3WWGBnrmClkSZbFPQOtWvEnztnrjzLcFcsQuyvs3gqp6jKj5ZHv4Op4Gd0qww59H+QAvIR3VEgQhj2LzJJ5cG7pkD8IABdJOuYRX1A=;
+X-UUID: e7ce929d298b4a2cbeb934bcd9bf50b0-20210627
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1880613911; Sun, 27 Jun 2021 15:56:13 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 27 Jun 2021 15:56:12 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 27 Jun 2021 15:56:12 +0800
+Message-ID: <1624780572.1958.2.camel@mtkswgap22>
+Subject: Re: [PATCH v12 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Sun, 27 Jun 2021 15:56:12 +0800
+In-Reply-To: <20210602165827.GA3558170@robh.at.kernel.org>
+References: <1622307153-3639-1-git-send-email-hector.yuan@mediatek.com>
+         <1622307153-3639-3-git-send-email-hector.yuan@mediatek.com>
+         <20210602165827.GA3558170@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxb0DfKthgFewYAA--.29429S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw17Wr1UWrWrAF1UCFWDCFg_yoW5Cw4xpr
-        9xC3WDKFWfuw18ZF1rtFyUtrWUuF9xArsrAFW2gF17G3sxW3s3tws5JFy8tF1kArW7ua4j
-        9rWrGrW8CF4fu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jewZ7UUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add power management register operations to support reboot and poweroff.
-
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
-
-v1-v2:
-- Add pm block node
-
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..929e8ddf86eb 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -101,6 +101,14 @@ uart0: serial@1fe00000 {
- 			no-loopback-test;
- 		};
- 
-+		pm: power-controller {
-+			device_type = "power management";
-+			reg = <0 0x1fe0700c 0 0x8>,
-+				<0 0x1fe07014 0 0x8>,
-+				<0 0x1fe07030 0 0x8>;
-+			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
-+		};
-+
- 		pci@1a000000 {
- 			compatible = "loongson,ls2k-pci";
- 			device_type = "pci";
-diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
-index c97bfdc8c922..ea125e925d44 100644
---- a/arch/mips/loongson64/reset.c
-+++ b/arch/mips/loongson64/reset.c
-@@ -10,6 +10,7 @@
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kexec.h>
-+#include <linux/of_address.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
- 
-@@ -20,12 +21,50 @@
- #include <loongson.h>
- #include <boot_param.h>
- 
-+static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
-+
-+static void __iomem *get_reg_byname(struct device_node *node, const char *name)
-+{
-+	int index = of_property_match_string(node, "reg-names", name);
-+
-+	if (index < 0)
-+		return NULL;
-+
-+	return of_iomap(node, index);
-+}
-+
-+static int  __init loongson_fdt_reset_init(void)
-+{
-+	struct device_node *np;
-+	int i;
-+
-+	np = of_find_node_by_type(NULL, "power management");
-+	if (!np) {
-+		pr_info("Failed to get PM node\n");
-+		return -ENODEV;
-+	}
-+
-+	for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
-+		pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
-+		if (!pm_reg_name[i])
-+			iounmap(pm_reg_name[i]);
-+	}
-+
-+	of_node_put(np);
-+	return 0;
-+}
-+arch_initcall(loongson_fdt_reset_init);
-+
- static void loongson_restart(char *command)
- {
-+	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
-+		writel(0x1, (void *)pm_reg_name[2]);
-+	} else {
-+		void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
- 
--	void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
-+		fw_restart();
-+	}
- 
--	fw_restart();
- 	while (1) {
- 		if (cpu_wait)
- 			cpu_wait();
-@@ -34,9 +73,18 @@ static void loongson_restart(char *command)
- 
- static void loongson_poweroff(void)
- {
--	void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
-+	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
-+		/* Clear */
-+		writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void *)pm_reg_name[0]);
-+		/* Sleep Enable | Soft Off*/
-+		writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
-+	} else {
-+
-+		void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
-+
-+		fw_poweroff();
-+	}
- 
--	fw_poweroff();
- 	while (1) {
- 		if (cpu_wait)
- 			cpu_wait();
--- 
-2.31.0
+T24gV2VkLCAyMDIxLTA2LTAyIGF0IDExOjU4IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gU3VuLCBNYXkgMzAsIDIwMjEgYXQgMTI6NTI6MzNBTSArMDgwMCwgSGVjdG9yIFl1YW4gd3Jv
+dGU6DQo+ID4gRnJvbTogIkhlY3Rvci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0K
+PiA+IA0KPiA+IEFkZCBkZXZpY2V0cmVlIGJpbmRpbmdzIGZvciBNZWRpYVRlayBIVyBkcml2ZXIu
+DQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSGVjdG9yLll1YW4gPGhlY3Rvci55dWFuQG1lZGlh
+dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRp
+YXRlay1ody55YW1sICAgICAgfCAgIDcxICsrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
+ZSBjaGFuZ2VkLCA3MSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY3B1ZnJlcS9jcHVmcmVxLW1lZGlhdGVrLWh3
+LnlhbWwNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sDQo+ID4g
+bmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwLi4xYWE0ZDU0DQo+ID4gLS0t
+IC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9j
+cHVmcmVxL2NwdWZyZXEtbWVkaWF0ZWstaHcueWFtbA0KPiA+IEBAIC0wLDAgKzEsNzEgQEANCj4g
+PiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1
+c2UpDQo+ID4gKyVZQU1MIDEuMg0KPiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJl
+ZS5vcmcvc2NoZW1hcy9jcHVmcmVxL2NwdWZyZXEtbWVkaWF0ZWstaHcueWFtbCMNCj4gPiArJHNj
+aGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4g
+Kw0KPiA+ICt0aXRsZTogTWVkaWFUZWsncyBDUFVGUkVRIEJpbmRpbmdzDQo+ID4gKw0KPiA+ICtt
+YWludGFpbmVyczoNCj4gPiArICAtIEhlY3RvciBZdWFuIDxoZWN0b3IueXVhbkBtZWRpYXRlay5j
+b20+DQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjoNCj4gPiArICBDUFVGUkVRIEhXIGlzIGEgaGFy
+ZHdhcmUgZW5naW5lIHVzZWQgYnkgTWVkaWFUZWsNCj4gPiArICBTb0NzIHRvIG1hbmFnZSBmcmVx
+dWVuY3kgaW4gaGFyZHdhcmUuIEl0IGlzIGNhcGFibGUgb2YgY29udHJvbGxpbmcgZnJlcXVlbmN5
+DQo+ID4gKyAgZm9yIG11bHRpcGxlIGNsdXN0ZXJzLg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoN
+Cj4gPiArICBjb21wYXRpYmxlOg0KPiA+ICsgICAgY29uc3Q6IG1lZGlhdGVrLGNwdWZyZXEtaHcN
+Cj4gPiArDQo+ID4gKyAgcmVnOg0KPiA+ICsgICAgbWluSXRlbXM6IDENCj4gPiArICAgIG1heEl0
+ZW1zOiAyDQo+ID4gKyAgICBkZXNjcmlwdGlvbjogfA0KPiA+ICsgICAgICBBZGRyZXNzZXMgYW5k
+IHNpemVzIGZvciB0aGUgbWVtb3J5IG9mIHRoZQ0KPiA+ICsgICAgICBIVyBiYXNlcyBpbiBlYWNo
+IGZyZXF1ZW5jeSBkb21haW4uDQo+ID4gKw0KPiA+ICsgICIjcGVyZm9ybWFuY2UtZG9tYWluLWNl
+bGxzIjoNCj4gPiArICAgIGRlc2NyaXB0aW9uOg0KPiA+ICsgICAgICBOdW1iZXIgb2YgY2VsbHMg
+aW4gYSBwZXJmb3JtYW5jZSBkb21haW4gc3BlY2lmaWVyLiBUeXBpY2FsbHkgMCBmb3Igbm9kZXMN
+Cj4gPiArICAgICAgcmVwcmVzZW50aW5nIGEgc2luZ2xlIHBlcmZvcm1hbmNlIGRvbWFpbiBhbmQg
+MSBmb3Igbm9kZXMgcHJvdmlkaW5nDQo+ID4gKyAgICAgIG11bHRpcGxlIHBlcmZvcm1hbmNlIGRv
+bWFpbnMgKGUuZy4gcGVyZm9ybWFuY2UgY29udHJvbGxlcnMpLCBidXQgY2FuIGJlDQo+ID4gKyAg
+ICAgIGFueSB2YWx1ZSBhcyBzcGVjaWZpZWQgYnkgZGV2aWNlIHRyZWUgYmluZGluZyBkb2N1bWVu
+dGF0aW9uIG9mIHBhcnRpY3VsYXINCj4gPiArICAgICAgcHJvdmlkZXIuDQo+ID4gKyAgICBlbnVt
+OiBbIDAsIDEgXQ0KPiANCj4gQ2FuJ3QgeW91IHJlc3RyaWN0IHRoaXMgdG8gYmUgMSBmb3IgTWVk
+aWF0ZWsgaC93PyBFdmVuIGlmIHlvdSBzb21ldGltZXMgDQo+IGhhdmUgYSBzaW5nbGUgZG9tYWlu
+LCBpdCdzIHByb2JhYmx5IG1vcmUgc2ltcGxlIGZvciB0aGUgZHJpdmVyIGlmIHRoaXMgDQo+IGlz
+IGZpeGVkLg0KPiANCk9LLCBJIHdpbGwgcmVzdHJpY3QgdGhpcyBhcyAxIGluIG5leHQgdmVyc2lv
+bi4NCj4gPiArDQo+ID4gK3JlcXVpcmVkOg0KPiA+ICsgIC0gY29tcGF0aWJsZQ0KPiA+ICsgIC0g
+cmVnDQo+ID4gKyAgLSAiI3BlcmZvcm1hbmNlLWRvbWFpbi1jZWxscyINCj4gPiArDQo+ID4gK2Fk
+ZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVlDQo+IA0KPiBTaG91bGQgYmUgZmFsc2UuDQo+IA0KT0ss
+IHRoYW5rcw0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICBjcHVz
+IHsNCj4gPiArICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4gKyAgICAgICAg
+ICAgICNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsNCj4gPiArICAgICAgICAgICAgY3B1MDogY3B1
+QDAgew0KPiA+ICsgICAgICAgICAgICAgICAgZGV2aWNlX3R5cGUgPSAiY3B1IjsNCj4gPiArICAg
+ICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYXJtLGNvcnRleC1hNTUiOw0KPiA+ICsgICAgICAg
+ICAgICAgICAgZW5hYmxlLW1ldGhvZCA9ICJwc2NpIjsNCj4gPiArICAgICAgICAgICAgICAgIHBl
+cmZvcm1hbmNlLWRvbWFpbnMgPSA8JnBlcmZvcm1hbmNlIDA+Ow0KPiA+ICsgICAgICAgICAgICAg
+ICAgcmVnID0gPDB4MDAwPjsNCj4gPiArICAgICAgICAgICAgfTsNCj4gPiArICAgIH07DQo+ID4g
+Kw0KPiA+ICsgICAgLyogLi4uICovDQo+ID4gKw0KPiA+ICsgICAgc29jIHsNCj4gPiArICAgICAg
+ICAjYWRkcmVzcy1jZWxscyA9IDwyPjsNCj4gPiArICAgICAgICAjc2l6ZS1jZWxscyA9IDwyPjsN
+Cj4gPiArDQo+ID4gKyAgICAgICAgcGVyZm9ybWFuY2U6IHBlcmZvcm1hbmNlLWNvbnRyb2xsZXJA
+MTFiYzAwIHsNCj4gPiArICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxjcHVmcmVx
+LWh3IjsNCj4gPiArICAgICAgICAgICAgcmVnID0gPDAgMHgwMDExYmMxMCAwIDB4MTIwPiwgPDAg
+MHgwMDExYmQzMCAwIDB4MTIwPjsNCj4gPiArDQo+ID4gKyAgICAgICAgICAgICNwZXJmb3JtYW5j
+ZS1kb21haW4tY2VsbHMgPSA8MT47DQo+ID4gKyAgICAgICAgfTsNCj4gPiArICAgIH07DQo+ID4g
+LS0gDQo+ID4gMS43LjkuNQ0KDQo=
 
