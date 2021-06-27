@@ -2,213 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017643B50AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 02:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE533B50B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 03:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhF0Avu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Jun 2021 20:51:50 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:41930 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhF0Avt (ORCPT
+        id S230438AbhF0BOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Jun 2021 21:14:02 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62828 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhF0BOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Jun 2021 20:51:49 -0400
-Received: by mail-lf1-f44.google.com with SMTP id j4so23989652lfc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Jun 2021 17:49:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jQccB20CQF5Dr5LsObv3HRFh/UxoVEFfeObD4BLsXKY=;
-        b=gWbxf83r3lrfcCgW4h/laqRJGtNeLMvDuNsYAzTssoJE4yQHG8KMxKfi0tVUlbwWBm
-         9+AgINwoVl5rslJj0AEdubdl1RuG/L3kFlf1wdrUT6tUyD1SIoOHS+Fh5308Y0qkaTHI
-         8XYcCMVhdyoztC6W4uQf9O9zPAoaBVJyt5XKgyzY1KVUtuTiaLL5dwBFRZ5axkxQ2go8
-         uHm1tVeLUloC429waMhL99G9QfP/UVctAR9KfKAGlqThKOFHdtxSlJEb/+TBtBSfRaCa
-         iI52Ngn9kHEq4183YmseN9cEnblv+e4rbz/B0aY6tdSlKSLJA/DNvNYJ2qY7R6ytwszt
-         a8HA==
-X-Gm-Message-State: AOAM531zJte8bnRszyyXIC4Exqi1TU5hyfBdmZ9ItztSmOOCxedliBFz
-        q2fM5/aJfEPe6C/eRpTeloEqPFyOSph/gYanzg4=
-X-Google-Smtp-Source: ABdhPJyUNBTc/qh3LL075sZxc2OLFebC8zgHnNtcQQB4r7HMeJtizgRB3aJnw48cxIBU6sUlVPdv4vFs+WWvl9tIKrA=
-X-Received: by 2002:a05:6512:1291:: with SMTP id u17mr7613772lfs.300.1624754964035;
- Sat, 26 Jun 2021 17:49:24 -0700 (PDT)
+        Sat, 26 Jun 2021 21:14:01 -0400
+Received: from fsav315.sakura.ne.jp (fsav315.sakura.ne.jp [153.120.85.146])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15R1AWWa081414;
+        Sun, 27 Jun 2021 10:10:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav315.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp);
+ Sun, 27 Jun 2021 10:10:31 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav315.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15R1APoP081243
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 27 Jun 2021 10:10:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+References: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20210626101834.55b4ecf1@rorschach.local.home>
+ <7297f336-70e5-82d3-f8d3-27f08c7d1548@i-love.sakura.ne.jp>
+ <20210626114157.765d9371@rorschach.local.home>
+ <20210626142213.6dee5c60@rorschach.local.home>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <fc5d0f90-502d-b217-0ad6-0d17cae12ff7@i-love.sakura.ne.jp>
+Date:   Sun, 27 Jun 2021 10:10:24 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com> <32d8135b4d3b5df28c234bab774b65e7f0b85727.1624350588.git.alexey.v.bayduraev@linux.intel.com>
-In-Reply-To: <32d8135b4d3b5df28c234bab774b65e7f0b85727.1624350588.git.alexey.v.bayduraev@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 26 Jun 2021 17:49:13 -0700
-Message-ID: <CAM9d7ci0OF3MLRoH3sZ=kYgfw0C7PBeYqgmun0mmas2U84NwkA@mail.gmail.com>
-Subject: Re: [PATCH v7 19/20] perf session: Load single file for analysis
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210626142213.6dee5c60@rorschach.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:43 AM Alexey Bayduraev
-<alexey.v.bayduraev@linux.intel.com> wrote:
->
-> Adding eof flag to reader state and moving the check to reader__mmap.
-> Separating reading code of single event into reader__read_event function.
-> Adding basic reader return codes to simplify the code and introducing
-> reader remmap/read_event loop based on them.
->
-> Design and implementation are based on the prototype [1], [2].
->
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 71 ++++++++++++++++++++++++---------------
->  1 file changed, 44 insertions(+), 27 deletions(-)
->
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 7d91205a6a47..fe25abf83b80 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -64,6 +64,12 @@ struct reader_state {
->         u64      file_offset;
->         u64      data_size;
->         u64      head;
-> +       bool     eof;
-> +};
-> +
-> +enum {
-> +       READER_EOF      =  0,
-> +       READER_OK       =  1,
+On 2021/06/27 3:22, Steven Rostedt wrote:
+>> If BPF is expected to register the same tracepoint with the same
+>> callback and data more than once, then let's add a call to do that
+>> without warning. Like I said, other callers expect the call to succeed
+>> unless it's out of memory, which tends to cause other problems.
+> 
+> If BPF is OK with registering the same probe more than once if user
+> space expects it, we can add this patch, which allows the caller (in
+> this case BPF) to not warn if the probe being registered is already
+> registered, and keeps the idea that a probe registered twice is a bug
+> for all other use cases.
 
-Just a nitpick, it might be better to add READER_NODATA state
-to differentiate it from the real end-of-file state.
+I think BPF will not register the same tracepoint with the same callback and
+data more than once, for bpf(BPF_RAW_TRACEPOINT_OPEN) cleans the request up
+by calling bpf_link_cleanup() and returns -EEXIST. But I think BPF relies on
+tracepoint_add_func() returning -EEXIST without crashing the kernel.
 
-Thanks,
-Namhyung
+CPU: 0 PID: 16193 Comm: syz-executor.5 Not tainted 5.13.0-rc7-syzkaller #0
+RIP: 0010:tracepoint_add_func+0x1fb/0xa90 kernel/tracepoint.c:291
+Call Trace:
+ tracepoint_probe_register_prio kernel/tracepoint.c:369 [inline]
+ tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:389
+ __bpf_probe_register kernel/trace/bpf_trace.c:1843 [inline]
+ bpf_probe_register+0x15a/0x1c0 kernel/trace/bpf_trace.c:1848
+ bpf_raw_tracepoint_open+0x34a/0x720 kernel/bpf/syscall.c:2895
+ __do_sys_bpf+0x2586/0x4f40 kernel/bpf/syscall.c:4453
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size) {
+  switch (cmd) {
+  case BPF_RAW_TRACEPOINT_OPEN:
+    err = bpf_raw_tracepoint_open(&attr) {
+      err = bpf_link_prime(&link->link, &link_primer);
+      if (err) {
+        kfree(link);
+        goto out_put_btp;
+      }
+      err = bpf_probe_register(link->btp, prog) {
+        return __bpf_probe_register(btp, prog) {
+          return tracepoint_probe_register(tp, (void *)btp->bpf_func, prog) {
+            return tracepoint_probe_register_prio(tp, probe, data, TRACEPOINT_DEFAULT_PRIO) {
+              mutex_lock(&tracepoints_mutex); // Serialization start.
+              ret = tracepoint_add_func(tp, &tp_func, prio) {
+                old = func_add(&tp_funcs, func, prio); // Returns -EEXIST.
+                if (IS_ERR(old)) {
+                  WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM); // Crashes due to warn_on_paic==1.
+                  return PTR_ERR(old); // Returns -EEXIST.
+                }
+              }
+              mutex_unlock(&tracepoints_mutex); // Serialization end.
+              return ret; // Returns -EEXIST.
+            }
+          }
+        }
+      }
+      if (err) {
+        bpf_link_cleanup(&link_primer); // Reject if func_add() returned -EEXIST.
+        goto out_put_btp;
+      }
+      return bpf_link_settle(&link_primer);
+    }
+    break;
+  }
+  return ret; // Returns -EEXIST to the userspace.
+}
 
->  };
->
->  struct reader {
-> @@ -2245,6 +2251,11 @@ reader__mmap(struct reader *rd, struct perf_session *session)
->         char *buf, **mmaps = st->mmaps;
->         u64 page_offset;
->
-> +       if (st->file_pos >= st->data_size) {
-> +               st->eof = true;
-> +               return READER_EOF;
-> +       }
-> +
->         mmap_prot  = PROT_READ;
->         mmap_flags = MAP_SHARED;
->
-> @@ -2273,36 +2284,26 @@ reader__mmap(struct reader *rd, struct perf_session *session)
->         mmaps[st->mmap_idx] = st->mmap_cur = buf;
->         st->mmap_idx = (st->mmap_idx + 1) & (ARRAY_SIZE(st->mmaps) - 1);
->         st->file_pos = st->file_offset + st->head;
-> -       return 0;
-> +       return READER_OK;
->  }
->
->  static int
-> -reader__process_events(struct reader *rd, struct perf_session *session,
-> -                      struct ui_progress *prog)
-> +reader__read_event(struct reader *rd, struct perf_session *session,
-> +                  struct ui_progress *prog)
->  {
->         struct reader_state *st = &rd->state;
-> -       u64 size;
-> -       int err = 0;
-> +       int err = READER_OK;
->         union perf_event *event;
-> +       u64 size;
->         s64 skip;
->
-> -remap:
-> -       err = reader__mmap(rd, session);
-> -       if (err)
-> -               goto out;
-> -       if (session->one_mmap) {
-> -               session->one_mmap_addr   = rd->state.mmap_cur;
-> -               session->one_mmap_offset = rd->state.file_offset;
-> -       }
-> -
-> -more:
->         event = fetch_mmaped_event(st->head, st->mmap_size, st->mmap_cur,
->                                    session->header.needs_swap);
->         if (IS_ERR(event))
->                 return PTR_ERR(event);
->
->         if (!event)
-> -               goto remap;
-> +               return READER_EOF;
->
->         session->active_reader = rd;
->         size = event->header.size;
-> @@ -2324,18 +2325,12 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->         st->head += size;
->         st->file_pos += size;
->
-> -       err = __perf_session__process_decomp_events(session);
-> -       if (err)
-> -               goto out;
-> +       skip = __perf_session__process_decomp_events(session);
-> +       if (skip)
-> +               err = skip;
->
->         ui_progress__update(prog, size);
->
-> -       if (session_done())
-> -               goto out;
-> -
-> -       if (st->file_pos < st->data_size)
-> -               goto more;
-> -
->  out:
->         session->active_reader = NULL;
->         return err;
-> @@ -2379,9 +2374,31 @@ static int __perf_session__process_events(struct perf_session *session)
->         err = reader__init(rd, &session->one_mmap);
->         if (err)
->                 goto out_err;
-> -       err = reader__process_events(rd, session, &prog);
-> -       if (err)
-> +       err = reader__mmap(rd, session);
-> +       if (err != READER_OK) {
-> +               if (err == READER_EOF)
-> +                       err = -EINVAL;
->                 goto out_err;
-> +       }
-> +       if (session->one_mmap) {
-> +               session->one_mmap_addr   = rd->state.mmap_cur;
-> +               session->one_mmap_offset = rd->state.file_offset;
-> +       }
-> +
-> +       while (true) {
-> +               if (session_done())
-> +                       break;
-> +
-> +               err = reader__read_event(rd, session, &prog);
-> +               if (err < 0)
-> +                       break;
-> +               if (err == READER_EOF) {
-> +                       err = reader__mmap(rd, session);
-> +                       if (err <= 0)
-> +                               break;
-> +               }
-> +       }
-> +
->         /* do the final flush for ordered samples */
->         err = ordered_events__flush(oe, OE_FLUSH__FINAL);
->         if (err)
-> --
-> 2.19.0
->
+On 2021/06/27 0:41, Steven Rostedt wrote:
+>>   (1) func_add() can reject an attempt to add same tracepoint multiple times
+>>       by returning -EEXIST to the caller.
+>>   (2) But tracepoint_add_func() (the caller of func_add()) is calling WARN_ON_ONCE()
+>>       if func_add() returned -EEXIST.
+> 
+> That's because (before BPF) there's no place in the kernel that tries
+> to register the same tracepoint multiple times, and was considered a
+> bug if it happened, because there's no ref counters to deal with adding
+> them multiple times.
+
+I see. But does that make sense? Since func_add() can fail with -ENOMEM,
+all places (even before BPF) needs to be prepared for failures.
+
+> 
+> If the tracepoint is already registered (with the given function and
+> data), then something likely went wrong.
+
+That can be prepared on the caller side of tracepoint_add_func() rather than
+tracepoint_add_func() side.
+
+> 
+>>   (3) And tracepoint_add_func() is triggerable via request from userspace.
+> 
+> Only via BPF correct?
+> 
+> I'm not sure how it works, but can't BPF catch that it is registering
+> the same tracepoint again?
+
+There is no chance to check whether some tracepoint is already registered, for
+tracepoints_mutex is the only lock which gives us a chance to check whether
+some tracepoint is already registered.
+
+Should bpf() syscall hold a global lock (like tracepoints_mutex) which will serialize
+the entire code in order to check whether some tracepoint is already registered?
+That might severely damage concurrency.
+
