@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4957C3B52A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 11:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53223B52AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Jun 2021 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhF0JAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 05:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S230036AbhF0J0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 05:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhF0JAg (ORCPT
+        with ESMTP id S229761AbhF0J0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 05:00:36 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC88C061574;
-        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso8331594pjp.2;
-        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
+        Sun, 27 Jun 2021 05:26:32 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E0C061574;
+        Sun, 27 Jun 2021 02:24:09 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id n11so2930121pjo.1;
+        Sun, 27 Jun 2021 02:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sJzQYMfdLr/FWwnhoBx+HcrPD/wFgYM+uN9MRIrljR8=;
-        b=k8usj9rD4Us1Ta2dllTQVyixS/TGHTvls5PhYg2D8pvVJVVnKWHZ7qHavotUcT+kF5
-         8hbmY2v5C9rvFFZ136lNQ86JYIHN5n0BC0vxTtA/VK91AFvovH2d5Xje/wXeC3xqcZcQ
-         fHLu6RNMVXQ6ncA/dmnHeoxbUhN07tJKlmTyEjH5+T4yTPry2NTNwg6VuNLJCapovvLc
-         6pEVHw8LzpugSiw7i4zxvCbWCQTK13HCXD2rLBVPtNFPwdgylFDGW7yeyeLIkTFBpGEk
-         4iiUYLBJgb3Pevw+qrEGaQKrrhajwBWoL1zjC+udpgnK0S3sYF7cnG7ueduuWe5reWx2
-         z/hg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5EhXthsWfwEs0xNrl9REBAzPg/Pr0Fd/pP88+OTbnhY=;
+        b=dR3BCf8GlgDv63a2yPBk9InUJqLy3eN66Z3Efz4nGNr1sXgKcsTX1da//xiSMcFx0X
+         qu9zR9sMoFzGaBKCykIUroGmlCH03ytTWiCSbAu53yEJcgZv+NHAkxU6b9avY7pONbQE
+         zqPaUiw+QOMvYcKnmwrwFGuvE/7KmwbK2SZr4bwFBTCJxiEn24UBfNQW7X3tqi6VGJaz
+         Gb5vjKrO6Lfj2m7OfWNq8spb1yj5Lns1ErUH/RuxYZOjSSSiAp2OYEZD8gfAFeFxAMNx
+         R14q6PpnQxbb31fWWtaoqsz9+XCkeMU1GwHqsr/z23XUGexX2FnoVBKMkLFolJUlfSDC
+         OY4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sJzQYMfdLr/FWwnhoBx+HcrPD/wFgYM+uN9MRIrljR8=;
-        b=WgkV4RmZ24YoIPgOfTzcM7DxJFT4dDfPNSGXIGiIbJvR8uYc5+8YzLUUXBkZVTZKgo
-         jxZvam/Nt3YULuiFQwthoaXD2hLSTs0P49gfVbrw2AF+4Wklf2mp70GoqjHLfvahAkBb
-         Wps9vUu6OaYZbhoB0eRAryw9Q/bBw45MAgf8LWs7oQUGhDvb7Bu6Tv/OzA4gtodYxMiJ
-         D4mPvA0CvAWEQwFcLIJK3u5DU6r06xykuYMWEqnNmW3D5YpoGGTUZT4SKT9SZt2ilx/i
-         /VLKlX3/zdmAk9r8AD5LoySas3F/ZVZ+ZkuM4ldII9ValagSnRZ1CJQn76nXkz3oyf8k
-         7Nqw==
-X-Gm-Message-State: AOAM531MN90ReejY6HSTaXKQzIdQztalHQpf4qHOgVfY18+KBVanYsNQ
-        Vg8AKngddMXslF9ZwoeajfhJoVyKxyM=
-X-Google-Smtp-Source: ABdhPJzcGmGYVGnegTe6jQczhUbL6Z0LBn3xQX75wSkQVEK33XLVVPWIuMjkTMEkPJGsJsb4Q4orJQ==
-X-Received: by 2002:a17:90a:d09:: with SMTP id t9mr16134874pja.66.1624784291144;
-        Sun, 27 Jun 2021 01:58:11 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id n34sm4256697pji.45.2021.06.27.01.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 01:58:10 -0700 (PDT)
-Date:   Sun, 27 Jun 2021 16:57:59 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 045/146] net: make get_net_ns return error if NET_NS
- is disabled
-Message-ID: <20210627085759.n75m3uulvll47bdf@mail.google.com>
-References: <20210621154911.244649123@linuxfoundation.org>
- <20210621154912.823486108@linuxfoundation.org>
- <20210623142635.GB27348@amd>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5EhXthsWfwEs0xNrl9REBAzPg/Pr0Fd/pP88+OTbnhY=;
+        b=SqGoolFa5Xb2mPejk/XObk210CcsCBHJoaGwEVrsekkdyjCEA1vs9NeIvP4xLrk4Xn
+         9IIIK4aFY+NMMg1pNv/bbqCWNAk7RzNOEk7mvWajmakdX2ws8gfuYuaVd/YMJVlzqKsW
+         VzUQpOqFysK9wm0T1e6Ys52pczgTWdJAyJJEDwVL0fTr0jD9yi++06wUXqH8WhTbcy4N
+         pLgYxWY56HcrhIJwp9Rj1FK/v/eNxSyX7xUr5OmsVMP5tp6NISM1BeaGq4AgayKtbtVD
+         uS4xoxKhdIgVI9IkHja+xPexlh8jGzZh+5Khpk4TCKl/quK2VZjsSfbEKmeblSy/mWyD
+         J9YA==
+X-Gm-Message-State: AOAM5322+RFdHOu/3fjyfz0VgzfImFAnpDvCuB+dzQ79vnhC4WtyEfDC
+        8CmYLkSH6kIcOAADUDszPDVe4DN2sdrSnF1xLB8=
+X-Google-Smtp-Source: ABdhPJz47kq9gELBweOXKA538gw/a2j5+fH45iL5LYjvMg8p/8m4NazZmxGmR94czgZigqM7gFWwknQuiC7I76p0MkY=
+X-Received: by 2002:a17:902:fe0a:b029:11d:81c9:3adf with SMTP id
+ g10-20020a170902fe0ab029011d81c93adfmr17159686plj.0.1624785848687; Sun, 27
+ Jun 2021 02:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210623142635.GB27348@amd>
+References: <cover.1617189926.git.matthias.schiffer@ew.tq-group.com>
+ <11a8323c249ae6ea7584402ab0fb74551b6a4b7d.1617189926.git.matthias.schiffer@ew.tq-group.com>
+ <CAHp75Vcc3CNXguMK-ZhRfvfjVBQBbcGEYK_+WQAmb_Sw5-Derw@mail.gmail.com>
+ <4c143c8ee65fe52840ccbb4e1b422b6e473563d9.camel@ew.tq-group.com>
+ <CAHp75VfVCTj170S_4Lh9JyDYFfUQLjTtnU=O-iXgUVXcycLxwg@mail.gmail.com>
+ <38b1191ce594d9fefe9e0e98b3fa8ca0a23ee3ea.camel@ew.tq-group.com>
+ <CAHp75VcuD49UgkXCrPL3VKiOsx4qSDsf=zB2vp6yVS1aJCuc2w@mail.gmail.com> <53e222fdbb3d488a99bb24d0205b064d3fe662b0.camel@ew.tq-group.com>
+In-Reply-To: <53e222fdbb3d488a99bb24d0205b064d3fe662b0.camel@ew.tq-group.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 27 Jun 2021 12:23:32 +0300
+Message-ID: <CAHp75VdjmwgoWF1pJmWUDMxn0wW7t3N_h5sB4DiQUmhavrKStg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: tqmx86: really make IRQ optional
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:26:35PM +0200, Pavel Machek wrote:
-> Hi!
-> > 
-> > There is a panic in socket ioctl cmd SIOCGSKNS when NET_NS is not enabled.
-> > The reason is that nsfs tries to access ns->ops but the proc_ns_operations
-> > is not implemented in this case.
-> > 
-> > [7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-> > [7.670268] pgd = 32b54000
-> > [7.670544] [00000010] *pgd=00000000
-> > [7.671861] Internal error: Oops: 5 [#1] SMP ARM
-> > [7.672315] Modules linked in:
-> > [7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
-> > [7.673309] Hardware name: Generic DT based system
-> > [7.673642] PC is at nsfs_evict+0x24/0x30
-> > [7.674486] LR is at clear_inode+0x20/0x9c
-> > 
-> > The same to tun SIOCGSKNS command.
-> > 
-> > To fix this problem, we make get_net_ns() return -EINVAL when NET_NS is
-> > disabled. Meanwhile move it to right place net/core/net_namespace.c.
-> 
-> -EINVAL sounds like wrong error code for valid operation kernel was
-> configured to do. -ENOTSUPP?
+On Thu, Jun 24, 2021 at 4:44 PM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
+> On Wed, 2021-03-31 at 17:03 +0300, Andy Shevchenko wrote:
+> > On Wed, Mar 31, 2021 at 4:36 PM Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > On Wed, 2021-03-31 at 15:39 +0300, Andy Shevchenko wrote:
+> > > > On Wed, Mar 31, 2021 at 3:37 PM Matthias Schiffer
+> > > > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > > > On Wed, 2021-03-31 at 15:29 +0300, Andy Shevchenko wrote:
+
+...
+
+> > > > > I don't understand which part of the code is dead now. I assume the
+> > > > > `return irq` case is still useful for unexpected errors, or things like
+> > > > > EPROBE_DEFER? I'm not sure if EPROBE_DEFER is relevant for this driver,
+> > > > > but just ignoring the error code completely doesn't seem right to me.
+> > > >
+> > > > platform_get_irq() AFAIK won't ever return such a code.
+> > > > So, basically your conditional is always false.
+> > > >
+> > > > I would like to see the code path which makes my comment wrong.
+> > >
+> > > EPROBE_DEFER appears a few times in platform_get_irq_optional()
+> > > (drivers/base/platform.c), but it's possible that this is only relevant
+> > > for OF-based platforms and not x86.
+> >
+> > Ah, okay, that's something I haven't paid attention to.
+> >
+> > So the root cause of the your case is platform_get_irq_optional|()
+> > return code. I'm wondering why it can't return 0 instead of absent
+> > IRQ? Perhaps you need to fix it instead of lurking into each caller.
 >
-This is to align with the existing code which returns -EINVAL.
-For the issue we fixed, yes, -EOPNOTSUPP (not -ENOTSUPP) should be better.
+> what's the plan here? "driver core: platform: Make
+> platform_get_irq_optional() optional" had to be reverted because it
+> broke existing users of platform_get_irq_optional(). I'm not convinced
+> that a slightly more convenient API is worth going through the trouble
+> of fixing them all - I know we don't care much about out-of-tree
+> modules, but subtly changing the behaviour of such a function doesn't
+> seem like a good idea to me even if we review all in-tree users.
 
-> Best regards,
-> 								Pavel
-> 								
-> -- 
-> http://www.livejournal.com/~pavelmachek
+Why? The problem with this function is either naming or semantics.
+It should be fixed and that will require revisiting all current users anyway.
 
+> Should I just rebase my patches with the existing ENXIO handing (and
+> fix up the other issues that were noted), or do you intend to give the
+> platform_get_irq_optional() revamp another try?
+
+I do intend to give another try, but if you want to be independent of
+that, just make sure that in any new / revisited user of
+platform_get_irq_optional() the 0 is taken into consideration as an
+optional case.
 
 
 -- 
-Cheers,
-Changbin Du
+With Best Regards,
+Andy Shevchenko
