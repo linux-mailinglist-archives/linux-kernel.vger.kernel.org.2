@@ -2,102 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187813B59F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60763B5A0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhF1Hqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S232332AbhF1Hwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhF1Hqq (ORCPT
+        with ESMTP id S232351AbhF1Hwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:46:46 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D288C061574;
-        Mon, 28 Jun 2021 00:44:20 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id e22so14741992pgv.10;
-        Mon, 28 Jun 2021 00:44:20 -0700 (PDT)
+        Mon, 28 Jun 2021 03:52:38 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9657CC061574;
+        Mon, 28 Jun 2021 00:50:13 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c8so13424189pfp.5;
+        Mon, 28 Jun 2021 00:50:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KS1knKUidrLccDLlGBOty0Yju70nzZmvxoRoS1cSJVE=;
-        b=nRd3J1xMnY6Xmw0GJVc0BWZ7l/pv3U9rgVw4iBoKDGvq8ANN2Obcu5daAIjBvi/zsX
-         sqlmgvPeh13khN48H4yEVRbNlLY3PBH4Z5r8UoAQFy6J5uZWPzBwlcVgJJcD6U8odJ/h
-         bUraAVbfiazQycaeDbviXSJSVFAg5R7ENG6vUbP6b7TQOW23vLQBWb8eYWA1zgdZ6cah
-         pQAN0AfSuhxtebZWwwP89Kst2RnpfYuY+hL38B9yzhiHz/LETwx2cicuVq/4vKjeSrmS
-         ofKXYhlby4z5Re14WPhlUxbe23Z7V8MSE3I8N8ORqazoYxe+/lLbS4ZMPs+8jhrcRS/b
-         GdWg==
+        bh=a9SnhaSC0KGtJA4jbcNzI1RmFExj/PoChJSbMbViqHo=;
+        b=SlBZfW/vVWkuCoPhugNlcjB4fJuggEiyWrFbzXOSBp0G7zrKUI/R531RyHgcoG8efT
+         xMZRK6yAyqGWqh6LYzljI4DeFQA6oX0HXvbVZiflZqrioI0gcIFrYOmwvNwC+87d4SbO
+         NJBa4WTI/IOXtT7RPXxYE5OfokS/CmNnGGm8fCay/OWPwkl7L3GQ27x0aeMElR28679S
+         jmhnHhLXd6cdg+2kzk9jbWHc4Djt1aagDnGCpDyux6srGhw/DsjbElHyZkCzY1B+UOMK
+         prjZCWbYlh6BlTl6D0YBgmoYDCpNn/zSsUvf9ifiRhd2nQzDTtjAjpJRJVd6DAU21lzH
+         QC1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KS1knKUidrLccDLlGBOty0Yju70nzZmvxoRoS1cSJVE=;
-        b=GjqH6wmnKJI0gBy3PgZ52DN+C+ZqzfeIgBGuGKgmpyy750WQQsEykVrnAGBxebnwBB
-         G6CaFQ9E37cz1jrnBk57/CKgk1a/LY9zaKrDI/w+08hG4CgMUOVRapkrCPWZD46GnHpK
-         y7e2kdMKvltyWZpNZdR/Ppx/a4llJadpFpsZ1ZAewIjOIaZGxxn6HUq77PZs20o0kxkh
-         kEpZH2mT4g/yQGFxCFZgvgkzy6ghImt5cmSADs00MJ1maHfVK+N7OLMc1MsYqnvrWkrJ
-         gwEpS5LBD9nYRLN4zWJbwWrbz83JVVVV0sb33jsp362bwq0AF3j0duKY4V+GnNJrS8tW
-         KfDg==
-X-Gm-Message-State: AOAM530Dl4kEgC6CFcVS1dNQLNXHIvwiOpycSbLRff9T3EKVhXCK97SJ
-        fGrbr1BdMWv9nU0V9LGgRjQ=
-X-Google-Smtp-Source: ABdhPJydhq4EWutI0RUsW02q2keZzoybl7UllfYxVKqZbLAM8pco2qa1sne4FC1Vc1sjobfNReJ7FA==
-X-Received: by 2002:a62:768c:0:b029:2ff:2002:d3d0 with SMTP id r134-20020a62768c0000b02902ff2002d3d0mr23409719pfc.70.1624866260185;
-        Mon, 28 Jun 2021 00:44:20 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id l10sm19016634pjg.26.2021.06.28.00.44.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Jun 2021 00:44:19 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/pmu: Clear anythread deprecated bit when 0xa leaf is unsupported on the SVM
-Date:   Mon, 28 Jun 2021 15:43:54 +0800
-Message-Id: <20210628074354.33848-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.32.0
+        bh=a9SnhaSC0KGtJA4jbcNzI1RmFExj/PoChJSbMbViqHo=;
+        b=pIsiLEP/7dSkozWCBaxSz2VxR1szpukwInDRZSPLfce8XC/IqDup4dYuI7SC8LNfPF
+         E0Z7CmgQgRTF9v6n4zH6Ri8kssH6xdyAYSxzFJJYOYQU6BVU9zgMqxNW43A1Mhk/Y6A5
+         DT36NFZdsNfVUbaYWWxW/7XP6ZU2LESS5rf60KKuPx3EYA1CetGepAvjt88+bNyDqELV
+         jOeZFZrvQeFwL8wSUOdywYVBytxefM4iVSZ14Ae8vAuPAoWER/6+l0kp8qdbmHrV2xAD
+         /BxzQmGFKixJHIPwFmpXjgfZbIPunT24keVPKj97h/H1efxVubPfF8OFvETaC/8T3qru
+         mUWQ==
+X-Gm-Message-State: AOAM531P96fqLelzBjNX3xzat4OgecncH1w0s1IRKhO3Xx4gya1HkEHT
+        /aZ9YBcsSk6ulnFRA+Ze92Q=
+X-Google-Smtp-Source: ABdhPJzmLptl5YBBhs4A80NLCSgl3oM4vlhA0HLGNblaK7RuNiVK3F/VD3Cb07Y/TvBgBZzt9AUuaw==
+X-Received: by 2002:a65:6555:: with SMTP id a21mr5312004pgw.53.1624866613181;
+        Mon, 28 Jun 2021 00:50:13 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id c24sm14519028pgj.11.2021.06.28.00.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 00:50:12 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Subject: [PATCH] Bluetooth: fix inconsistent lock state in sco
+Date:   Mon, 28 Jun 2021 15:48:34 +0800
+Message-Id: <20210628074834.161640-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AMD platform does not support the functions Ah CPUID leaf. The returned
-results for this entry should all remain zero just like the native does:
+Syzbot reported an inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock
+usage in sco_conn_del and sco_sock_timeout that could lead to
+deadlocks:
+https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e
 
-AMD host:
-   0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
-(uncanny) AMD guest:
-   0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00008000
+This inconsistent lock state can also happen between sco_conn_ready
+and sco_sock_timeout.
 
-Fixes: cadbaa039b99 ("perf/x86/intel: Make anythread filter support conditional")
-Signed-off-by: Like Xu <likexu@tencent.com>
+The issue is that these three functions take a spin lock on the
+socket, but sco_sock_timeout is called from an IRQ context. Since
+bh_lock_sock calls spin_lock but does not disable softirqs, this could
+lead to deadlocks:
+
+       CPU0
+       ----
+  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+  <Interrupt>
+    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+
+ *** DEADLOCK ***
+
+We fix this by replacing bh_lock_sock with spin_lock_bh in
+sco_conn_del and sco_conn_ready.
+
+Additionally, to avoid regressions, we pull the clean-up code out from
+sco_chan_del and use it directly in sco_conn_del. This is necessary
+because sco_chan_del makes a call to sco_conn_lock which takes an
+SOFTIRQ-unsafe lock. This means that calling sco_chan_del while
+holding the socket lock would result in a SOFTIRQ-safe ->
+SOFTIRQ-unsafe lock hierarchy between slock-AF_BLUETOOTH-BTPROTO_SCO
+and &conn->lock#2. This could lead to a deadlock as well:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(&conn->lock#2);
+                                local_irq_disable();
+                                lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+                                lock(&conn->lock#2);
+   <Interrupt>
+     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+
+  *** DEADLOCK ***
+
+Pulling out the code from sco_chan_del allows us to avoid this lock
+dependency by holding the two locks for only their required critical
+sections.
+
+Reported-and-tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 ---
- arch/x86/kvm/cpuid.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bluetooth/sco.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 0edda1fc4fe7..b1808e4fc7d5 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -765,7 +765,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 3bd41563f118..d05629d7cc55 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -173,10 +173,22 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
  
- 		edx.split.num_counters_fixed = min(cap.num_counters_fixed, MAX_FIXED_COUNTERS);
- 		edx.split.bit_width_fixed = cap.bit_width_fixed;
--		edx.split.anythread_deprecated = 1;
-+		if (cap.version)
-+			edx.split.anythread_deprecated = 1;
- 		edx.split.reserved1 = 0;
- 		edx.split.reserved2 = 0;
+ 	if (sk) {
+ 		sock_hold(sk);
+-		bh_lock_sock(sk);
++
++		spin_lock_bh(&sk->sk_lock.slock);
+ 		sco_sock_clear_timer(sk);
+-		sco_chan_del(sk, err);
+-		bh_unlock_sock(sk);
++		sco_pi(sk)->conn = NULL;
++		if (conn->hcon)
++			hci_conn_drop(conn->hcon);
++		sk->sk_state = BT_CLOSED;
++		sk->sk_err   = err;
++		sk->sk_state_change(sk);
++		sock_set_flag(sk, SOCK_ZAPPED);
++		spin_unlock_bh(&sk->sk_lock.slock);
++
++		sco_conn_lock(conn);
++		conn->sk = NULL;
++		sco_conn_unlock(conn);
++
+ 		sco_sock_kill(sk);
+ 		sock_put(sk);
+ 	}
+@@ -1084,10 +1096,10 @@ static void sco_conn_ready(struct sco_conn *conn)
  
+ 	if (sk) {
+ 		sco_sock_clear_timer(sk);
+-		bh_lock_sock(sk);
++		spin_lock_bh(&sk->sk_lock.slock);
+ 		sk->sk_state = BT_CONNECTED;
+ 		sk->sk_state_change(sk);
+-		bh_unlock_sock(sk);
++		spin_unlock_bh(&sk->sk_lock.slock);
+ 	} else {
+ 		sco_conn_lock(conn);
+ 
+@@ -1102,12 +1114,12 @@ static void sco_conn_ready(struct sco_conn *conn)
+ 			return;
+ 		}
+ 
+-		bh_lock_sock(parent);
++		spin_lock_bh(&parent->sk_lock.slock);
+ 
+ 		sk = sco_sock_alloc(sock_net(parent), NULL,
+ 				    BTPROTO_SCO, GFP_ATOMIC, 0);
+ 		if (!sk) {
+-			bh_unlock_sock(parent);
++			spin_unlock_bh(&parent->sk_lock.slock);
+ 			sco_conn_unlock(conn);
+ 			return;
+ 		}
+@@ -1128,7 +1140,7 @@ static void sco_conn_ready(struct sco_conn *conn)
+ 		/* Wake up parent */
+ 		parent->sk_data_ready(parent);
+ 
+-		bh_unlock_sock(parent);
++		spin_unlock_bh(&parent->sk_lock.slock);
+ 
+ 		sco_conn_unlock(conn);
+ 	}
 -- 
-2.32.0
+2.25.1
 
