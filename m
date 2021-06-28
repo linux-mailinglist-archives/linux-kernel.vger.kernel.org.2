@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146BA3B5935
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69523B593B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbhF1GlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhF1GlN (ORCPT
+        id S232139AbhF1Gp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:45:28 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:44328 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhF1Gp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:41:13 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6D2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 23:38:48 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lxkum-0002SH-IT; Mon, 28 Jun 2021 08:38:40 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lxkul-0003IP-RG; Mon, 28 Jun 2021 08:38:39 +0200
-Date:   Mon, 28 Jun 2021 08:38:39 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH -next] pwm: img: Fix PM reference leak in img_pwm_enable()
-Message-ID: <20210628063839.5oeh5fvvoy3fk2gw@pengutronix.de>
-References: <1620791837-16138-1-git-send-email-zou_wei@huawei.com>
- <20210512045222.2yjm6yxikznohlmn@pengutronix.de>
- <CAJZ5v0huz6Ek1FTvdMs0hPOoMn+ZHiNJeDp6-ujg-1WwpCsELQ@mail.gmail.com>
+        Mon, 28 Jun 2021 02:45:26 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33996 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lxkyy-0002pP-Bf; Mon, 28 Jun 2021 02:43:00 -0400
+Message-ID: <f51af209b1a7fc17d8416f32f18368e1835ac2e6.camel@trillion01.com>
+Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Jens Axboe' <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 28 Jun 2021 02:42:59 -0400
+In-Reply-To: <c85e28df251d4c66a511dc157b795b13@AcuMS.aculab.com>
+References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+         <16c91f57-9b6f-8837-94af-f096d697f5fb@kernel.dk>
+         <c85e28df251d4c66a511dc157b795b13@AcuMS.aculab.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ouqyesh2gt3a22qr"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0huz6Ek1FTvdMs0hPOoMn+ZHiNJeDp6-ujg-1WwpCsELQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-06-25 at 08:15 +0000, David Laight wrote:
+> From: Jens Axboe
+> > Sent: 25 June 2021 01:45
+> > 
+> > On 6/22/21 6:17 AM, Olivier Langlois wrote:
+> > > It is quite frequent that when an operation fails and returns
+> > > EAGAIN,
+> > > the data becomes available between that failure and the call to
+> > > vfs_poll() done by io_arm_poll_handler().
+> > > 
+> > > Detecting the situation and reissuing the operation is much
+> > > faster
+> > > than going ahead and push the operation to the io-wq.
+> > > 
+> > > Performance improvement testing has been performed with:
+> > > Single thread, 1 TCP connection receiving a 5 Mbps stream, no
+> > > sqpoll.
+> > > 
+> > > 4 measurements have been taken:
+> > > 1. The time it takes to process a read request when data is
+> > > already available
+> > > 2. The time it takes to process by calling twice io_issue_sqe()
+> > > after vfs_poll() indicated that data
+> > was available
+> > > 3. The time it takes to execute io_queue_async_work()
+> > > 4. The time it takes to complete a read request asynchronously
+> > > 
+> > > 2.25% of all the read operations did use the new path.
+> 
+> How much slower is it when the data to complete the read isn't
+> available?
+> 
+> I suspect there are different workflows where that is almost
+> always true.
+> 
+David,
 
---ouqyesh2gt3a22qr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+in the case that the data to complete isn't available, the request will
+be processed exactly as it was before the patch.
 
-Hello Zou,
+Ideally through io_uring fast polling feature. If not possible because
+arming the poll has been aborted, the request will be punted to the io-
+wq.
 
-On Fri, Jun 25, 2021 at 07:45:14PM +0200, Rafael J. Wysocki wrote:
-> On Wed, May 12, 2021 at 6:52 AM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > On Wed, May 12, 2021 at 11:57:17AM +0800, Zou Wei wrote:
-> > > pm_runtime_get_sync will increment pm usage counter even it failed.
-> > > Forgetting to putting operation will result in reference leak here.
-> > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> > > counter balanced.
-> > >
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> > > ---
-> > >  drivers/pwm/pwm-img.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
-> > > index cc37054..11b16ec 100644
-> > > --- a/drivers/pwm/pwm-img.c
-> > > +++ b/drivers/pwm/pwm-img.c
-> > > @@ -156,7 +156,7 @@ static int img_pwm_enable(struct pwm_chip *chip, =
-struct pwm_device *pwm)
-> > >       struct img_pwm_chip *pwm_chip =3D to_img_pwm_chip(chip);
-> > >       int ret;
-> > >
-> > > -     ret =3D pm_runtime_get_sync(chip->dev);
-> > > +     ret =3D pm_runtime_resume_and_get(chip->dev);
-> > >       if (ret < 0)
-> > >               return ret;
-> >
-> > This patch looks right with my limited understanding of pm_runtime. A
-> > similar issue in this driver was fixed in commit
-> >
-> >         ca162ce98110 ("pwm: img: Call pm_runtime_put() in pm_runtime_ge=
-t_sync() failed case")
-> >
-> > where (even though the commit log talks about pm_runtime_put()) a call
-> > to pm_runtime_put_autosuspend() was added in the error path.
-> >
-> > I added the PM guys to Cc, maybe they can advise about the right thing
-> > to do here. Does it make sense to use the same idiom in both
-> > img_pwm_enable() and img_pwm_config()?
->=20
-> I think so.
->=20
-> And calling pm_runtime_put_autosuspend() in the img_pwm_enable() error
-> path would work too.
+Greetings,
 
-Do you care to clean this up accordingly and send a new patch?
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ouqyesh2gt3a22qr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDZbmwACgkQwfwUeK3K
-7AkHdAgAh/F2qNIQATDK1b+ShrXomsXhrDHW8/TMxpw+VRjRRGpnIPzv5NMXxNNt
-v9ABxSjUBms6N1vP5ax3Jv52IJWWetn53OAOGTI99PsvESh+1yW2J6LlNAO7yyLw
-y/2Ify+L7Ppoj3vbgGYFCdgiJf/3g0f/q4xTzA3zhSPDD1Ku6enUW6+upjkYuKbs
-GAFcraEYEBSGBI186HRWB2zOB645APQXm/YZlz6dTDHwhBUBgtjkjxfy8lmW8jpc
-RZs9l8fbMWzKlk8SQPgbRUpsJnzO/+lwMnSskJQMfm1U8lL+had5PW9kTD7L39sE
-kPMOWYwIjGbKBIvVF9KnlFLHZMYt1Q==
-=p3Fy
------END PGP SIGNATURE-----
-
---ouqyesh2gt3a22qr--
