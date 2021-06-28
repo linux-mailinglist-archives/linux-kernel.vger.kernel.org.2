@@ -2,71 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382AB3B697E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14973B6986
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237288AbhF1UMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58360 "EHLO mail.kernel.org"
+        id S236092AbhF1UNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:13:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58313 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232527AbhF1UMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:12:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0A59A61CC4;
-        Mon, 28 Jun 2021 20:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624911004;
-        bh=mLeKWVJZAYEvuqZ2Od+0+PNnbfAb3kwqUipu6hnCOe8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fXC5GCkkQLY/P/QE8GLV2vXLfpaUzrDzdyYrhWOGvL5gOsIfWj0MwEAo+BqaKCAHA
-         Xrdni3KTyj7aqzqKfVNiyeF7AsooZ3+Sn5stjTOXq2ePmOR6BqM222uq7hvLBxONh/
-         ZEqwxd8I4rynE5Mquo3NLIvnuVYyMZQIQzZvneACD4rqT1PbpQiPstvIwRDN53qG9s
-         5QswVXcQD9CunWRjmQ3pUHFQ35OR4YKoo2n48v+ODOqW9UfqX6hBtqWHRfVjDJsJE8
-         U/MlFL3Fg51ww/TNzRK1kClIZPYvD/5nz2xI+vdHjRPFs1Ap1nFskHQILNtHtFV89t
-         6gZLkeaxMZcuQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F301B60CD0;
-        Mon, 28 Jun 2021 20:10:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236965AbhF1UNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 16:13:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195321500"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="195321500"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 13:10:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="557689270"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga004.jf.intel.com with ESMTP; 28 Jun 2021 13:10:19 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] thermal: int340x: processor_thermal: Fix tcc setting
+Date:   Mon, 28 Jun 2021 13:10:12 -0700
+Message-Id: <20210628201012.68642-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: sched: fix warning in tcindex_alloc_perfect_hash
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162491100399.2562.3036606234492787494.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Jun 2021 20:10:03 +0000
-References: <20210625202348.24560-1-paskripkin@gmail.com>
-In-Reply-To: <20210625202348.24560-1-paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The following fixes are done for tcc sysfs interface:
+- TCC is 6 bits only from bit 29-24
+- TCC of 0 is valid
+- When BIT(31) is set, this register is read only
+- Check for invalid tcc value
+- Error for negative values
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ .../processor_thermal_device.c                | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-On Fri, 25 Jun 2021 23:23:48 +0300 you wrote:
-> Syzbot reported warning in tcindex_alloc_perfect_hash. The problem
-> was in too big cp->hash, which triggers warning in kmalloc. Since
-> cp->hash comes from userspace, there is no need to warn if value
-> is not correct
-> 
-> Fixes: b9a24bb76bf6 ("net_sched: properly handle failure case of tcf_exts_init()")
-> Reported-and-tested-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - net: sched: fix warning in tcindex_alloc_perfect_hash
-    https://git.kernel.org/netdev/net/c/3f2db250099f
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
+index de4fc640deb0..0f0038af2ad4 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
+@@ -78,24 +78,27 @@ static ssize_t tcc_offset_degree_celsius_show(struct device *dev,
+ 	if (err)
+ 		return err;
+ 
+-	val = (val >> 24) & 0xff;
++	val = (val >> 24) & 0x3f;
+ 	return sprintf(buf, "%d\n", (int)val);
+ }
+ 
+-static int tcc_offset_update(int tcc)
++static int tcc_offset_update(unsigned int tcc)
+ {
+ 	u64 val;
+ 	int err;
+ 
+-	if (!tcc)
++	if (tcc > 63)
+ 		return -EINVAL;
+ 
+ 	err = rdmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, &val);
+ 	if (err)
+ 		return err;
+ 
+-	val &= ~GENMASK_ULL(31, 24);
+-	val |= (tcc & 0xff) << 24;
++	if (val & BIT(31))
++		return -EPERM;
++
++	val &= ~GENMASK_ULL(29, 24);
++	val |= (tcc & 0x3f) << 24;
+ 
+ 	err = wrmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, val);
+ 	if (err)
+@@ -104,14 +107,15 @@ static int tcc_offset_update(int tcc)
+ 	return 0;
+ }
+ 
+-static int tcc_offset_save;
++static unsigned int tcc_offset_save;
+ 
+ static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
+ 				struct device_attribute *attr, const char *buf,
+ 				size_t count)
+ {
++	unsigned int tcc;
+ 	u64 val;
+-	int tcc, err;
++	int err;
+ 
+ 	err = rdmsrl_safe(MSR_PLATFORM_INFO, &val);
+ 	if (err)
+@@ -120,7 +124,7 @@ static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
+ 	if (!(val & BIT(30)))
+ 		return -EACCES;
+ 
+-	if (kstrtoint(buf, 0, &tcc))
++	if (kstrtouint(buf, 0, &tcc))
+ 		return -EINVAL;
+ 
+ 	err = tcc_offset_update(tcc);
+-- 
+2.27.0
 
