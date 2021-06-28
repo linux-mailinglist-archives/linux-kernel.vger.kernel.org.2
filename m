@@ -2,184 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0903B5EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82383B5ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhF1NTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:19:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30571 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232507AbhF1NTo (ORCPT
+        id S233134AbhF1NUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:20:17 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:9286 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232941AbhF1NUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:19:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624886239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6bLcRY/0JN6MwVt+nlnNCYdH0mTDBpxH6AZykoHRbI=;
-        b=jKyt1afBuc3Bn6hMlOsQ5G7LrVdJhCHU4vSFcCKK6pgb3z1ceOnWMf8cW4qE9R9JKFPgly
-        ov79EozPFFo+jwuqXuwpWmS40/9xU4HC7F6978auePtns9EjRetyzRlHXvzPZDmPR84i7Z
-        S1Ofwi8dT9w2oXiWzh6xYZOSHQ5RZMk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-84bhD4XTPWe0cs4vExpSaA-1; Mon, 28 Jun 2021 09:17:14 -0400
-X-MC-Unique: 84bhD4XTPWe0cs4vExpSaA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77F01100A44D;
-        Mon, 28 Jun 2021 13:17:12 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-225.rdu2.redhat.com [10.10.115.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C747C26FDD;
-        Mon, 28 Jun 2021 13:17:08 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 5548D22054F; Mon, 28 Jun 2021 09:17:08 -0400 (EDT)
-Date:   Mon, 28 Jun 2021 09:17:08 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     "Schaufler, Casey" <casey.schaufler@intel.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Mon, 28 Jun 2021 09:20:10 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GD7Lf074Yz1BSm5;
+        Mon, 28 Jun 2021 21:12:26 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 21:17:43 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 28
+ Jun 2021 21:17:42 +0800
+Subject: Re: [PATCH v7 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     John Garry <john.garry@huawei.com>, Linuxarm <linuxarm@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "dwalsh@redhat.com" <dwalsh@redhat.com>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <20210628131708.GA1803896@redhat.com>
-References: <20210625191229.1752531-1-vgoyal@redhat.com>
- <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
+        Zhangshaokun <zhangshaokun@hisilicon.com>
+References: <1624532384-43002-1-git-send-email-liuqi115@huawei.com>
+ <1624532384-43002-3-git-send-email-liuqi115@huawei.com>
+ <485dcb90-01bc-766a-466a-f32563e2076f@huawei.com>
+ <95de93f7-1618-5aa6-9a23-6445c5cb3515@huawei.com>
+ <1b164e4b-b30b-f071-51fa-841cc76ec017@huawei.com>
+ <403d09f8-6fe8-c04c-151b-40816c344b55@huawei.com>
+ <f2e0ac61-d46d-1245-46e7-aea9bb83c64d@huawei.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <b217d750-7c40-d669-1391-77aa9d7ee6de@huawei.com>
+Date:   Mon, 28 Jun 2021 21:17:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <f2e0ac61-d46d-1245-46e7-aea9bb83c64d@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:49:51PM +0000, Schaufler, Casey wrote:
-> > -----Original Message-----
-> > From: Vivek Goyal <vgoyal@redhat.com>
-> > Sent: Friday, June 25, 2021 12:12 PM
-> > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > viro@zeniv.linux.org.uk
-> > Cc: virtio-fs@redhat.com; dwalsh@redhat.com; dgilbert@redhat.com;
-> > berrange@redhat.com; vgoyal@redhat.com
+
+
+On 2021/6/28 20:11, John Garry wrote:
+> On 28/06/2021 11:49, liuqi (BA) wrote:
+>>>> Hardware counter and ext_counter work together for bandwidth, latency,
+>>>> bus utilization and buffer occupancy events. For example, for latency
+>>>> events(idx = 0x10), counter counts total delay cycles and ext_counter
+>>>> counts PCIe packets number.
+>>>>
+>>>> As we don't want PMU driver to process these two data, "delay cycles"
+>>>> can be treated as an event(id = 0x10), "packets number" as another 
+>>>> event
+>>>> (id = 0x10 << 8), and driver could export these data separately.
+>>>>
+>>>> if the user want to calculate latency of rx memory read, they should:
+>>>> ./perf stat -v -e '{hisi_pcieX/event=0x10,
+>>>> subevent=0x01/,hisi_pcieX/event=0x0400, subevent=0x01/
+>>>>
+>>>> and for bandwidth event:
+>>>> ./perf stat -v -e '{hisi_pcieX/event=0x4,
+>>>> subevent=0x02/,hisi_pcieX/event=0x1000, subevent=0x02/
+>> Hi John,
+>>> I would suggest supporting a perf metric for this then, which would be
+>>> like:
+>>>
+>>> {
+>>>      "BriefDescription": "Latency for inbound traffic...",
+>>>      "MetricName": "hisi_pcie_lat_rx_mrd",
+>>>      "MetricExpr": "hisi_pcieX@event\\=0x4@subevent\\=0x02 \
+>>> hisi_pcieX@event\\=0x1000@subevent\\=0x02 \",
+>>>      "Unit": "hisi_pci",
+>>>      "Compat": "v1"
+>>> },
+>>>
+>>> (syntax may be incorrect - illustration only)
+>>>
+>> yes, we could add these metrics in json file, thanks.
 > 
-> Please include Linux Security Module list <linux-security-module@vger.kernel.org>
-> and selinux@vger.kernel.org on this topic.
+> The syntax is actually like:
+>     "MetricExpr": "hisi_pcieX@event\\=0x4\\,subevent\\=0x2@ / 
+> hisi_pcieX@event\\=0x1000\\,subevent\\=0x2@",
 > 
-> > Subject: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special files if
-> > caller has CAP_SYS_RESOURCE
-> > 
-> > Hi,
-> > 
-> > In virtiofs, actual file server is virtiosd daemon running on host.
-> > There we have a mode where xattrs can be remapped to something else.
-> > For example security.selinux can be remapped to
-> > user.virtiofsd.securit.selinux on the host.
+>>>> Then the value in HISI_PCIE_CNT and HISI_PCIE_EXT_CNT returned
+>>>> separately, and userspace could do the calculation.
+>>> But I am still curious about lat_rx_mrd and the other events which we
+>>> continue to advertise. They don't really provide latency or bandwidth on
+>>> their own, but only half the necessary data. So I doubt their purpose.
+>>>
+>> So how about changing the event name to show the real purpose of this
+>> event, like changing "bw_rx_mrd" to "flux_rx_mrd", and changing
+>> "lat_rx_mrd" to "delay_rx_mrd"?
 > 
-> This would seem to provide mechanism whereby a user can violate
-> SELinux policy quite easily. 
-
-Hi Casey,
-
-As david already replied, we are not bypassing host's SELinux policy (if
-there is one). We are just trying to provide a mode where host and
-guest's SELinux policies could co-exist without interefering
-with each other.
-
-By remappming guests SELinux xattrs (and not host's SELinux xattrs),
-a file probably will have two xattrs
-
-"security.selinux" and "user.virtiofsd.security.selinux". Host will
-enforce SELinux policy based on security.selinux xattr and guest
-will see the SELinux info stored in "user.virtiofsd.security.selinux"
-and guest SELinux policy will enforce rules based on that.
-(user.virtiofsd.security.selinux will be remapped to "security.selinux"
-when guest does getxattr()).
-
-IOW, this mode is allowing both host and guest SELinux policies to
-co-exist and not interefere with each other. (Remapping guests's
-SELinux xattr is not changing hosts's SELinux label and is not
-bypassing host's SELinux policy).
-
-virtiofsd also provides for the mode where if guest process sets
-SELinux xattr it shows up as security.selinux on host. But now we
-have multiple issues. There are two SELinux policies (host and guest)
-which are operating on same lable. And there is a very good chance
-that two have not been written in such a way that they work with
-each other. In fact there does not seem to exist a notion where
-two different SELinux policies are operating on same label.
-
-At high level, this is in a way similar to files created on
-virtio-blk devices. Say this device is backed by a foo.img file
-on host. Now host selinux policy will set its own label on
-foo.img and provide access control while labels created by guest
-are not seen or controlled by host's SELinux policy. Only guest
-SELinux policy works with those labels.
-
-So this is similar kind of attempt. Provide isolation between
-host and guests's SELinux labels so that two policies can
-co-exist and not interfere with each other.
-
+> eh, I suppose you could, but I am not sure of the value. However  > assume that the driver will detect and reject invalid or nonsense
+> combinations of events if you did want this.
 > 
-> > 
-> > This remapping is useful when SELinux is enabled in guest and virtiofs
-> > as being used as rootfs. Guest and host SELinux policy might not match
-> > and host policy might deny security.selinux xattr setting by guest
-> > onto host. Or host might have SELinux disabled and in that case to
-> > be able to set security.selinux xattr, virtiofsd will need to have
-> > CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
-> > guest security.selinux (or other xattrs) on host to something else
-> > is also better from security point of view.
-> 
-> Can you please provide some rationale for this assertion?
-> I have been working with security xattrs longer than anyone
-> and have trouble accepting the statement.
+Hi John,
 
-If guest is not able to interfere or change host's SELinux labels
-directly, it sounded better.
+As content in two counters are registered as two independent different 
+events, these events perhaps should be selected without limitation 
+(Although it make sense only when using in combination).
 
-Irrespective of this, my primary concern is that to allow guest
-VM to be able to use SELinux seamlessly in diverse host OS
-environments (typical of cloud deployments). And being able to
-provide a mode where host and guest's security labels can
-co-exist and policies can work independently, should be able
-to achieve that goal.
+So perhaps we don't need to do this rejection if user only get the value 
+in HISI_PCIE_CNT or only get HISI_PCIE_EXT_CNT.
 
-> 
-> > But when we try this, we noticed that SELinux relabeling in guest
-> > is failing on some symlinks. When I debugged a little more, I
-> > came to know that "user.*" xattrs are not allowed on symlinks
-> > or special files.
-> > 
-> > "man xattr" seems to suggest that primary reason to disallow is
-> > that arbitrary users can set unlimited amount of "user.*" xattrs
-> > on these files and bypass quota check.
-> > 
-> > If that's the primary reason, I am wondering is it possible to relax
-> > the restrictions if caller has CAP_SYS_RESOURCE. This capability
-> > allows caller to bypass quota checks. So it should not be
-> > a problem atleast from quota perpective.
-> > 
-> > That will allow me to give CAP_SYS_RESOURCE to virtiofs deamon
-> > and remap xattrs arbitrarily.
-> 
-> On a Smack system you should require CAP_MAC_ADMIN to remap
-> security. xattrs. I sounds like you're in serious danger of running afoul
-> of LSM attribute policy on a reasonable general level.
-
-I think I did not explain xattr remapping properly and that's why this
-confusion is there. Only guests's xattrs will be remapped and not
-hosts's xattr. So one can not bypass any access control implemented
-by any of the LSM on host.
-
-Thanks
-Vivek
+Thanks,
+Qi
+> Thanks,
+> John
+> .
 
