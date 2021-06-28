@@ -2,199 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54F53B5C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D2D3B5C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhF1Kkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhF1Kkk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:40:40 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5214BC061574;
-        Mon, 28 Jun 2021 03:38:15 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id t17so31806857lfq.0;
-        Mon, 28 Jun 2021 03:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/I7dcKCKPigz1sUat62lgmckX5MS1JXYmlBQYUMPTmg=;
-        b=UDf51rVZxQcOLan9bcV0kkGZoYwNHrRQPKdC2tR3m4cvWOqLo0ClHjB7tVsIAiA9TN
-         yQ/ab5XyBFUoySdi6Ymo4mKcxwrKwanh6z19XiMMXZaJwm9gJVVnAdZocvw23VdSTI2C
-         Aq8vh7xfPXbPd/vba3gv9Qk3haCrey6yHMkK7tBOS3dnKxB9rvk/TWHLrquaMxiQXeyQ
-         V7l+9WlGZwzzA/5R0yutHpAzEG2FqLXljmO6ypfARAbkv0zyecGzkUAawYCggPE8D/+r
-         VqN7+bjE7aTywekeuI6rhVhk/jNCtd5RPOAkJ6cF2Z4gf4nCzQ3zyU49kl4dU4hwumJA
-         oADA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/I7dcKCKPigz1sUat62lgmckX5MS1JXYmlBQYUMPTmg=;
-        b=C3h+Lg2Rs/Z9gce+s6ZTyqxEzbJsKWpK+IxyGxiQiNpPXSyO+1+1LSAQm1zKxNZKP2
-         RQlc3dwSYDKfHN5rKbuWuv2jeZjXnNR3UNnEN65MHxKj3TWTkaD6Gdj2HEY1NKHbKRi4
-         4tRpvM3IX9PIv39t25bvpf/Pc2jDHAjqWvQSIkvU+VU/lpbdu2gpHWxtpYrcBXGTaExw
-         UMRkc+hmdtkboyJFqcKh9t/BYp5Ev/5iVXiQ/D9dR/oiMPlP80sZUp2Ab74+/vmrNL29
-         1ZqLjOZjb7EA0E1Tp9itSnSxkzRLjzSyfk0DK53McnRIMJ5TtjpHf03xNohoe7DG+pd1
-         oPRw==
-X-Gm-Message-State: AOAM532k5nnS3yJNOh0x0CYmxbb3sKCkA/a5+FzNXeIGB+zvJPJewBcV
-        p2HE0X0dmev+kPKmiBtgJvKpvARKeNs=
-X-Google-Smtp-Source: ABdhPJzEqdSrhyJT1TFKvr8Uqot44JVj1GPidYVe6MSWHCPeKEuXDeysBss6RpR8Wpqq+o+FcvjeNQ==
-X-Received: by 2002:a05:6512:3322:: with SMTP id l2mr18375800lfe.460.1624876693163;
-        Mon, 28 Jun 2021 03:38:13 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id p17sm1281168lfo.118.2021.06.28.03.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 03:38:12 -0700 (PDT)
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210624182449.31164-1-p.yadav@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH v3] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
-Message-ID: <6b8662e2-2dd5-b1c4-6bc1-24a69776ffac@gmail.com>
-Date:   Mon, 28 Jun 2021 13:38:13 +0300
+        id S232713AbhF1KlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:41:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:56196 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231935AbhF1KlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:41:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DE28D6E;
+        Mon, 28 Jun 2021 03:38:38 -0700 (PDT)
+Received: from [10.57.8.231] (unknown [10.57.8.231])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23C2B3F694;
+        Mon, 28 Jun 2021 03:38:36 -0700 (PDT)
+Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210624164303.28632-1-james.clark@arm.com>
+ <20210624164303.28632-3-james.clark@arm.com>
+ <20210628012744.GA158794@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
+Date:   Mon, 28 Jun 2021 11:38:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210624182449.31164-1-p.yadav@ti.com>
+In-Reply-To: <20210628012744.GA158794@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 24/06/2021 21:24, Pratyush Yadav wrote:
-> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory.
-
-If we want to be correct:
-The CSI2RX subsystem in j721e is serviced by UDMA via PSI-L to transfer
-frames to memory.
-
-If you update the commit message you can also add my:
-
-Acked-by: Peter Ujfalusi <peter.ujflausi@gmail.com>
-
-> It can
-> have up to 32 threads per instance. J721E has two instances of the
-> subsystem, so there are 64 threads total. Add them to the endpoint map.
+On 28/06/2021 02:27, Leo Yan wrote:
+> Hi James,
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> On Thu, Jun 24, 2021 at 05:43:03PM +0100, James Clark wrote:
+>> Currently --dump-raw-trace skips queueing and splitting buffers because
+>> of an early exit condition in cs_etm__process_auxtrace_info(). Once
+>> that is removed we can print the split data by using the queues
+>> and searching for split buffers with the same reference as the
+>> one that is currently being processed.
+>>
+>> This keeps the same behaviour of dumping in file order when an AUXTRACE
+>> event appears, rather than moving trace dump to where AUX records are in
+>> the file.
+>>
+>> There will be a newline and size printout for each fragment. For example
+>> this buffer is comprised of two AUX records, but was printed as one:
+>>
+>>   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
+>>
+>>   . ... CoreSight ETM Trace data: size 160 bytes
+>>           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
+>>           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
+>>           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
+>>           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
+>>           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
+>>           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
+>>
+>> But is now printed as two fragments:
+>>
+>>   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
+>>
+>>   . ... CoreSight ETM Trace data: size 80 bytes
+>>           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
+>>           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
+>>           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
+>>
+>>   . ... CoreSight ETM Trace data: size 80 bytes
+>>           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
+>>           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
+>>           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
+>>
+>> Decoding errors that appeared in problematic files are now not present,
+>> for example:
+>>
+>>         Idx:808; ID:1c; I_BAD_SEQUENCE : Invalid Sequence in packet.[I_ASYNC]
+>>         ...
+>>         PKTP_ETMV4I_0016 : 0x0014 (OCSD_ERR_INVALID_PCKT_HDR) [Invalid packet header]; TrcIdx=822
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
 > 
-> ---
-> This patch has been split off from [0] to facilitate easier merging. I
-> have still kept it as v3 to maintain continuity with the previous patches.
+> I tested this patch and the result looks good for me.
 > 
-> [0] https://patchwork.linuxtv.org/project/linux-media/list/?series=5526&state=%2A&archive=both
+> I found a side effect introduced by this change is the perf raw dump
+> also synthesizes events PERF_RECORD_ATTR.  This is because function
+> cs_etm__synth_events() will execute after applying this patch and it
+> synthesizes PERF_RECORD_ATTR events.  I don't see any harm for this,
+> so:
 > 
-> Changes in v3:
-> - Update commit message to mention that all 64 threads are being added.
-> 
-> Changes in v2:
-> - Add all 64 threads, instead of having only the one thread being
->   currently used by the driver.
-> 
->  drivers/dma/ti/k3-psil-j721e.c | 73 ++++++++++++++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
-> 
-> diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
-> index 7580870ed746..34e3fc565a37 100644
-> --- a/drivers/dma/ti/k3-psil-j721e.c
-> +++ b/drivers/dma/ti/k3-psil-j721e.c
-> @@ -58,6 +58,14 @@
->  		},					\
->  	}
->  
-> +#define PSIL_CSI2RX(x)					\
-> +	{						\
-> +		.thread_id = x,				\
-> +		.ep_config = {				\
-> +			.ep_type = PSIL_EP_NATIVE,	\
-> +		},					\
-> +	}
-> +
->  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
->  static struct psil_ep j721e_src_ep_map[] = {
->  	/* SA2UL */
-> @@ -138,6 +146,71 @@ static struct psil_ep j721e_src_ep_map[] = {
->  	PSIL_PDMA_XY_PKT(0x4707),
->  	PSIL_PDMA_XY_PKT(0x4708),
->  	PSIL_PDMA_XY_PKT(0x4709),
-> +	/* CSI2RX */
-> +	PSIL_CSI2RX(0x4940),
-> +	PSIL_CSI2RX(0x4941),
-> +	PSIL_CSI2RX(0x4942),
-> +	PSIL_CSI2RX(0x4943),
-> +	PSIL_CSI2RX(0x4944),
-> +	PSIL_CSI2RX(0x4945),
-> +	PSIL_CSI2RX(0x4946),
-> +	PSIL_CSI2RX(0x4947),
-> +	PSIL_CSI2RX(0x4948),
-> +	PSIL_CSI2RX(0x4949),
-> +	PSIL_CSI2RX(0x494a),
-> +	PSIL_CSI2RX(0x494b),
-> +	PSIL_CSI2RX(0x494c),
-> +	PSIL_CSI2RX(0x494d),
-> +	PSIL_CSI2RX(0x494e),
-> +	PSIL_CSI2RX(0x494f),
-> +	PSIL_CSI2RX(0x4950),
-> +	PSIL_CSI2RX(0x4951),
-> +	PSIL_CSI2RX(0x4952),
-> +	PSIL_CSI2RX(0x4953),
-> +	PSIL_CSI2RX(0x4954),
-> +	PSIL_CSI2RX(0x4955),
-> +	PSIL_CSI2RX(0x4956),
-> +	PSIL_CSI2RX(0x4957),
-> +	PSIL_CSI2RX(0x4958),
-> +	PSIL_CSI2RX(0x4959),
-> +	PSIL_CSI2RX(0x495a),
-> +	PSIL_CSI2RX(0x495b),
-> +	PSIL_CSI2RX(0x495c),
-> +	PSIL_CSI2RX(0x495d),
-> +	PSIL_CSI2RX(0x495e),
-> +	PSIL_CSI2RX(0x495f),
-> +	PSIL_CSI2RX(0x4960),
-> +	PSIL_CSI2RX(0x4961),
-> +	PSIL_CSI2RX(0x4962),
-> +	PSIL_CSI2RX(0x4963),
-> +	PSIL_CSI2RX(0x4964),
-> +	PSIL_CSI2RX(0x4965),
-> +	PSIL_CSI2RX(0x4966),
-> +	PSIL_CSI2RX(0x4967),
-> +	PSIL_CSI2RX(0x4968),
-> +	PSIL_CSI2RX(0x4969),
-> +	PSIL_CSI2RX(0x496a),
-> +	PSIL_CSI2RX(0x496b),
-> +	PSIL_CSI2RX(0x496c),
-> +	PSIL_CSI2RX(0x496d),
-> +	PSIL_CSI2RX(0x496e),
-> +	PSIL_CSI2RX(0x496f),
-> +	PSIL_CSI2RX(0x4970),
-> +	PSIL_CSI2RX(0x4971),
-> +	PSIL_CSI2RX(0x4972),
-> +	PSIL_CSI2RX(0x4973),
-> +	PSIL_CSI2RX(0x4974),
-> +	PSIL_CSI2RX(0x4975),
-> +	PSIL_CSI2RX(0x4976),
-> +	PSIL_CSI2RX(0x4977),
-> +	PSIL_CSI2RX(0x4978),
-> +	PSIL_CSI2RX(0x4979),
-> +	PSIL_CSI2RX(0x497a),
-> +	PSIL_CSI2RX(0x497b),
-> +	PSIL_CSI2RX(0x497c),
-> +	PSIL_CSI2RX(0x497d),
-> +	PSIL_CSI2RX(0x497e),
-> +	PSIL_CSI2RX(0x497f),
->  	/* CPSW9 */
->  	PSIL_ETHERNET(0x4a00),
->  	/* CPSW0 */
+> Tested-by: Leo Yan <leo.yan@linaro.org>
 > 
 
--- 
-Péter
+Thanks for the testing!
+
+> Please see an extra comment in below.
+> 
+>> ---
+>>  tools/perf/util/cs-etm.c | 20 ++++++++++++++++++--
+>>  1 file changed, 18 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>> index 88e8122f73c9..ad777c2a342f 100644
+>> --- a/tools/perf/util/cs-etm.c
+>> +++ b/tools/perf/util/cs-etm.c
+>> @@ -2430,6 +2430,22 @@ static int cs_etm__process_event(struct perf_session *session,
+>>  	return 0;
+>>  }
+>>  
+>> +static void dump_queued_data(struct cs_etm_auxtrace *etm,
+>> +			     struct perf_record_auxtrace *event)
+>> +{
+>> +	struct auxtrace_buffer *buf;
+>> +	unsigned int i;
+>> +	/*
+>> +	 * Find all buffers with same reference in the queues and dump them.
+>> +	 * This is because the queues can contain multiple entries of the same
+>> +	 * buffer that were split on aux records.
+>> +	 */
+>> +	for (i = 0; i < etm->queues.nr_queues; ++i)
+>> +		list_for_each_entry(buf, &etm->queues.queue_array[i].head, list)
+>> +			if (buf->reference == event->reference)
+>> +				cs_etm__dump_event(etm, buf);
+>> +}
+>> +
+>>  static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>>  					  union perf_event *event,
+>>  					  struct perf_tool *tool __maybe_unused)
+>> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>>  				cs_etm__dump_event(etm, buffer);
+>>  				auxtrace_buffer__put_data(buffer);
+>>  			}
+>> -	}
+>> +	} else if (dump_trace)
+>> +		dump_queued_data(etm, &event->auxtrace);
+> 
+> IIUC, in the function cs_etm__process_auxtrace_event(), since
+> "etm->data_queued" is always true, below flow will never run:
+> 
+>     if (!etm->data_queued) {
+>         ......
+> 
+>         if (dump_trace)
+>             if (auxtrace_buffer__get_data(buffer, fd)) {
+>                     cs_etm__dump_event(etm, buffer);
+>                     auxtrace_buffer__put_data(buffer);
+>             }
+>     }
+> 
+> If so, it's better to use a new patch to polish the code.
+> 
+
+Hi Leo,
+
+I think this is not true in piped mode because there is no auxtrace index.
+In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
+is called for each buffer.
+
+You can reproduce this with something like this:
+
+     ./perf record -o - ls > stdio.data
+     cat stdio.data | ./perf report -i -
+
+There are some other Coresight features that don't work as expected in this mode, like
+sorting timestamps between CPUs. The aux split patchset won't work either because random
+access isn't possible. And the TRBE patch that I'm working on now won't work, because it
+also requires the random access to lookup the flags on the AUX record to configure the 
+decoder for unformatted trace.
+
+
+Thanks
+James
+
+> Thanks,
+> Leo
+> 
+>>  
+>>  	return 0;
+>>  }
+>> @@ -3038,7 +3055,6 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+>>  
+>>  	if (dump_trace) {
+>>  		cs_etm__print_auxtrace_info(auxtrace_info->priv, num_cpu);
+>> -		return 0;
+>>  	}
+>>  
+>>  	err = cs_etm__synth_events(etm, session);
+>> -- 
+>> 2.28.0
+>>
