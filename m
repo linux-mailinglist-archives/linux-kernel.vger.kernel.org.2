@@ -2,247 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9289D3B5F3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C5A3B5F3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhF1NnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:43:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:59592 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230154AbhF1NnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:43:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 982E01042;
-        Mon, 28 Jun 2021 06:40:38 -0700 (PDT)
-Received: from [10.57.8.89] (unknown [10.57.8.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 649B63F718;
-        Mon, 28 Jun 2021 06:40:36 -0700 (PDT)
-Subject: Re: [PATCH RFC 1/2] scatterlist: add I/O variant of sg_pcopy &
- sg_copy
-To:     Neil Armstrong <narmstrong@baylibre.com>, jgg@ziepe.ca,
-        leon@kernel.org, m.szyprowski@samsung.com, ulf.hansson@linaro.org
-Cc:     torvalds@linux-foundation.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, linux-mmc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210628123411.119778-1-narmstrong@baylibre.com>
- <20210628123411.119778-2-narmstrong@baylibre.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d86f72ff-191a-fbf1-b1d1-7c980b488bcd@arm.com>
-Date:   Mon, 28 Jun 2021 14:40:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232033AbhF1Nn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhF1Nny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:43:54 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FA2C061574;
+        Mon, 28 Jun 2021 06:41:29 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id b1so2459655pls.5;
+        Mon, 28 Jun 2021 06:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J0zWLnENjoZcvSkz0GaaLHvicuPlecPlHuFYuJAX7Oc=;
+        b=KxFAuX6JnjLzFtLeIvbW9xVGLQkYU5APMZG7yJYfy3KH+1vxiTi8yTPN3weVUz4sH+
+         p5wNqPH4HRuv3pv1+iwZplQbU58eMLUK7r1b9RwWsl1A5sLEwt6LubEVg0vrWtYUa6PP
+         NIWxVPv3Ttri+C6vXj5PPnF9ScNhiUt4bPtPueTRizV4b/gqEjuzgNfbOhxMCT5c05zM
+         zpHIukQ1jzEy2OBZvuldeW2Telpus0/sqLiyaPfVl7On6htx6ZzfH8PbdykWOKRDRkAy
+         nAu9yHvralGM5092TlQQKLfnTkjkmU4gocadwIFH3+OYasRkJZVsN4F07tuynUMYlyvQ
+         63BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J0zWLnENjoZcvSkz0GaaLHvicuPlecPlHuFYuJAX7Oc=;
+        b=eBoDNe8c0VWAYZG6o3K0eeKFuvoOtgHpdl4oWfJzPe1csFNRCXGK7Zp457snkfTA7q
+         FDl9oLxlzzMfCRkbsTtgrnOaTso1GeubVGS6h+Pd/1z6ni/W3HWZrdPT9JXfjI2cu2EC
+         hrfHw5kJz0OFnvJLeyQirISvmHH4jYn/W8yLCoUIOo8ZK6ji48QtgevFBXhXWb2sGaPw
+         Rz8Fmex0n6PzqHUVC5atzxROWUxLPGH6QpJQ/P4DSBHEFLL/N87M57oDD5BsZgFieb2v
+         q+7itWvJzlLuEcEi3DnYoEU8FQtU7yx5V4+Wb/jp65gYRq3eBGf6EQ4nsmLCXMYbfTmH
+         Gf2Q==
+X-Gm-Message-State: AOAM5318nfygEB5W3sQ/JeL0Vbgy8dLVxDJKBloNNWU/lxewqDKW3IIe
+        +ZLIf0bL3dSYAwsZI7V61UbRG6/JkBezcfhqbtQ=
+X-Google-Smtp-Source: ABdhPJxlB+h0XWEqkCThUJapbV7dEugW+IqA5etEWhYXmNtmVm+YtSGhY0TzsWXZe24vh9XtpqOLhTp8Oe3qtxMTmbg=
+X-Received: by 2002:a17:90a:bc89:: with SMTP id x9mr28051362pjr.228.1624887689062;
+ Mon, 28 Jun 2021 06:41:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628123411.119778-2-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <CAF78GY0jB_oeKgfZc4SHWBVusGnNfxKk5jTC4UBDsteSEVEzTw@mail.gmail.com>
+In-Reply-To: <CAF78GY0jB_oeKgfZc4SHWBVusGnNfxKk5jTC4UBDsteSEVEzTw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Jun 2021 16:40:51 +0300
+Message-ID: <CAHp75VeZwUiK2v8HZ=MLGSkK8wLudDEJFhBSm--Wu9gzABhmSg@mail.gmail.com>
+Subject: Re: gpiochip_lock_as_irq on pins without FLAG_REQUESTED: bug or
+ feature ?
+To:     Vincent Pelletier <plr.vincent@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-28 13:34, Neil Armstrong wrote:
-> When copying from/to an iomem mapped memory, the current sg_copy & sg_pcopy can't
-> be used and lead to local variants in drivers like in [1] & [2].
-> 
-> This introduces an I/O variant to be used instead of the local variants.
-> 
-> [1] mv_cesa_sg_copy in drivers/crypto/marvell/cesa/tdma.c
-> [2] meson_mmc_copy_buffer in drivers/mmc/host/meson-gx-mmc.c
+On Mon, Jun 28, 2021 at 6:37 AM Vincent Pelletier <plr.vincent@gmail.com> wrote:
+>
+> Hello,
+>
+> While trying to debug an IRQ handling issue on a sifive-unmatched board
+> (which is a very recent board on a recent architecture, so I would not
+> be overly surprised if there were bugs in hiding), I realised that I was able
+> to claim via sysfs GPIO pins which are being actively used as IRQ sources.
+>
+> Checking drivers/gpio/gpiolib.c and kernel/irq/chip.c, I believe this is because
+> gpiolib (gpiochip_irq_reqres, gpiochip_reqres_irq, gpiochip_lock_as_irq)
+> does not call gpiod_request_{,commit}, resulting in a pin which is available
+> for use. I could confirm this by adding (just as a debugging aid):
+>   WARN_ON(!test_bit(FLAG_REQUESTED, &desc->flags));
+> early in gpiochip_lock_as_irq, and this statement gets triggered.
+>
+> Is this intentional ?
 
-Other than one apparent typo below, this looks like what I imagined, 
-thanks for putting it together!
+IIRC the GPIO can be locked as IRQ without being requested (perhaps
+for legacy/historical reasons). But I forgot all code paths anyway, so
+I'm expecting that Linus and  or Bart can elaborate this better.
 
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   include/linux/scatterlist.h |  14 +++++
->   lib/scatterlist.c           | 119 ++++++++++++++++++++++++++++++++++++
->   2 files changed, 133 insertions(+)
-> 
-> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-> index 6f70572b2938..6ef339ba5290 100644
-> --- a/include/linux/scatterlist.h
-> +++ b/include/linux/scatterlist.h
-> @@ -308,15 +308,29 @@ void sgl_free(struct scatterlist *sgl);
->   size_t sg_copy_buffer(struct scatterlist *sgl, unsigned int nents, void *buf,
->   		      size_t buflen, off_t skip, bool to_buffer);
->   
-> +size_t sg_copy_io(struct scatterlist *sgl, unsigned int nents, void __iomem *buf,
-> +		  size_t buflen, off_t skip, bool to_buffer);
-> +
->   size_t sg_copy_from_buffer(struct scatterlist *sgl, unsigned int nents,
->   			   const void *buf, size_t buflen);
->   size_t sg_copy_to_buffer(struct scatterlist *sgl, unsigned int nents,
->   			 void *buf, size_t buflen);
->   
-> +size_t sg_copy_from_io(struct scatterlist *sgl, unsigned int nents,
-> +		       const void __iomem *buf, size_t buflen);
-> +size_t sg_copy_to_io(struct scatterlist *sgl, unsigned int nents,
-> +		     void __iomem *buf, size_t buflen);
-> +
->   size_t sg_pcopy_from_buffer(struct scatterlist *sgl, unsigned int nents,
->   			    const void *buf, size_t buflen, off_t skip);
->   size_t sg_pcopy_to_buffer(struct scatterlist *sgl, unsigned int nents,
->   			  void *buf, size_t buflen, off_t skip);
-> +
-> +size_t sg_pcopy_from_io(struct scatterlist *sgl, unsigned int nents,
-> +			const void __iomem *buf, size_t buflen, off_t skip);
-> +size_t sg_pcopy_to_io(struct scatterlist *sgl, unsigned int nents,
-> +		      void __iomem *buf, size_t buflen, off_t skip);
-> +
->   size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
->   		       size_t buflen, off_t skip);
->   
-> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> index a59778946404..e52f37b181fa 100644
-> --- a/lib/scatterlist.c
-> +++ b/lib/scatterlist.c
-> @@ -954,6 +954,55 @@ size_t sg_copy_buffer(struct scatterlist *sgl, unsigned int nents, void *buf,
->   }
->   EXPORT_SYMBOL(sg_copy_buffer);
->   
-> +/**
-> + * sg_copy_io - Copy data between an I/O mapped buffer and an SG list
-> + * @sgl:		 The SG list
-> + * @nents:		 Number of SG entries
-> + * @buf:		 Where to copy from
-> + * @buflen:		 The number of bytes to copy
-> + * @skip:		 Number of bytes to skip before copying
-> + * @to_buffer:		 transfer direction (true == from an sg list to a
-> + *			 buffer, false == from a buffer to an sg list)
-> + *
-> + * Returns the number of copied bytes.
-> + *
-> + **/
-> +size_t sg_copy_io(struct scatterlist *sgl, unsigned int nents, void __iomem *buf,
-> +		  size_t buflen, off_t skip, bool to_buffer)
-> +{
-> +	unsigned int offset = 0;
-> +	struct sg_mapping_iter miter;
-> +	unsigned int sg_flags = SG_MITER_ATOMIC;
-> +
-> +	if (to_buffer)
-> +		sg_flags |= SG_MITER_FROM_SG;
-> +	else
-> +		sg_flags |= SG_MITER_TO_SG;
-> +
-> +	sg_miter_start(&miter, sgl, nents, sg_flags);
-> +
-> +	if (!sg_miter_skip(&miter, skip))
-> +		return 0;
-> +
-> +	while ((offset < buflen) && sg_miter_next(&miter)) {
-> +		unsigned int len;
-> +
-> +		len = min(miter.length, buflen - offset);
-> +
-> +		if (to_buffer)
-> +			memcpy_toio(buf + offset, miter.addr, len);
-> +		else
-> +			memcpy_fromio(miter.addr, buf + offset, len);
-> +
-> +		offset += len;
-> +	}
-> +
-> +	sg_miter_stop(&miter);
-> +
-> +	return offset;
-> +}
-> +EXPORT_SYMBOL(sg_copy_io);
-> +
->   /**
->    * sg_copy_from_buffer - Copy from a linear buffer to an SG list
->    * @sgl:		 The SG list
-> @@ -988,6 +1037,40 @@ size_t sg_copy_to_buffer(struct scatterlist *sgl, unsigned int nents,
->   }
->   EXPORT_SYMBOL(sg_copy_to_buffer);
->   
-> +/**
-> + * sg_copy_from_io - Copy from an I/O mapped buffer to an SG list
-> + * @sgl:		 The SG list
-> + * @nents:		 Number of SG entries
-> + * @buf:		 Where to copy from
-> + * @buflen:		 The number of bytes to copy
-> + *
-> + * Returns the number of copied bytes.
-> + *
-> + **/
-> +size_t sg_copy_from_io(struct scatterlist *sgl, unsigned int nents,
-> +		       const void *buf, size_t buflen)
+> Does this requesting belong to something else in the codepath from
+> request_threaded_irq (and similar) ?
+> Could it be something missing in the devicetree for this board ?
+>
+> Also, I notice that both gpiochip_hierarchy_add_domain and
+> gpiochip_reqres_irq call gpiochip_lock_as_irq, and I am surprised I do not
+> get any error about this: in my understanding only the first call on a given pin
+> should succeed, but with my WARN_ON I am seeing both stack traces and
+> no other warning.
 
-The __iomem annotation wants to be on buf here raher than cast in below, 
-to match the prototype (and everything else).
 
-Cheers,
-Robin.
-
-> +{
-> +	return sg_copy_io(sgl, nents, (void __iomem *)buf, buflen, 0, false);
-> +}
-> +EXPORT_SYMBOL(sg_copy_from_io);
-> +
-> +/**
-> + * sg_copy_to_io - Copy from an SG list to an I/O mapped buffer
-> + * @sgl:		 The SG list
-> + * @nents:		 Number of SG entries
-> + * @buf:		 Where to copy to
-> + * @buflen:		 The number of bytes to copy
-> + *
-> + * Returns the number of copied bytes.
-> + *
-> + **/
-> +size_t sg_copy_to_io(struct scatterlist *sgl, unsigned int nents,
-> +		     void __iomem *buf, size_t buflen)
-> +{
-> +	return sg_copy_io(sgl, nents, buf, buflen, 0, true);
-> +}
-> +EXPORT_SYMBOL(sg_copy_to_io);
-> +
->   /**
->    * sg_pcopy_from_buffer - Copy from a linear buffer to an SG list
->    * @sgl:		 The SG list
-> @@ -1024,6 +1107,42 @@ size_t sg_pcopy_to_buffer(struct scatterlist *sgl, unsigned int nents,
->   }
->   EXPORT_SYMBOL(sg_pcopy_to_buffer);
->   
-> +/**
-> + * sg_pcopy_from_io - Copy from an I/O mapped buffer to an SG list
-> + * @sgl:		 The SG list
-> + * @nents:		 Number of SG entries
-> + * @buf:		 Where to copy from
-> + * @buflen:		 The number of bytes to copy
-> + * @skip:		 Number of bytes to skip before copying
-> + *
-> + * Returns the number of copied bytes.
-> + *
-> + **/
-> +size_t sg_pcopy_from_io(struct scatterlist *sgl, unsigned int nents,
-> +			const void __iomem *buf, size_t buflen, off_t skip)
-> +{
-> +	return sg_copy_io(sgl, nents, (void __iomem *)buf, buflen, skip, false);
-> +}
-> +EXPORT_SYMBOL(sg_pcopy_from_io);
-> +
-> +/**
-> + * sg_pcopy_to_io - Copy from an SG list to an I/O mapped buffer
-> + * @sgl:		 The SG list
-> + * @nents:		 Number of SG entries
-> + * @buf:		 Where to copy to
-> + * @buflen:		 The number of bytes to copy
-> + * @skip:		 Number of bytes to skip before copying
-> + *
-> + * Returns the number of copied bytes.
-> + *
-> + **/
-> +size_t sg_pcopy_to_io(struct scatterlist *sgl, unsigned int nents,
-> +		      void __iomem *buf, size_t buflen, off_t skip)
-> +{
-> +	return sg_copy_io(sgl, nents, buf, buflen, skip, true);
-> +}
-> +EXPORT_SYMBOL(sg_pcopy_to_io);
-> +
->   /**
->    * sg_zero_buffer - Zero-out a part of a SG list
->    * @sgl:		 The SG list
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
