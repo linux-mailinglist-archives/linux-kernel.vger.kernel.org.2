@@ -2,148 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3C83B5DB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9233B5DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbhF1MO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S232880AbhF1MQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhF1MOu (ORCPT
+        with ESMTP id S232855AbhF1MQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:14:50 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA150C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:12:23 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id b1so2317527pls.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:12:23 -0700 (PDT)
+        Mon, 28 Jun 2021 08:16:54 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88FDC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:14:27 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id f13so25386820ljp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:14:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2xcGOgP/yg1u7n803j0UADdqFly0YaxV+TsFk8YNqGg=;
-        b=q0XtAxQCldYUjMpu+SY9e/g2ItjBE0+iCawDmqpGlnW9tg1QZoxU1EerpByITcNWpo
-         dYYERIGvOrhKWkz68obNn4RVU/T6Vn7ARfiLc9xK8sI+djcHH8LTkBtwf1IuK3ZX9q7m
-         TfVz9UOi881d1rqWEIxZpFFpPdzqknoSGGszEtdO9IDm8V2EjYmJ4EZlHK8WK5EfIbKi
-         HTtzL7Md3RkabxkmtU+Hd5AG+oheb+jkOs+1F+sEO/uncvw8yS53OsiNeDoXMguaZMcB
-         yBGuqzS5L70IluQiN3qJ8EUc75jnbvDeTnDufd3tJ1hKp4lnAXQAxofN2vkO8GRPJwUi
-         gEeg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IU77WBZE9mV7D3mQ04skNRvL8L5r2XXRRJdj4vDKQlI=;
+        b=LMxKD+ZqXB8Q5pFcAlMU0D19B7UTQNtCxaOM5FiHF5Me2rRzdvbJYZZ+AxdIsilsM1
+         cXU0OfzcFMNBAFxJhoDHNMtcvo6IK4zw+QFOanqJ2cwGAKzUbf4Vbgtp/YZVPagh4lB3
+         JeK7MxW2hJ88Ileo7gUKaVUOrVNuL08FkYGg+jjpiSdVwf5bv4vPbni1SMiFXuWFg4x5
+         tV5cSz7QgfGZ74NI573dW2GTDvXHU8jznVVd+SQVTCCtsWT8MXWNoS/qBxZ+zuU/Ig4r
+         CWV7MXbto/tkb4i5sl8Skjq9WLj0Yj0uFklDTIvyXrXvIZ9ZzbqPb32RSXk9+PFxNfh/
+         wWEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2xcGOgP/yg1u7n803j0UADdqFly0YaxV+TsFk8YNqGg=;
-        b=YhU2Qdm+CAqqMDaL3JEPcqqZmElq6Ej0FeH8d0tuA4kLvUFoSZ+WlLIJxdOTjtzB1A
-         e5F5nVStZRyHTlKSDR5a8Kb8VBHye181G++3OmNpXf0cwopJD+3RH7mTHfFvx/1VozzH
-         HiOpTWw2srDP7A1hqbovLEMAIO2ADXagKfwdCMsegg7X6Z75dEnEDBxzmnhfhqQbAHJW
-         0lVYufI+GZz/9rb0snFYZnZYv5hmtKCH9TvU94C+LL8YTTzfaA49YrIp2ls0OB/hqHvf
-         GYe/g65rm4SnkgU5N8c80XJPbKVhblyxZxav2J4N8EIrCF3wtycSeAY8QJ3hFeKeitKE
-         1cRA==
-X-Gm-Message-State: AOAM532cQPTyew5Drg4y+nl+6gKHG1aW+PErrwjx2iCMO10GeWUwNSor
-        VHAueyk3g8drFdbqS/qjP8t0Fw==
-X-Google-Smtp-Source: ABdhPJy3t88iPCr1uRgXPIlJRE1hWIf9EVjMlvHN4QcQ52KFGeWoAA5vxIvilcuwAN6yuVxJVewSOw==
-X-Received: by 2002:a17:902:e04f:b029:eb:66b0:6d08 with SMTP id x15-20020a170902e04fb02900eb66b06d08mr22425677plx.50.1624882343334;
-        Mon, 28 Jun 2021 05:12:23 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id b22sm6140182pfp.20.2021.06.28.05.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:12:22 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 20:12:17 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>, Al Grant <Al.Grant@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] perf arm-spe: Don't wait for PERF_RECORD_EXIT
- event
-Message-ID: <20210628121217.GD200044@leoy-ThinkPad-X240s>
-References: <20210519071939.1598923-1-leo.yan@linaro.org>
- <20210519071939.1598923-6-leo.yan@linaro.org>
- <369fd454-d94d-daa1-ead4-b42645ec4282@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IU77WBZE9mV7D3mQ04skNRvL8L5r2XXRRJdj4vDKQlI=;
+        b=SGaIc9mhFdVRnFfB0LStQ/Mpa1rJzG0m7pNTu1bBuiJwNTEyUFl/M0jWpbz13rU4iR
+         4qvpicwUhfrIgilr6LzmQDg8UZmNF5xUV4WCVzN5CpEdvKZ6lkVTeXHy79x0FJUeYurH
+         yK5mpF36pj/mRCSyTyskG1Xd1pukJXkmJF3t6aLKVyFeR9DsHkMBQAKayK0YtHyF2XQA
+         5QDKxhNpLXBCS8ZA+PutBtsF3tNOm2kJ/aCsjQVeYCYBZJIb8na7A67B88e4uP4M7JHs
+         FGQM3y6yrpt8AtiU5royfidhl2A6d7qFBWMvlegZd0B8agHjfVm3wSODDPQ5o3vz627S
+         S6mQ==
+X-Gm-Message-State: AOAM532Plp18FpnA1LDSgHPFEeh0G3yz5cdy7y5dpMXTjOvdSYJqdL4h
+        kvizt0zn/K3eOHkHyaJWB2bXpztrybSDsO8oYG2Biw==
+X-Google-Smtp-Source: ABdhPJxGjFQVeWlK8SLwk4umPJ+r7JmGj9rU07PjvVIpQC689chCLz+0dj8pdQ5Gadhq5J6db5lEwvcA6JlpZ4qcYZ4=
+X-Received: by 2002:a2e:9c02:: with SMTP id s2mr930558lji.299.1624882466028;
+ Mon, 28 Jun 2021 05:14:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <369fd454-d94d-daa1-ead4-b42645ec4282@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org> <20210628115452.GA28797@arm.com>
+In-Reply-To: <20210628115452.GA28797@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 28 Jun 2021 14:14:14 +0200
+Message-ID: <CAKfTPtAtE1WHA19=BrWyekHgFYVn0+LdTLROJzYRdshp-EYOWA@mail.gmail.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 02:25:15PM +0100, James Clark wrote:
-> 
-> 
-> On 19/05/2021 08:19, Leo Yan wrote:
-> > When decode Arm SPE trace, it waits for PERF_RECORD_EXIT event (the last
-> > perf event) for processing trace data, which is needless and even might
-> > cause logic error, e.g. it might fail to correlate perf events with Arm
-> > SPE events correctly.
-> > 
-> > So this patch removes the condition checking for PERF_RECORD_EXIT event.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  tools/perf/util/arm-spe.c | 6 +-----
-> >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> > index 5c5b438584c4..58b7069c5a5f 100644
-> > --- a/tools/perf/util/arm-spe.c
-> > +++ b/tools/perf/util/arm-spe.c
-> > @@ -717,11 +717,7 @@ static int arm_spe_process_event(struct perf_session *session,
-> >  					sample->time);
-> >  		}
-> >  	} else if (timestamp) {
-> > -		if (event->header.type == PERF_RECORD_EXIT) {
-> > -			err = arm_spe_process_queues(spe, timestamp);
-> > -			if (err)
-> > -				return err;
-> > -		}
-> > +		err = arm_spe_process_queues(spe, timestamp);
-> >  	}
-> >  
-> >  	return err;
-> > 
-> 
-> For the whole set:
-> Reviewed-by: James Clark <james.clark@arm.com>
-> Tested-by: James Clark <james.clark@arm.com>
+On Mon, 28 Jun 2021 at 13:54, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+>
+> Hi guys,
+>
+> On Monday 21 Jun 2021 at 14:49:33 (+0530), Viresh Kumar wrote:
+> > Hello,
+> >
+> > Changes since V2:
+> >
+> > - We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
+> >   work using policy ->init() and exit() alone.
+> >
+> > - Two new cleanup patches 1/4 and 2/4.
+> >
+> > - Improved commit log of 3/4.
+> >
+> > - Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
+> >   overlap (seen with Vincent's setup).
+> >
+>
+> If you happen to have the data around, I would like to know more about
+> your observations on ThunderX2.
+>
+>
+> I tried ThunderX2 as well, with the following observations:
+>
+> Booting with userspace governor and all CPUs online, the CPPC frequency
+> scale factor was all over the place (even much larger than 1024).
+>
+> My initial assumptions:
+>  - Counters do not behave properly in light of SMT
+>  - Firmware does not do a good job to keep the reference and core
+>    counters monotonic: save and restore at core off.
+>
+> So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
+> a single core (part of policy0). With this all works very well:
+>
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1863.095370] CPU96: cppc scale: 697.
+> [ 1863.175370] CPU0: cppc scale: 492.
+> [ 1863.215367] CPU64: cppc scale: 492.
+> [ 1863.235366] CPU96: cppc scale: 492.
+> [ 1863.485368] CPU32: cppc scale: 492.
+>
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1891.395363] CPU96: cppc scale: 558.
+> [ 1891.415362] CPU0: cppc scale: 595.
+> [ 1891.435362] CPU32: cppc scale: 615.
+> [ 1891.465363] CPU96: cppc scale: 635.
+> [ 1891.495361] CPU0: cppc scale: 673.
+> [ 1891.515360] CPU32: cppc scale: 703.
+> [ 1891.545360] CPU96: cppc scale: 738.
+> [ 1891.575360] CPU0: cppc scale: 779.
+> [ 1891.605360] CPU96: cppc scale: 829.
+> [ 1891.635360] CPU0: cppc scale: 879.
+>
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1896.585363] CPU32: cppc scale: 1004.
+> [ 1896.675359] CPU64: cppc scale: 973.
+> [ 1896.715359] CPU0: cppc scale: 1024.
+>
+> I'm doing a rate limited printk only for increase/decrease values over
+> 64 in the scale factor value.
+>
+> This showed me that SMT is handled properly.
+>
+> Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
+> stops being even close to correct, for example:
+>
+> [238394.770328] CPU96: cppc scale: 22328.
+> [238395.628846] CPU96: cppc scale: 245.
+> [238516.087115] CPU96: cppc scale: 930.
+> [238523.385009] CPU96: cppc scale: 245.
+> [238538.767473] CPU96: cppc scale: 936.
+> [238538.867546] CPU96: cppc scale: 245.
+> [238599.367932] CPU97: cppc scale: 2728.
+> [238599.859865] CPU97: cppc scale: 452.
+> [238647.786284] CPU96: cppc scale: 1438.
+> [238669.604684] CPU96: cppc scale: 27306.
+> [238676.805049] CPU96: cppc scale: 245.
+> [238737.642902] CPU97: cppc scale: 2035.
+> [238737.664995] CPU97: cppc scale: 452.
+> [238788.066193] CPU96: cppc scale: 2749.
+> [238788.110192] CPU96: cppc scale: 245.
+> [238817.231659] CPU96: cppc scale: 2698.
+> [238818.083687] CPU96: cppc scale: 245.
+> [238845.466850] CPU97: cppc scale: 2990.
+> [238847.477805] CPU97: cppc scale: 452.
+> [238936.984107] CPU97: cppc scale: 1590.
+> [238937.029079] CPU97: cppc scale: 452.
+> [238979.052464] CPU97: cppc scale: 911.
+> [238980.900668] CPU97: cppc scale: 452.
+> [239149.587889] CPU96: cppc scale: 803.
+> [239151.085516] CPU96: cppc scale: 245.
+> [239303.871373] CPU64: cppc scale: 956.
+> [239303.906837] CPU64: cppc scale: 245.
+> [239308.666786] CPU96: cppc scale: 821.
+> [239319.440634] CPU96: cppc scale: 245.
+> [239389.978395] CPU97: cppc scale: 4229.
+> [239391.969562] CPU97: cppc scale: 452.
+> [239415.894738] CPU96: cppc scale: 630.
+> [239417.875326] CPU96: cppc scale: 245.
+>
 
-> I see a big improvement in decoding involving multiple processes because the timestamps are now
-> correlated with the comm and mmap events.
-> 
-> For example perf-exec samples are visible right before the exec is done, and on an
-> application that forks, samples are visible from all processes. For example:
-> 
->    perf record -e arm_spe// -- bash -c "stress -c 1"
->    perf script
-> 
->    perf-exec  4502 [003] 259755.050409:          1    l1d-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
->    perf-exec  4502 [003] 259755.050409:          1    tlb-access:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
->    perf-exec  4502 [003] 259755.050409:          1        memory:  ffff80001014b840 sched_clock+0x40 ([kernel.kallsyms])
->    perf-exec  4502 [003] 259755.050411:          1    tlb-access:  ffff800010120fb8 __rcu_read_lock+0x0 ([kernel.kallsyms])
->    bash  4502 [003] 259755.050411:          1   branch-miss:  ffff8000105b2a40 memcpy+0x80 ([kernel.kallsyms])
->    bash  4502 [003] 259755.050411:          1    tlb-access:                 0 [unknown] ([unknown])
->    ...
->    stress  4502 [003] 259755.051468:          1    l1d-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
->    stress  4502 [003] 259755.051468:          1    tlb-access:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
->    stress  4502 [003] 259755.051468:          1        memory:  ffff800010259a24 __vma_adjust+0x1f4 ([kernel.kallsyms])
-> 
-> Previously samples were only attributed to 'stress', which was obviously wrong.
+With the counter being 32bits and the freq scaling being update at
+tick, you can easily get a overflow on it in idle system. I can easily
+imagine that when you unplug CPUs there is enough activity on the CPU
+to update it regularly whereas with all CPUs, the idle time is longer
+that the counter overflow
 
-Thanks a lot for the review and testing, James!
-
-Hi Arnaldo, I confirmed this patch set can be cleanly applied on
-the latest acme/perf/core branch, so could you pick up this patch
-set?
-
-Thanks,
-Leo
+> The counter values shown by feedback_ctrs do not seem monotonic even
+> when only core 0 threads are online.
+>
+> ref:2812420736 del:166051103
+> ref:3683620736 del:641578595
+> ref:1049653440 del:1548202980
+> ref:2099053440 del:2120997459
+> ref:3185853440 del:2714205997
+> ref:712486144  del:3708490753
+> ref:3658438336 del:3401357212
+> ref:1570998080 del:2279728438
+>
+> For now I was just wondering if you have seen the same and whether you
+> have an opinion on this.
+>
+> > This is tested on my Hikey platform (without the actual read/write to
+> > performance counters), with this script for over an hour:
+> >
+> > while true; do
+> >     for i in `seq 1 7`;
+> >     do
+> >         echo 0 > /sys/devices/system/cpu/cpu$i/online;
+> >     done;
+> >
+> >     for i in `seq 1 7`;
+> >     do
+> >         echo 1 > /sys/devices/system/cpu/cpu$i/online;
+> >     done;
+> > done
+> >
+> >
+> > The same is done by Vincent on ThunderX2 and no issues were seen.
+>
+> Hotplug worked fine for me as well on both platforms I tested (Juno R2
+> and ThunderX2).
+>
+> Thanks,
+> Ionela.
