@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8D53B5801
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 06:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9463B5809
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 06:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhF1EJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 00:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhF1EJt (ORCPT
+        id S230164AbhF1EMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 00:12:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51614 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhF1EMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 00:09:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF436C061766
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 21:07:23 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id b5so638113plg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 21:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UPwJ4JFkf9xbmYHm20uOVNE4kSxCHxiSpBWFcMmJsf4=;
-        b=Uok0jT2pxd+MJTrzQzNU+B1Vw/1BMSfeaNwyu3DXXL5ufR2/CLXdtn57aSt/Ij+NyS
-         v1czpL+N/SxMFG/f9g9Y79C1BQL5ZX7wtuO8pqqdNgPgZbasIgwKw9DFwf9Vu/4wDPOq
-         8J7Xk8e3fpcaL8HJYe9orfgkxD6X8HGcNyAV8iIkcx47v6GZZmxtLFMGZTV0baoi/WG7
-         pmeuXXar7yh5VrUItS2vMKrkJPMwZ+Qe/VSUk2V99UlW2GgbuvEK8sGpBhil0klRZEu9
-         8RagdFbFbrPm9DCbQ3lx1sySvMcq1+QCzjXQ1TeApB+Vq/xGZomy5aU2C/TI++3j7khi
-         yaNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UPwJ4JFkf9xbmYHm20uOVNE4kSxCHxiSpBWFcMmJsf4=;
-        b=KhH3UfXuzYxt2qTVuprIbWn2P/WVH9owpmXdlDA0TC4A2NIYX8SBqRZ+XprUkRGelL
-         xgGnAqEAH1XMMCWIWvQzi5gC3C+Hqd0umqDjEI6uPPl/7929Mq0Bsuthj6Lf63QlvQHL
-         HbsLv1V24I+GSYiiQcHm6mGvspLupSRTUPsqKaZxPgiDMKjnaM7xepVarR5OkUYaV0Jo
-         uusYTslN1hTYNjwgCZEtzNoI5Ni9R7zAH0XbjVyiUIL41guJ8V8jvbAMkh4HOOK5HS5W
-         d0CZRfAeb5dlggPRKEzNzt8j7vh829BCgddLzwCZwazawZu5j1H7fMoyxN7r8fZ/NE+R
-         XRXQ==
-X-Gm-Message-State: AOAM530Hf47GYLoLgvlnoRd8ct2RVyUTgTYCaVk4TWwqFBpvPe8+y1ay
-        nOA5BdMM1nMC2K1LTR1fdG3BjA==
-X-Google-Smtp-Source: ABdhPJzFWo89rXwqJzwPopMzsa0ZNowOikGCxgvea1IDTivUY8d9WCeemuR6SUA/phlV0AwqiLYnHQ==
-X-Received: by 2002:a17:90a:69e2:: with SMTP id s89mr35387821pjj.154.1624853242453;
-        Sun, 27 Jun 2021 21:07:22 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id j3sm12654626pfe.98.2021.06.27.21.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 21:07:21 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 12:07:16 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, james.clark@arm.com,
-        andre.przywara@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf arm-spe: Fix incorrect sample timestamp in perf
- script
-Message-ID: <20210628040716.GC163942@leoy-ThinkPad-X240s>
-References: <20210626032115.16742-1-yangjihong1@huawei.com>
- <20210628014953.GA163942@leoy-ThinkPad-X240s>
- <75dac5f8-9c82-0db1-d362-44289dcaa206@huawei.com>
+        Mon, 28 Jun 2021 00:12:34 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15S49fKm059338;
+        Sun, 27 Jun 2021 23:09:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1624853381;
+        bh=GNU1vUWoanvJ92XdB4nexwD2JVJqd69WagBGfaf6suA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=mu5a+hQh7vJ9G0ABfC7bLJiQYRwVGkbagBr2vVw6qNOKFlRlurlvSii0+Fes6CvVQ
+         OEOpT6s0KS699UN4t0jZp7N7fmUOsNFB+Gl+PUzpKJm5uSlclhBEYN9/NNoCERVURP
+         qodihYQZWDOv6WWRlBehZhmP0K9aWQ5VxULnokmQ=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15S49fX1100414
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 27 Jun 2021 23:09:41 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 27
+ Jun 2021 23:09:40 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Sun, 27 Jun 2021 23:09:41 -0500
+Received: from [10.250.232.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15S49XI6013993;
+        Sun, 27 Jun 2021 23:09:33 -0500
+Subject: Re: [PATCH v6 0/7] Add SR-IOV support in PCIe Endpoint Core
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+References: <20210616211630.GA3007203@bjorn-Precision-5520>
+ <0fd19e28-e0a6-fd79-672a-b588fb2763ba@ti.com>
+ <20210625161528.GA21595@lpieralisi>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <8bf024da-d35b-80d5-4351-c1c1d68ef59c@ti.com>
+Date:   Mon, 28 Jun 2021 09:39:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75dac5f8-9c82-0db1-d362-44289dcaa206@huawei.com>
+In-Reply-To: <20210625161528.GA21595@lpieralisi>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:45:07AM +0800, Yang Jihong wrote:
+Hi Lorenzo,
 
-[...]
+On 25/06/21 9:45 pm, Lorenzo Pieralisi wrote:
+> On Thu, Jun 24, 2021 at 08:30:09PM +0530, Kishon Vijay Abraham I wrote:
+>> Hi Lorenzo,
+>>
+>> On 17/06/21 2:46 am, Bjorn Helgaas wrote:
+>>> On Wed, Jun 16, 2021 at 07:35:33PM +0530, Kishon Vijay Abraham I wrote:
+>>>> Hi Lorenzo, Bjorn,
+>>>>
+>>>> On 17/05/21 1:17 pm, Kishon Vijay Abraham I wrote:
+>>>>> Patch series
+>>>>> *) Adds support to add virtual functions to enable endpoint controller
+>>>>>    which supports SR-IOV capability
+>>>>> *) Add support in Cadence endpoint driver to configure virtual functions
+>>>>> *) Enable pci_endpoint_test driver to create pci_device for virtual
+>>>>>    functions
+>>>>>
+>>>>> v1 of the patch series can be found at [1]
+>>>>> v2 of the patch series can be found at [2]
+>>>>> v3 of the patch series can be found at [3]
+>>>>> v4 of the patch series can be found at [4]
+>>>>> v5 of the patch series can be found at [5]
+>>>>>
+>>>>> Here both physical functions and virtual functions use the same
+>>>>> pci_endpoint_test driver and existing pcitest utility can be used
+>>>>> to test virtual functions as well.
+>>>>>
+>>>>> Changes from v5:
+>>>>> *) Rebased to 5.13-rc1
+>>>>>
+>>>>> Changes from v4:
+>>>>> *) Added a fix in Cadence driver which was overwriting BAR configuration
+>>>>>    of physical function.
+>>>>> *) Didn't include Tom's Acked-by since Cadence driver is modified in
+>>>>>    this revision.
+>>>>>
+>>>>> Changes from v3:
+>>>>> *) Fixed Rob's comment and added his Reviewed-by as suggested by him.
+>>>>>
+>>>>> Changes from v2:
+>>>>> *) Fixed DT binding documentation comment by Rob
+>>>>> *) Fixed the error check in pci-epc-core.c
+>>>>>
+>>>>> Changes from v1:
+>>>>> *) Re-based and Re-worked to latest kernel 5.10.0-rc2+ (now has generic
+>>>>>    binding for EP)
+>>>>>
+>>>>> [1] -> http://lore.kernel.org/r/20191231113534.30405-1-kishon@ti.com
+>>>>> [2] -> http://lore.kernel.org/r/20201112175358.2653-1-kishon@ti.com
+>>>>> [3] -> https://lore.kernel.org/r/20210305050410.9201-1-kishon@ti.com
+>>>>> [4] -> http://lore.kernel.org/r/20210310160943.7606-1-kishon@ti.com
+>>>>> [5] -> https://lore.kernel.org/r/20210419083401.31628-1-kishon@ti.com
+>>>>
+>>>> Can this series be merged for 5.14? It already includes Ack from Rob for
+>>>> dt-binding changes and Ack from Tom for Cadence driver changes.
+>>>
+>>> Sorry, I think this was assigned to me in patchwork, but Lorenzo
+>>> usually takes care of the endpoint stuff.  He's away this week, but no
+>>> doubt will look at it when he returns.
+>>
+>> Can you consider merging this series for 5.14?
+> 
+> I am running late this cycle on reviews and the merge window is about
+> to open, I will review it and queue it first thing for the next cycle.
 
-> The timestamp does not match. Each timestamp has a difference of
-> 213.98296702 seconds. Is the command I executed wrong?
+Sure, thanks!
 
-I don't understand what's your meaning "a difference of 213.98296702
-seconds".
-
-But let me give an explaination with your below examples.  You could
-the command "perf script" outputs the timestamp 314938.859071370 which
-is the kernel's timestamp, if using the command "perf script -D", it
-outputs the value 31515284203839 which is the Arch timer's raw counter
-value.
-
-In theory, the arch timer's counter is enabled at the very early
-time before kernel's booting (e.g. bootloaders, UEFI, etc...).  So for
-the kernel's timestamp, it should calibrate the timestamp and reduce
-the offset prior to the kernel's booting.  I think this is the reason
-why you observed 213.98296702 seconds difference (if compared with
-your own patch?)
-
-If still see any issue, please let me know.  Thanks a lot for the
-testing!
-
-Leo
-
-> |symbol_address|perf script| perf script -D|
-> |ffffb7ee2a20e100|314938.859071370|31515284203839|
-> |ffffb7ee29f360e0|314938.859753820|31515284272084|
-> |fffe85dd87e0|314938.859820430|31515284278745|
-> |fffe85dd7a28|314938.859941110|31515284290813|
-> |fffe85dd7a28|314938.859948890|31515284291591|
-> |fffe85dc8f58|314938.859953610|31515284292063|
+Best Regards,
+Kishon
