@@ -2,160 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856EC3B5E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2703B5E57
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhF1Msg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:48:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33590 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbhF1Mse (ORCPT
+        id S232996AbhF1MtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232566AbhF1MtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:48:34 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3CE7D22394;
-        Mon, 28 Jun 2021 12:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624884368; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gp9Hq8iWIIvvu3xnrWcrA3AsEWWrAsk0/1I6sTXSv8M=;
-        b=O8Do7vItHay3SzZ14/BAP3s5E5fqYA+8/qN90h6RhgOO7kbUCMLmL9nAobxqquS9wMJaOk
-        LxOlLPcLJ6B+MKCM8bC/rSmBSsd5fukZLngdSQy6OCRNQp5aoK8Cu1gfRzBfoD5+fJl+Y4
-        khqBpEBszENWbR7+IgCmbiCRw+SduUY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 094F8A3B8C;
-        Mon, 28 Jun 2021 12:46:07 +0000 (UTC)
-Date:   Mon, 28 Jun 2021 14:46:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmalloc: add cond_resched() in __vunmap()
-Message-ID: <YNnEjp72rzT7zQ10@dhcp22.suse.cz>
-References: <20210622225030.478384-1-aquini@redhat.com>
- <YNR4ZkwF+Bh11XMC@dhcp22.suse.cz>
- <20210624142339.GA2267@pc638.lan>
- <YNWY/IY+ftszkjM5@dhcp22.suse.cz>
- <20210625160011.GA50201@pc638.lan>
+        Mon, 28 Jun 2021 08:49:02 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7368C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:46:36 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id a18so10196829lfs.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bE94dkEiagNN+9+kFZlZw382SA94vUnxjwE0fje0Xk0=;
+        b=Ht6Gea2SfQjaOGwZUSX+vM/eLTPlMEdb/841pVZfh+X68ssJ1KJDHcIP4x+pWOYZPj
+         t507EHUiwc06CyBU/9L/T/wwPHRyOJKOMbq7acJb03LCk6Fu7c98WPFUiyYL9dcjes/O
+         kR7VdZUEuquwEjystBKf8BJr/j1YtBuj4S+DbiOcsrqJiOyonmBQL03PDuKJzgzMjZnx
+         sRjoeMZxy0tu9vK291N7BDHMWi/7Mxlw1wjnOaIUg41nDmWg7TZaPL/7OZf24MSsdWKm
+         OUo1EtZQKY2OcT5a6oEKfexbrIFtzp5kIUpdQOQ04a+MWXtGOya3iCUPJ40pkYBjfhaV
+         IwAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bE94dkEiagNN+9+kFZlZw382SA94vUnxjwE0fje0Xk0=;
+        b=uBi8JESdrPd6jAM7zqzuX8AakNTbQgrVeXixQNZ574k2nAGJcEK29o5KclptVOnQSp
+         afbtGtCt9pK5eDXaXSn4P0NGh2tNzOBe8l9EYZYRCwLhSBp23Zzf3yWtBTwRZDW5qF64
+         xJjb+qhISUxn0DejMafvR7Esgq1+Kn2ewRH1FctkOEfVXhVepoISFsgRFPt0Icv1nfkJ
+         6zHpeA7v1aY7Iqq9NEyRwLRSLLagom1QBgyfETmGqbXKrzweBjc2MLXJyQz6lpzQy8ZK
+         cMlkWsPg8v0EmHe4hrOnkXuABorQH3Iz1NJ+W1SmW8FuYCn24fv+Fu1W54qP20+AD6ZE
+         8Qlg==
+X-Gm-Message-State: AOAM532dolAO00oksFh1YW9CZ3Umz/UltC7mwPLu6Qn2skwRvL9PZ/Pd
+        4sJVpwP30ucZR1Up3O9AnMwwjA==
+X-Google-Smtp-Source: ABdhPJx3x4IfClwhHCvXuiTmI3sq3nF9lEkNhcJjaCr83013VKYnGJ8cEjohV6J5iX9lASPr1gWtVA==
+X-Received: by 2002:a05:6512:138a:: with SMTP id p10mr18835229lfa.505.1624884395244;
+        Mon, 28 Jun 2021 05:46:35 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q23sm1219833lfe.170.2021.06.28.05.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 05:46:34 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id E241710280E; Mon, 28 Jun 2021 15:46:33 +0300 (+03)
+Date:   Mon, 28 Jun 2021 15:46:33 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v12 24/33] mm/swap: Add folio_rotate_reclaimable()
+Message-ID: <20210628124633.vlckysu3zvvkyy4v@box.shutemov.name>
+References: <20210622114118.3388190-1-willy@infradead.org>
+ <20210622114118.3388190-25-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625160011.GA50201@pc638.lan>
+In-Reply-To: <20210622114118.3388190-25-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 25-06-21 18:00:11, Uladzislau Rezki wrote:
-> On Fri, Jun 25, 2021 at 10:51:08AM +0200, Michal Hocko wrote:
-> > On Thu 24-06-21 16:23:39, Uladzislau Rezki wrote:
-> > > On Thu, Jun 24, 2021 at 02:21:21PM +0200, Michal Hocko wrote:
-> > > > On Tue 22-06-21 18:50:30, Rafael Aquini wrote:
-> > > > > On non-preemptible kernel builds the watchdog can complain
-> > > > > about soft lockups when vfree() is called against large
-> > > > > vmalloc areas:
-> > > > > 
-> > > > > [  210.851798] kvmalloc-test: vmalloc(2199023255552) succeeded
-> > > > > [  238.654842] watchdog: BUG: soft lockup - CPU#181 stuck for 26s! [rmmod:5203]
-> > > > > [  238.662716] Modules linked in: kvmalloc_test(OE-) ...
-> > > > > [  238.772671] CPU: 181 PID: 5203 Comm: rmmod Tainted: G S         OE     5.13.0-rc7+ #1
-> > > > > [  238.781413] Hardware name: Intel Corporation PURLEY/PURLEY, BIOS PLYXCRB1.86B.0553.D01.1809190614 09/19/2018
-> > > > > [  238.792383] RIP: 0010:free_unref_page+0x52/0x60
-> > > > > [  238.797447] Code: 48 c1 fd 06 48 89 ee e8 9c d0 ff ff 84 c0 74 19 9c 41 5c fa 48 89 ee 48 89 df e8 b9 ea ff ff 41 f7 c4 00 02 00 00 74 01 fb 5b <5d> 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f0 29 77
-> > > > > [  238.818406] RSP: 0018:ffffb4d87868fe98 EFLAGS: 00000206
-> > > > > [  238.824236] RAX: 0000000000000000 RBX: 000000001da0c945 RCX: ffffb4d87868fe40
-> > > > > [  238.832200] RDX: ffffd79d3beed108 RSI: ffffd7998501dc08 RDI: ffff9c6fbffd7010
-> > > > > [  238.840166] RBP: 000000000d518cbd R08: ffffd7998501dc08 R09: 0000000000000001
-> > > > > [  238.848131] R10: 0000000000000000 R11: ffffd79d3beee088 R12: 0000000000000202
-> > > > > [  238.856095] R13: ffff9e5be3eceec0 R14: 0000000000000000 R15: 0000000000000000
-> > > > > [  238.864059] FS:  00007fe082c2d740(0000) GS:ffff9f4c69b40000(0000) knlGS:0000000000000000
-> > > > > [  238.873089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > > [  238.879503] CR2: 000055a000611128 CR3: 000000f6094f6006 CR4: 00000000007706e0
-> > > > > [  238.887467] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > > [  238.895433] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > > [  238.903397] PKRU: 55555554
-> > > > > [  238.906417] Call Trace:
-> > > > > [  238.909149]  __vunmap+0x17c/0x220
-> > > > > [  238.912851]  __x64_sys_delete_module+0x13a/0x250
-> > > > > [  238.918008]  ? syscall_trace_enter.isra.20+0x13c/0x1b0
-> > > > > [  238.923746]  do_syscall_64+0x39/0x80
-> > > > > [  238.927740]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > > > 
-> > > > > Like in other range zapping routines that iterate over
-> > > > > a large list, lets just add cond_resched() within __vunmap()'s
-> > > > > page-releasing loop in order to avoid the watchdog splats.
-> > > > 
-> > > > cond_resched makes a lot of sense. We do not want vmalloc to be visible
-> > > > the userspace (e.g. by stalling it) so all time consuming operations
-> > > > should yield regularly whenever possible. I would expect that any
-> > > > susbsystem which needs huge vmalloc areas would have it for the whole
-> > > > boot life time so such large vfrees should be really rare.
-> > > > 
-> > > There is at least one more place with potentially similar issue. I see that
-> > > the bulk allocator disables irqs during obtaining pages and filling an array.
-> > > 
-> > > So i suspect if we request a huge size to allocate over vmalloc same soft
-> > > lockup should occur. For example 10G alloactions simultaneously on different
-> > > CPUs.
-> > 
-> > I haven't payed a close attention to the changes regarding the bulk
-> > allocator but my high level understanding is that it only allocates from
-> > from pcp lists so the amount of allocatable pages is quite limited.
+On Tue, Jun 22, 2021 at 12:41:09PM +0100, Matthew Wilcox (Oracle) wrote:
+> Convert rotate_reclaimable_page() to folio_rotate_reclaimable().  This
+> eliminates all five of the calls to compound_head() in this function,
+> saving 75 bytes at the cost of adding 15 bytes to its one caller,
+> end_page_writeback().  We also save 36 bytes from pagevec_move_tail_fn()
+> due to using folios there.  Net 96 bytes savings.
 > 
-> I am able to trigger it. To simulate it i run 10 threads to allocate and vfree
-> ~1GB(262144 pages) of vmalloced memory at the same time: 
+> Also move its declaration to mm/internal.h as it's only used by filemap.c.
 > 
-> <snip>
-> [   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
-> [   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
-> [   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
-> [   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
-> [   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
-> [   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
-> [   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
-> [   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
-> [   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
-> [   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
-> [   62.512641] Call Trace:
-> [   62.512646]  __vmalloc_node_range+0x11c/0x2d0
-> [   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
-> [   62.512654]  __vmalloc_node+0x4b/0x70
-> [   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-> [   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-> [   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
-> [   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
-> [   62.512668]  kthread+0x11a/0x140
-> [   62.512671]  ? set_kthread_struct+0x40/0x40
-> [   62.512672]  ret_from_fork+0x22/0x30
-> <snip>
-> 
-> As for how much a bulk allocator can allocate, it is quite a lot. In my case i see
-> that 262144 pages can be obtained per one bulk call, if pcp-list is empty it is
-> refilled.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Hmm, that is surprising. I would have to take a closer look but I
-thought the pcp list won't get refilled while there is a consumer on
-that cpu. So it should really be just about the number of pages on pcp
-lists. 1GB worth of memory there sounds way too much.
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-> >From the other hand allocating 1GB on 10 CPUs simultaneously is not common test
-> case in real world.
-> 
-> Not sure if we can do something with it and if it is worth to fix. At least we can
-> invoke a bulk allocator several times doing it per specific batch, for example 50
-> pages.
-> 
-> Any thoughts about it?
-
-On the other hand the bulk allocator is meant to be optimized for speed
-and it assumes a certain level of reasonability from its callers so it
-makes some sense to do reasonable sized batches at the vmalloc end.
 -- 
-Michal Hocko
-SUSE Labs
+ Kirill A. Shutemov
