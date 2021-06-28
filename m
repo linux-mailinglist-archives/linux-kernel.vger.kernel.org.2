@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7EB3B6417
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B5F3B641D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237007AbhF1PEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:04:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51698 "EHLO mail.kernel.org"
+        id S237202AbhF1PFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:05:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235660AbhF1Opa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:45:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DECA661C94;
-        Mon, 28 Jun 2021 14:34:05 +0000 (UTC)
+        id S235741AbhF1Opg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:45:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7CB61CD2;
+        Mon, 28 Jun 2021 14:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890846;
-        bh=AMRNq82L8/VQmA8YXlo0+swCoNiRblO7beLYo6e9MzY=;
+        s=k20201202; t=1624890854;
+        bh=3nNXwGY6/CtzdLpo740JpzmycN4ggCl0iGIXwQXwbFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtlUNnwPeDGbZtmTCww4dz2BJGJETBah+/2Jd/fo7auTwfFqNY3V51sP1bvNGxwq9
-         St4DrhbwtntR2yrADCBnxe7vqPYnmlnWUJxqzW1lBix2cBsyi6J3Bw3NdzVz47FZoK
-         eqslvI65IYOtBVZ5VEgJoC9uLiNZpeD24Qn+fp+vpM5CAOdu6W8XlSk733SrXsywKC
-         u4tYv6p6YKCeBZokHRWTobtSYFCJNcQiyzZduhPTM2nVyutNAuu7S17IWqVgFX+BfN
-         GABkrbpdDwsQY7qkPgOUvIvQG1KLjQBVW/Z2bhCKwE37E7mszF+Tcx5fp7+OwnKwxN
-         qfZtZe853QWdQ==
+        b=FH4jCLq8jeGECoWWyI/cYUCoCBhNmd4sBKkIKwkv/YX2hIYMdtLCyyS2Vv1wAgKfV
+         jq/rPNtOPUf4YTDl7Yzxb745LScVpPQLIIaYFAvX8AhNRf260xoOdIJJzymndZOWKw
+         AZegUqR2TMvVYIqSadguvQNsNo2MK7qiw/oZv2VgXCJyCf7B+HE9oWIKZKFaV0D2Sn
+         Ayqk1ERSxGIOgMv4YFYkdIc94VuwLuFDPnMtfCQz29D2dRK9kkHkYvKZQyHonrs8y+
+         Ek+gxwvsH19+rrRFk05wRheL70gocSi3z5+kAq1iz4SEnMQgOSOo5zubbzRiMU2Rx4
+         c4hwTF/y5NpQQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vineet Gupta <vgupta@synopsys.com>,
-        kernel test robot <lkp@intel.com>,
-        Vladimir Isaev <isaev@synopsys.com>,
+Cc:     Eric Auger <eric.auger@redhat.com>, Stable@vger.kernel.org,
+        Gavin Shan <gshan@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.19 068/109] ARCv2: save ABI registers across signal handling
-Date:   Mon, 28 Jun 2021 10:32:24 -0400
-Message-Id: <20210628143305.32978-69-sashal@kernel.org>
+Subject: [PATCH 4.19 077/109] KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
+Date:   Mon, 28 Jun 2021 10:32:33 -0400
+Message-Id: <20210628143305.32978-78-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
@@ -49,117 +48,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Eric Auger <eric.auger@redhat.com>
 
-commit 96f1b00138cb8f04c742c82d0a7c460b2202e887 upstream.
+commit 94ac0835391efc1a30feda6fc908913ec012951e upstream.
 
-ARCv2 has some configuration dependent registers (r30, r58, r59) which
-could be targetted by the compiler. To keep the ABI stable, these were
-unconditionally part of the glibc ABI
-(sysdeps/unix/sysv/linux/arc/sys/ucontext.h:mcontext_t) however we
-missed populating them (by saving/restoring them across signal
-handling).
+When reading the base address of the a REDIST region
+through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
+redistributor region list to be populated with a single
+element.
 
-This patch fixes the issue by
- - adding arcv2 ABI regs to kernel struct sigcontext
- - populating them during signal handling
+However list_first_entry() expects the list to be non empty.
+Instead we should use list_first_entry_or_null which effectively
+returns NULL if the list is empty.
 
-Change to struct sigcontext might seem like a glibc ABI change (although
-it primarily uses ucontext_t:mcontext_t) but the fact is
- - it has only been extended (existing fields are not touched)
- - the old sigcontext was ABI incomplete to begin with anyways
-
-Fixes: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/53
-Cc: <stable@vger.kernel.org>
-Tested-by: kernel test robot <lkp@intel.com>
-Reported-by: Vladimir Isaev <isaev@synopsys.com>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
+Cc: <Stable@vger.kernel.org> # v4.18+
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Reported-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210412150034.29185-1-eric.auger@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arc/include/uapi/asm/sigcontext.h |  1 +
- arch/arc/kernel/signal.c               | 43 ++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
+ virt/kvm/arm/vgic/vgic-kvm-device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arc/include/uapi/asm/sigcontext.h b/arch/arc/include/uapi/asm/sigcontext.h
-index 95f8a4380e11..7a5449dfcb29 100644
---- a/arch/arc/include/uapi/asm/sigcontext.h
-+++ b/arch/arc/include/uapi/asm/sigcontext.h
-@@ -18,6 +18,7 @@
-  */
- struct sigcontext {
- 	struct user_regs_struct regs;
-+	struct user_regs_arcv2 v2abi;
- };
- 
- #endif /* _ASM_ARC_SIGCONTEXT_H */
-diff --git a/arch/arc/kernel/signal.c b/arch/arc/kernel/signal.c
-index da243420bcb5..68901f6f18ba 100644
---- a/arch/arc/kernel/signal.c
-+++ b/arch/arc/kernel/signal.c
-@@ -64,6 +64,41 @@ struct rt_sigframe {
- 	unsigned int sigret_magic;
- };
- 
-+static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-+{
-+	int err = 0;
-+#ifndef CONFIG_ISA_ARCOMPACT
-+	struct user_regs_arcv2 v2abi;
-+
-+	v2abi.r30 = regs->r30;
-+#ifdef CONFIG_ARC_HAS_ACCL_REGS
-+	v2abi.r58 = regs->r58;
-+	v2abi.r59 = regs->r59;
-+#else
-+	v2abi.r58 = v2abi.r59 = 0;
-+#endif
-+	err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
-+#endif
-+	return err;
-+}
-+
-+static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-+{
-+	int err = 0;
-+#ifndef CONFIG_ISA_ARCOMPACT
-+	struct user_regs_arcv2 v2abi;
-+
-+	err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
-+
-+	regs->r30 = v2abi.r30;
-+#ifdef CONFIG_ARC_HAS_ACCL_REGS
-+	regs->r58 = v2abi.r58;
-+	regs->r59 = v2abi.r59;
-+#endif
-+#endif
-+	return err;
-+}
-+
- static int
- stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
- 	       sigset_t *set)
-@@ -97,6 +132,10 @@ stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
- 
- 	err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
- 			     sizeof(sf->uc.uc_mcontext.regs.scratch));
-+
-+	if (is_isa_arcv2())
-+		err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
-+
- 	err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
- 
- 	return err ? -EFAULT : 0;
-@@ -112,6 +151,10 @@ static int restore_usr_regs(struct pt_regs *regs, struct rt_sigframe __user *sf)
- 	err |= __copy_from_user(&uregs.scratch,
- 				&(sf->uc.uc_mcontext.regs.scratch),
- 				sizeof(sf->uc.uc_mcontext.regs.scratch));
-+
-+	if (is_isa_arcv2())
-+		err |= restore_arcv2_regs(&(sf->uc.uc_mcontext), regs);
-+
- 	if (err)
- 		return -EFAULT;
- 
+diff --git a/virt/kvm/arm/vgic/vgic-kvm-device.c b/virt/kvm/arm/vgic/vgic-kvm-device.c
+index 6ada2432e37c..71d92096776e 100644
+--- a/virt/kvm/arm/vgic/vgic-kvm-device.c
++++ b/virt/kvm/arm/vgic/vgic-kvm-device.c
+@@ -95,8 +95,8 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
+ 			r = vgic_v3_set_redist_base(kvm, 0, *addr, 0);
+ 			goto out;
+ 		}
+-		rdreg = list_first_entry(&vgic->rd_regions,
+-					 struct vgic_redist_region, list);
++		rdreg = list_first_entry_or_null(&vgic->rd_regions,
++						 struct vgic_redist_region, list);
+ 		if (!rdreg)
+ 			addr_ptr = &undef_value;
+ 		else
 -- 
 2.30.2
 
