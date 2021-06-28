@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD39B3B660A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2662E3B660D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbhF1Ptj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        id S235478AbhF1Put (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236476AbhF1PtV (ORCPT
+        with ESMTP id S234968AbhF1Pui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:49:21 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07011C07022F;
-        Mon, 28 Jun 2021 08:18:49 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 0B4E31F427D6
-Message-ID: <276e3e43ba89ea996f89eb4109b0d50bc43d4d7f.camel@collabora.com>
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, lee.jones@linaro.org,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
-        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Date:   Mon, 28 Jun 2021 12:18:34 -0300
-In-Reply-To: <24bea430-56d9-9a62-130d-1ed3830c1915@collabora.com>
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
-         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
-         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
-         <24bea430-56d9-9a62-130d-1ed3830c1915@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Mon, 28 Jun 2021 11:50:38 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461FBC0763A7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:22:46 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so13136381pjs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmsXrQ0WMFUOjfSaSqjTHvp41i7ydFz3EWx9LYdOZfc=;
+        b=NW4/3amg0ZRvKo+SF981NcJlVQQB4mFSwlUKCPOGAySdm3uOIAEw2TL7DwScMVkC8Z
+         5+PY3Ig+6Xe8PzpyXUzklUZ/wJH05xZqE7EL/4QUq1l4bs9XtP0rVlDGD+wr1o62ENS1
+         hQOb42avrhohRh/52F47tqVZb8NmzBjd+wQZ/Ts3DAeg74kPW78E3XAiwqXhzPyhUTXy
+         +Hktnh8XvXk+xOxsvJbXtW+ir/9Kp9R0AJtu6+ZBnsRBsebswCXYLy2Cb3Djtd+km4me
+         4oVPtLRuCYEy1m5qE9CxTM5KhnH3fg459H2iQ6NWOKY7sSPwkRXvBq6cjW/8KGE12gRV
+         y1hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jmsXrQ0WMFUOjfSaSqjTHvp41i7ydFz3EWx9LYdOZfc=;
+        b=tUwI7O0QPeyFSOFZIWEtqYOKQg7R4R5msmBcQkrRRk3rW3lzvv+JcfXUF2/umsR8JZ
+         m+aD6hbBv2Y+sr5Noa8a8lpe1b54E2cD1ORNC9Rh6X/57ejkx/p2enX7GoGFVGbsCstK
+         he8RXtFnGzSI83VGEIViORS65unOHRSrkhYRlKy1hed+/9JQJ6NyjlymmEtNxe4rq4e5
+         Agyl8EyZi4+ERAPcrjhZV+HsLS3jDOa95BBAfyWtqQgs2KM9+7HZhmAb+VEZGdAkmM7a
+         D4FKP72efmuVSGWZ9xaWRR0jDgMIzs/N2oFqm5bqh7XzVNKWnb+kVkHv+1i7+N0cAt6j
+         dfWg==
+X-Gm-Message-State: AOAM533289pQMIY71PorgmNEV4TFNy5Qkb42ge2v5B1Hf5e6+i3j2JcV
+        4D6WGKo5i7rvLGixgEMlvTknyM3DLsqRa0X2TQGNrA==
+X-Google-Smtp-Source: ABdhPJy0QoJdRNi49a6OBOJ0bydiMRyzMa7tvWU0X0+DGJdOgdCdI8VkwGG5iiar16SXHxcm930YUw==
+X-Received: by 2002:a17:90a:5202:: with SMTP id v2mr22129959pjh.169.1624893765882;
+        Mon, 28 Jun 2021 08:22:45 -0700 (PDT)
+Received: from localhost ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id h9sm15323713pgn.57.2021.06.28.08.22.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Jun 2021 08:22:45 -0700 (PDT)
+From:   Xiangyang Zhang <xyz.sun.ok@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        fabioaiuto83@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, xyz.sun.ok@gmail.com
+Subject: [PATCH] staging: rtl8723bs: Fix a resource leak in sd_int_dpc
+Date:   Mon, 28 Jun 2021 23:22:39 +0800
+Message-Id: <20210628152239.5475-1-xyz.sun.ok@gmail.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+The "c2h_evt" variable is not freed when function call
+"c2h_evt_read_88xx" failed
 
-On Mon, 2021-06-28 at 15:35 +0200, Benjamin Gaignard wrote:
-> 
-> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
-> > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
-> > > In order to be able to share the control hardware block between
-> > > VPUs use a syscon instead a ioremap it in the driver.
-> > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
-> > > phandle is not found look at 'ctrl' reg-name.
-> > > With the method it becomes useless to provide a list of register
-> > > names so remove it.
-> > Sorry for putting a spoke in the wheel after many iterations of the
-> > series.
-> > 
-> > We just discussed a way forward on how to handle the clocks and resets
-> > provided by the blkctl block on i.MX8MM and later and it seems there is
-> > a consensus on trying to provide virtual power domains from a blkctl
-> > driver, controlling clocks and resets for the devices in the power
-> > domain. I would like to avoid introducing yet another way of handling
-> > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
-> > what we are planning to do on the later chip generations.
-> > 
-> > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
-> > virtual power domain thing a shot.
-> 
-> Hey guys,
-> 
-> I may I have miss them but I haven't see patches about power domain for IMX8MQ
-> VPU control block ?
-> Is it something that you still plan to do ?
-> If not, I can resend my patches where I use syscon.
-> 
+Fixes: 554c0a3abf21 ("staging: Add rtl8723bs sdio wifi driver")
+Signed-off-by: Xiangyang Zhang <xyz.sun.ok@gmail.com>
+---
+ drivers/staging/rtl8723bs/hal/sdio_ops.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Please see "soc: imx: add i.MX BLK-CTL support" [1] sent by Peng
-a couple weeks ago. It adds the VPUMIX for i.MX8MM, so it seems
-the best way forward is to follow that design, extending it for
-i.MX8MQ.
-
-That's still under discussion, but hopefully it will be sorted out for v5.15.
-
-Speaking of i.MX8MM, I got a report that the Hantro G1 block mostly
-work, but needs to be restricted to 1920x1080. If you could add a new
-compatible and variant for that, maybe we can find someone to test it.
-
-[1] https://lore.kernel.org/linux-arm-kernel/7683ab0b-f905-dff1-aa4f-76ad638da568@oss.nxp.com/T/#mf73fe4a13aec0a8e633a14a5d9c2d5609799acb4
-
-Kindly,
-Ezequiel
+diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+index 2dd251ce177e..a545832a468e 100644
+--- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
++++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+@@ -909,6 +909,8 @@ void sd_int_dpc(struct adapter *adapter)
+ 				} else {
+ 					rtw_c2h_wk_cmd(adapter, (u8 *)c2h_evt);
+ 				}
++			} else {
++				kfree(c2h_evt);
+ 			}
+ 		} else {
+ 			/* Error handling for malloc fail */
+-- 
+2.19.1
 
