@@ -2,513 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61513B69EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCE43B69EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbhF1U5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:57:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237281AbhF1U5n (ORCPT
+        id S237512AbhF1U63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237324AbhF1U6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:57:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624913717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fvk4x+VinAixB3G6n6FpTbrtUNoyle0i26UtXK2mtuE=;
-        b=FrLrgDMn2AYNVK87Ihz+5s2CYrLCcCE/G6xNiL0jD2aAvzfDsrQjCNpHlxbg+VddRBfhgW
-        8Mvtw/BTPAfZTB0YVTlPDawqEPJGWTveKZ38Xi9IcW2u4SBt087GLbHbfU2srGdkm/z6WD
-        yZf3KtU9Ym1hAHJXIxcXDFDjW7zM4p8=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-3mvZnAyWP-mZV139kRvF-g-1; Mon, 28 Jun 2021 16:55:15 -0400
-X-MC-Unique: 3mvZnAyWP-mZV139kRvF-g-1
-Received: by mail-oo1-f71.google.com with SMTP id b9-20020a4a87890000b0290248cb841124so12359785ooi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:55:15 -0700 (PDT)
+        Mon, 28 Jun 2021 16:58:24 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26E0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x16so15218314pfa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mb3LYqy4tYD5twHKe5/2sd9B60PMKocbZfeTltPQ2BA=;
+        b=WoMDjJl05tWoY3t7FXLznAV+bl/f6pLz4aarqzGr13/vJAPKaCxvZL67tRZ/YyXDQK
+         9Lfmzgk1eSp/x8IPsTQZpkaXBQoCVI/VKTMB5MMnIE+yXPAGWiNsiTS4MDMoVUyk3U88
+         OG+0y5jxaQO9t0xj6a1Umh0mmutPOFBWj6SeU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Fvk4x+VinAixB3G6n6FpTbrtUNoyle0i26UtXK2mtuE=;
-        b=SWTJIyS32hwhIRpdvO0FoR5WJ+n8Da2Hw80zXNeTbUEM0RK7B+1RqTuSJ+oPZTTHss
-         5F9Inh7zpiwPswAeT1Ynel4R8Zw1bJ2GcGL90wQ0K086yxpT6v63ZDqtq24IT1kBJMPB
-         0INJrx2JVyR6DHcjVg8X6FlfQx3M4WtziZ0DSFnLZBEVE+IUnfoZIzw7A6SV+Ab9EBXv
-         +Q3c93Tugds1vg58Sc43xIHWySuA2rxOl+ZH+J9dLUvXrHq3QS/Fxsiic6IMStYSgCx1
-         6rF96fn3IJya8rL4vUCIBknSsLkTXwjjxcsYKoOxS3WAASFehH9kOcz91q6bawPyi3jd
-         grrA==
-X-Gm-Message-State: AOAM533sewcJGLT3DVnpAwHZy9u76BehlocZ0/qXtWzFTUVeCeiFMZ3Z
-        hjFnZxXZmQzvApZbvGCCNgRnA78Pq341iqqF1cMTAT0bTtVzKslHiCf4kHqJZqlPEcgdRXZ4AZk
-        9/P0REEMI3sWmEVm+neJIpr9A
-X-Received: by 2002:a05:6830:1387:: with SMTP id d7mr1324745otq.61.1624913714427;
-        Mon, 28 Jun 2021 13:55:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywtnw9JjTD1I1X6Niim3Fd29IEU5mVDoiu4yRl9I63dOZ35GczDfx93iPw14PNFjNZJ/wb5A==
-X-Received: by 2002:a05:6830:1387:: with SMTP id d7mr1324703otq.61.1624913714025;
-        Mon, 28 Jun 2021 13:55:14 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id f138sm3426063oig.21.2021.06.28.13.55.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 13:55:13 -0700 (PDT)
-Subject: Re: [PATCH v5 1/4] fpga: generalize updating the card
-To:     Moritz Fischer <mdf@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     hao.wu@intel.com, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210625195849.837976-1-trix@redhat.com>
- <20210625195849.837976-3-trix@redhat.com> <YNoYhAjh0vydP5yF@epycbox.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a333a01e-e705-5f07-e1a0-2362e947a879@redhat.com>
-Date:   Mon, 28 Jun 2021 13:55:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mb3LYqy4tYD5twHKe5/2sd9B60PMKocbZfeTltPQ2BA=;
+        b=k2yW5IN70ghqyztpybDMbYDaa3Eq5U0pYHj2CWh7sWI+j+9+NiUVsYTt2wXsKR6eiW
+         lzA1B8ry7FUPyIy1+i1Z1spSQjPYjBwEHWpbzUJlvC78VPXUPrwFgFxgPLVufa/xC1Wl
+         xATJt/AgtgjTxCLXpIEYrpuDc4gEw8fBASkaCAmalts3fhph8riICkHcIGf9hNZMAowm
+         ZLZiL/rsn21nJJxFb90NMPrU+qBoLlvUJVF/BJHocEpSmZE5vJlkDSLsJVCAXb3/Ihc9
+         pQChvg1kVFxRFpyG8V0DaJWOErqHEa6qH2PLglFdlIIPIHF2EJ8mg8OnEvmmTMPSim1G
+         Xazg==
+X-Gm-Message-State: AOAM530WUjF8QoJrBcPkaOaS+J5O5/hf39SiL89O1GADicSBdshD2DEe
+        n7GjO8wcO/vnZvI8r9l6yYnACnNmq5RSXw==
+X-Google-Smtp-Source: ABdhPJzz2Q5BWj5HcfRU5luan48X8U8Ub4ra1oEA1Wtzyo2swVZR+LOj24GVC6RH2OnD7ufNiwcjaw==
+X-Received: by 2002:aa7:9436:0:b029:30b:30ba:5942 with SMTP id y22-20020aa794360000b029030b30ba5942mr11026196pfo.47.1624913758326;
+        Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j20sm14572965pfc.85.2021.06.28.13.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 13:55:57 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 13:55:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lkdtm: remove duplicated include of init.h
+Message-ID: <202106281355.3FEE09E@keescook>
+References: <20210628123512.38090-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <YNoYhAjh0vydP5yF@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628123512.38090-1-wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 08:35:12PM +0800, Wan Jiabing wrote:
+> Fix following checkincludes.pl warning:
+> ./drivers/misc/lkdtm/core.c
+> 26	#include <linux/init.h>
+>     29	#include <linux/init.h>
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-On 6/28/21 11:44 AM, Moritz Fischer wrote:
-> On Fri, Jun 25, 2021 at 12:58:46PM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> There is a need to update the whole card.  An fpga can
-> Not sure I'd use the 'card' language. Not every FPGA sits on a plugin
-> card / board.
->
-> I'd suggest to frame the description around persistent vs
-> non-persistent.
->
->> contain non-fpga components whose firmware needs to be
->> updated at the same time as the fpga rtl images and
->> may need to be handled differently from the existing
->> fpga reconfiguration in the fpga manager.
-> Updating images beyond FPGA images is beyond the scope of the FPGA
-> Manager framework.
+Whoops! Thank you. :)
 
-This patchset is a followup for the sec-mgr patchset, seeing if 
-generalizing fpga-mgr makes sense.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-If it doesn't, that is fine we can drop this.
+-Kees
 
+> ---
+>  drivers/misc/lkdtm/core.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+> index 9dda87c6b54a..c9a0ad6d5d72 100644
+> --- a/drivers/misc/lkdtm/core.c
+> +++ b/drivers/misc/lkdtm/core.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/init.h>
+>  #include <linux/slab.h>
+>  #include <linux/debugfs.h>
+> -#include <linux/init.h>
+>  
+>  #define DEFAULT_COUNT 10
+>  
+> -- 
+> 2.20.1
+> 
 
-I believe a contentious part of sec-mgr patchset is its a single user 
-feature being implemented as a general subsystem feature.
-
-If generalizing fpga-mgr is out, the options as I see it are.
-
-keep sec-mgr structure as-is.
-
-move card updating to fw subsystem
-
-have a dfl-sec-update.* dfl specific interface in fpga/ .
-
-Tom
-
-
->> Move the write_* ops out of fpga_manager_ops and
->> into a new fpga_manager_update_ops struct.  Add
->> two update_ops back to fpga_manager_ops,
->> reconfig for the exiting functionality and
->> reimage for the new functionity.
->>
->> Rewire fpga devs to use reconfig ops
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/fpga/altera-cvp.c        |  8 ++++----
->>   drivers/fpga/altera-pr-ip-core.c |  8 ++++----
->>   drivers/fpga/altera-ps-spi.c     |  8 ++++----
->>   drivers/fpga/dfl-fme-mgr.c       |  8 ++++----
->>   drivers/fpga/fpga-mgr.c          | 20 ++++++++++----------
->>   drivers/fpga/ice40-spi.c         |  8 ++++----
->>   drivers/fpga/machxo2-spi.c       |  8 ++++----
->>   drivers/fpga/socfpga-a10.c       | 10 +++++-----
->>   drivers/fpga/socfpga.c           |  8 ++++----
->>   drivers/fpga/stratix10-soc.c     |  6 +++---
->>   drivers/fpga/ts73xx-fpga.c       |  6 +++---
->>   drivers/fpga/xilinx-spi.c        |  8 ++++----
->>   drivers/fpga/zynq-fpga.c         | 10 +++++-----
->>   drivers/fpga/zynqmp-fpga.c       |  6 +++---
->>   include/linux/fpga/fpga-mgr.h    | 32 +++++++++++++++++++++-----------
->>   15 files changed, 82 insertions(+), 72 deletions(-)
->>
->> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
->> index ccf4546eff297..9363353798bc9 100644
->> --- a/drivers/fpga/altera-cvp.c
->> +++ b/drivers/fpga/altera-cvp.c
->> @@ -516,10 +516,10 @@ static int altera_cvp_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops altera_cvp_ops = {
->> -	.state		= altera_cvp_state,
->> -	.write_init	= altera_cvp_write_init,
->> -	.write		= altera_cvp_write,
->> -	.write_complete	= altera_cvp_write_complete,
->> +	.state                   = altera_cvp_state,
->> +	.reconfig.write_init     = altera_cvp_write_init,
->> +	.reconfig.write          = altera_cvp_write,
->> +	.reconfig.write_complete = altera_cvp_write_complete,
->>   };
->>   
->>   static const struct cvp_priv cvp_priv_v1 = {
->> diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera-pr-ip-core.c
->> index dfdf21ed34c4e..30c7b534df95b 100644
->> --- a/drivers/fpga/altera-pr-ip-core.c
->> +++ b/drivers/fpga/altera-pr-ip-core.c
->> @@ -167,10 +167,10 @@ static int alt_pr_fpga_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops alt_pr_ops = {
->> -	.state = alt_pr_fpga_state,
->> -	.write_init = alt_pr_fpga_write_init,
->> -	.write = alt_pr_fpga_write,
->> -	.write_complete = alt_pr_fpga_write_complete,
->> +	.state                   = alt_pr_fpga_state,
->> +	.reconfig.write_init     = alt_pr_fpga_write_init,
->> +	.reconfig.write          = alt_pr_fpga_write,
->> +	.reconfig.write_complete = alt_pr_fpga_write_complete,
->>   };
->>   
->>   int alt_pr_register(struct device *dev, void __iomem *reg_base)
->> diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
->> index 23bfd4d1ad0f7..2b01a3c53d374 100644
->> --- a/drivers/fpga/altera-ps-spi.c
->> +++ b/drivers/fpga/altera-ps-spi.c
->> @@ -231,10 +231,10 @@ static int altera_ps_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops altera_ps_ops = {
->> -	.state = altera_ps_state,
->> -	.write_init = altera_ps_write_init,
->> -	.write = altera_ps_write,
->> -	.write_complete = altera_ps_write_complete,
->> +	.state                   = altera_ps_state,
->> +	.reconfig.write_init     = altera_ps_write_init,
->> +	.reconfig.write          = altera_ps_write,
->> +	.reconfig.write_complete = altera_ps_write_complete,
->>   };
->>   
->>   static const struct altera_ps_data *id_to_data(const struct spi_device_id *id)
->> diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
->> index 313420405d5e8..a6d2ed399e580 100644
->> --- a/drivers/fpga/dfl-fme-mgr.c
->> +++ b/drivers/fpga/dfl-fme-mgr.c
->> @@ -260,10 +260,10 @@ static u64 fme_mgr_status(struct fpga_manager *mgr)
->>   }
->>   
->>   static const struct fpga_manager_ops fme_mgr_ops = {
->> -	.write_init = fme_mgr_write_init,
->> -	.write = fme_mgr_write,
->> -	.write_complete = fme_mgr_write_complete,
->> -	.status = fme_mgr_status,
->> +	.status                  = fme_mgr_status,
->> +	.reconfig.write_init     = fme_mgr_write_init,
->> +	.reconfig.write          = fme_mgr_write,
->> +	.reconfig.write_complete = fme_mgr_write_complete,
->>   };
->>   
->>   static void fme_mgr_get_compat_id(void __iomem *fme_pr,
->> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
->> index aa30889e23208..31c51d7e07cc8 100644
->> --- a/drivers/fpga/fpga-mgr.c
->> +++ b/drivers/fpga/fpga-mgr.c
->> @@ -47,8 +47,8 @@ static inline u64 fpga_mgr_status(struct fpga_manager *mgr)
->>   
->>   static inline int fpga_mgr_write(struct fpga_manager *mgr, const char *buf, size_t count)
->>   {
->> -	if (mgr->mops->write)
->> -		return  mgr->mops->write(mgr, buf, count);
->> +	if (mgr->mops->reconfig.write)
->> +		return  mgr->mops->reconfig.write(mgr, buf, count);
->>   	return -EOPNOTSUPP;
->>   }
->>   
->> @@ -62,8 +62,8 @@ static inline int fpga_mgr_write_complete(struct fpga_manager *mgr,
->>   	int ret = 0;
->>   
->>   	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
->> -	if (mgr->mops->write_complete)
->> -		ret = mgr->mops->write_complete(mgr, info);
->> +	if (mgr->mops->reconfig.write_complete)
->> +		ret = mgr->mops->reconfig.write_complete(mgr, info);
->>   	if (ret) {
->>   		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
->>   		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
->> @@ -78,16 +78,16 @@ static inline int fpga_mgr_write_init(struct fpga_manager *mgr,
->>   				      struct fpga_image_info *info,
->>   				      const char *buf, size_t count)
->>   {
->> -	if (mgr->mops->write_init)
->> -		return  mgr->mops->write_init(mgr, info, buf, count);
->> +	if (mgr->mops->reconfig.write_init)
->> +		return  mgr->mops->reconfig.write_init(mgr, info, buf, count);
->>   	return 0;
->>   }
->>   
->>   static inline int fpga_mgr_write_sg(struct fpga_manager *mgr,
->>   				    struct sg_table *sgt)
->>   {
->> -	if (mgr->mops->write_sg)
->> -		return  mgr->mops->write_sg(mgr, sgt);
->> +	if (mgr->mops->reconfig.write_sg)
->> +		return  mgr->mops->reconfig.write_sg(mgr, sgt);
->>   	return -EOPNOTSUPP;
->>   }
->>   
->> @@ -232,7 +232,7 @@ static int fpga_mgr_buf_load_sg(struct fpga_manager *mgr,
->>   
->>   	/* Write the FPGA image to the FPGA. */
->>   	mgr->state = FPGA_MGR_STATE_WRITE;
->> -	if (mgr->mops->write_sg) {
->> +	if (mgr->mops->reconfig.write_sg) {
->>   		ret = fpga_mgr_write_sg(mgr, sgt);
->>   	} else {
->>   		struct sg_mapping_iter miter;
->> @@ -309,7 +309,7 @@ static int fpga_mgr_buf_load(struct fpga_manager *mgr,
->>   	 * contiguous kernel buffer and the driver doesn't require SG, non-SG
->>   	 * drivers will still work on the slow path.
->>   	 */
->> -	if (mgr->mops->write)
->> +	if (mgr->mops->reconfig.write)
->>   		return fpga_mgr_buf_load_mapped(mgr, info, buf, count);
->>   
->>   	/*
->> diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/ice40-spi.c
->> index 69dec5af23c36..3bdc3fe8ece97 100644
->> --- a/drivers/fpga/ice40-spi.c
->> +++ b/drivers/fpga/ice40-spi.c
->> @@ -126,10 +126,10 @@ static int ice40_fpga_ops_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops ice40_fpga_ops = {
->> -	.state = ice40_fpga_ops_state,
->> -	.write_init = ice40_fpga_ops_write_init,
->> -	.write = ice40_fpga_ops_write,
->> -	.write_complete = ice40_fpga_ops_write_complete,
->> +	.state                   = ice40_fpga_ops_state,
->> +	.reconfig.write_init     = ice40_fpga_ops_write_init,
->> +	.reconfig.write          = ice40_fpga_ops_write,
->> +	.reconfig.write_complete = ice40_fpga_ops_write_complete,
->>   };
->>   
->>   static int ice40_fpga_probe(struct spi_device *spi)
->> diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
->> index 114a64d2b7a4d..8b860e9a19c92 100644
->> --- a/drivers/fpga/machxo2-spi.c
->> +++ b/drivers/fpga/machxo2-spi.c
->> @@ -350,10 +350,10 @@ static int machxo2_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops machxo2_ops = {
->> -	.state = machxo2_spi_state,
->> -	.write_init = machxo2_write_init,
->> -	.write = machxo2_write,
->> -	.write_complete = machxo2_write_complete,
->> +	.state                   = machxo2_spi_state,
->> +	.reconfig.write_init     = machxo2_write_init,
->> +	.reconfig.write          = machxo2_write,
->> +	.reconfig.write_complete = machxo2_write_complete,
->>   };
->>   
->>   static int machxo2_spi_probe(struct spi_device *spi)
->> diff --git a/drivers/fpga/socfpga-a10.c b/drivers/fpga/socfpga-a10.c
->> index 573d88bdf7307..e60bf844b4c40 100644
->> --- a/drivers/fpga/socfpga-a10.c
->> +++ b/drivers/fpga/socfpga-a10.c
->> @@ -458,11 +458,11 @@ static enum fpga_mgr_states socfpga_a10_fpga_state(struct fpga_manager *mgr)
->>   }
->>   
->>   static const struct fpga_manager_ops socfpga_a10_fpga_mgr_ops = {
->> -	.initial_header_size = (RBF_DECOMPRESS_OFFSET + 1) * 4,
->> -	.state = socfpga_a10_fpga_state,
->> -	.write_init = socfpga_a10_fpga_write_init,
->> -	.write = socfpga_a10_fpga_write,
->> -	.write_complete = socfpga_a10_fpga_write_complete,
->> +	.initial_header_size     = (RBF_DECOMPRESS_OFFSET + 1) * 4,
->> +	.state                   = socfpga_a10_fpga_state,
->> +	.reconfig.write_init     = socfpga_a10_fpga_write_init,
->> +	.reconfig.write          = socfpga_a10_fpga_write,
->> +	.reconfig.write_complete = socfpga_a10_fpga_write_complete,
->>   };
->>   
->>   static int socfpga_a10_fpga_probe(struct platform_device *pdev)
->> diff --git a/drivers/fpga/socfpga.c b/drivers/fpga/socfpga.c
->> index 1f467173fc1f3..cc752a3f742c2 100644
->> --- a/drivers/fpga/socfpga.c
->> +++ b/drivers/fpga/socfpga.c
->> @@ -534,10 +534,10 @@ static enum fpga_mgr_states socfpga_fpga_ops_state(struct fpga_manager *mgr)
->>   }
->>   
->>   static const struct fpga_manager_ops socfpga_fpga_ops = {
->> -	.state = socfpga_fpga_ops_state,
->> -	.write_init = socfpga_fpga_ops_configure_init,
->> -	.write = socfpga_fpga_ops_configure_write,
->> -	.write_complete = socfpga_fpga_ops_configure_complete,
->> +	.state                   = socfpga_fpga_ops_state,
->> +	.reconfig.write_init     = socfpga_fpga_ops_configure_init,
->> +	.reconfig.write          = socfpga_fpga_ops_configure_write,
->> +	.reconfig.write_complete = socfpga_fpga_ops_configure_complete,
->>   };
->>   
->>   static int socfpga_fpga_probe(struct platform_device *pdev)
->> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
->> index 047fd7f237069..ab1941d92cf60 100644
->> --- a/drivers/fpga/stratix10-soc.c
->> +++ b/drivers/fpga/stratix10-soc.c
->> @@ -389,9 +389,9 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops s10_ops = {
->> -	.write_init = s10_ops_write_init,
->> -	.write = s10_ops_write,
->> -	.write_complete = s10_ops_write_complete,
->> +	.reconfig.write_init     = s10_ops_write_init,
->> +	.reconfig.write          = s10_ops_write,
->> +	.reconfig.write_complete = s10_ops_write_complete,
->>   };
->>   
->>   static int s10_probe(struct platform_device *pdev)
->> diff --git a/drivers/fpga/ts73xx-fpga.c b/drivers/fpga/ts73xx-fpga.c
->> index 167abb0b08d40..cbbc6dec56856 100644
->> --- a/drivers/fpga/ts73xx-fpga.c
->> +++ b/drivers/fpga/ts73xx-fpga.c
->> @@ -93,9 +93,9 @@ static int ts73xx_fpga_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops ts73xx_fpga_ops = {
->> -	.write_init	= ts73xx_fpga_write_init,
->> -	.write		= ts73xx_fpga_write,
->> -	.write_complete	= ts73xx_fpga_write_complete,
->> +	.reconfig.write_init     = ts73xx_fpga_write_init,
->> +	.reconfig.write          = ts73xx_fpga_write,
->> +	.reconfig.write_complete = ts73xx_fpga_write_complete,
->>   };
->>   
->>   static int ts73xx_fpga_probe(struct platform_device *pdev)
->> diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
->> index fee4d0abf6bfe..4d092f30bf700 100644
->> --- a/drivers/fpga/xilinx-spi.c
->> +++ b/drivers/fpga/xilinx-spi.c
->> @@ -214,10 +214,10 @@ static int xilinx_spi_write_complete(struct fpga_manager *mgr,
->>   }
->>   
->>   static const struct fpga_manager_ops xilinx_spi_ops = {
->> -	.state = xilinx_spi_state,
->> -	.write_init = xilinx_spi_write_init,
->> -	.write = xilinx_spi_write,
->> -	.write_complete = xilinx_spi_write_complete,
->> +	.state                   = xilinx_spi_state,
->> +	.reconfig.write_init     = xilinx_spi_write_init,
->> +	.reconfig.write          = xilinx_spi_write,
->> +	.reconfig.write_complete = xilinx_spi_write_complete,
->>   };
->>   
->>   static int xilinx_spi_probe(struct spi_device *spi)
->> diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
->> index 9b75bd4f93d8e..bdfc257740cff 100644
->> --- a/drivers/fpga/zynq-fpga.c
->> +++ b/drivers/fpga/zynq-fpga.c
->> @@ -543,11 +543,11 @@ static enum fpga_mgr_states zynq_fpga_ops_state(struct fpga_manager *mgr)
->>   }
->>   
->>   static const struct fpga_manager_ops zynq_fpga_ops = {
->> -	.initial_header_size = 128,
->> -	.state = zynq_fpga_ops_state,
->> -	.write_init = zynq_fpga_ops_write_init,
->> -	.write_sg = zynq_fpga_ops_write,
->> -	.write_complete = zynq_fpga_ops_write_complete,
->> +	.initial_header_size     = 128,
->> +	.state                   = zynq_fpga_ops_state,
->> +	.reconfig.write_init     = zynq_fpga_ops_write_init,
->> +	.reconfig.write_sg       = zynq_fpga_ops_write,
->> +	.reconfig.write_complete = zynq_fpga_ops_write_complete,
->>   };
->>   
->>   static int zynq_fpga_probe(struct platform_device *pdev)
->> diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
->> index 9efbd70aa6864..fbb66c1f9c871 100644
->> --- a/drivers/fpga/zynqmp-fpga.c
->> +++ b/drivers/fpga/zynqmp-fpga.c
->> @@ -78,9 +78,9 @@ static enum fpga_mgr_states zynqmp_fpga_ops_state(struct fpga_manager *mgr)
->>   }
->>   
->>   static const struct fpga_manager_ops zynqmp_fpga_ops = {
->> -	.state = zynqmp_fpga_ops_state,
->> -	.write_init = zynqmp_fpga_ops_write_init,
->> -	.write = zynqmp_fpga_ops_write,
->> +	.state                   = zynqmp_fpga_ops_state,
->> +	.reconfig.write_init     = zynqmp_fpga_ops_write_init,
->> +	.reconfig.write          = zynqmp_fpga_ops_write,
->>   };
->>   
->>   static int zynqmp_fpga_probe(struct platform_device *pdev)
->> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
->> index 474c1f5063070..53f9402d6aa17 100644
->> --- a/include/linux/fpga/fpga-mgr.h
->> +++ b/include/linux/fpga/fpga-mgr.h
->> @@ -106,14 +106,29 @@ struct fpga_image_info {
->>   };
->>   
->>   /**
->> - * struct fpga_manager_ops - ops for low level fpga manager drivers
->> - * @initial_header_size: Maximum number of bytes that should be passed into write_init
->> - * @state: returns an enum value of the FPGA's state
->> - * @status: returns status of the FPGA, including reconfiguration error code
->> + * struct fpga_manager_update_ops - ops updating fpga
->>    * @write_init: prepare the FPGA to receive configuration data
->>    * @write: write count bytes of configuration data to the FPGA
->>    * @write_sg: write the scatter list of configuration data to the FPGA
->>    * @write_complete: set FPGA to operating state after writing is done
->> + */
->> +struct fpga_manager_update_ops {
->> +	int (*write_init)(struct fpga_manager *mgr,
->> +			  struct fpga_image_info *info,
->> +			  const char *buf, size_t count);
->> +	int (*write)(struct fpga_manager *mgr, const char *buf, size_t count);
->> +	int (*write_sg)(struct fpga_manager *mgr, struct sg_table *sgt);
->> +	int (*write_complete)(struct fpga_manager *mgr,
->> +			      struct fpga_image_info *info);
->> +};
->> +
->> +/**
->> + * struct fpga_manager_ops - ops for low level fpga manager drivers
->> + * @initial_header_size: Maximum number of bytes that should be passed into write_init
->> + * @state: returns an enum value of the FPGA's state
->> + * @status: returns status of the FPGA, including reconfiguration error code
->> + * @partial_update: ops for doing partial reconfiguration
->> + * @full_update: ops for doing a full card update, user,shell,fw ie. the works
->>    * @fpga_remove: optional: Set FPGA into a specific state during driver remove
->>    * @groups: optional attribute groups.
->>    *
->> @@ -125,13 +140,8 @@ struct fpga_manager_ops {
->>   	size_t initial_header_size;
->>   	enum fpga_mgr_states (*state)(struct fpga_manager *mgr);
->>   	u64 (*status)(struct fpga_manager *mgr);
->> -	int (*write_init)(struct fpga_manager *mgr,
->> -			  struct fpga_image_info *info,
->> -			  const char *buf, size_t count);
->> -	int (*write)(struct fpga_manager *mgr, const char *buf, size_t count);
->> -	int (*write_sg)(struct fpga_manager *mgr, struct sg_table *sgt);
->> -	int (*write_complete)(struct fpga_manager *mgr,
->> -			      struct fpga_image_info *info);
->> +	struct fpga_manager_update_ops reconfig;
->> +	struct fpga_manager_update_ops reimage;
->>   	void (*fpga_remove)(struct fpga_manager *mgr);
->>   	const struct attribute_group **groups;
->>   };
->> -- 
->> 2.26.3
->>
-> Thanks,
-> Moritz
->
-
+-- 
+Kees Cook
