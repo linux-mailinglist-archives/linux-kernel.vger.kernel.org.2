@@ -2,122 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553213B5EB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38903B5EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhF1NJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:09:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233114AbhF1NJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:09:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624885616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Wsog/UA6NQRm36wrbUHXM3ftcSt/9+OFEW6vcsabAY=;
-        b=RiR40TU4jrtl9rNUACuQNyx3biuO0jOUfjOJYa6ZdFJNcIR0kwK6zXRf2i3JB2TrDYifVN
-        0FV9Ko9m9P8GhPRbog+ijE+UScWmqlp/0xhj/bYB6w8PgRoJMkNhtEGDh0NoqEpJHxOz9G
-        7oYHPVAH1UquSbN7FuPBdlf2OObnwZ4=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-1xDeNJ_DNvCraDb0N4pDzw-1; Mon, 28 Jun 2021 09:06:53 -0400
-X-MC-Unique: 1xDeNJ_DNvCraDb0N4pDzw-1
-Received: by mail-qv1-f70.google.com with SMTP id y35-20020a0cb8a30000b0290270c2da88e8so17492676qvf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:06:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=3Wsog/UA6NQRm36wrbUHXM3ftcSt/9+OFEW6vcsabAY=;
-        b=iazA5JC7NVpqGrU2Ja3pHUETe1WLhyQSce+OY21ZOtW/U59hRp9BepQ8ZZHzxKVZ84
-         79zdvh6tzfMUpEj8ZHgK+yneGh0TvBGodUtPuzt6sVjk3+O4F6Xl6quaZYpuGXlP96tr
-         0KzV2JF9m0QJXZ00IwyntMacKyjRjY1I7ysMCbAI6P1i1Xb2rNMV7q1FMegW8sPUYdXE
-         Z1YPEkGRpqqmNz19ye5pbY2fLHBgW8YCVuK1dGWDWjAccpv9QpdzmnqMWRCucathlVGF
-         F1uav+j5E7Kb0510HiFF0b/5eqKXE/S+PD4ZpJDBoIK0QntDsVXFEqNOStc/Iap7XWo9
-         XopQ==
-X-Gm-Message-State: AOAM532H2IUsYj6Va8ZBSSA9i99L/wEjSwxGUqK1jQ70PErXXySYgRbJ
-        LWcPMgufel6GgCZ35t29XPt2RIyXS0NMK5Thi2RZBne69rjMcGbT64LeFJIxrbCeN6juwap3+25
-        Eq1QAK4h5UYuQpm5Yi8kvFDGf
-X-Received: by 2002:a37:9986:: with SMTP id b128mr25711687qke.485.1624885612616;
-        Mon, 28 Jun 2021 06:06:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUlJHxYKkE1I0xN1vBM5amAltWfY9ckZGLT37Njz1aTkLclF02YuG2OEJBVFBBcLl/BywiTA==
-X-Received: by 2002:a37:9986:: with SMTP id b128mr25711669qke.485.1624885612428;
-        Mon, 28 Jun 2021 06:06:52 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h128sm10222579qkc.94.2021.06.28.06.06.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 06:06:51 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        id S233106AbhF1NKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:10:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:58884 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233037AbhF1NKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:10:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7B8C1042;
+        Mon, 28 Jun 2021 06:08:15 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4741F3F718;
+        Mon, 28 Jun 2021 06:08:15 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 14:08:13 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
-Message-ID: <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
-Date:   Mon, 28 Jun 2021 09:06:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210628130813.GA18112@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <20210628115452.GA28797@arm.com>
+ <CAKfTPtAtE1WHA19=BrWyekHgFYVn0+LdTLROJzYRdshp-EYOWA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YNcHOe3o//pIiByh@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAtE1WHA19=BrWyekHgFYVn0+LdTLROJzYRdshp-EYOWA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/26/21 6:53 AM, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Mon, Jun 21, 2021 at 02:49:20PM -0400, Waiman Long wrote:
->>   1) A partition root can't be changed to member if it has child partition
->>      roots.
->>   2) Removing CPUs from cpuset.cpus that causes it to become invalid is
->>      not allowed.
-> I'm not a fan of this approach. No matter what we have to be able to handle
-> CPU removals which are user-iniated operations anyway, so I don't see why
-> we're adding a different way of handling a different set of operations. Just
-> handle them the same?
+On Monday 28 Jun 2021 at 14:14:14 (+0200), Vincent Guittot wrote:
+> On Mon, 28 Jun 2021 at 13:54, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> >
+> > Hi guys,
+> >
+> > On Monday 21 Jun 2021 at 14:49:33 (+0530), Viresh Kumar wrote:
+> > > Hello,
+> > >
+> > > Changes since V2:
+> > >
+> > > - We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
+> > >   work using policy ->init() and exit() alone.
+> > >
+> > > - Two new cleanup patches 1/4 and 2/4.
+> > >
+> > > - Improved commit log of 3/4.
+> > >
+> > > - Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
+> > >   overlap (seen with Vincent's setup).
+> > >
+> >
+> > If you happen to have the data around, I would like to know more about
+> > your observations on ThunderX2.
+> >
+> >
+> > I tried ThunderX2 as well, with the following observations:
+> >
+> > Booting with userspace governor and all CPUs online, the CPPC frequency
+> > scale factor was all over the place (even much larger than 1024).
+> >
+> > My initial assumptions:
+> >  - Counters do not behave properly in light of SMT
+> >  - Firmware does not do a good job to keep the reference and core
+> >    counters monotonic: save and restore at core off.
+> >
+> > So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
+> > a single core (part of policy0). With this all works very well:
+> >
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > [ 1863.095370] CPU96: cppc scale: 697.
+> > [ 1863.175370] CPU0: cppc scale: 492.
+> > [ 1863.215367] CPU64: cppc scale: 492.
+> > [ 1863.235366] CPU96: cppc scale: 492.
+> > [ 1863.485368] CPU32: cppc scale: 492.
+> >
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > [ 1891.395363] CPU96: cppc scale: 558.
+> > [ 1891.415362] CPU0: cppc scale: 595.
+> > [ 1891.435362] CPU32: cppc scale: 615.
+> > [ 1891.465363] CPU96: cppc scale: 635.
+> > [ 1891.495361] CPU0: cppc scale: 673.
+> > [ 1891.515360] CPU32: cppc scale: 703.
+> > [ 1891.545360] CPU96: cppc scale: 738.
+> > [ 1891.575360] CPU0: cppc scale: 779.
+> > [ 1891.605360] CPU96: cppc scale: 829.
+> > [ 1891.635360] CPU0: cppc scale: 879.
+> >
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
+> > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > [ 1896.585363] CPU32: cppc scale: 1004.
+> > [ 1896.675359] CPU64: cppc scale: 973.
+> > [ 1896.715359] CPU0: cppc scale: 1024.
+> >
+> > I'm doing a rate limited printk only for increase/decrease values over
+> > 64 in the scale factor value.
+> >
+> > This showed me that SMT is handled properly.
+> >
+> > Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
+> > stops being even close to correct, for example:
+> >
+> > [238394.770328] CPU96: cppc scale: 22328.
+> > [238395.628846] CPU96: cppc scale: 245.
+> > [238516.087115] CPU96: cppc scale: 930.
+> > [238523.385009] CPU96: cppc scale: 245.
+> > [238538.767473] CPU96: cppc scale: 936.
+> > [238538.867546] CPU96: cppc scale: 245.
+> > [238599.367932] CPU97: cppc scale: 2728.
+> > [238599.859865] CPU97: cppc scale: 452.
+> > [238647.786284] CPU96: cppc scale: 1438.
+> > [238669.604684] CPU96: cppc scale: 27306.
+> > [238676.805049] CPU96: cppc scale: 245.
+> > [238737.642902] CPU97: cppc scale: 2035.
+> > [238737.664995] CPU97: cppc scale: 452.
+> > [238788.066193] CPU96: cppc scale: 2749.
+> > [238788.110192] CPU96: cppc scale: 245.
+> > [238817.231659] CPU96: cppc scale: 2698.
+> > [238818.083687] CPU96: cppc scale: 245.
+> > [238845.466850] CPU97: cppc scale: 2990.
+> > [238847.477805] CPU97: cppc scale: 452.
+> > [238936.984107] CPU97: cppc scale: 1590.
+> > [238937.029079] CPU97: cppc scale: 452.
+> > [238979.052464] CPU97: cppc scale: 911.
+> > [238980.900668] CPU97: cppc scale: 452.
+> > [239149.587889] CPU96: cppc scale: 803.
+> > [239151.085516] CPU96: cppc scale: 245.
+> > [239303.871373] CPU64: cppc scale: 956.
+> > [239303.906837] CPU64: cppc scale: 245.
+> > [239308.666786] CPU96: cppc scale: 821.
+> > [239319.440634] CPU96: cppc scale: 245.
+> > [239389.978395] CPU97: cppc scale: 4229.
+> > [239391.969562] CPU97: cppc scale: 452.
+> > [239415.894738] CPU96: cppc scale: 630.
+> > [239417.875326] CPU96: cppc scale: 245.
+> >
+> 
+> With the counter being 32bits and the freq scaling being update at
+> tick, you can easily get a overflow on it in idle system. I can easily
+> imagine that when you unplug CPUs there is enough activity on the CPU
+> to update it regularly whereas with all CPUs, the idle time is longer
+> that the counter overflow
+> 
 
-The main reason for doing this is because normal cpuset control file 
-actions are under the direct control of the cpuset code. So it is up to 
-us to decide whether to grant it or deny it. Hotplug, on the other hand, 
-is not under the control of cpuset code. It can't deny a hotplug 
-operation. This is the main reason why the partition root error state 
-was added in the first place.
+Thanks! Yes, given the high wraparound time I thought they were 64 bit.
+All variables in software are 64 bit, but looking at bit width in the
+_CPC entries, the platform counters are 32 bit counters.
 
-Normally, users can set cpuset.cpus to whatever value they want even 
-though they are not actually granted. However, turning on partition root 
-is under more strict control. You can't turn on partition root if the 
-CPUs requested cannot actually be granted. The problem with setting the 
-state to just partition error is that users may not be aware that the 
-partition creation operation fails.  We can't assume all users will do 
-the proper error checking. I would rather let them know the operation 
-fails rather than relying on them doing the proper check afterward.
+> There are 32bits and the overflow need to be handled by cppc_cpufreq
+> driver
 
-Yes, I agree that it is a different philosophy than the original cpuset 
-code, but I thought one reason of doing cgroup v2 is to simplify the 
-interface and make it a bit more erorr-proof. Since partition root 
-creation is a relatively rare operation, we can afford to make it more 
-strict than the other operations.
+I'm wondering if this would be best handled in the function that reads
+the counters or in the cppc_cpufreq driver that uses them. Probably the
+latter, as you say, as the read function should only return the raw
+values, but it does complicate things.
 
-Cheers,
-Longman
+Thanks,
+Ionela.
 
+
+
+> > The counter values shown by feedback_ctrs do not seem monotonic even
+> > when only core 0 threads are online.
+> >
+> > ref:2812420736 del:166051103
+> > ref:3683620736 del:641578595
+> > ref:1049653440 del:1548202980
+> > ref:2099053440 del:2120997459
+> > ref:3185853440 del:2714205997
+> > ref:712486144  del:3708490753
+> > ref:3658438336 del:3401357212
+> > ref:1570998080 del:2279728438
+> >
+> > For now I was just wondering if you have seen the same and whether you
+> > have an opinion on this.
+> >
+> > > This is tested on my Hikey platform (without the actual read/write to
+> > > performance counters), with this script for over an hour:
+> > >
+> > > while true; do
+> > >     for i in `seq 1 7`;
+> > >     do
+> > >         echo 0 > /sys/devices/system/cpu/cpu$i/online;
+> > >     done;
+> > >
+> > >     for i in `seq 1 7`;
+> > >     do
+> > >         echo 1 > /sys/devices/system/cpu/cpu$i/online;
+> > >     done;
+> > > done
+> > >
+> > >
+> > > The same is done by Vincent on ThunderX2 and no issues were seen.
+> >
+> > Hotplug worked fine for me as well on both platforms I tested (Juno R2
+> > and ThunderX2).
+> >
+> > Thanks,
+> > Ionela.
