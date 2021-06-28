@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877593B59D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1313B59C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhF1HgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:36:23 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53400 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232246AbhF1HgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:36:21 -0400
-X-UUID: 574c76e2c2aa4ea5935980c50dcfcddf-20210628
-X-UUID: 574c76e2c2aa4ea5935980c50dcfcddf-20210628
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 253331028; Mon, 28 Jun 2021 15:33:51 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 28 Jun 2021 15:33:43 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Jun 2021 15:33:42 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of ccmni
-Date:   Mon, 28 Jun 2021 15:18:30 +0800
-Message-ID: <20210628071829.14925-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YNS4GzYHpxMWIH+1@kroah.com>
-References: <YNS4GzYHpxMWIH+1@kroah.com>
+        id S232396AbhF1HeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232246AbhF1Hd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:33:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6070561582;
+        Mon, 28 Jun 2021 07:31:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624865491;
+        bh=xQlF2kkg5CI8fR9QA6kLrmGihAIy44Vu5eKh0i1qOfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pRdGiQJuy+CZrRTOvhalGZckEedXMagwjwVKyVUxPvgUaDo9IGMmS4ZzgamAacQML
+         zxFF9I+HWzNuOroMICqNtT9bP1esRSzk74CODW0FJaMsxngu0hjjPBDPgQvlI1SpFP
+         Gh+9pOSZqxUysbkDRrLTJf6AvmeN+NIvMc2DdBWdSpjv/D/zt4D/9l7IzmH2s4ZaS4
+         13kx+aN/R5C2vbwqkJNu4cRSxg06aW9849A2eZvwwW5Ijfg+9fuQG61KIO5SO8RYy7
+         ioK/pe8ltv6AmyfArSiyQYV8N5Bbw9Hb9V/oJhAizgBo4GYfYX2TDdLQk+xrnFWsil
+         V/lGCcGYNGqHQ==
+Date:   Mon, 28 Jun 2021 13:01:24 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        kbuild-all@lists.01.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ARM: dts: owl-s500: Add ethernet support
+Message-ID: <20210628073124.GB4033@workstation>
+References: <222ee0c2cb431619f558dce9726585ac92f65e00.1623401998.git.cristian.ciocaltea@gmail.com>
+ <202106162101.RfHWePKS-lkp@intel.com>
+ <20210628062235.GA4033@workstation>
+ <20210628070234.GA1003245@ubuntu2004>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628070234.GA1003245@ubuntu2004>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-24 at 18:51 +0200, Greg KH wrote:
-On Thu, Jun 24, 2021 at 11:55:02PM +0800, Rocco Yue wrote:
->> On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
->> On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
->>> 
->>> not have exports that no one uses.  Please add the driver to this patch
->>> series when you resend it.
->>> 
->> 
->> I've just took a look at what the Linux staging tree is. It looks like
->> a good choice for the current ccmni driver.
->> 
->> honstly, If I simply upload the relevant driver code B that calls
->> A (e.g. ccmni_rx_push), there is still a lack of code to call B.
->> This seems to be a continuty problem, unless all drivers codes are
->> uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
+On Mon, Jun 28, 2021 at 10:02:34AM +0300, Cristian Ciocaltea wrote:
+> Hi Mani,
 > 
-> Great, send it all!  Why is it different modules, it's only for one
-> chunk of hardware, no need to split it up into tiny pieces.  That way
-> only causes it to be more code overall.
+> On Mon, Jun 28, 2021 at 11:52:35AM +0530, Manivannan Sadhasivam wrote:
+> > Hi Cristi,
+> > 
+> > On Wed, Jun 16, 2021 at 09:30:13PM +0800, kernel test robot wrote:
+> > > Hi Cristian,
+> > > 
+> > > I love your patch! Yet something to improve:
+> > > 
+> > > [auto build test ERROR on robh/for-next]
+> > > [also build test ERROR on v5.13-rc6 next-20210615]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > And when submitting patch, we suggest to use '--base' as documented in
+> > > https://git-scm.com/docs/git-format-patch]
+> > > 
+> > > url:    https://github.com/0day-ci/linux/commits/Cristian-Ciocaltea/Add-Ethernet-DTS-for-Actions-Semi-Owl-S500-SoCs/20210616-121106
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> > > config: arm-randconfig-r025-20210615 (attached as .config)
+> > > compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://github.com/0day-ci/linux/commit/87e17f86112592e0805d0a081914f7b2eeb2770d
+> > >         git remote add linux-review https://github.com/0day-ci/linux
+> > >         git fetch --no-tags linux-review Cristian-Ciocaltea/Add-Ethernet-DTS-for-Actions-Semi-Owl-S500-SoCs/20210616-121106
+> > >         git checkout 87e17f86112592e0805d0a081914f7b2eeb2770d
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > > >> Error: arch/arm/boot/dts/owl-s500.dtsi:332.19-20 syntax error
+> > > >> FATAL ERROR: Unable to parse input tree
+> > 
+> > Did you look into this error? Looks like CLK_ETHERNET is not defined in
+> > the s500 CMU binding.
 > 
->> 
->> Thanks~
->> 
->> Can I resend patch set as follows:
->> (1) supplement the details of pureip for patch 1/4;
->> (2) the document of ccmni.rst still live in the Documentation/...
->> (3) modify ccmni and move it into the drivers/staging/...
+> CLK_ETHERNET is introduced through patches 5 & 6 from the patch series:
+> "[PATCH v3 0/6] Improve clock support for Actions S500 SoC"
 > 
-> for drivers/staging/ the code needs to be "self contained" in that it
-> does not require adding anything outside of the directory for it.
-> 
-> If you still require this core networking change, that needs to be
-> accepted first by the networking developers and maintainers.
-> 
-> thanks,
-> 
-> greg k-h
+> Most probably those patches were not applied to the tested kernel tree
+> and that's why the robot reported the error.
 > 
 
-Hi Greg,
-
-I am grateful for your help.
-
-Both ccmni change and networking changes are needed, because as far
-as I know, usually a device type should have at least one device to
-use it, and pureip is what the ccmni driver needs, so I uploaded the
-networking change and ccmni driver together;
-
-Since MTK’s modem driver has a large amount of code and strong code
-coupling, it takes some time to clean up them. At this stage, it may
-be difficult to upstream all the codes together.
-
-During this period, even if ccmni is incomplete, can I put the ccmni
-driver initial code in the driver/staging first ? After that, we will
-gradually implement more functions of ccmni in the staging tree, and
-we can also gradually sort out and clean up modem driver in the staging.
-
-In addition, due to the requirements of GKI 2.0, if ccmni device
-uses RAWIP or NONE, it will hit ipv6 issue; and if ccmni uses
-a device type other than PUREIP/RAWIP/NONE, there will be tethering
-ebpf offload or clat ebpf offload can not work problems.
-
-I hope PUREIP and ccmni can be accepted by the Linux community.
+Ah, okay. I didn't see it. Then I'll just push the dts changes and see
+if they get applied for 5.14.
 
 Thanks,
-Rocco
+Mani
 
+> Thanks,
+> Cristi
+> 
+> > Today I saw that the clk patches are applied but then it is later for me
+> > to send the dts patches for v5.14. So please fix this error and
+> > resubmit, I'll take them for v5.15.
+> > 
+> > Thanks,
+> > Mani
+> > 
+> > > 
+> > > ---
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > 
+> > 
