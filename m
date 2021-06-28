@@ -2,147 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828F43B64B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F1A3B64C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhF1PNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:13:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45070 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234697AbhF1OwM (ORCPT
+        id S238001AbhF1PPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:15:10 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:38945 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234595AbhF1Oxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:52:12 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SEWopq101732;
-        Mon, 28 Jun 2021 10:49:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=h03xNSk7ghdjy3NvBWtPVvT1k716FIeYhukht/R8OYI=;
- b=E/2mKAjK8l1L+ehVCXLoYe+eUNSTmfpMU+G/BXeaR7wMVuwTIPKvYsGpnTHI5hx6shZV
- g5OG2yVhJBvL2zXpiS+L6nbjp9yz+9s8ifiGUJyWenjfFqMdDy7oKN7GUbGT0XppQ6rW
- cEkWxfnvhkhlS4EudCgbdnR79gJjvlpeGml6pkysCW6FmSpE2PJYZfw4EbOWHC3onS/1
- xuRdMwBlazdfDIFjl3yn12uZl3FcoGWb7ZP6Nftqrn7LzUmG2oajiuExlQBa4Iy9nseZ
- 7feRXq+Lbgdr+I+j0AEZz8fRU/OqAE3+JTK1WBcI3BdkfRW0bulBvYqTXvSy7tcb6b4v 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39ffj7t9wh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 10:49:41 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SEXj0O105668;
-        Mon, 28 Jun 2021 10:49:40 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39ffj7t9w9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 10:49:40 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SEgDsL006366;
-        Mon, 28 Jun 2021 14:49:40 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma05wdc.us.ibm.com with ESMTP id 39duvak5d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:49:40 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SEndQs37749018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 14:49:39 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3E9FB214C;
-        Mon, 28 Jun 2021 14:49:39 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 022CAB2179;
-        Mon, 28 Jun 2021 14:49:38 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.210.16])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Mon, 28 Jun 2021 14:49:38 +0000 (GMT)
-Date:   Mon, 28 Jun 2021 09:49:37 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        jolsa@redhat.com, ravi.bangoria@linux.ibm.com,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        rnsastry@linux.ibm.com
-Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
- perf script
-Message-ID: <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20210628062341.155839-1-kjain@linux.ibm.com>
+        Mon, 28 Jun 2021 10:53:48 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id 68512F8016
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 15:51:18 +0100 (IST)
+Received: (qmail 15563 invoked from network); 28 Jun 2021 14:51:18 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 Jun 2021 14:51:18 -0000
+Date:   Mon, 28 Jun 2021 15:51:16 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>
+Subject: Re: v5.13 regression - suspend went belly up
+Message-ID: <20210628145116.GB3840@techsingularity.net>
+References: <760cf981588a31b9a51fa1f6d485d5dbdc61400a.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210628062341.155839-1-kjain@linux.ibm.com>
+In-Reply-To: <760cf981588a31b9a51fa1f6d485d5dbdc61400a.camel@gmx.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: PQRSfbvHeYeTApyTWRJTRB9tQZl_MKLK
-X-Proofpoint-ORIG-GUID: RPs_xy7izUBK3NhDSmZVxCR39duluPST
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_12:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106280102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
-> Commit 48a1f565261d ("perf script python: Add more PMU fields
-> to event handler dict") added functionality to report fields like
-> weight, iregs, uregs etc via perf report.
-> That commit predefined buffer size to 512 bytes to print those fields.
+On Mon, Jun 28, 2021 at 03:33:42PM +0200, Mike Galbraith wrote:
+> Greetings,
 > 
-> But incase of powerpc, since we added extended regs support
-> in commits:
+> A regression popping up post rc7 is a bit unusual, but hohum, I suppose
+> they can bite whenever they damn well feel like it.  This one was
+> bisected rc7..release, the (surprising to me) result then confirmed in
+> four disgruntled local trees.
 > 
-> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
-> Counter SPRs as part of extended regs")
-> Commit d735599a069f ("powerpc/perf: Add extended regs support for
-> power10 platform")
-> 
-> Now iregs can carry more bytes of data and this predefined buffer size
-> can result to data loss in perf script output.
-> 
-> Patch resolve this issue by making buffer size dynamic based on number
-> of registers needed to print. It also changed return type for function
-> "regs_map" from int to void, as the return value is not being used by
-> the caller function "set_regs_in_dict".
-> 
-> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
-> Counter SPRs as part of extended regs")
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> ---
->  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index 4e4aa4c97ac5..c8c9706b4643 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-[...]
-> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
->  			     struct evsel *evsel)
->  {
->  	struct perf_event_attr *attr = &evsel->core.attr;
-> -	char bf[512];
-> +
-> +	/*
-> +	 * Here value 28 is a constant size which can be used to print
-> +	 * one register value and its corresponds to:
-> +	 * 16 chars is to specify 64 bit register in hexadecimal.
-> +	 * 2 chars is for appending "0x" to the hexadecimal value and
-> +	 * 10 chars is for register name.
-> +	 */
-> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
-> +	char bf[size];
 
-I propose using a template rather than a magic number here. Something like:
-const char reg_name_tmpl[] = "10 chars  ";
-const char reg_value_tmpl[] = "0x0123456789abcdef";
-const int size = __sw_hweight64(attr->sample_regs_intr) +
-                 sizeof reg_name_tmpl + sizeof reg_value_tmpl;
+Hi Mike, this may be NFS-related fallout given that it appears in the
+stack. Can you try this please?
 
-Pardon my ignorance, but is there no separation/whitespace between the name
-and the value? And is there some significance to 10 characters for the
-register name, or is that a magic number?
+--8<---
+mm/page_alloc: Correct return value of populated elements if bulk array is populated
 
-PC
+Dave Jones reported the following
+
+	This made it into 5.13 final, and completely breaks NFSD for me
+	(Serving tcp v3 mounts).  Existing mounts on clients hang, as do
+	new mounts from new clients.  Rebooting the server back to rc7
+	everything recovers.
+
+The commit b3b64ebd3822 ("mm/page_alloc: do bulk array bounds check after
+checking populated elements") returns the wrong value if the array is
+already populated which is interpreted as an allocation failure.
+
+Fixes: b3b64ebd3822 ("mm/page_alloc: do bulk array bounds check after checking populated elements")
+Reported-by: Dave Jones <davej@codemonkey.org.uk>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Cc: <stable@vger.kernel.org> [5.13+]
+---
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index ef2265f86b91..04220581579c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5058,7 +5058,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 
+ 	/* Already populated array? */
+ 	if (unlikely(page_array && nr_pages - nr_populated == 0))
+-		return 0;
++		return nr_populated;
+ 
+ 	/* Use the single page allocator for one page. */
+ 	if (nr_pages - nr_populated == 1)
