@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3A53B5634
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1193B563A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhF1AJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 20:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1AJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 20:09:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2582C61C35;
-        Mon, 28 Jun 2021 00:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624838851;
-        bh=Ih6spxU+1XJ+wWk6G9ehGMIsi6kRbn0gTxB1FlkWhEo=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=M/NfxGSUhp91RbzJextnONbsMaHKRt35X6/Zxq7B8nWOxnNg3VuSv2b7LinBBzuLv
-         F5OSTjLWMpotyVlL7z4ar+XTvoSWHyQii/PM4/VIVh8E2JckYqRoIkIfvaoP3YxtG6
-         q0KXqhxnCfQTBfWYz81Rby1BOyxUiO0a3sPbVcq2DyROKM/ex/i5fX9UuLy13Nu/1k
-         OVVpM66tMSeJAiMirSKdOFFi7gme3tPc8xdrcbj4N8hWexzjQ70FY3D91bU31IkFG4
-         ZHuj7b4QGmqByP0KgnkfCCiwPdSZWwfOLyWnDjuxQ15kLSL7QWC33Y2qP3PZ6e7G5P
-         ppyjfqoSbYzJA==
-Content-Type: text/plain; charset="utf-8"
+        id S231742AbhF1ASD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 20:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231700AbhF1ASC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 20:18:02 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00F4C061574;
+        Sun, 27 Jun 2021 17:15:36 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id d12so13852037pgd.9;
+        Sun, 27 Jun 2021 17:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VZuXigR7cViPxOT07DRneZhTndTX7Fj6p6fDTv4kP8Q=;
+        b=gmUtWqSmrtkcw9/cvXq/DSN5fCGFmCdhAod5dOcElRSbdTpZMZWBXSzXctMoAxfuuH
+         eFR/illJn6tVQet6en3xgmCInx33P2HgRYqQwH2DMC2egOMspMvJmRmubVUOf8e3GxQp
+         RCBr/XGQjqYwe3Ak5WFE25OuKI6/EP9CyXy2j4M5HruBS3Hc8YtxQEaj+PLty5+ynOMx
+         0vZFKQvPGsy2JG3+whUGOnYbccRx89hNxv58+NALqiJIGe5nghyupTT/wvKqtTB/DiUP
+         O/HRN3vcyjBBO8nOftKZBspNHwXsnRqx9EkF0ESpJTfW6Q1Z6uFrNYS/V/AwYUXIbhMq
+         i6MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VZuXigR7cViPxOT07DRneZhTndTX7Fj6p6fDTv4kP8Q=;
+        b=a02Z8UX3mzsUCC1PLNRtH0vJPwaB1diEw7IY4iV4+k0csQMj3vEcM3teFJX7MucqZ9
+         m8E6PkA+Dyx4VNyy5RzEKxx0yDK6hDP6ocVheigO6woP4Y70jfFBX6ZrY5v9jZFObQKL
+         cTUZHqsrubNNNinGLRzzBdP07GFstEKH8maOx0y4XTFXNqa9B1ADrf9XoZyanmmdn5Lk
+         C6ex9yCcqVa1aMqMTtLDGJ03KPIbz8fY4Md0/2JTIfWZbjoRcg7he9cYD4Ahvf2l5vD6
+         oIDNDyWgzEYMfP9NeaerEvq6GJ8E2o6ErkvCHxRpdon66GW6l349uhPJ2r1T67Dqate1
+         zwbw==
+X-Gm-Message-State: AOAM530+W+uS93m6Amyua9JQ2nRKJw43AkjSrXhaeb7XeznjTX8q2TmP
+        zS3eYfiz5feSC2Rfz/k6VBo=
+X-Google-Smtp-Source: ABdhPJws2QhuGOY4Ocg5kOzw0hbRAPY1TXZ0N1TR1cnkc9ACDq+YGz7eOLgwaaIszXzanMiQl07HUw==
+X-Received: by 2002:a05:6a00:10cd:b029:30a:ea3a:4acf with SMTP id d13-20020a056a0010cdb029030aea3a4acfmr7760984pfu.51.1624839336176;
+        Sun, 27 Jun 2021 17:15:36 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w20sm13813106pff.90.2021.06.27.17.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 17:15:35 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Mon, 28 Jun 2021 08:14:42 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 01/19] staging: qlge: fix incorrect truesize accounting
+Message-ID: <20210628001442.7fl3v6to5dzr557a@Rk>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-2-coiby.xu@gmail.com>
+ <20210621141027.GJ1861@kadam>
+ <20210622113649.vm2hfh2veqr4dq6y@Rk>
+ <YNK+s9Rm7OtL++YM@d3>
+ <20210624114705.ehmzmysl3vdylg3x@Rk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210518175153.3176764-1-robimarko@gmail.com>
-References: <20210518175153.3176764-1-robimarko@gmail.com>
-Subject: Re: [PATCH] clk: qcom: ipq8074: fix PCI-E clock oops
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Robert Marko <robimarko@gmail.com>
-To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sivaprak@codeaurora.org,
-        speriaka@codeaurora.org
-Date:   Sun, 27 Jun 2021 17:07:29 -0700
-Message-ID: <162483884998.3259633.3733659727822681631@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210624114705.ehmzmysl3vdylg3x@Rk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Robert Marko (2021-05-18 10:51:53)
-> Fix PCI-E clock related kernel oops that are causes by missing
-> parent_names.
->=20
-> Without the use of parent_names kernel will panic on
-> clk_core_get_parent_by_index() due to a NULL pointer.
->=20
-> Without this earlycon is needed to even catch the OOPS as it will reset
-> the board before serial is initialized.
+On Thu, Jun 24, 2021 at 07:47:05PM +0800, Coiby Xu wrote:
+>On Wed, Jun 23, 2021 at 01:55:15PM +0900, Benjamin Poirier wrote:
+[..]
+>>>> Why is this an RFC instead of just a normal patch which we can apply?
+>>>
+>>>After doing the tests mentioned in the cover letter, I found Red Hat's
+>>>network QE team has quite a rigorous test suite. But I needed to return the
+>>>machine before having the time to learn about the test suite and run it by
+>>>myself. So I mark it as an RFC before I borrow the machine again to run the
+>>>test suite.
+>>
+>>Interesting. Is this test suite based on a public project?
+>
+>The test suite is written for Beaker [1] but it seems it's not public.
+>
+>[1] https://fedoraproject.org/wiki/QA/Beaker
 
-Can you share the oops message here in the commit text?
+FYI, the tier-1 tests are part of the CKI project and are public [2].
 
->=20
-> Fixes: f0cfcf1ade20 ("clk: qcom: ipq8074: Add missing clocks for pcie")
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
->  drivers/clk/qcom/gcc-ipq8074.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/clk/qcom/gcc-ipq8074.c b/drivers/clk/qcom/gcc-ipq807=
-4.c
-> index 0c619ed35c82..8d8b1717a203 100644
-> --- a/drivers/clk/qcom/gcc-ipq8074.c
-> +++ b/drivers/clk/qcom/gcc-ipq8074.c
-> @@ -4357,8 +4357,7 @@ static struct clk_rcg2 pcie0_rchng_clk_src =3D {
->         .parent_map =3D gcc_xo_gpll0_map,
->         .clkr.hw.init =3D &(struct clk_init_data){
->                 .name =3D "pcie0_rchng_clk_src",
-> -               .parent_hws =3D (const struct clk_hw *[]) {
-> -                               &gpll0.clkr.hw },
-> +               .parent_names =3D gcc_xo_gpll0,
+[2] https://gitlab.com/cki-project/kernel-tests/-/tree/main/networking
 
-This seems to imply that we need to have two parents but we didn't
-realize that was the case. Ouch! Please use a struct clk_parent_data
-array and then use the firmware name for XO and the clk_hw pointer for
-gpll0.
-
->                 .num_parents =3D 2,
->                 .ops =3D &clk_rcg2_ops,
->         },
-> @@ -4372,8 +4371,8 @@ static struct clk_branch gcc_pcie0_rchng_clk =3D {
->                 .enable_mask =3D BIT(1),
->                 .hw.init =3D &(struct clk_init_data){
->                         .name =3D "gcc_pcie0_rchng_clk",
-> -                       .parent_hws =3D (const struct clk_hw *[]){
-> -                               &pcie0_rchng_clk_src.clkr.hw,
-> +                       .parent_names =3D (const char *[]){
-> +                               "pcie0_rchng_clk_src",
->                         },
->                         .num_parents =3D 1,
->                         .flags =3D CLK_SET_RATE_PARENT,
-> @@ -4390,8 +4389,8 @@ static struct clk_branch gcc_pcie0_axi_s_bridge_clk=
- =3D {
->                 .enable_mask =3D BIT(0),
->                 .hw.init =3D &(struct clk_init_data){
->                         .name =3D "gcc_pcie0_axi_s_bridge_clk",
-> -                       .parent_hws =3D (const struct clk_hw *[]){
-> -                               &pcie0_axi_clk_src.clkr.hw,
-> +                       .parent_names =3D (const char *[]){
-> +                               "pcie0_axi_clk_src"
-
-These two hunks can be dropped.
+-- 
+Best regards,
+Coiby
