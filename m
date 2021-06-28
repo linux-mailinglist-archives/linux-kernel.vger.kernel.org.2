@@ -2,196 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241E13B5707
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4683B5708
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhF1BzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:55:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58698 "EHLO mga07.intel.com"
+        id S231985AbhF1BzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:55:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8969 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1BzL (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:55:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271732524"
+        id S231678AbhF1BzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 21:55:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="187562240"
 X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="scan'208";a="271732524"
+   d="scan'208";a="187562240"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 18:52:46 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 18:52:53 -0700
 X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="scan'208";a="456126462"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 18:52:44 -0700
-Subject: Re: [PATCH v1] perf tools: Fix pattern matching for same substring
- used in different pmu type
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210609045738.1051-1-yao.jin@linux.intel.com>
- <982714a5-8a5d-8f8a-4e30-bd9a497ffa40@linux.intel.com>
- <4787334d-cf28-5b25-8d11-c767c52288f1@linux.intel.com>
- <YNWr7zsEaNPCn4CR@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <14a70048-ddd0-3297-9ae9-6b76dd0f1000@linux.intel.com>
-Date:   Mon, 28 Jun 2021 09:52:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+   d="scan'208";a="456126492"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 18:52:51 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Wei Xu <weixugc@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH -V9 4/9] mm/migrate: demote pages during reclaim
+References: <20210625073204.1005986-1-ying.huang@intel.com>
+        <20210625073204.1005986-5-ying.huang@intel.com>
+        <CAAPL-u_wnxWTedy7hZe0mtkHXo2jWihnZ_z+MD_XvLHQ+84w2w@mail.gmail.com>
+Date:   Mon, 28 Jun 2021 09:52:49 +0800
+In-Reply-To: <CAAPL-u_wnxWTedy7hZe0mtkHXo2jWihnZ_z+MD_XvLHQ+84w2w@mail.gmail.com>
+        (Wei Xu's message of "Fri, 25 Jun 2021 17:21:40 -0700")
+Message-ID: <87a6nag3gu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YNWr7zsEaNPCn4CR@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Wei Xu <weixugc@google.com> writes:
 
-On 6/25/2021 6:11 PM, Jiri Olsa wrote:
-> On Wed, Jun 23, 2021 at 10:02:01AM +0800, Jin, Yao wrote:
->> Hi Arnaldo, Jiri,
+> On Fri, Jun 25, 2021 at 12:33 AM Huang Ying <ying.huang@intel.com> wrote:
 >>
->> Any comments for this bug fix patch?
+>> From: Dave Hansen <dave.hansen@linux.intel.com>
 >>
->> The issue does impact some uncore events and even some metrics.
-> 
-> sry for delay
-> 
-> SNIP
-> 
->>>> Some different pmu types may have same substring. For example,
->>>> on Icelake server, we have pmu types "uncore_imc" and
->>>> "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
->>>> But the parser would wrongly think they are the same pmu type.
->>>>
->>>> We enable an imc event,
->>>> perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
->>>>
->>>> Perf actually expands the event to:
->>>> uncore_imc_0/event=0xe3/
->>>> uncore_imc_1/event=0xe3/
->>>> uncore_imc_2/event=0xe3/
->>>> uncore_imc_3/event=0xe3/
->>>> uncore_imc_4/event=0xe3/
->>>> uncore_imc_5/event=0xe3/
->>>> uncore_imc_6/event=0xe3/
->>>> uncore_imc_7/event=0xe3/
->>>> uncore_imc_free_running_0/event=0xe3/
->>>> uncore_imc_free_running_1/event=0xe3/
->>>> uncore_imc_free_running_3/event=0xe3/
->>>> uncore_imc_free_running_4/event=0xe3/
->>>>
->>>> That's because the "uncore_imc_free_running" matches the
->>>> pattern "uncore_imc*".
->>>>
->>>> Now we check that the last characters of pmu name is
->>>> '_<digit>'.
->>>>
->>>> Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
->>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->>>> ---
->>>>    tools/perf/util/parse-events.y |  2 ++
->>>>    tools/perf/util/pmu.c          | 25 ++++++++++++++++++++++++-
->>>>    tools/perf/util/pmu.h          |  1 +
->>>>    3 files changed, 27 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
->>>> index aba12a4d488e..7a694c7f7f1a 100644
->>>> --- a/tools/perf/util/parse-events.y
->>>> +++ b/tools/perf/util/parse-events.y
->>>> @@ -317,6 +317,8 @@ event_pmu_name opt_pmu_config
->>>>                    strncmp($1, "uncore_", 7))
->>>>                    name += 7;
->>>>                if (!fnmatch(pattern, name, 0)) {
->>>> +                if (!perf_pmu__valid_suffix($1, name))
->>>> +                    continue;
-> 
-> could this be part of the fnmatch's pattern?
+>> This is mostly derived from a patch from Yang Shi:
+>>
+>>         https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
+>>
+>> Add code to the reclaim path (shrink_page_list()) to "demote" data
+>> to another NUMA node instead of discarding the data.  This always
+>> avoids the cost of I/O needed to read the page back in and sometimes
+>> avoids the writeout cost when the page is dirty.
+>>
+>> A second pass through shrink_page_list() will be made if any demotions
+>> fail.  This essentially falls back to normal reclaim behavior in the
+>> case that demotions fail.  Previous versions of this patch may have
+>> simply failed to reclaim pages which were eligible for demotion but
+>> were unable to be demoted in practice.
+>>
+>> For some cases, for example, MADV_PAGEOUT, the pages are always
+>> discarded instead of demoted to follow the kernel API definition.
+>> Because MADV_PAGEOUT is defined as freeing specified pages regardless
+>> in which tier they are.
+>>
+>> Note: This just adds the start of infrastructure for migration. It is
+>> actually disabled next to the FIXME in migrate_demote_page_ok().
+>>
+>> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Reviewed-by: Yang Shi <shy828301@gmail.com>
+>> Reviewed-by: Wei Xu <weixugc@google.com>
+>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Zi Yan <ziy@nvidia.com>
+>> Cc: David Rientjes <rientjes@google.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>
+>> --
+>> changes from 20210618:
+>>  * Fix some typos in comments and patch description.
+>>  * Fix MADV_PAGEOUT behavior per Zi's comments.
+>>
+>> changes from 20210122:
+>>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
+>>
+>> changes from 202010:
+>>  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
+>>  * make migrate_demote_page_ok() static, remove 'sc' arg until
+>>    later patch
+>>  * remove unnecessary alloc_demote_page() hugetlb warning
+>>  * Simplify alloc_demote_page() gfp mask.  Depend on
+>>    __GFP_NORETRY to make it lightweight instead of fancier
+>>    stuff like leaving out __GFP_IO/FS.
+>>  * Allocate migration page with alloc_migration_target()
+>>    instead of allocating directly.
+>> changes from 20200730:
+>>  * Add another pass through shrink_page_list() when demotion
+>>    fails.
+>> changes from 20210302:
+>>  * Use __GFP_THISNODE and revise the comment explaining the
+>>    GFP mask constructionn
+>> ---
+>>  include/linux/migrate.h        |  9 ++++
+>>  include/trace/events/migrate.h |  3 +-
+>>  mm/vmscan.c                    | 93 ++++++++++++++++++++++++++++++++++
+>>  3 files changed, 104 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>> index 166dc1fe4eee..d678e02a27ff 100644
+>> --- a/include/linux/migrate.h
+>> +++ b/include/linux/migrate.h
+>> @@ -28,6 +28,7 @@ enum migrate_reason {
+>>         MR_NUMA_MISPLACED,
+>>         MR_CONTIG_RANGE,
+>>         MR_LONGTERM_PIN,
+>> +       MR_DEMOTION,
+>>         MR_TYPES
+>>  };
+>>
+>> @@ -191,6 +192,14 @@ struct migrate_vma {
+>>  int migrate_vma_setup(struct migrate_vma *args);
+>>  void migrate_vma_pages(struct migrate_vma *migrate);
+>>  void migrate_vma_finalize(struct migrate_vma *migrate);
+>> +int next_demotion_node(int node);
+>> +
+>> +#else /* CONFIG_MIGRATION disabled: */
+>> +
+>> +static inline int next_demotion_node(int node)
+>> +{
+>> +       return NUMA_NO_NODE;
+>> +}
+>>
+>>  #endif /* CONFIG_MIGRATION */
+>>
+>> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
+>> index 9fb2a3bbcdfb..779f3fad9ecd 100644
+>> --- a/include/trace/events/migrate.h
+>> +++ b/include/trace/events/migrate.h
+>> @@ -21,7 +21,8 @@
+>>         EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
+>>         EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
+>>         EM( MR_CONTIG_RANGE,    "contig_range")                 \
+>> -       EMe(MR_LONGTERM_PIN,    "longterm_pin")
+>> +       EM( MR_LONGTERM_PIN,    "longterm_pin")                 \
+>> +       EMe(MR_DEMOTION,        "demotion")
+>>
+>>  /*
+>>   * First define the enums in the above macros to be exported to userspace
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 5199b9696bab..badaf3d4360d 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -41,6 +41,7 @@
+>>  #include <linux/kthread.h>
+>>  #include <linux/freezer.h>
+>>  #include <linux/memcontrol.h>
+>> +#include <linux/migrate.h>
+>>  #include <linux/delayacct.h>
+>>  #include <linux/sysctl.h>
+>>  #include <linux/oom.h>
+>> @@ -118,6 +119,9 @@ struct scan_control {
+>>         /* The file pages on the current node are dangerously low */
+>>         unsigned int file_is_tiny:1;
+>>
+>> +       /* Always discard instead of demoting to lower tier memory */
+>> +       unsigned int no_demotion:1;
+>> +
+>>         /* Allocation order */
+>>         s8 order;
+>>
+>> @@ -1231,6 +1235,27 @@ static enum page_references page_check_references(struct page *page,
+>>         return PAGEREF_RECLAIM;
+>>  }
+>>
+>> +static bool migrate_demote_page_ok(struct page *page,
+>> +                                  struct scan_control *sc)
+>> +{
+>> +       int next_nid;
+>> +
+>> +       VM_BUG_ON_PAGE(!PageLocked(page), page);
+>> +       VM_BUG_ON_PAGE(PageHuge(page), page);
+>> +       VM_BUG_ON_PAGE(PageLRU(page), page);
+>> +
+>> +       if (sc->no_demotion)
+>> +               return false;
+>> +       next_nid = next_demotion_node(page_to_nid(page));
+>> +       if (next_nid == NUMA_NO_NODE)
+>> +               return false;
 >
+> The above sc and node checks are not specific to the page.  They can
+> be moved into shrink_page_list() to set do_demote_pass accordingly.
+> We then don't need to repeat these checks for every page.
 
-Actually I had used the pattern "uncore_imc_[0-9]" before. But for some units, e.g., CHA, they have 
-more than 10 units. So this simple pattern couldn't satisfy them.
+Sounds good to me!  Thanks!  Will change this in the next version.
 
-And then I changed the pattern to "uncore_imc_[0-9]+$", which can match the string 
-"uncore_imc_<integer id>". But unfortunately it didn't work for fnmatch.
+Best Regards,
+Huang, Ying
 
-I used regex, such as:
-
-asprintf(&pattern, "%s_[0-9]+$", tok);
-regcomp(&regex, pattern, REG_EXTENDED);
-ret = regexec(&regex, name, 0, NULL, 0);
-
-But the regex approach looks not very simple (a bit heavy), so finally I just keep using fnmatch and 
-then just check the last character.
-
->>>>                    if (parse_events_copy_term_list(orig_terms, &terms))
->>>>                        CLEANUP_YYABORT;
->>>>                    if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
->>>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->>>> index 88c8ecdc60b0..78af01959830 100644
->>>> --- a/tools/perf/util/pmu.c
->>>> +++ b/tools/perf/util/pmu.c
->>>> @@ -3,6 +3,7 @@
->>>>    #include <linux/compiler.h>
->>>>    #include <linux/string.h>
->>>>    #include <linux/zalloc.h>
->>>> +#include <linux/ctype.h>
->>>>    #include <subcmd/pager.h>
->>>>    #include <sys/types.h>
->>>>    #include <errno.h>
->>>> @@ -768,7 +769,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->>>>         */
->>>>        for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
->>>>            name = strstr(name, tok);
->>>> -        if (!name) {
->>>> +        if (!name || !perf_pmu__valid_suffix(tok, (char *)name)) {
->>>>                res = false;
->>>>                goto out;
->>>>            }
->>>> @@ -1872,3 +1873,25 @@ bool perf_pmu__has_hybrid(void)
->>>>        return !list_empty(&perf_pmu__hybrid_pmus);
->>>>    }
->>>> +
->>>> +bool perf_pmu__valid_suffix(char *tok, char *pmu_name)
->>>> +{
->>>> +    char *p;
->>>> +
->>>> +    /*
->>>> +     * The pmu_name has substring tok. If the format of
->>>> +     * pmu_name is <tok> or <tok>_<digit>, return true.
->>>> +     */
->>>> +    p = pmu_name + strlen(tok);
->>>> +    if (*p == 0)
->>>> +        return true;
->>>> +
->>>> +    if (*p != '_')
->>>> +        return false;
->>>> +
->>>> +    ++p;
->>>> +    if (*p == 0 || !isdigit(*p))
->>>> +        return false;
->>>> +
->>>> +    return true;
->>>> +}
-> 
-> hum, so we have pattern serch and then another function checking
-> if that search was ok..
-
-Yes, that's what this patch does.
-
-I understand that's convenient, because
-> it's on 2 different places
-
-Yes, on pmu_uncore_alias_match() and on parse-events.y.
-
-but could we have some generic solution,
-> line one function/search that returns/search for valid pmu name?
-> 
-
-Sorry, I don't understand this idea well. Would you like to further explain?
-
-Or can you accept the regex approach?
-
-> thanks,
-> jirka
-> 
+>> +       if (PageTransHuge(page) && !thp_migration_supported())
+>> +               return false;
+>> +
+>> +       // FIXME: actually enable this later in the series
+>> +       return false;
+>> +}
+>> +
+>>  /* Check if a page is dirty or under writeback */
+>>  static void page_check_dirty_writeback(struct page *page,
+>>                                        bool *dirty, bool *writeback)
+>> @@ -1261,6 +1286,49 @@ static void page_check_dirty_writeback(struct page *page,
+>>                 mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
+>>  }
+>>
+>> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
+>> +{
+>> +       struct migration_target_control mtc = {
+>> +               /*
+>> +                * Allocate from 'node', or fail quickly and quietly.
+>> +                * When this happens, 'page' will likely just be discarded
+>> +                * instead of migrated.
+>> +                */
+>> +               .gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
+>> +                           __GFP_THISNODE  | __GFP_NOWARN |
+>> +                           __GFP_NOMEMALLOC | GFP_NOWAIT,
+>> +               .nid = node
+>> +       };
+>> +
+>> +       return alloc_migration_target(page, (unsigned long)&mtc);
+>> +}
+>> +
+>> +/*
+>> + * Take pages on @demote_list and attempt to demote them to
+>> + * another node.  Pages which are not demoted are left on
+>> + * @demote_pages.
+>> + */
+>> +static unsigned int demote_page_list(struct list_head *demote_pages,
+>> +                                    struct pglist_data *pgdat)
+>> +{
+>> +       int target_nid = next_demotion_node(pgdat->node_id);
+>> +       unsigned int nr_succeeded;
+>> +       int err;
+>> +
+>> +       if (list_empty(demote_pages))
+>> +               return 0;
+>> +
+>> +       if (target_nid == NUMA_NO_NODE)
+>> +               return 0;
+>> +
+>> +       /* Demotion ignores all cpuset and mempolicy settings */
+>> +       err = migrate_pages(demote_pages, alloc_demote_page, NULL,
+>> +                           target_nid, MIGRATE_ASYNC, MR_DEMOTION,
+>> +                           &nr_succeeded);
+>> +
+>> +       return nr_succeeded;
+>> +}
+>> +
+>>  /*
+>>   * shrink_page_list() returns the number of reclaimed pages
+>>   */
+>> @@ -1272,12 +1340,15 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>>  {
+>>         LIST_HEAD(ret_pages);
+>>         LIST_HEAD(free_pages);
+>> +       LIST_HEAD(demote_pages);
+>>         unsigned int nr_reclaimed = 0;
+>>         unsigned int pgactivate = 0;
+>> +       bool do_demote_pass = true;
+>>
+>>         memset(stat, 0, sizeof(*stat));
+>>         cond_resched();
+>>
+>> +retry:
+>>         while (!list_empty(page_list)) {
+>>                 struct address_space *mapping;
+>>                 struct page *page;
+>> @@ -1426,6 +1497,16 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>>                         ; /* try to reclaim the page below */
+>>                 }
+>>
+>> +               /*
+>> +                * Before reclaiming the page, try to relocate
+>> +                * its contents to another node.
+>> +                */
+>> +               if (do_demote_pass && migrate_demote_page_ok(page, sc)) {
+>> +                       list_add(&page->lru, &demote_pages);
+>> +                       unlock_page(page);
+>> +                       continue;
+>> +               }
+>> +
+>>                 /*
+>>                  * Anonymous process memory has backing store?
+>>                  * Try to allocate it some swap space here.
+>> @@ -1676,6 +1757,17 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>>                 list_add(&page->lru, &ret_pages);
+>>                 VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
+>>         }
+>> +       /* 'page_list' is always empty here */
+>> +
+>> +       /* Migrate pages selected for demotion */
+>> +       nr_reclaimed += demote_page_list(&demote_pages, pgdat);
+>> +       /* Pages that could not be demoted are still in @demote_pages */
+>> +       if (!list_empty(&demote_pages)) {
+>> +               /* Pages which failed to demoted go back on @page_list for retry: */
+>> +               list_splice_init(&demote_pages, page_list);
+>> +               do_demote_pass = false;
+>> +               goto retry;
+>> +       }
+>>
+>>         pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
+>>
+>> @@ -2312,6 +2404,7 @@ unsigned long reclaim_pages(struct list_head *page_list)
+>>                 .may_writepage = 1,
+>>                 .may_unmap = 1,
+>>                 .may_swap = 1,
+>> +               .no_demotion = 1,
+>>         };
+>>
+>>         while (!list_empty(page_list)) {
+>> --
+>> 2.30.2
+>>
