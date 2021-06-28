@@ -2,134 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CD13B65B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610CD3B65B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhF1Pd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:33:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
+        id S238125AbhF1PeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:34:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:24075 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236104AbhF1PHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:07:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F3ED613FD;
-        Mon, 28 Jun 2021 14:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624892301;
-        bh=HsQz+eG06TzAb3HbY3JdUc6LQkxeCoRIcHF3y10TQ+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZVOvoruMYHVhjj1s9pjQE/Aw1s+xTb2/9/1JCF6tZd4BsiX9Bs6Mp9zskJOHy7VF6
-         0mLmmtpq7YBd/uzGdrLBiHS0f6dWAhtedwzFyed+Zzcw/+t7lmYxPUbsArRJFoz64D
-         G77Oxmqf0KbyrItRSd9lKiAwxLg+RSZRSZsRJW13BpwMOPMsdekuet042fL5vYi1rM
-         fKgiWJSku7nULuw544GP81w+ZRqhlKfUqoFbAi1ujEDDkog/GgWbanclu+JPLy/mm3
-         K34g7zrN5YdeJYYjf3PTy/vWpNAfuSBjm9H3Yb/BeFGOnYDsw7lZYCy4lW3wWv4rtQ
-         2UFPIbWnIlwFw==
-Date:   Mon, 28 Jun 2021 16:58:15 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNnjh3xxyaZZSo9N@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+        id S236583AbhF1PLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:11:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="187657388"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="187657388"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 08:00:05 -0700
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="643361063"
+Received: from ngminuti-mobl.amr.corp.intel.com (HELO [10.212.174.12]) ([10.212.174.12])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 08:00:05 -0700
+Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
+To:     Greg KH <greg@kroah.com>
+Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
+References: <YNSWtCSjJy8CytOL@kroah.com>
+ <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
+ <YNSlVPcjHInk4un6@kroah.com>
+ <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
+ <YNVneO6exCS4ETRt@kroah.com>
+ <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
+ <YNXqXwq1+o09eHox@kroah.com>
+ <e670abe2-67b9-a602-410a-0c4170796ec7@linux.intel.com>
+ <YNhauAgaUxMfTa+c@kroah.com>
+ <bdeb80ea-99dd-d9ea-d508-9cb8d2c6fbf4@linux.intel.com>
+ <YNlyYJIl5yki0Q+3@kroah.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <ac22e112-7748-e47b-c08d-948ffde130bc@linux.intel.com>
+Date:   Mon, 28 Jun 2021 08:00:05 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="x7HUe2JbQ8ROazkf"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+In-Reply-To: <YNlyYJIl5yki0Q+3@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---x7HUe2JbQ8ROazkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 6/27/2021 11:55 PM, Greg KH wrote:
+> On Sun, Jun 27, 2021 at 09:30:53AM -0700, Andi Kleen wrote:
+>>> Then do not break things by renaming the device name, as you all have
+>>> now stated that this name is part of the user/kernel api.
+>> The renaming comes from the fallback mode on future systems. In the fallback
+>> mode the driver doesn't know the true name, so it has to use  the numeric
+>> name. If you don't use the fallback mode and have the full driver then yes
+>> you'll get the same names as always (or at least as they make sense for the
+>> hardware).
+>>
+>> But we would like to have the fallback mode too to allow more people use
+>> uncore monitoring, and that's where the need to for the second name comes
+>> in.
+> So then just always use the "fallback" name if that is going to be the
+> name you have for this hardware device.  Why would you want it to be
+> renamed later on to a "fancier" name if there is only going to be
+> one-per-chipset-type anyway?
 
+It's an ugly numeric name, difficult to use
 
-> You can fine Viresh's vhost-user implementation at
-> https://lore.kernel.org/qemu-devel/cover.1617278395.git.viresh.kumar@linaro.org/t/#m3b5044bad9769b170f505e63bd081eb27cef8db2
+perf stat -e uncore_0_2//
 
-It looks OK so far; yet, it is not complete. But it might be bearable
-in the end.
+instead of
 
-> As you say, it does get a bit clumsy, but I think there is also a good argument
-> to be made that the clumsiness is based on the host Linux user interface
-> more than the on the requirements of the physical interface,
-> and that should not have to be reflected in the virtio specification.
+perf stat -e uncore_cha//
 
-Makes sense to me.
+It wouldn't exactly be an improvement for the full driver.
 
-> Right, this one has come up before as well: the preliminary result
-> was to assume that this probably won't be needed, but would be easy
-> enough to add later if necessary.
+-Andi
 
-If adding support incrementally works for such an interface, this makes
-sense as well.
-
-So, where are we? As I understand, this v10 does not support I2C
-transactions (or I2C_RDWR as you said). But you want to support all
-clients. So, this doesn't match, or?
-
-
---x7HUe2JbQ8ROazkf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDZ44MACgkQFA3kzBSg
-KbZiNRAAg3+smsUmLAlo8w15thKTdKhG6yNDBD+TxkLusukTvHLa5j7KBjzDW+8L
-TgeVVbK6h4x9T21E0ofnkT8wUFquxCDC+h80FYIS/wMcISrLFDZAjW6M9Gjftzho
-pMW6jKibH9oKHZdvfnE3S5wCHGveCcBtztoTxUVELJop2HXj3OXhyCgtlo52PR2u
-rNIEjRsp+gSunOpu3c6U+70Hh+gmvTuFBWinAuelHCVqjoC9WbHbP3l0khP72y6A
-bDWWZk5e0Z3AHEoPlOXEWScNB0b/ScL6ZAkj19Q/JOrYFeDAAc4FdkE33HfX4J8h
-TbbwDRLxejCFyIfKfoIXGYxjihWwjdfZDkRspPy9i5gLCK6tfEcFCw/g+vSmisBh
-Xp6eQMqgFKiiFsBljSGRN8rEHrJKcysQXrL34QAPb5/ZK7PlRNtdBJBG6kWNkKLJ
-YjuLf2zkB0dD4fOwhHEYs7jbA2WDSNy3vJHVkqxyVOLClX67KTZMO8ShhHSFnSsA
-YZRJhbWAYvpZTrVRr54uvaWkv8VYL/BSx4N9DJE6ZbtHcVH2ixNBduqgY5SudnOt
-nQGq9SZHYY3VCZyO4d1U3rhPP1LFyHTkDA06AwDMV9I2jImA/I2Vofqy3ORWjBUZ
-ZF7xGiZ3jWuEOGhtyESTDYkfRIxir1zQKywb/1p+21f2lVFx+wc=
-=QsUe
------END PGP SIGNATURE-----
-
---x7HUe2JbQ8ROazkf--
