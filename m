@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A223B5A6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A503B5A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhF1I2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
+        id S232439AbhF1I2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhF1I2B (ORCPT
+        with ESMTP id S232399AbhF1I2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:28:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56C5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 01:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bBOOAJZmb1MGQkBOhTr3Y7C4iASxBA5CQqatO8OKvkU=; b=IcEY+/vJyPW5mfpsonXxEzgnK2
-        ij2cjBwdvkFvDpKT0mwZmUi1tZbHxGz0K4oI6cmwke1DT62/JaCr7pB6BSOLJAX1D/tVjkOouDAOR
-        azyo8Erh9WYzCWTBPA7tNyhFRwvALHIAwddq2XtH94udA/1OcPY+W6OwLOfPjAV86OITTrXfG/mfp
-        f2mTpaPvkdIFLmqb5I1jwTQ0gHno895wsth7lUaQNgsIMXPfLVM14Fk/NNripoW65fF0QCMRHM7Ak
-        D6jD95Cp7/u1V+FHmN+Zx7zV4G8Q4XH4sh4RM3FOip4LOEISeGUE+mMO3bv1GAObXLcgGJH/1pNc3
-        +zD31TVQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxmZL-002k7t-Ll; Mon, 28 Jun 2021 08:24:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00C153001DC;
-        Mon, 28 Jun 2021 10:24:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D71FF2028DBF2; Mon, 28 Jun 2021 10:24:38 +0200 (CEST)
-Date:   Mon, 28 Jun 2021 10:24:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michael Forney <mforney@mforney.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] objtool: Check for gelf_update_rel[a] failures
-Message-ID: <YNmHRi+00RAAUmEt@hirez.programming.kicks-ass.net>
-References: <20210509000103.11008-1-mforney@mforney.org>
- <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
+        Mon, 28 Jun 2021 04:28:44 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C1BC061574;
+        Mon, 28 Jun 2021 01:26:19 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id w13so18624733edc.0;
+        Mon, 28 Jun 2021 01:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g4PI97rHtLeYK11OULP1ovkKwmxtW8szp+2tw0+tBZk=;
+        b=B2xvAaoC92DlGfbVskv4mOCDwGR9dLnm3uCFjLxEUHeU/yXNbJsfB+WngqZF/1H/h+
+         kNixc9QJT9lPzMpbmlaYvxYghOr7UspMjuweKa14UZZjVrwQg9LzA24qCFOKKf86TyMR
+         dYUWoeM+NRtx92YJ4sVuBXo5oZv0RzQTktspfxmlkTH39dEE/o5AdTxQqU3Uz5mYsxYi
+         7R4wjaFCleTDbEiLOFJdR8khrLfrRk6Hf2aCaBtCByVPttZyZqpIpC1CnJjReT9q2ban
+         4iN3WiXqtUm2R9c0oosKzczwNs8xw/I+jQX2h0pgQ96schFdw5AREQAOtjDDZeD3xrdQ
+         I0lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g4PI97rHtLeYK11OULP1ovkKwmxtW8szp+2tw0+tBZk=;
+        b=pmM78R39K+4iaUX1BJu/rgDHM+01knYw9nO9lGLtBwCk0w7RxICHovGzci10BkDQdZ
+         XE5viTILNAKF9cxsPQuiAUrTiWkmNRCIyZBLAY8QXN8PpQdsQHG5yUtFebphlhe8SIPy
+         ohQcvKy8UK64kA6Oi2LgeaHmTmyuZOoE6cEZd1S8GId7hDBysEpmXnygc2y4a9yH5ts0
+         sr3hQOs3CPWS5BhVKDUA/hZYayEMPHz7owy6621yOfTfeq4sxDXa0Rju4xUB1HXrHK4I
+         I3CyDXDXKq9etWdq4DGjju2x2LG68i1yITWgUYLezMs3NnIR7w1r4v/+j7qJMSPFidD6
+         Rp5A==
+X-Gm-Message-State: AOAM531+Av99AfdX5XGHBVYeeUhJN/QwLRZqpSW+0UOJ0bjOx29vxUm4
+        qPlY7vtDQns1gPxPNi1cnql/4Zk2v2lfcqKyoW0=
+X-Google-Smtp-Source: ABdhPJxMEm5q3bs9V/gHqSa0A49eOh8fZ2OX2anTdiNFmvPt/+Bb8MYxEEca9MVTSifC7/W/PPn+3xORMMLZGdGO8bY=
+X-Received: by 2002:a05:6402:354d:: with SMTP id f13mr31073516edd.71.1624868777683;
+ Mon, 28 Jun 2021 01:26:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
+References: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
+ <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
+ <17876c6e-4688-59e6-216f-445f91a8b884@gmail.com> <20210322084420.GA1503756@BV030612LT>
+In-Reply-To: <20210322084420.GA1503756@BV030612LT>
+From:   Amit Tomer <amittomer25@gmail.com>
+Date:   Mon, 28 Jun 2021 13:55:40 +0530
+Message-ID: <CABHD4K_r_ixtBXH_v82S62onYr-=fbh8cHJsdz0oo6MN-i5tVg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] net: ethernet: actions: Add Actions Semi Owl
+ Ethernet MAC driver
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 12:52:07AM -0700, Michael Forney wrote:
-> On 2021-05-08, Michael Forney <mforney@mforney.org> wrote:
-> > Otherwise, if these fail we end up with garbage data in the
-> > .rela.orc_unwind_ip section, leading to errors like
-> >
-> >   ld: fs/squashfs/namei.o: bad reloc symbol index (0x7f16 >= 0x12) for
-> > offset 0x7f16d5c82cc8 in section `.orc_unwind_ip'
-> >
-> > Signed-off-by: Michael Forney <mforney@mforney.org>
-> 
-> Ping on these patches.
+Hi,
 
-Josh, I forever forget which libelf versions we're supposed to support,
+> > Do you know the story behind this Ethernet controller?
+>
+> I just happened to get a board based on the S500 SoC, so I took this
+> opportunity to help improving the mainline kernel support, but other
+> than that I do not really know much about the hardware history.
+>
+> > The various
+> > receive/transmit descriptor definitions are 99% those defined in
+> > drivers/net/ethernet/stmmicro/stmmac/descs.h for the normal descriptor.
+>
+> That's an interesting observation. I could only assume the vendor did
+> not want to reinvent the wheel here, but I cannot say if this is a
+> common design scheme or is something specific to STMicroelectronics
+> only.
 
-But these patches do look reasonable to me, wdyt?
+I am not entirely sure about it but it looks like it *may* only need
+to have a glue driver to
+connect to DWMAC.
+For instance, on the U-boot[1] side (S700 is one of 64bit OWL SoC from
+actions), we kind of re-uses already
+existing DWMAC and provide a glue code, and on the Linux side as well
+have some similar implementation (locally).
+
+Thanks
+-Amit.
+
+[1]: https://source.denx.de/u-boot/u-boot/-/blob/master/drivers/net/dwmac_s700.c
