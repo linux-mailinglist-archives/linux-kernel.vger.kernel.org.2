@@ -2,179 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133C63B5955
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C193B5957
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhF1HCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:02:09 -0400
-Received: from mail-co1nam11on2066.outbound.protection.outlook.com ([40.107.220.66]:63072
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229998AbhF1HCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:02:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hVPh9+7h94a7IsO1Tez9LcQUN+5knYGMSl9Wx0Jtv9MOxDrCh5d14wOxH41wZ3h0hab0mriBL9xEdF927iTjWRrHeYZ28DvJkUockcSPfDGIC2nAWDGkvKNw1C/W9X3neo4KzIBowUXAe+wwyaA7fXoUm6NyeB3nXpenOT7utvQUGkeaXFmh6aLJGcb5uV3dtMgdU8E5e4sBJHYQWc3viv1hWiOZGleiQL6l9WpAxcb7rkkyBOBR0Fno8FeIi1Hcn4wvurMJONA19Y6mv/DNojIJvgnCinXbga14RtTGJ0DifhEH2i8b720B4iGZmnD42I5G3LvBiSW7awyjbIVIIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JQMmnfkPJ5T1jJDZ+6TTI7qv9pIiEKjuvIXGVFM8GeA=;
- b=UJxe3CtPzTUUSQoOUQBzax0hK00QYvxNzxslMozo1hVQgkqir37G0x0alcDs0PynTZykwD+C81YcOqRFwpUabg1QItVHSh831+sD+2iYfGsOUBxQAJj3HupBzw3IwpbV8r4JDSBm0CTbrZbyKo0MGXjFkE2ZS/H913YXC58gAsXWE32wrQAWwKhVdlXuen0SrD1KRGW1LXNnIA/UC0YvFzuLaP9ecL+3+DCCqt7BXZafZFD2aXGvKhvxSMdSYGbQdR0FAzoNTNAuzZEnZ3OBy4fxkm/hw5wrJ1+/ricV+3TkaT9t3kLJT0TaSSzXmJnHVtnt2S2hbCLgW01J079Nuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+        id S232216AbhF1HCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhF1HCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:02:45 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5970FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:00:19 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id v20so9552474eji.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JQMmnfkPJ5T1jJDZ+6TTI7qv9pIiEKjuvIXGVFM8GeA=;
- b=MsNLt9Dbcs/S3vx6dEeltv+2cKIqNLwanzhVNL1ETKuO3QJV7NT0YM3b1644DgzoL3tpBhYfrQtl7GI79vWZa+1OW+3MXmTmBx267ktPECok6vFAV9lXFFBQr3MhcZPhevHgxNd9wKbJ/Hv9XiaxVCe/+45FEIxraWGq4dniwY8=
-Received: from BYAPR02MB3941.namprd02.prod.outlook.com (2603:10b6:a02:f8::18)
- by BY5PR02MB6900.namprd02.prod.outlook.com (2603:10b6:a03:21d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Mon, 28 Jun
- 2021 06:59:41 +0000
-Received: from BYAPR02MB3941.namprd02.prod.outlook.com
- ([fe80::a974:6b60:92b:265]) by BYAPR02MB3941.namprd02.prod.outlook.com
- ([fe80::a974:6b60:92b:265%5]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 06:59:41 +0000
-From:   Rajan Vaja <RAJANV@xilinx.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        "kristo@kernel.org" <kristo@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        Michal Simek <michals@xilinx.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "quanyang.wang@windriver.com" <quanyang.wang@windriver.com>
-CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 1/4] clk: zynqmp: Use firmware specific common clock
- flags
-Thread-Topic: [PATCH v5 1/4] clk: zynqmp: Use firmware specific common clock
- flags
-Thread-Index: AQHXaPLpEbVz5HSoZ0StdDVSydytWaslX9GAgAOgQ3A=
-Date:   Mon, 28 Jun 2021 06:59:41 +0000
-Message-ID: <BYAPR02MB394184FD49527801FE8E5389B7039@BYAPR02MB3941.namprd02.prod.outlook.com>
-References: <20210624121633.22179-1-rajan.vaja@xilinx.com>
- <20210624121633.22179-2-rajan.vaja@xilinx.com>
- <162466330370.3259633.11293469583164120084@swboyd.mtv.corp.google.com>
-In-Reply-To: <162466330370.3259633.11293469583164120084@swboyd.mtv.corp.google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.62.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 734a106e-e435-471f-938f-08d93a024d8b
-x-ms-traffictypediagnostic: BY5PR02MB6900:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR02MB6900556CAE97C7B99496C619B7039@BY5PR02MB6900.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: g2murfB8yeH+n11+U+Mo47jHzn3YtkR4o6O2wHrnKFwtWU3KNC/0JCC6hmcKbPQD+xKboyGM6MrBpPU4PAb9r+UiZj6/sXC8vs/ct69QyXKpXgzJRSyULfhh6q9L+rsSm4o6uxhK6np3sXk8yG3GWNO9YXNS/yDTHuzUi4/ws+lHXSaxm/uDAW43oZpVRBeSWg2v5GxMvU85QfP592FmkC9XFZzuSNTytRshqIFW3s+csJUYKNS1f1mENo4rQ6C1JVg+LQ2bs2sQO/0BMkK0BjP4Pu2hYYEFhn6yAeRi93dzAtBL17TelDuDZZx6Yq1+JUY1WRMtHNwf3nbe9afAmG3S/Br1XqGi93B3zonlcXfCZIjqUdlQhTT2Kqqxg3BAFMEL6SBBxeFuIgz3mkBWQH6JppROuh9vdbe9EbNXWroK2BHJTRo5ua021JjThp/LC7nXhOalcfNrjziJDd947A7kHJ5Fdg+VMlberqMRKZ5beP+IFFw5KI9FLukH3hauAcnqAeQHF1bpGUqM51S6i2Q5850hH79yeQPA0C0haYdJqdjW+TnD49j1wyNJ+s1aQFC3FANLmGf32GRxxbvyo6vSngUNJfSOBudhO6vjlzE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB3941.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(366004)(396003)(136003)(66556008)(66446008)(71200400001)(64756008)(66476007)(33656002)(7696005)(5660300002)(8676002)(53546011)(6506007)(186003)(2906002)(38100700002)(83380400001)(54906003)(4326008)(26005)(86362001)(110136005)(478600001)(52536014)(55016002)(9686003)(122000001)(66946007)(76116006)(8936002)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SG93RFlWN1V3VnMvc2ViemNkUDE1Q2ZaUnNkTzYzT0FlM0ZIclkxd09icGRX?=
- =?utf-8?B?OXNTdkZWUHhxTHI5aDNQMGlnSXdrSFAxd3RoOSsveW9zVjFrcXhnL0pVQWc0?=
- =?utf-8?B?dzgxeW12WGN3UGpjb00wTkRlMkZJdHh4ZDBndWQ5ZFBGcFRFQU9GUzRTTnNT?=
- =?utf-8?B?dmVMdFZLUjZQaWd4b3ByK2Z6Y2NJcFpmTmlScGJ2MHpTTUlQY3llU2R6ZWpW?=
- =?utf-8?B?VHdZbzM5U082bmlKOGR0WEVTelQrVVAyeXBpV28zTEZxd1J4dk41dmpCSGFw?=
- =?utf-8?B?V24rbjVsNkEwUmdxdU4ycnlmUC84TG9SMW0xRFduM3M4RXNsUWJHQm5mRG40?=
- =?utf-8?B?a2RjVGhGSTBDZ2tLMjBYUjEyZ2dmWnp0Ynd4MXphNEtYTjhEcDdLTUdUeHg1?=
- =?utf-8?B?WnhRRWVaWS9URjdXMDI0T21sWVpWUzJJR3RDNThzWFdDNzEyd1VhK1Rqb0xS?=
- =?utf-8?B?eU9sOElONmV3ejI2QXZyVUdCcG0wZVZmKzVqYkxTREQvT1g3RHlwMDJyOHcr?=
- =?utf-8?B?MFpydStTbmJVU1JPVksyVnE1RHBDdE5lWnlPRHpyeDgvQTdWT0FRNDlJYXdz?=
- =?utf-8?B?NnVKNUJHRDB1ZmNmMmFlM3RCWGtXS1JXMUVuQWdBUk1EMG13VDJJUU9URExE?=
- =?utf-8?B?VXlVb1FJL0VDQlNqU2d6QmY0Q2RXZm5ZZmNmRGhYeW1qUXN2REdFT0FUZWpa?=
- =?utf-8?B?TG5SZ1I5OHJXU0gwQTEyYm5kOFFSOFQrYjVSSEVqMXQwd1g4KzlwM0p2THgw?=
- =?utf-8?B?QXVZd1VEdUd5RWtudnRvUnZmSU9KY2FmbERNc2hmd0UwckhDNzQwWDNmbHZ4?=
- =?utf-8?B?Q0w4dnMxNmY5aEtTeTVrOEx1MUdxOTduVlROU2paQlRhUzlkQ3ppNm1jQkRi?=
- =?utf-8?B?UnpCTlBVQ2tTZmhIQ012TGJwZE4vMDZxRUJHMjRxeEljb1ZnUUFzb3didVpp?=
- =?utf-8?B?SDNiY3ZjTi94QXZqaHMyb3F5bDVZYUtBZURyVEZabG5MYVBlNEpJellSajlF?=
- =?utf-8?B?SWc4YWE5c1F4VWNqeFF6dVhvUUk5ajNKUHVuS1RvZVY0Q1Z2WmlJWEx3Qzls?=
- =?utf-8?B?aWRnZkxXdnRMK2Q2eFlXLzB5RXpKcVpyMW45YnZVSTlXUGJCVTlOM3Q1azZy?=
- =?utf-8?B?TnptMVR1anQwaDhJODRLN1VaU2lqWUl1SFFNREZLYWMzdEovM1ZJcVB5Rity?=
- =?utf-8?B?WGN5TGhaazBYY05aK0llVzIzMzEzQmxXYTVOVE9MWTBud1dNNDJPNTRTdld6?=
- =?utf-8?B?V2NTdUhEYkZUZytXcGhrbFVwdmdXQ0xwdmZTb0NRZHhxNlV4dTFQUWp2NGta?=
- =?utf-8?B?SVhHeTRBYmp2ajdKZVJjRGlhaTZZWUJaWFllY2RnYXZhR1pTQ0xrc2xCMm9w?=
- =?utf-8?B?WW00ZWVNbENTeFJuTSt2Z0IxaEJIMHh4SFJlQkVDZ2N1VEg3UVYvVDJHeFFr?=
- =?utf-8?B?bzdMUDdhWCszOUZjMFhLMndpWURkN0V2b1ZaZVIzWVJzWmZVTFpBL0RNekxS?=
- =?utf-8?B?b3ByUlo4UWN0czdZYVNJcno3YmY3amNrNkJQUmdrd0UwL3ZnRW9uSTNNN2d6?=
- =?utf-8?B?MEdhYW9uMU9ZQ2xNdDJ5ajVXT0IrMGx6ZzhkMnhERUFmYjdVQzRPNCtYRTYr?=
- =?utf-8?B?bG9lVVV2Q21BSlpkSlhTNk1BaXpkeTU4UldWVXRwOHZIaGdqZk50Sk82YWE4?=
- =?utf-8?B?Uk15cEM4ZmwraGtqczlxV3FBRlJwQ05mNmV5L3hHUW8rS1RvVzZwNlpmOEE3?=
- =?utf-8?Q?apjYS48Bi0p+h+QEPXnHY3eV+IfbpGYpxLFug5Y?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=/ZTnZkYKek+5EDiWJLcDLFzzSu7VX9SBVVqHtordz78=;
+        b=KdTQmykmJOGUbeEE6oEB5bGZTq63btGbVnCfp9JgeTiG3lj6tYaS2LzIUu+xvHkiy4
+         FAyd02jW0DpRPpk4IzYKZ3b6BwvHB9MaZixrzgaxDXAzD3nclAzSlpIJrTdtuiuhURK1
+         yYSPJi9UYDXY294a5QeaZGHUrvfsHbI6xTPWkCJoAJfwhvQur6g9X+5sJFBqFgT2+y/r
+         k6SXx8ahIkb68D7nuQRt5wE7vmMMF/gITDHEBCOW7oQRRudVCo68DVYEyHCN0lYm3ZB4
+         UJWbRoemdyJc8tC9ti1tGH5i4x6j9jmJXbcwbglH/bzBTI3HhaIPx2fcAK1LUhYXg4ne
+         epbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=/ZTnZkYKek+5EDiWJLcDLFzzSu7VX9SBVVqHtordz78=;
+        b=MuD3GtCSc8XeTsFtdErLvJN1cSe9nvG+YBQTokQ7CJPfs7imqDMTLx3ITtsczKoqLZ
+         +p3FxLvvoDU9GqAj+H1HOQrRn9CR9TjdzsBRP/iHaq2IAitXKQiQGcHkXMwlx0BFAv9w
+         MzX0qXwIJKPUVEXFoyl6TNNrBJQV+J2/NOxI95XZn1Zwat8aWgEgu69i2iwC09cEzL54
+         UnskJig+sY8W4dFOLJFPjJ+Ao7H2cb02vjvvU8Y9SovPnUaoGdVtWgdC3YGUcM2glAvz
+         l8qeilLF+cZzqhy2/S0hxyPNDKArd2bl+cxGa0KIMbkdQR1y8EL+Q0i5rW0XUf62ccEK
+         gAwQ==
+X-Gm-Message-State: AOAM533m06MXGDE88+j4ZuhszH0Q5BupXzdT8WPMXh3ATkNlgbI8FYFP
+        QCHS2b06n4x2ltEk+CTLWh0HeU01SuE=
+X-Google-Smtp-Source: ABdhPJyu6H+i6XA4mpGDRZ1N7TQmyTvt8dtGj9LtVHgkT67q5y8kw1LBum3Tp25sglOGZxmfikhXgw==
+X-Received: by 2002:a17:907:9fd:: with SMTP id ce29mr21953245ejc.62.1624863617954;
+        Mon, 28 Jun 2021 00:00:17 -0700 (PDT)
+Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
+        by smtp.gmail.com with ESMTPSA id x2sm612347edv.61.2021.06.28.00.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 00:00:17 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Jun 2021 09:00:15 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] timers/nohz updates for v5.14
+Message-ID: <YNlzf+i1j/4wIUtC@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB3941.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 734a106e-e435-471f-938f-08d93a024d8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2021 06:59:41.3585
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UzJ+f7lL/AHJ2soVKTNgVH6e/U15pC7PX7jBOra27smfZt8xlQAWWowmgWqX0JGZYBAq+7OZi8miVGH17trRZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6900
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU3RlcGhlbiwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTdGVw
-aGVuIEJveWQgPHNib3lkQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZyaWRheSwgSnVuZSAyNSwgMjAy
-MSA0OjIyIFBNDQo+IFRvOiBSYWphbiBWYWphIDxSQUpBTlZAeGlsaW54LmNvbT47IGtyaXN0b0Br
-ZXJuZWwub3JnOyBsZWUuam9uZXNAbGluYXJvLm9yZzsNCj4gTWljaGFsIFNpbWVrIDxtaWNoYWxz
-QHhpbGlueC5jb20+OyBtdHVycXVldHRlQGJheWxpYnJlLmNvbTsNCj4gcXVhbnlhbmcud2FuZ0B3
-aW5kcml2ZXIuY29tDQo+IENjOiBsaW51eC1jbGtAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0t
-a2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwu
-b3JnOyBSYWphbiBWYWphIDxSQUpBTlZAeGlsaW54LmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRD
-SCB2NSAxLzRdIGNsazogenlucW1wOiBVc2UgZmlybXdhcmUgc3BlY2lmaWMgY29tbW9uIGNsb2Nr
-DQo+IGZsYWdzDQo+IA0KPiBRdW90aW5nIFJhamFuIFZhamEgKDIwMjEtMDYtMjQgMDU6MTY6MzAp
-DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL3p5bnFtcC9jbGtjLmMgYi9kcml2ZXJzL2Ns
-ay96eW5xbXAvY2xrYy5jDQo+ID4gaW5kZXggZGI4ZDBkNzE2MWNlLi5hZjA2YTE5NWVjNDYgMTAw
-NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9jbGsvenlucW1wL2Nsa2MuYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvY2xrL3p5bnFtcC9jbGtjLmMNCj4gPiBAQCAtMjcxLDYgKzI3MSwzNCBAQCBzdGF0aWMgaW50
-IHp5bnFtcF9wbV9jbG9ja19nZXRfdG9wb2xvZ3kodTMyDQo+IGNsb2NrX2lkLCB1MzIgaW5kZXgs
-DQo+ID4gICAgICAgICByZXR1cm4gcmV0Ow0KPiA+ICB9DQo+ID4NCj4gPiArdW5zaWduZWQgbG9u
-ZyB6eW5xbXBfY2xrX21hcF9jb21tb25fY2NmX2ZsYWdzKGNvbnN0IHUzMiB6eW5xbXBfZmxhZykN
-Cj4gPiArew0KPiA+ICsgICAgICAgdW5zaWduZWQgbG9uZyBjY2ZfZmxhZyA9IDA7DQo+ID4gKw0K
-PiA+ICsgICAgICAgaWYgKHp5bnFtcF9mbGFnICYgWllOUU1QX0NMS19TRVRfUkFURV9HQVRFKQ0K
-PiA+ICsgICAgICAgICAgICAgICBjY2ZfZmxhZyB8PSBDTEtfU0VUX1JBVEVfR0FURTsNCj4gPiAr
-ICAgICAgIGlmICh6eW5xbXBfZmxhZyAmIFpZTlFNUF9DTEtfU0VUX1BBUkVOVF9HQVRFKQ0KPiA+
-ICsgICAgICAgICAgICAgICBjY2ZfZmxhZyB8PSBDTEtfU0VUX1BBUkVOVF9HQVRFOw0KPiA+ICsg
-ICAgICAgaWYgKHp5bnFtcF9mbGFnICYgWllOUU1QX0NMS19TRVRfUkFURV9QQVJFTlQpDQo+ID4g
-KyAgICAgICAgICAgICAgIGNjZl9mbGFnIHw9IENMS19TRVRfUkFURV9QQVJFTlQ7DQo+ID4gKyAg
-ICAgICBpZiAoenlucW1wX2ZsYWcgJiBaWU5RTVBfQ0xLX0lHTk9SRV9VTlVTRUQpDQo+ID4gKyAg
-ICAgICAgICAgICAgIGNjZl9mbGFnIHw9IENMS19JR05PUkVfVU5VU0VEOw0KPiA+ICsgICAgICAg
-aWYgKHp5bnFtcF9mbGFnICYgWllOUU1QX0NMS19HRVRfUkFURV9OT0NBQ0hFKQ0KPiA+ICsgICAg
-ICAgICAgICAgICBjY2ZfZmxhZyB8PSBDTEtfR0VUX1JBVEVfTk9DQUNIRTsNCj4gDQo+IERvZXMg
-dGhlIGZpcm13YXJlIHJlYWxseSB1c2UgYWxsIHRoZXNlIGZsYWdzPyBJZGVhbGx5IHdlIGdldCBy
-aWQgb2YgdGhlDQo+IGFib3ZlIHR3by4NCj4gDQo+ID4gKyAgICAgICBpZiAoenlucW1wX2ZsYWcg
-JiBaWU5RTVBfQ0xLX1NFVF9SQVRFX05PX1JFUEFSRU5UKQ0KPiA+ICsgICAgICAgICAgICAgICBj
-Y2ZfZmxhZyB8PSBDTEtfU0VUX1JBVEVfTk9fUkVQQVJFTlQ7DQo+ID4gKyAgICAgICBpZiAoenlu
-cW1wX2ZsYWcgJiBaWU5RTVBfQ0xLX0dFVF9BQ0NVUkFDWV9OT0NBQ0hFKQ0KPiA+ICsgICAgICAg
-ICAgICAgICBjY2ZfZmxhZyB8PSBDTEtfR0VUX0FDQ1VSQUNZX05PQ0FDSEU7DQo+ID4gKyAgICAg
-ICBpZiAoenlucW1wX2ZsYWcgJiBaWU5RTVBfQ0xLX1JFQ0FMQ19ORVdfUkFURVMpDQo+ID4gKyAg
-ICAgICAgICAgICAgIGNjZl9mbGFnIHw9IENMS19SRUNBTENfTkVXX1JBVEVTOw0KPiANCj4gQW5k
-IHRoaXMgb25lLg0KPiANCj4gPiArICAgICAgIGlmICh6eW5xbXBfZmxhZyAmIFpZTlFNUF9DTEtf
-U0VUX1JBVEVfVU5HQVRFKQ0KPiA+ICsgICAgICAgICAgICAgICBjY2ZfZmxhZyB8PSBDTEtfU0VU
-X1JBVEVfVU5HQVRFOw0KPiA+ICsgICAgICAgaWYgKHp5bnFtcF9mbGFnICYgWllOUU1QX0NMS19J
-U19DUklUSUNBTCkNCj4gPiArICAgICAgICAgICAgICAgY2NmX2ZsYWcgfD0gQ0xLX0lTX0NSSVRJ
-Q0FMOw0KPiANCj4gQW5kIHRoaXMgb25lLg0KPiANCj4gSSB3b3JyeSB0aGF0IHN1cHBvcnRpbmcg
-YWxsIHRoZXNlIGZsYWdzIHdpbGwgbWVhbiB3ZSBjYW4gbmV2ZXIgZ2V0IHJpZA0KPiBvZiB0aGVt
-LiBBbmQgd2UgY3VycmVudGx5IGRvbid0IHN1cHBvcnQgc2V0dGluZyBjcml0aWNhbCB2aWEgRFQs
-IHdoaWNoDQo+IGlzIGVzc2VudGlhbGx5IGFub3RoZXIgZmlybXdhcmUgaW50ZXJmYWNlIGxpa2Ug
-dGhpcyBvbmUuDQpbUmFqYW5dIGZpcm13YXJlIGlzIHVzaW5nIGJlbG93IGZsYWdzOg0KWllOUU1Q
-X0NMS19TRVRfUkFURV9HQVRFDQpaWU5RTVBfQ0xLX1NFVF9QQVJFTlRfR0FURQ0KWllOUU1QX0NM
-S19TRVRfUkFURV9QQVJFTlQNClpZTlFNUF9DTEtfSUdOT1JFX1VOVVNFRA0KWllOUU1QX0NMS19T
-RVRfUkFURV9OT19SRVBBUkVOVA0KWllOUU1QX0NMS19JU19DUklUSUNBTA0KDQpPdGhlciBmbGFn
-cyBhcmUgdW51c2VkLiBJIHdpbGwgcmVtb3ZlIHVudXNlZCBmbGFncyBpbiBuZXh0IHZlcnNpb24u
-DQoNClRoYW5rcywNClJhamFuDQo+IA0KPiA+ICsNCj4gPiArICAgICAgIHJldHVybiBjY2ZfZmxh
-ZzsNCj4gPiArfQ0KPiA+ICsNCj4gPiAgLyoqDQo+ID4gICAqIHp5bnFtcF9jbGtfcmVnaXN0ZXJf
-Zml4ZWRfZmFjdG9yKCkgLSBSZWdpc3RlciBmaXhlZCBmYWN0b3Igd2l0aCB0aGUNCj4gPiAgICog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvY2sgZnJhbWV3b3JrDQo=
+Linus,
+
+Please pull the latest timers/nohz git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-nohz-2021-06-28
+
+   # HEAD: 09fe880ed7a160ebbffb84a0a9096a075e314d2f MAINTAINERS: Add myself as context tracking maintainer
+
+Updates to the tick/nohz code in this cycle:
+
+ - Micro-optimize tick_nohz_full_cpu()
+
+ - Optimize idle exit tick restarts to be less eager
+
+ - Optimize tick_nohz_dep_set_task() to only wake up
+   a single CPU. This reduces IPIs and interruptions
+   on nohz_full CPUs.
+
+ - Optimize tick_nohz_dep_set_signal() in a similar
+   fashion.
+
+ - Skip IPIs in tick_nohz_kick_task() when trying
+   to kick a non-running task.
+
+ - Micro-optimize tick_nohz_task_switch() IRQ flags
+   handling to reduce context switching costs.
+
+ - Misc cleanups and fixes
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Frederic Weisbecker (4):
+      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+      tick/nohz: Update nohz_full Kconfig help
+      tick/nohz: Only wake up a single target cpu when kicking a task
+      MAINTAINERS: Add myself as context tracking maintainer
+
+Marcelo Tosatti (2):
+      tick/nohz: Change signal tick dependency to wake up CPUs of member tasks
+      tick/nohz: Kick only _queued_ task whose tick dependency is updated
+
+Peter Zijlstra (2):
+      tick/nohz: Evaluate the CPU expression after the static key
+      tick/nohz: Call tick_nohz_task_switch() with interrupts disabled
+
+Yunfeng Ye (2):
+      tick/nohz: Conditionally restart tick on idle exit
+      tick/nohz: Update idle_exittime on actual idle exit
+
+
+ MAINTAINERS                    |   6 ++
+ include/linux/sched.h          |   2 +
+ include/linux/tick.h           |  26 +++++----
+ kernel/sched/core.c            |   7 ++-
+ kernel/time/Kconfig            |  11 ++--
+ kernel/time/posix-cpu-timers.c |   4 +-
+ kernel/time/tick-sched.c       | 129 ++++++++++++++++++++++++++++-------------
+ 7 files changed, 125 insertions(+), 60 deletions(-)
