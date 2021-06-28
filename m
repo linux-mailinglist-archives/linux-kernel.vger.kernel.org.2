@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BC93B65BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD39B3B660A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239105AbhF1PfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:35:01 -0400
-Received: from pv50p00im-ztbu10021601.me.com ([17.58.6.57]:40640 "EHLO
-        pv50p00im-ztbu10021601.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237768AbhF1PUV (ORCPT
+        id S236661AbhF1Ptj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236476AbhF1PtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:20:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1624893472; bh=giHbjBf++rogiLGAOt9HJUmkwkKfSi+Vn7w9ZvDIEbs=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=aOLuUBqQPLCC+7v8dTC5dnj9RauiQqR52DoXxQT1W6ZmR4zDs139xL/weFC2VHLRM
-         uBVC7F2Kzf2zQfcMY21RKU6LCZqr7fIGCfCPEmTGvVo5WjHas8rpv1jMNpuq8MgTDM
-         Kvk7LkieRdZeMjYrf3arxNA2kZ7BlP5d3mC9S8tjYAAmDpGDU9Tg3esmjq9WbHdnM+
-         MjaV0PSunvhXf/yf4kxSEKCuzBSRaaQbipstsU7C9Jq3RZfBrgQnU9sP8N8t1Us/2/
-         CDYoAKd7xhLKx9FNIQJDv47gvb/H8AikyKRnr32GyohsFuVUqIco/on0JSS0mOFnyw
-         iXQhw49r8JOtA==
-Received: from xiongwei.. (unknown [120.245.2.115])
-        by pv50p00im-ztbu10021601.me.com (Postfix) with ESMTPSA id 663A56E05A7;
-        Mon, 28 Jun 2021 15:17:49 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH v2] locking/lockdep: Fix meaningless usages output of lock classes
-Date:   Mon, 28 Jun 2021 23:17:08 +0800
-Message-Id: <20210628151708.138524-1-sxwjean@me.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 28 Jun 2021 11:49:21 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07011C07022F;
+        Mon, 28 Jun 2021 08:18:49 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 0B4E31F427D6
+Message-ID: <276e3e43ba89ea996f89eb4109b0d50bc43d4d7f.camel@collabora.com>
+Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>, p.zabel@pengutronix.de,
+        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, kernel@collabora.com,
+        cphealy@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Date:   Mon, 28 Jun 2021 12:18:34 -0300
+In-Reply-To: <24bea430-56d9-9a62-130d-1ed3830c1915@collabora.com>
+References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+         <20210407073534.376722-4-benjamin.gaignard@collabora.com>
+         <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
+         <24bea430-56d9-9a62-130d-1ed3830c1915@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_12:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2106280104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+Hi Benjamin,
 
-When enabling CONFIG_LOCK_STAT, then CONFIG_LOCKDEP is forcedly enabled.
-We can get output from /proc/lockdep, which currently includes usages of
-lock classes. But the usages are meaningless, see the output below:
+On Mon, 2021-06-28 at 15:35 +0200, Benjamin Gaignard wrote:
+> 
+> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
+> > Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
+> > > In order to be able to share the control hardware block between
+> > > VPUs use a syscon instead a ioremap it in the driver.
+> > > To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+> > > phandle is not found look at 'ctrl' reg-name.
+> > > With the method it becomes useless to provide a list of register
+> > > names so remove it.
+> > Sorry for putting a spoke in the wheel after many iterations of the
+> > series.
+> > 
+> > We just discussed a way forward on how to handle the clocks and resets
+> > provided by the blkctl block on i.MX8MM and later and it seems there is
+> > a consensus on trying to provide virtual power domains from a blkctl
+> > driver, controlling clocks and resets for the devices in the power
+> > domain. I would like to avoid introducing yet another way of handling
+> > the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
+> > what we are planning to do on the later chip generations.
+> > 
+> > CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
+> > virtual power domain thing a shot.
+> 
+> Hey guys,
+> 
+> I may I have miss them but I haven't see patches about power domain for IMX8MQ
+> VPU control block ?
+> Is it something that you still plan to do ?
+> If not, I can resend my patches where I use syscon.
+> 
 
-/ # cat /proc/lockdep
-all lock classes:
-ffffffff9af63350 ....: cgroup_mutex
+Please see "soc: imx: add i.MX BLK-CTL support" [1] sent by Peng
+a couple weeks ago. It adds the VPUMIX for i.MX8MM, so it seems
+the best way forward is to follow that design, extending it for
+i.MX8MQ.
 
-ffffffff9af54eb8 ....: (console_sem).lock
+That's still under discussion, but hopefully it will be sorted out for v5.15.
 
-ffffffff9af54e60 ....: console_lock
+Speaking of i.MX8MM, I got a report that the Hantro G1 block mostly
+work, but needs to be restricted to 1920x1080. If you could add a new
+compatible and variant for that, maybe we can find someone to test it.
 
-ffffffff9ae74c38 ....: console_owner_lock
+[1] https://lore.kernel.org/linux-arm-kernel/7683ab0b-f905-dff1-aa4f-76ad638da568@oss.nxp.com/T/#mf73fe4a13aec0a8e633a14a5d9c2d5609799acb4
 
-ffffffff9ae74c80 ....: console_owner
-
-ffffffff9ae66e60 ....: cpu_hotplug_lock
-
-Only one usage context for each lock, this is because each usage is only
-changed in mark_lock() that is in CONFIG_PROVE_LOCKING defined section,
-however in the test situation, it's not.
-
-The fix is to move the usages reading and seq_print from
-CONFIG_PROVE_LOCKING undefined setcion to its defined section. Also,
-locks_after list of lock_class is empty when CONFIG_PROVE_LOCKING
-undefined, so do the same thing as what have done for usages of lock
-classes.
-
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- kernel/locking/lockdep_proc.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 806978314496..a1ec2652d492 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -70,23 +70,25 @@ static int l_show(struct seq_file *m, void *v)
- #ifdef CONFIG_DEBUG_LOCKDEP
- 	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
- #endif
--#ifdef CONFIG_PROVE_LOCKING
--	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
--	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
--#endif
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
-+		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
- 
--	get_usage_chars(class, usage);
--	seq_printf(m, " %s", usage);
-+		get_usage_chars(class, usage);
-+		seq_printf(m, " %s", usage);
-+	}
- 
- 	seq_printf(m, ": ");
- 	print_name(m, class);
- 	seq_puts(m, "\n");
- 
--	list_for_each_entry(entry, &class->locks_after, entry) {
--		if (entry->distance == 1) {
--			seq_printf(m, " -> [%p] ", entry->class->key);
--			print_name(m, entry->class);
--			seq_puts(m, "\n");
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		list_for_each_entry(entry, &class->locks_after, entry) {
-+			if (entry->distance == 1) {
-+				seq_printf(m, " -> [%p] ", entry->class->key);
-+				print_name(m, entry->class);
-+				seq_puts(m, "\n");
-+			}
- 		}
- 	}
- 	seq_puts(m, "\n");
--- 
-2.30.2
+Kindly,
+Ezequiel
 
