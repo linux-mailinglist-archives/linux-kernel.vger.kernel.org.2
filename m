@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCDD3B5969
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3AC3B596B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhF1HFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232356AbhF1HFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232332AbhF1HFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 03:05:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36752 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231725AbhF1HE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:04:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624863751; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=g8AXCTj9BiQLyJnLLdipxuqkcsPu5WGjWgb8TFrd67Q=;
- b=XQYmbVa2T8nH1Me4jG58UPeSppSkawknfPuBT+9D+b5OK8rsLzHN6rp6ODPgRcQZRSwZzMa3
- 53/fKFN5tPEW61GiAI64Bck3hwZvVI2QxuHY1ymdknJbMvXJIFw23Lparw7f4rbWsBl/o2WO
- Lx6zksjljYnCwHxLy4nDK/FuVBg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60d973e3d2559fe392579ef1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Jun 2021 07:01:55
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06B07C43460; Mon, 28 Jun 2021 07:01:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3035BC433F1;
-        Mon, 28 Jun 2021 07:01:54 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AA9C061766;
+        Mon, 28 Jun 2021 00:02:38 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id nd37so28179765ejc.3;
+        Mon, 28 Jun 2021 00:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=snyk/AXhy7GrEZfzYc6ccI7tWOy8mp8ddfAE4nP28I0=;
+        b=OY0RRvBe/Cqd+CA8HKJkufMQUsqyWewAmN8AWozUQNEAlXTy7PI2hFZp90dydyOGYv
+         IVBVkWUjgs6hIApJ+PrF7WVhzHqryi7ZyfbvxPpTdFthWxjdueBeFOYQCSFJl9w570Qz
+         yszUQYaM8jrDnM+YVp6x7z0CwUa22QQAtZlMa0I3m8ZIovclykMX7h8wnQJcIZVNSATB
+         D9mv6SgzI5SGIQgQwSB3fpW6YzhNxXgDTkzFsxgaBBNigtJVxOikts1U9uCcXBSA88iK
+         njFtoZOljz2mSgejEZzHzrTE1xTNXk8WGBuD3YY/Jd7EcyyYZiLWfWZMoInQOPHr9pb7
+         SkYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=snyk/AXhy7GrEZfzYc6ccI7tWOy8mp8ddfAE4nP28I0=;
+        b=Gjy1knYR0Ksa8e90xAmOhGSeqJ5DgUO7Dtp+oyS2W/UpJVvnYtVXXrDclAXvUsvj7L
+         vhfp0An8imw+WCKH09TrpJd42BUxDMZgfiPQuyRJLNtSzt9UUr4bFBXf+M2NKa/KiKw8
+         X5P2t4D/HkSxBobLR97NFONWjriGAY9AeTNiAoc8Ae4iL2Lh9HuVPTb9qZgZyynYDas/
+         ELwsqNfFGw44AJeKXH3vZBBCBvvZiJk1FAk9jdsWWMi9mKje8L7bJpf6DASogk2Ncsur
+         o2v/FptSjJjxdPnIL/pgl3u9v8GHOPRygMHs1hFRIkSeNNepMCGU64pjF48A+e81LAJt
+         xm0w==
+X-Gm-Message-State: AOAM530GV2nBdF4d4JJsbyrDZ3aeNqT1eg44XTGSwoUpkC6E0eeNr2ZK
+        /RtmjafKfmMjR9SqpvfonEk=
+X-Google-Smtp-Source: ABdhPJx1lPR7HFV30XJf1MGFUhzIqBWRw2VoffegpfT7ONKQn3Nj8iS1mXX/AYdwm1esMzeZr7hB1A==
+X-Received: by 2002:a17:906:6ad3:: with SMTP id q19mr22626207ejs.11.1624863756946;
+        Mon, 28 Jun 2021 00:02:36 -0700 (PDT)
+Received: from ubuntu2004 ([188.24.178.25])
+        by smtp.gmail.com with ESMTPSA id i21sm6444348ejo.9.2021.06.28.00.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 00:02:36 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 10:02:34 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        kbuild-all@lists.01.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] ARM: dts: owl-s500: Add ethernet support
+Message-ID: <20210628070234.GA1003245@ubuntu2004>
+References: <222ee0c2cb431619f558dce9726585ac92f65e00.1623401998.git.cristian.ciocaltea@gmail.com>
+ <202106162101.RfHWePKS-lkp@intel.com>
+ <20210628062235.GA4033@workstation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Jun 2021 15:01:54 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
- is_sys_suspended
-In-Reply-To: <cb39c5d7-c21d-66b1-0a86-f9154f73a94e@acm.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-2-git-send-email-cang@codeaurora.org>
- <cb39c5d7-c21d-66b1-0a86-f9154f73a94e@acm.org>
-Message-ID: <b7562bc820fc712196104a5eae30e2e4@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628062235.GA4033@workstation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-25 07:42, Bart Van Assche wrote:
-> On 6/23/21 12:35 AM, Can Guo wrote:
->> Rename pm_op_in_progress and is_sys_suspended to wlu_pm_op_in_progress 
->> and
->> is_wlu_sys_suspended accordingly.
-> 
-> Can the is_wlu_sys_suspended member variable be removed by checking
-> dev->power.is_suspended where dev represents the WLUN?
-> 
+Hi Mani,
 
-No, PM set dev->power.is_suspended to "false" even the device failed 
-resuming,
-while is_wlu_sys_suspended can be used to tell that.
+On Mon, Jun 28, 2021 at 11:52:35AM +0530, Manivannan Sadhasivam wrote:
+> Hi Cristi,
+> 
+> On Wed, Jun 16, 2021 at 09:30:13PM +0800, kernel test robot wrote:
+> > Hi Cristian,
+> > 
+> > I love your patch! Yet something to improve:
+> > 
+> > [auto build test ERROR on robh/for-next]
+> > [also build test ERROR on v5.13-rc6 next-20210615]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> > 
+> > url:    https://github.com/0day-ci/linux/commits/Cristian-Ciocaltea/Add-Ethernet-DTS-for-Actions-Semi-Owl-S500-SoCs/20210616-121106
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> > config: arm-randconfig-r025-20210615 (attached as .config)
+> > compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/87e17f86112592e0805d0a081914f7b2eeb2770d
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Cristian-Ciocaltea/Add-Ethernet-DTS-for-Actions-Semi-Owl-S500-SoCs/20210616-121106
+> >         git checkout 87e17f86112592e0805d0a081914f7b2eeb2770d
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> > >> Error: arch/arm/boot/dts/owl-s500.dtsi:332.19-20 syntax error
+> > >> FATAL ERROR: Unable to parse input tree
+> 
+> Did you look into this error? Looks like CLK_ETHERNET is not defined in
+> the s500 CMU binding.
+
+CLK_ETHERNET is introduced through patches 5 & 6 from the patch series:
+"[PATCH v3 0/6] Improve clock support for Actions S500 SoC"
+
+Most probably those patches were not applied to the tested kernel tree
+and that's why the robot reported the error.
 
 Thanks,
+Cristi
 
-Can Guo.
-
-> Thanks,
+> Today I saw that the clk patches are applied but then it is later for me
+> to send the dts patches for v5.14. So please fix this error and
+> resubmit, I'll take them for v5.15.
 > 
-> Bart.
+> Thanks,
+> Mani
+> 
+> > 
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> 
