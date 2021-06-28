@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B083B5BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319FF3B5BF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhF1KFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:05:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4304 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232664AbhF1KFE (ORCPT
+        id S232660AbhF1KFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:05:13 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:60250 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232556AbhF1KFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:05:04 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15S9Ws1F114753;
-        Mon, 28 Jun 2021 06:02:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=kyL2mVIJzs+HDFn1txhBWQuxASTtAL4NK+sQHR9/M6w=;
- b=nlhmKcLJUCCyLIB4qbT56v44PyBoB93JSwEOFbliY1ABdDDC2qQiEBobAN7uVXxWVpG5
- fAN+9TL1iFKJ8OcMRrCgsisK9a2F9eUT6cHPoH61tR0IY62g8uQe4VrhkNlfK2W6vMEC
- rWgCkWNt6CgrAjmAjQaShlrvFizPefYxUtARNDx3sfZWy1JYIknD7gMqnvnisEYAOaDl
- NzjUV7hFWg0CfClwn2aeVwqO3IFcrcYQZZwlSg7i7RQ5AMzP4jBNLdyUtM8Zx8UwnjDa
- NFpBKv1Wp4mtyIbeRkVhYVtSw7aiHu2gzXuQNL9TLaKwineHuHP7XrwuOKQWNMHt1idD 4g== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39f9m34saf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 06:02:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SA2TwB008458;
-        Mon, 28 Jun 2021 10:02:29 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39duv8gq80-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 10:02:29 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SA2QUG22020388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 10:02:26 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BE9411CC68;
-        Mon, 28 Jun 2021 10:02:24 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5550E11CC4A;
-        Mon, 28 Jun 2021 10:02:24 +0000 (GMT)
-Received: from osiris (unknown [9.145.26.242])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 28 Jun 2021 10:02:24 +0000 (GMT)
-Date:   Mon, 28 Jun 2021 12:02:22 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 7/9] s390: kprobes: Use is_kernel() helper
-Message-ID: <YNmeLhfWf3Rs6yRA@osiris>
-References: <20210626073439.150586-1-wangkefeng.wang@huawei.com>
- <20210626073439.150586-8-wangkefeng.wang@huawei.com>
+        Mon, 28 Jun 2021 06:05:08 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 2AA135233ED;
+        Mon, 28 Jun 2021 13:02:41 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1624874561;
+        bh=2ZcxuzAOr5rwISq3QvCdGeK5DromCAlghudAmDK/oLA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=lUwpqFPPhyRdhQiLh45Ic98b76LfAAYMEXjnhM2SMPvL6xkNpfTpzJZAKI9WvddMg
+         bMnRyo1t+jjOxg5mUBZT93L2CKL4EHZqgQJHw1wP1kAbnKB0odZYH1OF9NYAFQw28p
+         n6y1Rd9mC7dK4nruN9EitU85zv7larZK8/V6+eG9iu6MOdjTCq7HZ58N7gkbXJVSLq
+         mpy0ic1amEMF9n1cw7h4vbYjvfIPsoC42JR2YB2Py2RubNnIdvzgyDbum5z0qpXdxq
+         9WT+SYmz8VFjHE34LAHmgEwB+8RTQaE+1mFwfEbEgACORi9+E/btid7G4Q25VN+b86
+         3i/Qj6qCrJ+sw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 631515233F2;
+        Mon, 28 Jun 2021 13:02:40 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 28
+ Jun 2021 13:02:39 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [RFC PATCH v1 04/16] virtio/vsock: remove 'virtio_transport_seqpacket_has_data'
+Date:   Mon, 28 Jun 2021 13:02:24 +0300
+Message-ID: <20210628100227.570585-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
+References: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210626073439.150586-8-wangkefeng.wang@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8I-ro_vE4lHJmKJVPRaA2OAWE_TQiwbE
-X-Proofpoint-GUID: 8I-ro_vE4lHJmKJVPRaA2OAWE_TQiwbE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_07:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- mlxscore=0 mlxlogscore=770 priorityscore=1501 adultscore=0 phishscore=0
- bulkscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106280066
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/28/2021 09:47:58
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164664 [Jun 28 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/28/2021 09:51:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 28.06.2021 5:59:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/28 08:23:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/28 05:40:00 #16806866
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 03:34:37PM +0800, Kefeng Wang wrote:
-> Use is_kernel() helper instead of is_kernel_addr().
-> 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  arch/s390/kernel/kprobes.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-...
-> -static inline int is_kernel_addr(void *addr)
-> -{
-> -	return addr < (void *)_end;
-> -}
-> -
->  static int s390_get_insn_slot(struct kprobe *p)
->  {
->  	/*
-> @@ -105,7 +100,7 @@ static int s390_get_insn_slot(struct kprobe *p)
->  	 * field can be patched and executed within the insn slot.
->  	 */
->  	p->ainsn.insn = NULL;
-> -	if (is_kernel_addr(p->addr))
-> +	if (is_kernel(p->addr))
->  		p->ainsn.insn = get_s390_insn_slot();
->  	else if (is_module_addr(p->addr))
->  		p->ainsn.insn = get_insn_slot();
-> @@ -117,7 +112,7 @@ static void s390_free_insn_slot(struct kprobe *p)
->  {
->  	if (!p->ainsn.insn)
->  		return;
-> -	if (is_kernel_addr(p->addr))
-> +	if (is_kernel(p->addr))
->  		free_s390_insn_slot(p->ainsn.insn, 0);
->  	else
->  		free_insn_slot(p->ainsn.insn, 0);
+As now 'rx_bytes' is used to check presence of data on socket,
+this function is obsolete.
 
-Given that this makes sense its own, and I can't follow the discussion
-of the patch series due to missing cc, I applied this to the s390 tree
-- and also fixed up the missing unsigned long casts.
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ include/linux/virtio_vsock.h            |  1 -
+ net/vmw_vsock/virtio_transport_common.c | 13 -------------
+ 2 files changed, 14 deletions(-)
 
-Thanks!
+diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+index 35d7eedb5e8e..719008d4235e 100644
+--- a/include/linux/virtio_vsock.h
++++ b/include/linux/virtio_vsock.h
+@@ -91,7 +91,6 @@ virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+ 				   int flags);
+ s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+ s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+-u32 virtio_transport_seqpacket_has_data(struct vsock_sock *vsk);
+ 
+ int virtio_transport_do_socket_init(struct vsock_sock *vsk,
+ 				 struct vsock_sock *psk);
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index f014ccfdd9c2..bc25961509e0 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -540,19 +540,6 @@ s64 virtio_transport_stream_has_data(struct vsock_sock *vsk)
+ }
+ EXPORT_SYMBOL_GPL(virtio_transport_stream_has_data);
+ 
+-u32 virtio_transport_seqpacket_has_data(struct vsock_sock *vsk)
+-{
+-	struct virtio_vsock_sock *vvs = vsk->trans;
+-	u32 msg_count;
+-
+-	spin_lock_bh(&vvs->rx_lock);
+-	msg_count = vvs->msg_count;
+-	spin_unlock_bh(&vvs->rx_lock);
+-
+-	return msg_count;
+-}
+-EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_has_data);
+-
+ static s64 virtio_transport_has_space(struct vsock_sock *vsk)
+ {
+ 	struct virtio_vsock_sock *vvs = vsk->trans;
+-- 
+2.25.1
+
