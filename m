@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57FA3B68F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33323B6900
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhF1TUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:20:20 -0400
-Received: from mail-vk1-f182.google.com ([209.85.221.182]:41516 "EHLO
-        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234492AbhF1TUS (ORCPT
+        id S236397AbhF1TX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:23:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3784 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235037AbhF1TXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:20:18 -0400
-Received: by mail-vk1-f182.google.com with SMTP id s72so4207047vkb.8;
-        Mon, 28 Jun 2021 12:17:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1kgfbZhYJkXzzmr7bNgLSoqZcGM1rWxHnjonqp3p6M4=;
-        b=hpoCwrunIKs2bKQHGSzC7jX9ZsCbaYBwPjoG6WFNUuenXSMJlEB44C33Vr2kloinhU
-         jwLKLSEUFwsZDIBMTSY4ssmDkyDVR6+QW3InxSKshfRpdwIgNfjeA5mNOKRnm//qRJnP
-         OAccC8muQcXnXNp4Qd/CDh5ATJuglknFE2tBOhhl5CadVoqM/bn1yaLigX84mmIMB8fH
-         Dv+3THBUIyPYkW0WJ3r//eebypTuPNf02S/50Wo5CbDnDgKyNJiOEZX8e2kIdQ7QAFpf
-         keuzUTt4/3o9IOes07vj+EiTZWnWNLt+H5qetDRcWlPdpyf57psvcFGWdSU4KHXlL+RF
-         fXmA==
-X-Gm-Message-State: AOAM530ndj5H96a7GpsCI5mBV2ewbBEZCUDtRQupZMXX/sqPorNcdQM5
-        QjX//heG7SuOiXUPmswcQKZbiUrXTjMpTlp5O0w=
-X-Google-Smtp-Source: ABdhPJzs8zbnJjOLDbjAx1eFBIkt9LTfmLSpKI8oTfbuVusOL0Bm2d6UnYO3XmABdwIa/jNXr5Siyc6+oD1nv2X1nUA=
-X-Received: by 2002:a1f:ac45:: with SMTP id v66mr18581239vke.1.1624907871922;
- Mon, 28 Jun 2021 12:17:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk> <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com> <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
-In-Reply-To: <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 21:17:33 +0200
-Message-ID: <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Mon, 28 Jun 2021 15:23:52 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SJ3mjX160591;
+        Mon, 28 Jun 2021 15:21:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=4wu0Ddv1MfZ3y5Ez7fexH8dvSk3YjDkNVPwDhX77vG0=;
+ b=QTaSZhPZSZilSvnADPOVBpeMJxR1KcEkzkGNdQONeeP5RZ2PZP5IeRvnUv6hlOHgmBc8
+ OSAQbTluSq0Tble855eiuILMM0tTh9mJkg6Xhw8e1v+Wn5/EeJC6TwQoVeU0GuKvx7eF
+ D8ZxgX0+xNW38Iqqs+3b0AktukIusj5kqkNlTZhvAGS/HTDARwtCsKkxcAT25kqw/+qf
+ 8uqfDs7KxD5/EBsamS9fMZ1BtizZdffTBLctfZSZnAzeWmbHUvaPz5W/30d7u7dEZeZe
+ f1OoEh/ODxqaURFLGV3FBKQ8Of4MbLiwzHamE38C0jbgAZr6y/k7vSGRrvMb7UhNIgXk vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fhu2mtvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 15:21:23 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SJ6O8A170613;
+        Mon, 28 Jun 2021 15:21:23 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fhu2mtvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 15:21:22 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SJHFXg003644;
+        Mon, 28 Jun 2021 19:21:22 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 39duvbrf14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 19:21:22 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SJLKkr22675828
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 19:21:20 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 79F286A08B;
+        Mon, 28 Jun 2021 19:21:19 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A35F6A094;
+        Mon, 28 Jun 2021 19:21:19 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Jun 2021 19:21:18 +0000 (GMT)
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+References: <20210623135600.n343aglmvu272fsg@kernel.org>
+ <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
+ <8de9d45e-4389-8316-b0d0-e9a43be9fade@linux.ibm.com>
+ <CAHk-=wibQ3ahmo0m3BynA3bw2Fkhv0OfMJuV0+wEMwg93Fbj0g@mail.gmail.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <d3fd4b64-be6a-2210-5cfa-fc1947aea293@linux.ibm.com>
+Date:   Mon, 28 Jun 2021 15:21:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <CAHk-=wibQ3ahmo0m3BynA3bw2Fkhv0OfMJuV0+wEMwg93Fbj0g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: N4ftWuMCLZo4HqMsM5D9th5CXzb2qFak
+X-Proofpoint-GUID: 0_RKVwjoY670kTNcsMS_OCNW2JinGW-M
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ spamscore=0 phishscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106280124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
 
-On Mon, Jun 28, 2021 at 7:14 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 28.06.2021 um 19:31 schrieb Geert Uytterhoeven:
-> >> Haven't found that warning in over 7 years' worth of console logs, and
-> >> I'm a good candidate for running the oldest userland in existence for m68k.
-> >>
-> >> Time to let it go.
-> >
-> > The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
-> > which is a very old ramdisk from right after the m68k a.out to ELF
-> > transition:
-> >
-> >     warning: process `update' used the obsolete bdflush system call
-> >     Fix your initscripts?
-> >
-> > I still boot it, once in a while.
+On 6/28/21 3:11 PM, Linus Torvalds wrote:
+> On Mon, Jun 28, 2021 at 11:33 AM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>> The removal is triggered by the user changing the type of key from what
+>> is in the keyfile.
 >
-> OK; you take the cake. That ramdisk came to mind when I thought about
-> where I'd last seen bdflush, but I've not used it in ages (not sure 14
-> MB are enough for that).
+>
+> So no. No backups either. Because there is not a single valid
+> situation where you'd want a backup - because the kernel build should
+> never EVER modify the original.
+>
+> Maybe I misunderstand what is going on, but I think the whole thing is
+> completely wrongly designed. The _only_ key that the kernel build
+> should touchn is the auto-generated throw-away one (ie
+> "certs/signing_key.pem"), not CONFIG_MODULE_SIG_KEY in general.
 
-Of course it will work on your 14 MiB machine!  It fits on a floppy, _after_
-decompression.  It was used by people to install Linux on the hard disks
-of their beefy m68k machines, after they had set up the family Christmas
-tree, in December 1996.
+Correct, and the code (certs/Makefile) is surrounded by the check for 
+this particular file here, so it won't touch anything else:
 
-I also have a slightly larger one, built from OpenWRT when I did my first
-experiments on that.  Unlike filesys-ELF-2.0.x-1400K-2.gz, it does open
-a shell on the serial console, so it is more useful to me.
+[...]
 
-> The question then is - will bdflush fail gracefully, or spin retrying
-> the syscall?
+ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
 
-Will add to my todo list...
-BTW, you can boot this ramdisk on ARAnyM, too.
+ifeq ($(openssl_available),yes)
+X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
+endif
 
-Gr{oetje,eeting}s,
+# Support user changing key type
+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
+ifeq ($(openssl_available),yes)
+$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f 
+$(CONFIG_MODULE_SIG_KEY)))
+endif
+endif # CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
 
-                        Geert
+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
+ifeq ($(openssl_available),yes)
+$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f 
+$(CONFIG_MODULE_SIG_KEY)))
+endif
+endif # CONFIG_MODULE_SIG_KEY_TYPE_RSA
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+[...]
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+There's one dent in this patch series that requires suppressing an error 
+output:  https://lkml.org/lkml/2021/6/25/452
+
+
+   Stefan
+
+
+>
+>                   Linus
