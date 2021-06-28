@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330613B5E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72E43B5E1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhF1Mhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232624AbhF1Mhh (ORCPT
+        id S232725AbhF1MiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:38:11 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:48776 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232514AbhF1MiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:37:37 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BA7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:35:11 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id q4so17070761ljp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:35:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b4cWCmiDmq2f7gAA0xos0gUPIaEGtZleOLH3TntBbjU=;
-        b=hNXeh7nZH0tYje8UHbWOl9pCANcbvnisVkD3HC3/SSju9adfXxY09laZVxCXe2rBer
-         woHbUYrAB5t48FfkqlO5flfTsYpteDH58VduuLVfKAFdVnQoGhT794hGVvEXuicmBu4H
-         HgR7BMC5ULaF3RdDM0YoC1gG8ESOJba1pvcNKZoI0KczsoZFqQDAOxZ5NaP7QgQRSNfB
-         LDVBTZpKO6o8TDPow9pPSYxxXqHtjjBmc+OJ5SLF2LVunV5GDw5kCoL1gUgBK3XMyKcA
-         rShKFeL+hWfr0t7M0+BoSjzFh5At11CoOUBpn5SWgXL4L5AfuhBTzWyAzfu9xSHBuWCA
-         8EBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b4cWCmiDmq2f7gAA0xos0gUPIaEGtZleOLH3TntBbjU=;
-        b=fVmFrUK+qG8dOcwR5Y669x0R2jsmR1qfTcrXGNEVgpi5UrRA4F1w5XxCQB5Hdsi/xw
-         Vwg3+A/6WN89W9rNLprYY5eYtITqGfQ3TbTclutmJYuCZMMfx3YfC3likLeReHRlgWSK
-         3EkleY0Sgxv6+dRim9CdGyrIvo1DuTzj6aS77gvpDe+YGCmWznN2t/tDeVtrXpCO9p6q
-         JvtTUfujQKj26jLlUhCgI5v3g3dgi185OsvM762LQWZ3cKl7P+kMwsB6Fh4+DFPJ45NA
-         cicdEogkFPOyt5Bbjp+H3Lswd/0m1UkO2JE91DDPKORjJ1WKZIxhwkg6SD7eYQvY7IBz
-         MNuw==
-X-Gm-Message-State: AOAM531GfvnMjH8cehG0YrAkf4+XRlDNVwTghvTdeGQ2IH1POUB1sod6
-        kWMHJFjUEtBUxXhPCXx4rmq2bQ==
-X-Google-Smtp-Source: ABdhPJyGtljRlnH949VrIi90DObhw8FvDOwb37VkxKqAmbo2VV7b/5j6NJ3N9DkrAUy1cQrcKrs1HQ==
-X-Received: by 2002:a2e:890d:: with SMTP id d13mr19944241lji.327.1624883709620;
-        Mon, 28 Jun 2021 05:35:09 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id n20sm1302356lfu.206.2021.06.28.05.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:35:09 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 69CA910280E; Mon, 28 Jun 2021 15:35:08 +0300 (+03)
-Date:   Mon, 28 Jun 2021 15:35:08 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v12 01/33] mm: Convert get_page_unless_zero() to return
- bool
-Message-ID: <20210628123508.bckqc72hrnpuyip4@box.shutemov.name>
-References: <20210622114118.3388190-1-willy@infradead.org>
- <20210622114118.3388190-2-willy@infradead.org>
+        Mon, 28 Jun 2021 08:38:10 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=ixfloo1MHAWjR+Nz1ljxCUSePHF3wpONviFosozKxXdBrokr1sqoqNmMZtUXIVTY1gmvoQ5brfzvheAOZwDjfDqOJRgRmquAi+MzNDC6vonmRO+fXYwCCVJDa0hMafmTLCONe2uIhzD2uuolKLtSoxYMOICSAkUfcfi09KzXt+g=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=xpl7brLCo2gGrul+NZ+CKYfqW57kbhKm/BKbSTcLQ54=;
+        h=date:mime-version:subject:message-id:from;
+Received: from Wanjb.localdomain (unknown [36.152.145.182])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 0D13CAC00A6;
+        Mon, 28 Jun 2021 20:35:38 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] lkdtm: remove duplicated include of init.h
+Date:   Mon, 28 Jun 2021 20:35:12 +0800
+Message-Id: <20210628123512.38090-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622114118.3388190-2-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQx9CHlYYGk4YSE5CSExITUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6LSo5Hz9KEDQ8NCI0Iw0J
+        PU0KFBVVSlVKTUlPQ0NITEhDT09PVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKT09NNwY+
+X-HM-Tid: 0a7a529e3622b039kuuu0d13cac00a6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:40:46PM +0100, Matthew Wilcox (Oracle) wrote:
-> atomic_add_unless() returns bool, so remove the widening casts to int
-> in page_ref_add_unless() and get_page_unless_zero().  This causes gcc
-> to produce slightly larger code in isolate_migratepages_block(), but
-> it's not clear that it's worse code.  Net +19 bytes of text.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Fix following checkincludes.pl warning:
+./drivers/misc/lkdtm/core.c
+26	#include <linux/init.h>
+    29	#include <linux/init.h>
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/misc/lkdtm/core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+index 9dda87c6b54a..c9a0ad6d5d72 100644
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -26,7 +26,6 @@
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/debugfs.h>
+-#include <linux/init.h>
+ 
+ #define DEFAULT_COUNT 10
+ 
 -- 
- Kirill A. Shutemov
+2.20.1
+
