@@ -2,114 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D993B5C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F1F3B5C47
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbhF1KOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:14:38 -0400
-Received: from saphodev.broadcom.com ([192.19.11.229]:35520 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232520AbhF1KO3 (ORCPT
+        id S232771AbhF1KPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:15:06 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56635 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232889AbhF1KOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:14:29 -0400
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 365027DBA;
-        Mon, 28 Jun 2021 03:12:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 365027DBA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1624875123;
-        bh=7GV6KFu0g0aVtH9w1qkWYhk+UZVnJoVDXbi4mnUgM8A=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=a0t9svh8UgV3kAvIFMZjZNffcxOes+3AdcHzR64lGDUt3nqfZ6PvQg132ULT7WKMI
-         pEiivpVU0xzcyHds+hTrtVSQGclFkprkY5G6EfQRCzjZGP39BV/vF+3Dacas1d2lwz
-         6/3Su9Qs1DFX/BXjE9cs55UXff96WHRaSJXOh3OY=
-Received: from [10.176.68.80] (39y1yf2.dhcp.broadcom.net [10.176.68.80])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 857B71874BE;
-        Mon, 28 Jun 2021 03:11:59 -0700 (PDT)
-Subject: Re: [PATCH] brcmfmac: use separate firmware for 43430 revision 2
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Double Lo <double.lo@cypress.com>,
-        Remi Depommier <rde@setrix.com>,
-        Amar Shankar <amsr@cypress.com>,
-        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
-        Frank Kao <frank.kao@cypress.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210509233010.2477973-1-mike.rudenko@gmail.com>
- <d1bac6c3-aa52-5d76-1f2a-4af9edef71c5@broadcom.com>
- <87a6oxpsn8.fsf@gmail.com> <87o8bvgqt8.fsf@tynnyri.adurom.net>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <bb4eece6-e164-7dc2-bd9a-33fe0714d7a7@broadcom.com>
-Date:   Mon, 28 Jun 2021 12:11:57 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 28 Jun 2021 06:14:36 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id D1C692B00828;
+        Mon, 28 Jun 2021 06:12:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 28 Jun 2021 06:12:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=G1ta7c/5/ThX06wXTeoCB5eCgJv
+        sZJNMAJ9Re7t/XCY=; b=zqK0dOCuCE1noPGpc5CJksQS/smvQGb8Jolv2knBnCE
+        ZlMy8mWmE7m0uknVyNTvOVsTxSbsGGCm9cn2b1rk/olrODnaczcN+T6bT766957N
+        fDwTL8yWcU1NZb/9ayjpe9XI4Zatz7AZUyrLAvEmULb2hUgc+xiO941tXHi1x2JB
+        jskcKAK7RLx3hNUUE4tos9TSCFKgftS/fFJw8TbARbRSMqqDvuhp0Pd83nwvK/BS
+        i7FB697n6KHVXTlFCJ4YdSSg1k57217XtZtEk4JaqloWzVs/e1H2Vu0VLc8xjsKY
+        PD2lRyxW5Nnny+5BN8JfXK0WrBHgJmXmPCj1bCZ7MfA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G1ta7c
+        /5/ThX06wXTeoCB5eCgJvsZJNMAJ9Re7t/XCY=; b=WfbrO0P+LWj1h60MSG1mJM
+        1C7/kdqiLuWZRDHHGZZrg+SXS2ZUOg0zjb8RhUgnNt0dlG3OwVUOwdcXLTakQ/JM
+        4bKW3bbrnk96s1Z3wBUcfyt60jq1bpN96GNfXJINW10OcJVWYxsLknxEKDGr35xl
+        FRQhSyEnslD5D2qTHZvyuMXarn0NvzO+lj2W+QPblPcp4GMmgmJaX4toLt60e6eK
+        Mc+wiM2hW/a90BPLw0TA8EiHXMhbnOIpU1oyKJ37/kbn/DYyipbBNeyZuz8LmNPC
+        ngM4lQjLUYbBxYHx7BPUxG/0oIYA8Jjac4EOy4JO15WlW8ie8InSTdXts0TO4qPg
+        ==
+X-ME-Sender: <xms:d6DZYDls6_6Dhd4TzTjS-0pGkA_W4h5ixrfOPZSrjBMP3wGnH8deCA>
+    <xme:d6DZYG1m-odd59MuYjIiV9aDdEN_X0syhjTrqzNBhQx1NMyf9MrChweG8VQ4-yVkn
+    t28brE5HYI-hmnUOuE>
+X-ME-Received: <xmr:d6DZYJrif8c1Xtan_uLx2s_SnmCQNnIyKVh6seeLPCOtJBpvtFGG8IqhaP4t5bg_ZUxBG6VL3F5wQH40wKrXjSZrvJRTT8vdjb5K>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:d6DZYLlD5Y0AAC-8KzB4noid8ZdJZDJZm5yG9FyQZAuvmPoR03-StA>
+    <xmx:d6DZYB3QRX7pgZTQ0WygVpsaakizD5GWWiYiyP__Tho-PY3rpLEpKg>
+    <xmx:d6DZYKtGVv6xmcHiF4-JGDUzawMBiT3gV03TdxSbsb0bzWJG6ajXEQ>
+    <xmx:eaDZYA3m0edaLtUq34ARbFlM4Qx7VA_V4F_a4l7NHXfIeshH-_ralAzmtOk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Jun 2021 06:12:07 -0400 (EDT)
+Date:   Mon, 28 Jun 2021 12:12:05 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jonathan Liu <net147@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko Stubner <heiko@sntech.de>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
+Message-ID: <20210628101205.bul2iwwljxtd24tb@gilmour>
+References: <20210203091306.140518-1-jagan@amarulasolutions.com>
+ <CANwerB1Bev8Ljta9OyO6vAKsQqHHmaJnjV1YRGmY4bVk_J6xZA@mail.gmail.com>
+ <CAMty3ZAY7Ez9UYvfftSmqLEVWgN7xE5HevqfWirmrExZH=RMWA@mail.gmail.com>
+ <CANwerB1AiiT3oXCpwP83M1=ES9M-yQoLuZO5f=eVxA42MkEbiA@mail.gmail.com>
+ <YNR/uQrS75s5BILs@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <87o8bvgqt8.fsf@tynnyri.adurom.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pxsrq5bk7iavnx3y"
+Content-Disposition: inline
+In-Reply-To: <YNR/uQrS75s5BILs@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--pxsrq5bk7iavnx3y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/24/2021 6:39 PM, Kalle Valo wrote:
-> Mikhail Rudenko <mike.rudenko@gmail.com> writes:
-> 
->> On 2021-05-10 at 11:06 MSK, Arend van Spriel <arend.vanspriel@broadcom.com> wrote:
->>> On 5/10/2021 1:30 AM, Mikhail Rudenko wrote:
->>>> A separate firmware is needed for Broadcom 43430 revision 2.  This
->>>> chip can be found in e.g. certain revisions of Ampak AP6212 wireless
->>>> IC. Original firmware file from IC vendor is named
->>>> 'fw_bcm43436b0.bin', but brcmfmac and also btbcm drivers report chip
->>>
->>> That is bad naming. There already is a 43436 USB device.
->>>
->>>> id 43430, so requested firmware file name is
->>>> 'brcmfmac43430b0-sdio.bin' in line with other 43430 revisions.
->>>
->>> As always there is the question about who will be publishing this
->>> particular firmware file to linux-firmware.
->>
->> The above mentioned file can be easily found by web search. Also, the
->> corresponding patch for the bluetooth part has just been accepted
->> [1]. Is it strictly necessary to have firmware file in linux-firmware in
->> order to have this patch accepted?
-> 
-> This patch is a bit in the gray area. We have a rule that firmware
-> images should be in linux-firmware, but as the vendor won't submit one
-> and I assume the license doesn't approve the community submit it either,
-> there is not really any solution for the firmware problem.
+Hi,
 
-At the moment I am not sure which company/division is shipping the 43430 
-rev 2 or 43436. Having it in linux-firmware is still preferred.
+On Thu, Jun 24, 2021 at 03:51:05PM +0300, Laurent Pinchart wrote:
+> CC'ing Maxime Ripard.
+>=20
+> Maxime, is this similar to the issue we've recently discussed with the
+> VC4 DSI encoder ?
+>=20
+> On Thu, Jun 24, 2021 at 10:39:48PM +1000, Jonathan Liu wrote:
+> > On Thu, 24 Jun 2021 at 22:34, Jagan Teki wrote:
+> > > On Fri, Jun 18, 2021 at 6:40 PM Jonathan Liu wrote:
+> > > > On Wed, 3 Feb 2021 at 09:13, Jagan Teki wrote:
+> > > > > @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device=
+ *pdev,
+> > > > >         dw_mipi_dsi_debugfs_init(dsi);
+> > > > >         pm_runtime_enable(dev);
+> > > > >
+> > > > > +       ret =3D drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
+> > > > > +                                         &panel, &bridge);
+> > > > > +       if (ret)
+> > > > > +               return ERR_PTR(ret);
+> > > >
+> > > > On RK3399 if the error is EPROBE_DEFER, __dw_mipi_dsi_probe can be
+> > > > called again and result in the following errors:
+> > > > [    0.717589] debugfs: Directory 'ff960000.mipi' with parent '/' a=
+lready present!
+> > > > [    0.717601] dw-mipi-dsi-rockchip ff960000.mipi: failed to create=
+ debugfs root
+> > > > [    0.717606] dw-mipi-dsi-rockchip ff960000.mipi: Unbalanced pm_ru=
+ntime_enable!
+> > >
+> > > Is this when you test bridge on rk3399 or panel?
+> >=20
+> > MIPI-DSI to LVDS bridge.
 
-> On the other hand some community members have access to the firmware
-> somehow so this patch is useful to the community, and I think taking an
-> exception to the rule in this case is justified. So I am inclined
-> towards applying the patch.
+It looks more like a driver that doesn't free its resources properly on EPR=
+OBE_DEFER?
 
-As an end-user community members using the device are allowed to use the 
-firmware to run on that device. So I tend to agree with you.
+Maxime
 
-> Thoughts? I also have another similar patch in the queue:
-> 
-> https://patchwork.kernel.org/project/linux-wireless/patch/20210307113550.7720-1-konrad.dybcio@somainline.org/
+--pxsrq5bk7iavnx3y
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I will review both and comment/ack them.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
-Arend
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNmgdQAKCRDj7w1vZxhR
+xR8DAP94cJXuHL0Y5IP7BYZbO+0AfSWavVR1bJBD81CtyTet5AEAzxOwqJgZ0od3
+0W8wv1CYlqMx3P/bxlmTi9qwOAuJIwU=
+=kLbL
+-----END PGP SIGNATURE-----
+
+--pxsrq5bk7iavnx3y--
