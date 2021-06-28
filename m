@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300CA3B5BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237FC3B5BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbhF1KDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:03:25 -0400
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:39628 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbhF1KDY (ORCPT
+        id S232637AbhF1KER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:04:17 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:20152 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhF1KEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:03:24 -0400
-Received: by mail-vk1-f173.google.com with SMTP id k140so777535vkk.6;
-        Mon, 28 Jun 2021 03:00:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PkXqYJgitaalH/JTJGQSczmMs8oLBdOuvLdN4mBy9qc=;
-        b=Thsjcwsh+UtROidrqhDDsDi7bUHPn9Jt2czWtqzQ0OW/fpwTS8tY0Q7/f8oGwtz/y9
-         mv0arZ8RDT4VDn2XgT67V6A/hgfcdb6n304fG/FJhK+6sWr7xSMsEgRmEeSGm0rKHUUv
-         cZC1HiodW14KvdMiEMaEQz7F/bAL2Ul8knPpo+IbeJtpBHDmMfk3b9MMgL9hBs/Tx5mG
-         mnBMIDJ4yJwSfYyGiq582ZU04Wri0a0o0zFlU7QKcf0MxTQTBQQa1ZTgbHnHgAgR2UoK
-         6P39Y7bcKUB8t6jawZ5raB8OYXcX9167XX5yS+xVgegRCJ6bynT0NBY7P/HTwe/LLer5
-         5HgQ==
-X-Gm-Message-State: AOAM532bZ002MD0t7VDQdsgDfX1yCQKFzPxrQF7nXsfiPgURfY1wDCxF
-        4EWro9WfJR3NVQ5oyoTJDqzP5slQ7U0ElOqwQBV6TkpxiESm+Q==
-X-Google-Smtp-Source: ABdhPJyYa7db5x1agDV7+CIDFKfHb/aN1WkHfWiCp0mrKjb5bzdZbOu7d2PI8FfeM2tAu9a+QhGeyjM5bSwRo8IKe0o=
-X-Received: by 2002:a1f:ac45:: with SMTP id v66mr15717278vke.1.1624874456985;
- Mon, 28 Jun 2021 03:00:56 -0700 (PDT)
+        Mon, 28 Jun 2021 06:04:16 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 21EE377F5C;
+        Mon, 28 Jun 2021 13:01:49 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1624874509;
+        bh=sMkQyx0kGaqiiwJwOl8rjTgclLBqCw1i9wZF/05L2Ok=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=18+wlKA8Tk3NsHKSbw6eaDwdpx8wQSkhWJzu3dRozwmtHQTdUGrrkGsndiyyYC2fs
+         Is1VwgOnE6+ZaMWzKLJ0yB4cZwJLm4jIajiDLmbC0jQZIQdU8LDxFd/41WzqGOLS9O
+         UKdlJ8huhIcytOIencgJhvbz53af7PtHCBGZpFQt1GwqPkZ0bZ5YUEK9TICroCSO+d
+         ZRRFWJyUM1jPF/FBcLDAMiOl6q8b/rfXRzckIdq2A5mSnJvR60FBO33GTvaKNceERQ
+         szB+Q9fKfTjPsK//4XO9V6KaLnFOKvMrzOsqLcHXCaHk65A/bU6mj5uKRmg91ltO3f
+         cCaXHho4Aozug==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id E116777F59;
+        Mon, 28 Jun 2021 13:01:48 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 28
+ Jun 2021 13:01:48 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [RFC PATCH v1 01/16] vhost/vsock: don't set 'seqpacket_has_data()' callback
+Date:   Mon, 28 Jun 2021 13:01:35 +0300
+Message-ID: <20210628100138.570219-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
+References: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210623133205.GA28589@lst.de> <CAFr9PXk84aejj186UNizftwK_w5G1RXLMsSvAEVEYsXi8=yCoA@mail.gmail.com>
- <27c78c11-b230-a5b5-6648-6b93daf6afda@physik.fu-berlin.de>
- <CAMuHMdV+SmxUtvAptYfVgy04jCHeABmsEpn3mcUfFQ_RfTF7eA@mail.gmail.com> <CAFr9PXnuFWFy-3mUAo63aiP5qXmD9ULycWVn=_YG96ReohJAjg@mail.gmail.com>
-In-Reply-To: <CAFr9PXnuFWFy-3mUAo63aiP5qXmD9ULycWVn=_YG96ReohJAjg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 12:00:45 +0200
-Message-ID: <CAMuHMdU_O3-qgCF3TStdE3Jp2gD6kqhwK9kSECnBeJGB7aNVAA@mail.gmail.com>
-Subject: Re: dma_declare_coherent_memory and SuperH
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/28/2021 09:47:58
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164664 [Jun 28 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/28/2021 09:51:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 28.06.2021 5:59:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/28 08:23:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/28 05:40:00 #16806866
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Clean 'seqpacket_has_data()' callback in transport struct.
 
-On Mon, Jun 28, 2021 at 11:30 AM Daniel Palmer <daniel@0x0f.com> wrote:
-> On Mon, 28 Jun 2021 at 17:57, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > There is an unmerged patch set by Yoshinori Sato that adds device tree support for SH.
-> >
-> > But it does not include support for SH7724 yet, only for SH775[01]
-> > (note to myself: still have to try it on my landisk).
->
-> I have some landisks. Is there a sane u-boot for them? I think mine
-> still have the hacked up lilo thing.
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ drivers/vhost/vsock.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I believe Sato-san has one for the new landisks.
-Mine is also using the hacked up lilo, with kexec to boot into a modern
-kernel.  Unfortunately kexec is broken upstream (since ages), so I cannot
-kexec from a modern kernel to a modern kernel.
-
-> > Fortunately most core devices on SH7724 and Ecovec should already
-> > have DT support in their drivers. The main missing pieces are
-> > interrupt and clock support.
->
-> This sounds like a fun project. I'm not sure if I could manage it
-> without the Hitachi/Renesas debugging dongle though.
-
-Should be doable with earlycon.
-
-> Anyhow, it would be a shame to remove the ecovec just because it
-> doesn't have DT as it pretty much fully works with a few small patches
-> to fix some bit rot like ethernet and the LCD not working.
-
-Yeah, I agree the Ecovec24 (and the SH7722-based Migo-R) should be
-kept alive.
-
-> I sent a patch a few years ago for the ethernet and never got a response. :(
-
-You mean "[PATCH] SH: Add dma mask for sh_eth on ecovec24."[1]?
-Do you still need that patch? Probably this was fixed in the core
-core, after the
-initial dma_mask breakage.
-
-[1] https://lore.kernel.org/linux-sh/20181203122323.765-1-daniel@0x0f.com/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index 119f08491d3c..4118390aeab6 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -451,7 +451,6 @@ static struct virtio_transport vhost_transport = {
+ 		.seqpacket_dequeue        = virtio_transport_seqpacket_dequeue,
+ 		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
+ 		.seqpacket_allow          = vhost_transport_seqpacket_allow,
+-		.seqpacket_has_data       = virtio_transport_seqpacket_has_data,
+ 
+ 		.notify_poll_in           = virtio_transport_notify_poll_in,
+ 		.notify_poll_out          = virtio_transport_notify_poll_out,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
