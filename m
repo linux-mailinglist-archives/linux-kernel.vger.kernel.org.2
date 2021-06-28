@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAA43B619A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC023B6192
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhF1Og6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:36:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        id S234887AbhF1Ogb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:36:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233978AbhF1O2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:28:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74FD661C7F;
-        Mon, 28 Jun 2021 14:26:11 +0000 (UTC)
+        id S234383AbhF1O3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:29:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F90E61C86;
+        Mon, 28 Jun 2021 14:26:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890372;
-        bh=G6owhmpqhIdSJhUhchnGygkNEtP/ReN23zl88rAl/y0=;
+        s=k20201202; t=1624890376;
+        bh=VL+/AH8Xfy2zo2JtDmPB2fLvSbaiSbgT9qXKIlTq0DY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+4iaHClI3e6sEVC1YBocxfLuMhLfVQ0RNb+SNZt2kBRUnb7gne7gzPjiStSy3/co
-         xlx9BqEo1oDZWn4pyEwkgmMvnuT5E4eGqOb6U8N373zrHUa/YqwHlqBMYYICypw5gd
-         CyVnYsgdgIJ92XjaQbmnbVE8eGUCqHt3cb1uTWQVo30CmaDh9xCx5rPE9BQB/1d3X8
-         uzx86DOnldyxE9XKSrktV/xP47yU2IO1zZwJnujn78RdztvMEKmShHUoGSP3An/LuH
-         dn6q/sG4WYZSfjId+e1MzNvmWBYJh3br+E//GUju0MdoJu+UfcyybIwOGuJlp2eIvH
-         rHUirtcZBW66A==
+        b=MlXqlfdxo542gZgKCfxrQMw5+qsBg6emGxgAYZaZY4I+X6rn/rWMwkrt/4Xz2/tpn
+         THHHcpOXSxE9wGSRZvPo7LeKxXWWg7A8Ef9s+YYiGw9FADdsRSaP3tXKXZ4i9OaEwd
+         hWeT9Xtg1zwRcAvA+lC9gcLbBuTFua12bPkEQWCNqHEZeE0XvhYcBhHuRHNbJlUaod
+         M7fLotpjAoa8nPHMj6AlPj6B4IS2ziH3Tc3UOiPahFHsr1Oy0xW9E9wZzDP+mrbkP7
+         ID1ATpuwPYBls7Co8dGp0WG38FTopeOGMdhCkrVKe3c7Ydw1Devq4PTaS9VXphRa/0
+         efXGDGdxwPicg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yifan Zhang <yifan1.zhang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, stable@kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.10 002/101] Revert "drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue."
-Date:   Mon, 28 Jun 2021 10:24:28 -0400
-Message-Id: <20210628142607.32218-3-sashal@kernel.org>
+Subject: [PATCH 5.10 007/101] drm/amdgpu: wait for moving fence after pinning
+Date:   Mon, 28 Jun 2021 10:24:33 -0400
+Message-Id: <20210628142607.32218-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
 References: <20210628142607.32218-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.47-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-5.10.y
@@ -48,42 +49,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifan Zhang <yifan1.zhang@amd.com>
+From: Christian König <christian.koenig@amd.com>
 
-commit ee5468b9f1d3bf48082eed351dace14598e8ca39 upstream.
+commit 8ddf5b9bb479570a3825d70fecfb9399bc15700c upstream.
 
-This reverts commit 4cbbe34807938e6e494e535a68d5ff64edac3f20.
+We actually need to wait for the moving fence after pinning
+the BO to make sure that the pin is completed.
 
-Reason for revert: side effect of enlarging CP_MEC_DOORBELL_RANGE may
-cause some APUs fail to enter gfxoff in certain user cases.
-
-Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+References: https://lore.kernel.org/dri-devel/20210621151758.2347474-1-daniel.vetter@ffwll.ch/
+CC: stable@kernel.org
+Link: https://patchwork.freedesktop.org/patch/msgid/20210622114506.106349-3-christian.koenig@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-index 1859d293ef71..fb15e8b5af32 100644
---- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
-@@ -3619,12 +3619,8 @@ static int gfx_v9_0_kiq_init_register(struct amdgpu_ring *ring)
- 	if (ring->use_doorbell) {
- 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_LOWER,
- 					(adev->doorbell_index.kiq * 2) << 2);
--		/* If GC has entered CGPG, ringing doorbell > first page doesn't
--		 * wakeup GC. Enlarge CP_MEC_DOORBELL_RANGE_UPPER to workaround
--		 * this issue.
--		 */
- 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_UPPER,
--					(adev->doorbell.size - 4));
-+					(adev->doorbell_index.userqueue_end * 2) << 2);
- 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
+index 1b56dbc1f304..e93ccdc5faf4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
+@@ -238,9 +238,21 @@ static int amdgpu_dma_buf_pin(struct dma_buf_attachment *attach)
+ {
+ 	struct drm_gem_object *obj = attach->dmabuf->priv;
+ 	struct amdgpu_bo *bo = gem_to_amdgpu_bo(obj);
++	int r;
  
- 	WREG32_SOC15_RLC(GC, 0, mmCP_HQD_PQ_DOORBELL_CONTROL,
+ 	/* pin buffer into GTT */
+-	return amdgpu_bo_pin(bo, AMDGPU_GEM_DOMAIN_GTT);
++	r = amdgpu_bo_pin(bo, AMDGPU_GEM_DOMAIN_GTT);
++	if (r)
++		return r;
++
++	if (bo->tbo.moving) {
++		r = dma_fence_wait(bo->tbo.moving, true);
++		if (r) {
++			amdgpu_bo_unpin(bo);
++			return r;
++		}
++	}
++	return 0;
+ }
+ 
+ /**
 -- 
 2.30.2
 
