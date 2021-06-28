@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464933B5FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E603B5FBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhF1OP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230033AbhF1OP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:15:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 629B361C75;
-        Mon, 28 Jun 2021 14:13:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624889582;
-        bh=10OGvJ3sV5SvCdwDzuwVsEK0pFrJzuzIqJkU4Gcps6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fanLLj7weVcWfc7hX6CBz3vT3zNr4JjKaMFYB6fHBl2d1b6yO1kweoa+5bkknFj8Z
-         Bs+evzbqWlyOP2RSMVmCdQeP6yqC0Hc6tDE/LLNNcSxqb69FCnkPrPlumXpY3MlEV0
-         qx18nmQaDOvwl/f2l5jYFtCIItIAOwzf3VgEm9jtiPZJNcow0PyL+fsd7INsYIvAFb
-         2xiccBDaL4myquws9eRxZFOCyvuXrki1cU0BXgIISsuVZRjqNyE+j2RevUzacRAGvq
-         Xo7hqJICXsOrAPCfJbv/LAg7cwYxJEbAkKDL9+oOKY2kBWT0XxdkJmnpewKOC7EaCO
-         Dc3bN26Sopnjg==
-Date:   Mon, 28 Jun 2021 16:13:00 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "hasegawa-hitomi@fujitsu.com" <hasegawa-hitomi@fujitsu.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "'mgorman@suse.de'" <mgorman@suse.de>,
-        "'mingo@kernel.org'" <mingo@kernel.org>,
-        "'tglx@linutronix.de'" <tglx@linutronix.de>,
-        "'juri.lelli@redhat.com'" <juri.lelli@redhat.com>,
-        "'vincent.guittot@linaro.org'" <vincent.guittot@linaro.org>,
-        "'fweisbec@gmail.com'" <fweisbec@gmail.com>,
-        "'dietmar.eggemann@arm.com'" <dietmar.eggemann@arm.com>,
-        "'rostedt@goodmis.org'" <rostedt@goodmis.org>,
-        "'bsegall@google.com'" <bsegall@google.com>,
-        "'bristot@redhat.com'" <bristot@redhat.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: Re: Utime and stime are less when getrusage (RUSAGE_THREAD) is
- executed on a tickless CPU.
-Message-ID: <20210628141300.GA5710@lothringen>
-References: <OSBPR01MB21837C8931D90AE55AF4A955EB529@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <OSBPR01MB2183384B29F6291EB7C0BB81EB2C9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKN5cQpFSdsgBlBU@hirez.programming.kicks-ass.net>
- <OSBPR01MB21835E55331FCAE6F75E8332EB2B9@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <YKTZag/E8AaOtVT0@hirez.programming.kicks-ass.net>
- <20210616125452.GE801071@lothringen>
- <OSBPR01MB21836F532CA384C7378C1284EB099@OSBPR01MB2183.jpnprd01.prod.outlook.com>
- <OSBPR01MB2183D3C6B2BBF25B22DD09FAEB039@OSBPR01MB2183.jpnprd01.prod.outlook.com>
+        id S232468AbhF1OPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:15:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47302 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhF1OPk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:15:40 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 036A422498;
+        Mon, 28 Jun 2021 14:13:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624889594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+mHKq7qTTJCoVp4riFxvnW5aDGyigNAF0z1SpQNLpI=;
+        b=GYeAUuIvOglBswcJ6jcRaESdDDwXafBYYFFe+ILYBN+Ly/PlYlolrovHsmzTmjbVr6wdRa
+        DhmPzXqBVBcfFCyySSwT9QbpCFLMBFORj9OtZwmTrMka/KDp6UwrwZ9NTdjIKwFWNze2fM
+        VB8y1EJd9NSWFNvWzH0HlVAHQrNCIAE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624889594;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+mHKq7qTTJCoVp4riFxvnW5aDGyigNAF0z1SpQNLpI=;
+        b=86swravYrb0sUf0IfviqrwIuMHLhO/tnGiC8S/yaGR8fxMtSKKleUL5bWC9oVJkTs6UbiR
+        OTUo3tla1Cwjn0Cw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id E801811906;
+        Mon, 28 Jun 2021 14:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624889593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+mHKq7qTTJCoVp4riFxvnW5aDGyigNAF0z1SpQNLpI=;
+        b=EkpMQCIuybFAPsF4B72o0VGO/jl85VFH4iNASylyYgw13ytPhj8Lw9DRVNVAwM77XKqD+9
+        J+odxaKWcr60oUWfDM/q/6jRO89sWYsfBLHnJpCth+dhxCP3Fm5vUhExESmkqC9yj0UqQU
+        Z07T9P6WE3JTO5QWz93Ptv3SIip8Blc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624889593;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+mHKq7qTTJCoVp4riFxvnW5aDGyigNAF0z1SpQNLpI=;
+        b=7KdjcoOY1/zsSeaVjSyHo5trgte3+Kv6IjgpfqRI6j8UJ7zRVlDM/GJq9WbrjXPiR5QYjk
+        KjVPaa3XL7eXvsAg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id SemMOPnY2WAkBAAALh3uQQ
+        (envelope-from <dwagner@suse.de>); Mon, 28 Jun 2021 14:13:13 +0000
+Date:   Mon, 28 Jun 2021 16:13:13 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     John Kacur <jkacur@redhat.com>
+Cc:     Daniel Wagner <wagi@monom.org>, Mike Galbraith <efault@gmx.de>,
+        RT <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        Johnathan Schwender <schwenderjonathan@gmail.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [ANNOUNCE] rt-tests-2.0
+Message-ID: <20210628141313.3fixpscbdc4ugnld@beryllium.lan>
+References: <20210625160801.9283-1-jkacur@redhat.com>
+ <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de>
+ <1c1966dd51ae6f8ddcd892cba485c332281fbd37.camel@gmx.de>
+ <3d6a6c593eed6f5d59209ba2d8db29fadcc72ad7.camel@gmx.de>
+ <20210628081135.l7yvya7iaygb23ye@beryllium.lan>
+ <f31d9d37-df6d-90b0-8bf9-95156c27e8d@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB2183D3C6B2BBF25B22DD09FAEB039@OSBPR01MB2183.jpnprd01.prod.outlook.com>
+In-Reply-To: <f31d9d37-df6d-90b0-8bf9-95156c27e8d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 02:36:27AM +0000, hasegawa-hitomi@fujitsu.com wrote:
-> Hi Frederic, Peter, and Mel
+On Mon, Jun 28, 2021 at 09:50:25AM -0400, John Kacur wrote:
+> > I'd say the tsbuf access is the one which triggers a pagefault.
+> > 
+> > John, I would suggest to move the rt_test_start() into rt_init() and
+> > take the timestamp at the execution start (as my initial version was). I
+> > think the additional pain in slightly more correct start timestamp
+> > (which is also not defined what it actually means in this context) is
+> > just not worth the effort.
+> > 
+> > Thanks,
+> > Daniel
+> > 
 > 
-> > I tested this and confirmed that it gives accurate values.
-> > Also, task_sched_runtime () is done only on nohz_full CPU, so I think
-> > it's a better idea than before.
-> > I hope you will incorporate this fix into your mainline.
+> Send me a patch, and I'll have a look. The timerthread()function is
+> sensitive anyway, so it's probably a good idea not to put that kind
+> of thing there.
 > 
-> I have also confirmed that CPUs other than nohz_full have very little overhead.
-> Please consider merging it into the mainline.
+> Note that the the code following the /* Get Current Time */
+> is getting the time, but you probably want something rougher that
+> you can call strftime on?
 
-Ok, I'm going to submit a proper patch.
+I think it's just the buffer strftime is writting into it. The page is
+probably not mapped and hence the pagefault in the first access.
 
-Thanks!
+Anyway, I'll send a patch which moves the rt_test_start() into rt_init().
