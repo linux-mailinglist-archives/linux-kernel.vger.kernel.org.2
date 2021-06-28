@@ -2,129 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B823B5D4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F70D3B5D62
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhF1LrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
+        id S232904AbhF1LxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhF1LrB (ORCPT
+        with ESMTP id S232524AbhF1LxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:47:01 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A36C061574;
-        Mon, 28 Jun 2021 04:44:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GD5PD1xXdz9sVt;
-        Mon, 28 Jun 2021 21:44:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624880672;
-        bh=7Pb3MnxHOl/+eVEKU5ze5W1VhogzyJb/L35VwUoyH+A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V7d7oy4/KN+V7cIb8tRkQD6ApnmWPXWLD0r/atDiSwrFFOTlmifBVU1jw7pyqjhlP
-         Zdn4IbzWvYp+FJ0F630CLq7dlSdlkLM4dnMib7ZOLVeQBGme5ABdpkRy2fUeKFfAsW
-         WkDpbLV3dd/e90qqXU2A3JKcc4b42Gaml9ibJR14gTdx5R4w1prA0NXMw75WAyicjK
-         EqQyvTyO1bM29FluwXZwySAX8tE6GD6m3mPU5o5vZ6bCMhNUhFO9GHPokcMoU/AG0L
-         F6IlNH0vS4Z6Up2etWZxjuRiNneGKskPWDkk7Gg1Ej8Et7vNvhBniuVIWIXD4Dy9DR
-         +0sE7oE5G/17Q==
-Date:   Mon, 28 Jun 2021 21:44:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Robert Hancock <robert.hancock@calian.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the clk tree
-Message-ID: <20210628214430.6b3607d5@canb.auug.org.au>
+        Mon, 28 Jun 2021 07:53:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679B3C061574;
+        Mon, 28 Jun 2021 04:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GDSq0NtU1BVOXfQ/dS8BZrVt+kCI2fOBmY8YWTpCw/Q=; b=hArg8QhORkUpq8rvl4GS8UcGMq
+        w2nry9nqQ4dTFrkSER3m/Bvhe8rpJt2vNG3JC7/Ot3rDAHFiCrd+85ubk3hLZexRDUEB5Pw33wo+a
+        TU0WHxxqQTlDy0Mrs9SQAgIAzQ4Q80aQeOeBUDqG2UpbANzBr9e11Ogszrhr/w69i4y1dGN2QdmR9
+        I2zbeb90l7jmRkwoPbRr7A2fThQv5UMl96a0ifilFKVP+cpRHKVTPTL3JyyVYsGNml5SFlQBLkTfb
+        NAKxjO6pSaZpbH7MZq6cOkoLYxNEo2d4JpYkY5ZhD1RCLLNFAL0t0eDRXPTEWDWWSUqiMcFSuSp5k
+        kezd82UQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxpll-002vLV-Tr; Mon, 28 Jun 2021 11:49:53 +0000
+Date:   Mon, 28 Jun 2021 12:49:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@lst.de, agk@redhat.com,
+        snitzer@redhat.com, rgoldwyn@suse.de
+Subject: Re: [PATCH v5 5/9] mm: Introduce mf_dax_kill_procs() for fsdax case
+Message-ID: <YNm3VeeWuI0m4Vcx@casper.infradead.org>
+References: <20210628000218.387833-1-ruansy.fnst@fujitsu.com>
+ <20210628000218.387833-6-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1QVTU.+H6zquvIjKLrMdMvW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628000218.387833-6-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1QVTU.+H6zquvIjKLrMdMvW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 28, 2021 at 08:02:14AM +0800, Shiyang Ruan wrote:
+> +/*
+> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
+> + * @mapping:	The file whose entry we want to load
+> + * @index:	offset where the DAX entry located in
+> + *
+> + * Return:	pfn number of the DAX entry
+> + */
 
-Hi all,
+This is an externally visible function; why not add the second '*' and
+make this kernel-doc?
 
-In commit
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
+> +{
+> +	XA_STATE(xas, &mapping->i_pages, index);
+> +	void *entry;
+> +	unsigned long pfn;
+> +
+> +	xas_lock_irq(&xas);
+> +	entry = xas_load(&xas);
+> +	pfn = dax_to_pfn(entry);
+> +	xas_unlock_irq(&xas);
 
-  3c9b49b0031a ("clk: si5341: Update initialization magic")
+Why do you need the i_pages lock to do this?  is the rcu_read_lock()
+insufficient?  For that matter, why use the xas functions?  Why not
+simply:
 
-Fixes tag
+	void *entry = xa_load(&mapping->i_pages, index);
+	return dax_to_pfn(entry);
 
-  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Looking at it more though, how do you know this is a PFN entry?
+It could be locked, for example.  Or the zero page, or empty.
 
-has these problem(s):
+But I think this is unnecessary; why not just pass the PFN into
+mf_dax_kill_procs?
 
-  - SHA1 should be at least 12 digits long
-
-In commit
-
-  71dcc4d1f7d2 ("clk: si5341: Check for input clock presence and PLL lock o=
-n startup")
-
-Fixes tag
-
-  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-In commit
-
-  78f6f406026d ("clk: si5341: Avoid divide errors due to bogus register con=
-tents")
-
-Fixes tag
-
-  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-In commit
-
-  6e7d2de1e000 ("clk: si5341: Wait for DEVICE_READY on startup")
-
-Fixes tag
-
-  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-This can be fixed for the future by setting core.abbrev to 12 (or more)
-or (for git v2.11 or later) just making sure it is not set (or set to
-"auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1QVTU.+H6zquvIjKLrMdMvW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDZth4ACgkQAVBC80lX
-0Gyxhwf+O9YeXvX2knf2jhvuQBCd07ZrhZpXSBH+6wYT1kS9lSyNyRBuEeQmnQQW
-xEEkUouflkkP28vTMa4Lj96y4eZyIpCONekNBYuoxgJhFMkNGAn+IjX3PxMZt3xx
-bTXGJGaWHyIIrEqadzxhWwDJj8db4MCQqLoa+fUA4rTVdRjPJFiq7QXGdVgmgqWE
-cexSz6UqKNIq16C5d3y04KhOTHv7Bqci+uvGRh6SnEAkuaK7vsae7xSUdCqJOZJs
-Fgu6kIULxJuO7wCHQwwPofR5ohD9o5LRLtV+RrBoQaXRqhWTHWuWF77TIQyXci5E
-skBnT6Oq+Xg4LIJmvFTb3p0RcCkMDw==
-=g7Gf
------END PGP SIGNATURE-----
-
---Sig_/1QVTU.+H6zquvIjKLrMdMvW--
