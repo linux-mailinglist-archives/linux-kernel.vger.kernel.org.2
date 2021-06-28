@@ -2,368 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B96E3B5905
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9221B3B5906
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhF1GQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:16:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:60982 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232277AbhF1GQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:16:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271751109"
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="271751109"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 23:14:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="407607407"
-Received: from bspteam04.iind.intel.com ([10.106.46.142])
-  by orsmga006.jf.intel.com with ESMTP; 27 Jun 2021 23:14:18 -0700
-From:   shruthi.sanil@intel.com
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
-        mgross@linux.intel.com, srikanth.thokala@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
-Subject: [PATCH v4 2/2] clocksource: Add Intel Keem Bay timer support
-Date:   Mon, 28 Jun 2021 11:44:10 +0530
-Message-Id: <20210628061410.8009-3-shruthi.sanil@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210628061410.8009-1-shruthi.sanil@intel.com>
-References: <20210628061410.8009-1-shruthi.sanil@intel.com>
+        id S232277AbhF1GRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhF1GR3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 02:17:29 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E036C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 23:15:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id o11so14771637ejd.4
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 23:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=TWbktd4YXRMltDNInbLTTyq3pkPSuFkBZTDUxrS/Kek=;
+        b=iP4hXah5uZuUNmUoSLEA+He+Qrc65vzkraptctekuDZKru3GesBrtmZok7rQh1XVeu
+         dsSqwJ4SF6UHhH/u8nhSe13CuTiHefS04a81TSgYIC5MLlVZ4wOQ5i3ify90e35gaS3c
+         eNeWFhEnDDW9aws3I5zqcSqO6rnAwj8rQTLc7munOcIhl4JhVPayRunAKrbE6i4EG07x
+         SjTqSaW5WRUI4Cef7UZ8h7hvu/7OHU+AQbeUTdZgJBGTS5hFV3cOWvRq6fAEr9wImoxo
+         aZZKaCjnKn5wU5C/i1v/IR4wJQ4uHXaT1o3jK4eRmovLYwZbTC6do45hrC6Dnzyjf4iX
+         xN9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=TWbktd4YXRMltDNInbLTTyq3pkPSuFkBZTDUxrS/Kek=;
+        b=Q0rk7cZ32Q6x/vBmWOr0Wt7uZ39ywtG0+lQ90U7fh+tjQ3nFLgYHlLeKPnkZMqn1RH
+         FElmwjzzcqbnIRfB+hrQHrASj9bB0I8Q3zqjb7LUIVxgCb6xnlU6laFz5xylj8Vpj0fb
+         GExF9VheydMm6PesrLWFJCMTZ21UavBTMjPST+zZ3RSlDNQ27lCBHX7qES2qoPPjfVf2
+         CdJyZZCde0CVXaWCTHcEPmFIRKDaEkpj8r7Yc2bHlBUYHeoT79dbUhugFj/8c8O/mGV3
+         zpd4NGjrbbye0MKlw2cLMjsj83yj3K3foPxYllYKG8pDj0D6l8kdSYXqgOU8qB9dRk18
+         nZAQ==
+X-Gm-Message-State: AOAM533HMYfApJn5klQGMka+8Pp6mc5/RNd6ZwWkGtClqthQJ6BUJJse
+        xW2dvKpIatqwvPobwAqQ/3o=
+X-Google-Smtp-Source: ABdhPJwFPpYwxF7E28mwn3xd5GZOWkPxXZHaSrBRQ45+GVhcghaL3I1o0dtbCfQ498yCrSxT8S5TcA==
+X-Received: by 2002:a17:906:841a:: with SMTP id n26mr21930493ejx.430.1624860901833;
+        Sun, 27 Jun 2021 23:15:01 -0700 (PDT)
+Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
+        by smtp.gmail.com with ESMTPSA id v5sm8821549edt.55.2021.06.27.23.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 23:15:01 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Jun 2021 08:14:59 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] locking changes for v5.14
+Message-ID: <YNlo43RtRbxBb+so@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shruthi Sanil <shruthi.sanil@intel.com>
+Linus,
 
-The Intel Keem Bay timer driver supports clocksource and clockevent
-features for the timer IP used in Intel Keem Bay SoC.
-The timer block supports 1 free running counter and 8 timers.
-The free running counter can be used as a clocksource and
-the timers can be used as clockevent. Each timer is capable of
-generating individual interrupt.
-Both the features are enabled through the timer general config register.
+Please pull the latest locking/core git tree from:
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
----
- MAINTAINERS                         |   5 +
- drivers/clocksource/Kconfig         |  11 ++
- drivers/clocksource/Makefile        |   1 +
- drivers/clocksource/timer-keembay.c | 255 ++++++++++++++++++++++++++++
- 4 files changed, 272 insertions(+)
- create mode 100644 drivers/clocksource/timer-keembay.c
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-core-2021-06-28
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0cce91cd5624..1e7826979064 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9286,6 +9286,11 @@ F:	drivers/crypto/keembay/keembay-ocs-hcu-core.c
- F:	drivers/crypto/keembay/ocs-hcu.c
- F:	drivers/crypto/keembay/ocs-hcu.h
- 
-+INTEL KEEM BAY TIMER SUPPORT
-+M:	Shruthi Sanil <shruthi.sanil@intel.com>
-+S:	Maintained
-+F:	drivers/clocksource/timer-keembay.c
-+
- INTEL MANAGEMENT ENGINE (mei)
- M:	Tomas Winkler <tomas.winkler@intel.com>
- L:	linux-kernel@vger.kernel.org
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 39aa21d01e05..70596ec72851 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -693,4 +693,15 @@ config MICROCHIP_PIT64B
- 	  modes and high resolution. It is used as a clocksource
- 	  and a clockevent.
- 
-+config KEEMBAY_TIMER
-+	bool "Intel Keem Bay timer"
-+	depends on ARCH_KEEMBAY || COMPILE_TEST
-+	select TIMER_OF
-+	help
-+	  This option enables the support for the Intel Keem Bay
-+	  general purpose timer and free running counter driver.
-+	  Each timer can generate an individual interrupt and
-+	  supports oneshot and periodic modes.
-+	  The 64-bit counter can be used as a clock source.
-+
- endmenu
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index c17ee32a7151..ea319063ba47 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -88,3 +88,4 @@ obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
- obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
- obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
- obj-$(CONFIG_MICROCHIP_PIT64B)		+= timer-microchip-pit64b.o
-+obj-$(CONFIG_KEEMBAY_TIMER)		+= timer-keembay.o
-diff --git a/drivers/clocksource/timer-keembay.c b/drivers/clocksource/timer-keembay.c
-new file mode 100644
-index 000000000000..e62187eeb4f6
---- /dev/null
-+++ b/drivers/clocksource/timer-keembay.c
-@@ -0,0 +1,255 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel Keem Bay Timer driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/idr.h>
-+#include <linux/interrupt.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+
-+#include "timer-of.h"
-+
-+/* Timer register offset */
-+#define TIM_CNT_VAL_OFFSET		0x0
-+#define TIM_RELOAD_VAL_OFFSET		0x4
-+#define TIM_CONFIG_OFFSET		0x8
-+
-+/* Bit fields of timer general config register */
-+#define TIM_CONFIG_PRESCALER_ENABLE	BIT(2)
-+#define TIM_CONFIG_COUNTER_ENABLE	BIT(0)
-+
-+/* Bit fields of timer config register */
-+#define TIM_CONFIG_INTERRUPT_PENDING	BIT(4)
-+#define TIM_CONFIG_INTERRUPT_ENABLE	BIT(2)
-+#define TIM_CONFIG_RESTART		BIT(1)
-+#define TIM_CONFIG_ENABLE		BIT(0)
-+
-+#define TIM_GEN_MASK			GENMASK(31, 12)
-+#define TIM_RATING			200
-+#define TIM_CLKSRC_MASK_BITS		64
-+
-+#define TIMER_NAME_SIZE			25
-+
-+/* Provides a unique ID for each timer */
-+static DEFINE_IDA(keembay_timer_ida);
-+
-+static inline void keembay_timer_enable(void __iomem *base, u32 flags)
-+{
-+	writel(TIM_CONFIG_ENABLE | flags, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static inline void keembay_timer_disable(void __iomem *base)
-+{
-+	writel(0x0, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static inline void keembay_timer_update_counter(void __iomem *base, u32 val)
-+{
-+	writel(val, base + TIM_CNT_VAL_OFFSET);
-+	writel(val, base + TIM_RELOAD_VAL_OFFSET);
-+}
-+
-+static inline void keembay_timer_clear_pending_int(void __iomem *base)
-+{
-+	u32 val;
-+
-+	val = readl(base + TIM_CONFIG_OFFSET);
-+	val &= ~TIM_CONFIG_INTERRUPT_PENDING;
-+	writel(val, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static int keembay_timer_set_next_event(unsigned long evt, struct clock_event_device *ce)
-+{
-+	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE;
-+	struct timer_of *to = to_timer_of(ce);
-+	void __iomem *tim_base = timer_of_base(to);
-+
-+	keembay_timer_disable(tim_base);
-+	keembay_timer_update_counter(tim_base, evt);
-+	keembay_timer_enable(tim_base, flags);
-+
-+	return 0;
-+}
-+
-+static int keembay_timer_periodic(struct clock_event_device *ce)
-+{
-+	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE | TIM_CONFIG_RESTART;
-+	struct timer_of *to = to_timer_of(ce);
-+	void __iomem *tim_base = timer_of_base(to);
-+
-+	keembay_timer_disable(tim_base);
-+	keembay_timer_update_counter(tim_base, timer_of_period(to));
-+	keembay_timer_enable(tim_base, flags);
-+
-+	return 0;
-+}
-+
-+static int keembay_timer_shutdown(struct clock_event_device *ce)
-+{
-+	struct timer_of *to = to_timer_of(ce);
-+
-+	keembay_timer_disable(timer_of_base(to));
-+
-+	return 0;
-+}
-+
-+static irqreturn_t keembay_timer_isr(int irq, void *dev_id)
-+{
-+	struct clock_event_device *evt = dev_id;
-+	struct timer_of *to = to_timer_of(evt);
-+	void __iomem *tim_base = timer_of_base(to);
-+	u32 val;
-+
-+	val = readl(tim_base + TIM_CONFIG_OFFSET);
-+
-+	if (val & TIM_CONFIG_RESTART) {
-+		/* Clear interrupt for periodic timer*/
-+		keembay_timer_clear_pending_int(tim_base);
-+	} else {
-+		/* Disable the timer for one shot timer */
-+		keembay_timer_disable(tim_base);
-+	}
-+
-+	evt->event_handler(evt);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int __init keembay_clockevent_init(struct device_node *np)
-+{
-+	struct device_node *gpt_node = np->parent;
-+	struct timer_of *keembay_ce_to;
-+	void __iomem *gpt_base;
-+	char *timer_name;
-+	int timer_id;
-+	int ret;
-+	u32 val;
-+
-+	gpt_base = of_iomap(gpt_node, 0);
-+	if (!gpt_base) {
-+		pr_err("%pOF: Failed to get general config base address\n", np);
-+		return -ENXIO;
-+	}
-+
-+	/* Prescaler must be enabled for the timer to operate */
-+	val = readl(gpt_base + TIM_CONFIG_OFFSET);
-+	if (!(val & TIM_CONFIG_PRESCALER_ENABLE)) {
-+		pr_err("%pOF: Prescaler is not enabled\n", np);
-+		ret = -ENODEV;
-+		goto err_iounmap;
-+	}
-+
-+	keembay_ce_to = kzalloc(sizeof(*keembay_ce_to), GFP_KERNEL);
-+	if (!keembay_ce_to) {
-+		ret = -ENOMEM;
-+		goto err_iounmap;
-+	}
-+
-+	timer_id = ida_alloc(&keembay_timer_ida, GFP_KERNEL);
-+	if (timer_id < 0) {
-+		ret = timer_id;
-+		goto err_keembay_ce_to_free;
-+	}
-+
-+	timer_name = kasprintf(GFP_KERNEL, "keembay_timer%d", timer_id);
-+	if (!timer_name) {
-+		ret = -ENOMEM;
-+		goto err_free_ida;
-+	}
-+
-+	keembay_ce_to->flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK;
-+	keembay_ce_to->clkevt.name = timer_name;
-+	keembay_ce_to->clkevt.cpumask = cpumask_of(0);
-+	keembay_ce_to->clkevt.features = CLOCK_EVT_FEAT_PERIODIC |
-+					 CLOCK_EVT_FEAT_ONESHOT  |
-+					 CLOCK_EVT_FEAT_DYNIRQ;
-+	keembay_ce_to->clkevt.rating = TIM_RATING;
-+	keembay_ce_to->clkevt.set_next_event = keembay_timer_set_next_event;
-+	keembay_ce_to->clkevt.set_state_periodic = keembay_timer_periodic;
-+	keembay_ce_to->clkevt.set_state_shutdown = keembay_timer_shutdown;
-+	keembay_ce_to->of_irq.handler = keembay_timer_isr;
-+	keembay_ce_to->of_irq.flags = IRQF_TIMER;
-+
-+	ret = timer_of_init(np, keembay_ce_to);
-+	if (ret)
-+		goto err_timer_name_free;
-+
-+	val = readl(gpt_base + TIM_RELOAD_VAL_OFFSET);
-+	iounmap(gpt_base);
-+
-+	keembay_ce_to->of_clk.rate = keembay_ce_to->of_clk.rate / (val + 1);
-+
-+	clockevents_config_and_register(&keembay_ce_to->clkevt,
-+					timer_of_rate(keembay_ce_to),
-+					1,
-+					U32_MAX);
-+
-+	return 0;
-+
-+err_timer_name_free:
-+	kfree(timer_name);
-+err_free_ida:
-+	ida_free(&keembay_timer_ida, timer_id);
-+err_keembay_ce_to_free:
-+	kfree(keembay_ce_to);
-+err_iounmap:
-+	iounmap(gpt_base);
-+
-+	return ret;
-+}
-+
-+static struct timer_of keembay_cs_to = {
-+	.flags	= TIMER_OF_BASE | TIMER_OF_CLOCK,
-+};
-+
-+static u64 notrace keembay_clocksource_read(struct clocksource *cs)
-+{
-+	return lo_hi_readq(timer_of_base(&keembay_cs_to));
-+}
-+
-+static struct clocksource keembay_counter = {
-+	.name	= "keembay_sys_counter",
-+	.rating	= TIM_RATING,
-+	.read	= keembay_clocksource_read,
-+	.mask	= CLOCKSOURCE_MASK(TIM_CLKSRC_MASK_BITS),
-+	.flags	= CLOCK_SOURCE_IS_CONTINUOUS |
-+		  CLOCK_SOURCE_SUSPEND_NONSTOP,
-+};
-+
-+static int __init keembay_clocksource_init(struct device_node *np)
-+{
-+	struct device_node *gpt_node = np->parent;
-+	void __iomem *gpt_base;
-+	u32 val;
-+	int ret;
-+
-+	gpt_base = of_iomap(gpt_node, 0);
-+	if (!gpt_base) {
-+		pr_err("%pOF: Failed to get general config base address\n", np);
-+		return -ENXIO;
-+	}
-+
-+	/* Free Running Counter must be enabled */
-+	val = readl(gpt_base + TIM_CONFIG_OFFSET);
-+	iounmap(gpt_base);
-+	if (!(val & TIM_CONFIG_COUNTER_ENABLE)) {
-+		pr_err("%pOF: free running counter is not enabled\n", np);
-+		return -ENODEV;
-+	}
-+
-+	ret = timer_of_init(np, &keembay_cs_to);
-+	if (ret)
-+		return ret;
-+
-+	return clocksource_register_hz(&keembay_counter, timer_of_rate(&keembay_cs_to));
-+}
-+
-+TIMER_OF_DECLARE(keembay_clockevent, "intel,keembay-timer", keembay_clockevent_init);
-+TIMER_OF_DECLARE(keembay_clocksource, "intel,keembay-counter", keembay_clocksource_init);
--- 
-2.17.1
+   # HEAD: 0e8a89d49d45197770f2e57fb15f1bc9ded96eb0 locking/lockdep: Correct the description error for check_redundant()
+
+Locking changes for this cycle:
+
+ - Core locking & atomics:
+
+     - Convert all architectures to ARCH_ATOMIC: move every
+       architecture to ARCH_ATOMIC, then get rid of ARCH_ATOMIC
+       and all the transitory facilities and #ifdefs.
+
+       Much reduction in complexity from that series:
+
+           63 files changed, 756 insertions(+), 4094 deletions(-)
+
+     - Self-test enhancements
+
+ - Futexes:
+
+     - Add the new FUTEX_LOCK_PI2 ABI, which is a variant that
+       doesn't set FLAGS_CLOCKRT (.e. uses CLOCK_MONOTONIC).
+
+       [ The temptation to repurpose FUTEX_LOCK_PI's implicit
+         setting of FLAGS_CLOCKRT & invert the flag's meaning
+         to avoid having to introduce a new variant was
+         resisted successfully. ]
+
+     - Enhance futex self-tests
+
+ - Lockdep:
+
+     - Fix dependency path printouts
+     - Optimize trace saving
+     - Broaden & fix wait-context checks
+
+ - Misc cleanups and fixes.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+André Almeida (4):
+      selftests: futex: Correctly include headers dirs
+      selftests: futex: Expand timeout test
+      selftests: futex: Add futex wait test
+      selftests: futex: Add futex compare requeue test
+
+Boqun Feng (4):
+      locking/lockdep: Fix the dep path printing for backwards BFS
+      locking/lockdep: Remove the unnecessary trace saving
+      lockding/lockdep: Avoid to find wrong lock dep path in check_irq_usage()
+      locking/selftests: Add a selftest for check_irq_usage()
+
+Huilong Deng (1):
+      seqlock: Remove trailing semicolon in macros
+
+Ingo Molnar (1):
+      locking: Fix comment typos
+
+Mark Rutland (33):
+      locking/atomic: make ARCH_ATOMIC a Kconfig symbol
+      locking/atomic: net: use linux/atomic.h for xchg & cmpxchg
+      locking/atomic: h8300: use asm-generic exclusively
+      locking/atomic: microblaze: use asm-generic exclusively
+      locking/atomic: openrisc: avoid asm-generic/atomic.h
+      locking/atomic: atomic: remove stale comments
+      locking/atomic: atomic: remove redundant include
+      locking/atomic: atomic: simplify ifdeffery
+      locking/atomic: atomic: support ARCH_ATOMIC
+      locking/atomic: atomic64: support ARCH_ATOMIC
+      locking/atomic: cmpxchg: make `generic` a prefix
+      locking/atomic: cmpxchg: support ARCH_ATOMIC
+      locking/atomic: alpha: move to ARCH_ATOMIC
+      locking/atomic: arc: move to ARCH_ATOMIC
+      locking/atomic: arm: move to ARCH_ATOMIC
+      locking/atomic: csky: move to ARCH_ATOMIC
+      locking/atomic: h8300: move to ARCH_ATOMIC
+      locking/atomic: hexagon: move to ARCH_ATOMIC
+      locking/atomic: ia64: move to ARCH_ATOMIC
+      locking/atomic: m68k: move to ARCH_ATOMIC
+      locking/atomic: microblaze: move to ARCH_ATOMIC
+      locking/atomic: mips: move to ARCH_ATOMIC
+      locking/atomic: nds32: move to ARCH_ATOMIC
+      locking/atomic: nios2: move to ARCH_ATOMIC
+      locking/atomic: openrisc: move to ARCH_ATOMIC
+      locking/atomic: parisc: move to ARCH_ATOMIC
+      locking/atomic: powerpc: move to ARCH_ATOMIC
+      locking/atomic: riscv: move to ARCH_ATOMIC
+      locking/atomic: sh: move to ARCH_ATOMIC
+      locking/atomic: sparc: move to ARCH_ATOMIC
+      locking/atomic: xtensa: move to ARCH_ATOMIC
+      locking/atomic: delete !ARCH_ATOMIC remnants
+      locking/atomics: atomic-instrumented: simplify ifdeffery
+
+Pavel Begunkov (1):
+      futex: Deduplicate cond_resched() invocation in futex_wake_op()
+
+Peter Zijlstra (3):
+      lockdep: Fix wait-type for empty stack
+      lockdep/selftests: Fix selftests vs PROVE_RAW_LOCK_NESTING
+      lockdep/selftest: Remove wait-type RCU_CALLBACK tests
+
+Randy Dunlap (1):
+      locking/lockdep: Reduce LOCKDEP dependency list
+
+Thomas Gleixner (2):
+      futex: Prepare futex_lock_pi() for runtime clock selection
+      futex: Provide FUTEX_LOCK_PI2 to support clock selection
+
+Xiongwei Song (2):
+      locking/lockdep,doc: Improve readability of the block matrix
+      locking/lockdep: Correct the description error for check_redundant()
+
+
+ Documentation/locking/lockdep-design.rst           |    4 +-
+ arch/alpha/include/asm/atomic.h                    |   88 +-
+ arch/alpha/include/asm/cmpxchg.h                   |   12 +-
+ arch/arc/include/asm/atomic.h                      |   60 +-
+ arch/arc/include/asm/cmpxchg.h                     |   10 +-
+ arch/arm/include/asm/atomic.h                      |   96 +-
+ arch/arm/include/asm/cmpxchg.h                     |   20 +-
+ arch/arm/include/asm/sync_bitops.h                 |    2 +-
+ arch/arm64/include/asm/atomic.h                    |    2 -
+ arch/csky/include/asm/cmpxchg.h                    |    8 +-
+ arch/h8300/include/asm/Kbuild                      |    1 +
+ arch/h8300/include/asm/atomic.h                    |   97 -
+ arch/h8300/include/asm/cmpxchg.h                   |   66 -
+ arch/hexagon/include/asm/atomic.h                  |   28 +-
+ arch/hexagon/include/asm/cmpxchg.h                 |    4 +-
+ arch/ia64/include/asm/atomic.h                     |   74 +-
+ arch/ia64/include/asm/cmpxchg.h                    |   16 +
+ arch/ia64/include/uapi/asm/cmpxchg.h               |   10 +-
+ arch/m68k/include/asm/atomic.h                     |   60 +-
+ arch/m68k/include/asm/cmpxchg.h                    |   10 +-
+ arch/m68k/include/asm/mmu_context.h                |    2 +-
+ arch/microblaze/include/asm/Kbuild                 |    1 +
+ arch/microblaze/include/asm/atomic.h               |   28 -
+ arch/microblaze/include/asm/cmpxchg.h              |    9 -
+ arch/mips/include/asm/atomic.h                     |   55 +-
+ arch/mips/include/asm/cmpxchg.h                    |   22 +-
+ arch/mips/kernel/cmpxchg.c                         |    4 +-
+ arch/openrisc/include/asm/atomic.h                 |   42 +-
+ arch/openrisc/include/asm/cmpxchg.h                |    4 +-
+ arch/parisc/include/asm/atomic.h                   |   34 +-
+ arch/parisc/include/asm/cmpxchg.h                  |   14 +-
+ arch/powerpc/include/asm/atomic.h                  |  140 +-
+ arch/powerpc/include/asm/cmpxchg.h                 |   30 +-
+ arch/powerpc/include/asm/qspinlock.h               |    2 +-
+ arch/riscv/include/asm/atomic.h                    |  128 +-
+ arch/riscv/include/asm/cmpxchg.h                   |   34 +-
+ arch/s390/include/asm/atomic.h                     |    2 -
+ arch/sh/include/asm/atomic-grb.h                   |    6 +-
+ arch/sh/include/asm/atomic-irq.h                   |    6 +-
+ arch/sh/include/asm/atomic-llsc.h                  |    6 +-
+ arch/sh/include/asm/atomic.h                       |    8 +-
+ arch/sh/include/asm/cmpxchg.h                      |    4 +-
+ arch/sparc/include/asm/atomic_32.h                 |   38 +-
+ arch/sparc/include/asm/atomic_64.h                 |   36 +-
+ arch/sparc/include/asm/cmpxchg_32.h                |   12 +-
+ arch/sparc/include/asm/cmpxchg_64.h                |   12 +-
+ arch/sparc/lib/atomic32.c                          |   24 +-
+ arch/sparc/lib/atomic_64.S                         |   42 +-
+ arch/x86/include/asm/atomic.h                      |    2 -
+ arch/xtensa/include/asm/atomic.h                   |   26 +-
+ arch/xtensa/include/asm/cmpxchg.h                  |   14 +-
+ include/asm-generic/atomic-instrumented.h          |  498 +---
+ include/asm-generic/atomic.h                       |  118 +-
+ include/asm-generic/atomic64.h                     |   45 +-
+ include/asm-generic/cmpxchg-local.h                |    4 +-
+ include/asm-generic/cmpxchg.h                      |   42 +-
+ include/linux/atomic-fallback.h                    | 2595 --------------------
+ include/linux/atomic.h                             |    4 -
+ include/linux/lockdep_types.h                      |    2 +-
+ include/linux/seqlock.h                            |    6 +-
+ include/uapi/linux/futex.h                         |    2 +
+ kernel/futex.c                                     |   29 +-
+ kernel/locking/lockdep.c                           |  127 +-
+ lib/Kconfig.debug                                  |    1 -
+ lib/atomic64.c                                     |   36 +-
+ lib/locking-selftest.c                             |   83 +-
+ net/core/filter.c                                  |    2 +-
+ net/sunrpc/xprtmultipath.c                         |    2 +-
+ scripts/atomic/check-atomics.sh                    |    1 -
+ scripts/atomic/gen-atomic-instrumented.sh          |   51 +-
+ scripts/atomic/gen-atomics.sh                      |    1 -
+ .../testing/selftests/futex/functional/.gitignore  |    2 +
+ tools/testing/selftests/futex/functional/Makefile  |    7 +-
+ .../selftests/futex/functional/futex_requeue.c     |  136 +
+ .../selftests/futex/functional/futex_wait.c        |  171 ++
+ .../futex/functional/futex_wait_timeout.c          |  126 +-
+ tools/testing/selftests/futex/functional/run.sh    |    6 +
+ 77 files changed, 1395 insertions(+), 4157 deletions(-)
+ delete mode 100644 arch/h8300/include/asm/atomic.h
+ delete mode 100644 arch/h8300/include/asm/cmpxchg.h
+ create mode 100644 arch/ia64/include/asm/cmpxchg.h
+ delete mode 100644 arch/microblaze/include/asm/atomic.h
+ delete mode 100644 arch/microblaze/include/asm/cmpxchg.h
+ delete mode 100644 include/linux/atomic-fallback.h
+ create mode 100644 tools/testing/selftests/futex/functional/futex_requeue.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex_wait.c
 
