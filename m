@@ -2,189 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092863B5D76
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F893B5D7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhF1MBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:01:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21543 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232514AbhF1MA6 (ORCPT
+        id S232804AbhF1MCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232514AbhF1MCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624881509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAyy3fb9a/A0Wy4JT6Gz9HEgpmGDE5qbwHVNuC276O4=;
-        b=P6PG5Ul2zK3uLRsK30LLEBSIM9JMFpJju7hzN6Stsliemn37swjYCEd8VvJ211Ots9Y2pI
-        i7vtp9CpO1mO7js88717AwDDIcXSTSSFcYlTsT22uhHNADLt7Yh4aDWHHg8Hs4APYXTQC3
-        v2oqQpnjsKRQ5X8Vru9nb37E43Ys52M=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-128-jyNMYitQOj630DjJ6FS1ug-1; Mon, 28 Jun 2021 07:58:27 -0400
-X-MC-Unique: jyNMYitQOj630DjJ6FS1ug-1
-Received: by mail-wr1-f70.google.com with SMTP id w10-20020a5d608a0000b0290124b2be1b59so2892690wrt.20
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 04:58:27 -0700 (PDT)
+        Mon, 28 Jun 2021 08:02:47 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB25BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:00:20 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id r8so7177727wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OAAYW5OXFtT6zZRlw+ON+OvCdB1rmGdpZn4NmlmkWKo=;
+        b=kudnq+g7bvQIO2zTBTx2crBmyW6PCd/k9FhBOAqff7d3xmvZZX3o2U5AW9vDW6aNv+
+         8/LIMN2gpmlg5bVUsMwT2aqxLRdeKIgP9JnBYvhdajm5rUG6XZRebTgIzV2i2xzyuOSg
+         3SQskbDr1cVLWGsTeFl/dVBlFY62kNKKvebwqS/G6eiw51omdX0ltqqAvFCGNSbRS6D6
+         NxuAtDdqsfOviKv7iwVR+gikB/gugJ8d7JxhzPq44wa+3OpTTz6WqPcSm1PIb7GbV4PG
+         lUUTOl4MPFxrTopn5PFqtqI1jGato/BtTn4SR3a3VsLP3e5xS8GNjWop75i5c39uppec
+         1bHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mAyy3fb9a/A0Wy4JT6Gz9HEgpmGDE5qbwHVNuC276O4=;
-        b=ANCZalPrHjAF1lRiWkWwnR1QXPGDfc3AD8hU0+JpFYH5JSMQK6YFlYBuw6HG06pvoR
-         +24UFAUkx6oWEsZMFqXf6l4gAIOrzCw/u1CHwxZa21G3WvPBlXogkxPzbIxbeVtR7d2w
-         m1qLnCiR8LrurYZpm6qXHjnXVwU1i7RqvtmfhiAKTSfRH97k/2j/pIpDMxxwmNvKL8ts
-         ha0aJxEE4uT8MSK/0+D6d3h2J3GYHSekIfnPzm+AAw+h/UoRxADTHFfbRZnCPQtHkPH8
-         n6bPUaFSBwGQfItmPTA8WV07l5NLnE2RtEmHYiHsd79K7P2v1rih6rB1XzApDyqdQXLE
-         0Zyg==
-X-Gm-Message-State: AOAM530akgyToClkjsri5Z+QjeoGN6yGHUU9nqVYKTGABr2ObemzPz8k
-        H47GdBJ5J7pTHD35Mk5BEzGj77+0PL/Zmh1MPFsizfaF3bPbzi5vgryNniy4d4pOYZlQvdJTkCL
-        snCXGVcVNxoG8MrvR8iF6llAj
-X-Received: by 2002:a5d:49c9:: with SMTP id t9mr2237842wrs.364.1624881506751;
-        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrkk/KgU87mrJhE843ZLCm7+57AC7KmP6Nb7lxQfMUgnmV3+0IYC6pgVkzCBCu+wPbRcgMpw==
-X-Received: by 2002:a5d:49c9:: with SMTP id t9mr2237815wrs.364.1624881506582;
-        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
-Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
-        by smtp.gmail.com with ESMTPSA id v17sm7065600wrt.74.2021.06.28.04.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 12:58:23 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     "Schaufler, Casey" <casey.schaufler@intel.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OAAYW5OXFtT6zZRlw+ON+OvCdB1rmGdpZn4NmlmkWKo=;
+        b=hanxHxUBhU6uUn6h+M2cRiV+pGk3eQptOV0uSAyTnLUj+QqiYnGlNqp6PofhBh4J1T
+         +V+wfl0b48UUg5T2oGKmlnkHYKDuXqnLM3Gk8ebZI3SW+FPdqY4ckcdIBuQKuvzQVi0g
+         rGJhFFx2ewFKeJ1XfWI4d6jVH+NJtDZFfquz2KQcKl3UE7BvWLaEjsSlSBfqPLJFwUj0
+         4SwsKGCHpg5xqUUu1AGLvfQKXZt8PWkCcQFEgqzTuOJnRKD9jlJlsMjyNRxITFyDUyeg
+         MJKBsilW3WTyJFKrnPvafXh0Lt7u+NfLK5u7KzEvsBLhbrb2yslCSTf4PNe8hTKJT/uU
+         jS5Q==
+X-Gm-Message-State: AOAM531lw8Lc2xKNkgsFyYEVG4r9KwTZq8nKgJFw9uPpmqDZmSmf/69F
+        /tVaFKFXSnx/5bo5zHYZLdu19DYKgzM=
+X-Google-Smtp-Source: ABdhPJzDgYrSFAUr8Nz3HuU8n9cxEc4DBNNm36mJL/hIuTlq2XF37hRw3lfI2cf8Vjp0HH5/EavFhw==
+X-Received: by 2002:a5d:564c:: with SMTP id j12mr27119934wrw.37.1624881619504;
+        Mon, 28 Jun 2021 05:00:19 -0700 (PDT)
+Received: from [10.8.0.150] ([195.53.121.100])
+        by smtp.gmail.com with ESMTPSA id o17sm17982413wmh.19.2021.06.28.05.00.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 05:00:18 -0700 (PDT)
+Subject: Re: [RFC] strcpys(): New function for copying strings safely
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        glibc <libc-alpha@sourceware.org>
+Cc:     "tech@openbsd.org" <tech@openbsd.org>,
+        Christoph Hellwig <hch@lst.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "dwalsh@redhat.com" <dwalsh@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <YNm5X/5PuqyXcZbM@work-vm>
-References: <20210625191229.1752531-1-vgoyal@redhat.com>
- <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
+        drepper@gmail.com
+References: <755875ec-baae-6cab-52a8-3c9530db1ce6@gmail.com>
+ <38428d5e-ead2-bf18-e198-cecd4caeb3e7@gmail.com>
+ <f5bfab0dce604736b6a563a4f9f7ce43@AcuMS.aculab.com>
+ <52e57bd5-0d04-4b4f-978a-8c1dbc08115c@gmail.com>
+Message-ID: <d27912e6-f090-68af-295d-d40b00c1b0a7@gmail.com>
+Date:   Mon, 28 Jun 2021 14:00:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+In-Reply-To: <52e57bd5-0d04-4b4f-978a-8c1dbc08115c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Schaufler, Casey (casey.schaufler@intel.com) wrote:
-> > -----Original Message-----
-> > From: Vivek Goyal <vgoyal@redhat.com>
-> > Sent: Friday, June 25, 2021 12:12 PM
-> > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > viro@zeniv.linux.org.uk
-> > Cc: virtio-fs@redhat.com; dwalsh@redhat.com; dgilbert@redhat.com;
-> > berrange@redhat.com; vgoyal@redhat.com
+On 6/28/21 1:32 PM, Alejandro Colomar (man-pages) wrote:
+>>
+>> The other use is where you want a sequence of:
+>>     len *= str_copy(dest + len, dest_len - len, src);
+>> But don't really want to test for overflow after each call.
 > 
-> Please include Linux Security Module list <linux-security-module@vger.kernel.org>
-> and selinux@vger.kernel.org on this topic.
+> This is a legitimate use of strscpy().  Please, add it to glibc, as 
+> there is no libc function to do that.
 > 
-> > Subject: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special files if
-> > caller has CAP_SYS_RESOURCE
-> > 
-> > Hi,
-> > 
-> > In virtiofs, actual file server is virtiosd daemon running on host.
-> > There we have a mode where xattrs can be remapped to something else.
-> > For example security.selinux can be remapped to
-> > user.virtiofsd.securit.selinux on the host.
+>>
+>> In this case returning the buffer length (including the added
+>> '\0' on truncation works quite nicely.
+>> No chance of writing outside the buffer, safe truncation and
+>> a simple 'len == dest_len' check for overflow.
+>>
+>> OTOH there are already too many string copy functions.
 > 
-> This would seem to provide mechanism whereby a user can violate
-> SELinux policy quite easily. 
+> There are, but because the standard ones don't serve all purposes 
+> correctly, so people need to develop their own.  If libc provided the 
+> necessary functions, less custom string copy functions would be 
+> necessary, as Christoph said a long time ago, which is a good thing.
 > 
-> > 
-> > This remapping is useful when SELinux is enabled in guest and virtiofs
-> > as being used as rootfs. Guest and host SELinux policy might not match
-> > and host policy might deny security.selinux xattr setting by guest
-> > onto host. Or host might have SELinux disabled and in that case to
-> > be able to set security.selinux xattr, virtiofsd will need to have
-> > CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
-> > guest security.selinux (or other xattrs) on host to something else
-> > is also better from security point of view.
+> As I see it, there are the following, each of which has its valid usage:
 > 
-> Can you please provide some rationale for this assertion?
-> I have been working with security xattrs longer than anyone
-> and have trouble accepting the statement.
-
-There seem to be a few very different ways of using SELinux in
-containers/guests, and many ways of using shared filesystems.
-
-A common request is that we share a host filesystem into the guest (a
-VM), and then the guest can do with it whatever it likes, preferably
-without making the guest privileged in any way, and with having as few
-priviliges on the daemons running on behalf of the guest ('virtiofd'
-which is a fuse implementation daemon that runs on the host).
-
-By remapping all guests xattr to add a "user.virtiofsd." prefix,
-the guest can label it's filesystem and implement it's own SELinux
-policy, but because it's using "user." on the host, it can neither
-bypass nor change the hosts SELinux labelling or policies.
-
-(It also means that the guest can set capabilities and other xattr's,
-again without confusing the host).
-
-> > But when we try this, we noticed that SELinux relabeling in guest
-> > is failing on some symlinks. When I debugged a little more, I
-> > came to know that "user.*" xattrs are not allowed on symlinks
-> > or special files.
-> > 
-> > "man xattr" seems to suggest that primary reason to disallow is
-> > that arbitrary users can set unlimited amount of "user.*" xattrs
-> > on these files and bypass quota check.
-> > 
-> > If that's the primary reason, I am wondering is it possible to relax
-> > the restrictions if caller has CAP_SYS_RESOURCE. This capability
-> > allows caller to bypass quota checks. So it should not be
-> > a problem atleast from quota perpective.
-> > 
-> > That will allow me to give CAP_SYS_RESOURCE to virtiofs deamon
-> > and remap xattrs arbitrarily.
+> strcpy(3):
+>      known input && known buffer
+> strncpy(3):
+>      not for C strings; only for fixed width buffers of characters!
+> strlcpy)3bsd):
+>      known input && unknown buffer
+>      Given that performance-wise it's similar to strscpy(),
+>      it should probably always be replaced by strscpy().
+> strscpy():
+>      unknown input && truncation is silently ignored
+>      Except for performance-critical applications,
+>      this call may replace strcpy(3), to add some extra safety.
+> strcpys():
+>      unknown input && truncation may be an error (or not).
+>      This call can replace strscpy() in most cases,
+>      simplifying usage.
+>      The only case I can see that strscpy() is superior
+>      is for chains of strscpy(), where I'd only use strcpys()
+>      in the last one (if any strscpy() in the chain has been
+>      trunncated, so will the last strcpys() (unless it's "")).
 > 
-> On a Smack system you should require CAP_MAC_ADMIN to remap
-> security. xattrs. I sounds like you're in serious danger of running afoul
-> of LSM attribute policy on a reasonable general level.
-
-Note that the remapping is done by the userspace daemon running on the
-host (and takes parameters saying what remapping is required); as
-such it's still bound by whatever LSM policies the host wants; we're
-just giving the guest the ability to add it's own policies without
-breaking the hosts.
-
-Of course if you want the guest kernel to see the host xattrs
-then you don't want the remapping; there are even some cases where you
-might want to allow the guest to set those xattrs; but then you really
-do have to start worrying about what the guest could do to your
-filesystem.
-
-The only thing getting in the way of the guest being able to do a full
-relabel seems to be the limitation on user.* on non-files.
-
-Dave
-
-> > 
-> > Thanks
-> > Vivek
-> > 
-> > Vivek Goyal (1):
-> >   xattr: Allow user.* xattr on symlink/special files with
-> >     CAP_SYS_RESOURCE
-> > 
-> >  fs/xattr.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > --
-> > 2.25.4
 > 
+
+BTW, for chains of str_cpy(), a strscat() and a strcats() function 
+should probably replace chained strcpy()s, so it would be something like:
+
+l = strscpy(n, dest, src);
+l = strscat(n - l, dest + l, src2);
+l = strscat(n - l, dest + l, src3);
+...
+if (strcats(n - l, dest + l, srcN, NULL))
+	goto handle_truncation_or_error;
+
+And the user should make sure that srcN is not "" unless he doesn't care 
+about truncation.  Otherwise, check at every step.
+
+I'll send my source code for strscat and strcats, if strscpy and strcpys 
+are considered for addition.
+
+
 -- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
