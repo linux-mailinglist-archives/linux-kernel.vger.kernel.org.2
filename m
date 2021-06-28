@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3A43B5D7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2BE3B5D85
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhF1MDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:03:40 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58531 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232608AbhF1MDi (ORCPT
+        id S232835AbhF1MFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232608AbhF1MFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:03:38 -0400
-X-UUID: cd97d7ea107e435f832f6231cf181a40-20210628
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=glrhrzaIhE7vhNz3vuSdEIfHQkSaoPCRC4KtXtyz+5E=;
-        b=SRQCeNphtjYkTbA9alHnMjs3fZPik3jmTkHA3AZXUqaJkPJozGoW5KYp5sky2/NbjW61lesgSjTyV7p/VMYoCP6cJhjzI9Tsa4vwmmD/QueUGMrDZqbOm/t8FcX4F+ZcTEb8FWwE1nTzH1kvU2u81DT00PZwyQ7yy3eu9WC0LPA=;
-X-UUID: cd97d7ea107e435f832f6231cf181a40-20210628
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1307190865; Mon, 28 Jun 2021 20:01:09 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 28 Jun 2021 20:01:08 +0800
-Received: from [10.17.3.153] (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Jun 2021 20:01:07 +0800
-Message-ID: <1624881667.26480.2.camel@mhfsdcap03>
-Subject: Re: [v4,3/3] watchdog: mediatek: mt8195: add wdt support
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-CC:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>
-Date:   Mon, 28 Jun 2021 20:01:07 +0800
-In-Reply-To: <CA+Px+wX7yBvuzj=KWf0MhLkTQOi4Rfn8F6z_+g-T66K3iMfb=w@mail.gmail.com>
-References: <20210623123854.21941-1-Christine.Zhu@mediatek.com>
-         <20210623123854.21941-4-Christine.Zhu@mediatek.com>
-         <CA+Px+wX7yBvuzj=KWf0MhLkTQOi4Rfn8F6z_+g-T66K3iMfb=w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 28 Jun 2021 08:05:43 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4817DC061574;
+        Mon, 28 Jun 2021 05:03:17 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id d12so15270037pgd.9;
+        Mon, 28 Jun 2021 05:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hC95X8dILV4yUsxnWcqyaUSRLR/4KhkkqpuXQlMJ+os=;
+        b=j/1qnIN05R1GrGDHQLT945i6wPcIK8UlPXIPynREbRgcev1CYX2vV3PdaSuMf/fkFk
+         5cqvLfoq5LYsQxXfM7WQ0FhWh/GEM4zDYp5YUE+qMxSxIVkZ7BKnlyGaKE/bSRaOvHBg
+         TBZ0p8k4IY1hA9bUBHOp66D2kooiwq9RIKp0v+M+UCECYePx1BGSp6UWwbcxRdr1vGBU
+         YhrN7Hyf6PH/SHx5y8fvtG5Q53KD9JWDK6pJ02iF3Cy0+B3mLGowTZUmWFnuQlP3f7Nx
+         +XjgCAXiaMUgzXVlCRGJGktRvkV7Bp51kBbOk6qaMNw6n64Vu4Jj8gRaEQVLEsn/xxNv
+         kMUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hC95X8dILV4yUsxnWcqyaUSRLR/4KhkkqpuXQlMJ+os=;
+        b=RnPTzM1taTLl4W5n+cIexpiXT28ml9J8lJs3VAWL6VH+n5K193xCj1EQARZQ0jY4lA
+         4ML/VaJaSIzavDrc6svh8wD3wkAqLI43AVbXvFFRhgRBcrkuBW+eE9HhMZlevHPW7IqS
+         tMWgGeAhV3YbKX9IILxu2iONOl250J+LcsWC9WHPJTff8TWXI2nfODpyi9SQJXJyxfZ/
+         uZeqbhcqL+HQlhu4w/yda75TxHJnX+VY7LU3NVJwbhL3l3rv7xHoyyUauWIS9h+p0Lnd
+         T4di5v1ifT1xbKisBDy/r+BcEhefhgzgiP7/ouB6PmuhlU/O02WGODi5ZVUfKNhD6E+Z
+         n7Tg==
+X-Gm-Message-State: AOAM530bKDNQSI/J+Esjde5p2KKiwTUl4Sk75mK+Wt2nz1A/62hHj37v
+        s/TSKrT/y5a/1TvHm38Lf7LFxCQWQVU1TZaOFo8=
+X-Google-Smtp-Source: ABdhPJyAv9znER5hh/JOnKHGaD1NRGWHP3IrFfiODa8IXBazHOnTNyl7L/0rKn7rdXQ7fCvZ/iGF6s9IOTuD8HfB+dg=
+X-Received: by 2002:a63:f609:: with SMTP id m9mr1004059pgh.74.1624881796677;
+ Mon, 28 Jun 2021 05:03:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210625235532.19575-1-dipenp@nvidia.com> <CAHp75Vf4TKjtC7cLNape4r+hE-AWnbxtbww2ofCcHQJf9zyh-g@mail.gmail.com>
+ <CACRpkdbXE2A98P0_juA9PNEKTo89FcgywYmnqJSC5bV+Vox=Fw@mail.gmail.com>
+In-Reply-To: <CACRpkdbXE2A98P0_juA9PNEKTo89FcgywYmnqJSC5bV+Vox=Fw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Jun 2021 15:02:39 +0300
+Message-ID: <CAHp75Vcv3BsQ87bnnYK07npQsp3GU4JC1k+iXUw2uuGbSKBQNg@mail.gmail.com>
+Subject: Re: [RFC 00/11] Intro to Hardware timestamping engine
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Ye Xiang <xiang.ye@intel.com>, Drew Fustini <drew@beagleboard.org>,
+        Sandeep Singh <sandeep.singh@amd.com>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA2LTI1IGF0IDEzOjExICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0K
-PiBPbiBXZWQsIEp1biAyMywgMjAyMSBhdCA4OjQ0IFBNIENocmlzdGluZSBaaHUNCj4gPENocmlz
-dGluZS5aaHVAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiBGcm9tOiAiQ2hyaXN0aW5lIFpodSIg
-PENocmlzdGluZS5aaHVAbWVkaWF0ZWsuY29tPg0KPiA+DQo+ID4gU3VwcG9ydCBNVDgxOTUgd2F0
-Y2hkb2cgZGV2aWNlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogY2hyaXN0aW5lLnpodSA8Q2hy
-aXN0aW5lLlpodUBtZWRpYXRlay5jb20+DQo+IFN0aWxsIG1pc3NlZCB0aGlzIHBhcnQgcGVyIHN1
-Z2dlc3Rpb24gaW4gWzFdLg0KPiANCj4gWzFdOiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3Jn
-L3Byb2plY3QvbGludXgtbWVkaWF0ZWsvcGF0Y2gvMjAyMTA2MjMwOTI5MTcuNDQ0Ny0yLUNocmlz
-dGluZS5aaHVAbWVkaWF0ZWsuY29tLyMyNDI3MDYxOQ0KDQpUaHggZm9yIHlvdXIgYWR2aWNlLEkg
-aGF2ZSB1cGxvYWRlZCB2NSB0byBmaXggaXQuDQo=
+On Sun, Jun 27, 2021 at 5:41 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Sun, Jun 27, 2021 at 3:08 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+>
+> > > To summarize upstream discussion:
+> > > - It was heavily favoured by Linus and Kent to extend GPIOLIB and supporting
+> > > GPIO drivers to add HTE functionality and I agreed to experiment with it.
+> >
+> > I guess this series should include more people from different
+> > companies, especially documentation parts. This may be used by
+> > different hardware and quite different vendors. Developing a framework
+> > like this for only one vendor is no go in general.
+>
+> I forwarded patch 00 to the IIO list and Jonathan Cameron,
+> and let's page Ye Xiang who made a bunch of contributions
+> from Intel's side to IIO directly. (Hi Ye, please check this concept
+> if you have time!)
+>
+> The actually most important target group would be people
+> doing things like sensor fusion where a common timebase is
+> important, I don't know who does really, but Sandeep Singh from
+> AMD has contributed the AMD Sensor Fusion hub in
+> drivers/hid/amd-sfh-hid and might know a few things about this
+> though I don't think SFH would need this directly.
+> https://en.wikipedia.org/wiki/Sensor_fusion
+>
+> Also Paging Drew Fustini, who knows a lot of maker and tinker
+> people, he might know a bit about this or know someone who
+> knows.
 
+Thank you!
+
+-- 
+With Best Regards,
+Andy Shevchenko
