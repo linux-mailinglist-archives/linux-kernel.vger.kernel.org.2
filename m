@@ -2,176 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2D93B5853
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 06:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0353B5874
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 06:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhF1Eam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 00:30:42 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:52196 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhF1Eal (ORCPT
+        id S232122AbhF1ErY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 00:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhF1ErX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 00:30:41 -0400
-Received: by mail-io1-f70.google.com with SMTP id x21-20020a5d99150000b02904e00bb129f0so12529010iol.18
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 21:28:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=icxrGNLP9JeJyygKnYHu0Kd8QQahd5TDh1IJBmjQ4fU=;
-        b=jrU3/62Iwz6JiD8VApeNSNzFnqod3pPtECWUYA2RnkJx6Xv52GggDIeDv3phMRl4bd
-         E61ene4WlhG1zEfhvQVdJ81yvb7d3Yw9/cySUQ6sRD0W6r9kuzE1k2S26VJqDutFWMvU
-         ASRe6uvxWx7oKvzfmAbY9wORRSY3A8ueRq993LOFXq9RWe/JpW0/THwTUu1wCOat9/Dc
-         lWqoVDSZBBLREVlOL9ANGO9Em/0r9WQq+tF+4+J8kBYSTf5BgLQNOZUPcFCBP82ogiQg
-         sRW/BWA2JsBb4UMvAP3BYf62zvksj0xdiPjww4p4eBXNZB3D0/YwenAhUCmhXVhD/c1m
-         YqEQ==
-X-Gm-Message-State: AOAM530Ai0KABNKS1Zjx9zYwDU42N2XjxI1x7my2Kt1BV6WPH38y6LHh
-        Ui9utzq9dFPSpThpkCt4fZvVH0XgrgTxJuqq/Sq/+s0gdsaz
-X-Google-Smtp-Source: ABdhPJz7x+mV90IRliuwgevDl/SQ8cw3MqpMFiOQ9959GwywBmL3g9wJR0IxB8UWyt3n+YMx9APc5G0ogAWyctYmtGl/Od5a/Frl
+        Mon, 28 Jun 2021 00:47:23 -0400
+X-Greylist: delayed 1012 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 27 Jun 2021 21:44:58 PDT
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D9AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 21:44:58 -0700 (PDT)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1lxisJ-0003gK-S0; Mon, 28 Jun 2021 00:27:59 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id 72A26560148; Mon, 28 Jun 2021 00:27:59 -0400 (EDT)
+Date:   Mon, 28 Jun 2021 00:27:59 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] mm/page_alloc: do bulk array bounds check after checking
+ populated elements
+Message-ID: <20210628042759.GA19686@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210618125102.GU30378@techsingularity.net>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9c43:: with SMTP id 3mr3689294iof.123.1624854496443;
- Sun, 27 Jun 2021 21:28:16 -0700 (PDT)
-Date:   Sun, 27 Jun 2021 21:28:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001285b905c5cbeb8f@google.com>
-Subject: [syzbot] memory leak in j1939_sk_sendmsg
-From:   syzbot <syzbot+085305c4b952053c9437@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618125102.GU30378@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    7266f203 Merge tag 'pm-5.13-rc8' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e22d34300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3aac8c6ef370586a
-dashboard link: https://syzkaller.appspot.com/bug?extid=085305c4b952053c9437
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e0d6a4300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13528400300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+085305c4b952053c9437@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888112d44400 (size 232):
-  comm "syz-executor006", pid 8628, jiffies 4294942391 (age 8.470s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 80 d7 0f 81 88 ff ff 00 64 db 16 81 88 ff ff  .........d......
-  backtrace:
-    [<ffffffff836a0f8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:413
-    [<ffffffff836ac44a>] alloc_skb include/linux/skbuff.h:1107 [inline]
-    [<ffffffff836ac44a>] alloc_skb_with_frags+0x6a/0x2c0 net/core/skbuff.c:5992
-    [<ffffffff83699e63>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2364
-    [<ffffffff83c54592>] j1939_sk_alloc_skb net/can/j1939/socket.c:858 [inline]
-    [<ffffffff83c54592>] j1939_sk_send_loop net/can/j1939/socket.c:1040 [inline]
-    [<ffffffff83c54592>] j1939_sk_sendmsg+0x2e2/0x7d0 net/can/j1939/socket.c:1175
-    [<ffffffff83690ad6>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff83690ad6>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff83696e9f>] sock_no_sendpage+0x8f/0xc0 net/core/sock.c:2862
-    [<ffffffff836903db>] kernel_sendpage.part.0+0xeb/0x150 net/socket.c:3618
-    [<ffffffff836910bb>] kernel_sendpage net/socket.c:3615 [inline]
-    [<ffffffff836910bb>] sock_sendpage+0x5b/0x90 net/socket.c:947
-    [<ffffffff815b8862>] pipe_to_sendpage+0xa2/0x110 fs/splice.c:364
-    [<ffffffff815ba702>] splice_from_pipe_feed fs/splice.c:418 [inline]
-    [<ffffffff815ba702>] __splice_from_pipe+0x1e2/0x330 fs/splice.c:562
-    [<ffffffff815baf2f>] splice_from_pipe fs/splice.c:597 [inline]
-    [<ffffffff815baf2f>] generic_splice_sendpage+0x6f/0xa0 fs/splice.c:746
-    [<ffffffff815b891b>] do_splice_from fs/splice.c:767 [inline]
-    [<ffffffff815b891b>] direct_splice_actor+0x4b/0x70 fs/splice.c:936
-    [<ffffffff815b9033>] splice_direct_to_actor+0x153/0x350 fs/splice.c:891
-    [<ffffffff815b9318>] do_splice_direct+0xe8/0x150 fs/splice.c:979
-    [<ffffffff8155a64f>] do_sendfile+0x51f/0x760 fs/read_write.c:1260
-    [<ffffffff8155cf82>] __do_sys_sendfile64 fs/read_write.c:1325 [inline]
-    [<ffffffff8155cf82>] __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-    [<ffffffff8155cf82>] __x64_sys_sendfile64+0xe2/0x100 fs/read_write.c:1311
-
-BUG: memory leak
-unreferenced object 0xffff888116d2d800 (size 1024):
-  comm "syz-executor006", pid 8628, jiffies 4294942391 (age 8.470s)
-  hex dump (first 32 bytes):
-    0d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836a0e5f>] kmalloc_reserve net/core/skbuff.c:354 [inline]
-    [<ffffffff836a0e5f>] __alloc_skb+0xdf/0x280 net/core/skbuff.c:425
-    [<ffffffff836ac44a>] alloc_skb include/linux/skbuff.h:1107 [inline]
-    [<ffffffff836ac44a>] alloc_skb_with_frags+0x6a/0x2c0 net/core/skbuff.c:5992
-    [<ffffffff83699e63>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2364
-    [<ffffffff83c54592>] j1939_sk_alloc_skb net/can/j1939/socket.c:858 [inline]
-    [<ffffffff83c54592>] j1939_sk_send_loop net/can/j1939/socket.c:1040 [inline]
-    [<ffffffff83c54592>] j1939_sk_sendmsg+0x2e2/0x7d0 net/can/j1939/socket.c:1175
-    [<ffffffff83690ad6>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff83690ad6>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff83696e9f>] sock_no_sendpage+0x8f/0xc0 net/core/sock.c:2862
-    [<ffffffff836903db>] kernel_sendpage.part.0+0xeb/0x150 net/socket.c:3618
-    [<ffffffff836910bb>] kernel_sendpage net/socket.c:3615 [inline]
-    [<ffffffff836910bb>] sock_sendpage+0x5b/0x90 net/socket.c:947
-    [<ffffffff815b8862>] pipe_to_sendpage+0xa2/0x110 fs/splice.c:364
-    [<ffffffff815ba702>] splice_from_pipe_feed fs/splice.c:418 [inline]
-    [<ffffffff815ba702>] __splice_from_pipe+0x1e2/0x330 fs/splice.c:562
-    [<ffffffff815baf2f>] splice_from_pipe fs/splice.c:597 [inline]
-    [<ffffffff815baf2f>] generic_splice_sendpage+0x6f/0xa0 fs/splice.c:746
-    [<ffffffff815b891b>] do_splice_from fs/splice.c:767 [inline]
-    [<ffffffff815b891b>] direct_splice_actor+0x4b/0x70 fs/splice.c:936
-    [<ffffffff815b9033>] splice_direct_to_actor+0x153/0x350 fs/splice.c:891
-    [<ffffffff815b9318>] do_splice_direct+0xe8/0x150 fs/splice.c:979
-    [<ffffffff8155a64f>] do_sendfile+0x51f/0x760 fs/read_write.c:1260
-    [<ffffffff8155cf82>] __do_sys_sendfile64 fs/read_write.c:1325 [inline]
-    [<ffffffff8155cf82>] __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-    [<ffffffff8155cf82>] __x64_sys_sendfile64+0xe2/0x100 fs/read_write.c:1311
-
-BUG: memory leak
-unreferenced object 0xffff888111010d00 (size 232):
-  comm "syz-executor006", pid 8628, jiffies 4294942391 (age 8.470s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 80 d7 0f 81 88 ff ff 00 64 db 16 81 88 ff ff  .........d......
-  backtrace:
-    [<ffffffff836a0f8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:413
-    [<ffffffff836ac44a>] alloc_skb include/linux/skbuff.h:1107 [inline]
-    [<ffffffff836ac44a>] alloc_skb_with_frags+0x6a/0x2c0 net/core/skbuff.c:5992
-    [<ffffffff83699e63>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2364
-    [<ffffffff83c54592>] j1939_sk_alloc_skb net/can/j1939/socket.c:858 [inline]
-    [<ffffffff83c54592>] j1939_sk_send_loop net/can/j1939/socket.c:1040 [inline]
-    [<ffffffff83c54592>] j1939_sk_sendmsg+0x2e2/0x7d0 net/can/j1939/socket.c:1175
-    [<ffffffff83690ad6>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff83690ad6>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff83696e9f>] sock_no_sendpage+0x8f/0xc0 net/core/sock.c:2862
-    [<ffffffff836903db>] kernel_sendpage.part.0+0xeb/0x150 net/socket.c:3618
-    [<ffffffff836910bb>] kernel_sendpage net/socket.c:3615 [inline]
-    [<ffffffff836910bb>] sock_sendpage+0x5b/0x90 net/socket.c:947
-    [<ffffffff815b8862>] pipe_to_sendpage+0xa2/0x110 fs/splice.c:364
-    [<ffffffff815ba702>] splice_from_pipe_feed fs/splice.c:418 [inline]
-    [<ffffffff815ba702>] __splice_from_pipe+0x1e2/0x330 fs/splice.c:562
-    [<ffffffff815baf2f>] splice_from_pipe fs/splice.c:597 [inline]
-    [<ffffffff815baf2f>] generic_splice_sendpage+0x6f/0xa0 fs/splice.c:746
-    [<ffffffff815b891b>] do_splice_from fs/splice.c:767 [inline]
-    [<ffffffff815b891b>] direct_splice_actor+0x4b/0x70 fs/splice.c:936
-    [<ffffffff815b9033>] splice_direct_to_actor+0x153/0x350 fs/splice.c:891
-    [<ffffffff815b9318>] do_splice_direct+0xe8/0x150 fs/splice.c:979
-    [<ffffffff8155a64f>] do_sendfile+0x51f/0x760 fs/read_write.c:1260
-    [<ffffffff8155cf82>] __do_sys_sendfile64 fs/read_write.c:1325 [inline]
-    [<ffffffff8155cf82>] __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-    [<ffffffff8155cf82>] __x64_sys_sendfile64+0xe2/0x100 fs/read_write.c:1311
+On Fri, Jun 18, 2021 at 01:51:02PM +0100, Mel Gorman wrote:
+ > Dan Carpenter reported the following
+ > 
+ >   The patch 0f87d9d30f21: "mm/page_alloc: add an array-based interface
+ >   to the bulk page allocator" from Apr 29, 2021, leads to the following
+ >   static checker warning:
+ > 
+ >         mm/page_alloc.c:5338 __alloc_pages_bulk()
+ >         warn: potentially one past the end of array 'page_array[nr_populated]'
+ > 
+ > The problem can occur if an array is passed in that is fully populated. That
+ > potentially ends up allocating a single page and storing it past the end of
+ > the array. This patch returns 0 if the array is fully populated.
+ > 
+ > Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
+ > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+ > Signed-off-by: Mel Gorman <mgorman@techsinguliarity.net>
+ > ---
+ >  mm/page_alloc.c | 4 ++++
+ >  1 file changed, 4 insertions(+)
+ > 
+ > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+ > index 7124bb00219d..ef2265f86b91 100644
+ > --- a/mm/page_alloc.c
+ > +++ b/mm/page_alloc.c
+ > @@ -5056,6 +5056,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ >  	while (page_array && nr_populated < nr_pages && page_array[nr_populated])
+ >  		nr_populated++;
+ >  
+ > +	/* Already populated array? */
+ > +	if (unlikely(page_array && nr_pages - nr_populated == 0))
+ > +		return 0;
+ > +
+ >  	/* Use the single page allocator for one page. */
+ >  	if (nr_pages - nr_populated == 1)
+ >  		goto failed;
 
 
+This made it into 5.13 final, and completely breaks NFSD for me (Serving tcp v3 mounts).
+Existing mounts on clients hang, as do new mounts from new clients.
+Rebooting the server back to rc7 everything recovers.  Bisect lands on
+this commit.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+$ git bisect start
+# good: [13311e74253fe64329390df80bed3f07314ddd61] Linux 5.13-rc7
+git bisect good 13311e74253fe64329390df80bed3f07314ddd61
+# bad: [b665c68f11192e7b31e9b793f31c78d80558da07] restart watchdog if oopsing
+git bisect bad b665c68f11192e7b31e9b793f31c78d80558da07
+# good: [b960e0147451915b5d4cd208b7abd3b07ceaf1a2] Merge tag 'for-linus-5.13b-rc8-tag' of git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip
+git bisect good b960e0147451915b5d4cd208b7abd3b07ceaf1a2
+# bad: [7ce32ac6fb2fc73584b567c73ae0c47528954ec6] Merge branch 'akpm' (patches from Andrew)
+git bisect bad 7ce32ac6fb2fc73584b567c73ae0c47528954ec6
+# good: [5fa54346caf67b4b1b10b1f390316ae466da4d53] kthread: prevent deadlock when kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
+git bisect good 5fa54346caf67b4b1b10b1f390316ae466da4d53
+# bad: [72a461adbe88acf6a8cc5dba7720cf94d7056154] mailmap: add Marek's other e-mail address and identity without diacritics
+git bisect bad 72a461adbe88acf6a8cc5dba7720cf94d7056154
+# good: [ea6d0630100b285f059d0a8d8e86f38a46407536] mm/hwpoison: do not lock page again when me_huge_page() successfully recovers
+git bisect good ea6d0630100b285f059d0a8d8e86f38a46407536
+# bad: [b3b64ebd38225d8032b5db42938d969b602040c2] mm/page_alloc: do bulk array bounds check after checking populated elements
+git bisect bad b3b64ebd38225d8032b5db42938d969b602040c2
+# good: [b08e50dd64489e3997029d204f761cb57a3762d2] mm/page_alloc: __alloc_pages_bulk(): do bounds check before accessing array
+git bisect good b08e50dd64489e3997029d204f761cb57a3762d2
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+	Dave
+
