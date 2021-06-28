@@ -2,91 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA73F3B5E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C157B3B5E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhF1MnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232701AbhF1MnT (ORCPT
+        id S232775AbhF1Mp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:45:28 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:55767 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232556AbhF1Mp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:43:19 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA9DC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:40:53 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id x20so18735241ljc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pWlR4YOkd8r6fBXSkgmDPdaUdCNYp8ikvYFMARhlCFg=;
-        b=Oxksn4yKNReeH+KzWlY47KMNb9WTHopjB+tZf0NdYwVRIS3ZcFJ7afYEXXrxkqLIm6
-         67Mss8GReFxB2AAOvKMD2qBQLWA42WpBddsLFYajCpUVv6rptpdC5xPvkW9xNA064UHn
-         HrrPTAORiyHrH2sVlTca3RunbMlqXsTAptOg7u2VKKdMlWbSnLW1GEDRl8a6OwPtjcfL
-         AFMH7JypJL11pG/D0zZ5/BwGTKHk9Js23O7SeQswpmANqyFhKkWOPk7EAdLx0XmC0VCf
-         OUNQgPpdSwmXU4F9JEDMELGGOFoaSrpHkjokPRp51axX5Y1zg5/shsIpG0MPnESiT/0C
-         32yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pWlR4YOkd8r6fBXSkgmDPdaUdCNYp8ikvYFMARhlCFg=;
-        b=QQ7Mctw3Z5jjy+IoNmJOQg96TJhha49Jg63gDss5CDGRXlXTd3iOKv7hauSeIDetjC
-         kkT5PsfhWKnpY6V8342tDNvlYOH7tE484sKaJndAKkV08HJ7ERAFMTJeUn72TTahtPdw
-         /1q7B7D+uU1quG/KAb9hq+oubDru0cm74htXtJ6vfoN6IiUmVcv12BkDH132HfYregfp
-         Z1LXFKSh4MJIWDLbVfHl6HB/ekO+PdCc2aTcPfgy/Qke8tvnfOnE0MCfDceu4WKTAAfh
-         tZBO69e78SdUC27B0f7yQ+Q3TAmHtfgt3mBHgUFNXf79Hac7GPciXwlkiUzFRcBsiM7l
-         pd5w==
-X-Gm-Message-State: AOAM531k+FOu3qU7XZq/9ljXv+PjiiW9lAPUmPvOOFp2dKdcz/JVtoUV
-        zLWpcK59V9GH9lXKUbWHMgVkGg==
-X-Google-Smtp-Source: ABdhPJxqOQLjAKOnhgVMn+Pqls/utX1ohXkGCAy/hp1RrNvoBiG/wi/OXtYdsQObKDfc/fG0tkghRg==
-X-Received: by 2002:a2e:9945:: with SMTP id r5mr20046316ljj.324.1624884051437;
-        Mon, 28 Jun 2021 05:40:51 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id m18sm393250lfu.67.2021.06.28.05.40.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:40:50 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 2AF8210280E; Mon, 28 Jun 2021 15:40:50 +0300 (+03)
-Date:   Mon, 28 Jun 2021 15:40:50 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yu Zhao <yuzhao@google.com>, Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v12 11/33] mm/lru: Add folio LRU functions
-Message-ID: <20210628124050.6xa7m6n362hst2op@box.shutemov.name>
-References: <20210622114118.3388190-1-willy@infradead.org>
- <20210622114118.3388190-12-willy@infradead.org>
+        Mon, 28 Jun 2021 08:45:27 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 022F35804FF;
+        Mon, 28 Jun 2021 08:43:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 28 Jun 2021 08:43:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm3; bh=qYJzqGRayG5fc3vFetGGsRUNaW
+        hIjr1nAhdURETU8yc=; b=wAOfsvSckW7NsJzlY9nNYgyVGnniicmu9frDDYpGvz
+        hbL0fyHdL2qYOnRhbUzwp4DN0yyZ1wrVgguSB4JSQmoOys6uK1HtAncYAaDxzAl7
+        rct/QIKksR7nhQn0x9G6SA63kel2zDKnt2lrLOYYAIEezNIGo9+ksL174+jhNDmO
+        +KaFuI2qg863Zhakxk3jPTfMfeKyo88LDxZdbosYvOGN69RR1c0b0olNeCUcMKs+
+        yIaEUr1uSRNlabRKg7cor3r3mWfdCEnfitK9WzadtnktcWv9B3AQw/QdPOaZ3H4C
+        fh2vW7INiFIYc6mm885ZKSkZ13P7hfKhEdi8T0RXA+Ww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qYJzqG
+        RayG5fc3vFetGGsRUNaWhIjr1nAhdURETU8yc=; b=jFyGSndriDlLAugQ1ieOgH
+        /Il2VMGSwK28xrn4lpmsqOjKsPk/hxNsuvgISrAtj/BEyMrI+CfGqdUl6JOfd5Kf
+        FMfmb1dAI5v40tr4RUdNeIVrjBmQMLaXxwvNvGoFUccHb9YrV/qb82CqWj/MHIDK
+        10myC7PTz4Cekb+cKsMpkj/MFkMocEDLA6duU7LoJLwt0pSzNVOZXNNwkJyCJJCX
+        9MwtCM3iWh7YMy8Q68JywDzuCJf3OkPi+LrpW0zgAmFxJYDEmIc9ih0TkMSATNpD
+        0DCdleEMx2BxilTf/vs/ZXZAnojUtTYsqe73maJg5uILO/HF5rX0G96m7+PTjNgQ
+        ==
+X-ME-Sender: <xms:08PZYLn36zdXWlJUOUls6YlL9ixZSeQuEgTDFN79oomx51Jk2yOuUw>
+    <xme:08PZYO3LiuQ4s_-UzPCs6sTtuAvKg1M2pEd7lb_yKcNBib7vXHrukzexvimgrrtmj
+    A3s-kNUn_15-R_Gcpg>
+X-ME-Received: <xmr:08PZYBoaLH6gXsS0_iw-H4oREKqW7xm1Ljx1vHBpnpKYkRlNcukvPAJbL4M-X2tRk8LfLwgzq6Cj-pax24vG-kRtaZAxq03oPCDF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:08PZYDnlFTkhRQtu8U1d348Vs4n5p9__ylOsI1cxwW-4jkWYm7LiLg>
+    <xmx:08PZYJ2TE_VDWJUOg58tTo4U2dTxNG_mHcuquuEM_dGw0gBZpkmEXQ>
+    <xmx:08PZYCuEl6vqvU3OfnhW20wim_4WRRdMbtgf0D2ou5MToi2vbDMZOA>
+    <xmx:1MPZYI3bCQhq5yePbenF3QpPTxvy722DQpECBdJNG-RNem-jXerLMw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Jun 2021 08:42:58 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Emma Anholt <emma@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Eric Anholt <eric@anholt.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/10] drm/vc4: hdmi: Support the 4k @ 60Hz modes
+Date:   Mon, 28 Jun 2021 14:42:47 +0200
+Message-Id: <20210628124257.140453-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622114118.3388190-12-willy@infradead.org>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:40:56PM +0100, Matthew Wilcox (Oracle) wrote:
-> Handle arbitrary-order folios being added to the LRU.  By definition,
-> all pages being added to the LRU were already head or base pages,
-> so define page wrappers around folio functions where the original
-> page functions involved calling compound_head() to manipulate flags,
-> but define folio wrappers around page functions where there's no need to
-> call compound_head().  The one thing that does change for those functions
-> is calling compound_nr() instead of thp_nr_pages(), in order to handle
-> arbitrary-sized folios.
-> 
-> Saves 783 bytes of kernel text; no functions grow.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: David Howells <dhowells@redhat.com>
-
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
- Kirill A. Shutemov
+Hi,=0D
+=0D
+Here is a series that enables the higher resolutions on the HDMI0 Controlle=
+r=0D
+found in the BCM2711 (RPi4).=0D
+=0D
+In order to work it needs a few adjustments to config.txt, most notably to=
+=0D
+enable the enable_hdmi_4kp60 option.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+---=0D
+=0D
+Changes from v4:=0D
+  - Removed the patches already applied=0D
+  - Added various fixes for the issues that have been discovered on the=0D
+    downstream tree=0D
+=0D
+Changes from v3:=0D
+  - Rework the encoder retrieval code that was broken on the RPi3 and older=
+=0D
+  - Fix a scrambling enabling issue on some display=0D
+=0D
+Changes from v2:=0D
+  - Gathered the various tags=0D
+  - Added Cc stable when relevant=0D
+  - Split out the check to test whether the scrambler is required into=0D
+    an helper=0D
+  - Fixed a bug where the scrambler state wouldn't be tracked properly=0D
+    if it was enabled at boot=0D
+=0D
+Changes from v1:=0D
+  - Dropped the range accessors=0D
+  - Drop the mention of force_turbo=0D
+  - Reordered the SCRAMBLER_CTL register to match the offset=0D
+  - Removed duplicate HDMI_14_MAX_TMDS_CLK define=0D
+  - Warn about enable_hdmi_4kp60 only if there's some modes that can't be r=
+eached=0D
+  - Rework the BVB clock computation=0D
+=0D
+Maxime Ripard (10):=0D
+  drm/vc4: hdmi: Remove the DDC probing for status detection=0D
+  drm/vc4: hdmi: Fix HPD GPIO detection=0D
+  drm/vc4: Make vc4_crtc_get_encoder public=0D
+  drm/vc4: crtc: Add encoder to vc4_crtc_config_pv prototype=0D
+  drm/vc4: crtc: Rework the encoder retrieval code (again)=0D
+  drm/vc4: crtc: Add some logging=0D
+  drm/vc4: Leverage the load tracker on the BCM2711=0D
+  drm/vc4: hdmi: Raise the maximum clock rate=0D
+  drm/vc4: hdmi: Enable the scrambler on reconnection=0D
+  drm/vc4: Increase the core clock based on HVS load=0D
+=0D
+ drivers/gpu/drm/vc4/vc4_crtc.c    |  60 ++++++++------=0D
+ drivers/gpu/drm/vc4/vc4_debugfs.c |   7 +-=0D
+ drivers/gpu/drm/vc4/vc4_drv.h     |   9 ++-=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c    |  20 +++--=0D
+ drivers/gpu/drm/vc4/vc4_kms.c     | 126 +++++++++++++++++++++++++-----=0D
+ drivers/gpu/drm/vc4/vc4_plane.c   |   3 -=0D
+ 6 files changed, 164 insertions(+), 61 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
