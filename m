@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790A53B5703
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB793B5705
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhF1Bw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbhF1Bw0 (ORCPT
+        id S231946AbhF1Byy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:54:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:12075 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhF1Byx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:52:26 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD66C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 18:50:00 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id a7so3318048pga.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 18:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8iY2XvGYIEGsPy5ZGZiQi9ADeEM827+ckbpfPdEArIg=;
-        b=HpotKYvpqG61Gpg54HUKhviArjzigfbpU5tFnq0t8nL+1oJI/JDmpDiYEdrBt/6kNc
-         3cnt9SoxgI1NRzO7R7ERaCRg8nGA+dMEsIYD6fzdki7oE2QaLP5L9UnpD1wjtBY1TBRM
-         j9ln8ZzVASY9u8024p6Wo443xXptBdCSDiFoz3G3hl8Urncmc5OlNI9A1YjnMgYISe4H
-         cgl9tsf1Swp28c1xuqHQD07yBDV0rNdyRJ3V1/QB1kbDbtp3Dk7CcMAjXKC7FDRdGdJF
-         s8npiLmjK9oX3q2JqSYHD9vf8dJOkOWq7gwmc1WWF6C0SSxWGQGagp5gsxZf9NmifpWn
-         shCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8iY2XvGYIEGsPy5ZGZiQi9ADeEM827+ckbpfPdEArIg=;
-        b=Tq64MPlG0YoBvfiJmbhG6ADmK4SMYuJKXfA/1Ox42InKg6FWwZ2J27m/dU6g8wVvIM
-         +kEziamaNGdo06b7FcKRnrsqpjQ623Af24d4zVJMR5NLcRopNzCjlmby5xwcPFb56xI4
-         +nXV03O+BUTCyZN2kxp3KqbnX6qGqjNAXayhmSN0wLZ6WexfnYmCsehk9Oy0WeOuzjk9
-         A4vwURmgKrItwSiSjrY9zLY721G95ulLGMD55okpIYw7hemAjXCFh0Zg2fbvdOVOxzqy
-         dK+nYDVxcKuSKPObnEBSRgvwJWS+BEKSjB2OccskXaiKoLXDpOeIuR3qKg9+IPyBhONg
-         pRHA==
-X-Gm-Message-State: AOAM53191gxhJJcS+4rRK38nzaW/mBsBgr4csWVVgfbQQUjk3pOYdB1L
-        kDtD3Gb9z6iOJboofHuvQnFOEQ==
-X-Google-Smtp-Source: ABdhPJwVsR2cyfJyFTLxc+oAucQiwJumgusFZrJ4XQp+UursvqAWuCuaYAIp2flT20pbByydH2JfQQ==
-X-Received: by 2002:a63:e205:: with SMTP id q5mr20722318pgh.404.1624844999931;
-        Sun, 27 Jun 2021 18:49:59 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id t13sm12283459pfq.4.2021.06.27.18.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 18:49:59 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 09:49:53 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, james.clark@arm.com,
-        andre.przywara@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf arm-spe: Fix incorrect sample timestamp in perf
- script
-Message-ID: <20210628014953.GA163942@leoy-ThinkPad-X240s>
-References: <20210626032115.16742-1-yangjihong1@huawei.com>
+        Sun, 27 Jun 2021 21:54:53 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GCrBV0ZJlzZkdS;
+        Mon, 28 Jun 2021 09:49:22 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by dggeml757-chm.china.huawei.com
+ (10.1.199.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 28
+ Jun 2021 09:52:26 +0800
+Subject: Re: [PATCH v4 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        <kenneth-lee-2012@foxmail.com>
+References: <1623209801-1709-1-git-send-email-zhangfei.gao@linaro.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <4a4b1c5c-e4a7-0cf1-623e-672973fc1f0a@hisilicon.com>
+Date:   Mon, 28 Jun 2021 09:52:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210626032115.16742-1-yangjihong1@huawei.com>
+In-Reply-To: <1623209801-1709-1-git-send-email-zhangfei.gao@linaro.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.87]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jihong,
+On 2021/6/9 11:36, Zhangfei Gao wrote:
+> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+> actually on the AMBA bus. These fake PCI devices have PASID capability
+> though not supporting TLP.
+> 
+> Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
+> 
+> Jean's dma-can-stall patchset has been accepted
+> https://lore.kernel.org/linux-iommu/162314710744.3707892.6632600736379822229.b4-ty@kernel.org/
+> 
+> v4: 
+> Applied to Linux 5.13-rc2, and build successfully with only these three patches.
+> 
+> v3:
+> https://lore.kernel.org/linux-pci/1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org/
+> Rebase to Linux 5.12-rc1
+> Change commit msg adding:
+> Property dma-can-stall depends on patchset
+> https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
+> 
+> By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+> without the dependent patchset.
+> 
+> v2:
+> Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn 
+> "Apparently these devices have a PASID capability.  I think you should
+> add a new pci_dev bit that is specific to this idea of "PASID works
+> without TLP prefixes" and then change pci_enable_pasid() to look at
+> that bit as well as eetlp_prefix_path."
+> https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
+> 
+> Zhangfei Gao (3):
+>   PCI: PASID can be enabled without TLP prefix
+>   PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+>   PCI: Set dma-can-stall for HiSilicon chips
+> 
+>  drivers/pci/ats.c    |  2 +-
+>  drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+>  include/linux/pci.h  |  1 +
+>  3 files changed, 29 insertions(+), 1 deletion(-)
+>
 
-On Sat, Jun 26, 2021 at 11:21:15AM +0800, Yang Jihong wrote:
-> When use perf script to parse ARM SPE data, sample timestamp does not match
-> the timestamp stored in the AUX buffer, arm_spe_prep_sample function set
-> "samlpe->time = speq->timestamp", "speq->timestamp" is the timestamp of first
-> packet in auxtrace buffer. As a result, the time of all samples in a auxtrace
-> buffer uses the same timestamp.
+Hi Bjorn,
 
-Could you confirm if the patch set [1] can fix your issue?
+Could you take this series for coming v5.14-rc1? With this series, HiSilicon accelerators(ZIP/SEC/HPRE)
+will work in mainline, as the related SMMU series had been accepted.
 
-Thanks,
-Leo
+Best,
+Zhou
 
-[1] https://lore.kernel.org/patchwork/cover/1431624/
+
