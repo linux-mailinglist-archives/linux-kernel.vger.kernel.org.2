@@ -2,92 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BED3B69EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D9E3B69F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237588AbhF1U7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237487AbhF1U7t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:59:49 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92968C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:57:22 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id a11so18795144ilf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ExBqZ4fFUGq6qkTuRSNlnPB5XbkHr6PXqlYIc7Ox2Gs=;
-        b=MP/NoRKbbNbwlDwYC4z6ywv/AjMVI4ZK/CFru+nutHTxlMTkOmyeHDO9pwhlE1lFfr
-         Djp+rFJ4SXmE9TLYwX5cbleaN/lQP8W7YJjpmLEd2HbzJRZzXxPUPQw7JvzmrrYH4Pqv
-         NfnIhmzGOEeyRqD33CB2PsY2DAizLopHicpTM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ExBqZ4fFUGq6qkTuRSNlnPB5XbkHr6PXqlYIc7Ox2Gs=;
-        b=IgDnQzJvNYjpXItEK6eNIS5DfdzP6dUtNBnCdphq9LDEDflLww+ieZp6jmSZLlijbD
-         tiBhs+QrT3J+591kbYZcAuLeoT6x8sQti/IJcmBIDbyvnZEip+v4U4Pdr0Ns7nU0/EeF
-         2XR6PjGCt4M591XH+QWMMpRL5QH/Q4eKDFwHIOb5fpl49GHvQlmcjtnVm5vljaymNm1F
-         NV7wOxJW+M9+HcIIJIyuW1NGgb4uR23U+wviDxN+g1gq+9ej4oMVqR0c14Ix2ELyuYq1
-         OMgGtG5lwlysNJyUFJnV1SC0fLfbnbOJVW/0oazbkcvPOvuQR8fJJKPI824L/tzLyKNF
-         k7aw==
-X-Gm-Message-State: AOAM532XLNjpOUUgxxAq+dBXZK2q95Krx1z7O3BpMkHLrwkeRL1bvSKU
-        hzbLMBAzTWGwLJy2pJycoqNDcA==
-X-Google-Smtp-Source: ABdhPJyjNcIyebxLcpZEWQ2jHEjcP2S2ihsmlQxGsuFA1DBlfrOSmHeDYiMMmBzRehafymNSj0haZA==
-X-Received: by 2002:a92:b50d:: with SMTP id f13mr19623232ile.253.1624913841964;
-        Mon, 28 Jun 2021 13:57:21 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a24sm2380976ioa.35.2021.06.28.13.57.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 13:57:21 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210628143004.32596-1-sashal@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d3122f35-4659-8bed-65eb-77087eec82fe@linuxfoundation.org>
-Date:   Mon, 28 Jun 2021 14:57:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237548AbhF1VA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235991AbhF1VAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 17:00:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1182861CED;
+        Mon, 28 Jun 2021 20:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624913878;
+        bh=URL1jLAaNUk666AjBfkuIHGK7AVn9XByCzXInmJ6Nuk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MTahtqDhkFSIeCipWZcl7+tofHQKB0XPRIQYK1Ln9L1wUYF9etdRTSLHxgLIJfRuq
+         mlK9Jg8bQIzQzz58qAz8BZcjvnpdQBFYcsqb1D+I78v8Mxo+MBycgodI8TuPE03sWI
+         OQYCK0nkynBLvvZqLEoONcrNgeiQ6fDRSjWahh1dYtHTrbSzSi/Kfmh0bO9e29p4If
+         coNh14E5/qPwNaGInD2j6YjlZiYWSS17Lr6tOHSEIQQvmJ3ffOLBBLq8najpiZUKQU
+         ZB74pu0CY9nstfy/Anxwa4xQxylpkLXDbPbQ50XFRO3XMC8Hk2tlsiduBPmJJdIdxd
+         Ra7b19oW1pEog==
+Date:   Mon, 28 Jun 2021 15:59:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [GIT PULL] fallthrough fixes for Clang for 5.14-rc1
+Message-ID: <20210628205947.GA10869@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 8:28 AM, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 5.4.129 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.128
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
 
-My tools are failing on this link. Is it possible to keep the rc patch 
-convention consistent with Greg KH's naming scheme?
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
 
-The whole patch series can be found in one patch at:
+are available in the Git repository at:
 
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-fixes-clang-5.14-rc1
 
-thanks,
--- Shuah
+for you to fetch changes up to 40e67c120093a918037b6ec589bafd5d96b522a3:
+
+  rxrpc: Fix fall-through warnings for Clang (2021-06-04 17:40:04 -0500)
+
+----------------------------------------------------------------
+fallthrough fixes for Clang for 5.14-rc1
+
+Hi Linus,
+
+Please, pull the following patches that fix many fall-through warnings
+when building with Clang 12.0.0 and this[1] change reverted. Notice
+that in order to enable -Wimplicit-fallthrough for Clang, such change[1]
+is meant to be reverted at some point. So, these patches help to move
+in that direction.
+
+Thanks!
+
+[1] commit e2079e93f562c ("kbuild: Do not enable -Wimplicit-fallthrough for clang for now")
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (26):
+      tee: Fix fall-through warnings for Clang
+      atm: fore200e: Fix fall-through warnings for Clang
+      watchdog: Fix fall-through warnings for Clang
+      vxge: Fix fall-through warnings for Clang
+      reiserfs: Fix fall-through warnings for Clang
+      nfp: Fix fall-through warnings for Clang
+      netxen_nic: Fix fall-through warnings for Clang
+      bnxt_en: Fix fall-through warnings for Clang
+      qlcnic: Fix fall-through warnings for Clang
+      ipv4: Fix fall-through warnings for Clang
+      braille_console: Fix fall-through warnings for Clang
+      firewire: core: Fix fall-through warnings for Clang
+      hwmon: (corsair-cpro) Fix fall-through warnings for Clang
+      hwmon: (max6621) Fix fall-through warnings for Clang
+      ide: Fix fall-through warnings for Clang
+      net: netrom: Fix fall-through warnings for Clang
+      net/packet: Fix fall-through warnings for Clang
+      rds: Fix fall-through warnings for Clang
+      sctp: Fix fall-through warnings for Clang
+      tipc: Fix fall-through warnings for Clang
+      xfrm: Fix fall-through warnings for Clang
+      xfs: Fix fall-through warnings for Clang
+      drm/nouveau: Fix fall-through warnings for Clang
+      drm/nouveau/therm: Fix fall-through warnings for Clang
+      drm/nouveau/clk: Fix fall-through warnings for Clang
+      rxrpc: Fix fall-through warnings for Clang
+
+ drivers/accessibility/braille/braille_console.c      | 1 +
+ drivers/atm/fore200e.c                               | 1 +
+ drivers/firewire/core-topology.c                     | 1 +
+ drivers/gpu/drm/nouveau/nouveau_bo.c                 | 1 +
+ drivers/gpu/drm/nouveau/nouveau_connector.c          | 1 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/clk/nv50.c       | 1 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/therm/gf119.c    | 1 +
+ drivers/hwmon/corsair-cpro.c                         | 1 +
+ drivers/hwmon/max6621.c                              | 2 +-
+ drivers/ide/siimage.c                                | 1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c            | 1 +
+ drivers/net/ethernet/neterion/vxge/vxge-config.c     | 1 +
+ drivers/net/ethernet/netronome/nfp/nfp_net_repr.c    | 1 +
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c | 1 +
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c       | 1 +
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c     | 1 +
+ drivers/tee/tee_core.c                               | 1 +
+ drivers/watchdog/machzwd.c                           | 1 +
+ fs/reiserfs/namei.c                                  | 1 +
+ fs/xfs/libxfs/xfs_ag_resv.c                          | 4 ++--
+ fs/xfs/libxfs/xfs_alloc.c                            | 2 +-
+ fs/xfs/libxfs/xfs_da_btree.c                         | 2 +-
+ fs/xfs/scrub/agheader.c                              | 1 +
+ fs/xfs/scrub/bmap.c                                  | 2 +-
+ fs/xfs/scrub/btree.c                                 | 2 +-
+ fs/xfs/scrub/common.c                                | 6 +++---
+ fs/xfs/scrub/dabtree.c                               | 2 +-
+ fs/xfs/scrub/repair.c                                | 2 +-
+ fs/xfs/xfs_bmap_util.c                               | 2 +-
+ fs/xfs/xfs_export.c                                  | 4 ++--
+ fs/xfs/xfs_file.c                                    | 2 +-
+ fs/xfs/xfs_inode.c                                   | 2 +-
+ fs/xfs/xfs_ioctl.c                                   | 4 ++--
+ fs/xfs/xfs_iomap.c                                   | 2 +-
+ fs/xfs/xfs_log.c                                     | 1 +
+ fs/xfs/xfs_trans_buf.c                               | 2 +-
+ net/ipv4/ah4.c                                       | 1 +
+ net/ipv4/esp4.c                                      | 1 +
+ net/ipv4/fib_semantics.c                             | 1 +
+ net/ipv4/ip_vti.c                                    | 1 +
+ net/ipv4/ipcomp.c                                    | 1 +
+ net/netrom/nr_route.c                                | 4 ++++
+ net/packet/af_packet.c                               | 1 +
+ net/rds/tcp_connect.c                                | 1 +
+ net/rds/threads.c                                    | 2 ++
+ net/rxrpc/af_rxrpc.c                                 | 1 +
+ net/sctp/input.c                                     | 3 ++-
+ net/tipc/link.c                                      | 1 +
+ net/xfrm/xfrm_interface.c                            | 1 +
+ 49 files changed, 59 insertions(+), 22 deletions(-)
