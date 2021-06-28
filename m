@@ -2,53 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85CD3B5785
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301993B5791
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhF1C5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 22:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59234 "EHLO mail.kernel.org"
+        id S232050AbhF1C7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 22:59:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56857 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231984AbhF1C5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 22:57:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081A061A1D;
-        Mon, 28 Jun 2021 02:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624848919;
-        bh=cx7qh3lkj8FpUVeQl1lHhT+q04JbXWm9rzjjdfTRFBs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=QkZHX99fahdBv9ZojAuvaIPwkQUl65cCpKUvcVmPqut+xtFPh1VTz9zZRxRlCSiZc
-         +E/4ojPJmgHfbsHrif++eifIhXviEz89BgGfQrLYHwxDX165GRVBe5Vn7BzHKkcDl3
-         NxMqR5MtXaHhjI6DIvlU9gfcwuXiMIEnHn/FNx8vw5QB/LnqSv23Rci3FPOBke9k/h
-         CT9GXPEbZTxOCmIGDKkfkHdwhvV7/0q1N9U2sCzY+6KbwCr6F6M/c2x8hnwmyO4gYS
-         1FZEimSti1s8W/nS+GqBCqF1xBfH6B10hHfYvp1DKgrSurhF4JwvKUNNx8qB1+lWi5
-         vKzSjys6BUaDQ==
-Content-Type: text/plain; charset="utf-8"
+        id S231678AbhF1C7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 22:59:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271737095"
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="271737095"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 19:56:51 -0700
+X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
+   d="scan'208";a="419008053"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 19:56:46 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Wei Xu <weixugc@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH -V9 7/9] mm/vmscan: Consider anonymous pages without swap
+References: <20210625073204.1005986-1-ying.huang@intel.com>
+        <20210625073204.1005986-8-ying.huang@intel.com>
+        <CAAPL-u8J8A2G=QO24hhn-Em+PXE7Q82OObpPJxNUWznfO-0XRQ@mail.gmail.com>
+Date:   Mon, 28 Jun 2021 10:56:44 +0800
+In-Reply-To: <CAAPL-u8J8A2G=QO24hhn-Em+PXE7Q82OObpPJxNUWznfO-0XRQ@mail.gmail.com>
+        (Wei Xu's message of "Fri, 25 Jun 2021 17:02:25 -0700")
+Message-ID: <874kdig0ib.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210331201632.24530-8-avolmat@me.com>
-References: <20210331201632.24530-1-avolmat@me.com> <20210331201632.24530-8-avolmat@me.com>
-Subject: Re: [PATCH v4 7/7] dt-bindings: clock: st: clkgen-fsyn: add new introduced compatible
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
-To:     Alain Volmat <avolmat@me.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Sun, 27 Jun 2021 19:55:17 -0700
-Message-ID: <162484891788.2516444.15034205531719797793@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Alain Volmat (2021-03-31 13:16:32)
-> New compatible are added, supporting various kind of clkgen-fsyn
-> used for STiH407, STiH410 and STiH418
->=20
-> Signed-off-by: Alain Volmat <avolmat@me.com>
-> ---
+Wei Xu <weixugc@google.com> writes:
 
-Applied to clk-next
+> On Fri, Jun 25, 2021 at 12:33 AM Huang Ying <ying.huang@intel.com> wrote:
+>>
+>> From: Keith Busch <kbusch@kernel.org>
+>>
+>> Reclaim anonymous pages if a migration path is available now that
+>> demotion provides a non-swap recourse for reclaiming anon pages.
+>>
+>> Note that this check is subtly different from the
+>> anon_should_be_aged() checks.  This mechanism checks whether a
+>> specific page in a specific context *can* actually be reclaimed, given
+>> current swap space and cgroup limits
+>>
+>> anon_should_be_aged() is a much simpler and more preliminary check
+>> which just says whether there is a possibility of future reclaim.
+>>
+>> Cc: Keith Busch <kbusch@kernel.org>
+>> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Reviewed-by: Yang Shi <shy828301@gmail.com>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Zi Yan <ziy@nvidia.com>
+>> Cc: Wei Xu <weixugc@google.com>
+>> Cc: David Rientjes <rientjes@google.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>>
+>> --
+>>
+>> Changes since 20210618:
+>>  * Consider whether demotion is disabled
+>>
+>> Changes from Dave 202010:
+>>  * remove 'total_swap_pages' modification
+>>
+>> Changes from Dave 202006:
+>>  * rename reclaim_anon_pages()->can_reclaim_anon_pages()
+>>
+>> Note: Keith's Intel SoB is commented out because he is no
+>> longer at Intel and his @intel.com mail will bounce.
+>> ---
+>>  mm/vmscan.c | 37 ++++++++++++++++++++++++++++++++++---
+>>  1 file changed, 34 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 55f6192b2a51..fce43c7970d7 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -519,6 +519,36 @@ static long add_nr_deferred(long nr, struct shrinker *shrinker,
+>>         return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
+>>  }
+>>
+>> +static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>> +                                         int node_id,
+>> +                                         struct scan_control *sc)
+>> +{
+>> +       if (memcg == NULL) {
+>> +               /*
+>> +                * For non-memcg reclaim, is there
+>> +                * space in any swap device?
+>> +                */
+>> +               if (get_nr_swap_pages() > 0)
+>> +                       return true;
+>> +       } else {
+>> +               /* Is the memcg below its swap limit? */
+>> +               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>> +                       return true;
+>> +       }
+>> +
+>> +       /*
+>> +        * The page can not be swapped.
+>> +        *
+>> +        * Can it be reclaimed from this node via demotion?
+>> +        */
+>> +       if ((!sc || !sc->no_demotion) &&
+>> +           next_demotion_node(node_id) != NUMA_NO_NODE)
+>> +               return true;
+>
+> It is better to abstract these checks into a function, e.g.
+> can_demote_anon_pages(), to share with anon_can_be_aged().
+
+Thanks!  This is a really good idea!  The function can be used by
+shrink_page_list() too.  So code duplication is reduced greatly!  Will
+do that in the next version.
+
+Best Regards,
+Huang, Ying
+
+>> +       /* No way to reclaim anon pages */
+>> +       return false;
+>> +}
+>> +
+>>  /*
+>>   * This misses isolated pages which are not accounted for to save counters.
+>>   * As the data only determines if reclaim or compaction continues, it is
+>> @@ -530,7 +560,7 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
+>>
+>>         nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
+>>                 zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
+>> -       if (get_nr_swap_pages() > 0)
+>> +       if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
+>>                 nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
+>>                         zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
+>>
+>> @@ -2531,6 +2561,7 @@ enum scan_balance {
+>>  static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>>                            unsigned long *nr)
+>>  {
+>> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>>         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>>         unsigned long anon_cost, file_cost, total_cost;
+>>         int swappiness = mem_cgroup_swappiness(memcg);
+>> @@ -2541,7 +2572,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>>         enum lru_list lru;
+>>
+>>         /* If we have no swap space, do not bother scanning anon pages. */
+>> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
+>> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
+>>                 scan_balance = SCAN_FILE;
+>>                 goto out;
+>>         }
+>> @@ -2916,7 +2947,7 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
+>>          */
+>>         pages_for_compaction = compact_gap(sc->order);
+>>         inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
+>> -       if (get_nr_swap_pages() > 0)
+>> +       if (can_reclaim_anon_pages(NULL, pgdat->node_id, sc))
+>>                 inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
+>>
+>>         return inactive_lru_pages > pages_for_compaction;
+>> --
+>> 2.30.2
+>>
