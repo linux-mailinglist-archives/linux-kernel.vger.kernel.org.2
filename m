@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C283B5B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784FE3B5B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhF1Jca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhF1Jc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:32:28 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21BBC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:30:02 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id b2so692314qka.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E72ySZbZCZJUglG4bV3l9a6211R6RN9M28XMGqPmIic=;
-        b=Og6yi3wkkqPF391Xj/IuoiwJsVRCZ7ibznjPyr58+t2frYgGOcragsAcbWEw9/Lm9g
-         5J2lkz3uaWNxLLDGVAdFcVFoNOD0Pl8tuHH87b4eBkGTZgyGkyNGJ0lOW6lqlOUHR0gT
-         z3PbhZhyYWufY/vvxuBAiweYDOLC4KefQuoto=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E72ySZbZCZJUglG4bV3l9a6211R6RN9M28XMGqPmIic=;
-        b=I/MzLh3zgJAHbIJfhBLR2d3lhRAt8x/JufxovT0N3PvBtPkYeXScegRmSKHgkyYZEV
-         gli7RkpuhaH5SZnBqSRwGVqvlGK7USQXRnk+C68wTyc56uj+7cI/oBypLAgMGRMZVGat
-         5TaJjjZHYR6qkY6uJG4Z70jXuUw8tLwVqeYPp6SK+JA9yN2P72kV6WzngbBBlfoSVdjn
-         t2/x3+IAz6DfN57Y3GdyXKq9WmgVtCWGuegLPrhMc+DJ7DF0Fm+nCPLR3edRP3cJyOWA
-         bd3SjfEM9Hof3Mv0E3GyMTZBkrc0t3Ilj2Ig7EQzddmfaCZryI4DqNnUk2NDxXHH2mA8
-         pWcg==
-X-Gm-Message-State: AOAM532fdv67znRrCNb3/TzoT5nhyJ8jpfvlSu2xqB9eywuubwNFXERZ
-        zMRsRJyvTqh7WIMVo1VwlWoenMXUdDUqD/q5ombnaw==
-X-Google-Smtp-Source: ABdhPJwxqWTFWg875LeELm0St37Pwr8hO8VE72D3ovSrwjzrF4LIZI8Xq0Wumaj6tg+ZVpzLbABfLc3yhLSnNpq5slE=
-X-Received: by 2002:a05:620a:cc1:: with SMTP id b1mr24390353qkj.468.1624872602089;
- Mon, 28 Jun 2021 02:30:02 -0700 (PDT)
+        id S232577AbhF1JdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232426AbhF1JdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:33:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D96461C5A;
+        Mon, 28 Jun 2021 09:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624872646;
+        bh=tko4HhpTn1KfqSQcG6rk256TdCkSHRTiZNDg1gfOL1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mdirt+wh3MtaZ7eNyZ9G3nbYCW5idUpb0uLyW3y3Pff8g1i8FeRt120hCx8rMfLOA
+         LnRoyQZ6znqLxXb5WQ4POqk3nvJJlxgEnyIMLyf/4xRDnJ3jrCYholI79Dx7JQswRh
+         BPPsck43uFy1epGSrPj0zjj0CnIzhGXT51/oNF84=
+Date:   Mon, 28 Jun 2021 11:30:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of
+ ccmni
+Message-ID: <YNmWwSsZ02iigiHC@kroah.com>
+References: <YNS4GzYHpxMWIH+1@kroah.com>
+ <20210628071829.14925-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
-References: <20210623133205.GA28589@lst.de> <CAFr9PXk84aejj186UNizftwK_w5G1RXLMsSvAEVEYsXi8=yCoA@mail.gmail.com>
- <27c78c11-b230-a5b5-6648-6b93daf6afda@physik.fu-berlin.de> <CAMuHMdV+SmxUtvAptYfVgy04jCHeABmsEpn3mcUfFQ_RfTF7eA@mail.gmail.com>
-In-Reply-To: <CAMuHMdV+SmxUtvAptYfVgy04jCHeABmsEpn3mcUfFQ_RfTF7eA@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 28 Jun 2021 18:29:51 +0900
-Message-ID: <CAFr9PXnuFWFy-3mUAo63aiP5qXmD9ULycWVn=_YG96ReohJAjg@mail.gmail.com>
-Subject: Re: dma_declare_coherent_memory and SuperH
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628071829.14925-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon, Jun 28, 2021 at 03:18:30PM +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 18:51 +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 11:55:02PM +0800, Rocco Yue wrote:
+> >> On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
+> >> On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+> >>> 
+> >>> not have exports that no one uses.  Please add the driver to this patch
+> >>> series when you resend it.
+> >>> 
+> >> 
+> >> I've just took a look at what the Linux staging tree is. It looks like
+> >> a good choice for the current ccmni driver.
+> >> 
+> >> honstly, If I simply upload the relevant driver code B that calls
+> >> A (e.g. ccmni_rx_push), there is still a lack of code to call B.
+> >> This seems to be a continuty problem, unless all drivers codes are
+> >> uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
+> > 
+> > Great, send it all!  Why is it different modules, it's only for one
+> > chunk of hardware, no need to split it up into tiny pieces.  That way
+> > only causes it to be more code overall.
+> > 
+> >> 
+> >> Thanks~
+> >> 
+> >> Can I resend patch set as follows:
+> >> (1) supplement the details of pureip for patch 1/4;
+> >> (2) the document of ccmni.rst still live in the Documentation/...
+> >> (3) modify ccmni and move it into the drivers/staging/...
+> > 
+> > for drivers/staging/ the code needs to be "self contained" in that it
+> > does not require adding anything outside of the directory for it.
+> > 
+> > If you still require this core networking change, that needs to be
+> > accepted first by the networking developers and maintainers.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> Hi Greg,
+> 
+> I am grateful for your help.
+> 
+> Both ccmni change and networking changes are needed, because as far
+> as I know, usually a device type should have at least one device to
+> use it, and pureip is what the ccmni driver needs, so I uploaded the
+> networking change and ccmni driver together;
+> 
+> Since MTK’s modem driver has a large amount of code and strong code
+> coupling, it takes some time to clean up them. At this stage, it may
+> be difficult to upstream all the codes together.
 
-On Mon, 28 Jun 2021 at 17:57, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > There is an unmerged patch set by Yoshinori Sato that adds device tree support for SH.
->
-> But it does not include support for SH7724 yet, only for SH775[01]
-> (note to myself: still have to try it on my landisk).
+Why?  Just dump the whole thing in a drivers/staging/mtk/ directory
+structure and all should be fine.
 
-I have some landisks. Is there a sane u-boot for them? I think mine
-still have the hacked up lilo thing.
+> During this period, even if ccmni is incomplete, can I put the ccmni
+> driver initial code in the driver/staging first ? After that, we will
+> gradually implement more functions of ccmni in the staging tree, and
+> we can also gradually sort out and clean up modem driver in the staging.
 
-> Fortunately most core devices on SH7724 and Ecovec should already
-> have DT support in their drivers. The main missing pieces are
-> interrupt and clock support.
+I do not know, let's see the code first.  But we can not add frameworks
+with no in-kernel users, as that does not make any sense at all.
 
-This sounds like a fun project. I'm not sure if I could manage it
-without the Hitachi/Renesas debugging dongle though.
+> In addition, due to the requirements of GKI 2.0,
 
-Anyhow, it would be a shame to remove the ecovec just because it
-doesn't have DT as it pretty much fully works with a few small patches
-to fix some bit rot like ethernet and the LCD not working.
-I sent a patch a few years ago for the ethernet and never got a response. :(
+That is a Google requirement, not a kernel.org requirement.  Please work
+with Google if you have questions/issues about that, there is NOTHING we
+can do about that here in the community for obvious reasons.
 
-Cheers,
+> if ccmni device
+> uses RAWIP or NONE, it will hit ipv6 issue; and if ccmni uses
+> a device type other than PUREIP/RAWIP/NONE, there will be tethering
+> ebpf offload or clat ebpf offload can not work problems.
+> 
+> I hope PUREIP and ccmni can be accepted by the Linux community.
 
-Daniel
+As I stated before you need to have an in-kernel user for us to be able
+to accept frameworks and functions into the tree.  Otherwise Linux would
+quickly become unmanagable and unmaintainable.  Would you want to try to
+maintain code with no in-tree users?  What would you do if you were in
+our position?
+
+But for networking flags like this that go into userspace, I do not know
+what the maintainers of the networking stack require, so that really is
+up to them, not me.
+
+thanks,
+
+greg k-h
