@@ -2,125 +2,402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFA53B5B0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBE33B5B11
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhF1JRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:17:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39912 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232284AbhF1JRi (ORCPT
+        id S232489AbhF1JTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232353AbhF1JTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:17:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624871713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5bou4h074m3o/W74lRU3ezW0yQ1+IHLUSss8INpB7tU=;
-        b=cARQtbAIrUBRl6xoLuaHaYz1n0IItaWD+00xfIxqT3YYgT8qcLfdAN+r8HBBBVpMzbYwPC
-        xK2j827JcVkwqjbWdeSCnErFAC138/NndPbjI5uWWlLmK8BhR0O5axkZbnEAeR0wp7P8JF
-        Ojai9n7SN6EvM1YMLUBnXeipKSKvEbY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-dXK-54gIMoKOuJ5SLepnsw-1; Mon, 28 Jun 2021 05:15:11 -0400
-X-MC-Unique: dXK-54gIMoKOuJ5SLepnsw-1
-Received: by mail-ed1-f71.google.com with SMTP id da21-20020a0564021775b0290395165c6cefso5809766edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:15:10 -0700 (PDT)
+        Mon, 28 Jun 2021 05:19:51 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D25BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:17:26 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id v7so14969062pgl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=21k231iYronjuvnyYK5DtKewl+/dujygOQnBwVDhWTo=;
+        b=gD6p+lr2Z/ePaM+h+oz9gO/Oj7qzryOx0BBj13Y/0giZ/nS3IMwWgWFz7BsiAAbFRy
+         n4MukdwjJyOnA/RyYcvTNVfZ5BXLvkmIY0jw6T2gbe4QD4TbWfQhM2KaLf40k7e9tkQy
+         Ztm1bi8K9Db6tORZDHgtXD11tbNZXVWqKZosw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5bou4h074m3o/W74lRU3ezW0yQ1+IHLUSss8INpB7tU=;
-        b=s9eRncHxVe4mMFXoegFshOHYRwrzoHnAjmuwbgDzTbFMr9TxJepvmdfHBIywh3BYG5
-         zQxTbbH4nIYhTo9EtAt4O5b5skzCIX1sLDQ/i0WzIf5qnvrsFDjpE4Yxs56oHC62ErJI
-         jxuJn0XgRmCmneLGu4vhPhQSbv6YjvJFaVn3B2Tk3qUQ3+2OxQAZeJnq3kyX3pMOk/eW
-         /XiWOU69KFDDojFtsPD/5rVYmAdPID2M5TAKb0CqjfsGNfM6JEv7JXh5HDt1+rZYli6o
-         gj4Jfo/w6C3hBDehDgvQMsO6TbdrAa8GDOTLZd5KecpmmliJStuLThuzshEImvR5CJX+
-         WkNg==
-X-Gm-Message-State: AOAM533xMZYZFzuim00RJSKFaorJnRkfyYvuRwBMTmM+zyB0IEncRdtj
-        22iqMDIhxpZQU+pZJU+RModl3WlSV7cuwziRDomb4YLqZvAivrSSybC2Z6T3WeBwa1WTEMYsX5q
-        nLrpnYxEYJHYv6+seWvHdj5Bd
-X-Received: by 2002:a17:906:31d4:: with SMTP id f20mr22633335ejf.383.1624871709980;
-        Mon, 28 Jun 2021 02:15:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8mJSO5fIGvt8yQ58Tc6tauoJdaypg9Uo0BH/ZKvCHDRQqrU5UpRKRWSg513d19BQXRr3ZXg==
-X-Received: by 2002:a17:906:31d4:: with SMTP id f20mr22633314ejf.383.1624871709795;
-        Mon, 28 Jun 2021 02:15:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id bq1sm6582042ejb.66.2021.06.28.02.15.09
+        bh=21k231iYronjuvnyYK5DtKewl+/dujygOQnBwVDhWTo=;
+        b=C4JMirCTjo6LzsvBSizOLv9z6W1/8PjGzTXZeCXaTIwwK1mmEyhDx0KjpY7mtrGbwF
+         tLa18A+w/ZYkX05fS++H3nvFBVZcQVch/gQFM/h+I8Gce5PuFA4LYz48a4QVh5NtbO69
+         D9ppvS+urgb0jOt45D5nnWPRua0oax6KwaSgkeJlH7aKZRgiQrPzt3LZHDJuxzmi3/hp
+         WxLOlpV2+D37yDFMKjRXMoaiodSdgQNrEtRHUGaWC3GfhILwQ5/8a+udiIMZXV988qdL
+         ay2VCfK+YW21WvFIQjRYyjQI90Fu4jxCnW8UlhbM6KmL/HBN4WaqSccTeaJXVycP2qVV
+         t45A==
+X-Gm-Message-State: AOAM533sv67x/tsAo7dE8bmPd+g7gv+LjShQmwTdFksKQGmKXqsz8mN8
+        ZZmvYPWZLnvwf6TYPLBDsGlbGGSUSCxlKg==
+X-Google-Smtp-Source: ABdhPJxUAr2KKX1yFf14vWpkJtd+ilKl7bz1guVg0BfnsHDb4JUhuiu9Ktd8xepwlZ+0K3AxDe/2ZA==
+X-Received: by 2002:a62:a507:0:b029:30d:82e1:ce14 with SMTP id v7-20020a62a5070000b029030d82e1ce14mr643943pfm.29.1624871845702;
+        Mon, 28 Jun 2021 02:17:25 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:14:d9cf:d433:6a82:6f81])
+        by smtp.gmail.com with UTF8SMTPSA id s4sm13769691pju.17.2021.06.28.02.17.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 02:15:09 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: Change user experience
- when Admin/System Password is modified
-To:     Prasanth KSR <kosigiprasanth@gmail.com>, dvhart@infradead.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Prasanth KSR <prasanth.ksr@dell.com>,
-        Divya Bharathi <divya.bharathi@dell.com>
-References: <20210628084906.4233-1-prasanth.ksr@dell.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f4ec848d-735b-68aa-bee2-de9a2fbbe195@redhat.com>
-Date:   Mon, 28 Jun 2021 11:15:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 28 Jun 2021 02:17:25 -0700 (PDT)
+From:   Sam McNally <sammc@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Lyude Paul <lyude@redhat.com>, Hans Verkuil <hverkuil@xs4all.nl>,
+        Sam McNally <sammc@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v7 1/3] drm/dp_mst: Add self-tests for up requests
+Date:   Mon, 28 Jun 2021 19:17:01 +1000
+Message-Id: <20210628191617.v7.1.I6f50a7996687318ba298c24a3663c8be7dd432c7@changeid>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-In-Reply-To: <20210628084906.4233-1-prasanth.ksr@dell.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Up requests are decoded by drm_dp_sideband_parse_req(), which operates
+on a drm_dp_sideband_msg_rx, unlike down requests. Expand the existing
+self-test helper sideband_msg_req_encode_decode() to copy the message
+contents and length from a drm_dp_sideband_msg_tx to
+drm_dp_sideband_msg_rx and use the parse function under test in place of
+decode. Add an additional helper for testing clearly-invalid up
+messages, verifying that parse rejects them.
 
-On 6/28/21 10:49 AM, Prasanth KSR wrote:
-> Whenever user has changed an Admin/System Password using the sysfs,
-> then we are automatically copying the new password to existing
-> password field.
-> 
-> Co-developed-by: Divya Bharathi <divya.bharathi@dell.com>
-> Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
-> Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
+Add support for currently-supported up requests to
+drm_dp_dump_sideband_msg_req_body(); add support to
+drm_dp_encode_sideband_req() to allow encoding for the self-tests.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Add self-tests for CONNECTION_STATUS_NOTIFY and RESOURCE_STATUS_NOTIFY.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Sam McNally <sammc@chromium.org>
+---
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+(no changes since v5)
 
-Regards,
+Changes in v5:
+- Set mock device name to more clearly attribute error/debug logging to
+  the self-test, in particular for cases where failures are expected
 
-Hans
+Changes in v4:
+- New in v4
 
+ drivers/gpu/drm/drm_dp_mst_topology.c         |  54 ++++++-
+ .../gpu/drm/drm_dp_mst_topology_internal.h    |   4 +
+ .../drm/selftests/test-drm_dp_mst_helper.c    | 149 ++++++++++++++++--
+ 3 files changed, 192 insertions(+), 15 deletions(-)
 
-> ---
->  .../x86/dell/dell-wmi-sysman/passwordattr-interface.c         | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c b/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
-> index 339a082d6c18..86ec962aace9 100644
-> --- a/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
-> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
-> @@ -95,9 +95,9 @@ int set_new_password(const char *password_type, const char *new)
->  
->  	print_hex_dump_bytes("set new password data: ", DUMP_PREFIX_NONE, buffer, buffer_size);
->  	ret = call_password_interface(wmi_priv.password_attr_wdev, buffer, buffer_size);
-> -	/* clear current_password here and use user input from wmi_priv.current_password */
-> +	/* on success copy the new password to current password */
->  	if (!ret)
-> -		memset(current_password, 0, MAX_BUFF);
-> +		strscpy(current_password, new, MAX_BUFF);
->  	/* explain to user the detailed failure reason */
->  	else if (ret == -EOPNOTSUPP)
->  		dev_err(&wmi_priv.password_attr_wdev->dev, "admin password must be configured\n");
-> 
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index ad0795afc21c..ee58f6517482 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -445,6 +445,37 @@ drm_dp_encode_sideband_req(const struct drm_dp_sideband_msg_req_body *req,
+ 		idx++;
+ 		}
+ 		break;
++	case DP_CONNECTION_STATUS_NOTIFY: {
++		const struct drm_dp_connection_status_notify *msg;
++
++		msg = &req->u.conn_stat;
++		buf[idx] = (msg->port_number & 0xf) << 4;
++		idx++;
++		memcpy(&raw->msg[idx], msg->guid, 16);
++		idx += 16;
++		raw->msg[idx] = 0;
++		raw->msg[idx] |= msg->legacy_device_plug_status ? BIT(6) : 0;
++		raw->msg[idx] |= msg->displayport_device_plug_status ? BIT(5) : 0;
++		raw->msg[idx] |= msg->message_capability_status ? BIT(4) : 0;
++		raw->msg[idx] |= msg->input_port ? BIT(3) : 0;
++		raw->msg[idx] |= FIELD_PREP(GENMASK(2, 0), msg->peer_device_type);
++		idx++;
++		break;
++	}
++	case DP_RESOURCE_STATUS_NOTIFY: {
++		const struct drm_dp_resource_status_notify *msg;
++
++		msg = &req->u.resource_stat;
++		buf[idx] = (msg->port_number & 0xf) << 4;
++		idx++;
++		memcpy(&raw->msg[idx], msg->guid, 16);
++		idx += 16;
++		buf[idx] = (msg->available_pbn & 0xff00) >> 8;
++		idx++;
++		buf[idx] = (msg->available_pbn & 0xff);
++		idx++;
++		break;
++	}
+ 	}
+ 	raw->cur_len = idx;
+ }
+@@ -675,6 +706,22 @@ drm_dp_dump_sideband_msg_req_body(const struct drm_dp_sideband_msg_req_body *req
+ 		  req->u.enc_status.stream_behavior,
+ 		  req->u.enc_status.valid_stream_behavior);
+ 		break;
++	case DP_CONNECTION_STATUS_NOTIFY:
++		P("port=%d guid=%*ph legacy=%d displayport=%d messaging=%d input=%d peer_type=%d",
++		  req->u.conn_stat.port_number,
++		  (int)ARRAY_SIZE(req->u.conn_stat.guid), req->u.conn_stat.guid,
++		  req->u.conn_stat.legacy_device_plug_status,
++		  req->u.conn_stat.displayport_device_plug_status,
++		  req->u.conn_stat.message_capability_status,
++		  req->u.conn_stat.input_port,
++		  req->u.conn_stat.peer_device_type);
++		break;
++	case DP_RESOURCE_STATUS_NOTIFY:
++		P("port=%d guid=%*ph pbn=%d",
++		  req->u.resource_stat.port_number,
++		  (int)ARRAY_SIZE(req->u.resource_stat.guid), req->u.resource_stat.guid,
++		  req->u.resource_stat.available_pbn);
++		break;
+ 	default:
+ 		P("???\n");
+ 		break;
+@@ -1119,9 +1166,9 @@ static bool drm_dp_sideband_parse_resource_status_notify(const struct drm_dp_mst
+ 	return false;
+ }
+ 
+-static bool drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
+-				      struct drm_dp_sideband_msg_rx *raw,
+-				      struct drm_dp_sideband_msg_req_body *msg)
++bool drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
++			       struct drm_dp_sideband_msg_rx *raw,
++			       struct drm_dp_sideband_msg_req_body *msg)
+ {
+ 	memset(msg, 0, sizeof(*msg));
+ 	msg->req_type = (raw->msg[0] & 0x7f);
+@@ -1137,6 +1184,7 @@ static bool drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
+ 		return false;
+ 	}
+ }
++EXPORT_SYMBOL_FOR_TESTS_ONLY(drm_dp_sideband_parse_req);
+ 
+ static void build_dpcd_write(struct drm_dp_sideband_msg_tx *msg,
+ 			     u8 port_num, u32 offset, u8 num_bytes, u8 *bytes)
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology_internal.h b/drivers/gpu/drm/drm_dp_mst_topology_internal.h
+index eeda9a61c657..0356a2e0dba1 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology_internal.h
++++ b/drivers/gpu/drm/drm_dp_mst_topology_internal.h
+@@ -21,4 +21,8 @@ void
+ drm_dp_dump_sideband_msg_req_body(const struct drm_dp_sideband_msg_req_body *req,
+ 				  int indent, struct drm_printer *printer);
+ 
++bool
++drm_dp_sideband_parse_req(const struct drm_dp_mst_topology_mgr *mgr,
++			  struct drm_dp_sideband_msg_rx *raw,
++			  struct drm_dp_sideband_msg_req_body *msg);
+ #endif /* !_DRM_DP_MST_HELPER_INTERNAL_H_ */
+diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
+index 6b4759ed6bfd..7bbeb1e5bc97 100644
+--- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
++++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
+@@ -13,6 +13,10 @@
+ #include "../drm_dp_mst_topology_internal.h"
+ #include "test-drm_modeset_common.h"
+ 
++static void mock_release(struct device *dev)
++{
++}
++
+ int igt_dp_mst_calc_pbn_mode(void *ignored)
+ {
+ 	int pbn, i;
+@@ -120,27 +124,60 @@ sideband_msg_req_equal(const struct drm_dp_sideband_msg_req_body *in,
+ static bool
+ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
+ {
+-	struct drm_dp_sideband_msg_req_body *out;
++	struct drm_dp_sideband_msg_req_body *out = NULL;
+ 	struct drm_printer p = drm_err_printer(PREFIX_STR);
+-	struct drm_dp_sideband_msg_tx *txmsg;
++	struct drm_dp_sideband_msg_tx *txmsg = NULL;
++	struct drm_dp_sideband_msg_rx *rxmsg = NULL;
++	struct drm_dp_mst_topology_mgr *mgr = NULL;
+ 	int i, ret;
+-	bool result = true;
++	bool result = false;
+ 
+ 	out = kzalloc(sizeof(*out), GFP_KERNEL);
+ 	if (!out)
+-		return false;
++		goto out;
+ 
+ 	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+ 	if (!txmsg)
+-		return false;
++		goto out;
+ 
+-	drm_dp_encode_sideband_req(in, txmsg);
+-	ret = drm_dp_decode_sideband_req(txmsg, out);
+-	if (ret < 0) {
+-		drm_printf(&p, "Failed to decode sideband request: %d\n",
+-			   ret);
+-		result = false;
++	rxmsg = kzalloc(sizeof(*rxmsg), GFP_KERNEL);
++	if (!rxmsg)
+ 		goto out;
++
++	mgr = kzalloc(sizeof(*mgr), GFP_KERNEL);
++	if (!mgr)
++		goto out;
++
++	mgr->dev = kzalloc(sizeof(*mgr->dev), GFP_KERNEL);
++	if (!mgr->dev)
++		goto out;
++
++	mgr->dev->dev = kzalloc(sizeof(*mgr->dev->dev), GFP_KERNEL);
++	if (!mgr->dev->dev)
++		goto out;
++
++	mgr->dev->dev->release = mock_release;
++	mgr->dev->dev->init_name = PREFIX_STR;
++	device_initialize(mgr->dev->dev);
++
++	drm_dp_encode_sideband_req(in, txmsg);
++	switch (in->req_type) {
++	case DP_CONNECTION_STATUS_NOTIFY:
++	case DP_RESOURCE_STATUS_NOTIFY:
++		memcpy(&rxmsg->msg, txmsg->msg, ARRAY_SIZE(rxmsg->msg));
++		rxmsg->curlen = txmsg->cur_len;
++		if (!drm_dp_sideband_parse_req(mgr, rxmsg, out)) {
++			drm_printf(&p, "Failed to decode sideband request\n");
++			goto out;
++		}
++		break;
++	default:
++		ret = drm_dp_decode_sideband_req(txmsg, out);
++		if (ret < 0) {
++			drm_printf(&p, "Failed to decode sideband request: %d\n", ret);
++			goto out;
++		}
++		break;
+ 	}
+ 
+ 	if (!sideband_msg_req_equal(in, out)) {
+@@ -148,9 +185,9 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
+ 		drm_dp_dump_sideband_msg_req_body(in, 1, &p);
+ 		drm_printf(&p, "Got:\n");
+ 		drm_dp_dump_sideband_msg_req_body(out, 1, &p);
+-		result = false;
+ 		goto out;
+ 	}
++	result = true;
+ 
+ 	switch (in->req_type) {
+ 	case DP_REMOTE_DPCD_WRITE:
+@@ -171,6 +208,66 @@ sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
+ out:
+ 	kfree(out);
+ 	kfree(txmsg);
++	kfree(rxmsg);
++	if (mgr) {
++		if (mgr->dev) {
++			put_device(mgr->dev->dev);
++			kfree(mgr->dev);
++		}
++		kfree(mgr);
++	}
++	return result;
++}
++
++static bool
++sideband_msg_req_parse(int req_type)
++{
++	struct drm_dp_sideband_msg_req_body *out = NULL;
++	struct drm_printer p = drm_err_printer(PREFIX_STR);
++	struct drm_dp_sideband_msg_rx *rxmsg = NULL;
++	struct drm_dp_mst_topology_mgr *mgr = NULL;
++	bool result = false;
++
++	out = kzalloc(sizeof(*out), GFP_KERNEL);
++	if (!out)
++		goto out;
++
++	rxmsg = kzalloc(sizeof(*rxmsg), GFP_KERNEL);
++	if (!rxmsg)
++		goto out;
++
++	mgr = kzalloc(sizeof(*mgr), GFP_KERNEL);
++	if (!mgr)
++		goto out;
++
++	mgr->dev = kzalloc(sizeof(*mgr->dev), GFP_KERNEL);
++	if (!mgr->dev)
++		goto out;
++
++	mgr->dev->dev = kzalloc(sizeof(*mgr->dev->dev), GFP_KERNEL);
++	if (!mgr->dev->dev)
++		goto out;
++
++	mgr->dev->dev->release = mock_release;
++	mgr->dev->dev->init_name = PREFIX_STR " expected parse failure";
++	device_initialize(mgr->dev->dev);
++
++	rxmsg->curlen = 1;
++	rxmsg->msg[0] = req_type & 0x7f;
++	if (drm_dp_sideband_parse_req(mgr, rxmsg, out))
++		drm_printf(&p, "Unexpectedly decoded invalid sideband request\n");
++	else
++		result = true;
++out:
++	kfree(out);
++	kfree(rxmsg);
++	if (mgr) {
++		if (mgr->dev) {
++			put_device(mgr->dev->dev);
++			kfree(mgr->dev);
++		}
++		kfree(mgr);
++	}
+ 	return result;
+ }
+ 
+@@ -268,6 +365,34 @@ int igt_dp_mst_sideband_msg_req_decode(void *unused)
+ 	in.u.enc_status.valid_stream_behavior = 1;
+ 	DO_TEST();
+ 
++	in.req_type = DP_CONNECTION_STATUS_NOTIFY;
++	in.u.conn_stat.port_number = 0xf;
++	get_random_bytes(in.u.conn_stat.guid, sizeof(in.u.conn_stat.guid));
++	in.u.conn_stat.legacy_device_plug_status = 1;
++	in.u.conn_stat.displayport_device_plug_status = 0;
++	in.u.conn_stat.message_capability_status = 0;
++	in.u.conn_stat.input_port = 0;
++	in.u.conn_stat.peer_device_type = 7;
++	DO_TEST();
++	in.u.conn_stat.displayport_device_plug_status = 1;
++	DO_TEST();
++	in.u.conn_stat.message_capability_status = 1;
++	DO_TEST();
++	in.u.conn_stat.input_port = 1;
++	DO_TEST();
++
++	in.req_type = DP_RESOURCE_STATUS_NOTIFY;
++	in.u.resource_stat.port_number = 0xf;
++	get_random_bytes(in.u.resource_stat.guid, sizeof(in.u.resource_stat.guid));
++	in.u.resource_stat.available_pbn = 0xcdef;
++	DO_TEST();
++
++#undef DO_TEST
++#define DO_TEST(req_type) FAIL_ON(!sideband_msg_req_parse(req_type))
++	DO_TEST(DP_CONNECTION_STATUS_NOTIFY);
++	DO_TEST(DP_RESOURCE_STATUS_NOTIFY);
++
++	DO_TEST(DP_REMOTE_I2C_WRITE);
+ #undef DO_TEST
+ 	return 0;
+ }
+-- 
+2.32.0.93.g670b81a890-goog
 
