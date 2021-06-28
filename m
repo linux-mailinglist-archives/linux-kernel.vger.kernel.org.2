@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB2D3B5654
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25ACE3B5657
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhF1Abv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 20:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhF1Abu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 20:31:50 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD06C061574;
-        Sun, 27 Jun 2021 17:29:24 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id q4so14299037ljp.13;
-        Sun, 27 Jun 2021 17:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=n7M28hFUwo0t3z3ukhVUpDX7Pqm41FdcERBzHJotZrA=;
-        b=Vttc8PSDitkrqIejHH/KizML5yuFrK0gpCQ1idLH//0yA5+x/vWBFuF2I8j7GL1dds
-         QPaXNmd72xs11JmBa7lleshBRWPP4XqBXrU+ngmWNCa0QTLXXoftp+1cyj11HnVQHJkX
-         90Xjz6fmxkiZoaf8XdYXbCE+mJzD6bOl/uRHTsR5ol3qxS4VzGMVMxraoeDi1NfPx0gj
-         KRpddqrbGes4BaKCLISP1tUjBwNQ56VWSvl1bJdKF7QNi0tew5Qd9GBLaCdQX1bL9/WA
-         ydb9ngQrzeS8/8oXBkIN1bzTPogUt2qqRZWErQUk4ByTtPkoRk+gFoSVc+zxwlhD225Q
-         lg1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n7M28hFUwo0t3z3ukhVUpDX7Pqm41FdcERBzHJotZrA=;
-        b=HdHMCj1IL/gdiG/5NPeNdO3ryW1KSFZ2f6t0eL137N/BmoWE7iuB1j/o0yK69nYEJJ
-         Z6lK7DH4yijwbnnchXDmaigQM6vfxyQaK1ub51DkA/HuovG9RPRVdqaNgtbL9LXmW4U2
-         VGlU3b3ril9NktUFQcE4UFt8D2EDB4HBBPgXZNDI4qak8CvOZ54SyaxQkQ96oiGZwjxY
-         /BhDNuzq5XmWYT0CakkStCl5Uv/eSMLh1B8W6Ux3kz2T8J8NjqhvwsHQ1XU4PTEpgosO
-         9Bnl/CIcv6M3w6ZYlIw8jwCNDg7FugZrl62/Kv1a8cz0VnnhZfDsRm2gClzdim7aDcvs
-         8CQg==
-X-Gm-Message-State: AOAM533KWYymQyhVM6MCeVq9I0twA8L/iGTJc9gIbZC0DZS+x0ZLfU/5
-        cxQiXqL+A9FRLXDodbkEHJTr9bvBn3w=
-X-Google-Smtp-Source: ABdhPJyiM9tJi0jMtVF8k4COnwVGN8OxiZvDLTPWRkZxz8Z4165bsS52E5y7fFI5m+LKXb361VLQ3w==
-X-Received: by 2002:a2e:b8ca:: with SMTP id s10mr8671391ljp.449.1624840161847;
-        Sun, 27 Jun 2021 17:29:21 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id z25sm1162708lfu.22.2021.06.27.17.29.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Jun 2021 17:29:21 -0700 (PDT)
-Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20210617082759.1008-1-thunder.leizhen@huawei.com>
- <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com>
- <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com>
- <162483744494.3259633.12565750309559171999@swboyd.mtv.corp.google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5eb50fd9-1de9-cc61-6443-d84999e22803@gmail.com>
-Date:   Mon, 28 Jun 2021 03:29:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231772AbhF1AgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 20:36:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231689AbhF1AgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 20:36:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2816861584;
+        Mon, 28 Jun 2021 00:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624840426;
+        bh=FBi2YLCW92c1uFuvx3VBsGFRMiVxfq+fdBLeG/U6Sfc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=AslJ2GeG+2XcKcZkpoXp87WsSdOOsDFWO9/bm//hR1MRlUduXYSc2JSuP4wkoSzSz
+         PLczeFKO/bK7uxlcN6rx/witGaTZo0nC+iUZhkT8y5Ok02C1csretsiIvJjdfdVP4q
+         hEMV3Ms9JwqR78TadtE3RcZv8/bbYs9y7axnzZ/lREVgNHWXNP+jIfqNoDE8UccjfP
+         Qy53jJhHWJkaQoKAlQVgNYWjsf3P6A+lH2q7K/ZM4+LtDAe88EyAAMVLbAHcTTxwxo
+         Y0P5uPwD7DRDgpcQDw6kIyZEkq4jY52T/VwKXSsGRsDxvWGu+ub8tQWclIaww++FXI
+         RNgZs9gvNrzMw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <162483744494.3259633.12565750309559171999@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210609073742.722911-1-xinjian34324@163.com>
+References: <20210609073742.722911-1-xinjian34324@163.com>
+Subject: Re: [PATCH] clk: socfpga: clk-pll: Remove unused variable 'rc'
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jian Xin <xinjian@yulong.com>
+To:     Jian Xin <xinjian34324@163.com>, dinguyen@kernel.org,
+        mturquette@baylibre.com
+Date:   Sun, 27 Jun 2021 17:33:44 -0700
+Message-ID: <162484042495.3259633.4035444135672420533@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.06.2021 02:44, Stephen Boyd пишет:
-> Quoting Leizhen (ThunderTown) (2021-06-25 18:32:46)
->>
->>
->> On 2021/6/26 7:31, Stephen Boyd wrote:
->>> Quoting Zhen Lei (2021-06-17 01:27:59)
->>>> When krealloc() fails to expand the memory and returns NULL, the original
->>>> memory is not released. In this case, the original "timings" scale should
->>>> be maintained.
->>>>
->>>> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
+Quoting Jian Xin (2021-06-09 00:37:42)
+> From: Jian Xin <xinjian@yulong.com>
+>=20
+> Fix the following build warning:
+>   drivers/clk/socfpga/clk-pll.c: In function =E2=80=98__socfpga_pll_init=
+=E2=80=99:
+>   drivers/clk/socfpga/clk-pll.c:83:6: warning: variable =E2=80=98rc=E2=80=
+=99 set but not used [-Wunused-but-set-variable]
+>=20
+> Signed-off-by: Jian Xin <xinjian@yulong.com>
+> ---
 
-The memory is still not released on error and this is not the only one
-place in that code which doesn't release memory on error.
-
-All this code is executed only once during early kernel boot, perhaps
-not really worthwhile fixing it or at least this should be done properly.
-
->>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>> ---
->>>
->>> Looks correct, but when does krealloc() return NULL? My read of the
->>> kerneldoc is that it would return the original memory if the new
->>> allocation "failed".
->>
->> That must be the wrong description in the document. For example, the original
-> 
-> Can you fix the kernel doc then?
-> 
-
-The doc is clearly saying that it returns NULL, am I missing something?
-
-* Return: pointer to the allocated memory or %NULL in case of error
+Applied to clk-next but it would be better to check the return value and
+fail properly.
