@@ -2,134 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74BF3B5A8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6803B5A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhF1ImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:42:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49990 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhF1ImK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:42:10 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 54D772022D;
-        Mon, 28 Jun 2021 08:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624869584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
-        b=yQqqhaJ/CHAWQdSiuhvBPt0W7ZCSSi7MYqfHndPp74som5heLerExGYZYkuNCnmFcSbWM1
-        SxplcdB5ydtqAf0kFvv8OQbCiE0vOMeDCMEGWyY//u/gLYYif751GbNQW6Hay95bBeCpry
-        AXFQ3AINqXwrA5r/V/XA0P1yuncixlo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624869584;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
-        b=LvB1dvkKEU3OfpgVUgxv/U3SgHukbV/yCh5PsivmEL6z72eHi4K/+bM5ErSqUAvlVxhRHc
-        gtbu7TopPGF7blCw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 39714118DD;
-        Mon, 28 Jun 2021 08:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624869584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
-        b=yQqqhaJ/CHAWQdSiuhvBPt0W7ZCSSi7MYqfHndPp74som5heLerExGYZYkuNCnmFcSbWM1
-        SxplcdB5ydtqAf0kFvv8OQbCiE0vOMeDCMEGWyY//u/gLYYif751GbNQW6Hay95bBeCpry
-        AXFQ3AINqXwrA5r/V/XA0P1yuncixlo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624869584;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
-        b=LvB1dvkKEU3OfpgVUgxv/U3SgHukbV/yCh5PsivmEL6z72eHi4K/+bM5ErSqUAvlVxhRHc
-        gtbu7TopPGF7blCw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id PGr1DNCK2WCsPwAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 28 Jun 2021 08:39:44 +0000
-Date:   Mon, 28 Jun 2021 10:39:38 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/sev for v5.14
-Message-ID: <YNmKyjD8UH6ETawm@zn.tnic>
+        id S232454AbhF1ImR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232427AbhF1ImP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:42:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A64F46144B;
+        Mon, 28 Jun 2021 08:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624869590;
+        bh=THO6tfXSTEF7UsaWjKejI9nBZFIYuak1uBvRa1XTghU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PPYWRZLYttYNfF7bxfK4EL/+55kI/OLHwreamOdv8sW9luRUGmK/ymzM60YzWW1wB
+         1vPQWBWppnEJUIIYV1VHrLLSg6PLQTqFpNI6u6cjXeVSc4pmQ0PMEiGplaFMNhUVxz
+         jK865aNaKuCJdK/QxN815wYPtlSAGvQE7ie0efpu5q4AaWt1Esm11Sx7AzEl1Sd5Li
+         t2cKH/Vb8pmjjMp2PsOMku49MhRFZUGg/LDVZvs12hEigzH1nR6hKm8eR+RSyX7UcM
+         FtxZwizmkaQ/P2CjA60qPYxMQqbYVKuB/rS91UfksnsB1e9L4d6Bmy4Prz1khhlvJY
+         eueVO9LuaD+8Q==
+Date:   Mon, 28 Jun 2021 10:39:44 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YNmK0MP5ffQpiipt@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
+        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
+        loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qSoO7NsOskj/CTgw"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull the current pile of enhancements and fixes to the SEV side
-of things, for v5.14.
+--qSoO7NsOskj/CTgw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thx.
+Hi,
 
----
+sorry for the long delay. I am not familiar with VFIO, so I had to dive
+into the topic a little first. I am still not seeing through it
+completely, so I have very high-level questions first.
 
-The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
 
-  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+I think we need to start here:
 
-are available in the Git repository at:
+===
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sev_for_v5.14_rc1
+If ``length of \field{read_buf}''=0 and ``length of \field{write_buf}''>0,
+the request is called write request.
 
-for you to fetch changes up to 8d9d46bbf3b6b7ff8edcac33603ab45c29e0e07f:
+If ``length of \field{read_buf}''>0 and ``length of \field{write_buf}''=0,
+the request is called read request.
 
-  x86/sev: Use "SEV: " prefix for messages from sev.c (2021-06-23 11:56:18 +0200)
+If ``length of \field{read_buf}''>0 and ``length of \field{write_buf}''>0,
+the request is called write-read request. It means an I2C write segment followed
+by a read segment. Usually, the write segment provides the number of an I2C
+controlled device register to be read.
 
-----------------------------------------------------------------
-- Differentiate the type of exception the #VC handler raises depending
-on code executed in the guest and handle the case where failure to
-get the RIP would result in a #GP, as it should, instead of in a #PF
+===
 
-- Disable interrupts while the per-CPU GHCB is held
+I2C transactions can have an arbitrary number of messages which can
+arbitrarily be read or write. As I understand the above, only one read,
+write or read-write transaction is supported. If that is the case, it
+would be not very much I2C but more SMBus. If my assumptions are true,
+we first need to decide if you want to go the I2C way or SMBus subset.
 
-- Split the #VC handler depending on where the #VC exception has
-happened and therefore provide for precise context tracking like the
-rest of the exception handlers deal with noinstr regions now
+But maybe I need to undestand the following paragraph first:
 
-- Add defines for the GHCB version 2 protocol so that further shared
-development with KVM can happen without merge conflicts
+===
 
-- The usual small cleanups
+A driver may send one request or multiple requests to the device at a time.
+The requests in the virtqueue are both queued and processed in order.
 
-----------------------------------------------------------------
-Brijesh Singh (1):
-      x86/sev: Add defines for GHCB version 2 MSR protocol requests
+===
 
-Joerg Roedel (7):
-      x86/sev: Fix error message in runtime #VC handler
-      x86/insn-eval: Make 0 a valid RIP for insn_get_effective_ip()
-      x86/insn: Extend error reporting from insn_fetch_from_user[_inatomic]()
-      x86/sev: Propagate #GP if getting linear instruction address failed
-      x86/sev: Make sure IRQs are disabled while GHCB is active
-      x86/sev: Split up runtime #VC handler for correct state tracking
-      x86/sev: Use "SEV: " prefix for messages from sev.c
+What happens if those multiple requests are sent out to the I2C bus
+master driver on the host? Is there one transaction with N messages or
+are there N transfers with 1 message each. This is a difference in I2C
+world (REP_START vs. STOP/START) and some devices really need this
+properly handled or they won't work.
 
- arch/x86/entry/entry_64.S         |   4 +-
- arch/x86/include/asm/idtentry.h   |  29 ++----
- arch/x86/include/asm/sev-common.h |  16 ++-
- arch/x86/kernel/sev.c             | 201 +++++++++++++++++++++-----------------
- arch/x86/kernel/umip.c            |  10 +-
- arch/x86/lib/insn-eval.c          |  30 +++---
- 6 files changed, 160 insertions(+), 130 deletions(-)
+===
 
--- 
-Regards/Gruss,
-    Boris.
+The case when ``length of \field{write_buf}''=0, and at the same time,
+``length of \field{read_buf}''=0 doesn't make any sense.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+===
+
+Oh, it does. That's a legal transfer, both in SMBus and I2C. It is used
+to e.g. discover devices. I think it should be supported, even though
+not all bus master drivers on the host can support it. Is it possible?
+
+Also, as I read it, a whole bus is para-virtualized to the guest, or?
+Wouldn't it be better to allow just specific devices on a bus? Again, I
+am kinda new to this, so I may have overlooked things.
+
+Thanks and happy hacking,
+
+   Wolfram
+
+
+--qSoO7NsOskj/CTgw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDZiswACgkQFA3kzBSg
+KbYbXA/+KSKzXE7s7bq3L7tzpkMR2Dsra4ZFO9RRcu1nHxKOxA6sTNHfC08aPyk7
+8wn8SbkDjo5V+MPCr20aILLiAiW2AaUbtTy7vC/WUcmMgml/aDhwP/bYczzcpHgd
+9OW5Gd9otvxovWd3/1MK+IvDjdfI54ip5ItUX0KbW7/wmpJf1VlaMEYkZlY2G2o/
+MulO2lklg1uiiV55jW72INVWJchSTxNlh9ZRJVzM5uESm7C58GIG5okNjxshVgup
+1aKFXPlr+zrgHGh4HCZItSAN3m2Bxoss4Mz+fBbL1RAZUt/KvlmMyl5B+GSwQXrB
+vBTfsjWukF+YpQk1s9WqouKlkIPgkKWJnBRq12U4BhUcXJzlt/u1TilJ5XxWSAu6
+pZ4GMNZpmOaHx1fZf9M33eRtALZm4K5j0g5yhX+KahS3TuX0IssqVICkldrXUuFm
+K7ZX/gTGMMgFj4lB7k8oUHbphjl1FAyMbHAlRbvyI+JRtoyIHegck8A5HnWS4urI
+93oRlWiLMdns18mfCnwOd7AfKB8RphAjDGXReGbamNi7RnnnCsEEAqRAl2eb0F5c
+EFNNVcWfH7UFfDhPJUFN95OTo49JdfhfhXG5K8yZ+NMVrF1HkGRJQ7TXbfU/C2WE
+QNn4ZWlQ/d8VtQE6bUehICy7VLW9bO88lkUf49zZnp5HnXuiyTg=
+=T+Ay
+-----END PGP SIGNATURE-----
+
+--qSoO7NsOskj/CTgw--
