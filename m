@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F713B5747
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8053B574E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhF1CmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 22:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1CmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 22:42:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFB4619C4;
-        Mon, 28 Jun 2021 02:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624847983;
-        bh=SoCGeNG9HsDyxEtp2GU2WZmjAAPuhOGmCHPhhj60muU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=JKIEBR2oQ9Uw+5+bfI1dRTWaB6ZUaiPcjiM+R1JnW5iWgLzXii3r0qdYEMoGCKVbQ
-         Z6zHPO1HRGvE9t8h6WAiAxvfs1llnO5STQhj5wxIZ3gsE/FuRE3yhl7aPg9cJ0zaWA
-         K4lm5rKgALzdaW0zO0iy/7swammUSOK5H5dhEJ/plzMkxVUVyrA55j5sNgdhzE5bnu
-         Vf9N+zBOhkTEd3ilJyQYF5iYuR2zWtTmUFwnnF+brjWadYyLQ90lj5mj6d4bsX6CDJ
-         buDcY2PbucRx0Y09LG1Donz/cBC1tozXuN4se0s8lTRHsQFhwpwiTvgLyee248n5qU
-         DAd0bUCLz+yWw==
-Content-Type: text/plain; charset="utf-8"
+        id S231994AbhF1CsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 22:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhF1CsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 22:48:20 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1808EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 19:45:56 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h4so14137117pgp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 19:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/ZglMk5xEV7kqPnzl923s5w51WPieL3sLq9YmzBcALE=;
+        b=nUlOpiZdsURZNX3nXwrPK+lpBucURq3MdKAQtTyUnwKnkg7GvNT0HpVWB7Npvqk0lc
+         J2yelxl+xiSaTC4As+derq954XeTRGPPldSVUofYHA3gs4bIdr3vQy+EomVFHj2kDaIh
+         i01MYeGTLmrGifrVCvEetNzpWtfrEjRTYByTWGhhw9BA5LU3f6BagH91yjHD8+lV35in
+         7Q2krdV5Dre6o1fpocAdU1Az4ghMdA3aghNV9uau6s2kR8QO2gaZX+q7px9+SNDp46uJ
+         tBGXas+0+fckhDeVeWzEgRzwuDu3msk/F6LzKeSp+1Ct825R41NfphxwazxJCYTSpnHg
+         3TmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/ZglMk5xEV7kqPnzl923s5w51WPieL3sLq9YmzBcALE=;
+        b=Pcy654KW2zdfCNaSOz/ny76Ea0wd4UVHdx1ziYT+1mOPysF5OdbxmhQpZIf73ZcM//
+         HrhcnBzTcT6uHqlddEY1W8539V2RAhE6OeuHTQ2NdrICpENthg7YgSldqPRr+YZrXEsQ
+         N8McR30aT3jB/81KgAz1/1EaUQgHW1rN4o0hFjujmUmSNohXgehJiUBSr56LV7Dwrdjz
+         J486YOnfQ+Z53H2r8xliYvvNUKQ9H4/YFvzFkFJs0RXielKzvo+VhEDW2mif/K4kW2Nd
+         Ox9Fe4cAXAtHTLhJDWOtX4rJ8lExNsONgceUmiKkG6MoMU7EH/YS3bAs/rAwLC+ULSZ9
+         lJiA==
+X-Gm-Message-State: AOAM530n+cdmFwpdPQpnWDEnD0aD58jSzdPQIEmkb30KseR2OZ53SSsr
+        PRHLx3eAMu1aednyPh6ktxY=
+X-Google-Smtp-Source: ABdhPJyox2quKoYGLxF1JyW4tUbI8GVPUip1KPU4wHP8CJqx1CNd54QO7ZciKVkiyP1c17eJJ7/BWQ==
+X-Received: by 2002:a63:1841:: with SMTP id 1mr11515809pgy.377.1624848355530;
+        Sun, 27 Jun 2021 19:45:55 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id n127sm1472443pga.58.2021.06.27.19.45.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Jun 2021 19:45:54 -0700 (PDT)
+Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
+To:     anton@tuxera.com
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+References: <20210614050540.289494-1-desmondcheongzx@gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <ea63e5af-6ac4-08fe-4261-904d55392b10@gmail.com>
+Date:   Mon, 28 Jun 2021 10:45:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <56f3b0bd-5dd7-80d4-041a-0fd2daf4b1f2@marek.ca>
-References: <20210519001802.1863-1-jonathan@marek.ca> <20210519001802.1863-2-jonathan@marek.ca> <162266925581.4130789.10178141366818328902@swboyd.mtv.corp.google.com> <56f3b0bd-5dd7-80d4-041a-0fd2daf4b1f2@marek.ca>
-Subject: Re: [PATCH v2 2/2] dt-bindings: clock: add QCOM SM8350 display clock bindings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Sun, 27 Jun 2021 19:39:41 -0700
-Message-ID: <162484798199.3259633.9009940760433821881@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210614050540.289494-1-desmondcheongzx@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2021-06-04 10:25:41)
-> On 6/2/21 5:27 PM, Stephen Boyd wrote:
-> > Quoting Jonathan Marek (2021-05-18 17:18:02)
-> >> Add sm8350 DISPCC bindings, which are simply a symlink to the sm8250
-> >> bindings. Update the documentation with the new compatible.
-> >>
-> >> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >> Reviewed-by: Rob Herring <robh@kernel.org>
-> >> ---
-> >>   .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml       | 6 ++++=
---
-> >>   include/dt-bindings/clock/qcom,dispcc-sm8350.h              | 1 +
-> >=20
-> >>   2 files changed, 5 insertions(+), 2 deletions(-)
-> >>   create mode 120000 include/dt-bindings/clock/qcom,dispcc-sm8350.h
-> >=20
-> > Why the symlink? Can we have the dt authors use the existing header file
-> > instead?
-> >=20
->=20
-> It would be strange to include bindings with the name of a different=20
-> SoC. I guess it is a matter a preference, is there any good reason to=20
-> *not* do it like this?
+On 14/6/21 1:05 pm, Desmond Cheong Zhi Xi wrote:
+> When checking the file name attribute, we want to ensure that it fits
+> within the bounds of ATTR_RECORD. To do this, we should check
+> that (attr record + file name offset + file name length) < (attr
+> record + attr record length).
+> 
+> However, the original check did not include the file name offset in
+> the calculation. This means that corrupted on-disk metadata might not
+> caught by the incorrect file name check, and lead to an invalid memory
+> access.
+> 
+> An example can be seen in the crash report of a memory corruption
+> error found by Syzbot:
+> https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
+> 
+> Adding the file name offset to the validity check fixes this error and
+> passes the Syzbot reproducer test.
+> 
+> Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+> Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+>   fs/ntfs/inode.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+> index f5c058b3192c..4474adb393ca 100644
+> --- a/fs/ntfs/inode.c
+> +++ b/fs/ntfs/inode.c
+> @@ -477,7 +477,7 @@ static int ntfs_is_extended_system_file(ntfs_attr_search_ctx *ctx)
+>   		}
+>   		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
+>   				le16_to_cpu(attr->data.resident.value_offset));
+> -		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
+> +		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
+>   		if (p2 < (u8*)attr || p2 > p)
+>   			goto err_corrupt_attr;
+>   		/* This attribute is ok, but is it in the $Extend directory? */
+> 
 
- $ find include/dt-bindings -type l
- include/dt-bindings/input/linux-event-codes.h
- include/dt-bindings/clock/qcom,dispcc-sm8150.h
+Hi Anton,
 
-It seems to not be common at all.
+Any chance to review this patch?
 
->=20
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x5=
-0.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> >> index 0cdf53f41f84..8f414642445e 100644
-> >> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> >> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> >> @@ -4,24 +4,26 @@
-> >>   $id: http://devicetree.org/schemas/clock/qcom,dispcc-sm8x50.yaml#
-> >>   $schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>  =20
-> >> -title: Qualcomm Display Clock & Reset Controller Binding for SM8150/S=
-M8250
-> >> +title: Qualcomm Display Clock & Reset Controller Binding for SM8150/S=
-M8250/SM8350
-> >=20
-> > Maybe just "Binding for SM8x50 SoCs"
-> >=20
->=20
-> Its likely these bindings won't be compatible with future "SM8x50" SoCs, =
-
-> listing supported SoCs explicitly will avoid confusion in the future.
-
-The yaml file has sm8x50 in the name. What's the plan there?
+Best wishes,
+Desmond
