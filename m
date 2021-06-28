@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A833B67BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57F43B67C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbhF1RhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:37:25 -0400
-Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:12513
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233747AbhF1RhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:37:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YYUTmfpyPEVnJLUarNDBW2s2y6xnzij1HasgrCTSJhZUccB1k+bsIaa/L27WMLVIyAtqBN4vYfMt5EcdRmnLM2KmyQbxbs7+bGMNYk/7Apgedmwk06OJBXWEr0kZ0TRo6FdGEZRxCSo0MoP0MsptztugF2Z0/w151jzG/oqASIsSjg5kv5UtNBeN6oYaaQpRhF847f4K0upJz3xxwWRGRmJezJyYImyVJlhvhh566U//SbzUMrKLd3eblY25elsEtf4hzKWzWfbp40JCne764GlU9F9O7WpeHEGRXUjFbROKR1CLu9r3YUbXagVbpRvCfECOpTwWGYIOczMNrGJyJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGHdZex21aO9+ugiCjqCdSALBJHf7Z6/khcGUFAERiw=;
- b=U9Ecj9rkC7a57ti2k3pwAH70iKuG2+TfX4l9LG+9oCv5lan8Us1ehuY67QHhFC15iwu2Yl9gAo4f9eOqWSd8Gd64UdkkYa2ABtYwGavmiLtsTHdoG23ORrQvVT5mogahkdEivrwjX0GhXH2fM4MK+0S2tYcE3FY4Du/VrnESRBJaLXWJxPppOxNIEsY3hx/mktvDscWMhMkRjX8OxMVyBAApM6kM9Q2HEm4MAlVzlRVTtliYqF5bwMQo6cYZq7HlLXr0LaeBX1IMbE6W+5QeakINcmA5AaCgI78wKcriK9gnqTT8gg2n5z/mHTEHXPiG/K5i8aWvM6alBJugbauztQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGHdZex21aO9+ugiCjqCdSALBJHf7Z6/khcGUFAERiw=;
- b=qMBHaVdBwIL1k+DxzeLqeJPZn/Rz8tfzw+f9y49+8T3jtGoW/XVCr6Yvjszb7/KhWP6T0CJXWpZZX5/XJo5XA6xW4HqTW+eephVlAg1UYDa3e/EtuIPIFi2J8sNAVuv4Z681HkV2mHTw7JoyrtvGzQ02b98aSjrkeagxUSWq3GIMDqJk/4/ewQo1F4uwmNNaRMvMIaT7jvkDITo+GRNalIoTvK41rdjZ6EI7xwsirx/P/tYKfju+Q9nhQ36Bp9RvEmG3W2r9u311Z5vmNZ3vgGBS92/tMeq4HhByz+uL6O4gt/f7RofYWdld9PUiME0MCeNZLwQyTdFsowSKf2SGsA==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5522.namprd12.prod.outlook.com (2603:10b6:208:17d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Mon, 28 Jun
- 2021 17:34:49 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 17:34:49 +0000
-Date:   Mon, 28 Jun 2021 14:34:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210628173448.GG4459@nvidia.com>
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625220758.80365-1-akrowiak@linux.ibm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0084.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::29) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232530AbhF1Rlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:41:32 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:37725 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhF1Rla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:41:30 -0400
+Received: by mail-wr1-f47.google.com with SMTP id i94so22280470wri.4;
+        Mon, 28 Jun 2021 10:39:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=x1KLh0OYEF3ex6ks4cGytJzCjqrl5yb7/zSlprVlZ9E=;
+        b=ow+OuMEXMARv3vGv4h5FMsIRVFBk+ifeuhbUVUWRFRxiZBiIqb1PZBsAX0R3fy5GHm
+         IxkNYEHz4t4U6VZeH7vxAn6tUfY1UouesHQl1iOxhDakUyURPr4LX7mIfRAVtOOauqZf
+         wLt5MsP6TzufI5bDWztd9YeZNh1Or9UR9y/NKCW9CDhxjrOwGpOkU/oGdvRGSfKYWq44
+         Bg+Ip4nesgdq3fbieTrHwufDZ7V30hBdmshzxZM8mV10QKTe26kJXnW5PyEcS3wHzm7l
+         TKCLYpKeDy8mFzI8W+aSzRPeYFSNPF4MD4oTWlhCFQkhddBUsJYwESY2JG5AVqGzZU5x
+         024A==
+X-Gm-Message-State: AOAM531uVFETJCNldOZb2ELzdodji45JXAF2PvFTou1xRqsu8CX3PKLz
+        CPbFoEWafkXT+viJIpJJOik=
+X-Google-Smtp-Source: ABdhPJy8sUmcsCDQYEl9DOnlkHfDZbMvrgtz16KwsCG84MBS1mY8T+kwNuvosWWiPDoeK+PHVLtoPg==
+X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr9632102wrx.177.1624901943832;
+        Mon, 28 Jun 2021 10:39:03 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t16sm176520wmi.2.2021.06.28.10.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 10:39:03 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 17:39:01 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     longli@linuxonhyperv.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, Long Li <longli@microsoft.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
+Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
+Message-ID: <20210628173901.mwo4ydfdmf3zd2zt@liuwe-devbox-debian-v2>
+References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
+ <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
+ <ff05bb0d-bcad-8445-d410-7756e7502352@metux.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0084.namprd13.prod.outlook.com (2603:10b6:208:2b8::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.12 via Frontend Transport; Mon, 28 Jun 2021 17:34:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lxv9k-000h2V-Gc; Mon, 28 Jun 2021 14:34:48 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d324e7e9-c7bb-4f46-ec88-08d93a5b0794
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5522:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5522D42A4FDFA01FD8AB31B8C2039@BL0PR12MB5522.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gVSSIcAO+QpU5efuX2nh0QH0fuH5W8rbDkhLPXaU4seT7lmPeQ+pIvFCpHpAo/pneQxpDbDUgI3l+U9jLmQCwi6yatgyOz5hjyzyHj1JaPdQyJEmljimmdMJ6ra69PjOsoTXOu59+y7+UG0gP5+owF8OECFZQ4yDrWbuFV9Dwx08QaHBZrEgufWUY296pl6UAb4E8LfyVxkc0wDIqciSMCndyRi8ZtSBsSj6Cc2Ih61ybfwr3oVWsS6IQq37MeGBsytWIwluP6gNzPgg2Uug+vIAUs+iyEUHy35ZyLwy42jhv+dybepkA2JWyVr/qRS5zDV8Vrlg3BZ1dxuGJ3dBatnPJUeUuXP95b89znXhb+3MNmVh7Z+B9aPcqfeItyzZL91jpYaCdWtyd4qmPYZcSSzhyE8CeWHruxWJL1eFcsyPG6zZMPGWL4zxnDVXKDAQW728U1mA/tFugzaE7gzth7IqljW+T17087Bpegas2I4j9GRwjJ5lhoYtEh5KZxuUqasMLElmD3icRrHjJ2xldxO5orPM8r+Y1SuWuTLAJTYyymBv3kKqXBxbOb4SepDjTir0SupFrGYejjZ9D4f5w+16i7SqY0YhgEte/TLpxJh5MB6M8D4MmzRiG8XmAw+F6wZ4Y+/qTYev7wcrHbDDVQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39860400002)(396003)(346002)(83380400001)(36756003)(478600001)(6916009)(7416002)(33656002)(8676002)(8936002)(9746002)(4744005)(66476007)(66556008)(316002)(66946007)(26005)(1076003)(86362001)(186003)(38100700002)(9786002)(2616005)(426003)(5660300002)(4326008)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P2z5lX8RFRT9il6BsTvV0gJmYiskm9k2DpxJ0AmF0E3tbSUtOpKo5zvEqUAr?=
- =?us-ascii?Q?SXUZFzXnF1zGGhutyyhC4Z4VKUxUES4ftiSNos74hjVgoUMeqki+ILr83hmE?=
- =?us-ascii?Q?P/bR2D+PtJa50Uoaeh9UqfO0Jir9rB8RZKR/eZz4qG3YaScptyEhKsw/AAcq?=
- =?us-ascii?Q?FLlyxVQjn9daGA7+1F4NIqoniRMCMN6FDQCgWOGmLMig46A1hNXiHcwF/wIR?=
- =?us-ascii?Q?/DAor2xar69Oi/eniKrjjdTH+MXgZuM3iGlH6AtQfOSN6onEaPJdnaPL+hOY?=
- =?us-ascii?Q?JEpVSvbWCmdqjUiMYuoiUJkjrTuAH75F8LoVa916Ht9VT7WGZ0UwfJRJU0t+?=
- =?us-ascii?Q?Z2YrEm3yJCqabGYmUDBea4sp0Pt9L2ZyfZMCuQzAu8ApfCxzZ4tDK2dvhOVj?=
- =?us-ascii?Q?WBN0zTqZhjhx9oy4GgpA+K4LHtglFpi97FeJGpH+pBQdM35wWVFiVxn/pcM2?=
- =?us-ascii?Q?1F2ErG1MMaQdeiFVL3xk7Ubhb2t01arWUSgeH+G7K1stppmE6HiFoJdXHP3+?=
- =?us-ascii?Q?R72p9/bSrMHD5aEjm5mE27H70szstRbTUEkrRbzk9wciRBAunPrGNsfQEI73?=
- =?us-ascii?Q?hj3gBFkGUKfWpJu8rEmhOY7AJksIJ58Qc0lIloBWfPPc534EBFsDiYixmMng?=
- =?us-ascii?Q?vnCPHjvK6EPtg2IVW1p6NUY8UDEC391PXA9XlMWHQdAdp00e24dj5RegVNcL?=
- =?us-ascii?Q?Nt/rZGiDJGOdHLaWeLEfSYaDNpAKIvjLO4XPeIpYqUR5A7hoDavLxoEZYmph?=
- =?us-ascii?Q?rPOyDMwaX7rUHUmSgdI5WkaPUi5DBpneb9Cqm1cbgC/ERrrBTot1ka3tCqlb?=
- =?us-ascii?Q?UWXbxc4SIt31bt9KB5KzCsuHd3VayDxlkMEjT9LgWuKJaMNVoDTko194igRg?=
- =?us-ascii?Q?JouQsDOHG/4QlHduPXq4SDrpzz2WOeb8+4B+hjztkd2EDWqUa8oIk+xlf+Ec?=
- =?us-ascii?Q?VGi/J7fM0/BkcLlFObgCN2vU4xPktnuj0z24Rrhf9j2RcTbbrtQpqZ81wLIR?=
- =?us-ascii?Q?qLERO/FpeBvZ2+5Vt+xPd/KQcOxKB+A8LQSL1Ew+QM0huQIM/3e9iNYlkA9H?=
- =?us-ascii?Q?SBJhyU8um2wUSitiYe4E1z5qk3d+/L9q93b20HX1n8KPuvd0f0fZ/mnB6Yxs?=
- =?us-ascii?Q?Bjdc4yjlTDLLdQHB/7RWmkcUAW0bmizq+vPhwtdW/CRAHtDNg8n9y/Xd3Xvg?=
- =?us-ascii?Q?1dMqdsnYbZeQUgISI6+1v41ElmfS+u9er+82pX8fkruvYnJij8lkusgeE76f?=
- =?us-ascii?Q?1nY1Ra0X/Wrkz3/OVWQf0AtWVP+crUatAh9g409yxIEThuypAVEyAVOb1jb9?=
- =?us-ascii?Q?CGZicHLWSHqf9q2+SzFQCRzR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d324e7e9-c7bb-4f46-ec88-08d93a5b0794
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 17:34:49.4426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BZ2Qdya1iCTTc//ZaZnfUrBCC/A8J+a/Q4lEkh59gVJkxsSIv8uZ5sDw9tdDK+6a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5522
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ff05bb0d-bcad-8445-d410-7756e7502352@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 06:07:58PM -0400, Tony Krowiak wrote:
->  static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->  {
-> +	mutex_lock(&matrix_dev->lock);
->  
-> +	if ((matrix_mdev->kvm) && (matrix_mdev->kvm->arch.crypto.crycbd)) {
->  		mutex_unlock(&matrix_dev->lock);
-> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->  
-> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->  
->  		mutex_lock(&matrix_dev->lock);
->  		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->  		kvm_put_kvm(matrix_mdev->kvm);
->  		matrix_mdev->kvm = NULL;
-> +		mutex_unlock(&matrix_dev->lock);
->  	}
+On Mon, Jun 28, 2021 at 07:12:40PM +0200, Enrico Weigelt, metux IT consult wrote:
+> On 26.06.21 08:30, longli@linuxonhyperv.com wrote:
+> 
+> Hi,
+> 
+> > From: Long Li <longli@microsoft.com>
+> > 
+> > Azure Blob storage provides scalable and durable data storage for Azure.
+> > (https://azure.microsoft.com/en-us/services/storage/blobs/)
+> 
+> It's a bit hard to quickly find out the exact semantics of that (w/o fully
+> reading the library code ...).  :(
+> 
+> > This driver adds support for accelerated access to Azure Blob storage. As an
+> > alternative to REST APIs, it provides a fast data path that uses host native
+> > network stack and secure direct data link for storage server access.
+> 
+> I don't think that yet another misc device with some very specific API
+> is a good thing. We should have a more generic userland interface.
+> 
+> Maybe a file system ?
 
-Doesn't a flow exit the function with matrix_dev->lock held here?
+This can already be done if I'm not mistaken:
 
-Write it with 'success oriented flow'
+https://docs.microsoft.com/en-us/azure/storage/blobs/storage-how-to-mount-container-linux
+https://docs.microsoft.com/en-us/azure/storage/blobs/network-file-system-protocol-support-how-to
 
-I didn't check if everything makes sense, but it sure looks clean.
+> 
+> OTOH, I've been considering adding other kind of blob stores (eg. venti
+> and similar things) and inventing an own subsys for that, so we'd have
+> some more universal interface. Unfortunately always been busy with other
+> things.
+> 
+> Maybe we should go that route instead of introducing yet another device
+> specific uapi.
 
-Jason
+This work of course does not preclude anyone from going that route.
+
+Wei.
+
+> 
+> 
+> --mtx
+> 
+> -- 
+> ---
+> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+> GPG/PGP-Schlüssel zu.
+> ---
+> Enrico Weigelt, metux IT consult
+> Free software and Linux embedded engineering
+> info@metux.net -- +49-151-27565287
