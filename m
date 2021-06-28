@@ -2,141 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56F3B68CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B193B68C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236046AbhF1TGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:06:07 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:33324 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbhF1TGA (ORCPT
+        id S235904AbhF1TFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233101AbhF1TFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:06:00 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:48296)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lxwXY-00FZtO-Fr; Mon, 28 Jun 2021 13:03:28 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:38704 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lxwXX-00Gdx8-9L; Mon, 28 Jun 2021 13:03:28 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-        <87a6njf0ia.fsf@disp2133>
-        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
-        <87tulpbp19.fsf@disp2133>
-        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
-        <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
-Date:   Mon, 28 Jun 2021 14:02:50 -0500
-In-Reply-To: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk> (Al Viro's message of
-        "Thu, 24 Jun 2021 22:45:23 +0000")
-Message-ID: <87v95xx15x.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 28 Jun 2021 15:05:43 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBECC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id a15so26650863lfr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uR/ZxXYOfetOCIPFRvKNULFj2/1YAj7wkBUuAw2Y1ls=;
+        b=RACA7+LLO50Cky/qJJNkQqRagEmWSnMIqo1OLMpw0plnLeIC9kJ68PHAMATFyfmYhV
+         P7c7jTDmTegZ0lzfLxA0pq400U8jSROY9IHCUFMn2wvIAvlcuJdkmJpy9cviHj2M3WKn
+         NMTgV8nXT0gT0ca/CBswfP0oxbRlf6qT0p5no=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uR/ZxXYOfetOCIPFRvKNULFj2/1YAj7wkBUuAw2Y1ls=;
+        b=qWN5CBEGylsDIS6UkPEC4FL/OzWtWuqIz96S5NPFy5aW+97KInqcMUEOuj3VVVvmrj
+         BUCFlwm8s/PB/+AmA80TbTPdpkAPpVtqcUByzbXFTgZoOGzl0BeqwJoWozh8JfnmOeQo
+         /XXrqs/Bj1Hr+JvkYVJXMnR9jQIRgXdYKfEJNsyWibKe/Tb2WNmJF2XNssEkNWt9xzMu
+         woRuWrj9SkdEkSeBgNjXc6LxvQHpyINb/PXYHL3yPhkmIy/1bAwhPPOGaF4BGZMJK4ma
+         H4ApwZVXMQ8Kdhl84QLczVyDx6uWPsHxkW9JqJvTzv6LhRrs9zlp9xdxU4wbLoLWf4YS
+         t8Hw==
+X-Gm-Message-State: AOAM531+8tT6OwfTKq7gARRRwv8H8ix2WuY3l8IZKj8iRm5HNrKMp8AM
+        Ztm0VwsHq1NhbGT112pO8zeq5sLduX8RO1he
+X-Google-Smtp-Source: ABdhPJwHYzl/QvvsAAj8TXnSR6YtLnzLceMotdmJi27A1P3SAL0Zit+80mpv2ak33dDCvpIBXC/1WQ==
+X-Received: by 2002:ac2:546a:: with SMTP id e10mr20440271lfn.244.1624906994467;
+        Mon, 28 Jun 2021 12:03:14 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id a7sm1513098lfg.220.2021.06.28.12.03.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id w19so5910781lfk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr19320422lfc.201.1624906993250;
+ Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lxwXX-00Gdx8-9L;;;mid=<87v95xx15x.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18JERu3BMiKmUMjDvvelGV7aJUlVNLWdXI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,
-        XM_Body_Dirty_Words autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XM_Body_Dirty_Words Contains a dirty word
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 577 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 14 (2.4%), b_tie_ro: 12 (2.0%), parse: 0.98
-        (0.2%), extract_message_metadata: 13 (2.2%), get_uri_detail_list: 1.59
-        (0.3%), tests_pri_-1000: 9 (1.5%), tests_pri_-950: 1.33 (0.2%),
-        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 194 (33.7%), check_bayes:
-        190 (33.0%), b_tokenize: 7 (1.2%), b_tok_get_all: 10 (1.7%),
-        b_comp_prob: 3.1 (0.5%), b_tok_touch_all: 164 (28.5%), b_finish: 1.53
-        (0.3%), tests_pri_0: 330 (57.2%), check_dkim_signature: 0.49 (0.1%),
-        check_dkim_adsp: 3.1 (0.5%), poll_dns_idle: 0.90 (0.2%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 8 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/9] Refactoring exit
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <YNQwgTR3n3mSO9+3@gmail.com> <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
+ <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
+ <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com>
+ <YNlapAKObfeVPoQO@gmail.com> <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
+ <YNoZIVgboj6YKo3V@gmail.com>
+In-Reply-To: <YNoZIVgboj6YKo3V@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Jun 2021 12:02:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
+Message-ID: <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
+Subject: Re: [GIT PULL] sigqueue cache fix
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
-
-> On Thu, Jun 24, 2021 at 01:57:35PM -0500, Eric W. Biederman wrote:
+On Mon, Jun 28, 2021 at 11:47 AM Ingo Molnar <mingo@kernel.org> wrote:
 >
->> So far the code has been lightly tested, and the descriptions of some
->> of the patches are a bit light, but I think this shows the direction
->> I am aiming to travel for sorting out exit(2) and exit_group(2).
->
-> FWIW, here's the current picture for do_exit(), aside of exit(2) and do_exit_group():
->
-> 1) stuff that is clearly oops-like -
->         alpha:die_if_kernel() alpha:do_entUna() alpha:do_page_fault() arm:oops_end()
->         arm:__do_kernel_fault() arm64:die() arm64:die_kernel_fault() csky:alignment()
->         csky:die() csky:no_context() h8300:die() h8300:do_page_fault() hexagon:die()
->         ia64:die() i64:ia64_do_page_fault() m68k:die_if_kernel() m68k:send_fault_sig()
->         microblaze:die() mips:die() nds32:handle_fpu_exception() nds32:die()
->         nds32:unhandled_interruption() nds32:unhandled_exceptions() nds32:do_revinsn()
->         nds32:do_page_fault() nios:die() openrisc:die() openrisc:do_page_fault()
->         parisc:die_if_kernel() ppc:oops_end() riscv:die() riscv:die_kernel_fault()
->         s390:die() s390:do_no_context() s390:do_low_address() sh:die()
->         sparc32:die_if_kernel() sparc32:do_sparc_fault() sparc64:die_if_kernel()
->         x86:rewind_stack_do_exit() xtensa:die() xtensa:bad_page_fault()
-> We really do not want ptrace anywhere near any of those and we do not want
-> any of that to return; this shit would better be handled right there and
-> there - no "post a fatal signal" would do.
+> But even if release_posix_timer() is changed to call sigqueue_free() with
+> IRQs disabled, or sigqueue_free() disables interrupts itself, I think we
+> need to be mindful of the Consumer <-> Producer SMP races, which only
+> appear to be safe due to an accidental barrier by free_uid().
 
-Thanks that makes a good start for digging into these.
+Oh, I agree. The SMP memory ordering issues are subtle and while I
+suspect they aren't something that can be triggered in reality, it's
+an example of how broken some WRITE_ONCE -> READ_ONCE serialization
+is.
 
-I think the distinction I would make is:
-- If the kernel is broken use do_task_dead.
-- Otherwise cleanup the semantics by using start_group_exit,
-  start_task_exit or by just cleaning up the code.
-  
+I don't mind READ_ONCE/WRITE_ONCE in general, but I absolutely detest
+them when they are used to hide KCSAN things, and when they are used
+randomly for pointers.
 
-Looking at the reboot case it looks like we the code
-should have become do_group_exit in 2.5.  I have a suspicion
-we have a bunch of similar cases that want to terminate the
-entire process, but we simply never updated to deal with
-multi-thread processes.
+I think they are much better suited for one-time flag things, and
+pretty much every time you see a READ_ONCE/WRITE_ONCE you should
+likely see a barrier somewhere.
 
-I suspect in the reboot case panic if machine_halt or
-or machine_power_off fails is more likely the correct
-handling.  But we do have funny semantics sometimes.
+And no, we don't want them to be some subtle barriers that are just
+"in the context of this code, we can depend on the barrier in that
+other function".
 
-I will see what I can do to expand my patchset to handle all of these
-various callers of do_exit.
+In general, if you have a WRITE_ONCE -> READ_ONCE chain an dnot some
+obvious required barrier for other reasons right *there*, it should
+almost certainly not be one of those ONCE things at all. It should be
+a proper smp_store_release() -> smp_load_acquire(). Those have real -
+and on sane hardware cheap - memory orderings.
 
-Eric
+And as the whole - and only - point of the sigqueue cache was a very
+subtle performance and latency issue, I don't think we want to use
+locks or atomics. It's why my revert commit suggests re-purposing the
+"percpu_cmpxchg()" functionality: that would likely be a good model at
+least for x86 and arm.
+
+But while we have "percpu_cmpxchg()", I don't think we currently don't
+really have that kind of operation where it
+
+ (a) works on a non-percpu variable (but we can force casts, I guess)
+
+ (b) has "acquire" semantics
+
+We do have the *atomic* cmpxchg with acquire semantics, but atomics
+are rather more expensive than we'd probably really want.
+
+                 Linus
