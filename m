@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A353B5F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6809A3B5F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhF1Nkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhF1Nka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:40:30 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCEFC061574;
-        Mon, 28 Jun 2021 06:38:04 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id j184so27413371qkd.6;
-        Mon, 28 Jun 2021 06:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=yWrLgKEK8bPBcHoI/fkkz+6nVPueHkgXLIuRqJ0nIr8=;
-        b=DaJ+8XT3y2Ve271KmtccmRvNKShpVwERsXWENWdzmd97r7x0lv1JpfOAaI6YRbBCRq
-         Rp5E5z7ZkS8MOZYfjnZjQZWeyPUYo1zVlgJGVkvUAR4gbDnXbrAq6jzBe2YBTSNKnoan
-         axMQfbLlg9RnBwJgSSDFJS1/WtSnQAtLG/soi17iO1+c3XDiJzNw+6rKoRwbXj9tXzHt
-         baKBkGxFH3aWIr2kkbhjjTIdYKvTdDNR70HsRVfdHcUhbAtaisF7w20Me4cG+jdQfBr8
-         i9ICfQ7xIlbnHCJsgKjfvurgFGc4+6lEKm+rm7qDBARgwfXRtuCDPvCxpRT4v313+6VI
-         9fWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=yWrLgKEK8bPBcHoI/fkkz+6nVPueHkgXLIuRqJ0nIr8=;
-        b=DnJjPOY0Of4gGipnlNExX6fHmFT86IA/y/oDMLd9Lyw9O7q+LNvBAqdjf6SqxfvlGJ
-         snrvKoyIIzxPbLVWhGUWYRU5a4yjULp9eH/NxsJGIdpP3JVCkEiPFkwqrZEA2TcP3IW1
-         x29zjZtQnfYQWQO73STLxe2Tvrm7Ug25EnPQ3QKgXd9C+NC7ZrDU5EMmPAoRAY7ChgR2
-         IGjfKI/DfsqX1FOJmKfhdRnvMdJgbK8LFOn27NZjEzzy5/hvitqDX9VpZYBfv8/SrIJs
-         LAHhZpLu6AnGZ3C0Gy4NxIpsGQ+8PQxGCErIgWfWp8HS3iv9E6jSyGVM7FFa2dvW61JP
-         q29Q==
-X-Gm-Message-State: AOAM530P025nHpI8RJ1USVaAQHSL/olyQ8jtkYdTVtpkI240Epw6hxkj
-        /zGz6j6v8CYF6pCX+C/ydtU=
-X-Google-Smtp-Source: ABdhPJz3BXbDFy0x6Zijuf0/8TzcBVqfdxc0tf2CqHHXa9eoT2DKQYp5BnlaABJMzGfw45lDrbOqPg==
-X-Received: by 2002:ae9:e803:: with SMTP id a3mr9183850qkg.93.1624887484198;
-        Mon, 28 Jun 2021 06:38:04 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id r4sm1864189qtn.57.2021.06.28.06.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 06:38:03 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-Cc:     SeongJae Park <sj38.park@gmail.com>, brendanhiggins@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
-Date:   Mon, 28 Jun 2021 13:37:59 +0000
-Message-Id: <20210628133759.18659-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAGS_qxoPq1f+dcaf43xyjbDhW-ASG3gZez-b0Pv_s17JU3hePw@mail.gmail.com>
-To:     unlisted-recipients:; (no To-header on input)
+        id S232054AbhF1Nlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:41:35 -0400
+Received: from verein.lst.de ([213.95.11.211]:36508 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231955AbhF1Nl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:41:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 258586736F; Mon, 28 Jun 2021 15:38:59 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 15:38:58 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Rob Landley <rob@landley.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: dma_declare_coherent_memory and SuperH
+Message-ID: <20210628133858.GA21602@lst.de>
+References: <20210623133205.GA28589@lst.de> <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Brendan, could I ask you opinion for this patch?
+On Sat, Jun 26, 2021 at 05:36:08PM -0500, Rob Landley wrote:
+> On 6/23/21 8:32 AM, Christoph Hellwig wrote:
+> > Hi SuperH maintainers,
+> > 
+> > I have a vague recollection that you were planning on dropping support
+> > for non-devicetree platforms, is that still the case?
+> 
+> We'd like to convert them, but have to rustle up test hardware for what _is_
+> still available. (There was some motion towards this a year or so back, but it
+> petered out because pandemic and everyone got distracted halfway through.)
+> 
+> (We should definitely START by converting the r2d board qemu emulates. :)
+> 
+> > The reason I'm asking is because all but one users of
+> > dma_declare_coherent_memory are in the sh platform setup code, and
+> > I'd really like to move towards killing this function off.
+> 
+> Understood. Is there an easy "convert to this" I could do to those callers?
 
-
-Thanks,
-SeongJae Park
-
-[...]
+Well, the replacement is to declare the device memory carveouts in the
+Device Tree.
