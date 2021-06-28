@@ -2,162 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F703B6413
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972203B6555
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236863AbhF1PE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:04:29 -0400
-Received: from mail-dm6nam11on2057.outbound.protection.outlook.com ([40.107.223.57]:32929
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234536AbhF1Oni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:43:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ay9rXKpyh5fG56LkyiUVzCvqT39QQlBMTuTHV45wI7jtH8jfQd6hZBVFq09EERxyfQQbzbrynQbGRo/1R4BwzT0SH3qYIGxPenn8boA6LOHDrqAVY+jAG8jnDRzef4aZlp3to5+qoFx+YnbiLPGWKKvBEmPafN6fODZOX2knlMvsji0EswPEI+hVnqMqGzzddxzejUb0uhh0Obq1EdirL5gQxAhc21BJ4YQVa4tPb3r9PuYEKUYBWcVnGJW8f7lAyoCS6T1XXD8PlJM0DBBoXdKcn1xEHANh3DgzzygsIl40wo55Z1F+raEgwpx6mQ9beAHMeEu0hTUy6BTv3PO9rA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2h+Zjtve4P3scgOfIw/418Rdb7R5UdWO7K+mRjA+R8Q=;
- b=ncG8GynfTS+yNf47+oiUmikAv16PH8F7ZS4tQ6RLpbb01AtcRqAo3wDpK3A4CWIZX7Zx8wZ16XWd4zGHZUnv/jW+OqhMwtaDIGLsNW96LU3c8i/Qe1GVHzPLGEelO3P8fN8wFe/yu5KksHhEoZDuc4Dfb/X84wIWPYEcCPXsGkp9k7UoZ0cDZbx/FV/N4h9VOjnD+XnpU3wzmM3/qBKRyCec2YHpLxpUztYqYOQLFwY7fKzTx1JSetf5uRUKlARYna1KhLgh5Vvj0mnt/1oeNwp5NAN4J2Zadc+PbttEIPk4MzGz2zZqGa8tPQxRmdcjw5cTw2rZ+w7cScvr3xBgyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2h+Zjtve4P3scgOfIw/418Rdb7R5UdWO7K+mRjA+R8Q=;
- b=WXg9cV29eS4TW/NU6jOD2VOQ+4snHnHude4pW4V2k5LWU0m7nmpyQiCG7X4STAZR8vZK9vtgsLfHULx5/qX8EysSufhj2zfdWSzmU0e8NuOKCeunh69vcdpWEm8BCSgXTsbrpwWflYqe+1G8NIw7JRDLmyKrjTQ4jvujTL1g4QDUzsBjX23FZmPe+aC6ihuDjB8+/Hajar35Q8ThIGcUv4NFnlaO6oP+dKYSVaklOjVOhgatHHU84JSuFyBs0o+aAf/t+TiM68qgsui5HL9yejkShz0gqbhQuyq3GXl/0kWsvdhDRUzAa4HU7NBMC0RyUgp60pTbKHf9NqtDFS+sow==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5336.namprd12.prod.outlook.com (2603:10b6:208:314::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Mon, 28 Jun
- 2021 14:41:10 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 14:41:10 +0000
-Date:   Mon, 28 Jun 2021 11:41:09 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210628144109.GC4459@nvidia.com>
-References: <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210616133937.59050e1a.alex.williamson@redhat.com>
- <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210617151452.08beadae.alex.williamson@redhat.com>
- <20210618001956.GA1987166@nvidia.com>
- <MWHPR11MB1886A17124605251DF394E888C0D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210618182306.GI1002214@nvidia.com>
- <BN9PR11MB5433B9C0577CF0BD8EFCC9BC8C069@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210625143616.GT2371267@nvidia.com>
- <BN9PR11MB5433DCBE6DE1EC27CFB9D3738C039@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5433DCBE6DE1EC27CFB9D3738C039@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR19CA0070.namprd19.prod.outlook.com
- (2603:10b6:208:19b::47) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S235979AbhF1PZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236661AbhF1PCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:02:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C27C8613CB;
+        Mon, 28 Jun 2021 14:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624891378;
+        bh=WHx5Pmwg5AuIwLp2+aNVAkXAGwGL2imUrPBU3zEihag=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Wg54L58dsVAgQsf/oi6/jzsKRiWtgfozCzz+wJdb2nhI0ktBefEs/j28eqxcctCcg
+         svsljIh7TSs7L7SHLhoBm7bcTjUDv0gWlQRcWqvIdOGY1tjkYeQMbGJdk9+xM9/756
+         a33UwGZ0AvzBqIe+tTI6UBWwKQKOJMNzKkMTj8WjbeLNRpwU4ZwdEuS44Bvj1HvUt3
+         UqDtF69XVYB+YoTW9EGg3cW+Hp77sL196VgUSDC8mH92fR5g7w5oHYfApYRt8KMRlL
+         qhprYZF59zuQMcLfveKwnd+FTV8yYO3PUhm+D9GwEo0et7EmwbdJuqoXA8dU8WlCMU
+         12ejleTiIrhxg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org
+Subject: [PATCH 4.4 00/57] 4.4.274-rc1 review
+Date:   Mon, 28 Jun 2021 10:41:59 -0400
+Message-Id: <20210628144256.34524-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR19CA0070.namprd19.prod.outlook.com (2603:10b6:208:19b::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Mon, 28 Jun 2021 14:41:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lxsRh-000dW5-90; Mon, 28 Jun 2021 11:41:09 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d0296a37-8e39-4a7d-4c69-08d93a42c569
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5336:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5336F34748A19B1573958B9FC2039@BL1PR12MB5336.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jGBVpiu49HrsFf+gv4cB6hEkvGw5WZuZQXfgflE6UJX0gUmnij/+gNE8E7wXO4vUBWg8KG7sgxqViSQqKZN5PDHHQtFGxE3rcTdQQOLRF1ruXalGOyeYKmgIaz0XWEZ51OOFF1Sd7fXP8BuZ4ZOE4xgr8mYIhJ2t2JDojKhEGu2X8nx/hg80PL5q2EV3YTysPFEyw7jcAQpszxLX+3O5iPcoO+Mt0Byp/njSiI9nl75JPjUzcHKBYwMvdJ3/78RaJd+hYNWOMO8G4uTpdY14VRcqfOMrJA0fajEfbpzHGRB01peHddlOIBEbGg1KGqyaahlqAJ7TOQHSrYlY6eIsD678r5p0CEC7QFhUk7KwMX4ZM6km8Gw9alPoULCX1Zc0FBlvHTa8ShzsfXVyTFVTO5PcktCqO6TBkg+/JMcxm5UCEDK/lA/0ZgmxcmI+qpebEcXWI+UYZMHN5l07MbFGTrSY0Xx2nzbYVGADM6IqEEqmBvF/XrKYvrUCBvZ7rhqcFXUSAXjijRoHNe5kbC6HXpu4VHqQBu1e4izqFasT5pAgGk5Q3nbjTCg6BrYipchhXcsY44JG98zfbfT0bM+q23fZtD844aPYuweY8AGjndiVuI2GoGTaXDaJh68lflVXAxv5Si3WtVVkB/+I0UWZrw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(83380400001)(5660300002)(186003)(9786002)(2616005)(1076003)(9746002)(426003)(2906002)(4326008)(36756003)(38100700002)(26005)(54906003)(66946007)(316002)(86362001)(7416002)(8676002)(6916009)(66476007)(66556008)(8936002)(33656002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FVlADGL1oJfH3h4c28VN+ex4dmbMMpcRMWXz/r8rwjNh/6/fXClgIAVPGZPv?=
- =?us-ascii?Q?LXFA4/Mjp3GGIthZxig8WDANkTl86GPoKhjbL3X/qAJ7NEmQW4oWwovSNrAf?=
- =?us-ascii?Q?+8gE+yT49+ZN/1I6XNtbcSCefDB6vko691FOHb1a27PojF/6xiCN4ooQKUiu?=
- =?us-ascii?Q?oMqevQPJiYxRTr7O+Z0ixiKgpTdzjMTJLXq0TkqMIev0REev8Xe8ucGGjdxx?=
- =?us-ascii?Q?KdTGlBrDz7jW/L8Vx6me5lKa7CqCdgqCr5RHBgaY/mOsuLPpv/pdZg2bvCYO?=
- =?us-ascii?Q?aBLLfDbOKqCPuqXNv64zpbuYB2fQNFO4koDlYuW8WQbCVh0j9eyZRG4LL2PX?=
- =?us-ascii?Q?QcyrNfa+FyjVd0rkHLNwv+re0+tICx9h7kEPTUpQ42OY6BdJzhM68tlMC0nd?=
- =?us-ascii?Q?bJOxy+lEOj46vp64cdcWfzmZvqsGCYLnk+RC4aacIfEpO8AVG6nKBy1rsb98?=
- =?us-ascii?Q?REH1NnhicEzoKCd/RawMffmHtrZHSiGI5dMdxVOYvkVV+ylge02yuESYjntK?=
- =?us-ascii?Q?56ggLL3OcU8lg1UlLfzXq5yutjnoIfcgwmVxGZ6OQcmFhXNVg1fBaTpU2m7G?=
- =?us-ascii?Q?7H2e43zy1BlrVFaRc7uq4Ldo8WPb5B5oGJUIGokYq8U01qHf3dlHiNGVzt1z?=
- =?us-ascii?Q?zjzcPiU9NnMccEvxkZKTRn9rY16/vwdP7J9maV7DL0fA5R4PMKZhHCngBNw/?=
- =?us-ascii?Q?W73w+4WBEBd8M/phRmSXM0tDbsG5iz7Xvt1OM9adtk99in3mCxV6fB3MRELH?=
- =?us-ascii?Q?GqrTHXdJgJ68d0cQs4DL5uKNb5zSUcUkY74wVpfnO43Vvj9MXyjP7IHpkt5e?=
- =?us-ascii?Q?cOi0mgRwuIzIOLST85ThqgJc92E6WAeOboj6A1WF1IFtgDQjTCc1iElocxWx?=
- =?us-ascii?Q?+cgDlL9VLjU+unvm28lcMiMzrDpUuk7a7R2jUlqwKnklZRlZw/5wlHcYpd+i?=
- =?us-ascii?Q?etnHOce+Kh6PX9lGSvus7/DJnUcptEVg5B8oUt4dKQHrV0HPKkpBgYlEcZcr?=
- =?us-ascii?Q?Iev5aRPy1TeTtFvnEdRTsidQMCuvOko0uVkP982pU0U9jDOkh3KoLorWFhj2?=
- =?us-ascii?Q?9fR6+IbJAk1fWQc0bvSzSB+OTnT+jkWP3jDz4d5BTll2/nHXMebF8O0+PiX0?=
- =?us-ascii?Q?neX8RSSP7poVKMbcQcPXKaum38IZp2AlMHOdHwpLIu/VebnmGsjTqdUUMfxU?=
- =?us-ascii?Q?pTr1zDmHDD4NF5Ag9s4Pp3GUwXTAjcIK0HuSfrhokxiHcXlGH91lbitAtCWy?=
- =?us-ascii?Q?2IOI0m4B9jtnCIafx+dHO/HHx15aBkITnJ7BJ+ZxRGeLLzvp+jL0zaCJbkkP?=
- =?us-ascii?Q?tIE9G/wosj5foogtf7hL2Kms?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0296a37-8e39-4a7d-4c69-08d93a42c569
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 14:41:10.6579
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MHJv8vOAb2gRNsBUmqjfLH6f0svrK1mILGs7hveGXxTN9LemaMqBNn+7IjjuXTBP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5336
+Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.274-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.274-rc1
+X-KernelTest-Deadline: 2021-06-30T14:42+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 02:03:56AM +0000, Tian, Kevin wrote:
 
-> Combining with the last paragraph above, are you actually suggesting 
-> that 1:1 group (including mdev) should use a new device-centric vfio 
-> uAPI (without group fd) while existing group-centric vfio uAPI is only 
-> kept for 1:N group (with slight semantics change in my sketch to match 
-> device-centric iommu fd API)?
+This is the start of the stable review cycle for the 4.4.274 release.
+There are 57 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Yes, this is one approach
+Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
+Anything received after that time might be too late.
 
-Using a VFIO_GROUP_GET_DEVICE_FD_NEW on the group FD is another
-option, but locks us into having the group FD.
+The whole patch series can be found in one patch at:
+        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.4.y&id2=v4.4.273
+or in the git tree and branch at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
-Which is better possibly depends on some details when going through
-the code transformation, though I prefer not to design assuming the
-group FD must exist.
+Thanks,
+Sasha
 
-> (not via an indirect group ioctl). Then it implies that we may have to allow 
-> the user open a device before it is put into a security context, thus the 
-> safe guard may have to be enabled on mmap() for 1:1 group. This is a
-> different sequence from the existing group-centric model.
+-------------
+Pseudo-Shortlog of commits:
 
-Yes, but I think this is fairly minor, it would just start with a
-dummy fops and move to operational fops once things are setup enough.
+Anirudh Rayabharam (1):
+  HID: usbhid: fix info leak in hid_submit_ctrl
 
-Jason
+Antti Järvinen (1):
+  PCI: Mark TI C667X to avoid bus reset
+
+Arnd Bergmann (1):
+  ARM: 9081/1: fix gcc-10 thumb2-kernel regression
+
+Bixuan Cui (1):
+  HID: gt683r: add missing MODULE_DEVICE_TABLE
+
+Bumyong Lee (1):
+  dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
+
+Chen Li (1):
+  radeon: use memcpy_to/fromio for UVD fw upload
+
+Christophe JAILLET (3):
+  qlcnic: Fix an error handling path in 'qlcnic_probe()'
+  netxen_nic: Fix an error handling path in 'netxen_nic_probe()'
+  be2net: Fix an error handling path in 'be_probe()'
+
+Dongliang Mu (1):
+  net: usb: fix possible use-after-free in smsc75xx_bind
+
+Du Cheng (1):
+  cfg80211: call cfg80211_leave_ocb when switching away from OCB
+
+Eric Dumazet (3):
+  net/af_unix: fix a data-race in unix_dgram_sendmsg / unix_release_sock
+  inet: use bigger hash table for IP ID generation
+  inet: annotate date races around sk->sk_txhash
+
+Esben Haabendal (1):
+  net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY
+
+Fugang Duan (1):
+  net: fec_ptp: add clock rate zero check
+
+Hillf Danton (1):
+  gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+Ido Schimmel (1):
+  rtnetlink: Fix regression in bridge VLAN configuration
+
+Jiapeng Chong (2):
+  ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+  rtnetlink: Fix missing error code in rtnl_bridge_notify()
+
+Jisheng Zhang (1):
+  net: stmmac: dwmac1000: Fix extended MAC address registers definition
+
+Johan Hovold (1):
+  i2c: robotfuzz-osif: fix control-request directions
+
+Johannes Berg (1):
+  mac80211: drop multicast fragments
+
+Josh Triplett (1):
+  net: ipconfig: Don't override command-line hostnames or domains
+
+Kees Cook (3):
+  r8152: Avoid memcpy() over-reading of ETH_SS_STATS
+  sh_eth: Avoid memcpy() over-reading of ETH_SS_STATS
+  r8169: Avoid memcpy() over-reading of ETH_SS_STATS
+
+Linyu Yuan (1):
+  net: cdc_eem: fix tx fixup skb leak
+
+Maciej Żenczykowski (1):
+  net: cdc_ncm: switch to eth%d interface naming
+
+Mark Bolhuis (1):
+  HID: Add BUS_VIRTUAL to hid_connect logging
+
+Maurizio Lombardi (1):
+  scsi: target: core: Fix warning on realtime kernels
+
+Maxim Mikityanskiy (1):
+  netfilter: synproxy: Fix out of bounds when parsing TCP options
+
+Ming Lei (1):
+  scsi: core: Put .shost_dev in failure path if host state changes to
+    RUNNING
+
+Nanyong Sun (1):
+  net: ipv4: fix memory leak in netlbl_cipsov4_add_std
+
+Nathan Chancellor (1):
+  Makefile: Move -Wno-unused-but-set-variable out of GCC only block
+
+Norbert Slusarek (1):
+  can: bcm: fix infoleak in struct bcm_msg_head
+
+Pavel Skripkin (5):
+  net: rds: fix memory leak in rds_recvmsg
+  net: hamradio: fix memory leak in mkiss_close
+  net: ethernet: fix potential use-after-free in ec_bhf_remove
+  net: caif: fix memory leak in ldisc_open
+  nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
+
+Rafael J. Wysocki (1):
+  Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
+
+Sasha Levin (1):
+  Linux 4.4.274-rc1
+
+Shanker Donthineni (1):
+  PCI: Mark some NVIDIA GPUs to avoid bus reset
+
+Srinivas Pandruvada (1):
+  HID: hid-sensor-hub: Return error for hid_set_field() failure
+
+Steven Rostedt (VMware) (3):
+  tracing: Do no increment trace_clock_global() by one
+  tracing: Do not stop recording cmdlines when tracing is off
+  tracing: Do not stop recording comms if the trace file is being read
+
+Tetsuo Handa (1):
+  can: bcm/raw/isotp: use per module netdevice notifier
+
+Thomas Gleixner (1):
+  x86/fpu: Reset state for all signal restore failures
+
+Vineet Gupta (1):
+  ARCv2: save ABI registers across signal handling
+
+Yang Yingliang (1):
+  dmaengine: stedma40: add missing iounmap() on error in d40_probe()
+
+Yongqiang Liu (1):
+  ARM: OMAP2+: Fix build warning when mmc_omap is not built
+
+Zheng Yongjun (4):
+  net/x25: Return the correct errno code
+  net: Return the correct errno code
+  fib: Return the correct errno code
+  ping: Check return value of function 'ping_queue_rcv_skb'
+
+ Makefile                                      |  7 +-
+ arch/arc/include/uapi/asm/sigcontext.h        |  1 +
+ arch/arc/kernel/signal.c                      | 43 +++++++++++++
+ arch/arm/kernel/setup.c                       | 16 +++--
+ arch/arm/mach-omap2/board-n8x0.c              |  2 +-
+ arch/x86/kernel/fpu/signal.c                  | 18 ++++--
+ drivers/dma/pl330.c                           |  6 +-
+ drivers/dma/ste_dma40.c                       |  3 +
+ drivers/gpu/drm/radeon/radeon_uvd.c           |  4 +-
+ drivers/hid/hid-core.c                        |  3 +
+ drivers/hid/hid-gt683r.c                      |  1 +
+ drivers/hid/hid-sensor-hub.c                  | 13 ++--
+ drivers/hid/usbhid/hid-core.c                 |  2 +-
+ drivers/i2c/busses/i2c-robotfuzz-osif.c       |  4 +-
+ drivers/net/caif/caif_serial.c                |  1 +
+ drivers/net/ethernet/ec_bhf.c                 |  4 +-
+ drivers/net/ethernet/emulex/benet/be_main.c   |  1 +
+ drivers/net/ethernet/freescale/fec_ptp.c      |  4 ++
+ .../net/ethernet/myricom/myri10ge/myri10ge.c  |  1 +
+ .../ethernet/qlogic/netxen/netxen_nic_main.c  |  2 +
+ .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |  1 +
+ drivers/net/ethernet/realtek/r8169.c          |  2 +-
+ drivers/net/ethernet/renesas/sh_eth.c         |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac1000.h   |  8 +--
+ drivers/net/ethernet/xilinx/ll_temac_main.c   |  5 ++
+ drivers/net/hamradio/mkiss.c                  |  1 +
+ drivers/net/usb/cdc_eem.c                     |  2 +-
+ drivers/net/usb/cdc_ncm.c                     |  2 +-
+ drivers/net/usb/r8152.c                       |  2 +-
+ drivers/net/usb/smsc75xx.c                    | 10 +--
+ drivers/pci/pci.c                             | 16 ++++-
+ drivers/pci/quirks.c                          | 22 +++++++
+ drivers/scsi/hosts.c                          |  8 ++-
+ drivers/target/target_core_transport.c        |  4 +-
+ fs/gfs2/glock.c                               |  2 +-
+ fs/nilfs2/sysfs.c                             |  1 +
+ include/linux/hid.h                           |  3 +-
+ include/net/sock.h                            | 10 ++-
+ kernel/trace/trace.c                          | 12 ----
+ kernel/trace/trace_clock.c                    |  6 +-
+ net/can/bcm.c                                 | 64 +++++++++++++++----
+ net/can/raw.c                                 | 62 ++++++++++++++----
+ net/compat.c                                  |  2 +-
+ net/core/fib_rules.c                          |  2 +-
+ net/core/rtnetlink.c                          |  4 ++
+ net/ipv4/cipso_ipv4.c                         |  1 +
+ net/ipv4/ipconfig.c                           | 13 ++--
+ net/ipv4/ping.c                               | 12 ++--
+ net/ipv4/route.c                              | 42 ++++++++----
+ net/mac80211/rx.c                             |  9 +--
+ net/netfilter/nf_synproxy_core.c              |  5 ++
+ net/rds/recv.c                                |  2 +-
+ net/unix/af_unix.c                            |  7 +-
+ net/wireless/util.c                           |  3 +
+ net/x25/af_x25.c                              |  2 +-
+ 55 files changed, 351 insertions(+), 134 deletions(-)
+
+-- 
+2.30.2
+
