@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BAD3B5A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A223B5A6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhF1I0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:26:44 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35082 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232308AbhF1I0n (ORCPT
+        id S232401AbhF1I2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhF1I2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:26:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-89-FswThSeuNS-iTkJMwVP7Ow-1; Mon, 28 Jun 2021 09:24:16 +0100
-X-MC-Unique: FswThSeuNS-iTkJMwVP7Ow-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 28 Jun
- 2021 09:24:15 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Mon, 28 Jun 2021 09:24:15 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Chen, Rong A'" <rong.a.chen@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        kernel test robot <lkp@intel.com>
-CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [kbuild-all] Re: net/ceph/messenger_v2.c:2808:5: warning: stack
- frame size (2336) exceeds limit (2048) in function 'ceph_con_v2_try_read'
-Thread-Topic: [kbuild-all] Re: net/ceph/messenger_v2.c:2808:5: warning: stack
- frame size (2336) exceeds limit (2048) in function 'ceph_con_v2_try_read'
-Thread-Index: AQHXa/RueJm4ArZTY06Bo3hjOSis8KspFAQw
-Date:   Mon, 28 Jun 2021 08:24:15 +0000
-Message-ID: <3d6a513b51d545cc87a7a0ae22452567@AcuMS.aculab.com>
-References: <202106280955.VUsBSyHq-lkp@intel.com>
- <CAOi1vP-FR2PpqdW4WuhJaaFPZifxthf0B45dV03v00ef66R8wg@mail.gmail.com>
- <a875976b-3117-f001-606b-8e90802bef8a@intel.com>
-In-Reply-To: <a875976b-3117-f001-606b-8e90802bef8a@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 28 Jun 2021 04:28:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56C5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 01:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bBOOAJZmb1MGQkBOhTr3Y7C4iASxBA5CQqatO8OKvkU=; b=IcEY+/vJyPW5mfpsonXxEzgnK2
+        ij2cjBwdvkFvDpKT0mwZmUi1tZbHxGz0K4oI6cmwke1DT62/JaCr7pB6BSOLJAX1D/tVjkOouDAOR
+        azyo8Erh9WYzCWTBPA7tNyhFRwvALHIAwddq2XtH94udA/1OcPY+W6OwLOfPjAV86OITTrXfG/mfp
+        f2mTpaPvkdIFLmqb5I1jwTQ0gHno895wsth7lUaQNgsIMXPfLVM14Fk/NNripoW65fF0QCMRHM7Ak
+        D6jD95Cp7/u1V+FHmN+Zx7zV4G8Q4XH4sh4RM3FOip4LOEISeGUE+mMO3bv1GAObXLcgGJH/1pNc3
+        +zD31TVQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxmZL-002k7t-Ll; Mon, 28 Jun 2021 08:24:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00C153001DC;
+        Mon, 28 Jun 2021 10:24:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D71FF2028DBF2; Mon, 28 Jun 2021 10:24:38 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 10:24:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michael Forney <mforney@mforney.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] objtool: Check for gelf_update_rel[a] failures
+Message-ID: <YNmHRi+00RAAUmEt@hirez.programming.kicks-ass.net>
+References: <20210509000103.11008-1-mforney@mforney.org>
+ <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+ID4+ICAgICBhcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vaW8tZGVmcy5oOjQzOjE6IHdh
-cm5pbmc6IHBlcmZvcm1pbmcgcG9pbnRlciBhcml0aG1ldGljIG9uIGEgbnVsbA0KPiBwb2ludGVy
-IGhhcyB1bmRlZmluZWQgYmVoYXZpb3IgWy1XbnVsbC1wb2ludGVyLWFyaXRobWV0aWNdDQoNCkkn
-dmUganVzdCByZWFsaXNlZCB3aHkgdGhhdCBlcnJvciBpcyBvdXRwdXQuDQpUaGUgcmVzdWx0IG9m
-IChsb25nKSgoY2hhciAqKTAgKyA0KSBpcyBvbmx5IDQgaWYgdGhlIE5VTEwgcG9pbnRlcg0KaGFz
-IHRoZSAnYWxsLXplcm8nIGJpdCBwYXR0ZXJuLg0KVGhpcyBpc24ndCBtYW5kYXRlZCBieSB0aGUg
-bGFuZ3VhZ2UuDQoNCkhvd2V2ZXIgSSBzdXNwZWN0IGFsbW9zdCBldmVyeSBpbXBsZW1lbnRhdGlv
-biBvZiBDIHRoZXJlIGhhcyBldmVyDQpiZWVuIGhhcyB1c2VkIHRoZSBhbGwtemVybyBiaXQgcGF0
-dGVybiBmb3IgTlVMTC4NClRoaXMgaW5jbHVkZXMgb25lIHN5c3RlbSBJIHVzZWQgKG1hbnkgeWVh
-cnMgYWdvKSB3aGVyZSB0aGUgJ25hdHVyYWwnDQpOVUxMIHBvaW50ZXIgd291bGQgaGF2ZSBiZWVu
-IHRoZSBhbGwtb25lcyBwYXR0ZXJuLg0KDQpGYXIgdG9vIG11Y2ggY29kZSBhc3N1bWVzIG1lbXNl
-dChwdHIsIDAsIGxlbikgd2lsbCBzZXQgcG9pbnRlcnMNCnRvIE5VTEwgZm9yIGFueSBvdGhlciB2
-YWx1ZSB0byBldmVyIHdvcmsuDQoNCk9mIGNvdXJzZSAndW5kZWZpbmVkIGJlaGF2aW91cicgZG9l
-c24ndCBtZWFuICd1bmRlZmluZWQgdmFsdWUnDQppdCBpbmNsdWRlcyBmaXJpbmcgYSBJQ0JNIGF0
-IHRoZSBjb2RlcidzIGhvdXNlLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Mon, Jun 28, 2021 at 12:52:07AM -0700, Michael Forney wrote:
+> On 2021-05-08, Michael Forney <mforney@mforney.org> wrote:
+> > Otherwise, if these fail we end up with garbage data in the
+> > .rela.orc_unwind_ip section, leading to errors like
+> >
+> >   ld: fs/squashfs/namei.o: bad reloc symbol index (0x7f16 >= 0x12) for
+> > offset 0x7f16d5c82cc8 in section `.orc_unwind_ip'
+> >
+> > Signed-off-by: Michael Forney <mforney@mforney.org>
+> 
+> Ping on these patches.
 
+Josh, I forever forget which libelf versions we're supposed to support,
+
+But these patches do look reasonable to me, wdyt?
