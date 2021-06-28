@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967CD3B65A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198993B6424
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237925AbhF1Pca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:32:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234885AbhF1PGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:06:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E755B61C82;
-        Mon, 28 Jun 2021 14:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624891456;
-        bh=l8xIVzscZoiXeJLtkWgfbXmxS5FPm4sqJlwbpgvEvNU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=f6T2RU+XRroYN17GYS5iHJ6ACK46Q/2zjffbEmz+PuebhcrPFv9t6S8ELE0RGQ23s
-         VH6vHJSis7Epu7JeXq/6BzHKhFyfs12jBSaE+uxvs2uRGGSwIlwHpkcB+3qRCPabDE
-         eiFivBPZ3PaItXbfakAsL+4Bkd3ua5E+aLveEgClieeODxw8KwiPQ4LmWLaH5X42as
-         P8iJV6njt3flIsCC95389IrQWpZ2O5RY+3tbGC45aXST6fpvB8JyK5F50Z/qWQo/ZT
-         ScI3aYvyF8krV9axcF5TTayV92ngSAUccvOpy3yj1tcPyqKm/yWd7g7I2zMzN9vfV4
-         rJIu4fr41MKtw==
-Message-ID: <3a993a4f2b302fd4fdb6f778f29f7f81db79adda.camel@kernel.org>
-Subject: Re: [RFC PATCH] ceph: reduce contention in ceph_check_delayed_caps()
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Mon, 28 Jun 2021 10:44:14 -0400
-In-Reply-To: <YNmQiP/Idf92tDDw@suse.de>
-References: <20210625154559.8148-1-lhenriques@suse.de>
-         <e427c4e5877e0b036c36eedbe40020047b02a85b.camel@kernel.org>
-         <YNmQiP/Idf92tDDw@suse.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        id S237492AbhF1PFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:05:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236281AbhF1OrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:47:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624891476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=npbGF2ULVa7eofab+6oK3y2vWHP2r2nG679/RfmMcPI=;
+        b=bBiL137sbpKfmDuYquSVrTZvVYPvD1Iyq2tR1wOWMgU7Y5AvikInDN2xec8XQMwTXLoF65
+        ihCg0A6lPnLsokdFnmChGA+z/+jNXD+FwtDVRxbEpf+VWDXGvJ5S8WFnGC+VQ2+kJVSRkV
+        RzL/M9jh7qPOKdYh+j+rzEePXy/2my0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-N5n7t7WuNZuhb0i3eb80tw-1; Mon, 28 Jun 2021 10:44:34 -0400
+X-MC-Unique: N5n7t7WuNZuhb0i3eb80tw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4113D362FE;
+        Mon, 28 Jun 2021 14:44:33 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-113-168.ams2.redhat.com [10.36.113.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E5765C1D0;
+        Mon, 28 Jun 2021 14:44:27 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        linux-kernel@vger.kernel.org, mihai.carabas@oracle.com
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org, pizhenwei@bytedance.com,
+        andriy.shevchenko@linux.intel.com, pbonzini@redhat.com,
+        joe@perches.com
+Subject: [PATCH] misc/pvpanic-pci: Allow automatic loading
+Date:   Mon, 28 Jun 2021 16:44:22 +0200
+Message-Id: <20210628144422.895526-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-28 at 10:04 +0100, Luis Henriques wrote:
-> On Fri, Jun 25, 2021 at 12:54:44PM -0400, Jeff Layton wrote:
-> <...>
-> > I'm not sure this approach is viable, unfortunately. Once you've dropped
-> > the cap_delay_lock, then nothing protects the i_cap_delay_list head
-> > anymore.
-> > 
-> > So you could detach these objects and put them on the private list, and
-> > then once you drop the spinlock another task could find one of them and
-> > (e.g.) call __cap_delay_requeue on it, potentially corrupting your list.
-> > 
-> > I think we'll need to come up with a different way to do this...
-> 
-> Ugh, yeah I see what you mean.
-> 
-> Another option I can think off is to time-bound this loop, so that it
-> would stop after finding the first ci->i_hold_caps_max timestamp that was
-> set *after* the start of the current run.  I'll see if I can come up with
-> an RFC shortly.
-> 
+The pvpanic-pci driver does not auto-load and requires manual
+modprobe. Let's include a device database using the
+MODULE_DEVICE_TABLE macro.
 
-Sounds like a reasonable thing to do.
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+---
+ drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The catch there is that those caps may end up being delayed up to 5s
-more than they would have, since schedule_delayed always uses a 5s
-delay. That delay could be made more dynamic if it becomes an issue.
-
-Maybe have the schedule_delayed callers calculate and pass in a timeout
-and schedule the next run for that point in the future? Then
-delayed_work could schedule the next run to coincide with the timeout of
-the next entry on the list.
+diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
+index 9ecc4e8559d5d..30290d42d8aa8 100644
+--- a/drivers/misc/pvpanic/pvpanic-pci.c
++++ b/drivers/misc/pvpanic/pvpanic-pci.c
+@@ -122,4 +122,6 @@ static struct pci_driver pvpanic_pci_driver = {
+ 	},
+ };
+ 
++MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
++
+ module_pci_driver(pvpanic_pci_driver);
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.26.3
 
