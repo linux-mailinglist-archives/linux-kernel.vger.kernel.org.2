@@ -2,89 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2703B5E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBACA3B5E59
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhF1MtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbhF1MtC (ORCPT
+        id S233039AbhF1MtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:49:09 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34451 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232889AbhF1MtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:49:02 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7368C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:46:36 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id a18so10196829lfs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bE94dkEiagNN+9+kFZlZw382SA94vUnxjwE0fje0Xk0=;
-        b=Ht6Gea2SfQjaOGwZUSX+vM/eLTPlMEdb/841pVZfh+X68ssJ1KJDHcIP4x+pWOYZPj
-         t507EHUiwc06CyBU/9L/T/wwPHRyOJKOMbq7acJb03LCk6Fu7c98WPFUiyYL9dcjes/O
-         kR7VdZUEuquwEjystBKf8BJr/j1YtBuj4S+DbiOcsrqJiOyonmBQL03PDuKJzgzMjZnx
-         sRjoeMZxy0tu9vK291N7BDHMWi/7Mxlw1wjnOaIUg41nDmWg7TZaPL/7OZf24MSsdWKm
-         OUo1EtZQKY2OcT5a6oEKfexbrIFtzp5kIUpdQOQ04a+MWXtGOya3iCUPJ40pkYBjfhaV
-         IwAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bE94dkEiagNN+9+kFZlZw382SA94vUnxjwE0fje0Xk0=;
-        b=uBi8JESdrPd6jAM7zqzuX8AakNTbQgrVeXixQNZ574k2nAGJcEK29o5KclptVOnQSp
-         afbtGtCt9pK5eDXaXSn4P0NGh2tNzOBe8l9EYZYRCwLhSBp23Zzf3yWtBTwRZDW5qF64
-         xJjb+qhISUxn0DejMafvR7Esgq1+Kn2ewRH1FctkOEfVXhVepoISFsgRFPt0Icv1nfkJ
-         6zHpeA7v1aY7Iqq9NEyRwLRSLLagom1QBgyfETmGqbXKrzweBjc2MLXJyQz6lpzQy8ZK
-         cMlkWsPg8v0EmHe4hrOnkXuABorQH3Iz1NJ+W1SmW8FuYCn24fv+Fu1W54qP20+AD6ZE
-         8Qlg==
-X-Gm-Message-State: AOAM532dolAO00oksFh1YW9CZ3Umz/UltC7mwPLu6Qn2skwRvL9PZ/Pd
-        4sJVpwP30ucZR1Up3O9AnMwwjA==
-X-Google-Smtp-Source: ABdhPJx3x4IfClwhHCvXuiTmI3sq3nF9lEkNhcJjaCr83013VKYnGJ8cEjohV6J5iX9lASPr1gWtVA==
-X-Received: by 2002:a05:6512:138a:: with SMTP id p10mr18835229lfa.505.1624884395244;
-        Mon, 28 Jun 2021 05:46:35 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id q23sm1219833lfe.170.2021.06.28.05.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:46:34 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E241710280E; Mon, 28 Jun 2021 15:46:33 +0300 (+03)
-Date:   Mon, 28 Jun 2021 15:46:33 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v12 24/33] mm/swap: Add folio_rotate_reclaimable()
-Message-ID: <20210628124633.vlckysu3zvvkyy4v@box.shutemov.name>
-References: <20210622114118.3388190-1-willy@infradead.org>
- <20210622114118.3388190-25-willy@infradead.org>
+        Mon, 28 Jun 2021 08:49:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9569E58073B;
+        Mon, 28 Jun 2021 08:46:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 28 Jun 2021 08:46:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=FGZcwoZwyPYceIqBEn/JL4z0fxH
+        5zp8oJcvt5w3ABb4=; b=XjUIgotobppm/S2dYlC7NoZCJ/kNNH0oSeeon95yHoB
+        H9MShuY7w68ElblP8T8S1w7sEfRA1EYmMBGLD9ukAEbNEHH6ba24/RfkjfqvUK7t
+        XOvKskUlGp3k1hsJWVZv75Tt/rhYAm/vj2itcFPiLNuxQxTn5EZAzuxW25krnkQU
+        oLmlnh4qwobducCXpO/lpEtO2QE62N0wLGWGeJdo0nAasd5UJJ4gOIgI2nTR3xoh
+        zkC1xOcEiT7rq6mcEgWaIIy0yPpnRQQSDb5SVhnWWKJE+UmS60lBV3xv4p1XNfuk
+        +QqFIMhz4Osbcgi8du6Mt8NQq7k8PcSjQoKMnI8MqqQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FGZcwo
+        ZwyPYceIqBEn/JL4z0fxH5zp8oJcvt5w3ABb4=; b=TH3R+UNmoK5PEOZO0SEp/9
+        NiyHWqi6Z9WkqJHlk3iZ9Cyatb64kvA42MRX1STlR8cAvlQKHFiBD4grIKs8nGUM
+        KCHQK9IgD0RfvIo85eYwgwJ9EfW2C1rT3Khb+iVOUp+sSILxN2cQYSxxcyHleXzd
+        6YpI04UCgALJtfoBE4Pk/nkld56HRobKfYY0xrEOWPffHrkzuWbu808Cl6IGo23l
+        OgTtd8+lwfgAEgWnLLv+zY/8UkAJKEPwBhiUdUQFUugLsomXRB7fEL7OI+LRbSoC
+        JaVhxa04zZkRyQE+aTlfEnySfIJGwVD+YJImqofDcG5OeYtpINcbOKCiKGowlpzQ
+        ==
+X-ME-Sender: <xms:rMTZYNrL03vBsHOo3OnkaqUrKRFqdzTYB4grOdmd7_FsquwcESGZrQ>
+    <xme:rMTZYPrDQUOQVbOzEHOCU4-g2seksclyIhrHZONtneskB8E64z4chmq8HR_M3TgDx
+    dmt-OvTYtwCWs90tbw>
+X-ME-Received: <xmr:rMTZYKNl6yZmXyuEOp8Ge0mErhQByV9xGdDoHezsfL_K9SHAVKI6UPBXcmBVvkQNf_ZZtuwrVoftuexjFxXPBdtzK0EVvIAFJEqN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeffteetveeijeetuefhffegkeetgf
+    fhieelheehtdduudethffhjedtvddtudelvdenucffohhmrghinhepuggvvhhitggvthhr
+    vggvrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:rMTZYI4ksmDYF0Rqye_Zjemx9NMc4sjt7Iy8dfpcV8lyxsrHNhmvHA>
+    <xmx:rMTZYM7o3EswVER0tS5OmjiQjoxAOty1lqHhNhB-SA8mE7iCoWwb7w>
+    <xmx:rMTZYAjQBolGbcWO8EhD2KMFPdodZd2yvUyB-_GoPb9i5EledZ6Hcw>
+    <xmx:rcTZYNGE8d4nF2MgHBficmLTRao3CglHH2dy2cEygBcZwSngR1G96g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Jun 2021 08:46:36 -0400 (EDT)
+Date:   Mon, 28 Jun 2021 14:46:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     fengzheng923@gmail.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        wens@csie.org, jernej.skrabec@gmail.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings
+ for DMIC controller
+Message-ID: <20210628124634.radw3ywstfdl2fqw@gilmour>
+References: <20210625090721.6183-1-fengzheng923@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ersryph7t25vlhha"
 Content-Disposition: inline
-In-Reply-To: <20210622114118.3388190-25-willy@infradead.org>
+In-Reply-To: <20210625090721.6183-1-fengzheng923@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:41:09PM +0100, Matthew Wilcox (Oracle) wrote:
-> Convert rotate_reclaimable_page() to folio_rotate_reclaimable().  This
-> eliminates all five of the calls to compound_head() in this function,
-> saving 75 bytes at the cost of adding 15 bytes to its one caller,
-> end_page_writeback().  We also save 36 bytes from pagevec_move_tail_fn()
-> due to using folios there.  Net 96 bytes savings.
-> 
-> Also move its declaration to mm/internal.h as it's only used by filemap.c.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+--ersryph7t25vlhha
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
- Kirill A. Shutemov
+On Fri, Jun 25, 2021 at 05:07:21AM -0400, fengzheng923@gmail.com wrote:
+> From: Ban Tao <fengzheng923@gmail.com>
+>=20
+> DT binding documentation for this new ASoC driver.
+>=20
+> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+>=20
+> ---
+> v1->v2:
+> 1.Fix some build errors.
+> ---
+> v2->v3:
+> 1.Fix some build errors.
+> ---
+> v3->v4:
+> 1.None.
+> ---
+>  .../sound/allwinner,sun50i-h6-dmic.yaml       | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun=
+50i-h6-dmic.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-=
+dmic.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmi=
+c.yaml
+> new file mode 100644
+> index 000000000000..d9107685b78d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
+ml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Allwinner H6 DMIC Device Tree Bindings
+> +
+> +maintainers:
+> +  - Ban Tao <fengzheng923@gmail.com>
+> +
+> +properties:
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +  compatible:
+> +    const: allwinner,sun50i-h6-dmic
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus Clock
+> +      - description: Module Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bus
+> +      - const: mod
+> +
+> +  dmas:
+> +    items:
+> +      - description: RX DMA Channel
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +required:
+> +  - "#sound-dai-cells"
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +  - dma-names
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dmic: dmic@5095000 {
+> +      #sound-dai-cells =3D <0>;
+> +      compatible =3D "allwinner,sun50i-h6-dmic";
+> +      reg =3D <0x05095000 0x400>;
+> +      clocks =3D <&ccu 101>, <&ccu 100>;
+> +      clock-names =3D "bus", "mod";
+> +      dmas =3D <&dma 7>;
+> +      dma-names =3D "rx";
+> +      resets =3D <&ccu 42>;
+> +    };
+
+You can keep the clock and reset indices, it's more readable that way,
+you just have to add the headers dt-bindings/clock/sun50i-h6-ccu.h and
+dt-bindings/reset/sun50i-h6-ccu.h like what
+Documentation/devicetree/bindings/iommu/allwinner,sun50i-h6-iommu.yaml
+is doing.
+
+Also, this controller has an interrupt. Even if the driver doesn't use
+it it should be in the binding.
+
+Maxime
+
+--ersryph7t25vlhha
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNnEqgAKCRDj7w1vZxhR
+xae2AP4qPv9ltkegaT6Rdk9GGRXJUgBLvDbFtsYo+bDb8jTrGwD/S+Pb9PvRC7ey
+moBzsqtqHcl2FG/ce2wg5N3rQ9f7EwU=
+=c0fk
+-----END PGP SIGNATURE-----
+
+--ersryph7t25vlhha--
