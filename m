@@ -2,189 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6833B5D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B823B5D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhF1Llx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:41:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:35287 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232884AbhF1Llt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:41:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624880317;
-        bh=00G7pzR1O9LgCBM7CPR6hiHOXgoARTMTk2Q1Z8dY/SY=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=GO0RHG3VZRfL5Pzr7ZNlpYaW8LfPDxEjvHKW+C2dnhcusSFnFLKLhPEM3GuY/m0qc
-         FtJIPSnzvyfMHuiLNv3x9ij29vgOWcT5b6jE+UNcWCA1dLF1mSqE6nNI4oDKXVxM0f
-         t0sb8fI0uAtPJsAfJayMVSBBQBK9m+i2NBhu5Dzk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3KTo-1lGHaI2TlS-010MPK; Mon, 28
- Jun 2021 13:38:37 +0200
-To:     13145886936@163.com, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-References: <20210628083050.5302-1-13145886936@163.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
-Message-ID: <0220a6b0-a948-daa3-331e-1332588057e9@gmx.com>
-Date:   Mon, 28 Jun 2021 19:38:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232842AbhF1LrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhF1LrB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:47:01 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A36C061574;
+        Mon, 28 Jun 2021 04:44:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GD5PD1xXdz9sVt;
+        Mon, 28 Jun 2021 21:44:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624880672;
+        bh=7Pb3MnxHOl/+eVEKU5ze5W1VhogzyJb/L35VwUoyH+A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V7d7oy4/KN+V7cIb8tRkQD6ApnmWPXWLD0r/atDiSwrFFOTlmifBVU1jw7pyqjhlP
+         Zdn4IbzWvYp+FJ0F630CLq7dlSdlkLM4dnMib7ZOLVeQBGme5ABdpkRy2fUeKFfAsW
+         WkDpbLV3dd/e90qqXU2A3JKcc4b42Gaml9ibJR14gTdx5R4w1prA0NXMw75WAyicjK
+         EqQyvTyO1bM29FluwXZwySAX8tE6GD6m3mPU5o5vZ6bCMhNUhFO9GHPokcMoU/AG0L
+         F6IlNH0vS4Z6Up2etWZxjuRiNneGKskPWDkk7Gg1Ej8Et7vNvhBniuVIWIXD4Dy9DR
+         +0sE7oE5G/17Q==
+Date:   Mon, 28 Jun 2021 21:44:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Robert Hancock <robert.hancock@calian.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tags need some work in the clk tree
+Message-ID: <20210628214430.6b3607d5@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210628083050.5302-1-13145886936@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cAubsysGtGV03CoD+DkB53fjInzdFpm4lB5hSQ28jADKa4bZoaT
- 85A1bXajtVYGlK570yt3tDL5bCamEjsMlEdbusnlfSvpfuqnUl8v9JLsVQKnIwq/UhZJJyA
- eFd79N4ok/GWNCKNqsIuE5xbZjYiICaDYei+G0h6QG95Z4iNrqkR7KMD6YLLr25zi5W7eIQ
- YKjYRKQALjoyTMxogeokQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nNAC8qQi56A=:I9IZBgeEvImvPX96jiUo85
- SqTzTuYnFRdscy7QajwIrgPBUDBFnQM4Ff1iulPft710X2psdFhNnfmy5PIDQDx6hC2nzzvo8
- qDIOO3mHlzjZt7d6dB8CvmlCJyw9nlVdEiRFfcejzhZ/PZoTENpZ39FYklkDRbgM8YfYkRfQm
- qoJoDAen31zTRtcITrXg6MVS0Yf2NxZ/yoZtAdzCTt/avyeCaIon9dDw6aClC0MbnygrXC3wa
- SUqHwzx3/RA3FpvxEQ+kuQWvHl0VedKNNzUFYZp7IXeBgmjxRinTZuoHs87LajNA+1E6XrYdk
- bNkvJP0SMQYIRIZgpJlMG4B+wL3++2yO8WGAdS3G9umYvMW59VBZ1XOa8sYeXwosqEEWxwOOW
- Rq86/Q5k1tYH480TkipPNzb1JTC+rI/HYUMXdcaIEIVu2OYj7iyTh9nuNEI2V4AkpKBEr3Czc
- BrYYSVdW9funR+M3VI25ieSXV6Qs8aTjNJk2oxFZRloBr5KQH4qVnF8dgWt9l+2gFwZzNAv6M
- hex8x6DFr+LnM7z1hPp8Serno2n8fmdD1q9Dxa05YR37qFe+IRPNUVkYFsKdf8Bgt5jHEIT88
- i6srGb4Ph8M5mAoBE0ujg6LVdLda/4GfuEC28sjuMc/6qLd3bE68Uk/02Yia+M+/beS56Xpnu
- lT8lXURaYMpePQaCmqWPkletrR6T8Z2LYGW7XSfKo2JXWPyZd5lQOVaSd2BaVLQoPUZCgOr2Q
- 6kcKwYGL9KvmR+VgYtvwziLs0+Js/DpiItJTCDny71ca9eXh8m3eY8HhHthVfzp+y6EGaRECm
- 3nFdspeSPSe5HKg4q7Cfpb5TRMsc91iZNvr6hucpAkfolVLF/1m1SyqW1C3LVhIbsuEVEZBd+
- 3UqqdBUrCTdFPVECGtjJXiu1MUajWnYZGdwgDn7/MEkTsOQiudG+TtzMuf12X6lsPWp4kWTVZ
- 67G0tiIQZH7KEKzEMMcAA0+KPJgIsxk1JgzSwHbJN08tlhq/69S64KBwpQmi0GRIJ6eajQfar
- sVS+Ij9sCLlzm6yFKCCG+zVB0hLYy/rAn6nVZ3nVKtjvR8ojTzt5rh1i/peMtS58zmJ3+B9VD
- TFt+nuhE539mrnk3g0Gw9FDjaPCPfWeFaEDaFeQ4QUK9RzusgmaPK/OiQ==
+Content-Type: multipart/signed; boundary="Sig_/1QVTU.+H6zquvIjKLrMdMvW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gu,
+--Sig_/1QVTU.+H6zquvIjKLrMdMvW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/6/28 =E4=B8=8B=E5=8D=884:30, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
->
-> Remove unneeded variable: "ret".
+Hi all,
 
-Considering you're really a newbie doing new contribution to the kernel,
-I think it's better to give you some advice to encourage you do more
-contribution, while also be more professional, and hopefully to help
-other individuals in your company to contribute.
+In commit
 
-And I hope this could also be some guide for new developers to learn a
-trick or two from.
+  3c9b49b0031a ("clk: si5341: Update initialization magic")
 
+Fixes tag
 
-=3D=3D=3D WHEN NOT SURE, LEARN FROM OTHERS =3D=3D=3D
-First thing first, if you have something not sure, like how you should
-setup your name and email in your git config, try to find some merged
-patches to learn from them.
+  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
 
+has these problem(s):
 
-=3D=3D=3D EMAIL ADDRESS =3D=3D=3D
-Firstly, your mail is sent from your 163 mail box, not your company mail
-box.
+  - SHA1 should be at least 12 digits long
 
-Peter Zijlstra has already mentioned this in another patch.
+In commit
 
-Normally if you want to send a patch to represent your company, it's
-common to send using a mail address of your company "@yulong.com" (Isn't
-it called Coolpad Group nowadays?)
+  71dcc4d1f7d2 ("clk: si5341: Check for input clock presence and PLL lock o=
+n startup")
 
-For how to configure git-send-email to use the SMTP server of your
-company, I guess your colleague Hu Yue <huyue2@yulong.com> has more
-experience and you can definitely learn from him.
+Fixes tag
 
-If you want to the patch to be CCed to your personal mail box, you can
-use "--cc" option of git-send-email, as most reviewer just reply-to-all,
-thus your personal mail box will definite get the comment.
+  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
 
-This will make the SOB line much cleaner.
+has these problem(s):
 
+  - SHA1 should be at least 12 digits long
 
-=3D=3D=3D MAIL LIST =3D=3D=3D
-This is not a big deal, just something optional but really helpful for
-your next contribution.
+In commit
 
-In this particular patch, you only need to send the patch to btrfs mail
-list <linux-btrfs@vger.kernel.org>, even no need to CC the maintainers.
+  78f6f406026d ("clk: si5341: Avoid divide errors due to bogus register con=
+tents")
 
-LKML is fine for your first several patches to get more comments, like
-this one.
+Fixes tag
 
-But when you get settled to a certain field of kernel, it's better just
-to send the patch to the related mail list.
+  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
 
+has these problem(s):
 
-=3D=3D=3D FOR THE CLEANUP =3D=3D=3D
-As I mentioned in another thread, if you use some automatic tool or
-script to expose the problem, that's fine.
+  - SHA1 should be at least 12 digits long
 
-But it would be even better to provide the tool. Fix one small problem
-is OK, but fixing a type of problems is really what we want.
+In commit
 
-If you really just found the bug by manually scanning the code, kudos to
-you.
+  6e7d2de1e000 ("clk: si5341: Wait for DEVICE_READY on startup")
 
-But if you do more contribution, one day your time will be too precious
-to be spent on things like this.
+Fixes tag
 
+  Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
 
-Just like an old Chinese saying, give a man a fish, and you feed him for
-a day, teach a man to finish, and you feed him for a lifetime.
+has these problem(s):
 
+  - SHA1 should be at least 12 digits long
 
+This can be fixed for the future by setting core.abbrev to 12 (or more)
+or (for git v2.11 or later) just making sure it is not set (or set to
+"auto").
 
-And since the patch itself is fine.
+--=20
+Cheers,
+Stephen Rothwell
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+--Sig_/1QVTU.+H6zquvIjKLrMdMvW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-And really hope you can do more and better contribution to linux kernel.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Qu
->
-> Signed-off-by: gushengxian <13145886936@163.com>
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-> ---
->   fs/btrfs/disk-io.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index b117dd3b8172..7e65a54b7839 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	struct rb_node *node;
->   	struct btrfs_delayed_ref_root *delayed_refs;
->   	struct btrfs_delayed_ref_node *ref;
-> -	int ret =3D 0;
->
->   	delayed_refs =3D &trans->delayed_refs;
->
-> @@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
->   		spin_unlock(&delayed_refs->lock);
->   		btrfs_debug(fs_info, "delayed_refs has NO entry");
-> -		return ret;
-> +		return 0;
->   	}
->
->   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
-) {
-> @@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->
->   	spin_unlock(&delayed_refs->lock);
->
-> -	return ret;
-> +	return 0;
->   }
->
->   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
->
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDZth4ACgkQAVBC80lX
+0Gyxhwf+O9YeXvX2knf2jhvuQBCd07ZrhZpXSBH+6wYT1kS9lSyNyRBuEeQmnQQW
+xEEkUouflkkP28vTMa4Lj96y4eZyIpCONekNBYuoxgJhFMkNGAn+IjX3PxMZt3xx
+bTXGJGaWHyIIrEqadzxhWwDJj8db4MCQqLoa+fUA4rTVdRjPJFiq7QXGdVgmgqWE
+cexSz6UqKNIq16C5d3y04KhOTHv7Bqci+uvGRh6SnEAkuaK7vsae7xSUdCqJOZJs
+Fgu6kIULxJuO7wCHQwwPofR5ohD9o5LRLtV+RrBoQaXRqhWTHWuWF77TIQyXci5E
+skBnT6Oq+Xg4LIJmvFTb3p0RcCkMDw==
+=g7Gf
+-----END PGP SIGNATURE-----
+
+--Sig_/1QVTU.+H6zquvIjKLrMdMvW--
