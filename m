@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A59A3B6143
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A1E3B61AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhF1OeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36750 "EHLO mail.kernel.org"
+        id S234731AbhF1Ohc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234590AbhF1OaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234598AbhF1OaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 10:30:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C553561CAB;
-        Mon, 28 Jun 2021 14:26:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC8E61CAE;
+        Mon, 28 Jun 2021 14:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890392;
-        bh=sB2btyZogi/Gqa1re073DeHahW7b5+RIXm+Wclmq4b0=;
+        s=k20201202; t=1624890394;
+        bh=CtLT/lzwUI8ebT8vGhX4RAeNFaQvGQpIJCVCOAIQ0WU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPYO4ZY0ifdlivLaaebxdj0H3k74GgMEIm+7GD5+Gqu2dMtKG3MHF/lWy+ZtpxvRK
-         1Bf16utODXWvsCqyUi3ixIvy16Z40wikeGXA0htUcklOJep2SCF2KQQRgUdwAMe21P
-         mN/3nSL2YBuzy+1crJUR8b+zpsy4+zAJWHPqJ/8oQv2sS/T1LszJTJJ1YvgYIrOSEL
-         H1Ty8LbUwCAs/bfDioqViBjBif4oErWq+LbOqUm4FFLncI70VkoMpeOtAWyuKv7q12
-         8MSo27OFIANthto+w+dXxDnadt3qHmtf806APPdBWZ82d2lroYuV83k1B0o74LS9Mo
-         boPJ+OuwP6SJw==
+        b=fi5MP6obMA3DT44hPFMLrAN4M+RucKADlwHe+QFK8ID8NslCfIvv0nwY+lXHicjWy
+         5T4fNFbGMFMRarTklJ5jiF61rEtESBitkSZS3BoxTMl4hatfqwm0i6NR395HWHhvcN
+         0bgsU+H02seqEXCPZe3HzYHCWd9+ETB01YhZa5JsmeqQy7tCUs9Av9Wold7So/Tz1k
+         diruF+wgzLSNEw9aslAaSXSC1gA3eMeG/Ddy5YgJY232sj4y6QBnIpeS6t3QmfThvv
+         njGYZO+STB4TDjX9+0Mvn7F74aOvSnBtQ+mxecklmET+Xv7QRlLoNyOUOFZPe/yPEI
+         h+wBc/IeawNog==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 026/101] mac80211: remove warning in ieee80211_get_sband()
-Date:   Mon, 28 Jun 2021 10:24:52 -0400
-Message-Id: <20210628142607.32218-27-sashal@kernel.org>
+Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 029/101] dmaengine: rcar-dmac: Fix PM reference leak in rcar_dmac_probe()
+Date:   Mon, 28 Jun 2021 10:24:55 -0400
+Message-Id: <20210628142607.32218-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
 References: <20210628142607.32218-1-sashal@kernel.org>
@@ -48,37 +49,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 0ee4d55534f82a0624701d0bb9fc2304d4529086 ]
+[ Upstream commit dea8464ddf553803382efb753b6727dbf3931d06 ]
 
-Syzbot reports that it's possible to hit this from userspace,
-by trying to add a station before any other connection setup
-has been done. Instead of trying to catch this in some other
-way simply remove the warning, that will appropriately reject
-the call from userspace.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Reported-by: syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20210517164715.f537da276d17.Id05f40ec8761d6a8cc2df87f1aa09c651988a586@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/1622442963-54095-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/ieee80211_i.h | 2 +-
+ drivers/dma/sh/rcar-dmac.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index be40f6b16199..a83f0c2fcdf7 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -1445,7 +1445,7 @@ ieee80211_get_sband(struct ieee80211_sub_if_data *sdata)
- 	rcu_read_lock();
- 	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
+diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+index a57705356e8b..991a7b5da29f 100644
+--- a/drivers/dma/sh/rcar-dmac.c
++++ b/drivers/dma/sh/rcar-dmac.c
+@@ -1874,7 +1874,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
  
--	if (WARN_ON_ONCE(!chanctx_conf)) {
-+	if (!chanctx_conf) {
- 		rcu_read_unlock();
- 		return NULL;
- 	}
+ 	/* Enable runtime PM and initialize the device. */
+ 	pm_runtime_enable(&pdev->dev);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "runtime PM get sync failed (%d)\n", ret);
+ 		return ret;
 -- 
 2.30.2
 
