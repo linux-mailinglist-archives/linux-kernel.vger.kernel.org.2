@@ -2,146 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8B23B5628
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630F83B5606
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhF1AGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 20:06:00 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:54596 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231702AbhF1AFz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 20:05:55 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A9Se1iaFrOT7Xo9FfpLqEDseALOsnbusQ8zAX?=
- =?us-ascii?q?P0AYc31om6uj5rmTdZUgpGfJYVkqKRIdcLy7V5VoBEmskaKdgrNhW4tKPjOW2l?=
- =?us-ascii?q?dARbsKheCJrlHd8m/Fh4lgPMxbE5SWZuefMbEDt7ee3OCnKadd/PC3tLCvmfzF?=
- =?us-ascii?q?z2pgCSVja6Rb5Q9/DQqBe3cGPjVuNN4oEoaG/Mpbq36FcXQTVM6yAX4IRKztvN?=
- =?us-ascii?q?vO/aiWHCIuNlo27hWUlzO05PrfGxic5B0XVDRC2vMD3AH+4nfE2pk=3D?=
-X-IronPort-AV: E=Sophos;i="5.83,304,1616428800"; 
-   d="scan'208";a="110256401"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 28 Jun 2021 08:03:28 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 11E524D0BA6A;
-        Mon, 28 Jun 2021 08:03:24 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 28 Jun 2021 08:03:25 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Mon, 28 Jun 2021 08:03:24 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
-        <snitzer@redhat.com>, <rgoldwyn@suse.de>
-Subject: [PATCH v5 9/9] fs/dax: Remove useless functions
-Date:   Mon, 28 Jun 2021 08:02:18 +0800
-Message-ID: <20210628000218.387833-10-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210628000218.387833-1-ruansy.fnst@fujitsu.com>
-References: <20210628000218.387833-1-ruansy.fnst@fujitsu.com>
+        id S231789AbhF1AE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 20:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231678AbhF1AE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 20:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EB9619F1;
+        Mon, 28 Jun 2021 00:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624838552;
+        bh=cex9UBR8tANH1+N5Lqp+EgWEV7oAAqKaKFLhstSAa1c=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=EaYsQiiGQNMs6OfNUuUrCiAPvHAd+HiZPHtg3F1ShjkUbGkQ7CUNratLK8opriLtP
+         H6AQZozpW3PKLWyp62VDT3x8bQ5fBZzzX33XsPYC4dLej6TtgVoxfDnTZUeUR7jk7z
+         r1Hx2UhFVC4+AN1pW3O0vNfP6ZXjn1QzJ6snE71VUrg8axEOfG0uq4uJgaHqTd0fYQ
+         13ioEx+Ny0yDeECY5HlLrugjWQ8gVYSM9ev43Jwku8XGa9t4e8wmy5aftC0ff81WOL
+         L9j6wHXVx2e1GOzLypEQHDbWg5pVCEpbY82VALffDygRCDQ7qFkGKAnxgr5TNRV8ho
+         U1mWnT0hg/duQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 11E524D0BA6A.A3DAF
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210605104040.12960-1-bartosz.dudziak@snejp.pl>
+References: <20210605104040.12960-1-bartosz.dudziak@snejp.pl>
+Subject: Re: [PATCH v2] clk: qcom: smd-rpmcc: Add support for MSM8226 rpm clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+To:     Andy Gross <agross@kernel.org>,
+        Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 27 Jun 2021 17:02:31 -0700
+Message-ID: <162483855121.3259633.18353346032569562123@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since owner tracking is triggerred by pmem device, these functions are
-useless.  So remove them.
+Quoting Bartosz Dudziak (2021-06-05 03:40:40)
+> Add compatible for rpm smd clocks, PMIC and bus clocks which are required
+> on MSM8226 for clients to vote on.
+>=20
+> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+> ---
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/dax.c | 46 ----------------------------------------------
- 1 file changed, 46 deletions(-)
-
-diff --git a/fs/dax.c b/fs/dax.c
-index 7c5d8acd6bc5..cee8e61d1025 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -334,48 +334,6 @@ static unsigned long dax_end_pfn(void *entry)
- 	for (pfn = dax_to_pfn(entry); \
- 			pfn < dax_end_pfn(entry); pfn++)
-
--/*
-- * TODO: for reflink+dax we need a way to associate a single page with
-- * multiple address_space instances at different linear_page_index()
-- * offsets.
-- */
--static void dax_associate_entry(void *entry, struct address_space *mapping,
--		struct vm_area_struct *vma, unsigned long address)
--{
--	unsigned long size = dax_entry_size(entry), pfn, index;
--	int i = 0;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	index = linear_page_index(vma, address & ~(size - 1));
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(page->mapping);
--		page->mapping = mapping;
--		page->index = index + i++;
--	}
--}
--
--static void dax_disassociate_entry(void *entry, struct address_space *mapping,
--		bool trunc)
--{
--	unsigned long pfn;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
--		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
--		page->mapping = NULL;
--		page->index = 0;
--	}
--}
--
- static struct page *dax_busy_page(void *entry)
- {
- 	unsigned long pfn;
-@@ -554,7 +512,6 @@ static void *grab_mapping_entry(struct xa_state *xas,
- 			xas_lock_irq(xas);
- 		}
-
--		dax_disassociate_entry(entry, mapping, false);
- 		xas_store(xas, NULL);	/* undo the PMD join */
- 		dax_wake_entry(xas, entry, WAKE_ALL);
- 		mapping->nrpages -= PG_PMD_NR;
-@@ -691,7 +648,6 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	    (xas_get_mark(&xas, PAGECACHE_TAG_DIRTY) ||
- 	     xas_get_mark(&xas, PAGECACHE_TAG_TOWRITE)))
- 		goto out;
--	dax_disassociate_entry(entry, mapping, trunc);
- 	xas_store(&xas, NULL);
- 	mapping->nrpages -= 1UL << dax_entry_order(entry);
- 	ret = 1;
-@@ -785,8 +741,6 @@ static void *dax_insert_entry(struct xa_state *xas,
- 	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
- 		void *old;
-
--		dax_disassociate_entry(entry, mapping, false);
--		dax_associate_entry(new_entry, mapping, vmf->vma, vmf->address);
- 		/*
- 		 * Only swap our new entry into the page cache if the current
- 		 * entry is a zero page or an empty entry.  If a normal PTE or
---
-2.32.0
-
-
-
+Applied to clk-next
