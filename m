@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030F33B60D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEC03B6074
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbhF1OaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233084AbhF1OYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:24:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E7961C7C;
-        Mon, 28 Jun 2021 14:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890024;
-        bh=Qcx2exETMwbWlcfQpu+JtH3K3hkT6PG7gh86QlRK8YE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVqMWKAOYkA/ZT506ryb44tfKp2lbwMCdhKu4/vjUhphK7BIp5PpCfruE1e7PL+Py
-         xGn3QJ9lUTB2G5Osz8DE6PITSvfv4FI5A8tYMbk+vDmoAItQjcteKo0d6HeCFZoJgY
-         qVsT3NMFfue84HPnVqwZRfPNLfwJCh8PevpdFMERi5niA80TR+27jF6DqpAfc6mAJy
-         p4I51t2s6FDnB+qmhhl1g2XHguPTxo9uLxV3feO+kXz/42JkFZbiG+bBsNvSGoeTyR
-         29r3X8Ly0YeNcmqBiMzqAY1lA/ZV8DKPt0ezzJ5ZFybdz9jcsp7aqW3DD1z2A+vybq
-         tf2lgNV4F0f0w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 110/110] Linux 5.12.14-rc1
-Date:   Mon, 28 Jun 2021 10:18:28 -0400
-Message-Id: <20210628141828.31757-111-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628141828.31757-1-sashal@kernel.org>
-References: <20210628141828.31757-1-sashal@kernel.org>
+        id S233734AbhF1OZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:25:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52636 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232530AbhF1OVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:21:36 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lxs6M-0001mq-1O; Mon, 28 Jun 2021 16:19:06 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lxs6L-000VbA-PF; Mon, 28 Jun 2021 16:19:05 +0200
+Subject: Re: [PATCH] bpf: fix false positive kmemleak report in
+ bpf_ringbuf_area_alloc()
+To:     Rustam Kovhaev <rkovhaev@gmail.com>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dvyukov@google.com, andrii@kernel.org
+References: <20210626181156.1873604-1-rkovhaev@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <254ef541-6fd6-9ddf-3491-97b854a09554@iogearbox.net>
+Date:   Mon, 28 Jun 2021 16:19:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.14-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.12.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.12.14-rc1
-X-KernelTest-Deadline: 2021-06-30T14:18+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210626181156.1873604-1-rkovhaev@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26215/Mon Jun 28 13:09:26 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 6/26/21 8:11 PM, Rustam Kovhaev wrote:
+> kmemleak scans struct page, but it does not scan the page content.
+> if we allocate some memory with kmalloc(), then allocate page with
+> alloc_page(), and if we put kmalloc pointer somewhere inside that page,
+> kmemleak will report kmalloc pointer as a false positive.
+> 
+> we can instruct kmemleak to scan the memory area by calling
+> kmemleak_alloc()/kmemleak_free(), but part of struct bpf_ringbuf is
+> mmaped to user space, and if struct bpf_ringbuf changes we would have to
+> revisit and review size argument in kmemleak_alloc(), because we do not
+> want kmemleak to scan the user space memory.
+> let's simplify things and use kmemleak_not_leak() here.
+> 
+> Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10/
+> Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com/
+> Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
+> Reported-and-tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
 
-diff --git a/Makefile b/Makefile
-index d2fe36db78ae..a4b63b0f262b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 12
--SUBLEVEL = 13
--EXTRAVERSION =
-+SUBLEVEL = 14
-+EXTRAVERSION = -rc1
- NAME = Frozen Wasteland
- 
- # *DOCUMENTATION*
--- 
-2.30.2
+Applied, thanks! (Also included Andrii's prior analysis as well to the commit
+log so there's a bit more context if we need to revisit in future [0].)
 
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=ccff81e1d028bbbf8573d3364a87542386c707bf
