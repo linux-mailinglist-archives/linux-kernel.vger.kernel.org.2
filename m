@@ -2,596 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CF43B67B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995863B67B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhF1RbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:31:12 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:53913 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbhF1RbK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:31:10 -0400
-Received: from [192.168.1.155] ([77.9.21.236]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N0nzR-1l4Jjk2qw9-00wjTP; Mon, 28 Jun 2021 19:28:37 +0200
-Subject: Re: [PATCH] SUNIX SDC PCIe multi-function card core driver
-To:     Moriis Ku <saumah@gmail.com>, lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, jason_lee@sunix.com,
-        taian.chen@sunix.com, morris_ku@sunix.com
-References: <20210625085520.10573-1-saumah@gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <df512124-af4d-2528-d752-04337957fa71@metux.net>
-Date:   Mon, 28 Jun 2021 19:28:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233511AbhF1RdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:33:01 -0400
+Received: from mail-mw2nam10on2071.outbound.protection.outlook.com ([40.107.94.71]:22490
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232713AbhF1Rc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:32:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OJ651lLnuVRr0yVx5dQQGlW4eLmT0y+T6r3D3Qqhrcok6CFuEpxI1GmL7F/0q6t+I1T7J9lFahw7c8s4F9cMXxvPk4hSGA5BGhGlhJ64RzyrFZSEXo/XXk2UAziqWw+clxZt0/ZoWw/tcO5hPwGz1qjamqhOU+ge9EVc1axbq0Jat9gEEy4F03/d6s7Va2ylZ0puZVH7mZ6fMWXxQBsgE97B12hwgZTBdj9JXnOcUZHsC+7ivuVQ4hrfTWhxeBCA1upEVvCt4KlsmSeBJuVFdSTkrluAERPubflgw+wWqCp49dEwXf0I+tIbM0uWerWKzOPBF4ym7tpIXQUsTlaDJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HhTJVnSX1/ZX9odvq0z8OeCUWL+Zp3rlPAmsgmHq0gw=;
+ b=EzMJ8i3/i22PzoSu1zr1QtySOCcmSkbvVGmDI5agisj0ojN68NL9qpsQzoe02YCbO4fa0eIvnjS8qt9IfcachCvC0K93zyuFnJKdg+ZI4OMy1rbNtbLbjVL3moEtGynfirfQjreW7tbPUE6ZUX7not6Mc4qu9A1ZDvBbu3gOAU03A9FrBeP+pIZm11tP4PZlpyD/FLpC6RyLFd8qZKSt7Vwv121cYTpVT0Hr4v0XbQO0pl/IEJehwhuvUEypjxrlsK7y/a5R59K4LsAqIR2cnYlnNg4Y+bok0faDkALLZk2CKD1vitP+85Xw6WHLhCgm9vJ+I+eQrgXQd8vVaizz0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HhTJVnSX1/ZX9odvq0z8OeCUWL+Zp3rlPAmsgmHq0gw=;
+ b=UfdWIKVCTpnlZk1EG0CFjWvPY6NW43ubfvo+uQFXz0BTXEwzAdvEMtn9cZZL8RH45Kbb+eNwgFvLv0160g+n7uiYg224Q9K8x/6UobJg5dJXWbPWhEhRwZW5WmIX7WUK7GgND7N/SjeazWTo1Q2nUcF5nJn0BYx33q8E/aUjU1lsSVY1D5kUtqrLUis/iHiMtWiKwc+tIPpxWCvnOBm/0OMYcChREviF0lMz8GDeAD/TzXcy9/givpFG7T5NtBcIS/+rM1HiYJPhspmyD/llNea90yMIn8lFtZkwKqWdDtCfuOPgFm/fd30wE/qaopi6EPSU2bCLr5Aexp0BRwnXUw==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5349.namprd12.prod.outlook.com (2603:10b6:208:31f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Mon, 28 Jun
+ 2021 17:30:30 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
+ 17:30:30 +0000
+Date:   Mon, 28 Jun 2021 14:30:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
+Subject: Re: [PATCH v2] vfio/pci: Handle concurrent vma faults
+Message-ID: <20210628173028.GF4459@nvidia.com>
+References: <161540257788.10151.6284852774772157400.stgit@gimli.home>
+ <20210628104653.4ca65921.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628104653.4ca65921.alex.williamson@redhat.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR18CA0029.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::34) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210625085520.10573-1-saumah@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:QHizMrCniQ4JXdQED0CifoAFpVTfbAmkyLVZYQJAfXybd4lr20l
- hncTvv162jVf81Cp6a7bBUlJGxWl3nSpqOzcXPpN4n30fzkq9njyRtnaBkwcbTtM0i+ZWPj
- nvBABF7PPCg7xgAurfHsyldG1drhWW8MnSKofETFkEcQ+NzUyU1ucLM/u8EYjgCGdZLZDJC
- 8QfBSVo3YP3BxqSIFdA/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0sHvSvmsqsw=:gp+iqSJQeuooC0sA5/WKxl
- vBPsxmAWOgWmV/uL0eL81h6Epc141o4ktYFDl2r+XGBAchvisqWYTKWdHNMCZtEzJZnf5EQg5
- qoZ5RqRF6thcV6/okef6WxvroZup21qXvOsi8TwGZv3el16rJ4evYOqEoX0GD4TJDHoZH5sn1
- tjFOjofcX7VkojzSQuMZW+rRephTXm5qbAFHdrRlHo0Z6z2AH0Y0O0wx2BgcaGOvEP1m32w57
- aE8aH2ZL+tCMjM4s55Ym3j0auSwIrWgmBHImAsAg56NIwx88ztwx5qXEMrAz/Ms7KK41ng0H7
- wYOmQWSAwUfSVfCijC9MQD7cKvtOheSRabmiJz9Hi2buBXUfFLgdcTH1V3OLEM+TMo4Bes97q
- PSGuPelFzphQMo4O+vpXdqw3Rky1iHrLrUlU26SyJws/WAsASiKfpqVXcvFEDy256xqSCY3Lw
- okgcSOpaW0fSo3BIK5Rq8Pz/2Ia5ozZSSN83Jy2WkbfVKkTs9Qsd301LA8J2cUqWMBfWpJAvJ
- admIJ+Gy8btp5jgPE8mXtY=
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR18CA0029.namprd18.prod.outlook.com (2603:10b6:208:23c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend Transport; Mon, 28 Jun 2021 17:30:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lxv5Y-000gtU-CM; Mon, 28 Jun 2021 14:30:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 096b87b2-e720-407d-b60f-08d93a5a6ce1
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5349:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB53497B8D08E845DF622B88FFC2039@BL1PR12MB5349.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QXxYePQ358HDsXs0YmBzU/U6FZMxw0NPSoOc4P3SfbNdcNaGZcKF9E5CVgLVrBQeXDJj/nIuFFcIW1fNCDTuEqHly2wBYv7oqvIjrmtfeedw00uG1mACchmJDKYc3PtApVdvBBlXp8FuztF5E5d1rAK8Ct7cOAF5IheUJuk8F5WZNapU95/9METksWF9r6vAszZvaAuqQm7XsUNGgmMQo//dQNhI7VolyUB8sYBBZmzW/gLss/g087MIaizte5pfHbTLi3/7KGfMwyd+9BUCOb8jzJT8+BPgY/D0qBBQiSAAhW8iz1kg/UR8D3m5Fi8ruO8xTVd81Faff2ZzT21ElEcQ7O0LiJLpRnI5HReNYv+A2A20B7zhYadwIYPbj4YqcqHKsOznjTtRbD4qyZlTq30mvWBczO/IznvAZ+2OXki/Q2gb9GNZeld7rfRxnAbmefFwoL2bscBare7b1V0zyu7P4Q2hTd7m7s6nz1HA5X04Jw38KLatIyLYoUotEjm5x2pSTiffU/mBbAXDxjovp5AnB02oltUj1rJTPwLfFu9zRiDCH2BuG56oe7BlrY/6hj1ZlblV100kDUEs0eVfoFvYa7slSq6PhAjtZ8dSkOdihQ5hb26CLq9jcc3grzfqpsbCpzYI3aSxlWdmmydLpA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(2906002)(86362001)(6916009)(4326008)(2616005)(1076003)(8936002)(426003)(36756003)(38100700002)(186003)(33656002)(8676002)(9746002)(9786002)(66946007)(83380400001)(26005)(66476007)(66556008)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CfSGWdYT42n1Finhknb7wkrr/ka558jhGkyXsbQFyRi4h165I6P5pr24yg6u?=
+ =?us-ascii?Q?ozP2l0bpym3IXwqv5i9fPQmXex3GWQVSYeTuZJzv2x1qYDf1go32jmrGFrEI?=
+ =?us-ascii?Q?w13+KvbR02BZdQvwICGjq3H9haSMw07s4sGDV+wReJhf9RdhiNgf0uoqE1rv?=
+ =?us-ascii?Q?cSs3P0PNqlNvIfGEhdiW9hyGpwxV0rKROh/ImDY/Fm/lckde+Fy9FV5ZEN2p?=
+ =?us-ascii?Q?MKpYiCTCuGeOnUk6AuwIuwTrHtZPkSuBxBq+rACVyKL70fA/DEr6dWL1fNTZ?=
+ =?us-ascii?Q?S+Wmcs3AHPx9douIRbJgIg/LFgEztull46ofHoAt04DiE7w5i71LxVCVfshj?=
+ =?us-ascii?Q?hoXTq8i+OpO/oleco4hrGcaMZX+xJQCMM848x+5Xo5jVSfBz2PHwv3AMcoCU?=
+ =?us-ascii?Q?j9JKa7oPEbV0OkHmGhM2taSfLYRuwwvcZKK4PTo0D5EGf2JyKQjisfAsbrpI?=
+ =?us-ascii?Q?Y9byv8UtneNpbtCPnQDDb8YJSrHwXx6Paxu3MC/TvKJ4LW4JYg6V6KlOmAYU?=
+ =?us-ascii?Q?eRBdxvp/B9MxoOeX5I2vBOUsOkJXM0y+5e82YOixo4I1IV0u+qe+Td/juPwN?=
+ =?us-ascii?Q?oONj32lJ41RleOmLn0XYeAA++syO9pO34lgc2rq573GYWJ2ZaXQiZZZwg4n0?=
+ =?us-ascii?Q?KnkhPMWjaVuayaArPKm+FuqKYBrU9zwzv+5WfxS3x1jUjmWvyrhHlQ+k2vJT?=
+ =?us-ascii?Q?Ur7ucpO1xbdobBwhmvVQf9pmviRdPYWFEmQp4fPCTeSrjENxL65NVu4QaOrS?=
+ =?us-ascii?Q?DZDccCdS1O8nOurgg1gWNb5uIwEDp1y5UV1ayEwwv+W7rPDjuqh1C0Rw0RmH?=
+ =?us-ascii?Q?4l7a+owkXduaMn2f4aDcVYlhsNwXO/bI+aW8qxVPI0unZd+0D2rfY/01Jo9p?=
+ =?us-ascii?Q?6R1Su3ubZEWYBUsLynPsUq9WG4BCKFk/JN0jE8U3u0ikZpO0w+GUCbJfxnRJ?=
+ =?us-ascii?Q?k7c5PXqisSVyw3dGRR825+cWRUQMqVhoC7bk1+8o4AeH1NnSzVqV+q+47hJb?=
+ =?us-ascii?Q?aI3IJkB4rp+vtA561n5I0UFd87E0ZyELrwm7CrXW5xz++wKA39pgQFqOJiPH?=
+ =?us-ascii?Q?3DUc9jj1+hLOuu1z4n1DUHbvveFIaygNEsqBhpnPsLEmt9LN1NejcrAY0CV6?=
+ =?us-ascii?Q?O0MeVTRAbnBke3mxpULCmun+GimXDO/QTgnHF/Pt76v3xVsfm+wb6liYCh+6?=
+ =?us-ascii?Q?EKtk5p67yT2wvIQHoZWr9/hhxUtYjtZ/kD7Yy2N4ZaIWy4Z3Rbsy1ajeM59K?=
+ =?us-ascii?Q?atlrwXpgR/r42x+H4ht2FwGVU9+m5K8IUgxpTr8HxvaeAAJSIof7CLh/DqFE?=
+ =?us-ascii?Q?MygCCHYeEpzaprZx3sflDdiG?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 096b87b2-e720-407d-b60f-08d93a5a6ce1
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 17:30:29.9388
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e183qpwCog+cPbiJPbe45fVQQ2UxLG99PnEJHpnJYMl3Y9hvkZeG6O2CejUVmq/T
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5349
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.06.21 10:55, Moriis Ku wrote:
-
-Hi,
-
-
-first of all: put all patches into one queue, so we know these things
-belong together.
-
-
-
-> From: Morris Ku <saumah@gmail.com>
+On Mon, Jun 28, 2021 at 10:46:53AM -0600, Alex Williamson wrote:
+> On Wed, 10 Mar 2021 11:58:07 -0700
+> Alex Williamson <alex.williamson@redhat.com> wrote:
 > 
-> Add support for SUNIX SDC PCIe multi-function card
-> 
-> Cc: Jason Lee <jason_lee@sunix.com>
-> Cc: Taian Chen <taian.chen@sunix.com>
-> Cc: Morris Ku <morris_ku@sunix.com>
-> Signed-off-by: Morris Ku <saumah@gmail.com>
-> ---
->   sunix-sdc.c | 606 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 606 insertions(+)
->   create mode 100644 sunix-sdc.c
-> 
-> diff --git a/sunix-sdc.c b/sunix-sdc.c
-> new file mode 100644
-> index 0000000..5e724a3
-> --- /dev/null
-> +++ b/sunix-sdc.c
-> @@ -0,0 +1,606 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * SUNIX SDC PCIe multi-function card core support.
-> + *
-> + * Copyright (C) 2021, SUNIX Co., Ltd.
-> + *
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/io.h>
-> +#include <linux/property.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/idr.h>
-> +#include <linux/mfd/core.h>
-> +#include "sunix-sdc.h"
-> +
-> +#define DRIVER_NAME		"sunix-sdc"
-> +
-> +enum cib_type {
-> +	TYPE_CONFIG = 0,
-> +	TYPE_UART,
-> +	TYPE_DIO,
-> +	TYPE_CAN
-> +};
+> > vfio_pci_mmap_fault() incorrectly makes use of io_remap_pfn_range()
+> > from within a vm_ops fault handler.  This function will trigger a
+> > BUG_ON if it encounters a populated pte within the remapped range,
+> > where any fault is meant to populate the entire vma.  Concurrent
+> > inflight faults to the same vma will therefore hit this issue,
+> > triggering traces such as:
 
-What is a "CIB" ?
+If it is just about concurrancy can the vma_lock enclose
+io_remap_pfn_range() ?
 
-> +struct cib_config {
-> +	u32 mem_offset;
-> +	u32 mem_size;
-> +	u8 ic_brand;
-> +	u8 ic_model;
-> +};
-> +
-> +struct cib_uart {
-> +	u32 io_offset;
-> +	u8 io_size;
-> +	u32 mem_offset;
-> +	u32 mem_size;
-> +	u16 tx_fifo_size;
-> +	u16 rx_fifo_size;
-> +	u32 significand;
-> +	u8 exponent;
-> +	u32 capability;
-> +};
-> +
-> +struct cib_dio_bank {
-> +	u8 number_of_io;
-> +	char number_of_io_name[32];
-> +	u8 capability;
-> +	char capability_name[32];
-> +};
-> +
-> +struct cib_dio {
-> +	u32 mem_offset;
-> +	u32 mem_size;
-> +	u8 number_of_bank;
-> +	u8 capability;
-> +
-> +	struct cib_dio_bank *banks;
-> +};
-> +
-> +struct cib_can {
-> +	u32 mem_offset;
-> +	u32 mem_size;
-> +	u32 significand;
-> +	u8 exponent;
-> +	u8 number_of_device;
-> +	u8 device_type;
-> +	u8 gpio_input;
-> +	u8 gpio_output;
-> +};
-> +
-> +struct cib_info {
-> +	u8 number;
-> +	enum cib_type type;
-> +	u8 version;
-> +	u8 total_length;
-> +	u8 resource_cap;
-> +	u8 event_type;
-> +
-> +	struct cib_config *config;
-> +	struct cib_uart *uart;
-> +	struct cib_dio *dio;
-> +	struct cib_can *can;
-> +};
-> +
-> +struct sdc_channel {
-> +	struct cib_info info;
-> +
-> +	struct property_entry *property;
-> +	struct resource *resource;
-> +	struct mfd_cell *cell;
-> +};
-> +
-> +struct sdc_board {
-> +	struct sunix_sdc_platform_info *info;
-> +
-> +	u8 major_version;
-> +	u8 minor_version;
-> +	u8 available_chls;
-> +	u8 total_length;
-> +	char model_name[16];
-> +
-> +	struct sdc_channel *channels;
-> +	struct device *dev;
-> +	int id;
-> +
-> +	struct debugfs_blob_wrapper debugfs_model_name;
-> +};
+> IIRC, there were no blocking issues on this patch as an interim fix to
+> resolve the concurrent fault issues with io_remap_pfn_range().
+> Unfortunately it also got no Reviewed-by or Tested-by feedback.  I'd
+> like to put this in for v5.14 (should have gone in earlier).  Any final
+> comments?  Thanks,
 
-I think it might be better splitting this big thing apart into several
-drivers for each sub device and have frontend driver(s) that does the
-probing / instantiation of the individual components. Note that not
-everybody has all the corresponding subsystems enabled.
+I assume there is a reason why vm_lock can't be used here, so I
+wouldn't object, though I don't especially like the loss of tracking
+either.
 
-
-> +static int sdc_board_id = 1;
-> +static int sdc_uart_id = 1;
-> +static int sdc_dio_id = 1;
-> +static int sdc_can_id = 1;
-
-What exactly are these global singletons for ?
-Usually device specific data belongs into the device's private data,
-except there's a damn good reason.
-
-<snip>
-
-> +static void sdc_get_dio_info(struct cib_dio *dio, void __iomem *base,
-> +				u16 ptr)
-> +{
-> +	u32 temp;
-
-what exactly is an "dio" ? do you mean gpio ?
-
-<snip>
-
-> +int sunix_sdc_probe(struct device *dev, struct sunix_sdc_platform_info *info)
-> +{
-
-Doesn't really look like some device probe function. Who calls that and
-who fills this struct ?
-
-> +	struct sdc_channel *chl;
-> +	struct sdc_board *sdc;
-> +	struct cib_dio *dio;
-> +	struct cib_can *can;
-> +	void __iomem *mem_base;
-> +	u16 chl_offset_backup;
-> +	u16 chl_offset;
-> +	u32 temp;
-> +	u8 type;
-> +	int index;
-> +	int ret;
-> +	int i;
-> +	int j;
-> +
-> +	if (!info || !info->b1_io || !info->b2_mem || info->irq <= 0)
-> +		return -EINVAL;
-> +
-> +	sdc = devm_kzalloc(dev, sizeof(*sdc), GFP_KERNEL);
-> +	if (!sdc)
-> +		return -ENOMEM;
-> +
-> +	mem_base = devm_ioremap(dev, info->b2_mem->start, resource_size(info->b2_mem));
-> +	if (!mem_base)
-> +		return -ENOMEM;
-> +
-> +	sdc->info = info;
-> +	sdc->dev = dev;
-> +	sdc->id = sdc_board_id++;
-> +
-> +	temp = sdc_readl(mem_base, 0, 0);
-> +	sdc->major_version = temp & GENMASK(7, 0);
-> +	sdc->minor_version = (temp & GENMASK(15, 8)) >> 8;
-> +	sdc->available_chls = (temp & GENMASK(23, 16)) >> 16;
-> +	sdc->total_length = (temp & GENMASK(31, 24)) >> 24;
-> +
-> +	temp = sdc_readl(mem_base, 0, 1);
-> +	chl_offset = chl_offset_backup = temp & GENMASK(15, 0);
-> +
-> +	j = 0;
-> +	for (i = 0; i < 4; i++) {
-> +		temp = sdc_readl(mem_base, 0, 2 + i);
-> +		sdc->model_name[j++] = temp & GENMASK(7, 0);
-> +		sdc->model_name[j++] = (temp & GENMASK(15, 8)) >> 8;
-> +		sdc->model_name[j++] = (temp & GENMASK(23, 16)) >> 16;
-> +		sdc->model_name[j++] = (temp & GENMASK(31, 24)) >> 24;
-> +	}
-> +	sdc->model_name[strlen(sdc->model_name)] = '\n';
-> +
-> +	sdc->channels = devm_kcalloc(dev, sdc->available_chls,
-> +		sizeof(struct sdc_channel), GFP_KERNEL);
-> +	if (!sdc->channels)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < sdc->available_chls; i++) {
-> +		chl = &sdc->channels[i];
-> +		chl_offset_backup = chl_offset;
-> +
-> +		temp = sdc_readl(mem_base, chl_offset, 0);
-> +		chl->info.number = temp & GENMASK(7, 0);
-> +		type = (temp & GENMASK(15, 8)) >> 8;
-> +		switch (type) {
-> +		case 0x00:
-> +		case 0x01:
-> +		case 0x02:
-> +		case 0x03:
-> +			chl->info.type = (enum cib_type)type;
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +		chl->info.version = (temp & GENMASK(23, 16)) >> 16;
-> +		chl->info.total_length = (temp & GENMASK(31, 24)) >> 24;
-> +
-> +		temp = sdc_readl(mem_base, chl_offset, 1);
-> +		chl_offset = temp & GENMASK(15, 0);
-> +		chl->info.resource_cap = (temp & GENMASK(23, 16)) >> 16;
-> +		chl->info.event_type = (temp & GENMASK(31, 24)) >> 24;
-> +
-> +		switch (chl->info.type) {
-> +		case TYPE_CONFIG:
-> +			chl->info.config = devm_kzalloc(dev,
-> +				sizeof(*chl->info.config), GFP_KERNEL);
-> +			if (!chl->info.config)
-> +				return -ENOMEM;
-> +			sdc_get_config_info(chl->info.config, mem_base,
-> +				chl_offset_backup);
-> +			break;
-> +
-> +		case TYPE_UART:
-> +			chl->info.uart = devm_kzalloc(dev,
-> +				sizeof(*chl->info.uart), GFP_KERNEL);
-> +			if (!chl->info.uart)
-> +				return -ENOMEM;
-> +			sdc_get_uart_info(chl->info.uart, mem_base,
-> +				chl_offset_backup);
-> +
-> +			chl->property = devm_kcalloc(dev, 8,
-> +				sizeof(struct property_entry), GFP_KERNEL);
-> +			if (!chl->property)
-> +				return -ENOMEM;
-> +			index = 0;
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"board_id", sdc->id);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"chl_number", chl->info.number);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"version", chl->info.version);
-> +			chl->property[index++] = PROPERTY_ENTRY_U16(
-> +				"tx_fifo_size", chl->info.uart->tx_fifo_size);
-> +			chl->property[index++] = PROPERTY_ENTRY_U16(
-> +				"rx_fifo_size", chl->info.uart->rx_fifo_size);
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"significand", chl->info.uart->significand);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"exponent", chl->info.uart->exponent);
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"capability", chl->info.uart->capability);
-> +
-> +			chl->resource = devm_kcalloc(dev, 2,
-> +				sizeof(struct resource), GFP_KERNEL);
-> +			if (!chl->resource)
-> +				return -ENOMEM;
-> +			chl->resource[0].start = info->b1_io->start +
-> +				chl->info.uart->io_offset;
-> +			chl->resource[0].end = chl->resource[0].start +
-> +				chl->info.uart->io_size - 1;
-> +			chl->resource[0].name = "8250_sdc";
-> +			chl->resource[0].flags = IORESOURCE_IO;
-> +			chl->resource[0].desc = IORES_DESC_NONE;
-> +			chl->resource[1].start = 0;
-> +			chl->resource[1].end =  0;
-> +			chl->resource[1].name = "irq";
-> +			chl->resource[1].flags = IORESOURCE_IRQ;
-> +			chl->resource[1].desc = IORES_DESC_NONE;
-
-Since this thing is initialized from somewhere else, why not directly 
-passing in struct resource instances ?
-
-> +			chl->cell = devm_kzalloc(dev,
-> +				sizeof(struct mfd_cell), GFP_KERNEL);
-
-MFD ? Seriously ?
-
-> +			if (!chl->cell)
-> +				return -ENOMEM;
-> +			chl->cell->name = "8250_sdc";
-> +			chl->cell->id = sdc_uart_id++;
-> +			chl->cell->properties = chl->property;
-> +			chl->cell->num_resources = 2;
-> +			chl->cell->resources = chl->resource;
-> +			break;
-> +
-> +		case TYPE_DIO:
-> +			chl->info.dio = devm_kzalloc(dev,
-> +				sizeof(*chl->info.dio), GFP_KERNEL);
-> +			if (!chl->info.dio)
-> +				return -ENOMEM;
-> +			dio = chl->info.dio;
-> +			sdc_get_dio_info(dio, mem_base, chl_offset_backup);
-> +			if (dio->number_of_bank) {
-> +				dio->banks =
-> +					devm_kcalloc(dev, dio->number_of_bank,
-> +					sizeof(*dio->banks), GFP_KERNEL);
-> +				if (!dio->banks)
-> +					return -ENOMEM;
-> +
-> +				sdc_get_dio_banks_info(dio, mem_base,
-> +					chl_offset_backup);
-> +			}
-> +
-> +			chl->property = devm_kcalloc(dev, 5 + dio->number_of_bank * 2,
-> +				sizeof(struct property_entry), GFP_KERNEL);
-> +			if (!chl->property)
-> +				return -ENOMEM;
-> +			index = 0;
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"board_id", sdc->id);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"chl_number", chl->info.number);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"version", chl->info.version);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"number_of_bank", dio->number_of_bank);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"capability", dio->capability);
-> +			for (j = 0; j < dio->number_of_bank; j++) {
-> +				snprintf(dio->banks[j].number_of_io_name,
-> +					sizeof(dio->banks[j].number_of_io_name),
-> +					"b%d_number_of_io", j);
-> +				chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				dio->banks[j].number_of_io_name, dio->banks[j].number_of_io);
-> +				snprintf(dio->banks[j].capability_name,
-> +					sizeof(dio->banks[j].capability_name),
-> +					"b%d_capability", j);
-> +				chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				dio->banks[j].capability_name, dio->banks[j].capability);
-> +			}
-> +
-> +			chl->resource = devm_kcalloc(dev, 4,
-> +				sizeof(struct resource), GFP_KERNEL);
-> +			if (!chl->resource)
-> +				return -ENOMEM;
-> +			chl->resource[0].start = info->b2_mem->start +
-> +				chl->info.dio->mem_offset;
-> +			chl->resource[0].end = chl->resource[0].start +
-> +				chl->info.dio->mem_size - 1;
-> +			chl->resource[0].name = "gpio_sdc";
-> +			chl->resource[0].flags = IORESOURCE_MEM;
-> +			chl->resource[0].desc = IORES_DESC_NONE;
-> +			chl->resource[1].start = 0;
-> +			chl->resource[1].end =  0;
-> +			chl->resource[1].name = "irq";
-> +			chl->resource[1].flags = IORESOURCE_IRQ;
-> +			chl->resource[1].desc = IORES_DESC_NONE;
-> +			chl->resource[2].start = info->b0_mem->start;
-> +			chl->resource[2].end = chl->resource[2].start + 32 - 1;
-> +			chl->resource[2].name = "sdc_irq_vector";
-> +			chl->resource[2].flags = IORESOURCE_MEM;
-> +			chl->resource[2].desc = IORES_DESC_NONE;
-> +			chl->resource[3].start = info->b0_mem->start + 32 +
-> +				(chl->info.number * 4);
-> +			chl->resource[3].end = chl->resource[3].start + 4 - 1;
-> +			chl->resource[3].name = "gpio_sdc_event_header";
-> +			chl->resource[3].flags = IORESOURCE_MEM;
-> +			chl->resource[3].desc = IORES_DESC_NONE;
-> +
-> +			chl->cell = devm_kzalloc(dev,
-> +				sizeof(struct mfd_cell), GFP_KERNEL);
-> +			if (!chl->cell)
-> +				return -ENOMEM;
-> +			chl->cell->name = "gpio_sdc";
-> +			chl->cell->id = sdc_dio_id++;
-> +			chl->cell->properties = chl->property;
-> +			chl->cell->num_resources = 4;
-> +			chl->cell->resources = chl->resource;
-> +			break;
-> +
-> +		case TYPE_CAN:
-> +			chl->info.can = devm_kzalloc(dev,
-> +				sizeof(*chl->info.can), GFP_KERNEL);
-> +			if (!chl->info.can)
-> +				return -ENOMEM;
-> +			can = chl->info.can;
-> +			sdc_get_can_info(can, mem_base,	chl_offset_backup);
-> +
-> +			if (can->number_of_device != 1 && can->device_type != 0x03)
-> +				break;
-> +
-> +			chl->property = devm_kcalloc(dev, 7,
-> +				sizeof(struct property_entry), GFP_KERNEL);
-> +			if (!chl->property)
-> +				return -ENOMEM;
-> +			index = 0;
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"board_id", sdc->id);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"chl_number", chl->info.number);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"version", chl->info.version);
-> +			chl->property[index++] = PROPERTY_ENTRY_U32(
-> +				"significand", can->significand);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"exponent", can->exponent);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"gpio_input", can->gpio_input);
-> +			chl->property[index++] = PROPERTY_ENTRY_U8(
-> +				"gpio_output", can->gpio_output);
-> +
-> +			chl->resource = devm_kcalloc(dev, 2,
-> +				sizeof(struct resource), GFP_KERNEL);
-> +			if (!chl->resource)
-> +				return -ENOMEM;
-> +			chl->resource[0].start = info->b2_mem->start +
-> +				chl->info.can->mem_offset;
-> +			chl->resource[0].end = chl->resource[0].start +
-> +				chl->info.can->mem_size - 1;
-> +			chl->resource[0].name = "sx2010_can";
-> +			chl->resource[0].flags = IORESOURCE_MEM;
-> +			chl->resource[0].desc = IORES_DESC_NONE;
-> +			chl->resource[1].start = 0;
-> +			chl->resource[1].end =  0;
-> +			chl->resource[1].name = "irq";
-> +			chl->resource[1].flags = IORESOURCE_IRQ;
-> +			chl->resource[1].desc = IORES_DESC_NONE;
-> +
-> +			chl->cell = devm_kzalloc(dev,
-> +				sizeof(struct mfd_cell), GFP_KERNEL);
-> +			if (!chl->cell)
-> +				return -ENOMEM;
-> +			chl->cell->name = "sx2010_can";
-> +			chl->cell->id = sdc_can_id++;
-> +			chl->cell->properties = chl->property;
-> +			chl->cell->num_resources = 2;
-> +			chl->cell->resources = chl->resource;
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	dev_set_drvdata(dev, sdc);
-> +	sdc_debugfs_add(sdc);
-> +
-> +	for (i = 0; i < sdc->available_chls; i++) {
-> +		chl = &sdc->channels[i];
-> +
-> +		if (chl->cell) {
-> +			ret = mfd_add_devices(dev, sdc->id, chl->cell, 1,
-> +						NULL, sdc->info->irq, NULL);
-> +			if (ret)
-> +				goto err_remove_sdc;
-> +		}
-> +	}
-> +
-> +	dev_pm_set_driver_flags(dev, DPM_FLAG_SMART_SUSPEND);
-> +	return 0;
-> +
-> +err_remove_sdc:
-> +	sdc_debugfs_remove(sdc);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(sunix_sdc_probe);
-
-I really wonder what this functions is actually for. Doesn't seem to be
-some driver probe function. Doesn't seem to create any devices.
-
-> +void sunix_sdc_remove(struct device *dev)
-> +{
-> +	struct sdc_board *sdc = dev_get_drvdata(dev);
-> +
-> +	mfd_remove_devices(dev);
-> +	sdc_debugfs_remove(sdc);
-> +}
-> +EXPORT_SYMBOL_GPL(sunix_sdc_remove);
-> +
-> +static int __init sunix_sdc_init(void)
-> +{
-> +	sdc_debugfs_init();
-> +	return 0;
-> +}
-> +module_init(sunix_sdc_init);
-> +
-> +static void __exit sunix_sdc_exit(void)
-> +{
-> +	sdc_debugfs_exit();
-> +}
-> +module_exit(sunix_sdc_exit);
-> +
-> +MODULE_AUTHOR("Jason Lee <jason_lee@sunix.com>");
-> +MODULE_DESCRIPTION("SUNIX SDC PCIe multi-function card core driver");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:" DRIVER_NAME);
-> 
-
-Sorry, but it's totally unclear to me what this code is actually
-supposed to do.
-
-Please submit a complete queue that does something actually useful and
-give some more explainations.
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Jason
