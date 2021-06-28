@@ -2,238 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26D93B6AC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 00:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F723B6ACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 00:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237157AbhF1WFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 18:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238196AbhF1WEz (ORCPT
+        id S235645AbhF1WHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 18:07:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43732 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234255AbhF1WG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 18:04:55 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C611C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 15:02:02 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bp27so10307498lfb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 15:02:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ld79rQjtbYJbqjVTRO7UGOY87DxJGaKTkW2E/mZ4R2E=;
-        b=oXcIv1+b+m9nbsVkXvnzrqE+QwQ8K7cAqnnEfCLXqwKwo46GbdBo0Jbtr2xL2/4Cv+
-         f1Lt1uUN6P2zm1We42Y7JAitJef2yT9p6/glCnsvVBKc4iuu3ZzfvP8FiQm1NVBoBhd4
-         iRBwn9itICpvIhr9v+19p0hdpzGwCgDddI0nG1y7Kz01W3JKg1LzJNfSx9y8SgyDe1Ms
-         EdkYtHCZwNpTMvWNj84Qem5M+Zlji3frczx8gW8IEcDfuw3gphxI1ohtjVAGgs/p/M1Q
-         tt4clc2XU9IQY5u+zJAZOup23nZ8hkOQgVQSuY/CqFiVYewWgrPlTd1v8S9MRAQ7o4aw
-         TjNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ld79rQjtbYJbqjVTRO7UGOY87DxJGaKTkW2E/mZ4R2E=;
-        b=HO9NA0plnskiKG72fia4yw77FE7fldyT+YfcC4cq+rdTFvurEkHyX2h87Lx0qO5Dxf
-         kivuubzu5SXQnWqgRcWDRBugXBU+mWVf5W9fAryuIJTsKZEoSNOU4cM5mJWmDABIEgz8
-         AAngUqVB+2i+aWTOcKQIIOiD3whtmm4vksB27UqApcNAqPVyRUHZuzLBO5e8RSXxzURH
-         7+o38NzjVHwDeq+iYMQaGTAyKM9tn0Z1i1URP9bum44f4R8FuwtG9ygwfA09k3SeADDf
-         fSxEfVpxK5cgiH2qVkBRJe6mp1sYskFodZ1+GtVLim3JkizhNYElKzo+7Xs4J++jKDSM
-         +IRw==
-X-Gm-Message-State: AOAM530+tcm2ROfp3o77WtHKlqw+mOgMnO0V7xNbCwYIlF76+H7g8Vau
-        XfJiRwPXo9cjl5+GFcRRSsj1xMlEG+HqXwh3uBm90w==
-X-Google-Smtp-Source: ABdhPJzlY9YJ1zRH+7oS6WkPRdxcTlJ0sfvinym2ogxMsBEcjk5Gy8TS0jvoLHc9krnbrO4CyebeuqSrZBdM/zuRYjc=
-X-Received: by 2002:a05:6512:3884:: with SMTP id n4mr20321135lft.547.1624917720175;
- Mon, 28 Jun 2021 15:02:00 -0700 (PDT)
+        Mon, 28 Jun 2021 18:06:56 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SM3nl3077878;
+        Mon, 28 Jun 2021 18:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type; s=pp1; bh=/j/I9RNOSJVzxhIpCwjAFlqFGV/o4jH+HkdfSVk0oRs=;
+ b=VHX35BWMKJE46mFBEzeY9NIe272c6E4ctZnMo2aKFyI6Yn3PU4NMqleotH6DSECKuMlY
+ uwzjl4XSjXJchssXoThLnD/Sz0Sr4OCkUw0mKP8bLfynwCZeRkFTkb1MluDwhuMC0o2k
+ DzW7wcaMQU/kGGSEi/kAbkzhUkN7VgY1oYA8dpIX6a8aMFlg7/F8nWOSU3f0oUKNg1lC
+ Q59XMZoZlsE7YoJX3TfyQZ2XL+wdi5UkFJ40uEM1R2G0YXumk6ZMiPOndGPSlVgo3EWc
+ lrroMSxPTjt6zV/BbuX9pgyN6n2EPq0fUmWB5T9C68S2vXIrVBne/bSRpG5oXXrsZ0qT lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fm5jbyhs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 18:04:24 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SM4NE6079429;
+        Mon, 28 Jun 2021 18:04:24 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fm5jbyhm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 18:04:23 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SM2JmB014275;
+        Mon, 28 Jun 2021 22:04:23 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma04dal.us.ibm.com with ESMTP id 39ekxaknep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 22:04:23 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SM4LrE32440662
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 22:04:21 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C0A24136074;
+        Mon, 28 Jun 2021 22:04:21 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C41421360BD;
+        Mon, 28 Jun 2021 22:04:20 +0000 (GMT)
+Received: from [9.65.68.196] (unknown [9.65.68.196])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Jun 2021 22:04:20 +0000 (GMT)
+Subject: Re: ima - wait for tpm load
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>
+References: <20210610071633.GA30216@trex>
+ <b3c1f5a0a37419fac51d570cd1c8e521f59cee14.camel@linux.ibm.com>
+ <20210610151801.GA19687@trex>
+ <f0c6ab70093eb9e360232482ce415e9863a8699c.camel@linux.ibm.com>
+From:   Ken Goldman <kgold@linux.ibm.com>
+Message-ID: <1341c53c-1aa7-62dc-db9f-b58dcb8b7906@linux.ibm.com>
+Date:   Mon, 28 Jun 2021 18:04:19 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <a970613b-014f-be76-e342-4a51e792b56d@kernel.org>
- <20210628203109.2501792-1-ndesaulniers@google.com> <YNo8+PWPu5ssAcau@archlinux-ax161>
-In-Reply-To: <YNo8+PWPu5ssAcau@archlinux-ax161>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 28 Jun 2021 15:01:48 -0700
-Message-ID: <CAKwvOdks4o8A1o7Q49Pa43ZyY5Zh6+s-u67FL-fp=16FP-Y7yw@mail.gmail.com>
-Subject: Re: [PATCH v3] kallsyms: strip LTO suffixes from static functions
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>, "KE . LI" <like1@oppo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f0c6ab70093eb9e360232482ce415e9863a8699c.camel@linux.ibm.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms080705080204090202070806"
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: txPh4_nK0mImkWhg8ohXwBEDR4iPEaK8
+X-Proofpoint-GUID: tY3nhzrRKFuX2nJjQ89ggPMGIIrkYmcW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 clxscore=1011 malwarescore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106280143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 2:20 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Mon, Jun 28, 2021 at 01:31:06PM -0700, Nick Desaulniers wrote:
-> > Similar to:
-> > commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
-> > functions")
-> >
-> > It's very common for compilers to modify the symbol name for static
-> > functions as part of optimizing transformations. That makes hooking
-> > static functions (that weren't inlined or DCE'd) with kprobes difficult.
-> >
-> > LLVM has yet another name mangling scheme used by thin LTO.  Strip off
-> > these suffixes so that we can continue to hook such static functions.
-> >
-> > Reported-by: KE.LI(Lieke) <like1@oppo.com>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > Changes v2 -> V3:
-> > * Un-nest preprocessor checks, as per Nathan.
-> >
-> > Changes v1 -> v2:
-> > * Both mangling schemes can occur for thinLTO + CFI, this new scheme can
-> >   also occur for thinLTO without CFI. Split cleanup_symbol_name() into
-> >   two function calls.
-> > * Drop KE.LI's tested by tag.
-> > * Do not carry Fangrui's Reviewed by tag.
-> > * Drop the inline keyword; it is meaningless.
-> >  kernel/kallsyms.c | 32 +++++++++++++++++++++++++++++---
-> >  1 file changed, 29 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > index 4067564ec59f..143c69e7e75d 100644
-> > --- a/kernel/kallsyms.c
-> > +++ b/kernel/kallsyms.c
-> > @@ -171,6 +171,26 @@ static unsigned long kallsyms_sym_address(int idx)
-> >       return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
-> >  }
-> >
-> > +#ifdef CONFIG_LTO_CLANG_THIN
-> > +/*
-> > + * LLVM appends a suffix for local variables that must be promoted to global
-> > + * scope as part of thin LTO. foo() becomes foo.llvm.974640843467629774. This
-> > + * can break hooking of static functions with kprobes.
-> > + */
-> > +static bool cleanup_symbol_name_thinlto(char *s)
-> > +{
-> > +     char *res;
-> > +
-> > +     res = strstr(s, ".llvm.");
-> > +     if (res)
-> > +             *res = '\0';
-> > +
-> > +     return res != NULL;
-> > +}
-> > +#else
-> > +static bool cleanup_symbol_name_thinlto(char *s) { return false; }
-> > +#endif /* CONFIG_LTO_CLANG_THIN */
-> > +
-> >  #if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
-> >  /*
-> >   * LLVM appends a hash to static function names when ThinLTO and CFI are
-> > @@ -178,7 +198,7 @@ static unsigned long kallsyms_sym_address(int idx)
-> >   * This causes confusion and potentially breaks user space tools, so we
-> >   * strip the suffix from expanded symbol names.
-> >   */
-> > -static inline bool cleanup_symbol_name(char *s)
-> > +static bool cleanup_symbol_name_thinlto_cfi(char *s)
-> >  {
-> >       char *res;
-> >
-> > @@ -189,8 +209,14 @@ static inline bool cleanup_symbol_name(char *s)
-> >       return res != NULL;
-> >  }
-> >  #else
-> > -static inline bool cleanup_symbol_name(char *s) { return false; }
-> > -#endif
-> > +static bool cleanup_symbol_name_thinlto_cfi(char *s) { return false; }
-> > +#endif /* CONFIG_CFI_CLANG && CONFIG_LTO_CLANG_THIN */
-> > +
-> > +static bool cleanup_symbol_name(char *s)
-> > +{
-> > +     return cleanup_symbol_name_thinlto(s) &&
-> > +             cleanup_symbol_name_thinlto_cfi(s);
-> > +}
-> >
-> >  /* Lookup the address for this symbol. Returns 0 if not found. */
-> >  unsigned long kallsyms_lookup_name(const char *name)
-> > --
-> > 2.32.0.93.g670b81a890-goog
-> >
->
-> Is there any reason that we cannot eliminate the stubs and combine the
-> functions, or am I missing something? Completely untested diff.
->
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index c851ca0ed357..014b59ad68a3 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -161,26 +161,36 @@ static unsigned long kallsyms_sym_address(int idx)
->         return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
->  }
->
-> -#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
-> -/*
-> - * LLVM appends a hash to static function names when ThinLTO and CFI are
-> - * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-> - * This causes confusion and potentially breaks user space tools, so we
-> - * strip the suffix from expanded symbol names.
-> - */
-> -static inline bool cleanup_symbol_name(char *s)
-> +static inline bool cleanup_symbol_name_thinlto(char *s)
+This is a cryptographically signed message in MIME format.
 
-Drop inline while touching this line.
+--------------ms080705080204090202070806
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->  {
->         char *res;
->
-> -       res = strrchr(s, '$');
-> +       if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
-> +               return false;
-> +
-> +       /*
-> +        * LLVM appends a suffix for local variables that must be promoted to global
-> +        * scope as part of ThinLTO. foo() becomes foo.llvm.974640843467629774. This
-> +        * can break hooking of static functions with kprobes.
-> +        */
-> +       res = strstr(s, ".llvm.");
->         if (res)
->                 *res = '\0';
+On 6/10/2021 4:31 PM, Mimi Zohar wrote:
+> As I recall "extend" works pretty much from the beginning.  There's no
+> need to wait for the self test to complete.   Registering the TPM early=
 
-Sure, this is nicer though within the true block we should `return
-true;` early rather than additionally check the $ mangling, I suppose.
+> might be enough without having to wait.  Or maybe check the selftest
+> result.
 
->
-> +       /*
-> +        * LLVM appends a hash to static function names when ThinLTO and CFI are
-> +        * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
-> +        * This causes confusion and potentially breaks user space tools, so we
-> +        * strip the suffix from expanded symbol names.
-> +        */
-> +       if (IS_ENABLED(CONFIG_CFI_CLANG)) {
-> +               res = strrchr(s, '$');
-> +               if (res)
-> +                       *res = '\0';
-> +       }
-> +
->         return res != NULL;
->  }
-> -#else
-> -static inline bool cleanup_symbol_name(char *s) { return false; }
-> -#endif
->
->  /* Lookup the address for this symbol. Returns 0 if not found. */
->  unsigned long kallsyms_lookup_name(const char *name)
-> @@ -195,7 +205,7 @@ unsigned long kallsyms_lookup_name(const char *name)
->                 if (strcmp(namebuf, name) == 0)
->                         return kallsyms_sym_address(i);
->
-> -               if (cleanup_symbol_name(namebuf) && strcmp(namebuf, name) == 0)
-> +               if (cleanup_symbol_name_thinlto(namebuf) && strcmp(namebuf, name) == 0)
->                         return kallsyms_sym_address(i);
->         }
->         return module_kallsyms_lookup_name(name);
+TPM 2.0 depends somewhat on the type of self test - there are several
+options.  They will in some sense block other commands that use
+the angorithm.
+
+The TPM is permitted to do an extend before the hash algorithm is
+tested (just not return a result) but I don't think it's required.
+
+So:
+
+- self test
+- extend
+
+may permit the extend to proceed while the self test is
+happening, but it may not.
 
 
 
--- 
-Thanks,
-~Nick Desaulniers
+--------------ms080705080204090202070806
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+JTNkQWN0YWxpcyUyMFMucC5BLiUyZjAzMzU4NTIwOTY3LGMlM2RJVD9jZXJ0aWZpY2F0ZVJl
+dm9jYXRpb25MaXN0O2JpbmFyeTA9oDugOYY3aHR0cDovL2NybDA1LmFjdGFsaXMuaXQvUmVw
+b3NpdG9yeS9BVVRILVJPT1QvZ2V0TGFzdENSTDAdBgNVHQ4EFgQUvpepqoS/gL8QU30JMvnh
+LjIbz3cwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4ICAQAmm+cbWQ10sxID6edV
+94SAhc1CwzthHFfHpuYS30gisWUfWpgp43Dg1XzG2in3VGV7XrzCCGZh4JM/XQWp+4oxmyV4
+2Qjz9vc8GRksgo6X2nYObPYZzQjda9wxsCB38i4G3H33w8lf9sFvl0xm4ZXZ2s2bF/PdqvrK
+0ZgvF51+MoIPnli/wJBw3p72xbk5Sb1MneSO3tZ293WFzDmz7tuGU0PfytYUkG7O6annGqbU
+1I6CA6QVKUqeFLPodSODAFqJ3pimKD0vX9MuuSa0QinH7CkiPtZMD0mpwwzIsnSs3qOOl60t
+IZQOTc0I6lCe1LLhrz7Q75J6nNL9N5zVwZ1I3o2Lb8Dt7BA13VFuZvZIzapUGV83R7pmSVaj
+1Bik1nJ/R393e6mwppsT140KDVLh4Oenywmp2VpBDuEj9RgICAO0sibv8n379LbO7ARa0kw9
+y9pggFzN2PAX25b7w0n9m78kpv3z3vW65rs6wl7E8VEHNfv8+cnb81dxN3C51KElz+l31zch
+FTurD5HFEpyEhzO/fMS5AkweRJIzwozxNs7OL/S/SVTpJLJL1ukZ1lnHHX0d3xCzRy/5HqfK
+3uiG22LPB5+RjNDobPAjAz2BKMfkF/+v0pzn8mqqkopQaJzEAbLbMpgQYHRCjvrUxxwjJyUF
+b2Z+40UNtMF4MTK7zTGCA/MwggPvAgEBMIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwH
+QmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBT
+LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBt
+lC9msSpKrr0rmsrvlS70MA0GCWCGSAFlAwQCAQUAoIICLTAYBgkqhkiG9w0BCQMxCwYJKoZI
+hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA2MjgyMjA0MjBaMC8GCSqGSIb3DQEJBDEiBCAr
+mk+Y5ezDx714eoOEdPVRP189hIVXWimQD1Y613kMaTBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCG
+SAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
+SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGnBgkrBgEEAYI3EAQxgZkwgZYw
+gYExCzAJBgNVBAYTAklUMRAwDgYDVQQIDAdCZXJnYW1vMRkwFwYDVQQHDBBQb250ZSBTYW4g
+UGlldHJvMRcwFQYDVQQKDA5BY3RhbGlzIFMucC5BLjEsMCoGA1UEAwwjQWN0YWxpcyBDbGll
+bnQgQXV0aGVudGljYXRpb24gQ0EgRzMCEG2UL2axKkquvSuayu+VLvQwgakGCyqGSIb3DQEJ
+EAILMYGZoIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQ
+UG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0Fj
+dGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhBtlC9msSpKrr0rmsrvlS70MA0G
+CSqGSIb3DQEBAQUABIIBAFbCpNH0x9gMUO7pWQ3Ca2TNTZfu4k0suoBgESNuBJQR6f5cjBpT
+tcJE9t0alwWCUSW4nc5DU3oHm/Rmbk1BFV00C16mXSI/y9ThOB1M9S0NbiWSlylB7cxD2H/p
+0Gb+xFYJ8WyrsxN+c6BGKdltjaHyoFJ7pA26sA5fG7/0A9Np0FGTie/ly9AL3VyNbx0pxOGX
+QAi9hfNwjUKe+01BeQtOb2EdUhMyFDUSP1nsFNq9yOmpGM44zrJ/x/DkNojQAPw71Te97lW+
+YCV0acIz4Bob4CyUwVzBD+L+E4kvUbHsmWGRWLY5olNeif5fE6PwKuf8ddgdmk+sXvnXlcEa
+6ZcAAAAAAAA=
+--------------ms080705080204090202070806--
+
