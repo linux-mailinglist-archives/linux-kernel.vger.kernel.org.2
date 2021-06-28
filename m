@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35763B5922
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549533B5925
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhF1GcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:32:12 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:12082 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhF1GcL (ORCPT
+        id S232142AbhF1Gd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:33:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8476 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhF1GdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:32:11 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GCyLR1SLNzZkht;
-        Mon, 28 Jun 2021 14:26:39 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+        Mon, 28 Jun 2021 02:33:24 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GCyMr08zqzZn69;
+        Mon, 28 Jun 2021 14:27:52 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 14:29:43 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ 15.1.2176.2; Mon, 28 Jun 2021 14:30:56 +0800
+Received: from [10.67.102.248] (10.67.102.248) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 14:29:43 +0800
-Subject: Re: [PATCH 9/9] dma-debug: Use memory_intersects() directly
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>
-References: <20210626073439.150586-1-wangkefeng.wang@huawei.com>
- <20210626073439.150586-10-wangkefeng.wang@huawei.com>
- <20210628061123.GA23316@lst.de>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <bfdf4359-d98d-a675-b6d9-56280200ea81@huawei.com>
-Date:   Mon, 28 Jun 2021 14:29:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ 15.1.2176.2; Mon, 28 Jun 2021 14:30:56 +0800
+Subject: Re: [PATCH] perf arm-spe: Fix incorrect sample timestamp in perf
+ script
+To:     Leo Yan <leo.yan@linaro.org>
+CC:     <john.garry@huawei.com>, <will@kernel.org>,
+        <mathieu.poirier@linaro.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <james.clark@arm.com>,
+        <andre.przywara@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210626032115.16742-1-yangjihong1@huawei.com>
+ <20210628014953.GA163942@leoy-ThinkPad-X240s>
+ <75dac5f8-9c82-0db1-d362-44289dcaa206@huawei.com>
+ <20210628040716.GC163942@leoy-ThinkPad-X240s>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <2af84c69-8528-9c4a-f666-2dd660bcd966@huawei.com>
+Date:   Mon, 28 Jun 2021 14:30:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210628061123.GA23316@lst.de>
+In-Reply-To: <20210628040716.GC163942@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Leo,
 
-On 2021/6/28 14:11, Christoph Hellwig wrote:
-> You've sent me a patch 9 out of 9 without the previous 8 patches.  There
-> is no way I can sensibly review this series.
+On 2021/6/28 12:07, Leo Yan wrote:
+> On Mon, Jun 28, 2021 at 11:45:07AM +0800, Yang Jihong wrote:
+> 
+> [...]
+> 
+>> The timestamp does not match. Each timestamp has a difference of
+>> 213.98296702 seconds. Is the command I executed wrong?
+> 
+> I don't understand what's your meaning "a difference of 213.98296702
+> seconds".
+> 
+> But let me give an explaination with your below examples.  You could
+> the command "perf script" outputs the timestamp 314938.859071370 which
+> is the kernel's timestamp, if using the command "perf script -D", it
+> outputs the value 31515284203839 which is the Arch timer's raw counter
+> value.
+> 
+> In theory, the arch timer's counter is enabled at the very early
+> time before kernel's booting (e.g. bootloaders, UEFI, etc...).  So for
+> the kernel's timestamp, it should calibrate the timestamp and reduce
+> the offset prior to the kernel's booting.  I think this is the reason
+> why you observed 213.98296702 seconds difference (if compared with
+> your own patch?)
+> 
+> If still see any issue, please let me know.  Thanks a lot for the
+> testing!
+> 
+Thanks for the very detailed explanation.
+To keep the correct relative time sequence between events in SPE and 
+other events, we should use kernel timestamp instead of arch time. 
+Therefore, we need to calibrate the time. Is this correct?
 
-The full patches is 
-https://lore.kernel.org/linux-arch/20210626073439.150586-1-wangkefeng.wang@huawei.com/T/#t
-
-This patch is not very relevant about the above 8 patches, only use the 
-existing function to simplify code.
-
+Thanks,
+Jihong.
+> Leo
+> 
+>> |symbol_address|perf script| perf script -D|
+>> |ffffb7ee2a20e100|314938.859071370|31515284203839|
+>> |ffffb7ee29f360e0|314938.859753820|31515284272084|
+>> |fffe85dd87e0|314938.859820430|31515284278745|
+>> |fffe85dd7a28|314938.859941110|31515284290813|
+>> |fffe85dd7a28|314938.859948890|31515284291591|
+>> |fffe85dc8f58|314938.859953610|31515284292063|
+> .
+> 
