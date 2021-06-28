@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9763B609C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC863B5FCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhF1O1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233168AbhF1OWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:22:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85F6061C7C;
-        Mon, 28 Jun 2021 14:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624889971;
-        bh=Gng668oBJNwPCNqmYWvLzv7pCOt/cSV4b4aNdMm8VnY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kabeEF/XF9zbw3U5UyQgq2V7bM+2Axoszoe2TXIm9D34L6jcqu2ORcwO+B+6P2hYN
-         gOGa0QegCGtlrdzGlpKu0WzgM75pbrIUWl39KGI6bTuKVjc/LpfGZ6siuQJ10PeWBN
-         I/YuwwKHN3N6fD7am6Qfa6/ypXZrLB6ghnxNHsc7tyGPQvnDBx3A4HwhvcosOr82KP
-         vdiwvwD44FlJ5Y14OH/fxL5OY7iZky9paJNhQVrAL3t9FmRm/xiJ0kF5ECgZ9P0cwZ
-         xWEl/MEbslTcLT0vbSRR3OxYtR2RzQ7q//SMZy1GRzLMtrFlhXnVfpEipBf+Ax76fb
-         duUsAB5qH5PZw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.12 072/110] s390: clear pt_regs::flags on irq entry
-Date:   Mon, 28 Jun 2021 10:17:50 -0400
-Message-Id: <20210628141828.31757-73-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628141828.31757-1-sashal@kernel.org>
-References: <20210628141828.31757-1-sashal@kernel.org>
+        id S232592AbhF1OUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:20:19 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:47827 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232093AbhF1OUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:20:17 -0400
+Received: (qmail 657640 invoked by uid 1000); 28 Jun 2021 10:17:51 -0400
+Date:   Mon, 28 Jun 2021 10:17:51 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "guido.kiener@rohde-schwarz.com" <guido.kiener@rohde-schwarz.com>,
+        "dpenkler@gmail.com" <dpenkler@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210628141751.GB656159@rowland.harvard.edu>
+References: <000000000000a9b79905c04e25a0@google.com>
+ <CACT4Y+aF64oNZD7Vd04bj+KfBU5GqVobCbRPp2-x_Z6dEr8d3A@mail.gmail.com>
+ <BL1PR11MB5478572825796B0F04E1E1FDFF039@BL1PR11MB5478.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.14-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.12.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.12.14-rc1
-X-KernelTest-Deadline: 2021-06-30T14:18+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL1PR11MB5478572825796B0F04E1E1FDFF039@BL1PR11MB5478.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+On Mon, Jun 28, 2021 at 06:38:37AM +0000, Zhang, Qiang wrote:
+> 
+> 
+> ________________________________________
+> From: Dmitry Vyukov <dvyukov@google.com>
+> Sent: Monday, 19 April 2021 15:27
+> To: syzbot; Greg Kroah-Hartman; guido.kiener@rohde-schwarz.com; dpenkler@gmail.com; lee.jones@linaro.org; USB list
+> Cc: bp@alien8.de; dwmw@amazon.co.uk; hpa@zytor.com; linux-kernel@vger.kernel.org; luto@kernel.org; mingo@redhat.com; syzkaller-bugs@googlegroups.com; tglx@linutronix.de; x86@kernel.org
+> Subject: Re: [syzbot] INFO: rcu detected stall in tx
+> 
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> 
+> On Mon, Apr 19, 2021 at 9:19 AM syzbot
+> <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    50987bec Merge tag 'trace-v5.12-rc7' of git://git.kernel.o..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1065c5fcd00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=398c4d0fe6f66e68
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=e2eae5639e7203360018
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com
+> >
+> > usbtmc 5-1:0.0: unknown status received: -71
+> > usbtmc 3-1:0.0: unknown status received: -71
+> > usbtmc 5-1:0.0: unknown status received: -71
+> 
+> >The log shows an infinite stream of these before the stall, so I
+> >assume it's an infinite loop in usbtmc.
+> >+usbtmc maintainers
+> >
+> >[  370.171634][    C0] usbtmc 6-1:0.0: unknown status received: >-71
+> >[  370.177799][    C1] usbtmc 3-1:0.0: unknown status received: >-71
 
-commit ca1f4d702d534387aa1f16379edb3b03cdb6ceda upstream.
+> This seems like a long time in the following cycle,  when the callback function usbtmc_interrupt() find unknown status error, it will submit urb again. the urb may be insert  urbp_list.
+> due to the dummy_timer() be called in bh-disable. 
+> This will result in the RCU reading critical area not exiting for a long time (note: bh_disable/enable, preempt_disable/enable is regarded as the RCU critical reading area ), and prevent rcu_preempt kthread be schedule and running.
 
-The current irq entry code doesn't initialize pt_regs::flags. On exit to
-user mode arch_do_signal_or_restart() tests whether PIF_SYSCALL is set,
-which might yield wrong results.
+> Whether to return directly when we find the urb status is unknown error?
 
-Fix this by clearing pt_regs::flags in the entry.S irq handler
-code.
+Yes.
 
-Reported-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Fixes: 56e62a737028 ("s390: convert to generic entry")
-Cc: <stable@vger.kernel.org> # 5.12
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/s390/kernel/entry.S | 1 +
- 1 file changed, 1 insertion(+)
+> diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
+> index 74d5a9c5238a..39d44339c03f 100644
+> --- a/drivers/usb/class/usbtmc.c
+> +++ b/drivers/usb/class/usbtmc.c
+> @@ -2335,6 +2335,7 @@ static void usbtmc_interrupt(struct urb *urb)
+>                 return;
+>         default:
+>                 dev_err(dev, "unknown status received: %d\n", status);
+> +               return;
+>         }
+>  exit:
+>         rv = usb_submit_urb(urb, GFP_ATOMIC);
 
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 9cc71ca9a88f..e84f495e7eb2 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -418,6 +418,7 @@ ENTRY(\name)
- 	xgr	%r6,%r6
- 	xgr	%r7,%r7
- 	xgr	%r10,%r10
-+	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
- 	mvc	__PT_R8(64,%r11),__LC_SAVE_AREA_ASYNC
- 	stmg	%r8,%r9,__PT_PSW(%r11)
- 	tm	%r8,0x0001		# coming from user space?
--- 
-2.30.2
+This is the right thing to do.  In fact, you should also change the code 
+above this.  There's no real need for special handling of the 
+-ECONNRESET, -ENOENT, ..., -EPIPE codes, since the driver will do the 
+same thing no matter what the code is.
 
+Alan Stern
