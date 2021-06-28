@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B1E3B6A69
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8EE3B6A6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238271AbhF1V3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 17:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S238087AbhF1VaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238287AbhF1VZc (ORCPT
+        with ESMTP id S238373AbhF1V03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 17:25:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36586C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=BGlr9DHHCiuYzdZBYi7Kf2gIU29JYUpZ5JYhQsivVFs=; b=CHsuiNZNlNdl7KK8LrmD/VJukI
-        dGbwbUTLRRNqKgO1W1PtuZwH5G8mQ6S0qQuGO+oX5muuN4zocijMyhP6c+pNnhtiB9ywM4iuPwB3w
-        W5SQ6cO7fmlqr6321skyN4TpniPIWIPeTD0JQVttUn4s7/CkMDU6gnuMwEvg8ePPXHIzn6tu3AqtL
-        2uk8r9ur3LvRKCFpgs48IfPGDhuQA1IzNf5fE9C6b8KecG0w2FonTUlUyNOVlApajrTTz2GyqZgVq
-        lVrK6keKafpDPTFkIQVdwzKao5pXMCNn5YPeqTmHSU1QBZ7GmExa9GJHxMXqnVJOv7L1I5AfM8uFk
-        EEunCsfg==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxyht-009ET0-0y; Mon, 28 Jun 2021 21:22:17 +0000
-Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
- ARCH_ATOMIC
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
-        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
-        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
-        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-References: <20210525140232.53872-1-mark.rutland@arm.com>
- <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
- <20210618084847.GA93984@C02TD0UTHF1T.local>
- <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
-Message-ID: <4ec7308f-02c6-a357-eab8-63b6f2b7a5eb@infradead.org>
-Date:   Mon, 28 Jun 2021 14:22:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 28 Jun 2021 17:26:29 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8638C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:23:58 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v13so9686396ple.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=beDcbwnP5As/mpTZp4157m7lhvaIkwus448ktxDYZvw=;
+        b=hWBO2BGhHo4wGkJVLXWZrYlXf4KDPCrSBwu9CLS9i1uqZziusrG8bjJ9mhC2Gvqo5U
+         /9D563iCVi95+zuDP6wh8g98G0A1nr54k9YZIqal45xzZx/Sfu6Cq+WGvFHtcpRh9CmK
+         p1i4f38U+srKWyf3c+pGv9BuT7Vfe4zLq5qtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=beDcbwnP5As/mpTZp4157m7lhvaIkwus448ktxDYZvw=;
+        b=Ks6THP9PtJehBazRHJZ+IK9VIyarflhR2khHhzaI+9x9/iVd64e3dGaRZziHbI+bkD
+         RwqC1w/eJ/8162Ghz/jyW08+AVTFZJbYx9Ifv4Fa294zJCUHZhrc5HTIo7ctENVyJlH1
+         hdOsxUMl3S/nQwMn9JBZXECgLizHfMcsACVuUOGNH7eQO4W3ybkdvke3kaGFA1r3S3my
+         xJUCiK69GXWZ4bAs9iHDOErx1Dm3vZimTEKAon1j4d8/Dpgw5u/6nM9qx4iyDco7gcYG
+         doXZXA/Amel3gzeYNPWUoLsuRaxPFwxq0mVnCH61FcaFQB4CKzRxcJdVgK9i4Xn/MfRc
+         fmVg==
+X-Gm-Message-State: AOAM530035CSNTbJ8weMN5EHL1PixV2g7+BE4y0Rd/MBEcBtF+9wyV5K
+        OaXSTT6D7P+bvxPosnN4PIKeAg==
+X-Google-Smtp-Source: ABdhPJzWVQZwXtcZku9Aom+JoyFe8QXif5vNo/7e47b/swit2rYKntKf8tytD9UEe1i5oQdJKiBXnQ==
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr39170373pjb.133.1624915438390;
+        Mon, 28 Jun 2021 14:23:58 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:df70:d2d8:b384:35cf])
+        by smtp.gmail.com with UTF8SMTPSA id j2sm15093743pfi.111.2021.06.28.14.23.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 14:23:57 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 14:23:56 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Subject: Re: [PATCH v8 6/6] usb: dwc3: qcom: Keep power domain on to support
+ wakeup
+Message-ID: <YNo97HQXmYjUNz/C@google.com>
+References: <1624882097-23265-1-git-send-email-sanm@codeaurora.org>
+ <1624882097-23265-7-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1624882097-23265-7-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/27/21 2:47 PM, Randy Dunlap wrote:
-> On 6/18/21 1:48 AM, Mark Rutland wrote:
->> On Fri, Jun 04, 2021 at 10:56:16PM -0700, Randy Dunlap wrote:
->>> On 5/25/21 7:01 AM, Mark Rutland wrote:
->>>> This series (based on v5.13-rc2) converts all architectures to
->>>> ARCH_ATOMIC. This will allow the use of instrumented atomics on all
->>>> architectures (e.g. for KASAN and similar), and simplifies the core
->>>> atomic code (which should allow for easier rework of the fallbacks and
->>>> other bits in future).
->>
->> [...]
->>
->>> Hi Mark,
->>> Sorry for the late reply. 
->>
->> Hi Randy,
->>
->> Likewise, apologies in the delay in getting to this!
->>
->>> I was just trying to update a patch
->>> to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
->>>
->>> https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
->>>
->>> The patch simply converts xchg() to a GCC statement expression to
->>> eliminate a build warning.
+On Mon, Jun 28, 2021 at 05:38:17PM +0530, Sandeep Maheswaram wrote:
+> If wakeup capable devices are connected to the controller (directly
+> or through hubs) at suspend time keep the power domain on in order
+> to support wakeup from these devices.
 > 
-> Hm, with your locking/atomic patch series applied (in linux-next), I can
-> no longer make arch/sh/ get this build warning:
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+> Checking phy_power_off flag instead of usb_wakeup_enabled_descendants 
+> to keep gdsc active.
 > 
-> ../fs/ocfs2/file.c: In function 'ocfs2_file_write_iter':
-> ../arch/sh/include/asm/cmpxchg.h:49:3: warning: value computed is not used [-Wunused-value]
->    49 |  ((__typeof__(*(ptr)))__xchg((ptr),(unsigned long)(x), sizeof(*(ptr))))
+>  drivers/usb/dwc3/dwc3-qcom.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> 
-> so I will go ahead with the rest of my arch/sh/ patches and then contemplate
-> what to do about this one.
-> 
-> 
->>> Arnd has done this for m68k and I have done it for sparc in the past.
->>>
->>> Is there any (good) reason that all versions of arch_xchg() are not
->>> statement expressions?  In this patch series, they seem to be quite
->>> mixed (as they were before this patch series). I count 11 arches
->>> that use a statement expression and 4 that do not (including arch/sh/).
->>
->> Largely I tried to make the minimal change from what was there before,
->> and I didn't have any specific reason to either use or avoid statement
->> expressions.
->>
->> This series has been queued in the tip tree's locking/core branch for a
->> while now, but we could spin a patch atop. Do you want to spin a patch
->> to convert the remaining 4 architectures in one go?
-> 
-> I'll look at the 4 remaining arches later..
-> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 82125bc..ba31aa3 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/usb/of.h>
+>  #include <linux/reset.h>
+>  #include <linux/iopoll.h>
+> @@ -355,9 +356,15 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
+>  	u32 val;
+>  	int i, ret;
+>  
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+> +
+>  	if (qcom->is_suspended)
+>  		return 0;
+>  
+> +	if (!dwc->phy_power_off && dwc->xhci)
+> +		genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
+> +
+>  	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+>  	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>  		dev_err(qcom->dev, "HS-PHY not in L2\n");
+> @@ -382,9 +389,15 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
+>  	int ret;
+>  	int i;
+>  
+> +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
+> +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
+> +
+>  	if (!qcom->is_suspended)
+>  		return 0;
+>  
+> +	if (dwc->xhci)
+> +		genpd->flags &= ~GENPD_FLAG_ACTIVE_WAKEUP;
+> +
+>  	if (device_may_wakeup(qcom->dev))
+>  		dwc3_qcom_disable_interrupts(qcom);
+>  
 
-Hi Mark,
+This is essentially the same as v7, which Felipe NAKed
+(https://patchwork.kernel.org/project/linux-arm-msm/patch/1619586716-8687-6-git-send-email-sanm@codeaurora.org/)
 
-I checked xchg(), __xchg(), and cmpxchg() in all
-arch/*/include/asm/cmpxchg.h.  They are use static inline
-functions or statement expressions so I don't see any need
-for follow-ups to fix warnings like this (old) one, which
-I cannot cause with your series applied:
+I think Felipe wants to see the handling of the power domain in the
+xhci-plat driver. One problem here is that the power domain is owned
+by the glue driver. For dwc3 the glue device is the parent of the xHCI
+device, this is also the case for some other drivers like histb or
+cdns3, but I'm not sure if it is universally true. If it isn't
+xhci-plat could only make use of dev->parent->pm_domain for certain
+compatible strings.
 
-> ../fs/ocfs2/file.c: In function 'ocfs2_file_write_iter':
-> ../arch/sh/include/asm/cmpxchg.h:49:3: warning: value computed is not used [-Wunused-value]
->    49 |  ((__typeof__(*(ptr)))__xchg((ptr),(unsigned long)(x), sizeof(*(ptr))))
-
-
-However, something in arch/arc/ did look suspicious so I decided to
-try an ARC allmodconfig build, where I did see a few errors FYI:
-
-
-  CC      drivers/iommu/io-pgtable-arm.o
-In file included from ../include/linux/atomic.h:80,
-                 from ../drivers/iommu/io-pgtable-arm.c:12:
-../drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
-../include/linux/atomic-arch-fallback.h:60:32: error: implicit declaration of function 'arch_cmpxchg64'; did you mean 'arch_cmpxchg'? [-Werror=implicit-function-declaration]
-   60 | #define arch_cmpxchg64_relaxed arch_cmpxchg64
-      |                                ^~~~~~~~~~~~~~
-../include/asm-generic/atomic-instrumented.h:1261:2: note: in expansion of macro 'arch_cmpxchg64_relaxed'
- 1261 |  arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
-      |  ^~~~~~~~~~~~~~~~~~~~~~
-../drivers/iommu/io-pgtable-arm.c:320:8: note: in expansion of macro 'cmpxchg64_relaxed'
-  320 |  old = cmpxchg64_relaxed(ptep, curr, new);
-      |        ^~~~~~~~~~~~~~~~~
-
-
-
--- 
-~Randy
-
+One could argue that it isn't very clean either if xhci-plat manipulates
+a resource of it's parent. At the same time the glue driver isn't
+supposed to check for the wakeup capable devices, so I guess some kind
+of trade-off needs to be made.
