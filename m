@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2113B5A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C3C3B5AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhF1IdB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 04:33:01 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3323 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbhF1IdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:33:00 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GD0nb5BNVz6K7PF;
-        Mon, 28 Jun 2021 16:16:51 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 10:30:32 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Mon, 28 Jun 2021 10:30:32 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Thread-Topic: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Thread-Index: AQHXaeMP1hrQEcpfKUiTvUrYdI7FlqsnkBuAgAGHhIA=
-Date:   Mon, 28 Jun 2021 08:30:32 +0000
-Message-ID: <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-4-roberto.sassu@huawei.com>
- <YNhYu3BXh7f9GkVk@kroah.com>
-In-Reply-To: <YNhYu3BXh7f9GkVk@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232442AbhF1IwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:52:00 -0400
+Received: from m12-15.163.com ([220.181.12.15]:42151 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhF1Iv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:51:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ode9v
+        3e6crJ10ED+WHlug9qXebICX8vhtMeH4FWBSmc=; b=SE7kir8WwQUWVMUYRFcn8
+        DSSqcxzg1m1tF/2EiQ7nP8zF4jMOKL5EK+e84+MImBqxcCzYwmL2Lq1TGBASMbuI
+        6oNrYFlYsM/TuGV1Vkc20QPW4vuTJQvXcsq3G2EFi4McsUv8XQYjCRt211tslVxH
+        RSQtFdsPjH31AjAKxK6jak=
+Received: from ubuntu.localdomain (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowADn5xLBiNlgg0yUAg--.46S2;
+        Mon, 28 Jun 2021 16:33:24 +0800 (CST)
+From:   13145886936@163.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>,
+        gushengxian <13145886936@163.com>
+Subject: [PATCH] btrfs: remove unneeded variable: "ret"
+Date:   Mon, 28 Jun 2021 01:30:50 -0700
+Message-Id: <20210628083050.5302-1-13145886936@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowADn5xLBiNlgg0yUAg--.46S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF1rGF4fWr47Wr4kXw4rAFb_yoW8Jw1DpF
+        WfCrn8K395Jr1kGrs3W3y0gr1SyFZrA3yxW3say39aqw45Jrs8XF4vyr1Fqr1vyrW8uF4U
+        Zr45WFWkZanFkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j-wIDUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5zrdx5xxdq6xppld0qqrwthudrp/1tbiXBW-g1Xl0HHbrAAAsT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Sunday, June 27, 2021 12:54 PM
-> On Fri, Jun 25, 2021 at 06:56:05PM +0200, Roberto Sassu wrote:
-> > --- /dev/null
-> > +++ b/include/uapi/linux/digest_lists.h
-> > @@ -0,0 +1,43 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/*
-> > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > + *
-> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > + *
-> > + * This program is free software; you can redistribute it and/or
-> > + * modify it under the terms of the GNU General Public License as
-> > + * published by the Free Software Foundation, version 2 of the
-> > + * License.
-> 
-> As you already have the SPDX line up there, you do not need this
-> paragraph.  Please remove it from all of the new files you have added in
-> this series.
+From: gushengxian <gushengxian@yulong.com>
 
-Ok.
+Remove unneeded variable: "ret".
 
-> > + *
-> > + * File: digest_lists.h
-> 
-> We know the filename, no need to have it here again.
-> 
-> > + *      Digest list definitions exported to user space.
-> 
-> Now this is what probably needs more information...
+Signed-off-by: gushengxian <13145886936@163.com>
+Signed-off-by: gushengxian <gushengxian@yulong.com>
+---
+ fs/btrfs/disk-io.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Ok. Yes, these definitions are useful to generate digest lists
-in user space.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b117dd3b8172..7e65a54b7839 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	struct rb_node *node;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	struct btrfs_delayed_ref_node *ref;
+-	int ret = 0;
+ 
+ 	delayed_refs = &trans->delayed_refs;
+ 
+@@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	if (atomic_read(&delayed_refs->num_entries) == 0) {
+ 		spin_unlock(&delayed_refs->lock);
+ 		btrfs_debug(fs_info, "delayed_refs has NO entry");
+-		return ret;
++		return 0;
+ 	}
+ 
+ 	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
+@@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 
+ 	spin_unlock(&delayed_refs->lock);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+-- 
+2.25.1
 
-> > + */
-> > +
-> > +#ifndef _UAPI__LINUX_DIGEST_LISTS_H
-> > +#define _UAPI__LINUX_DIGEST_LISTS_H
-> > +
-> > +#include <linux/types.h>
-> > +#include <linux/hash_info.h>
-> > +
-> > +enum compact_types { COMPACT_KEY, COMPACT_PARSER,
-> COMPACT_FILE,
-> > +		     COMPACT_METADATA, COMPACT_DIGEST_LIST,
-> COMPACT__LAST };
-> > +
-> > +enum compact_modifiers { COMPACT_MOD_IMMUTABLE,
-> COMPACT_MOD__LAST };
-> > +
-> > +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
-> > +		       COMPACT_ACTION_IMA_APPRAISED,
-> > +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
-> > +		       COMPACT_ACTION__LAST };
-> > +
-> > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
-> > +
-> 
-> For enums you export to userspace, you need to specify the values so
-> that all compilers get them right.
-> 
-> > +struct compact_list_hdr {
-> > +	__u8 version;
-> 
-> You should never need a version, that way lies madness.
-
-We wanted to have a way to switch to a new format, if necessary.
-
-> > +	__u8 _reserved;
-> 
-> You better be testing this for 0, right?
-
-Ok, will do.
-
-> > +	__le16 type;
-> > +	__le16 modifiers;
-> > +	__le16 algo;
-> > +	__le32 count;
-> > +	__le32 datalen;
-> 
-> Why are user/kernel apis specified in little endian format?  Why would
-> that matter?  Shouldn't they just be "native" endian?
-
-I thought this would make it clear that the kernel always expects the
-digest lists to be in little endian.
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> greg k-h
