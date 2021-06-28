@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22AD3B61C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD653B618D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhF1Oif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:38:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37300 "EHLO mail.kernel.org"
+        id S234848AbhF1OgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:36:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234919AbhF1Oam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:30:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A402661CC9;
-        Mon, 28 Jun 2021 14:27:00 +0000 (UTC)
+        id S233940AbhF1O16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:27:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C66D6600CD;
+        Mon, 28 Jun 2021 14:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890421;
-        bh=kWtUTq6WVWrZAk1658c581SNcx68NzBUN84oOZqbgZg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HvAalztDUgViHNEWRc4Xo9mMORdyjH9YprbxUf6A2suFIuT5Kz03p9g31/qFW6/97
-         sMbvq5WaFw8sr5794IlHncYA/waJD6CUoq93ue2qNcOipDBOpoKOQUTUu5EuqGh433
-         gCC8FwnlUZ5QJ7mFBgyZDnOxMKWGRmX+LqvLudOkapCdmxmDoXxi3V1tyvIgL7tAVY
-         6OXQVqT7TH8i8fv4SOn021M0+HAdaLi49/BozcxjpNymo8Bqg2KmdVpPKQLWLmMluW
-         Ng44kYQVulOaGXeXhK257x3BhTamcnhMH9n2Iql7SFtTPnpSmSQP/ptiJRped0Afw1
-         I5qz14WtQmS0Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Michael L . Semon" <mlsemon35@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/101] nilfs2: fix memory leak in nilfs_sysfs_delete_device_group
-Date:   Mon, 28 Jun 2021 10:25:28 -0400
-Message-Id: <20210628142607.32218-63-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
-References: <20210628142607.32218-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.47-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.47-rc1
-X-KernelTest-Deadline: 2021-06-30T14:25+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1624890332;
+        bh=JurY56NJlZghnRhWOXb3Fi/DN1f+prsVrv0WNkW0DUM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZiLXuNRe3RF4Hu7375no72L5CG2gm20K3fHzF8JSy94Tvv668KpD6pyE2svvef7/P
+         wNvfilLnmPbUoM1Sfq/RWw0e36Ue90L5gPi9ysjbYIA73QIHvgym56DDYUYxW+0Lk/
+         co0ScxaaiK5/aKC3Aje8pPdIKZQGty05QftFSJ+lYAY3VJbjSjcRVgAvzq4QNppC4i
+         yVFKJYkcy5jy77PrKvN98hJrXCUV6kRa8U28VMZU7zMnyEWvRbgqL3AzbFmGVOgHDd
+         3g9Uw8zdXhMilMJlxzWc07Vfs7YhgoRLSKEKDtcgITKSqjJTwLU/jh/5wC395ShNiC
+         N2u1EyepvRlaA==
+Date:   Mon, 28 Jun 2021 23:25:29 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
+        ardb@kernel.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] kprobe/static_call: Restore missing
+ static_call_text_reserved()
+Message-Id: <20210628232529.f4b460b9e58cbb4098fe6c6a@kernel.org>
+In-Reply-To: <20210628113045.167127609@infradead.org>
+References: <20210628112409.233121975@infradead.org>
+        <20210628113045.167127609@infradead.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+On Mon, 28 Jun 2021 13:24:12 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-[ Upstream commit 8fd0c1b0647a6bda4067ee0cd61e8395954b6f28 ]
+> Restore two hunks from commit 6333e8f73b83 ("static_call: Avoid
+> kprobes on inline static_call()s") that went walkabout.
+> 
+> Fixes: 76d4acf22b48 ("Merge tag 'perf-kprobes-2020-12-14' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-My local syzbot instance hit memory leak in nilfs2.  The problem was in
-missing kobject_put() in nilfs_sysfs_delete_device_group().
+This looks good to me.
 
-kobject_del() does not call kobject_cleanup() for passed kobject and it
-leads to leaking duped kobject name if kobject_put() was not called.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Fail log:
+Thank you!
 
-  BUG: memory leak
-  unreferenced object 0xffff8880596171e0 (size 8):
-  comm "syz-executor379", pid 8381, jiffies 4294980258 (age 21.100s)
-  hex dump (first 8 bytes):
-    6c 6f 6f 70 30 00 00 00                          loop0...
-  backtrace:
-     kstrdup+0x36/0x70 mm/util.c:60
-     kstrdup_const+0x53/0x80 mm/util.c:83
-     kvasprintf_const+0x108/0x190 lib/kasprintf.c:48
-     kobject_set_name_vargs+0x56/0x150 lib/kobject.c:289
-     kobject_add_varg lib/kobject.c:384 [inline]
-     kobject_init_and_add+0xc9/0x160 lib/kobject.c:473
-     nilfs_sysfs_create_device_group+0x150/0x800 fs/nilfs2/sysfs.c:999
-     init_nilfs+0xe26/0x12b0 fs/nilfs2/the_nilfs.c:637
+> ---
+>  kernel/kprobes.c |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/ftrace.h>
+>  #include <linux/cpu.h>
+>  #include <linux/jump_label.h>
+> +#include <linux/static_call.h>
+>  #include <linux/perf_event.h>
+>  
+>  #include <asm/sections.h>
+> @@ -1551,6 +1552,7 @@ static int check_kprobe_address_safe(str
+>  	if (!kernel_text_address((unsigned long) p->addr) ||
+>  	    within_kprobe_blacklist((unsigned long) p->addr) ||
+>  	    jump_label_text_reserved(p->addr, p->addr) ||
+> +	    static_call_text_reserved(p->addr, p->addr) ||
+>  	    find_bug((unsigned long)p->addr)) {
+>  		ret = -EINVAL;
+>  		goto out;
+> 
+> 
 
-Link: https://lkml.kernel.org/r/20210612140559.20022-1-paskripkin@gmail.com
-Fixes: da7141fb78db ("nilfs2: add /sys/fs/nilfs2/<device> group")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: Michael L. Semon <mlsemon35@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/nilfs2/sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-index 303d71430bdd..9c6c0e2e5880 100644
---- a/fs/nilfs2/sysfs.c
-+++ b/fs/nilfs2/sysfs.c
-@@ -1053,6 +1053,7 @@ void nilfs_sysfs_delete_device_group(struct the_nilfs *nilfs)
- 	nilfs_sysfs_delete_superblock_group(nilfs);
- 	nilfs_sysfs_delete_segctor_group(nilfs);
- 	kobject_del(&nilfs->ns_dev_kobj);
-+	kobject_put(&nilfs->ns_dev_kobj);
- 	kfree(nilfs->ns_dev_subgroups);
- }
- 
 -- 
-2.30.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
