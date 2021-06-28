@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601473B5F4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B933B5F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhF1Nqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:46:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:59696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232131AbhF1Nqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:46:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5CD21042;
-        Mon, 28 Jun 2021 06:44:26 -0700 (PDT)
-Received: from [10.57.8.89] (unknown [10.57.8.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FF6D3F718;
-        Mon, 28 Jun 2021 06:44:24 -0700 (PDT)
-Subject: Re: [PATCH RFC 2/2] mmc: meson-gx: use sg_copy_to/from_io instead of
- local version
-To:     Neil Armstrong <narmstrong@baylibre.com>, jgg@ziepe.ca,
-        leon@kernel.org, m.szyprowski@samsung.com, ulf.hansson@linaro.org
-Cc:     torvalds@linux-foundation.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, linux-mmc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210628123411.119778-1-narmstrong@baylibre.com>
- <20210628123411.119778-3-narmstrong@baylibre.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <cfd6c96a-b5eb-bc0b-1861-c409f0a7e4f0@arm.com>
-Date:   Mon, 28 Jun 2021 14:44:20 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232207AbhF1Nsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhF1Nsh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:48:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C407C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:46:11 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id bb20so10164814pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VKJuiZY5njObqnbN2t61e+utxYTUMJcrwu9/5wMskiI=;
+        b=Zanf+FiiPCnwnD+C2HECqCtIxF3XOGExbD48rg1m0mTm/CiALdJiLyOvPVo4gWTj6d
+         9GNIeCT7w7lghDXGI8dJ6wicSMeg9mAlxmM0VJkaFS7MhNT+FbGszGhDXt0t0WkqiDH4
+         BzATbLUBfBu1vJgFztD3HYGa+6VPlR3O6lFkvmYarzdNqSydaO9bZtzGVKlxmO3t8ho/
+         vo/3qyVops8cbfY75eqxCptluzMCGgPqxDhrIjzYQGxqNUCgq+LjHFZYvl7tXgdFXR81
+         cmcUHWf+R5fWTlcG9wDFBOKFbwlRMR5NRzCuUpVf/QP6BkWPADO3FyNjiI3PawjFAZBW
+         7nKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VKJuiZY5njObqnbN2t61e+utxYTUMJcrwu9/5wMskiI=;
+        b=j2ExpLFIsF7+eY2WWib+5ETLEnfF5coMYLFJU+sOeHlPpmbaLKTGz1ifkIwutBcoX4
+         ehceLKZlmIOnoS1mp38IFLLw/0qERnjSTsAmC2YBYGe2B0LVbXcSdHYFbYMZUet0h8/B
+         AD4fjzIDUFMyOjfzKKm4PgwTug50C9VeST0zunJBPk/CIMupcz++x+WngerD/6ub8Uao
+         RdSTdXo9tW0k8Bzex/8/o8unho2W+yzqaL5aBTDAKtGxb6UcNsafB/swKS1Im+w9h9BE
+         rV7q4zC2plG2twDk4VwMVQ6AUFLwCzoYdkUlTMFnFI8Y6Ksv5+0K9g7RWHfdJj7ylw6G
+         e9oA==
+X-Gm-Message-State: AOAM532ubWyvLFhqWwe376wxsQw/WaNxmm034cCQiVzUCKpZhLIJ+ihm
+        fDa7BY3ih3uXJY4Ug2uQ7tY=
+X-Google-Smtp-Source: ABdhPJzBSCskmICzu86M/YdHWaIhKcT5eu+OOfQd+pSuRMHe4tlFvJ19oUZxMBOPLgPHFyHUaRkxNg==
+X-Received: by 2002:a17:90a:b891:: with SMTP id o17mr5444027pjr.32.1624887970627;
+        Mon, 28 Jun 2021 06:46:10 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
+        by smtp.googlemail.com with ESMTPSA id v3sm14913303pfb.126.2021.06.28.06.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 06:46:10 -0700 (PDT)
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+Subject: [PATCH v5] tty: Fix out-of-bound vmalloc access in imageblit
+Date:   Mon, 28 Jun 2021 10:45:09 -0300
+Message-Id: <20210628134509.15895-1-igormtorrente@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210628123411.119778-3-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-28 13:34, Neil Armstrong wrote:
-> Use the proper sg_copy_to_io & sg_copy_from_io instead of having a local
-> sg_copy_buffer variant to handle the I/O mapped buffer case.
-> 
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   drivers/mmc/host/meson-gx-mmc.c | 53 +++++++--------------------------
->   1 file changed, 10 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-> index 3f28eb4d17fe..c13436efb414 100644
-> --- a/drivers/mmc/host/meson-gx-mmc.c
-> +++ b/drivers/mmc/host/meson-gx-mmc.c
-> @@ -746,47 +746,6 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
->   	writel(start, host->regs + SD_EMMC_START);
->   }
->   
-> -/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
-> -static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
-> -				  size_t buflen, bool to_buffer)
-> -{
-> -	unsigned int sg_flags = SG_MITER_ATOMIC;
-> -	struct scatterlist *sgl = data->sg;
-> -	unsigned int nents = data->sg_len;
-> -	struct sg_mapping_iter miter;
-> -	unsigned int offset = 0;
-> -
-> -	if (to_buffer)
-> -		sg_flags |= SG_MITER_FROM_SG;
-> -	else
-> -		sg_flags |= SG_MITER_TO_SG;
-> -
-> -	sg_miter_start(&miter, sgl, nents, sg_flags);
-> -
-> -	while ((offset < buflen) && sg_miter_next(&miter)) {
-> -		unsigned int len;
-> -
-> -		len = min(miter.length, buflen - offset);
-> -
-> -		/* When dram_access_quirk, the bounce buffer is a iomem mapping */
-> -		if (host->dram_access_quirk) {
-> -			if (to_buffer)
-> -				memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
-> -			else
-> -				memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
-> -		} else {
-> -			if (to_buffer)
-> -				memcpy(host->bounce_buf + offset, miter.addr, len);
-> -			else
-> -				memcpy(miter.addr, host->bounce_buf + offset, len);
-> -		}
-> -
-> -		offset += len;
-> -	}
-> -
-> -	sg_miter_stop(&miter);
-> -}
-> -
->   static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->   {
->   	struct meson_host *host = mmc_priv(mmc);
-> @@ -830,7 +789,12 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
->   		if (data->flags & MMC_DATA_WRITE) {
->   			cmd_cfg |= CMD_CFG_DATA_WR;
->   			WARN_ON(xfer_bytes > host->bounce_buf_size);
-> -			meson_mmc_copy_buffer(host, data, xfer_bytes, true);
-> +			if (host->dram_access_quirk)
-> +				sg_copy_to_io(data->sg, data->sg_len,
-> +					      host->bounce_iomem_buf, xfer_bytes);
+This issue happens when a userspace program does an ioctl
+FBIOPUT_VSCREENINFO passing the fb_var_screeninfo struct
+containing only the fields xres, yres, and bits_per_pixel
+with values.
 
-Maybe you could just use host->regs + SD_EMMC_SRAM_DATA_BUF_OFF directly 
-here (and below) and save carrying host->bounce_iomem_buf around?
+If this struct is the same as the previous ioctl, the
+vc_resize() detects it and doesn't call the resize_screen(),
+leaving the fb_var_screeninfo incomplete. And this leads to
+the updatescrollmode() calculates a wrong value to
+fbcon_display->vrows, which makes the real_y() return a
+wrong value of y, and that value, eventually, causes
+the imageblit to access an out-of-bound address value.
 
-Robin.
+To solve this issue I made the resize_screen() be called
+even if the screen does not need any resizing, so it will
+"fix and fill" the fb_var_screeninfo independently.
 
-> +			else
-> +				sg_copy_to_buffer(data->sg, data->sg_len,
-> +						  host->bounce_buf, xfer_bytes);
->   			dma_wmb();
->   		}
->   
-> @@ -999,7 +963,10 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
->   	if (meson_mmc_bounce_buf_read(data)) {
->   		xfer_bytes = data->blksz * data->blocks;
->   		WARN_ON(xfer_bytes > host->bounce_buf_size);
-> -		meson_mmc_copy_buffer(host, data, xfer_bytes, false);
-> +		if (host->dram_access_quirk)
-> +			sg_copy_from_io(data->sg, data->sg_len, host->bounce_iomem_buf, xfer_bytes);
-> +		else
-> +			sg_copy_from_buffer(data->sg, data->sg_len, host->bounce_buf, xfer_bytes);
->   	}
->   
->   	next_cmd = meson_mmc_get_next_command(cmd);
-> 
+Reported-and-tested-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+---
+ drivers/tty/vt/vt.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index fa1548d4f94b..f384d251967f 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1219,8 +1219,25 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 	new_row_size = new_cols << 1;
+ 	new_screen_size = new_row_size * new_rows;
+ 
+-	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
+-		return 0;
++	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows) {
++		/*
++		 * This function is being called here to cover the case
++		 * where the userspace calls the FBIOPUT_VSCREENINFO twice,
++		 * passing the same fb_var_screeninfo containing the fields
++		 * yres/xres equal to a number non-multiple of vc_font.height
++		 * and yres_virtual/xres_virtual equal to number lesser than the
++		 * vc_font.height and yres/xres.
++		 * In the second call, the struct fb_var_screeninfo isn't
++		 * being modified by the underlying driver because of the
++		 * if above, and this causes the fbcon_display->vrows to become
++		 * negative and it eventually leads to out-of-bound
++		 * access by the imageblit function.
++		 * To give the correct values to the struct and to not have
++		 * to deal with possible errors from the code below, we call
++		 * the resize_screen here as well.
++		 */
++		return resize_screen(vc, new_cols, new_rows, user);
++	}
+ 
+ 	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
+ 		return -EINVAL;
+-- 
+2.20.1
+
