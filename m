@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0843B6689
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD913B6690
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhF1QTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        id S233158AbhF1QUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhF1QTQ (ORCPT
+        with ESMTP id S231472AbhF1QUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:19:16 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13057C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:16:50 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso19325888otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:16:50 -0700 (PDT)
+        Mon, 28 Jun 2021 12:20:44 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C46C061574;
+        Mon, 28 Jun 2021 09:18:18 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso362000pjp.2;
+        Mon, 28 Jun 2021 09:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sS3AX7gjw8RzAmQQDxkf4nTKNQiXmQsIziEYwVLXXqE=;
-        b=Crom6oqZjvmuQ7HTaOKYr32eQUnC7kJJFa1OaRR9nkFkMV75RlDZZiMu8ASZsZdh5m
-         LkmEy47LSUq9GavP19ZREQyvyHIb97qXa2i1enG90hWxB/VdZrMJJaXhDasTX6PrGx75
-         O23nDYNFsALK4H/zzkolf3zHUHHSoFkxofhGt8cdj0FTt91R4IZ7Y3BZAQy0YpMWgFsm
-         aLxoXBUwc0LGOk0f2uEKuLdpZQg+Im/Blo3YmWfunsA7/GJTQn2SaOgYFA+ObtZ1KNOJ
-         rsF93vOJGguV5ZirT5cn5AQ7sCMO5untNYCe4nLHwduwGPALV9+nP27vUFnKBVWek82F
-         MXow==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=//f/I/KD5xRd11o6Hb+6q4JyvdMxw/dD/4E2XDupayw=;
+        b=Z8moeK0GXjeB66FKcPwH3GhxOtubjszNU47sbPsRl37VdUbtv7ezQC/QfRLgOiGrEn
+         MrCMkFtK7eyrOt7e+L67uwl1BPzLQTz2Oj+vUFNNJdYIAGbGNZ/EHvc/shVu3PxwA0ZP
+         0mgfs2y6ZdP1g89tQMg+Xo2l0E6Wq/MLLv8q5wULSBl+PfPM/xUH8mGcX0xOGSkOXGY2
+         3guSSrsNtb/64oybj793dL9H7UDJ3mN98X40KZbaco128EpiSLmqhLIe2VNrPrcEhR8A
+         DmwKLP0E6ddAckakbxvwJpHhu1EqgY9DutiasUuga5a0ne2xj6NxT8FbUoGbzbZcva84
+         77+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sS3AX7gjw8RzAmQQDxkf4nTKNQiXmQsIziEYwVLXXqE=;
-        b=AHzYv2PrzhKax/HC+QqgRAouaZYMr0MKy9L7SGO/41H36LGlHpxv6Lfntz0+9t7IUB
-         tYR/5vBh2bPbedaaWvxdb5oLabxrKIuyNCx1MzpKt3BzUYoMlo82l/ql191ojXnS56na
-         aoTzgYdxKw4HhyPRxYjL4egiDjnbVK32Wtdg0ArwyboKH8huXGAJqweUx5CtARdMXddO
-         vD7OkLMBmOErFxCnFHsuZn29ZxC0c2azDowZGIz9YMTJwRKiSzLFyCWWPqJNsx1MjnnT
-         qDYX+RnfNqJNcJGPRRQ6Dx57zx0E5GAS87FJVvpS75bHLyY3IxzvINAiJEWpF+Il1UEO
-         1KWQ==
-X-Gm-Message-State: AOAM533mzmpfbUTIk4IjYYmwRBOepFHsv4efRJpY1DMr0xywv5n9Qkjg
-        +C4Z50MckbiaZxIL1ahJqi4sbA==
-X-Google-Smtp-Source: ABdhPJwZz+jLXv5MDMWYEBw2K8nW1xownzeKeRVGw7taqDhESdaLxCJsIE1l4K6aIdQkx2sKI3yW3A==
-X-Received: by 2002:a9d:5e17:: with SMTP id d23mr307765oti.330.1624897009316;
-        Mon, 28 Jun 2021 09:16:49 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p10sm3682896otf.45.2021.06.28.09.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 09:16:48 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 11:16:46 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] remoteproc: elf_loader: fix loading segment when
- is_iomem true
-Message-ID: <YNn17nA7CTaQLTrU@yoga>
-References: <20210628070657.7669-1-peng.fan@oss.nxp.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=//f/I/KD5xRd11o6Hb+6q4JyvdMxw/dD/4E2XDupayw=;
+        b=PQ8zqbjYWFe41/3GBplY2HsFR63hLvhDfMc9/bw5BAewsh7FauJKgGgQ8SRBWCrfl7
+         ijIq9iTvPQvPYQVPJpKqxJ5FQdnz9r4LxHFmdCM18aOOm7j0KzD2Fe0AXaaK4SgGes9G
+         56+xAEmrEbckwRUokMmgeS/rcllP1e3GR3IXZ49ddAPD24WxQOH1woSbGTM6M+6d4NBZ
+         er8pVUbvTEMRWONUf3n82cx99VrinU7cluRAnbPvyo4rcBYPlbARZWNJXwc/LyE6oqE1
+         8vL+gb2nGpKXnbGk3+6a4P3Y8wNouSyjguF/EPmW2UOx/8k7KxQqBxO3CiwzAcmomAR9
+         OXGA==
+X-Gm-Message-State: AOAM5323DwJBDjGITjbZShltq6cQ8OQKiDbtOsar+tjhOKENMAoCRY5w
+        F29UCrOTfsZdbXXGx7H/wPo=
+X-Google-Smtp-Source: ABdhPJwFubJeZBk8HM0tH0MnapCVqseK4cwUuK494LXwUm+m9HpCj4dMkcB/VPJF8q7Lj3ManFCS7g==
+X-Received: by 2002:a17:90b:3a91:: with SMTP id om17mr29493006pjb.50.1624897098072;
+        Mon, 28 Jun 2021 09:18:18 -0700 (PDT)
+Received: from [192.168.93.106] (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id l7sm14875506pgb.19.2021.06.28.09.18.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 09:18:17 -0700 (PDT)
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in
+ tcp_init_transfer.
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>
+References: <20210628144908.881499-1-phind.uet@gmail.com>
+ <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+From:   Phi Nguyen <phind.uet@gmail.com>
+Message-ID: <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com>
+Date:   Tue, 29 Jun 2021 00:18:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628070657.7669-1-peng.fan@oss.nxp.com>
+In-Reply-To: <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28 Jun 02:06 CDT 2021, Peng Fan (OSS) wrote:
+On 6/28/2021 10:52 PM, Eric Dumazet wrote:
 
-> From: Peng Fan <peng.fan@nxp.com>
+> Unfortunately this patch might break things.
 > 
-> It seems luckliy work on i.MX platform, but it is wrong.
-> Need use memcpy_toio, not memcpy_fromio.
+> We keep changing this CC switching, with eBPF being mixed in the equation.
 > 
-> Fixes: 40df0a91b2a52 ("remoteproc: add is_iomem to da_to_va")
-> Tested-by: Dong Aisheng <aisheng.dong@nxp.com> (i.MX8MQ)
-> Reported-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I would suggest you find a Fixes: tag first, so that we can continue
+> the discussion.
 > 
-> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-> index 469c52e62faf..e8078efb3dec 100644
-> --- a/drivers/remoteproc/remoteproc_elf_loader.c
-> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
-> @@ -220,7 +220,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
->  		/* put the segment where the remote processor expects it */
->  		if (filesz) {
->  			if (is_iomem)
-> -				memcpy_fromio(ptr, (void __iomem *)(elf_data + offset), filesz);
-> +				memcpy_toio(ptr, (void __iomem *)(elf_data + offset), filesz);
+> Thank you.
 
-Ouch, we should have caught that during the review, thanks for spotting
-and fixing this.
+Thank for your feedback. I will resubmit it with a Fixes tag.
 
-That said, it's the ptr that's __iomem, so the cast should be on the
-first parameter, not the second.
-
-Regards,
-Bjorn
-
->  			else
->  				memcpy(ptr, elf_data + offset, filesz);
->  		}
-> -- 
-> 2.30.0
-> 
+Regard.
