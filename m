@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F15A3B674C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243253B674D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhF1RKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:10:18 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:45986 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbhF1RKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:10:10 -0400
-Received: by mail-pl1-f173.google.com with SMTP id i4so9283758plt.12;
-        Mon, 28 Jun 2021 10:07:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5cLxTwDsCSrtdWkFMbm5QuhzGbb4I7nKkvY0D1dGHlY=;
-        b=AJBJ3mfSjL64Qqz2CblyDXlAvB6NAh/WN9jGvW8MLpb5HMe/HZV26LaRMaR3FJ0co4
-         SsaoyEASviUEjdU2lVF9h32EIjiLvknQ8A8GcDJIJkuYPeg3QwzvXyENPN0uFwTKs/2X
-         NX3PC/7rexJBT73ho+EeUejp7pHyboNv9IQNhz2Gx4dNqsso46UPjebnmzvuqGg0EoDV
-         lzG4cVXMuJDmJXtsn24iEGH8/oEY1sOKmo+s6/NkOiI5cgMKb5UEx8+MEu0zJJaiFSyg
-         MOt+B2sfLr/vKb2WtkA9FA2m5bFjOVSvRtAorQvMJaeadXjYuvIuhMqZcEG1p9kuhirM
-         CKJA==
-X-Gm-Message-State: AOAM532ESK0HPWGiYLa3J8x+GMBRYT7SBeKRryfIvw6Sn/4iYxh5eMEd
-        3Af9HNozU0zpN84v0Ogn5HcS+KrjzqQ=
-X-Google-Smtp-Source: ABdhPJzftsh0Nqv/HqgGTQbkic+FQnrxH2nrmHfzLcH8UeToPUbzrrLGPV9EGzpZWjBv9BAGAhkAJw==
-X-Received: by 2002:a17:90a:ea88:: with SMTP id h8mr7952693pjz.147.1624900064200;
-        Mon, 28 Jun 2021 10:07:44 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id v9sm14732437pfn.22.2021.06.28.10.07.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 10:07:43 -0700 (PDT)
-Subject: Re: [PATCH v4 01/10] scsi: ufs: Rename flags pm_op_in_progress and
- is_sys_suspended
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Satya Tangirala <satyat@google.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-2-git-send-email-cang@codeaurora.org>
- <cb39c5d7-c21d-66b1-0a86-f9154f73a94e@acm.org>
- <b7562bc820fc712196104a5eae30e2e4@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <50023fb6-7b61-e5dd-9fac-e0be3adbbadc@acm.org>
-Date:   Mon, 28 Jun 2021 10:07:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232963AbhF1RLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:11:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:65358 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232010AbhF1RLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:11:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195147999"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="195147999"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 10:08:37 -0700
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="488960331"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 10:08:34 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lxukI-0065KS-9v; Mon, 28 Jun 2021 20:08:30 +0300
+Date:   Mon, 28 Jun 2021 20:08:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Eric Auger <eric.auger@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, eric.auger.pro@gmail.com,
+        linux-kernel@vger.kernel.org, mihai.carabas@oracle.com,
+        arnd@arndb.de, pizhenwei@bytedance.com, pbonzini@redhat.com,
+        joe@perches.com
+Subject: Re: [PATCH] misc/pvpanic-pci: Allow automatic loading
+Message-ID: <YNoCDmHglfmN15lf@smile.fi.intel.com>
+References: <20210628144422.895526-1-eric.auger@redhat.com>
+ <YNnilZ/Kg4SpU+bw@kroah.com>
+ <5e3f7609-4820-6a8b-306e-553f10ce0f8a@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <b7562bc820fc712196104a5eae30e2e4@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e3f7609-4820-6a8b-306e-553f10ce0f8a@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:01 AM, Can Guo wrote:
-> On 2021-06-25 07:42, Bart Van Assche wrote:
->> On 6/23/21 12:35 AM, Can Guo wrote:
->>> Rename pm_op_in_progress and is_sys_suspended to
->>> wlu_pm_op_in_progress and
->>> is_wlu_sys_suspended accordingly.
->>
->> Can the is_wlu_sys_suspended member variable be removed by checking
->> dev->power.is_suspended where dev represents the WLUN?
->>
+On Mon, Jun 28, 2021 at 05:44:13PM +0200, Eric Auger wrote:
+> On 6/28/21 4:54 PM, Greg KH wrote:
+> > On Mon, Jun 28, 2021 at 04:44:22PM +0200, Eric Auger wrote:
+> >> The pvpanic-pci driver does not auto-load and requires manual
+> >> modprobe. Let's include a device database using the
+> >> MODULE_DEVICE_TABLE macro.
+
+...
+
+> > Is this something that you need?  Or is it created by a tool?
 > 
-> No, PM set dev->power.is_suspended to "false" even the device failed
-> resuming,
-> while is_wlu_sys_suspended can be used to tell that.
+> the virtual machine monitor (QEMU) exposes the pvpanic-pci device to the
+> guest. On guest side the module exists but currently isn't loaded
+> automatically. So the driver fails to be probed and does not its job of
+> handling guest panic events. We need a SW actor that loads the module
+> and I thought this should be handled that way. If not, please could you
+> advise?
 
-(+Rafael)
+At least something like about should have been in the commit message.
+Otherwise the selling point is unclear.
 
-Hi Rafael,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-In drivers/base/power/main.c we found the following code:
 
- End:
-	error = dpm_run_callback(callback, dev, state, info);
-	dev->power.is_suspended = false;
-
-Is it a bug or a feature that dev->power.is_suspended is set to false if
-dpm_run_callback() fails? I'm asking this because only clearing
-dev->power.is_suspended if dpm_run_callback() returns 0 would allow to
-simplify the UFS driver. It can happen for UFS devices that runtime
-resume fails and if this fails we need to track this.
-
-Thanks,
-
-Bart.
