@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD953B5B86
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C523B5B6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhF1Jp6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 05:45:58 -0400
-Received: from mgw-02.mpynet.fi ([82.197.21.91]:50160 "EHLO mgw-02.mpynet.fi"
+        id S232525AbhF1Jet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:34:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232552AbhF1Jp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:45:57 -0400
-Received: from pps.filterd (mgw-02.mpynet.fi [127.0.0.1])
-        by mgw-02.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 15S9MlX9115831;
-        Mon, 28 Jun 2021 12:22:55 +0300
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-02.mpynet.fi with ESMTP id 39f9xh82u4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 12:22:55 +0300
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.18; Mon, 28 Jun 2021 12:22:54 +0300
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.018; Mon, 28 Jun 2021 12:22:54 +0300
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-CC:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com" 
-        <syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] ntfs: Fix validity check for file name attribute
-Thread-Topic: [PATCH] ntfs: Fix validity check for file name attribute
-Thread-Index: AQHXYNr9xtdXtYfpBEGmty8mpcDGlasom2mAgABu7oA=
-Date:   Mon, 28 Jun 2021 09:22:53 +0000
-Message-ID: <A2D2BB3D-8C89-40D7-B0CF-F1D2B5176152@tuxera.com>
-References: <20210614050540.289494-1-desmondcheongzx@gmail.com>
- <ea63e5af-6ac4-08fe-4261-904d55392b10@gmail.com>
-In-Reply-To: <ea63e5af-6ac4-08fe-4261-904d55392b10@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [86.134.197.70]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E46CF24098D589409656063DFF65A21C@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S232152AbhF1Jer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:34:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 968D5619C5;
+        Mon, 28 Jun 2021 09:32:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624872742;
+        bh=lsamg+PxzeY+uZhhCSlp8N3GB8mjamZ+vBUc2M5/IYQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UyJ9GaPwLeevhfj1fFwQA3wbu0RqZcRtqjK2xyU8GUAuPRE2DQ0WerR6AvwzpJaZs
+         4FvFkl0XcIQDnn9boKYDXPBNRul/IT0PuqxAXR53l+yfYs9QBQgZWHwL1GB64S2JWB
+         MCn4MTwXS/iybIsQIU+StErstpj64CMUH/GH/RXA=
+Date:   Mon, 28 Jun 2021 11:32:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Message-ID: <YNmXIk7orQavkEME@kroah.com>
+References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
+ <20210625165614.2284243-4-roberto.sassu@huawei.com>
+ <YNhYu3BXh7f9GkVk@kroah.com>
+ <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
+ <YNmMX4EODT0c4zqk@kroah.com>
+ <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
 MIME-Version: 1.0
-X-Proofpoint-GUID: bS1-7ry4khBlczmL-2VT3CuiwRDQWvHJ
-X-Proofpoint-ORIG-GUID: bS1-7ry4khBlczmL-2VT3CuiwRDQWvHJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_07:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106280065
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Thanks for the patch!  Have asked Andrew to merge it.
-
-Best regards,
-
-	Anton
-
-> On 28 Jun 2021, at 03:45, Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com> wrote:
+On Mon, Jun 28, 2021 at 09:27:05AM +0000, Roberto Sassu wrote:
+> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > Sent: Monday, June 28, 2021 10:46 AM
+> > On Mon, Jun 28, 2021 at 08:30:32AM +0000, Roberto Sassu wrote:
+> > > > > +struct compact_list_hdr {
+> > > > > +	__u8 version;
+> > > >
+> > > > You should never need a version, that way lies madness.
+> > >
+> > > We wanted to have a way to switch to a new format, if necessary.
+> > 
+> > Then just add a new ioctl if you need that in the future, no need to try
+> > to cram it into this one.
 > 
-> On 14/6/21 1:05 pm, Desmond Cheong Zhi Xi wrote:
->> When checking the file name attribute, we want to ensure that it fits
->> within the bounds of ATTR_RECORD. To do this, we should check
->> that (attr record + file name offset + file name length) < (attr
->> record + attr record length).
->> However, the original check did not include the file name offset in
->> the calculation. This means that corrupted on-disk metadata might not
->> caught by the incorrect file name check, and lead to an invalid memory
->> access.
->> An example can be seen in the crash report of a memory corruption
->> error found by Syzbot:
->> https://syzkaller.appspot.com/bug?id=a1a1e379b225812688566745c3e2f7242bffc246
->> Adding the file name offset to the validity check fixes this error and
->> passes the Syzbot reproducer test.
->> Reported-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
->> Tested-by: syzbot+213ac8bb98f7f4420840@syzkaller.appspotmail.com
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->>  fs/ntfs/inode.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
->> index f5c058b3192c..4474adb393ca 100644
->> --- a/fs/ntfs/inode.c
->> +++ b/fs/ntfs/inode.c
->> @@ -477,7 +477,7 @@ static int ntfs_is_extended_system_file(ntfs_attr_search_ctx *ctx)
->>  		}
->>  		file_name_attr = (FILE_NAME_ATTR*)((u8*)attr +
->>  				le16_to_cpu(attr->data.resident.value_offset));
->> -		p2 = (u8*)attr + le32_to_cpu(attr->data.resident.value_length);
->> +		p2 = (u8 *)file_name_attr + le32_to_cpu(attr->data.resident.value_length);
->>  		if (p2 < (u8*)attr || p2 > p)
->>  			goto err_corrupt_attr;
->>  		/* This attribute is ok, but is it in the $Extend directory? */
+> Given that digest lists are generated elsewhere, it would be still
+> unclear when the ioctl() would be issued. Maybe the kernel needs
+> to parse both v1 and v2 digest lists (I expect that v1 cannot be easily
+> converted to v2, if they are signed).
 > 
-> Hi Anton,
+>  It would be also unpractical if digest lists are loaded at kernel
+> initialization time (I didn't send the patch yet).
+
+Then that is up to your api design, I do not know.  But note that
+"version" fields almost always never work, so be careful about assuming
+that this will solve any future issues.
+
+> > > > > +	__le16 type;
+> > > > > +	__le16 modifiers;
+> > > > > +	__le16 algo;
+> > > > > +	__le32 count;
+> > > > > +	__le32 datalen;
+> > > >
+> > > > Why are user/kernel apis specified in little endian format?  Why would
+> > > > that matter?  Shouldn't they just be "native" endian?
+> > >
+> > > I thought this would make it clear that the kernel always expects the
+> > > digest lists to be in little endian.
+> > 
+> > Why would a big endian system expect the data from userspace to be in
+> > little endian?  Shouldn't this always just be "native" endian given that
+> > this is not something that is being sent to hardware?
 > 
-> Any chance to review this patch?
-> 
-> Best wishes,
-> Desmond
+> The digest list might come from a system with different endianness.
 
+Ok, I have no idea what digests really are used for then.  So stick with
+little endian and be sure to properly convert within the kernel as
+needed.
 
--- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
+thanks,
 
+greg k-h
