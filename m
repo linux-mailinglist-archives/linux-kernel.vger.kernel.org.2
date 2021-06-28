@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1163B69FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF383B6A06
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237597AbhF1VH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 17:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
+        id S237633AbhF1VOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236768AbhF1VHu (ORCPT
+        with ESMTP id S234236AbhF1VO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 17:07:50 -0400
+        Mon, 28 Jun 2021 17:14:26 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84116C061574;
-        Mon, 28 Jun 2021 14:05:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE5FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=uVkWJJEgVMmv/VM+/tI0X/gn1Id+AayZLOfLG6sl0S4=; b=CDP8AVKZWHj5qu1qJuoZQy6xvf
-        E/ETdygnAZKz9/ak8vzKNKy3dWD60Vy9xb1d61vJcF61s/m0+L0wuehv6QKQq99zxvuR5Kev4LJYv
-        OaFjTdOdgmugsZKKANSwqs3ocRK9nImAYuy6W9EPLIcCviLNqj3Kyhmq1R2/WMkadG+vR7BsOmmQm
-        PeJPc/RGtuf0kpQ8mr8x+4ShABS0rRIv1KdeNUuk/20oDOQhkgJ4vU2/lilA+3gaRKHb+RsokJhJk
-        d0MlEuskP7VzHcQzqIKjwcil+qzjTUvN2p33TxivyTVlEWnvTvZiMqHTPgPlvL/mbP0JztnlMmgeK
-        S3POwxhw==;
+        bh=mTjSPzZG9+K/4jkT2IaNNnrtPpIfy0RNExLT/c4RwLY=; b=BGDYXRqiLf6JHU3uKfkeLeuhde
+        E8il+lkcZ5dOf9R8Bnd9EpKjLgaUXp9shQbX01J1RySanAx6mAIsyBFz8X7MEsf6OuycLBxm5UTfd
+        vk5nXPCgy2WRGo+j4MHRNE/z/uXYdHM/OFiuLJ6pzctxqcGoIIydEviXB3v9V83Jlu0rSJwnFGFdI
+        nxgkMZNQu+a67F4IYUmKchMOGzA2v4zkt98msNBGJoeEEGhm5BgCluXy6yRAY5QYSluJxttuH4GMc
+        XNxU2Fm9NTQPgXubne6fdfOsj5sqnNsknZvppKa/e8R4gwhLYjbipps2c5tSy4FL++VFnCcECE0HH
+        jnFEenRw==;
 Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxyRV-009Boc-Ps; Mon, 28 Jun 2021 21:05:21 +0000
+        id 1lxyXu-009CEy-OV; Mon, 28 Jun 2021 21:11:58 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "William A . Kennington III" <wak@google.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH v2] spi: <linux/spi/spi.h>: add missing struct kernel-doc entry
-Date:   Mon, 28 Jun 2021 14:05:20 -0700
-Message-Id: <20210628210520.5712-1-rdunlap@infradead.org>
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: [PATCH v2] ASoC: atmel: ATMEL drivers depend on HAS_DMA
+Date:   Mon, 28 Jun 2021 14:11:58 -0700
+Message-Id: <20210628211158.30273-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warning in spi.h by adding the missing kernel-doc entry
-and also correct the original comment so that they both indicate the
-correct polarity of the flag.
+On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+is not set, several ATMEL ASoC drivers select symbols that cause
+kconfig warnings. There is one "depends on HAS_DMA" here but several
+more are needed to prevent kconfig warnings since 'select' does not
+recognize any dependencies.
 
-../include/linux/spi/spi.h:673: warning: Function parameter or member 'devm_allocated' not described in 'spi_controller'
+Fix the following kconfig warnings:
 
-Fixes: 794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+
+WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+  Selected by [m]:
+  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+
+Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
+Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
+Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: William A. Kennington III <wak@google.com>
+Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
-Cc: Lukas Wunner <lukas@wunner.de>
+Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 ---
-v2: correct both comments for @devm_allocated to indicate the correct polarity
-    (thanks, Lukas)
+v2: rebase & resend;
+    drop Cc: to Bo Shen <voice.shen@atmel.com> # bounced
 
- include/linux/spi/spi.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/atmel/Kconfig |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- linux-next-20210628.orig/include/linux/spi/spi.h
-+++ linux-next-20210628/include/linux/spi/spi.h
-@@ -339,6 +339,7 @@ extern struct spi_device *spi_new_ancill
-  * @max_speed_hz: Highest supported transfer speed
-  * @flags: other constraints relevant to this driver
-  * @slave: indicates that this is an SPI slave controller
-+ * @devm_allocated: whether the allocation of this struct is devres-managed
-  * @max_transfer_size: function that returns the max transfer size for
-  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
-  * @max_message_size: function that returns the max message size for
-@@ -511,7 +512,7 @@ struct spi_controller {
+--- linux-next-20210628.orig/sound/soc/atmel/Kconfig
++++ linux-next-20210628/sound/soc/atmel/Kconfig
+@@ -19,12 +19,14 @@ config SND_ATMEL_SOC_DMA
  
- #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+ config SND_ATMEL_SOC_SSC
+ 	tristate
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_ATMEL_SOC_PDC
  
--	/* flag indicating this is a non-devres managed controller */
-+	/* flag indicating if the allocation of this struct is devres-managed */
- 	bool			devm_allocated;
- 
- 	/* flag indicating this is an SPI slave controller */
+ config SND_ATMEL_SOC_SSC_PDC
+ 	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
+ 	depends on ATMEL_SSC
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_PDC
+ 	select SND_ATMEL_SOC_SSC
+ 	help
+@@ -34,6 +36,7 @@ config SND_ATMEL_SOC_SSC_PDC
+ config SND_ATMEL_SOC_SSC_DMA
+ 	tristate "SoC PCM DAI support for AT91 SSC controller using DMA"
+ 	depends on ATMEL_SSC
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_DMA
+ 	select SND_ATMEL_SOC_SSC
+ 	help
+@@ -44,6 +47,7 @@ config SND_AT91_SOC_SAM9G20_WM8731
+ 	tristate "SoC Audio support for WM8731-based At91sam9g20 evaluation board"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+ 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_SSC_PDC
+ 	select SND_SOC_WM8731
+ 	help
+@@ -54,6 +58,7 @@ config SND_ATMEL_SOC_WM8904
+ 	tristate "Atmel ASoC driver for boards using WM8904 codec"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+ 	depends on ATMEL_SSC && I2C
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_SSC_DMA
+ 	select SND_SOC_WM8904
+ 	help
+@@ -64,6 +69,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
+ 	tristate "SoC Audio support for WM8731-based at91sam9x5 board"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+ 	depends on ATMEL_SSC && SND_SOC_I2C_AND_SPI
++	depends on HAS_DMA
+ 	select SND_ATMEL_SOC_SSC_DMA
+ 	select SND_SOC_WM8731
+ 	help
