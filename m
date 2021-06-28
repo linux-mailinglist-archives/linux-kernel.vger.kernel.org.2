@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246DF3B58DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C829A3B58DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhF1GCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:02:33 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:14778 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhF1GC3 (ORCPT
+        id S232177AbhF1GC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232035AbhF1GCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:02:29 -0400
-Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210628060003epoutp03c877fd6f8ebd38604bb40c1aec5315a8~MqZBjW65u0252602526epoutp03w
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:00:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210628060003epoutp03c877fd6f8ebd38604bb40c1aec5315a8~MqZBjW65u0252602526epoutp03w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624860003;
-        bh=ZBOaOnM5XEPFGcC55XN4dpE+X+wQQkFTm3DwUDgOvdE=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=MpmJLGRbgtwsqQ4a9ugeeVwbsgYImWzKsP0rdvFV6zJIeRumR8hCvQ6F31jKRVRZK
-         L6n3rmb2OS2aLf2mIT+WjwjUC7aV7XSrVdQA/3gcaCKnLJ5P4IgG9fJHAwy06xRkf4
-         86fAzJSyIulcel4kSSpynAx9iJdr9J1DvsIkYzcU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210628060001epcas3p2c38c4026db1fbb6c43a167d8095aab09~MqZAVAEGW1026810268epcas3p21;
-        Mon, 28 Jun 2021 06:00:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4GCxlj5qcBz4x9QP; Mon, 28 Jun 2021 06:00:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v2] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jpinto@synopsys.com" <jpinto@synopsys.com>,
-        "joe@perches.com" <joe@perches.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01624860001810.JavaMail.epsvc@epcpadp3>
-Date:   Mon, 28 Jun 2021 14:58:01 +0900
-X-CMS-MailID: 20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79
-References: <CGME20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79@epcms2p4>
+        Mon, 28 Jun 2021 02:02:24 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49B7C061574;
+        Sun, 27 Jun 2021 22:59:58 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ot9so26839192ejb.8;
+        Sun, 27 Jun 2021 22:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=scSC9FPsYN/R9j9GdoOTllx+3vsFm/mdFb9quS7rzYI=;
+        b=CvkBdWJ4oRn3YEcWbcwFITff9TmL8QkVvNknoOvc+VIryWWpkukvvnRSeLaRxuRyRx
+         xxTchDptzszJ0mWnMfZF2sOuZex6+/I+ZcJeFhHfsCGTCGTKwdDDTZ5lWzHSZZ4VQ2vV
+         WgOisHH+PeWPSC/hH8st9jhLZ7atUtuyG4cTolspIR4wLQE6uIS4bFxgcMEdTPdmTeIu
+         jioYCz245+TXgZrEGfvxhOFLZYIc3RMqjH6G5SBcTBPzLQTd5KNQBp4SUb1d52Fib7iZ
+         YR/bHDrKSCfckCpA7nGIkVWw0Tu/Y9HfiAPRBjHQv9n/pFTItEkx89vPOh0eCnwEWldi
+         KJIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=scSC9FPsYN/R9j9GdoOTllx+3vsFm/mdFb9quS7rzYI=;
+        b=i5arh1IC55kUbAFhbgoQTnNUI/IMtt6iL3w/b0us4ut0gKmd1yqTQqgn2uH3t3BLO0
+         W2a+rmURzGZ5l5+hl+xlXwm/t2foHLOi59OC+J6DxByQ9/yHdQZ/6b2q9/883lOqIFaV
+         8WEkcL0t3QfYtvBqnnMKdKmOPC0i281adWK7+TCVfwGlXvXPBdeE8MIx2YtGa3dEFU8u
+         v1J/v/x0B62z/JoVnOo8zt6oXXUp38rkTQdlY4O8jEKw0i2YS59HsUnaKc7TTtnDjq2m
+         +n/6VhVlQivelhxJvs56LG9JTiK7ketEAi/KOYFyii+5iuLh41yrP1fl/bK1tX9qo5fE
+         i/Sw==
+X-Gm-Message-State: AOAM531W/rRumb0UYCqzVTz/B1cyVIod+aQRFWdB5Py4862WmhXAoEZE
+        hBtQdit/6AAsqMaEOfqU4zY=
+X-Google-Smtp-Source: ABdhPJyrxn4mzQxG8eukm5nYIsde35AYVsofSIBJyVphFWkFl2j+jeThJ3JncoFe8AYj4eVgwD46AA==
+X-Received: by 2002:a17:906:a38d:: with SMTP id k13mr23284181ejz.250.1624859996821;
+        Sun, 27 Jun 2021 22:59:56 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dc2:cc00:2831:3317:971d:3f75])
+        by smtp.gmail.com with ESMTPSA id e21sm6390506ejy.54.2021.06.27.22.59.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 22:59:55 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] pgo: rectify comment to proper kernel-doc syntax
+Date:   Mon, 28 Jun 2021 07:59:47 +0200
+Message-Id: <20210628055947.6948-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify if else statement to return statement,
-and remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
+The command ./scripts/kernel-doc -none kernel/pgo/pgo.h warns:
 
-v1 -> v2
-Remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
+  kernel/pgo/pgo.h:112: warning: cannot understand function prototype: 'struct llvm_prf_value_node_data '
 
-Cc: Joao Pinto <jpinto@synopsys.com>
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+This is due to a slightly invalid use of kernel-doc syntax for the comment
+of this struct, that must have probably just slipped through refactoring
+and review before.
+
+Rectify the comment to proper kernel-doc syntax.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/scsi/ufs/ufshcd.h | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+Kees, please pick this quick minor fix into your pgo tree.
 
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index c98d540ac044..c9faca237290 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -893,16 +893,8 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+ kernel/pgo/pgo.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
+index ba3f8499254a..04fbf3bcde1e 100644
+--- a/kernel/pgo/pgo.h
++++ b/kernel/pgo/pgo.h
+@@ -103,7 +103,7 @@ struct llvm_prf_data {
+ } __aligned(LLVM_INSTR_PROF_DATA_ALIGNMENT);
  
- static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
- {
--/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
--#ifndef CONFIG_SCSI_UFS_DWC
--	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
--	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
--		return true;
--	else
--		return false;
--#else
--return true;
--#endif
-+	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-+		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
- }
- 
- static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
+ /**
+- * structure llvm_prf_value_node_data - represents the data part of the struct
++ * struct llvm_prf_value_node_data - represents the data part of the struct
+  *   llvm_prf_value_node data structure.
+  * @value: the value counters.
+  * @count: the counters' count.
 -- 
 2.17.1
+
