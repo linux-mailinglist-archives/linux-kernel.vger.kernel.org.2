@@ -2,180 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301993B5791
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C929C3B5790
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 04:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhF1C7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 22:59:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56857 "EHLO mga07.intel.com"
+        id S232013AbhF1C7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 22:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1C7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 22:59:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271737095"
-X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="scan'208";a="271737095"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 19:56:51 -0700
-X-IronPort-AV: E=Sophos;i="5.83,304,1616482800"; 
-   d="scan'208";a="419008053"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2021 19:56:46 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Busch <kbusch@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Zi Yan <ziy@nvidia.com>, David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH -V9 7/9] mm/vmscan: Consider anonymous pages without swap
-References: <20210625073204.1005986-1-ying.huang@intel.com>
-        <20210625073204.1005986-8-ying.huang@intel.com>
-        <CAAPL-u8J8A2G=QO24hhn-Em+PXE7Q82OObpPJxNUWznfO-0XRQ@mail.gmail.com>
-Date:   Mon, 28 Jun 2021 10:56:44 +0800
-In-Reply-To: <CAAPL-u8J8A2G=QO24hhn-Em+PXE7Q82OObpPJxNUWznfO-0XRQ@mail.gmail.com>
-        (Wei Xu's message of "Fri, 25 Jun 2021 17:02:25 -0700")
-Message-ID: <874kdig0ib.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231678AbhF1C7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 22:59:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3442861C29;
+        Mon, 28 Jun 2021 02:56:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624849010;
+        bh=JBdyWUe8fIp4N8uV6oiSpRPqgIGp9L3w0kNa6OeYPj8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=GyM7vzGuxsuZfe1r/YCiP72PJHe7nenx6wd1d2PyEQXBOgv/4wznl5FirkDIC7fjj
+         Ca5tburTvEZ+sGqKmLHXXzlfMRyZsE5WemYqudfVS3xRE+DgqA4tbkyu2gvQjamF0j
+         OajiykP+z493861a1/BTpEMm8f/J2CA7vcRmYaWRWS0ukxg+LYYU2HQ7A+IfalTIN1
+         4j6bwHiJQcCkRf4vDraXxMoEvjuqZZSh00sNmBiCuhu4nRx8Tvv0Q1/uJc9LMeozzs
+         TYFgat9Ysd4kmIZ5jvmQ8yLnM8+1RPBisRitYPKTLdKHupCgjLC63IssJY7M/Is7hP
+         xoCb7KwYS4kHA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210616034826.37276-1-yujiahua1@huawei.com>
+References: <20210616034826.37276-1-yujiahua1@huawei.com>
+Subject: Re: [PATCH -next] drivers: ti: remove redundant error message in adpll.c
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yu Jiahua <yujiahua1@huawei.com>
+To:     Yu Jiahua <yujiahua1@huawei.com>, kristo@kernel.org,
+        mturquette@baylibre.com
+Date:   Sun, 27 Jun 2021 19:56:48 -0700
+Message-ID: <162484900892.2516444.13735398844442302580@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Xu <weixugc@google.com> writes:
+Quoting Yu Jiahua (2021-06-15 20:48:26)
+> There is a error message within devm_ioremap_resource
+> already, so remove the dev_err call to avoid redundant
+> error message.
+>=20
+> Signed-off-by: Yu Jiahua <yujiahua1@huawei.com>
+> ---
 
-> On Fri, Jun 25, 2021 at 12:33 AM Huang Ying <ying.huang@intel.com> wrote:
->>
->> From: Keith Busch <kbusch@kernel.org>
->>
->> Reclaim anonymous pages if a migration path is available now that
->> demotion provides a non-swap recourse for reclaiming anon pages.
->>
->> Note that this check is subtly different from the
->> anon_should_be_aged() checks.  This mechanism checks whether a
->> specific page in a specific context *can* actually be reclaimed, given
->> current swap space and cgroup limits
->>
->> anon_should_be_aged() is a much simpler and more preliminary check
->> which just says whether there is a possibility of future reclaim.
->>
->> Cc: Keith Busch <kbusch@kernel.org>
->> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> Reviewed-by: Yang Shi <shy828301@gmail.com>
->> Cc: Michal Hocko <mhocko@suse.com>
->> Cc: Zi Yan <ziy@nvidia.com>
->> Cc: Wei Xu <weixugc@google.com>
->> Cc: David Rientjes <rientjes@google.com>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: David Hildenbrand <david@redhat.com>
->>
->> --
->>
->> Changes since 20210618:
->>  * Consider whether demotion is disabled
->>
->> Changes from Dave 202010:
->>  * remove 'total_swap_pages' modification
->>
->> Changes from Dave 202006:
->>  * rename reclaim_anon_pages()->can_reclaim_anon_pages()
->>
->> Note: Keith's Intel SoB is commented out because he is no
->> longer at Intel and his @intel.com mail will bounce.
->> ---
->>  mm/vmscan.c | 37 ++++++++++++++++++++++++++++++++++---
->>  1 file changed, 34 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 55f6192b2a51..fce43c7970d7 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -519,6 +519,36 @@ static long add_nr_deferred(long nr, struct shrinker *shrinker,
->>         return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
->>  }
->>
->> +static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->> +                                         int node_id,
->> +                                         struct scan_control *sc)
->> +{
->> +       if (memcg == NULL) {
->> +               /*
->> +                * For non-memcg reclaim, is there
->> +                * space in any swap device?
->> +                */
->> +               if (get_nr_swap_pages() > 0)
->> +                       return true;
->> +       } else {
->> +               /* Is the memcg below its swap limit? */
->> +               if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->> +                       return true;
->> +       }
->> +
->> +       /*
->> +        * The page can not be swapped.
->> +        *
->> +        * Can it be reclaimed from this node via demotion?
->> +        */
->> +       if ((!sc || !sc->no_demotion) &&
->> +           next_demotion_node(node_id) != NUMA_NO_NODE)
->> +               return true;
->
-> It is better to abstract these checks into a function, e.g.
-> can_demote_anon_pages(), to share with anon_can_be_aged().
-
-Thanks!  This is a really good idea!  The function can be used by
-shrink_page_list() too.  So code duplication is reduced greatly!  Will
-do that in the next version.
-
-Best Regards,
-Huang, Ying
-
->> +       /* No way to reclaim anon pages */
->> +       return false;
->> +}
->> +
->>  /*
->>   * This misses isolated pages which are not accounted for to save counters.
->>   * As the data only determines if reclaim or compaction continues, it is
->> @@ -530,7 +560,7 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
->>
->>         nr = zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_FILE) +
->>                 zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_FILE);
->> -       if (get_nr_swap_pages() > 0)
->> +       if (can_reclaim_anon_pages(NULL, zone_to_nid(zone), NULL))
->>                 nr += zone_page_state_snapshot(zone, NR_ZONE_INACTIVE_ANON) +
->>                         zone_page_state_snapshot(zone, NR_ZONE_ACTIVE_ANON);
->>
->> @@ -2531,6 +2561,7 @@ enum scan_balance {
->>  static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->>                            unsigned long *nr)
->>  {
->> +       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->>         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>         unsigned long anon_cost, file_cost, total_cost;
->>         int swappiness = mem_cgroup_swappiness(memcg);
->> @@ -2541,7 +2572,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->>         enum lru_list lru;
->>
->>         /* If we have no swap space, do not bother scanning anon pages. */
->> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
->> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
->>                 scan_balance = SCAN_FILE;
->>                 goto out;
->>         }
->> @@ -2916,7 +2947,7 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
->>          */
->>         pages_for_compaction = compact_gap(sc->order);
->>         inactive_lru_pages = node_page_state(pgdat, NR_INACTIVE_FILE);
->> -       if (get_nr_swap_pages() > 0)
->> +       if (can_reclaim_anon_pages(NULL, pgdat->node_id, sc))
->>                 inactive_lru_pages += node_page_state(pgdat, NR_INACTIVE_ANON);
->>
->>         return inactive_lru_pages > pages_for_compaction;
->> --
->> 2.30.2
->>
+Applied to clk-next
