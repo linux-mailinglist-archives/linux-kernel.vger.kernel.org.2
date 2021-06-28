@@ -2,115 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC863B5FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BAF3B5FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhF1OUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:20:19 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:47827 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232093AbhF1OUR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:20:17 -0400
-Received: (qmail 657640 invoked by uid 1000); 28 Jun 2021 10:17:51 -0400
-Date:   Mon, 28 Jun 2021 10:17:51 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "guido.kiener@rohde-schwarz.com" <guido.kiener@rohde-schwarz.com>,
-        "dpenkler@gmail.com" <dpenkler@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [syzbot] INFO: rcu detected stall in tx
-Message-ID: <20210628141751.GB656159@rowland.harvard.edu>
-References: <000000000000a9b79905c04e25a0@google.com>
- <CACT4Y+aF64oNZD7Vd04bj+KfBU5GqVobCbRPp2-x_Z6dEr8d3A@mail.gmail.com>
- <BL1PR11MB5478572825796B0F04E1E1FDFF039@BL1PR11MB5478.namprd11.prod.outlook.com>
+        id S232596AbhF1OUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:20:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:60292 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232093AbhF1OUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:20:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 806C71042;
+        Mon, 28 Jun 2021 07:17:58 -0700 (PDT)
+Received: from [10.57.8.89] (unknown [10.57.8.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 338663F718;
+        Mon, 28 Jun 2021 07:17:57 -0700 (PDT)
+Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
+ instead
+To:     Steven Price <steven.price@arm.com>,
+        Chunyou Tang <tangchunyou@163.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+References: <20210617062054.1864-1-tangchunyou@163.com>
+ <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
+ <20210619111852.00003e52@163.com>
+ <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
+ <20210622094000.00004f7e@163.com>
+ <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
+ <20210625174937.0000183f@163.com>
+ <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ebd984f1-19bd-4943-cbe6-2541aaa64946@arm.com>
+Date:   Mon, 28 Jun 2021 15:17:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BL1PR11MB5478572825796B0F04E1E1FDFF039@BL1PR11MB5478.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 06:38:37AM +0000, Zhang, Qiang wrote:
+On 2021-06-28 11:48, Steven Price wrote:
+> On 25/06/2021 10:49, Chunyou Tang wrote:
+>> Hi Steve,
+>> 	Thinks for your reply.
+>> 	When I only set the pte |= ARM_LPAE_PTE_SH_NS;there have no "GPU
+>> Fault",When I set the pte |= ARM_LPAE_PTE_SH_IS(or
+>> ARM_LPAE_PTE_SH_OS);there have "GPU Fault".I don't know how the pte
+>> effect this issue?
+>> 	Can you give me some suggestions again?
+>>
+>> Thinks.
+>>
+>> Chunyou
 > 
+> Hi Chunyou,
 > 
-> ________________________________________
-> From: Dmitry Vyukov <dvyukov@google.com>
-> Sent: Monday, 19 April 2021 15:27
-> To: syzbot; Greg Kroah-Hartman; guido.kiener@rohde-schwarz.com; dpenkler@gmail.com; lee.jones@linaro.org; USB list
-> Cc: bp@alien8.de; dwmw@amazon.co.uk; hpa@zytor.com; linux-kernel@vger.kernel.org; luto@kernel.org; mingo@redhat.com; syzkaller-bugs@googlegroups.com; tglx@linutronix.de; x86@kernel.org
-> Subject: Re: [syzbot] INFO: rcu detected stall in tx
+> You haven't given me much context so I'm not entirely sure which PTE you
+> are talking about (GPU or CPU), or indeed where you are changing the PTE
+> values.
 > 
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> The PTEs control whether a page is shareable or not, the GPU requires
+> that accesses are consistent (i.e. either all accesses to a page are
+> shareable or all are non-shareable) and will race a fault if it detects
+> this isn't the case. Mali also has a quirk for its version of 'LPAE'
+> where inner shareable actually means only within the GPU and outer
+> shareable means outside the GPU (which I think usually means Inner
+> Shareable on the external bus).
+
+Furthermore, the way the io-pgtable code works for ARM_MALI_LPAE format 
+  means that *all* GPU mappings are unconditionally outer-shareable, so 
+it's not clear how the GPU could observe a mismatch in the first place 
+(other than major integration issues causing data corruption).
+
+Robin.
+
 > 
-> On Mon, Apr 19, 2021 at 9:19 AM syzbot
-> <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    50987bec Merge tag 'trace-v5.12-rc7' of git://git.kernel.o..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1065c5fcd00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=398c4d0fe6f66e68
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e2eae5639e7203360018
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com
-> >
-> > usbtmc 5-1:0.0: unknown status received: -71
-> > usbtmc 3-1:0.0: unknown status received: -71
-> > usbtmc 5-1:0.0: unknown status received: -71
+> Steve
 > 
-> >The log shows an infinite stream of these before the stall, so I
-> >assume it's an infinite loop in usbtmc.
-> >+usbtmc maintainers
-> >
-> >[  370.171634][    C0] usbtmc 6-1:0.0: unknown status received: >-71
-> >[  370.177799][    C1] usbtmc 3-1:0.0: unknown status received: >-71
-
-> This seems like a long time in the following cycle,  when the callback function usbtmc_interrupt() find unknown status error, it will submit urb again. the urb may be insert  urbp_list.
-> due to the dummy_timer() be called in bh-disable. 
-> This will result in the RCU reading critical area not exiting for a long time (note: bh_disable/enable, preempt_disable/enable is regarded as the RCU critical reading area ), and prevent rcu_preempt kthread be schedule and running.
-
-> Whether to return directly when we find the urb status is unknown error?
-
-Yes.
-
-> diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
-> index 74d5a9c5238a..39d44339c03f 100644
-> --- a/drivers/usb/class/usbtmc.c
-> +++ b/drivers/usb/class/usbtmc.c
-> @@ -2335,6 +2335,7 @@ static void usbtmc_interrupt(struct urb *urb)
->                 return;
->         default:
->                 dev_err(dev, "unknown status received: %d\n", status);
-> +               return;
->         }
->  exit:
->         rv = usb_submit_urb(urb, GFP_ATOMIC);
-
-This is the right thing to do.  In fact, you should also change the code 
-above this.  There's no real need for special handling of the 
--ECONNRESET, -ENOENT, ..., -EPIPE codes, since the driver will do the 
-same thing no matter what the code is.
-
-Alan Stern
+>> 于 Thu, 24 Jun 2021 14:22:04 +0100
+>> Steven Price <steven.price@arm.com> 写道:
+>>
+>>> On 22/06/2021 02:40, Chunyou Tang wrote:
+>>>> Hi Steve,
+>>>> 	I will send a new patch with suitable subject/commit
+>>>> message. But I send a V3 or a new patch?
+>>>
+>>> Send a V3 - it is a new version of this patch.
+>>>
+>>>> 	I met a bug about the GPU,I have no idea about how to fix
+>>>> it, If you can give me some suggestion,it is perfect.
+>>>>
+>>>> You can see such kernel log:
+>>>>
+>>>> Jun 20 10:20:13 icube kernel: [  774.566760] mvp_gpu 0000:05:00.0:
+>>>> GPU Fault 0x00000088 (SHAREABILITY_FAULT) at 0x000000000310fd00 Jun
+>>>> 20 10:20:13 icube kernel: [  774.566764] mvp_gpu 0000:05:00.0:
+>>>> There were multiple GPU faults - some have not been reported Jun 20
+>>>> 10:20:13 icube kernel: [  774.667542] mvp_gpu 0000:05:00.0:
+>>>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  774.767900]
+>>>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:13 icube
+>>>> kernel: [  774.868546] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck
+>>>> Jun 20 10:20:13 icube kernel: [  774.968910] mvp_gpu 0000:05:00.0:
+>>>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  775.069251]
+>>>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:22 icube
+>>>> kernel: [  783.693971] mvp_gpu 0000:05:00.0: gpu sched timeout,
+>>>> js=1, config=0x7300, status=0x8, head=0x362c900, tail=0x362c100,
+>>>> sched_job=000000003252fb84
+>>>>
+>>>> In
+>>>> https://lore.kernel.org/dri-devel/20200510165538.19720-1-peron.clem@gmail.com/
+>>>> there had a same bug like mine,and I found you at the mail list,I
+>>>> don't know how it fixed?
+>>>
+>>> The GPU_SHAREABILITY_FAULT error means that a cache line has been
+>>> accessed both as shareable and non-shareable and therefore coherency
+>>> cannot be guaranteed. Although the "multiple GPU faults" means that
+>>> this may not be the underlying cause.
+>>>
+>>> The fact that your dmesg log has PCI style identifiers
+>>> ("0000:05:00.0") suggests this is an unusual platform - I've not
+>>> previously been aware of a Mali device behind PCI. Is this device
+>>> working with the kbase/DDK proprietary driver? It would be worth
+>>> looking at the kbase kernel code for the platform to see if there is
+>>> anything special done for the platform.
+>>>
+>>>  From the dmesg logs all I can really tell is that the GPU seems
+>>> unhappy about the memory system.
+>>>
+>>> Steve
+>>>
+>>>> I need your help!
+>>>>
+>>>> thinks very much!
+>>>>
+>>>> Chunyou
+>>>>
+>>>> 于 Mon, 21 Jun 2021 11:45:20 +0100
+>>>> Steven Price <steven.price@arm.com> 写道:
+>>>>
+>>>>> On 19/06/2021 04:18, Chunyou Tang wrote:
+>>>>>> Hi Steve,
+>>>>>> 	1,Now I know how to write the subject
+>>>>>> 	2,the low 8 bits is the exception type in spec.
+>>>>>>
+>>>>>> and you can see prnfrost_exception_name()
+>>>>>>
+>>>>>> switch (exception_code) {
+>>>>>>                  /* Non-Fault Status code */
+>>>>>> case 0x00: return "NOT_STARTED/IDLE/OK";
+>>>>>> case 0x01: return "DONE";
+>>>>>> case 0x02: return "INTERRUPTED";
+>>>>>> case 0x03: return "STOPPED";
+>>>>>> case 0x04: return "TERMINATED";
+>>>>>> case 0x08: return "ACTIVE";
+>>>>>> ........
+>>>>>> ........
+>>>>>> case 0xD8: return "ACCESS_FLAG";
+>>>>>> case 0xD9 ... 0xDF: return "ACCESS_FLAG";
+>>>>>> case 0xE0 ... 0xE7: return "ADDRESS_SIZE_FAULT";
+>>>>>> case 0xE8 ... 0xEF: return "MEMORY_ATTRIBUTES_FAULT";
+>>>>>> }
+>>>>>> return "UNKNOWN";
+>>>>>> }
+>>>>>>
+>>>>>> the exception_code in case is only 8 bits,so if fault_status
+>>>>>> in panfrost_gpu_irq_handler() don't & 0xFF,it can't get correct
+>>>>>> exception reason,it will be always UNKNOWN.
+>>>>>
+>>>>> Yes, I'm happy with the change - I just need a patch that I can
+>>>>> apply. At the moment this patch only changes the first '0x%08x'
+>>>>> output rather than the call to panfrost_exception_name() as well.
+>>>>> So we just need a patch which does:
+>>>>>
+>>>>> - fault_status & 0xFF, panfrost_exception_name(pfdev,
+>>>>> fault_status),
+>>>>> + fault_status, panfrost_exception_name(pfdev, fault_status &
+>>>>> 0xFF),
+>>>>>
+>>>>> along with a suitable subject/commit message describing the
+>>>>> change. If you can send me that I can apply it.
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Steve
+>>>>>
+>>>>> PS. Sorry for going round in circles here - I'm trying to help you
+>>>>> get setup so you'll be able to contribute patches easily in
+>>>>> future. An important part of that is ensuring you can send a
+>>>>> properly formatted patch to the list.
+>>>>>
+>>>>> PPS. I'm still not receiving your emails directly. I don't think
+>>>>> it's a problem at my end because I'm receiving other emails, but
+>>>>> if you can somehow fix the problem you're likely to receive a
+>>>>> faster response.
+>>>>>
+>>>>>> 于 Fri, 18 Jun 2021 13:43:24 +0100
+>>>>>> Steven Price <steven.price@arm.com> 写道:
+>>>>>>
+>>>>>>> On 17/06/2021 07:20, ChunyouTang wrote:
+>>>>>>>> From: ChunyouTang <tangchunyou@icubecorp.cn>
+>>>>>>>>
+>>>>>>>> of the low 8 bits.
+>>>>>>>
+>>>>>>> Please don't split the subject like this. The first line of the
+>>>>>>> commit should be a (very short) summary of the patch. Then a
+>>>>>>> blank line and then a longer description of what the purpose of
+>>>>>>> the patch is and why it's needed.
+>>>>>>>
+>>>>>>> Also you previously had this as part of a series (the first part
+>>>>>>> adding the "& 0xFF" in the panfrost_exception_name() call). I'm
+>>>>>>> not sure we need two patches for the single line, but as it
+>>>>>>> stands this patch doesn't apply.
+>>>>>>>
+>>>>>>> Also I'm still not receiving any emails from you directly (only
+>>>>>>> via the list), so it's possible I might have missed something
+>>>>>>> you sent.
+>>>>>>>
+>>>>>>> Steve
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+>>>>>>>> ---
+>>>>>>>>   drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+>>>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
+>>>>>>>> 1fffb6a0b24f..d2d287bbf4e7 100644 ---
+>>>>>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
+>>>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@
+>>>>>>>> static irqreturn_t panfrost_gpu_irq_handler(int irq, void
+>>>>>>>> *data) address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
+>>>>>>>>   		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+>>>>>>>> 0x%016llx\n",
+>>>>>>>> -			 fault_status & 0xFF,
+>>>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
+>>>>>>>> +			 fault_status,
+>>>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF), address);
+>>>>>>>>   
+>>>>>>>>   		if (state & GPU_IRQ_MULTIPLE_FAULT)
+>>>>>>>>
+>>>>>>
+>>>>>>
+>>>>
+>>>>
+>>
+>>
+> 
