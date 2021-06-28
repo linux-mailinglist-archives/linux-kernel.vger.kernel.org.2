@@ -2,210 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D2D3B5C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245213B5C91
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbhF1KlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:41:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:56196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231935AbhF1KlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:41:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DE28D6E;
-        Mon, 28 Jun 2021 03:38:38 -0700 (PDT)
-Received: from [10.57.8.231] (unknown [10.57.8.231])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23C2B3F694;
-        Mon, 28 Jun 2021 03:38:36 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210624164303.28632-1-james.clark@arm.com>
- <20210624164303.28632-3-james.clark@arm.com>
- <20210628012744.GA158794@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
-Date:   Mon, 28 Jun 2021 11:38:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232732AbhF1KlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhF1KlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:41:10 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D662BC061768
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 03:38:43 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n23so11103182wms.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 03:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0qFQ3U6jsg6qIs7KhbJBNtk6J/Y0oCVBp71I54LXLBM=;
+        b=zrbX05ANKJVsOPOZiX2DLCZgzOucc2vNcD5mDLD0rtzXhqPL4j9jXZorortgjgwEOu
+         Xmt3ndzxMzAL56ksiYw5gR9v+dDSg0+eih1BD7Dk9QQBrKCNyno4xyVKoDEJNZiLbQPm
+         BsPb19xHJVxibC+rc3Bv+zUrFq9r5Iky8VjEs7pr6I4hDlLIINaMfxKax8Kgni49mLT5
+         DLRGdH2523pzID0flvfDQQ/8JzCd2uDHMw6S8Ja8Z10hkgr5SZPFrhBUKjxtZdUJj/pD
+         jLbGsaOl9YqcdTWLSkepmPO1o5fqU8ZZx6gt6PQ7vQWMEq6AEbNBDV2tRNKbIo/IwbJ9
+         iemw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0qFQ3U6jsg6qIs7KhbJBNtk6J/Y0oCVBp71I54LXLBM=;
+        b=QhKwSK3AQRnaE4TXjwMoK1fiC/tAnT4n4dsAlHo6Vil3vYX5Mpt5TJnnVbngdXt+N/
+         tJgUVbagk12HJgRcchBLYPlEOVxOtpODFWwlTR5XtfDgLDsvVKyG66/vvO13ibMaO3eA
+         d0oQkkJX/kLZHF9/ALrJsXDu3BQJizCCq4wIQji7Zfbqc8GC/AhR338UqJGBHpZSS7DY
+         1ObrERcgkjTeYv65WazC668/w3zENo9yHdFAUFnO6OhsOvDe91WIR1r8YtJRw5aMXJ4/
+         WOWgREETj7qhMnyVzxNWMhUEkCuRmrzSyFEvc5ILm8Vo4dfg/nb2BLFvudTg8kO6Ilqy
+         wkxQ==
+X-Gm-Message-State: AOAM5327LABsSnB2CmtA0FIzdYpCf6QDkJAWQm8vY09h4B3V5jTHAiY7
+        HEW9NRhsIBMUrPIvA4g9Ecq7nw==
+X-Google-Smtp-Source: ABdhPJwLTkAQajwpkj6Z7Owjep39/6h4h6Ogd+7eakE6TPJFQqHxWWueTSFRYMTddDjl8IJxeyRA9w==
+X-Received: by 2002:a05:600c:224a:: with SMTP id a10mr26172573wmm.154.1624876722454;
+        Mon, 28 Jun 2021 03:38:42 -0700 (PDT)
+Received: from dell ([95.144.13.187])
+        by smtp.gmail.com with ESMTPSA id h206sm18855813wmh.33.2021.06.28.03.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 03:38:42 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 11:38:40 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "grant.likely@linaro.org" <grant.likely@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH mfd v3] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Message-ID: <YNmmsON7qP5+yjqp@dell>
+References: <1624034232-7952-1-git-send-email-min.li.xe@renesas.com>
+ <OS3PR01MB659309124542B0D712FC9DEBBA069@OS3PR01MB6593.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628012744.GA158794@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OS3PR01MB659309124542B0D712FC9DEBBA069@OS3PR01MB6593.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 25 Jun 2021, Min Li wrote:
 
+> Hi Lee
+> 
+> This is Min. I am wondering if you have had a chance to review my latest patch?
 
-On 28/06/2021 02:27, Leo Yan wrote:
-> Hi James,
-> 
-> On Thu, Jun 24, 2021 at 05:43:03PM +0100, James Clark wrote:
->> Currently --dump-raw-trace skips queueing and splitting buffers because
->> of an early exit condition in cs_etm__process_auxtrace_info(). Once
->> that is removed we can print the split data by using the queues
->> and searching for split buffers with the same reference as the
->> one that is currently being processed.
->>
->> This keeps the same behaviour of dumping in file order when an AUXTRACE
->> event appears, rather than moving trace dump to where AUX records are in
->> the file.
->>
->> There will be a newline and size printout for each fragment. For example
->> this buffer is comprised of two AUX records, but was printed as one:
->>
->>   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
->>
->>   . ... CoreSight ETM Trace data: size 160 bytes
->>           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
->>           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->>           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
->>           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
->>           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->>           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
->>
->> But is now printed as two fragments:
->>
->>   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
->>
->>   . ... CoreSight ETM Trace data: size 80 bytes
->>           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
->>           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->>           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
->>
->>   . ... CoreSight ETM Trace data: size 80 bytes
->>           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
->>           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->>           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
->>
->> Decoding errors that appeared in problematic files are now not present,
->> for example:
->>
->>         Idx:808; ID:1c; I_BAD_SEQUENCE : Invalid Sequence in packet.[I_ASYNC]
->>         ...
->>         PKTP_ETMV4I_0016 : 0x0014 (OCSD_ERR_INVALID_PCKT_HDR) [Invalid packet header]; TrcIdx=822
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
-> 
-> I tested this patch and the result looks good for me.
-> 
-> I found a side effect introduced by this change is the perf raw dump
-> also synthesizes events PERF_RECORD_ATTR.  This is because function
-> cs_etm__synth_events() will execute after applying this patch and it
-> synthesizes PERF_RECORD_ATTR events.  I don't see any harm for this,
-> so:
-> 
-> Tested-by: Leo Yan <leo.yan@linaro.org>
-> 
+Please don't nag.
 
-Thanks for the testing!
+You should provide at least 2 weeks for someone to review.
 
-> Please see an extra comment in below.
-> 
->> ---
->>  tools/perf/util/cs-etm.c | 20 ++++++++++++++++++--
->>  1 file changed, 18 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->> index 88e8122f73c9..ad777c2a342f 100644
->> --- a/tools/perf/util/cs-etm.c
->> +++ b/tools/perf/util/cs-etm.c
->> @@ -2430,6 +2430,22 @@ static int cs_etm__process_event(struct perf_session *session,
->>  	return 0;
->>  }
->>  
->> +static void dump_queued_data(struct cs_etm_auxtrace *etm,
->> +			     struct perf_record_auxtrace *event)
->> +{
->> +	struct auxtrace_buffer *buf;
->> +	unsigned int i;
->> +	/*
->> +	 * Find all buffers with same reference in the queues and dump them.
->> +	 * This is because the queues can contain multiple entries of the same
->> +	 * buffer that were split on aux records.
->> +	 */
->> +	for (i = 0; i < etm->queues.nr_queues; ++i)
->> +		list_for_each_entry(buf, &etm->queues.queue_array[i].head, list)
->> +			if (buf->reference == event->reference)
->> +				cs_etm__dump_event(etm, buf);
->> +}
->> +
->>  static int cs_etm__process_auxtrace_event(struct perf_session *session,
->>  					  union perf_event *event,
->>  					  struct perf_tool *tool __maybe_unused)
->> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->>  				cs_etm__dump_event(etm, buffer);
->>  				auxtrace_buffer__put_data(buffer);
->>  			}
->> -	}
->> +	} else if (dump_trace)
->> +		dump_queued_data(etm, &event->auxtrace);
-> 
-> IIUC, in the function cs_etm__process_auxtrace_event(), since
-> "etm->data_queued" is always true, below flow will never run:
-> 
->     if (!etm->data_queued) {
->         ......
-> 
->         if (dump_trace)
->             if (auxtrace_buffer__get_data(buffer, fd)) {
->                     cs_etm__dump_event(etm, buffer);
->                     auxtrace_buffer__put_data(buffer);
->             }
->     }
-> 
-> If so, it's better to use a new patch to polish the code.
-> 
+After 2 weeks has elapsed, you may consider a [RESEND].
 
-Hi Leo,
+As it happens, your patch is in the queue and will be reviewed
+shortly.  Although this time has now been extended since you just
+pushed it to the back of the queue (patches are reviewed in
+chronological order by the date they were last updated).
 
-I think this is not true in piped mode because there is no auxtrace index.
-In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
-is called for each buffer.
-
-You can reproduce this with something like this:
-
-     ./perf record -o - ls > stdio.data
-     cat stdio.data | ./perf report -i -
-
-There are some other Coresight features that don't work as expected in this mode, like
-sorting timestamps between CPUs. The aux split patchset won't work either because random
-access isn't possible. And the TRBE patch that I'm working on now won't work, because it
-also requires the random access to lookup the flags on the AUX record to configure the 
-decoder for unformatted trace.
-
-
-Thanks
-James
-
-> Thanks,
-> Leo
-> 
->>  
->>  	return 0;
->>  }
->> @@ -3038,7 +3055,6 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
->>  
->>  	if (dump_trace) {
->>  		cs_etm__print_auxtrace_info(auxtrace_info->priv, num_cpu);
->> -		return 0;
->>  	}
->>  
->>  	err = cs_etm__synth_events(etm, session);
->> -- 
->> 2.28.0
->>
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
