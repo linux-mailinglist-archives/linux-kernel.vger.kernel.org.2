@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511EE3B68AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BAF3B68B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbhF1Sta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbhF1St2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:49:28 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39342C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:47:01 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id v20so13071431eji.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YNTrWfcoiPrPW+WzaIxT5A0s+McPLMj+Y/fAIS8NTGU=;
-        b=tfXqgJkBLD1l0dM32m90zIPv6WZJFDB42pT1FNu0Cfe7Zm9P+KB3hbOSIBxKA3ViYh
-         97jkGNc/EweQ/KbhlqsvRKdlpwN1iSyM0190wQrGdm2veNhzbniffMz+2hK8RhGYNchc
-         z0mvEP/uwk+xr/wchjVG8pzCyM0k4LUWSyLjuBjJmChtTF5JT2hs1aeZdR8k3LCC7rZo
-         ZefxDMPWZC+Sr4Bjzglcz2RqQiNXZWc5RBwvjSSsMnilWBOXt9wvCYN/V7P+jmW336mU
-         iikOnHVWGNXAl6CoKJ4xvKFkRI1lnw4qr0JdJJFc9xO7FaaOXmk+nkF7/S6Si4OStjXB
-         WbvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=YNTrWfcoiPrPW+WzaIxT5A0s+McPLMj+Y/fAIS8NTGU=;
-        b=qxkQb/RetpuGA4DDsHUS+IAea3a8xtrNbwXQLg7DH+sfiT7IYN73HakhN4ICpXDOjB
-         kW+UNRLvL+JWJwxhToRCcWSzDX5C4b3L9EW7IplIODAf3JtMQ/D1xMZti5CVhwljncWD
-         vxGg/fQk+X5I7QVIGDVHssmUTd6ioUHsbrUoBJJe3rrJyN0ZociOnXn3oxSsj77g9nf1
-         gYiEx1tIdZgWuGG0YrBMClst21vs96sM0L/kaF5tlnWD5WyAffQ+RT5ClOaMlGU4+jEj
-         JZXDVdavOwW5sHqXfVE7EwfSWBfKWFJ+ThtSyNU0ytYPTwmCiupqZB2ECr5wpXbvQUMp
-         bLsg==
-X-Gm-Message-State: AOAM530LtzvMPBqG0E9udHbotg06lN7lUHmOpza2fp2LrYjGr7imZNCB
-        LSYxCv1REqYYTlQpTWalReI=
-X-Google-Smtp-Source: ABdhPJxImjO2UEAVzOJpKEDUb/FY1YK09W+7WIa35c0RF4umK5X0xzr5RWM786g8ZMfDf2gS644bHA==
-X-Received: by 2002:a17:906:2dd3:: with SMTP id h19mr26060594eji.272.1624906019820;
-        Mon, 28 Jun 2021 11:46:59 -0700 (PDT)
-Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
-        by smtp.gmail.com with ESMTPSA id n2sm9887738edi.32.2021.06.28.11.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 11:46:59 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 28 Jun 2021 20:46:57 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] sigqueue cache fix
-Message-ID: <YNoZIVgboj6YKo3V@gmail.com>
-References: <YNQwgTR3n3mSO9+3@gmail.com>
- <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
- <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
- <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com>
- <YNlapAKObfeVPoQO@gmail.com>
- <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
-MIME-Version: 1.0
+        id S235439AbhF1SzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:55:12 -0400
+Received: from mail-co1nam11on2042.outbound.protection.outlook.com ([40.107.220.42]:36896
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233768AbhF1SzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 14:55:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xat6Sm7Nry/wVsas+eZoUUTJZRdWEz5OOyfIePuq/Ky0ISjL6LFDQB2wyA9+A+QkJ361NcOChPd6cp17dseCCrP4WQ2HMGRLdZmsKEey/vMbKgGdBsaNx4vsL/9W0YX9uwTiyQhjiUz4HIExr8gGuDSKeN3ARKy52ScB2DajBlqfR119uGme4pffCzSxdMnfJkjQ63eQb189QFpTJch4SNu4NmX08JJXFMsKRgGtWbkXIV2E3AEWp2NjcReBcAJZQsBMWjixlum4UFyjH3XVobYklmht947gJy3ydErtw4sTm10H0bxlwiIwRJrP3V2VzFyoIpXm1ks4tXAa/nrfyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YCW+SWkA0FFfLpVpAaPNaBue7rnLOQmKcUqHSoQGt6c=;
+ b=DwOq7xb+WpwD6Wwx5pqgPA/04eVotIljOrz47b+onj3+8EiSBWAv1FfYv9xo/4TjHvTn1Op0pohwTK/aq+q3LN6mM/K4Y5EsehNVmZsjouuWg/uWYmIramUJ80h5/a0/PlfKkYcBzz71dL51RPMKeUJhnRmhFVjnc+Ad855phMCZMfBML3FQOLzbHj+ITMkn/CZEBwe7zogI+ODGeDsb6q2qu3Fp7xkMn8GGoi1mFJ7P5+B6nstAAR8Gf83dHql3wDrs5w0WZzl8uuOK59LR3gskEd7H73v6DpsZkYyDJj1HMHbsVqv7EfV4WDVjpDMqFaAg//uo01gaZ7TAt45YMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YCW+SWkA0FFfLpVpAaPNaBue7rnLOQmKcUqHSoQGt6c=;
+ b=YuWYallSXAE8xcGChvypy/B3VhRrQg/E+6G45fE/6NlCSs1sMsAPWIyB+65mjBLSDo7vmfd7YwOhf2MN1iT+oQZ06MkrBj128HgqMW1aiyKdx7oCSEX7DmNQzkYWclwjaFqy0D1e+gUcvLt6iu191WYK9iCUj057bkq93qbEC+DmcRCLmfKoQ9phIlaL0T73JF37rLdQV1VkbzCSZ2IwQ6GyYcZB8T8RVZ2QhjfNoNuHCYLKKhvaFSUcuAd4ZuHSCvunAvIgtUzre/8RX4fPwcHf41TGN4N7R8x1Jfm+5ZMfIPVBg7bPe9qgQXHVJZGqMVS4klMG5zJCtbhYzN6Rsw==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5379.namprd12.prod.outlook.com (2603:10b6:208:317::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Mon, 28 Jun
+ 2021 18:52:43 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
+ 18:52:43 +0000
+Date:   Mon, 28 Jun 2021 15:52:42 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
+Subject: Re: [PATCH v2] vfio/pci: Handle concurrent vma faults
+Message-ID: <20210628185242.GI4459@nvidia.com>
+References: <161540257788.10151.6284852774772157400.stgit@gimli.home>
+ <20210628104653.4ca65921.alex.williamson@redhat.com>
+ <20210628173028.GF4459@nvidia.com>
+ <20210628123621.7fd36a1b.alex.williamson@redhat.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
+In-Reply-To: <20210628123621.7fd36a1b.alex.williamson@redhat.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0009.namprd13.prod.outlook.com
+ (2603:10b6:208:256::14) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0009.namprd13.prod.outlook.com (2603:10b6:208:256::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.15 via Frontend Transport; Mon, 28 Jun 2021 18:52:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lxwN8-000iVd-D4; Mon, 28 Jun 2021 15:52:42 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4e561715-939c-46c7-3e69-08d93a65e967
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5379:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5379A27A6A23CFD28DACF535C2039@BL1PR12MB5379.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mbFML/J4f29gs8fVmycNxU6mBpKX5grseR2DrtHKz0mgE9mMLehJHMuqoxmGIqvXSwzvkQtozbSGScjmJagSCMLz5dTinqDc9evE4+dknE04J3yfEqVWov6g2y5UNDonPEkf6Cwyn+Z6kZwmFyI2vvoYMGMtAq/YmXoNkiNIJbDh53YiDS1a9m5ZXseHZmwhHkA6KHRZDteATQO7kIrfhEHH9ueG2gQyis6aoMe6qiXPWZHSO8DELhTbHNpDfQ0WKUjmSOf3+GkGJjqyYJyZ/SLIK0TFrozI3Xen0qX6PsyfKTl2d05obU+2ayqn8TLszEYq9KCUpNqxW/tCv3YiymnZ3hGrSlsS0YFdsNNQp1WHYMFksU+ac2bJyzscJWjJ1jtvknEAAYAaPJX4e1CF/fqglBtkacVuHizq7dUgwMjvIXRkeAF7ANWH9cddxcCIfcJfSWQfYhBpXqoSQRYDtZvouTyKYY981bgXNJu91+DzftQ0oKMp77ihH3yD2zGUkHQjnofHQTBI8vkwtvJTk8bY2ycpSui3QK5KozrphnVo6nBlPLKR2Kp0GtzFEF5sdXVlNskZFjfd2PyxTkDtFLAuyZkjU06nZmIDzstEcsxPR76QewjG4M4+Tog+f9nqjy/VaqiCG7nA0/5/iu4cfg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(39860400002)(396003)(478600001)(66946007)(9786002)(9746002)(316002)(38100700002)(2906002)(4326008)(8936002)(2616005)(36756003)(1076003)(6916009)(66476007)(8676002)(83380400001)(186003)(5660300002)(86362001)(66556008)(26005)(426003)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2BJnBDdGvEwlfbXJiWNfc09c1KILxScYA4xYgz8Obb7l2aTsAf83skMvpl6c?=
+ =?us-ascii?Q?no1UD+6Nr3AtW3VOUW2Ne3ylGCg6xnc69Fno7wmaHNapu+vayDYND3TK+if0?=
+ =?us-ascii?Q?xF+teBvR4emlFATbLTuPgSnSvuQ9/GUBZ2q318Ge6F+zw3VFifXTrF9SOGJR?=
+ =?us-ascii?Q?6K9m2S8UdRvKfx0QJ5rpqJQf7K5kYh9ZTzdVdYT1xSY2fktg6PenkgRA7Ex8?=
+ =?us-ascii?Q?FeF5w0cuzaiAFTF/pReVDOrwX8NMJHabO/aEStD7yV5Fulco/X2SmqVTDrWp?=
+ =?us-ascii?Q?aqQ47ckXPtxTCB9rJ+F+f4MxviRi5isM5++Jk8Y0mrzOJ+5+uT7d0ASGhbY8?=
+ =?us-ascii?Q?Qok5j0XysfvABvUIZ/E0xB007iXuc6bMn5NurpYg4BWnxqfJpMves+Z+ti2C?=
+ =?us-ascii?Q?IOCbxsYkkxTpRgoYg8fVPi+qYui0UQpREZ+Ko0/ijGSS1kLsMByw8Jig7QUB?=
+ =?us-ascii?Q?1MFcs0k+aWtyjtTm0zsWE7ElUOdhY4z6JbqRBJAvYXKNSrgs27Yfaa4mF8Id?=
+ =?us-ascii?Q?IFWa415qVQxa8dxdqDH0WMoyeupfzgZB/rNs/8gCbEDlPgASXcjIgzr1FhBL?=
+ =?us-ascii?Q?mjIh8eCSkDeHvHaAapVtzW8amcksIs73TEQWYUVwxtVpQBnnHfO+LYHzr4Xq?=
+ =?us-ascii?Q?/vP+ux5dyW7OX6sUoVuJhBJQ/SHzUw3GlZ9yq2+V1+Q0GTLP0lING8TBedOy?=
+ =?us-ascii?Q?bD3l/n9NpciK8gwTNx7gfa0xRTmPsaPbSPAgfSsjo9+xv9NVWI0kqXTU+Nmv?=
+ =?us-ascii?Q?iIzP2p9AkhIUnCZ6D5FuTi1CIt4GW6D3jmuJyuDCtOfVw/PSQGKeGSykQFRx?=
+ =?us-ascii?Q?COeQ7dI/g0fzBbzNtPnErQ6vBgPH/oxYz/VO2/O2DY9zhJ2Bv7F6QIKKTlXq?=
+ =?us-ascii?Q?HwKqS1PGSGF74uXJEpuZBX4Jz7z28UJlaw150jxWz6KxssNb9bkhpyQOaH1P?=
+ =?us-ascii?Q?eP3s1u762n97eV6i1tp7nARWTh2zqKlqRxRXFDP7hemRUlVwAv+C/mu/TkDp?=
+ =?us-ascii?Q?UQtP8lmluzgcWiwtpjG3rJIAeZrDIVgm8yz2EUl4oIspm9ncGWwvgZ7C2g4l?=
+ =?us-ascii?Q?N9CN4q9+sP3v3+TB+cYy0S4PQSk5/Y99t9AFupa3VgxRBKQELC5uZ7S8HL31?=
+ =?us-ascii?Q?MYq/tBbnYAHqaomrb6hcXmuOGJCMHR947adSUztnYMkeCwOeV1X2lq10lkUb?=
+ =?us-ascii?Q?E0FS73RaqfvGJZwSWXKAbT/eEbBUasiKkWU3gQpKZSOEIHNNd//1JuOLvVuv?=
+ =?us-ascii?Q?WYyiZJCUNOfd4O5jCoIi2f1APQbDBfi7cnoqSjAZG3fcE8+KEErH0zr47z0j?=
+ =?us-ascii?Q?DE80QRmhN6qGYnqkbf94gWmw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e561715-939c-46c7-3e69-08d93a65e967
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 18:52:43.4379
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xsR4lS/RNg2UE01NI5V9RigBYaMgsmWQTc1FV/vMmb1EBB47I9YQTn9pOYOTaclQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5379
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Sun, Jun 27, 2021 at 10:14 PM Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > The most fundamental race we can have is this:
+On Mon, Jun 28, 2021 at 12:36:21PM -0600, Alex Williamson wrote:
+> On Mon, 28 Jun 2021 14:30:28 -0300
+> Jason Gunthorpe <jgg@nvidia.com> wrote:
 > 
-> No. It's this (all on the same CPU):
+> > On Mon, Jun 28, 2021 at 10:46:53AM -0600, Alex Williamson wrote:
+> > > On Wed, 10 Mar 2021 11:58:07 -0700
+> > > Alex Williamson <alex.williamson@redhat.com> wrote:
+> > >   
+> > > > vfio_pci_mmap_fault() incorrectly makes use of io_remap_pfn_range()
+> > > > from within a vm_ops fault handler.  This function will trigger a
+> > > > BUG_ON if it encounters a populated pte within the remapped range,
+> > > > where any fault is meant to populate the entire vma.  Concurrent
+> > > > inflight faults to the same vma will therefore hit this issue,
+> > > > triggering traces such as:  
+> > 
+> > If it is just about concurrancy can the vma_lock enclose
+> > io_remap_pfn_range() ?
 > 
->    sigqueue_cache_or_free():
+> We could extend vma_lock around io_remap_pfn_range(), but that alone
+> would just block the concurrent faults to the same vma and once we
+> released them they'd still hit the BUG_ON in io_remap_pfn_range()
+> because the page is no longer pte_none().  We'd need to combine that
+> with something like __vfio_pci_add_vma() returning -EEXIST to skip the
+> io_remap_pfn_range(), but I've been advised that we shouldn't be
+> calling io_remap_pfn_range() from within the fault handler anyway, we
+> should be using something like vmf_insert_pfn() instead, which I
+> understand can be called safely in the same situation.  That's rather
+> the testing I was hoping someone who reproduced the issue previously
+> could validate.
+
+Yes, using the vmf_ stuff is 'righter' for sure, but there isn't
+really a vmf for IO mappings..
+
+> > I assume there is a reason why vm_lock can't be used here, so I
+> > wouldn't object, though I don't especially like the loss of tracking
+> > either.
 > 
->        if (!READ_ONCE(current->sigqueue_cache))
->                      <-- Interrupt happens here
->                WRITE_ONCE(current->sigqueue_cache, q);
+> There's no loss of tracking here, we were only expecting a single fault
+> per vma to add the vma to our list.  This just skips adding duplicates
+> in these cases where we can have multiple faults in-flight.  Thanks,
 
-Indeed - I was under the impression that this cannot happen, because 
-interrupts are disabled - but I was wrong:
+I mean the arch tracking of IO maps that is hidden inside ioremap_pfn
 
-__sigqueue_free() is the only user of sigqueue_cache_or_free().
-
-Callers of __sigqueue_free():
-
- - flush_sigqueue():
-    # flush_signals() is holding the siglock & disables IRQs
-    # __exit_signal() isn't holding the siglock but has IRQs disabled
-    # selinux_bprm_committed_creds() is holding the siglock & disables IRQs
-
- - __flush_itimer_signals()
-    # Its single caller is holding the siglock & disables IRQs
-
- - collect_signal()
-    # Its single caller is holding the siglock & disables IRQs
-
- - dequeue_synchronous_signal()
-    # Its single caller is holding the siglock & disables IRQs
-
- - flush_sigqueue_mask():
-    # All callers are holding the siglock & disable IRQs
-
- - sigqueue_free()
-    ...    
-
-Boom, the last one on the list, sigqueue_free(), does __sigqueue_free() 
-while not holding the siglock and not disabling interrupts. :-/
-
-It does it in various syscall paths in the POSIX timers code through 
-release_posix_timer(), with interrupts clearly enabled.
-
-> and then the interrupt sends a SIGCONT, which ends up flushing
-> previous process control signals, which ends up freeing them, which
-> ends up in sigqueue_cache_or_free() again, at which point you have
-> 
->        if (!READ_ONCE(current->sigqueue_cache))
->                WRITE_ONCE(current->sigqueue_cache, q);
-> 
-> again.
-> 
-> And both the original and the interrupting one sees a NULL
-> current->sigqueue_cache, so both of them will do that WRITE_ONCE(),
-> and when the interrupt returns, the original case will overwrite the
-> value that the interrupt free'd.
-> 
-> Boom - memory leak.
-> 
-> It does seem to be very small race window, and it's "only" a memory
-> leak, but it's a very simple example of how this cache was broken even
-> on UP.
-
-Yeah - a clear Producer <-> Producer IRQ preemptability race that can leak 
-freed sigqueue structures.
-
-Thanks for catching this ...
-
-But even if release_posix_timer() is changed to call sigqueue_free() with 
-IRQs disabled, or sigqueue_free() disables interrupts itself, I think we 
-need to be mindful of the Consumer <-> Producer SMP races, which only 
-appear to be safe due to an accidental barrier by free_uid().
-
-Plus a lockdep_assert_irqs_disabled() would have helped a lot in catching 
-this sooner.
-
-Thanks,
-
-	Ingo
+Jason
