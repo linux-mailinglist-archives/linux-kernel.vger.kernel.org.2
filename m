@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDF03B5897
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82DB3B589E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhF1FZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 01:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhF1FZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 01:25:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C70536198A;
-        Mon, 28 Jun 2021 05:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624857768;
-        bh=+o7WGKvwDW+ueEpME8OSZh7rG0yScCEmn09xSWcHm2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zc3FVj5fUj2MY1o2VkOBhawT0rO1J1YO3COerIGmuJW6iYbeCgIEfiHWX3/W0jQBi
-         SiJOfaiMgAOkz/ZsLLJlnhtyS31Np4jed+wO8VGh5NVa3l1a2xRG4EquKsZ3QjwmzP
-         McLwEh8CPe992SPIDrzid0gQGJixFancyHKoC7UhmFaMb7jlXjhJ356GJSDYz6i7Z4
-         DlRD4kBZgq4YQNHSlX296+ee1YV0s8eRMs7gmaCw+/G3vLH2WWo52WY1Sr1q5Hgfho
-         anjddxwNu6mTwl7FxnLbfsuC+BaDoEXha5gdGDhlMxMNX2fApS2FDwyYYgV8rhMqpW
-         lMHm/1Roxt0qQ==
-Date:   Mon, 28 Jun 2021 08:22:45 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: Re: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack
- object
-Message-ID: <YNlcpfdsdJdwMp5l@unreal>
-References: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
- <20210624174841.GA2906108@nvidia.com>
- <YNgxxTQ4NW0yGHq1@unreal>
- <20210627231528.GA4459@nvidia.com>
+        id S232072AbhF1Fch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 01:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhF1Fcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 01:32:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A6FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:30:07 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id bg14so27720077ejb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TCOGh443Z3FS98u3j0YSq8PEKcmYhShTJ9+FJzrba6A=;
+        b=P7nAnXD2lZjL/Q7FX7HRnoSXdTNgPVjcRood2YevxQ7J/SS5I9eD7s4OTZ/Rou/QVo
+         pPhIYuLZIeGDcmoXnBjLuE8z6U6T9Ij/6g1kwTVPYelfb/VEVHdYxyzzzh86aFzdnl7I
+         0JRG5kL/Kr3sLEiqMwnEpdwjnHJ236V/PQdZG7JY4TImJxn/Zh/rwghf3TEKPFlgGV8d
+         ky2Avp+YM7aEmhT4JUVIaMJsg6sHFZsScSyv+e+grqiW9fS+N6eGXOkbT1iJrIQGNmVy
+         YGrhYzZRMXNH7P3VKpkfURtZMprRB4d2hrygxv3rWGyWAECbgk8rDZy1OCH5/ZY/VTS+
+         X21Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=TCOGh443Z3FS98u3j0YSq8PEKcmYhShTJ9+FJzrba6A=;
+        b=rqOBj/L4PieuzFo+7g5ZXB+gBSqcQ9V+frjj2OxocHeuW/VznCepd+JuVmWNzFlBkq
+         LglfJLzsl6l19tJZHjAT5r2sIKQY8gCzOmgcZ/k9nwU7Sj3MXwURApSpUszUZUoI18oY
+         DjIlbJFM0w0tGGQHUy7oknwfr9r+rYhafsbFYLBRWKOOJaUhcCxGSJh/ah6PoH2gDou/
+         Ofhf4hEZLGO4RgF9l8OQFSvk2ZsnE6cK6FHc2KLfUfL9U9TjE94Ub+460tQOxE08G6gy
+         X4UuI+zQPuiHcYlNUKBmgZsJ+uwVyZkrJV30BNJxo7aCWU4yw2fzx0V2lt8j9GkXyxDR
+         HuLg==
+X-Gm-Message-State: AOAM5326GM9ZrAwLhADvdsWzX+MFcXVQoiMfnwFVmxRIq/stk6CgoZ57
+        p24GPt25WT+xYR9VdNjGBZApKdiSRb8=
+X-Google-Smtp-Source: ABdhPJzKHhJG0+SUdmo8JKUmtHDmwpzosoEDUlm87f6DIYAH4/nkL/IqG6i4SlbTSAHqtmyCXDs8wQ==
+X-Received: by 2002:a17:906:9419:: with SMTP id q25mr22523851ejx.341.1624858205754;
+        Sun, 27 Jun 2021 22:30:05 -0700 (PDT)
+Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
+        by smtp.gmail.com with ESMTPSA id ee47sm8893562edb.51.2021.06.27.22.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 22:30:05 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Jun 2021 07:30:03 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] sigqueue cache fix
+Message-ID: <YNleW59jE1rj0Tq8@gmail.com>
+References: <YNQwgTR3n3mSO9+3@gmail.com>
+ <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
+ <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
+ <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com>
+ <YNlapAKObfeVPoQO@gmail.com>
+ <YNlcgryyawTxPz//@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210627231528.GA4459@nvidia.com>
+In-Reply-To: <YNlcgryyawTxPz//@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 08:15:28PM -0300, Jason Gunthorpe wrote:
-> On Sun, Jun 27, 2021 at 11:07:33AM +0300, Leon Romanovsky wrote:
-> > On Thu, Jun 24, 2021 at 02:48:41PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jun 08, 2021 at 08:23:48AM +0300, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > Change location of rdma_restrack_add() callers to be near attachment
-> > > > to device logic. Such improvement fixes the bug where task_struct was
-> > > > acquired but not released, causing to resource leak.
-> > > > 
-> > > >   ucma_create_id() {
-> > > >     ucma_alloc_ctx();
-> > > >     rdma_create_user_id() {
-> > > >       rdma_restrack_new();
-> > > >       rdma_restrack_set_name() {
-> > > >         rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
-> > > >       }
-> > > >     }
-> > > >     ucma_destroy_private_ctx() {
-> > > >       ucma_put_ctx();
-> > > >       rdma_destroy_id() {
-> > > >         _destroy_id()                       <--- id_priv was freed
-> > > >       }
-> > > >     }
-> > > >   }
-> > > 
-> > > I still don't understand this patch
-> > > 
-> > > > @@ -1852,6 +1849,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
-> > > >  {
-> > > >  	cma_cancel_operation(id_priv, state);
-> > > >  
-> > > > +	rdma_restrack_del(&id_priv->res);
-> > > >  	if (id_priv->cma_dev) {
-> > > >  		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
-> > > >  			if (id_priv->cm_id.ib)
-> > > > @@ -1861,7 +1859,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
-> > > >  				iw_destroy_cm_id(id_prgtiv->cm_id.iw);
-> > > >  		}
-> > > >  		cma_leave_mc_groups(id_priv);
-> > > > -		rdma_restrack_del(&id_priv->res);
-> > > >  		cma_release_dev(id_priv);
-> > > 
-> > > This seems to be the only hunk that is actually necessary, ensuring a
-> > > non-added ID is always cleaned up is the necessary step to fixing the
-> > > trace above.
-> > > 
-> > > What is the rest of this doing?? It looks wrong:
-> > > 
-> > > int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
-> > > {
-> > > [..]
-> > > 	ret = cma_get_port(id_priv);
-> > > 	if (ret)
-> > > 		goto err2;
-> > > err2:
-> > > [..]
-> > > 	if (!cma_any_addr(addr))
-> > > 		rdma_restrack_del(&id_priv->res);
-> > > 
-> > > Which means if rdma_bind_addr() fails then restrack will discard the
-> > > task, even though the cm_id is still valid! The ucma is free to try
-> > > bind again and keep using the ID.
-> > 
-> > "Failure to bind" means that cma_attach_to_dev() needs to be unwind.
-> > 
-> > It is the same if rdma_restrack_add() inside that function like in this
-> > patch or in the line before rdma_bind_addr() returns as it was in
-> > previous code.
-> 
-> The previous code didn't call restrack_del. restrack_del undoes the
-> restrack_set_name stuff, not just add - so it does not leave things
-> back the way it found them
 
-The previous code didn't call to restrack_add and this is why it didn't
-call to restrack_del later. In old and new code, we are still calling to
-acquire and release dev (cma_acquire_dev_by_src_ip/cma_release_dev) and
-this is where the CM_ID is actually attached.
-
-Thanks
+* Ingo Molnar <mingo@kernel.org> wrote:
 
 > 
-> Jason
+> * Ingo Molnar <mingo@kernel.org> wrote:
+> 
+> >  - Producer <-> consumer: this is the most interesting race, and I think 
+> >    it's unsafe in theory, because the producer doesn't make sure that any 
+> >    previous writes to the actual queue entry (struct sigqueue *q) have 
+> >    reached storage before the new 'free' entry is advertised to consumers.
+> > 
+> >    So in principle CPU#0 could see a new sigqueue entry and use it, before 
+> >    it's fully freed.
+> > 
+> >    In *practice* it's probably safe by accident (or by undocumented 
+> >    intent), because there's an atomic op we have shortly before putting the 
+> >    queue entry into the sigqueue_cache, in __sigqueue_free():
+> > 
+> >          if (atomic_dec_and_test(&q->user->sigpending))
+> >                 free_uid(q->user);
+> > 
+> >    And atomic_dec_and_test() implies a full barrier - although I haven't 
+> >    found the place where we document it and 
+> >    Documentation/memory-ordering.txt is silent on it. We should probably 
+> >    fix that too.
+> > 
+> > At minimum the patch adding the ->sigqueue_cache should include a 
+> > well-documented race analysis firmly documenting the implicit barrier after 
+> > the atomic_dec_and_test().
+> 
+> I just realized that even with that implicit full barrier it's not safe: 
+> the producer uses q->user after the atomic_dec_and_test(). That access is 
+> not serialized with the later write to ->sigqueue_cache - and another CPU 
+> might see that entry and use the ->sigqueue_cache and corrupt q->user ...
+> 
+> So I think this code might have a real race on LL/SC platforms and we'll 
+> need an smp_mb() in sigqueue_cache_or_free()?
+
+pps. free_uid() happens to have an implicit barrier via 
+refcount_dec_and_lock_irqsave():
+
+  void free_uid(struct user_struct *up)
+  {
+        unsigned long flags;
+
+        if (!up)
+                return;
+
+        if (refcount_dec_and_lock_irqsave(&up->__count, &uidhash_lock, &flags))
+                free_user(up, flags);
+
+
+So the q->user read in __sigqueue_free() appears to be implicitly 
+serialized by free_uid() with the later write of 'q' to ->sigqueue_cache.
+
+This needs to be robustly documented though.
+
+Thanks,
+
+	Ingo
