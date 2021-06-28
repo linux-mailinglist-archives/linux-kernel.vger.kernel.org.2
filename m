@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5C23B5BC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4544C3B5BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhF1J4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:56:14 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:54597 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbhF1J4N (ORCPT
+        id S232563AbhF1JyT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 05:54:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3325 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232488AbhF1JyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:56:13 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MdNoW-1lOTD03vNY-00ZP8M; Mon, 28 Jun 2021 11:53:46 +0200
-Received: by mail-wr1-f53.google.com with SMTP id l8so11707761wry.13;
-        Mon, 28 Jun 2021 02:53:46 -0700 (PDT)
-X-Gm-Message-State: AOAM531aInD1ElZ7fMCU/v00dcJZfUNDdND0o++Z3MGV3uAglJRw3KR3
-        dmjIlXMcAac4vH8ud6ZqJCiG8R1GvXLwiKeDh0U=
-X-Google-Smtp-Source: ABdhPJwktqDothMpLIRlMDpocHDcEWckQcB5id0jYduIugUmev01PMKggW/MtSAVvvpDnvAX/XZRRryNLFIoMAA6eyE=
-X-Received: by 2002:adf:fd8e:: with SMTP id d14mr5557535wrr.361.1624874026628;
- Mon, 28 Jun 2021 02:53:46 -0700 (PDT)
+        Mon, 28 Jun 2021 05:54:17 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GD2gH5Vd0z6N4QG;
+        Mon, 28 Jun 2021 17:41:31 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 11:51:49 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 28 Jun 2021 11:51:49 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Thread-Topic: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Thread-Index: AQHXaeMP1hrQEcpfKUiTvUrYdI7FlqsnkBuAgAGHhID//+c5gIAAIpgw///qPACAACIkMA==
+Date:   Mon, 28 Jun 2021 09:51:49 +0000
+Message-ID: <ae8418b544884467bbc5f7b4664b7e42@huawei.com>
+References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
+ <20210625165614.2284243-4-roberto.sassu@huawei.com>
+ <YNhYu3BXh7f9GkVk@kroah.com> <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
+ <YNmMX4EODT0c4zqk@kroah.com> <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
+ <YNmXIk7orQavkEME@kroah.com>
+In-Reply-To: <YNmXIk7orQavkEME@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato> <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
-In-Reply-To: <YNmVg3ZhshshlbSx@ninjato>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 28 Jun 2021 11:51:15 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
-Message-ID: <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Y8z4xoFpyM0sk5GQ51VxNLLPLGnt0N0Fg2luYTjT2N3rN8+a5qL
- jvatuSez44m42R2izw9uMu7BCU1OoSQisW+OGVUCQilTYk2w9z4TM0MPq/ownVymNu+FOmj
- 8Uc8QYB7oKjbuTwq6O2EjU9q4R/EVvGU14yOSR7EIcU+VdbW/vCjhAFi5Bg+Y5EKrKWJ9FT
- wp9hPjWZ3SJDMnSLtogew==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OXcKbYj3TRk=:tr6gdzv1gVn+aSM4a4RAhb
- s2ha5JevF/RAkytiMDCn7jy9JR7w+mtTYAYUvKpMk+kAxBE+e4lKNuthbFWkJHg+1thkz+bG7
- hLyqOyGpqwj2S5wAfKaKQytvAb+Gghyi2H57UV+8Xa2+axZ2nEfxCf7ehe8a70hGmOIURUhaW
- 62PoxCtxd+YQjyPvhBltxSH1LM9aXnkqxp96dcNYGjVXJP3Yh90M/mWxuAz7+5qFETt0dawTn
- 0NLSlBpfFpCMWoqmRlJxY/uBqy6hjxiZjcnpTNaj81VhGbQFLulLAzNhksLbsKuPHJxVfLcRU
- eZQ61h78vmsUMirBx5OBMzuoVEOSWdJVFqNJVZSMFhyM6wBtGtASwjvJYzq5Yonu8s3yFJRCN
- DutiP4vJLVTcyuhyxU3cycwgPM8RHbHDAC5VSwXnZ7bMAuIKx/B9RaN2Cme58C5tvd/2KAPH1
- VZKhUbEa09orQfUcK6qB3zQUIxBgfLDpfLgw5gPVHdD8e5MEo/HjZ6x2AteZbtNjzRM8inR0g
- vJ9QKDKWKL47x+YVzMfaV8ZIu3qXKctvgkK4qy7rCqnlzjSorMP9CFtNwkb0O2pn+CbgIpwTK
- Dopax9HFt3zG9HQTRZbL8NLQDI/x58RNqQklogYhl5J+seVBS24J4Pt2UpO3jiDf+dTXPXapG
- u/gk=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:25 AM Wolfram Sang <wsa@kernel.org> wrote:
-> > As far as I understand me (please clarify), implementing only the smbus
-> > subset would mean that we cannot communicate with all client devices,
-> > while implementing both would add more complexity than the lower-level
-> > protocol.
->
-> Correct. You need to pick I2C if you want to support all devices. SMBus
-> will give you only a lot of devices.
-
-Ok, that's what I thought. There is one corner case that I've struggled
-with though: Suppose the host has an SMBus-only driver, and the
-proposed driver exposes this as an I2C device to the guest, which
-makes it available to guest user space (or a guest kernel driver)
-using the emulated smbus command set. Is it always possible for
-the host user space to turn the I2C transaction back into the
-expected SMBus transaction on the host?
-
-> > > Also, as I read it, a whole bus is para-virtualized to the guest, or?
-> > > Wouldn't it be better to allow just specific devices on a bus? Again, I
-> > > am kinda new to this, so I may have overlooked things.
+> From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> Sent: Monday, June 28, 2021 11:32 AM
+> On Mon, Jun 28, 2021 at 09:27:05AM +0000, Roberto Sassu wrote:
+> > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > > Sent: Monday, June 28, 2021 10:46 AM
+> > > On Mon, Jun 28, 2021 at 08:30:32AM +0000, Roberto Sassu wrote:
+> > > > > > +struct compact_list_hdr {
+> > > > > > +	__u8 version;
+> > > > >
+> > > > > You should never need a version, that way lies madness.
+> > > >
+> > > > We wanted to have a way to switch to a new format, if necessary.
+> > >
+> > > Then just add a new ioctl if you need that in the future, no need to try
+> > > to cram it into this one.
 > >
-> > Do you mean just allowing a single device per bus (as opposed to
-> > having multiple devices as on a real bus), or just allowing
-> > a particular set of client devices that can be identified using
-> > virtio specific configuration (as opposed to relying on device
-> > tree or similar for probing). Both of these are valid questions that
-> > have been discussed before, but that could be revisited.
->
-> I am just thinking that a physical bus on the host may have devices that
-> should be shared with the guest while other devices on the same bus
-> should not be shared (PMIC!). I'd think this is a minimal requirement
-> for security. I also wonder if it is possible to have a paravirtualized
-> bus in the guest which has multiple devices from the host sitting on
-> different physical busses there. But that may be the cherry on the top.
+> > Given that digest lists are generated elsewhere, it would be still
+> > unclear when the ioctl() would be issued. Maybe the kernel needs
+> > to parse both v1 and v2 digest lists (I expect that v1 cannot be easily
+> > converted to v2, if they are signed).
+> >
+> >  It would be also unpractical if digest lists are loaded at kernel
+> > initialization time (I didn't send the patch yet).
+> 
+> Then that is up to your api design, I do not know.  But note that
+> "version" fields almost always never work, so be careful about assuming
+> that this will solve any future issues.
+> 
+> > > > > > +	__le16 type;
+> > > > > > +	__le16 modifiers;
+> > > > > > +	__le16 algo;
+> > > > > > +	__le32 count;
+> > > > > > +	__le32 datalen;
+> > > > >
+> > > > > Why are user/kernel apis specified in little endian format?  Why would
+> > > > > that matter?  Shouldn't they just be "native" endian?
+> > > >
+> > > > I thought this would make it clear that the kernel always expects the
+> > > > digest lists to be in little endian.
+> > >
+> > > Why would a big endian system expect the data from userspace to be in
+> > > little endian?  Shouldn't this always just be "native" endian given that
+> > > this is not something that is being sent to hardware?
+> >
+> > The digest list might come from a system with different endianness.
+> 
+> Ok, I have no idea what digests really are used for then.  So stick with
+> little endian and be sure to properly convert within the kernel as
+> needed.
 
-This is certainly possible, but is independent of the implementation of
-the guest driver. It's up to the host to provision the devices that
-are actually passed down to the guest, and this could in theory
-be any combination of emulated devices with devices connected to
-any of the host's physical buses. The host may also decide to remap
-the addresses of the devices during passthrough.
+The most intuitive use case is to extend secure boot to the OS.
 
-       Arnd
+The kernel might be configured to accept only digest lists signed
+with a trusted key.
+
+Once the database is populated, execution and mmap can be denied
+if the calculated file or metadata digest is not found in the database
+(the file has not been released by the vendor).
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> greg k-h
