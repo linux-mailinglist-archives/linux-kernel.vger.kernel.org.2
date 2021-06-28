@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB053B5B26
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF6A3B5B2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhF1JXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:23:49 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:45947 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhF1JXp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:23:45 -0400
-Received: by mail-ua1-f43.google.com with SMTP id c20so6697964uar.12;
-        Mon, 28 Jun 2021 02:21:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dXsC1+zSEMlM+supXspj2457/hPp3B45hOkYONeY4Is=;
-        b=qrlxOug0ayMiXxP6fNYsRw65CzLYZE8opNHhx7tkFdA51EV6N6HyfE8IkQHSkEAZQL
-         bITGs/iWMSMCHrBwO6Wwg5SVbCwWId5CzRNu/BJi4k3hvKwzREMRIv5jOl53cwk3OW5x
-         O7UKkK4yjG7pgmXBoX5PrIiu075Mg26prnd8aCnJRzZMZxTT/yyq8IDztatQ8x390mf4
-         EEZUiuX848HVIs8cyhIqfc4jQBtpJQdyYljyboDMee36LHbaY2WZnTh86VS9rXn0jMHT
-         jHkurXLyOC8XexUSwohP71bQdpzjVHwlgZvyxD2FQQrNCCmIxckqtwwU9JvSEDJ2HmqP
-         kUhg==
-X-Gm-Message-State: AOAM53198+mg2uEDO/vr35w8jdkveYFyBSqslywTVN6p+XL9+DkDljNF
-        ig7ZychkP9WC3VRNSSlsYQZqI+GzXGQTL+Fvt0M=
-X-Google-Smtp-Source: ABdhPJyvpSl9Lwa3c1/yfWiKIw+V+kX10XFZlBG4/WXiv2OELPvofLcRPso0QjEiBSE6oMrTBkS+lP9yf990+QbGfeo=
-X-Received: by 2002:ab0:647:: with SMTP id f65mr19373178uaf.4.1624872079635;
- Mon, 28 Jun 2021 02:21:19 -0700 (PDT)
+        id S232543AbhF1JY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:24:27 -0400
+Received: from mout.gmx.net ([212.227.15.15]:42063 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232527AbhF1JYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:24:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624872099;
+        bh=vhIyYZ7msZOYr3lfD+Hbl2Brh69vI/AmcDPrLyZarKM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Tu7S1y1/RgeQcammVM22heUno73b2dRhM2aoG7J8RFDaLXVyoT3nJbZF1S7QpSmIN
+         puMJoNqMVfIWnvc9JpLEf3mUJpcbx+jOPojh2/xM1O4X9Yn7ehVamZnLpg/fbKL9Za
+         b7XNJ9EBNlgkqmyVM6JFNbtGtTgndtc5eGESKI+o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNbp3-1lZw9h2kiB-00P2MO; Mon, 28
+ Jun 2021 11:21:39 +0200
+Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
+To:     13145886936@163.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+References: <20210628083050.5302-1-13145886936@163.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <ee06042f-da1a-9137-dda3-b8f14bf1b79a@gmx.com>
+Date:   Mon, 28 Jun 2021 17:21:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210625125902.1162428-1-geert@linux-m68k.org>
- <20210625125902.1162428-19-geert@linux-m68k.org> <20210625223916.7e00e710@thinkpad>
- <20210625224001.115c938a@thinkpad>
-In-Reply-To: <20210625224001.115c938a@thinkpad>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 11:21:08 +0200
-Message-ID: <CAMuHMdXYLkoS7hTi1OZx7PMSCcfAR9YviJMN-x_dWpbz5KW+JA@mail.gmail.com>
-Subject: Re: [PATCH v2 18/18] auxdisplay: ht16k33: Add segment display LED support
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210628083050.5302-1-13145886936@163.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8U1F7hZf+AwSnmCB198rs0tWTeB5BJjzQp8Q1ItNgZOIwVOAp50
+ zIAQ8HqAzrx5vtBTDbLFr4TwHPMpW2vvfNyEGIFO0vd+dN5zch7FKJxP3oSSDgmLMo0qFRp
+ KZSE2YdkbjyVfQE8Pl4HgqPO+76lS9MYbm8X+M8MYCkZGKm4NL5prFaX59o8HGVof7fg9v3
+ k2EQUVqu3ipojHwqPjQNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2DTsEmU7shc=:48pCwe61dCYyPvENXti+e2
+ pKkqbunx/nQiVvDYuvCtR2nJF+vX34KUw1/82wWwm4xldLYxsxKuSiCXvkpSqty3DVOCiUucm
+ DyBJVynz0y52IkKqX76wh5AZ1DoTZUx1mNjXNVS/T6HWgJFTk4OoF1wgKZ+OEWFEHJ9M99q1e
+ NyAtPXQ2SCsPr7b2/8AjuwNL9Nlobb3oCDjHm8MO2FhiMPGoibrK44QEEbhD9EMMUZ1sqv7uL
+ AWkjeyiW7UHHLGthuk9p70tr0ZeOYTWmcIBap+BjztcIkqgvmiWvl0RfLJ0q0gb3+E4FyTYl9
+ ixxjhESORN44wLCRRgU1SIhOkXu1fJHfuVsm6uZOxPLznYSmyebP7OlqJgQsPLXAJ9lY0WM2X
+ vAR0cDYb4H/1vxEuGhlSsUNKQ4rtrL7ggYvYqb9CFOpy0fIf9OZB2FDN7+0hSvFInhoNxXMZl
+ wbJ1BXMDXNjEn/nXuMkpirUyglRHvEIqN89vjYBXBHjPWE1V1Olwl/G8gQUNJiTmqXen594B8
+ +ft594yuY10lqv9xlrpndFDpmtusmNzRSmJ2ZRFFGYJYNGnFfauCpkAPObNrcsa3Ix8gyjT2W
+ 5nD3saIS/e8yXVHutJvDcVmWUtqul388U0sJQvVGt/fKE3+oH46cqMEMWrsr7YdBtuTZoVnYn
+ 9in6KFx7IEt7bjW+ZX6pBJ+XfTVAVuT3kRJqza+hYwlYMrMGWETAD+OQ6dgGhngXxVP59HwcF
+ TI74raW1fhhbLLqvZhfrAZXwbh1xqtASOg3GU7/qRTUrOY/H1IhnVfwk2u5zZ++ueYdCu9P3B
+ vyXt8lTT0d2eEcu1gBXSFsqrktXqKusnMm6zX7BWXNN50NfLuYgtFlrf3cTpm4CUjbGt4wd+A
+ APqfY1pWasGee91P4II22fLsLR9QKX5wLrNY7D3e1qjfRhdxz66alIH8VryFJ9vU5QSEn4yeQ
+ LM9BApnTBNYE9Nrgd3DZ+2yB8Ls5LNU8xIOIsnEPAX2L4MwowCa7U1rcnaPFtpuNr15rOoKMB
+ 8Yr1ik2JOJmhtDFUSX91mDVnu8GiV8gAa7vC4r0fq/a9KbeRkTefH24JViT3b70bjET0Zy0jQ
+ zh/cZOBbn8tNFXGCkvjnUIJquyAs4zpxeQ3De3p0rMAYeIs4E4L9Jt+yw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
 
-On Fri, Jun 25, 2021 at 10:40 PM Marek Behun <marek.behun@nic.cz> wrote:
-> On Fri, 25 Jun 2021 22:39:16 +0200
-> Marek Behun <marek.behun@nic.cz> wrote:
-> > On Fri, 25 Jun 2021 14:59:02 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > Instantiate a single LED for a segment display.  This allows the user to
-> > > control display brightness and blinking through the LED class API and
-> > > triggers, and exposes the display color.
-> > > The LED will be named "auxdisplay:<color>:backlight".
-> >
-> > What if there are multiple "auxdisplay"s ?
-> > Doesn't this subsystem have IDs? So that you can use auxdisplayN for
-> > device name, for example?
+
+On 2021/6/28 =E4=B8=8B=E5=8D=884:30, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
 >
-> Or if this driver creates a fbdev, maybe "fb<N>" for devicename?
+> Remove unneeded variable: "ret".
+>
+> Signed-off-by: gushengxian <13145886936@163.com>
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
 
-This LED device is only registered when using the HT16K33 to drive
-segment displays.
-When driving a dot matrix display, the driver still use fbdev and
-devm_backlight_device_register(), for backwards compatibility.
+Is this detected by some script?
 
-Gr{oetje,eeting}s,
+Mind to share the script and run it against the whole btrfs code base?
 
-                        Geert
+Thanks,
+Qu
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>   fs/btrfs/disk-io.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b117dd3b8172..7e65a54b7839 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	struct rb_node *node;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
+>   	struct btrfs_delayed_ref_node *ref;
+> -	int ret =3D 0;
+>
+>   	delayed_refs =3D &trans->delayed_refs;
+>
+> @@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>   		spin_unlock(&delayed_refs->lock);
+>   		btrfs_debug(fs_info, "delayed_refs has NO entry");
+> -		return ret;
+> +		return 0;
+>   	}
+>
+>   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
+) {
+> @@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>
+>   	spin_unlock(&delayed_refs->lock);
+>
+> -	return ret;
+> +	return 0;
+>   }
+>
+>   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+>
