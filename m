@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE9D3B6414
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AD93B6416
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbhF1PEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51692 "EHLO mail.kernel.org"
+        id S236936AbhF1PEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:04:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235034AbhF1OoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:44:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F45061CEE;
-        Mon, 28 Jun 2021 14:33:47 +0000 (UTC)
+        id S235438AbhF1OpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:45:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E8D961D06;
+        Mon, 28 Jun 2021 14:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890828;
-        bh=nqo5wYVshusn/Mgb71VBIPERmlG+APA5fganEMFEW0Q=;
+        s=k20201202; t=1624890841;
+        bh=7H1gF4APE212UAPJY+7xGcaw49mKV6PHL83tDqh4hiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nrv0LR/910wnmD610pL7g4gPOJmieQ2fvSxY8WLYHw4fr8dAg4u93CCQ5f3qs32fO
-         O/s/SbSJ5/FD3MCbEvYGFFF3Oi+orjf4xxGRepqdGMCMe02zX4jlkAXqWmUPkYwetS
-         C3LdnpKtQy3/58xZQFGb1R0oYKlqWTAQ2TKhGqqK2lV4Ho3+dqpwD3MheUSr/gDlYT
-         Dtd72k1dYW+5shhEByCwTog2Hjh1c3rB9PvBSeRysDaOUsMdpHG5KF8f5El3j6BETk
-         RkjqG27SFM0YM9tDTJA/eJdAcrfj/K5Azr9UdDilaxztoClERbPYG0Htj2UdKeaZ3b
-         ZBKRVR8RnoN2A==
+        b=Om8OAtM/ktG+921gi8vH8IhmaYswJsq/iQOTKuvJLJGw8yEoDHsXcUZstDbNLA4YK
+         JGQfDimvvjg6tj2A0CxE6eCeRYwjqnB321f+W//hH8Z2jkAjYnaenASk7KWmLj6apX
+         snUW0qvguqd5tyF1voaNqY8tLF6FJ+PXMAWTa1lNei4DvyL5C38ykNF6s79e5QybUs
+         dhE0uzB0sC36vsmbsWHB6PoRxK3Q211nW4AnaQp2RbLqmJr1B6sTkgnUf1YZtFMERl
+         xb2mJA/ENJlW57oRSPsDjACJ95U34UR5/t9gAdiTNhWZaCIMtQMEAtCKxoBiX25vyB
+         yWzKNzqM/YnBw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 046/109] net: fec_ptp: fix issue caused by refactor the fec_devtype
-Date:   Mon, 28 Jun 2021 10:32:02 -0400
-Message-Id: <20210628143305.32978-47-sashal@kernel.org>
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.19 062/109] tracing: Do not stop recording comms if the trace file is being read
+Date:   Mon, 28 Jun 2021 10:32:18 -0400
+Message-Id: <20210628143305.32978-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
@@ -48,42 +47,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-[ Upstream commit d23765646e71b43ed2b809930411ba5c0aadee7b ]
+commit 4fdd595e4f9a1ff6d93ec702eaecae451cfc6591 upstream.
 
-Commit da722186f654 ("net: fec: set GPR bit on suspend by DT configuration.")
-refactor the fec_devtype, need adjust ptp driver accordingly.
+A while ago, when the "trace" file was opened, tracing was stopped, and
+code was added to stop recording the comms to saved_cmdlines, for mapping
+of the pids to the task name.
 
-Fixes: da722186f654 ("net: fec: set GPR bit on suspend by DT configuration.")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Code has been added that only records the comm if a trace event occurred,
+and there's no reason to not trace it if the trace file is opened.
+
+Cc: stable@vger.kernel.org
+Fixes: 7ffbd48d5cab2 ("tracing: Cache comms only after an event occurred")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/fec_ptp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/trace/trace.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 09a762eb4f09..eca65d49decb 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -220,15 +220,13 @@ static u64 fec_ptp_read(const struct cyclecounter *cc)
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 133cf8d125a3..71bc808fe03a 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1743,9 +1743,6 @@ struct saved_cmdlines_buffer {
+ };
+ static struct saved_cmdlines_buffer *savedcmd;
+ 
+-/* temporary disable recording */
+-static atomic_t trace_record_taskinfo_disabled __read_mostly;
+-
+ static inline char *get_saved_cmdlines(int idx)
  {
- 	struct fec_enet_private *fep =
- 		container_of(cc, struct fec_enet_private, cc);
--	const struct platform_device_id *id_entry =
--		platform_get_device_id(fep->pdev);
- 	u32 tempval;
+ 	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
+@@ -3259,9 +3256,6 @@ static void *s_start(struct seq_file *m, loff_t *pos)
+ 		return ERR_PTR(-EBUSY);
+ #endif
  
- 	tempval = readl(fep->hwp + FEC_ATIME_CTRL);
- 	tempval |= FEC_T_CTRL_CAPTURE;
- 	writel(tempval, fep->hwp + FEC_ATIME_CTRL);
+-	if (!iter->snapshot)
+-		atomic_inc(&trace_record_taskinfo_disabled);
+-
+ 	if (*pos != iter->pos) {
+ 		iter->ent = NULL;
+ 		iter->cpu = 0;
+@@ -3304,9 +3298,6 @@ static void s_stop(struct seq_file *m, void *p)
+ 		return;
+ #endif
  
--	if (id_entry->driver_data & FEC_QUIRK_BUG_CAPTURE)
-+	if (fep->quirks & FEC_QUIRK_BUG_CAPTURE)
- 		udelay(1);
- 
- 	return readl(fep->hwp + FEC_ATIME);
+-	if (!iter->snapshot)
+-		atomic_dec(&trace_record_taskinfo_disabled);
+-
+ 	trace_access_unlock(iter->cpu_file);
+ 	trace_event_read_unlock();
+ }
 -- 
 2.30.2
 
