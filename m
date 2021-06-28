@@ -2,147 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20B33B5EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8773B5EAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbhF1NIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:08:07 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59869 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232502AbhF1NID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:08:03 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B087D5806B1;
-        Mon, 28 Jun 2021 09:05:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 28 Jun 2021 09:05:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=pJDoaEKICoxjXDVlY/UTHzlsuR
-        SeWoO2PgHJjPp/Lyg=; b=RppTGqKqcZhZzad1XqGjUzuADb9IG7wCZFBSOGyQVt
-        MzSfS7XvGomrP/nvAY2QUWvzBqBeY1c3uWLTja8ivcHwHGTgkyPo/KR1gJOwFWnF
-        JDXp8AejsnHiMtuXLrioSPhN8CnMsj3a5/agIKFygTHFyBZiwn8igkEznCSt1Uiw
-        +lOkMqfaJjd24mu27RFRdKzzAvm9hcPSjeTb84WIFCncu36gu/mHKUgDGJSB3Mw+
-        3Vpca9Cn15hzm3XEZ0pr8+LiFPxB1gJKfnZEM5CwxR6Pp4sJt4DZxZ9aqtdd4Eg5
-        Lx5rSiRdz8QxQDWS6JwLVm4HPe12VFoTd0vcFj3yDlgA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pJDoaEKICoxjXDVlY
-        /UTHzlsuRSeWoO2PgHJjPp/Lyg=; b=nBxkdVJTfocxYD9oLD54LH7HsEfKlZZQs
-        xKNJltEukCFEDVHgrZZ16ZSQkAsUFrv/nGfUF/udhS6UXvpMgSzSPnzQMeXcFLEo
-        e2S5l3lri8Sk3vpeWEEjru6pl3sMr4x7qnhLDnfWRCrMgO6K0KsOxLb8NtkqKJPn
-        zpA4Ai3/Xmw5RJf+M6ARx8Aq2FR0rnFntjX/HBzqDo6M9ieldhwKmfhw0UJqNonz
-        L8BXwq6GKdVZ8s6akS10PYkZHHAnD62nGGEVzBium1o05//1swgBOb8uqkeVym3L
-        sj6BWYKv/uuxWEiObu6vfyDJ9hOHsHX2FluiLT5mjvo/j61D7utEg==
-X-ME-Sender: <xms:H8nZYJuRHHTUEd7ib-L5vMIB0vUqw4UaaxMlrl7HcepKIoKI_JuAtA>
-    <xme:H8nZYCdd1QdWqf1attPv9brsVwsdwYYCruRvStwUM0OkyCBpbqfBXEvsmwKfidjqW
-    lQf9BGez5ayNSJ0z7Y>
-X-ME-Received: <xmr:H8nZYMwL3rA1wQvHk4MCGuvoROOH9lp_FNjvOqLGMxyyWkC3uvVnmp4P_S2_qQQE-2wFxpFD2YiIW_4mYSg839Mn-ly7uL-IJpmf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
-    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
-    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgi
-    himhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:H8nZYAO6F9petE1j2Ib1F3v-B5m27TmYMLI_aOkcwh8zTdyHmX0RLw>
-    <xmx:H8nZYJ-pQH4fa9ERldvz06vu5iSo5K2BeRwwXFGRq0M_A3xZCWPr_w>
-    <xmx:H8nZYAWvZ5udT-5xLyoeek_qXA1epS-RotRnHZS32TrocJa1rmkmEA>
-    <xmx:IcnZYIcscGcgWcz5Oywh10VGc4DGP3q6OJVVzuWmXHXDduIdVFeX6A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 28 Jun 2021 09:05:35 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Emma Anholt <emma@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>
-Subject: [PATCH] drm: vc4: Fix pixel-wrap issue with DVP teardown
-Date:   Mon, 28 Jun 2021 15:05:33 +0200
-Message-Id: <20210628130533.144617-1-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
+        id S233113AbhF1NI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233102AbhF1NIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:08:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC9461C67;
+        Mon, 28 Jun 2021 13:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624885558;
+        bh=3kmPpdJJLBc82VUevNApL7kNOOs7bagNA6cKCpLTN+4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SOYpeJMc4MmWY+VJ9duNc6vhRNarkgT+bdkBsXgaWx+P7/yWia1VmGqlIK56Eirt/
+         H/QfQtU9qOwuqPcfpp8gwM3E1ZKIdcoOokJHOmNAU2i9Nb3Jj9+S38ALZpol81B1RG
+         h4XUwkg309HgtKX0zPe6IP/NMIVt22m2ZjLKWlZscjmJu14kNKzxWBDN038VCepw+3
+         Rl0zehqj/gGwi55C88cB3eYpHrKSiULqGXpdpn/H4IiNl4hAWcHzd/177F2fHQqt3W
+         gbtcDkCAjcAJGB5Rp8diNo/3dPJfgeS2c2Nm9cm+rOp5heRkXieaVMJlgqX0h5ZiTe
+         BfsMb+1NOccwA==
+Date:   Mon, 28 Jun 2021 15:05:53 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: armada-3720-turris-mox.dts: remove
+ mrvl,i2c-fast-mode
+Message-ID: <20210628150553.4e026d19@thinkpad>
+In-Reply-To: <20210628121015.22660-1-pali@kernel.org>
+References: <20210628121015.22660-1-pali@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Gover <tim.gover@raspberrypi.com>
+On Mon, 28 Jun 2021 14:10:15 +0200
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-Adjust the DVP enable/disable sequence to avoid a pixel getting stuck
-in an internal, non resettable FIFO within PixelValve when changing
-HDMI resolution.
+> +	/delete-property/mrvl,i2c-fast-mode;
 
-The blank pixels features of the DVP can prevent signals back to
-pixelvalve causing it to not clear the FIFO. Adjust the ordering
-and timing of operations to ensure the clear signal makes it through to
-pixelvalve.
+Can you add an additional space here?
+  /delete-property/ mrvl,i2c-fast-mode;
 
-Signed-off-by: Tim Gover <tim.gover@raspberrypi.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Other than that
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 4ebe216b10a9..472a9d6b5866 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -605,12 +605,12 @@ static void vc4_hdmi_encoder_post_crtc_disable(struct drm_encoder *encoder,
- 
- 	HDMI_WRITE(HDMI_RAM_PACKET_CONFIG, 0);
- 
--	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) |
--		   VC4_HD_VID_CTL_CLRRGB | VC4_HD_VID_CTL_CLRSYNC);
-+	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_CLRRGB);
-+
-+	mdelay(1);
- 
- 	HDMI_WRITE(HDMI_VID_CTL,
--		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
--
-+		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
- 	vc4_hdmi_disable_scrambling(encoder);
- }
- 
-@@ -620,12 +620,12 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder,
- 	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
- 	int ret;
- 
-+	HDMI_WRITE(HDMI_VID_CTL,
-+		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
-+
- 	if (vc4_hdmi->variant->phy_disable)
- 		vc4_hdmi->variant->phy_disable(vc4_hdmi);
- 
--	HDMI_WRITE(HDMI_VID_CTL,
--		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
--
- 	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
- 	clk_disable_unprepare(vc4_hdmi->hsm_clock);
- 	clk_disable_unprepare(vc4_hdmi->pixel_clock);
-@@ -1017,6 +1017,7 @@ static void vc4_hdmi_encoder_post_crtc_enable(struct drm_encoder *encoder,
- 
- 	HDMI_WRITE(HDMI_VID_CTL,
- 		   VC4_HD_VID_CTL_ENABLE |
-+		   VC4_HD_VID_CTL_CLRRGB |
- 		   VC4_HD_VID_CTL_UNDERFLOW_ENABLE |
- 		   VC4_HD_VID_CTL_FRAME_COUNTER_RESET |
- 		   (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
--- 
-2.31.1
+Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
 
+
+BTW the i2c driver should me made to respect the `clock-frequency` DT
+property, not the fast-mode nonsense.
+
+The `mrvl,i2c-fast-mode` should be IMO completely removed and whether it
+is enabled should be decided by the value of `clock-frequency`.
+
+BTW there are clock generating registers in A3720 I2C controller that
+can generate 100 kHz even in fast-mode. The driver does not use them,
+though, it leaves them to their default values, which for normal mode
+generate ~96 kHz and for fast mode ~258 kHz. Maybe we should implement
+configuring these registers and make the driver choose
+normal-mode / fast-mode / high-speed mode depending on
+`clock-frequency` ?
+
+Marek
