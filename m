@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C793B68C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D56F3B68CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbhF1TCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:02:19 -0400
-Received: from mail-bn8nam11on2085.outbound.protection.outlook.com ([40.107.236.85]:38075
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233101AbhF1TCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:02:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xg6Zd7UQMywTJ1RPVg6RW1aLDfpguZrO31kbRWCvrrRipRPp+tRW71KRuPuh2gJdaVVknWycmHc3hYugw4cPrkYb+thdDChed9zX4MngsYt3VAulHMQa2uMbVVoqCRY6PLSrCoQoTzOES9Z2MERQnWGyzOwXpjJU+02wRvSMMGpEoaNXDW1AftwWxTB/eiktMCFvxnILLuYbxKLHe0c0dm4HGA00rCiT8rOEqurmncY2yFCSE9nVOiirRQF2Qb2xVIeFlULCGF+cirkakC66PTXtkFEGbK2IbuESg3/7cZquDhh+YzGA7PhAMpfPJP8TgVkfr66BWo+E4yVLtnKOew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dpEezo7kt4hnEAbrtC+0WU+Ifeei2Upwg6juGtcjgv4=;
- b=MU2wLgNJGQ1tvLVk8Z9QKeq2JqWW7V04cH9Fn6FuK3tIXmDqaa5EdsO24q8RL7qi3JVfKFAVOmJTeitO8N1UkQtd6NX/imLaiiZoD3A+hLdCugcao/VZYbMIlJ4J11jhEBppxy17gx2m06YL22Tx0kagrsrVXWBg9ZHn+9G0Bl/ZvSSNMHpOeXtwA9yXPoK8yg+D6mTev3TEMQAiW7cUZ7tkb0hFFKeZ7VgYldwWkZ6JDhcApNMQQUfB/Ma2Q1ggjOE4ImdiJ8pNiDxOpZX+7so+b2LgePonLlhNpXYghEMHrMZ3sKO5EceiLRYaSyqKqbCmCP93LIRbAr86SVT3ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dpEezo7kt4hnEAbrtC+0WU+Ifeei2Upwg6juGtcjgv4=;
- b=oC3SznD9CIrreJ6WDzRuXWQyACvHF9jteTmHRLhdFEnGkvIbsovAOkdYtZRpeKhIJi41kt2gvMEzWag/HklxRF2QAf3oKtf2lbxWM/M1RyvX+WASpTWzdWOQCBre4RRSARwYx0fnnKohT/3+Mjdjmp58gh5IW93hVjX6ddEt7Jc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1257.namprd12.prod.outlook.com (2603:10b6:3:74::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.18; Mon, 28 Jun 2021 18:59:50 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686%12]) with mapi id 15.20.4264.026; Mon, 28 Jun
- 2021 18:59:50 +0000
-Subject: Re: [PATCH v3 04/11] x86: Introduce generic protected guest
- abstraction
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <9e188172-772c-8a33-46c0-e1e4bbf2668d@amd.com>
-Message-ID: <8d67d63b-75d2-8927-9308-b5aaba38ab92@amd.com>
-Date:   Mon, 28 Jun 2021 13:59:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <9e188172-772c-8a33-46c0-e1e4bbf2668d@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA9PR11CA0030.namprd11.prod.outlook.com
- (2603:10b6:806:6e::35) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S236046AbhF1TGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:06:07 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:33324 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233101AbhF1TGA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 15:06:00 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:48296)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lxwXY-00FZtO-Fr; Mon, 28 Jun 2021 13:03:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:38704 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lxwXX-00Gdx8-9L; Mon, 28 Jun 2021 13:03:28 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <87a6njf0ia.fsf@disp2133>
+        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+        <87tulpbp19.fsf@disp2133>
+        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
+        <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+Date:   Mon, 28 Jun 2021 14:02:50 -0500
+In-Reply-To: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Thu, 24 Jun 2021 22:45:23 +0000")
+Message-ID: <87v95xx15x.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9PR11CA0030.namprd11.prod.outlook.com (2603:10b6:806:6e::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.21 via Frontend Transport; Mon, 28 Jun 2021 18:59:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8a211825-a2c4-4856-62ee-08d93a66e826
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1257:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB125765424F71AB7F03D74F53EC039@DM5PR12MB1257.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j2vcetQgl/VkwcQzRPacpL27MEKpd7xmJHzNQZ0C2mqu1xoHIJHn2J5RYtYqvxApkvdCcJ4d0GQfWTyjKZyumnp8gHrt3EM7bysbO0d1PEZirdX8PanZSf1ph2O7VP02xzsl/PM85dq3adNSsmN+r0mOT7YarYEur9ZrXx066OT3dWEOdyBelEjUZYZ43ZWcXsjLPRfV/CEEtOsUruEcQ0lYn1Kfnp8wdGtHfjNIsxGeUfOEhn7r4n4zpNReiwdmmDuzY7T4J+xaYyoSJRZ2nMWoKzNY+aVvF0smijh4Pc9NIgX02Gop+gC5pM9aLKRpXwmIdcXIrCuUHwCkEN7egpu8S/MbMOcGYPCstD6ANRMIIPQDgRI1ioKuXSr8z50xAbUvjQiFA80OvMeq2DwOCvfN5UCkGQNeUotEN8KxqAfZN9iGTIpaAklaZVT0yr01DXMReWq2RZleDD1dQ4WOABOEvLhYkW/gi98OYTIz/oG48HKBB6DDi4gXDN/mjQvAzBOn9RyjM00QxUR/cS7fXg1JsJd6R6GkNIgGvTpxepVv9C7HJ365b5xkYfXNrzi7ZzwJdE5DVJ6/HWWCkJaQ/4lhng/tyXACN+D98IjOUSSLvZo26pKP14M3AHIaZYkZWP0v1bzCkErETqtNoio0mNVAkMUY4n/zs3nc8fD4PEzlZIJefgJ5EFXOjEXBxK+lwtLyafnlVHgKmPp5zmZbHgYmcjh3TXbvWTKm31jRJ1tzKQ5pw535IfPaKrrWwTDUfr8H71y5ezgE07JkEY5KsA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(8676002)(8936002)(2906002)(7416002)(31686004)(6486002)(6512007)(5660300002)(38100700002)(2616005)(66556008)(66476007)(66946007)(956004)(31696002)(316002)(53546011)(6506007)(54906003)(186003)(4326008)(16526019)(478600001)(26005)(86362001)(36756003)(110136005)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0w2ME1Dand3eHRVNG9zcGtMdE9zWk1jeXBma0VMSXJDdzhCQ2c0b05EU0Jh?=
- =?utf-8?B?Q1lPbWRzZEN2WldYSC9McHh4N2xOeEhjVzZnU2VQdThYbnN5Nnd3WGc0ODg4?=
- =?utf-8?B?S1Vub3VycFZWR09DODI2S2syZmgzTGdTd01WTDZXTUxlWTFtUmhGNlB3Vm5X?=
- =?utf-8?B?a0NIVXF4SURqS1p1K29FSWF3aGRCMmwxeXd4NkREMk96ZEhudlNEeGhZVzVE?=
- =?utf-8?B?SlRXWGZlWTZ4K2lha2tYYzFob2ZGTk5GVkVldHZVN0VPV2lKS3hNSlA2b1pi?=
- =?utf-8?B?NVFzeDhVRTRGRWhvL09BWnlnN0ZYRTlPcHl4NDd2OUVUbmp2WHgvZitreklY?=
- =?utf-8?B?OVIza0R6eWEzcUdGT1pyM2ZYdUZuR2lJMC9LN2hFSnVlRU5TWnJXWDE4Z2kw?=
- =?utf-8?B?c09aTmsvWXp6ekU3ZkhTa3ZkQkJPRnRvYTBzczR4dmx6ZEpNWXlrdnpZZ2RN?=
- =?utf-8?B?eG5MYXlpUHE3NVBQc0R2QUZ0NjFISDZYZ2loTC9aYUJZL0NwQ1VnSTNBd2FR?=
- =?utf-8?B?dnQ3OWdsWjdua2dtdkE0d1QrVUI3cndqODRWRnNsNGlEenhjNFVFVGFnSEd1?=
- =?utf-8?B?ejZnT0JRRi9HeDVVWkQ3REg3ZWcyZEYwdkFib3hRYThxenAwcjBTRUhpYnA1?=
- =?utf-8?B?MkJ1aTNaRnFQU0Y4dlVOVWRsaWZ0QkxGVk1kc0RUNDhJMy9ZcnREN21ONUpM?=
- =?utf-8?B?Q2t6VE5qbExkV0NDT0hodlkvdnFhb1BhMHMrKzl3Z0dLQlBaN3gzUEhER2g3?=
- =?utf-8?B?cndBS05XZ0lFSU04TDN2TUNydDhoRzloRWhSanFaeS9ITGMvNlNlNnp3WTZY?=
- =?utf-8?B?RkZWUzJTalQvYWhBampnREx6RG40K0dCL2Q0N0dtQStwcjVtL1NjdXRJcGhk?=
- =?utf-8?B?NFByeE9KdWNyUDJGTW5YOUlJeC9ZaDNXTHRmZjB3NGhoVm9aV05HQUxLU3dQ?=
- =?utf-8?B?Sy96NkZWUmlBaU5McHFFcm9LQWF4OTBhU2pjOU82a1RNaUFIMmhKaWhFRWZv?=
- =?utf-8?B?OXdmNXpuVUFiMWtxdjZoSmd1cVVGamJTR3gvRTBVaWhYbmVTYmljK3FrdlY0?=
- =?utf-8?B?ZnhzdGV1RVhtWHZWVkJRdVpHb1dKbzU2M3J3WmJ3N1cxM05jRnN3YVU1UkYr?=
- =?utf-8?B?RkxuejhBVDVid2I5ZzE5OUEzS1JKdGp4WXlnKy9QSFluMEVtRzQycmI1SkF1?=
- =?utf-8?B?SVpZbDZMTkZVYUN5V2tSdk5uYWFlSkZaRzdkYWZpRlh2N3lNR3lTSC9JVnRj?=
- =?utf-8?B?OGlCdWcwNnZScHFrbWNaSzUvTWJuUzBmenZacTV4OHM3eDB5a1I1K2lhaVYz?=
- =?utf-8?B?WFZUQnljN1NIdXFEL21Wb1VrUExuMUJPTHphL2RzbmVqRDF0aC9zY2NnSzJJ?=
- =?utf-8?B?RkdqblpUYzk0TFplZ0x0ZDNrc3ZmbUQyTEN4eXJsM2l2TUhneS8weVk4NGRF?=
- =?utf-8?B?UmZheCtZMVpYN1Y2ZHcwc2gvTzFnVVYyVkhSWG5PZ0x0NUJUYUlqVVZScWJB?=
- =?utf-8?B?Q2F2TmRNQU9YUk5sdE1kMU53WE9QQ2VJS0VOL2t5a2tsclliQU5aOUV1dXpr?=
- =?utf-8?B?QmNiSXV5VXhrRmwvNmtyWkFIVkJqYjhhcEMzZVhYL1FVa0hQcDNTWWhIVGJJ?=
- =?utf-8?B?MmNBUDFpc2ZvK3RaOFREWXFWbFVSYmtvR3UxNE9Mc1Mxa2I2SjhPajlkVVRp?=
- =?utf-8?B?bFJOTVE0Y0Zabit3K0FxbEJ6eGJsWEx4cmlDd1BFUFFoeVljK0tmWnFWeFEx?=
- =?utf-8?Q?xW3VGbIp9k4sfRJdeYicQHqu6qxqzMdKksOziRU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a211825-a2c4-4856-62ee-08d93a66e826
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 18:59:50.7679
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bSCRcNrb3swRaraYIyjGXXIIIooDnjONsy99ycBjufP6AIthUDLvuTmgZE9cq5FO+GopWNYHSnrMwGJmpdC8Rg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1257
+Content-Type: text/plain
+X-XM-SPF: eid=1lxwXX-00Gdx8-9L;;;mid=<87v95xx15x.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18JERu3BMiKmUMjDvvelGV7aJUlVNLWdXI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels,
+        XM_Body_Dirty_Words autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XM_Body_Dirty_Words Contains a dirty word
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 577 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (2.4%), b_tie_ro: 12 (2.0%), parse: 0.98
+        (0.2%), extract_message_metadata: 13 (2.2%), get_uri_detail_list: 1.59
+        (0.3%), tests_pri_-1000: 9 (1.5%), tests_pri_-950: 1.33 (0.2%),
+        tests_pri_-900: 1.13 (0.2%), tests_pri_-90: 194 (33.7%), check_bayes:
+        190 (33.0%), b_tokenize: 7 (1.2%), b_tok_get_all: 10 (1.7%),
+        b_comp_prob: 3.1 (0.5%), b_tok_touch_all: 164 (28.5%), b_finish: 1.53
+        (0.3%), tests_pri_0: 330 (57.2%), check_dkim_signature: 0.49 (0.1%),
+        check_dkim_adsp: 3.1 (0.5%), poll_dns_idle: 0.90 (0.2%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 8 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/9] Refactoring exit
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:52 PM, Tom Lendacky wrote:
-> On 6/18/21 5:57 PM, Kuppuswamy Sathyanarayanan wrote:
->> +
->> +static inline bool prot_guest_has(unsigned long flag)
->> +{
->> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
->> +		return tdx_protected_guest_has(flag);
->> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
->> +		return sev_protected_guest_has(flag);
-> 
-> So as I think about this, I don't think this will work if the hypervisor
-> decides to change the vendor name, right?
-> 
-> And doesn't TDX supply "IntelTDX    " as a signature. I don't see where
-> the signature is used to set the CPU vendor to X86_VENDOR_INTEL.
-> 
-> The current SEV checks to set sev_status, which is used by sme_active(),
-> sev_active, etc.) are based on the max leaf and CPUID bits, but not a
-> CPUID vendor check.
-> 
-> So maybe we can keep the prot_guest_has() but I think it will have to be a
-> common routine, with a "switch" statement that has supporting case element
-> that check for "sev_active() || static_cpu_has(X86_FEATURE_TDX_GUEST)", etc.
-> 
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-Or keep the separate vendor routines for separation and easier testing
-but, instead, they would have to key off of the support:
+> On Thu, Jun 24, 2021 at 01:57:35PM -0500, Eric W. Biederman wrote:
+>
+>> So far the code has been lightly tested, and the descriptions of some
+>> of the patches are a bit light, but I think this shows the direction
+>> I am aiming to travel for sorting out exit(2) and exit_group(2).
+>
+> FWIW, here's the current picture for do_exit(), aside of exit(2) and do_exit_group():
+>
+> 1) stuff that is clearly oops-like -
+>         alpha:die_if_kernel() alpha:do_entUna() alpha:do_page_fault() arm:oops_end()
+>         arm:__do_kernel_fault() arm64:die() arm64:die_kernel_fault() csky:alignment()
+>         csky:die() csky:no_context() h8300:die() h8300:do_page_fault() hexagon:die()
+>         ia64:die() i64:ia64_do_page_fault() m68k:die_if_kernel() m68k:send_fault_sig()
+>         microblaze:die() mips:die() nds32:handle_fpu_exception() nds32:die()
+>         nds32:unhandled_interruption() nds32:unhandled_exceptions() nds32:do_revinsn()
+>         nds32:do_page_fault() nios:die() openrisc:die() openrisc:do_page_fault()
+>         parisc:die_if_kernel() ppc:oops_end() riscv:die() riscv:die_kernel_fault()
+>         s390:die() s390:do_no_context() s390:do_low_address() sh:die()
+>         sparc32:die_if_kernel() sparc32:do_sparc_fault() sparc64:die_if_kernel()
+>         x86:rewind_stack_do_exit() xtensa:die() xtensa:bad_page_fault()
+> We really do not want ptrace anywhere near any of those and we do not want
+> any of that to return; this shit would better be handled right there and
+> there - no "post a fatal signal" would do.
 
-	if (static_cpu_has(X86_FEATURE_TDX_GUEST))
-		return tdx_prot_guest_has(flag);
-	else if (sme_active() || sev_active())
-		return sev_prot_guest_has(flag);
+Thanks that makes a good start for digging into these.
 
-Thanks,
-Tom
+I think the distinction I would make is:
+- If the kernel is broken use do_task_dead.
+- Otherwise cleanup the semantics by using start_group_exit,
+  start_task_exit or by just cleaning up the code.
+  
+
+Looking at the reboot case it looks like we the code
+should have become do_group_exit in 2.5.  I have a suspicion
+we have a bunch of similar cases that want to terminate the
+entire process, but we simply never updated to deal with
+multi-thread processes.
+
+I suspect in the reboot case panic if machine_halt or
+or machine_power_off fails is more likely the correct
+handling.  But we do have funny semantics sometimes.
+
+I will see what I can do to expand my patchset to handle all of these
+various callers of do_exit.
+
+Eric
