@@ -2,60 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDB93B6A0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7593B6A15
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhF1VSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 17:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237613AbhF1VRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 17:17:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A320561CF1;
-        Mon, 28 Jun 2021 21:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624914926;
-        bh=jqM8wxROc4TOar3V1LKzeib9ko6pzkfK/oBd3DmA5ns=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HKyEmGekOoApwppiThAk8rRTmZ9/ESn11Jxu5g2oLm+Q2A9XySfNuhEVEnpY83dEj
-         F7IfUf5GAGFY/U+L8cVue3laPPGcx2j8zHYm0Iyn502x23kys1NTQKbpVuj+RTT2Jg
-         6GrAp8yP9v+thW/bj/mPyNdutDX/3Em+T8qKpqHllkecx4c3sPuHb8zDhm7/3WmDuN
-         dTzLGjQ001NdyanPiyM4/g4O/Kd1ZgszkLOuxI4/bdhkLVb1JdQdvQ41zA1EWmFJyt
-         qwEYNTKlUGOq9fTKMvSTUNMnB1PvLh9FDePR7iOtzz5Jg2J/OboWCSBrRglpnGMqfg
-         dKoQhMskKrIcw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9D23B60A38;
-        Mon, 28 Jun 2021 21:15:26 +0000 (UTC)
-Subject: Re: [GIT PULL] arm64 updates for 5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210628150943.GA6205@willie-the-truck>
-References: <20210628150943.GA6205@willie-the-truck>
-X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20210628150943.GA6205@willie-the-truck>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
-X-PR-Tracked-Commit-Id: 3d1bf78c7b13a0ad88e77dce94df88400f47e0dd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9840cfcb97fc8b6aa7b36cec3cc3fd763f14052e
-Message-Id: <162491492663.5391.5145188930230145937.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Jun 2021 21:15:26 +0000
-To:     Will Deacon <will@kernel.org>
-Cc:     torvalds@linux-foundation.org, catalin.marinas@arm.com,
-        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
+        id S237841AbhF1VUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:20:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233305AbhF1VUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 17:20:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624915104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RnhvoDTmuhs9KIxjvKpzhhBCSacIZCBGXUwbPjFZJ9A=;
+        b=ASo4IE9n8mVC4Q1N6Ni5MH5IMpIomiKonjS4MyGx9bUiiTcIcIIqvufnsMzQ6gZaOQ7CXv
+        UKVBcK22SuVZZt9/titoswQIjPVP/wg99hE0d1uQn/EVSZl3PDvRDrA2ze9CczaFuCxAgh
+        pp5jFqhawZrdZm4CWknZC626bN2Q4DA=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-uE8nLGAYOGSJxct-upcC1w-1; Mon, 28 Jun 2021 17:17:35 -0400
+X-MC-Unique: uE8nLGAYOGSJxct-upcC1w-1
+Received: by mail-qt1-f197.google.com with SMTP id u18-20020a05622a1992b029024f5f5d3a48so8621577qtc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:17:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RnhvoDTmuhs9KIxjvKpzhhBCSacIZCBGXUwbPjFZJ9A=;
+        b=B1tjtY5jtxrD4SXqEkJsJvymG6Qknfg+IMs8R8CA4ci7sUZwEg1cGNJV98Z/3cj4Z7
+         uZX94DfC5FmYwlKw3pKiUzfBaOSYj2yADOoESqEsiW87mAd8rtolSkfC8oksRd3kMYCD
+         3BVVngoq5/1Th8XVMGMd47j3RnG+6pUR6SAb4bcELs2UbccdghKip5WCDFTNCZ0JnMXk
+         X98ZY6GOd96np9vxc1pj+JgKiysEA0ktdFfgPdkgXWCePiMzmkenXNn35tYFmZF3SsH5
+         XMW7gBTsaKuhz4GNqYxX6xSZDzsxALDH2a1ttPcjJkeFmA7A0OBC+uJfKI0fbC7jVdJ4
+         1VHg==
+X-Gm-Message-State: AOAM530F/3CjlUSmFea1xlRxeZj7lcSe9BSdIQyD6pRSLxPoTevXH5/w
+        ASguw1W+q1YgTCQH1tCKFk/HwBbVr9DVGIPK2xdKs5VqmbqaQxSFKzNy11zgOry2VwNrKw0pJss
+        MVs3GBENVXr/5UR+BIXUDPZSM
+X-Received: by 2002:a05:622a:89:: with SMTP id o9mr22936120qtw.339.1624915054724;
+        Mon, 28 Jun 2021 14:17:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaQ4xRxOWn2waVjZ2cksSsPDcFUIRKevd/nNXal2hzdtcneOwui5G7YEsqQsQ1hwGpednx8w==
+X-Received: by 2002:a05:622a:89:: with SMTP id o9mr22936109qtw.339.1624915054533;
+        Mon, 28 Jun 2021 14:17:34 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id x7sm10924237qke.62.2021.06.28.14.17.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 14:17:33 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2] locking/lockdep: Fix meaningless usages output of lock
+ classes
+To:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+References: <20210628151708.138524-1-sxwjean@me.com>
+Message-ID: <8fc00823-9d42-2178-784a-af33cc34b168@redhat.com>
+Date:   Mon, 28 Jun 2021 17:17:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210628151708.138524-1-sxwjean@me.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Jun 2021 16:09:43 +0100:
+On 6/28/21 11:17 AM, Xiongwei Song wrote:
+> From: Xiongwei Song <sxwjean@gmail.com>
+>
+> When enabling CONFIG_LOCK_STAT, then CONFIG_LOCKDEP is forcedly enabled.
+> We can get output from /proc/lockdep, which currently includes usages of
+> lock classes. But the usages are meaningless, see the output below:
+>
+> / # cat /proc/lockdep
+> all lock classes:
+> ffffffff9af63350 ....: cgroup_mutex
+>
+> ffffffff9af54eb8 ....: (console_sem).lock
+>
+> ffffffff9af54e60 ....: console_lock
+>
+> ffffffff9ae74c38 ....: console_owner_lock
+>
+> ffffffff9ae74c80 ....: console_owner
+>
+> ffffffff9ae66e60 ....: cpu_hotplug_lock
+>
+> Only one usage context for each lock, this is because each usage is only
+> changed in mark_lock() that is in CONFIG_PROVE_LOCKING defined section,
+> however in the test situation, it's not.
+>
+> The fix is to move the usages reading and seq_print from
+> CONFIG_PROVE_LOCKING undefined setcion to its defined section. Also,
+> locks_after list of lock_class is empty when CONFIG_PROVE_LOCKING
+> undefined, so do the same thing as what have done for usages of lock
+> classes.
+With this patch, CONFIG_LOCKDEP without CONFIG_PROVE_LOCKING will make 
+/proc/lockdep displays just the list of lock classes with their 
+associated lock keys. I think it is worth explicitly saying that in the 
+commit log.
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> ---
+>   kernel/locking/lockdep_proc.c | 24 +++++++++++++-----------
+>   1 file changed, 13 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+> index 806978314496..a1ec2652d492 100644
+> --- a/kernel/locking/lockdep_proc.c
+> +++ b/kernel/locking/lockdep_proc.c
+> @@ -70,23 +70,25 @@ static int l_show(struct seq_file *m, void *v)
+>   #ifdef CONFIG_DEBUG_LOCKDEP
+>   	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
+>   #endif
+> -#ifdef CONFIG_PROVE_LOCKING
+> -	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+> -	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+> -#endif
+> +	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+> +		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+> +		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+>   
+> -	get_usage_chars(class, usage);
+> -	seq_printf(m, " %s", usage);
+> +		get_usage_chars(class, usage);
+> +		seq_printf(m, " %s", usage);
+> +	}
+>   
+>   	seq_printf(m, ": ");
+>   	print_name(m, class);
+>   	seq_puts(m, "\n");
+>   
+> -	list_for_each_entry(entry, &class->locks_after, entry) {
+> -		if (entry->distance == 1) {
+> -			seq_printf(m, " -> [%p] ", entry->class->key);
+> -			print_name(m, entry->class);
+> -			seq_puts(m, "\n");
+> +	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+> +		list_for_each_entry(entry, &class->locks_after, entry) {
+> +			if (entry->distance == 1) {
+> +				seq_printf(m, " -> [%p] ", entry->class->key);
+> +				print_name(m, entry->class);
+> +				seq_puts(m, "\n");
+> +			}
+>   		}
+>   	}
+>   	seq_puts(m, "\n");
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
+Maybe you can remove the blank lines in this case by moving the last 
+seq_puts() inside the if loop. The blank lines are not really needed 
+without the associated locks_after information.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9840cfcb97fc8b6aa7b36cec3cc3fd763f14052e
+Cheers,
+Longman
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
