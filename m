@@ -2,124 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279D03B598D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8D33B5992
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhF1HO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:14:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20585 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhF1HOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:14:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624864319; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9HKLPt6UmZAYVg6hKZ4VhL+vXXYRIrBvxsOr/NJnZ2g=;
- b=UUQXVkkJwZbLr58lvu12vFqMnucv/M2uk6YKTQ2Ab4y2XfruxK4nUIiUJhVMeKbkyN9/JAFc
- D0Xf4ydhyXbXFHvgVbnNT4BsNHEYdAIkiDzR2ZACCpA+P8qPUfQoneRL04wDrbcpeA+zWrwd
- fbj8NGuGLj89kZs+pwYn09fM8VU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60d97633d2559fe3925f0a1a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Jun 2021 07:11:47
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7242AC43146; Mon, 28 Jun 2021 07:11:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8AD33C433D3;
-        Mon, 28 Jun 2021 07:11:45 +0000 (UTC)
+        id S232319AbhF1HSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:18:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64246 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229998AbhF1HSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:18:17 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15S744tO116374;
+        Mon, 28 Jun 2021 03:15:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=r/immuZYVE8Caoc6yGkt0MFN06PO3hMxemxPKVsCOXg=;
+ b=PULsJ+fCBXwXQpq19YESKYj0NUC1PSmgzSWtwYgrrtUlXkB52ioit+TZ2eR/ACgDEcvH
+ QdE60MHlrGWSM0Accw/n6FFe/VKL31exLwfVqcJnXHauLyHJPW8u/xd+PS6O6AAolGnp
+ 3+unw+UygJRQbHODn98vnrJkJUPGf4kfKEDtQjPL1VfrvTexV70kIGFnYSRS+pA/OgB1
+ zvVI8rQL/FMObBe1IV3uQkBgWZ7q6UHJvHTqCLozkk+7RxVVtkP9AaR/bSA5lO7U+3P0
+ yWMQP+jF6FFmQvnC2orEqrJZ5280vlzJ8MwkfOOqoo0j/cJeixSDSCa2/+HNjnbPFLRv eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39f77qkfd1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 03:15:46 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15S75M6n124410;
+        Mon, 28 Jun 2021 03:15:46 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39f77qkfc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 03:15:46 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15S78YCZ030026;
+        Mon, 28 Jun 2021 07:15:44 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 39duv8gmmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 07:15:44 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15S7EAK835979730
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 07:14:11 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63E09A4166;
+        Mon, 28 Jun 2021 07:15:40 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8345AA4124;
+        Mon, 28 Jun 2021 07:15:38 +0000 (GMT)
+Received: from Nageswaras-MacBook-Pro-2.local (unknown [9.199.47.223])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 28 Jun 2021 07:15:38 +0000 (GMT)
+Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
+ perf script
+To:     Kajol Jain <kjain@linux.ibm.com>, acme@kernel.org
+Cc:     maddy@linux.vnet.ibm.com, atrajeev@linux.vnet.ibm.com,
+        pc@us.ibm.com, linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210628062341.155839-1-kjain@linux.ibm.com>
+From:   Nageswara Sastry <rnsastry@linux.ibm.com>
+Message-ID: <46ddcac9-e115-6b96-11ec-6208bcd1c98a@linux.ibm.com>
+Date:   Mon, 28 Jun 2021 12:45:36 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210628062341.155839-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Jun 2021 15:11:45 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 02/10] scsi: ufs: Add flags pm_op_in_progress and
- is_sys_suspended
-In-Reply-To: <77b92c6e-2e1c-c799-f6ac-04467175f96a@acm.org>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-3-git-send-email-cang@codeaurora.org>
- <77b92c6e-2e1c-c799-f6ac-04467175f96a@acm.org>
-Message-ID: <aa01ddf1b91cb06a989bb47e001134ce@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vyCjQThvpV6iZpLIzekUkfEwUnIT5C78
+X-Proofpoint-GUID: -295f2NuuxizaUdLdi4i3_NLvBLXf4i4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_05:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106280049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-25 01:35, Bart Van Assche wrote:
-> On 6/23/21 12:35 AM, Can Guo wrote:
->> @@ -9141,6 +9143,8 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->> 
->>  	if (!hba->is_powered)
->>  		return 0;
->> +
->> +	hba->pm_op_in_progress = true;
->>  	/*
->>  	 * Disable the host irq as host controller as there won't be any
->>  	 * host controller transaction expected till resume.
->> @@ -9160,6 +9164,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
->>  	ufshcd_vreg_set_lpm(hba);
->>  	/* Put the host controller in low power mode if possible */
->>  	ufshcd_hba_vreg_set_lpm(hba);
->> +	hba->pm_op_in_progress = false;
->>  	return ret;
->>  }
->> 
->> @@ -9179,6 +9184,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->>  	if (!hba->is_powered)
->>  		return 0;
->> 
->> +	hba->pm_op_in_progress = true;
->>  	ufshcd_hba_vreg_set_hpm(hba);
->>  	ret = ufshcd_vreg_set_hpm(hba);
->>  	if (ret)
->> @@ -9198,6 +9204,7 @@ static int ufshcd_resume(struct ufs_hba *hba)
->>  out:
->>  	if (ret)
->>  		ufshcd_update_evt_hist(hba, UFS_EVT_RESUME_ERR, (u32)ret);
->> +	hba->pm_op_in_progress = false;
->>  	return ret;
->>  }
+Tested by creating perf-script.py using perf script
+and priting the iregs. Seen more values with this patch.
+
+
+Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
+
+On 28/06/21 11:53 am, Kajol Jain wrote:
+> Commit 48a1f565261d ("perf script python: Add more PMU fields
+> to event handler dict") added functionality to report fields like
+> weight, iregs, uregs etc via perf report.
+> That commit predefined buffer size to 512 bytes to print those fields.
 > 
-> Has it been considered to check dev->power.runtime_status instead of
-> introducing the pm_op_in_progress variable?
-
-ufshcd_resume() is also used by system resume, while runtime_status only
-tells about runtime resume. So does ufshcd_suspend().
-
-Thanks,
-
-Can Guo.
-
+> But incase of powerpc, since we added extended regs support
+> in commits:
 > 
-> Thanks,
+> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+> Counter SPRs as part of extended regs")
+> Commit d735599a069f ("powerpc/perf: Add extended regs support for
+> power10 platform")
 > 
-> Bart.
+> Now iregs can carry more bytes of data and this predefined buffer size
+> can result to data loss in perf script output.
+> 
+> Patch resolve this issue by making buffer size dynamic based on number
+> of registers needed to print. It also changed return type for function
+> "regs_map" from int to void, as the return value is not being used by
+> the caller function "set_regs_in_dict".
+> 
+> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+> Counter SPRs as part of extended regs")
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>   .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
+>   1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+> index 4e4aa4c97ac5..c8c9706b4643 100644
+> --- a/tools/perf/util/scripting-engines/trace-event-python.c
+> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
+> @@ -687,7 +687,7 @@ static void set_sample_datasrc_in_dict(PyObject *dict,
+>   			_PyUnicode_FromString(decode));
+>   }
+>   
+> -static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
+> +static void regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
+>   {
+>   	unsigned int i = 0, r;
+>   	int printed = 0;
+> @@ -695,7 +695,7 @@ static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
+>   	bf[0] = 0;
+>   
+>   	if (!regs || !regs->regs)
+> -		return 0;
+> +		return;
+>   
+>   	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
+>   		u64 val = regs->regs[i++];
+> @@ -704,8 +704,6 @@ static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
+>   				     "%5s:0x%" PRIx64 " ",
+>   				     perf_reg_name(r), val);
+>   	}
+> -
+> -	return printed;
+>   }
+>   
+>   static void set_regs_in_dict(PyObject *dict,
+> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
+>   			     struct evsel *evsel)
+>   {
+>   	struct perf_event_attr *attr = &evsel->core.attr;
+> -	char bf[512];
+> +
+> +	/*
+> +	 * Here value 28 is a constant size which can be used to print
+> +	 * one register value and its corresponds to:
+> +	 * 16 chars is to specify 64 bit register in hexadecimal.
+> +	 * 2 chars is for appending "0x" to the hexadecimal value and
+> +	 * 10 chars is for register name.
+> +	 */
+> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+> +	char bf[size];
+>   
+>   	regs_map(&sample->intr_regs, attr->sample_regs_intr, bf, sizeof(bf));
+>   
+> 
+
+-- 
+Thanks and Regards
+R.Nageswara Sastry
