@@ -2,250 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CB53B68BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1833B68C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhF1S6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:58:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59993 "EHLO
+        id S235686AbhF1S6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:58:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57949 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233789AbhF1S6Q (ORCPT
+        by vger.kernel.org with ESMTP id S235662AbhF1S6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:58:16 -0400
+        Mon, 28 Jun 2021 14:58:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624906549;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        s=mimecast20190719; t=1624906580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8HinIvCMtHYb1qVrOJ0tRZVpQdvLsbcc131aWbfWsnw=;
-        b=SbUGlsIVl78h0uiaemPWM9cGzfxZKn3Rt6n7IizhzS0V1sNU8zsSocDshgkybG0mgfwgK9
-        rTSMZO4DbfQOULSxs8ZT5SE30obdTmrqXNcr+eVk5AuNr0fcS/7XBG+rRwa5d5cKt9hM4k
-        DNRznjKrR0iCeylsVPvunnuRxnsNHGA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-ZxckCWrxMxSiWv-SBTETNQ-1; Mon, 28 Jun 2021 14:55:48 -0400
-X-MC-Unique: ZxckCWrxMxSiWv-SBTETNQ-1
-Received: by mail-qk1-f197.google.com with SMTP id v1-20020a372f010000b02903aa9be319adso18547669qkh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:55:48 -0700 (PDT)
+        bh=ECyZepa63nlv7FQfDjXLVtw4C+haeQFo0Jc6XzQeZsE=;
+        b=BBpbfYkxxDm8vXqRkY6GtztJnJIZTCUsxurOdgpF94SRq3EHHJv0OC9TevvQpmKsn0Miff
+        HPth/gF8YDpGjiRvcptN3GFz+sF5W+gdjNLF2vgG2JQuG4j4AnbFal+3u9E74UjqFKPQsd
+        qyk7G9Dgrb8SWcwYqWsm0zmyqtxsltU=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-180-iI1jAftSOn6UxlWEGxeEhQ-1; Mon, 28 Jun 2021 14:56:05 -0400
+X-MC-Unique: iI1jAftSOn6UxlWEGxeEhQ-1
+Received: by mail-oi1-f199.google.com with SMTP id 7-20020aca0f070000b029023d769dcb9bso5897369oip.14
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:56:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=8HinIvCMtHYb1qVrOJ0tRZVpQdvLsbcc131aWbfWsnw=;
-        b=VHXjqk7NbuSCJNMaYC0TfZRuyjDF5wgPO+2rZBmurVIaoWSZnTg8ctMqXjJNlbzKvu
-         9xSw/zqW+J3ajKmHnXKbEh/+VVohaarpV6JKNc4Ihq6+rh8+9Eg7Y7jY3T7p8VSRP0tx
-         yb4BML8295Icqe4lCh5mCF9jwoauXexVAGOnYM6NrhdNRDyZgulqZQ3JBTn4od5j0eZ4
-         JZnKFLK0RD3AF+b4uk+2cdoVEr0Ln9h3VObAGC109VxAqmsRdm45dMH5IqP3n3jLE3h/
-         EK9WJR/6PiiieEY2Vy7FAJ5LNIgjFA7wh9wDvgcRlgc2vzHCgxXtceyNfeuf29RRCbaC
-         DIAg==
-X-Gm-Message-State: AOAM531lBMRD6p77oYA+SZ8xqhcMoLihJzhlBRapgSI6EYxdpoxrrBEH
-        H6Cm47AAepWST6xBu2ots1395wdUix5gE9mRqrBQkHBK2NV+S12iSd9RzkzJs9FCYRVpgPWC8oT
-        D2cOWsUM3/QloIMh+2kAdo9o2
-X-Received: by 2002:a05:622a:1103:: with SMTP id e3mr19263981qty.390.1624906547853;
-        Mon, 28 Jun 2021 11:55:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqEW/3cBf2LZoNrjSfaumssIJCB2Hs91eIgGjWvxLJcGsx/bwi1i70Q1f4gaNmEkrdoTFZCQ==
-X-Received: by 2002:a05:622a:1103:: with SMTP id e3mr19263956qty.390.1624906547630;
-        Mon, 28 Jun 2021 11:55:47 -0700 (PDT)
-Received: from localhost.localdomain (cpe-74-65-150-180.maine.res.rr.com. [74.65.150.180])
-        by smtp.gmail.com with ESMTPSA id e12sm6878175qtj.3.2021.06.28.11.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 11:55:46 -0700 (PDT)
-Reply-To: dwalsh@redhat.com
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-References: <20210625191229.1752531-1-vgoyal@redhat.com>
- <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
- <20210628131708.GA1803896@redhat.com>
- <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
- <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
-From:   Daniel Walsh <dwalsh@redhat.com>
-Organization: Red Hat
-Message-ID: <69016bdc-fcf1-34df-1663-42d8f57c927c@redhat.com>
-Date:   Mon, 28 Jun 2021 14:55:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ECyZepa63nlv7FQfDjXLVtw4C+haeQFo0Jc6XzQeZsE=;
+        b=n+xuR+BjzbaE/LBUfvqCOiDte/NyPx2PpJG7GQbVH2LdvGbiMi0gumBBwHyEwT2h0P
+         Y9dCjHWOkawD6nXKBQh/F5ufjwgOgVRt1OrMvMzj9akGpI+egyIc6qhlJGRfN9RUf3BY
+         5YUuc6PVctBhn2qnak2T0cLnNxSvNTuKcVso4S/wZZflOFlFlt36eb4tbmGYB93kByvi
+         VznIdQFS8PIAtzX6fzdB7FAuva7RKvaKCw3JEmQJLvgqyGlaWrDVT2MXzp38NP11TzX7
+         /FOtX8iFkCZ9B+TX9sitUbACjEzykISdMPpZYabMXWc9WRDOSTn6jcrcYNv1EZLqnnfh
+         342A==
+X-Gm-Message-State: AOAM531ymZeyOhSNGu32NCOWk4ni7Rp2GdB2UURqsr6tCL3wV7UQRpY4
+        STQAlC1vptQPDmEZna89d5zfGW8L0ZFFYOjvsY6kyc0nasVpdVs71kMpIr8at+znHtz6oWf2rY2
+        E9O5n5vbVCCJADAojDsNuXuek
+X-Received: by 2002:a4a:9644:: with SMTP id r4mr745810ooi.52.1624906564642;
+        Mon, 28 Jun 2021 11:56:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+tWMyISY1yeEpZ9LNbIsGyIkCItlWIyGFb4Yoh05L8iUj6egVfko/ubXmKIYKG3lf81/DXQ==
+X-Received: by 2002:a4a:9644:: with SMTP id r4mr745775ooi.52.1624906564120;
+        Mon, 28 Jun 2021 11:56:04 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id u10sm3756394otj.75.2021.06.28.11.56.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 11:56:03 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 12:56:02 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Kirti Wankhede <kwankhede@nvidia.com>
+Cc:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cohuck@redhat.com>, <jgg@nvidia.com>
+Subject: Re: [PATCH] vfio/mtty: Enforce available_instances
+Message-ID: <20210628125602.5b07388e.alex.williamson@redhat.com>
+In-Reply-To: <ee949a98-6998-2032-eb17-00ef8b8d911c@nvidia.com>
+References: <162465624894.3338367.12935940647049917981.stgit@omen>
+        <ee949a98-6998-2032-eb17-00ef8b8d911c@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:04, Casey Schaufler wrote:
-> On 6/28/2021 6:36 AM, Daniel Walsh wrote:
->> On 6/28/21 09:17, Vivek Goyal wrote:
->>> On Fri, Jun 25, 2021 at 09:49:51PM +0000, Schaufler, Casey wrote:
->>>>> -----Original Message-----
->>>>> From: Vivek Goyal <vgoyal@redhat.com>
->>>>> Sent: Friday, June 25, 2021 12:12 PM
->>>>> To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>>> viro@zeniv.linux.org.uk
->>>>> Cc: virtio-fs@redhat.com; dwalsh@redhat.com; dgilbert@redhat.com;
->>>>> berrange@redhat.com; vgoyal@redhat.com
->>>> Please include Linux Security Module list <linux-security-module@vger.kernel.org>
->>>> and selinux@vger.kernel.org on this topic.
->>>>
->>>>> Subject: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special files if
->>>>> caller has CAP_SYS_RESOURCE
->>>>>
->>>>> Hi,
->>>>>
->>>>> In virtiofs, actual file server is virtiosd daemon running on host.
->>>>> There we have a mode where xattrs can be remapped to something else.
->>>>> For example security.selinux can be remapped to
->>>>> user.virtiofsd.securit.selinux on the host.
->>>> This would seem to provide mechanism whereby a user can violate
->>>> SELinux policy quite easily.
->>> Hi Casey,
->>>
->>> As david already replied, we are not bypassing host's SELinux policy (if
->>> there is one). We are just trying to provide a mode where host and
->>> guest's SELinux policies could co-exist without interefering
->>> with each other.
->>>
->>> By remappming guests SELinux xattrs (and not host's SELinux xattrs),
->>> a file probably will have two xattrs
->>>
->>> "security.selinux" and "user.virtiofsd.security.selinux". Host will
->>> enforce SELinux policy based on security.selinux xattr and guest
->>> will see the SELinux info stored in "user.virtiofsd.security.selinux"
->>> and guest SELinux policy will enforce rules based on that.
->>> (user.virtiofsd.security.selinux will be remapped to "security.selinux"
->>> when guest does getxattr()).
->>>
->>> IOW, this mode is allowing both host and guest SELinux policies to
->>> co-exist and not interefere with each other. (Remapping guests's
->>> SELinux xattr is not changing hosts's SELinux label and is not
->>> bypassing host's SELinux policy).
->>>
->>> virtiofsd also provides for the mode where if guest process sets
->>> SELinux xattr it shows up as security.selinux on host. But now we
->>> have multiple issues. There are two SELinux policies (host and guest)
->>> which are operating on same lable. And there is a very good chance
->>> that two have not been written in such a way that they work with
->>> each other. In fact there does not seem to exist a notion where
->>> two different SELinux policies are operating on same label.
->>>
->>> At high level, this is in a way similar to files created on
->>> virtio-blk devices. Say this device is backed by a foo.img file
->>> on host. Now host selinux policy will set its own label on
->>> foo.img and provide access control while labels created by guest
->>> are not seen or controlled by host's SELinux policy. Only guest
->>> SELinux policy works with those labels.
->>>
->>> So this is similar kind of attempt. Provide isolation between
->>> host and guests's SELinux labels so that two policies can
->>> co-exist and not interfere with each other.
->>>
->>>>> This remapping is useful when SELinux is enabled in guest and virtiofs
->>>>> as being used as rootfs. Guest and host SELinux policy might not match
->>>>> and host policy might deny security.selinux xattr setting by guest
->>>>> onto host. Or host might have SELinux disabled and in that case to
->>>>> be able to set security.selinux xattr, virtiofsd will need to have
->>>>> CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
->>>>> guest security.selinux (or other xattrs) on host to something else
->>>>> is also better from security point of view.
->>>> Can you please provide some rationale for this assertion?
->>>> I have been working with security xattrs longer than anyone
->>>> and have trouble accepting the statement.
->>> If guest is not able to interfere or change host's SELinux labels
->>> directly, it sounded better.
->>>
->>> Irrespective of this, my primary concern is that to allow guest
->>> VM to be able to use SELinux seamlessly in diverse host OS
->>> environments (typical of cloud deployments). And being able to
->>> provide a mode where host and guest's security labels can
->>> co-exist and policies can work independently, should be able
->>> to achieve that goal.
->>>
->>>>> But when we try this, we noticed that SELinux relabeling in guest
->>>>> is failing on some symlinks. When I debugged a little more, I
->>>>> came to know that "user.*" xattrs are not allowed on symlinks
->>>>> or special files.
->>>>>
->>>>> "man xattr" seems to suggest that primary reason to disallow is
->>>>> that arbitrary users can set unlimited amount of "user.*" xattrs
->>>>> on these files and bypass quota check.
->>>>>
->>>>> If that's the primary reason, I am wondering is it possible to relax
->>>>> the restrictions if caller has CAP_SYS_RESOURCE. This capability
->>>>> allows caller to bypass quota checks. So it should not be
->>>>> a problem atleast from quota perpective.
->>>>>
->>>>> That will allow me to give CAP_SYS_RESOURCE to virtiofs deamon
->>>>> and remap xattrs arbitrarily.
->>>> On a Smack system you should require CAP_MAC_ADMIN to remap
->>>> security. xattrs. I sounds like you're in serious danger of running afoul
->>>> of LSM attribute policy on a reasonable general level.
->>> I think I did not explain xattr remapping properly and that's why this
->>> confusion is there. Only guests's xattrs will be remapped and not
->>> hosts's xattr. So one can not bypass any access control implemented
->>> by any of the LSM on host.
->>>
->>> Thanks
->>> Vivek
->>>
->> I want to point out that this solves a  couple of other problems also.
-> I am not (usually) adverse to solving problems. My concern is with
-> regard to creating new ones.
->
->> Currently virtiofsd attempts to write security attributes on the host, which is denied by default on systems without SELinux and no CAP_SYS_ADMIN.
-> Right. Which is as it should be.
-> Also, s/SELinux/a LSM that uses security xattrs/
->
->>    This means if you want to run a container or VM
-> A container uses the kernel from the host. A VM uses the kernel
-> from the guest. Unless you're calling a VM a container for
-> marketing purposes. If this scheme works for non-VM based containers
-> there's a problem.
-That is your definition of a container.  Our definition includes 
-container workloads within kvm separation along with their own kernels. 
-(Kata and libkrun).  As opposed to VM workloads which run full operating 
-system workloads including systemd, logging, cron, sshd ...
->> on a host without SELinux support but the VM has SELinux enabled, then virtiofsd needs CAP_SYS_ADMIN.  It would be much more secure if it only needed CAP_SYS_RESOURCE.
-> I don't know, so I'm asking. Does virtiofsd really get run with limited capabilities,
-> or does it get run as root like most system daemons? If it runs as root the argument
-> has no legs.
-I believe it should almost always get run with limited privileges, we 
-are opening a whole from the kvm separated workload into the host.  If 
-there is a bug in virtiofsd, it can attack the host.
->>    If the host has SELinux enabled then it can run without CAP_SYS_ADMIN or CAP_SYS_RESOURCE, but it will only be allowed to write labels that the host system understands, any label not understood will be blocked. Not only this, but the label that is running virtiofsd pretty much has to run as unconfined, since it could be writing any SELinux label.
-> You could fix that easily enough by teaching SELinux about the proper
-> use of CAP_MAC_ADMIN. Alas, I understand that there's no way that's
-> going to happen, and why it would be considered philosophically repugnant
-> in the SELinux community.
-Sure, but this ignores the more important next comment.
->> If virtiofsd is writing Userxattrs with CAP_SYS_RESOURCE, then we can run with a confined SELinux label only allowing it to sexattr on the content in the designated directory, make the container/vm much more secure.
->>
-> User xattrs are less protected than security xattrs. You are exposing the
-> security xattrs on the guest to the possible whims of a malicious, unprivileged
-> actor on the host. All it needs is the right UID.
->
-> We have unused xattr namespaces. Would using the "trusted" namespace
-> work for your purposes?
->
-No because they bring their own issues, and can not be used without 
-CAP_SYS_ADMIN.
+On Mon, 28 Jun 2021 23:19:54 +0530
+Kirti Wankhede <kwankhede@nvidia.com> wrote:
 
-My number one concern is attacks from the kvm separated work space 
-against the host, since virtiofsd is opening up the attack vector.  
-Running it with the least privs possible from the MAC and DAC point of 
-view is the goal.
+> On 6/26/2021 2:56 AM, Alex Williamson wrote:
+> > The sample mtty mdev driver doesn't actually enforce the number of
+> > device instances it claims are available.  Implement this properly.
+> > 
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > ---
+> > 
+> > Applies to vfio next branch + Jason's atomic conversion
+> >   
+> 
+> 
+> Does this need to be on top of Jason's patch?
 
+Yes, see immediately above.
+
+> Patch to use mdev_used_ports is reverted here, can it be changed from 
+> mdev_devices_list to mdev_avail_ports atomic variable?
+
+It doesn't revert Jason's change, it builds on it.  The patches could
+we squashed, but there's no bug in Jason's patch that we're trying to
+avoid exposing, so I don't see why we'd do that.
+
+> Change here to use atomic variable looks good to me.
+> 
+> Reviewed by: Kirti Wankhede <kwankhede@nvidia.com>
+
+Thanks!  It was Jason's patch[1] that converted to use an atomic
+though, so I'm slightly confused if this R-b is for the patch below,
+Jason's patch, or both.  Thanks,
+
+Alex
+
+[1]https://lore.kernel.org/kvm/0-v1-0bc56b362ca7+62-mtty_used_ports_jgg@nvidia.com/
+
+> >   samples/vfio-mdev/mtty.c |   22 ++++++++++++++++------
+> >   1 file changed, 16 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
+> > index ffbaf07a17ea..8b26fecc4afe 100644
+> > --- a/samples/vfio-mdev/mtty.c
+> > +++ b/samples/vfio-mdev/mtty.c
+> > @@ -144,7 +144,7 @@ struct mdev_state {
+> >   	int nr_ports;
+> >   };
+> >   
+> > -static atomic_t mdev_used_ports;
+> > +static atomic_t mdev_avail_ports = ATOMIC_INIT(MAX_MTTYS);
+> >   
+> >   static const struct file_operations vd_fops = {
+> >   	.owner          = THIS_MODULE,
+> > @@ -707,11 +707,20 @@ static int mtty_probe(struct mdev_device *mdev)
+> >   {
+> >   	struct mdev_state *mdev_state;
+> >   	int nr_ports = mdev_get_type_group_id(mdev) + 1;
+> > +	int avail_ports = atomic_read(&mdev_avail_ports);
+> >   	int ret;
+> >   
+> > +	do {
+> > +		if (avail_ports < nr_ports)
+> > +			return -ENOSPC;
+> > +	} while (!atomic_try_cmpxchg(&mdev_avail_ports,
+> > +				     &avail_ports, avail_ports - nr_ports));
+> > +
+> >   	mdev_state = kzalloc(sizeof(struct mdev_state), GFP_KERNEL);
+> > -	if (mdev_state == NULL)
+> > +	if (mdev_state == NULL) {
+> > +		atomic_add(nr_ports, &mdev_avail_ports);
+> >   		return -ENOMEM;
+> > +	}
+> >   
+> >   	vfio_init_group_dev(&mdev_state->vdev, &mdev->dev, &mtty_dev_ops);
+> >   
+> > @@ -724,6 +733,7 @@ static int mtty_probe(struct mdev_device *mdev)
+> >   
+> >   	if (mdev_state->vconfig == NULL) {
+> >   		kfree(mdev_state);
+> > +		atomic_add(nr_ports, &mdev_avail_ports);
+> >   		return -ENOMEM;
+> >   	}
+> >   
+> > @@ -735,9 +745,9 @@ static int mtty_probe(struct mdev_device *mdev)
+> >   	ret = vfio_register_group_dev(&mdev_state->vdev);
+> >   	if (ret) {
+> >   		kfree(mdev_state);
+> > +		atomic_add(nr_ports, &mdev_avail_ports);
+> >   		return ret;
+> >   	}
+> > -	atomic_add(mdev_state->nr_ports, &mdev_used_ports);
+> >   
+> >   	dev_set_drvdata(&mdev->dev, mdev_state);
+> >   	return 0;
+> > @@ -746,12 +756,13 @@ static int mtty_probe(struct mdev_device *mdev)
+> >   static void mtty_remove(struct mdev_device *mdev)
+> >   {
+> >   	struct mdev_state *mdev_state = dev_get_drvdata(&mdev->dev);
+> > +	int nr_ports = mdev_state->nr_ports;
+> >   
+> > -	atomic_sub(mdev_state->nr_ports, &mdev_used_ports);
+> >   	vfio_unregister_group_dev(&mdev_state->vdev);
+> >   
+> >   	kfree(mdev_state->vconfig);
+> >   	kfree(mdev_state);
+> > +	atomic_add(nr_ports, &mdev_avail_ports);
+> >   }
+> >   
+> >   static int mtty_reset(struct mdev_state *mdev_state)
+> > @@ -1271,8 +1282,7 @@ static ssize_t available_instances_show(struct mdev_type *mtype,
+> >   {
+> >   	unsigned int ports = mtype_get_type_group_id(mtype) + 1;
+> >   
+> > -	return sprintf(buf, "%d\n",
+> > -		       (MAX_MTTYS - atomic_read(&mdev_used_ports)) / ports);
+> > +	return sprintf(buf, "%d\n", atomic_read(&mdev_avail_ports) / ports);
+> >   }
+> >   
+> >   static MDEV_TYPE_ATTR_RO(available_instances);
+> > 
+> >   
+> 
 
