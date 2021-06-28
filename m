@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAF73B58BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57AA3B58BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhF1Fsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 01:48:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45476 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbhF1Fsl (ORCPT
+        id S232136AbhF1Fuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 01:50:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:49548 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhF1Fue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 01:48:41 -0400
-Date:   Mon, 28 Jun 2021 05:46:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624859175;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=UAKjJdWtmKqBJLNF534pJg0UNDZh4brZXeI5Pyc4bHw=;
-        b=rJ1Gfl0xdxzs1eAYm14N53fVDVrP2fEKCcrcRbghQR4YobHZG/M8K6/HZISqCYGg+Bk2bq
-        6/GAlrigC8J1K1KAsVz26J3p8hnl1uj1WFfpgtM8ntuLHQ3QvRo2au2slntKpTaXW+h5M+
-        ut4pXPNu72qYAH4jzj/SB+QcgTNM5t5syhDvpdkCb/YPhshSH3LC4NeMz4GL6BfWhGnB8T
-        5tSyTtnW0SDDxjt9/PONq0p6OX+djBs7NWOVOsvLSC96cpTsKPgrho4KPbo7LDaxuHqvQs
-        YMqn21n94roDjgssNMzxtpgc7KhLKErQWgoZqmLO3RcYNuOhG6sYzUii/bTA5A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624859175;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=UAKjJdWtmKqBJLNF534pJg0UNDZh4brZXeI5Pyc4bHw=;
-        b=IAsNKXpEdNM/jH2TVUybCfLQPS1rVE44tYcKi+iN1sFEWgeyyqUN//Zy7ab8Sb9A+MrRRH
-        hbO+MfVkwX6RKiAw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] time/kunit: Add missing MODULE_LICENSE()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 28 Jun 2021 01:50:34 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 76E23D5D06;
+        Mon, 28 Jun 2021 13:47:59 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139709984536320S1624859260300161_;
+        Mon, 28 Jun 2021 13:48:00 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <4742e892832fb92502ccda9ba712ab69>
+X-RL-SENDER: zhanglianjie@uniontech.com
+X-SENDER: zhanglianjie@uniontech.com
+X-LOGIN-NAME: zhanglianjie@uniontech.com
+X-FST-TO: jiaxun.yang@flygoat.com
+X-RCPT-COUNT: 6
+X-SENDER-IP: 58.240.82.166
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhanglianjie <zhanglianjie@uniontech.com>
+To:     jiaxun.yang@flygoat.com, chenhuacai@kernel.org,
+        tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhanglianjie <zhanglianjie@uniontech.com>
+Subject: [PATCH v2] mm: Fix the problem of mips architecture Oops
+Date:   Mon, 28 Jun 2021 13:47:38 +0800
+Message-Id: <20210628054738.10964-1-zhanglianjie@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Message-ID: <162485917429.395.4159105611609357619.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+The cause of the problem is as follows:
+1. when cat /sys/devices/system/memory/memory0/valid_zones,
+   test_pages_in_a_zone() will be called.
+2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
+   The smallest pfn of the numa node in the mips architecture is 128,
+   and the page corresponding to the previous 0~127 pfn is not
+   initialized (page->flags is 0xFFFFFFFF)
+3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
+   of bounds in the corresponding array,
+   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
+   access to the out-of-bounds zone member variables appear abnormal,
+   resulting in Oops.
+Therefore, it is necessary to keep the page between 0 and the minimum
+pfn to prevent Oops from appearing.
 
-Commit-ID:     2d0a9eb23ccfdf11308bec6db0bc007585d919d2
-Gitweb:        https://git.kernel.org/tip/2d0a9eb23ccfdf11308bec6db0bc007585d919d2
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 26 Jun 2021 22:44:11 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 28 Jun 2021 07:40:23 +02:00
-
-time/kunit: Add missing MODULE_LICENSE()
-
-[ mingo: MODULE_LICENSE() takes a string. ]
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 ---
- kernel/time/time_test.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/loongson64/numa.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-index 341ebfa..831e8e7 100644
---- a/kernel/time/time_test.c
-+++ b/kernel/time/time_test.c
-@@ -96,3 +96,4 @@ static struct kunit_suite time_test_suite = {
- };
- 
- kunit_test_suite(time_test_suite);
-+MODULE_LICENSE("GPL");
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index fa9b4a487a47..dba9e6f17b9e 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -129,6 +129,9 @@ static void __init node_mem_init(unsigned int node)
+ 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
+ 			memblock_reserve((node_addrspace_offset | 0xfe000000),
+ 					 32 << 20);
++
++		/* Reserver pfn range 0~node[0]->node_start_pfn */
++		memblock_reserve(0, PAGE_SIZE * start_pfn);
+ 	}
+ }
+
+--
+2.20.1
+
+
+
