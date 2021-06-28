@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93BC3B58D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246DF3B58DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhF1F7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 01:59:53 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:47001 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232259AbhF1F7k (ORCPT
+        id S232196AbhF1GCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:02:33 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:14778 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232191AbhF1GC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 01:59:40 -0400
-Received: by mail-il1-f200.google.com with SMTP id p12-20020a92d28c0000b02901ee741987a7so4779835ilp.13
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:57:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NZiHOP66CN3/d3r09QWR20u5KTe63dZhDT9GX98ADZE=;
-        b=GpPlEaylUZHrnKcI8jmEmAJRVNwIcF0jrUZxf8eiJo3bsuv6Emae3ymkyAETdjb7fB
-         ALnVuuLUEB/FzGwKa6FcgTLyKOMAZ30SXGW9FYd7HaAd6RFVjiATaYfUjUgdFXFSEnyc
-         MMw/zl6U+fNsyuJ+Gp46MrPzz01FfWhHuMr2z1KgPNbaAzJgTwQDNH5lForVPkO+bVtK
-         jSFtujqRXKAvf1GAR/yb6hl8z95A7Fc+cs9970jIcArMu9BhwBIN1YV/YUTHQ3Km4V1E
-         DSMJ4DNuCoNrs18MulxrS4Kdv66hZWJAewShOl6jWUhJ2+pOMh27g9SuhTP8Ir8QAQIt
-         LO5Q==
-X-Gm-Message-State: AOAM533nDLorLh41f5FLQQ2fQfuzx7bIt7/WuuwPNTTWNtzhS9VXgImV
-        +pVuuAvoq7WKv+QuLJmp8sC6s+9VydTKkKQ75SPDgCYX+Q14
-X-Google-Smtp-Source: ABdhPJyVpCwX1N8AuMDdD5DBKGlQWtCf2XKmIlAljvfGYQzEV66j1fnci6D6i9DyvzjYqPhyRYwdvaPHdX0++rYkrNEepIueusfi
-MIME-Version: 1.0
-X-Received: by 2002:a6b:5c0a:: with SMTP id z10mr19934094ioh.122.1624859834952;
- Sun, 27 Jun 2021 22:57:14 -0700 (PDT)
-Date:   Sun, 27 Jun 2021 22:57:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000045ad9705c5cd29ab@google.com>
-Subject: [syzbot] INFO: task can't die in p9_client_rpc (3)
-From:   syzbot <syzbot+716aab0e63b2895e1811@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, lucho@ionkov.net,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 28 Jun 2021 02:02:29 -0400
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210628060003epoutp03c877fd6f8ebd38604bb40c1aec5315a8~MqZBjW65u0252602526epoutp03w
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:00:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210628060003epoutp03c877fd6f8ebd38604bb40c1aec5315a8~MqZBjW65u0252602526epoutp03w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624860003;
+        bh=ZBOaOnM5XEPFGcC55XN4dpE+X+wQQkFTm3DwUDgOvdE=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=MpmJLGRbgtwsqQ4a9ugeeVwbsgYImWzKsP0rdvFV6zJIeRumR8hCvQ6F31jKRVRZK
+         L6n3rmb2OS2aLf2mIT+WjwjUC7aV7XSrVdQA/3gcaCKnLJ5P4IgG9fJHAwy06xRkf4
+         86fAzJSyIulcel4kSSpynAx9iJdr9J1DvsIkYzcU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
+        20210628060001epcas3p2c38c4026db1fbb6c43a167d8095aab09~MqZAVAEGW1026810268epcas3p21;
+        Mon, 28 Jun 2021 06:00:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4GCxlj5qcBz4x9QP; Mon, 28 Jun 2021 06:00:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v2] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        "satyat@google.com" <satyat@google.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jpinto@synopsys.com" <jpinto@synopsys.com>,
+        "joe@perches.com" <joe@perches.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01624860001810.JavaMail.epsvc@epcpadp3>
+Date:   Mon, 28 Jun 2021 14:58:01 +0900
+X-CMS-MailID: 20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79
+References: <CGME20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Simplify if else statement to return statement,
+and remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
 
-syzbot found the following issue on:
+v1 -> v2
+Remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
 
-HEAD commit:    a1f92694 Add linux-next specific files for 20210518
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10805a64300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=716aab0e63b2895e1811
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+716aab0e63b2895e1811@syzkaller.appspotmail.com
-
-INFO: task syz-executor.2:17696 can't die for more than 143 seconds.
-task:syz-executor.2  state:D stack:27376 pid:17696 ppid:  8468 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4688 [inline]
- __schedule+0xb38/0x58c0 kernel/sched/core.c:5945
- schedule+0xcf/0x270 kernel/sched/core.c:6024
- p9_client_rpc+0x405/0x1240 net/9p/client.c:759
- p9_client_flush+0x1f9/0x430 net/9p/client.c:667
- p9_client_rpc+0xfe3/0x1240 net/9p/client.c:784
- p9_client_version net/9p/client.c:955 [inline]
- p9_client_create+0xae1/0x1110 net/9p/client.c:1055
- v9fs_session_init+0x1dd/0x17b0 fs/9p/v9fs.c:406
- v9fs_mount+0x79/0x9c0 fs/9p/vfs_super.c:126
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
- do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-RSP: 002b:00007f42a9fe9188 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000020000200 RSI: 0000000020000000 RDI: 0000000000000000
-RBP: 00000000004bfcb9 R08: 0000000020000440 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffdec5a8f0f R14: 00007f42a9fe9300 R15: 0000000000022000
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1641:
- #0: ffffffff8c17afe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
-1 lock held by in:imklog/8364:
- #0: ffff888025c12370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
-4 locks held by rs:main Q:Reg/8365:
- #0: ffff8880b9c35718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:460
- #1: ffff8880b9c1f988 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x24c/0x670 kernel/sched/psi.c:872
- #2: ffff88802e7cf230 (&sb->s_type->i_mutex_key#10){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
- #2: ffff88802e7cf230 (&sb->s_type->i_mutex_key#10){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:263
- #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:359 [inline]
- #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: ext4_do_update_inode fs/ext4/inode.c:5033 [inline]
- #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: ext4_mark_iloc_dirty+0x213/0x38d0 fs/ext4/inode.c:5724
-2 locks held by agetty/8383:
- #0: ffff888015b94098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:253
- #1: ffffc90000fdc2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xcf0/0x1230 drivers/tty/n_tty.c:2113
-
-=============================================
-
-
-
+Cc: Joao Pinto <jpinto@synopsys.com>
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/scsi/ufs/ufshcd.h | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index c98d540ac044..c9faca237290 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -893,16 +893,8 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
+ 
+ static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
+ {
+-/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
+-#ifndef CONFIG_SCSI_UFS_DWC
+-	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
+-	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
+-		return true;
+-	else
+-		return false;
+-#else
+-return true;
+-#endif
++	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
++		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
+ }
+ 
+ static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
+-- 
+2.17.1
