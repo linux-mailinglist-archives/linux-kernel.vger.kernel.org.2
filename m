@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2BE3B5D85
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EDD3B5D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhF1MFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbhF1MFn (ORCPT
+        id S232854AbhF1MHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:07:45 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:27197 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhF1MHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:05:43 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4817DC061574;
-        Mon, 28 Jun 2021 05:03:17 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id d12so15270037pgd.9;
-        Mon, 28 Jun 2021 05:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hC95X8dILV4yUsxnWcqyaUSRLR/4KhkkqpuXQlMJ+os=;
-        b=j/1qnIN05R1GrGDHQLT945i6wPcIK8UlPXIPynREbRgcev1CYX2vV3PdaSuMf/fkFk
-         5cqvLfoq5LYsQxXfM7WQ0FhWh/GEM4zDYp5YUE+qMxSxIVkZ7BKnlyGaKE/bSRaOvHBg
-         TBZ0p8k4IY1hA9bUBHOp66D2kooiwq9RIKp0v+M+UCECYePx1BGSp6UWwbcxRdr1vGBU
-         YhrN7Hyf6PH/SHx5y8fvtG5Q53KD9JWDK6pJ02iF3Cy0+B3mLGowTZUmWFnuQlP3f7Nx
-         +XjgCAXiaMUgzXVlCRGJGktRvkV7Bp51kBbOk6qaMNw6n64Vu4Jj8gRaEQVLEsn/xxNv
-         kMUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hC95X8dILV4yUsxnWcqyaUSRLR/4KhkkqpuXQlMJ+os=;
-        b=RnPTzM1taTLl4W5n+cIexpiXT28ml9J8lJs3VAWL6VH+n5K193xCj1EQARZQ0jY4lA
-         4ML/VaJaSIzavDrc6svh8wD3wkAqLI43AVbXvFFRhgRBcrkuBW+eE9HhMZlevHPW7IqS
-         tMWgGeAhV3YbKX9IILxu2iONOl250J+LcsWC9WHPJTff8TWXI2nfODpyi9SQJXJyxfZ/
-         uZeqbhcqL+HQlhu4w/yda75TxHJnX+VY7LU3NVJwbhL3l3rv7xHoyyUauWIS9h+p0Lnd
-         T4di5v1ifT1xbKisBDy/r+BcEhefhgzgiP7/ouB6PmuhlU/O02WGODi5ZVUfKNhD6E+Z
-         n7Tg==
-X-Gm-Message-State: AOAM530bKDNQSI/J+Esjde5p2KKiwTUl4Sk75mK+Wt2nz1A/62hHj37v
-        s/TSKrT/y5a/1TvHm38Lf7LFxCQWQVU1TZaOFo8=
-X-Google-Smtp-Source: ABdhPJyAv9znER5hh/JOnKHGaD1NRGWHP3IrFfiODa8IXBazHOnTNyl7L/0rKn7rdXQ7fCvZ/iGF6s9IOTuD8HfB+dg=
-X-Received: by 2002:a63:f609:: with SMTP id m9mr1004059pgh.74.1624881796677;
- Mon, 28 Jun 2021 05:03:16 -0700 (PDT)
+        Mon, 28 Jun 2021 08:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1624881916; x=1656417916;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=D1JleMTnSO1ymCUdXh/+hDEDMbLr8UzAtT0hHDbs/TM=;
+  b=ZJ6Os/bUn7Z4tajL1Ma9md2py+wKi3Yc2ceyoxIDsyibtHh4zaWdUQJX
+   fBl3ujjFeq0T1OFAp9dRKqjLRiArJF1vDRWkYO06DXIu+grkJiNIsE9Im
+   TLj3XEZY76uXr0Ip97965Sz+xi/WGb8qu2xzlKN2NOnD6ot/+uLhygHwR
+   H+7v6SjfZc5bSrW73vH/9PyjH9PQ1ee2WKGPEGcBqv8t2Z+WqAi3RC4+S
+   OSURo89MJd41HIjf2QgT2W4X6rd3CKmzvkyxykg0nbhr2y/g5EzqPomCH
+   u4Us3P/1LTDh/eyuQcx0H33phRVdbIbyQfqRnb/n7I979EWLwVQD3g8QU
+   w==;
+IronPort-SDR: uwNKe2ztjzkSoZGpMhZPcQBzKONsvPI90wvwmw83jXzu6M4nMLglu7agH0C9ywbvwzXPyenmqn
+ jaAJDFCBZXLTazW1z4CaUNSnTS9mc17nEmgYkjq4GhCOGI4A0ld6xftoTTomhKb7Yr76eW1yqO
+ DMCPDQORGogJG0SVGNDwIDPQu2RP/GuF+we9bFiaFMtNEFSL4Qnxp44ez8o0ML8xcBYM4kph2s
+ QBxxDohXTRE1jZjiwkNDFc1VF/Xi+uklkp56P2AFv2IfVIz6T5uVadpo7PsSm12dZfsCDFB+w7
+ ZqA=
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="120256120"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jun 2021 05:05:13 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 05:05:14 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 28 Jun 2021 05:05:11 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <robh+dt@kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <soc@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ludovic.desroches@microchip.com>,
+        <claudiu.beznea@microchip.com>, <codrin.ciubotariu@microchip.com>,
+        "Eugen Hristev" <eugen.hristev@microchip.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/4] dt-bindings: ARM: at91: document sama7g5ek board
+Date:   Mon, 28 Jun 2021 15:04:49 +0300
+Message-ID: <20210628120452.74408-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210625235532.19575-1-dipenp@nvidia.com> <CAHp75Vf4TKjtC7cLNape4r+hE-AWnbxtbww2ofCcHQJf9zyh-g@mail.gmail.com>
- <CACRpkdbXE2A98P0_juA9PNEKTo89FcgywYmnqJSC5bV+Vox=Fw@mail.gmail.com>
-In-Reply-To: <CACRpkdbXE2A98P0_juA9PNEKTo89FcgywYmnqJSC5bV+Vox=Fw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 28 Jun 2021 15:02:39 +0300
-Message-ID: <CAHp75Vcv3BsQ87bnnYK07npQsp3GU4JC1k+iXUw2uuGbSKBQNg@mail.gmail.com>
-Subject: Re: [RFC 00/11] Intro to Hardware timestamping engine
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Ye Xiang <xiang.ye@intel.com>, Drew Fustini <drew@beagleboard.org>,
-        Sandeep Singh <sandeep.singh@amd.com>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 5:41 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Sun, Jun 27, 2021 at 3:08 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->
-> > > To summarize upstream discussion:
-> > > - It was heavily favoured by Linus and Kent to extend GPIOLIB and supporting
-> > > GPIO drivers to add HTE functionality and I agreed to experiment with it.
-> >
-> > I guess this series should include more people from different
-> > companies, especially documentation parts. This may be used by
-> > different hardware and quite different vendors. Developing a framework
-> > like this for only one vendor is no go in general.
->
-> I forwarded patch 00 to the IIO list and Jonathan Cameron,
-> and let's page Ye Xiang who made a bunch of contributions
-> from Intel's side to IIO directly. (Hi Ye, please check this concept
-> if you have time!)
->
-> The actually most important target group would be people
-> doing things like sensor fusion where a common timebase is
-> important, I don't know who does really, but Sandeep Singh from
-> AMD has contributed the AMD Sensor Fusion hub in
-> drivers/hid/amd-sfh-hid and might know a few things about this
-> though I don't think SFH would need this directly.
-> https://en.wikipedia.org/wiki/Sensor_fusion
->
-> Also Paging Drew Fustini, who knows a lot of maker and tinker
-> people, he might know a bit about this or know someone who
-> knows.
+Document the SAMA7G5 Evaluation Kit based on sama7g5 SoC.
 
-Thank you!
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+ Documentation/devicetree/bindings/arm/atmel-at91.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+index 6fc5a22ad962..fba071b9af1d 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
++++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+@@ -145,6 +145,11 @@ properties:
+           - const: atmel,sama5d4
+           - const: atmel,sama5
+ 
++      - items:
++          - const: microchip,sama7g5ek # SAMA7G5 Evaluation Kit
++          - const: microchip,sama7g5
++          - const: microchip,sama7
++
+       - items:
+           - enum:
+               - atmel,sams70j19
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
