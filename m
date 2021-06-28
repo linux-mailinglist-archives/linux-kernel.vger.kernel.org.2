@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1513B66AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2B73B66AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhF1Q0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        id S233775AbhF1Q1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhF1Q0i (ORCPT
+        with ESMTP id S233189AbhF1Q1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:26:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0D4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:24:12 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lxu3N-0006TZ-5k; Mon, 28 Jun 2021 18:24:09 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lxu3L-00088p-V1; Mon, 28 Jun 2021 18:24:07 +0200
-Date:   Mon, 28 Jun 2021 18:24:07 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Emil Lenngren <emil.lenngren@gmail.com>,
-        michal.simek@xilinx.com, Alvaro Gamez <alvaro.gamez@hazent.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/3] pwm: Add support for Xilinx AXI Timer
-Message-ID: <20210628162407.dxxt6hqfzeokdtxa@pengutronix.de>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
- <20210528214522.617435-3-sean.anderson@seco.com>
- <20210625061958.yeaxjltuq7q2t7i7@pengutronix.de>
- <a748143d-f157-562e-795d-dcd9a0cf9d85@seco.com>
- <20210625165642.5iuorl5guuq5c7gc@pengutronix.de>
- <f1772da9-8bd8-57cf-6eba-3c16c58a903f@seco.com>
- <20210627181919.iunagls4j67ignhh@pengutronix.de>
- <59e93f67-0552-04bb-116e-73ddf878761e@seco.com>
+        Mon, 28 Jun 2021 12:27:07 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1B2C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:24:41 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id d7so4074735vkf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RpJ7w32iGqwOk/oM/d0ecaefQixseDwgEeakcU32Bpk=;
+        b=J5VVzZnCPxO4E4iVGvXs0S0FNIqPMIYqCPljwFsfMFBLSG5Xf/XsoDBBgz7XgOAHmm
+         vj7AoYTLWtcJtxnNJHMOS4ONGe4/xLbiLzUhOqtIS+2VZ8TjR/p4Jp/sjGyshvcYALQV
+         jiVsg2puI6vff5H82ZCHshluIz/QfrLLq8Q1ODcK2NxRkPvQDq4NlK8sQLRWj/URdKEZ
+         ZLO4SE0JpCoP3lPkkachFV5wjB0I/V2WtBgJTHN8spUvLb5bKq89e41L9bsmNvmMK9vp
+         dTyECvKDxu/nb0CWQCyyvTe4MPcCoERzBGkhHsCI7FYD+dGi9i2beYvViJ6+e6YeCT47
+         NvBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RpJ7w32iGqwOk/oM/d0ecaefQixseDwgEeakcU32Bpk=;
+        b=gd69woBSosbnR65OkOoXJt+MfANW4kmVc9HvmS4lxJZQ0WK2CgbABagGS0dhsyy5O5
+         0MmoCC/WFJshPeh/uRPOWMXRQVQO+wanbnHveD4Y7kbYwC/4l7zTEZH8F2E1Kr5OGWIH
+         jc0jf0dvqXrxQNRAecva5Gxv+HOsTQezrQ0O/ljUHDJFD6CK9vZLxk2FJADf5U3JwSlE
+         6uDFPfq7szf5iww+5U82gD0vr86L8wuwwOlXhgq7KoyMQbhe9tHByd8un4ic+0QyrHiN
+         05v5Da/MGJKi2YBBrMhzZOtf7O/6nqM2YfsReg81ym0M3MPfeqIz1Mwl3kYF/dmSHreo
+         VZeQ==
+X-Gm-Message-State: AOAM533Vj+XymO5wiR8yeOaHAyppqvw89uhDFccjqW6xvtO2rbsfTbRb
+        wPu7oBvGxxX1ANjRburyp7+wvF65qitLTH2ddAv7Ew==
+X-Google-Smtp-Source: ABdhPJw91nOsdpuFZV/dLpAyCemkIwoeS+zWUP869PzyBrf5GyGV7tXMqGOVFz318/U7RCY6IgxhF5tRCxgIjbMCSos=
+X-Received: by 2002:a1f:280e:: with SMTP id o14mr17539002vko.19.1624897480401;
+ Mon, 28 Jun 2021 09:24:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mxlp6tyzyeaflos4"
-Content-Disposition: inline
-In-Reply-To: <59e93f67-0552-04bb-116e-73ddf878761e@seco.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com>
+In-Reply-To: <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Mon, 28 Jun 2021 12:24:19 -0400
+Message-ID: <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Phi Nguyen <phind.uet@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 12:18 PM Phi Nguyen <phind.uet@gmail.com> wrote:
+>
+> On 6/28/2021 10:52 PM, Eric Dumazet wrote:
+>
+> > Unfortunately this patch might break things.
+> >
+> > We keep changing this CC switching, with eBPF being mixed in the equation.
+> >
+> > I would suggest you find a Fixes: tag first, so that we can continue
+> > the discussion.
+> >
+> > Thank you.
+>
+> Thank for your feedback. I will resubmit it with a Fixes tag.
+>
+> Regard.
 
---mxlp6tyzyeaflos4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks.
 
-Hello Sean,
+Can you also please provide a summary of the event sequence that
+triggers the bug? Based on your Reported-by tag, I guess this is based
+on the syzbot reproducer:
 
-On Mon, Jun 28, 2021 at 11:50:33AM -0400, Sean Anderson wrote:
-> On 6/27/21 2:19 PM, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Jun 25, 2021 at 01:46:26PM -0400, Sean Anderson wrote:
-> > > So for the moment, why not give an error? This will be legal code both
-> > > now and after round_state is implemented.
-> >=20
-> > The problem is where to draw the line. To stay with your example: If a
-> > request for period =3D 150 ns comes in, and let X be the biggest period=
- <=3D
-> > 150 ns that the hardware can configure. For which values of X should an
-> > error be returned and for which values the setting should be
-> > implemented.
-> >=20
-> > In my eyes the only sensible thing to implement here is to tell the
-> > consumer about X and let it decide if it's good enough. If you have a
-> > better idea let me hear about it.
->=20
-> Sure. And I think it's ok to tell the consumer that X is the best we can
-> do. But if they go along and request an unconfigurable state anyway, we
-> should tell them as much.
+ https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
 
-I have the impression you didn't understand where I see the problem. If
-you request 150 ns and the controller can only do 149 ns (or 149.6667 ns)
-should we refuse? If yes: This is very unusable, e.g. the led-pwm driver
-expects that it can configure the duty_cycle in 1/256 steps of the
-period, and then maybe only steps 27 and 213 of the 256 possible steps
-work. (This example doesn't really match because the led-pwm driver
-varies duty_cycle and not period, but the principle becomes clear I
-assume.) If no: Should we accept 151 ns? Isn't that ridiculous?
+but perhaps you can give a summary of the event sequence that causes
+the bug? Is it that the call:
 
-> IMO, this is the best way to prevent surprising results in the API.
+setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+&(0x7f0000000000)='cdg\x00', 0x4)
 
-I think it's not possible in practise to refuse "near" misses and every
-definition of "near" is in some case ridiculous. Also if you consider
-the pwm_round_state() case you don't want to refuse any request to tell
-as much as possible about your controller's capabilities. And then it's
-straight forward to let apply behave in the same way to keep complexity
-low.
+initializes the CC and happens before the connection is established,
+and then when the connection is established, the line that sets:
+  icsk->icsk_ca_initialized = 0;
+is incorrect, causing the CC to be initialized again without first
+calling the cleanup code that deallocates the CDG-allocated memory?
 
-> The real issue here is that it is impossible to determine the correct
-> way to round the PWM a priori, and in particular, without considering
-> both duty_cycle and period. If a consumer requests very small
-> period/duty cycle which we cannot produce, how should it be rounded?
-
-Yeah, because there is no obviously right one, I picked one that is as
-wrong as the other possibilities but is easy to work with.
-
-> Should we just set TLR0=3D1 and TLR1=3D0 to give them 66% duty cycle with
-> the least period? Or should we try and increase the period to better
-> approximate the % duty cycle? And both of these decisions must be made
-> knowing both parameters. We cannot (for example) just always round up,
-> since we may produce a configuration with TLR0 =3D=3D TLR1, which would
-> produce 0% duty cycle instead of whatever was requested. Rounding rate
-> will introduce significant complexity into the driver. Most of the time
-> if a consumer requests an invalid rate, it is due to misconfiguration
-> which is best solved by fixing the configuration.
-
-In the first step pick the biggest period not bigger than the requested
-and then pick the biggest duty cycle that is not bigger than the
-requested and that can be set with the just picked period. That is the
-behaviour that all new drivers should do. This is somewhat arbitrary but
-after quite some thought the most sensible in my eyes.
-
-> > > Perhaps I should add
-> > >=20
-> > > 	if (tlr0 <=3D tlr1)
-> > > 		return -EINVAL;
-> > >=20
-> > > here to prevent accidentally getting 0% duty cycle.
-> >=20
-> > You can assume that duty_cycle <=3D period when .apply is called.
->=20
-> Ok, I will only check for =3D=3D then.
-
-You just have to pay attention to the case that you had to decrement
-=2Eperiod to the next possible value. Then .duty_cycle might be bigger
-than the corrected period.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---mxlp6tyzyeaflos4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDZ96QACgkQwfwUeK3K
-7AlJXgf7BKBFOIdY64LBcokhYBcDKmKMqIXrY1FhK8oF+FxlLdyQ89SrYSXpI29t
-DagR8JwKJZn6eigEOVD8b1q+0oB4Rrou9g6Q3CkfF5OMLBcxXCXqne1nAOY1lpD2
-AXzJjkfCHPNIcH6Cr3ESFhaGGdDzpb4KyxmYOjbrdxlbxlAr8HjgK8e2hbjAW31V
-m6jzcwWcE/Rru6TklnULd0pkGt4+hEbFTKuwsxoUVMQr10dT7ZN+5zSD9G4nOejc
-H6Zw8jdqSLsQ+DdI05+iADMUd7oVUnfYkMkCnJq8l7EYtrU35p+HDJNvJ0Djy19/
-JYMrzGjxkiegkRdQubUWtuMHlDQwOQ==
-=srzj
------END PGP SIGNATURE-----
-
---mxlp6tyzyeaflos4--
+thanks,
+neal
