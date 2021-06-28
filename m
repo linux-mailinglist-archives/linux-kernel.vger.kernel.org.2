@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3453B68D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110473B68DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhF1THt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S236084AbhF1TOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbhF1THn (ORCPT
+        with ESMTP id S233605AbhF1TOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:07:43 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514ABC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:05:17 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id u14so9800739pga.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:05:17 -0700 (PDT)
+        Mon, 28 Jun 2021 15:14:23 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B631C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:11:57 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id k8so27262247lja.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:11:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UuLWWmnvZt1Eact5E5zQvx40z47gJJnUBnaxQPWrxTo=;
-        b=AC1Pf6F2FnAnQz0fGMrj75w/nMyYp0qr4+QQ3bn8kV0Y4xcy0kSbGmGHTtvYY2nQUP
-         pzisKJXdkx3dVoHgrmy60jo1+oCRrQ1RaahFguj4q/uz7koXr6re8qrx5tC9FWYa0K41
-         mVxkrNdC0PcouiMQPDAnBH08fgAkPD870V2QI=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z2eTGBF8cKmK4hfSJJaTRWNwJ/wQm5OHrYYniY5NRgQ=;
+        b=PcxaghaLpMh+T26+vpvO+N/uXCxKEoqeVARQ7ZqZ5OhEITda3Zv1QXIrakDQ26Tbkq
+         aU1zITj3NW/CPLK31OfGi4rtkLgsYRrW/0Tfoi+2Gf5BsHR9d7y0C1si/zKVAssOnH+t
+         ZnS8HNKd9db3/SQvssXSJ660cuIhHSvMz/LBQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UuLWWmnvZt1Eact5E5zQvx40z47gJJnUBnaxQPWrxTo=;
-        b=gcIIvlJPNQuNYbQdOpPbFPelROIiQmn/Q8/r8JFuk2wnnx6+pS1WH+qWLOlplXuuTh
-         QHroNHRzWMFUCJzGAE2MG4hX6WZipriVfANJ0PsMhxvt3FS6y/dm6AHatMcnDmw7s07X
-         id+Wtwu0FjQYsBxSd0h9d1ezPwNpNPjWQ9uOKiZaSWwckBGDcY8176apBFvN4+AlM9ty
-         EwQ1ZCSpVOGtWIelFUiWd4rOyH+BU3w48/2OazEHF1U7P2VN4skfkaousXeW6AGCeZXE
-         D8zvtPhYxm2lcITG8ypxRduGxPtniwZKSEZO4KKA2u6v5tKBJ2ESfpprH9IhbDRZvxrE
-         u3nQ==
-X-Gm-Message-State: AOAM532n38A7Wj+Rrf/V1oLV66vUa3Jy3R7MssYPKgMQgGMbc1Y6hded
-        OLYcxCN7iRYLR516WN+C9AAswQ==
-X-Google-Smtp-Source: ABdhPJwL7reP7lAruztnf+bjjxn2ijxUR1B0eGZgtokgGCAeZnkfQcn7emRJZqXYg3AtdmC6WtP+ug==
-X-Received: by 2002:a63:1215:: with SMTP id h21mr24262501pgl.173.1624907116892;
-        Mon, 28 Jun 2021 12:05:16 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:df70:d2d8:b384:35cf])
-        by smtp.gmail.com with UTF8SMTPSA id i3sm16606319pgc.92.2021.06.28.12.05.15
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z2eTGBF8cKmK4hfSJJaTRWNwJ/wQm5OHrYYniY5NRgQ=;
+        b=Jljx1NNpvbk8upXjzUTNEvo1PeEUtxo2NQimGAyaUH5qoXHb0iDpC7vIObgvUv7tuu
+         yUlTDRrIObhgDUSBBGesJcHIq3uHaVD6+kz06E9IoYPdoqXfH/MWcLwR2d19Fpw0IpGl
+         VEXFz8QoA1Nt/CsfszdCFXCdk9Wsq+SXRCXtu2AdodC4/oReLQtOu5BVL1HbdpNWOgcB
+         egsK3c7xD/i0iT6XH4JuOH9wnfjchcEy3aoYyr/n08CMJPpvs56koxgx8YlhnPSRGMaa
+         LzYcyGgUrggaKajMsYEFVe/o/coOMdXrtnjVSozD6CK2EzspPw/CcNM+GkLvNu3pCyOD
+         vwEQ==
+X-Gm-Message-State: AOAM532lw0hti0/ncS3MIAZeBH430cWCwc2HQviDxVHRfaZTBTvaRHK4
+        o1qKw9Jk+18CdbEYW69t9N3k+k/FTgK0Gy7G
+X-Google-Smtp-Source: ABdhPJxt81NVang9sbqxHYmJ/OTJjtecY9Wnz+ddGUrGTXCcRnO+bWXrY60RnVy5UJReFnylU9rZcg==
+X-Received: by 2002:a2e:80ca:: with SMTP id r10mr683047ljg.485.1624907514964;
+        Mon, 28 Jun 2021 12:11:54 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id p24sm1097828lfo.0.2021.06.28.12.11.54
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 12:05:16 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 12:05:14 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 9/9] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-Message-ID: <YNodaqE9n9+sQUFq@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-10-git-send-email-sibis@codeaurora.org>
+        Mon, 28 Jun 2021 12:11:54 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id q18so181279lfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:11:54 -0700 (PDT)
+X-Received: by 2002:ac2:4950:: with SMTP id o16mr12794197lfi.487.1624907513712;
+ Mon, 28 Jun 2021 12:11:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1624564058-24095-10-git-send-email-sibis@codeaurora.org>
+References: <20210623135600.n343aglmvu272fsg@kernel.org> <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
+ <8de9d45e-4389-8316-b0d0-e9a43be9fade@linux.ibm.com>
+In-Reply-To: <8de9d45e-4389-8316-b0d0-e9a43be9fade@linux.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Jun 2021 12:11:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wibQ3ahmo0m3BynA3bw2Fkhv0OfMJuV0+wEMwg93Fbj0g@mail.gmail.com>
+Message-ID: <CAHk-=wibQ3ahmo0m3BynA3bw2Fkhv0OfMJuV0+wEMwg93Fbj0g@mail.gmail.com>
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:17:38AM +0530, Sibi Sankar wrote:
-> Update MSS node to support MSA based modem boot on SC7280 SoCs.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  7 +++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 19 ++++++++++++++++---
->  2 files changed, 23 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 191e8a92d153..d66e3ca42ad5 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -343,3 +343,10 @@
->  		bias-pull-up;
->  	};
->  };
-> +
-> +&remoteproc_mpss {
-> +	status = "okay";
-> +	compatible = "qcom,sc7280-mss-pil";
-> +	iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
-> +	memory-region = <&mba_mem &mpss_mem>;
-> +};
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 56ea172f641f..6d3687744440 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -586,7 +586,8 @@
->  
->  		remoteproc_mpss: remoteproc@4080000 {
->  			compatible = "qcom,sc7280-mpss-pas";
-> -			reg = <0 0x04080000 0 0x10000>;
-> +			reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
-> +			reg-names = "qdsp6", "rmb";
+On Mon, Jun 28, 2021 at 11:33 AM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>
+> The removal is triggered by the user changing the type of key from what
+> is in the keyfile.
 
-Binding needs update?
+I understand.
 
-Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
+But if I earlier pointed the kernel config to one my RSA keys, and
+then I change some key type config option to something else, I sure as
+hell don't want to perhaps lose my key as a result.
 
-  reg:
-      maxItems: 1
+Yes, one common situation is that the key is some automatically
+generated one. That's what I use personally - I want a temporary key
+that is thrown away and never exists except for validating that "yup,
+I built these modules for this kernel". Removing that temporary key is
+fine.
 
->  
->  			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
->  					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-> @@ -597,8 +598,11 @@
->  			interrupt-names = "wdog", "fatal", "ready", "handover",
->  					  "stop-ack", "shutdown-ack";
->  
-> -			clocks = <&rpmhcc RPMH_CXO_CLK>;
-> -			clock-names = "xo";
-> +			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
-> +				 <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
-> +				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
-> +				 <&rpmhcc RPMH_CXO_CLK>;
-> +			clock-names = "iface", "offline", "snoc_axi", "xo";
+But if I pointed MODULE_SIG_KEY to something outside the kernel build,
+I sure as hell don't want the kernel build deleting it. Ever. In fact,
+it should never write to it. It should extract the key information
+from it, and nothing else.
 
-Binding needs update?
+So no. No backups either. Because there is not a single valid
+situation where you'd want a backup - because the kernel build should
+never EVER modify the original.
 
-Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
+Maybe I misunderstand what is going on, but I think the whole thing is
+completely wrongly designed. The _only_ key that the kernel build
+should touchn is the auto-generated throw-away one (ie
+"certs/signing_key.pem"), not CONFIG_MODULE_SIG_KEY in general.
 
-  clocks:
-    items:
-      - description: XO clock
-  clock-names:
-    items:
-      - const: xo
+                 Linus
