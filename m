@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DF83B6116
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19493B611A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbhF1Obw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36744 "EHLO mail.kernel.org"
+        id S233995AbhF1OcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:32:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234387AbhF1O3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234392AbhF1O3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 10:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8848D61C8D;
-        Mon, 28 Jun 2021 14:26:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CD1F61C80;
+        Mon, 28 Jun 2021 14:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890378;
-        bh=Jai1KlH/R1hYCaItEYvpHtpzO4wXSH9pe1TKeMf5ZVo=;
+        s=k20201202; t=1624890381;
+        bh=a0ZXIHwPKUOQgh6KHswguKhHKWzW1AzYJXHjhIZf3tY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TV6uQWn6QjkBjlTA4v4EuNKmKZTkNFyYbC+fix8PX1u4q38AUfNWfKrKUBUzyIuVX
-         CMCtZRHYUm73fsIrR+50VankDvcR07aibPgGP4avkBGiweONAyIXyMIc9ChHyuXOfD
-         WrR1yfuR4iigcVBvVcKYDVy2QDZdhg2iOtixn2CVKLCS/L2XeUcZwwMlyO3WYAxyv4
-         AJrZ5cV3aiRO4tQe7z9NwUnjQMhZkhHp20GePMp0nh/aFoVE3OH4wTMOnJZyr935OO
-         dE/oMbl79YzI3wa5FLzAbpLbwj0GyOyYotUScsFnRYu0ORr6DW19P6qX/qR+9Rxz1F
-         73q38owxPKvwg==
+        b=ng3uir/gNT59/OS8MuIHSZmRQ3VCCYvhe6ARLs6uBy55frUigqi47+HdnhSE6FYt1
+         sTzy9OSc67nHCxDEYbKckTMUuYLqv1zw7ezfv2D9QMJ5rFfzWlA0ejxWcilmR49fvE
+         F3W3MdxcsHeTxAmwD9+x8leuSzdQm8hYkv6OOAnKLQfqfedZv7hq8aSGehmc2pH4W6
+         F5+Rv7MIIKubDj3li/LWDnfTM0HO6QMBQpu4Q84+ZqNs2HSxHOmODZzfrD280vxTzV
+         PspfaH2v5Z4uRqUdDvmqryMcmYt/tESAeiD7UFx60q5m3rbfcEQG8Oi3bq4Bjx5ll2
+         puG/d/gZVwOBg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        James Morse <james.morse@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.10 009/101] mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
-Date:   Mon, 28 Jun 2021 10:24:35 -0400
-Message-Id: <20210628142607.32218-10-sashal@kernel.org>
+Subject: [PATCH 5.10 012/101] arm64: Force NO_BLOCK_MAPPINGS if crashkernel reservation is required
+Date:   Mon, 28 Jun 2021 10:24:38 -0400
+Message-Id: <20210628142607.32218-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
 References: <20210628142607.32218-1-sashal@kernel.org>
@@ -50,121 +50,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Catalin Marinas <catalin.marinas@arm.com>
 
-commit 103a5348c22c3fca8b96c735a9e353b8a0801842 upstream.
+commit 2687275a5843d1089687f08fc64eb3f3b026a169 upstream.
 
-It has been reported that usage of memcpy() to/from an iomem mapping is invalid,
-and a recent arm64 memcpy update [1] triggers a memory abort when dram-access-quirk
-is used on the G12A/G12B platforms.
+mem_init() currently relies on knowing the boundaries of the crashkernel
+reservation to map such region with page granularity for later
+unmapping via set_memory_valid(..., 0). If the crashkernel reservation
+is deferred, such boundaries are not known when the linear mapping is
+created. Simply parse the command line for "crashkernel" and, if found,
+create the linear map with NO_BLOCK_MAPPINGS.
 
-This adds a local sg_copy_to_buffer which makes usage of io versions of memcpy
-when dram-access-quirk is enabled.
-
-[1] 285133040e6c ("arm64: Import latest memcpy()/memmove() implementation")
-
-Fixes: acdc8e71d9bb ("mmc: meson-gx: add dram-access-quirk")
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Suggested-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20210609150230.9291-1-narmstrong@baylibre.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Acked-by: James Morse <james.morse@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20201119175556.18681-1-catalin.marinas@arm.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/meson-gx-mmc.c | 50 +++++++++++++++++++++++++++++----
- 1 file changed, 45 insertions(+), 5 deletions(-)
+ arch/arm64/mm/mmu.c | 37 ++++++++++++++++---------------------
+ 1 file changed, 16 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-index 4ec41579940a..d3f40c9a8c6c 100644
---- a/drivers/mmc/host/meson-gx-mmc.c
-+++ b/drivers/mmc/host/meson-gx-mmc.c
-@@ -165,6 +165,7 @@ struct meson_host {
- 
- 	unsigned int bounce_buf_size;
- 	void *bounce_buf;
-+	void __iomem *bounce_iomem_buf;
- 	dma_addr_t bounce_dma_addr;
- 	struct sd_emmc_desc *descs;
- 	dma_addr_t descs_dma_addr;
-@@ -734,6 +735,47 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
- 	writel(start, host->regs + SD_EMMC_START);
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index afdad7607850..58dc93e56617 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -469,6 +469,21 @@ void __init mark_linear_text_alias_ro(void)
+ 			    PAGE_KERNEL_RO);
  }
  
-+/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
-+static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
-+				  size_t buflen, bool to_buffer)
++static bool crash_mem_map __initdata;
++
++static int __init enable_crash_mem_map(char *arg)
 +{
-+	unsigned int sg_flags = SG_MITER_ATOMIC;
-+	struct scatterlist *sgl = data->sg;
-+	unsigned int nents = data->sg_len;
-+	struct sg_mapping_iter miter;
-+	unsigned int offset = 0;
++	/*
++	 * Proper parameter parsing is done by reserve_crashkernel(). We only
++	 * need to know if the linear map has to avoid block mappings so that
++	 * the crashkernel reservations can be unmapped later.
++	 */
++	crash_mem_map = true;
 +
-+	if (to_buffer)
-+		sg_flags |= SG_MITER_FROM_SG;
-+	else
-+		sg_flags |= SG_MITER_TO_SG;
-+
-+	sg_miter_start(&miter, sgl, nents, sg_flags);
-+
-+	while ((offset < buflen) && sg_miter_next(&miter)) {
-+		unsigned int len;
-+
-+		len = min(miter.length, buflen - offset);
-+
-+		/* When dram_access_quirk, the bounce buffer is a iomem mapping */
-+		if (host->dram_access_quirk) {
-+			if (to_buffer)
-+				memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
-+			else
-+				memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
-+		} else {
-+			if (to_buffer)
-+				memcpy(host->bounce_buf + offset, miter.addr, len);
-+			else
-+				memcpy(miter.addr, host->bounce_buf + offset, len);
-+		}
-+
-+		offset += len;
-+	}
-+
-+	sg_miter_stop(&miter);
++	return 0;
 +}
++early_param("crashkernel", enable_crash_mem_map);
 +
- static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+ static void __init map_mem(pgd_t *pgdp)
  {
- 	struct meson_host *host = mmc_priv(mmc);
-@@ -777,8 +819,7 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
- 		if (data->flags & MMC_DATA_WRITE) {
- 			cmd_cfg |= CMD_CFG_DATA_WR;
- 			WARN_ON(xfer_bytes > host->bounce_buf_size);
--			sg_copy_to_buffer(data->sg, data->sg_len,
--					  host->bounce_buf, xfer_bytes);
-+			meson_mmc_copy_buffer(host, data, xfer_bytes, true);
- 			dma_wmb();
- 		}
+ 	phys_addr_t kernel_start = __pa_symbol(_text);
+@@ -477,7 +492,7 @@ static void __init map_mem(pgd_t *pgdp)
+ 	int flags = 0;
+ 	u64 i;
  
-@@ -947,8 +988,7 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
- 	if (meson_mmc_bounce_buf_read(data)) {
- 		xfer_bytes = data->blksz * data->blocks;
- 		WARN_ON(xfer_bytes > host->bounce_buf_size);
--		sg_copy_from_buffer(data->sg, data->sg_len,
--				    host->bounce_buf, xfer_bytes);
-+		meson_mmc_copy_buffer(host, data, xfer_bytes, false);
- 	}
+-	if (rodata_full || debug_pagealloc_enabled())
++	if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
+ 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
  
- 	next_cmd = meson_mmc_get_next_command(cmd);
-@@ -1168,7 +1208,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
- 		 * instead of the DDR memory
- 		 */
- 		host->bounce_buf_size = SD_EMMC_SRAM_DATA_BUF_LEN;
--		host->bounce_buf = host->regs + SD_EMMC_SRAM_DATA_BUF_OFF;
-+		host->bounce_iomem_buf = host->regs + SD_EMMC_SRAM_DATA_BUF_OFF;
- 		host->bounce_dma_addr = res->start + SD_EMMC_SRAM_DATA_BUF_OFF;
- 	} else {
- 		/* data bounce buffer */
+ 	/*
+@@ -487,11 +502,6 @@ static void __init map_mem(pgd_t *pgdp)
+ 	 * the following for-loop
+ 	 */
+ 	memblock_mark_nomap(kernel_start, kernel_end - kernel_start);
+-#ifdef CONFIG_KEXEC_CORE
+-	if (crashk_res.end)
+-		memblock_mark_nomap(crashk_res.start,
+-				    resource_size(&crashk_res));
+-#endif
+ 
+ 	/* map all the memory banks */
+ 	for_each_mem_range(i, &start, &end) {
+@@ -519,21 +529,6 @@ static void __init map_mem(pgd_t *pgdp)
+ 	__map_memblock(pgdp, kernel_start, kernel_end,
+ 		       PAGE_KERNEL, NO_CONT_MAPPINGS);
+ 	memblock_clear_nomap(kernel_start, kernel_end - kernel_start);
+-
+-#ifdef CONFIG_KEXEC_CORE
+-	/*
+-	 * Use page-level mappings here so that we can shrink the region
+-	 * in page granularity and put back unused memory to buddy system
+-	 * through /sys/kernel/kexec_crash_size interface.
+-	 */
+-	if (crashk_res.end) {
+-		__map_memblock(pgdp, crashk_res.start, crashk_res.end + 1,
+-			       PAGE_KERNEL,
+-			       NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS);
+-		memblock_clear_nomap(crashk_res.start,
+-				     resource_size(&crashk_res));
+-	}
+-#endif
+ }
+ 
+ void mark_rodata_ro(void)
 -- 
 2.30.2
 
