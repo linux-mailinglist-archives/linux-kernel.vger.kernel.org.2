@@ -2,159 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A0A3B66B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FA53B66BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhF1Q2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:28:39 -0400
-Received: from mail-mw2nam12on2060.outbound.protection.outlook.com ([40.107.244.60]:7763
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231472AbhF1Q2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:28:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UftTFqCvTT0ZutOKBheJ2H6lQF1R+CSTdVzmVWEh0v7xyZXQXrpRRH8IL+UG3w2WwyFj0NReTEG874sDzBTTD9YtMSmNSdOET1kim5BfpvDbMQL/j1Arkh3Hw+V0Bs30fziQmqlAtIe8jwZakv8SItIp+YTNwtzIyQR2JpqAyXtt//Wv5eB/iWD1aQQ6wJ3chcZ0DCY5cmTFCVDzOqwyIwvADzkgtNaxVoaBya8hPYm/OLiyJPah9FVZac9AMLWGpZkTR8mX8OU5b1H+5QDRF02tx2h8CQNIlrUC+js1zh3N0Ur3IDtDx9GI+FqtNI5GRl0nvzZUXrvKHTFEqNCaBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HD1qgjSAiL9lE/VgoH6PNKRjdPp5G9mVXFNvZfrAS04=;
- b=WlGpa7UoTqucCtXyg75Nq2oaMnMwqFatawyA5h7v68TgppNiKgQh2Kt2yIUAnDFFB6nWJ3rzucenMdAZX0Def3dIXk/zW4yqGAit8sG/bGBFqJGI0unVORAFFM0VIjJVOzSIaDcpU+STSYBf7wcB6mY90mqQPV26ebABCr/3wVlWiEUuMPeDp4+oew45EeILyeg/wYjqR56EYA19xam45jvLF4GIhhjxjf2zZZKuIKrTtsBpRPNbHe5batOK0YALtz/+Xe0CpHRFqgnhqBbxT9lN7TgjltFmGXqVJ2lKxxT8OfgQhkY49B0eRQfbVPkgFMnePZoOC5h54tXOw5mPtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HD1qgjSAiL9lE/VgoH6PNKRjdPp5G9mVXFNvZfrAS04=;
- b=JDUD4hRP+eYwvqyjQt3eWmRh2z30NNf3cD9wgnKpesUhWikhhylK0Hxco2GnXOdcMcD7eu4JLnKyHwgSrK69T4720BJx5yOl3lCE17NkjqCYcOBHF9ODAt83xrQ6+GwXDzT8dYGy8Va3kRlDbxCzfNk3e5JhP4SkN0/UG22bdMFjB0fOibbFrp6sJPJIcWvs6rC4OnQ+cRtJJ38T+blDKzSGN0BcCbwaOxYQTeivgi6fMyiDtLmYezLdtMamfa6gpgAjVz3/rkA1dAL5hADHUTWsfKJAt/T1Z4YXd8rJv80GPsdaITStIssVPP+4q+Fml77cEEZdqxmyVFgkPG/n9A==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5362.namprd12.prod.outlook.com (2603:10b6:208:31d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Mon, 28 Jun
- 2021 16:26:06 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 16:26:06 +0000
-Date:   Mon, 28 Jun 2021 13:26:04 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210628162604.GE4459@nvidia.com>
-References: <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210616133937.59050e1a.alex.williamson@redhat.com>
- <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210617151452.08beadae.alex.williamson@redhat.com>
- <20210618001956.GA1987166@nvidia.com>
- <MWHPR11MB1886A17124605251DF394E888C0D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210618182306.GI1002214@nvidia.com>
- <BN9PR11MB5433B9C0577CF0BD8EFCC9BC8C069@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210625143616.GT2371267@nvidia.com>
- <BN9PR11MB543382665D34E58155A9593C8C039@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB543382665D34E58155A9593C8C039@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR18CA0011.namprd18.prod.outlook.com
- (2603:10b6:208:23c::16) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233968AbhF1Qa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:30:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56444 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233115AbhF1Qaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:30:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624897709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L/l67GBIRQesyIDhYC0lVpbw73bssgYfuq+ath3cG+8=;
+        b=jPv93NJo55OQQbgYvOwyeV40nRIen23KJffDvNygeX/EL9Lva6YR+8eFADYtqYQvs83Yfn
+        m0Iyn7OD414a8AE9B5jhNpbPa08wW7HygrHXQENeRzvgnLOhBYRdvzGtZHg7vsFQkLn47g
+        haA86RX1OlEIVvewAFaVDk3e8PxjU7Q=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-538-w4N9k_feMay4mB0HCC4C6A-1; Mon, 28 Jun 2021 12:28:27 -0400
+X-MC-Unique: w4N9k_feMay4mB0HCC4C6A-1
+Received: by mail-wr1-f69.google.com with SMTP id w10-20020a5d608a0000b0290124b2be1b59so3177200wrt.20
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:28:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=L/l67GBIRQesyIDhYC0lVpbw73bssgYfuq+ath3cG+8=;
+        b=V0YiUlWV/B23MnsXrBnk+AH9ZtoEHF/rwvneAxnG8AepKutZQsdy9Taavn84bYce6m
+         lL7e0NsLYAbIfGbwm95mK8e3FHZq+tDn1Pn8Cpzi6O0jWcsoFUqpKcAjxAggPy5ikMt2
+         okcaGf2H+h2SEO6nPYN2wrv36e2XmYIGs+piF8u3nRdzwkiratKQhFqJpHNx1Ajz0COv
+         HWAsKkse+cxOAPoSDqFa2tPqy0auAbgwbMt5rj2LhfDxI/MKYf5Q2kHge5d6A4OtV3Pw
+         cObFy6eARgGrq+SJvOQADl2y1sGCf3/T020c1GtRurlALQhdWDODyvP1+CDhS4vE6fJQ
+         +7BQ==
+X-Gm-Message-State: AOAM532kfejZV1HEdKfeYVaDdKMpQJBKDqJeh2NRFtNVwkjeTZncwc9P
+        oo7wvP3mGvgp28GVszRn1vbZV1z79+eB5gXhv37bSgAWIa/nfsyWVZI3J6PolBPgOOsitWvJuG9
+        iUnwinqPAyJIIhjQqk6bJnLW9
+X-Received: by 2002:a5d:560c:: with SMTP id l12mr11027078wrv.310.1624897706348;
+        Mon, 28 Jun 2021 09:28:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTyV4+asBYZLWCZ/4Ugw0wAlbxogR+DyMPyNVe5cAtcYsr4/au1LmQUX070a+JSdjuO2cTIA==
+X-Received: by 2002:a5d:560c:: with SMTP id l12mr11027067wrv.310.1624897706217;
+        Mon, 28 Jun 2021 09:28:26 -0700 (PDT)
+Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
+        by smtp.gmail.com with ESMTPSA id 9sm493553wmf.3.2021.06.28.09.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 09:28:25 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 17:28:23 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     dwalsh@redhat.com, Vivek Goyal <vgoyal@redhat.com>,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <YNn4p+Zn444Sc4V+@work-vm>
+References: <20210625191229.1752531-1-vgoyal@redhat.com>
+ <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
+ <20210628131708.GA1803896@redhat.com>
+ <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
+ <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR18CA0011.namprd18.prod.outlook.com (2603:10b6:208:23c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend Transport; Mon, 28 Jun 2021 16:26:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lxu5E-000evq-FL; Mon, 28 Jun 2021 13:26:04 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 805a388f-c048-4ac2-5421-08d93a516e09
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5362:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53625AA935CE01668230043DC2039@BL1PR12MB5362.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZwAtVgiuoPhFtwibLePnJ2XWVqsCnjNYND6n9zvGGAVOeuj01jNSm1wGRhJP2QB0JPWbmrpV8n8IlGNb1SZQZASpyF6tonWLdONMoszngUTBUDYWRgBeA0C7PyZV1j0tFlIia6wVKq2c11qGqaaIXWyvBDVXejy6mgP6RkYhDLoWvvx/SyoZQBHdz5oUPFiibffwbS1TaTDcaMIeT+pPrFTX/nmfo1ro5qfGXGFuSApod8mXKwfkgIZeldphThEeP8UeofXi98eWE05Um1gtGe0yPnYp7mTVLA0hhPdRuVvwBJ5YRPcSmvYI1O/G+xrm5ft695stTniZLnnaaEnCocIc3yk2y1rjHSSEWFWlrVJaDDxp3QCYa1w38Z43Y/oCxNDXzE82j4FxBnJQ6KjBN9uemSCjF/7GooOwViB4QpVGqLKN16Kalist5PbaHvh/WX9Qh1BrYbDDkHp+cYGxyMf05+XIK0sMwqUxGrxa6EOUTGrCqNXwROBzPiUk44KT/oGudwWXB1DjesAcvSNw/Wn8dh6Dtu+N0G3k7i/vmF1H6WaUbLiJnhlYhGp5JCYenozGBdRW+948Pky80qcjEZETqnbMz/euw1Ucy81jl8zgNYXhQgUnoif7+JycHaLITBRgE9X33QLswn5fbbuB5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(39860400002)(376002)(5660300002)(66476007)(33656002)(6916009)(66946007)(4744005)(66556008)(83380400001)(7416002)(8676002)(8936002)(1076003)(186003)(9746002)(54906003)(478600001)(316002)(86362001)(2616005)(4326008)(426003)(9786002)(38100700002)(2906002)(26005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ANgkzasxLHV6UbbUDqdmny/3R6LuhWp7B9Kma/lp4L3uTZnHm7fUWPKtEX2K?=
- =?us-ascii?Q?bHlsL0D0GBY6uIqbhs7seNIHaL0rVAYXoH7zdWkWYw7lW3JKhXfXY6AZk9Ox?=
- =?us-ascii?Q?5cyP31sifh5VxHTFqalgURY5EXp0+5GkCjTtlcwhYTSh2Fp3EFWcovRGAKaG?=
- =?us-ascii?Q?cryYMndE/VRpywwwzeVl+wIIp2u/CjiAs7Smc/K3PlXmknD2ByrMMuzKIzHo?=
- =?us-ascii?Q?reo4N0Mz4JRLH2XZsUQCnwtdzFAJtFtGZuyachLJpumsmIzpNaGP+iwj9ykN?=
- =?us-ascii?Q?b+1plmlbQBJkZfFuebFXDHAFo1o/6a95RGFNezCUa+1XuKkElRptQoxS19eC?=
- =?us-ascii?Q?YwxDK9cqg/GZuosbm8mhrNBdHnpPAuZWpjnyBD0IfPk4OCHJc1C7FPVjTVPK?=
- =?us-ascii?Q?JrNZgQA7gV6avW0JduWOPRs5NQo/uvSQeKUAYh+3PvHa0ycLqh+q9zE4r9rI?=
- =?us-ascii?Q?8HKfv+QTM14TqIGOd8gUBS0D3oU6jMPPlXwpQUmN7O0asl6TqKPpNjRyvwet?=
- =?us-ascii?Q?aeOxCAt61tuLqMzfDbVbrMjSv/hwnTvchXM54LL8oOuhWhiaX8MOmC9CSj2+?=
- =?us-ascii?Q?lDabPbMUhUjMSzMeu/uKmJ7V+3UmD3VPx7rsJ0QCcUp5hMKnf2i7EQ65CKUk?=
- =?us-ascii?Q?N0WNhYlq0UpFnw4xMoSZ9kxYM1tibodJYplYDGTwsSQ/IsUetMkdhNYUp6uo?=
- =?us-ascii?Q?H4UyOkwjCdXX2SecQVnNsA33L9liumUFatrL84mx0yYOrvoRySAL4PW//HtL?=
- =?us-ascii?Q?4Vqm+ZO4ttvl/4e1LU1ckCh1uo7gsd3wELSiQewPBkgJYnH17qTTKojIWCnW?=
- =?us-ascii?Q?PnAT+AHc5G7indvZoJkJt/p2M+IDjUYThIAc1ZHr/ngolw2yMWpMQ0VAkReI?=
- =?us-ascii?Q?2cVo6Vl20BCdsXp3JWfvwnhGWrkgVSb3pCOVkAeKDjLZ5Bv3ISbP5904Sdf7?=
- =?us-ascii?Q?3jyKja7fgVjgajfM4R7YfYMSbkbbEwyK3HhNxSTCLuVX99ffhLlxZWd+1AJq?=
- =?us-ascii?Q?N8wIbfYiD8WTP+3S05Jnodr7hRMYGA6T8wbAo3X28S6QoFM4eo/KLEgd/37I?=
- =?us-ascii?Q?XJ9RLPQoHWbiYUvXGGQIOf7vO+TAs5R8qlC3o5S0y9A7AXNL+eEFyiRWkuQY?=
- =?us-ascii?Q?TM8T3K7jE0WEho5qQG2fswxkhF4mLvSlAYk7jGhDtzzTHZkvyJAgq2DEt790?=
- =?us-ascii?Q?GW33T+LzZLl9aEsPijU+cFHB8MwY6dEQuPRGHIycHV4LKxSG6ShEDZtcThsY?=
- =?us-ascii?Q?CXU6X1cZbJcyMPi7jJhRWyID+Cm76BtC3hg90myCMSUpAJl0vwp+siMaHY10?=
- =?us-ascii?Q?6jRsii8b2B7LKnrPc5Z4UE+c?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 805a388f-c048-4ac2-5421-08d93a516e09
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 16:26:06.4733
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2KeVcQ2NbH2ooiR6IDGeMFjFkw+PUDdXYRtAniJ0gEJs6rdp6Rw9tKVFYotQOmza
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5362
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 06:45:23AM +0000, Tian, Kevin wrote:
+* Casey Schaufler (casey@schaufler-ca.com) wrote:
+> On 6/28/2021 6:36 AM, Daniel Walsh wrote:
+> > On 6/28/21 09:17, Vivek Goyal wrote:
+> >> On Fri, Jun 25, 2021 at 09:49:51PM +0000, Schaufler, Casey wrote:
+> >>>> -----Original Message-----
+> >>>> From: Vivek Goyal <vgoyal@redhat.com>
+> >>>> Sent: Friday, June 25, 2021 12:12 PM
+> >>>> To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org;
+> >>>> viro@zeniv.linux.org.uk
+> >>>> Cc: virtio-fs@redhat.com; dwalsh@redhat.com; dgilbert@redhat.com;
+> >>>> berrange@redhat.com; vgoyal@redhat.com
+> >>> Please include Linux Security Module list <linux-security-module@vger.kernel.org>
+> >>> and selinux@vger.kernel.org on this topic.
+> >>>
+> >>>> Subject: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special files if
+> >>>> caller has CAP_SYS_RESOURCE
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> In virtiofs, actual file server is virtiosd daemon running on host.
+> >>>> There we have a mode where xattrs can be remapped to something else.
+> >>>> For example security.selinux can be remapped to
+> >>>> user.virtiofsd.securit.selinux on the host.
+> >>> This would seem to provide mechanism whereby a user can violate
+> >>> SELinux policy quite easily.
+> >> Hi Casey,
+> >>
+> >> As david already replied, we are not bypassing host's SELinux policy (if
+> >> there is one). We are just trying to provide a mode where host and
+> >> guest's SELinux policies could co-exist without interefering
+> >> with each other.
+> >>
+> >> By remappming guests SELinux xattrs (and not host's SELinux xattrs),
+> >> a file probably will have two xattrs
+> >>
+> >> "security.selinux" and "user.virtiofsd.security.selinux". Host will
+> >> enforce SELinux policy based on security.selinux xattr and guest
+> >> will see the SELinux info stored in "user.virtiofsd.security.selinux"
+> >> and guest SELinux policy will enforce rules based on that.
+> >> (user.virtiofsd.security.selinux will be remapped to "security.selinux"
+> >> when guest does getxattr()).
+> >>
+> >> IOW, this mode is allowing both host and guest SELinux policies to
+> >> co-exist and not interefere with each other. (Remapping guests's
+> >> SELinux xattr is not changing hosts's SELinux label and is not
+> >> bypassing host's SELinux policy).
+> >>
+> >> virtiofsd also provides for the mode where if guest process sets
+> >> SELinux xattr it shows up as security.selinux on host. But now we
+> >> have multiple issues. There are two SELinux policies (host and guest)
+> >> which are operating on same lable. And there is a very good chance
+> >> that two have not been written in such a way that they work with
+> >> each other. In fact there does not seem to exist a notion where
+> >> two different SELinux policies are operating on same label.
+> >>
+> >> At high level, this is in a way similar to files created on
+> >> virtio-blk devices. Say this device is backed by a foo.img file
+> >> on host. Now host selinux policy will set its own label on
+> >> foo.img and provide access control while labels created by guest
+> >> are not seen or controlled by host's SELinux policy. Only guest
+> >> SELinux policy works with those labels.
+> >>
+> >> So this is similar kind of attempt. Provide isolation between
+> >> host and guests's SELinux labels so that two policies can
+> >> co-exist and not interfere with each other.
+> >>
+> >>>> This remapping is useful when SELinux is enabled in guest and virtiofs
+> >>>> as being used as rootfs. Guest and host SELinux policy might not match
+> >>>> and host policy might deny security.selinux xattr setting by guest
+> >>>> onto host. Or host might have SELinux disabled and in that case to
+> >>>> be able to set security.selinux xattr, virtiofsd will need to have
+> >>>> CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
+> >>>> guest security.selinux (or other xattrs) on host to something else
+> >>>> is also better from security point of view.
+> >>> Can you please provide some rationale for this assertion?
+> >>> I have been working with security xattrs longer than anyone
+> >>> and have trouble accepting the statement.
+> >> If guest is not able to interfere or change host's SELinux labels
+> >> directly, it sounded better.
+> >>
+> >> Irrespective of this, my primary concern is that to allow guest
+> >> VM to be able to use SELinux seamlessly in diverse host OS
+> >> environments (typical of cloud deployments). And being able to
+> >> provide a mode where host and guest's security labels can
+> >> co-exist and policies can work independently, should be able
+> >> to achieve that goal.
+> >>
+> >>>> But when we try this, we noticed that SELinux relabeling in guest
+> >>>> is failing on some symlinks. When I debugged a little more, I
+> >>>> came to know that "user.*" xattrs are not allowed on symlinks
+> >>>> or special files.
+> >>>>
+> >>>> "man xattr" seems to suggest that primary reason to disallow is
+> >>>> that arbitrary users can set unlimited amount of "user.*" xattrs
+> >>>> on these files and bypass quota check.
+> >>>>
+> >>>> If that's the primary reason, I am wondering is it possible to relax
+> >>>> the restrictions if caller has CAP_SYS_RESOURCE. This capability
+> >>>> allows caller to bypass quota checks. So it should not be
+> >>>> a problem atleast from quota perpective.
+> >>>>
+> >>>> That will allow me to give CAP_SYS_RESOURCE to virtiofs deamon
+> >>>> and remap xattrs arbitrarily.
+> >>> On a Smack system you should require CAP_MAC_ADMIN to remap
+> >>> security. xattrs. I sounds like you're in serious danger of running afoul
+> >>> of LSM attribute policy on a reasonable general level.
+> >> I think I did not explain xattr remapping properly and that's why this
+> >> confusion is there. Only guests's xattrs will be remapped and not
+> >> hosts's xattr. So one can not bypass any access control implemented
+> >> by any of the LSM on host.
+> >>
+> >> Thanks
+> >> Vivek
+> >>
+> > I want to point out that this solves a  couple of other problems also. 
+> 
+> I am not (usually) adverse to solving problems. My concern is with
+> regard to creating new ones.
+> 
+> > Currently virtiofsd attempts to write security attributes on the host, which is denied by default on systems without SELinux and no CAP_SYS_ADMIN.
+> 
+> Right. Which is as it should be.
+> Also, s/SELinux/a LSM that uses security xattrs/
+> 
+> >   This means if you want to run a container or VM
+> 
+> A container uses the kernel from the host. A VM uses the kernel
+> from the guest. Unless you're calling a VM a container for
+> marketing purposes. If this scheme works for non-VM based containers
+> there's a problem.
 
-> 7)   Unbinding detaches the device from the block_dma domain and
->        re-attach it to the default domain. From now on the user should 
->        be denied from accessing the device. vfio should tear down the
->        MMIO mapping at this point.
+And 'kata' is it's own kernel, but more like a container runtime - would
+you like to call this a VM or a container?
+There's whole bunch of variations people are playing around with; I don't
+think there's a single answer, or a single way people are trying to use
+it.
 
-I think we should just forbid this, so long as the device_fd is open
-the iommu_fd cannot be destroyed and there is no way to detact a
-device other than closing its Fd.
+> > on a host without SELinux support but the VM has SELinux enabled, then virtiofsd needs CAP_SYS_ADMIN.  It would be much more secure if it only needed CAP_SYS_RESOURCE.
+> 
+> I don't know, so I'm asking. Does virtiofsd really get run with limited capabilities,
+> or does it get run as root like most system daemons? If it runs as root the argument
+> has no legs.
 
-revoke is tricky enough to implement we should avoid it.
+It's typically run without CAP_SYS_ADMIN; (although we have other
+problems, like wanting to use file handles that make caps tricky).
+Some people are trying to run it in user namespaces.
+Given that it's pretty complex and playing with lots of file syscalls
+under partial control of the guest, giving it as few capabilities
+as possible is my preference.
 
-> It's still an open whether we want to further allow devices within a group 
-> attached to different IOASIDs in case that the source devices are reliably 
-> identifiable. This is an usage not supported by existing vfio and might be
-> not worthwhile due to improved isolation over time.
+> >   If the host has SELinux enabled then it can run without CAP_SYS_ADMIN or CAP_SYS_RESOURCE, but it will only be allowed to write labels that the host system understands, any label not understood will be blocked. Not only this, but the label that is running virtiofsd pretty much has to run as unconfined, since it could be writing any SELinux label.
+> 
+> You could fix that easily enough by teaching SELinux about the proper
+> use of CAP_MAC_ADMIN. Alas, I understand that there's no way that's
+> going to happen, and why it would be considered philosophically repugnant
+> in the SELinux community. 
+> 
+> >
+> > If virtiofsd is writing Userxattrs with CAP_SYS_RESOURCE, then we can run with a confined SELinux label only allowing it to sexattr on the content in the designated directory, make the container/vm much more secure.
+> >
+> User xattrs are less protected than security xattrs. You are exposing the
+> security xattrs on the guest to the possible whims of a malicious, unprivileged
+> actor on the host. All it needs is the right UID.
 
-The main decision here is to decide if the uAPI should have some way to
-indicate that a device does not have its own unique IOASID but is
-sharing with the group
+Yep, we realise that; but when you're mainly interested in making sure
+the guest can't attack the host, that's less worrying.
+It would be lovely if there was something more granular, (e.g. allowing
+user.NUMBER. or trusted.NUMBER. to be used by this particular guest).
 
-Jason
+> We have unused xattr namespaces. Would using the "trusted" namespace
+> work for your purposes?
+
+For those with CAP_SYS_ADMIN I guess.
+
+Note the virtiofsd takes an option allowing you to set the mapping
+however you like, so there's no hard coded user. or trusted. in the
+daemon itself.
+
+Dave
+
+> 
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
