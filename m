@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610CD3B65B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B393B65EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238125AbhF1PeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:34:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24075 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236583AbhF1PLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:11:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="187657388"
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="187657388"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 08:00:05 -0700
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="643361063"
-Received: from ngminuti-mobl.amr.corp.intel.com (HELO [10.212.174.12]) ([10.212.174.12])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 08:00:05 -0700
-Subject: Re: [PATCH 2/7] perf: Create a symlink for a PMU
-To:     Greg KH <greg@kroah.com>
-Cc:     kan.liang@linux.intel.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, acme@kernel.org, jolsa@redhat.com
-References: <YNSWtCSjJy8CytOL@kroah.com>
- <1e536604-cf93-0f09-401e-2073924c5582@linux.intel.com>
- <YNSlVPcjHInk4un6@kroah.com>
- <29d5f315-578f-103c-9523-ae890e29c7e7@linux.intel.com>
- <YNVneO6exCS4ETRt@kroah.com>
- <540d8a38-da12-56c8-8306-8d3d61ae1d6b@linux.intel.com>
- <YNXqXwq1+o09eHox@kroah.com>
- <e670abe2-67b9-a602-410a-0c4170796ec7@linux.intel.com>
- <YNhauAgaUxMfTa+c@kroah.com>
- <bdeb80ea-99dd-d9ea-d508-9cb8d2c6fbf4@linux.intel.com>
- <YNlyYJIl5yki0Q+3@kroah.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <ac22e112-7748-e47b-c08d-948ffde130bc@linux.intel.com>
-Date:   Mon, 28 Jun 2021 08:00:05 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237200AbhF1PoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236654AbhF1PoA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:44:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B712C0527C1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kRDx85p4HU5gltVTcFkhvi9KGKM9mkjBLcdZpumiDfU=; b=pK2XkrZngfiYV6nzZJ08HwaxJk
+        KP+/UY7d3lcv9nZJLA78zS0Z0FK1KiyARCLtkO5k4xsjvikMFudHxlt3bvw7WquAWE4HB7HiaGS85
+        NLAtDBlfxcTx3E26jJBhbcogYAzR+ZYPU9meGXS/bb/i04GWEHT7w/hOjqF+MSgSma37iNos3cRX9
+        93A+8MiCpzdhaE4S0tE3+RgU65CdAh0j65plf6q8ot6ov1vYWk1XjDnTr7pjMKs0PYfv625DxtqJN
+        HPXgznr7OGQw/Q/T0wQAhSTpW/PaHwia14onkUVr90wB25plsLCMkV9B/MH2B4nMoxmMEdQYVZCGu
+        lOKBEtFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxskX-00CaPA-9v; Mon, 28 Jun 2021 15:00:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 001EE3001DC;
+        Mon, 28 Jun 2021 17:00:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CD7F820D89373; Mon, 28 Jun 2021 17:00:30 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 17:00:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
+        bsegall@google.com, dietmar.eggemann@arm.com,
+        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
+        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
+        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
+        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, tj@kernel.org,
+        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v6 2/3] sched/fair: Add cfs bandwidth burst statistics
+Message-ID: <YNnkDnJtliEInwTY@hirez.programming.kicks-ass.net>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+ <20210621092800.23714-3-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <YNlyYJIl5yki0Q+3@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621092800.23714-3-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 21, 2021 at 05:27:59PM +0800, Huaixin Chang wrote:
+> The following statistics in cpu.stat file is added to show how much workload
+> is making use of cfs_b burst:
+> 
+> nr_bursts:  number of periods bandwidth burst occurs
+> burst_usec: cumulative wall-time that any cpus has
+> 	    used above quota in respective periods
+> 
+> The larger nr_bursts is, the more bursty periods there are. And the larger
+> burst_usec is, the more burst time is used by bursty workload.
 
-On 6/27/2021 11:55 PM, Greg KH wrote:
-> On Sun, Jun 27, 2021 at 09:30:53AM -0700, Andi Kleen wrote:
->>> Then do not break things by renaming the device name, as you all have
->>> now stated that this name is part of the user/kernel api.
->> The renaming comes from the fallback mode on future systems. In the fallback
->> mode the driver doesn't know the true name, so it has to use  the numeric
->> name. If you don't use the fallback mode and have the full driver then yes
->> you'll get the same names as always (or at least as they make sense for the
->> hardware).
->>
->> But we would like to have the fallback mode too to allow more people use
->> uncore monitoring, and that's where the need to for the second name comes
->> in.
-> So then just always use the "fallback" name if that is going to be the
-> name you have for this hardware device.  Why would you want it to be
-> renamed later on to a "fancier" name if there is only going to be
-> one-per-chipset-type anyway?
+That's what it does, but fails to explain why. How is this number
+useful.
 
-It's an ugly numeric name, difficult to use
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 53d7cc4d009b..62b73722e510 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4634,11 +4634,22 @@ static inline u64 sched_cfs_bandwidth_slice(void)
+>   */
+>  void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
+>  {
+> +	u64 runtime;
+> +
+>  	if (unlikely(cfs_b->quota == RUNTIME_INF))
+>  		return;
+>  
+> +	if (cfs_b->runtime_at_period_start > cfs_b->runtime) {
+> +		runtime = cfs_b->runtime_at_period_start - cfs_b->runtime;
 
-perf stat -e uncore_0_2//
+That comparison is the same as the subtraction; might as well write
+this:
 
-instead of
+> +		if (runtime > cfs_b->quota) {
+> +			cfs_b->burst_time += runtime - cfs_b->quota;
 
-perf stat -e uncore_cha//
+Same here.
 
-It wouldn't exactly be an improvement for the full driver.
+> +			cfs_b->nr_burst++;
+> +		}
+> +	}
 
--Andi
 
+Perhaps we can write that like:
+
+	s64 runtime = cfs_b->runtime_snapshot - cfs_b->runtime;
+	if (runtime > 0) {
+		s64 burstime = runtime - cfs_q->quota;
+		if (burstime > 0) {
+			cfs_b->bust_time += bursttime;
+			cfs_b->nr_bursts++;
+		}
+	}
+
+I was hoping we could get away with something simpler, like maybe:
+
+	u64 old_runtim = cfs_b->runtime;
+
+	cfs_b->runtime += cfs_b->quota
+	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+
+	if (cfs_b->runtime - old_runtime > cfs_b->quota)
+		cfs_b->nr_bursts++;
+
+Would that be good enough?
+
+
+> +
+>  	cfs_b->runtime += cfs_b->quota;
+>  	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+> +	cfs_b->runtime_at_period_start = cfs_b->runtime;
+>  }
+>  
+>  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index d317ca74a48c..b770b553dfbb 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -367,6 +367,7 @@ struct cfs_bandwidth {
+>  	u64			quota;
+>  	u64			runtime;
+>  	u64			burst;
+> +	u64			runtime_at_period_start;
+>  	s64			hierarchical_quota;
+
+As per the above, I don't really like that name, runtime_snapshot or
+perhaps runtime_snap is shorter and not less clear. But not having it at
+all would be even better.
