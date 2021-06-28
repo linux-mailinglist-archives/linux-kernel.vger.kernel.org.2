@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64453B67A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC783B67AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhF1RaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbhF1RaS (ORCPT
+        id S234542AbhF1Ra6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:30:58 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:42612 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233430AbhF1Ra4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:30:18 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8558BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:27:52 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id bb20so10605512pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oi7s7ZAKggIYA9cELE+fXzXNfj41gs2Dc3uXc+ZK0C4=;
-        b=weXUs0nQHbJ7vo/3GvHUg0lzriDlghVSwf1RvxO+T7KI9n2a7VK/o0100WD1xlgdl0
-         +IfM5NkwkTUD2waBN/S1YVr4hAmBf00eWnMk/pyKcZZFi7HdbnssetKkcimwCXp9rWWF
-         pli+y/mXUY+L6OxnuzvZXNk3Z8oMOIBed7TI5RidC8fdOf/FgFl+QjKCbP7Cx/kZKFfu
-         sGoxaMbdCw8dqlbb7gEJOoaCvFl4dzXlK6XU9Yr+YOSxMTuZuWtfLej71QQJ/2JoLi9e
-         eg8gSYnqzWywTq+hdbiw3UQBMyNroMQckc3ffjW2w3lAdWmiqDeF6eBVJiB8+EZT3wLA
-         usHQ==
+        Mon, 28 Jun 2021 13:30:56 -0400
+Received: by mail-pg1-f182.google.com with SMTP id d12so16009261pgd.9;
+        Mon, 28 Jun 2021 10:28:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oi7s7ZAKggIYA9cELE+fXzXNfj41gs2Dc3uXc+ZK0C4=;
-        b=uasao3luOVh9Fh43N1qRLI3Wrj7ilpV2p1M0FHcFIwn6RJjmEUA2V66EsgGcfkTKKW
-         jCEfnd/Du3+Nsp0d71VYjJsHkNJJqJSNh9Wz69/Cc1je+IisJPPtW6nMRiLKUt5tqQbl
-         3ftw7XUsaXXiLtDYlyGdhMGRMxN8Xh6TFSTHFBmzeZdujgBWOI3eGrkov+QxLctqkUI2
-         f7FQJWjKc6P7xlIZY9wIM8cEdne+nMmdNlVZlndkSSoARiJZ0UkdcPMLN//Avw9ETJ13
-         kzAtYvWvAtJmRr5F4gix+k/QV+sxsX67Jlh3UjM9oD8nLns1vW9UyzltMZIuNpaWq3q9
-         apjw==
-X-Gm-Message-State: AOAM5312TgCm5HOHIAeMmWKJ5pYlKuN/Ix53mYL1ngTx4qlhrEzps7mT
-        XBL5PlR9VboDMDRTOlKmR36v
-X-Google-Smtp-Source: ABdhPJz1xWVXhT9rHorz+wFawEPTBVOtlpDLPfQO8Sao7/36rP6iGgvQptiV3WOWqTeLGgjW8QCchw==
-X-Received: by 2002:a17:902:6b42:b029:11d:a147:bb7b with SMTP id g2-20020a1709026b42b029011da147bb7bmr24030953plt.9.1624901271951;
-        Mon, 28 Jun 2021 10:27:51 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.13.225])
-        by smtp.gmail.com with ESMTPSA id c24sm16482054pgj.11.2021.06.28.10.27.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=TPuWmBUlipmneUEeRZ9VUhDX5+XS8G4OvGR2i434oPY=;
+        b=cQ4tzAyPjQWavGb2T6spEZ2NYe8+w6ZsKdo5eKPEvHv11mCZxXhBPs1tpRSVCv0Oqb
+         3AS6vno6Ri+CfIUwYmn96vcCMY2N44L4LDVuShATKaqQE98RWzOGIoCLG5OUTGIdodf9
+         fpLCJLQs0QBHZBAG5BB9Go20ZgPAM8ctDMNZvKuxoDKVQPXD7Ys8br6NzMWIKupQQcIx
+         0d9c66ewtplIqiz8dhXi5tgCyb0KVWbB5LVNtDmrS6MGSev/g+IT+uTFuaR54ry4+jja
+         b92L+n2pH1HVhxyescQcmjd/mwUvCxInaasQMXAYljDLG8dZdJp/zqite3JSZl1Aao6t
+         lOVg==
+X-Gm-Message-State: AOAM532KGbaSdpZlpBlq9kpgtVaM9nzlMGM7jZFfARnhRfwfZiNjibRu
+        d3eyvTdFJebeXyQ9OW8HWMM=
+X-Google-Smtp-Source: ABdhPJwzH5F38culUsWjH/Gkjc4yp8t6YOVA31U7C4pqDfrHdJ8Jy3lSyFc7zd6Bd6D4rEgchFU4sA==
+X-Received: by 2002:a63:f20:: with SMTP id e32mr24377461pgl.235.1624901310593;
+        Mon, 28 Jun 2021 10:28:30 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id y80sm15278566pfb.204.2021.06.28.10.28.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 10:27:51 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thara.gopinath@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] soc: qcom: aoss: Fix the out of bound usage of cooling_devs
-Date:   Mon, 28 Jun 2021 22:57:41 +0530
-Message-Id: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Jun 2021 10:28:29 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 10:28:28 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
+Message-ID: <YNoGvOhMQHsqXWfc@epycbox.lan>
+References: <20210625074213.654274-1-martin@geanix.com>
+ <20210625074213.654274-6-martin@geanix.com>
+ <20210628163556.GB445250@roeck-us.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628163556.GB445250@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In "qmp_cooling_devices_register", the count value is initially
-QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
-the memory for cooling_devs is allocated. Then while calling the
-"qmp_cooling_device_add" function, count value is post-incremented for
-each child node.
+Hi Guenter,
 
-This makes the out of bound access to the cooling_dev array. Fix it by
-resetting the count value to zero before adding cooling devices.
+On Mon, Jun 28, 2021 at 09:35:56AM -0700, Guenter Roeck wrote:
+> On Fri, Jun 25, 2021 at 09:42:13AM +0200, Martin Hundebøll wrote:
+> > From: Martin Hundebøll <mhu@silicom.dk>
+> > 
+> > Add the list of sensors supported by the Silicom n5010 PAC, and enable
+> > the drivers as a subtype of the intel-m10-bmc multi-function driver.
+> > 
+> > Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> 
+> For my reference:
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Moritz Fischer <mdf@kernel.org>
 
-While at it, let's also free the memory allocated to cooling_dev if no
-cooling device is found in DT and during unroll phase.
+> 
+> Not sure if I can apply this patch as-is to hwmon, or if it needs
+> to wait for the other patches in the series. Any thoughts / comments ?
 
-Cc: stable@vger.kernel.org # 5.4
-Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+I don't see how it would break anything in itself since it just adds
+extra compatible and data.
 
-Bjorn: I've just compile tested this patch.
+I'd probably wait with applying until discussions around the mfd and dfl
+parts are resolved since otherwise there's no user.
 
- drivers/soc/qcom/qcom_aoss.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> Guenter
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 934fcc4d2b05..98c665411768 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -488,6 +488,7 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
- 	if (!qmp->cooling_devs)
- 		return -ENOMEM;
- 
-+	count = 0;
- 	for_each_available_child_of_node(np, child) {
- 		if (!of_find_property(child, "#cooling-cells", NULL))
- 			continue;
-@@ -497,12 +498,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
- 			goto unroll;
- 	}
- 
-+	if (!count)
-+		devm_kfree(qmp->dev, qmp->cooling_devs);
-+
- 	return 0;
- 
- unroll:
- 	while (--count >= 0)
- 		thermal_cooling_device_unregister
- 			(qmp->cooling_devs[count].cdev);
-+	devm_kfree(qmp->dev, qmp->cooling_devs);
- 
- 	return ret;
- }
--- 
-2.25.1
-
+Thanks,
+Moritz
