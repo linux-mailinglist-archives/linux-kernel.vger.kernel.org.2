@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718613B5AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7111D3B5AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhF1Itm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
+        id S232412AbhF1IvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:51:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhF1Itk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:49:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 357A36108B;
-        Mon, 28 Jun 2021 08:47:15 +0000 (UTC)
+        id S231683AbhF1IvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD026108B;
+        Mon, 28 Jun 2021 08:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624870035;
-        bh=fwqDYD3WVqhCOOp5GXfpIJP5FpsuNHICvD28AiRGpmU=;
+        s=korg; t=1624870121;
+        bh=8A0dJggrHgLUXVOsaEGaAZv0/ji2VPqrS/XWZsuMxXI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xToNot36Z0FTctWX4O4yKCtB4CNUuLiel82y2cNUAPBd6LtSAfAv7o+SOHFB/E0DP
-         Cy134+nqFVHFGGmMopVowg+kj/577kRoRXbmzjqW6NFUbkkpZVUQAx4sz3xrNQIBgV
-         jDuqrDTeuMcxiGKjE8dqmQ3Yp1DdTTB3+sqcMfxE=
-Date:   Mon, 28 Jun 2021 10:47:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH 04/12] digest_lists: Objects
-Message-ID: <YNmMkUwaPj0Xgh2r@kroah.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-5-roberto.sassu@huawei.com>
- <YNhZTR5VSin7ABZP@kroah.com>
- <22fff08f1a70460da814d3f21b497f8b@huawei.com>
+        b=BrJzt5xIBjMEQUtgjX81Gef4fBD3HxfzeB/7PQ8Vyb+0e+b5REpD68bspiYDau2Bk
+         lvzn3L8aQnn9iVhICcZ9391LNkwkzzVriwM5UwNs/1zka9aEQ6HpR4o4yQr3Sx/2Tj
+         fXKcD02qYr7NcM9/hBh6buLVpmll4J7lM7VE/UV8=
+Date:   Mon, 28 Jun 2021 10:48:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     bing fan <hptsfb@gmail.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm pl011 serial: support multi-irq request
+Message-ID: <YNmM518c49k9V3Hv@kroah.com>
+References: <CADVmyHWOVRNfVaJMm9D9KsFsi+t5cDwYtHcA9wn=v_Jh1QK-Rw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <22fff08f1a70460da814d3f21b497f8b@huawei.com>
+In-Reply-To: <CADVmyHWOVRNfVaJMm9D9KsFsi+t5cDwYtHcA9wn=v_Jh1QK-Rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:14:41AM +0000, Roberto Sassu wrote:
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Sunday, June 27, 2021 12:56 PM
-> > On Fri, Jun 25, 2021 at 06:56:06PM +0200, Roberto Sassu wrote:
-> > > +++ b/security/integrity/digest_lists/digest_lists.h
-> > > @@ -0,0 +1,117 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +/*
-> > > + * Copyright (C) 2005,2006,2007,2008 IBM Corporation
-> > > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > > + *
-> > > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > > + *
-> > > + * This program is free software; you can redistribute it and/or
-> > > + * modify it under the terms of the GNU General Public License as
-> > > + * published by the Free Software Foundation, version 2 of the
-> > > + * License.
-> > > + *
-> > > + * File: digest_lists.h
-> > > + *      Unexported definitions for digest lists.
-> > 
-> > Unexported to whom?
+On Mon, Jun 28, 2021 at 03:19:13PM +0800, bing fan wrote:
+> From: Bing Fan <tombinfan@tencent.com>
 > 
-> Hi Greg
+> In order to make pl011 work better, multiple interrupts are
+> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+> at the same time, pl011 to GIC does not merge the interrupt
+> lines(each serial-interrupt corresponding to different GIC hardware
+> interrupt), so need to enable and request multiple gic interrupt
+> numbers in the driver.
 > 
-> I meant not placed in include/linux.
+> Signed-off-by: Bing Fan <hptsfb@gmail.com>
+> ---
+>  drivers/tty/serial/amba-pl011.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+> index 78682c12156a..2b6f43c27dea 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -1703,9 +1703,30 @@ static void pl011_write_lcr_h(struct
+> uart_amba_port *uap, unsigned int lcr_h)
+> 
+>  static int pl011_allocate_irq(struct uart_amba_port *uap)
+>  {
+> +       int ret = -1;
+> +       int i = 0;
+> +       unsigned int virq = 0;
+> +       struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
+> +
+> +       if (!amba_dev)
+> +               return -1;
+> +
+>         pl011_write(uap->im, uap, REG_IMSC);
+> 
+> -       return request_irq(uap->port.irq, pl011_int, IRQF_SHARED,
+> "uart-pl011", uap);
+> +       for (i = 0; i < AMBA_NR_IRQS; i++) {
+> +               virq = amba_dev->irq[i];
+> +               if (virq == 0)          // request irq until virq is 0
+> +                       break;
+> +
+> +               ret = request_irq(virq, pl011_int, IRQF_SHARED,
+> "uart-pl011-*", uap);
+> +               if (ret < 0) {
+> +                       dev_info(uap->port.dev, "%s %d request %u
+> interrupt failed\n",
+> +                                       __func__, __LINE__, virq);
+> +                       break;
+> +               }
+> +       }
+> +
+> +       return ret;
+>  }
+> 
+>  /*
+> -- 
+> 2.17.1
 
-That's obvious based on the location of the file :)
 
-> > > +
-> > > +static inline struct compact_list_hdr *get_hdr(
-> > > +					struct digest_list_item *digest_list,
-> > > +					loff_t hdr_offset)
-> > > +{
-> > > +	return (struct compact_list_hdr *)(digest_list->buf + hdr_offset);
-> > > +}
-> > 
-> > pointer math feels rough, are you shure you want to do this this way?
-> 
-> Maybe, I could change digest_list_item_ref to:
-> 
-> struct digest_list_item_ref {
-> 	struct digest_list_item *digest_list;
-> 	u8 *digest;
-> 	struct compact_list_hdr *hdr;
-> };
-> 
-> where digest and hdr are calculated in the same way.
+Hi,
 
-That works better, no need to do pointer math if you do not have to.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/email-clients.txt in order to fix this.
+
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
 thanks,
 
-greg k-h
+greg k-h's patch email bot
