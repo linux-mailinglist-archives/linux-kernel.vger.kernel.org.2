@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407ED3B6683
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0AE3B6687
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbhF1QRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S232946AbhF1QSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231472AbhF1QRn (ORCPT
+        with ESMTP id S230163AbhF1QSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:17:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289FBC061574;
-        Mon, 28 Jun 2021 09:15:18 -0700 (PDT)
+        Mon, 28 Jun 2021 12:18:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A066C061574;
+        Mon, 28 Jun 2021 09:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ZCLD8MBj2jLFJkWBGVsoZUuZJhShQvPQFbWNVUGT3z0=; b=OWG4fcCamJbgwFHvtjMQhJqJ5v
-        tGw1Yms3M5TpPhkJgSRMXsmP13cw2449vGRTFWAXSu9vEU2dLWF5cviOX0Pqz/V/WcE8VI2uTBrHY
-        MiOPuIMrxlqZ1rCmddNyMffQ4rYg7HGwn3ZwwjbjbAPvOfvnBLHWJfMfVHQY0RJYNrQ7/j0uzkR11
-        IhoZz7ASG8l8lUEWe8oLzu0iNEoEu1wIV4ZPnXK6zSK2znqKwqi5VngW/ISySCJRxCG1f7MBII4+/
-        a39D/rhOnhs2q72iJVvrsOucF+yJt9/OMQPU3CdUeqPOLiXPeQ80Ve02hlznhT5J8ZE1nxSJe9sFN
-        c2VJteww==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxtum-008Yb0-V2; Mon, 28 Jun 2021 16:15:17 +0000
-Subject: Re: [PATCH v5] Documentation, dt, numa: Add note to empty NUMA node
-To:     Gavin Shan <gshan@redhat.com>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, drjones@redhat.com,
-        robh+dt@kernel.org, shan.gavin@gmail.com
-References: <20210628093411.88805-1-gshan@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <89e25fd7-b323-2092-4151-faba060d4c10@infradead.org>
-Date:   Mon, 28 Jun 2021 09:15:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=AVS6wdnWgOLuiMtZUjGyWXos+iEGLYpsp9B+2iMmy1U=; b=u0sS8zoyGjUHUotlbA0+9HB4p
+        4OXEh/9UjF/Wg+37pMDYZV6j13nPc/tC8rg/ZC7s3bCyK2XX71zq0t23x4b9HLZQ+3V7mCU6Z4iVn
+        2qTY8jLv9lYHQr9wQZfWZxZ8GM0IUr3aIV3limdLFQEzIiqYbnhKH81CKX3U1vC8p/6S9NGg0DLr8
+        pwL4gklHv3afK1PUMlggJ/f4H4g/+ojFKsztpi9j+58uDbIxU2F4QsQGNxpnrWv3gJPw//szxWDFX
+        uFXsF/j2uoMlW9Ph1m+cQ4x0O7KAmAuWbKpQm+9s8v7N6aseagTPgKDfZ6Mp5MSQvdxhOTKEoskCp
+        A4HgLqdLw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45434)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lxtvr-0003gw-Ei; Mon, 28 Jun 2021 17:16:23 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lxtvo-0001Bp-Vg; Mon, 28 Jun 2021 17:16:20 +0100
+Date:   Mon, 28 Jun 2021 17:16:20 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: armada-3720-turris-mox: remove
+ mrvl,i2c-fast-mode
+Message-ID: <20210628161620.GB22278@shell.armlinux.org.uk>
+References: <20210628121015.22660-1-pali@kernel.org>
+ <20210628151229.25214-1-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210628093411.88805-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628151229.25214-1-pali@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 2:34 AM, Gavin Shan wrote:
-> The empty memory nodes, where no memory resides in, are allowed.
-> For these empty memory nodes, the 'len' of 'reg' property is zero.
-> The NUMA node IDs are still valid and parsed, but memory may be
-> added to them through hotplug afterwards. I finds difficulty to
-> get where it's properly documented.
-> 
-> So lets add a section for empty memory nodes in NUMA binding
-> document. Also, the 'unit-address', equivalent to 'base-address'
-> in the 'reg' property of these empty memory nodes is suggested to
-> be the summation of highest memory address plus the NUMA node ID.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
-> v5: Separate section for empty memory node
-> ---
->  Documentation/devicetree/bindings/numa.txt | 61 +++++++++++++++++++++-
->  1 file changed, 60 insertions(+), 1 deletion(-)
-> 
+On Mon, Jun 28, 2021 at 05:12:29PM +0200, Pali Rohár wrote:
+> Some SFP modules are not detected when i2c-fast-mode is enabled even when
+> clock-frequency is already set to 100000. The I2C bus violates the timing
+> specifications when run in fast mode. So disable fast mode on Turris Mox.
 
-LGTM. Thanks.
+Yes. SFP module specification is 100kHz max on the I2C bus, which is
+often forgotten about until someone runs into a problem.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
 -- 
-~Randy
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
