@@ -2,213 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57E73B6131
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410CD3B5FB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhF1OdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:33:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46388 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234491AbhF1O35 (ORCPT
+        id S232427AbhF1OPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhF1OPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:29:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624890451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LH8UNtD4dgcFZ2cOzBHPmeit1WiRYTLTlJgZddc4rZA=;
-        b=RJ9iZgZVCqMmQ/E8mCUyKSvqAZD5cJkAb/MBmj0dlTMPkh7tRZ0z7igCQ43gHjS0uaifZz
-        6xO3JuUl9puTDWCN3iyxB8stM2WOgxZGH8unCD99q6+Xl6oDJfrVTN3txWmzkCmj3sGHJa
-        kias5F1GyEqd4iZy7wq00uOEndscVD8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-vhDeOqsgOliBweVHyX5tHA-1; Mon, 28 Jun 2021 10:27:30 -0400
-X-MC-Unique: vhDeOqsgOliBweVHyX5tHA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63DCC800D55;
-        Mon, 28 Jun 2021 14:27:28 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-225.rdu2.redhat.com [10.10.115.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6162F5D9DC;
-        Mon, 28 Jun 2021 14:27:23 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 3427B22054F; Mon, 28 Jun 2021 10:27:23 -0400 (EDT)
-Date:   Mon, 28 Jun 2021 10:27:23 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Ming Lin <mlin@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Simon Ser <contact@emersion.fr>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, virtio-fs-list <virtio-fs@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [PATCH v2 2/2] mm: adds NOSIGBUS extension to mmap()
-Message-ID: <20210628142723.GB1803896@redhat.com>
-References: <1622792602-40459-1-git-send-email-mlin@kernel.org>
- <1622792602-40459-3-git-send-email-mlin@kernel.org>
+        Mon, 28 Jun 2021 10:15:17 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAA7C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 07:12:50 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id a5-20020a05683012c5b029046700014863so2084992otq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 07:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rfeXX0z3uQGk3VM+2xtA2DmnGgP2rWO/RWy/3AwFX2Y=;
+        b=oEx9hPhXaBPdvVIaz6BVAJzYzMGl1m/N8qbg7AEc2G1ta3UVBQUKXNySY2Fbm/zSZg
+         7CNt3L0bqI/4Ex96WZP/HbqN90z4RXEOrOk9kC4kPL859tXwX34YFvjbsBEf+E1q2rqj
+         4nykuDKfuw6dFHpbXiBlHRhLLw3RdF1KAVKOWeHIGiqU4ZVExCSWaIX4bqR7UMbOF08g
+         qvRxi0uFH9hd3yV+KOBOTXMk8UOE3Lykv1AxSqqsucT4+HJyGb/3bue6CZ+d9OlkWDg7
+         2KkzfBq9ajnol99Q6mRWLMvg5b5Kg+aMSEk81qANYVNpsKJEjFshv6OBf+osh/Wbmcs4
+         /m3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rfeXX0z3uQGk3VM+2xtA2DmnGgP2rWO/RWy/3AwFX2Y=;
+        b=I4R+pvwcJ8T3ImWsPwiTAeQ9cR37GQzV340zgukXjhAzMHIU4CLN/h5MAxJjTVtMFc
+         r1yWgF8gD4zG+zDHY6x/3/T72kN/a9bC5nQxefBPBcvr8yGO4G5jECQg3Rkk8WjMLULw
+         4POKuBYUxfMcYnkZR0FGEO3A55hdbeyjBfiH1T+5c8fKrVHC7XFX4MRkigNKGwK5Uc2c
+         m3EFIvQnEYgkpZrKhmsXNicPMONmlbwvEDtkBSJhtTTst2SASp0aZgek948GoU/08rK9
+         15XlOe2lJCrRFrPrpzNhX3XOFhjG6TU+zjvNGWAsZ5iCHsCbq+I8LVzIKNyc4U0BlLDz
+         Uotg==
+X-Gm-Message-State: AOAM5332G2bOH4uVvpceaGbnQjvtXVlXb0ZeVP4B2ngFMrHI/YNLybFx
+        HdQTlSyshHVa6nKm/kADCwAJsUXc/OkZ3p6U
+X-Google-Smtp-Source: ABdhPJxwqACyHwzTBQ3ULjEyeEdUJXy8m8MXBq1w/A8ku65FixpuNCpN7u0pxb2tmcH/AD8R8Qx+7w==
+X-Received: by 2002:a05:6830:1e64:: with SMTP id m4mr20972177otr.23.1624889569949;
+        Mon, 28 Jun 2021 07:12:49 -0700 (PDT)
+Received: from [192.168.86.166] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id b20sm3513621otq.41.2021.06.28.07.12.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 07:12:49 -0700 (PDT)
+Subject: Re: dma_declare_coherent_memory and SuperH
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210623133205.GA28589@lst.de>
+ <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
+ <20210628133858.GA21602@lst.de>
+ <4d6b7c35-f2fa-b476-b814-598a812770e6@landley.net>
+ <20210628134955.GA22559@lst.de>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <1141b20f-7cdf-1477-ef51-876226db7a37@landley.net>
+Date:   Mon, 28 Jun 2021 09:29:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622792602-40459-3-git-send-email-mlin@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210628134955.GA22559@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:43:22AM -0700, Ming Lin wrote:
-> Adds new flag MAP_NOSIGBUS of mmap() to specify the behavior of
-> "don't SIGBUS on fault". Right now, this flag is only allowed
-> for private mapping.
+On 6/28/21 8:49 AM, Christoph Hellwig wrote:
+> On Mon, Jun 28, 2021 at 09:04:19AM -0500, Rob Landley wrote:
+>> > Well, the replacement is to declare the device memory carveouts in the
+>> > Device Tree.
+>> 
+>> Your plan is to eliminate the ability for non-device-tree boards to do DMA?
 > 
-> For MAP_NOSIGBUS mapping, map in the zero page on read fault
-> or fill a freshly allocated page with zeroes on write fault.
+> No.  My hope is to kill dma_declarare_coherent, an API for board
+> support files to declare device-specific regions to be used for
+> coherent DMA.
 
-I am wondering if this could be of limited use for me if MAP_NOSIGBUS
-were to be supported for shared mappings as well.
+Q) If I haven't got regression test hardware to make sure I properly converted
+each of these entire boards to device tree, Is there anything else I can do to
+help you remove this function from common code, such as inlining some portion of
+this function?
 
-When virtiofs is run with dax enabled, then it is possible that if
-a file is shared between two guests, then one guest truncates the
-file and second guest tries to do load/store operation. Given current
-kvm architecture, there is no mechanism to propagate SIGBUS to guest
-process, instead KVM retries page fault infinitely and guest cpu/process
-hangs.
+A) You can convert the board to device tree.
 
-Ideally we want this error to propagate all the way back into the
-guest and to the guest process but that solution is not in place yet.
+Which part of this exchange have I misunderstood?
 
-https://lore.kernel.org/kvm/20200406190951.GA19259@redhat.com/
-
-In the absense of a proper solution, one could think of mapping
-shared file on host with MAP_NOSIGBUS, and hopefully that means
-kvm will be able to resolve fault to a zero filled page and guest
-will not hang. But this means that data sharing between two processes
-is now broken. Writes by process A will not be visible to process B
-in another once this situation happens, IIUC.
-
-So if we were to MAP_NOSIGBUS, guest will not hang but failures resulting
-from ftruncate will be silent and will be noticed sometime later. I guess
-not exactly a very pleasant scenario...
-
-Thanks
-Vivek
-
-
-
-> 
-> Signed-off-by: Ming Lin <mlin@kernel.org>
-> ---
->  arch/parisc/include/uapi/asm/mman.h          |  1 +
->  include/linux/mm.h                           |  2 ++
->  include/linux/mman.h                         |  1 +
->  include/uapi/asm-generic/mman-common.h       |  1 +
->  mm/memory.c                                  | 11 +++++++++++
->  mm/mmap.c                                    |  4 ++++
->  tools/include/uapi/asm-generic/mman-common.h |  1 +
->  7 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
-> index ab78cba..eecf9af 100644
-> --- a/arch/parisc/include/uapi/asm/mman.h
-> +++ b/arch/parisc/include/uapi/asm/mman.h
-> @@ -25,6 +25,7 @@
->  #define MAP_STACK	0x40000		/* give out an address that is best suited for process/thread stacks */
->  #define MAP_HUGETLB	0x80000		/* create a huge page mapping */
->  #define MAP_FIXED_NOREPLACE 0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
-> +#define MAP_NOSIGBUS	0x200000	/* do not SIGBUS on fault */
->  #define MAP_UNINITIALIZED 0		/* uninitialized anonymous mmap */
->  
->  #define MS_SYNC		1		/* synchronous memory sync */
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 9e86ca1..100d122 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -373,6 +373,8 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
->  # define VM_UFFD_MINOR		VM_NONE
->  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
->  
-> +#define VM_NOSIGBUS		VM_FLAGS_BIT(38)	/* Do not SIGBUS on fault */
-> +
->  /* Bits set in the VMA until the stack is in its final location */
->  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
->  
-> diff --git a/include/linux/mman.h b/include/linux/mman.h
-> index b2cbae9..c966b08 100644
-> --- a/include/linux/mman.h
-> +++ b/include/linux/mman.h
-> @@ -154,6 +154,7 @@ static inline bool arch_validate_flags(unsigned long flags)
->  	       _calc_vm_trans(flags, MAP_DENYWRITE,  VM_DENYWRITE ) |
->  	       _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
->  	       _calc_vm_trans(flags, MAP_SYNC,	     VM_SYNC      ) |
-> +	       _calc_vm_trans(flags, MAP_NOSIGBUS,   VM_NOSIGBUS  ) |
->  	       arch_calc_vm_flag_bits(flags);
->  }
->  
-> diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-> index f94f65d..a2a5333 100644
-> --- a/include/uapi/asm-generic/mman-common.h
-> +++ b/include/uapi/asm-generic/mman-common.h
-> @@ -29,6 +29,7 @@
->  #define MAP_HUGETLB		0x040000	/* create a huge page mapping */
->  #define MAP_SYNC		0x080000 /* perform synchronous page faults for the mapping */
->  #define MAP_FIXED_NOREPLACE	0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
-> +#define MAP_NOSIGBUS		0x200000	/* do not SIGBUS on fault */
->  
->  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
->  					 * uninitialized */
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 8d5e583..6b5a897 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3676,6 +3676,17 @@ static vm_fault_t __do_fault(struct vm_fault *vmf)
->  	}
->  
->  	ret = vma->vm_ops->fault(vmf);
-> +	if (unlikely(ret & VM_FAULT_SIGBUS) && (vma->vm_flags & VM_NOSIGBUS)) {
-> +		/*
-> +		 * For MAP_NOSIGBUS mapping, map in the zero page on read fault
-> +		 * or fill a freshly allocated page with zeroes on write fault
-> +		 */
-> +		ret = do_anonymous_page(vmf);
-> +		if (!ret)
-> +			ret = VM_FAULT_NOPAGE;
-> +		return ret;
-> +	}
-> +
->  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY |
->  			    VM_FAULT_DONE_COW)))
->  		return ret;
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 8bed547..d5c9fb5 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1419,6 +1419,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
->  	if (!len)
->  		return -EINVAL;
->  
-> +	/* Restrict MAP_NOSIGBUS to MAP_PRIVATE mapping */
-> +	if ((flags & MAP_NOSIGBUS) && !(flags & MAP_PRIVATE))
-> +		return -EINVAL;
-> +
->  	/*
->  	 * Does the application expect PROT_READ to imply PROT_EXEC?
->  	 *
-> diff --git a/tools/include/uapi/asm-generic/mman-common.h b/tools/include/uapi/asm-generic/mman-common.h
-> index f94f65d..a2a5333 100644
-> --- a/tools/include/uapi/asm-generic/mman-common.h
-> +++ b/tools/include/uapi/asm-generic/mman-common.h
-> @@ -29,6 +29,7 @@
->  #define MAP_HUGETLB		0x040000	/* create a huge page mapping */
->  #define MAP_SYNC		0x080000 /* perform synchronous page faults for the mapping */
->  #define MAP_FIXED_NOREPLACE	0x100000	/* MAP_FIXED which doesn't unmap underlying mapping */
-> +#define MAP_NOSIGBUS		0x200000	/* do not SIGBUS on fault */
->  
->  #define MAP_UNINITIALIZED 0x4000000	/* For anonymous mmap, memory could be
->  					 * uninitialized */
-> -- 
-> 1.8.3.1
-> 
-
+Rob
