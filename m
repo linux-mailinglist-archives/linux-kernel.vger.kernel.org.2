@@ -2,93 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828CF3B66E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCB83B66DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhF1Qiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhF1Qir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:38:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28BCE6144F;
-        Mon, 28 Jun 2021 16:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624898181;
-        bh=fM2UYPrxJnpjJzQAfwhDN/Dv4U8bjUg8ETAvFWC4mxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UuaXR6cXmyMxOTx7grxZ24uIGOf6jgvD8ysUu96av3wk89rlbRPaKiJDI0cmE0QAb
-         pM4YS+ZLr/+CDUl5W0J5EF8o6tRDijdh+prAwYToHd5bu5EH0ixh9Tbo0wmXl/OgF3
-         oHg4IJ/gq+2ikxlLPqb3xh+q643IGLcP+CmgFMiz5lrnOgSKRIwYmN/3l2e4jBcRT8
-         llt+fsOjc3rDiM10+ds3IWilKARbJlkBrYW804L9Q46nzfcSYxdl4hYDoMln95i4DD
-         ZUsSkZUsKS1Ex1jFK6nNPGGWbOFBcT3rNxb1qQNzaLTo4uGamDys6hG2cweh4FifRu
-         d57SPXviKUlDA==
-Date:   Mon, 28 Jun 2021 17:35:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Bo Shen <voice.shen@atmel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH] ASoC: atmel: ATMEL drivers depend on HAS_DMA
-Message-ID: <20210628163553.GD4492@sirena.org.uk>
-References: <20210530204851.3372-1-rdunlap@infradead.org>
- <9ba0da3b-dbdb-c91d-2def-f3dcd30cbde3@infradead.org>
- <20210628130214.GB4492@sirena.org.uk>
- <6734cd67-ae14-74f4-a78e-b6a810c1cdec@infradead.org>
+        id S231833AbhF1Qia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231734AbhF1Qi0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:38:26 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C927EC061574;
+        Mon, 28 Jun 2021 09:35:58 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso19392916otu.10;
+        Mon, 28 Jun 2021 09:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=SEFrvB4lNK1uv+L1kEqbUttA63rPtg4SqRdsqRkNxR0=;
+        b=SdmAj+8M50qeuooFOqBSiKTI1eYBIJPgAhjnfwbpuqPuFq5Aks86ciFrQK67jZtbD7
+         nneH2PwWNovGHUdLEOgFczgS0DHmV8m1hbSz1tH45NUnphYeomGI9raMXI8LMXPGEJSX
+         Y2z41RHn48YgXwtnAm+Uwf9SyT1pZoVkkuXiWKyCDFpzFpb3RofMM50vsliFgSzI2Fdz
+         YnD8E34WGqRKSO9Wl5Ua1kR1lZmC4oW1IdoFA/nRHo+c9W2WnVBm6zmrjO+kMV6Tm9D3
+         kJYLaciASuahlp6gHaN90sAu4nAbVf064GPRL23uAQb+GukZPhy89ehFJ6DvX8YZLfCw
+         eHMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=SEFrvB4lNK1uv+L1kEqbUttA63rPtg4SqRdsqRkNxR0=;
+        b=e0Yo/Gh6e1TY6T/ltBSrBs7sq8/heSfPtLhKtiRLRvJtXwVKPoE+UC4BShuK3KJ9ta
+         FVZuprG1Xv8tC5GQGhsA06Hk9gkQ8pSMAap0REa7STxJfqcKf+UTCzxMieWBNoxKDMm9
+         zKS5JGbQzI7M7vHOdJjVPNWRJJgnqhaeCYodiizd3tFqFadzJtAPJhjjbxy/I5KuE6xT
+         3YdZX23yTF/TwrMMkiKujRPFF+6seSsEmoG+RBc4fFJdz884kiTPOYW2eWdZ8y0yVuQ2
+         fgFPUaitDYhXkTZXvhVN/FaSkxqIRHXiS3SfF0JsO7SM/lfzwFg1hjYhD2Ke6qdb9UOL
+         0snQ==
+X-Gm-Message-State: AOAM533em9X0ZL4Bq1LHB/dhLAQAK8J6FOWXxfHZulqanhGvjyGyBzOn
+        0Az4ck9ea7/X0g6Z8E0c37Y=
+X-Google-Smtp-Source: ABdhPJzTf47pyLSaDZ0ridJ7KaIluoX+RDqtU2UZQG0HsSj/bcq4OHSWmLx5p/vnCB5AC/gY54uvrQ==
+X-Received: by 2002:a9d:554a:: with SMTP id h10mr381131oti.177.1624898157994;
+        Mon, 28 Jun 2021 09:35:57 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d3sm1436778otl.57.2021.06.28.09.35.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 09:35:57 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 28 Jun 2021 09:35:56 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
+Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
+Message-ID: <20210628163556.GB445250@roeck-us.net>
+References: <20210625074213.654274-1-martin@geanix.com>
+ <20210625074213.654274-6-martin@geanix.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kvUQC+jR9YzypDnK"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6734cd67-ae14-74f4-a78e-b6a810c1cdec@infradead.org>
-X-Cookie: Someone is speaking well of you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210625074213.654274-6-martin@geanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 25, 2021 at 09:42:13AM +0200, Martin Hundebøll wrote:
+> From: Martin Hundebøll <mhu@silicom.dk>
+> 
+> Add the list of sensors supported by the Silicom n5010 PAC, and enable
+> the drivers as a subtype of the intel-m10-bmc multi-function driver.
+> 
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
 
---kvUQC+jR9YzypDnK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For my reference:
 
-On Mon, Jun 28, 2021 at 09:03:25AM -0700, Randy Dunlap wrote:
-> On 6/28/21 6:02 AM, Mark Brown wrote:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> > Please don't send content free pings and please allow a reasonable time
-> > for review.  People get busy, go on holiday, attend conferences and so=
-=20
+Not sure if I can apply this patch as-is to hwmon, or if it needs
+to wait for the other patches in the series. Any thoughts / comments ?
 
-> a. The entire email/patch was there. Should I put the ping _after_ the pa=
-tch?
-> Would that help?
+Guenter
 
-Never send content free pings of any kind.  There's an "and" there.
-Quoted patches can't be applied.
-
-> b. What do you consider a reasonable time?  The patch was sent 28 days
-> prior to this gentle ping.
-
-As the mail you are replying to suggests this depends on the patch, some
-things are more urgent than others, and in any case like I say content
-free pings no matter how content free are just nose.
-
---kvUQC+jR9YzypDnK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDZ+mkACgkQJNaLcl1U
-h9DblggAhwS5IQqddFnWasPd9h6yF5OEbnQV1e2IYp81mj/NjDG7RNdMlWkXl7B7
-2Cap8Kax2DtjMNHdykf0pbs4jJzgYxMcuuobtGXFWpTs6+gPm9LcP8R7DYg7c+ok
-b54DvQ085VHJc2yYMGn6HFq5vBKTJMav4SxMRUjfBzvb9wIqXnn9JQQVRAa8XluV
-qFJ7+R4VbHILOaRWZqkeVtMGrxlbjQhegTDBmKZhESVSWffUL+I0J1TCrEgQXllq
-qVrtMGoDVMb7606DbkkKJ8IK8RtWmlwJjXDVnDkZIqphiZ4KVa32CsMK2dXMDz5e
-AF7qY99WHxYObQaNO9pfnoBaKNVItg==
-=X13a
------END PGP SIGNATURE-----
-
---kvUQC+jR9YzypDnK--
+> ---
+> 
+> Changes since v1:
+>  * Patch split out to separate hwmon changes
+> 
+>  drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+> 
+> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> index bd7ed2ed3a1e..7a08e4c44a4b 100644
+> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
+> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> @@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
+>  	.hinfo = d5005bmc_hinfo,
+>  };
+>  
+> +static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
+> +	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
+> +	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
+> +	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
+> +	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
+> +	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
+> +	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
+> +	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
+> +	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
+> +	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
+> +	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
+> +	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
+> +	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
+> +	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
+> +	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
+> +	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
+> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
+> +	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
+> +};
+> +
+> +static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
+> +	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
+> +	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
+> +	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
+> +	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
+> +	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
+> +	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
+> +	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
+> +	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
+> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
+> +	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
+> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
+> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
+> +	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
+> +};
+> +
+> +static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
+> +	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
+> +	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
+> +	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
+> +	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
+> +	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
+> +	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
+> +	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
+> +	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
+> +	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
+> +	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
+> +	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
+> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
+> +	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
+> +};
+> +
+> +static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
+> +	HWMON_CHANNEL_INFO(temp,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(in,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+> +	HWMON_CHANNEL_INFO(curr,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL),
+> +	NULL
+> +};
+> +
+> +static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
+> +	.tables = {
+> +		[hwmon_temp] = n5010bmc_temp_tbl,
+> +		[hwmon_in] = n5010bmc_in_tbl,
+> +		[hwmon_curr] = n5010bmc_curr_tbl,
+> +	},
+> +
+> +	.hinfo = n5010bmc_hinfo,
+> +};
+> +
+>  static umode_t
+>  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+>  			u32 attr, int channel)
+> @@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
+>  		.name = "d5005bmc-hwmon",
+>  		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
+>  	},
+> +	{
+> +		.name = "n5010bmc-hwmon",
+> +		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
+> +	},
+>  	{ }
+>  };
+>  
+> -- 
+> 2.31.0
+> 
