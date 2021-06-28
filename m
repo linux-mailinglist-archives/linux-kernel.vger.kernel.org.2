@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEEF3B5A16
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7063B5A1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhF1Hyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhF1Hyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:54:41 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630CEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:52:15 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id l21-20020a05600c1d15b02901e7513b02dbso7648068wms.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=26Jo7b1uCcAsRn7cA2/UX0PAm6+96/bC+S5nPYvJDSs=;
-        b=d/FLb0ur37yuvi/he3rJ4++VzOSF9BgsmO7AnOKJaMPVCqDjbfyONooNEP62zZFOlu
-         2NyFCToeZGGdFkXuf6bOuhgWGJD7Vc1V4GKMroCPY6Gz7Gd7CUh9IGASAPhP+sG1M1OM
-         RGvibommRmMaBdxFs996P+K50jJGrgqOLdVhaEP7KqaU4XeWopFwzmljenckuB41bscq
-         PRH2FvQ8zGpaTQaw7ylPTYUuQB9KI5ccN5aMXpto+GZMut7P62R/EMDSjHWADEvimZUZ
-         /3I394wdpriRggUihQq42fGvGf8ej3ZcIu139+J5iq7Z+HrsHANwdL7aE6oXU9WOWyOx
-         Xb/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=26Jo7b1uCcAsRn7cA2/UX0PAm6+96/bC+S5nPYvJDSs=;
-        b=rk5oDWRlAcizPOg5EVzyywZZ/NOC5D4zkvxpwxoUGhMCMkPz8kDErzQ7gEN+J7yqEu
-         N6CtsKQ9qa0YSM1ZJdNBVwmE3jRu1dAPjil55GctxHwsfmhp+WBvPvV74ikJ6gUszYHD
-         bFl3CzDvh6MqXIjTPmIPuDDb5dUPLElGHaoIiV6BYMhFLzqYmvwm5JZjL7C5s6zof3TN
-         1S6POFqEi0f8UZyajGOlBvnZVaN90tU+U6EzAE0qH2M1mcOXDaFgvQlAGnOscX8rwMj+
-         212+MnjzJGZTo065eNmRh1ECqG7VWpZ6KH4tC52ulgkno1UNQpeQ8IRCHRzjN5X5sc5C
-         jltg==
-X-Gm-Message-State: AOAM530Qvhzsyx3tJnyEZRyHKq+rJAObXOAKZ0fDNemhXPbtmnb0iy2O
-        1Gdxxasu1J1GpnyVgLL5ICcfUM2XIng=
-X-Google-Smtp-Source: ABdhPJyEs4DQY1q9IDG/fz/JGbGFyvIJQcb6b1lWA7LabpLizJxLmgFKid93Qh6/jk5JTWQ3WRrRgg==
-X-Received: by 2002:a7b:c104:: with SMTP id w4mr24726348wmi.87.1624866733991;
-        Mon, 28 Jun 2021 00:52:13 -0700 (PDT)
-Received: from [10.8.0.150] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id e12sm14094999wrw.34.2021.06.28.00.52.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 00:52:13 -0700 (PDT)
-Subject: Re: [PATCH v2] checkpatch: Fix regex for do without braces
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>, joe@perches.com,
-        apw@canonical.com
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org
-References: <20210627184909.6000-1-dwaipayanray1@gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <dfc6106b-81cd-a78f-a002-2a4b4c04155e@gmail.com>
-Date:   Mon, 28 Jun 2021 09:52:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232256AbhF1H4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:56:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4149 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhF1H4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:56:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271763942"
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="271763942"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:47 -0700
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="446461048"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.171.151]) ([10.249.171.151])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:42 -0700
+Subject: Re: [PATCH V7 00/18] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     "Wang, Wei W" <wei.w.wang@intel.com>,
+        Liuxiangdong <liuxiangdong5@huawei.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+Cc:     "bp@alien8.de" <bp@alien8.de>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Yang, Weijiang" <weijiang.yang@intel.com>,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "eranian@google.com" <eranian@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "like.xu.linux@gmail.com" <like.xu.linux@gmail.com>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+References: <20210622094306.8336-1-lingshan.zhu@intel.com>
+ <60D5A487.8020507@huawei.com>
+ <37832cc0-788d-91b9-dc95-147eca133842@intel.com>
+ <81530ac3ebe74ada9b5d1dc8092c1a31@intel.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <1bfecd6b-e05a-c470-ef09-e398de8db521@intel.com>
+Date:   Mon, 28 Jun 2021 15:53:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210627184909.6000-1-dwaipayanray1@gmail.com>
+In-Reply-To: <81530ac3ebe74ada9b5d1dc8092c1a31@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/27/21 8:49 PM, Dwaipayan Ray wrote:
-> The regular expression for detecting do without braces
-> also passes when checkpatch encounters the "double"
-> keyword. This causes wrong recalculation of $stat in
-> checkpatch which can cause false positives.
-> 
-> Fix the regex to avoid the above. Also update the comments
-> for the check.
-> 
-> Reported-by: Alejandro Colomar <alx.manpages@gmail.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Reviewed-by: Alejandro Colomar <alx.manpages@gmail.com>
-Tested-by: Alejandro Colomar <alx.manpages@gmail.com>
-(is Acked-by/Reviewed-by implied by Tested-by?)
-> ---
-> 
-> Changes in v2:
-> - Check word boundary on both sides of do
-> 
->   scripts/checkpatch.pl | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 8d19beca3538..64036e7eff71 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5488,9 +5488,8 @@ sub process {
->   			}
->   		}
->   
-> -# Check for illegal assignment in if conditional -- and check for trailing
-> -# statements after the conditional.
-> -		if ($line =~ /do\s*(?!{)/) {
-> +# If we have sufficient context detect and handle do without braces ({).
-
-s/context detect/context, detect/
-
-> +		if ($line =~ /\bdo\b\s*(?!{)/) {
->   			($stat, $cond, $line_nr_next, $remain_next, $off_next) =
->   				ctx_statement_block($linenr, $realcnt, 0)
->   					if (!defined $stat);
-> @@ -5511,6 +5510,9 @@ sub process {
->   								$offset} = 1;
->   			}
->   		}
-> +
-> +# Check for illegal assignment in if conditional -- and check for trailing
-> +# statements after the conditional.
->   		if (!defined $suppress_whiletrailers{$linenr} &&
->   		    defined($stat) && defined($cond) &&
->   		    $line =~ /\b(?:if|while|for)\s*\(/ && $line !~ /^.\s*#/) {
-> 
 
 
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+On 6/28/2021 3:49 PM, Wang, Wei W wrote:
+> On Friday, June 25, 2021 5:46 PM, Zhu, Lingshan wrote:
+>>> Only on the host?
+>>> I cannot use pebs unless try with "echo 0 > /proc/sys/kernel/watchdog"
+>>> both on the host and guest on ICX.
+>> Hi Xiangdong
+>>
+>> I guess you may run into the "cross-map" case(slow path below), so I think you
+>> can disable them both in host and guest to make PEBS work.
+>>
+> Hi Lingshan, could we also reproduce this issue?
+>
+> If the guest's watchdog takes away the virtual fixed counter, this will schedule the guest PEBS to use virtual PMC0. With the fast path (1:1 mapping), I think physical PMC0 is likely to be available for the guest PEBS emulation if no other host perf events are running.
+I think it is possible, even a virtual counter need a perf event 
+scheduled on the host. This depends on the guest / host workloads.
+
+Thanks,
+Zhu Lingshan
+> Best,
+> Wei
+
