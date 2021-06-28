@@ -2,140 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28F13B6698
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2853B66A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhF1QXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhF1QW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:22:57 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A7EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:20:30 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d5so13960930qtd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U7fXfGjadiL8isA1UEbZJYGUjr2KdPxa22wtkL8fYR8=;
-        b=pV/7OfUk02PcQ9bRleE0yLppYhvY69BgBt3SYvAB8mVKwWVMQTt06R5K+RJBTaIa1b
-         AO8oZ8+tFiC/covbKoFFlk4EKvVS/69aQChB4/LTkWHpmfJwYlFLRYvHxwSd3nN3lXr9
-         X2OkcJFRvQCDfJIqAc1FRBF7rI/cagrbGCIYTFW6pt7tV3HW+we7cKBrFajqi1xzD7uS
-         8iyg4Vl3R24D2FA+RkQgX4zZlr5g9D28gZZnLkh3+VcIW0ynNfXJpwZOoXhLoBpq+N91
-         Mr1Mo92oJq3BEVbQRQFgw1S+LRzCj1U6hPfjQ5CWrLI1FF+D2iUPUKuJNHTatFmE6VM3
-         k36A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U7fXfGjadiL8isA1UEbZJYGUjr2KdPxa22wtkL8fYR8=;
-        b=DQnXv3JJJaIRdvnxPYRAytkkWd20foK3ci+rQ4RFRSnp5T4oZLJXbhT2It8lkbQR4w
-         xrPZH5/X3SDKBS6pc+jxQZGRftK6oA3A51DiQF+oE96OFTbBEn99XBZ+dqJcMGaXywdr
-         dI4fH8rEedE7B4ejmj4yxjVbfvA/TF+K9Ol1mLQJA7R1a50ZLnUOytarIYenBkXHsk6U
-         5izPxgmtEHP8JOhGvJA+ApZgx+naPj91dSATCrYRdg/YFxr+Rc/u9d2/1kW8Eg4oXs5G
-         SzO/0zZhcTVZkCw4q271iYDsV2elwcAwMRxKmgYWG20QGhZ5S9jS4IPmy/9w+/nIP24R
-         3WZQ==
-X-Gm-Message-State: AOAM530kl6SMbmxdIRj5ZjiYR1QTeRl+CUZfXv2ocMD9sXCRu/1Lld9t
-        6OM98EFwrN68dVcOwXJFOH8zjw==
-X-Google-Smtp-Source: ABdhPJz9oN20ohmo1SYUNEJ984SoicNirF9kNToTI6f84nkXK3d/W9hgY6gqGE1GH+r5u9CFQGCmSg==
-X-Received: by 2002:a05:622a:14d3:: with SMTP id u19mr22192270qtx.115.1624897229575;
-        Mon, 28 Jun 2021 09:20:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id t139sm10262947qka.85.2021.06.28.09.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 09:20:28 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lxtzn-000emj-68; Mon, 28 Jun 2021 13:20:27 -0300
-Date:   Mon, 28 Jun 2021 13:20:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Benjamin LaHaise <ben@communityfibre.ca>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: linux-mm@kvack.org - limping on a backup
-Message-ID: <20210628162027.GC4604@ziepe.ca>
-References: <20210622145954.GA4058@kvack.org>
- <214c41fae1f1b148e5b04a58c1b018fb091d7e83.camel@HansenPartnership.com>
- <20210625171259.GG4058@kvack.org>
- <6f309c63f5b7be968ae679e81ab959db05681e8a.camel@HansenPartnership.com>
- <20210625192607.GH4058@kvack.org>
- <20210628134607.GA4604@ziepe.ca>
- <20210628135352.GL4058@kvack.org>
- <20210628142659.GB4604@ziepe.ca>
- <20210628144051.GM4058@kvack.org>
+        id S233574AbhF1QZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:25:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:35140 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231472AbhF1QZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:25:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81BA41042;
+        Mon, 28 Jun 2021 09:22:38 -0700 (PDT)
+Received: from [10.57.8.89] (unknown [10.57.8.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7846F3F718;
+        Mon, 28 Jun 2021 09:22:36 -0700 (PDT)
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Huang <chenhuang5@huawei.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <da9c2fa9-a545-0c48-4490-d6134cc31425@huawei.com>
+ <20210623132223.GA96264@C02TD0UTHF1T.local>
+ <1c635945-fb25-8871-7b34-f475f75b2caf@huawei.com>
+ <YNP6/p/yJzLLr8M8@casper.infradead.org> <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk> <20210624185554.GC25097@arm.com>
+ <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+ <20210625103905.GA20835@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7f14271a-9b2f-1afc-3caf-c4e5b36efa73@arm.com>
+Date:   Mon, 28 Jun 2021 17:22:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628144051.GM4058@kvack.org>
+In-Reply-To: <20210625103905.GA20835@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 10:40:51AM -0400, Benjamin LaHaise wrote:
-> On Mon, Jun 28, 2021 at 11:26:59AM -0300, Jason Gunthorpe wrote:
-> > Isn't a 7-bit conversion what I pointed at last time we talked about
-> > this?
+On 2021-06-25 11:39, Catalin Marinas wrote:
+> On Thu, Jun 24, 2021 at 09:36:54PM +0100, Robin Murphy wrote:
+>> On 2021-06-24 19:55, Catalin Marinas wrote:
+>>> On Thu, Jun 24, 2021 at 04:27:17PM +0000, Al Viro wrote:
+>>>> On Thu, Jun 24, 2021 at 02:22:27PM +0100, Robin Murphy wrote:
+>>>>> FWIW I think the only way to make the kernel behaviour any more robust here
+>>>>> would be to make the whole uaccess API more expressive, such that rather
+>>>>> than simply saying "I only got this far" it could actually differentiate
+>>>>> between stopping due to a fault which may be recoverable and worth retrying,
+>>>>> and one which definitely isn't.
+>>>>
+>>>> ... and propagate that "more expressive" information through what, 3 or 4
+>>>> levels in the call chain?
+>>>>
+>>>>   From include/linux/uaccess.h:
+>>>>
+>>>>    * If raw_copy_{to,from}_user(to, from, size) returns N, size - N bytes starting
+>>>>    * at to must become equal to the bytes fetched from the corresponding area
+>>>>    * starting at from.  All data past to + size - N must be left unmodified.
+>>>>    *
+>>>>    * If copying succeeds, the return value must be 0.  If some data cannot be
+>>>>    * fetched, it is permitted to copy less than had been fetched; the only
+>>>>    * hard requirement is that not storing anything at all (i.e. returning size)
+>>>>    * should happen only when nothing could be copied.  In other words, you don't
+>>>>    * have to squeeze as much as possible - it is allowed, but not necessary.
+>>>>
+>>>> arm64 instances violate the aforementioned hard requirement.
+>>>
+>>> After reading the above a few more times, I think I get it. The key
+>>> sentence is: not storing anything at all should happen only when nothing
+>>> could be copied. In the MTE case, something can still be copied.
+>>>
+>>>> Please, fix
+>>>> it there; it's not hard.  All you need is an exception handler in .Ltiny15
+>>>> that would fall back to (short) byte-by-byte copy if the faulting address
+>>>> happened to be unaligned.  Or just do one-byte copy, not that it had been
+>>>> considerably cheaper than a loop.  Will be cheaper than propagating that extra
+>>>> information up the call chain, let alone paying for extra ->write_begin()
+>>>> and ->write_end() for single byte in generic_perform_write().
+>>>
+>>> Yeah, it's definitely fixable in the arch code. I misread the above
+>>> requirements and thought it could be fixed in the core code.
+>>>
+>>> Quick hack, though I think in the actual exception handling path in .S
+>>> more sense (and it needs the copy_to_user for symmetry):
+>>
+>> Hmm, if anything the asm version might be even more straightforward; I think
+>> it's pretty much just this (untested):
 > 
-> I changed several options in postfix last time this was raised, but as
-> nobody ever provided a test case, I had no way of knowing if it worked or
-> not.
+> That's what I thought but it was too late in the day to think in asm.
+> 
+>> diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+>> index 043da90f5dd7..632bf1f9540d 100644
+>> --- a/arch/arm64/lib/copy_to_user.S
+>> +++ b/arch/arm64/lib/copy_to_user.S
+>> @@ -62,6 +62,9 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+>>
+>>          .section .fixup,"ax"
+>>          .align  2
+>> -9998:  sub     x0, end, dst                    // bytes not copied
+>> +9998:  ldrb    w7, [x1]
+>> +USER(9997f,    sttrb   w7, [x0])
+>> +       add     x0, x0, #1
+>> +9997:  sub     x0, end, dst                    // bytes not copied
+>>          ret
+>>          .previous
+>>
+>> If we can get away without trying to finish the whole copy bytewise, (i.e.
+>> we don't cause any faults of our own by knowingly over-reading in the
+>> routine itself), I'm more than happy with that.
+> 
+> I don't think we over-read/write in the routine itself as this is based
+> on the user memcpy() which can't handle faults. And since we got a fault
+> before the end of the copy, we have at least one byte left in the
+> buffer (which may or may not trigger a fault).
+> 
+> I wonder whether we should skip the extra byte copy if something was
+> copied, i.e. start the exception handler with:
+> 
+> 	cmp	dstin, dst
+> 	b.ne	9997f
+> 
+> That said, the fall-back to bytewise copying may have some advantage. I
+> think we still have the issue where we copy some data to user but report
+> less (STP failing on the second 8-byte when the first had been already
+> written first 8). A byte copy loop would solve this, unless we pass the
+> fault address to the exception handler (I thought you had some patch for
+> this at some point).
 
-I've been using a script like this against the lore public inbox git
-repos to monitor my own domain's dkim cleanness and interaction with
-list serves:
+OK, this is the quick-fix patch I've ended up with - I'll send it
+properly at rc1. It makes both copy_from_user and copy_to_user behave
+reasonably in Catalin's MTE-based test-case, so I figure copy_in_user
+must be OK too (I keep hoping it might have gone away by now...)
 
-#!/usr/bin/python3
-import subprocess
-import collections
+Robin.
 
-# Starting points
-start = XXXXX # git commit id string
+----->8-----
+From: Robin Murphy <robin.murphy@arm.com>
+Subject: [PATCH] arm64: Avoid premature usercopy failure
 
-emails = collections.defaultdict(list)
-commits = subprocess.check_output(["git","log","master","^" + start,'--pretty=format:%H %aN <%aE>']).decode()
-for ln in commits.splitlines():
-    commit,_,email = ln.partition(' ')
-    if "nvidia.com" in email.lower():
-        emails[email].append(commit)
+Al reminds us that the usercopy API must only return complete failure
+if absolutely nothing could be copied. Currently, if userspace does
+something silly like giving us an unaligned pointer to Device memory,
+or a size which overruns MTE tag bounds, we may fail to honour that
+requirement when faulting on a multi-byte access even though a smaller
+access could have succeeded.
 
-fails = set()
-not_empty = True;
-while not_empty:
-    not_empty = False;
-    for email,commits in sorted(emails.items()):
-        if email in fails or not commits:
-            continue
-        commit = commits[-1];
-        del commits[-1]
-        if commits:
-            not_empty = True;
-        msg = subprocess.check_output(["git","show",commit + ":m"]);
-        try:
-            subprocess.check_output(["dkimverify"], input=msg);
-            #print(email)
-        except:
-            fails.add(email)
-            print("Failed!", email, commit)
+Add a mitigation to the fixup routines to fall back to a single-byte
+copy if we faulted on a larger access before anything has been written
+to the destination, to guarantee making *some* forward progress. We
+needn't be too concerned about the overall performance since this should
+only occur when callers are doing something a bit dodgy in the first
+place. Particularly broken userspace might still be able to trick
+generic_perform_write() into an infinite loop by targeting write() at
+an mmap() of some read-only device register where the fault-in load
+succeeds but any store synchronously aborts such that copy_to_user() is
+genuinely unable to make progress, but, well, don't do that...
 
-It has taken a lot of doing, but nvidia.com is now effectively DKIM
-clean through vger.
+Reported-by: Chen Huang <chenhuang5@huawei.com>
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
+  arch/arm64/lib/copy_from_user.S | 14 +++++++++++---
+  arch/arm64/lib/copy_in_user.S   | 21 ++++++++++++++-------
+  arch/arm64/lib/copy_to_user.S   | 14 +++++++++++---
+  3 files changed, 36 insertions(+), 13 deletions(-)
 
-You could run with with some known-good domains like nvidia.com,
-facebook.com, google.com, to measure kvack's activity. Failures can
-often be cross-correlated against a vger list and then you can do A/B
-comparison to guess what is wrong.
+diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
+index 95cd62d67371..5b720a29a242 100644
+--- a/arch/arm64/lib/copy_from_user.S
++++ b/arch/arm64/lib/copy_from_user.S
+@@ -29,7 +29,7 @@
+  	.endm
+  
+  	.macro ldrh1 reg, ptr, val
+-	user_ldst 9998f, ldtrh, \reg, \ptr, \val
++	user_ldst 9997f, ldtrh, \reg, \ptr, \val
+  	.endm
+  
+  	.macro strh1 reg, ptr, val
+@@ -37,7 +37,7 @@
+  	.endm
+  
+  	.macro ldr1 reg, ptr, val
+-	user_ldst 9998f, ldtr, \reg, \ptr, \val
++	user_ldst 9997f, ldtr, \reg, \ptr, \val
+  	.endm
+  
+  	.macro str1 reg, ptr, val
+@@ -45,7 +45,7 @@
+  	.endm
+  
+  	.macro ldp1 reg1, reg2, ptr, val
+-	user_ldp 9998f, \reg1, \reg2, \ptr, \val
++	user_ldp 9997f, \reg1, \reg2, \ptr, \val
+  	.endm
+  
+  	.macro stp1 reg1, reg2, ptr, val
+@@ -53,8 +53,10 @@
+  	.endm
+  
+  end	.req	x5
++srcin	.req	x15
+  SYM_FUNC_START(__arch_copy_from_user)
+  	add	end, x0, x2
++	mov	srcin, x1
+  #include "copy_template.S"
+  	mov	x0, #0				// Nothing to copy
+  	ret
+@@ -63,6 +65,12 @@ EXPORT_SYMBOL(__arch_copy_from_user)
+  
+  	.section .fixup,"ax"
+  	.align	2
++9997:	cmp	dst, dstin
++	b.ne	9998f
++	// Before being absolutely sure we couldn't copy anything, try harder
++USER(9998f, ldtrb tmp1w, [srcin])
++	strb	tmp1w, [dstin]
++	add	dst, dstin, #1
+  9998:	sub	x0, end, dst			// bytes not copied
+  	ret
+  	.previous
+diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
+index 1f61cd0df062..0abb24a01781 100644
+--- a/arch/arm64/lib/copy_in_user.S
++++ b/arch/arm64/lib/copy_in_user.S
+@@ -30,33 +30,34 @@
+  	.endm
+  
+  	.macro ldrh1 reg, ptr, val
+-	user_ldst 9998f, ldtrh, \reg, \ptr, \val
++	user_ldst 9997f, ldtrh, \reg, \ptr, \val
+  	.endm
+  
+  	.macro strh1 reg, ptr, val
+-	user_ldst 9998f, sttrh, \reg, \ptr, \val
++	user_ldst 9997f, sttrh, \reg, \ptr, \val
+  	.endm
+  
+  	.macro ldr1 reg, ptr, val
+-	user_ldst 9998f, ldtr, \reg, \ptr, \val
++	user_ldst 9997f, ldtr, \reg, \ptr, \val
+  	.endm
+  
+  	.macro str1 reg, ptr, val
+-	user_ldst 9998f, sttr, \reg, \ptr, \val
++	user_ldst 9997f, sttr, \reg, \ptr, \val
+  	.endm
+  
+  	.macro ldp1 reg1, reg2, ptr, val
+-	user_ldp 9998f, \reg1, \reg2, \ptr, \val
++	user_ldp 9997f, \reg1, \reg2, \ptr, \val
+  	.endm
+  
+  	.macro stp1 reg1, reg2, ptr, val
+-	user_stp 9998f, \reg1, \reg2, \ptr, \val
++	user_stp 9997f, \reg1, \reg2, \ptr, \val
+  	.endm
+  
+  end	.req	x5
+-
++srcin	.req	x15
+  SYM_FUNC_START(__arch_copy_in_user)
+  	add	end, x0, x2
++	mov	srcin, x1
+  #include "copy_template.S"
+  	mov	x0, #0
+  	ret
+@@ -65,6 +66,12 @@ EXPORT_SYMBOL(__arch_copy_in_user)
+  
+  	.section .fixup,"ax"
+  	.align	2
++9997:	cmp	dst, dstin
++	b.ne	9998f
++	// Before being absolutely sure we couldn't copy anything, try harder
++USER(9998f, ldtrb tmp1w, [srcin])
++USER(9998f, sttrb tmp1w, [dstin])
++	add	dst, dstin, #1
+  9998:	sub	x0, end, dst			// bytes not copied
+  	ret
+  	.previous
+diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+index 043da90f5dd7..cfb598ae4812 100644
+--- a/arch/arm64/lib/copy_to_user.S
++++ b/arch/arm64/lib/copy_to_user.S
+@@ -32,7 +32,7 @@
+  	.endm
+  
+  	.macro strh1 reg, ptr, val
+-	user_ldst 9998f, sttrh, \reg, \ptr, \val
++	user_ldst 9997f, sttrh, \reg, \ptr, \val
+  	.endm
+  
+  	.macro ldr1 reg, ptr, val
+@@ -40,7 +40,7 @@
+  	.endm
+  
+  	.macro str1 reg, ptr, val
+-	user_ldst 9998f, sttr, \reg, \ptr, \val
++	user_ldst 9997f, sttr, \reg, \ptr, \val
+  	.endm
+  
+  	.macro ldp1 reg1, reg2, ptr, val
+@@ -48,12 +48,14 @@
+  	.endm
+  
+  	.macro stp1 reg1, reg2, ptr, val
+-	user_stp 9998f, \reg1, \reg2, \ptr, \val
++	user_stp 9997f, \reg1, \reg2, \ptr, \val
+  	.endm
+  
+  end	.req	x5
++srcin	.req	x15
+  SYM_FUNC_START(__arch_copy_to_user)
+  	add	end, x0, x2
++	mov	srcin, x1
+  #include "copy_template.S"
+  	mov	x0, #0
+  	ret
+@@ -62,6 +64,12 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+  
+  	.section .fixup,"ax"
+  	.align	2
++9997:	cmp	dst, dstin
++	b.ne	9998f
++	// Before being absolutely sure we couldn't copy anything, try harder
++	ldrb	tmp1w, [srcin]
++USER(9998f, sttrb tmp1w, [dstin])
++	add	dst, dstin, #1
+  9998:	sub	x0, end, dst			// bytes not copied
+  	ret
+  	.previous
+-- 
+2.25.1
 
-> spec that ignores decades of that philosophy at the IETF.  And even if a
-> DKIM signature passes, that's still not enough to trust the resulting
-> email.  All it does is ensure that a small subset of valid emails get
-> dropped on the floor.  This doesn't seem like an overall win.
-
-I have no idea. It is here, people beyond us have made this decision,
-we have to work within it. DMARC is ratcheting this up and is moving
-to say if DKIM fails then emails should be discared.
-
-Jason
