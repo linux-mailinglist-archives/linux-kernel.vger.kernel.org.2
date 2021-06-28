@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C523B5B6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454633B5B6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhF1Jet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232152AbhF1Jer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:34:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 968D5619C5;
-        Mon, 28 Jun 2021 09:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624872742;
-        bh=lsamg+PxzeY+uZhhCSlp8N3GB8mjamZ+vBUc2M5/IYQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UyJ9GaPwLeevhfj1fFwQA3wbu0RqZcRtqjK2xyU8GUAuPRE2DQ0WerR6AvwzpJaZs
-         4FvFkl0XcIQDnn9boKYDXPBNRul/IT0PuqxAXR53l+yfYs9QBQgZWHwL1GB64S2JWB
-         MCn4MTwXS/iybIsQIU+StErstpj64CMUH/GH/RXA=
-Date:   Mon, 28 Jun 2021 11:32:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Message-ID: <YNmXIk7orQavkEME@kroah.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-4-roberto.sassu@huawei.com>
- <YNhYu3BXh7f9GkVk@kroah.com>
- <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
- <YNmMX4EODT0c4zqk@kroah.com>
- <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
+        id S232527AbhF1Jgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:36:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232348AbhF1Jgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:36:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624872865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OH+jVVr1lvBtZ9CWlaipwKLG10KB8Y6CJCSIOW1M3BE=;
+        b=C1DUbap4RrCaGNcg1YPdrpWbk0j530e1Nw9WSrF+6i9rLlHkvIFOWbnglUwmtbsH+EXGI1
+        yutRYYLeGBpf5Aj7Kuwc6CB8kzfdsMc3ctSDtzrtn7+Idq8RZDul1gQn3G4PlQtmeMYAmS
+        z/vvlzqZ/uYInCPBJHUCCrGdP4QTq+8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-178-SPwY-9xXNaWRvF0Vc_Vq1Q-1; Mon, 28 Jun 2021 05:34:22 -0400
+X-MC-Unique: SPwY-9xXNaWRvF0Vc_Vq1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A17E8800C78;
+        Mon, 28 Jun 2021 09:34:21 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-204.bne.redhat.com [10.64.54.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 319D819C87;
+        Mon, 28 Jun 2021 09:34:18 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        drjones@redhat.com, robh+dt@kernel.org, shan.gavin@gmail.com
+Subject: [PATCH v5] Documentation, dt, numa: Add note to empty NUMA node
+Date:   Mon, 28 Jun 2021 17:34:11 +0800
+Message-Id: <20210628093411.88805-1-gshan@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 09:27:05AM +0000, Roberto Sassu wrote:
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Monday, June 28, 2021 10:46 AM
-> > On Mon, Jun 28, 2021 at 08:30:32AM +0000, Roberto Sassu wrote:
-> > > > > +struct compact_list_hdr {
-> > > > > +	__u8 version;
-> > > >
-> > > > You should never need a version, that way lies madness.
-> > >
-> > > We wanted to have a way to switch to a new format, if necessary.
-> > 
-> > Then just add a new ioctl if you need that in the future, no need to try
-> > to cram it into this one.
-> 
-> Given that digest lists are generated elsewhere, it would be still
-> unclear when the ioctl() would be issued. Maybe the kernel needs
-> to parse both v1 and v2 digest lists (I expect that v1 cannot be easily
-> converted to v2, if they are signed).
-> 
->  It would be also unpractical if digest lists are loaded at kernel
-> initialization time (I didn't send the patch yet).
+The empty memory nodes, where no memory resides in, are allowed.
+For these empty memory nodes, the 'len' of 'reg' property is zero.
+The NUMA node IDs are still valid and parsed, but memory may be
+added to them through hotplug afterwards. I finds difficulty to
+get where it's properly documented.
 
-Then that is up to your api design, I do not know.  But note that
-"version" fields almost always never work, so be careful about assuming
-that this will solve any future issues.
+So lets add a section for empty memory nodes in NUMA binding
+document. Also, the 'unit-address', equivalent to 'base-address'
+in the 'reg' property of these empty memory nodes is suggested to
+be the summation of highest memory address plus the NUMA node ID.
 
-> > > > > +	__le16 type;
-> > > > > +	__le16 modifiers;
-> > > > > +	__le16 algo;
-> > > > > +	__le32 count;
-> > > > > +	__le32 datalen;
-> > > >
-> > > > Why are user/kernel apis specified in little endian format?  Why would
-> > > > that matter?  Shouldn't they just be "native" endian?
-> > >
-> > > I thought this would make it clear that the kernel always expects the
-> > > digest lists to be in little endian.
-> > 
-> > Why would a big endian system expect the data from userspace to be in
-> > little endian?  Shouldn't this always just be "native" endian given that
-> > this is not something that is being sent to hardware?
-> 
-> The digest list might come from a system with different endianness.
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+---
+v5: Separate section for empty memory node
+---
+ Documentation/devicetree/bindings/numa.txt | 61 +++++++++++++++++++++-
+ 1 file changed, 60 insertions(+), 1 deletion(-)
 
-Ok, I have no idea what digests really are used for then.  So stick with
-little endian and be sure to properly convert within the kernel as
-needed.
+diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
+index 21b35053ca5a..230c734af948 100644
+--- a/Documentation/devicetree/bindings/numa.txt
++++ b/Documentation/devicetree/bindings/numa.txt
+@@ -103,7 +103,66 @@ Example:
+ 		};
+ 
+ ==============================================================================
+-4 - Example dts
++4 - Empty memory nodes
++==============================================================================
++
++Empty memory nodes, which no memory resides in, are allowed. The 'length'
++field of the 'reg' property is zero, but the 'base-address' is a dummy
++address and invalid. The 'base-address' could be the summation of highest
++memory address plus the NUMA node ID. However, the NUMA node IDs and
++distance maps are still valid and memory may be added into them through
++hotplug afterwards.
++
++Example:
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x80000000>;
++		numa-node-id = <0>;
++	};
++
++	memory@0x80000000 {
++		device_type = "memory";
++		reg = <0x0 0x80000000 0x0 0x80000000>;
++		numa-node-id = <1>;
++	};
++
++	/* Empty memory node */
++	memory@0x100000002 {
++		device_type = "memory";
++		reg = <0x1 0x2 0x0 0x0>;
++		numa-node-id = <2>;
++	};
++
++	/* Empty memory node */
++	memory@0x100000003 {
++		device_type = "memory";
++		reg = <0x1 0x3 0x0 0x0>;
++		numa-node-id = <3>;
++	};
++
++	distance-map {
++		compatible = "numa-distance-map-v1";
++		distance-matrix = <0 0  10>,
++				  <0 1  20>,
++				  <0 2  40>,
++				  <0 3  20>,
++				  <1 0  20>,
++				  <1 1  10>,
++				  <1 2  20>,
++				  <1 3  40>,
++				  <2 0  40>,
++				  <2 1  20>,
++				  <2 2  10>,
++				  <2 3  20>,
++				  <3 0  20>,
++				  <3 1  40>,
++				  <3 2  20>,
++				  <3 3  10>;
++	};
++
++==============================================================================
++5 - Example dts
+ ==============================================================================
+ 
+ Dual socket system consists of 2 boards connected through ccn bus and
+-- 
+2.23.0
 
-thanks,
-
-greg k-h
