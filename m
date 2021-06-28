@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EC33B65EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365473B65F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237237AbhF1Poa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S237546AbhF1PqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237046AbhF1PoN (ORCPT
+        with ESMTP id S237432AbhF1Pph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:44:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7F0C094246
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VB1DknrWVbY9Khq707YQZej2CCQ0Z5AyZ8g92XnuLGY=; b=eLBbjA+5vJeyt+CnksfQ3fboOY
-        pe2Be/sjm6+fhtNUFj4L5obZ32R7c8SB65RJGT9scHvwkkc4X5Sp3XLJsRZUxZPFWhouj0PozxD5L
-        ewEkcQU6dLqbiJwZx8v7nR/upAkYBnkI5rlfm3eXM2geNZQu7zkyetEn8uTEYRsmR91r5QnFS6rBu
-        GTG3EdmnziVahU4uSxvkx8e5px2rTT01xdEbFu51r2NRSybuorNDDp//XQgWSJ4VBfJ9qH+mW4MtL
-        YYKUHr7Z0KLmNXtjsWD/nP/I5SGbPUwzVElR8yVppORDOvquPC/6JwlJhi+rybE0lYi5WSK35VRP9
-        Hsb/hODw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxsnH-00CaSU-E7; Mon, 28 Jun 2021 15:03:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79FC33001DC;
-        Mon, 28 Jun 2021 17:03:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 470612041E859; Mon, 28 Jun 2021 17:03:26 +0200 (CEST)
-Date:   Mon, 28 Jun 2021 17:03:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
-        ardb@kernel.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] kprobe/static_call: Restore missing
- static_call_text_reserved()
-Message-ID: <YNnkvpLoDsql2mdq@hirez.programming.kicks-ass.net>
-References: <20210628112409.233121975@infradead.org>
- <20210628113045.167127609@infradead.org>
- <YNmz4nvH84jzX1aB@hirez.programming.kicks-ass.net>
- <20210628232447.540fe9d53f0d2011d6590379@kernel.org>
+        Mon, 28 Jun 2021 11:45:37 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960A3C0575FC
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:07:04 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso199600pjp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ULn7DIu4wwa5GXTqLwaOz3Z66Z8PfP99SnS+I7xsRHs=;
+        b=Km2QoyDwZDeRvpQWFJj2Oklrs8bFDQOuHnqfM/z7OkNSv+69D2qERWqZk7Xb2z44qU
+         /bU5I3GyU8Oee86tFVDjufMGNPjeww1sAxP6rHtZvC4WoIPsTxNm5GFZZU9AeXpjWbgK
+         uJPX5vKilC4qT3wX3aO3lLel4Bv09CM8NL7SA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ULn7DIu4wwa5GXTqLwaOz3Z66Z8PfP99SnS+I7xsRHs=;
+        b=pOgkjxnQO1Cvpg9Fgyc3rA6R47okmTAG2u4UjS8Af84MUdPl41T6QWII5p7fNUS+O9
+         ZdaVZg2Sc7qJ6V+ODGX9HscbN4nInIUChx52/K6xTZ7nxXixLFobLZ+Id42bbCMUYSB9
+         ShWlfpQfJLvAmQHjKvP3E/Lpan3ATBMQwQEqCLnZFSMQB0Ebp1YrAnTNqpvctAHVyOsx
+         e0YgTZF15rA6duo3aS3OQbUP9sxuAN8EpdYoNjOI8fny6boES31YVHDlOiTAE6PxNBbE
+         9XNd4ThFobnyBvB/35hlcuNhXY+sMXMZjZ4IWaGx6sePCv6BTm8Nl7rmIJJrg2wXEpMt
+         gdsQ==
+X-Gm-Message-State: AOAM5321R0K+uMTEo3kCjDqR2/1gD7gSboS8GKuB5M31s66rc9IjxGHt
+        a2hp+rbdk+uBfo0PYoSv2qfnxQ==
+X-Google-Smtp-Source: ABdhPJynLhIrI4Ec/Pi8a+UDxpqcBNKVYwi1xF2Z3p9w13WpPyERu1mDpA9ujWCI8mGWcJne8PRpsQ==
+X-Received: by 2002:a17:90b:30c3:: with SMTP id hi3mr27886839pjb.188.1624892823966;
+        Mon, 28 Jun 2021 08:07:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v8sm14011101pff.34.2021.06.28.08.07.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 08:07:03 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 08:07:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        David Laight <David.Laight@aculab.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [selftests/lkdtm]  7ecfffe9bc:
+ kernel_BUG_at_drivers/misc/lkdtm/bugs.c
+Message-ID: <202106280805.5620A53D08@keescook>
+References: <20210628145922.GC22448@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628232447.540fe9d53f0d2011d6590379@kernel.org>
+In-Reply-To: <20210628145922.GC22448@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:24:47PM +0900, Masami Hiramatsu wrote:
-> On Mon, 28 Jun 2021 13:34:58 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, Jun 28, 2021 at 10:59:22PM +0800, kernel test robot wrote:
 > 
-> > On Mon, Jun 28, 2021 at 01:24:12PM +0200, Peter Zijlstra wrote:
-> > > Restore two hunks from commit 6333e8f73b83 ("static_call: Avoid
-> > > kprobes on inline static_call()s") that went walkabout.
-> > > 
-> > > Fixes: 76d4acf22b48 ("Merge tag 'perf-kprobes-2020-12-14' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
-> > 
-> > FWIW, it was a royal pain in the arse to find that commit...
 > 
-> I think if this is a fix, that fixes static_call introduction commit,
-> because anyway kprobes has to check the static_call site as a reserved
-> area for another self code modifying.
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 7ecfffe9bcb6657ae3a86c58f8eae2fe37b54807 ("selftests/lkdtm: Avoid needing explicit sub-shell")
+> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git for-next/lkdtm
+> 
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-f8879e85-1_20210621
+> with following parameters:
+> 
+> 	group: lkdtm
+> 	ucode: 0xe2
+> 
+> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
 
-Yeah, so 6333e8f73b83 has these two hunks, so the initial commit was
-fine, but the merge commit from the Fixes: tag lost them again for some
-reason. So this really is a fix for a merge commit afaict.
+When running the "lkdtm" subsystem of tests, CI systems should ignore
+console Oopses, since those are "working as intended" for lkdtm (which
+is explicitly testing for those Oopses).
+
+-Kees
+
+-- 
+Kees Cook
