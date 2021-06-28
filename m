@@ -2,109 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAFE3B6735
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CAB3B6738
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhF1RFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
+        id S232063AbhF1RFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhF1RF1 (ORCPT
+        with ESMTP id S232625AbhF1RFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:05:27 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9701CC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:03:00 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id bj15so28089705qkb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:03:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l2biafiss9BBHd7k9NtviXn2L7h+FuR+Y1QggEGLz5U=;
-        b=YTFj++LWjpfANHTFDoiuzF33MH0SygYF4hrrKMUCi12buIdK2VGAETtTuQff03Wisw
-         fAbMynLG93xc6TZUSxcE3xbR8lFGaGp1/TibTimGKty/4YMopXSIXYUwbY/CmuWwt0Hm
-         iTFiNIobAmeXXbDNydZB7bUOMK7fkiPHoTxbBhyEjKE5be23kfs04HcvhLc9V79ZLhxz
-         ttnYH3f/SRTHhbSDb3+4xYwhJm6rWez1GkV6Te2GkxzYtyoQUCFaDSf9Kj1Vgmmfqdev
-         MbNUq6krZ9swoy61dO3ynpPfPLvrgqCA4g8C57CjEdC4ee2tA4C5+N5/3WW4kI40Znum
-         ag9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l2biafiss9BBHd7k9NtviXn2L7h+FuR+Y1QggEGLz5U=;
-        b=dJpJBYvyXK8xzDZpXQw8Vmwbkh/WgJdm1Ia8mgqjlrIKt4enGPjXD2dSzjRSwNayLQ
-         njO6m9M5J/qGi4f2TFAiVNBatdOlumyFsmwR5mecJcAIJ/oORJx/YVC84Iy856laNB/N
-         DLDS9i/36OHrsYfEvyOMzlCRcWbi26KbwK1HgkNIP53hfP26YBy/CAHWNFPS/ZRtUuzW
-         r9iwg8J427/xCIwHlqI0vJP+6S+2uSKL57W/wp/G14nSh88vVmRQLwvuBWhZOdrRjfWb
-         F6kpZ3JG1Prgxy02Db7iMlLnF+r9LC1lMClwQO30hoHbDYBJ+/gkcJ5mxXCxSm9qVatQ
-         RQtA==
-X-Gm-Message-State: AOAM5330i1rLOCahhMu/h3rzdhJG31Th2RUT3iSH38bnUSAcEkNMRkti
-        P9g0H07cm63oig++BILNrS8REg==
-X-Google-Smtp-Source: ABdhPJxFNUT87DB1AwYwdXjC4/VjS4Cc78YfiZqIK07/DC1ZxKM7Bgify7U+VhCFarhy7jSWX/rNxA==
-X-Received: by 2002:a05:620a:5ed:: with SMTP id z13mr8918649qkg.422.1624899779716;
-        Mon, 28 Jun 2021 10:02:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id p64sm4245461qka.114.2021.06.28.10.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 10:02:58 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lxuew-000gKn-37; Mon, 28 Jun 2021 14:02:58 -0300
-Date:   Mon, 28 Jun 2021 14:02:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Anand Khoje <anand.a.khoje@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH v6 for-next 0/2] IB/core: Obtaining subnet_prefix from
- cache in
-Message-ID: <20210628170258.GD4604@ziepe.ca>
-References: <20210627064753.1012-1-anand.a.khoje@oracle.com>
- <YNhThN0tiA5v5Q4v@unreal>
- <19EE4BE9-063D-4820-A1F7-5E1D0016A51D@oracle.com>
- <YNhiC45Si+XHP87i@unreal>
+        Mon, 28 Jun 2021 13:05:35 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E0FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:03:09 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 780A7C800E0;
+        Mon, 28 Jun 2021 19:03:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id s55WI_sueaYA; Mon, 28 Jun 2021 19:03:06 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:4900:5a7:8b5d:f9f7:c452] (p200300E37F39490005A78B5dF9f7C452.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:5a7:8b5d:f9f7:c452])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 5D0CBC800CE;
+        Mon, 28 Jun 2021 19:03:05 +0200 (CEST)
+Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
+ for "max bpc" drm property
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-4-wse@tuxedocomputers.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
+Date:   Mon, 28 Jun 2021 19:03:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNhiC45Si+XHP87i@unreal>
+In-Reply-To: <20210618091116.14428-4-wse@tuxedocomputers.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 02:33:31PM +0300, Leon Romanovsky wrote:
-> On Sun, Jun 27, 2021 at 10:40:43AM +0000, Haakon Bugge wrote:
-> > 
-> > 
-> > > On 27 Jun 2021, at 12:31, Leon Romanovsky <leon@kernel.org> wrote:
-> > > 
-> > > On Sun, Jun 27, 2021 at 12:17:51PM +0530, Anand Khoje wrote:
-> > >> This v6 patch series is used to read the port_attribute subnet_prefix
-> > >> from a valid cache entry instead of having to call
-> > >> device->ops.query_gid() for Infiniband link-layer devices in
-> > >> __ib_query_port().
-> > >> 
-> > >> In the event of a cache update, the value for subnet_prefix gets read
-> > >> using device->ops.query_gid() in config_non_roce_gid_cache().
-> > >> 
-> > >> Anand Khoje (2):
-> > >>  IB/core: Updating cache for subnet_prefix in
-> > >>    config_non_roce_gid_cache()
-> > >>  IB/core: Read subnet_prefix in ib_query_port via cache.
-> > > 
-> > > This series breaks mlx4/mlx5. You forgot to call to lock_init or
-> > > something like that.
-> > 
-> > Thanks for catching!
-> > 
-> > Sure, in ib_register_device(), setup_device() (which ends up calling __ib_query_port()) is called before ib_cache_setup_one(). Can these two calls have their order swapped?
-> 
-> I don't think so, if I didn't miss anything, we are relying in gid_table_setup_one()
-> on some properties from setup_device().
+Am 18.06.21 um 11:11 schrieb Werner Sembach:
+> Add a new general drm property "active bpc" which can be used by graphic
+> drivers to report the applied bit depth per pixel back to userspace.
+>
+> While "max bpc" can be used to change the color depth, there was no way to
+> check which one actually got used. While in theory the driver chooses the
+> best/highest color depth within the max bpc setting a user might not be
+> fully aware what his hardware is or isn't capable off. This is meant as a
+> quick way to double check the setup.
+>
+> In the future, automatic color calibration for screens might also depend on
+> this information being available.
+>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>  drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h     |  8 ++++++
+>  2 files changed, 59 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index da39e7ff6965..943f6b61053b 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1197,6 +1197,14 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * active bpc:
+> + *	This read-only range property tells userspace the pixel color bit depth
+> + *	actually used by the hardware display engine on "the cable" on a
+> + *	connector. The chosen value depends on hardware capabilities, both
+> + *	display engine and connected monitor, and the "max bpc" property.
+> + *	Drivers shall use drm_connector_attach_active_bpc_property() to install
+> + *	this property.
+> + *
 
-Just reorder things enough so that the cache_lock is setup earlier, it
-has no business being in cache_setup_one anyhow.
+Regarding "on the cable" and dithering: As far as I can tell, what the dithering option does, is setting a hardware
+register here:
 
-Jason
+- https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4534
+
+- https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4571
+
+So dithering seems to be calculated by fixed purpose hardware/firmware outside of the driver?
+
+The Intel driver does not seem to set a target bpc/bpp for this hardware so I guess it defaults to 6 or 8 bpc?
+
+Similar things happen on amd. Here the output dither depth seems to be written to a fixed value however:
+
+- https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c#L828
+
+- https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c#L769
+
+Does anyone know about a resource where I can read up on the used registers and what this hardware actually does?
+
+My proposal for now: "max bpc" affects what happens before dither, so I would keep "active bpc" the same and add another
+drm property "dither active: true/false". No additional property to control dither, as amdgpu does have one already
+(which isn't always active?) and Intel driver does only seem prepared for dithering at 6bpc (albeit I don't know why to
+dither at 6bpc and what depth to dither to?).
+
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2152,6 +2160,49 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+>  
+> +/**
+> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
+> + * @connector: connector to attach active bpc property on.
+> + * @min: The minimum bit depth supported by the connector.
+> + * @max: The maximum bit depth supported by the connector.
+> + *
+> + * This is used to check the applied bit depth on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector, int min, int max)
+> +{
+> +	struct drm_device *dev = connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	if (!connector->active_bpc_property) {
+> +		prop = drm_property_create_range(dev, DRM_MODE_PROP_IMMUTABLE, "active bpc",
+> +						 min, max);
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->active_bpc_property = prop;
+> +		drm_object_attach_property(&connector->base, prop, 0);
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
+> +
+> +/**
+> + * drm_connector_set_active_bpc_property - sets the active bits per color property for a connector
+> + * @connector: drm connector
+> + * @active_bpc: bits per color for the connector currently active on "the cable"
+> + *
+> + * Should be used by atomic drivers to update the active bits per color over a connector.
+> + */
+> +void drm_connector_set_active_bpc_property(struct drm_connector *connector, int active_bpc)
+> +{
+> +	drm_object_property_set_value(&connector->base, connector->active_bpc_property, active_bpc);
+> +}
+> +EXPORT_SYMBOL(drm_connector_set_active_bpc_property);
+> +
+>  /**
+>   * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
+>   * @connector: connector to attach the property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 714d1a01c065..eee86de62a5f 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1380,6 +1380,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *max_bpc_property;
+>  
+> +	/**
+> +	 * @active_bpc_property: Default connector property for the active bpc
+> +	 * to be driven out of the connector.
+> +	 */
+> +	struct drm_property *active_bpc_property;
+> +
+>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -1702,6 +1708,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>  	int width, int height);
+>  int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>  					  int min, int max);
+> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector, int min, int max);
+> +void drm_connector_set_active_bpc_property(struct drm_connector *connector, int active_bpc);
+>  
+>  /**
+>   * struct drm_tile_group - Tile group metadata
