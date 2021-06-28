@@ -2,123 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6E93B676A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F30C3B676F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhF1RR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        id S233697AbhF1RRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbhF1RR0 (ORCPT
+        with ESMTP id S233450AbhF1RRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:17:26 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418A8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:15:00 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u25so11141691ljj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:15:00 -0700 (PDT)
+        Mon, 28 Jun 2021 13:17:34 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C6AC061766;
+        Mon, 28 Jun 2021 10:15:07 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id m2so15989395pgk.7;
+        Mon, 28 Jun 2021 10:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2XZJeJAnEeTw6EZhaeLtrIK78gkna+e52JMMHDT7CCg=;
-        b=vXUXr4QmB8bjJVw5A5IXOs6Bo6viOvMc2F0ojinBt6aXe1DSaxMQwbtfRnJQb+8lYW
-         zcyFZgIJtaGNLaTOhAJJ8JyG4hU3Dd4EVJs3il9GJtDKN9WZZqQPALe2FH+E+iIl863X
-         Em5ZoXz7AkXDHv014gmOyuqVRDCUpKfJKn76opXr3IIGqQ2vTCeVV+c6OVkmR9ipZiTi
-         wPUxWKKKF0t+qKL2L2riNFGIDdEgqH7abrYvPLwsnGxKzWtGCM82TnEj13IwbrX83Qjv
-         BW79d4ELwMWWecaVuLUPoewSfeWAdNbdVCEW55GA4IZ/6mRwnCEwB5tXIwF7FNxQA7Kb
-         /qew==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fCKObqA74NqRAYeVYKlKeknSs67vwt3CV8aw7Nhvy9Y=;
+        b=TNZkaKv7eJglshBuJEK/UhqienXmlRATwI+7iziTa3f0dRigg6mYsjMCVdF/Tf4SGN
+         cip34c2yIqs8d5p20Kaln2A1a3dnOObbjZT/lblPMDUZFBkAxFaSrXhx6VvHXq13Xb0L
+         Sn02VBe9+CTEV44DJpt3f16X5VV4JdtiWmosc/JenE289VhuNNuJxGRBdWrHyyIZX5K+
+         Vs0ggg8Yj3VZV1vbkHwkqeAyanKgd2kskucy5RYIJ6CyyoZgt2fXKsztiNkgHRUS09Ht
+         WhRBBYjeXZFWL7WlChB/I/mH2xgZmBG8usWjMMlMa2MDb7/BPq+PFpCVlorpAuQcEWsy
+         137w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2XZJeJAnEeTw6EZhaeLtrIK78gkna+e52JMMHDT7CCg=;
-        b=VUwSpLLyFQm2sqD0wr2qsy+W/IQvgIQSf3+pBat7XDRwkUhmPB3pkyBNaVGz62gV9b
-         mjOoy0GoAt/EHQFlux4uX42Lt+mdu9h5sOLO2jq1LmeOvjYbc+zsA1eKA8O8HCU3s7pG
-         DssM7a5YhfokgQQfJfIPbzmcCqhCcj8eQzBEpVGwO8tf6/YUWod7Q9JJlQgXe9qdaSaE
-         qwvUmeJWDxbff5bm0zMq3KVpTha2c1Pt/EH5MiaAXb9d80a2R8kSfvm6PkgimWNtPQVg
-         QdK8SUiJQzODZZzl1CikweWYAklX5nIknAPPvv7MskXD6A6HwxzNS/0v/1Y4RG2oQoIQ
-         Ev1w==
-X-Gm-Message-State: AOAM5310GK+qVmwSkVW58+QyeFqTO9dlesI3tIIhGNZRf4BWkcJ8b+8+
-        yIITD5Np5wBVKwbGnYJtqYbcJdNRJoyu7vtZszwFwg==
-X-Google-Smtp-Source: ABdhPJwouLp0BeyvLadrY22lhcl7T2zhKeDBodDpwR+JLO60lkyrdWsQoS1kjfX3iybtOy7rkSxgTUJm5fJEEgP3AO8=
-X-Received: by 2002:a2e:918a:: with SMTP id f10mr362098ljg.226.1624900497482;
- Mon, 28 Jun 2021 10:14:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fCKObqA74NqRAYeVYKlKeknSs67vwt3CV8aw7Nhvy9Y=;
+        b=kAHoIWV4WfxQ49yL6k1cijEl1tlh4kzXZ+Bur858/DEyI8gfNU2tQgrM1LnYTNMILj
+         kPPEHTx+l3NoVw2mRBna6ohvZ3Xy82y8v1mSCY9Sjui2b7eGG2VWtJe8/8vfB6uqhqZq
+         IL9ULFPFL5YCpFP1nYRjwlFIglNO/Ok6Wrilwkj6CgM3zs9mNzWWfIT6XaroN00ByJEi
+         WpnotIPU1MWRAkL3jVQ/pXB4bCB6YCq1jSXW4LqMfGNnOEwioROHNDLV3BcqHtusbEDh
+         DUfb34P6+2xK2m8zfUu7C9CoDMUayZEvduXfBh8iuPQjLH7Z0Lk6YaS3POdKajwaxCyv
+         w8MA==
+X-Gm-Message-State: AOAM532u/D4FLqzQ14tiv4sdEOeDCHe1AKy/FMhDp5t9vgLYDJq/VLfT
+        P/eGFpohT3ZN5i1KQ6f+1x8dhnQGx7Mxs7A3kGE=
+X-Google-Smtp-Source: ABdhPJxZbRVyTh/aEiikN39UXk/5br3PktBli3ZLyY1Oyps6WsdFzqRLViK+wikefkKAegarMKsrQA==
+X-Received: by 2002:a62:8857:0:b029:30c:5b98:564d with SMTP id l84-20020a6288570000b029030c5b98564dmr6515689pfd.81.1624900507209;
+        Mon, 28 Jun 2021 10:15:07 -0700 (PDT)
+Received: from [192.168.93.106] (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id w8sm16282132pgf.81.2021.06.28.10.15.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 10:15:06 -0700 (PDT)
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in
+ tcp_init_transfer.
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+References: <20210628144908.881499-1-phind.uet@gmail.com>
+ <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com>
+ <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+From:   Phi Nguyen <phind.uet@gmail.com>
+Message-ID: <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com>
+Date:   Tue, 29 Jun 2021 01:15:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
- <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com> <f64f960b-d978-4022-9e56-0d9d9a3c0ebc@www.fastmail.com>
-In-Reply-To: <f64f960b-d978-4022-9e56-0d9d9a3c0ebc@www.fastmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 28 Jun 2021 19:14:31 +0200
-Message-ID: <CAG48ez1d3abHEekh_fYoXdAe85RG+c--G7sEyMYhiKEsns3uog@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 6:30 PM Andy Lutomirski <luto@kernel.org> wrote:
-> On Mon, Jun 28, 2021, at 9:13 AM, Jann Horn wrote:
-> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> > > This change introduces the new system call:
-> > > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long fla=
-gs,
-> > >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask=
-)
-> > >
-> > > process_vm_exec allows to execute the current process in an address
-> > > space of another process.
-> > [...]
-> >
-> > I still think that this whole API is fundamentally the wrong approach
-> > because it tries to shoehorn multiple usecases with different
-> > requirements into a single API. But that aside:
-> >
-> > > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *tar=
-get_mm)
-> > > +{
-> > > +       struct task_struct *tsk =3D current;
-> > > +       struct mm_struct *active_mm;
-> > > +
-> > > +       task_lock(tsk);
-> > > +       /* Hold off tlb flush IPIs while switching mm's */
-> > > +       local_irq_disable();
-> > > +
-> > > +       sync_mm_rss(prev_mm);
-> > > +
-> > > +       vmacache_flush(tsk);
-> > > +
-> > > +       active_mm =3D tsk->active_mm;
-> > > +       if (active_mm !=3D target_mm) {
-> > > +               mmgrab(target_mm);
-> > > +               tsk->active_mm =3D target_mm;
-> > > +       }
-> > > +       tsk->mm =3D target_mm;
-> >
-> > I'm pretty sure you're not currently allowed to overwrite the ->mm
-> > pointer of a userspace thread. For example, zap_threads() assumes that
-> > all threads running under a process have the same ->mm. (And if you're
-> > fiddling with ->mm stuff, you should probably CC linux-mm@.)
->
-> exec_mmap() does it, so it can=E2=80=99t be entirely impossible.
+On 6/29/2021 12:24 AM, Neal Cardwell wrote:
 
-Yeah, true, execve can do it - I guess the thing that makes that
-special is that it's running after de_thread(), so it's guaranteed to
-be single-threaded?
+> Thanks.
+> 
+> Can you also please provide a summary of the event sequence that
+> triggers the bug? Based on your Reported-by tag, I guess this is based
+> on the syzbot reproducer:
+> 
+>   https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
+> 
+> but perhaps you can give a summary of the event sequence that causes
+> the bug? Is it that the call:
+> 
+> setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+> &(0x7f0000000000)='cdg\x00', 0x4)
+> 
+> initializes the CC and happens before the connection is established,
+> and then when the connection is established, the line that sets:
+>    icsk->icsk_ca_initialized = 0;
+> is incorrect, causing the CC to be initialized again without first
+> calling the cleanup code that deallocates the CDG-allocated memory?
+> 
+> thanks,
+> neal
+> 
+
+Hi Neal,
+
+The gdb stack trace that lead to init_transfer_input() is as bellow, the 
+current sock state is TCP_SYN_RECV.
+
+#0  tcp_cdg_init (sk=sk@entry=0xffff8880275fa080) at net/ipv4/tcp_cdg.c:380
+#1  0xffffffff83a3c129 in tcp_init_congestion_control 
+(sk=sk@entry=0xffff8880275fa080) at net/ipv4/tcp_cong.c:183
+#2  0xffffffff83a21312 in tcp_init_transfer 
+(sk=sk@entry=0xffff8880275fa080, bpf_op=bpf_op@entry=5, 
+skb=skb@entry=0xffff888027704400) at net/ipv4/tcp_input.c:5928
+#3  0xffffffff83a22a55 in tcp_rcv_state_process 
+(sk=sk@entry=0xffff8880275fa080, skb=skb@entry=0xffff888027704400) at 
+net/ipv4/tcp_input.c:6416
+#4  0xffffffff83a35f8a in tcp_v4_do_rcv (sk=sk@entry=0xffff8880275fa080, 
+skb=skb@entry=0xffff888027704400) at net/ipv4/tcp_ipv4.c:1716
+#5  0xffffffff83a39300 in tcp_v4_rcv (skb=0xffff888027704400) at 
+net/ipv4/tcp_ipv4.c:2087
+#6  0xffffffff839eaf57 in ip_protocol_deliver_rcu 
+(net=net@entry=0xffff888022858180, skb=skb@entry=0xffff888027704400, 
+protocol=<optimized out>) at net/ipv4/ip_input.c:204
+#7  0xffffffff839eb266 in ip_local_deliver_finish 
+(net=0xffff888022858180, sk=<optimized out>, skb=0xffff888027704400) at 
+./include/linux/skbuff.h:2544
+#8  0xffffffff839eb34a in NF_HOOK (sk=0x0 <fixed_percpu_data>, pf=2 
+'\002', hook=1, in=<optimized out>, out=0x0 <fixed_percpu_data>, 
+okfn=0xffffffff839eb1f0 <ip_local_deliver_finish>,
+     skb=0xffff888027704400, net=0xffff888022858180) at 
+./include/linux/netfilter.h:307
+#9  NF_HOOK (pf=2 '\002', sk=0x0 <fixed_percpu_data>, out=0x0 
+<fixed_percpu_data>, okfn=0xffffffff839eb1f0 <ip_local_deliver_finish>, 
+in=<optimized out>, skb=0xffff888027704400,
+     net=0xffff888022858180, hook=1) at ./include/linux/netfilter.h:301
+#10 ip_local_deliver (skb=0xffff888027704400) at net/ipv4/ip_input.c:252
+#11 0xffffffff839ea58e in dst_input (skb=0xffff888027704400) at 
+./include/linux/skbuff.h:980
+#12 ip_rcv_finish (net=net@entry=0xffff888022858180, sk=sk@entry=0x0 
+<fixed_percpu_data>, skb=skb@entry=0xffff888027704400) at 
+net/ipv4/ip_input.c:429
+#13 0xffffffff839eb4fa in NF_HOOK (sk=0x0 <fixed_percpu_data>, pf=2 
+'\002', hook=0, in=0xffff888022a20000, out=0x0 <fixed_percpu_data>, 
+okfn=0xffffffff839ea4b0 <ip_rcv_finish>, skb=0xffff888027704400,
+     net=0xffff888022858180) at ./include/linux/netfilter.h:307
+#14 NF_HOOK (pf=2 '\002', sk=0x0 <fixed_percpu_data>, out=0x0 
+<fixed_percpu_data>, okfn=0xffffffff839ea4b0 <ip_rcv_finish>, 
+in=0xffff888022a20000, skb=0xffff888027704400, net=0xffff888022858180,
+     hook=0) at ./include/linux/netfilter.h:301
+#15 ip_rcv (skb=0xffff888027704400, dev=0xffff888022a20000, 
+pt=<optimized out>, orig_dev=<optimized out>) at net/ipv4/ip_input.c:540
+#16 0xffffffff83712acf in __netif_receive_skb_one_core (skb=<optimized 
+out>, skb@entry=0xffff888027704400, pfmemalloc=pfmemalloc@entry=false) 
+at net/core/dev.c:5482
+#17 0xffffffff83712b59 in __netif_receive_skb (skb=0xffff888027704400) 
+at net/core/dev.c:5596
+#18 0xffffffff83712f09 in process_backlog (napi=0xffff88803ec2c8d0, 
+quota=64) at net/core/dev.c:6460
+#19 0xffffffff837159f2 in __napi_poll (n=n@entry=0xffff88803ec2c8d0, 
+repoll=repoll@entry=0xffffc900007b7e0f) at net/core/dev.c:7015
+#20 0xffffffff837161b2 in napi_poll (repoll=0xffffc900007b7e20, 
+n=0xffff88803ec2c8d0) at net/core/dev.c:7082
+#21 net_rx_action (h=<optimized out>) at net/core/dev.c:7169
+#22 0xffffffff84600114 in __do_softirq () at kernel/softirq.c:558
+#23 0xffffffff81241506 in run_ksoftirqd (cpu=<optimized out>) at 
+kernel/softirq.c:920
+#24 run_ksoftirqd (cpu=<optimized out>) at kernel/softirq.c:912
+#25 0xffffffff8127ec83 in smpboot_thread_fn (data=0xffff888008f70240) at 
+kernel/smpboot.c:164
+#26 0xffffffff81274475 in kthread (_create=<optimized out>) at 
+kernel/kthread.c:319
+#27 0xffffffff8100230f in ret_from_fork () at arch/x86/entry/entry_64.S:295
+#28 0x0000000000000000 in ?? ()
+
+Best Regards.
