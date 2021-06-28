@@ -2,174 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CBC3B67FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AC53B67FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbhF1R5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhF1R5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:57:08 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BD5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:54:42 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id r16so26872266ljk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:54:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1JGL45JVnWIjVsGv/XsgCsmYr6pic/ZedIcGZwFZj2c=;
-        b=LS2y1K539DTLpk3/PHIdif03qlez/eloIAOdH84d/z4Do1daVYAzgNjoBVbp/slxXT
-         GfFV4HnbW+l7iHAX+YbILJlxpRr3a9HGxEVBCcmxxkIM5ugPUcvFaQZFN/teHeA9zHDR
-         WOcvCeCCxn8IcAu6Re/qpW3L7p7AsQ7neh6ayB7iBttVVDZpCTjLQEA82SmWgCt1HBxp
-         N3JeK58AwHgmStnjvO7p2fXGV8xvXkwwhCDOpG90tECudm30cea8iCUWwBfVyNzhoM1j
-         RVLUbmwolZKG6qYDI8b5Cl57Uo61M5N3Ci30TGC19MYLW+WxqnkFOAziXO+9K/m2cMq3
-         CfAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1JGL45JVnWIjVsGv/XsgCsmYr6pic/ZedIcGZwFZj2c=;
-        b=FiFCju4SEHjDfBaY66dS1jGEx3gGeP5u+L2L/buwV4hrUxZ64KkxN8HN4hiWfdaAAZ
-         Xt3PwUjo3cM9+eddaY+DWQWKcMvGVqR3wW8RiBdNJRiDHPDQ/DR2mKv9R63LrZlTGWLR
-         iYGIKDYJ0vknkolv+yM53U4vkTeMC1rkx4cGK8IIkLeg9gE9zuOAMkpRH8u9NvyZCcz8
-         tYlzykA3JLum8a1hwyYFK7+Cydo/fgNGIiapcYs1CjKRqjeRH+thz7rtM1YfbvUnsN3c
-         kNTEwXu0kCkHnXXIQpFkbwU+aRmh0LK2agvjRoGf0GIHVhtoWUqjdCBawREAzqNn26UJ
-         4LmQ==
-X-Gm-Message-State: AOAM530ofevtdcCkV1EAnLhfa44s/B5gnWEhXee7aygYm1cGW8FiSm4G
-        M7hSu0x7ykxjvXBh5LHukTRqJSuv290FmHXoPST5Zw==
-X-Google-Smtp-Source: ABdhPJz7nl8khY0H0xmxyJYwYeJhRYCooPStEH7MgwGUFhrS3RMNGX23ctkcZHyrn5WcdhMc6dFXxkVnIHa3YxzDzBM=
-X-Received: by 2002:a2e:b5b5:: with SMTP id f21mr440155ljn.479.1624902880473;
- Mon, 28 Jun 2021 10:54:40 -0700 (PDT)
+        id S234698AbhF1R6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:58:23 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51559 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234044AbhF1R6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:58:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="208044751"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="208044751"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 10:55:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="625335523"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 28 Jun 2021 10:55:54 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lxvUA-0008fk-A0; Mon, 28 Jun 2021 17:55:54 +0000
+Date:   Tue, 29 Jun 2021 01:55:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ 2d0a9eb23ccfdf11308bec6db0bc007585d919d2
+Message-ID: <60da0d1d.KaLixIlYIV6OEkkq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210622183858.2962637-1-ndesaulniers@google.com> <20210622201822.ayavok3d2fw3u2pl@google.com>
-In-Reply-To: <20210622201822.ayavok3d2fw3u2pl@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 28 Jun 2021 10:54:24 -0700
-Message-ID: <CAKwvOdki=HZh4TYwqwDSo4BWtbGHp6pM_2akA+D3K8JO+dMGoQ@mail.gmail.com>
-Subject: Re: [PATCH] kallsyms: strip LTO suffixes from static functions
-To:     Fangrui Song <maskray@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, "KE . LI" <like1@oppo.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:18 PM Fangrui Song <maskray@google.com> wrote:
->
-> On 2021-06-22, 'Nick Desaulniers' via Clang Built Linux wrote:
-> >Similar to:
-> >commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
-> >functions")
-> >
-> >It's very common for compilers to modify the symbol name for static
-> >functions as part of optimizing transformations. That makes hooking
-> >static functions (that weren't inlined or DCE'd) with kprobes difficult.
-> >
-> >Full LTO uses a different mangling scheme than thin LTO; full LTO
-> >imports all code into effectively one big translation unit. It must
-> >rename static functions to prevent collisions. Strip off these suffixes
-> >so that we can continue to hook such static functions.
->
-> See below. The message needs a change.
->
-> I can comment on the LTO side thing, but a maintainer needs to check
-> about the kernel side logic.
->
-> Reviewed-by: Fangrui Song <maskray@google.com>
->
-> >Reported-by: KE.LI(Lieke) <like1@oppo.com>
-> >Tested-by: KE.LI(Lieke) <like1@oppo.com>
-> >Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >---
-> > kernel/kallsyms.c | 18 ++++++++++++++++++
-> > 1 file changed, 18 insertions(+)
-> >
-> >diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> >index 4067564ec59f..14cf3a6474de 100644
-> >--- a/kernel/kallsyms.c
-> >+++ b/kernel/kallsyms.c
-> >@@ -188,6 +188,24 @@ static inline bool cleanup_symbol_name(char *s)
-> >
-> >       return res != NULL;
-> > }
-> >+#elif defined(CONFIG_LTO_CLANG_FULL)
-> >+/*
-> >+ * LLVM mangles static functions for full LTO so that two static functions with
-> >+ * the same identifier do not collide when all code is combined into one
-> >+ * module. The scheme used converts references to foo into
-> >+ * foo.llvm.974640843467629774, for example. This can break hooking of static
-> >+ * functions with kprobes.
-> >+ */
->
-> The comment should say ThinLTO instead.
->
-> The .llvm.123 suffix is for global scope promotion for local linkage
-> symbols. The scheme is ThinLTO specific. This ensures that a local
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: 2d0a9eb23ccfdf11308bec6db0bc007585d919d2  time/kunit: Add missing MODULE_LICENSE()
 
-Oh, boy. Indeed.  I had identified the mangling coming from
-getGlobalNameForLocal(), but looking at the call chain now I see:
+elapsed time: 720m
 
-FunctionImportGlobalProcessing::processGlobalForThinLTO()
--> FunctionImportGlobalProcessing::getPromotedName()
-  -> ModuleSummaryIndex::getGlobalNameForLocal()
+configs tested: 169
+configs skipped: 3
 
-I'm not sure then how I figured it was specific to full LTO.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Android recently switched from thin LTO to full LTO, which is what I
-assumed was the cause of the bug report. Rereading our internal bug
-report, it was tested against a prior version that did the symbol
-truncation for thinLTO. I then assumed this was full LTO specific for
-whatever reason, and modified the patch to only apply to full LTO.  I
-see via the above call chain that this patch is not correct.  Let me
-send my original patch as a v2. b/189560201 if you're interested.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7722_defconfig
+sh                          landisk_defconfig
+mips                      pic32mzda_defconfig
+arm                        mvebu_v7_defconfig
+arm                       spear13xx_defconfig
+xtensa                  cadence_csp_defconfig
+arm                    vt8500_v6_v7_defconfig
+sh                          rsk7269_defconfig
+powerpc                       holly_defconfig
+arm                          iop32x_defconfig
+powerpc                    sam440ep_defconfig
+h8300                       h8s-sim_defconfig
+parisc                           alldefconfig
+powerpc                 canyonlands_defconfig
+m68k                          multi_defconfig
+x86_64                              defconfig
+arm                            lart_defconfig
+arm                       imx_v6_v7_defconfig
+arm                          ep93xx_defconfig
+arc                              alldefconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                       ppc64_defconfig
+sh                          urquell_defconfig
+m68k                       m5249evb_defconfig
+sh                           se7780_defconfig
+arm                         socfpga_defconfig
+parisc                generic-64bit_defconfig
+arm                             rpc_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                      tqm8xx_defconfig
+sh                 kfr2r09-romimage_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                      maltasmvp_defconfig
+arc                     nsimosci_hs_defconfig
+mips                            ar7_defconfig
+arm                        mvebu_v5_defconfig
+arm                       versatile_defconfig
+m68k                        m5272c3_defconfig
+arm                         cm_x300_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                      obs600_defconfig
+powerpc                        fsp2_defconfig
+arm                         vf610m4_defconfig
+powerpc                     stx_gp3_defconfig
+sh                          kfr2r09_defconfig
+arm                         s5pv210_defconfig
+powerpc                     taishan_defconfig
+h8300                               defconfig
+powerpc                     tqm8541_defconfig
+mips                        omega2p_defconfig
+microblaze                      mmu_defconfig
+m68k                        stmark2_defconfig
+powerpc                   motionpro_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                       cns3420vb_defconfig
+mips                       capcella_defconfig
+sh                   sh7770_generic_defconfig
+openrisc                    or1ksim_defconfig
+sh                           se7724_defconfig
+arm                        magician_defconfig
+sh                             shx3_defconfig
+sh                           se7619_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                      rts7751r2d1_defconfig
+arc                                 defconfig
+riscv                          rv32_defconfig
+powerpc                     akebono_defconfig
+sh                             espt_defconfig
+ia64                      gensparse_defconfig
+mips                        bcm63xx_defconfig
+mips                         rt305x_defconfig
+sh                           sh2007_defconfig
+sh                        sh7785lcr_defconfig
+arm                        spear3xx_defconfig
+powerpc64                           defconfig
+mips                         db1xxx_defconfig
+powerpc                      bamboo_defconfig
+sh                         ecovec24_defconfig
+arc                        nsim_700_defconfig
+mips                       lemote2f_defconfig
+sh                         microdev_defconfig
+arm                           u8500_defconfig
+h8300                    h8300h-sim_defconfig
+mips                        vocore2_defconfig
+sh                          polaris_defconfig
+mips                      pistachio_defconfig
+arm                           h3600_defconfig
+s390                             alldefconfig
+arm                  colibri_pxa270_defconfig
+arm                          lpd270_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210628
+i386                 randconfig-a002-20210628
+i386                 randconfig-a003-20210628
+i386                 randconfig-a006-20210628
+i386                 randconfig-a005-20210628
+i386                 randconfig-a004-20210628
+x86_64               randconfig-a012-20210628
+x86_64               randconfig-a016-20210628
+x86_64               randconfig-a015-20210628
+x86_64               randconfig-a013-20210628
+x86_64               randconfig-a014-20210628
+x86_64               randconfig-a011-20210628
+i386                 randconfig-a011-20210628
+i386                 randconfig-a014-20210628
+i386                 randconfig-a013-20210628
+i386                 randconfig-a015-20210628
+i386                 randconfig-a016-20210628
+i386                 randconfig-a012-20210628
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> linkage symbol, when imported into multiple translation units, then
-> compiled into different object files, during linking, the copies can be
-> deduplicated. This matters for code size and for correctness when the
-> function address is taken.
->
-> Regular LTO (sometimes called full LTO) uses the regular name.\d+
-> scheme.
->
-> >+static inline bool cleanup_symbol_name(char *s)
-> >+{
-> >+      char *res;
-> >+
-> >+      res = strstr(s, ".llvm.");
-> >+      if (res)
-> >+              *res = '\0';
-> >+
-> >+      return res != NULL;
-> >+}
-> > #else
-> > static inline bool cleanup_symbol_name(char *s) { return false; }
-> > #endif
-> >--
-> >2.32.0.288.g62a8d224e6-goog
->
-> I wonder whether it makes sense to strip all `.something` suffixes.
-> For example, the recent -funique-internal-linkage-name (which can
-> improve sample profile accuracy) uses the `.__uniq.1234` scheme.
->
-> Function specialization/clones can create arbitrary `.123` suffixes.
+clang tested configs:
+x86_64               randconfig-b001-20210628
+x86_64               randconfig-a002-20210628
+x86_64               randconfig-a005-20210628
+x86_64               randconfig-a001-20210628
+x86_64               randconfig-a003-20210628
+x86_64               randconfig-a004-20210628
+x86_64               randconfig-a006-20210628
 
-I definitely don't see hooking static functions via kprobes as being
-scalable. There are numerous different mangling schemes different
-compilers apply to different static functions.
-
---
-Thanks,
-~Nick Desaulniers
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
