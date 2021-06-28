@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC023B6192
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5713B6196
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbhF1Ogb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36734 "EHLO mail.kernel.org"
+        id S233204AbhF1Ogo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:36:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234383AbhF1O3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F90E61C86;
-        Mon, 28 Jun 2021 14:26:15 +0000 (UTC)
+        id S234388AbhF1O3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7796B61C7C;
+        Mon, 28 Jun 2021 14:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890376;
-        bh=VL+/AH8Xfy2zo2JtDmPB2fLvSbaiSbgT9qXKIlTq0DY=;
+        s=k20201202; t=1624890379;
+        bh=t1Xb6puR9lFf/7Q8gM/4FvkHhubSiNxkSjB09XodxhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MlXqlfdxo542gZgKCfxrQMw5+qsBg6emGxgAYZaZY4I+X6rn/rWMwkrt/4Xz2/tpn
-         THHHcpOXSxE9wGSRZvPo7LeKxXWWg7A8Ef9s+YYiGw9FADdsRSaP3tXKXZ4i9OaEwd
-         hWeT9Xtg1zwRcAvA+lC9gcLbBuTFua12bPkEQWCNqHEZeE0XvhYcBhHuRHNbJlUaod
-         M7fLotpjAoa8nPHMj6AlPj6B4IS2ziH3Tc3UOiPahFHsr1Oy0xW9E9wZzDP+mrbkP7
-         ID1ATpuwPYBls7Co8dGp0WG38FTopeOGMdhCkrVKe3c7Ydw1Devq4PTaS9VXphRa/0
-         efXGDGdxwPicg==
+        b=VtcVf4dJUnvUYV+S2npVOiSYDiunKA2D/oAK2MRF/IC8GSxdKGjDXU0R+fWlaRA7k
+         B3FNN0L0IxxkHyST1eUBmhJ4FKl02HUixV6f/cYuR86LracQUf2SndMDn2Uf+M8vBx
+         cjiiX0K/o90JP/FtrF12RsxJCwBIHjrniVtdRzlYUze5kvKKNbdF9k7ebKwEGK2Iz2
+         V3F+Qduc8VCJjxtV5aAL2K9f7A8xjuvXWiCy/gyllIcr/bitC5n+8w0z/hoIwYeo9a
+         xQ7hZO6ntjUk9ajdykjX74iATBK7sQtzKn0Iq3NXPmpQfmXgW2dfYZ4gVovSRHbHvF
+         2+SnEp0gPfp1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, stable@kernel.org,
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Simon Glass <sjg@chromium.org>, Tom Rini <trini@konsulko.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 5.10 007/101] drm/amdgpu: wait for moving fence after pinning
-Date:   Mon, 28 Jun 2021 10:24:33 -0400
-Message-Id: <20210628142607.32218-8-sashal@kernel.org>
+Subject: [PATCH 5.10 010/101] MIPS: generic: Update node names to avoid unit addresses
+Date:   Mon, 28 Jun 2021 10:24:36 -0400
+Message-Id: <20210628142607.32218-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
 References: <20210628142607.32218-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.47-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-5.10.y
@@ -49,50 +49,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 8ddf5b9bb479570a3825d70fecfb9399bc15700c upstream.
+commit e607ff630c6053ecc67502677c0e50053d7892d4 upstream.
 
-We actually need to wait for the moving fence after pinning
-the BO to make sure that the pin is completed.
+With the latest mkimage from U-Boot 2021.04, the generic defconfigs no
+longer build, failing with:
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-References: https://lore.kernel.org/dri-devel/20210621151758.2347474-1-daniel.vetter@ffwll.ch/
-CC: stable@kernel.org
-Link: https://patchwork.freedesktop.org/patch/msgid/20210622114506.106349-3-christian.koenig@amd.com
+/usr/bin/mkimage: verify_header failed for FIT Image support with exit code 1
+
+This is expected after the linked U-Boot commits because '@' is
+forbidden in the node names due to the way that libfdt treats nodes with
+the same prefix but different unit addresses.
+
+Switch the '@' in the node name to '-'. Drop the unit addresses from the
+hash and kernel child nodes because there is only one node so they do
+not need to have a number to differentiate them.
+
+Cc: stable@vger.kernel.org
+Link: https://source.denx.de/u-boot/u-boot/-/commit/79af75f7776fc20b0d7eb6afe1e27c00fdb4b9b4
+Link: https://source.denx.de/u-boot/u-boot/-/commit/3f04db891a353f4b127ed57279279f851c6b4917
+Suggested-by: Simon Glass <sjg@chromium.org>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Tom Rini <trini@konsulko.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+[nathan: Backport to 5.10, only apply to .its.S files that exist]
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/mips/generic/board-boston.its.S   | 10 +++++-----
+ arch/mips/generic/board-ni169445.its.S | 10 +++++-----
+ arch/mips/generic/board-ocelot.its.S   | 20 ++++++++++----------
+ arch/mips/generic/board-xilfpga.its.S  | 10 +++++-----
+ arch/mips/generic/vmlinux.its.S        | 10 +++++-----
+ 5 files changed, 30 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
-index 1b56dbc1f304..e93ccdc5faf4 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c
-@@ -238,9 +238,21 @@ static int amdgpu_dma_buf_pin(struct dma_buf_attachment *attach)
- {
- 	struct drm_gem_object *obj = attach->dmabuf->priv;
- 	struct amdgpu_bo *bo = gem_to_amdgpu_bo(obj);
-+	int r;
+diff --git a/arch/mips/generic/board-boston.its.S b/arch/mips/generic/board-boston.its.S
+index a7f51f97b910..c45ad2759421 100644
+--- a/arch/mips/generic/board-boston.its.S
++++ b/arch/mips/generic/board-boston.its.S
+@@ -1,22 +1,22 @@
+ / {
+ 	images {
+-		fdt@boston {
++		fdt-boston {
+ 			description = "img,boston Device Tree";
+ 			data = /incbin/("boot/dts/img/boston.dtb");
+ 			type = "flat_dt";
+ 			arch = "mips";
+ 			compression = "none";
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 	};
  
- 	/* pin buffer into GTT */
--	return amdgpu_bo_pin(bo, AMDGPU_GEM_DOMAIN_GTT);
-+	r = amdgpu_bo_pin(bo, AMDGPU_GEM_DOMAIN_GTT);
-+	if (r)
-+		return r;
-+
-+	if (bo->tbo.moving) {
-+		r = dma_fence_wait(bo->tbo.moving, true);
-+		if (r) {
-+			amdgpu_bo_unpin(bo);
-+			return r;
-+		}
-+	}
-+	return 0;
- }
+ 	configurations {
+-		conf@boston {
++		conf-boston {
+ 			description = "Boston Linux kernel";
+-			kernel = "kernel@0";
+-			fdt = "fdt@boston";
++			kernel = "kernel";
++			fdt = "fdt-boston";
+ 		};
+ 	};
+ };
+diff --git a/arch/mips/generic/board-ni169445.its.S b/arch/mips/generic/board-ni169445.its.S
+index e4cb4f95a8cc..0a2e8f7a8526 100644
+--- a/arch/mips/generic/board-ni169445.its.S
++++ b/arch/mips/generic/board-ni169445.its.S
+@@ -1,22 +1,22 @@
+ / {
+ 	images {
+-		fdt@ni169445 {
++		fdt-ni169445 {
+ 			description = "NI 169445 device tree";
+ 			data = /incbin/("boot/dts/ni/169445.dtb");
+ 			type = "flat_dt";
+ 			arch = "mips";
+ 			compression = "none";
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 	};
  
- /**
+ 	configurations {
+-		conf@ni169445 {
++		conf-ni169445 {
+ 			description = "NI 169445 Linux Kernel";
+-			kernel = "kernel@0";
+-			fdt = "fdt@ni169445";
++			kernel = "kernel";
++			fdt = "fdt-ni169445";
+ 		};
+ 	};
+ };
+diff --git a/arch/mips/generic/board-ocelot.its.S b/arch/mips/generic/board-ocelot.its.S
+index 3da23988149a..8c7e3a1b68d3 100644
+--- a/arch/mips/generic/board-ocelot.its.S
++++ b/arch/mips/generic/board-ocelot.its.S
+@@ -1,40 +1,40 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+ / {
+ 	images {
+-		fdt@ocelot_pcb123 {
++		fdt-ocelot_pcb123 {
+ 			description = "MSCC Ocelot PCB123 Device Tree";
+ 			data = /incbin/("boot/dts/mscc/ocelot_pcb123.dtb");
+ 			type = "flat_dt";
+ 			arch = "mips";
+ 			compression = "none";
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 
+-		fdt@ocelot_pcb120 {
++		fdt-ocelot_pcb120 {
+ 			description = "MSCC Ocelot PCB120 Device Tree";
+ 			data = /incbin/("boot/dts/mscc/ocelot_pcb120.dtb");
+ 			type = "flat_dt";
+ 			arch = "mips";
+ 			compression = "none";
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 	};
+ 
+ 	configurations {
+-		conf@ocelot_pcb123 {
++		conf-ocelot_pcb123 {
+ 			description = "Ocelot Linux kernel";
+-			kernel = "kernel@0";
+-			fdt = "fdt@ocelot_pcb123";
++			kernel = "kernel";
++			fdt = "fdt-ocelot_pcb123";
+ 		};
+ 
+-		conf@ocelot_pcb120 {
++		conf-ocelot_pcb120 {
+ 			description = "Ocelot Linux kernel";
+-			kernel = "kernel@0";
+-			fdt = "fdt@ocelot_pcb120";
++			kernel = "kernel";
++			fdt = "fdt-ocelot_pcb120";
+ 		};
+ 	};
+ };
+diff --git a/arch/mips/generic/board-xilfpga.its.S b/arch/mips/generic/board-xilfpga.its.S
+index a2e773d3f14f..08c1e900eb4e 100644
+--- a/arch/mips/generic/board-xilfpga.its.S
++++ b/arch/mips/generic/board-xilfpga.its.S
+@@ -1,22 +1,22 @@
+ / {
+ 	images {
+-		fdt@xilfpga {
++		fdt-xilfpga {
+ 			description = "MIPSfpga (xilfpga) Device Tree";
+ 			data = /incbin/("boot/dts/xilfpga/nexys4ddr.dtb");
+ 			type = "flat_dt";
+ 			arch = "mips";
+ 			compression = "none";
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 	};
+ 
+ 	configurations {
+-		conf@xilfpga {
++		conf-xilfpga {
+ 			description = "MIPSfpga Linux kernel";
+-			kernel = "kernel@0";
+-			fdt = "fdt@xilfpga";
++			kernel = "kernel";
++			fdt = "fdt-xilfpga";
+ 		};
+ 	};
+ };
+diff --git a/arch/mips/generic/vmlinux.its.S b/arch/mips/generic/vmlinux.its.S
+index 1a08438fd893..3e254676540f 100644
+--- a/arch/mips/generic/vmlinux.its.S
++++ b/arch/mips/generic/vmlinux.its.S
+@@ -6,7 +6,7 @@
+ 	#address-cells = <ADDR_CELLS>;
+ 
+ 	images {
+-		kernel@0 {
++		kernel {
+ 			description = KERNEL_NAME;
+ 			data = /incbin/(VMLINUX_BINARY);
+ 			type = "kernel";
+@@ -15,18 +15,18 @@
+ 			compression = VMLINUX_COMPRESSION;
+ 			load = /bits/ ADDR_BITS <VMLINUX_LOAD_ADDRESS>;
+ 			entry = /bits/ ADDR_BITS <VMLINUX_ENTRY_ADDRESS>;
+-			hash@0 {
++			hash {
+ 				algo = "sha1";
+ 			};
+ 		};
+ 	};
+ 
+ 	configurations {
+-		default = "conf@default";
++		default = "conf-default";
+ 
+-		conf@default {
++		conf-default {
+ 			description = "Generic Linux kernel";
+-			kernel = "kernel@0";
++			kernel = "kernel";
+ 		};
+ 	};
+ };
 -- 
 2.30.2
 
