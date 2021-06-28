@@ -2,91 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44053B5A37
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2373B5A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhF1IGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:06:19 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:17526 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229911AbhF1IGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:06:18 -0400
-X-UUID: 37a9a923059e48819e7bcb92db666673-20210628
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UyCUoWq5C8H8X3Ls/9jw1l30aSnsYNS8MIqI3Jdte34=;
-        b=NQShitKfmMb479YptqZkariH15y33S2g8+NDnwgUZ+eDrNkMRyFunmkMb7By0jVUIZSbsLMJqa2tFzr9mtZZChfk+abZn0TBa5ACznHKLh+5bkm38UEgRgGO8Ekd5hBsQJPM211xrhtYh9OPpy8oPpP01bUSxJ+/bQaXIaZWDag=;
-X-UUID: 37a9a923059e48819e7bcb92db666673-20210628
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1510859484; Mon, 28 Jun 2021 16:03:45 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 28 Jun
- 2021 16:03:36 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Jun 2021 16:03:35 +0800
-Message-ID: <1624867415.19871.7.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 1/2] dt-bindings: PCI: mediatek-gen3: Add property to
- disable dvfsrc voltage request
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Ryder Lee <ryder.lee@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <youlin.pei@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
-        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
-        <Rex-BC.Chen@mediatek.com>, Krzysztof Wilczyski <kw@linux.com>,
-        <Ryan-JH.Yu@mediatek.com>
-Date:   Mon, 28 Jun 2021 16:03:35 +0800
-In-Reply-To: <20210611114824.14537-2-jianjun.wang@mediatek.com>
-References: <20210611114824.14537-1-jianjun.wang@mediatek.com>
-         <20210611114824.14537-2-jianjun.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S232345AbhF1IIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:08:22 -0400
+Received: from mga04.intel.com ([192.55.52.120]:28311 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232318AbhF1IIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:08:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="206082426"
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="206082426"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 01:05:56 -0700
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="456226358"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.30.185]) ([10.255.30.185])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 01:05:53 -0700
+Subject: Re: [kbuild-all] Re: net/ceph/messenger_v2.c:2808:5: warning: stack
+ frame size (2336) exceeds limit (2048) in function 'ceph_con_v2_try_read'
+To:     Ilya Dryomov <idryomov@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>
+References: <202106280955.VUsBSyHq-lkp@intel.com>
+ <CAOi1vP-FR2PpqdW4WuhJaaFPZifxthf0B45dV03v00ef66R8wg@mail.gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <a875976b-3117-f001-606b-8e90802bef8a@intel.com>
+Date:   Mon, 28 Jun 2021 16:05:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 3C847F0C72EE72988F88A8EF8A8CFC570617985F93A7278597666503F0F909702000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAOi1vP-FR2PpqdW4WuhJaaFPZifxthf0B45dV03v00ef66R8wg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLCBCam9ybiwgTWF0dGhpYXMsDQoNCkNvdWxkIHlvdSBwbGVhc2UgaGVscCB0byB0YWtl
-IGEgbG9vayBhdCB0aGlzIHBhdGNoIHNlcmllcz8NCg0KV2UgaGF2ZSBkb25lIHRoZSBpbnRlcm5h
-bCB0ZXN0cyBhbmQgbmVlZCB0byBpbXBsZW1lbnQgdGhpcyBmdW5jdGlvbiBpbg0KdGhlIGZpbmFs
-IHByb2R1Y3QsIFdlIHJlYWxseSBuZWVkIHlvdXIgc3VnZ2VzdGlvbnMuDQoNClRoYW5rcy4NCg0K
-T24gRnJpLCAyMDIxLTA2LTExIGF0IDE5OjQ4ICswODAwLCBKaWFuanVuIFdhbmcgd3JvdGU6DQo+
-IEFkZCBwcm9wZXJ0eSB0byBkaXNhYmxlIGR2ZnNyYyB2b2x0YWdlIHJlcXVlc3QsIGlmIHRoaXMg
-cHJvcGVydHkNCj4gaXMgcHJlc2VudGVkLCB3ZSBhc3N1bWUgdGhhdCB0aGUgcmVxdWVzdGVkIHZv
-bHRhZ2UgaXMgYWx3YXlzDQo+IGhpZ2hlciBlbm91Z2ggdG8ga2VlcCB0aGUgUENJZSBjb250cm9s
-bGVyIGFjdGl2ZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYW5qdW4gV2FuZyA8amlhbmp1bi53
-YW5nQG1lZGlhdGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcu
-Y2hlbmdAbWVkaWF0ZWsuY29tPg0KPiBUZXN0ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcu
-Y2hlbmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bj
-aS9tZWRpYXRlay1wY2llLWdlbjMueWFtbCAgICAgICB8IDggKysrKysrKysNCj4gIDEgZmlsZSBj
-aGFuZ2VkLCA4IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0K
-PiBpbmRleCBlN2IxZjk4OTJkYTQuLjNlMjZjMDMyY2VhOSAxMDA2NDQNCj4gLS0tIGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0K
-PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBj
-aWUtZ2VuMy55YW1sDQo+IEBAIC05Niw2ICs5NiwxMiBAQCBwcm9wZXJ0aWVzOg0KPiAgICBwaHlz
-Og0KPiAgICAgIG1heEl0ZW1zOiAxDQo+ICANCj4gKyAgZGlzYWJsZS1kdmZzcmMtdmx0LXJlcToN
-Cj4gKyAgICBkZXNjcmlwdGlvbjogRGlzYWJsZSBkdmZzcmMgdm9sdGFnZSByZXF1ZXN0LCBpZiB0
-aGlzIHByb3BlcnR5IGlzIHByZXNlbnRlZCwNCj4gKyAgICAgIHdlIGFzc3VtZSB0aGF0IHRoZSBy
-ZXF1ZXN0ZWQgdm9sdGFnZSBpcyBhbHdheXMgaGlnaGVyIGVub3VnaCB0byBrZWVwDQo+ICsgICAg
-ICB0aGUgUENJZSBjb250cm9sbGVyIGFjdGl2ZS4NCj4gKyAgICB0eXBlOiBib29sZWFuDQo+ICsN
-Cj4gICAgJyNpbnRlcnJ1cHQtY2VsbHMnOg0KPiAgICAgIGNvbnN0OiAxDQo+ICANCj4gQEAgLTE2
-Niw2ICsxNzIsOCBAQCBleGFtcGxlczoNCj4gICAgICAgICAgICAgICAgICAgICAgIDwmaW5mcmFj
-ZmdfcnN0IDM+Ow0KPiAgICAgICAgICAgICAgcmVzZXQtbmFtZXMgPSAicGh5IiwgIm1hYyI7DQo+
-ICANCj4gKyAgICAgICAgICAgIGRpc2FibGUtZHZmc3JjLXZsdC1yZXE7DQo+ICsNCj4gICAgICAg
-ICAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+ICAgICAgICAgICAgICBpbnRlcnJ1cHQt
-bWFwLW1hc2sgPSA8MCAwIDAgMHg3PjsNCj4gICAgICAgICAgICAgIGludGVycnVwdC1tYXAgPSA8
-MCAwIDAgMSAmcGNpZV9pbnRjIDA+LA0KDQo=
 
+
+On 6/28/2021 4:02 PM, Ilya Dryomov wrote:
+> On Mon, Jun 28, 2021 at 3:25 AM kernel test robot <lkp@intel.com> wrote:
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   62fb9874f5da54fdb243003b386128037319b219
+>> commit: cd1a677cad994021b19665ed476aea63f5d54f31 libceph, ceph: implement msgr2.1 protocol (crc and secure modes)
+>> date:   7 months ago
+>> config: powerpc64-randconfig-r034-20210628 (attached as .config)
+>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 59558129276098d62046c8cda92240d292cbfb1c)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install powerpc64 cross compiling tool for clang build
+>>          # apt-get install binutils-powerpc64-linux-gnu
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cd1a677cad994021b19665ed476aea63f5d54f31
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout cd1a677cad994021b19665ed476aea63f5d54f31
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:2:1: note: expanded from here
+>>     __do_outl
+>>     ^
+>>     arch/powerpc/include/asm/io.h:522:62: note: expanded from macro '__do_outl'
+>>     #define __do_outl(val, port)    writel(val,(PCI_IO_ADDR)_IO_BASE+port);
+>>                                                ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:43:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:30:1: note: expanded from here
+>>     __do_insb
+>>     ^
+>>     arch/powerpc/include/asm/io.h:541:56: note: expanded from macro '__do_insb'
+>>     #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:34:1: note: expanded from here
+>>     __do_insw
+>>     ^
+>>     arch/powerpc/include/asm/io.h:542:56: note: expanded from macro '__do_insw'
+>>     #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:38:1: note: expanded from here
+>>     __do_insl
+>>     ^
+>>     arch/powerpc/include/asm/io.h:543:56: note: expanded from macro '__do_insl'
+>>     #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:42:1: note: expanded from here
+>>     __do_outsb
+>>     ^
+>>     arch/powerpc/include/asm/io.h:544:58: note: expanded from macro '__do_outsb'
+>>     #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:46:1: note: expanded from here
+>>     __do_outsw
+>>     ^
+>>     arch/powerpc/include/asm/io.h:545:58: note: expanded from macro '__do_outsw'
+>>     #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v2.c:17:
+>>     In file included from include/linux/scatterlist.h:9:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:50:1: note: expanded from here
+>>     __do_outsl
+>>     ^
+>>     arch/powerpc/include/asm/io.h:546:58: note: expanded from macro '__do_outsl'
+>>     #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>>> net/ceph/messenger_v2.c:2808:5: warning: stack frame size (2336) exceeds limit (2048) in function 'ceph_con_v2_try_read' [-Wframe-larger-than]
+> 
+> Same as for ceph_con_v1_try_read(), please add this instance to the
+> allowlist.
+
+Got it, thanks for the information.
+
+Best Regards,
+Rong Chen
+
+> 
+> Thanks,
+> 
+>                  Ilya
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> 
