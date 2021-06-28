@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48E63B5F48
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF3B3B5F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhF1NqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhF1NqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232053AbhF1NqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Jun 2021 09:46:07 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7851C061574;
-        Mon, 28 Jun 2021 06:43:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ad700491bef6a2c18e575.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:d700:491b:ef6a:2c18:e575])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F2FA21EC0473;
-        Mon, 28 Jun 2021 15:43:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624887819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oaTWoMIR/8kJ1vrSQ/YRM/leTg1aNhhSfH9Oxbdei28=;
-        b=CcGIVm4bSbzMzC10uwvsiurej2wJd+CPm1Arml3UbITXCUfouCbJT706JeVxr6NOxOmjwo
-        Bv7E2wkMLBJ3qDqFg3z4uKMvcXyXgLKEw3LFgtzRCZDU2rPJBwZVy9us4eNCpqb3a3lL7u
-        oZVemIo605NkzDqx5AiWPvSFPd0d4X8=
-Date:   Mon, 28 Jun 2021 15:43:34 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YNnSBl5asXjXIvfy@zn.tnic>
-References: <YNMLX6fbB3PQwSpv@zn.tnic>
- <20210624031911.eznpkbgjt4e445xj@amd.com>
- <YNQz7ZxEaSWjcjO2@zn.tnic>
- <20210624123447.zbfkohbtdusey66w@amd.com>
- <YNSAlJnXMjigpqu1@zn.tnic>
- <20210624141111.pzvb6gk5lzfelx26@amd.com>
- <YNXs1XRu31dFiR2Z@zn.tnic>
- <8faad91a-f229-dee3-0e1f-0b613596db17@amd.com>
- <YNYMAkoSoMnfhBnJ@zn.tnic>
- <20210625181417.kaylo56pz4rlwwqr@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210625181417.kaylo56pz4rlwwqr@amd.com>
+Received: from mail.kernel.org ([198.145.29.99]:46270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230164AbhF1NqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:46:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B9C61883;
+        Mon, 28 Jun 2021 13:43:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624887820;
+        bh=gJqInbHX6Us83HMFo3RkNrKg8rMfR8eHVqFlvzvL8VI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=usqjamcTbtVaGCkh7xAY9zUqVLP/N2tr9W5rA87h10st1NRtdYMJtISxZyBR+RnPX
+         JyRxscflboYuiwfybFJ5Byt/5kgl6O9aHmCx1Knpcm4FuUCEAdS28Vdn9KmDE9ecbm
+         3o8pIkt7Me/wQFRxcDTMzDPBXbSXG62uY9QCbt8kY/5K5v/4/TNmaC91zZ6mG1Cl0F
+         sVw2D6p2SH3XhZQCjhOV/0GCs1yprYwa4iaVAFxa2eXvBzlqGIR4gyIMnUk8TM0Apj
+         fx6G8E4KtgrE413xj3nwmQ/EI8leK0e1T9p1mpnkI006ykLoVPWlNgFg4xikRuId0Z
+         tE57ViYlzD1Mg==
+Date:   Mon, 28 Jun 2021 22:43:37 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
+        ardb@kernel.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH 1/3] jump_label: Fix jump_label_text_reserved() vs
+ __init
+Message-Id: <20210628224337.5429a2a898ea6f5e0d96d77c@kernel.org>
+In-Reply-To: <20210628113045.045141693@infradead.org>
+References: <20210628112409.233121975@infradead.org>
+        <20210628113045.045141693@infradead.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 01:14:17PM -0500, Michael Roth wrote:
-> So non-EFI case would rely purely on the setup_data entry for both (though
-> we could still use boot_params->cc_blob_address to avoid the need to scan
-> setup_data list in proper kernel as well, but scanning it early on doesn't
-> have the same issues as with EFI config table so it's not really
-> necessary there).
+On Mon, 28 Jun 2021 13:24:10 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Yeah, sure, we can simply always use boot_params->cc_blob_address just
-like acpi_rsdp_addr and always put the CC blob address there.
+> It turns out that jump_label_text_reserved() was reporting __init text
+> as being reserved past the time when the __init text was freed and
+> re-used.
+> 
+> For a long time, this resulted in, at worst, not being able to kprobe
+> text that happened to land at the re-used address. However a recent
+> commit e7bf1ba97afd ("jump_label, x86: Emit short JMP") made it a
+> fatal mistake because it now needs to read the instruction in order to
+> determine the conflict -- an instruction that's no longer there.
+> 
+> Fixes: 4c3ef6d79328 ("jump label: Add jump_label_text_reserved() to reserve jump points")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> I opted to give setup_data precedence over EFI, since if a bootloader goes
-> the extra mile of packaging up a setup_data argument instead of just leaving
-> it to firmware/EFI config table, it might be out of some extra need.  For
-> example, if we do have a shared definition for both SEV and TDX, maybe the
-> bootloader needs to synthesize multiple EFI table entries, and a unified
-> setup_data will be easier for the kernel to consume than replicating that same
-> work, and maybe over time the fallback can be deprecated. And containers will
-> more than likely prefer setup_data approach, which might drive future changes
-> that aren't in lockstep with EFI definitions as well.
+Looks good to me.
 
-Yah, that makes perfect sense. And you/Brijesh should put the gist of
-that in a comment over the code so that people are aware. The less we
-rely on firmware, the better.
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-> Brijesh can correct me if I'm wrong, but I believe that's the intent, and the
-> setup_data approach definitely seems workable for that aspect.
+Thank you,
 
-Oki doki, I think we're all on the same page then. :-)
+> ---
+>  kernel/jump_label.c |   13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> --- a/kernel/jump_label.c
+> +++ b/kernel/jump_label.c
+> @@ -316,14 +316,16 @@ static int addr_conflict(struct jump_ent
+>  }
+>  
+>  static int __jump_label_text_reserved(struct jump_entry *iter_start,
+> -		struct jump_entry *iter_stop, void *start, void *end)
+> +		struct jump_entry *iter_stop, void *start, void *end, bool init)
+>  {
+>  	struct jump_entry *iter;
+>  
+>  	iter = iter_start;
+>  	while (iter < iter_stop) {
+> -		if (addr_conflict(iter, start, end))
+> -			return 1;
+> +		if (init || !jump_entry_is_init(iter)) {
+> +			if (addr_conflict(iter, start, end))
+> +				return 1;
+> +		}
+>  		iter++;
+>  	}
+>  
+> @@ -561,7 +563,7 @@ static int __jump_label_mod_text_reserve
+>  
+>  	ret = __jump_label_text_reserved(mod->jump_entries,
+>  				mod->jump_entries + mod->num_jump_entries,
+> -				start, end);
+> +				start, end, mod->state == MODULE_STATE_COMING);
+>  
+>  	module_put(mod);
+>  
+> @@ -786,8 +788,9 @@ early_initcall(jump_label_init_module);
+>   */
+>  int jump_label_text_reserved(void *start, void *end)
+>  {
+> +	bool init = system_state < SYSTEM_RUNNING;
+>  	int ret = __jump_label_text_reserved(__start___jump_table,
+> -			__stop___jump_table, start, end);
+> +			__stop___jump_table, start, end, init);
+>  
+>  	if (ret)
+>  		return ret;
+> 
+> 
 
-Thx.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Masami Hiramatsu <mhiramat@kernel.org>
