@@ -2,202 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D823B5E0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78413B5E14
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhF1MgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:36:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232756AbhF1MgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80ADA61C6A;
-        Mon, 28 Jun 2021 12:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624883638;
-        bh=OOyHM6b/euXABkREYtUfPsbWldbOJbz+L5JFqJ0vJOQ=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=LRfaJllObY8Gqc/xLCX/6DJiaxzKW7Y6axl8h8BjEaX5EdGx6G32vbtJaaQpewo24
-         cYza49QPE8+gTeL/8Kq7qHdFtld0wnmnEc2B02j+pWulKdfgSSHvRIQXqjtYFeoJ3J
-         yUxnaADiNzPT71zY6/GRpNPXKrtOjEuNjX5+c9GV4SDr9ZGGGFHnDwcxCZat1wsDWQ
-         98jSyMc2iv8J2VW8M1rb+IGVhDye+lg4JzoxMwCoZQ9z6UlzNl9CAmgUuM81hR99Wi
-         0OP3mqSmCKY4zQi0N5ex0cTkHfSKBPWiHDiheeAhTP40JlM5eBwopSzOvkhrKmOntD
-         UJXvDFClujHbA==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid attaching SB_ACTIVE flag during
- mount/remount
-From:   Chao Yu <chao@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210525113909.113486-1-yuchao0@huawei.com>
- <YNLsKSSxS5xLJcnB@google.com>
- <bd548ff5-4143-31f9-0d84-abc8a53b597d@kernel.org>
- <YNNYEUumK506fxPK@google.com>
- <1ae0bb19-4773-57e1-41e3-2bedc9c850d0@kernel.org>
-Message-ID: <e5118454-5890-6061-95eb-62872cd612da@kernel.org>
-Date:   Mon, 28 Jun 2021 20:33:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233034AbhF1Mgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233022AbhF1Mgo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 08:36:44 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47702C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:34:17 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p8so4966679wrr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4Piownw0Km7jYaWnqnZYrht6sXkD+M9EE5R9haJeqU=;
+        b=RpmUcAWPAA24cki8FV8sIiR/T9iEYHriC0yCwfOOTb4uqcPcCoDIl5um61M0Q3JNhd
+         HLRkEqXN2yGFQunfUq1oa3qpnJK4tA757J1lFxhMtcrYkTYFQ78IouFy8QcTrkoarB1i
+         m5LRW4Lse26c2JMoWyM41aE6S4UknpZ0ergRk+TbCkxVBPppNAjf8B+FLYj7YdA/jhWc
+         j59ruiM34M3XMVVDTLJ3Y46Fwh1xS5SvblR5JFnfoSUspQxn3dS7du34oa2vKwdAXyLQ
+         gOxFT0cQnap+TR5FDfLeVOi0G6tEQf88cYFZTES+gIgRw9FyNgUM6PSUae1XYBBudQXb
+         Fe4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4Piownw0Km7jYaWnqnZYrht6sXkD+M9EE5R9haJeqU=;
+        b=Mf2oN5kzHm5kcwytu4WzSuGkQ8ayYZghhiQuheS45r6bEKA1W1eCRAq6yDdbmUesUa
+         W+AMbrGnk8WZ44SnzTsdMGB80RNnQJ/sGsvMx0np4zGIE9uujnSYFtQ/3mRhQStZTop0
+         oIvxJNQbt7cTM80T8CJoUCgBXDk2XHh1iy8lAJ40n3gmhFEC4YOFqKiR8yFcjStikJ+O
+         IS59pnLrdPLx4a++0WG6ltXlvFv1jKibuW2clachQizi/VMgIfyq78MEgh68zjCI6rZ3
+         LvypDLq3njjhKo/dZb4wVldQbt/5NcPDF16iiBzDAcynlkmTWnwT7qwSFzF1xWMfnbmX
+         nI5A==
+X-Gm-Message-State: AOAM531mAy4o7mOlD9p5BCubDWd/dc3wXLEjNC4klJGhH00qEwBD1Qk4
+        PH8ni1XXRWlagYzqtsqv1JhSlg==
+X-Google-Smtp-Source: ABdhPJynXZUsQ+KCCA2PMCmxfxH2qhUAPGDL5BW7LSSONysZPkBA8RYkV5kdJNx/yJHplx94ajGkIw==
+X-Received: by 2002:adf:fac4:: with SMTP id a4mr27567032wrs.189.1624883655814;
+        Mon, 28 Jun 2021 05:34:15 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:e503:e76:4043:c4f7])
+        by smtp.gmail.com with ESMTPSA id p7sm2357334wrr.68.2021.06.28.05.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 05:34:15 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     jgg@ziepe.ca, leon@kernel.org, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, ulf.hansson@linaro.org
+Cc:     torvalds@linux-foundation.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, linux-mmc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH RFC 0/2] scatterlist: add I/O variant of sg_pcopy & sg_copy and use them
+Date:   Mon, 28 Jun 2021 14:34:09 +0200
+Message-Id: <20210628123411.119778-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1ae0bb19-4773-57e1-41e3-2bedc9c850d0@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=976; h=from:subject; bh=iVEMvBLaRZgih5yGs1nmMY9KLw8WXAeUJcp1bYFUiBY=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBg2cGWtsGJ0XA8KWFoXtdBdbBZY/Eo9DjS/KkXuTzv 5/+iniKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYNnBlgAKCRB33NvayMhJ0XPhEA CcU6sOzBX3jxArz37tuZhTke4Yg6dNMPnsx19qObWnWEpWCFEdEzrPxjZH8d2shIfumiocFQt1tlQf NrsBokdpyV2jvNOgHBTsDGYfqBlxKE4tMytf5ooHTErzX9XraDT1cXZKBKAEcYiti/49Hgsd7NQQ3N NGEY0fI8LIpEFotO67MZ7zO9zjqqDnBqQYBpmCAW207JExawMCmAeWUfuV7lJhXqut5nX57hV3Ia6i IKu0l5t319rVU+tLJI7zcVEAZDP63rBK/GCAy4AdY/a2KzZHvjKYFh2MXwoFIx74Xdgzn+mp+pZHQ5 Gy1CZOHdaA7Nd9apmUfVxGq49AkH4GglixwfZC/U1n59sOfZvt3SvEi7LYBDDiORE9+mHr8Eo0DiW4 pGSEU7giItN3JyECFLqjnJt+wQJXZlQYn+nvJtaWz+O00wIA7vKQPl8PbNZGvQEIDdwJyRUdqXjvca +SHOa5/6FnOYt74n+VwOeiXbMXnFCW3mpbR8jdOyRd+oz+VQIE3J82S296md6xTQEe0oQ98nnQ2PUC SsxUoFHiBZyHwoAVVdgtAe+KtcJLSgvOkGmfK4ylJpCH6wxWeZmuecrNTghwCp8Q/x3fZ2Wyf8ogMG IM9QL/KQH/1DL1WHS0A8gqMFvLbjg1m3Xj1DnhnkZvfDbY4d8/Pn5cLa7LpQ==
+X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/28 20:29, Chao Yu wrote:
-> On 2021/6/23 23:49, Jaegeuk Kim wrote:
->> On 06/23, Chao Yu wrote:
->>> Hi Jaegeuk,
->>>
->>> On 2021/6/23 16:09, Jaegeuk Kim wrote:
->>>> Hi Chao,
->>>>
->>>> I'll remove this patch, since it breaks checkpoint=disable and recovery
->>>> flow that check SB_ACTIVE.
->>>
->>> Oh, sorry, is it due to changes in f2fs_disable_checkpoint()?
->>>
->>> So how about testing with changes f2fs_recover_orphan_inodes() and
->>> f2fs_recover_fsync_data()?
->>
->> I'm now nervous whether the test can miss corner cases. So, I don't think
->> we need to pour our time for this nice-to-have patch.
-> 
-> Well, could you please consider to check the fixed patch in 5.15 version?
-> SB_ACTIVE in recovery flow is necessary for checkpoint disabling, it should
+A local variant of sg_copy_buffer has been introduced in the meson-gx mmc driver [1] after
+a mempcy optimization, fixing the iomem buffer manipulation and the reported system crash [2].
 
-Sorry, I mean: if SB_ACTIVE in recovery flow is necessary...
+But, the fix is suboptimal in terms of performace/ugliness [3] and a proper I/O variant of
+sg_copy_buffer should be added and used instead.
 
-Thanks,
+[1] https://lore.kernel.org/r/20210609150230.9291-1-narmstrong@baylibre.com
+[2] https://lore.kernel.org/r/acb244ad-0759-5a96-c659-5c23003d3dcd@samsung.com
+[3] https://lore.kernel.org/r/CAPDyKFrLSMpPJOgd5e4B1x3Vwfg4q23zgy4ESc8EmFL2MnyK7g@mail.gmail.com
 
-> not be enabled only under CONFIG_QUOTA, right?
-> 
-> Thanks,
-> 
->>
->>>
->>> Thanks,
->>>
->>>>
->>>> Thanks,
->>>>
->>>> On 05/25, Chao Yu wrote:
->>>>> Quoted from [1]
->>>>>
->>>>> "I do remember that I've added this code back then because otherwise
->>>>> orphan cleanup was losing updates to quota files. But you're right
->>>>> that now I don't see how that could be happening and it would be nice
->>>>> if we could get rid of this hack"
->>>>>
->>>>> [1] https://lore.kernel.org/linux-ext4/99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com/T/#m04990cfbc4f44592421736b504afcc346b2a7c00
->>>>>
->>>>> Related fix in ext4 by
->>>>> commit 72ffb49a7b62 ("ext4: do not set SB_ACTIVE in ext4_orphan_cleanup()").
->>>>>
->>>>> f2fs has the same hack implementation in
->>>>> - f2fs_recover_orphan_inodes()
->>>>> - f2fs_recover_fsync_data()
->>>>> - f2fs_disable_checkpoint()
->>>>>
->>>>> Let's get rid of this hack as well in f2fs.
->>>>>
->>>>> Cc: Zhang Yi <yi.zhang@huawei.com>
->>>>> Cc: Jan Kara <jack@suse.cz>
->>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>> ---
->>>>>     fs/f2fs/checkpoint.c |  3 ---
->>>>>     fs/f2fs/recovery.c   |  8 ++------
->>>>>     fs/f2fs/super.c      | 11 ++++-------
->>>>>     3 files changed, 6 insertions(+), 16 deletions(-)
->>>>>
->>>>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->>>>> index 6c208108d69c..a578c7d13d81 100644
->>>>> --- a/fs/f2fs/checkpoint.c
->>>>> +++ b/fs/f2fs/checkpoint.c
->>>>> @@ -691,9 +691,6 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
->>>>>     	}
->>>>>     #ifdef CONFIG_QUOTA
->>>>> -	/* Needed for iput() to work correctly and not trash data */
->>>>> -	sbi->sb->s_flags |= SB_ACTIVE;
->>>>> -
->>>>>     	/*
->>>>>     	 * Turn on quotas which were not enabled for read-only mounts if
->>>>>     	 * filesystem has quota feature, so that they are updated correctly.
->>>>> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
->>>>> index 4b2f7d1d5bf4..4cfe36fa41be 100644
->>>>> --- a/fs/f2fs/recovery.c
->>>>> +++ b/fs/f2fs/recovery.c
->>>>> @@ -782,8 +782,6 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
->>>>>     	}
->>>>>     #ifdef CONFIG_QUOTA
->>>>> -	/* Needed for iput() to work correctly and not trash data */
->>>>> -	sbi->sb->s_flags |= SB_ACTIVE;
->>>>>     	/* Turn on quotas so that they are updated correctly */
->>>>>     	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
->>>>>     #endif
->>>>> @@ -811,10 +809,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
->>>>>     	err = recover_data(sbi, &inode_list, &tmp_inode_list, &dir_list);
->>>>>     	if (!err)
->>>>>     		f2fs_bug_on(sbi, !list_empty(&inode_list));
->>>>> -	else {
->>>>> -		/* restore s_flags to let iput() trash data */
->>>>> -		sbi->sb->s_flags = s_flags;
->>>>> -	}
->>>>> +	else
->>>>> +		f2fs_bug_on(sbi, sbi->sb->s_flags & SB_ACTIVE);
->>>>>     skip:
->>>>>     	fix_curseg_write_pointer = !check_only || list_empty(&inode_list);
->>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>> index 0a77808ebb8f..e7bd983fbddc 100644
->>>>> --- a/fs/f2fs/super.c
->>>>> +++ b/fs/f2fs/super.c
->>>>> @@ -1881,17 +1881,15 @@ static int f2fs_enable_quotas(struct super_block *sb);
->>>>>     static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
->>>>>     {
->>>>> -	unsigned int s_flags = sbi->sb->s_flags;
->>>>>     	struct cp_control cpc;
->>>>>     	int err = 0;
->>>>>     	int ret;
->>>>>     	block_t unusable;
->>>>> -	if (s_flags & SB_RDONLY) {
->>>>> +	if (sbi->sb->s_flags & SB_RDONLY) {
->>>>>     		f2fs_err(sbi, "checkpoint=disable on readonly fs");
->>>>>     		return -EINVAL;
->>>>>     	}
->>>>> -	sbi->sb->s_flags |= SB_ACTIVE;
->>>>>     	f2fs_update_time(sbi, DISABLE_TIME);
->>>>> @@ -1909,13 +1907,13 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
->>>>>     	ret = sync_filesystem(sbi->sb);
->>>>>     	if (ret || err) {
->>>>>     		err = ret ? ret : err;
->>>>> -		goto restore_flag;
->>>>> +		goto out;
->>>>>     	}
->>>>>     	unusable = f2fs_get_unusable_blocks(sbi);
->>>>>     	if (f2fs_disable_cp_again(sbi, unusable)) {
->>>>>     		err = -EAGAIN;
->>>>> -		goto restore_flag;
->>>>> +		goto out;
->>>>>     	}
->>>>>     	down_write(&sbi->gc_lock);
->>>>> @@ -1931,8 +1929,7 @@ static int f2fs_disable_checkpoint(struct f2fs_sb_info *sbi)
->>>>>     out_unlock:
->>>>>     	up_write(&sbi->gc_lock);
->>>>> -restore_flag:
->>>>> -	sbi->sb->s_flags = s_flags;	/* Restore SB_RDONLY status */
->>>>> +out:
->>>>>     	return err;
->>>>>     }
->>>>> -- 
->>>>> 2.29.2
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
+Neil Armstrong (2):
+  scatterlist: add I/O variant of sg_pcopy & sg_copy
+  mmc: meson-gx: use sg_copy_to/from_io instead of local version
+
+ drivers/mmc/host/meson-gx-mmc.c |  53 +++-----------
+ include/linux/scatterlist.h     |  14 ++++
+ lib/scatterlist.c               | 119 ++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+), 43 deletions(-)
+
+-- 
+2.25.1
+
