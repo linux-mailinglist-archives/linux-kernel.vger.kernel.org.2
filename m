@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD263B5C63
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347D43B5C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhF1KUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:20:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61792 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232628AbhF1KUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232630AbhF1KUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Jun 2021 06:20:19 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SA6FdZ021485;
-        Mon, 28 Jun 2021 06:17:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=sXZdoLvBk+fNTtJpTtUX4MKouU0H3cFHvZFshe/wFbE=;
- b=PNFDmJnhJNIN2yJRpC2Qu8qSGShRLpJ+b8GSq2n4VYloUdnD1DS92FIX4p5G6cUaIffl
- TTCrvWzND8SfjqlEUwfIGDJEOAGK3ep+bBWi5FPhgabiglfRj8XnF9GDHgzMc0Eg8b4i
- QQOEMldUqFb+eGdS0B15M/1wz4RlQJa1vTPR+kLbRVSOw9BvykCwx5XY/L+fRw2n2TcB
- 8PeLMW/Zy1rYM5z0f+rDTnluJj2KxZDzlJ0vvUDQLZsC/H+rIHTkz42JMXvfs6Rpj2be
- fxsfIg0VlvgLJ6oEEcQOgO/ZQC2LJOzwk5z7Wl4krYzFbH6l5Mi3Rq1Gen3Dz4tpK20e yQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fb6d2acr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 06:17:46 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SA6ckU023350;
-        Mon, 28 Jun 2021 06:17:46 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fb6d2ac6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 06:17:46 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SAHBBd019245;
-        Mon, 28 Jun 2021 10:17:44 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 39duv8gchb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 10:17:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SAGAsA23200056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 10:16:10 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00BBAAE3BC;
-        Mon, 28 Jun 2021 10:17:40 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47AC1AE454;
-        Mon, 28 Jun 2021 10:17:36 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.42.117])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Jun 2021 10:17:36 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com
-Cc:     trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, maddy@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        rnsastry@linux.ibm.com, linux-perf-users@vger.kernel.org
-Subject: [PATCH] fpga: dfl: fme: Fix cpu hotplug issue in performance reporting
-Date:   Mon, 28 Jun 2021 15:47:21 +0530
-Message-Id: <20210628101721.188991-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ALhaI1aBKmPv9rGZWQe4h5o1VwraTyfn
-X-Proofpoint-ORIG-GUID: Ll6Af3jtnxqNQDGQEYB0jvWtFaxc-WaF
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:45784 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232452AbhF1KUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:20:17 -0400
+Received: by mail-ua1-f43.google.com with SMTP id c20so6751598uar.12;
+        Mon, 28 Jun 2021 03:17:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pr9HGl4FqzQBvqaKGGPpCfCz3bY0d+qLj1EnCPHyL5w=;
+        b=GG/8FZgTQ4sb8MR9WkCWQpfEyY88VrqJ5OijB8p0S/lcbLVLcMRKJEio4KhvQO692w
+         GVcWYJ+edxkHMM8bwRf8OFulFcCQCHn4BYyBafG6b7XfWP5JgBg6TyxtTYHYLmvR3F5n
+         ykE4+h5wXLqtt3AUEE9hoDSYKVdljWjqtmCN0t1zFKw0z0+JCo7f9SHbdZvVURuByQ8E
+         B71RqoSP5hyjAUWATBoZweiiY0PfyF4Qx1S2u4YEDIM4rybmQa0f+/JvLMwBI0xM/94S
+         /S/JPLo5ZOV6lJ0ZcnsT36ZCp/pDrXbydP8RBxbTpknYYEigOTHOYnO6AO8vzqztpmZn
+         PBTg==
+X-Gm-Message-State: AOAM5330ubTFLMlWSHlEYiE52DBi3ADM1nmwm0hlZv8uiUS69EN0MTgV
+        ZLwUe39pC4ipoAHJaUrUHSLMSeFPF36tCGNyzFI=
+X-Google-Smtp-Source: ABdhPJyqF1aSJLgvFbmkLMYCnsnTPHiPUAsGhIVM99tOcWI2ZbGEjju2EsKV4xbyE6jUD9q959uT/dX1hb0S6FovsPA=
+X-Received: by 2002:ab0:1e4c:: with SMTP id n12mr19573056uak.58.1624875470758;
+ Mon, 28 Jun 2021 03:17:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_07:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106280070
+References: <20210625125902.1162428-7-geert@linux-m68k.org> <202106260719.fU3KdM6r-lkp@intel.com>
+In-Reply-To: <202106260719.fU3KdM6r-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 28 Jun 2021 12:17:39 +0200
+Message-ID: <CAMuHMdVf=9XQ49BJ3VcpfJAS1SmEpopqUhkYGqp4fmP-XMBJwg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/18] auxdisplay: Extract character line display core support
+To:     kernel test robot <lkp@intel.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, kbuild-all@lists.01.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The performance reporting driver added cpu hotplug
-feature but it didn't add pmu migration call in cpu
-offline function.
-This can create an issue incase the current designated
-cpu being used to collect fme pmu data got offline,
-as based on current code we are not migrating fme pmu to
-new target cpu. Because of that perf will still try to
-fetch data from that offline cpu and hence we will not
-get counter data.
+Hi Kernel Test Robot,
 
-Patch fixed this issue by adding pmu_migrate_context call
-in fme_perf_offline_cpu function.
+On Sat, Jun 26, 2021 at 1:36 AM kernel test robot <lkp@intel.com> wrote:
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on robh/for-next]
+> [also build test ERROR on staging/staging-testing linus/master v5.13-rc7 next-20210625]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Geert-Uytterhoeven/auxdisplay-ht16k33-Add-character-display-support/20210625-210014
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> config: powerpc-allmodconfig (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/5505aedee505055e2fe16a718203e24fd8519e2a
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Geert-Uytterhoeven/auxdisplay-ht16k33-Add-character-display-support/20210625-210014
+>         git checkout 5505aedee505055e2fe16a718203e24fd8519e2a
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>
+> >> ERROR: modpost: ".kernfs_create_link" [drivers/auxdisplay/img-ascii-lcd.ko] undefined!
 
-Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
-Tested-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- drivers/fpga/dfl-fme-perf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks a lot!
 
----
-Changelog:
-- Remove RFC tag
-- Did nits changes on subject and commit message as suggested by Xu Yilun
-- Added Tested-by tag
-- Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
----
-diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-index 4299145ef347..b9a54583e505 100644
---- a/drivers/fpga/dfl-fme-perf.c
-+++ b/drivers/fpga/dfl-fme-perf.c
-@@ -953,6 +953,10 @@ static int fme_perf_offline_cpu(unsigned int cpu, struct hlist_node *node)
- 		return 0;
- 
- 	priv->cpu = target;
-+
-+	/* Migrate fme_perf pmu events to the new target cpu */
-+	perf_pmu_migrate_context(&priv->pmu, cpu, target);
-+
- 	return 0;
- }
- 
+This helped me finding compat_only_sysfs_link_entry_to_kobj(), which
+I hadn't found before, and which does an even better job than my custom
+sysfs_create_file_link() implementation.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
