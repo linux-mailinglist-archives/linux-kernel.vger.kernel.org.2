@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD473B686A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12913B686D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhF1SYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:24:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39362 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234751AbhF1SX3 (ORCPT
+        id S233927AbhF1SYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235363AbhF1SXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:23:29 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SI3tDM064448;
-        Mon, 28 Jun 2021 14:21:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=dc/S/1/PMhO2CDdPI1HX9wC2D1Doj3jFVx5qGJjnfU0=;
- b=Tj6jg/mh1Lg8RbDAydWKw6JMFoZhRFKg/7ugV5R+AzV2wxu9fWqgAK+R4Pz+Hz4Ieg62
- cMVeZVN7ssu/ZXy3OvwZkSWW0Kln/OuF7tWu+JGvaiwkpTOz9yYRYx02ebvvHXeF7lia
- vQa074cyrdff0+496b7Uik9agjcyetkY76FzIaVL3OpbjZ+1BJCBejQNqCT1/WTIsufk
- 7X1fHP5MA/f0kuAL7QfM0AXAw/QuW49ywoIHVUPQ2SWhQmd3f7r8c8vWYBsJuzJqcyAA
- +kTKSmVyxdM5gd3Ksa9XlC8j/2hyzWcmPCPp8kwRUOgFRMnGeUtVux3+UxAnuw1I2UiM Bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjn99q4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:21:00 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SI4xTi072144;
-        Mon, 28 Jun 2021 14:21:00 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjn99q41-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:21:00 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SIAUXj015727;
-        Mon, 28 Jun 2021 18:20:59 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 39ejyx3tp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 18:20:59 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SIKwcl29360432
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 18:20:58 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2322078064;
-        Mon, 28 Jun 2021 18:20:58 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBB2A780B4;
-        Mon, 28 Jun 2021 18:20:56 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.148.87])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Jun 2021 18:20:56 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
- <20210628173448.GG4459@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <cc14f238-ba11-e388-06ec-027912fc313c@linux.ibm.com>
-Date:   Mon, 28 Jun 2021 14:20:55 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210628173448.GG4459@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 28 Jun 2021 14:23:31 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AB1C0617A6;
+        Mon, 28 Jun 2021 11:21:04 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id e20so16189624pgg.0;
+        Mon, 28 Jun 2021 11:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Mze86rq/HH0+Jr0eUT1QFEQw7aT+jWIGpimAmIf8PD0=;
+        b=HSDGzKRXQiwKjjZ3soDbhRmvOJBcPXB7ZwkOkxZeEy28cn2m3pblSV2s4Qwb/gDpfi
+         dDsDbYOXDEWFluzlP9v9+70kfBu/iX8j/Nwnigy5t6vMML1M1NHmHObegmfR5HKP/SR2
+         wi5TePs+ymXabLpJsMW1wf2rctVFMBtMzu8b2n+gCQpqLHQwptjCPQy3W1ZRRRXJoIHR
+         Cxsfg+ae45KG7Z+uG+dAbVsc0w4daZ9kVpq1HeEIISuCto//3MnJxjT3bqLAjRtgFOKO
+         6jxGeJROS2A4Kg8XiZlxM+pr3ZSizeTWJwU5KBA6pQy0emmdfJI2ovYUypeBkvJSUf2q
+         00Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=Mze86rq/HH0+Jr0eUT1QFEQw7aT+jWIGpimAmIf8PD0=;
+        b=msZ8unUAVeraET4F2ZbC8VlpcsdClE7BfjTIY0Jhz5NStnIxgRgTyXSJbeDLZXIqSK
+         68Iig7dpr8ZEWXzIX4AH8RLAWaVuM7+59Irc/8eDclhZkp/6EzuZF3uYhYDwOEFYB4F0
+         3dBTaQbY2710RE/RXIibfoNoiAlNheJjSlSRLWgLzZd9QnVbgHr97bMl72xkThjoLfJx
+         ne+vadt5qBUmzZ4Vz4PBOJF7F29N7Myq/a9/AdDj8wBj4yGml+0s7vi4FN2KqiaB1Ylj
+         s2TEEActoGJAw7KStMW8Uf7Minjl86pFab0aLrx9QTUShqoGrua7YTPyF7bZ6TH6gl9i
+         jMzA==
+X-Gm-Message-State: AOAM532trOpUPtFgmgkC4bL0Zis9wnXR/favx+Mzl6iHMEDZnGRJuw7e
+        apoA+68zoSmmGPIHW87GfCTSo3qpX8P7gHIXalc=
+X-Google-Smtp-Source: ABdhPJwOSKxPnXcVk0gwTtpR8c/RIQr7cDNDr4T4D8LtQKDzf2nafNBBSuxwc4GGkUqVRTJZM533YA==
+X-Received: by 2002:a05:6a00:15d0:b029:305:1ef:8fbd with SMTP id o16-20020a056a0015d0b029030501ef8fbdmr26508643pfu.64.1624904463388;
+        Mon, 28 Jun 2021 11:21:03 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id g141sm14753650pfb.210.2021.06.28.11.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 11:21:02 -0700 (PDT)
+Message-ID: <60da130e.1c69fb81.c638f.a74a@mx.google.com>
+Date:   Mon, 28 Jun 2021 11:21:02 -0700 (PDT)
+X-Google-Original-Date: Mon, 28 Jun 2021 18:21:00 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210628141828.31757-1-sashal@kernel.org>
+Subject: RE: [PATCH 5.12 000/110] 5.12.14-rc1 review
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sasha Levin <sashal@kernel.org>, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: hNTyB1T5iBMZMzJMtrOAOcJXFWvBdtCu
-X-Proofpoint-GUID: BJjxR1E-k7zVg-Ci6nEbnT0iBTQAFzEQ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106280118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Jun 2021 10:16:38 -0400, Sasha Levin <sashal@kernel.org> wrote:
+> 
+> This is the start of the stable review cycle for the 5.12.14 release.
+> There are 110 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:18:05 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.13
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-
-On 6/28/21 1:34 PM, Jason Gunthorpe wrote:
-> On Fri, Jun 25, 2021 at 06:07:58PM -0400, Tony Krowiak wrote:
->>   static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->>   {
->> +	mutex_lock(&matrix_dev->lock);
->>   
->> +	if ((matrix_mdev->kvm) && (matrix_mdev->kvm->arch.crypto.crycbd)) {
->>   		mutex_unlock(&matrix_dev->lock);
->> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->>   
->> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->>   
->>   		mutex_lock(&matrix_dev->lock);
->>   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->>   		kvm_put_kvm(matrix_mdev->kvm);
->>   		matrix_mdev->kvm = NULL;
->> +		mutex_unlock(&matrix_dev->lock);
->>   	}
-> Doesn't a flow exit the function with matrix_dev->lock held he
-
-How can that happen? What flow?
-
->
-> Write it with 'success oriented flow'
-
-I'm not sure what you mean, can you clarify this statement?
-
->
-> I didn't check if everything makes sense, but it sure looks clean.
->
-> Jason
+5.12.14-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
