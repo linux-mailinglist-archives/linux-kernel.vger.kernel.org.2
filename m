@@ -2,137 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F2F3B5F6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA6E3B5F6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhF1NxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:53:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232358AbhF1Nwz (ORCPT
+        id S232210AbhF1Nyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhF1Nyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:52:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624888229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DMK9OptVb1F8pIZsdHHHz8DEy/sPMopWfS2vl5q6VgE=;
-        b=PwvPbzft6Oae49uso4gpnDrsbdDhnsjKQtD/nV5FHyu8vPJ+N8iPQu6q6c9mn2sQnJZCe6
-        HezMJGZLbfFH/GT7lDpJ0vRfSDGm85lBQnF/ypDj9YL09ZuPd+tWxz+r/k2dI8qIuo9JD7
-        67+RE2RZ8cnhd6OIGVV16Px4zvlgfF8=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-G3-BrDdZOPqrFuHacuk23g-1; Mon, 28 Jun 2021 09:50:28 -0400
-X-MC-Unique: G3-BrDdZOPqrFuHacuk23g-1
-Received: by mail-qt1-f198.google.com with SMTP id b11-20020ac812cb0000b0290250bfff0028so2003354qtj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:50:27 -0700 (PDT)
+        Mon, 28 Jun 2021 09:54:47 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE04CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:52:21 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j1so21346973wrn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=diap9fcYCkWKv/Qg6fT0+qsnz8jKwEg8akmh3ZI+4Wg=;
+        b=G3jDBf5YwwFNJ7E6BmB1nhbQZYlznqZSI/avLRaRxOIigRWmqDK6OxUOAjkeUTyRsS
+         x+aVl9FGNYILNu537NoKMXZ7i93oB9P+eF8OfUUDv23GPn0x36Y9FJzmmyeZugdNfzDk
+         8+Ugkzj6Z5+uLuP3yh1ctb9kz9rCqy8SiHqcMFfOtkMYvxx5lfyoiWy0BDWipflaI6jP
+         4YztLc0XC14CnxoSJPhSNGEwVKEm2d8Hof8AzphX4MrbbmdlLWjXPR0C/pPjfMF/YXcc
+         pfpWRZA2kPXtGUlF3jEjm6dNGjroakgt7G6gYNFvR3IbOA5mpONsPVQUC4WDjptBiqHo
+         pjxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=DMK9OptVb1F8pIZsdHHHz8DEy/sPMopWfS2vl5q6VgE=;
-        b=PbC++Hq7rJIpDISEoaL8p1rHXL8CKdRBNOtwBYKDcvshUUWTLuu9o5hnsaddrkGsBW
-         iCRulCk3ys/Z4tdG2XBZLNolzYbfiVqOo9hRCrQha35PSIy9MmACol1FiL28NlB05TL/
-         iRZUHcrjISvFPCNcij5eHtaHLVa+WP029Z4JfVZNxvQ7cKJo6gmvmybhMCC/R/Bq+IFC
-         gdkLWlModPrj/zWbAn1At5lPzhyS5BFi68PNwApFPpPvT9tUW2bC9M8tk9iIfcX46NIg
-         FHDbwYKNt7r4Os19BLz0edQb18HBvFkKhCWpOspBPbxzb1qXfXFrjhCUiR51woJX3rzW
-         rhMA==
-X-Gm-Message-State: AOAM530lANIa+sauWP5Ql9mD26ODHdrvXQ69SB5nHXwF2Ojl5Sg/2bDo
-        KD3CGuonOUM0tRib69PZuRb55CjwGnbU1JpIBbYWjB0gmQwrwxGyVNVl0yCvVVYhNkGsz2R/0rp
-        AD1PbSy7Hl54771iAGWxQyPuG
-X-Received: by 2002:a37:454a:: with SMTP id s71mr25281108qka.88.1624888227560;
-        Mon, 28 Jun 2021 06:50:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8SSjGVqIolCL+Kaxzfg0aBIfR8K6DyKGVYmp8TXZdr3MGTX+sVfxY14VwzUn5zxjMlZcHrQ==
-X-Received: by 2002:a37:454a:: with SMTP id s71mr25281082qka.88.1624888227374;
-        Mon, 28 Jun 2021 06:50:27 -0700 (PDT)
-Received: from fionn (bras-base-rdwyon0600w-grc-10-174-88-120-156.dsl.bell.ca. [174.88.120.156])
-        by smtp.gmail.com with ESMTPSA id u15sm10318869qku.33.2021.06.28.06.50.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=diap9fcYCkWKv/Qg6fT0+qsnz8jKwEg8akmh3ZI+4Wg=;
+        b=KFR0/1+CF23eXoCMr+ZavFY0r9KmjTvxcNrESiq4tT5/DcGSDA+Q159IzIi6jmPgof
+         wnGzQawNrKWHeeACU8v92etXyMmqYO42G/NevgrQL4v2d4rzff8evlNk8T+RYJOETXFS
+         jgdHymldVQM84g2bQ8loqRiPwu1+hNL7L9FOC+MKXGjaMq4zsL51xRZQUl0Ruvr4TPu9
+         tJ2aOyB9GTcAlGsGpE/1iJyvMG0MUodGus75c2/rnYOEDBWOsJu2BlMeWHZK8jwLAvHi
+         j73db3pIpFVB0lToK+i3DYOCGc5K649QophwPBvNVCNQzk3dD99rulcEd+vOARqTq3AG
+         RzSg==
+X-Gm-Message-State: AOAM533JYppPvv5SfQ5mNiKAKgkIuKQPn24H88E+mq7CXoGabthgR+cJ
+        H1lsrDKFum2tkuociouLzNSNng==
+X-Google-Smtp-Source: ABdhPJz4lXKAnVnpga+cU3Sooi5YlNaiEDbCmzBnzb8Rk/DQuoe4zNecRHOqu5815Yuw78Lon8wNgg==
+X-Received: by 2002:a5d:4103:: with SMTP id l3mr9365465wrp.102.1624888340356;
+        Mon, 28 Jun 2021 06:52:20 -0700 (PDT)
+Received: from neptune.anevia.com (ip-149-62-159-73.naitways.net. [149.62.159.73])
+        by smtp.gmail.com with ESMTPSA id m184sm13749911wmm.26.2021.06.28.06.52.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 06:50:26 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 09:50:25 -0400 (EDT)
-From:   John Kacur <jkacur@redhat.com>
-To:     Daniel Wagner <wagi@monom.org>
-cc:     Mike Galbraith <efault@gmx.de>,
-        RT <linux-rt-users@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Johnathan Schwender <schwenderjonathan@gmail.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [ANNOUNCE] rt-tests-2.0
-In-Reply-To: <20210628081135.l7yvya7iaygb23ye@beryllium.lan>
-Message-ID: <f31d9d37-df6d-90b0-8bf9-95156c27e8d@redhat.com>
-References: <20210625160801.9283-1-jkacur@redhat.com> <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de> <1c1966dd51ae6f8ddcd892cba485c332281fbd37.camel@gmx.de> <3d6a6c593eed6f5d59209ba2d8db29fadcc72ad7.camel@gmx.de>
- <20210628081135.l7yvya7iaygb23ye@beryllium.lan>
+        Mon, 28 Jun 2021 06:52:19 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: light: adjd_s311: convert to device-managed functions
+Date:   Mon, 28 Jun 2021 16:51:32 +0300
+Message-Id: <20210628135132.73682-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This one is a little easier to convert to device-managed, now with the
+devm_krealloc() function.
 
+The other iio_triggered_buffer_setup() and iio_device_register() can be
+converted to their devm_ variants. And devm_krealloc() can be used to
+(re)alloc the buffer. When the driver unloads, this will also be free'd.
 
-On Mon, 28 Jun 2021, Daniel Wagner wrote:
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/light/adjd_s311.c | 34 +++++-----------------------------
+ 1 file changed, 5 insertions(+), 29 deletions(-)
 
-> Hi Mike,
-> 
-> On Sat, Jun 26, 2021 at 02:45:27PM +0200, Mike Galbraith wrote:
-> > On Sat, 2021-06-26 at 13:47 +0200, Mike Galbraith wrote:
-> > > On Sat, 2021-06-26 at 08:55 +0200, Mike Galbraith wrote:
-> > > > On Fri, 2021-06-25 at 12:08 -0400, John Kacur wrote:
-> > > > > I'm pleased to announce rt-tests-2.0
-> > > >
-> > > > Greetings,
-> > > >
-> > > > cyclictest seems to have grown an mlock related regression.
-> > >
-> > > Ok, chores done, I did a quick bisect/confirm.  I didn't go stare
-> > > at rt_test_start() to ponder what the mlockall connection may be.
-> >
-> > Moving the call above "Get current time" stops it mucking things up.
-> 
-> Thanks a lot for your excellent report. rt_test_start does
-> 
->   static char ts_start[MAX_TS_SIZE];
-> 
->   static void get_timestamp(char *tsbuf)
->   {
->           struct timeval tv;
->           struct tm *tm;
->           time_t t;
-> 
->           gettimeofday(&tv, NULL);
->           t = tv.tv_sec;
->           tm = localtime(&t);
->           /* RFC 2822-compliant date format */
->           strftime(tsbuf, MAX_TS_SIZE, "%a, %d %b %Y %T %z", tm);
->   }
-> 
->   void rt_test_start(void)
->   {
->           get_timestamp(ts_start);
->   }
-> 
-> I'd say the tsbuf access is the one which triggers a pagefault.
-> 
-> John, I would suggest to move the rt_test_start() into rt_init() and
-> take the timestamp at the execution start (as my initial version was). I
-> think the additional pain in slightly more correct start timestamp
-> (which is also not defined what it actually means in this context) is
-> just not worth the effort.
-> 
-> Thanks,
-> Daniel
-> 
-
-Send me a patch, and I'll have a look. The timerthread()function is
-sensitive anyway, so it's probably a good idea not to put that kind
-of thing there.
-
-Note that the the code following the /* Get Current Time */
-is getting the time, but you probably want something rougher that
-you can call strftime on?
-
-John
+diff --git a/drivers/iio/light/adjd_s311.c b/drivers/iio/light/adjd_s311.c
+index 17dac8d0e11d..19d60d6986a1 100644
+--- a/drivers/iio/light/adjd_s311.c
++++ b/drivers/iio/light/adjd_s311.c
+@@ -230,8 +230,8 @@ static int adjd_s311_update_scan_mode(struct iio_dev *indio_dev,
+ {
+ 	struct adjd_s311_data *data = iio_priv(indio_dev);
+ 
+-	kfree(data->buffer);
+-	data->buffer = kmalloc(indio_dev->scan_bytes, GFP_KERNEL);
++	data->buffer = devm_krealloc(indio_dev->dev.parent, data->buffer,
++				     indio_dev->scan_bytes, GFP_KERNEL);
+ 	if (data->buffer == NULL)
+ 		return -ENOMEM;
+ 
+@@ -256,7 +256,6 @@ static int adjd_s311_probe(struct i2c_client *client,
+ 		return -ENOMEM;
+ 
+ 	data = iio_priv(indio_dev);
+-	i2c_set_clientdata(client, indio_dev);
+ 	data->client = client;
+ 
+ 	indio_dev->info = &adjd_s311_info;
+@@ -265,34 +264,12 @@ static int adjd_s311_probe(struct i2c_client *client,
+ 	indio_dev->num_channels = ARRAY_SIZE(adjd_s311_channels);
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 
+-	err = iio_triggered_buffer_setup(indio_dev, NULL,
+-		adjd_s311_trigger_handler, NULL);
++	err = devm_iio_triggered_buffer_setup(&client->dev, indio_dev, NULL,
++					      adjd_s311_trigger_handler, NULL);
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = iio_device_register(indio_dev);
+-	if (err)
+-		goto exit_unreg_buffer;
+-
+-	dev_info(&client->dev, "ADJD-S311 color sensor registered\n");
+-
+-	return 0;
+-
+-exit_unreg_buffer:
+-	iio_triggered_buffer_cleanup(indio_dev);
+-	return err;
+-}
+-
+-static int adjd_s311_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-	struct adjd_s311_data *data = iio_priv(indio_dev);
+-
+-	iio_device_unregister(indio_dev);
+-	iio_triggered_buffer_cleanup(indio_dev);
+-	kfree(data->buffer);
+-
+-	return 0;
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ static const struct i2c_device_id adjd_s311_id[] = {
+@@ -306,7 +283,6 @@ static struct i2c_driver adjd_s311_driver = {
+ 		.name	= ADJD_S311_DRV_NAME,
+ 	},
+ 	.probe		= adjd_s311_probe,
+-	.remove		= adjd_s311_remove,
+ 	.id_table	= adjd_s311_id,
+ };
+ module_i2c_driver(adjd_s311_driver);
+-- 
+2.31.1
 
