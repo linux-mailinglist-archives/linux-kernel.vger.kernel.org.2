@@ -2,94 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142E03B5D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A6B3B5D8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhF1MIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:08:04 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:56194 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhF1MHt (ORCPT
+        id S232963AbhF1MII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232926AbhF1MIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:07:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624881924; x=1656417924;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PaCSetCKwvtQGvTBWH5h3ispeHDjsJzITohck8b3c5g=;
-  b=tQTR69XmNB1NG8i/pu0JgpQzKZcQjJMIYvybyGqsAUyV4oIZmzDgLr/g
-   n4MPYYTe7kt2pG3kK0RcKBcT0xPOTd6GGiYqnvcqQn6PCO7TbPmIz/Wav
-   +yJ+e+iFDfkkRVmSPtZbnhseelbE6eULAz9S3wBD2GQhASOsQzl+sbLGB
-   6esUQVbebS4KCmifgqNjliGgC8rsdRq75RUQh+fQ387bj1jBCX3B7jWLF
-   ECNCTaCeSg5FBlH0OX+nPfnyYR3k+WUrgNgptucBGajef3DNituZdZWvW
-   /3brr7VDiVaHRDyLOzPdceXFW8Xg1w8Oi7L4OjF7rw+MDD96cNUe2XcwJ
-   w==;
-IronPort-SDR: 865UmXT1tBOZdFTzj2Jqa5XZNwZJ7NSDaQGuWC1NOSUe+2x6cMU/sjYRw5X9KLyiMYtABawFkX
- IfXpLEtFlv8coBHawKARQ3/XaUDFMVjU+FcStJPBZWbb0PlbiBmLs0dOsaglYtkg0hm3wOGhKE
- HsowOKoaGtZqTCnuGOGEr6Me3Qo00LbL94t/AZyKwYDnCnN9M5i5ih4PgTgt/9a4+YwZLiLTxb
- 91HohmnQ5sjAhl2X4WrY5/EiFBqjePSzrd0zNwNbt2TN5PSqewykDlJw686Mq3pv+jNrpQ3ZMh
- Yhk=
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="60442228"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jun 2021 05:05:23 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 05:05:23 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 28 Jun 2021 05:05:20 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <robh+dt@kernel.org>
-CC:     <alexandre.belloni@bootlin.com>, <soc@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <ludovic.desroches@microchip.com>,
-        <claudiu.beznea@microchip.com>, <codrin.ciubotariu@microchip.com>,
-        "Eugen Hristev" <eugen.hristev@microchip.com>
-Subject: [PATCH v5 4/4] ARM: multi_v7_defconfig: add sama7g5 SoC
-Date:   Mon, 28 Jun 2021 15:04:52 +0300
-Message-ID: <20210628120452.74408-4-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210628120452.74408-1-eugen.hristev@microchip.com>
-References: <20210628120452.74408-1-eugen.hristev@microchip.com>
+        Mon, 28 Jun 2021 08:08:05 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB6FC061766;
+        Mon, 28 Jun 2021 05:05:36 -0700 (PDT)
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 0FCAC82DBA;
+        Mon, 28 Jun 2021 14:05:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624881933;
+        bh=UIyRjwy0vFnK2UZowXIaRpxAMqdxk5niHOiRA8DOgxg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zJ0tKC7qc4492AcJQEgN+To4LYQYAQyDrZ9B0yK+5edUSoaOhpoJAx2UDFMw1WPUI
+         lUSSTaTkSxeKqAKLhzJJigposDp0oxaXGJyEMm/0WSpR9haz01yeaDByANk/CTGJ7y
+         UyG1g2M+jemyGc6Gn77TqQfVHU0xop8SLE1pcNsyhz51AMhpQvomXqASy1u25PuWLL
+         y9X5o/H0s/rucmg8bjMtgWCYbRSjm+yBoJvLKE5Ip6O1tm6mlJtVrDYN8BLkyIAVav
+         ktv3laFgdkOZ3JP4TpA9xNuA9oObXzkypNy5nb3dgryNkLrF6Ud9zXfclQbDyPbL4X
+         W2Owvz2P6ExZQ==
+Date:   Mon, 28 Jun 2021 14:05:26 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <20210628140526.7417fbf2@ktm>
+In-Reply-To: <YNXq1bp7XH8jRyx0@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-3-lukma@denx.de>
+        <YNH7vS9FgvEhz2fZ@lunn.ch>
+        <20210623133704.334a84df@ktm>
+        <YNOTKl7ZKk8vhcMR@lunn.ch>
+        <20210624125304.36636a44@ktm>
+        <YNSJyf5vN4YuTUGb@lunn.ch>
+        <20210624163542.5b6d87ee@ktm>
+        <YNSuvJsD0HSSshOJ@lunn.ch>
+        <20210625115935.132922ff@ktm>
+        <YNXq1bp7XH8jRyx0@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/oRs4Gqruek3169mZ2ms_wVj"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Microchip SAMA7G5 ARM v7 Cortex-A7 based SoC to multi_v7_defconfig.
-Also add it's clock timer, the PIT64B.
+--Sig_/oRs4Gqruek3169mZ2ms_wVj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Hi Andrew,
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 52a0400fdd92..4a02c102128d 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -16,6 +16,7 @@ CONFIG_ARCH_AT91=y
- CONFIG_SOC_SAMA5D2=y
- CONFIG_SOC_SAMA5D3=y
- CONFIG_SOC_SAMA5D4=y
-+CONFIG_SOC_SAMA7G5=y
- CONFIG_ARCH_BCM=y
- CONFIG_ARCH_BCM_CYGNUS=y
- CONFIG_ARCH_BCM_HR2=y
-@@ -996,6 +997,7 @@ CONFIG_APQ_MMCC_8084=y
- CONFIG_MSM_GCC_8660=y
- CONFIG_MSM_MMCC_8960=y
- CONFIG_MSM_MMCC_8974=y
-+CONFIG_MICROCHIP_PIT64B=y
- CONFIG_BCM2835_MBOX=y
- CONFIG_ROCKCHIP_IOMMU=y
- CONFIG_TEGRA_IOMMU_GART=y
--- 
-2.25.1
+> > I do believe that I can just extend the L2 switch driver (fec_mtip.c
+> > file to be precise) to provide full blown L2 switch functionality
+> > without touching the legacy FEC more than in this patch set.
+> >=20
+> > Would you consider applying this patch series then? =20
+>=20
+> What is most important is the ABI. If something is merged now, we need
+> to ensure it does not block later refactoring to a clean new
+> driver. The DT binding is considered ABI. So the DT binding needs to
+> be like a traditional switchdev driver. Florian already pointed out,
+> you can use a binding very similar to DSA. ti,cpsw-switch.yaml is
+> another good example.
 
+The best I could get would be:
+
+&eth_switch {
+	compatible =3D "imx,mtip-l2switch";
+	reg =3D <0x800f8000 0x400>, <0x800fC000 0x4000>;
+
+	interrupts =3D <100>;
+	status =3D "okay";
+
+	ethernet-ports {
+		port1@1 {
+			reg =3D <1>;
+			label =3D "eth0";
+			phys =3D <&mac0 0>;
+		};
+
+		port2@2 {
+			reg =3D <2>;
+			label =3D "eth1";
+			phys =3D <&mac1 1>;
+		};
+	};
+};
+
+Which would abuse the "phys" properties usages - as 'mac[01]' are
+referring to ethernet controllers.
+
+On TI SoCs (e.g. am33xx-l4.dtsi) phys refer to some separate driver
+responsible for PHY management. On NXP this is integrated with FEC
+driver itself.
+
+>=20
+> So before considering merging your changes, i would like to see a
+> usable binding.
+>=20
+> I also don't remember seeing support for STP. Without that, your
+> network has broadcast storm problems when there are loops. So i would
+> like to see the code needed to put ports into blocking, listening,
+> learning, and forwarding states.
+>=20
+> 	  Andrew
+
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/oRs4Gqruek3169mZ2ms_wVj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDZuwYACgkQAR8vZIA0
+zr2RcAgAuMY1iZZF2X1EHM9gUTLF569/9gcgivWFrvNEChAKx5zHxpIbgzxPAnwm
+GzabIwg2N4OIHd1QGNR9zWxba3EnRbAG9+YdcGNIY6XN9wR7qe5LUjLpyg3kyica
+hlSc5lqCeXhZYzPEIyUx1t8mc14J7aUw4s09YSkqWFWpDd2vbCgJGuExIM/qrOE9
+ZI1ramBtlAMNvA6aJmpTM9tJTIb3Ih9gqqJVSpsLSkn4iVYeYWO0OT0HNncnAf5p
+3clvENVZPplWGGwedpyCMyRvu5Q/Ww7pce6YdJ42RmTFeBw0xHjHPbvcrYj+qspD
+oapmrFJvImA1Gc1aerNhuLtH+UWgEg==
+=ZPz6
+-----END PGP SIGNATURE-----
+
+--Sig_/oRs4Gqruek3169mZ2ms_wVj--
