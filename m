@@ -2,88 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B8E3B5FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B6C3B5FB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhF1OMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:12:55 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53219 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230033AbhF1OMy (ORCPT
+        id S232418AbhF1ONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230033AbhF1ONl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:12:54 -0400
-Received: (qmail 657388 invoked by uid 1000); 28 Jun 2021 10:10:27 -0400
-Date:   Mon, 28 Jun 2021 10:10:27 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     linyyuan@codeaurora.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH] usb: dwc3: fix race of usb_gadget_driver operation
-Message-ID: <20210628141027.GA656159@rowland.harvard.edu>
-References: <20210625104415.8072-1-linyyuan@codeaurora.org>
- <20210625163707.GC574023@rowland.harvard.edu>
- <b24825113327c72c742d55e89ec2726e@codeaurora.org>
- <20210626150304.GA601624@rowland.harvard.edu>
- <1d1f06763c7cdeb67264128537c6a8f4@codeaurora.org>
- <20210627140903.GB624763@rowland.harvard.edu>
- <ca669cb24f424e1c28adfa3a84d7bad2@codeaurora.org>
+        Mon, 28 Jun 2021 10:13:41 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDEFC061574;
+        Mon, 28 Jun 2021 07:11:14 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id g19-20020a9d12930000b0290457fde18ad0so18880082otg.1;
+        Mon, 28 Jun 2021 07:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NCy8SzHtVsTms8W2cCZWxIt9IklFt3RTVjERxFKBJRU=;
+        b=QTI2Djox7MRIV5xmVdooXf1riXKjlPe55adOU+BbFPijCaVTewXZ5ie4xVJsUrdcBD
+         cJlaDQ0G3jnRQLLI4ucg9LiqJXoFUL6UF2TdwnGnGtzNPK8lFvgToLswQ41VZ24yv2nQ
+         APiWED5RrVS3FU+JaP99TaMMnWbx8swi1+T9I0Lzqyuw36K+MEEdXeqT+yN1Kbe+8u+q
+         Nvw+TC7qW+mR340aPPwnhXKV/asgsrjefMugWibYblLQo+twZx0UsIDpXi6EuogG+xfL
+         dTLM/fXncBQegCh1l/jxYY4BheYzmt3HHt6EhczL8on3MfoCQ1m6Yu56FxKx5ukPt4Fc
+         1DyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NCy8SzHtVsTms8W2cCZWxIt9IklFt3RTVjERxFKBJRU=;
+        b=WPjwoopFWCThGGc2zUtG1I+/X9nzblPj89TLdmFbB1c/j+4s1/Esb6SnTxRCbbaYgH
+         dfgfQBHVNh/FRY66RogItNnKDrNPoAEM+gU+k3jiAhT3ZYOeLST27S1ok+Pekfs907ho
+         IUp7mTNDmzjTeIHmkKquf1LezmUjtrDNK0h7TqVoDEZ46wQ5j+Ux21mt3pQguVBDST74
+         DXQqDGtZfD5iMUM5Zeta2bYt6qDtsy19aeV2ob0YfG8DB2tlNJ1L4k7+r86coyYnItES
+         J0cKlwFvtx5fgSptByg8hzWhxYcar2onSAi351RLoJjoBEW6ZrZKOwiFvVvTC2njaInR
+         VOeA==
+X-Gm-Message-State: AOAM532mZSzD+F47bE8Y71L7dmjX9GI9Yb6NCgUC+VLYVyn3TUlVK6u3
+        jCDFCkKssggICvSK8d1LV2qDGRP14X0=
+X-Google-Smtp-Source: ABdhPJz/RXKT8x97KI9wifUr08T/FRV419WzdifSJDubUxN/tao0sXxCDyEYw9FcL+YvC+iV0ip2Tw==
+X-Received: by 2002:a9d:5c14:: with SMTP id o20mr20880765otk.328.1624889472363;
+        Mon, 28 Jun 2021 07:11:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r204sm3120937oih.11.2021.06.28.07.11.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 07:11:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
+To:     Xu Yilun <yilun.xu@intel.com>,
+        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <martin@geanix.com>
+Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20210625074213.654274-1-martin@geanix.com>
+ <20210625074213.654274-6-martin@geanix.com>
+ <20210628060019.GE72330@yilunxu-OptiPlex-7050>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <6cb3b8cb-35dc-7279-cda2-0a2300aa959a@roeck-us.net>
+Date:   Mon, 28 Jun 2021 07:11:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca669cb24f424e1c28adfa3a84d7bad2@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210628060019.GE72330@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 05:36:22PM +0800, linyyuan@codeaurora.org wrote:
-> On 2021-06-27 22:09, Alan Stern wrote:
-> > 
-> > 	CPU0				CPU1
-> > 	----				----
-> > 					usb_gadget_remove_driver runs
-> > 					  Calls synchronize_irq
-> > 					    synchronize_irq returns
-> > 					  Calls udc_driver_unbind
-> > 	IRQ happens for disconnect
-> > 	  Handler unlocks dwc->lock
-> > 	  Calls dwc->gadget_driver->disconnect
-> > 	    Gadget driver has already been unbound
-> > 	      and is not prepared to handle a
-> > 	      callback, so it crashes
-> > 					  Calls usb_gadget_udc_stop
-> > 					    dwc->gadget_driver is
-> > 					      set to NULL
-> > 
-> > Without the async_callbacks mechanism, the gadget driver can get a
-> > callback at the wrong time (after it has been unbound), which might
-> > cause it to crash.
-> 1. do you think we need to back to my original patch,
-> https://lore.kernel.org/linux-usb/20210619154309.52127-1-linyyuan@codeaurora.org/T/#t
-
-No, I think the async_callbacks approach is slightly better.
-
-> i think we can add the spin lock or mutex lock to protect this kind of race
-> from UDC layer, it will be easy understanding.
-
-We don't actually need a lock or mutex to fix this problem.  We just 
-need to make the remove_driver sequence issue two calls to the UDC 
-driver rather than just one: async_callbacks and udc_stop.
-
-> 2. if you insist this kind of change, how to change following code in dwc3 ?
-> if (dwc->gadget_driver && dwc->gadget_driver->disconnect) {
+On 6/27/21 11:00 PM, Xu Yilun wrote:
+> It is good to me.
 > 
-> 2.1 if (dwc->async_callbacks && dwc->gadget_driver->disconnect) {
-> or
-> 2.2 if (dwc->async_callbacks && vdwc->gadget_driver &&
-> dwc->gadget_driver->disconnect) {
 
-Either one would be okay.  If async_callbacks is enabled then 
-dwc->gadget_driver should never be NULL, but it won't hurt to check.  
-After all, disconnect does not occur often and it doesn't need to run 
-extremely quickly.
+As already pointed out, please don't top-post, and provide a
+formal Reviewed-by: or Acked-by: tag.
 
-Alan Stern
+Thanks,
+Guenter
+
+> On Fri, Jun 25, 2021 at 09:42:13AM +0200, Martin Hundebøll wrote:
+>> From: Martin Hundebøll <mhu@silicom.dk>
+>>
+>> Add the list of sensors supported by the Silicom n5010 PAC, and enable
+>> the drivers as a subtype of the intel-m10-bmc multi-function driver.
+>>
+>> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+>> ---
+>>
+>> Changes since v1:
+>>   * Patch split out to separate hwmon changes
+>>
+>>   drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
+>>   1 file changed, 116 insertions(+)
+>>
+>> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
+>> index bd7ed2ed3a1e..7a08e4c44a4b 100644
+>> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
+>> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
+>> @@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
+>>   	.hinfo = d5005bmc_hinfo,
+>>   };
+>>   
+>> +static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
+>> +	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
+>> +	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
+>> +	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
+>> +	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
+>> +	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
+>> +	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
+>> +	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
+>> +	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
+>> +	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
+>> +	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
+>> +	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
+>> +	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
+>> +	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
+>> +	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
+>> +	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
+>> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
+>> +	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
+>> +};
+>> +
+>> +static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
+>> +	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
+>> +	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
+>> +	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
+>> +	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
+>> +	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
+>> +	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
+>> +	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
+>> +	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
+>> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
+>> +	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
+>> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
+>> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
+>> +	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
+>> +};
+>> +
+>> +static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
+>> +	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
+>> +	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
+>> +	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
+>> +	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
+>> +	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
+>> +	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
+>> +	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
+>> +	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
+>> +	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
+>> +	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
+>> +	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
+>> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
+>> +	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
+>> +};
+>> +
+>> +static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
+>> +	HWMON_CHANNEL_INFO(temp,
+>> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+>> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+>> +	HWMON_CHANNEL_INFO(in,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+>> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+>> +	HWMON_CHANNEL_INFO(curr,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+>> +			   HWMON_C_INPUT | HWMON_C_LABEL),
+>> +	NULL
+>> +};
+>> +
+>> +static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
+>> +	.tables = {
+>> +		[hwmon_temp] = n5010bmc_temp_tbl,
+>> +		[hwmon_in] = n5010bmc_in_tbl,
+>> +		[hwmon_curr] = n5010bmc_curr_tbl,
+>> +	},
+>> +
+>> +	.hinfo = n5010bmc_hinfo,
+>> +};
+>> +
+>>   static umode_t
+>>   m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+>>   			u32 attr, int channel)
+>> @@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
+>>   		.name = "d5005bmc-hwmon",
+>>   		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
+>>   	},
+>> +	{
+>> +		.name = "n5010bmc-hwmon",
+>> +		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
+>> +	},
+>>   	{ }
+>>   };
+>>   
+>> -- 
+>> 2.31.0
+
