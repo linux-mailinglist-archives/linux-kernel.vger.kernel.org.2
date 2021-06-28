@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57AA3B58BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D903B58BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhF1Fuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 01:50:35 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:49548 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhF1Fue (ORCPT
+        id S232132AbhF1FxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 01:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhF1FxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 01:50:34 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 76E23D5D06;
-        Mon, 28 Jun 2021 13:47:59 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.240.82.166])
-        by smtp.263.net (postfix) whith ESMTP id P12363T139709984536320S1624859260300161_;
-        Mon, 28 Jun 2021 13:48:00 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4742e892832fb92502ccda9ba712ab69>
-X-RL-SENDER: zhanglianjie@uniontech.com
-X-SENDER: zhanglianjie@uniontech.com
-X-LOGIN-NAME: zhanglianjie@uniontech.com
-X-FST-TO: jiaxun.yang@flygoat.com
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.240.82.166
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhanglianjie <zhanglianjie@uniontech.com>
-To:     jiaxun.yang@flygoat.com, chenhuacai@kernel.org,
-        tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhanglianjie <zhanglianjie@uniontech.com>
-Subject: [PATCH v2] mm: Fix the problem of mips architecture Oops
-Date:   Mon, 28 Jun 2021 13:47:38 +0800
-Message-Id: <20210628054738.10964-1-zhanglianjie@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 28 Jun 2021 01:53:16 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B576C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:50:51 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w17so8456978edd.10
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3ELu6RuiUNiclS07JxaHoXIOglq+3DaLEhzbqrS+pHo=;
+        b=Drwg8qwvcp1ADogVCxHnwobhqYqKeWiggrWpCltmedAnb7hEZ9KjliMB9DuzMhiC40
+         BywW/qOP25mplzD6KRdnlwFDoByL7/zuYwfIWc99/1+xeIN52tvDeqa55mxbxTtOk8+v
+         RdcVkd/Lj/pcoVTKfKGgnLRLmMZenaUqkPj1P/T7GdNznY+4UaLocmdKDryFugq+Y8re
+         v0PGm23hdV+FeReAygM5L2wcaRcVyGQIZzWudJMIBKN784KeMrIqRRpggeU61GZ0TCsn
+         j9r11Bi8dewft0d9++uxOZTtP5REwG9uBzJpfJxHY4L1ESBwYo4gtdVZPZ+XMjB62B4Y
+         NJoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=3ELu6RuiUNiclS07JxaHoXIOglq+3DaLEhzbqrS+pHo=;
+        b=pWeuUXMJjlAz1kcliFZ+yCI0Fg/lTjn+0OYUU1G0KJs2XeUAXHxigIu7lAkiEmWldh
+         JNoXT8VyYhgArzIIL2lPjuo0mmhQ98Tv+viOWSimmDwiN2Z0ySz4oqYUMqJeUgwjlVR+
+         LXUIo6Cqzk1ni5vW7ovjcK2QSFfIwIEyvIK/ddsXzi0GpUvLEps2YrKxPl7MnxB7Y3ie
+         luMnuJg9kYPqX9MoOHqXEq0PfNaKu+EWK1gBBpzN3cWrnSiauU9fu3vvI33gMADG9f39
+         sST6rspCEIoNrVdCg9j/LFDT66OCGEZEwYvrgCQAO6dSXJCnbQ0ZWnX94xN3xy3TO/eo
+         ao0A==
+X-Gm-Message-State: AOAM533GtqdyJ0gU5emMxDJ4m6aXPDVNkUviZhJJmPKRSipljkAd39r2
+        DiXPjvtlDQI60ApRB7DmqQo=
+X-Google-Smtp-Source: ABdhPJy+lk9aibdbSxw03bC3vyRw6Gx65ZUjn1AmU9C9ViWDhUu9PWyKhB9EiEFq8vNgdqcTX1Fc8w==
+X-Received: by 2002:a05:6402:397:: with SMTP id o23mr27221891edv.217.1624859449954;
+        Sun, 27 Jun 2021 22:50:49 -0700 (PDT)
+Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
+        by smtp.gmail.com with ESMTPSA id j19sm8821959edw.43.2021.06.27.22.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Jun 2021 22:50:49 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 28 Jun 2021 07:50:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] objtools fix for v5.14
+Message-ID: <YNljN5OXy1opw86H@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cause of the problem is as follows:
-1. when cat /sys/devices/system/memory/memory0/valid_zones,
-   test_pages_in_a_zone() will be called.
-2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
-   The smallest pfn of the numa node in the mips architecture is 128,
-   and the page corresponding to the previous 0~127 pfn is not
-   initialized (page->flags is 0xFFFFFFFF)
-3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
-   of bounds in the corresponding array,
-   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
-   access to the out-of-bounds zone member variables appear abnormal,
-   resulting in Oops.
-Therefore, it is necessary to keep the page between 0 and the minimum
-pfn to prevent Oops from appearing.
+Linus,
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
----
- arch/mips/loongson64/numa.c | 3 +++
- 1 file changed, 3 insertions(+)
+Please pull the latest objtool/urgent git tree from:
 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index fa9b4a487a47..dba9e6f17b9e 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -129,6 +129,9 @@ static void __init node_mem_init(unsigned int node)
- 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
- 			memblock_reserve((node_addrspace_offset | 0xfe000000),
- 					 32 << 20);
-+
-+		/* Reserver pfn range 0~node[0]->node_start_pfn */
-+		memblock_reserve(0, PAGE_SIZE * start_pfn);
- 	}
- }
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-urgent-2021-06-28
 
---
-2.20.1
+   # HEAD: e31694e0a7a709293319475d8001e05e31f2178c objtool: Don't make .altinstructions writable
+
+A single ELF format fix for a section flags mismatch bug that breaks
+kernel tooling such as kpatch-build.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Josh Poimboeuf (1):
+      objtool: Don't make .altinstructions writable
 
 
+ tools/objtool/arch/x86/decode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 523aa4157f80..bc821056aba9 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -684,7 +684,7 @@ static int elf_add_alternative(struct elf *elf,
+ 	sec = find_section_by_name(elf, ".altinstructions");
+ 	if (!sec) {
+ 		sec = elf_create_section(elf, ".altinstructions",
+-					 SHF_WRITE, size, 0);
++					 SHF_ALLOC, size, 0);
+ 
+ 		if (!sec) {
+ 			WARN_ELF("elf_create_section");
