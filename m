@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AD3B620E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAA43B619A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbhF1OlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbhF1Ocr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:32:47 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982F2C0611C6;
-        Mon, 28 Jun 2021 07:23:32 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id h17so26148799edw.11;
-        Mon, 28 Jun 2021 07:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rfKuoJAtusVapu2kMNkcCOghL39W8RTkgqPaXUuzpo8=;
-        b=ZDRo78BaHPXxHFuzCVbfLd4RGcEPVTnhlS9BBkW9pXPF0D1YWb3CfCZroYT4gN+9yx
-         DHJPJ6Vk6gsB2GDCvGqaNltY9IdKnbRbFiW2ZCeevawG11FbaaPem3QT6umspNl74ZGF
-         sp+XIF68u49BhCc/fAOJhPWGAVapss6+9HA1+XYgSNMRQIX9hcNYY/HrUfycufng+SDs
-         /iWH7Mw6UYidGttFQHvdpsBDniMNgibVXGdQoDHFnU1sm51c/EtzJ9EvGXZ59DSl9+Gp
-         Q+3q+kR3R2Sye0HfyIgXV5O7Jb43WJwdYWw/M8Ulb47lVWdSpuFeCdHPQpdQRbU6qYGi
-         o+eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rfKuoJAtusVapu2kMNkcCOghL39W8RTkgqPaXUuzpo8=;
-        b=YZN3auLm1D5fusVay4gpd96yVLxEgSK1TbLPHsWzlChwGC7a2XtZcNudhRLj7v+T7B
-         kk88yY/sXMZzd1q7yoVIycWbIn3u9ps2sNT7Trdf2c+r44p5sdY+Uk9CsQ6YLxrRh0Xn
-         rpuBcefzM4u+eIBw2MrE/c3vL7uD128BnEYUN8pd0xKcUOq5n32iN5BnKqiBRh0YZGu7
-         24JV4K27T7lATy54BNM1XmBs7xrwmdvd1+DiNpEhe6vxe1E6y1TssbtPPb0Hz20vV9tY
-         tZJHXhqk0FeKihKARdOeE1safrrg5hB/SDiSGexGz6RIFtS00ciICN+Hn9Tr2SnHyAek
-         nZXQ==
-X-Gm-Message-State: AOAM532AcSj4NScclQgULL2T36n/ckmmBLLJemxKoFHOwAWL+BY6u3RI
-        lHnmH7z3NKC6KpaSiv+VVhnXaeuM0zk=
-X-Google-Smtp-Source: ABdhPJwfobLX0Nexj7XfdQlU1nOg96cEbyQjKFS9BY0XcmMGP7zeiIu2sXZM7wjh3rbbdIaU05pSlA==
-X-Received: by 2002:a05:6402:154:: with SMTP id s20mr33653045edu.103.1624890211191;
-        Mon, 28 Jun 2021 07:23:31 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id cd4sm6983770ejb.104.2021.06.28.07.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 07:23:30 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 17:23:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210628142329.2y7gmykoy7uh44gd@skbuf>
-References: <YNOTKl7ZKk8vhcMR@lunn.ch>
- <20210624125304.36636a44@ktm>
- <YNSJyf5vN4YuTUGb@lunn.ch>
- <20210624163542.5b6d87ee@ktm>
- <YNSuvJsD0HSSshOJ@lunn.ch>
- <20210625115935.132922ff@ktm>
- <YNXq1bp7XH8jRyx0@lunn.ch>
- <20210628140526.7417fbf2@ktm>
- <20210628124835.zbuija3hwsnh2zmd@skbuf>
- <20210628161314.37223141@ktm>
+        id S234033AbhF1Og6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233978AbhF1O2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:28:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74FD661C7F;
+        Mon, 28 Jun 2021 14:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624890372;
+        bh=G6owhmpqhIdSJhUhchnGygkNEtP/ReN23zl88rAl/y0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=P+4iaHClI3e6sEVC1YBocxfLuMhLfVQ0RNb+SNZt2kBRUnb7gne7gzPjiStSy3/co
+         xlx9BqEo1oDZWn4pyEwkgmMvnuT5E4eGqOb6U8N373zrHUa/YqwHlqBMYYICypw5gd
+         CyVnYsgdgIJ92XjaQbmnbVE8eGUCqHt3cb1uTWQVo30CmaDh9xCx5rPE9BQB/1d3X8
+         uzx86DOnldyxE9XKSrktV/xP47yU2IO1zZwJnujn78RdztvMEKmShHUoGSP3An/LuH
+         dn6q/sG4WYZSfjId+e1MzNvmWBYJh3br+E//GUju0MdoJu+UfcyybIwOGuJlp2eIvH
+         rHUirtcZBW66A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yifan Zhang <yifan1.zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.10 002/101] Revert "drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue."
+Date:   Mon, 28 Jun 2021 10:24:28 -0400
+Message-Id: <20210628142607.32218-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
+References: <20210628142607.32218-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628161314.37223141@ktm>
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.47-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.47-rc1
+X-KernelTest-Deadline: 2021-06-30T14:25+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 04:13:14PM +0200, Lukasz Majewski wrote:
-> > > > So before considering merging your changes, i would like to see a
-> > > > usable binding.
-> > > >
-> > > > I also don't remember seeing support for STP. Without that, your
-> > > > network has broadcast storm problems when there are loops. So i
-> > > > would like to see the code needed to put ports into blocking,
-> > > > listening, learning, and forwarding states.
-> > > >
-> > > > 	  Andrew
-> >
-> > I cannot stress enough how important it is for us to see STP support
-> > and consequently the ndo_start_xmit procedure for switch ports.
->
-> Ok.
->
-> > Let me see if I understand correctly. When the switch is enabled, eth0
-> > sends packets towards both physical switch ports, and eth1 sends
-> > packets towards none, but eth0 handles the link state of switch port
-> > 0, and eth1 handles the link state of switch port 1?
->
-> Exactly, this is how FEC driver is utilized for this switch.
+From: Yifan Zhang <yifan1.zhang@amd.com>
 
-This is a much bigger problem than anything which has to do with code
-organization. Linux does not have any sort of support for unmanaged
-switches. Please try to find out if your switch is supposed to be able
-to be managed (run control protocols on the CPU). If not, well, I don't
-know what to suggest.
+commit ee5468b9f1d3bf48082eed351dace14598e8ca39 upstream.
+
+This reverts commit 4cbbe34807938e6e494e535a68d5ff64edac3f20.
+
+Reason for revert: side effect of enlarging CP_MEC_DOORBELL_RANGE may
+cause some APUs fail to enter gfxoff in certain user cases.
+
+Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+index 1859d293ef71..fb15e8b5af32 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c
+@@ -3619,12 +3619,8 @@ static int gfx_v9_0_kiq_init_register(struct amdgpu_ring *ring)
+ 	if (ring->use_doorbell) {
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_LOWER,
+ 					(adev->doorbell_index.kiq * 2) << 2);
+-		/* If GC has entered CGPG, ringing doorbell > first page doesn't
+-		 * wakeup GC. Enlarge CP_MEC_DOORBELL_RANGE_UPPER to workaround
+-		 * this issue.
+-		 */
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_UPPER,
+-					(adev->doorbell.size - 4));
++					(adev->doorbell_index.userqueue_end * 2) << 2);
+ 	}
+ 
+ 	WREG32_SOC15_RLC(GC, 0, mmCP_HQD_PQ_DOORBELL_CONTROL,
+-- 
+2.30.2
+
