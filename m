@@ -2,163 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A6B3B5D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A56A3B5D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhF1MII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
+        id S232870AbhF1MKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232926AbhF1MIF (ORCPT
+        with ESMTP id S232608AbhF1MKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:08:05 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB6FC061766;
-        Mon, 28 Jun 2021 05:05:36 -0700 (PDT)
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 0FCAC82DBA;
-        Mon, 28 Jun 2021 14:05:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624881933;
-        bh=UIyRjwy0vFnK2UZowXIaRpxAMqdxk5niHOiRA8DOgxg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zJ0tKC7qc4492AcJQEgN+To4LYQYAQyDrZ9B0yK+5edUSoaOhpoJAx2UDFMw1WPUI
-         lUSSTaTkSxeKqAKLhzJJigposDp0oxaXGJyEMm/0WSpR9haz01yeaDByANk/CTGJ7y
-         UyG1g2M+jemyGc6Gn77TqQfVHU0xop8SLE1pcNsyhz51AMhpQvomXqASy1u25PuWLL
-         y9X5o/H0s/rucmg8bjMtgWCYbRSjm+yBoJvLKE5Ip6O1tm6mlJtVrDYN8BLkyIAVav
-         ktv3laFgdkOZ3JP4TpA9xNuA9oObXzkypNy5nb3dgryNkLrF6Ud9zXfclQbDyPbL4X
-         W2Owvz2P6ExZQ==
-Date:   Mon, 28 Jun 2021 14:05:26 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210628140526.7417fbf2@ktm>
-In-Reply-To: <YNXq1bp7XH8jRyx0@lunn.ch>
-References: <20210622144111.19647-1-lukma@denx.de>
-        <20210622144111.19647-3-lukma@denx.de>
-        <YNH7vS9FgvEhz2fZ@lunn.ch>
-        <20210623133704.334a84df@ktm>
-        <YNOTKl7ZKk8vhcMR@lunn.ch>
-        <20210624125304.36636a44@ktm>
-        <YNSJyf5vN4YuTUGb@lunn.ch>
-        <20210624163542.5b6d87ee@ktm>
-        <YNSuvJsD0HSSshOJ@lunn.ch>
-        <20210625115935.132922ff@ktm>
-        <YNXq1bp7XH8jRyx0@lunn.ch>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 28 Jun 2021 08:10:35 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A38C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:08:10 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso10277916pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rBkm1+s9hX6PcUjinQ7lSJS/Fgd3FwweZh2+Z8xsqPo=;
+        b=opd6sglrblljFRzHryg/7EDmSJHD5JrcCqUh9qzqAbDVm+/TtkkOtWQygN+1DkWBch
+         AL45nqtkgOjaX1dUubd2kOvovFvWG6daiQBEHt119H2YFRS7/QXcRoKYQdjeBCeJ4s3d
+         wGEzfk0U9N/+p7QxV1uMdyzpYfVi5uc+eqSlAjXvXRbRjUX0cmEYafIjy0gHuWuFhEWv
+         D8a+oK8Nb9SH5DSPZUt/105BpunBxXb8WOPDQDC4roEBeRk7oE8WmqsbH3VRMhBV2vh3
+         a3sEy3r6o49FJDybVNWviCMJ08pewDwPGjT+8pcaLWNLbboO2sQQYx4AcRk1aw7ZUOOs
+         1fJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rBkm1+s9hX6PcUjinQ7lSJS/Fgd3FwweZh2+Z8xsqPo=;
+        b=Krs+ibRapqQf0ku/iP8TEejy+ocv/RMEnFf8kL7z2IoVNHi7txfTWyGyGfaedqItHp
+         +jgrPxGvqjJWw/KXSH3dpV44Ek45Zdd7k2n+qFTcWJPjfNjd/6XLH84iafTs0GP02hcv
+         mrWgF8sDbRL/mbjRjjx5n7+3vRMO5I2TcjJFh7QOQYkMMm5LZZbxdQEGp0vinkQlOAMm
+         ZOUaEYNw5+4Bbmq/K6UePgICrs9nENkspgWg87Q93kWwLyvuobP1sbpLJeo8pnEXE75B
+         wUfJ06GyYr0lQNwUO6QpHWhlQviSlSvXIgH8KpY85418AUlYrvNr5h7/KSfhJUwYXYpu
+         yJ8Q==
+X-Gm-Message-State: AOAM530AvUPzMLnFBpX1kTvBD1Zqy3uq7IFDIXF2kiwlWtUyGwk5vojv
+        FQTXYGQuiLFUDlXE2AF2iFfzJg==
+X-Google-Smtp-Source: ABdhPJz+wogkKeCNY+BVjSj+kneg8FhgU/tquI+IyEsOosqz0f3FtnnoYWlFAZpKsenFk1uABafnlg==
+X-Received: by 2002:a17:90a:2f66:: with SMTP id s93mr876153pjd.19.1624882089207;
+        Mon, 28 Jun 2021 05:08:09 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id o1sm14404856pfk.152.2021.06.28.05.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 05:08:08 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 20:08:02 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
+Message-ID: <20210628120802.GC200044@leoy-ThinkPad-X240s>
+References: <20210624164303.28632-1-james.clark@arm.com>
+ <20210624164303.28632-3-james.clark@arm.com>
+ <20210628012744.GA158794@leoy-ThinkPad-X240s>
+ <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/oRs4Gqruek3169mZ2ms_wVj"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oRs4Gqruek3169mZ2ms_wVj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 28, 2021 at 11:38:34AM +0100, James Clark wrote:
 
-Hi Andrew,
+[...]
 
-> > I do believe that I can just extend the L2 switch driver (fec_mtip.c
-> > file to be precise) to provide full blown L2 switch functionality
-> > without touching the legacy FEC more than in this patch set.
-> >=20
-> > Would you consider applying this patch series then? =20
->=20
-> What is most important is the ABI. If something is merged now, we need
-> to ensure it does not block later refactoring to a clean new
-> driver. The DT binding is considered ABI. So the DT binding needs to
-> be like a traditional switchdev driver. Florian already pointed out,
-> you can use a binding very similar to DSA. ti,cpsw-switch.yaml is
-> another good example.
+> >>  static int cs_etm__process_auxtrace_event(struct perf_session *session,
+> >>  					  union perf_event *event,
+> >>  					  struct perf_tool *tool __maybe_unused)
+> >> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
+> >>  				cs_etm__dump_event(etm, buffer);
+> >>  				auxtrace_buffer__put_data(buffer);
+> >>  			}
+> >> -	}
+> >> +	} else if (dump_trace)
+> >> +		dump_queued_data(etm, &event->auxtrace);
+> > 
+> > IIUC, in the function cs_etm__process_auxtrace_event(), since
+> > "etm->data_queued" is always true, below flow will never run:
+> > 
+> >     if (!etm->data_queued) {
+> >         ......
+> > 
+> >         if (dump_trace)
+> >             if (auxtrace_buffer__get_data(buffer, fd)) {
+> >                     cs_etm__dump_event(etm, buffer);
+> >                     auxtrace_buffer__put_data(buffer);
+> >             }
+> >     }
+> > 
+> > If so, it's better to use a new patch to polish the code.
+> > 
+> 
+> Hi Leo,
+> 
+> I think this is not true in piped mode because there is no auxtrace index.
+> In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
+> is called for each buffer.
+> 
+> You can reproduce this with something like this:
+> 
+>      ./perf record -o - ls > stdio.data
+>      cat stdio.data | ./perf report -i -
 
-The best I could get would be:
+You are right!  I tried these two commands with cs_etm event, just as
+you said, in this case, the AUX trace data is not queued; so the flow
+for "if (!etm->data_queued)" should be kept.  If so, I am very fine
+for current change.  Thanks for sharing the knowledge.
 
-&eth_switch {
-	compatible =3D "imx,mtip-l2switch";
-	reg =3D <0x800f8000 0x400>, <0x800fC000 0x4000>;
+> There are some other Coresight features that don't work as expected in this mode, like
+> sorting timestamps between CPUs. The aux split patchset won't work either because random
+> access isn't possible. And the TRBE patch that I'm working on now won't work, because it
+> also requires the random access to lookup the flags on the AUX record to configure the 
+> decoder for unformatted trace.
 
-	interrupts =3D <100>;
-	status =3D "okay";
+Cool, looking forward for the patches :)
 
-	ethernet-ports {
-		port1@1 {
-			reg =3D <1>;
-			label =3D "eth0";
-			phys =3D <&mac0 0>;
-		};
-
-		port2@2 {
-			reg =3D <2>;
-			label =3D "eth1";
-			phys =3D <&mac1 1>;
-		};
-	};
-};
-
-Which would abuse the "phys" properties usages - as 'mac[01]' are
-referring to ethernet controllers.
-
-On TI SoCs (e.g. am33xx-l4.dtsi) phys refer to some separate driver
-responsible for PHY management. On NXP this is integrated with FEC
-driver itself.
-
->=20
-> So before considering merging your changes, i would like to see a
-> usable binding.
->=20
-> I also don't remember seeing support for STP. Without that, your
-> network has broadcast storm problems when there are loops. So i would
-> like to see the code needed to put ports into blocking, listening,
-> learning, and forwarding states.
->=20
-> 	  Andrew
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/oRs4Gqruek3169mZ2ms_wVj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDZuwYACgkQAR8vZIA0
-zr2RcAgAuMY1iZZF2X1EHM9gUTLF569/9gcgivWFrvNEChAKx5zHxpIbgzxPAnwm
-GzabIwg2N4OIHd1QGNR9zWxba3EnRbAG9+YdcGNIY6XN9wR7qe5LUjLpyg3kyica
-hlSc5lqCeXhZYzPEIyUx1t8mc14J7aUw4s09YSkqWFWpDd2vbCgJGuExIM/qrOE9
-ZI1ramBtlAMNvA6aJmpTM9tJTIb3Ih9gqqJVSpsLSkn4iVYeYWO0OT0HNncnAf5p
-3clvENVZPplWGGwedpyCMyRvu5Q/Ww7pce6YdJ42RmTFeBw0xHjHPbvcrYj+qspD
-oapmrFJvImA1Gc1aerNhuLtH+UWgEg==
-=ZPz6
------END PGP SIGNATURE-----
-
---Sig_/oRs4Gqruek3169mZ2ms_wVj--
+Leo
