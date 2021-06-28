@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF113B691A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C743B6920
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbhF1Tcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:32:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1186 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236553AbhF1Tcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:32:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="188399721"
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="188399721"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 12:30:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="419287684"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Jun 2021 12:30:05 -0700
-Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
- dynamically loaded shared object
-To:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210627131818.810-1-adrian.hunter@intel.com>
- <e2a57ee8-6489-40d5-04d0-7d985eba961f@linux.intel.com>
- <ea9a04ad-26b2-7072-9f45-9ddbd8f61c10@intel.com>
- <65fc17a8-cefa-f7a8-8ffc-8ef88b773991@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <4e94511d-858b-bd46-add8-cb525be4875b@intel.com>
-Date:   Mon, 28 Jun 2021 22:30:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236613AbhF1TdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:33:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42352 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236582AbhF1TdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 15:33:08 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1791B20325;
+        Mon, 28 Jun 2021 19:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624908641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEQN+ccfOjcpFsKF9tjkkDsFaoGwhe01Beu6Uhltj9o=;
+        b=KUVrjBJerwzMYPd+lZdMk1zvDrO5H78ZthMidfFr0lN4i2RwtVwO6lDpo/aIamAToJsEis
+        55Lj0NFL5dkNHH8u+osiOfPEgte/+CrVniZFDX889a6eIHI0nE6/7UeGbzXje5DmgxXvdl
+        2fN5r+zrsuPpOmNZGuw7hCzjbNhAxZ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624908641;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEQN+ccfOjcpFsKF9tjkkDsFaoGwhe01Beu6Uhltj9o=;
+        b=aC+0FI3oJVelbkw2MSiOs94AD5YXdDgLOP7S5XaDEIOP628vj+WaEPdz2scDT7de3adsoJ
+        +K+fWbDwlm1jjXCw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 03CC611906;
+        Mon, 28 Jun 2021 19:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624908641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEQN+ccfOjcpFsKF9tjkkDsFaoGwhe01Beu6Uhltj9o=;
+        b=KUVrjBJerwzMYPd+lZdMk1zvDrO5H78ZthMidfFr0lN4i2RwtVwO6lDpo/aIamAToJsEis
+        55Lj0NFL5dkNHH8u+osiOfPEgte/+CrVniZFDX889a6eIHI0nE6/7UeGbzXje5DmgxXvdl
+        2fN5r+zrsuPpOmNZGuw7hCzjbNhAxZ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624908641;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEQN+ccfOjcpFsKF9tjkkDsFaoGwhe01Beu6Uhltj9o=;
+        b=aC+0FI3oJVelbkw2MSiOs94AD5YXdDgLOP7S5XaDEIOP628vj+WaEPdz2scDT7de3adsoJ
+        +K+fWbDwlm1jjXCw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id xrVsO2Aj2mAZHwAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 28 Jun 2021 19:30:40 +0000
+Date:   Mon, 28 Jun 2021 21:30:40 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Dov Murik <dovmurik@linux.ibm.com>
+Cc:     linux-efi@vger.kernel.org, Laszlo Ersek <lersek@redhat.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/3] virt: Add sev_secret module to expose
+ confidential computing secrets
+Message-ID: <YNojYBIwk0xCHQ0v@zn.tnic>
+References: <20210628183431.953934-1-dovmurik@linux.ibm.com>
+ <20210628183431.953934-4-dovmurik@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <65fc17a8-cefa-f7a8-8ffc-8ef88b773991@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628183431.953934-4-dovmurik@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/06/21 5:57 pm, Andi Kleen wrote:
+On Mon, Jun 28, 2021 at 06:34:31PM +0000, Dov Murik wrote:
+> The new sev_secret module exposes the confidential computing secret area
+> via securityfs interface.
 > 
-> On 6/28/2021 12:23 AM, Adrian Hunter wrote:
->> On 27/06/21 7:13 pm, Andi Kleen wrote:
->>> On 6/27/2021 6:18 AM, Adrian Hunter wrote:
->>>> Hi In some cases, users want to filter very large amounts of data
->>>> (e.g. from AUX area tracing like Intel PT) looking for something
->>>> specific. While scripting such as Python can be used, Python is 10
->>>> to 20 times slower than C. So define a C API so that custom filters
->>>> can be written and loaded.
->>> While I appreciate this for complex cases, in my experience filtering
->>> is usually just a simple expression. It would be nice to also have a
->>> way to do this reasonably fast without having to write a custom C
->> I do not agree that writing C filters is a hassle e.g. a minimal do-nothing
->> filter is only a few lines:
+> When the module is loaded (and securityfs is mounted, typically under
+> /sys/kernel/security), an "sev_secret" directory is created in
+> securityfs.  In it, a file is created for each secret entry.  The name
+> of each such file is the GUID of the secret entry, and its content is
+> the secret data.
 > 
-> It still doesn't seem user friendly. Maybe it's obvious to you, but I suspect we left behind most of even the sophisticated perf users here.
+> This allows applications running in a confidential computing setting to
+> read secrets provided by the guest owner via a secure secret injection
+> mechanism (such as AMD SEV's LAUNCH_SECRET command).
 > 
-
-Fair enough.
-
+> Removing (unlinking) files in the "sev_secret" directory will zero out
+> the secret in memory, and remove the filesystem entry.  If the module
+> is removed and loaded again, that secret will not appear in the
+> filesystem.
 > 
->>
->>>                   Maybe we could have some kind of python fast path
->>> just for filters?
->> I expect there are ways to make it more efficient, but I doubt it would ever
->> come close to C.
-> 
-> If it's within 2-3x I guess it would be ok. For any larger data files we should parallelize anyways, and that works fine with the --time x/y method (although it usually also needs some custom scripting, perhaps need to figure out how to make it more user friendly)
+> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
+> ---
+>  drivers/virt/Kconfig                 |   2 +
+>  drivers/virt/Makefile                |   1 +
+>  drivers/virt/sev_secret/Kconfig      |  11 +
+>  drivers/virt/sev_secret/Makefile     |   2 +
+>  drivers/virt/sev_secret/sev_secret.c | 298 +++++++++++++++++++++++++++
+>  5 files changed, 314 insertions(+)
+>  create mode 100644 drivers/virt/sev_secret/Kconfig
+>  create mode 100644 drivers/virt/sev_secret/Makefile
+>  create mode 100644 drivers/virt/sev_secret/sev_secret.c
 
-I am not sure Python could do that, maybe something else.
+Same question here: maybe have 
 
-Parallelization is on the list of things to do.  Splitting by time is OK but gets trickier if you want to put the results back together in time order.  Also call chains get broken at the splits in time.
+drivers/virt/coco/
 
-> 
-> 
->>
->>> just for filters? Or maybe the alternative would be to have a
->>> frontend in perf that can automatically generate/compile such a C
->>> filter based on a simple expression, but I'm not sure if that would
->>> be much simpler.
->> If gcc is available, perf script could, in fact, build the .so on the fly
->> since the compile time is very quick.
->>
->> Another point is that filters can be used for more than just filtering.
->> Here is an example which sums cycles per-cpu and prints them, and the difference
->> to the last print, at the beginning of each line.  I think this was something
->> you were interested in doing?
-> 
-> Yes that's great and useful, but I would prefer to not maintain custom plugins for it. Often when I write a script it has to run in all kinds of weird environments that some random person installed, and it's not clear how portable building C will be there. And I doubt I can just copy the .so files around.
+and put all coco guest stuff in there.
 
-That is true.  .so files have limitations.
+> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
+> index 8061e8ef449f..c222cc625891 100644
+> --- a/drivers/virt/Kconfig
+> +++ b/drivers/virt/Kconfig
+> @@ -36,4 +36,6 @@ source "drivers/virt/vboxguest/Kconfig"
+>  source "drivers/virt/nitro_enclaves/Kconfig"
+>  
+>  source "drivers/virt/acrn/Kconfig"
+> +
+> +source "drivers/virt/sev_secret/Kconfig"
+>  endif
+> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+> index 3e272ea60cd9..0765e5418d1d 100644
+> --- a/drivers/virt/Makefile
+> +++ b/drivers/virt/Makefile
+> @@ -8,3 +8,4 @@ obj-y				+= vboxguest/
+>  
+>  obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
+>  obj-$(CONFIG_ACRN_HSM)		+= acrn/
+> +obj-y				+= sev_secret/
+> diff --git a/drivers/virt/sev_secret/Kconfig b/drivers/virt/sev_secret/Kconfig
+> new file mode 100644
+> index 000000000000..4505526b8ef1
+> --- /dev/null
+> +++ b/drivers/virt/sev_secret/Kconfig
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config AMD_SEV_SECRET_SECURITYFS
+> +	tristate "AMD SEV secret area securityfs support"
+> +	depends on EFI
 
-> 
-> BTW I'm not arguing to not do the plugin (I can imagine extreme cases where such a plugin is the best option), but really for most of these things there should be easier and more portable alternatives, even if they are slightly slower.
+That probably needs to depend on CONFIG_AMD_MEM_ENCRYPT - otherwise
+what's the point for it.
 
-Right.  The documentation could definitely point out limitations and more user-friendly alternatives like using Python scripting.
+-- 
+Regards/Gruss,
+    Boris.
 
-
-
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
