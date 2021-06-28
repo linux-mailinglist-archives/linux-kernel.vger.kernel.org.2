@@ -2,237 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCB83B66DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D976B3B66E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhF1Qia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S231852AbhF1Qlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbhF1Qi0 (ORCPT
+        with ESMTP id S231719AbhF1Qlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:38:26 -0400
+        Mon, 28 Jun 2021 12:41:31 -0400
 Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C927EC061574;
-        Mon, 28 Jun 2021 09:35:58 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso19392916otu.10;
-        Mon, 28 Jun 2021 09:35:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CC5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:39:04 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so19410040otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 09:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SEFrvB4lNK1uv+L1kEqbUttA63rPtg4SqRdsqRkNxR0=;
-        b=SdmAj+8M50qeuooFOqBSiKTI1eYBIJPgAhjnfwbpuqPuFq5Aks86ciFrQK67jZtbD7
-         nneH2PwWNovGHUdLEOgFczgS0DHmV8m1hbSz1tH45NUnphYeomGI9raMXI8LMXPGEJSX
-         Y2z41RHn48YgXwtnAm+Uwf9SyT1pZoVkkuXiWKyCDFpzFpb3RofMM50vsliFgSzI2Fdz
-         YnD8E34WGqRKSO9Wl5Ua1kR1lZmC4oW1IdoFA/nRHo+c9W2WnVBm6zmrjO+kMV6Tm9D3
-         kJYLaciASuahlp6gHaN90sAu4nAbVf064GPRL23uAQb+GukZPhy89ehFJ6DvX8YZLfCw
-         eHMg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dzETNv4uyDhuYHJGELa+ExcxyxQjGe2pv/stbKqgYMw=;
+        b=rBenLrIuJvtaIysQfKhnjr14lj+L8avGymkeyl2Kyk5vGXN2R2ZoQZPHPQ7ExWAk3Y
+         yL+pi2ALV/47YsUPRCkvmBi3C0gFZJdvv2BMtGxj/7UGql6F4EcIv+nKxIseax3bagZf
+         T74nScYy0afGUWmzWwZSV7ag4jRiYsg0VdYVMAwEhd3YrS+v/RQsVkFSb7or7n5vd6PW
+         bFpt+Nq+mZvF/9cSpnkyXoFsxY3ygqAIRXG7Pxmg86DG1XGwOPZA28HHtlrpKmJKz6o5
+         +w7oUK0hqy4Wtx72SJnMmruTs8zEKNl3uM80qaAlO7NE2fciTXdroF+fhEXtU7pNukXJ
+         0hng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=SEFrvB4lNK1uv+L1kEqbUttA63rPtg4SqRdsqRkNxR0=;
-        b=e0Yo/Gh6e1TY6T/ltBSrBs7sq8/heSfPtLhKtiRLRvJtXwVKPoE+UC4BShuK3KJ9ta
-         FVZuprG1Xv8tC5GQGhsA06Hk9gkQ8pSMAap0REa7STxJfqcKf+UTCzxMieWBNoxKDMm9
-         zKS5JGbQzI7M7vHOdJjVPNWRJJgnqhaeCYodiizd3tFqFadzJtAPJhjjbxy/I5KuE6xT
-         3YdZX23yTF/TwrMMkiKujRPFF+6seSsEmoG+RBc4fFJdz884kiTPOYW2eWdZ8y0yVuQ2
-         fgFPUaitDYhXkTZXvhVN/FaSkxqIRHXiS3SfF0JsO7SM/lfzwFg1hjYhD2Ke6qdb9UOL
-         0snQ==
-X-Gm-Message-State: AOAM533em9X0ZL4Bq1LHB/dhLAQAK8J6FOWXxfHZulqanhGvjyGyBzOn
-        0Az4ck9ea7/X0g6Z8E0c37Y=
-X-Google-Smtp-Source: ABdhPJzTf47pyLSaDZ0ridJ7KaIluoX+RDqtU2UZQG0HsSj/bcq4OHSWmLx5p/vnCB5AC/gY54uvrQ==
-X-Received: by 2002:a9d:554a:: with SMTP id h10mr381131oti.177.1624898157994;
-        Mon, 28 Jun 2021 09:35:57 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d3sm1436778otl.57.2021.06.28.09.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 09:35:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 28 Jun 2021 09:35:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
-Message-ID: <20210628163556.GB445250@roeck-us.net>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-6-martin@geanix.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dzETNv4uyDhuYHJGELa+ExcxyxQjGe2pv/stbKqgYMw=;
+        b=XTc+LRujRZwjZlydMEY+LBROF8Ne3rmtMMhOUAfP73NFry70RcmU1hlPnW9i0qqxeV
+         zvwgX9YGiim8ZBw4IlrbPspBlf+lgGAjT07pqo+Ykv+QM6zvKItB1DHZ7BJfPF1tvlBZ
+         7YkSxliuBdlkk3xk3IeETcteSz3njHAjtWxr+KchzPBrE62X6RpErW9N1DtS10BN5fXq
+         SbC/DN2COfWtiZPFUTBrDP01pH4hJV3/2xQhtyQJhe9XbSKubGBoM92QucoGXl0rx+Pj
+         VHZQmC/i9PBaptQRfsCCMzzo7YJsqdk9NUGkCEpKM/uoaUmWaCaRqFq+MDcauHQMGjze
+         8sXQ==
+X-Gm-Message-State: AOAM532WMCr+CXBdg9QCHZMN3v9xykhBYpYiPfxAt9pJn0cINphm41eg
+        yVPqlPXbz80DuTj0EY+6XxXG7OaCDAASh31bH2A=
+X-Google-Smtp-Source: ABdhPJzYRZG+BMW6R3nKjH+PGAeE2fWVuPRA4R5Z/llGtbaSglDGzXmuYL/A81nL+/pjaKCm3iK3ZnT4JtzU94FalS8=
+X-Received: by 2002:a05:6830:4119:: with SMTP id w25mr432485ott.132.1624898343968;
+ Mon, 28 Jun 2021 09:39:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625074213.654274-6-martin@geanix.com>
+References: <20210623103039.9881-1-msuchanek@suse.de> <6ae69103-b01f-4f16-7cd2-845ea991ae95@amd.com>
+In-Reply-To: <6ae69103-b01f-4f16-7cd2-845ea991ae95@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 28 Jun 2021 12:38:53 -0400
+Message-ID: <CADnq5_OcurGjMshexjUO58+7n0vxvvyn7wozPnVM-ArGCEovzQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/dc: Really fix DCN3.1 Makefile for PPC64
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, Leo Li <sunpeng.li@amd.com>,
+        Will Deacon <will@kernel.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>, Huang Rui <ray.huang@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:42:13AM +0200, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@silicom.dk>
-> 
-> Add the list of sensors supported by the Silicom n5010 PAC, and enable
-> the drivers as a subtype of the intel-m10-bmc multi-function driver.
-> 
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+Applied.  Thanks!
 
-For my reference:
+Alex
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Not sure if I can apply this patch as-is to hwmon, or if it needs
-to wait for the other patches in the series. Any thoughts / comments ?
-
-Guenter
-
-> ---
-> 
-> Changes since v1:
->  * Patch split out to separate hwmon changes
-> 
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
->  1 file changed, 116 insertions(+)
-> 
-> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> index bd7ed2ed3a1e..7a08e4c44a4b 100644
-> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> @@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
->  	.hinfo = d5005bmc_hinfo,
->  };
->  
-> +static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
-> +	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
-> +	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
-> +	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
-> +	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
-> +	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
-> +	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
-> +	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
-> +	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
-> +	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
-> +	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
-> +	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
-> +	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
-> +	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
-> +	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
-> +	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
-> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
-> +	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
-> +};
-> +
-> +static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
-> +	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
-> +	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
-> +	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
-> +	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
-> +	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
-> +	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
-> +	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
-> +	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
-> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
-> +	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
-> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
-> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
-> +	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
-> +};
-> +
-> +static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
-> +	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
-> +	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
-> +	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
-> +	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
-> +	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
-> +	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
-> +	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
-> +	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
-> +	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
-> +	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
-> +	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
-> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
-> +	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
-> +};
-> +
-> +static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
-> +	.tables = {
-> +		[hwmon_temp] = n5010bmc_temp_tbl,
-> +		[hwmon_in] = n5010bmc_in_tbl,
-> +		[hwmon_curr] = n5010bmc_curr_tbl,
-> +	},
-> +
-> +	.hinfo = n5010bmc_hinfo,
-> +};
-> +
->  static umode_t
->  m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
->  			u32 attr, int channel)
-> @@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
->  		.name = "d5005bmc-hwmon",
->  		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
->  	},
-> +	{
-> +		.name = "n5010bmc-hwmon",
-> +		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
-> +	},
->  	{ }
->  };
->  
-> -- 
-> 2.31.0
-> 
+On Fri, Jun 25, 2021 at 4:14 PM Harry Wentland <harry.wentland@amd.com> wrote:
+>
+> On 2021-06-23 6:30 a.m., Michal Suchanek wrote:
+> > Also copy over the part that makes old gcc handling cross-platform.
+> >
+> > Fixes: df7a1658f257 ("drm/amdgpu/dc: fix DCN3.1 Makefile for PPC64")
+> > Fixes: 926d6972efb6 ("drm/amd/display: Add DCN3.1 blocks to the DC Makefile")
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+>
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> > ---
+> > The fact that the old gcc handling triggers on gcc 10 and 11 is another
+> > story I don't want to delve into.
+> > ---
+> >  drivers/gpu/drm/amd/display/dc/dcn31/Makefile | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/Makefile b/drivers/gpu/drm/amd/display/dc/dcn31/Makefile
+> > index 5dcdc5a858fe..4bab97acb155 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dcn31/Makefile
+> > +++ b/drivers/gpu/drm/amd/display/dc/dcn31/Makefile
+> > @@ -28,6 +28,7 @@ endif
+> >  CFLAGS_$(AMDDALPATH)/dc/dcn31/dcn31_resource.o += -mhard-float
+> >  endif
+> >
+> > +ifdef CONFIG_X86
+> >  ifdef IS_OLD_GCC
+> >  # Stack alignment mismatch, proceed with caution.
+> >  # GCC < 7.1 cannot compile code using `double` and -mpreferred-stack-boundary=3
+> > @@ -36,6 +37,7 @@ CFLAGS_$(AMDDALPATH)/dc/dcn31/dcn31_resource.o += -mpreferred-stack-boundary=4
+> >  else
+> >  CFLAGS_$(AMDDALPATH)/dc/dcn31/dcn31_resource.o += -msse2
+> >  endif
+> > +endif
+> >
+> >  AMD_DAL_DCN31 = $(addprefix $(AMDDALPATH)/dc/dcn31/,$(DCN31))
+> >
+> >
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
