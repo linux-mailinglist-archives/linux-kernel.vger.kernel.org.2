@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8703B6601
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3E83B6612
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhF1PrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:47:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54420 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235998AbhF1Pqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:46:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624895059;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dh6piDAixbuaPg3aGqNgRb+P+i5BQmPMS0CpF1jfr/M=;
-        b=gEs6nJ8TM03CHO3Kx8uaakAn73ImLRLgyW//oynKVwEwAQDrWPXI9NwjjmTy6HFduRQVhj
-        UqMOmm1ptOzgGIbNl3p51xOdP3LImjV0SiygG7BPu/GtWgqWcqGdqhSGeDUd2WM0Q6+E7u
-        45JfPkEMJIm9cz4IR+Nwp8pFkSnaFj8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-4RLdL1-5PvevxLGRMb76Dg-1; Mon, 28 Jun 2021 11:44:17 -0400
-X-MC-Unique: 4RLdL1-5PvevxLGRMb76Dg-1
-Received: by mail-wr1-f72.google.com with SMTP id y5-20020adfe6c50000b02901258bf1d760so866941wrm.14
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:44:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=Dh6piDAixbuaPg3aGqNgRb+P+i5BQmPMS0CpF1jfr/M=;
-        b=Pk9EQL9VcCCCRMhYZEWpmQgN5ey/r2g0ZtsxJ3bHrc7eAf1WMylp6qz3J96adpj8L+
-         nfkHn5rlhlzodS0ScjcGx1nf4KjxAVMrhpLD5dC3wcywlsVh067YmGH7axCZ6KRqj7iD
-         jinBDY7xr44s1f+kBeznTUXSBoz5zK7Wnc6FaXlPAssOsBjc/Fp1T1jOB8LCUyZuT2mg
-         3sNuuXGbjEes9IjgIhXW6iMHA2yMM0NuH/+JgEwCVnVVGIsl8wpXH4zFJGOlK9OB8Wbt
-         pTx7+MsahE8E7ZNlnwuOwzXPQaLCgaXHGiCpqEbqQoA53F4upFBwxQWRIM/Uq3gPLPY4
-         C8Dw==
-X-Gm-Message-State: AOAM533aGFveqq3OwFbhzSwMxmFXCi2qSHKXs26ZJ2awjIsuePt7jN20
-        PUCUudrRB3VRmKtgdX5IfFLw2U3tTvoAR4RLN1XzXLVp47Rdfe1umgYC0VaUMAUpBYqCadMytNO
-        JqRIahYwnp5N0wjQNYNpDCpWt
-X-Received: by 2002:a5d:460e:: with SMTP id t14mr28379278wrq.149.1624895055886;
-        Mon, 28 Jun 2021 08:44:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRqGQMOoyUuBAXQnq59MthlhjWiXolkwEtpSRKENqOkpiKJ4FiR6tbgITHZEm92EskKUk2zQ==
-X-Received: by 2002:a5d:460e:: with SMTP id t14mr28379266wrq.149.1624895055727;
-        Mon, 28 Jun 2021 08:44:15 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id b8sm3480529wmb.20.2021.06.28.08.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 08:44:15 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH] misc/pvpanic-pci: Allow automatic loading
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        mihai.carabas@oracle.com, arnd@arndb.de, pizhenwei@bytedance.com,
-        andriy.shevchenko@linux.intel.com, pbonzini@redhat.com,
-        joe@perches.com
-References: <20210628144422.895526-1-eric.auger@redhat.com>
- <YNnilZ/Kg4SpU+bw@kroah.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <5e3f7609-4820-6a8b-306e-553f10ce0f8a@redhat.com>
-Date:   Mon, 28 Jun 2021 17:44:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235990AbhF1Pw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235956AbhF1PwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:52:21 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88A38619BE;
+        Mon, 28 Jun 2021 15:49:55 +0000 (UTC)
+Date:   Mon, 28 Jun 2021 11:49:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] tracing: Have osnoise_main() add a quiescent state for task
+ rcu
+Message-ID: <20210628114953.6dc06a91@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YNnilZ/Kg4SpU+bw@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-On 6/28/21 4:54 PM, Greg KH wrote:
-> On Mon, Jun 28, 2021 at 04:44:22PM +0200, Eric Auger wrote:
->> The pvpanic-pci driver does not auto-load and requires manual
->> modprobe. Let's include a device database using the
->> MODULE_DEVICE_TABLE macro.
->>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->> ---
->>  drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
->> index 9ecc4e8559d5d..30290d42d8aa8 100644
->> --- a/drivers/misc/pvpanic/pvpanic-pci.c
->> +++ b/drivers/misc/pvpanic/pvpanic-pci.c
->> @@ -122,4 +122,6 @@ static struct pci_driver pvpanic_pci_driver = {
->>  	},
->>  };
->>  
->> +MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
->> +
-> Is this something that you need?  Or is it created by a tool?
+ftracetest triggered:
 
-the virtual machine monitor (QEMU) exposes the pvpanic-pci device to the
-guest. On guest side the module exists but currently isn't loaded
-automatically. So the driver fails to be probed and does not its job of
-handling guest panic events. We need a SW actor that loads the module
-and I thought this should be handled that way. If not, please could you
-advise?
+ INFO: rcu_tasks detected stalls on tasks:
+ 00000000b92b832d: .. nvcsw: 1/1 holdout: 1 idle_cpu: -1/7
+ task:osnoise/7       state:R  running task     stack:    0 pid: 2133 ppid:     2 flags:0x00004000
+ Call Trace:
+  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
+  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
+  ? trace_hardirqs_on+0x2b/0xe0
+  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
+  ? trace_clock_local+0xc/0x20
+  ? osnoise_main+0x10e/0x450
+  ? trace_softirq_entry_callback+0x50/0x50
+  ? kthread+0x153/0x170
+  ? __kthread_bind_mask+0x60/0x60
+  ? ret_from_fork+0x22/0x30
 
-Thank you in advance
+While running osnoise tracer with other tracers that rely on
+synchronize_rcu_tasks(), where that just hung.
 
-Eric 
->
-> thanks,
->
-> greg k-h
->
+The reason is that osnoise_main() never schedules out if the interval
+is less than 1, and this will cause synchronize_rcu_tasks() to never
+return.
+
+Fixes: bce29ac9ce0bb ("trace: Add osnoise tracer")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_osnoise.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 38aa5e208ffd..556d530af805 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -1216,8 +1216,11 @@ static int osnoise_main(void *data)
+ 		 * differently from hwlat_detector, the osnoise tracer can run
+ 		 * without a pause because preemption is on.
+ 		 */
+-		if (interval < 1)
++		if (interval < 1) {
++			/* Let synchronize_rcu_tasks() make progress */
++			cond_resched_tasks_rcu_qs();
+ 			continue;
++		}
+ 
+ 		if (msleep_interruptible(interval))
+ 			break;
+-- 
+2.29.2
 
