@@ -2,153 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96483B69F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1163B69FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237589AbhF1VFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 17:05:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237541AbhF1VFh (ORCPT
+        id S237597AbhF1VH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236768AbhF1VHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 17:05:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624914190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yzYnIdqALVwqpJ5Uy7M/EcMdnqNtYf74mt8YlEcYEKk=;
-        b=HAXJjCMZHvXRxTQUgD1LdX0Ar/ikYu20XXt2iC3JvvcVs3nsd/KpX8ChgiepAQ9j/i/bpx
-        WMqIl/Qf6noA4cZK1+1gMmZqdVWiYhgCHF+Uy2kRrCcbL+ycp77oGfCeiXyZ+2LajcFaT0
-        bekzDP6CKoF7P47dUK0W1FjGvmNz7V0=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-81b-ObWoN42B_3nMbnrduA-1; Mon, 28 Jun 2021 17:03:07 -0400
-X-MC-Unique: 81b-ObWoN42B_3nMbnrduA-1
-Received: by mail-ot1-f72.google.com with SMTP id i20-20020a9d61140000b0290465533f61a5so5680238otj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:03:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=yzYnIdqALVwqpJ5Uy7M/EcMdnqNtYf74mt8YlEcYEKk=;
-        b=Uk8eetxwbZwwSQg6EnV+vibb3DmG+RFRtoFesdrp3ebAi5g2uOx9W8d+KxSUXHEFen
-         fBqWc9PJNPf+XYTCj1Bb1ucDMHUuQ8cyb+C3CPwDYXfUfGJoILlW+ax/C4szD0nG9itb
-         jjEqJpcibCHYDHM9NozQd91LaCI8t9dbxWq6PoMnHM00s9QAMPsaurL41bydo3PGXjod
-         xpykkh41xl7kgDQUwhhpvryKOu5jTmdh8LTDX48EWw+YRN0CEn2cpmGz0ORMBJMO7GYj
-         8UK8EsF6Q4d/hEvshRCgWmeQa4dndN+HKerT08GLVtT0+ByHQ8iVdyWxG/q3MoroZycc
-         dhtQ==
-X-Gm-Message-State: AOAM5323IfE6hhkxiUcOY9mqXxDPZYxf6YEg07aOinEWaOX7VP/1iP8X
-        gkl4YQTjqjjS6TsuRGTAW0OrOfKwEX+C48cur/gVtq9e4T+6vaEVzuQ0Q1eqpb7FLIoRa8oOBli
-        Ws8gSbNgrqMVPDfX6/kmimnXZ
-X-Received: by 2002:a05:6808:1511:: with SMTP id u17mr22439673oiw.53.1624914186636;
-        Mon, 28 Jun 2021 14:03:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzsZr7MBgtbktSb31XipIXX24eIxiYdVF2FG1UGZtqkHHRG/FrDVq9DRXtYM9k67DJiSLzlow==
-X-Received: by 2002:a05:6808:1511:: with SMTP id u17mr22439662oiw.53.1624914186524;
-        Mon, 28 Jun 2021 14:03:06 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v203sm3454609oib.37.2021.06.28.14.03.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 14:03:05 -0700 (PDT)
-Subject: Re: [PATCH v4 1/7] fpga-mgr: wrap the write_init() op
-To:     Moritz Fischer <mdf@kernel.org>, "Xu, Yilun" <yilun.xu@intel.com>
-Cc:     hao.wu@intel.com, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210625195148.837230-1-trix@redhat.com>
- <20210625195148.837230-3-trix@redhat.com> <YNoauN/c0E65n8JU@epycbox.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <088cbfc6-e627-c929-0d87-830bc6271c58@redhat.com>
-Date:   Mon, 28 Jun 2021 14:03:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 28 Jun 2021 17:07:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84116C061574;
+        Mon, 28 Jun 2021 14:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uVkWJJEgVMmv/VM+/tI0X/gn1Id+AayZLOfLG6sl0S4=; b=CDP8AVKZWHj5qu1qJuoZQy6xvf
+        E/ETdygnAZKz9/ak8vzKNKy3dWD60Vy9xb1d61vJcF61s/m0+L0wuehv6QKQq99zxvuR5Kev4LJYv
+        OaFjTdOdgmugsZKKANSwqs3ocRK9nImAYuy6W9EPLIcCviLNqj3Kyhmq1R2/WMkadG+vR7BsOmmQm
+        PeJPc/RGtuf0kpQ8mr8x+4ShABS0rRIv1KdeNUuk/20oDOQhkgJ4vU2/lilA+3gaRKHb+RsokJhJk
+        d0MlEuskP7VzHcQzqIKjwcil+qzjTUvN2p33TxivyTVlEWnvTvZiMqHTPgPlvL/mbP0JztnlMmgeK
+        S3POwxhw==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxyRV-009Boc-Ps; Mon, 28 Jun 2021 21:05:21 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "William A . Kennington III" <wak@google.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH v2] spi: <linux/spi/spi.h>: add missing struct kernel-doc entry
+Date:   Mon, 28 Jun 2021 14:05:20 -0700
+Message-Id: <20210628210520.5712-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YNoauN/c0E65n8JU@epycbox.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix kernel-doc warning in spi.h by adding the missing kernel-doc entry
+and also correct the original comment so that they both indicate the
+correct polarity of the flag.
 
-On 6/28/21 11:53 AM, Moritz Fischer wrote:
-> On Fri, Jun 25, 2021 at 12:51:42PM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> An FPGA manager should not be required to provide a
->> write_init() op if there is nothing for it do.
->> So add a wrapper and move the op checking.
->> Default to success.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>   drivers/fpga/fpga-mgr.c | 15 ++++++++++++---
->>   1 file changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
->> index ecb4c3c795fa5..c047de8a059b7 100644
->> --- a/drivers/fpga/fpga-mgr.c
->> +++ b/drivers/fpga/fpga-mgr.c
->> @@ -25,6 +25,15 @@ struct fpga_mgr_devres {
->>   	struct fpga_manager *mgr;
->>   };
->>   
->> +static inline int fpga_mgr_write_init(struct fpga_manager *mgr,
->> +				      struct fpga_image_info *info,
->> +				      const char *buf, size_t count)
->> +{
->> +	if (mgr->mops->write_init)
-> Will you need a if (mgr->mops && mgr->mops->write_init) here later?
+../include/linux/spi/spi.h:673: warning: Function parameter or member 'devm_allocated' not described in 'spi_controller'
 
-This was changed from v3 based on Yilun's comment
+Fixes: 794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: William A. Kennington III <wak@google.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org
+Cc: Lukas Wunner <lukas@wunner.de>
+---
+v2: correct both comments for @devm_allocated to indicate the correct polarity
+    (thanks, Lukas)
 
-https://lore.kernel.org/linux-fpga/20210624075414.GA44700@yilunxu-OptiPlex-7050/
+ include/linux/spi/spi.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-This is checked on creation
-
->> +		return  mgr->mops->write_init(mgr, info, buf, count);
->> +	return 0;
->> +}
->> +
->>   /**
->>    * fpga_image_info_alloc - Allocate an FPGA image info struct
->>    * @dev: owning device
->> @@ -83,9 +92,9 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
->>   
->>   	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
->>   	if (!mgr->mops->initial_header_size)
->> -		ret = mgr->mops->write_init(mgr, info, NULL, 0);
->> +		ret = fpga_mgr_write_init(mgr, info, NULL, 0);
->>   	else
->> -		ret = mgr->mops->write_init(
->> +		ret = fpga_mgr_write_init(
->>   		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
->>   
->>   	if (ret) {
->> @@ -569,7 +578,7 @@ struct fpga_manager *fpga_mgr_create(struct device *parent, const char *name,
->>   	int id, ret;
->>   
->>   	if (!mops || !mops->write_complete || !mops->state ||
->> -	    !mops->write_init || (!mops->write && !mops->write_sg) ||
->> +	    (!mops->write && !mops->write_sg) ||
->>   	    (mops->write && mops->write_sg)) {
->>   		dev_err(parent, "Attempt to register without fpga_manager_ops\n");
->>   		return NULL;
->> -- 
->> 2.26.3
->>
-> Looks good to me, I might reword the commit message some when applying.
-
-That is fine.
-
-Thanks
-
-Tom
-
-
-> - Moritz
->
-
+--- linux-next-20210628.orig/include/linux/spi/spi.h
++++ linux-next-20210628/include/linux/spi/spi.h
+@@ -339,6 +339,7 @@ extern struct spi_device *spi_new_ancill
+  * @max_speed_hz: Highest supported transfer speed
+  * @flags: other constraints relevant to this driver
+  * @slave: indicates that this is an SPI slave controller
++ * @devm_allocated: whether the allocation of this struct is devres-managed
+  * @max_transfer_size: function that returns the max transfer size for
+  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
+  * @max_message_size: function that returns the max message size for
+@@ -511,7 +512,7 @@ struct spi_controller {
+ 
+ #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+ 
+-	/* flag indicating this is a non-devres managed controller */
++	/* flag indicating if the allocation of this struct is devres-managed */
+ 	bool			devm_allocated;
+ 
+ 	/* flag indicating this is an SPI slave controller */
