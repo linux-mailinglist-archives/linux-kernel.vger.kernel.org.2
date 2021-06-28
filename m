@@ -2,410 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846463B6937
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011283B6938
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237000AbhF1Th7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbhF1Tho (ORCPT
+        id S237026AbhF1TiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:38:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41884 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234210AbhF1Thr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:37:44 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114C1C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:35:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id p8so6535828wrr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FGrCRIzZWiLg0iNo6C/VfSG2KO0vC/Hx8HRVvgiDG3s=;
-        b=TiBgky92Q8ex67mfergBoY2N/YpkwUhgn/lG7SKNlbEDUi6BOU0n3DlMbPKD5UN1sE
-         KCbX/8pVaC/PF6D7r4KaIEpQT1v51gCypNFbS1EUta7/ZwxUUM+ETtRgI7u7HoG2DMzY
-         PFCvpe2xxevLmLjT8B/+ZA+u/ZcFHvzT8aYd4YZSUh6HsFajhlPOpQ5Axi/REbDbZREo
-         yoyCgVjVEZwdrIRRpSrvdLBruwqhRVSLL/x+3Zlk0Lsg8n1xHzTpy3lq46tfJqsA0GAu
-         HmFS/k7WZzeP6vnMCDGqrNkp9FXkgobYJeuMfm1T1ZWUEU6ed9ppEsyu8i8jaWbB596y
-         mz7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FGrCRIzZWiLg0iNo6C/VfSG2KO0vC/Hx8HRVvgiDG3s=;
-        b=nrycG3/hBSnmTDl1B3rymHN8VNj6xLWAhuN+D2uRQk2ijf06E6W3oaQNLjbNGdDokb
-         ks9Olui0N8OJMebYwqzgM3Gm+VupAhykCPgh/iVc1kcGjEZ3aujxf6VVcCutLhDAurF7
-         TywuofBLYcVx93zPsvvftLib0X1DIH15mqI0JHvwwFFXhLdKGo8SorGIT8RIPBL6OG8w
-         joUOy5DV0Lv71c2dQImmpvoL7fqyvnCJerCYCqi+a6JD9DqerTKWSUF0L+AjHinjALR4
-         VYXszlubD+r9/OQGVNaJOx9AMuOBETj02YvYzgw3+Q8HBQq8kBEtsBBj8vScsIuae0by
-         oRHA==
-X-Gm-Message-State: AOAM532h432wMYffPc5GR51tQFtnZ6GCuqTa0B3ZGDfH+0bwMIwv5UUy
-        D+I8O0bPuBMvjCq+Ux6XtdVwTg==
-X-Google-Smtp-Source: ABdhPJxBQCJiqMGYqupmhTbRNxKX5toaoS4uiHaT4HM2bVGaiQ3xzXtyPVGJLR8Dix3mTcr4ivQhhw==
-X-Received: by 2002:adf:f149:: with SMTP id y9mr4831625wro.85.1624908915572;
-        Mon, 28 Jun 2021 12:35:15 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id x1sm14700116wmc.31.2021.06.28.12.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 12:35:15 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     bhelgaas@google.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v3] dt-bindings: PCI: ftpci100: convert faraday,ftpci100 to YAML
-Date:   Mon, 28 Jun 2021 19:35:08 +0000
-Message-Id: <20210628193508.2826903-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Jun 2021 15:37:47 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SJYTwc187874;
+        Mon, 28 Jun 2021 15:35:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=R4S2xD3vm3oT8VEEnXLkrTD8IIOFUMMCvhpioC/joRY=;
+ b=a8V+KmJPMAeBjV4bPkX7NnlLLZx393ra6tAOIb1yhYYHamX++bael3M04RnQxkjtly02
+ JbMiEl6ZJs9s6kEweyok/biE9DCwHMvb102UVoVeZ0kctqD6F4hYNPeOQSdIRSP7zDlh
+ Tfyov4e/ba+nTyAbuCaTXurF1KbzjbjV7ZKD1TI72vBjH2M1O6qIDDT4dCM5c3r+nB4/
+ ZNNafHE3uvZtXvmCXXp4vxvU/HMV1qYjgSaky61SC2+8aeqKIlWB4fP52fAZDF8rbhvH
+ rJ2Uz7UoR/KBdOK5S/lvVoLT2RW4UlNNgErUOm+zpEQeHIEfxIO2wq+2EXKpWSEs1t8L /w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjqb38hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 15:35:18 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SJYqMK188651;
+        Mon, 28 Jun 2021 15:35:18 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjqb38gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 15:35:18 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SJS0VB010426;
+        Mon, 28 Jun 2021 19:35:17 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 39duvam257-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 19:35:17 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SJZGTp33292560
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 19:35:16 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 939F7AE075;
+        Mon, 28 Jun 2021 19:35:16 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83A35AE06D;
+        Mon, 28 Jun 2021 19:35:16 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Jun 2021 19:35:16 +0000 (GMT)
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+References: <20210623135600.n343aglmvu272fsg@kernel.org>
+ <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
+ <8de9d45e-4389-8316-b0d0-e9a43be9fade@linux.ibm.com>
+ <CAHk-=wibQ3ahmo0m3BynA3bw2Fkhv0OfMJuV0+wEMwg93Fbj0g@mail.gmail.com>
+ <d3fd4b64-be6a-2210-5cfa-fc1947aea293@linux.ibm.com>
+ <CAHk-=wgQJESJ-q-4FNgwpTJTZrEr033gzpXM2gWWviVOHJNnaQ@mail.gmail.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <efeb27d1-5c75-b61f-0cc4-583a589e0f7f@linux.ibm.com>
+Date:   Mon, 28 Jun 2021 15:35:16 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <CAHk-=wgQJESJ-q-4FNgwpTJTZrEr033gzpXM2gWWviVOHJNnaQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1Rd25VMkPW1pa_dpSay-4vtbBR_HTyHf
+X-Proofpoint-GUID: jAmMaUp1yq9sgoQByjXj9KUCCR74ReE8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1015 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106280127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts pci/faraday,ftpci100.txt to yaml.
-Some change are also made:
-- example has wrong interrupts place
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
-Changes since v1:
-- fixed issues reported by Rob Herring https://patchwork.kernel.org/project/linux-pci/patch/20210503185228.1518131-1-clabbe@baylibre.com/
-- moved comment as asked by Linus Walleij
+On 6/28/21 3:27 PM, Linus Torvalds wrote:
+> On Mon, Jun 28, 2021 at 12:21 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>> Correct, and the code (certs/Makefile) is surrounded by the check for
+>> this particular file here, so it won't touch anything else:
+> Ahh, I missed that part.
+>
+> Can we just make it really really obvious, and not use
+> CONFIG_MODULE_SIG_KEY at all, then?
+>
+> IOW, make these literally be about "certs/signing_key.pem" and nothing
+> else, so that when people grep for this, or look at the Makefile, they
+> don't fall into that trap I fell into?
 
-Changes since v2:
-- fixed issues reported by Rob Herring https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210510203041.4024411-1-clabbe@baylibre.com/
+Yes, sir.
 
- .../bindings/pci/faraday,ftpci100.txt         | 135 --------------
- .../bindings/pci/faraday,ftpci100.yaml        | 176 ++++++++++++++++++
- 2 files changed, 176 insertions(+), 135 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.txt
- create mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+    Stefan
 
-diff --git a/Documentation/devicetree/bindings/pci/faraday,ftpci100.txt b/Documentation/devicetree/bindings/pci/faraday,ftpci100.txt
-deleted file mode 100644
-index 5f8cb4962f8d..000000000000
---- a/Documentation/devicetree/bindings/pci/faraday,ftpci100.txt
-+++ /dev/null
-@@ -1,135 +0,0 @@
--Faraday Technology FTPCI100 PCI Host Bridge
--
--This PCI bridge is found inside that Cortina Systems Gemini SoC platform and
--is a generic IP block from Faraday Technology. It exists in two variants:
--plain and dual PCI. The plain version embeds a cascading interrupt controller
--into the host bridge. The dual version routes the interrupts to the host
--chips interrupt controller.
--
--The host controller appear on the PCI bus with vendor ID 0x159b (Faraday
--Technology) and product ID 0x4321.
--
--Mandatory properties:
--
--- compatible: ranging from specific to generic, should be one of
--  "cortina,gemini-pci", "faraday,ftpci100"
--  "cortina,gemini-pci-dual", "faraday,ftpci100-dual"
--  "faraday,ftpci100"
--  "faraday,ftpci100-dual"
--- reg: memory base and size for the host bridge
--- #address-cells: set to <3>
--- #size-cells: set to <2>
--- #interrupt-cells: set to <1>
--- bus-range: set to <0x00 0xff>
--- device_type, set to "pci"
--- ranges: see pci.txt
--- interrupt-map-mask: see pci.txt
--- interrupt-map: see pci.txt
--- dma-ranges: three ranges for the inbound memory region. The ranges must
--  be aligned to a 1MB boundary, and may be 1MB, 2MB, 4MB, 8MB, 16MB, 32MB, 64MB,
--  128MB, 256MB, 512MB, 1GB or 2GB in size. The memory should be marked as
--  pre-fetchable.
--
--Optional properties:
--- clocks: when present, this should contain the peripheral clock (PCLK) and the
--  PCI clock (PCICLK). If these are not present, they are assumed to be
--  hard-wired enabled and always on. The PCI clock will be 33 or 66 MHz.
--- clock-names: when present, this should contain "PCLK" for the peripheral
--  clock and "PCICLK" for the PCI-side clock.
--
--Mandatory subnodes:
--- For "faraday,ftpci100" a node representing the interrupt-controller inside the
--  host bridge is mandatory. It has the following mandatory properties:
--  - interrupt: see interrupt-controller/interrupts.txt
--  - interrupt-controller: see interrupt-controller/interrupts.txt
--  - #address-cells: set to <0>
--  - #interrupt-cells: set to <1>
--
--I/O space considerations:
--
--The plain variant has 128MiB of non-prefetchable memory space, whereas the
--"dual" variant has 64MiB. Take this into account when describing the ranges.
--
--Interrupt map considerations:
--
--The "dual" variant will get INT A, B, C, D from the system interrupt controller
--and should point to respective interrupt in that controller in its
--interrupt-map.
--
--The code which is the only documentation of how the Faraday PCI (the non-dual
--variant) interrupts assigns the default interrupt mapping/swizzling has
--typically been like this, doing the swizzling on the interrupt controller side
--rather than in the interconnect:
--
--interrupt-map-mask = <0xf800 0 0 7>;
--interrupt-map =
--	<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
--	<0x4800 0 0 2 &pci_intc 1>,
--	<0x4800 0 0 3 &pci_intc 2>,
--	<0x4800 0 0 4 &pci_intc 3>,
--	<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
--	<0x5000 0 0 2 &pci_intc 2>,
--	<0x5000 0 0 3 &pci_intc 3>,
--	<0x5000 0 0 4 &pci_intc 0>,
--	<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
--	<0x5800 0 0 2 &pci_intc 3>,
--	<0x5800 0 0 3 &pci_intc 0>,
--	<0x5800 0 0 4 &pci_intc 1>,
--	<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
--	<0x6000 0 0 2 &pci_intc 0>,
--	<0x6000 0 0 3 &pci_intc 1>,
--	<0x6000 0 0 4 &pci_intc 2>;
--
--Example:
--
--pci@50000000 {
--	compatible = "cortina,gemini-pci", "faraday,ftpci100";
--	reg = <0x50000000 0x100>;
--	interrupts = <8 IRQ_TYPE_LEVEL_HIGH>, /* PCI A */
--			<26 IRQ_TYPE_LEVEL_HIGH>, /* PCI B */
--			<27 IRQ_TYPE_LEVEL_HIGH>, /* PCI C */
--			<28 IRQ_TYPE_LEVEL_HIGH>; /* PCI D */
--	#address-cells = <3>;
--	#size-cells = <2>;
--	#interrupt-cells = <1>;
--
--	bus-range = <0x00 0xff>;
--	ranges = /* 1MiB I/O space 0x50000000-0x500fffff */
--		 <0x01000000 0 0          0x50000000 0 0x00100000>,
--		 /* 128MiB non-prefetchable memory 0x58000000-0x5fffffff */
--		 <0x02000000 0 0x58000000 0x58000000 0 0x08000000>;
--
--	/* DMA ranges */
--	dma-ranges =
--	/* 128MiB at 0x00000000-0x07ffffff */
--	<0x02000000 0 0x00000000 0x00000000 0 0x08000000>,
--	/* 64MiB at 0x00000000-0x03ffffff */
--	<0x02000000 0 0x00000000 0x00000000 0 0x04000000>,
--	/* 64MiB at 0x00000000-0x03ffffff */
--	<0x02000000 0 0x00000000 0x00000000 0 0x04000000>;
--
--	interrupt-map-mask = <0xf800 0 0 7>;
--	interrupt-map =
--		<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
--		<0x4800 0 0 2 &pci_intc 1>,
--		<0x4800 0 0 3 &pci_intc 2>,
--		<0x4800 0 0 4 &pci_intc 3>,
--		<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
--		<0x5000 0 0 2 &pci_intc 2>,
--		<0x5000 0 0 3 &pci_intc 3>,
--		<0x5000 0 0 4 &pci_intc 0>,
--		<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
--		<0x5800 0 0 2 &pci_intc 3>,
--		<0x5800 0 0 3 &pci_intc 0>,
--		<0x5800 0 0 4 &pci_intc 1>,
--		<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
--		<0x6000 0 0 2 &pci_intc 0>,
--		<0x6000 0 0 3 &pci_intc 0>,
--		<0x6000 0 0 4 &pci_intc 0>;
--	pci_intc: interrupt-controller {
--		interrupt-parent = <&intcon>;
--		interrupt-controller;
--		#address-cells = <0>;
--		#interrupt-cells = <1>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
-new file mode 100644
-index 000000000000..fb32f7b55035
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
-@@ -0,0 +1,176 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/faraday,ftpci100.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Faraday Technology FTPCI100 PCI Host Bridge
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+
-+description: |
-+    This PCI bridge is found inside that Cortina Systems Gemini SoC platform and
-+    is a generic IP block from Faraday Technology. It exists in two variants:
-+    plain and dual PCI. The plain version embeds a cascading interrupt controller
-+    into the host bridge. The dual version routes the interrupts to the host
-+    chips interrupt controller.
-+    The host controller appear on the PCI bus with vendor ID 0x159b (Faraday
-+    Technology) and product ID 0x4321.
-+    I/O space considerations:
-+    The plain variant has 128MiB of non-prefetchable memory space, whereas the
-+    "dual" variant has 64MiB. Take this into account when describing the ranges.
-+
-+    Interrupt map considerations:
-+
-+    The "dual" variant will get INT A, B, C, D from the system interrupt controller
-+    and should point to respective interrupt in that controller in its interrupt-map.
-+
-+    The code which is the only documentation of how the Faraday PCI (the non-dual
-+    variant) interrupts assigns the default interrupt mapping/swizzling has
-+    typically been like this, doing the swizzling on the interrupt controller side
-+    rather than in the interconnect:
-+
-+    interrupt-map-mask = <0xf800 0 0 7>;
-+    interrupt-map =
-+        <0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
-+        <0x4800 0 0 2 &pci_intc 1>,
-+        <0x4800 0 0 3 &pci_intc 2>,
-+        <0x4800 0 0 4 &pci_intc 3>,
-+        <0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
-+        <0x5000 0 0 2 &pci_intc 2>,
-+        <0x5000 0 0 3 &pci_intc 3>,
-+        <0x5000 0 0 4 &pci_intc 0>,
-+        <0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
-+        <0x5800 0 0 2 &pci_intc 3>,
-+        <0x5800 0 0 3 &pci_intc 0>,
-+        <0x5800 0 0 4 &pci_intc 1>,
-+        <0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
-+        <0x6000 0 0 2 &pci_intc 0>,
-+        <0x6000 0 0 3 &pci_intc 1>,
-+        <0x6000 0 0 4 &pci_intc 2>;
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-bus.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: cortina,gemini-pci
-+          - const: faraday,ftpci100
-+      - items:
-+          - const: cortina,gemini-pci-dual
-+          - const: faraday,ftpci100-dual
-+      - const: faraday,ftpci100
-+      - const: faraday,ftpci100-dual
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 3
-+
-+  "#interrupt-cells":
-+    const: 1
-+
-+  ranges:
-+    minItems: 2
-+
-+  dma-ranges:
-+    minItems: 3
-+    description: |
-+      three ranges for the inbound memory region. The ranges must
-+      be aligned to a 1MB boundary, and may be 1MB, 2MB, 4MB, 8MB, 16MB, 32MB, 64MB,
-+      128MB, 256MB, 512MB, 1GB or 2GB in size. The memory should be marked as
-+      pre-fetchable.
-+
-+  clocks:
-+    items:
-+      - description: peripheral clock (PCLK)
-+      - description: PCI clock (PCICLK).
-+    description: |
-+      If these are not present, they are assumed to be
-+      hard-wired enabled and always on. The PCI clock will be 33 or 66 MHz.
-+
-+  clock-names:
-+    items:
-+      - const: PCLK
-+      - const: PCICLK
-+
-+  interrupt-controller:
-+    type: object
-+
-+required:
-+  - reg
-+  - compatible
-+  - "#interrupt-cells"
-+  - interrupt-map-mask
-+  - interrupt-map
-+  - dma-ranges
-+
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        items:
-+          - const: cortina,gemini-pci
-+          - const: faraday,ftpci100
-+then:
-+  required:
-+    - interrupt-controller
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    pci@50000000 {
-+      compatible = "cortina,gemini-pci", "faraday,ftpci100";
-+      reg = <0x50000000 0x100>;
-+      device_type = "pci";
-+      #address-cells = <3>;
-+      #size-cells = <2>;
-+      #interrupt-cells = <1>;
-+
-+      bus-range = <0x00 0xff>;
-+      ranges = /* 1MiB I/O space 0x50000000-0x500fffff */
-+        <0x01000000 0 0          0x50000000 0 0x00100000>,
-+        /* 128MiB non-prefetchable memory 0x58000000-0x5fffffff */
-+        <0x02000000 0 0x58000000 0x58000000 0 0x08000000>;
-+
-+      /* DMA ranges */
-+      dma-ranges =
-+        /* 128MiB at 0x00000000-0x07ffffff */
-+        <0x02000000 0 0x00000000 0x00000000 0 0x08000000>,
-+        /* 64MiB at 0x00000000-0x03ffffff */
-+        <0x02000000 0 0x00000000 0x00000000 0 0x04000000>,
-+        /* 64MiB at 0x00000000-0x03ffffff */
-+        <0x02000000 0 0x00000000 0x00000000 0 0x04000000>;
-+
-+      interrupt-map-mask = <0xf800 0 0 7>;
-+      interrupt-map =
-+        <0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
-+        <0x4800 0 0 2 &pci_intc 1>,
-+        <0x4800 0 0 3 &pci_intc 2>,
-+        <0x4800 0 0 4 &pci_intc 3>,
-+        <0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
-+        <0x5000 0 0 2 &pci_intc 2>,
-+        <0x5000 0 0 3 &pci_intc 3>,
-+        <0x5000 0 0 4 &pci_intc 0>,
-+        <0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
-+        <0x5800 0 0 2 &pci_intc 3>,
-+        <0x5800 0 0 3 &pci_intc 0>,
-+        <0x5800 0 0 4 &pci_intc 1>,
-+        <0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
-+        <0x6000 0 0 2 &pci_intc 0>,
-+        <0x6000 0 0 3 &pci_intc 0>,
-+        <0x6000 0 0 4 &pci_intc 0>;
-+      pci_intc: interrupt-controller {
-+        interrupt-parent = <&intcon>;
-+        interrupt-controller;
-+        interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
-+        #address-cells = <0>;
-+        #interrupt-cells = <1>;
-+      };
-+    };
--- 
-2.31.1
 
+>
+> That also would make it obvious that there are no pathname quoting issues etc.
+>
+>               Linus
