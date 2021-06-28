@@ -2,123 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4544C3B5BA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4698A3B5BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhF1JyT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 05:54:19 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3325 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbhF1JyR (ORCPT
+        id S232585AbhF1KAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhF1KAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:54:17 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GD2gH5Vd0z6N4QG;
-        Mon, 28 Jun 2021 17:41:31 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 11:51:49 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Mon, 28 Jun 2021 11:51:49 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Thread-Topic: [RFC][PATCH 03/12] digest_lists: Basic definitions
-Thread-Index: AQHXaeMP1hrQEcpfKUiTvUrYdI7FlqsnkBuAgAGHhID//+c5gIAAIpgw///qPACAACIkMA==
-Date:   Mon, 28 Jun 2021 09:51:49 +0000
-Message-ID: <ae8418b544884467bbc5f7b4664b7e42@huawei.com>
-References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
- <20210625165614.2284243-4-roberto.sassu@huawei.com>
- <YNhYu3BXh7f9GkVk@kroah.com> <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
- <YNmMX4EODT0c4zqk@kroah.com> <4acc7e8f15834b83b310b9e2ff9ba3d2@huawei.com>
- <YNmXIk7orQavkEME@kroah.com>
-In-Reply-To: <YNmXIk7orQavkEME@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 28 Jun 2021 06:00:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35784C061574;
+        Mon, 28 Jun 2021 02:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qIbUFExBlJI5QA1nU2WzaI4H72pC0gc6gNk0xgR+rKc=; b=P67bAxKgnCNb4it+mmUn9RXFur
+        8YhmJ0KuWIUz8sQi0gHjJGwVa9pFqfA+MrWJqN52N2IHhHOWPsBb3AKXG1toUqLubnxKCJGQpaohm
+        wE4bdavEkuw68XocSlav0FoQ4eXqz+O9efzE/WBB0lB2LKWsBA3p1IfQgCJXy7ulG9nFwTK8EINRC
+        Qa1HlsRv0V1LxdbLyRkLFeamdOfxBD8w0Xb+wO5oFxxcaEgI0Qj3sdMADAJALRZioq6BFr7R1ZKVL
+        rOtpCQw20ssWCvqk2ZoD3qa3ugxA75tY9epUZuPCZjRg2tF03LdvGXuwBubvStyTJ87fYdkyLDoLD
+        O+yN5pvA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxnxm-002ntY-LZ; Mon, 28 Jun 2021 09:54:15 +0000
+Date:   Mon, 28 Jun 2021 10:53:58 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Igor Kononenko <i.kononenko@yadro.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        openbmc@lists.ozlabs.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 5/6] FMS: Add the SCSI Get Configuration command.
+Message-ID: <YNmcNvqvTFNCrMl9@infradead.org>
+References: <20210626211820.107310-1-i.kononenko@yadro.com>
+ <20210626211820.107310-6-i.kononenko@yadro.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210626211820.107310-6-i.kononenko@yadro.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Monday, June 28, 2021 11:32 AM
-> On Mon, Jun 28, 2021 at 09:27:05AM +0000, Roberto Sassu wrote:
-> > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > > Sent: Monday, June 28, 2021 10:46 AM
-> > > On Mon, Jun 28, 2021 at 08:30:32AM +0000, Roberto Sassu wrote:
-> > > > > > +struct compact_list_hdr {
-> > > > > > +	__u8 version;
-> > > > >
-> > > > > You should never need a version, that way lies madness.
-> > > >
-> > > > We wanted to have a way to switch to a new format, if necessary.
-> > >
-> > > Then just add a new ioctl if you need that in the future, no need to try
-> > > to cram it into this one.
-> >
-> > Given that digest lists are generated elsewhere, it would be still
-> > unclear when the ioctl() would be issued. Maybe the kernel needs
-> > to parse both v1 and v2 digest lists (I expect that v1 cannot be easily
-> > converted to v2, if they are signed).
-> >
-> >  It would be also unpractical if digest lists are loaded at kernel
-> > initialization time (I didn't send the patch yet).
-> 
-> Then that is up to your api design, I do not know.  But note that
-> "version" fields almost always never work, so be careful about assuming
-> that this will solve any future issues.
-> 
-> > > > > > +	__le16 type;
-> > > > > > +	__le16 modifiers;
-> > > > > > +	__le16 algo;
-> > > > > > +	__le32 count;
-> > > > > > +	__le32 datalen;
-> > > > >
-> > > > > Why are user/kernel apis specified in little endian format?  Why would
-> > > > > that matter?  Shouldn't they just be "native" endian?
-> > > >
-> > > > I thought this would make it clear that the kernel always expects the
-> > > > digest lists to be in little endian.
-> > >
-> > > Why would a big endian system expect the data from userspace to be in
-> > > little endian?  Shouldn't this always just be "native" endian given that
-> > > this is not something that is being sent to hardware?
-> >
-> > The digest list might come from a system with different endianness.
-> 
-> Ok, I have no idea what digests really are used for then.  So stick with
-> little endian and be sure to properly convert within the kernel as
-> needed.
-
-The most intuitive use case is to extend secure boot to the OS.
-
-The kernel might be configured to accept only digest lists signed
-with a trusted key.
-
-Once the database is populated, execution and mmap can be denied
-if the calculated file or metadata digest is not found in the database
-(the file has not been released by the vendor).
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> greg k-h
+What is FMS?  And why do only patches 5 and 6 show up on the list?
+And why does this mix changes to the SCSI layer, libata, usb-gadget and
+the CDROM UAPI in a single patch?
