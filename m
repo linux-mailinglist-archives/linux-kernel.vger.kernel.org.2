@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AD93B6416
+	by mail.lfdr.de (Postfix) with ESMTP id 153053B6415
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236936AbhF1PEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51374 "EHLO mail.kernel.org"
+        id S236911AbhF1PEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:04:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235438AbhF1OpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:45:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E8D961D06;
-        Mon, 28 Jun 2021 14:34:01 +0000 (UTC)
+        id S235548AbhF1OpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:45:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 800E361C93;
+        Mon, 28 Jun 2021 14:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890841;
-        bh=7H1gF4APE212UAPJY+7xGcaw49mKV6PHL83tDqh4hiQ=;
+        s=k20201202; t=1624890843;
+        bh=9M84u6ZzyESkhUmLfSOS38pTRPECjwl61+6yUK/rcwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Om8OAtM/ktG+921gi8vH8IhmaYswJsq/iQOTKuvJLJGw8yEoDHsXcUZstDbNLA4YK
-         JGQfDimvvjg6tj2A0CxE6eCeRYwjqnB321f+W//hH8Z2jkAjYnaenASk7KWmLj6apX
-         snUW0qvguqd5tyF1voaNqY8tLF6FJ+PXMAWTa1lNei4DvyL5C38ykNF6s79e5QybUs
-         dhE0uzB0sC36vsmbsWHB6PoRxK3Q211nW4AnaQp2RbLqmJr1B6sTkgnUf1YZtFMERl
-         xb2mJA/ENJlW57oRSPsDjACJ95U34UR5/t9gAdiTNhWZaCIMtQMEAtCKxoBiX25vyB
-         yWzKNzqM/YnBw==
+        b=rz3p8o3hqGhq/NaXHmXfjPFyLi+B9vGJ/GoslHcIZXNKopjVGhx+pDSCVqkPWyVLc
+         EnrpgPwacLfBfGPyThT4r7kCvpifg5JYzUJh0XclcM0TRhzB3l5rGhPff2ZHa+mV9E
+         aTUWvydBa/V64/uBKH7xZVIb7x3ATEHEv6yaHFYJbYTKi3rB60jN/mlQNUyFL7df4q
+         cUHs05Lm50NYpXSA2YgdbnbeuZSEKQCSiICzyE2f/C/Y5jKksIExrtH5/AMqKcHYNe
+         HlS96lP/FqJvGAXzDf4RoW8UZQZLZlg9dp3wt8CMtQ9W6KEnWNDRAe943IZvW2pz5j
+         qG9+VUzDIz02w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+Cc:     =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.19 062/109] tracing: Do not stop recording comms if the trace file is being read
-Date:   Mon, 28 Jun 2021 10:32:18 -0400
-Message-Id: <20210628143305.32978-63-sashal@kernel.org>
+Subject: [PATCH 4.19 064/109] PCI: Mark TI C667X to avoid bus reset
+Date:   Mon, 28 Jun 2021 10:32:20 -0400
+Message-Id: <20210628143305.32978-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.196-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-4.19.y
@@ -47,59 +50,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Antti Järvinen <antti.jarvinen@gmail.com>
 
-commit 4fdd595e4f9a1ff6d93ec702eaecae451cfc6591 upstream.
+commit b5cf198e74a91073d12839a3e2db99994a39995d upstream.
 
-A while ago, when the "trace" file was opened, tracing was stopped, and
-code was added to stop recording the comms to saved_cmdlines, for mapping
-of the pids to the task name.
+Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
+automatically disables LTSSM when Secondary Bus Reset is received and
+device stops working.  Prevent bus reset for these devices.  With this
+change, the device can be assigned to VMs with VFIO, but it will leak state
+between VMs.
 
-Code has been added that only records the comm if a trace event occurred,
-and there's no reason to not trace it if the trace file is opened.
-
+Reference: https://e2e.ti.com/support/processors/f/791/t/954382
+Link: https://lore.kernel.org/r/20210315102606.17153-1-antti.jarvinen@gmail.com
+Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
 Cc: stable@vger.kernel.org
-Fixes: 7ffbd48d5cab2 ("tracing: Cache comms only after an event occurred")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/pci/quirks.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 133cf8d125a3..71bc808fe03a 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1743,9 +1743,6 @@ struct saved_cmdlines_buffer {
- };
- static struct saved_cmdlines_buffer *savedcmd;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 70f05595da60..bc4858b056f9 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3483,6 +3483,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+  */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
  
--/* temporary disable recording */
--static atomic_t trace_record_taskinfo_disabled __read_mostly;
--
- static inline char *get_saved_cmdlines(int idx)
++/*
++ * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
++ * automatically disables LTSSM when Secondary Bus Reset is received and
++ * the device stops working.  Prevent bus reset for these devices.  With
++ * this change, the device can be assigned to VMs with VFIO, but it will
++ * leak state between VMs.  Reference
++ * https://e2e.ti.com/support/processors/f/791/t/954382
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
++
+ static void quirk_no_pm_reset(struct pci_dev *dev)
  {
- 	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
-@@ -3259,9 +3256,6 @@ static void *s_start(struct seq_file *m, loff_t *pos)
- 		return ERR_PTR(-EBUSY);
- #endif
- 
--	if (!iter->snapshot)
--		atomic_inc(&trace_record_taskinfo_disabled);
--
- 	if (*pos != iter->pos) {
- 		iter->ent = NULL;
- 		iter->cpu = 0;
-@@ -3304,9 +3298,6 @@ static void s_stop(struct seq_file *m, void *p)
- 		return;
- #endif
- 
--	if (!iter->snapshot)
--		atomic_dec(&trace_record_taskinfo_disabled);
--
- 	trace_access_unlock(iter->cpu_file);
- 	trace_event_read_unlock();
- }
+ 	/*
 -- 
 2.30.2
 
