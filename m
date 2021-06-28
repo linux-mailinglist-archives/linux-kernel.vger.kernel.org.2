@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694CE3B63BD
+	by mail.lfdr.de (Postfix) with ESMTP id EABF23B63BE
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbhF1PAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:00:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51694 "EHLO mail.kernel.org"
+        id S236352AbhF1PAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235654AbhF1Op3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235661AbhF1Op3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 10:45:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31CD761D03;
-        Mon, 28 Jun 2021 14:34:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA8F361C8F;
+        Mon, 28 Jun 2021 14:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890844;
-        bh=oHWietslQmsL5XcK0i446ow/bSAhGtVpXjqHVJqLVgc=;
+        s=k20201202; t=1624890847;
+        bh=KcYifVzG9X7A7bcMwDAzKpW1uDv3YCM5opz3g4aokfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s84VNVdWnlrYAEoS9CG7/Druit9ANH4QRWZMQK/GU1oVmDBZALjmr7B3wKfYuvf42
-         MBkfR4NL/+85TfwwqfQD9FrB40Ad+3BFGvnH8LtHLTyVVWLGJBhravEca/l7P9T+hT
-         3bxMDWo0dWjF5CCb2xreZgKEZXQWsaoN4Jf8i3n4GYpu0GqrVCgSMjbpNHOEPGVp2M
-         33EI29f2GdmtVPAqe0M4c13BWjlsGm3xwhbxCbxUoovyaGZSyummamjBQVc61bMWZZ
-         FRcqN3tkXPKSSreGDmSM+IaY9qSwy42HpVGffMafaiy8myOmnUAvOV4hO3vQwH7ekt
-         fg8QKBRMt2jzg==
+        b=co96rN1p8tMYZAKQLEGrInmlwnw6NtlOlMc2sa0HN78D2bZJGoNL4sUc5b0Bf+I6s
+         oDOS2bgL2I9aEKunLzMzpZ1aG1YJEaLtNVhnd32iAs4J2RmAAXMpv7Fdd3bCicn2WT
+         deJx53iO+czIy3EBUKjiKoHVg/dSsrnuhHFnRYLoOmg3xky5TsdMxxucUlB1dPyNBu
+         spATOMl75Uz1jWAAHd/kKx7gux9G2AWYcQgA44/KeLoPVYiF8D2LCR3mRIbGUhg/qc
+         LzkiNT0CtnWUhJdNNRZMVho3H5Fe+PD7dusgSqbzlCB1nsex3tDe1ZE6AFrp/ykH51
+         CWuXA5W1meIag==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+Cc:     Bumyong Lee <bumyong.lee@samsung.com>,
+        Jongho Park <jongho7.park@samsung.com>,
+        Chanho Park <chanho61.park@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.19 066/109] PCI: Add ACS quirk for Broadcom BCM57414 NIC
-Date:   Mon, 28 Jun 2021 10:32:22 -0400
-Message-Id: <20210628143305.32978-67-sashal@kernel.org>
+Subject: [PATCH 4.19 069/109] dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
+Date:   Mon, 28 Jun 2021 10:32:25 -0400
+Message-Id: <20210628143305.32978-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
@@ -49,43 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+From: Bumyong Lee <bumyong.lee@samsung.com>
 
-commit db2f77e2bd99dbd2fb23ddde58f0fae392fe3338 upstream.
+commit 4ad5dd2d7876d79507a20f026507d1a93b8fff10 upstream.
 
-The Broadcom BCM57414 NIC may be a multi-function device.  While it does
-not advertise an ACS capability, peer-to-peer transactions are not possible
-between the individual functions, so it is safe to treat them as fully
-isolated.
+flags varible which is the input parameter of pl330_prep_dma_cyclic()
+should not be used by spinlock_irq[save/restore] function.
 
-Add an ACS quirk for this device so the functions can be in independent
-IOMMU groups and attached individually to userspace applications using
-VFIO.
-
-[bhelgaas: commit log]
-Link: https://lore.kernel.org/r/1621645997-16251-1-git-send-email-michael.chan@broadcom.com
-Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Jongho Park <jongho7.park@samsung.com>
+Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+Link: https://lore.kernel.org/r/20210507063647.111209-1-chanho61.park@samsung.com
+Fixes: f6f2421c0a1c ("dmaengine: pl330: Merge dma_pl330_dmac and pl330_dmac structs")
 Cc: stable@vger.kernel.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/dma/pl330.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 285b361831ec..c5141b0542d1 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4711,6 +4711,8 @@ static const struct pci_dev_acs_enabled {
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00A, pci_quirk_xgene_acs },
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00B, pci_quirk_xgene_acs },
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00C, pci_quirk_xgene_acs },
-+	/* Broadcom multi-function device */
-+	{ PCI_VENDOR_ID_BROADCOM, 0x16D7, pci_quirk_mf_endpoint_acs },
- 	{ PCI_VENDOR_ID_BROADCOM, 0xD714, pci_quirk_brcm_acs },
- 	{ 0 }
- };
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 15b30d2d8f7e..816630505294 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -2671,13 +2671,15 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
+ 	for (i = 0; i < len / period_len; i++) {
+ 		desc = pl330_get_desc(pch);
+ 		if (!desc) {
++			unsigned long iflags;
++
+ 			dev_err(pch->dmac->ddma.dev, "%s:%d Unable to fetch desc\n",
+ 				__func__, __LINE__);
+ 
+ 			if (!first)
+ 				return NULL;
+ 
+-			spin_lock_irqsave(&pl330->pool_lock, flags);
++			spin_lock_irqsave(&pl330->pool_lock, iflags);
+ 
+ 			while (!list_empty(&first->node)) {
+ 				desc = list_entry(first->node.next,
+@@ -2687,7 +2689,7 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
+ 
+ 			list_move_tail(&first->node, &pl330->desc_pool);
+ 
+-			spin_unlock_irqrestore(&pl330->pool_lock, flags);
++			spin_unlock_irqrestore(&pl330->pool_lock, iflags);
+ 
+ 			return NULL;
+ 		}
 -- 
 2.30.2
 
