@@ -2,138 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380F83B5F73
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E133B5F7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhF1N6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57076 "EHLO
+        id S232316AbhF1OAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhF1N6w (ORCPT
+        with ESMTP id S232249AbhF1OAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:58:52 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8130C061574;
-        Mon, 28 Jun 2021 06:56:26 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id o13-20020a9d404d0000b0290466630039caso3625974oti.6;
-        Mon, 28 Jun 2021 06:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MlExkp7hP/ylcrzSxL7T+dFTODfyxl0iT59Y7w//6AI=;
-        b=PNCFkZdjcjZ3XtS8w2YFVrtLgcKI/EFdDyvCxgjOS+ctap0ccxNMlhF4Cy+YRzm+GX
-         qApU/qgxnokyePZEhsKCUuRjwXPD0gmHmh5l3v/OJVoUNEbr7n4Ufn001SgBJl7TVw2z
-         1/29AAY/A29+WhFvFeX1biGb71YYdwq412ZJB+/dNGIT6+Zey5l4ecqrezi3JNQ6xOwe
-         nlMdcqlmoWobYRas1Ge1zr9V/GIymXSB9yQ9aJI0xC1XOl8O4Z+KzZuwvZ7lBYQIyslh
-         wAOWmTnAPpevqNBHw1tPfDXyiqPDIA2ekQJlAnLkQ3DT/YsH5SryerD7phAX9DZGSo0m
-         kt6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MlExkp7hP/ylcrzSxL7T+dFTODfyxl0iT59Y7w//6AI=;
-        b=eW/Kbt5u23uPzTC79xA2RU7E76d5JNZxkbMEoEBsMSLFRnNj9guWTRzlr/2caCIQji
-         kudcWDlWKJ070pUlVOXWIw96iQgSxWzjunSgGzUlGOMC+NSVuTDcdF184crS1HcKRfpw
-         OjWx265BjNin8bLYSEfoGKvDtgmlZM/hbsVAWP18jLCsoSv/TBgdKnGFzhUmJZM2QCCj
-         Uc64uMDAn1clp37/T5bCkcnGapN3j3PbKzAMwfEZYDJxd+Vytaw2idJqc6oYNBCpwluP
-         tWHPH5akZZWPExzfEF57JvFtbTUQJvuzkTOjNE8jfg+EDgvm4i5oJ9EXjdDvyPXrtl6C
-         Xcuw==
-X-Gm-Message-State: AOAM532C6UdPB1BQInwlFn0oLZDKRXgpK2fhkHvjZ/gKExtNqi6cfJ62
-        l5KjvzG1099Iu542n8XNzk8=
-X-Google-Smtp-Source: ABdhPJz7CrhyeVBx+daUx8mvU1U+EBy6hdRC8vefO5jyXcZa8GFDHCgAnMmsF0F6kyEPv3CbPjFwjA==
-X-Received: by 2002:a9d:6545:: with SMTP id q5mr22048969otl.268.1624888586144;
-        Mon, 28 Jun 2021 06:56:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j14sm3447071otn.18.2021.06.28.06.56.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 06:56:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-References: <20210624035821.25375-1-billy_tsai@aspeedtech.com>
- <20210624124428.GB1670703@roeck-us.net>
- <51093C5F-61E2-4155-9C9A-035E330AEA1E@aspeedtech.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: (aspeed-pwm-tacho) Using falling edge.
-Message-ID: <43b0c30c-949a-8a6f-268f-c2a550fca30d@roeck-us.net>
-Date:   Mon, 28 Jun 2021 06:56:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 28 Jun 2021 10:00:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C76CC061574;
+        Mon, 28 Jun 2021 06:58:06 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 13:58:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624888683;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tyZ+Vinq0Y+cqJkD6Gxupj7bGITGax9nPqCUz96nryE=;
+        b=ovjvx0c2QydRLY17LyXkiztHLQxUxeYoqH94BSngXyVjsDE3K5XaODNnDvH6D2TWAbh6Z4
+        NDTJ5t+uKupXCazNBXpkAkliHPMfopbpgR5vuFivfQd5jB8pAvuGOVo6PskvEh0zV/JQ84
+        ix6UpA5vhFgIgl1UCZsr5QdgL3LMxBWxbWUDRih8xbYnsV/HHdusPUYYblwe3bzMGvFviM
+        mGeJ9HRn/KeE6tkXlHp5KVk1yXxG5iFH4nfQQZyUaW3tlRlQVFlB0eASpKGtJ8QX4b1pcG
+        w0I2kmYOjN235TFIn4ZUGJAfrnLJ3p9AaGnuiSKo/zjnOXI3mLB58Bo2W0Jchw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624888683;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tyZ+Vinq0Y+cqJkD6Gxupj7bGITGax9nPqCUz96nryE=;
+        b=Z5a100+0oGiuH8A8bI6ewKuXik0Yey+O7em4H3RIX1cmisf5Fx1UeXjdJiuFUpHIz0gPjH
+        0r7RYmcFhQUjGNDg==
+From:   "tip-bot2 for Yuan ZhaoXiong" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched: Optimize housekeeping_cpumask() in
+ for_each_cpu_and()
+Cc:     Li RongQing <lirongqing@baidu.com>,
+        Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1622985115-51007-1-git-send-email-yuanzhaoxiong@baidu.com>
+References: <1622985115-51007-1-git-send-email-yuanzhaoxiong@baidu.com>
 MIME-Version: 1.0
-In-Reply-To: <51093C5F-61E2-4155-9C9A-035E330AEA1E@aspeedtech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Message-ID: <162488868286.395.10942600934422360377.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/24/21 8:35 PM, Billy Tsai wrote:
-> On 2021/6/24, 8:44 PM, "Guenter Roeck" <groeck7@gmail.com on behalf of linux@roeck-us.net> wrote:
-> 
->      On Thu, Jun 24, 2021 at 11:58:21AM +0800, Billy Tsai wrote:
->      >> The tach shouldn't use both edges to measure. When the tach input
->      >> duty cycle isn't 50% the return value will inaccurate.
->      >>
->      > A tachometer doesn't have a duty cycle. A pwm has a duty cycle, but that
->      > is completely independent of the pwm duty cycle used to set the fan speed.
->      > So this patch does not really make sense with the above explanation.
-> 
-> The duty cycle means the waveform that reported from the fan tach pin not pwm signal.
-> 
->      > The impact of this patch is likely that the reported fan speed is reduced
->      > by 50%. It may well be that the driver currently reports twice the real fan
->      > speed. I have no idea if that is the case, but if it is it should not be
->      > conditional. The description above states "when the tach input cycle isn't
->      > 50%", suggesting that this is conditional on some other configuration.
->      > I don't know what that might be either.
-> 
-> According to the tach mode, our tach controller will sample the time of once conditional meet and translate it to tach value.
-> When the tach signal duty cycle isn't 50%, using both edges mode will get the tach value with error rate.
-> In addition, the current report value of both edges will twice the result which will enlarge the error rate.
-> Actually, the tach signal won't be a complete 50% duty cycle, so both edges mode isn't recommanded for the fan usage.
-> With rising-to-rising mode the skew time of tach signal will also effect the accuracy.
-> Thus, using the falling-to-falling mode is the better way for a fan tach monitor.
-> But for flexibility, I think using dts property to control the tach mode is better the user can change the mode to adapter the monitor device.
-> 
+The following commit has been merged into the sched/core branch of tip:
 
-Trying again, using my own words.
+Commit-ID:     031e3bd8986fffe31e1ddbf5264cccfe30c9abd7
+Gitweb:        https://git.kernel.org/tip/031e3bd8986fffe31e1ddbf5264cccfe30c9abd7
+Author:        Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+AuthorDate:    Sun, 06 Jun 2021 21:11:55 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 28 Jun 2021 15:42:26 +02:00
 
-A fan normally provides two short pulses per revolution. Those are short
-puleses, and one does not typically talk about "duty cycle" or "waveform"
-in this context. The driver currently counts both edges of those pulses.
-Assuming that a fan reports, say, 1,000 pulses per minute, the hardware
-would report a edle count of 2,000. This should translate into 500 RPM.
-I don't know if this is currently the case in the driver; if not, it would
-be a bug. Either case, the suggested change would reduce the pulse count
-reported by the hardware to 1,000. If we assume that the driver currently
-translates this correctly to 500 RPM, the suggested change would result
-in the driver reporting 250 RPM, which would be wrong.
+sched: Optimize housekeeping_cpumask() in for_each_cpu_and()
 
-So there are two possibilities:
-1) The driver currently reports 1,000 RPM in this situation. This would be a bug
-    which needs to get fixed.
-2) The driver currently correctly reports 500 RPM. In this case, the suggested
-    patch would introduce a bug because the code is not adjusted for the reduced
-    pulse count.
+On a 128 cores AMD machine, there are 8 cores in nohz_full mode, and
+the others are used for housekeeping. When many housekeeping cpus are
+in idle state, we can observe huge time burn in the loop for searching
+nearest busy housekeeper cpu by ftrace.
 
-The problem is that the patch does not address either of the situations above.
-In case 1), it should state that the code currently reports twice the real
-fan speed, and that the patch fixes that problem. In case 2), the patch should
-also fix the arithmetic used to calculate RPM from the pulse count.
+   9)               |              get_nohz_timer_target() {
+   9)               |                housekeeping_test_cpu() {
+   9)   0.390 us    |                  housekeeping_get_mask.part.1();
+   9)   0.561 us    |                }
+   9)   0.090 us    |                __rcu_read_lock();
+   9)   0.090 us    |                housekeeping_cpumask();
+   9)   0.521 us    |                housekeeping_cpumask();
+   9)   0.140 us    |                housekeeping_cpumask();
 
-Either case, I disagree that this should be handled in devicetree. It has
-nothing to do with hardware description or configuration but is in the
-discretion of the driver author/implementer.
+   ...
 
-Guenter
+   9)   0.500 us    |                housekeeping_cpumask();
+   9)               |                housekeeping_any_cpu() {
+   9)   0.090 us    |                  housekeeping_get_mask.part.1();
+   9)   0.100 us    |                  sched_numa_find_closest();
+   9)   0.491 us    |                }
+   9)   0.100 us    |                __rcu_read_unlock();
+   9) + 76.163 us   |              }
+
+for_each_cpu_and() is a micro function, so in get_nohz_timer_target()
+function the
+        for_each_cpu_and(i, sched_domain_span(sd),
+                housekeeping_cpumask(HK_FLAG_TIMER))
+equals to below:
+        for (i = -1; i = cpumask_next_and(i, sched_domain_span(sd),
+                housekeeping_cpumask(HK_FLAG_TIMER)), i < nr_cpu_ids;)
+That will cause that housekeeping_cpumask() will be invoked many times.
+The housekeeping_cpumask() function returns a const value, so it is
+unnecessary to invoke it every time. This patch can minimize the worst
+searching time from ~76us to ~16us in my testing.
+
+Similarly, the find_new_ilb() function has the same problem.
+
+Co-developed-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/1622985115-51007-1-git-send-email-yuanzhaoxiong@baidu.com
+---
+ kernel/sched/core.c | 6 ++++--
+ kernel/sched/fair.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2883c22..0c22cd0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -993,6 +993,7 @@ int get_nohz_timer_target(void)
+ {
+ 	int i, cpu = smp_processor_id(), default_cpu = -1;
+ 	struct sched_domain *sd;
++	const struct cpumask *hk_mask;
+ 
+ 	if (housekeeping_cpu(cpu, HK_FLAG_TIMER)) {
+ 		if (!idle_cpu(cpu))
+@@ -1000,10 +1001,11 @@ int get_nohz_timer_target(void)
+ 		default_cpu = cpu;
+ 	}
+ 
++	hk_mask = housekeeping_cpumask(HK_FLAG_TIMER);
++
+ 	rcu_read_lock();
+ 	for_each_domain(cpu, sd) {
+-		for_each_cpu_and(i, sched_domain_span(sd),
+-			housekeeping_cpumask(HK_FLAG_TIMER)) {
++		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+ 			if (cpu == i)
+ 				continue;
+ 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 45edf61..11d2294 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10188,9 +10188,11 @@ static inline int on_null_domain(struct rq *rq)
+ static inline int find_new_ilb(void)
+ {
+ 	int ilb;
++	const struct cpumask *hk_mask;
+ 
+-	for_each_cpu_and(ilb, nohz.idle_cpus_mask,
+-			      housekeeping_cpumask(HK_FLAG_MISC)) {
++	hk_mask = housekeeping_cpumask(HK_FLAG_MISC);
++
++	for_each_cpu_and(ilb, nohz.idle_cpus_mask, hk_mask) {
+ 
+ 		if (ilb == smp_processor_id())
+ 			continue;
