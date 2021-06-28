@@ -2,73 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198993B6424
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828F43B64B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbhF1PFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:05:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23830 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236281AbhF1OrC (ORCPT
+        id S237163AbhF1PNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:13:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45070 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234697AbhF1OwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:47:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624891476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=npbGF2ULVa7eofab+6oK3y2vWHP2r2nG679/RfmMcPI=;
-        b=bBiL137sbpKfmDuYquSVrTZvVYPvD1Iyq2tR1wOWMgU7Y5AvikInDN2xec8XQMwTXLoF65
-        ihCg0A6lPnLsokdFnmChGA+z/+jNXD+FwtDVRxbEpf+VWDXGvJ5S8WFnGC+VQ2+kJVSRkV
-        RzL/M9jh7qPOKdYh+j+rzEePXy/2my0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-N5n7t7WuNZuhb0i3eb80tw-1; Mon, 28 Jun 2021 10:44:34 -0400
-X-MC-Unique: N5n7t7WuNZuhb0i3eb80tw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4113D362FE;
-        Mon, 28 Jun 2021 14:44:33 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-113-168.ams2.redhat.com [10.36.113.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E5765C1D0;
-        Mon, 28 Jun 2021 14:44:27 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        linux-kernel@vger.kernel.org, mihai.carabas@oracle.com
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org, pizhenwei@bytedance.com,
-        andriy.shevchenko@linux.intel.com, pbonzini@redhat.com,
-        joe@perches.com
-Subject: [PATCH] misc/pvpanic-pci: Allow automatic loading
-Date:   Mon, 28 Jun 2021 16:44:22 +0200
-Message-Id: <20210628144422.895526-1-eric.auger@redhat.com>
+        Mon, 28 Jun 2021 10:52:12 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SEWopq101732;
+        Mon, 28 Jun 2021 10:49:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=h03xNSk7ghdjy3NvBWtPVvT1k716FIeYhukht/R8OYI=;
+ b=E/2mKAjK8l1L+ehVCXLoYe+eUNSTmfpMU+G/BXeaR7wMVuwTIPKvYsGpnTHI5hx6shZV
+ g5OG2yVhJBvL2zXpiS+L6nbjp9yz+9s8ifiGUJyWenjfFqMdDy7oKN7GUbGT0XppQ6rW
+ cEkWxfnvhkhlS4EudCgbdnR79gJjvlpeGml6pkysCW6FmSpE2PJYZfw4EbOWHC3onS/1
+ xuRdMwBlazdfDIFjl3yn12uZl3FcoGWb7ZP6Nftqrn7LzUmG2oajiuExlQBa4Iy9nseZ
+ 7feRXq+Lbgdr+I+j0AEZz8fRU/OqAE3+JTK1WBcI3BdkfRW0bulBvYqTXvSy7tcb6b4v 4A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ffj7t9wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 10:49:41 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SEXj0O105668;
+        Mon, 28 Jun 2021 10:49:40 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ffj7t9w9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 10:49:40 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SEgDsL006366;
+        Mon, 28 Jun 2021 14:49:40 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma05wdc.us.ibm.com with ESMTP id 39duvak5d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 14:49:40 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SEndQs37749018
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 14:49:39 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3E9FB214C;
+        Mon, 28 Jun 2021 14:49:39 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 022CAB2179;
+        Mon, 28 Jun 2021 14:49:38 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.210.16])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Mon, 28 Jun 2021 14:49:38 +0000 (GMT)
+Date:   Mon, 28 Jun 2021 09:49:37 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com
+Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
+ perf script
+Message-ID: <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20210628062341.155839-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628062341.155839-1-kjain@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PQRSfbvHeYeTApyTWRJTRB9tQZl_MKLK
+X-Proofpoint-ORIG-GUID: RPs_xy7izUBK3NhDSmZVxCR39duluPST
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_12:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ mlxscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106280102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pvpanic-pci driver does not auto-load and requires manual
-modprobe. Let's include a device database using the
-MODULE_DEVICE_TABLE macro.
+On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
+> Commit 48a1f565261d ("perf script python: Add more PMU fields
+> to event handler dict") added functionality to report fields like
+> weight, iregs, uregs etc via perf report.
+> That commit predefined buffer size to 512 bytes to print those fields.
+> 
+> But incase of powerpc, since we added extended regs support
+> in commits:
+> 
+> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+> Counter SPRs as part of extended regs")
+> Commit d735599a069f ("powerpc/perf: Add extended regs support for
+> power10 platform")
+> 
+> Now iregs can carry more bytes of data and this predefined buffer size
+> can result to data loss in perf script output.
+> 
+> Patch resolve this issue by making buffer size dynamic based on number
+> of registers needed to print. It also changed return type for function
+> "regs_map" from int to void, as the return value is not being used by
+> the caller function "set_regs_in_dict".
+> 
+> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+> Counter SPRs as part of extended regs")
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+> index 4e4aa4c97ac5..c8c9706b4643 100644
+> --- a/tools/perf/util/scripting-engines/trace-event-python.c
+> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
+[...]
+> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
+>  			     struct evsel *evsel)
+>  {
+>  	struct perf_event_attr *attr = &evsel->core.attr;
+> -	char bf[512];
+> +
+> +	/*
+> +	 * Here value 28 is a constant size which can be used to print
+> +	 * one register value and its corresponds to:
+> +	 * 16 chars is to specify 64 bit register in hexadecimal.
+> +	 * 2 chars is for appending "0x" to the hexadecimal value and
+> +	 * 10 chars is for register name.
+> +	 */
+> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+> +	char bf[size];
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+I propose using a template rather than a magic number here. Something like:
+const char reg_name_tmpl[] = "10 chars  ";
+const char reg_value_tmpl[] = "0x0123456789abcdef";
+const int size = __sw_hweight64(attr->sample_regs_intr) +
+                 sizeof reg_name_tmpl + sizeof reg_value_tmpl;
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 9ecc4e8559d5d..30290d42d8aa8 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -122,4 +122,6 @@ static struct pci_driver pvpanic_pci_driver = {
- 	},
- };
- 
-+MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
-+
- module_pci_driver(pvpanic_pci_driver);
--- 
-2.26.3
+Pardon my ignorance, but is there no separation/whitespace between the name
+and the value? And is there some significance to 10 characters for the
+register name, or is that a magic number?
 
+PC
