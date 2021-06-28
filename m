@@ -2,122 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439463B6767
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6E93B676A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhF1RQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45292 "EHLO
+        id S232359AbhF1RR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbhF1RQy (ORCPT
+        with ESMTP id S233136AbhF1RR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:16:54 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAD6C061574;
-        Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x16so14653819pfa.13;
-        Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
+        Mon, 28 Jun 2021 13:17:26 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418A8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:15:00 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u25so11141691ljj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=8ssRK52MSevAKyQoJxF4jNVc366d3EchjdXo13/rUh0=;
-        b=OTreY5lHoXNQ2THoqnz3iL4Rn8/qrdaoVrPCgJ8vwojjNX7ZbIGTNwLMegvtr3NEOx
-         f4x1ieFMEEfPUc+TUB8eorPq6zNdNyAzIl04LigkNLL3eYJ5nryN8cPp+/c0l7T7gh4d
-         dvS7oNd42R5Qco5BpF18DRN/tO3wBHjIcTLCCqfWMep5h3drVoEgJZgzx8BgTvWTjGv6
-         iWoA3UG/Pe7zVTznLVgkz043hgsRJ5glZMvlCON65HheZ55cf5N6XebXtVxwPWm3mpJV
-         MocqOsJokcMgzOQIIvEyDIafgzBURe9vogeNPnCUUsJDmqPGT9rr8UiKR3HW1MubaqDY
-         cFvA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2XZJeJAnEeTw6EZhaeLtrIK78gkna+e52JMMHDT7CCg=;
+        b=vXUXr4QmB8bjJVw5A5IXOs6Bo6viOvMc2F0ojinBt6aXe1DSaxMQwbtfRnJQb+8lYW
+         zcyFZgIJtaGNLaTOhAJJ8JyG4hU3Dd4EVJs3il9GJtDKN9WZZqQPALe2FH+E+iIl863X
+         Em5ZoXz7AkXDHv014gmOyuqVRDCUpKfJKn76opXr3IIGqQ2vTCeVV+c6OVkmR9ipZiTi
+         wPUxWKKKF0t+qKL2L2riNFGIDdEgqH7abrYvPLwsnGxKzWtGCM82TnEj13IwbrX83Qjv
+         BW79d4ELwMWWecaVuLUPoewSfeWAdNbdVCEW55GA4IZ/6mRwnCEwB5tXIwF7FNxQA7Kb
+         /qew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=8ssRK52MSevAKyQoJxF4jNVc366d3EchjdXo13/rUh0=;
-        b=Gm/RNHr/4GNgBbwEjUssP4hhjYLHe2xVuQhRsz5TTXM8rJvbACJRD1jrD5YOxCPaph
-         e6zm2wb+GB2XpoFkj7lP3U9ch0ekdEV9yXt1sL03gREuSCllWFij6TN7KKkeTfUe7bkl
-         v1OJtxgUHBYfmxdNHNqTYtHP7UqIkl9DPaGijTd2cTu5JHTEpWgSwQ1bQ9KBYwrXQHMl
-         xS8OU5xZgKaz0q4lPYGb/Fmc3BgVDz0ipqORmD91I12HyIWoTlw8QSkhcVDv5P32SIZm
-         DRn1OFkUjM2K0oC13eSIEulRBBoNc33NppbVYgo/DDxPluh7S1GirHRepRe3KE5BcdU9
-         SVVA==
-X-Gm-Message-State: AOAM532hNQY7ZVFxzMKCYkuAYuoGkVzLNZp+bcoDXrZT+LT6DRHPgryF
-        nXSKNuLKq8ejRtjEbqKWNvE=
-X-Google-Smtp-Source: ABdhPJxqJ3swu4BK/xwqLBbP1EzrcjSmkBPGV9E35yiozTOuPnT7dVU6RjahTgXLPTyN8nqdYyzoUw==
-X-Received: by 2002:a63:f556:: with SMTP id e22mr23969589pgk.189.1624900467165;
-        Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id u2sm3685754pfh.61.2021.06.28.10.14.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Jun 2021 10:14:26 -0700 (PDT)
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
- <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
-Date:   Tue, 29 Jun 2021 05:14:16 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2XZJeJAnEeTw6EZhaeLtrIK78gkna+e52JMMHDT7CCg=;
+        b=VUwSpLLyFQm2sqD0wr2qsy+W/IQvgIQSf3+pBat7XDRwkUhmPB3pkyBNaVGz62gV9b
+         mjOoy0GoAt/EHQFlux4uX42Lt+mdu9h5sOLO2jq1LmeOvjYbc+zsA1eKA8O8HCU3s7pG
+         DssM7a5YhfokgQQfJfIPbzmcCqhCcj8eQzBEpVGwO8tf6/YUWod7Q9JJlQgXe9qdaSaE
+         qwvUmeJWDxbff5bm0zMq3KVpTha2c1Pt/EH5MiaAXb9d80a2R8kSfvm6PkgimWNtPQVg
+         QdK8SUiJQzODZZzl1CikweWYAklX5nIknAPPvv7MskXD6A6HwxzNS/0v/1Y4RG2oQoIQ
+         Ev1w==
+X-Gm-Message-State: AOAM5310GK+qVmwSkVW58+QyeFqTO9dlesI3tIIhGNZRf4BWkcJ8b+8+
+        yIITD5Np5wBVKwbGnYJtqYbcJdNRJoyu7vtZszwFwg==
+X-Google-Smtp-Source: ABdhPJwouLp0BeyvLadrY22lhcl7T2zhKeDBodDpwR+JLO60lkyrdWsQoS1kjfX3iybtOy7rkSxgTUJm5fJEEgP3AO8=
+X-Received: by 2002:a2e:918a:: with SMTP id f10mr362098ljg.226.1624900497482;
+ Mon, 28 Jun 2021 10:14:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210414055217.543246-1-avagin@gmail.com> <20210414055217.543246-3-avagin@gmail.com>
+ <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com> <f64f960b-d978-4022-9e56-0d9d9a3c0ebc@www.fastmail.com>
+In-Reply-To: <f64f960b-d978-4022-9e56-0d9d9a3c0ebc@www.fastmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 28 Jun 2021 19:14:31 +0200
+Message-ID: <CAG48ez1d3abHEekh_fYoXdAe85RG+c--G7sEyMYhiKEsns3uog@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Am 28.06.2021 um 19:31 schrieb Geert Uytterhoeven:
->> Haven't found that warning in over 7 years' worth of console logs, and
->> I'm a good candidate for running the oldest userland in existence for m68k.
->>
->> Time to let it go.
+On Mon, Jun 28, 2021 at 6:30 PM Andy Lutomirski <luto@kernel.org> wrote:
+> On Mon, Jun 28, 2021, at 9:13 AM, Jann Horn wrote:
+> > On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
+> > > This change introduces the new system call:
+> > > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long fla=
+gs,
+> > >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemask=
+)
+> > >
+> > > process_vm_exec allows to execute the current process in an address
+> > > space of another process.
+> > [...]
+> >
+> > I still think that this whole API is fundamentally the wrong approach
+> > because it tries to shoehorn multiple usecases with different
+> > requirements into a single API. But that aside:
+> >
+> > > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *tar=
+get_mm)
+> > > +{
+> > > +       struct task_struct *tsk =3D current;
+> > > +       struct mm_struct *active_mm;
+> > > +
+> > > +       task_lock(tsk);
+> > > +       /* Hold off tlb flush IPIs while switching mm's */
+> > > +       local_irq_disable();
+> > > +
+> > > +       sync_mm_rss(prev_mm);
+> > > +
+> > > +       vmacache_flush(tsk);
+> > > +
+> > > +       active_mm =3D tsk->active_mm;
+> > > +       if (active_mm !=3D target_mm) {
+> > > +               mmgrab(target_mm);
+> > > +               tsk->active_mm =3D target_mm;
+> > > +       }
+> > > +       tsk->mm =3D target_mm;
+> >
+> > I'm pretty sure you're not currently allowed to overwrite the ->mm
+> > pointer of a userspace thread. For example, zap_threads() assumes that
+> > all threads running under a process have the same ->mm. (And if you're
+> > fiddling with ->mm stuff, you should probably CC linux-mm@.)
 >
-> The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
-> which is a very old ramdisk from right after the m68k a.out to ELF
-> transition:
->
->     warning: process `update' used the obsolete bdflush system call
->     Fix your initscripts?
->
-> I still boot it, once in a while.
+> exec_mmap() does it, so it can=E2=80=99t be entirely impossible.
 
-OK; you take the cake. That ramdisk came to mind when I thought about 
-where I'd last seen bdflush, but I've not used it in ages (not sure 14 
-MB are enough for that).
-
-The question then is - will bdflush fail gracefully, or spin retrying 
-the syscall?
-
-Cheers,
-
-	Michael
-
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
+Yeah, true, execve can do it - I guess the thing that makes that
+special is that it's running after de_thread(), so it's guaranteed to
+be single-threaded?
