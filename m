@@ -2,145 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FF53B6803
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA97F3B681B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234782AbhF1SAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:00:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35963 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231950AbhF1SAK (ORCPT
+        id S234838AbhF1SNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:13:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231950AbhF1SN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:00:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624903064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9WGSZJwLu54dZ1SXYRBBCBs+9QaI0qgizM8sbdetDwM=;
-        b=Itx2qoTuAK/jxRKqcWnNB7Y3tJyxFw7ctl/6iv3RyiIcSsBSMnmvcccEtM7d/a8TiuM50L
-        EnP8B6gx9V32PcbrTXTnNqLqv4ht1TGsJUAlyD2OW+P1BOQ6XDzJweryCe0exPvSlUEhqe
-        zPpLwwP+pgzb9vSJlEFufz6boq0V5q8=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-fXnrd-PKPfWtA78NRvZw0Q-1; Mon, 28 Jun 2021 13:57:42 -0400
-X-MC-Unique: fXnrd-PKPfWtA78NRvZw0Q-1
-Received: by mail-qt1-f199.google.com with SMTP id l14-20020ac84a8e0000b0290250ca4407e3so1247281qtq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:57:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9WGSZJwLu54dZ1SXYRBBCBs+9QaI0qgizM8sbdetDwM=;
-        b=menieuJmCDlAnct19cXJK8yokvn6ioO/zUIL1jlbnC+Q9yPGQMzuBqW76WQgNQrsPt
-         S2r5eMS3wlAmIqbzFK5y23G8/J8USiyKbJ+IRPlZSlz1IjJSFvKAZQWfLc1CUNdekEma
-         DbwhEKofLUj243sYMPiXdLI7bxU3ThUludi18TtmPH3mb50N25eEYQJKJCkb4hwU6All
-         Mo8kZtsb0E/rdt5wusbqNnLwZlF7wtVQf1lWRMDXaYRq8QPrFGbzvyqB9yNGaZ5e5JUD
-         CL2dw1yzbO6wuvuP+Ya/zDa1XU2z3LQR3Znpt3r/9j/CN1VMcbFwX0PjEtwXYQUXwzFF
-         V1Rw==
-X-Gm-Message-State: AOAM533q3czrfq1WmVpebuZk7lIW1+B1gq9Hmz8Qdn3XXG1Wic6BHHdG
-        Y7VqbYjJv8zyS+U8R2brPQGwMlOmd0G2jHW0eN6GxBA3hCMnAIEBgGPVzDafyLozOAUvpX/Mkwf
-        haGhyZ9CZWNt/Pjh7CyJA3t605Nf6wwGMbtBpfr6Ns7iRmKFj6zQw+fOEZlAc1ACvBWsUXqc4
-X-Received: by 2002:ac8:5a44:: with SMTP id o4mr18771916qta.105.1624903062072;
-        Mon, 28 Jun 2021 10:57:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvzsG+Y50g+nhJCdd145CH3hC/wAN38BytA0/QmqTyzZwxzcVHe7tP8qsb7TeJUaj0+gUTZA==
-X-Received: by 2002:ac8:5a44:: with SMTP id o4mr18771899qta.105.1624903061750;
-        Mon, 28 Jun 2021 10:57:41 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id b66sm10885314qkc.4.2021.06.28.10.57.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 10:57:41 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] locking/mutex: fix the MUTEX_FLAG_HANDOFF bit is cleared
- unexpected
-To:     Yanfei Xu <yanfei.xu@windriver.com>, peterz@infradead.org,
-        mingo@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20210628155155.11623-1-yanfei.xu@windriver.com>
-Message-ID: <e914d4fd-5afc-35f9-c068-7044ceda53dd@redhat.com>
-Date:   Mon, 28 Jun 2021 13:57:40 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210628155155.11623-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 28 Jun 2021 14:13:27 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SI4FOn027964;
+        Mon, 28 Jun 2021 14:11:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=oOmE9JuSCNuN6JdtSlav75wscAap/nbuPNBBwMY5CS0=;
+ b=sse4daR0hKDKT76gCI41m/cHt5zjWVW9t/8347eGtrslFak8FUzl9NfqSpFtLh/Kb6hc
+ YIdfJ+uJi4BwXwUmm8igfJykAilAGgFlj9bSEV8LtLxj7vJaoFtwgUY5yv8PP8s1MDNO
+ 9w5aeWKWyISndvc7eMz/KUrDhEVPKCi0LthYOO6IQiby05JG6GfcByOUpbEL+jFT+W3F
+ lsMGNjJEWFY3O0g7zMEQXwZXO5bU/OpgaoLrZAOK6tX8Ajn+r1oWaZYfhJbHjgyaSy2u
+ nLLFwD8Gn4F4rCxmIzKyReG2ym+5PP97IiiRcY/aVN9OoSuBRf9QkQwGW+v7KaE7eX6A ZA== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjqb1an8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 14:11:00 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SIAvPp004675;
+        Mon, 28 Jun 2021 18:10:57 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 39duv88fsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 18:10:56 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SIAsJl34537778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Jun 2021 18:10:54 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A9B552077;
+        Mon, 28 Jun 2021 18:10:54 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.112.169])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3FC2E5207C;
+        Mon, 28 Jun 2021 18:10:53 +0000 (GMT)
+Message-ID: <12f950a86631e83e9af52faa843cd335ac867af8.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem updates for v5.14
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 28 Jun 2021 14:10:52 -0400
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4yigeBkAkShjWLvFzVQH3tOVoWdZDmrA
+X-Proofpoint-GUID: 4yigeBkAkShjWLvFzVQH3tOVoWdZDmrA
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ clxscore=1015 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106280118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 11:51 AM, Yanfei Xu wrote:
-> When the mutex unlock path is excuted with WAITERS bit and without
-> HANDOFF bit set, it will wake up the first task in wait_list. If
-> there are some tasks not in wait_list are stealing lock, it is very
-> likely successfully due to the task field of lock is NULL and flags
-> field is non-NULL. Then the HANDOFF bit will be cleared. But if the
-> HANDOFF bit was just set by the waked task in wait_list, this clearing
-> is unexcepted.
+Hi Linus,
 
-I think you mean "unexpected". Right? Anyway, all the setting and 
-clearing of the HANDOFF bit are atomic. There shouldn't be any 
-unexpected clearing.
+The large majority of the changes are EVM portable & immutable
+signature related: removing a dependency on loading an HMAC key, safely
+allowing file metadata included in the EVM portable & immutable
+signatures to be modified, allowing EVM signatures to fulfill IMA file
+signature policy requirements, including the EVM file metadata
+signature in lieu of an IMA file data signature in the measurement
+list, and adding dynamic debugging of EVM file metadata.
 
-> __mutex_lock_common                   __mutex_lock_common
->    __mutex_trylock                       schedule_preempt_disabled
->      /*steal lock successfully*/         __mutex_set_flag(lock,MUTEX_FLAG_HANDOFF)
->      __mutex_trylock_or_owner
->        if (task==NULL)
->        flags &= ~MUTEX_FLAG_HANDOFF
->        atomic_long_cmpxchg_acquire
->                                          __mutex_trylock  //failed
->                                          mutex_optimistic_spin  //failed
->                                          schedule_preempt_disabled  //sleep without HANDOFF bit
->
-> So the HANDOFF bit should be set as late as possible, here we defer
-> it util the task is going to be scheduled.
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->
-> Hi maintainers,
->
-> I am not very sure if I missed or misunderstanded something, please help
-> to review. Many thanks!
->
->   kernel/locking/mutex.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 013e1b08a1bf..e57d920e96bf 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -1033,17 +1033,17 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
->   		}
->   
->   		spin_unlock(&lock->wait_lock);
-> +
-> +		if (first)
-> +			__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
->   		schedule_preempt_disabled();
->   
->   		/*
->   		 * ww_mutex needs to always recheck its position since its waiter
->   		 * list is not FIFO ordered.
->   		 */
-> -		if (ww_ctx || !first) {
-> +		if (ww_ctx || !first)
->   			first = __mutex_waiter_is_first(lock, &waiter);
-> -			if (first)
-> -				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
-> -		}
->   
->   		set_current_state(state);
->   		/*
+In addition, in order to detect critical data or file change
+reversions, duplicate measurement records are permitted in the IMA
+measurement list.  The remaining patches address compiler, sparse, and
+doc warnings.
 
-In general, I don't mind setting the HANDOFF bit later, but 
-mutex_optimistic_spin() at the end of the loop should only be called 
-after the HANDOFF bit is set. So the logic isn't quite right yet.
+thanks,
 
-Cheers,
-Longman
+Mimi
+
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.14
+
+for you to fetch changes up to 907a399de7b0566236c480d0c01ff52220532fb1:
+
+  evm: Check xattr size discrepancy between kernel and user (2021-06-21 08:34:21 -0400)
+
+----------------------------------------------------------------
+integrity-v5.14
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      ima: Fix fall-through warning for Clang
+
+Lakshmi Ramasubramanian (1):
+      ima: Fix warning: no previous prototype for function 'ima_add_kexec_buffer'
+
+Mimi Zohar (5):
+      evm: fix writing <securityfs>/evm overflow
+      Merge branch 'misc-evm-v7' into next-integrity
+      Merge branch 'verify-evm-portable-sig-v2' into next-integrity
+      ima: differentiate between EVM failures in the audit log
+      evm: output EVM digest calculation info
+
+Roberto Sassu (25):
+      evm: Execute evm_inode_init_security() only when an HMAC key is loaded
+      evm: Load EVM key in ima_load_x509() to avoid appraisal
+      evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
+      evm: Introduce evm_revalidate_status()
+      evm: Introduce evm_hmac_disabled() to safely ignore verification errors
+      evm: Allow xattr/attr operations for portable signatures
+      evm: Pass user namespace to set/remove xattr hooks
+      evm: Allow setxattr() and setattr() for unmodified metadata
+      evm: Deprecate EVM_ALLOW_METADATA_WRITES
+      ima: Allow imasig requirement to be satisfied by EVM portable signatures
+      ima: Introduce template field evmsig and write to field sig as fallback
+      ima: Don't remove security.ima if file must not be appraised
+      ima: Add ima_show_template_uint() template library function
+      ima: Define new template fields iuid and igid
+      ima: Define new template field imode
+      evm: Verify portable signatures against all protected xattrs
+      ima: Define new template fields xattrnames, xattrlengths and xattrvalues
+      ima: Define new template evm-sig
+      evm: Don't return an error in evm_write_xattrs() if audit is not enabled
+      doc: Fix warning in Documentation/security/IMA-templates.rst
+      ima: Set correct casting types
+      ima/evm: Fix type mismatch
+      ima: Include header defining ima_post_key_create_or_update()
+      ima: Pass NULL instead of 0 to ima_get_action() in ima_file_mprotect()
+      evm: Check xattr size discrepancy between kernel and user
+
+Tushar Sugandhi (1):
+      IMA: support for duplicate measurement records
+
+ Documentation/ABI/testing/evm                |  36 ++-
+ Documentation/security/IMA-templates.rst     |  12 +-
+ include/linux/evm.h                          |  34 ++-
+ include/linux/integrity.h                    |   1 +
+ security/integrity/evm/evm.h                 |   1 +
+ security/integrity/evm/evm_crypto.c          |  58 ++++-
+ security/integrity/evm/evm_main.c            | 376 ++++++++++++++++++++++++---
+ security/integrity/evm/evm_secfs.c           |  31 ++-
+ security/integrity/iint.c                    |   4 +-
+ security/integrity/ima/Kconfig               |   7 +
+ security/integrity/ima/ima_appraise.c        |  44 +++-
+ security/integrity/ima/ima_asymmetric_keys.c |   1 +
+ security/integrity/ima/ima_crypto.c          |   4 +-
+ security/integrity/ima/ima_fs.c              |   6 +-
+ security/integrity/ima/ima_init.c            |   4 +
+ security/integrity/ima/ima_kexec.c           |   1 +
+ security/integrity/ima/ima_main.c            |   2 +-
+ security/integrity/ima/ima_queue.c           |   5 +-
+ security/integrity/ima/ima_template.c        |  30 ++-
+ security/integrity/ima/ima_template_lib.c    | 211 ++++++++++++++-
+ security/integrity/ima/ima_template_lib.h    |  16 ++
+ security/security.c                          |   4 +-
+ 22 files changed, 804 insertions(+), 84 deletions(-)
 
