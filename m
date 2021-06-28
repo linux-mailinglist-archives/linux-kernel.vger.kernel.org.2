@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763FA3B6B6B
+	by mail.lfdr.de (Postfix) with ESMTP id BF4113B6B6C
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbhF1XjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 19:39:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
+        id S235028AbhF1Xj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 19:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233942AbhF1XjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233819AbhF1XjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 19:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 571CB61D00;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 28DE661CF6;
         Mon, 28 Jun 2021 23:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624923392;
-        bh=/hO/oZb2mVuBmkscgzTpx+bEkYMl6dXUAjL3aylUMAw=;
+        bh=VgdtsaxqUIuUUk3CT+1AR20xTf7vtxnZGV0pwLxhiCM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=FpnDsQkXrZ9AkdNeYnbTNfGlMaTBXcuABDHG3z6UGtOjh9KK1kkRoW9QJLss9hMJE
-         7eI/t0Uk48dr6u/J1pio/AHVLOWeZwWxO5WWsl2LGnskweXOpRTZJcgXbqF9LzepfD
-         Izy1kDDZoTzR6ljr5v/aSxgXP4cH22GzvUxtVdkcl0RLmwGK1lxIxmkMk9DEybdQ1B
-         Cxy5fxqZq1CPgfDkk825mM08JLhbr+33e3ow/q0ysvxAzAB1360SrC3wNBSyW7VimX
-         zZG2U/7HHkkG6RzJ4Hvw6vPnEOkDtDHrRUvg67qvzcLLjJXjqnFf3ZlXfvk3G7wMuz
-         xrg+hOa+AzDfQ==
+        b=sfMk++KyGCADuTN4Qo/OQWMIm14JeBNrQceO1OwKmNWbXkuh/Q845YzCGbfqW5ZiT
+         htrYFqu2cb6kF6lpEFAyqBP2OesdS6mE0b9/aY1ZCNzA9RPzlDN4kai0QSYdXd7uyH
+         +LjTSCod0jHTKMmiSC6xzcMR5BfLKVEmnkbrHNg2fWNdsftPENH5hmDf5qdZDQXMUB
+         SBQKRxdjO/jWHQ/4PEq0XgleYHF05sVUXJrW+Lj6ykHwY03GPX728wqClHwZnr1/M4
+         PYnJQQyGGmuDyrkfFQHuVnIqPwXJXZo4agm7tN+NAx5d94r3jZJ2K202jZiCsHtJpt
+         G2NDXYUlNl41Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 52A0260A3A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2453860A56;
         Mon, 28 Jun 2021 23:36:32 +0000 (UTC)
-Subject: Re: [GIT PULL] integrity subsystem updates for v5.14
+Subject: Re: [GIT PULL] Btrfs updates for 5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <12f950a86631e83e9af52faa843cd335ac867af8.camel@linux.ibm.com>
-References: <12f950a86631e83e9af52faa843cd335ac867af8.camel@linux.ibm.com>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <12f950a86631e83e9af52faa843cd335ac867af8.camel@linux.ibm.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.14
-X-PR-Tracked-Commit-Id: 907a399de7b0566236c480d0c01ff52220532fb1
+In-Reply-To: <cover.1624891843.git.dsterba@suse.com>
+References: <cover.1624891843.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1624891843.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-tag
+X-PR-Tracked-Commit-Id: 629e33a16809ae0274e1f5fc3d22b92b9bd0fdf1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a60c538ed2ff9d084544a894219eed9c5ab980e5
-Message-Id: <162492339233.13806.2146751465335123896.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 122fa8c588316aacafe7e5a393bb3e875eaf5b25
+Message-Id: <162492339214.13806.7154005954656729838.pr-tracker-bot@kernel.org>
 Date:   Mon, 28 Jun 2021 23:36:32 +0000
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Jun 2021 14:10:52 -0400:
+The pull request you sent on Mon, 28 Jun 2021 20:16:26 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.14
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a60c538ed2ff9d084544a894219eed9c5ab980e5
+https://git.kernel.org/torvalds/c/122fa8c588316aacafe7e5a393bb3e875eaf5b25
 
 Thank you!
 
