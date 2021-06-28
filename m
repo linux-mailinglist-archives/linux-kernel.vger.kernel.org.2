@@ -2,87 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823463B68DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB633B68ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236132AbhF1TPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:15:41 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:40914 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233471AbhF1TPj (ORCPT
+        id S236288AbhF1TRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236252AbhF1TRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:15:39 -0400
-Received: by mail-vs1-f54.google.com with SMTP id e26so9288289vsh.7;
-        Mon, 28 Jun 2021 12:13:13 -0700 (PDT)
+        Mon, 28 Jun 2021 15:17:15 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E28DC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:14:49 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g198so4243087wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
+        b=M84CXuxddhwuBiLOn5s5lrAZLL1SfDCezNR9CfNLJ0MCC4ycfVQw0oBLTYJwtJ0cYl
+         TpQVpFZvX9c5NmVMSMBNb7p2IDcGKBUfnjWbISvK4cRF8wi0l3Jq0LB16GTBHxxxRr+z
+         e+ddYYTYKEtUNC+jy004NKbP+3D4/GA46E4B9CNLPF9fEUhqHgOqEs3JHnX8VU53uvwk
+         2595OdvZAb6Y6ZNNTx1YwvEaDi7AAl+K9dBaCesjWJ3OSrOxvQP0zm+n3V2Ey3hNx9lK
+         lsj2rkbvgcNq5oFDqZmGQWrAC+yHhHZdPpf3pJeTfCjlHXxhMeccrO06AP72HycuZCcd
+         qFHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fkcjAWg2iZfJCNWSyvUR3eFiJYg/imvuPuSRT3awcqs=;
-        b=sKHIhFY511F0lTDL9L6lfXhdh3rJ/EVnYpqgP7QsrJPEFZ3RovEhnonNkIE8aqxR50
-         wBirT2e1j8wP5VsGQztM5FwOJ24i/8kCn9hIsmatcVhmRB6Kb0JxBIvgy7wOUzqbB28j
-         swUqN4gHwVdWeQyRRb6BKKr2/0Pl3dO4OSoAgRonCWJSiiqfg05qYunXrnyx9e4wkdjG
-         Hl96oqIjS99r+zIzEYykAZvL+c51kz8f/0xfifwYc7mDBoGUdS134cmJVD9l4tjShwGc
-         z+nzILHv+tfM+IAK7O7KuMx6IA9UL2Pbyj1k5J4K/WHC3pQtqcI5xDzIN6OzxSOy10ww
-         hdpg==
-X-Gm-Message-State: AOAM533A0ZVm1GD1ljlI4r9R9wfL2lManU5/3WwThOjOEK2zUgVB04Hm
-        W0WustExVkUTsFGo7wn8CrXvnqCSNzs6okMefto=
-X-Google-Smtp-Source: ABdhPJxzhb7WVJl3CFD16mEMwzISZSi/yuq3DYndd8EySALZPGjkuHG+heuA13DFlvF7q6NwSTlS4/Lr3iFx5u+m81E=
-X-Received: by 2002:a67:fa45:: with SMTP id j5mr7644558vsq.18.1624907591118;
- Mon, 28 Jun 2021 12:13:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+htQTyEDF+CVc+mO+s5d9t8IztHN54DhG/4dMTnUuhs=;
+        b=fiWBhfeC2iTTHv0s0DacoMEBsA3/icHf3cQ3mZ3OaB8Mc4Zj7kRtAIWyAX6Z6gayjr
+         mV1xluJgtMF2lYNf8RU/xrMMZXtpOfmUdXOxVuibPOBcayxNIvQbo+ai25CoJoWt3Oat
+         i770HmMODiz79PCYfiajkUp8QpOSQhno0/ybDCEEOnGqNTOuF+HB/uvGVSICD6oeWho4
+         Kir6y+M8NPW9TWAcags/KJTwD/y329oOwGFNSh6iawA7pSImoeQhb+xa/SCoFno/FBPI
+         OeL6s/M2UZ89ckjMwEkrsODErYpCw0c9kqXMfdRLTwk66E14cW04CQk/FJ7hVMt/vo3Y
+         Fw3Q==
+X-Gm-Message-State: AOAM533Psm+lcfXXf+Ad8QbyKFEC9Vn2FeE4QqwDOW+3NnmsOSNtKSwY
+        A6jsKAM6OQiYxnThIoTsVLlQ1w==
+X-Google-Smtp-Source: ABdhPJyezEkTfArDKPV5DlchwZCsHL9GtWwN39ROTKBKy+ZAKVhOrjtAWdLO60RlnmSJF3S/SF58XA==
+X-Received: by 2002:a1c:e907:: with SMTP id q7mr28391463wmc.1.1624907687817;
+        Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id n8sm15591229wrt.95.2021.06.28.12.14.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 12:14:47 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, robh+dt@kernel.org,
+        vigneshr@ti.com, linus.walleij@linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH v2] dt_bindings: mtd: partitions: redboot: convert to YAML
+Date:   Mon, 28 Jun 2021 19:14:40 +0000
+Message-Id: <20210628191440.2823024-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210623133205.GA28589@lst.de> <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
- <20210628133858.GA21602@lst.de> <4d6b7c35-f2fa-b476-b814-598a812770e6@landley.net>
- <20210628134955.GA22559@lst.de> <1141b20f-7cdf-1477-ef51-876226db7a37@landley.net>
- <20210628163312.GA29659@lst.de>
-In-Reply-To: <20210628163312.GA29659@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 21:12:58 +0200
-Message-ID: <CAMuHMdVT17ruQZKJXAahMvQQVMnJNoaSjHSuqat-CHOCV4hVaA@mail.gmail.com>
-Subject: Re: dma_declare_coherent_memory and SuperH
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Rob Landley <rob@landley.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Converts mtd/partitions/redboot-fis.txt to YAML.
 
-On Mon, Jun 28, 2021 at 6:33 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Mon, Jun 28, 2021 at 09:29:59AM -0500, Rob Landley wrote:
-> > > No.  My hope is to kill dma_declarare_coherent, an API for board
-> > > support files to declare device-specific regions to be used for
-> > > coherent DMA.
-> >
-> > Q) If I haven't got regression test hardware to make sure I properly converted
-> > each of these entire boards to device tree, Is there anything else I can do to
-> > help you remove this function from common code, such as inlining some portion of
-> > this function?
-> >
-> > A) You can convert the board to device tree.
-> >
-> > Which part of this exchange have I misunderstood?
->
-> The part that there is no easy way out without the device tree
-> conversion.
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+Changes since v1:
+- fixed yamllint errors
+- removed @0 from flash
 
-So you keep this functionality around with DT.  Which means there's
-some code to parse the DT, extract a region, and handle it?
-I'm just wondering which terrible maintenance burden would be left by
-making the handling function public, so the SH platform code can still call it?
+ .../bindings/mtd/partitions/redboot-fis.txt   | 27 ------------
+ .../bindings/mtd/partitions/redboot-fis.yaml  | 42 +++++++++++++++++++
+ 2 files changed, 42 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+deleted file mode 100644
+index fd0ebe4e3415..000000000000
+--- a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-RedBoot FLASH Image System (FIS) Partitions
+-===========================================
+-
+-The FLASH Image System (FIS) directory is a flash description
+-format closely associated with the RedBoot boot loader.
+-
+-It uses one single flash eraseblock in the flash to store an index of
+-all images in the flash.
+-
+-This block size will vary depending on flash but is typically
+-32 KB in size.
+-
+-Required properties:
+-- compatible : (required) must be "redboot-fis"
+-- fis-index-block : (required) a index to the eraseblock containing
+-  the FIS directory on this device. On a flash memory with 32KB
+-  eraseblocks, 0 means the first eraseblock at 0x00000000, 1 means the
+-  second eraseblock at 0x00008000 and so on.
+-
+-Example:
+-
+-flash@0 {
+-	partitions {
+-		compatible = "redboot-fis";
+-		fis-index-block = <0>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
+new file mode 100644
+index 000000000000..fee8d81b5276
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/redboot-fis.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: RedBoot FLASH Image System (FIS) Partitions
++
++description: The FLASH Image System (FIS) directory is a flash description
++    format closely associated with the RedBoot boot loader.
++    It uses one single flash eraseblock in the flash to store an index of
++    all images in the flash.
++    This block size will vary depending on flash but is typically
++    32 KB in size.
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++properties:
++  compatible:
++    const: redboot-fis
++
++  fis-index-block:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: a index to the eraseblock containing the FIS directory on this
++      device. On a flash memory with 32KB eraseblocks, 0 means the first
++      eraseblock at 0x00000000, 1 means the second eraseblock at 0x00008000 and so on.
++
++required:
++  - compatible
++  - fis-index-block
++
++additionalProperties: false
++
++examples:
++  - |
++    flash {
++      partitions {
++        compatible = "redboot-fis";
++        fis-index-block = <0>;
++      };
++    };
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
