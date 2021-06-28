@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CCA3B5F6B
+	by mail.lfdr.de (Postfix) with ESMTP id 438FF3B5F6A
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhF1NxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbhF1Nwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:52:44 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85896C061760;
-        Mon, 28 Jun 2021 06:50:14 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 65so9985058qko.5;
-        Mon, 28 Jun 2021 06:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jgGEFkMArwto/hguJ5jTwXsSU4L7A/FJ08JPCBZFdjo=;
-        b=QplwyV5rzaOnfqkvF1RDY68wW2yI1YFYhMRcU7pWOqgNs/N/bZvgTUibr8EterCWA4
-         Ekg4bqUy8nZitFIyD419HvXNIRp46zq4M5rpXAU1sTVnIHOB/jZcNETK1LaVya0ndlz/
-         2jURLQCARDMBzkUm73devoFH3rv3GVs0S9EuwybXuNTlIkt9SjGd5YnIcQ8p1zQ5C4WA
-         tHGfcXJdoX8RM98TqBtqr4tQAM+TmEZ1uZHacFdNgH27MCoKwYMmfQ6XmMcXb6OULz9i
-         3v5uvBtUZPWB6F0S9ahtFlX2goc73mwKRU5f6BJSq6pyCNLIN/hOL5tlTDzI+fma8VN+
-         x5Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jgGEFkMArwto/hguJ5jTwXsSU4L7A/FJ08JPCBZFdjo=;
-        b=te+7dZ2Oe1NaC50X1ojoarY4fP7S0U2KwAH3q5AVzZEAT83B85s2rqCxJYKiLo6rQR
-         HwZlV/cYvDtpaO3AdiWprn3+1gOLwBFS3QA/iLBKlLizmH63srKror/4WMArd/YyNYox
-         rOEHolKV+P43Pimg+YmjJTuJtsh8v7gMtR3Ru6a7BpW0HErfpr7fwl9sDfsh3CRxTpGY
-         uEqq6xQDifJIisEx3XzLEbmPi/rKaBYBtrJ/wbEY2YW6/tcfBejDu4KZMIHDGrodq8DR
-         odrOulEsPnHLIZy2DbZxJFIXqkRx42fB+y80BQaXgM5NhWKI91Dt++YNNyUBfxbxiUSX
-         ijbw==
-X-Gm-Message-State: AOAM532SDzDzBQsZ0SRGWRpmlbFvU4lDvjjqx2Nn5ituExgAe0y1KMR8
-        wuRs93+Vs9kyk2rGYuxZ29QxadUxLgo=
-X-Google-Smtp-Source: ABdhPJzmqYPGHZdApMOX5+0nI7tsbDj4KOUWei4oAqv0gB0IybDgSBjUSm8hGAP3XRTJk4pw3udWYg==
-X-Received: by 2002:a37:b8b:: with SMTP id 133mr8863456qkl.44.1624888213665;
-        Mon, 28 Jun 2021 06:50:13 -0700 (PDT)
-Received: from tannerlove.nyc.corp.google.com ([2620:0:1003:1000:8502:d4aa:337:d4d])
-        by smtp.gmail.com with ESMTPSA id f19sm10760518qkg.70.2021.06.28.06.50.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 06:50:13 -0700 (PDT)
-From:   Tanner Love <tannerlove.kernel@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Tanner Love <tannerlove@google.com>
-Subject: [PATCH net-next v3 2/2] net: update netdev_rx_csum_fault() print dump only once
-Date:   Mon, 28 Jun 2021 09:50:07 -0400
-Message-Id: <20210628135007.1358909-3-tannerlove.kernel@gmail.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-In-Reply-To: <20210628135007.1358909-1-tannerlove.kernel@gmail.com>
-References: <20210628135007.1358909-1-tannerlove.kernel@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232326AbhF1NxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:53:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232307AbhF1Nwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB3BD61C74;
+        Mon, 28 Jun 2021 13:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624888218;
+        bh=+XEnZXMMZPwmy4U6RRfBJ9DMLt16I883FZaEFdRXwMU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u5nSUsyZRNVeRBgVGxOsEW2VVhWj0wM+p6hohojLPcL1iPsxy94Vh8MaXU5OUtqoN
+         lqxQF4BOw/iD2pYJuX1STRf8ahlHMdW+l/pyntmRTLldAWYAgplg8AJR4he+zYf65t
+         yJxfazVts9tA+v2NZGcLxoT0TB3Gcl3uLdpU66Bixv+2MVhY98KIthHjdY53jX2jc2
+         NXtRrHgtgo4GneSJGIuqigTp0Ukn3WSddUZicXk/rZ/fM4U9CEum1G+wO3vurg3hbl
+         6Le9fJ028Yuy+gUkYDI7XulTTYX50ySi5pe7Rgj4KgP+Z6S1mJIulhM9wJSanZRF/W
+         AtKK75oNsjbEw==
+Date:   Mon, 28 Jun 2021 22:50:13 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Qiang Wang <wangqiang.wq.frank@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH -tip v8 00/13] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20210628225013.17e14b4c530478e8cc545259@kernel.org>
+In-Reply-To: <162399992186.506599.8457763707951687195.stgit@devnote2>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tanner Love <tannerlove@google.com>
+Hi Ingo and Peter,
 
-Printing this stack dump multiple times does not provide additional
-useful information, and consumes time in the data path. Printing once
-is sufficient.
+Can you merge this series to tip tree?
+Josh reviewed the ORC unwinder parts, so I think it is a good time to pick it.
+(And recently I got same effort from Qiang, he thinks this can be a phishing risk *)
 
-Changes
-  v2: Format indentation properly
+* https://lore.kernel.org/bpf/CAMZfGtWPi4CuVOtmUpy2N9J_mvp+5=gSAFvqV1nmvDKP+CAvQA@mail.gmail.com/
 
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Acked-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Mahesh Bandewar <maheshb@google.com>
----
- net/core/dev.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Thank you,
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 991d09b67bd9..d609366da95c 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -148,6 +148,7 @@
- #include <net/devlink.h>
- #include <linux/pm_runtime.h>
- #include <linux/prandom.h>
-+#include <linux/once_lite.h>
- 
- #include "net-sysfs.h"
- 
-@@ -3487,13 +3488,16 @@ EXPORT_SYMBOL(__skb_gso_segment);
- 
- /* Take action when hardware reception checksum errors are detected. */
- #ifdef CONFIG_BUG
-+static void do_netdev_rx_csum_fault(struct net_device *dev, struct sk_buff *skb)
-+{
-+	pr_err("%s: hw csum failure\n", dev ? dev->name : "<unknown>");
-+	skb_dump(KERN_ERR, skb, true);
-+	dump_stack();
-+}
-+
- void netdev_rx_csum_fault(struct net_device *dev, struct sk_buff *skb)
- {
--	if (net_ratelimit()) {
--		pr_err("%s: hw csum failure\n", dev ? dev->name : "<unknown>");
--		skb_dump(KERN_ERR, skb, true);
--		dump_stack();
--	}
-+	DO_ONCE_LITE(do_netdev_rx_csum_fault, dev, skb);
- }
- EXPORT_SYMBOL(netdev_rx_csum_fault);
- #endif
+On Fri, 18 Jun 2021 16:05:22 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hello,
+> 
+> Here is the 8th version of the series to fix the stacktrace with kretprobe on x86.
+> 
+> The previous version is;
+> 
+>  https://lore.kernel.org/bpf/162209754288.436794.3904335049560916855.stgit@devnote2/
+> 
+> This version fixes to call appropriate function and drop some unneeded
+> patches.
+> 
+> 
+> Changes from v7:
+> [03/13]: Call dereference_kernel_function_descriptor() for getting the
+>   address of kretprobe_trampoline.
+> [09/13]: Update the title and description to explain why it is needed.
+> [10/13][11/13]: Add Josh's Acked-by.
+> 
+> 
+> 
+> With this series, unwinder can unwind stack correctly from ftrace as below;
+> 
+>   # cd /sys/kernel/debug/tracing
+>   # echo > trace
+>   # echo 1 > options/sym-offset
+>   # echo r vfs_read >> kprobe_events
+>   # echo r full_proxy_read >> kprobe_events
+>   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+>   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+>   # echo 1 > events/kprobes/enable
+>   # cat /sys/kernel/debug/kprobes/list
+> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+>   # echo 0 > events/kprobes/enable
+>   # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+>            <...>-134     [007] ...1    16.185901: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x4a/0x70
+>  => __kretprobe_trampoline_handler+0xd4/0x170
+>  => trampoline_handler+0x43/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => vfs_read+0x98/0x180
+>  => ksys_read+0x5f/0xe0
+>  => do_syscall_64+0x37/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> 
+> This shows the double return probes (vfs_read and full_proxy_read) on the stack
+> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
+> will return to vfs_read+0x98)
+> 
+> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> the pt_regs passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API, and can use
+> stack_trace_save_regs().
+> 
+> You can also get this series from 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v8
+> 
+> 
+> Thank you,
+> 
+> ---
+> 
+> Josh Poimboeuf (1):
+>       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+> 
+> Masami Hiramatsu (12):
+>       ia64: kprobes: Fix to pass correct trampoline address to the handler
+>       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+>       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+>       kprobes: Add kretprobe_find_ret_addr() for searching return address
+>       ARC: Add instruction_pointer_set() API
+>       ia64: Add instruction_pointer_set() API
+>       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+>       kprobes: Enable stacktrace from pt_regs in kretprobe handler
+>       x86/kprobes: Push a fake return address at kretprobe_trampoline
+>       x86/unwind: Recover kretprobe trampoline entry
+>       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+>       x86/kprobes: Fixup return address in generic trampoline handler
+> 
+> 
+>  arch/arc/include/asm/ptrace.h       |    5 ++
+>  arch/arc/kernel/kprobes.c           |    2 -
+>  arch/arm/probes/kprobes/core.c      |    5 +-
+>  arch/arm64/kernel/probes/kprobes.c  |    3 -
+>  arch/csky/kernel/probes/kprobes.c   |    2 -
+>  arch/ia64/include/asm/ptrace.h      |    5 ++
+>  arch/ia64/kernel/kprobes.c          |   15 ++---
+>  arch/mips/kernel/kprobes.c          |    3 -
+>  arch/parisc/kernel/kprobes.c        |    4 +
+>  arch/powerpc/kernel/kprobes.c       |   13 ----
+>  arch/riscv/kernel/probes/kprobes.c  |    2 -
+>  arch/s390/kernel/kprobes.c          |    2 -
+>  arch/sh/kernel/kprobes.c            |    2 -
+>  arch/sparc/kernel/kprobes.c         |    2 -
+>  arch/x86/include/asm/kprobes.h      |    1 
+>  arch/x86/include/asm/unwind.h       |   23 +++++++
+>  arch/x86/include/asm/unwind_hints.h |    5 ++
+>  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
+>  arch/x86/kernel/unwind_frame.c      |    3 -
+>  arch/x86/kernel/unwind_guess.c      |    3 -
+>  arch/x86/kernel/unwind_orc.c        |   18 +++++-
+>  include/linux/kprobes.h             |   44 ++++++++++++--
+>  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
+>  kernel/trace/trace_output.c         |   17 +-----
+>  lib/error-inject.c                  |    3 +
+>  25 files changed, 238 insertions(+), 105 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
 -- 
-2.32.0.93.g670b81a890-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
