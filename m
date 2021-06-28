@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14973B6986
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EE73B6984
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhF1UNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:13:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58313 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236965AbhF1UNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:13:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195321500"
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="195321500"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 13:10:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="557689270"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga004.jf.intel.com with ESMTP; 28 Jun 2021 13:10:19 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] thermal: int340x: processor_thermal: Fix tcc setting
-Date:   Mon, 28 Jun 2021 13:10:12 -0700
-Message-Id: <20210628201012.68642-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S237317AbhF1UNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237260AbhF1UNA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 16:13:00 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048E3C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:10:35 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so9576947ple.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:10:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HY/GsEHwNtsixKBYmNS8ME4RAx608QOmYPU33bjYZvg=;
+        b=XOeFjz35rDbu8g14AdYO1sHi5KROWGiXdYnqTyAfIy27JCvjTq/LH9FzzT+oC/y4ul
+         2G3hkeQRubvRGc2r5J2N+Wm4G49jvPPE9XbQpB8e7bJvPSeDEi7ia7IOsEKpIfceI+So
+         a6qUz+TLFmyic2EOZnj5LpgCWKIypkvDu0zs2eVZwkAnvGhL2FApntH+YBbDMvumf2Vf
+         eb/vhzbRYwfDTUDPzJK8xRL3c7kI1hW7DuvP6M6JJIuJjNwSS5jARE4D1WEYQ4E45GoE
+         RVL8d6Je6v/OEvLZ1pFXlT3wjYkk6W8GToAO5Uk5laekCqN/n0RkxeGt8Nlx8db4lCe8
+         hFjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HY/GsEHwNtsixKBYmNS8ME4RAx608QOmYPU33bjYZvg=;
+        b=a0MNh31xnQOVwI9KZ75Wejl9OqJxRt5xC2lZQpkhnTTuUdoYwsqgdum4dEtmasP5wT
+         2j84TzR+iI6llO1LSWgybOxYRVIsH+zqtewq0F21+hNo7mhxBeTjrjZ8yBnIIRXTfmOO
+         g1V1VUjSzYKqxdSlP3ZHY1xO7WoQKGZK2sLBOhQfS/b4ppojLz+OkH1rpahs88UZhnee
+         EJkyvnEA0d7/QPgWO//2G6/yyaHm2fdz4vfouO5jupM7X7Z/3WrKDrHkrEV3jC91I1r1
+         5+Jj8jfz346HfBg1DVbZE2W55CUsrykcyIobZEM4I8gBKFIq5SQkhMauu1eDnHddAvJs
+         Qt9Q==
+X-Gm-Message-State: AOAM5302fmM2cSSJjnjA3SgtTPsBSLniCJyJB2lHsHU+QiDqY8i7Yi8J
+        /7mHlSHHCyW8toPFzuwUUCDjPHtXZ8A2aPPrIyr20w==
+X-Google-Smtp-Source: ABdhPJxB8A0caP/EEeIPyL/nf0K6BKR08uAKbl6ViJHfHwWD/BPa5fP4/ozZuAYQ/lhyq464KVFb5xRX/O1213D3joo=
+X-Received: by 2002:a17:902:6bc8:b029:117:6a8a:f7af with SMTP id
+ m8-20020a1709026bc8b02901176a8af7afmr24419786plt.51.1624911034263; Mon, 28
+ Jun 2021 13:10:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210623201721.980348-1-dlatypov@google.com>
+In-Reply-To: <20210623201721.980348-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 28 Jun 2021 13:10:23 -0700
+Message-ID: <CAFd5g46pkO6JsMVU-79aDbmswSPs1Zx4U0DW9PhKR4SoUBq5EA@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: drop obsolete note about uml_abort
+ for coverage
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following fixes are done for tcc sysfs interface:
-- TCC is 6 bits only from bit 29-24
-- TCC of 0 is valid
-- When BIT(31) is set, this register is read only
-- Check for invalid tcc value
-- Error for negative values
+On Wed, Jun 23, 2021 at 1:17 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Commit b6d5799b0b58 ("kunit: Add 'kunit_shutdown' option") changes KUnit
+> to call kernel_halt() by default when done testing.
+>
+> This fixes the issue with not having .gcda files due to not calling
+> atexit() handlers, and therefore we can stop recommending people
+> manually tweak UML code.
+>
+> The need to use older versions of GCC (<=6) remains however, due to
+> linktime issues, same as before. Note: There also might still be issues
+> with .gcda files as well in newer versions.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- .../processor_thermal_device.c                | 20 +++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-index de4fc640deb0..0f0038af2ad4 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-@@ -78,24 +78,27 @@ static ssize_t tcc_offset_degree_celsius_show(struct device *dev,
- 	if (err)
- 		return err;
- 
--	val = (val >> 24) & 0xff;
-+	val = (val >> 24) & 0x3f;
- 	return sprintf(buf, "%d\n", (int)val);
- }
- 
--static int tcc_offset_update(int tcc)
-+static int tcc_offset_update(unsigned int tcc)
- {
- 	u64 val;
- 	int err;
- 
--	if (!tcc)
-+	if (tcc > 63)
- 		return -EINVAL;
- 
- 	err = rdmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, &val);
- 	if (err)
- 		return err;
- 
--	val &= ~GENMASK_ULL(31, 24);
--	val |= (tcc & 0xff) << 24;
-+	if (val & BIT(31))
-+		return -EPERM;
-+
-+	val &= ~GENMASK_ULL(29, 24);
-+	val |= (tcc & 0x3f) << 24;
- 
- 	err = wrmsrl_safe(MSR_IA32_TEMPERATURE_TARGET, val);
- 	if (err)
-@@ -104,14 +107,15 @@ static int tcc_offset_update(int tcc)
- 	return 0;
- }
- 
--static int tcc_offset_save;
-+static unsigned int tcc_offset_save;
- 
- static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
- 				struct device_attribute *attr, const char *buf,
- 				size_t count)
- {
-+	unsigned int tcc;
- 	u64 val;
--	int tcc, err;
-+	int err;
- 
- 	err = rdmsrl_safe(MSR_PLATFORM_INFO, &val);
- 	if (err)
-@@ -120,7 +124,7 @@ static ssize_t tcc_offset_degree_celsius_store(struct device *dev,
- 	if (!(val & BIT(30)))
- 		return -EACCES;
- 
--	if (kstrtoint(buf, 0, &tcc))
-+	if (kstrtouint(buf, 0, &tcc))
- 		return -EINVAL;
- 
- 	err = tcc_offset_update(tcc);
--- 
-2.27.0
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
