@@ -2,91 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0503B3B6B90
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC0E3B6B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbhF1Xwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 19:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
+        id S229907AbhF1XzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 19:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhF1Xwd (ORCPT
+        with ESMTP id S232700AbhF1Xy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 19:52:33 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024A3C061574;
-        Mon, 28 Jun 2021 16:50:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GDPVL06GXz9sXN;
-        Tue, 29 Jun 2021 09:50:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624924203;
-        bh=1KgKNLYDKdeCfLcT88TJMse+bZyRmCpg/mkbwx6HP9k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UeG2EQZSyi6g4zK3hqREmhqalz9emwjil3lKvQteR27UFIctiMN5FUbMLQPpDkZX0
-         p9oyA9McEqLMpKa0snjPojnxjFrUpJeyBke7sgkpkSMCJSo7K5fGvkd4zYx78fZOAL
-         xQN1AvHbEbaa3yNP3TURk7wjYWe51qV6huiY5fixqIly3SZwcWNq7EPYLzNS4k9WDC
-         4qQ2sIMuDIMP+4NyQ873ClkjDKygBnQGNlgxsed6o02ixOSXCn/9ltoLCZSj22Xhx2
-         /f5BXealOvq9u48seebdriwTN8apPDaYAD75XK9Jg3aSo+cKP8lLfiRTwpciGS6+bB
-         I/23SNLtVeisQ==
-Date:   Tue, 29 Jun 2021 09:50:01 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the thermal tree
-Message-ID: <20210629095001.1f0575ca@canb.auug.org.au>
+        Mon, 28 Jun 2021 19:54:57 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D034CC061574;
+        Mon, 28 Jun 2021 16:52:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id k10so35820204lfv.13;
+        Mon, 28 Jun 2021 16:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=0mhGyeclUmRPe+XYJKNXM5ZGwYfGJsYXJxWFl3k8OrY=;
+        b=bPgBoW2VqfbuS9v1KRayMGZAZOotrCmKS/hP/Y4ISyci+Bo/MGR1lvNwq1aAtXQ80N
+         it8SIqJm31HsEDFnIHOpAGC+h70FKUYI//XmbW/5g2E0JCZ6PIde/SPWbFITupOoto74
+         zhNFcQ38fcdzsK03yBn7j6eIU5B6fBIOKm07eEpobNlFNCzAALdsTCuWCk5qXn4PMI/X
+         uSAYfkhojS8LzMa4SPA9Bo+nZYMWL09v2NqQGxfEao/qEpmAROrknMJFl5WLfPSjoWLt
+         7hAoLy4DXjt5ql1jeA8vqh1nzHhED83tU3PvzyjMz/U0v4zVTUFhVHx3FlnPmo1HYZjB
+         m9Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=0mhGyeclUmRPe+XYJKNXM5ZGwYfGJsYXJxWFl3k8OrY=;
+        b=aeDN0qZrWdsVBuwWEQSQJY8KOWh8hiFu0uS3j2bJwo2MMo9+Ri9r0v+HmKDnyQi65i
+         njiKIrS2z2QO/Qpfq9LKgCTIDTxQ7t2gvODOqGyX6KPIZ03aXVAtz7ACG9DcaPy4B328
+         rP9enb6XhDgw35hwR7R0V/0keFUH279hx9K62rhrCNkmLefq04m06ZdSEPCIyNuKSky/
+         aa2PLoIvRAh6s4u155pYEonsCULW3WSYJT7cGQNSbFcVuH0sHUabxlyvQ/FWm2G5Xug3
+         Vze1s+yZWg6xDOpn/yiuGXS95g3pIZ/jolL+URlKyxilHGzWxEbfa8RfttLZfacycQ13
+         +eTg==
+X-Gm-Message-State: AOAM531ICRMLDJkQqwJwbvc0RY9k6MjQBOLUaAdehAIJDiV/1E4Asv1E
+        o3217bx9mXygxWdLWKX2Djm+f0gFh9J+lywISojtY2FqIG3zlQ==
+X-Google-Smtp-Source: ABdhPJyCF923I6WEbPeCYFm+7q2qwF+0/iTZj1HJoqhgJsOyeXTIqA552KVqTErWT8vOMzUHaIT+pkk/PQ51/VMM66o=
+X-Received: by 2002:a19:6712:: with SMTP id b18mr21151829lfc.184.1624924348611;
+ Mon, 28 Jun 2021 16:52:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/33I63fev2QgIpT/d1VWp3ke";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 28 Jun 2021 18:52:17 -0500
+Message-ID: <CAH2r5mursRhnq7Cgk-kG-kKeV=F-NL9XaGsEREo4WR-NBAhGPA@mail.gmail.com>
+Subject: [GIT PULL] CIFS/SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/33I63fev2QgIpT/d1VWp3ke
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Please pull the following changes since commit
+13311e74253fe64329390df80bed3f07314ddd61:
 
-Hi all,
+  Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
 
-In commit
+are available in the Git repository at:
 
-  f019bfde7a6f ("thermal/drivers/int340x/processor_thermal: Fix tcc setting=
-")
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc-smb3-fixes-part1
 
-Fixes tag
+for you to fetch changes up to 0fa757b5d3ea6e3d3d59f0e0d34c8214b8643b8f:
 
-  Fixes: fdf4f2fb8e899 ("drivers: thermal: processor_thermal_device:
+  smb3: prevent races updating CurrentMid (2021-06-25 14:02:26 -0500)
 
-has these problem(s):
+----------------------------------------------------------------
+38 cifs/smb3 fixes including:
+- improvement to fallocate emulation
+- 9 DFS fixes
+- 2 minor multichannel fixes
+- Various cleanup patches, many to address Coverity warnings
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
+There are various features still being tested that are not included
+in this PR but that should be ready soon, including some important
+multichannel fixes, support for the new signing negotiate context as
+well as an important multiuser uid fix.  We are also still working on
+the switchover to netfs for readahead so that is not included in this
+series yet.
+----------------------------------------------------------------
+Aurelien Aptel (1):
+      cifs: fix ipv6 formating in cifs_ses_add_channel
 
-Please do not split Fixes tags over more than one line.
+Baokun Li (3):
+      cifs: fix doc warnings in cifs_dfs_ref.c
+      cifs: convert list_for_each to entry variant in smb2misc.c
+      cifs: convert list_for_each to entry variant in cifs_debug.c
 
---=20
-Cheers,
-Stephen Rothwell
+Colin Ian King (1):
+      cifs: remove redundant initialization of variable rc
 
---Sig_/33I63fev2QgIpT/d1VWp3ke
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Dan Carpenter (1):
+      cifs: fix NULL dereference in smb2_check_message()
 
------BEGIN PGP SIGNATURE-----
+Hyunchul Lee (1):
+      cifs: decoding negTokenInit with generic ASN1 decoder
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDaYCkACgkQAVBC80lX
-0Gwu2Qf9Gh7/TnhxPiE5AwwiAz1Rlchp+yaYM7ZFXojBJTpZrHbeHOf4Fo67Eeit
-Pq1ZDada7GUI+YkurjL4BjpnB06gB2n/VZdvJgeoFja7p2yySOo0cJV8oiY8J1GD
-+A9rBnPfRNPCu89JoeWCcDnr58mgJEtBCcCsXDGV8DLCAUQqsLgWEsVl91/OyuEy
-56TndX4nZIQ1+ZrwTUCZPdqLlF8bXy6EKt8/FJ5sSvMblV10UgN55/93TI/ZDNnV
-61wZG0Q1A5ad1UrLTroVEaz2UYSApehcVFSJz+eWxdooJlwPxy4wYbO7yRTQra6F
-TT2zUqtCBdzkZ6CIpbqe29IFsuDiyA==
-=mzsy
------END PGP SIGNATURE-----
+Kees Cook (1):
+      cifs: Avoid field over-reading memcpy()
 
---Sig_/33I63fev2QgIpT/d1VWp3ke--
+Paulo Alcantara (9):
+      cifs: do not send tree disconnect to ipc shares
+      cifs: get rid of @noreq param in __dfs_cache_find()
+      cifs: keep referral server sessions alive
+      cifs: handle different charsets in dfs cache
+      cifs: fix path comparison and hash calc
+      cifs: set a minimum of 2 minutes for refreshing dfs cache
+      cifs: do not share tcp servers with dfs mounts
+      cifs: avoid starvation when refreshing dfs cache
+      cifs: fix check of dfs interlinks
+
+Rikard Falkeborn (1):
+      cifs: Constify static struct genl_ops
+
+Ronnie Sahlberg (2):
+      cifs: improve fallocate emulation
+      cifs: avoid extra calls in posix_info_parse
+
+Shyam Prasad N (1):
+      cifs: missed ref-counting smb session in find
+
+Steve French (15):
+      cifs: remove duplicated prototype
+      cifs: enable extended stats by default
+      cifs: use SPDX-Licence-Identifier
+      cifs: fix unneeded null check
+      smb3: fix uninitialized value for port in witness protocol move
+      cifs: fix SMB1 error path in cifs_get_file_info_unix
+      smb311: remove dead code for non compounded posix query info
+      smbdirect: missing rc checks while waiting for rdma events
+      SMB3: Add new info level for query directory
+      cifs: remove two cases where rc is set unnecessarily in sid_to_id
+      cifs: missing null check for newinode pointer
+      smb3: fix possible access to uninitialized pointer to DACL
+      cifs: missing null pointer check in cifs_mount
+      cifs: fix missing spinlock around update to ses->status
+      smb3: prevent races updating CurrentMid
+
+Thiago Rafael Becker (1):
+      cifs: retry lookup and readdir when EAGAIN is returned.
+
+YueHaibing (1):
+      cifs: Remove unused inline function is_sysvol_or_netlogon()
+
+ fs/cifs/Kconfig                       |    6 +-
+ fs/cifs/Makefile                      |    8 +-
+ fs/cifs/asn1.c                        |  623 ++-----------------
+ fs/cifs/cache.c                       |   14 +-
+ fs/cifs/cifs_debug.c                  |   24 +-
+ fs/cifs/cifs_debug.h                  |    2 +-
+ fs/cifs/cifs_dfs_ref.c                |    2 +-
+ fs/cifs/cifs_fs_sb.h                  |   18 +-
+ fs/cifs/cifs_ioctl.h                  |   11 +-
+ fs/cifs/cifs_spnego.c                 |   14 +-
+ fs/cifs/cifs_spnego.h                 |   14 +-
+ fs/cifs/cifs_spnego_negtokeninit.asn1 |   40 ++
+ fs/cifs/cifs_swn.c                    |   10 +-
+ fs/cifs/cifsacl.c                     |   18 +-
+ fs/cifs/cifsacl.h                     |   15 +-
+ fs/cifs/cifsencrypt.c                 |   14 +-
+ fs/cifs/cifsfs.c                      |   14 +-
+ fs/cifs/cifsfs.h                      |   14 +-
+ fs/cifs/cifsglob.h                    |   20 +-
+ fs/cifs/cifspdu.h                     |   14 +-
+ fs/cifs/cifsproto.h                   |   14 +-
+ fs/cifs/cifssmb.c                     |   16 +-
+ fs/cifs/connect.c                     |  159 +++--
+ fs/cifs/dfs_cache.c                   | 1079 +++++++++++++++------------------
+ fs/cifs/dfs_cache.h                   |   45 +-
+ fs/cifs/dir.c                         |   27 +-
+ fs/cifs/dns_resolve.c                 |   14 +-
+ fs/cifs/dns_resolve.h                 |   14 +-
+ fs/cifs/export.c                      |   14 +-
+ fs/cifs/file.c                        |   14 +-
+ fs/cifs/fscache.c                     |   14 +-
+ fs/cifs/fscache.h                     |   14 +-
+ fs/cifs/inode.c                       |   19 +-
+ fs/cifs/ioctl.c                       |   14 +-
+ fs/cifs/link.c                        |   14 +-
+ fs/cifs/misc.c                        |   14 +-
+ fs/cifs/netlink.c                     |    2 +-
+ fs/cifs/ntlmssp.h                     |   14 +-
+ fs/cifs/readdir.c                     |   16 +-
+ fs/cifs/rfc1002pdu.h                  |   14 +-
+ fs/cifs/sess.c                        |   16 +-
+ fs/cifs/smb2file.c                    |   14 +-
+ fs/cifs/smb2glob.h                    |   11 +-
+ fs/cifs/smb2inode.c                   |   14 +-
+ fs/cifs/smb2maperror.c                |   14 +-
+ fs/cifs/smb2misc.c                    |   52 +-
+ fs/cifs/smb2ops.c                     |  140 +++++
+ fs/cifs/smb2pdu.c                     |   49 +-
+ fs/cifs/smb2pdu.h                     |   53 +-
+ fs/cifs/smb2proto.h                   |   16 +-
+ fs/cifs/smb2status.h                  |   14 +-
+ fs/cifs/smb2transport.c               |   26 +-
+ fs/cifs/smbdirect.c                   |   14 +-
+ fs/cifs/smberr.h                      |   14 +-
+ fs/cifs/smbfsctl.h                    |   14 +-
+ fs/cifs/transport.c                   |   14 +-
+ fs/cifs/xattr.c                       |   14 +-
+ include/linux/oid_registry.h          |    8 +
+ 58 files changed, 974 insertions(+), 1949 deletions(-)
+ create mode 100644 fs/cifs/cifs_spnego_negtokeninit.asn1
+-- 
+Thanks,
+
+Steve
