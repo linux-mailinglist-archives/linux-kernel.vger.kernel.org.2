@@ -2,84 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7063B5A1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371CA3B5A1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhF1H4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:56:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:4149 "EHLO mga07.intel.com"
+        id S232359AbhF1H4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:56:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:26276 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229911AbhF1H4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:56:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="271763942"
+        id S231506AbhF1H4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:56:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="293542226"
 X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="271763942"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:47 -0700
+   d="scan'208";a="293542226"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:55 -0700
 X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="446461048"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.171.151]) ([10.249.171.151])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:42 -0700
-Subject: Re: [PATCH V7 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-To:     "Wang, Wei W" <wei.w.wang@intel.com>,
-        Liuxiangdong <liuxiangdong5@huawei.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Cc:     "bp@alien8.de" <bp@alien8.de>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Yang, Weijiang" <weijiang.yang@intel.com>,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "eranian@google.com" <eranian@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "like.xu.linux@gmail.com" <like.xu.linux@gmail.com>,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>
-References: <20210622094306.8336-1-lingshan.zhu@intel.com>
- <60D5A487.8020507@huawei.com>
- <37832cc0-788d-91b9-dc95-147eca133842@intel.com>
- <81530ac3ebe74ada9b5d1dc8092c1a31@intel.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <1bfecd6b-e05a-c470-ef09-e398de8db521@intel.com>
-Date:   Mon, 28 Jun 2021 15:53:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+   d="scan'208";a="456223372"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.30.185]) ([10.255.30.185])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:53:52 -0700
+Subject: Re: [kbuild-all] Re: net/ceph/messenger_v1.c:1204:5: warning: stack
+ frame size (2880) exceeds limit (2048) in function 'ceph_con_v1_try_read'
+To:     Ilya Dryomov <idryomov@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>
+References: <202106281329.JLKL1c31-lkp@intel.com>
+ <CAOi1vP9NJ3nw9aWxtbzY2CA4WOx+A2kVeOvuiCFX5ZEidWTe5A@mail.gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <31cca461-eceb-651c-a702-5a9bc9b262b2@intel.com>
+Date:   Mon, 28 Jun 2021 15:53:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <81530ac3ebe74ada9b5d1dc8092c1a31@intel.com>
+In-Reply-To: <CAOi1vP9NJ3nw9aWxtbzY2CA4WOx+A2kVeOvuiCFX5ZEidWTe5A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/28/2021 3:49 PM, Wang, Wei W wrote:
-> On Friday, June 25, 2021 5:46 PM, Zhu, Lingshan wrote:
->>> Only on the host?
->>> I cannot use pebs unless try with "echo 0 > /proc/sys/kernel/watchdog"
->>> both on the host and guest on ICX.
->> Hi Xiangdong
+On 6/28/2021 3:42 PM, Ilya Dryomov wrote:
+> On Mon, Jun 28, 2021 at 7:16 AM kernel test robot <lkp@intel.com> wrote:
 >>
->> I guess you may run into the "cross-map" case(slow path below), so I think you
->> can disable them both in host and guest to make PEBS work.
+>> Hi Ilya,
 >>
-> Hi Lingshan, could we also reproduce this issue?
->
-> If the guest's watchdog takes away the virtual fixed counter, this will schedule the guest PEBS to use virtual PMC0. With the fast path (1:1 mapping), I think physical PMC0 is likely to be available for the guest PEBS emulation if no other host perf events are running.
-I think it is possible, even a virtual counter need a perf event 
-scheduled on the host. This depends on the guest / host workloads.
+>> FYI, the error/warning still remains.
+> 
+> We won't be fixing the stack frame size warning here.  Please add it to the
+> allowlist.
 
-Thanks,
-Zhu Lingshan
-> Best,
-> Wei
+Got it, thanks for the information.
 
+Best Regards,
+Rong Chen
+
+> 
+> Thanks,
+> 
+>                  Ilya
+> 
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   62fb9874f5da54fdb243003b386128037319b219
+>> commit: 2f713615ddd9d805b6c5e79c52e0e11af99d2bf1 libceph: move msgr1 protocol implementation to its own file
+>> date:   7 months ago
+>> config: powerpc64-randconfig-r034-20210628 (attached as .config)
+>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 59558129276098d62046c8cda92240d292cbfb1c)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install powerpc64 cross compiling tool for clang build
+>>          # apt-get install binutils-powerpc64-linux-gnu
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2f713615ddd9d805b6c5e79c52e0e11af99d2bf1
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 2f713615ddd9d805b6c5e79c52e0e11af99d2bf1
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     __do_insb
+>>     ^
+>>     arch/powerpc/include/asm/io.h:541:56: note: expanded from macro '__do_insb'
+>>     #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v1.c:8:
+>>     In file included from include/net/sock.h:38:
+>>     In file included from include/linux/hardirq.h:10:
+>>     In file included from arch/powerpc/include/asm/hardirq.h:6:
+>>     In file included from include/linux/irq.h:20:
+>>     In file included from include/linux/io.h:13:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:246:1: note: expanded from here
+>>     __do_insw
+>>     ^
+>>     arch/powerpc/include/asm/io.h:542:56: note: expanded from macro '__do_insw'
+>>     #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v1.c:8:
+>>     In file included from include/net/sock.h:38:
+>>     In file included from include/linux/hardirq.h:10:
+>>     In file included from arch/powerpc/include/asm/hardirq.h:6:
+>>     In file included from include/linux/irq.h:20:
+>>     In file included from include/linux/io.h:13:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:250:1: note: expanded from here
+>>     __do_insl
+>>     ^
+>>     arch/powerpc/include/asm/io.h:543:56: note: expanded from macro '__do_insl'
+>>     #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+>>                                            ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v1.c:8:
+>>     In file included from include/net/sock.h:38:
+>>     In file included from include/linux/hardirq.h:10:
+>>     In file included from arch/powerpc/include/asm/hardirq.h:6:
+>>     In file included from include/linux/irq.h:20:
+>>     In file included from include/linux/io.h:13:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:254:1: note: expanded from here
+>>     __do_outsb
+>>     ^
+>>     arch/powerpc/include/asm/io.h:544:58: note: expanded from macro '__do_outsb'
+>>     #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v1.c:8:
+>>     In file included from include/net/sock.h:38:
+>>     In file included from include/linux/hardirq.h:10:
+>>     In file included from arch/powerpc/include/asm/hardirq.h:6:
+>>     In file included from include/linux/irq.h:20:
+>>     In file included from include/linux/io.h:13:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:4:1: note: expanded from here
+>>     __do_outsw
+>>     ^
+>>     arch/powerpc/include/asm/io.h:545:58: note: expanded from macro '__do_outsw'
+>>     #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>     In file included from net/ceph/messenger_v1.c:8:
+>>     In file included from include/net/sock.h:38:
+>>     In file included from include/linux/hardirq.h:10:
+>>     In file included from arch/powerpc/include/asm/hardirq.h:6:
+>>     In file included from include/linux/irq.h:20:
+>>     In file included from include/linux/io.h:13:
+>>     In file included from arch/powerpc/include/asm/io.h:604:
+>>     arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>>     DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
+>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     arch/powerpc/include/asm/io.h:601:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+>>                     __do_##name al;                                 \
+>>                     ^~~~~~~~~~~~~~
+>>     <scratch space>:8:1: note: expanded from here
+>>     __do_outsl
+>>     ^
+>>     arch/powerpc/include/asm/io.h:546:58: note: expanded from macro '__do_outsl'
+>>     #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+>>                                             ~~~~~~~~~~~~~~~~~~~~~^
+>>>> net/ceph/messenger_v1.c:1204:5: warning: stack frame size (2880) exceeds limit (2048) in function 'ceph_con_v1_try_read' [-Wframe-larger-than]
+>>     int ceph_con_v1_try_read(struct ceph_connection *con)
+>>         ^
+>>     14 warnings generated.
+>>
+>>
+>> vim +/ceph_con_v1_try_read +1204 net/ceph/messenger_v1.c
+>>
+>>    1200
+>>    1201  /*
+>>    1202   * Read what we can from the socket.
+>>    1203   */
+>>> 1204  int ceph_con_v1_try_read(struct ceph_connection *con)
+>>    1205  {
+>>    1206          int ret = -1;
+>>    1207
+>>    1208  more:
+>>    1209          dout("try_read start %p state %d\n", con, con->state);
+>>    1210          if (con->state != CEPH_CON_S_V1_BANNER &&
+>>    1211              con->state != CEPH_CON_S_V1_CONNECT_MSG &&
+>>    1212              con->state != CEPH_CON_S_OPEN)
+>>    1213                  return 0;
+>>    1214
+>>    1215          BUG_ON(!con->sock);
+>>    1216
+>>    1217          dout("try_read tag %d in_base_pos %d\n", (int)con->in_tag,
+>>    1218               con->in_base_pos);
+>>    1219
+>>    1220          if (con->state == CEPH_CON_S_V1_BANNER) {
+>>    1221                  ret = read_partial_banner(con);
+>>    1222                  if (ret <= 0)
+>>    1223                          goto out;
+>>    1224                  ret = process_banner(con);
+>>    1225                  if (ret < 0)
+>>    1226                          goto out;
+>>    1227
+>>    1228                  con->state = CEPH_CON_S_V1_CONNECT_MSG;
+>>    1229
+>>    1230                  /*
+>>    1231                   * Received banner is good, exchange connection info.
+>>    1232                   * Do not reset out_kvec, as sending our banner raced
+>>    1233                   * with receiving peer banner after connect completed.
+>>    1234                   */
+>>    1235                  ret = prepare_write_connect(con);
+>>    1236                  if (ret < 0)
+>>    1237                          goto out;
+>>    1238                  prepare_read_connect(con);
+>>    1239
+>>    1240                  /* Send connection info before awaiting response */
+>>    1241                  goto out;
+>>    1242          }
+>>    1243
+>>    1244          if (con->state == CEPH_CON_S_V1_CONNECT_MSG) {
+>>    1245                  ret = read_partial_connect(con);
+>>    1246                  if (ret <= 0)
+>>    1247                          goto out;
+>>    1248                  ret = process_connect(con);
+>>    1249                  if (ret < 0)
+>>    1250                          goto out;
+>>    1251                  goto more;
+>>    1252          }
+>>    1253
+>>    1254          WARN_ON(con->state != CEPH_CON_S_OPEN);
+>>    1255
+>>    1256          if (con->in_base_pos < 0) {
+>>    1257                  /*
+>>    1258                   * skipping + discarding content.
+>>    1259                   */
+>>    1260                  ret = ceph_tcp_recvmsg(con->sock, NULL, -con->in_base_pos);
+>>    1261                  if (ret <= 0)
+>>    1262                          goto out;
+>>    1263                  dout("skipped %d / %d bytes\n", ret, -con->in_base_pos);
+>>    1264                  con->in_base_pos += ret;
+>>    1265                  if (con->in_base_pos)
+>>    1266                          goto more;
+>>    1267          }
+>>    1268          if (con->in_tag == CEPH_MSGR_TAG_READY) {
+>>    1269                  /*
+>>    1270                   * what's next?
+>>    1271                   */
+>>    1272                  ret = ceph_tcp_recvmsg(con->sock, &con->in_tag, 1);
+>>    1273                  if (ret <= 0)
+>>    1274                          goto out;
+>>    1275                  dout("try_read got tag %d\n", (int)con->in_tag);
+>>    1276                  switch (con->in_tag) {
+>>    1277                  case CEPH_MSGR_TAG_MSG:
+>>    1278                          prepare_read_message(con);
+>>    1279                          break;
+>>    1280                  case CEPH_MSGR_TAG_ACK:
+>>    1281                          prepare_read_ack(con);
+>>    1282                          break;
+>>    1283                  case CEPH_MSGR_TAG_KEEPALIVE2_ACK:
+>>    1284                          prepare_read_keepalive_ack(con);
+>>    1285                          break;
+>>    1286                  case CEPH_MSGR_TAG_CLOSE:
+>>    1287                          ceph_con_close_socket(con);
+>>    1288                          con->state = CEPH_CON_S_CLOSED;
+>>    1289                          goto out;
+>>    1290                  default:
+>>    1291                          goto bad_tag;
+>>    1292                  }
+>>    1293          }
+>>    1294          if (con->in_tag == CEPH_MSGR_TAG_MSG) {
+>>    1295                  ret = read_partial_message(con);
+>>    1296                  if (ret <= 0) {
+>>    1297                          switch (ret) {
+>>    1298                          case -EBADMSG:
+>>    1299                                  con->error_msg = "bad crc/signature";
+>>    1300                                  fallthrough;
+>>    1301                          case -EBADE:
+>>    1302                                  ret = -EIO;
+>>    1303                                  break;
+>>    1304                          case -EIO:
+>>    1305                                  con->error_msg = "io error";
+>>    1306                                  break;
+>>    1307                          }
+>>    1308                          goto out;
+>>    1309                  }
+>>    1310                  if (con->in_tag == CEPH_MSGR_TAG_READY)
+>>    1311                          goto more;
+>>    1312                  ceph_con_process_message(con);
+>>    1313                  if (con->state == CEPH_CON_S_OPEN)
+>>    1314                          prepare_read_tag(con);
+>>    1315                  goto more;
+>>    1316          }
+>>    1317          if (con->in_tag == CEPH_MSGR_TAG_ACK ||
+>>    1318              con->in_tag == CEPH_MSGR_TAG_SEQ) {
+>>    1319                  /*
+>>    1320                   * the final handshake seq exchange is semantically
+>>    1321                   * equivalent to an ACK
+>>    1322                   */
+>>    1323                  ret = read_partial_ack(con);
+>>    1324                  if (ret <= 0)
+>>    1325                          goto out;
+>>    1326                  process_ack(con);
+>>    1327                  goto more;
+>>    1328          }
+>>    1329          if (con->in_tag == CEPH_MSGR_TAG_KEEPALIVE2_ACK) {
+>>    1330                  ret = read_keepalive_ack(con);
+>>    1331                  if (ret <= 0)
+>>    1332                          goto out;
+>>    1333                  goto more;
+>>    1334          }
+>>    1335
+>>    1336  out:
+>>    1337          dout("try_read done on %p ret %d\n", con, ret);
+>>    1338          return ret;
+>>    1339
+>>    1340  bad_tag:
+>>    1341          pr_err("try_read bad con->in_tag = %d\n", (int)con->in_tag);
+>>    1342          con->error_msg = "protocol error, garbage tag";
+>>    1343          ret = -1;
+>>    1344          goto out;
+>>    1345  }
+>>    1346
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> 
