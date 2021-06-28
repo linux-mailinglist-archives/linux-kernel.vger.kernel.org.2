@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37ED53B6731
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B9B3B6732
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhF1RE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:04:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32846 "EHLO mail.kernel.org"
+        id S232456AbhF1RFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232132AbhF1RE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 831D961990;
-        Mon, 28 Jun 2021 17:02:30 +0000 (UTC)
+        id S232328AbhF1RFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:05:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCCD4619A0;
+        Mon, 28 Jun 2021 17:02:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624899751;
-        bh=9ukzXv50aGZmH9gGkHyr+ybrS/tH2apudR2p8o7uX2s=;
+        s=k20201202; t=1624899754;
+        bh=JGmo5kWdDE8TegJUaUzYhwHSg+WSIbuVoqpGcUKEEZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkVv6/d52YYiTRAzD8hFtb9UcOkGCmPXUf7QZm2bb1bofrIkANjVRkdFC6DHQGcno
-         zEF12yh72rLoM8f1/ITzZv4SCb8Vn53LqNxOg+kQ1U+Em09TewYhZD9rwBmMUno1Yk
-         /UpgbhT7Ww8z9fNvb0tMu5UPK09v9idKJqC9TeipqHAhWz2QYHQpCMxT9iMy241sDa
-         QgZ2mPUWzAZwdMiqZoqKKvLn0bFbIeFXca9Az4uLDAZM4zeOuehxhtv5oIP68Q0BkG
-         jNfPWjWesYzB3mgBXtucZZh/CNi8AwavpPO+nRohhy0XZpLg1c2sKfLq+n4Zkk1dRr
-         o+EyHBSfT5V9w==
+        b=utLyHElepmirxo7pqA4pKwZGx94L0xy7CLqIjVbCSWWX/fZEH2nWQOYLfDlX3/x67
+         2XzicIAGYJWujG0ufwMy71/a23Gk4AYLi9/JMB1nKfZimoJDwNcApC8U5M8QAhRBc2
+         v/R2Fp0/rb3BLj7J+J7hO9TpTYDWkbFlOBUsIM+OsVJIMZFbc7PP9+5ytORBR9Io+m
+         7c4FiF3QrcEzT+51tTQcF3uI5CNOpGaXP0yglF0NF4PuVjA7zZyM206dvnlYjh+HU2
+         kXv+qbvjVqQTKrFcFcfZbo6lgmsteeHEshfn4BYXHfJLsmj9O32A2RsRxFBA+XwSAc
+         r5ZD3N8v3cS1g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>, Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
-        Beomho Seo <beomho.seo@samsung.com>
-Subject: Re: [PATCH] regulator: rt5033: Fix n_voltages settings for BUCK and LDO
-Date:   Mon, 28 Jun 2021 18:01:58 +0100
-Message-Id: <162489955393.5196.4842441856639308115.b4-ty@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, cy_huang@richtek.com,
+        linux-kernel@vger.kernel.org, axel.lin@ingics.com,
+        lgirdwood@gmail.com
+Subject: Re: [PATCH] regulator: rtmv20: Fix wrong mask for strobe-polarity-high
+Date:   Mon, 28 Jun 2021 18:01:59 +0100
+Message-Id: <162489955392.5196.5543347272155510506.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210627080418.1718127-1-axel.lin@ingics.com>
-References: <20210627080418.1718127-1-axel.lin@ingics.com>
+In-Reply-To: <1624723112-26653-1-git-send-email-u0084500@gmail.com>
+References: <1624723112-26653-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,13 +41,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Jun 2021 16:04:18 +0800, Axel Lin wrote:
-> For linear regulators, the n_voltages should be (max - min) / step + 1.
-> 
-> Buck voltage from 1v to 3V, per step 100mV, and vout mask is 0x1f.
-> If value is from 20 to 31, the voltage will all be fixed to 3V.
-> And LDO also, just vout range is different from 1.2v to 3v, step is the
-> same. If value is from 18 to 31, the voltage will also be fixed to 3v.
+On Sat, 26 Jun 2021 23:58:32 +0800, cy_huang wrote:
+> Fix wrong mask for strobe-polarity-high.
 
 Applied to
 
@@ -57,8 +50,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: rt5033: Fix n_voltages settings for BUCK and LDO
-      commit: 6549c46af8551b346bcc0b9043f93848319acd5c
+[1/1] regulator: rtmv20: Fix wrong mask for strobe-polarity-high
+      commit: 2b6a761be079f9fa8abf3157b5679a6f38885db4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
