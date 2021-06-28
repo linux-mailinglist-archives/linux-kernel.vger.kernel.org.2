@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464B23B6411
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9C33B6412
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235820AbhF1PER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:04:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51798 "EHLO mail.kernel.org"
+        id S236100AbhF1PEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234803AbhF1OmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9982761CE0;
-        Mon, 28 Jun 2021 14:33:38 +0000 (UTC)
+        id S234436AbhF1On0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:43:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F9DE61D01;
+        Mon, 28 Jun 2021 14:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890819;
-        bh=ODIo/6IGHuAaM1UsEW+lBl+nxpepbj472Jbw4fUHphY=;
+        s=k20201202; t=1624890826;
+        bh=x5eHzrd524X4z6GjnlPVRaelHBTUcH6/miCGCrq7OGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwYJpzths0fK6Gjk2yHVcqSupDXgotdU4m8XUFAT0yrNFltIgGcFYT0oMSoUqxvul
-         3MnD0x7IrIFVYE896ZnhtX5mXf0UiTzaK/NaK/WBGsxgcq7szUwi1u3TYyRCEdbQDt
-         1JT2xK7NuhZHNLO41l0yGvEPjOJyJ60MYNaLBo357mRUlSTVm6PvODhhCfQQ02sN5t
-         iRgZ8Aawdm6GXAueN+lZzOATgnUEIU63S5q/Qr7ZTuI9v9XOIS9QoGclOxALoo4QaE
-         OgZLsQBXRkdT0iB+zCO5aFGwuxE2zwhWxXWO2VolLKeXH5yffgJyMVWD+hMngVXps5
-         QT5fuGxhAiLgQ==
+        b=amPRHmf+Vx6iK1MgVMYkJOwIXJnBTYxdq29joT3TWSiTS87FaaufyP9u1C3gTO0Qw
+         GwWMBLwa13XLRcDl6PYTWJhukODL+sUy0LGkGbGAPtLZVu8kqijWYb9/ecjYKDFH6b
+         YEerxHO06wQhitPuUyY1sBmo3ZeAhb/V4PC7b1u6HCzDri7WrEETxclmH3XsOLHWnC
+         SYQ4YGpPGFaszuf1ZUNlOaMFem6qitxNKTeSPb8R5LY7wdMzYBuTKj8BXFEpVs+tnX
+         upDL7Z8AG5RXf2bQg3RL2p9Tch+oknlgsjp54YMpqhU74HN1aVwNKDQ/MxwJxf2El0
+         SrWK+lJvnWIsg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 035/109] alx: Fix an error handling path in 'alx_probe()'
-Date:   Mon, 28 Jun 2021 10:31:51 -0400
-Message-Id: <20210628143305.32978-36-sashal@kernel.org>
+Subject: [PATCH 4.19 043/109] ptp: improve max_adj check against unreasonable values
+Date:   Mon, 28 Jun 2021 10:31:59 -0400
+Message-Id: <20210628143305.32978-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
@@ -48,34 +49,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 33e381448cf7a05d76ac0b47d4a6531ecd0e5c53 ]
+[ Upstream commit 475b92f932168a78da8109acd10bfb7578b8f2bb ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+Scaled PPM conversion to PPB may (on 64bit systems) result
+in a value larger than s32 can hold (freq/scaled_ppm is a long).
+This means the kernel will not correctly reject unreasonably
+high ->freq values (e.g. > 4294967295ppb, 281474976645 scaled PPM).
 
-Fixes: ab69bde6b2e9 ("alx: add a simple AR816x/AR817x device driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The conversion is equivalent to a division by ~66 (65.536),
+so the value of ppb is always smaller than ppm, but not small
+enough to assume narrowing the type from long -> s32 is okay.
+
+Note that reasonable user space (e.g. ptp4l) will not use such
+high values, anyway, 4289046510ppb ~= 4.3x, so the fix is
+somewhat pedantic.
+
+Fixes: d39a743511cd ("ptp: validate the requested frequency adjustment.")
+Fixes: d94ba80ebbea ("ptp: Added a brand new class driver for ptp clocks.")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/atheros/alx/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/ptp/ptp_clock.c          | 6 +++---
+ include/linux/ptp_clock_kernel.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/atheros/alx/main.c b/drivers/net/ethernet/atheros/alx/main.c
-index d83ad06bf199..54bfe9d84ecd 100644
---- a/drivers/net/ethernet/atheros/alx/main.c
-+++ b/drivers/net/ethernet/atheros/alx/main.c
-@@ -1855,6 +1855,7 @@ static int alx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	free_netdev(netdev);
- out_pci_release:
- 	pci_release_mem_regions(pdev);
-+	pci_disable_pcie_error_reporting(pdev);
- out_pci_disable:
- 	pci_disable_device(pdev);
- 	return err;
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 863958f3bb57..89632cc9c28f 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -76,7 +76,7 @@ static void enqueue_external_timestamp(struct timestamp_event_queue *queue,
+ 	spin_unlock_irqrestore(&queue->lock, flags);
+ }
+ 
+-s32 scaled_ppm_to_ppb(long ppm)
++long scaled_ppm_to_ppb(long ppm)
+ {
+ 	/*
+ 	 * The 'freq' field in the 'struct timex' is in parts per
+@@ -93,7 +93,7 @@ s32 scaled_ppm_to_ppb(long ppm)
+ 	s64 ppb = 1 + ppm;
+ 	ppb *= 125;
+ 	ppb >>= 13;
+-	return (s32) ppb;
++	return (long) ppb;
+ }
+ EXPORT_SYMBOL(scaled_ppm_to_ppb);
+ 
+@@ -148,7 +148,7 @@ static int ptp_clock_adjtime(struct posix_clock *pc, struct timex *tx)
+ 		delta = ktime_to_ns(kt);
+ 		err = ops->adjtime(ops, delta);
+ 	} else if (tx->modes & ADJ_FREQUENCY) {
+-		s32 ppb = scaled_ppm_to_ppb(tx->freq);
++		long ppb = scaled_ppm_to_ppb(tx->freq);
+ 		if (ppb > ops->max_adj || ppb < -ops->max_adj)
+ 			return -ERANGE;
+ 		if (ops->adjfine)
+diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+index 40ea83fcfdd5..99c3f4ee938e 100644
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@ -210,7 +210,7 @@ extern int ptp_clock_index(struct ptp_clock *ptp);
+  * @ppm:    Parts per million, but with a 16 bit binary fractional field
+  */
+ 
+-extern s32 scaled_ppm_to_ppb(long ppm);
++extern long scaled_ppm_to_ppb(long ppm);
+ 
+ /**
+  * ptp_find_pin() - obtain the pin index of a given auxiliary function
 -- 
 2.30.2
 
