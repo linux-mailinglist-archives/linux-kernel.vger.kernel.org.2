@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2C23B638D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0263B6230
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhF1O5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233794AbhF1On0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:43:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C69861CE9;
-        Mon, 28 Jun 2021 14:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890825;
-        bh=NZlrqUBmSGQiqrxIlDF/JlOQIdLb2D9x0WuQTQFUCsE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LFIfPlr7GdMZQjMItXpnekOPCleoinrBgJy+1SLKFcmLP2IK9s53/gtf1amhQ0CHv
-         9J5KM1CR2nAERt+e1cVl/N4O0tDTWdaa3bDAGeLgXKTD6KPp4Hqz2hgxTMVJXs+CbF
-         ZwHMqXpPqW9Yv9znVeY2bNuPJRMirw8W3YcFgvOSOS6Ahj0xTjZxqgOol455JqhEtp
-         5s60iKdpj4h3WffzhodFpA6KNkhqstsQHBrQ1pcIIxaTbcY2lQsvS7qcxDVQAcDSqu
-         ySwraCn3QkQebU+YWYn23bRZnFRVkwfnt89SV/KczAg86nsi3oJH9EA57q3lJrV83d
-         R+NduH/S3qkIA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shalom Toledo <shalomt@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 042/109] ptp: ptp_clock: Publish scaled_ppm_to_ppb
+        id S233709AbhF1Omj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:42:39 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57635 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234871AbhF1OeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:34:24 -0400
+Received: (qmail 658330 invoked by uid 1000); 28 Jun 2021 10:31:58 -0400
 Date:   Mon, 28 Jun 2021 10:31:58 -0400
-Message-Id: <20210628143305.32978-43-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
-References: <20210628143305.32978-1-sashal@kernel.org>
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "i.kononenko" <i.kononenko@yadro.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>, openbmc@lists.ozlabs.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] fms: Add TOC/PMA/ATIP DVD-ROM capabilities
+Message-ID: <20210628143158.GD656159@rowland.harvard.edu>
+References: <20210626211820.107310-1-i.kononenko@yadro.com>
+ <20210626211820.107310-4-i.kononenko@yadro.com>
+ <20210627142952.GE624763@rowland.harvard.edu>
+ <3f9c6e4a-18b7-db11-8b23-f0473a649d06@yadro.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.196-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.196-rc1
-X-KernelTest-Deadline: 2021-06-30T14:32+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f9c6e4a-18b7-db11-8b23-f0473a649d06@yadro.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shalom Toledo <shalomt@mellanox.com>
+On Sun, Jun 27, 2021 at 09:45:07PM +0300, i.kononenko wrote:
+> 
+> 
+> On 27.06.2021 17:29, Alan Stern wrote:
+> > Is any of this really needed?  What usage scenarios require
+> > f_mass_storage to emulate a DVD-ROM that couldn't use f_tcm instead?
+> 
+> I can't see any impediments to supplement the already existing 
+> implementation of MMC-(2/3) specification of multimedia devices to 
+> represent the DVD/BD features. If the kernel presents the CD-ROM SCSI 
+> commands, why the mass_storage:usb-gadget-function still doesn't include
+> that for DVD/BD?
+> 
+> Many modern embedded systems (e.g., BMC, OpenBMC) implements their 
+> required features, e.g., Virtual Media Device, which is based on the 
+> usb:gadget:mass-storage. 
+> The purpose of that features is extensive, and their use the mass-storage
+> not only as a cdrom-device.
+> 
+> The required features of such systems might expect image back-end files
+> that size is significant than 2.1Gb, but such medium is not the CD-ROM 
+> device. USB-gadget consumers can incorrectly interpret such device by 
+> loading the wrong driver. I believe that should be the DVD-medium device,
+> at least. 
 
-[ Upstream commit 4368dada5b37e74a13b892ca5cef8a7d558e9a5f ]
+You should include this information in the patch description, so that 
+people will understand why you wrote the patch.
 
-Publish scaled_ppm_to_ppb to allow drivers to use it.
+> Additionally, please note the current patch also fixes the incorrect 
+> implementation of retrieving TOC/PMA/ATIP data, which is required for the 
+> CD-ROM. One system might correct works with retrieving first with the 
+> last session together, but for some systems, e.g., OS ESXi, OS Windows, 
+> should retrieving first and last border sessions in separate SCSI-request. 
 
-Signed-off-by: Shalom Toledo <shalomt@mellanox.com>
-Reviewed-by: Petr Machata <petrm@mellanox.com>
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/ptp/ptp_clock.c          | 3 ++-
- include/linux/ptp_clock_kernel.h | 8 ++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+What's wrong with the existing implementation?  Are you talking about 
+the do_read_toc function?  The driver only supports one session in any 
+case.
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index e232233beb8f..863958f3bb57 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -76,7 +76,7 @@ static void enqueue_external_timestamp(struct timestamp_event_queue *queue,
- 	spin_unlock_irqrestore(&queue->lock, flags);
- }
- 
--static s32 scaled_ppm_to_ppb(long ppm)
-+s32 scaled_ppm_to_ppb(long ppm)
- {
- 	/*
- 	 * The 'freq' field in the 'struct timex' is in parts per
-@@ -95,6 +95,7 @@ static s32 scaled_ppm_to_ppb(long ppm)
- 	ppb >>= 13;
- 	return (s32) ppb;
- }
-+EXPORT_SYMBOL(scaled_ppm_to_ppb);
- 
- /* posix clock implementation */
- 
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 51349d124ee5..40ea83fcfdd5 100644
---- a/include/linux/ptp_clock_kernel.h
-+++ b/include/linux/ptp_clock_kernel.h
-@@ -204,6 +204,14 @@ extern void ptp_clock_event(struct ptp_clock *ptp,
- 
- extern int ptp_clock_index(struct ptp_clock *ptp);
- 
-+/**
-+ * scaled_ppm_to_ppb() - convert scaled ppm to ppb
-+ *
-+ * @ppm:    Parts per million, but with a 16 bit binary fractional field
-+ */
-+
-+extern s32 scaled_ppm_to_ppb(long ppm);
-+
- /**
-  * ptp_find_pin() - obtain the pin index of a given auxiliary function
-  *
--- 
-2.30.2
+In general, fixes to existing code and additions of new code should go 
+in separate patches.
 
+Alan Stern
