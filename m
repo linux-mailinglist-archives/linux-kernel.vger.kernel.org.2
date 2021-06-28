@@ -2,88 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0C73B5EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20B33B5EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhF1NFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:05:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233150AbhF1NFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:05:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C04361C69;
-        Mon, 28 Jun 2021 13:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624885361;
-        bh=Y26NYPMh7hRNMuctINof5yJOo5k8WTet6vA/hQSpDXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EmtcopATJkGEAjK8kZah+u23pZWB4XZLBNl3OhSp237m9Zc7/5pSCgTZIaq03mTSM
-         l9fhEGbEKnG2Un5+V6Rz9Y8I6WHWhWWOxT5hgDLqJ6LtfWf3f9VMTin8VJZogGZQpg
-         NAYqWMmoWkvPdo1AINeWqXoRv/v/DYgBevWxFX7itmXHlH4D/1i/8zGSwFnULg74T3
-         I1qYEXcllSf7LE8gdRHE5Wz9v8SqvcfivPYp6feN4IFq/iyaRmS/2VPKDgNF/2oXmP
-         9bADijpDp57Y77Rf/S5NhFM5o9u78OiBpOYCF6YNKU3lICrPgNKjSVAE8U6JvNC9hE
-         TfQPkNSkS4oNA==
-Date:   Mon, 28 Jun 2021 14:02:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Bo Shen <voice.shen@atmel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH] ASoC: atmel: ATMEL drivers depend on HAS_DMA
-Message-ID: <20210628130214.GB4492@sirena.org.uk>
-References: <20210530204851.3372-1-rdunlap@infradead.org>
- <9ba0da3b-dbdb-c91d-2def-f3dcd30cbde3@infradead.org>
+        id S233097AbhF1NIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:08:07 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59869 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232502AbhF1NID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:08:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B087D5806B1;
+        Mon, 28 Jun 2021 09:05:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 28 Jun 2021 09:05:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=pJDoaEKICoxjXDVlY/UTHzlsuR
+        SeWoO2PgHJjPp/Lyg=; b=RppTGqKqcZhZzad1XqGjUzuADb9IG7wCZFBSOGyQVt
+        MzSfS7XvGomrP/nvAY2QUWvzBqBeY1c3uWLTja8ivcHwHGTgkyPo/KR1gJOwFWnF
+        JDXp8AejsnHiMtuXLrioSPhN8CnMsj3a5/agIKFygTHFyBZiwn8igkEznCSt1Uiw
+        +lOkMqfaJjd24mu27RFRdKzzAvm9hcPSjeTb84WIFCncu36gu/mHKUgDGJSB3Mw+
+        3Vpca9Cn15hzm3XEZ0pr8+LiFPxB1gJKfnZEM5CwxR6Pp4sJt4DZxZ9aqtdd4Eg5
+        Lx5rSiRdz8QxQDWS6JwLVm4HPe12VFoTd0vcFj3yDlgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pJDoaEKICoxjXDVlY
+        /UTHzlsuRSeWoO2PgHJjPp/Lyg=; b=nBxkdVJTfocxYD9oLD54LH7HsEfKlZZQs
+        xKNJltEukCFEDVHgrZZ16ZSQkAsUFrv/nGfUF/udhS6UXvpMgSzSPnzQMeXcFLEo
+        e2S5l3lri8Sk3vpeWEEjru6pl3sMr4x7qnhLDnfWRCrMgO6K0KsOxLb8NtkqKJPn
+        zpA4Ai3/Xmw5RJf+M6ARx8Aq2FR0rnFntjX/HBzqDo6M9ieldhwKmfhw0UJqNonz
+        L8BXwq6GKdVZ8s6akS10PYkZHHAnD62nGGEVzBium1o05//1swgBOb8uqkeVym3L
+        sj6BWYKv/uuxWEiObu6vfyDJ9hOHsHX2FluiLT5mjvo/j61D7utEg==
+X-ME-Sender: <xms:H8nZYJuRHHTUEd7ib-L5vMIB0vUqw4UaaxMlrl7HcepKIoKI_JuAtA>
+    <xme:H8nZYCdd1QdWqf1attPv9brsVwsdwYYCruRvStwUM0OkyCBpbqfBXEvsmwKfidjqW
+    lQf9BGez5ayNSJ0z7Y>
+X-ME-Received: <xmr:H8nZYMwL3rA1wQvHk4MCGuvoROOH9lp_FNjvOqLGMxyyWkC3uvVnmp4P_S2_qQQE-2wFxpFD2YiIW_4mYSg839Mn-ly7uL-IJpmf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgi
+    himhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:H8nZYAO6F9petE1j2Ib1F3v-B5m27TmYMLI_aOkcwh8zTdyHmX0RLw>
+    <xmx:H8nZYJ-pQH4fa9ERldvz06vu5iSo5K2BeRwwXFGRq0M_A3xZCWPr_w>
+    <xmx:H8nZYAWvZ5udT-5xLyoeek_qXA1epS-RotRnHZS32TrocJa1rmkmEA>
+    <xmx:IcnZYIcscGcgWcz5Oywh10VGc4DGP3q6OJVVzuWmXHXDduIdVFeX6A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Jun 2021 09:05:35 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Emma Anholt <emma@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>
+Subject: [PATCH] drm: vc4: Fix pixel-wrap issue with DVP teardown
+Date:   Mon, 28 Jun 2021 15:05:33 +0200
+Message-Id: <20210628130533.144617-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
-Content-Disposition: inline
-In-Reply-To: <9ba0da3b-dbdb-c91d-2def-f3dcd30cbde3@infradead.org>
-X-Cookie: Someone is speaking well of you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tim Gover <tim.gover@raspberrypi.com>
 
---NMuMz9nt05w80d4+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Adjust the DVP enable/disable sequence to avoid a pixel getting stuck
+in an internal, non resettable FIFO within PixelValve when changing
+HDMI resolution.
 
-On Sun, Jun 27, 2021 at 03:28:59PM -0700, Randy Dunlap wrote:
-> [adding LKML]
->=20
-> ping?
+The blank pixels features of the DVP can prevent signals back to
+pixelvalve causing it to not clear the FIFO. Adjust the ordering
+and timing of operations to ensure the clear signal makes it through to
+pixelvalve.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+Signed-off-by: Tim Gover <tim.gover@raspberrypi.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 4ebe216b10a9..472a9d6b5866 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -605,12 +605,12 @@ static void vc4_hdmi_encoder_post_crtc_disable(struct drm_encoder *encoder,
+ 
+ 	HDMI_WRITE(HDMI_RAM_PACKET_CONFIG, 0);
+ 
+-	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) |
+-		   VC4_HD_VID_CTL_CLRRGB | VC4_HD_VID_CTL_CLRSYNC);
++	HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_CLRRGB);
++
++	mdelay(1);
+ 
+ 	HDMI_WRITE(HDMI_VID_CTL,
+-		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
+-
++		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+ 	vc4_hdmi_disable_scrambling(encoder);
+ }
+ 
+@@ -620,12 +620,12 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder,
+ 	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	int ret;
+ 
++	HDMI_WRITE(HDMI_VID_CTL,
++		   HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
++
+ 	if (vc4_hdmi->variant->phy_disable)
+ 		vc4_hdmi->variant->phy_disable(vc4_hdmi);
+ 
+-	HDMI_WRITE(HDMI_VID_CTL,
+-		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+-
+ 	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
+ 	clk_disable_unprepare(vc4_hdmi->hsm_clock);
+ 	clk_disable_unprepare(vc4_hdmi->pixel_clock);
+@@ -1017,6 +1017,7 @@ static void vc4_hdmi_encoder_post_crtc_enable(struct drm_encoder *encoder,
+ 
+ 	HDMI_WRITE(HDMI_VID_CTL,
+ 		   VC4_HD_VID_CTL_ENABLE |
++		   VC4_HD_VID_CTL_CLRRGB |
+ 		   VC4_HD_VID_CTL_UNDERFLOW_ENABLE |
+ 		   VC4_HD_VID_CTL_FRAME_COUNTER_RESET |
+ 		   (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
+-- 
+2.31.1
 
---NMuMz9nt05w80d4+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDZyFUACgkQJNaLcl1U
-h9Bt/wf8DWM389gRTL6jZi/DGboXJNS2QfPYTyMXCpfmcfQr2p+mJyijz59Aw4oU
-tW1UDMrGmYvXI0euMGv3a8JsiRObGAK0rIQxmkU47hJODgKasgthC9BRumk8fktF
-EfokNzzO2aOzORL1K2RaJ3vO50opo8uKzemVg/E5JqKUnmAlvPlbamETA9hdwEox
-+GrNIKFTUiC8Oxc1tm18GnM44UysB1gqJDEx0heHAj/oGxFBwrpd1pCRwFd+zXu2
-IjxFQkhmZQz1TFbZAu73NfVthd0++lgRv6HHmWpqQkZTT8nufLa+RsbR5JVKrBwr
-IRJdbTzonmq8HqiailSlQlvtyoRxvA==
-=wQXC
------END PGP SIGNATURE-----
-
---NMuMz9nt05w80d4+--
