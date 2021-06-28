@@ -2,221 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC173B5A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74BF3B5A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhF1Ig4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:36:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22663 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232353AbhF1Igx (ORCPT
+        id S232399AbhF1ImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:42:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49990 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230294AbhF1ImK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:36:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624869266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BaA05LSXDHChHzjRGg73pz540UQJsz3irrDNsnm9Uhc=;
-        b=ad2+Ix89hY1uOEacXhI6kaxsaKau8pLswsEDYq9of379x7hGTgmeejH1b3+GwdOqy+PU7x
-        KIWJxucXpd0lB32hFwcRbNx1B9pmmjWz7PxOqN5PVnrTxX1EOxi3Er1u19as4CCMQpihi5
-        LMeOBZLSc05TdflYjVYz36Sjv4G8GvY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-V-S2LHLeNKKR6Yz7wzCTPQ-1; Mon, 28 Jun 2021 04:34:25 -0400
-X-MC-Unique: V-S2LHLeNKKR6Yz7wzCTPQ-1
-Received: by mail-ed1-f71.google.com with SMTP id z5-20020a05640235c5b0290393974bcf7eso9045405edc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 01:34:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BaA05LSXDHChHzjRGg73pz540UQJsz3irrDNsnm9Uhc=;
-        b=nrPOiFA2aieDd+lERCtseQpiTNw9kaESPYHKHYqGkJ+eN+6LBrS2IKBuHSkUCiwnln
-         4/+BbuBifuUwcdi3IDubOYK8PCFDH4pbNxEP991VB+bNegPdVJ1iuIr7x3iKcI8QmvZk
-         HHFlgoa/VoaCIXsXECqQJ+iZH5+p3nChcDHNinE6ZDM0/COWWDnT2pLSvQzXRi98ctbh
-         V477VTZsJtfmikmXnDj3N6mJw8PCY+j9U2uOOu/Aiu/dNBBD4KzyRaSteJt4SFBypGUk
-         f/BucjGjBSUaLxxIXbzGDFZXcdfR0vwMRt/0psyVq0bEppEIiwLaQ6oWJfJI4A38Ffww
-         l+uA==
-X-Gm-Message-State: AOAM532zRlO9lVOY66EyUuNTcPEd6xfPqtAy5HwRsLWTOP3skEuoXqQ5
-        rIVVKnSgUX7btgoMtD8qpm/vebC3ZxT+l5ZVxs8UrioZMg+0Wl0AgjcbRB1jf4IX2lN7RrC3KIw
-        LTcan6RnmUrA68vfWxr+nEbEN
-X-Received: by 2002:aa7:c54c:: with SMTP id s12mr31848944edr.24.1624869263939;
-        Mon, 28 Jun 2021 01:34:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyaj3Ah5f4hXpXN+sCUyDTF1a0Fp2L4NjiiQBqnCwrA1yUuU/Wgm59g3JxlNSGWzxEVMRD2AQ==
-X-Received: by 2002:aa7:c54c:: with SMTP id s12mr31848926edr.24.1624869263671;
-        Mon, 28 Jun 2021 01:34:23 -0700 (PDT)
-Received: from gator (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id m7sm6527201ejo.95.2021.06.28.01.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 01:34:23 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 10:34:20 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, robh+dt@kernel.org, shan.gavin@gmail.com
-Subject: Re: [PATCH v4] Documentation, dt, numa: Add note to empty NUMA node
-Message-ID: <20210628083420.v47xbbtcgjj2mu47@gator>
-References: <20210625052338.4875-1-gshan@redhat.com>
- <20210625070217.4ffmfe7nwlusbbjc@gator>
- <20210625070656.j373hveemf5cdch4@gator>
- <41643136-798b-a0f3-aee7-b6af94a2fc67@redhat.com>
- <20210625101821.3t3vgj2pnw3hqpzm@gator>
- <62d04903-e4f3-2302-d530-5942e33ae116@redhat.com>
+        Mon, 28 Jun 2021 04:42:10 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 54D772022D;
+        Mon, 28 Jun 2021 08:39:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624869584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
+        b=yQqqhaJ/CHAWQdSiuhvBPt0W7ZCSSi7MYqfHndPp74som5heLerExGYZYkuNCnmFcSbWM1
+        SxplcdB5ydtqAf0kFvv8OQbCiE0vOMeDCMEGWyY//u/gLYYif751GbNQW6Hay95bBeCpry
+        AXFQ3AINqXwrA5r/V/XA0P1yuncixlo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624869584;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
+        b=LvB1dvkKEU3OfpgVUgxv/U3SgHukbV/yCh5PsivmEL6z72eHi4K/+bM5ErSqUAvlVxhRHc
+        gtbu7TopPGF7blCw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 39714118DD;
+        Mon, 28 Jun 2021 08:39:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624869584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
+        b=yQqqhaJ/CHAWQdSiuhvBPt0W7ZCSSi7MYqfHndPp74som5heLerExGYZYkuNCnmFcSbWM1
+        SxplcdB5ydtqAf0kFvv8OQbCiE0vOMeDCMEGWyY//u/gLYYif751GbNQW6Hay95bBeCpry
+        AXFQ3AINqXwrA5r/V/XA0P1yuncixlo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624869584;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zts5Fg+3+/R4VMWjyIltUDUKV75Jq5sRs86cDB/ug1o=;
+        b=LvB1dvkKEU3OfpgVUgxv/U3SgHukbV/yCh5PsivmEL6z72eHi4K/+bM5ErSqUAvlVxhRHc
+        gtbu7TopPGF7blCw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id PGr1DNCK2WCsPwAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 28 Jun 2021 08:39:44 +0000
+Date:   Mon, 28 Jun 2021 10:39:38 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/sev for v5.14
+Message-ID: <YNmKyjD8UH6ETawm@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <62d04903-e4f3-2302-d530-5942e33ae116@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 09:14:49PM +1000, Gavin Shan wrote:
-> On 6/25/21 8:18 PM, Andrew Jones wrote:
-> > On Fri, Jun 25, 2021 at 06:36:48PM +1000, Gavin Shan wrote:
-> > > On 6/25/21 5:06 PM, Andrew Jones wrote:
-> > > > On Fri, Jun 25, 2021 at 09:02:17AM +0200, Andrew Jones wrote:
-> > > > > On Fri, Jun 25, 2021 at 01:23:38PM +0800, Gavin Shan wrote:
-> > > > > > The empty memory nodes, where no memory resides in, are allowed.
-> > > > > > For these empty memory nodes, the 'len' of 'reg' property is zero.
-> > > > > > The NUMA node IDs are still valid and parsed, but memory can be
-> > > > > > added to them through hotplug afterwards. I finds difficulty to
-> > > > > > get where it's properly documented.
-> > > > > > 
-> > > > > > So lets add note to empty memory nodes in the NUMA binding doc.
-> > > > > > 
-> > > > > > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > > > > > ---
-> > > > > >    Documentation/devicetree/bindings/numa.txt | 4 ++++
-> > > > > >    1 file changed, 4 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
-> > > > > > index 21b35053ca5a..0fc882e44270 100644
-> > > > > > --- a/Documentation/devicetree/bindings/numa.txt
-> > > > > > +++ b/Documentation/devicetree/bindings/numa.txt
-> > > > > > @@ -109,6 +109,10 @@ Example:
-> > > > > >    Dual socket system consists of 2 boards connected through ccn bus and
-> > > > > >    each board having one socket/soc of 8 cpus, memory and pci bus.
-> > > > > > +Note that empty memory nodes, which no memory resides in, are allowed.
-> > > > > > +The NUMA node IDs in these empty memory nodes are still valid, but
-> > > > > > +memory can be added into them through hotplug afterwards.
-> > > > > 
-> > > > > Please change the second sentence to:
-> > > > > 
-> > > > >     The NUMA node IDs in these empty memory nodes are still valid and
-> > > > >     memory may be added into them through hotplug afterwards.
-> > > > > 
-> > > > > But, this doesn't look like the right place for this paragraph. You're
-> > > > > adding the paragraph to the example section, but the example doesn't have
-> > > > > any empty memory nodes.
-> > > > > 
-> > > > > I think the paragraph should be added to section "2 - numa-node-id" and an
-> > > > 
-> > > > Or maybe even create a new section for it.
-> > > > 
-> > > > > example empty memory node should be provided. Also, the commit message
-> > > > > talks about the length of 'reg' being zero, which is an important
-> > > > > distinction which should also be documented.
-> > > > > 
-> > > 
-> > > Drew, thanks for your comments. Yeah, it sounds sensible to create
-> > > a new section for it and an example would be more helpful. Please
-> > > check if below changes are fine to you. I probably need Randy's review
-> > > again.
-> > > 
-> > > I'm trying to avoid too many revisions for this sort of trivial patch,
-> > > even though I already had. However, it's time frame for v5.14 and I'm
-> > > pushing this to be merged during the cycle.
-> > 
-> > We must revise until we're satisfied... Also, I wouldn't call writing
-> > specifications trivial.
-> > 
-> 
-> [...]
-> 
-> > I'll just rewrite it:
-> > 
-> >   Empty memory nodes, which no memory resides in, are allowed. The 'length'
-> >   field of the 'reg' property is zero, but the 'base-address' is a dummy
-> >   address and invalid. However, the NUMA node IDs and distance maps are
-> >   still valid and memory may be added into them through hotplug afterwards.
-> > 
-> 
-> [...]
-> 
-> > 
-> > You should write how you've selected the dummy addresses for the empty
-> > memory nodes, perhaps here in the /* Empty memory node */ comments or
-> > above in the paragraph or both.
-> > 
-> > > +	memory@0x100000000 {
-> > > +		device_type = "memory";
-> > > +		reg = <0x1 0x0 0x0 0x0>;
-> > > +		numa-node-id = <2>;
-> > > +	};
-> > > +
-> > > +	/* Empty memory node */
-> > > +	memory@0x180000000 {
-> > > +		device_type = "memory";
-> > > +		reg = <0x1 0x80000000 0x0 0x0>;
-> > > +		numa-node-id = <3>;
-> > > +	};
-> > > +
-> 
-> [...]
-> 
-> Thanks, Drew. As 'base-address' is dummy address and invalid. So we
-> would note it as suggestion. With your suggestion integrated, how about
-> something like this?
-> 
-> ==============================================================================
-> 4 - Empty memory nodes
-> ==============================================================================
-> 
-> Empty memory nodes, which no memory resides in, are allowed. The 'length'
-> field of the 'reg' property is zero, but the 'base-address' is a dummy
-> address and invalid. The 'base-address' could be the summation of highest
-> memory address plus the NUMA node ID. However, the NUMA node IDs and
-> distance maps are still valid and memory may be added into them through
-> hotplug afterwards.
-> 
->        :
-> 
->        memory@0 {
->                 device_type = "memory";
->                 reg = <0x0 0x0 0x0 0x80000000>;
->                 numa-node-id = <0>;
->         };
-> 
->         memory@0x80000000 {
->                 device_type = "memory";
->                 reg = <0x0 0x80000000 0x0 0x80000000>;
->                 numa-node-id = <1>;
->         };
-> 
->         /* Empty memory node */
->         memory@0x100000002 {
->                 device_type = "memory";
->                 reg = <0x1 0x2 0x0 0x0>;
->                 numa-node-id = <2>;
->         };
-> 
->         /* Empty memory node */
->         memory@0x100000003 {
->                 device_type = "memory";
->                 reg = <0x1 0x3 0x0 0x0>;
->                 numa-node-id = <3>;
->         };
-> 
->         :
-> 
-> Thanks,
-> Gavin
-> 
->
+Hi Linus,
 
-Looks good to me.
+please pull the current pile of enhancements and fixes to the SEV side
+of things, for v5.14.
 
-Thanks,
-drew 
+Thx.
 
+---
+
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+
+  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sev_for_v5.14_rc1
+
+for you to fetch changes up to 8d9d46bbf3b6b7ff8edcac33603ab45c29e0e07f:
+
+  x86/sev: Use "SEV: " prefix for messages from sev.c (2021-06-23 11:56:18 +0200)
+
+----------------------------------------------------------------
+- Differentiate the type of exception the #VC handler raises depending
+on code executed in the guest and handle the case where failure to
+get the RIP would result in a #GP, as it should, instead of in a #PF
+
+- Disable interrupts while the per-CPU GHCB is held
+
+- Split the #VC handler depending on where the #VC exception has
+happened and therefore provide for precise context tracking like the
+rest of the exception handlers deal with noinstr regions now
+
+- Add defines for the GHCB version 2 protocol so that further shared
+development with KVM can happen without merge conflicts
+
+- The usual small cleanups
+
+----------------------------------------------------------------
+Brijesh Singh (1):
+      x86/sev: Add defines for GHCB version 2 MSR protocol requests
+
+Joerg Roedel (7):
+      x86/sev: Fix error message in runtime #VC handler
+      x86/insn-eval: Make 0 a valid RIP for insn_get_effective_ip()
+      x86/insn: Extend error reporting from insn_fetch_from_user[_inatomic]()
+      x86/sev: Propagate #GP if getting linear instruction address failed
+      x86/sev: Make sure IRQs are disabled while GHCB is active
+      x86/sev: Split up runtime #VC handler for correct state tracking
+      x86/sev: Use "SEV: " prefix for messages from sev.c
+
+ arch/x86/entry/entry_64.S         |   4 +-
+ arch/x86/include/asm/idtentry.h   |  29 ++----
+ arch/x86/include/asm/sev-common.h |  16 ++-
+ arch/x86/kernel/sev.c             | 201 +++++++++++++++++++++-----------------
+ arch/x86/kernel/umip.c            |  10 +-
+ arch/x86/lib/insn-eval.c          |  30 +++---
+ 6 files changed, 160 insertions(+), 130 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
