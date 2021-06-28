@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BDD3B6B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BEC3B6B6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhF1XjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 19:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
+        id S235266AbhF1Xja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 19:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234000AbhF1XjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 19:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 454B761CBA;
-        Mon, 28 Jun 2021 23:36:33 +0000 (UTC)
+        id S234008AbhF1XjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 19:39:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5D7FC61D04;
+        Mon, 28 Jun 2021 23:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624923393;
-        bh=fTm/Ga16sxM06tMxxo7k/qsWdRUI4Rfg5V2tGr+4Hfc=;
+        s=k20201202; t=1624923396;
+        bh=u6VnLbf3ZulenKFDKRRWSDU0BLQs2pttUgLwSu+cnEM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hznhwHisCeZYoBFolAkYpGaY+/rFL3o2ew2srW6/UX3/oUQcDdQMMSOYHlm7c5aAM
-         pjfR30oniZeaAsdUiGK8Kei0XLYaAI7OpbSXCkF90aH5PuBTpXeKA5fJ4KfUbskbyt
-         Q0k/zX1SYh7sY4P27OApVMKd1INHNx6m8NqFvw2QAtgrHvxcC+8wcXVnNvui+tT9zh
-         jfQGwvWPNuxtn8hiYAOcA/UMWLjF6/xrwI3QFZE8tEm+FfKErfV/OFSnm9p/Phx8jx
-         MHNsH5Ls0atJ6OInhO+GhBHlCwXhg+UfuJg0LQoqNRJdB4kJk0tgNq2qae46skeK7g
-         JaEfoboQzCbuQ==
+        b=TOdZbzM8LgUT2Lszv2JIDHXEByO7KZF81e0s4LTEeMtNM6I+zlI/Ke+gy0326xlp+
+         eUCvSwTk+0uGMIvtslhiLu2laGj56b/XtSzLhIa6jn2jDaTohXzmqnD9qtacvjOxIZ
+         iTATB/kohcY3w0m5+XWWO4yZCH4W7a4YG9m5seel70LpFBtFx1ru5JJ0hvtJa1GhJ9
+         ixuK/y44VjCgf+YkXywxQrHT9Io4pTCuJkdvHwNBUD6I4ZnQsnsWKQDDN7k0GJplk/
+         54UktHg91acY8ducbpWsGQZSqubR5bzKQG2tWgg7UXZxP8tD/TmQ/TZju7T8Oltvxm
+         5u8/m+t9JPG/w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3E78360A3A;
-        Mon, 28 Jun 2021 23:36:33 +0000 (UTC)
-Subject: Re: [GIT PULL for v5.14-rc1] media updates
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5767160A3A;
+        Mon, 28 Jun 2021 23:36:36 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM changes for Linux 5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210628153005.1416aadf@coco.lan>
-References: <20210628153005.1416aadf@coco.lan>
-X-PR-Tracked-List-Id: <linux-media.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210628153005.1416aadf@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.14-1
-X-PR-Tracked-Commit-Id: 61c6f04a988e420a1fc5e8e81cf9aebf142a7bd6
+In-Reply-To: <20210625154805.133099-1-pbonzini@redhat.com>
+References: <20210625154805.133099-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210625154805.133099-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: b8917b4ae44d1b945f6fba3d8ee6777edb44633b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 31e798fd6f0ff0acdc49c1a358b581730936a09a
-Message-Id: <162492339324.13806.16569462944224079268.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Jun 2021 23:36:33 +0000
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 36824f198c621cebeb22966b5e244378fa341295
+Message-Id: <162492339635.13806.1858328284331539337.pr-tracker-bot@kernel.org>
+Date:   Mon, 28 Jun 2021 23:36:36 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Jun 2021 15:30:05 +0200:
+The pull request you sent on Fri, 25 Jun 2021 11:48:05 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.14-1
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/31e798fd6f0ff0acdc49c1a358b581730936a09a
+https://git.kernel.org/torvalds/c/36824f198c621cebeb22966b5e244378fa341295
 
 Thank you!
 
