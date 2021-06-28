@@ -2,53 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5783B5EBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64C03B5EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhF1NMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232502AbhF1NMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:12:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBBB619AB;
-        Mon, 28 Jun 2021 13:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624885815;
-        bh=+VFZSKnK8SyvGBP4gDqe0C/KPvLEj9KZlsmAGZCdk5A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HvHUT5sbGQLYxLL4IuaUzmUi6oDotstTU3BA40F0hpFAUJjSFsvgMlgSAHFCqjF6f
-         qOe4nGYWi3lh+GgmDhXYA2Y6ZSCSf/Sdqgd2lOgMrDD4vLCVHeu4UR2TK3iYwWay5r
-         B5+3sfbzfnK+pg8C9+/BZ4WB9HYtVkCB17BXsfwiEIWwdB4sB+uUbEvDvi2xF25yOa
-         QE5zfKeRKaoicTRP1GbqX5P2yuecuq69VvX7ZxyKzpnMSG5unIZnQsXp8rEvFaKD8j
-         /ossoyZBqqzBV4LlQpQ9SklJZn2y1WHI6r4P0Gy2c7sw8f4rEmU9jTdr93MLGeDDHt
-         rJRMnMpvZyTxg==
-Date:   Mon, 28 Jun 2021 15:10:10 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: armada-3720-turris-mox.dts: remove
- mrvl,i2c-fast-mode
-Message-ID: <20210628151010.518efa95@thinkpad>
-In-Reply-To: <20210628121015.22660-1-pali@kernel.org>
-References: <20210628121015.22660-1-pali@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233104AbhF1NRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:17:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32505 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232598AbhF1NRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 09:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624886080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tj4yIuEO+4XJm3fqX2pyrrx0se0LVYWofQJUdNNt4QE=;
+        b=XldSc9GenFUv57dUqyGt4L+EHvyNVGBnVlS+TKnHTBDk+2oabylYROEH2klo3ofhAPoszw
+        +IuiZhQW5z4LproCGAVCo4x81cR7tHHGQb858pr71h38DKaty6laO8Y1iXQOim3oXuFaD5
+        /H0MjOLn9Uwg43uE5NlpVbkmoIt2zmk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-2wcrMVEaOX2KiKGeE4lojw-1; Mon, 28 Jun 2021 09:14:39 -0400
+X-MC-Unique: 2wcrMVEaOX2KiKGeE4lojw-1
+Received: by mail-ed1-f70.google.com with SMTP id p19-20020aa7c4d30000b0290394bdda6d9cso9380838edr.21
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:14:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tj4yIuEO+4XJm3fqX2pyrrx0se0LVYWofQJUdNNt4QE=;
+        b=LPLapVcYf/rmQ9I9wXQa/wvBpGOn3hOUySPEeCgq6C5AGJib0n/3Saldh3BUXldePp
+         54Yqu8PnGMO9ROzMil+JW1V9FKx3aeYGO07/Z1WN1zH6bKei7vGCli7h/4ukj+NsHx+T
+         DAIVfAJiKBvlIOOG0ShVBwq6DN73SMFg/lvX5xhsHeTSd7p9WLiFISHteD+kWKvivQ7K
+         Di8jOAoPV0glrdupStCp+gGD5sv8VJ8SaCbL/tkC6qni0TvL4JdCTVlw978iFHKJr8ED
+         IkXn1etiYbNG4DRGoN81Se6QfpUnttklKVEPwoAZSgXjUf5kLmZGPw3oU3AyMod9uwcb
+         JwCg==
+X-Gm-Message-State: AOAM530SY/Di9sEs7Yv5Hf52Vy979DUUNbepOo8+Z/7cnHKoZfVDL3Dh
+        LDYwDQ+CJcgNcLl13J02Olz8CraV3Mac1eKKed+nXr4GabGjyXwFomxmxtrjyNgaDWzw3LvE6PD
+        DX1AR1mEkPgSP8dxCl0DabYUwSfNaNhjXAaSXqb+qLNl6wwXJ9aeTMCKyt7Y4XwkP8lsuaJNY+E
+        0=
+X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr33280675edu.328.1624886077894;
+        Mon, 28 Jun 2021 06:14:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyF01N+mW2cB7afBbWaAEtEf7kv/6l59hADkoTivbHSP6UGj2lBnUkg1OAZn1evp9XZFa+5gQ==
+X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr33280651edu.328.1624886077748;
+        Mon, 28 Jun 2021 06:14:37 -0700 (PDT)
+Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
+        by smtp.gmail.com with ESMTPSA id s18sm6859659ejh.12.2021.06.28.06.14.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 06:14:37 -0700 (PDT)
+Subject: Re: [PATCH][next] trace: Fix spelling in osnoise tracer
+ "interferences" -> "interference"
+To:     Colin King <colin.king@canonical.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210628125522.56361-1-colin.king@canonical.com>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <e53ec856-c93d-61fe-ec2f-6c73b3b6efc9@redhat.com>
+Date:   Mon, 28 Jun 2021 15:14:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210628125522.56361-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also please remove ".dts" from commit title, i.e.:
-  arm64: dts: armada-3720-turris-mox: remove mrvl,i2c-fast-mode
+On 6/28/21 2:55 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a TP_printk message, the word interferences
+> is not the plural of interference. Fix this.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-since "dts" is already present in the prefix.
+Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-Marek
+Thanks!
+-- Daniel
+
+> ---
+>  include/trace/events/osnoise.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/trace/events/osnoise.h b/include/trace/events/osnoise.h
+> index 28762c69f6c9..82f741ec0f57 100644
+> --- a/include/trace/events/osnoise.h
+> +++ b/include/trace/events/osnoise.h
+> @@ -129,7 +129,7 @@ TRACE_EVENT(sample_threshold,
+>  		__entry->interference = interference;
+>  	),
+>  
+> -	TP_printk("start %llu.%09u duration %llu ns interferences %llu",
+> +	TP_printk("start %llu.%09u duration %llu ns interference %llu",
+>  		__print_ns_to_secs(__entry->start),
+>  		__print_ns_without_secs(__entry->start),
+>  		__entry->duration,
+> 
+
