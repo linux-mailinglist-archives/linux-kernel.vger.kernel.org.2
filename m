@@ -2,138 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EFD3B5A7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2113B5A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbhF1IbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:31:01 -0400
-Received: from mail-bn7nam10on2062.outbound.protection.outlook.com ([40.107.92.62]:50017
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232378AbhF1Ia7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:30:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EvTkJ6I/DUIUG/R42Esr+BiHMjrQAPYL12TECf6OFIl4HpqSosIYaZ7bGbtnpndS00P9RQ2L+zOhJN5Xi2AA6olauNLQxwM94kkbDfBmrzldWMlBjIYcN1YmUmiE8qgM/wZ9FVyKEUIgY1DJKPYHGAZt4r5FYvAe/t3R0SVkDC1YwE3sOBrD94O5TcRbaYtZUiVCIhOrJOB50t5IvqYBwZFP8srQglmnTLlugOZNfZGjUjepkWY7eEuwAKQEBlPsuLKbn7DxWcZ+WkJztLy1M7aJk92fag2Fg4zPf0Jxi0lePey5aCf0JOa+I3rIDD5dZE9kG+TpQrB9OO50jWVEmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x/qVlOI17/ruiq2J9x5tdImUEtDlA6XvwQayKyFyZ0Y=;
- b=jffB5creiFHeH6Wjx5ORyJkOwWMfljBHZ24HiR77d+drLdAmlqDEROtiAME1mJdkHqXZYD4xhys8hmfcZSHzHmWENGVDaRYr+4LV/P6pSXB/p/vAP17kWAVavBg9n7XnRp1xFIArsXY1GOTlPiF8VE/BIxl3LVzlp/6HWFaFxAE+iMwzIKs8FF5yojqfwkfjgQdMqNhafA9XYKPaky9z78MpnJXyzBV4cpeVAl+ckw+B+HJ5nmvnGINi32494ZeXF8VFrx6WwtaVqDDIIoLJNoju1bOZ3WJqjg6ukVPCf9QCaN5a33wJcVaA8wMoStUrC8bQeLwaPctaaV4NaHXVQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x/qVlOI17/ruiq2J9x5tdImUEtDlA6XvwQayKyFyZ0Y=;
- b=nKeGYPnZ8LMwDVQKNqDLQesAdUVKEjGyDr5/mdy5ertCWio43DBs1YiJ4kN/DDUydy/nuG+R30lrJADePbT2ef3GjMJ2L7mOSSdfPjqFgrjzEVKHqTIqqs0pfem/lX2dMGVoBKYxoha5q1yA2W7kNG0xvKCQqmzhRR8RI+YwrglN+CbXjxA9yS90b3w7pv1TIAXvUtYAZUh45eAhEGsSOalpYdWsIP+rDWm0olPvCmFwq/vXcY/3l2bZ61q6tfBW6F9LwqpW2/XxS0gpe1G7+MR839Vl7thHR6zPCLrl3tgUQk4JBSWV6r7BJroPZQ7RoWwczHhNs2JughMFJ8Qo3w==
-Received: from DM5PR06CA0095.namprd06.prod.outlook.com (2603:10b6:3:4::33) by
- BL0PR12MB2434.namprd12.prod.outlook.com (2603:10b6:207:4d::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Mon, 28 Jun 2021 08:28:32 +0000
-Received: from DM6NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:4:cafe::5c) by DM5PR06CA0095.outlook.office365.com
- (2603:10b6:3:4::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend
- Transport; Mon, 28 Jun 2021 08:28:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT048.mail.protection.outlook.com (10.13.173.114) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4264.18 via Frontend Transport; Mon, 28 Jun 2021 08:28:32 +0000
-Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 28 Jun
- 2021 08:28:29 +0000
-Subject: Re: [PATCH] soc/tegra: Fix an error handling path in
- 'tegra_powergate_power_up()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        <thierry.reding@gmail.com>, <digetx@gmail.com>,
-        <ulf.hansson@linaro.org>, <maz@kernel.org>,
-        <gustavoars@kernel.org>, <jckuo@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <46d3af4a83e2e7b680c857e8969167f0d2d94841.1624809134.git.christophe.jaillet@wanadoo.fr>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <52f72ce4-a630-af2f-858e-488e4dd7d9cf@nvidia.com>
-Date:   Mon, 28 Jun 2021 09:28:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <46d3af4a83e2e7b680c857e8969167f0d2d94841.1624809134.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="utf-8"
+        id S232456AbhF1IdB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 04:33:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3323 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhF1IdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:33:00 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GD0nb5BNVz6K7PF;
+        Mon, 28 Jun 2021 16:16:51 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 10:30:32 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Mon, 28 Jun 2021 10:30:32 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Thread-Topic: [RFC][PATCH 03/12] digest_lists: Basic definitions
+Thread-Index: AQHXaeMP1hrQEcpfKUiTvUrYdI7FlqsnkBuAgAGHhIA=
+Date:   Mon, 28 Jun 2021 08:30:32 +0000
+Message-ID: <860717cce60f47abb3c9dc3c1bd32ab7@huawei.com>
+References: <20210625165614.2284243-1-roberto.sassu@huawei.com>
+ <20210625165614.2284243-4-roberto.sassu@huawei.com>
+ <YNhYu3BXh7f9GkVk@kroah.com>
+In-Reply-To: <YNhYu3BXh7f9GkVk@kroah.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 29a36b55-d20a-423e-7435-08d93a0eb71b
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2434:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB24343D398D7021B27BA15F3AD9039@BL0PR12MB2434.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vlyKjluu++3ibjG2u+NioAS92veO1OHq5/bbMPuUO9Z6+BSnDDPy4CXHEQa9iLOR1pFWyf1EnPSjoagHKB7/Op0Fr/Zl+0PstWb//I8bZOHWBoAfiyv3pdc8PrppIljQghf5mpTpbgqpzCmwLJX6HtRekJ1vtb/BapvQybM1rcfJAO5Uisa79engxL+6Nc0/T+uw4Ra807GN9wg56/gzfbodrSV3NGeew9EJMVCUcnTICAHWcFLd2gQAVuGnCsLkWY1kUhzFNAtG/HJn+d7rbcVEo7cwGmGUxwdmsFZDuDc3mUaclLbEa0/rzjKdK6qI1JXkFqTI7OpqkvGabEa5Bx2Ns1TKmizY4ggBXIBEdz9XkVPoeo9Yd8rKPH3rsK0hqjbf99Z72FcPmJ+I6ku+6AV6t6kAG7W5XMz76p4D/eWk3ppuckV8nTTTSccymTw60OGjaN03Q9o/e6n1KDZIelrVqTk+7TGFlbvBaNEo37EP5BSlXC9P3m3hHWBZetWZUy7a5EFgZURhfoUsWsMmCP1yFxRUmR3F8KTxDAxZXgwfhuMe0hQSOe58y3JAaR6MZfknSq/Ss0sXRrqAMb4b9Vh4cOdHoIvUEp35leQSqSRFUC2KhhenaeUcpznNEimvHldHnJ9t0hr6zcCM2QlCs+OaecnZQNV41YzR0wq32pTx0dGX3YJxVlM8D/cYvnN69oGWAGMOddlm6mUG7OYVKiIXG9qDN6F6Iim9wlAGhBo=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(46966006)(36840700001)(36860700001)(5660300002)(6636002)(16526019)(336012)(8936002)(31686004)(53546011)(86362001)(82740400003)(70206006)(426003)(70586007)(8676002)(110136005)(316002)(7636003)(478600001)(2616005)(356005)(4326008)(186003)(36756003)(16576012)(31696002)(26005)(82310400003)(47076005)(2906002)(83380400001)(54906003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 08:28:32.4599
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29a36b55-d20a-423e-7435-08d93a0eb71b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2434
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 27/06/2021 16:54, Christophe JAILLET wrote:
-> If an error occurs after a successful 'tegra_powergate_enable_clocks()'
-> call, it must be undone by a 'tegra_powergate_disable_clocks()' call, as
-> already done in the below and above error handling paths of this function.
+> From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> Sent: Sunday, June 27, 2021 12:54 PM
+> On Fri, Jun 25, 2021 at 06:56:05PM +0200, Roberto Sassu wrote:
+> > --- /dev/null
+> > +++ b/include/uapi/linux/digest_lists.h
+> > @@ -0,0 +1,43 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +/*
+> > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
+> > + *
+> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > + * modify it under the terms of the GNU General Public License as
+> > + * published by the Free Software Foundation, version 2 of the
+> > + * License.
 > 
-> Update the 'goto' to branch at the correct place of the error handling
-> path.
+> As you already have the SPDX line up there, you do not need this
+> paragraph.  Please remove it from all of the new files you have added in
+> this series.
+
+Ok.
+
+> > + *
+> > + * File: digest_lists.h
 > 
-> Fixes: a38045121bf4 ("soc/tegra: pmc: Add generic PM domain support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> /!\ This patch is speculative /!\
-> Review with care.
-> ---
->  drivers/soc/tegra/pmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> We know the filename, no need to have it here again.
 > 
-> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-> index ea62f84d1c8b..b8ef9506f3de 100644
-> --- a/drivers/soc/tegra/pmc.c
-> +++ b/drivers/soc/tegra/pmc.c
-> @@ -782,7 +782,7 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
->  
->  	err = reset_control_deassert(pg->reset);
->  	if (err)
-> -		goto powergate_off;
-> +		goto disable_clks;
->  
->  	usleep_range(10, 20);
+> > + *      Digest list definitions exported to user space.
+> 
+> Now this is what probably needs more information...
 
+Ok. Yes, these definitions are useful to generate digest lists
+in user space.
 
-Thanks for the fix.
+> > + */
+> > +
+> > +#ifndef _UAPI__LINUX_DIGEST_LISTS_H
+> > +#define _UAPI__LINUX_DIGEST_LISTS_H
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/hash_info.h>
+> > +
+> > +enum compact_types { COMPACT_KEY, COMPACT_PARSER,
+> COMPACT_FILE,
+> > +		     COMPACT_METADATA, COMPACT_DIGEST_LIST,
+> COMPACT__LAST };
+> > +
+> > +enum compact_modifiers { COMPACT_MOD_IMMUTABLE,
+> COMPACT_MOD__LAST };
+> > +
+> > +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
+> > +		       COMPACT_ACTION_IMA_APPRAISED,
+> > +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
+> > +		       COMPACT_ACTION__LAST };
+> > +
+> > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
+> > +
+> 
+> For enums you export to userspace, you need to specify the values so
+> that all compilers get them right.
+> 
+> > +struct compact_list_hdr {
+> > +	__u8 version;
+> 
+> You should never need a version, that way lies madness.
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+We wanted to have a way to switch to a new format, if necessary.
 
-Cheers
-Jon
+> > +	__u8 _reserved;
+> 
+> You better be testing this for 0, right?
 
--- 
-nvpublic
+Ok, will do.
+
+> > +	__le16 type;
+> > +	__le16 modifiers;
+> > +	__le16 algo;
+> > +	__le32 count;
+> > +	__le32 datalen;
+> 
+> Why are user/kernel apis specified in little endian format?  Why would
+> that matter?  Shouldn't they just be "native" endian?
+
+I thought this would make it clear that the kernel always expects the
+digest lists to be in little endian.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> greg k-h
