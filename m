@@ -2,231 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955253B57ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89273B57F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhF1Dri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 23:47:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8474 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhF1Drh (ORCPT
+        id S232115AbhF1DtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 23:49:13 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:47998 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232018AbhF1DtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 23:47:37 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GCthY1CC9zZnCc;
-        Mon, 28 Jun 2021 11:42:05 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 11:45:08 +0800
-Received: from [10.67.102.248] (10.67.102.248) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 11:45:08 +0800
-Subject: Re: [PATCH] perf arm-spe: Fix incorrect sample timestamp in perf
- script
-To:     Leo Yan <leo.yan@linaro.org>
-CC:     <john.garry@huawei.com>, <will@kernel.org>,
-        <mathieu.poirier@linaro.org>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <james.clark@arm.com>,
-        <andre.przywara@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210626032115.16742-1-yangjihong1@huawei.com>
- <20210628014953.GA163942@leoy-ThinkPad-X240s>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <75dac5f8-9c82-0db1-d362-44289dcaa206@huawei.com>
-Date:   Mon, 28 Jun 2021 11:45:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210628014953.GA163942@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Sun, 27 Jun 2021 23:49:12 -0400
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15S3iMY7022440;
+        Sun, 27 Jun 2021 20:46:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=ZKUQaKQRfL5qAVYOgBcjuzNMZwVBos+icOhyFt0Dyd8=;
+ b=AR+8y/lC8MoOGLShB7bL1M9tCLGW5+9xVD2W4PQCaLwJNEJbI1Nq7nM0lae4Ku2zBfmv
+ HnDJRrjPcus4nxnXcVaCVKgkzJj0vXkjQqsgRITKJC4FOCvGwGvHMnkcQuahVv56JHUM
+ NWc7YKObM8K69SNtYFtOhXlhxmxBadpcSnodlu/NE3t1wqjM3l/qzBP/7mEoexyyRqeT
+ rn6KSyyYHnOq55s4P8x5tVIjlOopy01YhqGngg6qNKBKoxo/nSgQgzxFftv7lqPSUK6A
+ LjUuPhzBc75MxsBtmn+dxFEIHkR7htn0rK323M69UfpX+MREsEwMHQWVfnvO8oNMlW51 fw== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 39dyu1wxf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Jun 2021 20:46:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B3AkudQrH3B3mnNy94LRYswAYgCPcpHuJJbn1NIx/PHQP1AVVOx0dXZKA6yCQ3JnT5g08kCyO779y8S36HqIu5zSAln3kEMTAI4ApQ8K4nAaxV8pgi7pcBnPvfeZnONaG84i2luzNe2v2T3JFNZ3IIWIHBB6cOpTI4U6WlbT0UO5QNIxhwzm9ZD0HW5KDsPLDSR3Ad10DqjscHfPmzCXvEa1sR3QQDJVVsRmal2f/7e9TJC3FeE3+aQ3wDDA/y8+IR1YEXNqazgdkkA/ZZwFj0Wz55BmkM1OXbhz36JJhM9fV3lgVV4Q6baIurw99bwk4TKnm7jKuk2+vQa14bQtKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZKUQaKQRfL5qAVYOgBcjuzNMZwVBos+icOhyFt0Dyd8=;
+ b=jBqGpgo9ONIxvBn1a1T122ZmlNWhq7whGBTQi+OWT/bquYbwE6SM8lbZW0gew6Xi8RsrewRHEU5fHDf0c+ja5sZK0q1H32jthbLiAWaq/UUFJm37PEg+jUE3IchAFA0t7bPJ2fob14HExFFNQhasH74EDzoe/H14twRYGQMZczEjKX+Vp8nOGBDY5rfjCfc8BIGd407C+rCRU7B59Cg1Ks/4urHF8/tPSIXRujvlzgrmt/WFsl+qoyP4j265pDPha8NZZC4sTYAeFPHtvnp2179pp6EMDkZi5aqQnp5ooh1pQmi55FUtyijN+lr4SD+ZzxHCzTvlWAy/A8ZM9PgwtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZKUQaKQRfL5qAVYOgBcjuzNMZwVBos+icOhyFt0Dyd8=;
+ b=GgyHd+Cz6SG5R87pw/LSXIxt728+GgParxqEmRkgQUDXn4OTiTC26kbOPu9xeuFy0FfZz2aeRnsdEEoFokzSJUv+zs2vU/CJAekXz4PLUDdIDk3m4rt7YyScUHnoMvh4oy9F6fnPVKnIPduoWMhCH/bzEbOHsnCL/sLMCjPXQXs=
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
+ by BY5PR07MB8065.namprd07.prod.outlook.com (2603:10b6:a03:1f6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Mon, 28 Jun
+ 2021 03:46:38 +0000
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::21a3:4648:fcda:e438]) by BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::21a3:4648:fcda:e438%4]) with mapi id 15.20.4242.025; Mon, 28 Jun 2021
+ 03:46:38 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Peter Chen <peter.chen@kernel.org>
+CC:     "rogerq@kernel.org" <rogerq@kernel.org>,
+        "a-govindraju@ti.com" <a-govindraju@ti.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "felipe.balbi@linux.intel.com" <felipe.balbi@linux.intel.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kishon@ti.com" <kishon@ti.com>, Rahul Kumar <kurahul@cadence.com>,
+        Sanket Parmar <sparmar@cadence.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] usb: cdns3: Fixed incorrect gadget state
+Thread-Topic: [PATCH] usb: cdns3: Fixed incorrect gadget state
+Thread-Index: AQHXZ/3ptkUHEkmY6UucrnPuWW+DP6smAnGAgALJ+aA=
+Date:   Mon, 28 Jun 2021 03:46:38 +0000
+Message-ID: <BYAPR07MB53812E6619228B19C2C3A6DADD039@BYAPR07MB5381.namprd07.prod.outlook.com>
+References: <20210623070247.46151-1-pawell@gli-login.cadence.com>
+ <20210626085655.GA13671@Peter>
+In-Reply-To: <20210626085655.GA13671@Peter>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctNmVlOTgyMzEtZDdjMy0xMWViLTg3OTEtYTQ0Y2M4MWIwYzU1XGFtZS10ZXN0XDZlZTk4MjMyLWQ3YzMtMTFlYi04NzkxLWE0NGNjODFiMGM1NWJvZHkudHh0IiBzej0iMjEzMCIgdD0iMTMyNjkzMjU1OTU1MDExNzg5IiBoPSJvZE95OXdyZ242UVpzZFNyR1pmVEFxejR3V009IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [185.217.253.59]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cd948225-317c-4450-5c2c-08d939e75597
+x-ms-traffictypediagnostic: BY5PR07MB8065:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR07MB8065EF5414C4509955AFFBC2DD039@BY5PR07MB8065.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6p/yEsFRtSxjwsl0ilR+/nh7vfcO2vK9ACe5nIy0Luqcgadv9t5RnN88D50Mmh4CQf2P8ahxfTehhPvkKhGEvUfqbe2DDw+DW+CO59RKsJhluk9jXfs2qSFXWWdSzsytBecwfgDnRQ3rdrEiBnsued3ENY018Ev8F4pMotZvHDVM7avgQyfFmorryjoBEGVsDcLg9Tl8ZSr1Me4HJjLk8ShgH9afolRzqOI9jw/0cDYKXXz1GNL93Fku1zE+QJzpDpQaj+3ERhJQGWaMWGQf+roM9Z0mHsn0gBMg2+g4yfBMhrokIbSf6Yq++AgKbKE0UThK2BwNhTwDR6X5KXLgZBxADqLHURz6obYPtRdO4lTtdygyKvIeZeX7WyuoTQLM4lb6jB2riG29FQrLfZ7zLxP6PhqLQF7NO0aKe1llH3vDXzfBUaIUo6FKPSstAOrNYufMWZaUUhmyL8j0+fYtzcE5cIKJwOuUDcaxuBTlMbftgmwXNZfoNNu+DDYU7ZrA844u7GLz+cMm+Sd6XBAeMbwffEk9GZeEj7c7RTesKFewGjTfvE8MukBh4tKaWHhLhhj7LcTYPBQgSxsVKyZKPWrsc9k0RnChikwpG9BbnqZ8LNKiSDp5Gp7Y+gFcZ4mHWS9Um4hd00OMwn4HC15hRyxCBOjwQfUvC3OKlydhl+w=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(136003)(376002)(346002)(36092001)(8676002)(8936002)(71200400001)(38100700002)(2906002)(5660300002)(9686003)(66446008)(6916009)(64756008)(122000001)(55016002)(33656002)(76116006)(66476007)(52536014)(66556008)(66946007)(186003)(6506007)(83380400001)(316002)(7696005)(54906003)(478600001)(4326008)(26005)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mrZb1x8F7WV1xHkqBep3LbxFgbSXZEgG/B6qAQbb4cGMJAbr4T0CrInEOQ8y?=
+ =?us-ascii?Q?8LwgMRPneZMX3fek4dSGQ3hQ2Yce1lBbgyCNyinyzwrQRvic1LttRPA7H51u?=
+ =?us-ascii?Q?g9bLOp7bEgRANFe9OdFXByh+QZPKObjFI1pqsuzXowIQwbhrYcGn0tes8dIR?=
+ =?us-ascii?Q?o4LrPzkikpYB2CX7wq4E2aZGA+9tyMKGZQTyvO+ZNI1mgZ5Iv1VvAuVzLIgD?=
+ =?us-ascii?Q?IbgCpkEmr2rCknUJ3zpJEaBvb79O7jFTyO1mgpqHn4lO0yc2S7P3yXwBMSu7?=
+ =?us-ascii?Q?w8VoZLTXVQcrOEXELWCwj4zYF0DOA+5ri7ttzlcppFlfikRogBMirrqgL+Ni?=
+ =?us-ascii?Q?7Xv7/J/WMCFqQCOK+RP+dyINRH8E1+jg4KnP26g4iMOpOWzK2hbYvT1Jv53K?=
+ =?us-ascii?Q?ZlOHOTBXa8/iY1GbJpY94zK+uMOt2X+1Gxitt9lhzxdsCvlEksIzsfaKCFDI?=
+ =?us-ascii?Q?ZTzoDnmxkLWClc9zYCUxuODzGw2yhy1MwhEvfFw5tfjnLo8ZltSqbHrwsc8g?=
+ =?us-ascii?Q?znbXGYxIKMOLrbHJPj90hV/7MTWoLFJMNlfC1uzdKPR6qpOOfYP+gGa1q5oO?=
+ =?us-ascii?Q?uRuC8h9UsciI0CQb4iCa5bcxP4FnoKeCK4H5G7dsRw3vx5zqBh8S6iaf8k/b?=
+ =?us-ascii?Q?1a0ropPwoluo2vLQP3bVI9Sk0JSmneNAwU3yXyZeAm1+YC/Ju/pvOsdBpH10?=
+ =?us-ascii?Q?oz7sOmf8iyL1NMYK1uu5t5ychUT0H4scsyt/NnVjbw1jrjCmE4X4z3j2YdO4?=
+ =?us-ascii?Q?/AVfifzGO87GK84ior1R59rZN7ZCpFSoXHDgUzFxhogTJuFQVuukgqplDF+Y?=
+ =?us-ascii?Q?4IXB3qWxcjen5+ZnkUMr3hBQe5YNkUlKuWsujazw2mQhcY9DtrlfALxQIPJt?=
+ =?us-ascii?Q?p3wEZHqLiFELhfVcYIVXvHhNayJy41gmku4YmspgoCXTSF3zcWTlXmXNa/uE?=
+ =?us-ascii?Q?MXk0vN4dRH2EWkj4g/49hrsEThBX0lzXCcZBp3oQbl5FXRSqHv0vDA4+nuwG?=
+ =?us-ascii?Q?uNt+8FqsD9WUlRo2OeabhNo9J37bcneq5lhU5FcO8cB5XP57HB7BOAPa+tkP?=
+ =?us-ascii?Q?p7vJ9wj3DE62Q9wmXn6SWZBIQD21UoM1HbnKXV2lYIi07Iv7u+0+Q28anit7?=
+ =?us-ascii?Q?9Zrd5uD1BZbATqHlCau7avBC9JTJaE6UeLdXWhXgAc0EvwyoAsUuLxsAi3ah?=
+ =?us-ascii?Q?sPm3ruIO0x4m5SUkHK8yZMkTVeJ5EOvqL7nX/wr1xLwtCik3iHeGgmhp0MQc?=
+ =?us-ascii?Q?fSY2t94bPZgJ+wSpmdIpHYHhql6KAsS2kJs+J8Pqm/GpCyQwm+1fbV4sFO7M?=
+ =?us-ascii?Q?OsXTG1A8BqwOj3/zhmYHPV2+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd948225-317c-4450-5c2c-08d939e75597
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2021 03:46:38.4618
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YzmiFc1aOWTdY1pHX7S+R0BXW27+YG90vijg5yq0QiTsYr9MS0x6V8i3Czd4+saXat3vOde2UrFf5xEtsI0GFMQDiBYa1OxkDhGmZhtK8hA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB8065
+X-Proofpoint-ORIG-GUID: fpeW32o4bOcMBMSW1pqIDfYwe1cMykvj
+X-Proofpoint-GUID: fpeW32o4bOcMBMSW1pqIDfYwe1cMykvj
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_03:2021-06-25,2021-06-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ malwarescore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 phishscore=0 priorityscore=1501 mlxlogscore=999
+ impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106280026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Leo,
+>
+>On 21-06-23 09:02:47, Pawel Laszczak wrote:
+>> From: Pawel Laszczak <pawell@cadence.com>
+>>
+>> For delayed status phase, the usb_gadget->state was set
+>> to USB_STATE_ADDRESS and it has never been updated to
+>> USB_STATE_CONFIGURED.
+>> Patch updates the gadget state to correct USB_STATE_CONFIGURED.
+>> As a result of this bug the controller was not able to enter to
+>> Test Mode while using MSC function.
+>
+>Pawel, would you please describe more about this issue? I remember the cdn=
+s3
+>controller at i.mx series SoC could enter test mode by using current
+>code.
 
-On 2021/6/28 9:49, Leo Yan wrote:
-> Hi Jihong,
-> 
-> On Sat, Jun 26, 2021 at 11:21:15AM +0800, Yang Jihong wrote:
->> When use perf script to parse ARM SPE data, sample timestamp does not match
->> the timestamp stored in the AUX buffer, arm_spe_prep_sample function set
->> "samlpe->time = speq->timestamp", "speq->timestamp" is the timestamp of first
->> packet in auxtrace buffer. As a result, the time of all samples in a auxtrace
->> buffer uses the same timestamp.
-> 
-> Could you confirm if the patch set [1] can fix your issue?
-> 
-After I apply this patch set, and verify it as follows:
+The issue occurs only for MSC class. MSC class has delayed status stage, so
+after returning from cdns3_req_ep0_set_configuration function called=20
+for Set Configuration driver remains in USB_STATE_ADDRESS.
 
-# ./perf/perf record -e arm_spe_0/ts_enable=1,branch_filter=1/ ls
-accounting  bootconfig  build   debugging  elf.s     firmware  hv 
-include   kvm     leds  Makefile      objtool  pcmcia  perf.data 
-scripts  testing  time     usb     vm
-arch        bpf         cgroup  edid       firewire  gpio      iio 
-io_uring  laptop  lib   memory-model  pci      perf    power      spi 
-    thermal  tracing  virtio  wmi
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.031 MB perf.data ]
-# ./perf/perf script --ns
-               ls 23104 [030] 314938.859071370:          1 
-               branch-miss:  ffffb7ee2a20e100 __pi_memcpy+0x80 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.859753820:          1 
-               branch-miss:  ffffb7ee29f360e0 __split_vma+0x110 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.859820430:          1 
-               branch-miss:      fffe85dd87e0 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.859941110:          1 
-               branch-miss:      fffe85dd7a28 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.859948890:          1 
-               branch-miss:      fffe85dd7a28 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.859953610:          1 
-               branch-miss:      fffe85dc8f58 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.859955730:          1 
-               branch-miss:  ffffb7ee2a12856c common_mmap.part.23+0x34 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.860059900:          1 
-               branch-miss:      fffe85dc8f58 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.860095470:          1 
-               branch-miss:      fffe85dc8f58 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.860105460:          1 
-               branch-miss:      fffe85dc8f58 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.860111870:          1 
-               branch-miss:      fffe85dd7a20 [unknown] 
-(/usr/lib64/ld-2.28.so)
-               ls 23104 [030] 314938.860237310:          1 
-               branch-miss:      fffe85bc8e00 [unknown] 
-(/usr/lib64/libc-2.28.so)
-               ls 23104 [030] 314938.860419000:          1 
-               branch-miss:      fffe85bd4638 __strcoll_l+0xc58 
-(/usr/lib64/libc-2.28.so)
-               ls 23104 [030] 314938.860455790:          1 
-               branch-miss:  ffffb7ee2a20e10c __pi_memcpy+0x8c 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.860473730:          1 
-               branch-miss:  ffffb7ee29d0af50 __queue_work+0x1a8 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.860485020:          1 
-               branch-miss:  ffffb7ee2a20e0c0 __pi_memcpy+0x40 
-([kernel.kallsyms])
-               ls 23104 [030] 314938.860533380:          1 
-               branch-miss:  ffffb7ee29f39158 tlb_flush+0x30 
-([kernel.kallsyms])
-# ./perf/perf script -D
-[...]
-.  00000a7c:  b0 00 e1 20 2a ee b7 ff c0                      PC 
-0xffb7ee2a20e100 el2 ns=1
-.  00000a85:  99 02 00                                        LAT 2 ISSUE
-.  00000a88:  98 03 00                                        LAT 3 TOT
-.  00000a8b:  52 c2 00                                        EV RETIRED 
-NOT-TAKEN MISPRED
-.  00000a8e:  4a 01                                           B COND
-.  00000a90:  b1 04 e1 20 2a ee b7 ff c0                      TGT 
-0xffb7ee2a20e104 el2 ns=1
-.  00000a99:  00 00 00 00 00 00                               PAD
-.  00000a9f:  71 3f e9 51 b9 a9 1c 00 00                      TS 
-31515284203839
-[...]
-.  000018c0:  b0 e0 60 f3 29 ee b7 ff c0                      PC 
-0xffb7ee29f360e0 el2 ns=1
-.  000018c9:  99 02 00                                        LAT 2 ISSUE
-.  000018cc:  98 03 00                                        LAT 3 TOT
-.  000018cf:  52 82 00                                        EV RETIRED 
-MISPRED
-.  000018d2:  4a 01                                           B COND
-.  000018d4:  b1 68 61 f3 29 ee b7 ff c0                      TGT 
-0xffb7ee29f36168 el2 ns=1
-.  000018dd:  00 00 00 00 00 00                               PAD
-.  000018e3:  71 d4 f3 52 b9 a9 1c 00 00                      TS 
-31515284272084
-[...]
-.  000019f4:  b0 e0 87 dd 85 fe ff 00 80                      PC 
-0xfffe85dd87e0 el0 ns=1
-.  000019fd:  99 02 00                                        LAT 2 ISSUE
-.  00001a00:  98 03 00                                        LAT 3 TOT
-.  00001a03:  52 c2 00                                        EV RETIRED 
-NOT-TAKEN MISPRED
-.  00001a06:  4a 01                                           B COND
-.  00001a08:  b1 e4 87 dd 85 fe ff 00 80                      TGT 
-0xfffe85dd87e4 el0 ns=1
-.  00001a11:  00 00 00 00 00 00                               PAD
-.  00001a17:  71 d9 0d 53 b9 a9 1c 00 00                      TS 
-31515284278745
-[...]
-.  00001f48:  b0 28 7a dd 85 fe ff 00 80                      PC 
-0xfffe85dd7a28 el0 ns=1
-.  00001f51:  99 07 00                                        LAT 7 ISSUE
-.  00001f54:  98 08 00                                        LAT 8 TOT
-.  00001f57:  52 c2 00                                        EV RETIRED 
-NOT-TAKEN MISPRED
-.  00001f5a:  4a 01                                           B COND
-.  00001f5c:  b1 2c 7a dd 85 fe ff 00 80                      TGT 
-0xfffe85dd7a2c el0 ns=1
-.  00001f65:  00 00 00 00 00 00                               PAD
-.  00001f6b:  71 fd 3c 53 b9 a9 1c 00 00                      TS 
-31515284290813
-[...]
-.  00001fcc:  b0 28 7a dd 85 fe ff 00 80                      PC 
-0xfffe85dd7a28 el0 ns=1
-.  00001fd5:  99 08 00                                        LAT 8 ISSUE
-.  00001fd8:  98 09 00                                        LAT 9 TOT
-.  00001fdb:  52 82 00                                        EV RETIRED 
-MISPRED
-.  00001fde:  4a 01                                           B COND
-.  00001fe0:  b1 10 7a dd 85 fe ff 00 80                      TGT 
-0xfffe85dd7a10 el0 ns=1
-.  00001fe9:  00 00 00 00 00 00                               PAD
-.  00001fef:  71 07 40 53 b9 a9 1c 00 00                      TS 
-31515284291591
-[...]
-.  00002050:  b0 58 8f dc 85 fe ff 00 80                      PC 
-0xfffe85dc8f58 el0 ns=1
-.  00002059:  99 22 00                                        LAT 34 ISSUE
-.  0000205c:  98 23 00                                        LAT 35 TOT
-.  0000205f:  52 82 00                                        EV RETIRED 
-MISPRED
-.  00002062:  4a 01                                           B COND
-.  00002064:  b1 40 8f dc 85 fe ff 00 80                      TGT 
-0xfffe85dc8f40 el0 ns=1
-.  0000206d:  00 00 00 00 00 00                               PAD
-.  00002073:  71 df 41 53 b9 a9 1c 00 00                      TS 
-31515284292063
-[...]
+In order to enter to test mode driver needs meet the condition included in=
+=20
+cdns3_ep0_feature_handle_device function:
+		if (state !=3D USB_STATE_CONFIGURED || speed > USB_SPEED_HIGH)
+			return -EINVAL;
 
-The timestamp does not match. Each timestamp has a difference of 
-213.98296702 seconds. Is the command I executed wrong?
+But it is still in USB_STATE_ADDRESS, because there was delayed status stag=
+e.
+To fix issue driver state must be updated to USB_STATE_CONFIGURED before=20
+or after  finishing status stage.
 
-|symbol_address|perf script| perf script -D|
-|ffffb7ee2a20e100|314938.859071370|31515284203839|
-|ffffb7ee29f360e0|314938.859753820|31515284272084|
-|fffe85dd87e0|314938.859820430|31515284278745|
-|fffe85dd7a28|314938.859941110|31515284290813|
-|fffe85dd7a28|314938.859948890|31515284291591|
-|fffe85dc8f58|314938.859953610|31515284292063|
+>
+>>
+>> Cc: <stable@vger.kernel.org>
+>> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+>> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+>> ---
+>>  drivers/usb/cdns3/cdns3-ep0.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/usb/cdns3/cdns3-ep0.c b/drivers/usb/cdns3/cdns3-ep0=
+.c
+>> index 9a17802275d5..ec5bfd8944c3 100644
+>> --- a/drivers/usb/cdns3/cdns3-ep0.c
+>> +++ b/drivers/usb/cdns3/cdns3-ep0.c
+>> @@ -731,6 +731,7 @@ static int cdns3_gadget_ep0_queue(struct usb_ep *ep,
+>>  		request->actual =3D 0;
+>>  		priv_dev->status_completion_no_call =3D true;
+>>  		priv_dev->pending_status_request =3D request;
+>> +		usb_gadget_set_state(&priv_dev->gadget, USB_STATE_CONFIGURED);
+>>  		spin_unlock_irqrestore(&priv_dev->lock, flags);
+>>
+>>  		/*
+>> --
+>> 2.25.1
+>>
+>
+--
 
 Thanks,
-Jihong
-> Thanks,
-> Leo
-> 
-> [1] https://lore.kernel.org/patchwork/cover/1431624/
-> .
-> 
+Pawel Laszczak
+
