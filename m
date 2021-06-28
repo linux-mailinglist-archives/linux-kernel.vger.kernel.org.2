@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268343B6722
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6836F3B672C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhF1Q70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhF1Q7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:59:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD344C061760;
-        Mon, 28 Jun 2021 09:56:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=woA5VoqAy7gFfT8dSEPQ9NehE3AhROEzmAkvRXaF6uM=; b=fq+lsGBs1466CQSA8ieXMG67tE
-        1dbuPBb6McuRA80xgoq1KSrP6hlVQoLEFvVJ6htxEISr/yqP2VZG6bxXLsBWGJ/yirVQcocFXkUwb
-        8jPb32aclLvc0vuCLojNqdRsHGqlEVWkLUdTbhRolwjO/iqo1qeJwTnFAQl3GNhEkwVnFRi34sVQS
-        yHA+R+j7x9z8ZOeN/42v/Y13tqKWupg10jDRQgCgVIXt7/EaYDGKg75euQxy7XyewIo3kXrqNOjwb
-        gWmcyHIS2trYvAlKph2wOQqO8NPH9SlNDKHXD7Xi7hZobzXA+qn2OaHP3JhaK1MkBLGtQX0aN8iI4
-        K0jha29Q==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxuZ6-008k66-Nd; Mon, 28 Jun 2021 16:56:56 +0000
-Subject: Re: [PATCH] spi: <linux/spi/spi.h>: add missing struct kernel-doc
- entry
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     linux-kernel@vger.kernel.org,
-        "William A . Kennington III" <wak@google.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-References: <20210628004023.7371-1-rdunlap@infradead.org>
- <20210628070542.GA5771@wunner.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <32f6bf08-a80f-7d47-18b2-42f6516c2772@infradead.org>
-Date:   Mon, 28 Jun 2021 09:56:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210628070542.GA5771@wunner.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232079AbhF1RDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:03:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:35746 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231892AbhF1RDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:03:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A319106F;
+        Mon, 28 Jun 2021 10:01:11 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BBA03F718;
+        Mon, 28 Jun 2021 10:01:08 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Subject: [PATCH] firmware: arm_scmi: Avoid padding in sensor message structure
+Date:   Mon, 28 Jun 2021 18:00:42 +0100
+Message-Id: <20210628170042.34105-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:05 AM, Lukas Wunner wrote:
-> On Sun, Jun 27, 2021 at 05:40:23PM -0700, Randy Dunlap wrote:
->> --- linux-next-20210625.orig/include/linux/spi/spi.h
->> +++ linux-next-20210625/include/linux/spi/spi.h
->> @@ -339,6 +339,7 @@ extern struct spi_device *spi_new_ancill
->>   * @max_speed_hz: Highest supported transfer speed
->>   * @flags: other constraints relevant to this driver
->>   * @slave: indicates that this is an SPI slave controller
->> + * @devm_allocated: flag indicating this is a non-devres managed controller
-> 
-> Actually the flag indicates that the *allocation* of the controller *is*
-> devres-managed, so instead of the above I'd suggest something along the
-> lines of:
-> 
->  * @devm_allocated: whether allocation of this struct is devres-managed
-> 
-> Thanks,
+Structure scmi_resp_sensor_reading_complete is meant to represent an SCMI
+asynchronous reading complete message: representing the readings field with
+a 64bit type forces padding and breaks reads in scmi_sensor_reading_get.
 
-Hi Lukas,
+Split it in two adjacent 32bit readings_low/high subfields to avoid padding
+or the need to make it packed.
 
-OK, I'll change it like that.
-I had just copied a comment from below in that same file.
-I think that I should fix that comment as well.
+Fixes: e2083d3673916 ("firmware: arm_scmi: Add SCMI v3.0 sensors timestamped reads")
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/sensors.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks.
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index 2c88aa221559..308471586381 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -166,7 +166,8 @@ struct scmi_msg_sensor_reading_get {
+ 
+ struct scmi_resp_sensor_reading_complete {
+ 	__le32 id;
+-	__le64 readings;
++	__le32 readings_low;
++	__le32 readings_high;
+ };
+ 
+ struct scmi_sensor_reading_resp {
+@@ -717,7 +718,8 @@ static int scmi_sensor_reading_get(const struct scmi_protocol_handle *ph,
+ 
+ 			resp = t->rx.buf;
+ 			if (le32_to_cpu(resp->id) == sensor_id)
+-				*value = get_unaligned_le64(&resp->readings);
++				*value =
++					get_unaligned_le64(&resp->readings_low);
+ 			else
+ 				ret = -EPROTO;
+ 		}
+-- 
+2.17.1
+
