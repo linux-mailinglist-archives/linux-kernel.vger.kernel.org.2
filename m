@@ -2,103 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F893B5D69
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD913B5D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhF1L4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:56:17 -0400
-Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:49323 "EHLO
-        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232524AbhF1L4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:56:14 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id EC6F516C018
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:53:47 +0100 (IST)
-Received: (qmail 18831 invoked from network); 28 Jun 2021 11:53:47 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 Jun 2021 11:53:47 -0000
-Date:   Mon, 28 Jun 2021 12:53:23 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] mm/page_alloc: do bulk array bounds check after checking
- populated elements
-Message-ID: <20210628115322.GA3840@techsingularity.net>
-References: <20210618125102.GU30378@techsingularity.net>
- <20210628042759.GA19686@codemonkey.org.uk>
+        id S232609AbhF1L5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:57:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:57454 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232502AbhF1L5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:57:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF120D6E;
+        Mon, 28 Jun 2021 04:54:54 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ED383F694;
+        Mon, 28 Jun 2021 04:54:54 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 12:54:52 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-pm@vger.kernel.org,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210628115452.GA28797@arm.com>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628042759.GA19686@codemonkey.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1624266901.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 12:27:59AM -0400, Dave Jones wrote:
-> On Fri, Jun 18, 2021 at 01:51:02PM +0100, Mel Gorman wrote:
->  > Dan Carpenter reported the following
->  > 
->  >   The patch 0f87d9d30f21: "mm/page_alloc: add an array-based interface
->  >   to the bulk page allocator" from Apr 29, 2021, leads to the following
->  >   static checker warning:
->  > 
->  >         mm/page_alloc.c:5338 __alloc_pages_bulk()
->  >         warn: potentially one past the end of array 'page_array[nr_populated]'
->  > 
->  > The problem can occur if an array is passed in that is fully populated. That
->  > potentially ends up allocating a single page and storing it past the end of
->  > the array. This patch returns 0 if the array is fully populated.
->  > 
->  > Fixes: 0f87d9d30f21 ("mm/page_alloc: add an array-based interface to the bulk page allocator")
->  > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->  > Signed-off-by: Mel Gorman <mgorman@techsinguliarity.net>
->  > ---
->  >  mm/page_alloc.c | 4 ++++
->  >  1 file changed, 4 insertions(+)
->  > 
->  > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->  > index 7124bb00219d..ef2265f86b91 100644
->  > --- a/mm/page_alloc.c
->  > +++ b/mm/page_alloc.c
->  > @@ -5056,6 +5056,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  >  	while (page_array && nr_populated < nr_pages && page_array[nr_populated])
->  >  		nr_populated++;
->  >  
->  > +	/* Already populated array? */
->  > +	if (unlikely(page_array && nr_pages - nr_populated == 0))
->  > +		return 0;
->  > +
->  >  	/* Use the single page allocator for one page. */
->  >  	if (nr_pages - nr_populated == 1)
->  >  		goto failed;
+Hi guys,
+
+On Monday 21 Jun 2021 at 14:49:33 (+0530), Viresh Kumar wrote:
+> Hello,
 > 
+> Changes since V2:
 > 
-> This made it into 5.13 final, and completely breaks NFSD for me (Serving tcp v3 mounts).
-> Existing mounts on clients hang, as do new mounts from new clients.
-> Rebooting the server back to rc7 everything recovers.  Bisect lands on
-> this commit.
+> - We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
+>   work using policy ->init() and exit() alone.
+> 
+> - Two new cleanup patches 1/4 and 2/4.
+> 
+> - Improved commit log of 3/4.
+> 
+> - Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
+>   overlap (seen with Vincent's setup).
 > 
 
-Thanks Dave, can you try this?
+If you happen to have the data around, I would like to know more about
+your observations on ThunderX2.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ef2265f86b91..04220581579c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5058,7 +5058,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 
- 	/* Already populated array? */
- 	if (unlikely(page_array && nr_pages - nr_populated == 0))
--		return 0;
-+		return nr_populated;
- 
- 	/* Use the single page allocator for one page. */
- 	if (nr_pages - nr_populated == 1)
+
+I tried ThunderX2 as well, with the following observations:
+
+Booting with userspace governor and all CPUs online, the CPPC frequency
+scale factor was all over the place (even much larger than 1024).
+
+My initial assumptions:
+ - Counters do not behave properly in light of SMT
+ - Firmware does not do a good job to keep the reference and core
+   counters monotonic: save and restore at core off.
+
+So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
+a single core (part of policy0). With this all works very well:
+
+root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
+root@target:/sys/devices/system/cpu/cpufreq/policy0#
+[ 1863.095370] CPU96: cppc scale: 697.
+[ 1863.175370] CPU0: cppc scale: 492.
+[ 1863.215367] CPU64: cppc scale: 492.
+[ 1863.235366] CPU96: cppc scale: 492.
+[ 1863.485368] CPU32: cppc scale: 492.
+
+root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
+root@target:/sys/devices/system/cpu/cpufreq/policy0#
+[ 1891.395363] CPU96: cppc scale: 558.
+[ 1891.415362] CPU0: cppc scale: 595.
+[ 1891.435362] CPU32: cppc scale: 615.
+[ 1891.465363] CPU96: cppc scale: 635.
+[ 1891.495361] CPU0: cppc scale: 673.
+[ 1891.515360] CPU32: cppc scale: 703.
+[ 1891.545360] CPU96: cppc scale: 738.
+[ 1891.575360] CPU0: cppc scale: 779.
+[ 1891.605360] CPU96: cppc scale: 829.
+[ 1891.635360] CPU0: cppc scale: 879.
+
+root@target:/sys/devices/system/cpu/cpufreq/policy0#
+root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
+root@target:/sys/devices/system/cpu/cpufreq/policy0#
+[ 1896.585363] CPU32: cppc scale: 1004.
+[ 1896.675359] CPU64: cppc scale: 973.
+[ 1896.715359] CPU0: cppc scale: 1024.
+
+I'm doing a rate limited printk only for increase/decrease values over
+64 in the scale factor value.
+
+This showed me that SMT is handled properly.
+
+Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
+stops being even close to correct, for example:
+
+[238394.770328] CPU96: cppc scale: 22328.
+[238395.628846] CPU96: cppc scale: 245.
+[238516.087115] CPU96: cppc scale: 930.
+[238523.385009] CPU96: cppc scale: 245.
+[238538.767473] CPU96: cppc scale: 936.
+[238538.867546] CPU96: cppc scale: 245.
+[238599.367932] CPU97: cppc scale: 2728.
+[238599.859865] CPU97: cppc scale: 452.
+[238647.786284] CPU96: cppc scale: 1438.
+[238669.604684] CPU96: cppc scale: 27306.
+[238676.805049] CPU96: cppc scale: 245.
+[238737.642902] CPU97: cppc scale: 2035.
+[238737.664995] CPU97: cppc scale: 452.
+[238788.066193] CPU96: cppc scale: 2749.
+[238788.110192] CPU96: cppc scale: 245.
+[238817.231659] CPU96: cppc scale: 2698.
+[238818.083687] CPU96: cppc scale: 245.
+[238845.466850] CPU97: cppc scale: 2990.
+[238847.477805] CPU97: cppc scale: 452.
+[238936.984107] CPU97: cppc scale: 1590.
+[238937.029079] CPU97: cppc scale: 452.
+[238979.052464] CPU97: cppc scale: 911.
+[238980.900668] CPU97: cppc scale: 452.
+[239149.587889] CPU96: cppc scale: 803.
+[239151.085516] CPU96: cppc scale: 245.
+[239303.871373] CPU64: cppc scale: 956.
+[239303.906837] CPU64: cppc scale: 245.
+[239308.666786] CPU96: cppc scale: 821.
+[239319.440634] CPU96: cppc scale: 245.
+[239389.978395] CPU97: cppc scale: 4229.
+[239391.969562] CPU97: cppc scale: 452.
+[239415.894738] CPU96: cppc scale: 630.
+[239417.875326] CPU96: cppc scale: 245.
+
+The counter values shown by feedback_ctrs do not seem monotonic even
+when only core 0 threads are online.
+
+ref:2812420736 del:166051103
+ref:3683620736 del:641578595
+ref:1049653440 del:1548202980
+ref:2099053440 del:2120997459
+ref:3185853440 del:2714205997
+ref:712486144  del:3708490753
+ref:3658438336 del:3401357212
+ref:1570998080 del:2279728438
+
+For now I was just wondering if you have seen the same and whether you
+have an opinion on this.
+
+> This is tested on my Hikey platform (without the actual read/write to
+> performance counters), with this script for over an hour:
+> 
+> while true; do
+>     for i in `seq 1 7`;
+>     do
+>         echo 0 > /sys/devices/system/cpu/cpu$i/online;
+>     done;
+> 
+>     for i in `seq 1 7`;
+>     do
+>         echo 1 > /sys/devices/system/cpu/cpu$i/online;
+>     done;
+> done
+> 
+> 
+> The same is done by Vincent on ThunderX2 and no issues were seen.
+
+Hotplug worked fine for me as well on both platforms I tested (Juno R2
+and ThunderX2).
+
+Thanks,
+Ionela.
