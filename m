@@ -2,195 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD913B5D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092863B5D76
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhF1L5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:57:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:57454 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232502AbhF1L5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:57:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF120D6E;
-        Mon, 28 Jun 2021 04:54:54 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ED383F694;
-        Mon, 28 Jun 2021 04:54:54 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 12:54:52 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon <will@kernel.org>, linux-pm@vger.kernel.org,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
- invariance
-Message-ID: <20210628115452.GA28797@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
+        id S232720AbhF1MBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:01:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21543 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232514AbhF1MA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 08:00:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624881509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAyy3fb9a/A0Wy4JT6Gz9HEgpmGDE5qbwHVNuC276O4=;
+        b=P6PG5Ul2zK3uLRsK30LLEBSIM9JMFpJju7hzN6Stsliemn37swjYCEd8VvJ211Ots9Y2pI
+        i7vtp9CpO1mO7js88717AwDDIcXSTSSFcYlTsT22uhHNADLt7Yh4aDWHHg8Hs4APYXTQC3
+        v2oqQpnjsKRQ5X8Vru9nb37E43Ys52M=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-jyNMYitQOj630DjJ6FS1ug-1; Mon, 28 Jun 2021 07:58:27 -0400
+X-MC-Unique: jyNMYitQOj630DjJ6FS1ug-1
+Received: by mail-wr1-f70.google.com with SMTP id w10-20020a5d608a0000b0290124b2be1b59so2892690wrt.20
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 04:58:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mAyy3fb9a/A0Wy4JT6Gz9HEgpmGDE5qbwHVNuC276O4=;
+        b=ANCZalPrHjAF1lRiWkWwnR1QXPGDfc3AD8hU0+JpFYH5JSMQK6YFlYBuw6HG06pvoR
+         +24UFAUkx6oWEsZMFqXf6l4gAIOrzCw/u1CHwxZa21G3WvPBlXogkxPzbIxbeVtR7d2w
+         m1qLnCiR8LrurYZpm6qXHjnXVwU1i7RqvtmfhiAKTSfRH97k/2j/pIpDMxxwmNvKL8ts
+         ha0aJxEE4uT8MSK/0+D6d3h2J3GYHSekIfnPzm+AAw+h/UoRxADTHFfbRZnCPQtHkPH8
+         n6bPUaFSBwGQfItmPTA8WV07l5NLnE2RtEmHYiHsd79K7P2v1rih6rB1XzApDyqdQXLE
+         0Zyg==
+X-Gm-Message-State: AOAM530akgyToClkjsri5Z+QjeoGN6yGHUU9nqVYKTGABr2ObemzPz8k
+        H47GdBJ5J7pTHD35Mk5BEzGj77+0PL/Zmh1MPFsizfaF3bPbzi5vgryNniy4d4pOYZlQvdJTkCL
+        snCXGVcVNxoG8MrvR8iF6llAj
+X-Received: by 2002:a5d:49c9:: with SMTP id t9mr2237842wrs.364.1624881506751;
+        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrkk/KgU87mrJhE843ZLCm7+57AC7KmP6Nb7lxQfMUgnmV3+0IYC6pgVkzCBCu+wPbRcgMpw==
+X-Received: by 2002:a5d:49c9:: with SMTP id t9mr2237815wrs.364.1624881506582;
+        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
+Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
+        by smtp.gmail.com with ESMTPSA id v17sm7065600wrt.74.2021.06.28.04.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 04:58:26 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 12:58:23 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     "Schaufler, Casey" <casey.schaufler@intel.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "dwalsh@redhat.com" <dwalsh@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <YNm5X/5PuqyXcZbM@work-vm>
+References: <20210625191229.1752531-1-vgoyal@redhat.com>
+ <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1624266901.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
-
-On Monday 21 Jun 2021 at 14:49:33 (+0530), Viresh Kumar wrote:
-> Hello,
+* Schaufler, Casey (casey.schaufler@intel.com) wrote:
+> > -----Original Message-----
+> > From: Vivek Goyal <vgoyal@redhat.com>
+> > Sent: Friday, June 25, 2021 12:12 PM
+> > To: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > viro@zeniv.linux.org.uk
+> > Cc: virtio-fs@redhat.com; dwalsh@redhat.com; dgilbert@redhat.com;
+> > berrange@redhat.com; vgoyal@redhat.com
 > 
-> Changes since V2:
+> Please include Linux Security Module list <linux-security-module@vger.kernel.org>
+> and selinux@vger.kernel.org on this topic.
 > 
-> - We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
->   work using policy ->init() and exit() alone.
+> > Subject: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special files if
+> > caller has CAP_SYS_RESOURCE
+> > 
+> > Hi,
+> > 
+> > In virtiofs, actual file server is virtiosd daemon running on host.
+> > There we have a mode where xattrs can be remapped to something else.
+> > For example security.selinux can be remapped to
+> > user.virtiofsd.securit.selinux on the host.
 > 
-> - Two new cleanup patches 1/4 and 2/4.
+> This would seem to provide mechanism whereby a user can violate
+> SELinux policy quite easily. 
 > 
-> - Improved commit log of 3/4.
+> > 
+> > This remapping is useful when SELinux is enabled in guest and virtiofs
+> > as being used as rootfs. Guest and host SELinux policy might not match
+> > and host policy might deny security.selinux xattr setting by guest
+> > onto host. Or host might have SELinux disabled and in that case to
+> > be able to set security.selinux xattr, virtiofsd will need to have
+> > CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
+> > guest security.selinux (or other xattrs) on host to something else
+> > is also better from security point of view.
 > 
-> - Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
->   overlap (seen with Vincent's setup).
+> Can you please provide some rationale for this assertion?
+> I have been working with security xattrs longer than anyone
+> and have trouble accepting the statement.
+
+There seem to be a few very different ways of using SELinux in
+containers/guests, and many ways of using shared filesystems.
+
+A common request is that we share a host filesystem into the guest (a
+VM), and then the guest can do with it whatever it likes, preferably
+without making the guest privileged in any way, and with having as few
+priviliges on the daemons running on behalf of the guest ('virtiofd'
+which is a fuse implementation daemon that runs on the host).
+
+By remapping all guests xattr to add a "user.virtiofsd." prefix,
+the guest can label it's filesystem and implement it's own SELinux
+policy, but because it's using "user." on the host, it can neither
+bypass nor change the hosts SELinux labelling or policies.
+
+(It also means that the guest can set capabilities and other xattr's,
+again without confusing the host).
+
+> > But when we try this, we noticed that SELinux relabeling in guest
+> > is failing on some symlinks. When I debugged a little more, I
+> > came to know that "user.*" xattrs are not allowed on symlinks
+> > or special files.
+> > 
+> > "man xattr" seems to suggest that primary reason to disallow is
+> > that arbitrary users can set unlimited amount of "user.*" xattrs
+> > on these files and bypass quota check.
+> > 
+> > If that's the primary reason, I am wondering is it possible to relax
+> > the restrictions if caller has CAP_SYS_RESOURCE. This capability
+> > allows caller to bypass quota checks. So it should not be
+> > a problem atleast from quota perpective.
+> > 
+> > That will allow me to give CAP_SYS_RESOURCE to virtiofs deamon
+> > and remap xattrs arbitrarily.
 > 
+> On a Smack system you should require CAP_MAC_ADMIN to remap
+> security. xattrs. I sounds like you're in serious danger of running afoul
+> of LSM attribute policy on a reasonable general level.
 
-If you happen to have the data around, I would like to know more about
-your observations on ThunderX2.
+Note that the remapping is done by the userspace daemon running on the
+host (and takes parameters saying what remapping is required); as
+such it's still bound by whatever LSM policies the host wants; we're
+just giving the guest the ability to add it's own policies without
+breaking the hosts.
 
+Of course if you want the guest kernel to see the host xattrs
+then you don't want the remapping; there are even some cases where you
+might want to allow the guest to set those xattrs; but then you really
+do have to start worrying about what the guest could do to your
+filesystem.
 
-I tried ThunderX2 as well, with the following observations:
+The only thing getting in the way of the guest being able to do a full
+relabel seems to be the limitation on user.* on non-files.
 
-Booting with userspace governor and all CPUs online, the CPPC frequency
-scale factor was all over the place (even much larger than 1024).
+Dave
 
-My initial assumptions:
- - Counters do not behave properly in light of SMT
- - Firmware does not do a good job to keep the reference and core
-   counters monotonic: save and restore at core off.
-
-So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
-a single core (part of policy0). With this all works very well:
-
-root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
-root@target:/sys/devices/system/cpu/cpufreq/policy0#
-[ 1863.095370] CPU96: cppc scale: 697.
-[ 1863.175370] CPU0: cppc scale: 492.
-[ 1863.215367] CPU64: cppc scale: 492.
-[ 1863.235366] CPU96: cppc scale: 492.
-[ 1863.485368] CPU32: cppc scale: 492.
-
-root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
-root@target:/sys/devices/system/cpu/cpufreq/policy0#
-[ 1891.395363] CPU96: cppc scale: 558.
-[ 1891.415362] CPU0: cppc scale: 595.
-[ 1891.435362] CPU32: cppc scale: 615.
-[ 1891.465363] CPU96: cppc scale: 635.
-[ 1891.495361] CPU0: cppc scale: 673.
-[ 1891.515360] CPU32: cppc scale: 703.
-[ 1891.545360] CPU96: cppc scale: 738.
-[ 1891.575360] CPU0: cppc scale: 779.
-[ 1891.605360] CPU96: cppc scale: 829.
-[ 1891.635360] CPU0: cppc scale: 879.
-
-root@target:/sys/devices/system/cpu/cpufreq/policy0#
-root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
-root@target:/sys/devices/system/cpu/cpufreq/policy0#
-[ 1896.585363] CPU32: cppc scale: 1004.
-[ 1896.675359] CPU64: cppc scale: 973.
-[ 1896.715359] CPU0: cppc scale: 1024.
-
-I'm doing a rate limited printk only for increase/decrease values over
-64 in the scale factor value.
-
-This showed me that SMT is handled properly.
-
-Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
-stops being even close to correct, for example:
-
-[238394.770328] CPU96: cppc scale: 22328.
-[238395.628846] CPU96: cppc scale: 245.
-[238516.087115] CPU96: cppc scale: 930.
-[238523.385009] CPU96: cppc scale: 245.
-[238538.767473] CPU96: cppc scale: 936.
-[238538.867546] CPU96: cppc scale: 245.
-[238599.367932] CPU97: cppc scale: 2728.
-[238599.859865] CPU97: cppc scale: 452.
-[238647.786284] CPU96: cppc scale: 1438.
-[238669.604684] CPU96: cppc scale: 27306.
-[238676.805049] CPU96: cppc scale: 245.
-[238737.642902] CPU97: cppc scale: 2035.
-[238737.664995] CPU97: cppc scale: 452.
-[238788.066193] CPU96: cppc scale: 2749.
-[238788.110192] CPU96: cppc scale: 245.
-[238817.231659] CPU96: cppc scale: 2698.
-[238818.083687] CPU96: cppc scale: 245.
-[238845.466850] CPU97: cppc scale: 2990.
-[238847.477805] CPU97: cppc scale: 452.
-[238936.984107] CPU97: cppc scale: 1590.
-[238937.029079] CPU97: cppc scale: 452.
-[238979.052464] CPU97: cppc scale: 911.
-[238980.900668] CPU97: cppc scale: 452.
-[239149.587889] CPU96: cppc scale: 803.
-[239151.085516] CPU96: cppc scale: 245.
-[239303.871373] CPU64: cppc scale: 956.
-[239303.906837] CPU64: cppc scale: 245.
-[239308.666786] CPU96: cppc scale: 821.
-[239319.440634] CPU96: cppc scale: 245.
-[239389.978395] CPU97: cppc scale: 4229.
-[239391.969562] CPU97: cppc scale: 452.
-[239415.894738] CPU96: cppc scale: 630.
-[239417.875326] CPU96: cppc scale: 245.
-
-The counter values shown by feedback_ctrs do not seem monotonic even
-when only core 0 threads are online.
-
-ref:2812420736 del:166051103
-ref:3683620736 del:641578595
-ref:1049653440 del:1548202980
-ref:2099053440 del:2120997459
-ref:3185853440 del:2714205997
-ref:712486144  del:3708490753
-ref:3658438336 del:3401357212
-ref:1570998080 del:2279728438
-
-For now I was just wondering if you have seen the same and whether you
-have an opinion on this.
-
-> This is tested on my Hikey platform (without the actual read/write to
-> performance counters), with this script for over an hour:
+> > 
+> > Thanks
+> > Vivek
+> > 
+> > Vivek Goyal (1):
+> >   xattr: Allow user.* xattr on symlink/special files with
+> >     CAP_SYS_RESOURCE
+> > 
+> >  fs/xattr.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > --
+> > 2.25.4
 > 
-> while true; do
->     for i in `seq 1 7`;
->     do
->         echo 0 > /sys/devices/system/cpu/cpu$i/online;
->     done;
-> 
->     for i in `seq 1 7`;
->     do
->         echo 1 > /sys/devices/system/cpu/cpu$i/online;
->     done;
-> done
-> 
-> 
-> The same is done by Vincent on ThunderX2 and no issues were seen.
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
-Hotplug worked fine for me as well on both platforms I tested (Juno R2
-and ThunderX2).
-
-Thanks,
-Ionela.
