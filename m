@@ -2,282 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76043B59BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358FF3B59B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhF1H3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:29:21 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:36664 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhF1H3U (ORCPT
+        id S232375AbhF1H3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhF1H3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:29:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624865215; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uKMCS0vOPHfu23vYTo9+6y45SziyiLid3872AqKVRc8=;
- b=G/9Xpexqzu1m3v1FoVCVN4W88lQKNTtXaC4LD1ArCXrDNbKVx1mWVvrJnXxSDRZSqJhb8S9x
- avhoyMRPtT7DZTAEyympUXZpGDuWucSe2AGCRea50MgiG+3ETpDaU+S42nIF2/mSR8s3eJOw
- nKhe9uMkcUgIo6rhTzzjZTplDh8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60d979ac06ea41c941cc2517 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Jun 2021 07:26:36
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2A806C433F1; Mon, 28 Jun 2021 07:26:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74A5BC433D3;
-        Mon, 28 Jun 2021 07:26:34 +0000 (UTC)
+        Mon, 28 Jun 2021 03:29:10 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38C2C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:26:44 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id b1so1909869pls.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CsEyi+ba8SRVvbqYHH4jH1LVCacUh7q5WrGtZYt+9O0=;
+        b=uS/PWnJw9EEYCs7oPju6zEF2huhjziG/Ai+HwVvEbygzN696DD0hR6oCRnY0utpird
+         l9wslKvhoYQmH3iJmab+T+Abuj0VG2uHXJ9E1cksWc5ROkYG7zacDj2Peh0eUfzvmiEN
+         eSN+PgeDf0S2LYqlfaPzDTZidl7eXk4EjAFOtxV9aVje/oMACppZDyKCtPC0LKToHhRR
+         sljfjg637WIkilO3gLVuBmugZcTJ708YnXxdyXL0L+FhYYL/8DPeCjzi+mgSup2ZvXSq
+         PTZpWbv2FeE6I+50oVZTLZg3O6aCsSsH3/rmgRjl0jxwKsJIbaZxsQdx4DYZLE0oVFmj
+         Vc4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CsEyi+ba8SRVvbqYHH4jH1LVCacUh7q5WrGtZYt+9O0=;
+        b=VrmhcuJNPbnlD7QA71t/kt7o34VmGnSB9hquUuwCgQJUR+Im0j3l9Gl6Omc63uP3rd
+         ZHKaRRsuD/9Y8E1O6NOfByfd8LqWct4M4FDwUTalcFMmv/O8/fgbpYJB7XhUJuxpZKA1
+         kOxFNsHR3ZHoGasWIZjCKEUF090gq6NdesyJJWzeodHRQEgse7XVDUwfUvnEVNXuq23C
+         R8sDF97bageMeAUSl3H+AxG4DbBaTssa/9PFl+871SOMQtxdCBVr+FA2FwKH7QMj9T55
+         keG5QyhSy8Q1ZglEGUsBG+aI/SluH5IjGAcDduyBnOQrtB2lZDYFoFYLZVrkmoCho4+L
+         oK6Q==
+X-Gm-Message-State: AOAM530jgQ+qlnjZ/1BAO0tbyA4zVv1bKoQ2sw+DfimTsd0AYnUvyNI/
+        uGORHelg9ld5Zhe/dlh9a1BDug==
+X-Google-Smtp-Source: ABdhPJzvj3RyJoV/06Ww25nVFOFF8bC770v05nPHwgY/XXaIshX/WE20M/moTS6WjQFUX7/ZSyTbWg==
+X-Received: by 2002:a17:90a:4d4e:: with SMTP id l14mr26329436pjh.129.1624865204126;
+        Mon, 28 Jun 2021 00:26:44 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id h24sm13522053pfn.180.2021.06.28.00.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 00:26:43 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 12:56:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>, Sudeep.Holla@arm.com
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v12 1/2] cpufreq: mediatek-hw: Add support for CPUFREQ HW
+Message-ID: <20210628072641.amqk5d3svwolvhic@vireshk-i7>
+References: <1622307153-3639-1-git-send-email-hector.yuan@mediatek.com>
+ <1622307153-3639-2-git-send-email-hector.yuan@mediatek.com>
+ <20210614104058.jdwb7godqzhf7rgd@vireshk-i7>
+ <1624781848.1958.16.camel@mtkswgap22>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 28 Jun 2021 15:26:34 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
- suspend/resume
-In-Reply-To: <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
-References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
- <1624433711-9339-8-git-send-email-cang@codeaurora.org>
- <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
- <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
- <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
- <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
- <a654d2ef-b333-1c56-42c6-3d69e9f44bd0@intel.com>
- <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
- <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
-Message-ID: <7c6e2baa3578eb30f2d4bd1696e800eb@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624781848.1958.16.camel@mtkswgap22>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-24 18:04, Adrian Hunter wrote:
-> On 24/06/21 9:31 am, Can Guo wrote:
->> On 2021-06-24 14:23, Adrian Hunter wrote:
->>> On 24/06/21 9:12 am, Can Guo wrote:
->>>> On 2021-06-24 13:52, Adrian Hunter wrote:
->>>>> On 24/06/21 5:16 am, Can Guo wrote:
->>>>>> On 2021-06-23 22:30, Adrian Hunter wrote:
->>>>>>> On 23/06/21 10:35 am, Can Guo wrote:
->>>>>>>> To protect system suspend/resume from being disturbed by error 
->>>>>>>> handling,
->>>>>>>> instead of using host_sem, let error handler call 
->>>>>>>> lock_system_sleep() and
->>>>>>>> unlock_system_sleep() which achieve the same purpose. Remove the 
->>>>>>>> host_sem
->>>>>>>> used in suspend/resume paths to make the code more readable.
->>>>>>>> 
->>>>>>>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
->>>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>>>>>> ---
->>>>>>>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
->>>>>>>>  1 file changed, 7 insertions(+), 5 deletions(-)
->>>>>>>> 
->>>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.c 
->>>>>>>> b/drivers/scsi/ufs/ufshcd.c
->>>>>>>> index 3695dd2..a09e4a2 100644
->>>>>>>> --- a/drivers/scsi/ufs/ufshcd.c
->>>>>>>> +++ b/drivers/scsi/ufs/ufshcd.c
->>>>>>>> @@ -5907,6 +5907,11 @@ static void 
->>>>>>>> ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
->>>>>>>> 
->>>>>>>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->>>>>>>>  {
->>>>>>>> +    /*
->>>>>>>> +     * It is not safe to perform error handling while suspend 
->>>>>>>> or resume is
->>>>>>>> +     * in progress. Hence the lock_system_sleep() call.
->>>>>>>> +     */
->>>>>>>> +    lock_system_sleep();
->>>>>>> 
->>>>>>> It looks to me like the system takes this lock quite early, even 
->>>>>>> before
->>>>>>> freezing tasks, so if anything needs the error handler to run it 
->>>>>>> will
->>>>>>> deadlock.
->>>>>> 
->>>>>> Hi Adrian,
->>>>>> 
->>>>>> UFS/hba system suspend/resume does not invoke or call error 
->>>>>> handling in a
->>>>>> synchronous way. So, whatever UFS errors (which schedules the 
->>>>>> error handler)
->>>>>> happens during suspend/resume, error handler will just wait here 
->>>>>> till system
->>>>>> suspend/resume release the lock. Hence no worries of deadlock 
->>>>>> here.
->>>>> 
->>>>> It looks to me like the state can change to 
->>>>> UFSHCD_STATE_EH_SCHEDULED_FATAL
->>>>> and since user processes are not frozen, nor file systems sync'ed, 
->>>>> everything
->>>>> is going to deadlock.
->>>>> i.e.
->>>>> I/O is blocked waiting on error handling
->>>>> error handling is blocked waiting on lock_system_sleep()
->>>>> suspend is blocked waiting on I/O
->>>>> 
->>>> 
->>>> Hi Adrian,
->>>> 
->>>> First of all, enter_state(suspend_state_t state) uses 
->>>> mutex_trylock(&system_transition_mutex).
->>> 
->>> Yes, in the case I am outlining it gets the mutex.
->>> 
->>>> Second, even that happens, in ufshcd_queuecommand(), below logic 
->>>> will break the cycle, by
->>>> fast failing the PM request (below codes are from the code tip with 
->>>> this whole series applied).
->>> 
->>> It won't get that far because the suspend will be waiting to sync 
->>> filesystems.
->>> Filesystems will be waiting on I/O.
->>> I/O will be waiting on the error handler.
->>> The error handler will be waiting on system_transition_mutex.
->>> But system_transition_mutex is already held by PM core.
->> 
->> Hi Adrian,
->> 
->> You are right.... I missed the action of syncing filesystems...
->> 
->> Using back host_sem in suspend_prepare()/resume_complete() won't have 
->> this
->> problem of deadlock, right?
+On 27-06-21, 16:17, Hector Yuan wrote:
+> On Mon, 2021-06-14 at 16:10 +0530, Viresh Kumar wrote:
+> > On 30-05-21, 00:52, Hector Yuan wrote:
+> > > +static int mtk_get_related_cpus(int index, struct cpufreq_mtk *c)
+> > > +{
+> > > +	struct device_node *cpu_np;
+> > > +	struct of_phandle_args args;
+> > > +	int cpu, ret;
+> > > +
+> > > +	for_each_possible_cpu(cpu) {
+> > > +		cpu_np = of_cpu_device_node_get(cpu);
+> > > +		if (!cpu_np)
+> > > +			continue;
+> > > +
+> > > +		ret = of_parse_phandle_with_args(cpu_np, "performance-domains",
+> > > +						 "#performance-domain-cells", 0,
+> > > +						 &args);
+> > > +		of_node_put(cpu_np);
+> > > +		if (ret < 0)
+> > > +			continue;
+> > > +
+> > > +		if (index == args.args[0]) {
+> > > +			cpumask_set_cpu(cpu, &c->related_cpus);
+> > > +			mtk_freq_domain_map[cpu] = c;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > I really hope this can be moved to a common place as more than one
+> > drier should be required to parse this thing.
+> > 
 > 
-> I am not sure, but what was problem that the V3 patch was fixing?
-> Can you give an example?
+> Yes, this can be a common part for all performance domain users. But may
+> I know whats your suggestion? Put this API in another file or? Thanks
 
-V3 was moving host_sem from wl_system_suspend/resume() to
-ufshcd_suspend_prepare()/ufshcd_resume_complete(). It is to
-make sure error handling does not run concurrenly with system
-PM, since error handling is recovering/clearing runtime PM
-errors of all the scsi devices under hba (in patch #8). Having the
-error handling doing so (in patch 8) is because runtime PM framework
-may save the runtime errors of the supplier to one or more consumers (
-unlike the children - parent relationship), for example if wlu resume
-fails, sda and/or other scsi devices may save the resume error, then
-they will be left runtime suspended permanently.
+Rob, Sudeep: You guys have a suggestion on where can we keep a routine for this
+?
 
-Thanks,
-
-Can Guo.
-
-> 
->> 
->> Thanks,
->> 
->> Can Guo.
->> 
->>> 
->>>> 
->>>>         case UFSHCD_STATE_EH_SCHEDULED_FATAL:
->>>>                 /*
->>>>                  * ufshcd_rpm_get_sync() is used at error handling 
->>>> preparation
->>>>                  * stage. If a scsi cmd, e.g., the SSU cmd, is sent 
->>>> from the
->>>>                  * PM ops, it can never be finished if we let SCSI 
->>>> layer keep
->>>>                  * retrying it, which gets err handler stuck 
->>>> forever. Neither
->>>>                  * can we let the scsi cmd pass through, because UFS 
->>>> is in bad
->>>>                  * state, the scsi cmd may eventually time out, 
->>>> which will get
->>>>                  * err handler blocked for too long. So, just fail 
->>>> the scsi cmd
->>>>                  * sent from PM ops, err handler can recover PM 
->>>> error anyways.
->>>>                  */
->>>>                 if (cmd->request->rq_flags & RQF_PM) {
->>>>                         hba->force_reset = true;
->>>>                         set_host_byte(cmd, DID_BAD_TARGET);
->>>>                         cmd->scsi_done(cmd);
->>>>                         goto out;
->>>>                 }
->>>>                 fallthrough;
->>>>         case UFSHCD_STATE_RESET:
->>>> 
->>>> Thanks,
->>>> 
->>>> Can Guo.
->>>> 
->>>>>> 
->>>>>> Thanks,
->>>>>> 
->>>>>> Can Guo.
->>>>>> 
->>>>>>> 
->>>>>>>>      ufshcd_rpm_get_sync(hba);
->>>>>>>>      if 
->>>>>>>> (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) 
->>>>>>>> ||
->>>>>>>>          hba->is_wlu_sys_suspended) {
->>>>>>>> @@ -5951,6 +5956,7 @@ static void 
->>>>>>>> ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>>>>>>          ufshcd_clk_scaling_suspend(hba, false);
->>>>>>>>      ufshcd_clear_ua_wluns(hba);
->>>>>>>>      ufshcd_rpm_put(hba);
->>>>>>>> +    unlock_system_sleep();
->>>>>>>>  }
->>>>>>>> 
->>>>>>>>  static inline bool ufshcd_err_handling_should_stop(struct 
->>>>>>>> ufs_hba *hba)
->>>>>>>> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct 
->>>>>>>> device *dev)
->>>>>>>>      ktime_t start = ktime_get();
->>>>>>>> 
->>>>>>>>      hba = shost_priv(sdev->host);
->>>>>>>> -    down(&hba->host_sem);
->>>>>>>> 
->>>>>>>>      if (pm_runtime_suspended(dev))
->>>>>>>>          goto out;
->>>>>>>> 
->>>>>>>>      ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
->>>>>>>> -    if (ret) {
->>>>>>>> +    if (ret)
->>>>>>>>          dev_err(&sdev->sdev_gendev, "%s failed: %d\n", 
->>>>>>>> __func__,  ret);
->>>>>>>> -        up(&hba->host_sem);
->>>>>>>> -    }
->>>>>>>> 
->>>>>>>>  out:
->>>>>>>>      if (!ret)
->>>>>>>> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device 
->>>>>>>> *dev)
->>>>>>>>          hba->curr_dev_pwr_mode, hba->uic_link_state);
->>>>>>>>      if (!ret)
->>>>>>>>          hba->is_wlu_sys_suspended = false;
->>>>>>>> -    up(&hba->host_sem);
->>>>>>>>      return ret;
->>>>>>>>  }
->>>>>>>>  #endif
->>>>>>>> 
+-- 
+viresh
