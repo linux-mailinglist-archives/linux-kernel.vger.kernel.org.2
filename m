@@ -2,127 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F92D3B5FC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1C33B605E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhF1OTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhF1OTt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:19:49 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB64C061574;
-        Mon, 28 Jun 2021 07:17:22 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id r7so13619061qta.12;
-        Mon, 28 Jun 2021 07:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vAguyIyi4MmUNdlCWw+ELLDz19W9ZtG5NXhufd99HQU=;
-        b=ou9qWijqI8+uRu9wJxljIWLESJnGibgJlZ1RbImShcDy9ys4gRS9l4WX13763vB6o1
-         JYtM7iFmX6tYN1xnyCqvBwoh3DV1nEe9s8ExkS7XaCO+6bnVGIJk2/0zmzghc7V7BIPy
-         52vif2t67eC4ft8m9AqigMctzHoCFjQmhqbj3vQSF4zC2GHEu5KT6up2sHp5z6YDQN0y
-         eHhJWR0+P8S9SC9MqmnfSvuCOto5l6Y0RRxPdsx8B4xvemH3LvFiAzHk3i4G0pmhIAja
-         jG3ZKv0SZKOXE5TxMKShSOdKq9czRuZ9nniTCuv85w8uglqMShEaWC/85HkJdvP/TFmx
-         xw/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vAguyIyi4MmUNdlCWw+ELLDz19W9ZtG5NXhufd99HQU=;
-        b=jKG4n0BfSnqviM5np3y1O4ivRElqJEUjywUG+pXw95P0n3e+4fauxwN5bbyCflkI57
-         rvx6ic4ejqZgBGeQksqaG7mREm67ufaznJbHetVAQvDOFEMnbM5kctWzUnkzQZmRs45y
-         gjNsTHVJ/z+t+ioa03t0uaMOXRmXSeHX3dCzeYrJRcNedOJ1bXVd3h99KcEP6Q82nJzM
-         X82lLhbEh1EDvI5+MpJs3P7pHEuwq2TlVHPRqZ+JzvWIUdGiL2MjjhEnNep5RaJVfZQ1
-         +Rj8N7y1B2rrp7B0Q+0AJFgIvJ+i+Cx6MCu3pU0CTuoRvwEBX9V5pYqdUwmci/+Niknu
-         sQNw==
-X-Gm-Message-State: AOAM533//+PB0xqEKLHpMnC8OtCT6uFihNJp0Uorrg6mGQhyX4JLus12
-        2nMwvkociE7P42+eeRoInXEyWW8Dprk=
-X-Google-Smtp-Source: ABdhPJyNwBsHos6I7IJOPlG9XtcqNTMTXUx/rehkBcgB+xJcMBgfooSu+WsH+JQVJryhhPEEKH8pGQ==
-X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr19216337qtd.73.1624889841494;
-        Mon, 28 Jun 2021 07:17:21 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:85ab])
-        by smtp.gmail.com with ESMTPSA id y7sm10651104qkp.103.2021.06.28.07.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 07:17:20 -0700 (PDT)
+        id S233731AbhF1OYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233125AbhF1OV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:21:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B635661C79;
+        Mon, 28 Jun 2021 14:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624889944;
+        bh=TFsLptV+Gk/46Iv+9WR3cQkcgg/VYlaSV+xb4rG/ulE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f8g4SrVYPjtcozDAlbHDpRNpz2Dwpnk4PYbpHq7NLl8vdKzXeWJiz0J56dU8b+zfS
+         P8bLrPSNqCTQfSFeD8lZMq5f5sEGoYILov8eKyFInFXQfvNmb25iZejhEFQYDupuNv
+         DsZBMz5a7jOLSOiJmDTwSr7W2nHrDlzYQQ0ymLjLwMAP7lWtPaSHEsKPpnynbkm0iK
+         mTpu6b0yUyRVxPzBvhNj5z9AoTX1e8ofGx9Z4ksBhO72rEyhVmMEX2kHrQQIXIsDjm
+         Ja+hwCV6CIulFCtkrwiesDli3swEM8AETAyJzWlKT1U+fNxMtIzCNxX9EB8YplPO91
+         hAJZdta/Oqq+A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 040/110] inet: annotate date races around sk->sk_txhash
 Date:   Mon, 28 Jun 2021 10:17:18 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
+Message-Id: <20210628141828.31757-41-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210628141828.31757-1-sashal@kernel.org>
+References: <20210628141828.31757-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.14-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.12.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.12.14-rc1
+X-KernelTest-Deadline: 2021-06-30T14:18+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YNXvr81YFzbaTxCb@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+From: Eric Dumazet <edumazet@google.com>
 
-On Fri, Jun 25, 2021 at 05:01:03PM +0200, Michal Koutný wrote:
-> Hi.
-> 
-> On Thu, Jun 10, 2021 at 10:39:44AM -0700, Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> > The current code only associates with the existing blkcg when aio is
-> > used to access the backing file. This patch covers all types of i/o to
-> > the backing file and also associates the memcg so if the backing file is
-> > on tmpfs, memory is charged appropriately.
-> > 
-> > This patch also exports cgroup_get_e_css and int_active_memcg so it
-> > can be used by the loop module.
-> 
-> Wouldn't it be clearer to export (not explicitly inlined anymore)
-> set_active_memcg() instead of the int_active_memcg that's rather an
-> implementation detail?
+[ Upstream commit b71eaed8c04f72a919a9c44e83e4ee254e69e7f3 ]
 
-Agreed that exporting int_active_memcg is an implementation detail,
-but would this prevent set_active_memcg from being inlined? Is that
-desireable?
+UDP sendmsg() path can be lockless, it is possible for another
+thread to re-connect an change sk->sk_txhash under us.
 
-> 
-> > @@ -2111,13 +2112,18 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
-> >  	}
-> >  
-> >  	/* always use the first bio's css */
-> > +	cmd->blkcg_css = NULL;
-> > +	cmd->memcg_css = NULL;
-> >  #ifdef CONFIG_BLK_CGROUP
-> > -	if (cmd->use_aio && rq->bio && rq->bio->bi_blkg) {
-> > -		cmd->css = &bio_blkcg(rq->bio)->css;
-> > -		css_get(cmd->css);
-> > -	} else
-> > +	if (rq->bio && rq->bio->bi_blkg) {
-> > +		cmd->blkcg_css = &bio_blkcg(rq->bio)->css;
-> > +#ifdef CONFIG_MEMCG
-> > +		cmd->memcg_css =
-> > +			cgroup_get_e_css(cmd->blkcg_css->cgroup,
-> > +					&memory_cgrp_subsys);
-> > +#endif
-> > +	}
-> >  #endif
-> > -		cmd->css = NULL;
-> >  	loop_queue_work(lo, cmd);
-> 
-> I see you dropped the cmd->blkcg_css reference (while rq is handled). Is
-> it intentional?
+There is no serious impact, but we can use READ_ONCE()/WRITE_ONCE()
+pair to document the race.
 
-Yes it is intentional. All requests (not just aio) go through the loop
-worker which grabs the blkcg reference in loop_queue_work() on
-construction. So I believe grabbing a reference per request is
-unnecessary.
+BUG: KCSAN: data-race in __ip4_datagram_connect / skb_set_owner_w
+
+write to 0xffff88813397920c of 4 bytes by task 30997 on cpu 1:
+ sk_set_txhash include/net/sock.h:1937 [inline]
+ __ip4_datagram_connect+0x69e/0x710 net/ipv4/datagram.c:75
+ __ip6_datagram_connect+0x551/0x840 net/ipv6/datagram.c:189
+ ip6_datagram_connect+0x2a/0x40 net/ipv6/datagram.c:272
+ inet_dgram_connect+0xfd/0x180 net/ipv4/af_inet.c:580
+ __sys_connect_file net/socket.c:1837 [inline]
+ __sys_connect+0x245/0x280 net/socket.c:1854
+ __do_sys_connect net/socket.c:1864 [inline]
+ __se_sys_connect net/socket.c:1861 [inline]
+ __x64_sys_connect+0x3d/0x50 net/socket.c:1861
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+read to 0xffff88813397920c of 4 bytes by task 31039 on cpu 0:
+ skb_set_hash_from_sk include/net/sock.h:2211 [inline]
+ skb_set_owner_w+0x118/0x220 net/core/sock.c:2101
+ sock_alloc_send_pskb+0x452/0x4e0 net/core/sock.c:2359
+ sock_alloc_send_skb+0x2d/0x40 net/core/sock.c:2373
+ __ip6_append_data+0x1743/0x21a0 net/ipv6/ip6_output.c:1621
+ ip6_make_skb+0x258/0x420 net/ipv6/ip6_output.c:1983
+ udpv6_sendmsg+0x160a/0x16b0 net/ipv6/udp.c:1527
+ inet6_sendmsg+0x5f/0x80 net/ipv6/af_inet6.c:642
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0x360/0x4d0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmmsg+0x315/0x4b0 net/socket.c:2490
+ __do_sys_sendmmsg net/socket.c:2519 [inline]
+ __se_sys_sendmmsg net/socket.c:2516 [inline]
+ __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2516
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0xbca3c43d -> 0xfdb309e0
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 31039 Comm: syz-executor.2 Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/net/sock.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index b98c80a7c7ae..b9bdeca1d784 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1928,7 +1928,8 @@ static inline u32 net_tx_rndhash(void)
+ 
+ static inline void sk_set_txhash(struct sock *sk)
+ {
+-	sk->sk_txhash = net_tx_rndhash();
++	/* This pairs with READ_ONCE() in skb_set_hash_from_sk() */
++	WRITE_ONCE(sk->sk_txhash, net_tx_rndhash());
+ }
+ 
+ static inline bool sk_rethink_txhash(struct sock *sk)
+@@ -2200,9 +2201,12 @@ static inline void sock_poll_wait(struct file *filp, struct socket *sock,
+ 
+ static inline void skb_set_hash_from_sk(struct sk_buff *skb, struct sock *sk)
+ {
+-	if (sk->sk_txhash) {
++	/* This pairs with WRITE_ONCE() in sk_set_txhash() */
++	u32 txhash = READ_ONCE(sk->sk_txhash);
++
++	if (txhash) {
+ 		skb->l4_hash = 1;
+-		skb->hash = sk->sk_txhash;
++		skb->hash = txhash;
+ 	}
+ }
+ 
+-- 
+2.30.2
+
