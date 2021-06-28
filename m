@@ -2,136 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC32A3B66CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D853B66D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhF1QfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:35:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45890 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbhF1QfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:35:16 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 09051202E5;
-        Mon, 28 Jun 2021 16:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1624897970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sjzGZYePvIIaGO11WBPWnpQt5eSI/Ls63u3nQRytpxM=;
-        b=v5P5suiPXZIsXITysRQW8T4KMY+HTzJY06wwv9ANmWT0+UoRk0KF2UcNSgGAcU8/xrnnyF
-        kPpUVGYkpHSgNykI30VVBsAWWwV+JZ/NUZTUXx/jze71iGhD7eXPDiNlx2lkJ1KGufh45l
-        F24EpgMLP+MgR+HzUjF07HT0FmnQU8U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1624897970;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sjzGZYePvIIaGO11WBPWnpQt5eSI/Ls63u3nQRytpxM=;
-        b=D1mI1F4oNy1ntZwMqfAaXFZh0By6E5mcAqJTJRlL2LDTIsrfdcrngZyYSiO77RRsiF88Od
-        AeY1VaqSDh4oEuCA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id CE6C6A3B94;
-        Mon, 28 Jun 2021 16:32:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 9B57A1E125C; Mon, 28 Jun 2021 18:32:49 +0200 (CEST)
-Date:   Mon, 28 Jun 2021 18:32:49 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, axboe@fb.com,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v3] writeback: fix obtain a reference to a freeing memcg
- css
-Message-ID: <20210628163249.GC17026@quack2.suse.cz>
-References: <20210402091145.80635-1-songmuchun@bytedance.com>
- <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com>
+        id S234241AbhF1Qfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:35:42 -0400
+Received: from verein.lst.de ([213.95.11.211]:37970 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234009AbhF1Qfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:35:40 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id D62886736F; Mon, 28 Jun 2021 18:33:12 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 18:33:12 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Rob Landley <rob@landley.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: dma_declare_coherent_memory and SuperH
+Message-ID: <20210628163312.GA29659@lst.de>
+References: <20210623133205.GA28589@lst.de> <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net> <20210628133858.GA21602@lst.de> <4d6b7c35-f2fa-b476-b814-598a812770e6@landley.net> <20210628134955.GA22559@lst.de> <1141b20f-7cdf-1477-ef51-876226db7a37@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1141b20f-7cdf-1477-ef51-876226db7a37@landley.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On Thu 20-05-21 11:45:23, Muchun Song wrote:
-> It seems like this patch has not been added to the linux-next
-> tree. Can anyone help with this? Thanks.
-
-Muchun, did someone pickup this patch? I don't see it merged so unless
-somebody yells, I'll pick it up to my tree and send it to Linus for rc2.
-
-								Honza
-
+On Mon, Jun 28, 2021 at 09:29:59AM -0500, Rob Landley wrote:
+> > No.  My hope is to kill dma_declarare_coherent, an API for board
+> > support files to declare device-specific regions to be used for
+> > coherent DMA.
 > 
-> On Fri, Apr 2, 2021 at 5:13 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > The caller of wb_get_create() should pin the memcg, because
-> > wb_get_create() relies on this guarantee. The rcu read lock
-> > only can guarantee that the memcg css returned by css_from_id()
-> > cannot be released, but the reference of the memcg can be zero.
-> >
-> >   rcu_read_lock()
-> >   memcg_css = css_from_id()
-> >   wb_get_create(memcg_css)
-> >       cgwb_create(memcg_css)
-> >           // css_get can change the ref counter from 0 back to 1
-> >           css_get(memcg_css)
-> >   rcu_read_unlock()
-> >
-> > Fix it by holding a reference to the css before calling
-> > wb_get_create(). This is not a problem I encountered in the
-> > real world. Just the result of a code review.
-> >
-> > Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > ---
-> > Changelog in v3:
-> >  1. Do not change GFP_ATOMIC.
-> >  2. Update commit log.
-> >
-> >  Thanks for Michal's review and suggestions.
-> >
-> > Changelog in v2:
-> >  1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
-> >
-> >
-> >  fs/fs-writeback.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > index 3ac002561327..dedde99da40d 100644
-> > --- a/fs/fs-writeback.c
-> > +++ b/fs/fs-writeback.c
-> > @@ -506,9 +506,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> >         /* find and pin the new wb */
-> >         rcu_read_lock();
-> >         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
-> > -       if (memcg_css)
-> > -               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-> > +       if (memcg_css && !css_tryget(memcg_css))
-> > +               memcg_css = NULL;
-> >         rcu_read_unlock();
-> > +       if (!memcg_css)
-> > +               goto out_free;
-> > +
-> > +       isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-> > +       css_put(memcg_css);
-> >         if (!isw->new_wb)
-> >                 goto out_free;
-> >
-> > --
-> > 2.11.0
-> >
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Q) If I haven't got regression test hardware to make sure I properly converted
+> each of these entire boards to device tree, Is there anything else I can do to
+> help you remove this function from common code, such as inlining some portion of
+> this function?
+> 
+> A) You can convert the board to device tree.
+> 
+> Which part of this exchange have I misunderstood?
+
+The part that there is no easy way out without the device tree
+conversion.
