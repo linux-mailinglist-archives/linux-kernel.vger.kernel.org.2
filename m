@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F032D3B570B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F303B570C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbhF1BzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1BzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:55:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7991061A36;
-        Mon, 28 Jun 2021 01:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624845177;
-        bh=YpYR08RUmtU3O4t9HgUXI0T0FWV5Il28adXJQeOZYOo=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=dTdeiFBfjtn0ZmPPtAeczAHJIaVRHrN1cmnrVZSSwQM/64zCH8F9enDftxzWOjJL0
-         B1x39j+sg0ehQ/8P32IRvFKw91lQ55HC3587ufZFleGcN4CrFIJyGFLkLjwfuTeZgs
-         C47mUd/Dm8rr0FJ5nAYkvpQLZK6VD9w+simUAIgJuK4T76JssVDqxnTYOsCvudEG9q
-         jtG1dQfv4BQ0SjKBrpAv+NuQI0CiVzP4qmZ7KjS1yk/o7QJw2moU2juqof/l9kbNz0
-         1wa2qhExOoGwcSVL9LDLWl0PAKkFkI0oNb7pPpkQNiDovdQ05ly1LWMLzNcG62whWU
-         yS7ebNlxs9tIw==
-Content-Type: text/plain; charset="utf-8"
+        id S231947AbhF1B4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhF1B4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 21:56:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C13AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 18:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=oeHRyuymoOzE5/i9iWqenF4pTcyyyYMUWbRGL1RrOWM=; b=yg8bM7alBKZlmJDT34I1GTkUAk
+        oFfVy+mxx1QlvFD9juk8XWWMOL/1TX7XTygCOkSBGXQC8/U9YQe+Qm7/1Ao6/sFDJFq8fm8L7wXjC
+        9+/Y/XPidjfUKeCx1HCwaHbN7JS2Dd9hlkvlCDcN0iOn7ppcf979XI0nguu+BQ3SpbUouMB0REDtp
+        NeHcrQJkrsNjBRvycze3bEoNA0kXYZQggf5av9tmdWQWhar3CJCKcTkPuOPnuhlT5/QtI0Bzx7Bdf
+        2BlwkHLJTXaAjc6bbi1uyypL8KHImA+TgxqaB9cXLSLaohxvVfsYnFzLr1w5w6aU2yvSEhs299kBc
+        N8omSwwQ==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxgTe-006WNv-QC; Mon, 28 Jun 2021 01:54:22 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH -next] regulator: machine.h: fix kernel-doc "bad line"
+Date:   Sun, 27 Jun 2021 18:54:22 -0700
+Message-Id: <20210628015422.8845-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <5eb50fd9-1de9-cc61-6443-d84999e22803@gmail.com>
-References: <20210617082759.1008-1-thunder.leizhen@huawei.com> <162466387362.3259633.2364843071785127818@swboyd.mtv.corp.google.com> <a6f88419-2cb9-0717-7737-e4666cdcc211@huawei.com> <162483744494.3259633.12565750309559171999@swboyd.mtv.corp.google.com> <5eb50fd9-1de9-cc61-6443-d84999e22803@gmail.com>
-Subject: Re: [PATCH 1/1] clk: tegra: tegra124-emc: Fix possible memory leak
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Leizhen (ThunderTown) <thunder.leizhen@huawei.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Date:   Sun, 27 Jun 2021 18:52:56 -0700
-Message-ID: <162484517623.3259633.1405371294577745182@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Osipenko (2021-06-27 17:29:20)
-> 28.06.2021 02:44, Stephen Boyd =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Quoting Leizhen (ThunderTown) (2021-06-25 18:32:46)
-> >>
-> >>
-> >> On 2021/6/26 7:31, Stephen Boyd wrote:
-> >>> Quoting Zhen Lei (2021-06-17 01:27:59)
-> >>>> When krealloc() fails to expand the memory and returns NULL, the ori=
-ginal
-> >>>> memory is not released. In this case, the original "timings" scale s=
-hould
-> >>>> be maintained.
-> >>>>
-> >>>> Fixes: 888ca40e2843 ("clk: tegra: emc: Support multiple RAM codes")
->=20
-> The memory is still not released on error and this is not the only one
-> place in that code which doesn't release memory on error.
->=20
-> All this code is executed only once during early kernel boot, perhaps
-> not really worthwhile fixing it or at least this should be done properly.
->=20
-> >>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >>>> ---
-> >>>
-> >>> Looks correct, but when does krealloc() return NULL? My read of the
-> >>> kerneldoc is that it would return the original memory if the new
-> >>> allocation "failed".
-> >>
-> >> That must be the wrong description in the document. For example, the o=
-riginal
-> >=20
-> > Can you fix the kernel doc then?
-> >=20
->=20
-> The doc is clearly saying that it returns NULL, am I missing something?
->=20
-> * Return: pointer to the allocated memory or %NULL in case of error
+Fix warning caused by a blank/empty line:
 
-See the paragraph
+../include/linux/regulator/machine.h:115: warning: bad line: 
 
- * The contents of the object pointed to are preserved up to the
- * lesser of the new and old sizes (__GFP_ZERO flag is effectively ignored)=
-.=20
+Fixes: 89a6a5e56c82 ("regulator: add property parsing and callbacks to set protection limits")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Mark Brown <broonie@kernel.org>
+---
+ include/linux/regulator/machine.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-which confused me into thinking the memory that is being reallocated is
-guaranteed to be preserved so it would be returned if the larger size
-failed. I suppose there's nothing to fix in the kernel-doc, just my
-understanding of that paragraph. Maybe it should say
-
-	The __GFP_ZERO flag is effectively ignored as the contents of
-	the objected pointed to @p are preserved up to the lesser of the
-	@new_size and old size.
+--- linux-next-20210625.orig/include/linux/regulator/machine.h
++++ linux-next-20210625/include/linux/regulator/machine.h
+@@ -112,7 +112,7 @@ struct notification_limit {
+  * @over_voltage_limits:	Limits for acting on over voltage.
+  * @under_voltage_limits:	Limits for acting on under voltage.
+  * @temp_limits:		Limits for acting on over temperature.
+-
++ *
+  * @max_spread: Max possible spread between coupled regulators
+  * @max_uV_step: Max possible step change in voltage
+  * @valid_modes_mask: Mask of modes which may be configured by consumers.
