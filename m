@@ -2,121 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF6A3B5B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D9A3B5B2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhF1JY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:24:27 -0400
-Received: from mout.gmx.net ([212.227.15.15]:42063 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232527AbhF1JYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:24:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624872099;
-        bh=vhIyYZ7msZOYr3lfD+Hbl2Brh69vI/AmcDPrLyZarKM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Tu7S1y1/RgeQcammVM22heUno73b2dRhM2aoG7J8RFDaLXVyoT3nJbZF1S7QpSmIN
-         puMJoNqMVfIWnvc9JpLEf3mUJpcbx+jOPojh2/xM1O4X9Yn7ehVamZnLpg/fbKL9Za
-         b7XNJ9EBNlgkqmyVM6JFNbtGtTgndtc5eGESKI+o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNbp3-1lZw9h2kiB-00P2MO; Mon, 28
- Jun 2021 11:21:39 +0200
-Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
-To:     13145886936@163.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-References: <20210628083050.5302-1-13145886936@163.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <ee06042f-da1a-9137-dda3-b8f14bf1b79a@gmx.com>
-Date:   Mon, 28 Jun 2021 17:21:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232513AbhF1JYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhF1JYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:24:20 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AD9C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:21:54 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id d9so21397959ioo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 02:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g5qZKYCziA7AuQxCTs0bsrOVVtxbtzYl4YkIRBhbMdY=;
+        b=oPilTdUORmoFChQtQHAur9BRTUyAt+bx8m4zEjslRSu+4957dYnJyUMZrn/7u/6NM/
+         1iAeqmch1rYLex/V0cL+iNFYcXpBm37QWML4SHi6AxkNe3lyYnL8+ynmaEXmkY3re3lP
+         BSuwJe7zqxVRPLjfDWbdv/JUxG+QWOy5degvBQbXfb+N41yknz4BJRyrwiNYnz7noyRP
+         pRMrgvZm/dT4q4hGoD4TZTFHUaoX1DzZsk1y5bVyS0UQEF7oeG23/9M4wHA++vuxoYM/
+         soWSiv5mI7EfT57r9kgS6kKI7PgCXu9b5ZNqiS3+2qxk6BvOigjz9ypacdg8sLFiK0VK
+         /8LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g5qZKYCziA7AuQxCTs0bsrOVVtxbtzYl4YkIRBhbMdY=;
+        b=RjpQVcdq7fdlyiroelbBrLwLVM5JHZwMbEVeCHK6QvcO/jppUe4BIrVQq4nzTrQzYM
+         4N61BPA2/X8g7BWAx+fDTblh5DIp1VVcsQB+QxPrLw4y5M340skcR9PrPMbT8v9y7P3U
+         8lLKnyaozN1fBK2vTnPQAmHvGaKPiujCC2F1P6JSR779OSaAfarW9tiA6DvkoD+4rLgQ
+         P/PDP4tVtKCmIbArQ8R/DOiCNLP/v2MO9zFtHkFLJbMBaciWkny80lhuYAje2qCY3Y1D
+         NLx4gOPk6eaWmxckgCJAOXayBBtKDDxqfQg0FhDYxo9VzIdmlogRzekDCFTd67VLPj/n
+         NQRg==
+X-Gm-Message-State: AOAM531kHmdOnV3zfOXwNlTF1s3mJ+pViYiNdZxBm3l7Cl7BhEVpp/k5
+        nOirjJyoLcYWG1TAMcFH0xZzjOw0PSRNF7N8ClmrLw==
+X-Google-Smtp-Source: ABdhPJxUbfn1wSSECM+UbA4gdXecnfYeVXyNH+ktzq7tT06Xqil8KMgKV1wL53rBDZufvAcDvC/PT3WfER1bmCjOTnc=
+X-Received: by 2002:a05:6602:25da:: with SMTP id d26mr20362529iop.106.1624872113955;
+ Mon, 28 Jun 2021 02:21:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628083050.5302-1-13145886936@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <20210202135002.4024825-1-jackmanb@google.com> <YNiadhIbJBBPeOr6@krava>
+In-Reply-To: <YNiadhIbJBBPeOr6@krava>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 28 Jun 2021 11:21:42 +0200
+Message-ID: <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8U1F7hZf+AwSnmCB198rs0tWTeB5BJjzQp8Q1ItNgZOIwVOAp50
- zIAQ8HqAzrx5vtBTDbLFr4TwHPMpW2vvfNyEGIFO0vd+dN5zch7FKJxP3oSSDgmLMo0qFRp
- KZSE2YdkbjyVfQE8Pl4HgqPO+76lS9MYbm8X+M8MYCkZGKm4NL5prFaX59o8HGVof7fg9v3
- k2EQUVqu3ipojHwqPjQNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2DTsEmU7shc=:48pCwe61dCYyPvENXti+e2
- pKkqbunx/nQiVvDYuvCtR2nJF+vX34KUw1/82wWwm4xldLYxsxKuSiCXvkpSqty3DVOCiUucm
- DyBJVynz0y52IkKqX76wh5AZ1DoTZUx1mNjXNVS/T6HWgJFTk4OoF1wgKZ+OEWFEHJ9M99q1e
- NyAtPXQ2SCsPr7b2/8AjuwNL9Nlobb3oCDjHm8MO2FhiMPGoibrK44QEEbhD9EMMUZ1sqv7uL
- AWkjeyiW7UHHLGthuk9p70tr0ZeOYTWmcIBap+BjztcIkqgvmiWvl0RfLJ0q0gb3+E4FyTYl9
- ixxjhESORN44wLCRRgU1SIhOkXu1fJHfuVsm6uZOxPLznYSmyebP7OlqJgQsPLXAJ9lY0WM2X
- vAR0cDYb4H/1vxEuGhlSsUNKQ4rtrL7ggYvYqb9CFOpy0fIf9OZB2FDN7+0hSvFInhoNxXMZl
- wbJ1BXMDXNjEn/nXuMkpirUyglRHvEIqN89vjYBXBHjPWE1V1Olwl/G8gQUNJiTmqXen594B8
- +ft594yuY10lqv9xlrpndFDpmtusmNzRSmJ2ZRFFGYJYNGnFfauCpkAPObNrcsa3Ix8gyjT2W
- 5nD3saIS/e8yXVHutJvDcVmWUtqul388U0sJQvVGt/fKE3+oH46cqMEMWrsr7YdBtuTZoVnYn
- 9in6KFx7IEt7bjW+ZX6pBJ+XfTVAVuT3kRJqza+hYwlYMrMGWETAD+OQ6dgGhngXxVP59HwcF
- TI74raW1fhhbLLqvZhfrAZXwbh1xqtASOg3GU7/qRTUrOY/H1IhnVfwk2u5zZ++ueYdCu9P3B
- vyXt8lTT0d2eEcu1gBXSFsqrktXqKusnMm6zX7BWXNN50NfLuYgtFlrf3cTpm4CUjbGt4wd+A
- APqfY1pWasGee91P4II22fLsLR9QKX5wLrNY7D3e1qjfRhdxz66alIH8VryFJ9vU5QSEn4yeQ
- LM9BApnTBNYE9Nrgd3DZ+2yB8Ls5LNU8xIOIsnEPAX2L4MwowCa7U1rcnaPFtpuNr15rOoKMB
- 8Yr1ik2JOJmhtDFUSX91mDVnu8GiV8gAa7vC4r0fq/a9KbeRkTefH24JViT3b70bjET0Zy0jQ
- zh/cZOBbn8tNFXGCkvjnUIJquyAs4zpxeQ3De3p0rMAYeIs4E4L9Jt+yw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/28 =E4=B8=8B=E5=8D=884:30, 13145886936@163.com wrote:
-> From: gushengxian <gushengxian@yulong.com>
+On Sun, 27 Jun 2021 at 17:34, Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> Remove unneeded variable: "ret".
+> On Tue, Feb 02, 2021 at 01:50:02PM +0000, Brendan Jackman wrote:
 >
-> Signed-off-by: gushengxian <13145886936@163.com>
-> Signed-off-by: gushengxian <gushengxian@yulong.com>
-
-Is this detected by some script?
-
-Mind to share the script and run it against the whole btrfs code base?
-
-Thanks,
-Qu
-
+> SNIP
+>
+> > diff --git a/tools/testing/selftests/bpf/verifier/atomic_bounds.c b/too=
+ls/testing/selftests/bpf/verifier/atomic_bounds.c
+> > new file mode 100644
+> > index 000000000000..e82183e4914f
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+> > @@ -0,0 +1,27 @@
+> > +{
+> > +     "BPF_ATOMIC bounds propagation, mem->reg",
+> > +     .insns =3D {
+> > +             /* a =3D 0; */
+> > +             /*
+> > +              * Note this is implemented with two separate instruction=
+s,
+> > +              * where you might think one would suffice:
+> > +              *
+> > +              * BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> > +              *
+> > +              * This is because BPF_ST_MEM doesn't seem to set the sta=
+ck slot
+> > +              * type to 0 when storing an immediate.
+> > +              */
+> > +             BPF_MOV64_IMM(BPF_REG_0, 0),
+> > +             BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
+> > +             /* b =3D atomic_fetch_add(&a, 1); */
+> > +             BPF_MOV64_IMM(BPF_REG_1, 1),
+> > +             BPF_ATOMIC_OP(BPF_DW, BPF_ADD | BPF_FETCH, BPF_REG_10, BP=
+F_REG_1, -8),
+> > +             /* Verifier should be able to tell that this infinite loo=
+p isn't reachable. */
+> > +             /* if (b) while (true) continue; */
+> > +             BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -1),
+> > +             BPF_EXIT_INSN(),
+> > +     },
+> > +     .result =3D ACCEPT,
+> > +     .result_unpriv =3D REJECT,
+> > +     .errstr_unpriv =3D "back-edge",
+> > +},
+> >
+> > base-commit: 61ca36c8c4eb3bae35a285b1ae18c514cde65439
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
+>
+> hi,
+> I tracked soft lock up on powerpc to this test:
+>
+>         [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 25
+>         #25/u BPF_ATOMIC bounds propagation, mem->reg SKIP
+>         #25/p BPF_ATOMIC bounds propagation, mem->reg
+>
+>         Message from syslogd@ibm-p9z-07-lp1 at Jun 27 11:24:34 ...
+>          kernel:watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_v=
+erifier:1055]
+>
+>         Message from syslogd@ibm-p9z-07-lp1 at Jun 27 11:25:04 ...
+>          kernel:watchdog: BUG: soft lockup - CPU#2 stuck for 48s! [test_v=
+erifier:1055]
+>
+> please check the console output below.. it looks like the verifier
+> allowed the loop to happen for some reason on powerpc.. any idea?
+>
+> I'm on latest bpf-next/master, I can send the config if needed
+>
+> thanks,
+> jirka
+>
+>
 > ---
->   fs/btrfs/disk-io.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index b117dd3b8172..7e65a54b7839 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	struct rb_node *node;
->   	struct btrfs_delayed_ref_root *delayed_refs;
->   	struct btrfs_delayed_ref_node *ref;
-> -	int ret =3D 0;
->
->   	delayed_refs =3D &trans->delayed_refs;
->
-> @@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
->   		spin_unlock(&delayed_refs->lock);
->   		btrfs_debug(fs_info, "delayed_refs has NO entry");
-> -		return ret;
-> +		return 0;
->   	}
->
->   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
-) {
-> @@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
-_transaction *trans,
->
->   	spin_unlock(&delayed_refs->lock);
->
-> -	return ret;
-> +	return 0;
->   }
->
->   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
->
+> ibm-p9z-07-lp1 login: [  184.108655] watchdog: BUG: soft lockup - CPU#2 s=
+tuck for 26s! [test_verifier:1055]
+> [  184.108679] Modules linked in: snd_seq_dummy(E) snd_hrtimer(E) snd_seq=
+(E) snd_seq_device(E) snd_timer(E) snd(E) soundcore(E) bonding(E) tls(E) rf=
+kill(E) pseries_rng(E) drm(E) fuse(E) drm_panel_orientation_quirks(E) xfs(E=
+) libcrc32c(E) sd_mod(E) t10_pi(E) ibmvscsi(E) ibmveth(E) scsi_transport_sr=
+p(E) vmx_crypto(E) dm_mirror(E) dm_region_hash(E) dm_log(E) dm_mod(E)
+> [  184.108722] CPU: 2 PID: 1055 Comm: test_verifier Tainted: G           =
+ E     5.13.0-rc3+ #3
+> [  184.108728] NIP:  c00800000131314c LR: c000000000c56918 CTR: c00800000=
+1313118
+> [  184.108733] REGS: c0000000119ef820 TRAP: 0900   Tainted: G            =
+E      (5.13.0-rc3+)
+> [  184.108739] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 4422284=
+0  XER: 20040003
+> [  184.108752] CFAR: c008000001313150 IRQMASK: 0
+> [  184.108752] GPR00: c000000000c5671c c0000000119efac0 c000000002a08400 =
+0000000000000001
+> [  184.108752] GPR04: c0080000010c0048 ffffffffffffffff 0000000001f3f8ec =
+0000000000000008
+> [  184.108752] GPR08: 0000000000000000 c0000000119efae8 0000000000000001 =
+49adb8fcb8417937
+> [  184.108752] GPR12: c008000001313118 c00000001ecae400 0000000000000000 =
+0000000000000000
+> [  184.108752] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
+c0000000021cf6f8
+> [  184.108752] GPR20: 0000000000000000 c0000000119efc34 c0000000119efc30 =
+c0080000010c0048
+> [  184.108752] GPR24: c00000000a1dc100 0000000000000001 c000000011fadc80 =
+c0000000021cf638
+> [  184.108752] GPR28: c0080000010c0000 0000000000000001 c0000000021cf638 =
+c0000000119efaf0
+> [  184.108812] NIP [c00800000131314c] bpf_prog_a2eb9104e5e8a5bf+0x34/0xce=
+e8
+> [  184.108819] LR [c000000000c56918] bpf_test_run+0x2f8/0x470
+> [  184.108826] Call Trace:
+> [  184.108828] [c0000000119efac0] [c0000000119efb30] 0xc0000000119efb30 (=
+unreliable)
+> [  184.108835] [c0000000119efb30] [c000000000c5671c] bpf_test_run+0xfc/0x=
+470
+> [  184.108841] [c0000000119efc10] [c000000000c57b6c] bpf_prog_test_run_sk=
+b+0x38c/0x660
+> [  184.108848] [c0000000119efcb0] [c00000000035de6c] __sys_bpf+0x46c/0xd6=
+0
+> [  184.108854] [c0000000119efd90] [c00000000035e810] sys_bpf+0x30/0x40
+> [  184.108859] [c0000000119efdb0] [c00000000002ea34] system_call_exceptio=
+n+0x144/0x280
+> [  184.108866] [c0000000119efe10] [c00000000000c570] system_call_vectored=
+_common+0xf0/0x268
+> [  184.108874] --- interrupt: 3000 at 0x7fff8bb3ef24
+> [  184.108878] NIP:  00007fff8bb3ef24 LR: 0000000000000000 CTR: 000000000=
+0000000
+> [  184.108883] REGS: c0000000119efe80 TRAP: 3000   Tainted: G            =
+E      (5.13.0-rc3+)
+> [  184.108887] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE=
+>  CR: 28000848  XER: 00000000
+> [  184.108903] IRQMASK: 0
+> [  184.108903] GPR00: 0000000000000169 00007fffe4577710 00007fff8bc27200 =
+000000000000000a
+> [  184.108903] GPR04: 00007fffe45777b8 0000000000000080 0000000000000001 =
+0000000000000008
+> [  184.108903] GPR08: 000000000000000a 0000000000000000 0000000000000000 =
+0000000000000000
+> [  184.108903] GPR12: 0000000000000000 00007fff8be1c400 0000000000000000 =
+0000000000000000
+> [  184.108903] GPR16: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000
+> [  184.108903] GPR20: 0000000000000000 0000000000000000 0000000000000000 =
+0000000000000000
+> [  184.108903] GPR24: 0000000000000000 0000000000000000 0000000000000000 =
+000000001000d1d0
+> [  184.108903] GPR28: 0000000000000002 00007fffe4578128 00007fffe45782c0 =
+00007fffe4577710
+> [  184.108960] NIP [00007fff8bb3ef24] 0x7fff8bb3ef24
+> [  184.108964] LR [0000000000000000] 0x0
+> [  184.108967] --- interrupt: 3000
+> [  184.108970] Instruction dump:
+> [  184.108974] 60000000 f821ff91 fbe10068 3be10030 39000000 f91ffff8 3860=
+0001 393ffff8
+> [  184.108985] 7d4048a8 7d4a1a14 7d4049ad 4082fff4 <28230000> 4082fffc 60=
+000000 ebe10068
+
+Hmm, is the test prog from atomic_bounds.c getting JITed there (my
+dumb guess at what '0xc0000000119efb30 (unreliable)' means)? That
+shouldn't happen - should get 'eBPF filter atomic op code %02x (@%d)
+unsupported\n' in dmesg instead. I wonder if I missed something in
+commit 91c960b0056 (bpf: Rename BPF_XADD and prepare to encode other
+atomics in .imm). Any idea if this test was ever passing on PowerPC?
