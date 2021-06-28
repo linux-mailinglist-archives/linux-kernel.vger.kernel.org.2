@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D925C3B5664
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940473B5665
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhF1Amu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 20:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S231887AbhF1AnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 20:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbhF1Ams (ORCPT
+        with ESMTP id S231845AbhF1AnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 20:42:48 -0400
+        Sun, 27 Jun 2021 20:43:10 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784F1C061574;
-        Sun, 27 Jun 2021 17:40:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE73C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 17:40:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=8hAFSlHFWdnPhlaMXpF6GcfhzBmf4yRkDGhXefLS0Ro=; b=dYLeBaC62HAnbE9R08Nq9sSl9o
-        eVqDvzPqf+3rMtsYMm+1RHdsaovcd9bPvvujD9dFoLXsS7cUbEwpWpc9MXDZClJhLq3nEGmsG5MUZ
-        9zqXLhPxlsmhnqe3X3RoA+K64tSHwU0OkWdUZImeOSqSBl1dmNDkiJk+Ba3IfjEjsffez4RiLFQe3
-        96ugUUYxaqOAhT0Ob6z7VZ4qgVkXzSCEfLzbTRdlRjrdZ3v87gMM8O5D8zjeI9Ypv7LivAVmYN9k+
-        f9RHukdArjlNoBTW6zUvgUnfDNF1qE6ryyV9rpJEjn7buoi5jCRZ/W0LaFdbqw18+sdrOPyazdbC7
-        hwaPOtUQ==;
+        bh=0CRh94sDskcrsrbGFlTvADWfh4XXtEAT9Y9zJdvidZM=; b=2nBPIF2dtrEOx1H3JjbaMLy9X6
+        gCKNgVyB7jJky2lh3jYP2A3WxF55oQfcV7J74XpwnwAJ8NaUz+68IYcDbqgV78/Hhn3tdTJJBB2QW
+        xWqX4h4mmlQzaNNtvAp6YPdOadF8frQwsxUvT+oysr+zCvo7lWP9wKiNzru/DtzrGWeCbOs5VMK3T
+        mX3efTkPVEuEUkCFGmqHZdczRSoL/wsasyWBZRGRaNZ6p1qBn+248RMqwspp6LlJgrIjHGIGa7ii8
+        QjtJKd5YkS79+uhx8Vqh3VqcwvMo7sD2kEK7e1X9EEaIVt7BFL9TWFFkF7daUAtyYyoqR3/C9Mb/e
+        6kN7S+EQ==;
 Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxfK3-006MXp-TQ; Mon, 28 Jun 2021 00:40:24 +0000
+        id 1lxfKP-006Ma1-8C; Mon, 28 Jun 2021 00:40:45 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "William A . Kennington III" <wak@google.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH] spi: <linux/spi/spi.h>: add missing struct kernel-doc entry
-Date:   Sun, 27 Jun 2021 17:40:23 -0700
-Message-Id: <20210628004023.7371-1-rdunlap@infradead.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH -next] IRQ: irqdesc.c: drop excess kernel-doc entry @lookup
+Date:   Sun, 27 Jun 2021 17:40:44 -0700
+Message-Id: <20210628004044.9011-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,26 +41,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warning in spi.h:
+Fix kernel-doc warning in irqdesc.c:
 
-../include/linux/spi/spi.h:673: warning: Function parameter or member 'devm_allocated' not described in 'spi_controller'
+../kernel/irq/irqdesc.c:692: warning: Excess function parameter 'lookup' description in 'handle_domain_irq'
 
-Fixes: 794aaf01444d ("spi: Fix use-after-free with devm_spi_alloc_*")
+Fixes: e1c054918c6c ("genirq: Move non-irqdomain handle_domain_irq() handling into ARM's handle_IRQ()")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: William A. Kennington III <wak@google.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/spi/spi.h |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/irq/irqdesc.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- linux-next-20210625.orig/include/linux/spi/spi.h
-+++ linux-next-20210625/include/linux/spi/spi.h
-@@ -339,6 +339,7 @@ extern struct spi_device *spi_new_ancill
-  * @max_speed_hz: Highest supported transfer speed
-  * @flags: other constraints relevant to this driver
-  * @slave: indicates that this is an SPI slave controller
-+ * @devm_allocated: flag indicating this is a non-devres managed controller
-  * @max_transfer_size: function that returns the max transfer size for
-  *	a &spi_device; may be %NULL, so the default %SIZE_MAX will be used.
-  * @max_message_size: function that returns the max message size for
+--- linux-next-20210625.orig/kernel/irq/irqdesc.c
++++ linux-next-20210625/kernel/irq/irqdesc.c
+@@ -682,7 +682,6 @@ EXPORT_SYMBOL_GPL(generic_handle_domain_
+  *                     usually for a root interrupt controller
+  * @domain:	The domain where to perform the lookup
+  * @hwirq:	The HW irq number to convert to a logical one
+- * @lookup:	Whether to perform the domain lookup or not
+  * @regs:	Register file coming from the low-level handling code
+  *
+  * Returns:	0 on success, or -EINVAL if conversion has failed
