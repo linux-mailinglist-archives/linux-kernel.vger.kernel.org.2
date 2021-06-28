@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623123B69A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207B73B69AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhF1UcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:32:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34938 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233832AbhF1UcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:32:01 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SK3xHh191629;
-        Mon, 28 Jun 2021 16:29:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=T/X0AWFySB1qm7I+J/JXYaQ73ERSk11h084c2j+kwVI=;
- b=pGv/neZhrkIK/1BPXjllwBhBFMpgL/xzzv2ZWo34IY2Je0P6w11u3uuOfEWTtzY4vaeM
- QiaInQM4W26BR2lnxZ/auDcLm3yzwDzgTpXffkJrXHd8Ew21nc51LhSi5x5SpzA88gC5
- w9Wl6pJbWMS4bK9CkX7AkDreNWQmifOesUdJZNa4Mdl2XcTk2TePFftX6uJCHb7pbfUf
- qOuQjZGTFOfhjVALEbSvZd28dzjP8rnlvxf2Q8LKLYSUc+VrsG7GynHtpMpcoElhIOOs
- W2H5yZjVoUm1LZ8H6dZCv2G/BXlLdtAsMcjF/KTTk10QBJKtB2NbW0x3hK+2Kyw/9e7F Gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39fkkv2t24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 16:29:32 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SK56Y2001551;
-        Mon, 28 Jun 2021 16:29:32 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39fkkv2t1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 16:29:32 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SKTUhD031338;
-        Mon, 28 Jun 2021 20:29:30 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 39duv8ggea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 20:29:30 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SKTQnH33358194
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 20:29:26 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24F1B4C058;
-        Mon, 28 Jun 2021 20:29:26 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 322884C050;
-        Mon, 28 Jun 2021 20:29:25 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.75.254])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 28 Jun 2021 20:29:25 +0000 (GMT)
-Date:   Mon, 28 Jun 2021 22:29:23 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <20210628222923.21a257c8.pasic@linux.ibm.com>
-In-Reply-To: <20210625220758.80365-1-akrowiak@linux.ibm.com>
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: CxEU1N4YCnkFLEJR_l64zXtq4GeWgF-v
-X-Proofpoint-ORIG-GUID: ogAhWMHvtvD9I7kNlCQWJZDuvllyqwBt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 clxscore=1015 mlxscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106280129
+        id S236408AbhF1Uet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:34:49 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6224 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233832AbhF1Uer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 16:34:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="188408761"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="188408761"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 13:32:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="557695593"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga004.jf.intel.com with ESMTP; 28 Jun 2021 13:32:21 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, gregkh@linuxfoundation.org,
+        acme@kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 0/6] perf: Add Sapphire Rapids server uncore support
+Date:   Mon, 28 Jun 2021 13:17:37 -0700
+Message-Id: <1624911463-192936-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 18:07:58 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+From: Kan Liang <kan.liang@linux.intel.com>
 
-What is a suitable base for this patch. I've tried the usual suspects,
-but none of them worked.
+Changes since V1:
+- Drop the symlink between two PMU names. Add a new attribute "alias"
+  to indicate the old numeric name.
+- Add document and perf tool support for the new attribute "alias".
+(I once planned to use "caps/pmu_name" as the new attribute name in V1's
+discussion.
+https://lore.kernel.org/lkml/1edc6666-c4b3-ebf5-964a-e5ffc97d8563@linux.intel.com/
+The name has a different meaning in the CPU PMU, which may causes
+confusion. So the "alias" is used in V2.)
+- The number of the free-running counter units should be the same as
+  the max index of the relative units plus one. Correct the number in
+  the patch 4.
 
-> The fix to resolve a lockdep splat while handling the
-> VFIO_GROUP_NOTIFY_SET_KVM event introduced a kvm_busy flag indicating that
-> the vfio_ap device driver is busy setting or unsetting the KVM pointer.
-> A wait queue was employed to allow functions requiring access to the KVM
-> pointer to wait for the kvm_busy flag to be cleared. For the duration of
-> the wait period, the mdev lock was unlocked then acquired again after the
-> kvm_busy flag was cleared. This got rid of the lockdep report, but didn't
-> really resolve the problem.
+Intel Sapphire Rapids supports a discovery mechanism, that allows an
+uncore driver to discover the different components ("boxes") of the
+chip.
 
-Can you please elaborate on the last point. You mean that we can have
-circular locking even after 0cc00c8d4050, but instead of getting stuck in
-on a lock we will get stuck on wait_event_cmd()? If that is it, please
-state it clearly in the description, and if you can to it in the short
-description.
+All the generic information of the uncore boxes should be retrieved from
+the discovery tables. This has been enabled with the commit edae1f06c2cd
+("perf/x86/intel/uncore: Parse uncore discovery tables"). The uncore
+driver doesn't need to hard code the generic information for each uncore
+box. But we still need to enable various functionality that cannot be
+directly discovered. This is done in the patchset.
 
-> 
-> This patch removes the the kvm_busy flag and wait queue as they are not
-> necessary to resolve the lockdep splat problem. The wait queue was
-> introduced to prevent changes to the matrix used to update the guest's
-> AP configuration. The idea was that whenever an adapter, domain or control
-> domain was being assigned to or unassigned from the matrix, the function
-> would wait until the group notifier function was no longer busy with the
-> KVM pointer.
-> 
-> The thing is, the KVM pointer value (matrix_mdev->kvm) is always set and
-> cleared while holding the matrix_dev->lock mutex. The assignment and
-> unassignment interfaces also lock the matrix_dev->lock mutex prior to
-> checking whether the matrix_mdev->kvm pointer is set and if so, returns
-> the -EBUSY error from the function. Consequently, there is no chance for
-> an update to the matrix to occur while the guest's AP configuration is
-> being updated.
-> 
-> Fixes: 0cc00c8d4050 ("s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Without this platform-specific enabling patch set, perf uses a type ID
+plus a box ID, e.g., uncore_type_0_0 to name an uncore PMU. With the
+patch set, perf has the mapping information from a type ID to a specific
+uncore unit. Just like the previous platforms, the uncore PMU can be
+named by the real PMU name, e.g., uncore_cha_0. Add a new attribute
+"alias" to indicate the old numeric name. The userspace perf tool is
+modified in the patch-set to handle both names.
+
+The uncore spec of Sapphire Rapids server can be found at
+https://cdrdv2.intel.com/v1/dl/getContent/642245
+
+Kan Liang (6):
+  perf/x86/intel/uncore: Add Sapphire Rapids server support
+  perf/x86/intel/uncore: Add alias PMU name
+  perf/x86/intel/uncore: Factor out snr_uncore_mmio_map()
+  perf/x86/intel/uncore: Support free-running counters on Sapphire
+    Rapids server
+  perf/x86/intel/uncore: Fix invalid unit check
+  perf pmu: Add PMU alias support
+
+ .../testing/sysfs-bus-event_source-devices-uncore  |  11 +
+ arch/x86/events/intel/uncore.c                     |  45 +-
+ arch/x86/events/intel/uncore.h                     |   4 +
+ arch/x86/events/intel/uncore_discovery.c           |  42 +-
+ arch/x86/events/intel/uncore_discovery.h           |  23 +-
+ arch/x86/events/intel/uncore_snbep.c               | 538 ++++++++++++++++++++-
+ tools/perf/arch/x86/util/pmu.c                     | 129 ++++-
+ tools/perf/util/parse-events.y                     |   4 +-
+ tools/perf/util/pmu.c                              |  23 +-
+ tools/perf/util/pmu.h                              |   5 +
+ 10 files changed, 776 insertions(+), 48 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-devices-uncore
+
+-- 
+2.7.4
+
