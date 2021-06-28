@@ -2,92 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DFE3B59B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76043B59BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhF1H1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhF1H1W (ORCPT
+        id S232374AbhF1H3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:29:21 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36664 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232355AbhF1H3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:27:22 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC96C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:24:56 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id i24so24314432edx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jVNTSHzyPdwPKJpT8dlRef55eBUHyowQ9V2IpIhGGgY=;
-        b=g+iVFERxlAsLxxqdruLIIhyxZMVntswNHCeDhafy2aDICYspsBfw/1V3sGm+n/GSR3
-         FXh9lB41R0FdPVcj6bikEgTDast/N/IdTMJjdWLIrdKeWgJKpAtXGyTJZX6bnbVTUzJo
-         v8xFySlvgaz+MULxEQeHyugMQ8DWh29ggvckG/2reeT0v8gkgreHcwAjsbnRv0zlrTEY
-         OK3WDWVAbL8y+sOV4LvaLDWnV5Jtc9MdNQqzg4RNiLuHlZqV78hvLfoXA7CtVLXcyB+9
-         A5o2W9fYyz5gzfE1cmpDKtW+RxbYycbJUmrh9fS3/6D1/Bv1rQZ7k83dZMwU8VebkzWU
-         Q32w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=jVNTSHzyPdwPKJpT8dlRef55eBUHyowQ9V2IpIhGGgY=;
-        b=h9NutKXnFEVj3I1+yOCLKOAwoYWtW1bfUvInsnI/GQitnjW6mTm9x0ubzuM0adkc+7
-         bIK4HaTOuEzXyqHrsZ3ZWCSwtrieGvXX+B1Mah1zYmpP1zXrsOoqH783OSXqGR5fX5cg
-         Al2DqhvbCrGIFHXhV145WM5bg6UHjXzbIq7qfLhHAeSSwHMqkVQqMJQV09JH7wtyZV2A
-         vyotgR/UI8ViszdAJIa7GYvPfxfGWD1+gj5QKR/IDiayvS7XNvonEVVVqpsMC6KjYNBQ
-         0FMLyZloweaLKUmxUKd4uoZEzEhNeuJkH9H5VyqPWi7PbWezRG4AkW1PbI6cfR7Y1vlX
-         AA1g==
-X-Gm-Message-State: AOAM532F+bOyk1TsXX4AfPGtRhJ+lCAEfg69Dcdfnq50kKThGec+MRsK
-        gp14gEOn1sLK1Wx3iDCLhw0E0DwrNnc=
-X-Google-Smtp-Source: ABdhPJyCGY/SjEEbkRgy2XgcV4ckxoNVUq7fhc/DzkxzyFcnTmDS5yL/zTq/Ut8G7Fa0RyhxPCvIpw==
-X-Received: by 2002:a05:6402:501:: with SMTP id m1mr31259514edv.163.1624865095433;
-        Mon, 28 Jun 2021 00:24:55 -0700 (PDT)
-Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
-        by smtp.gmail.com with ESMTPSA id ec24sm9217724edb.74.2021.06.28.00.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 00:24:55 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 28 Jun 2021 09:24:53 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86/boot change for v5.14
-Message-ID: <YNl5RRO5PSlokM+G@gmail.com>
+        Mon, 28 Jun 2021 03:29:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624865215; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uKMCS0vOPHfu23vYTo9+6y45SziyiLid3872AqKVRc8=;
+ b=G/9Xpexqzu1m3v1FoVCVN4W88lQKNTtXaC4LD1ArCXrDNbKVx1mWVvrJnXxSDRZSqJhb8S9x
+ avhoyMRPtT7DZTAEyympUXZpGDuWucSe2AGCRea50MgiG+3ETpDaU+S42nIF2/mSR8s3eJOw
+ nKhe9uMkcUgIo6rhTzzjZTplDh8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d979ac06ea41c941cc2517 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Jun 2021 07:26:36
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2A806C433F1; Mon, 28 Jun 2021 07:26:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74A5BC433D3;
+        Mon, 28 Jun 2021 07:26:34 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 28 Jun 2021 15:26:34 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
+ suspend/resume
+In-Reply-To: <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-8-git-send-email-cang@codeaurora.org>
+ <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
+ <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
+ <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
+ <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
+ <a654d2ef-b333-1c56-42c6-3d69e9f44bd0@intel.com>
+ <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
+ <f1c997f3-66e4-3f1f-08f5-83449b65c397@intel.com>
+Message-ID: <7c6e2baa3578eb30f2d4bd1696e800eb@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 2021-06-24 18:04, Adrian Hunter wrote:
+> On 24/06/21 9:31 am, Can Guo wrote:
+>> On 2021-06-24 14:23, Adrian Hunter wrote:
+>>> On 24/06/21 9:12 am, Can Guo wrote:
+>>>> On 2021-06-24 13:52, Adrian Hunter wrote:
+>>>>> On 24/06/21 5:16 am, Can Guo wrote:
+>>>>>> On 2021-06-23 22:30, Adrian Hunter wrote:
+>>>>>>> On 23/06/21 10:35 am, Can Guo wrote:
+>>>>>>>> To protect system suspend/resume from being disturbed by error 
+>>>>>>>> handling,
+>>>>>>>> instead of using host_sem, let error handler call 
+>>>>>>>> lock_system_sleep() and
+>>>>>>>> unlock_system_sleep() which achieve the same purpose. Remove the 
+>>>>>>>> host_sem
+>>>>>>>> used in suspend/resume paths to make the code more readable.
+>>>>>>>> 
+>>>>>>>> Suggested-by: Bart Van Assche <bvanassche@acm.org>
+>>>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>>>>>> ---
+>>>>>>>>  drivers/scsi/ufs/ufshcd.c | 12 +++++++-----
+>>>>>>>>  1 file changed, 7 insertions(+), 5 deletions(-)
+>>>>>>>> 
+>>>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.c 
+>>>>>>>> b/drivers/scsi/ufs/ufshcd.c
+>>>>>>>> index 3695dd2..a09e4a2 100644
+>>>>>>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>>>>>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>>>>>>> @@ -5907,6 +5907,11 @@ static void 
+>>>>>>>> ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
+>>>>>>>> 
+>>>>>>>>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>>>>>>>>  {
+>>>>>>>> +    /*
+>>>>>>>> +     * It is not safe to perform error handling while suspend 
+>>>>>>>> or resume is
+>>>>>>>> +     * in progress. Hence the lock_system_sleep() call.
+>>>>>>>> +     */
+>>>>>>>> +    lock_system_sleep();
+>>>>>>> 
+>>>>>>> It looks to me like the system takes this lock quite early, even 
+>>>>>>> before
+>>>>>>> freezing tasks, so if anything needs the error handler to run it 
+>>>>>>> will
+>>>>>>> deadlock.
+>>>>>> 
+>>>>>> Hi Adrian,
+>>>>>> 
+>>>>>> UFS/hba system suspend/resume does not invoke or call error 
+>>>>>> handling in a
+>>>>>> synchronous way. So, whatever UFS errors (which schedules the 
+>>>>>> error handler)
+>>>>>> happens during suspend/resume, error handler will just wait here 
+>>>>>> till system
+>>>>>> suspend/resume release the lock. Hence no worries of deadlock 
+>>>>>> here.
+>>>>> 
+>>>>> It looks to me like the state can change to 
+>>>>> UFSHCD_STATE_EH_SCHEDULED_FATAL
+>>>>> and since user processes are not frozen, nor file systems sync'ed, 
+>>>>> everything
+>>>>> is going to deadlock.
+>>>>> i.e.
+>>>>> I/O is blocked waiting on error handling
+>>>>> error handling is blocked waiting on lock_system_sleep()
+>>>>> suspend is blocked waiting on I/O
+>>>>> 
+>>>> 
+>>>> Hi Adrian,
+>>>> 
+>>>> First of all, enter_state(suspend_state_t state) uses 
+>>>> mutex_trylock(&system_transition_mutex).
+>>> 
+>>> Yes, in the case I am outlining it gets the mutex.
+>>> 
+>>>> Second, even that happens, in ufshcd_queuecommand(), below logic 
+>>>> will break the cycle, by
+>>>> fast failing the PM request (below codes are from the code tip with 
+>>>> this whole series applied).
+>>> 
+>>> It won't get that far because the suspend will be waiting to sync 
+>>> filesystems.
+>>> Filesystems will be waiting on I/O.
+>>> I/O will be waiting on the error handler.
+>>> The error handler will be waiting on system_transition_mutex.
+>>> But system_transition_mutex is already held by PM core.
+>> 
+>> Hi Adrian,
+>> 
+>> You are right.... I missed the action of syncing filesystems...
+>> 
+>> Using back host_sem in suspend_prepare()/resume_complete() won't have 
+>> this
+>> problem of deadlock, right?
+> 
+> I am not sure, but what was problem that the V3 patch was fixing?
+> Can you give an example?
 
-Please pull the latest x86/boot git tree from:
+V3 was moving host_sem from wl_system_suspend/resume() to
+ufshcd_suspend_prepare()/ufshcd_resume_complete(). It is to
+make sure error handling does not run concurrenly with system
+PM, since error handling is recovering/clearing runtime PM
+errors of all the scsi devices under hba (in patch #8). Having the
+error handling doing so (in patch 8) is because runtime PM framework
+may save the runtime errors of the supplier to one or more consumers (
+unlike the children - parent relationship), for example if wlu resume
+fails, sda and/or other scsi devices may save the resume error, then
+they will be left runtime suspended permanently.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-boot-2021-06-28
+Thanks,
 
-   # HEAD: f279b49f13bd2151bbe402a1d812c1e3646c4bbb x86/boot: Modernize genimage script; hdimage+EFI support
+Can Guo.
 
-Modernize the genimage.sh script, add a 'hdimage' target and EFI support.
-
- Thanks,
-
-	Ingo
-
------------------->
-H. Peter Anvin (Intel) (1):
-      x86/boot: Modernize genimage script; hdimage+EFI support
-
-
- arch/x86/Makefile            |   5 +-
- arch/x86/boot/.gitignore     |   1 +
- arch/x86/boot/Makefile       |  44 ++++---
- arch/x86/boot/genimage.sh    | 303 +++++++++++++++++++++++++++++++------------
- arch/x86/boot/mtools.conf.in |   3 +
- 5 files changed, 252 insertions(+), 104 deletions(-)
+> 
+>> 
+>> Thanks,
+>> 
+>> Can Guo.
+>> 
+>>> 
+>>>> 
+>>>>         case UFSHCD_STATE_EH_SCHEDULED_FATAL:
+>>>>                 /*
+>>>>                  * ufshcd_rpm_get_sync() is used at error handling 
+>>>> preparation
+>>>>                  * stage. If a scsi cmd, e.g., the SSU cmd, is sent 
+>>>> from the
+>>>>                  * PM ops, it can never be finished if we let SCSI 
+>>>> layer keep
+>>>>                  * retrying it, which gets err handler stuck 
+>>>> forever. Neither
+>>>>                  * can we let the scsi cmd pass through, because UFS 
+>>>> is in bad
+>>>>                  * state, the scsi cmd may eventually time out, 
+>>>> which will get
+>>>>                  * err handler blocked for too long. So, just fail 
+>>>> the scsi cmd
+>>>>                  * sent from PM ops, err handler can recover PM 
+>>>> error anyways.
+>>>>                  */
+>>>>                 if (cmd->request->rq_flags & RQF_PM) {
+>>>>                         hba->force_reset = true;
+>>>>                         set_host_byte(cmd, DID_BAD_TARGET);
+>>>>                         cmd->scsi_done(cmd);
+>>>>                         goto out;
+>>>>                 }
+>>>>                 fallthrough;
+>>>>         case UFSHCD_STATE_RESET:
+>>>> 
+>>>> Thanks,
+>>>> 
+>>>> Can Guo.
+>>>> 
+>>>>>> 
+>>>>>> Thanks,
+>>>>>> 
+>>>>>> Can Guo.
+>>>>>> 
+>>>>>>> 
+>>>>>>>>      ufshcd_rpm_get_sync(hba);
+>>>>>>>>      if 
+>>>>>>>> (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) 
+>>>>>>>> ||
+>>>>>>>>          hba->is_wlu_sys_suspended) {
+>>>>>>>> @@ -5951,6 +5956,7 @@ static void 
+>>>>>>>> ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>>>>>>>>          ufshcd_clk_scaling_suspend(hba, false);
+>>>>>>>>      ufshcd_clear_ua_wluns(hba);
+>>>>>>>>      ufshcd_rpm_put(hba);
+>>>>>>>> +    unlock_system_sleep();
+>>>>>>>>  }
+>>>>>>>> 
+>>>>>>>>  static inline bool ufshcd_err_handling_should_stop(struct 
+>>>>>>>> ufs_hba *hba)
+>>>>>>>> @@ -9053,16 +9059,13 @@ static int ufshcd_wl_suspend(struct 
+>>>>>>>> device *dev)
+>>>>>>>>      ktime_t start = ktime_get();
+>>>>>>>> 
+>>>>>>>>      hba = shost_priv(sdev->host);
+>>>>>>>> -    down(&hba->host_sem);
+>>>>>>>> 
+>>>>>>>>      if (pm_runtime_suspended(dev))
+>>>>>>>>          goto out;
+>>>>>>>> 
+>>>>>>>>      ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
+>>>>>>>> -    if (ret) {
+>>>>>>>> +    if (ret)
+>>>>>>>>          dev_err(&sdev->sdev_gendev, "%s failed: %d\n", 
+>>>>>>>> __func__,  ret);
+>>>>>>>> -        up(&hba->host_sem);
+>>>>>>>> -    }
+>>>>>>>> 
+>>>>>>>>  out:
+>>>>>>>>      if (!ret)
+>>>>>>>> @@ -9095,7 +9098,6 @@ static int ufshcd_wl_resume(struct device 
+>>>>>>>> *dev)
+>>>>>>>>          hba->curr_dev_pwr_mode, hba->uic_link_state);
+>>>>>>>>      if (!ret)
+>>>>>>>>          hba->is_wlu_sys_suspended = false;
+>>>>>>>> -    up(&hba->host_sem);
+>>>>>>>>      return ret;
+>>>>>>>>  }
+>>>>>>>>  #endif
+>>>>>>>> 
