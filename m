@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494E23B65AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314583B65AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238072AbhF1Pd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:33:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
+        id S233948AbhF1Pdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233000AbhF1PHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:07:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D0D61459;
-        Mon, 28 Jun 2021 14:53:34 +0000 (UTC)
+        id S236007AbhF1PHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:07:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C5CB61221;
+        Mon, 28 Jun 2021 14:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624892015;
-        bh=cO5kHhatIh9piqyE5gPyYNyoexdl3Z8SQfMo/3BHGJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=heDebRQEjFwCVumQPeQUnzfUQtQGjXt4csXcvrh9ZJWz3QhC7xrnyAbA6EHJXqauN
-         lAuh2S0IC2boNiPkGf/DmxPhigmN41Ly1v5f3lB9iMMikJjsSY91c+mR3Uo/6bOrFh
-         8WHt3ycUzBHy1ccnJYdP1r6aOXK2LOgUAFcExMhpSHx4XHmrAnBNFmlm5xyYhKULXy
-         oxirNewCZ36buCXu1RmmnZCNi5Dr0k82OwuUjQ8O1jj45YTNeqowjYoXAbxh3zOuZ9
-         EYc+r0M+LxMOPq2t/Og56vtm/YAKbXpEU2ZoJgXsYdiHOcYPz8FrjXVvjZC9Vp0If6
-         7UEfHPRo3D3FA==
-Date:   Mon, 28 Jun 2021 15:53:07 +0100
+        s=k20201202; t=1624892082;
+        bh=YktmvOo6I/38VMesbg8uHTU9HrJHbfBNO3dk0+9OyGA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=afWBYeXsQ3VAcL8j9kO6VP01f7pkStwgluFxv4TlfuSGvLCfRhVbNsQwtB7tLlaOV
+         Btp/VqMWQIolUSDZEmYSKJpq7/vW5VegE7VvceYP+BYErksF/LQqXnaTJA/gtgLC7w
+         /tBf/nrHj9/tuHcsA3ZwSRibETfL3Ko99L7Waf3SeyVDPetwFOD4YuiNvoMUp+A6Yi
+         +VM3ueKc+mpcpyjgdingyI/pfBhcCMcLyf3+nOJ+8SFfAEGA0iimRVUwAwCPIeS9dd
+         8yFsp06k92LCzgfxt98FFkRqpQr9RGvFMnHp2QHgBc3JarCxU7uxLA1aDkfVE/m+VI
+         cA+alvoWweDgg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH] regulator: devres: disable regulator on release if
- refcount is 1
-Message-ID: <20210628145307.GC4492@sirena.org.uk>
-References: <20210625125307.330831-1-aardelean@deviqon.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lMM8JwqTlfDpEaS6"
-Content-Disposition: inline
-In-Reply-To: <20210625125307.330831-1-aardelean@deviqon.com>
-X-Cookie: Someone is speaking well of you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regmap updates for v5.14
+Date:   Mon, 28 Jun 2021 15:54:02 +0100
+Message-Id: <20210628145442.0C5CB61221@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
 
---lMM8JwqTlfDpEaS6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
 
-On Fri, Jun 25, 2021 at 03:53:07PM +0300, Alexandru Ardelean wrote:
+are available in the Git repository at:
 
-> This means that the last 'regulator_disable()' (on driver remove) becomes
-> optional.
-> If there are any unbalanced regulator_enable()/regulator_disable() calls,
-> the 'enable_count' won't be touched and 'regulator_put()' will print a
-> warning.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-v5.14
 
-This doesn't seem like it's going to make reviewing and debugging
-reference counting issues any easier, it seems even more of a concern
-than a devm version TBH.  It's also not clear why if we were doing this
-we'd restrict it to a single reference.
+for you to fetch changes up to d17032f2befaceef2c8c6b761ae657bc700b0be3:
 
---lMM8JwqTlfDpEaS6
-Content-Type: application/pgp-signature; name="signature.asc"
+  Merge remote-tracking branch 'regmap/for-5.14' into regmap-next (2021-06-14 20:41:59 +0100)
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+regmap: Updates for v5.14
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDZ4lMACgkQJNaLcl1U
-h9DNogf9E6uz6xiKwtF8yxAaAPWRSB7n/C7UjIAn3qIoGXRZi9mFFGAh2qdea2an
-WBVkoi0PYtuiqlhSP2b1WYY/jWsS1ElG/HKnWaXpv3E3Nt5NdMQT85QuyWSpvir+
-WbyMsiUSt4ACurCG+AOzRWKB/Hz1sEQHBg2UjVcK7SzoHhsKR4/YZ05XW91jHwYY
-U1vyGsnmyuILGz1WlW0VVCyo3ansk40atNrWskDyGsXKQMhv2hhUOWY6LKt+f+mV
-u9CzCZ4K0eQTTFFvx6QO7oIXUaqwed+Z9L/XwknphyLUIpK1bzAjpNt+tnWHEJsO
-FjGHS0eBSOEzTMWE7GWf8USHiOA7jg==
-=9qzN
------END PGP SIGNATURE-----
+The big thing this release is support for accessing the register maps of
+MDIO devices via the framework.  We've also added support for 7/17
+register formats on bytestream transports and inverted status registers
+in regmap-irq.
 
---lMM8JwqTlfDpEaS6--
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      regmap: mdio: Don't modify output if error happened
+
+Antoniu Miclaus (1):
+      regmap: add support for 7/17 register formating
+
+Lucas Tanure (1):
+      regmap-i2c: Set regmap max raw r/w from quirks
+
+Mark Brown (2):
+      Merge series "RTL8231 GPIO expander support" from Sander Vanheule <sander@svanheule.net>:
+      Merge remote-tracking branch 'regmap/for-5.14' into regmap-next
+
+Maxim Kochetkov (1):
+      regmap-irq: Introduce inverted status registers support
+
+Sander Vanheule (5):
+      regmap: Add MDIO bus support
+      regmap: mdio: Clean up invalid clause-22 addresses
+      regmap: mdio: Add clause-45 support
+      regmap: mdio: Fix regmap_bus pointer constness
+      regmap: mdio: Reject invalid addresses
+
+ drivers/base/regmap/Kconfig       |   6 +-
+ drivers/base/regmap/Makefile      |   1 +
+ drivers/base/regmap/regmap-i2c.c  |  45 ++++++++++++---
+ drivers/base/regmap/regmap-irq.c  |   7 +++
+ drivers/base/regmap/regmap-mdio.c | 116 ++++++++++++++++++++++++++++++++++++++
+ drivers/base/regmap/regmap.c      |  15 +++++
+ include/linux/regmap.h            |  40 +++++++++++++
+ 7 files changed, 222 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/base/regmap/regmap-mdio.c
