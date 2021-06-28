@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59643B60E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DE73B60F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233711AbhF1ObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35356 "EHLO mail.kernel.org"
+        id S234096AbhF1ObY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233977AbhF1O2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:28:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70205619BF;
-        Mon, 28 Jun 2021 14:26:10 +0000 (UTC)
+        id S233815AbhF1O3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:29:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C37961C77;
+        Mon, 28 Jun 2021 14:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890371;
-        bh=hNb6fmoEw17cPpw3/BoKnm5hJ+ZN+5cx/Gw6Kva35tc=;
+        s=k20201202; t=1624890372;
+        bh=cfmSZGDC0MM1YW50M3mF32IzWWEEz8zXBPi3OUgs4cw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RHT9vqwIvzQnntkM34SAHqFPj824AyML9Dq5IhLpsALycvuue4Fhy1Y+qiw8DWW0a
-         hpZgNYiMaeZ2oZKZAZLA6PP8AjapgT4zXg7SsNHrn9UIQkadSRdfVx8kNgLJ+PdnuN
-         ZvWxBmwnDlwWYtE5+/ZZgDEFrGkDzkn0cM0RkVOEWFFzky+VBesF4ZCfLthTT3pYF7
-         XnidNjRSRcSrvKVb88r43k57Pt/MUbm4sszv+Nn2IWZ8B13H2oqgcyxE9nKV1tzgTN
-         ZagOZIdcqPryqbx53ZtqhYCs58NkKiWDv4S4BN9qKxBpiNpBSaVtio5rtYCt6TZSEK
-         1DrjmLJSdEu1Q==
+        b=anRmve+dfmONfez5GTclwZNQbl8FhGWDbmdFvI4OvBvyVSpgPrbZDVp5OcgSlBavC
+         JsX5WVKh+6V9Snp+TtCuEofBQ/CjRXo9+EWj+vt/loy3q4CnsuDmWOFqyrl8cvCpGy
+         Gm902BXtseDuqcHKHneXigwo/ss279ceEwd5LzMZeR3FLSgadXYk9Tcx7m/NKw+x7W
+         bfv5eWAiRReGSk2X5GvkfMWEEaETxG8IBAg29UyUmfQyV5FUtHnpO10rewSH8i3bJE
+         KLVnqfMlM5ySWaK3pqUQytAqCBkH1mFIphw+aErHNd8m8MH5zZqZE0Hvg6z6w6L9oE
+         Y1jxcQPN3H2ew==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, Nayna Jain <nayna@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 001/101] module: limit enabling module.sig_enforce
-Date:   Mon, 28 Jun 2021 10:24:27 -0400
-Message-Id: <20210628142607.32218-2-sashal@kernel.org>
+Cc:     Yifan Zhang <yifan1.zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.10 003/101] Revert "drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to cover full doorbell."
+Date:   Mon, 28 Jun 2021 10:24:29 -0400
+Message-Id: <20210628142607.32218-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
 References: <20210628142607.32218-1-sashal@kernel.org>
@@ -49,64 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mimi Zohar <zohar@linux.ibm.com>
+From: Yifan Zhang <yifan1.zhang@amd.com>
 
-[ Upstream commit 0c18f29aae7ce3dadd26d8ee3505d07cc982df75 ]
+commit baacf52a473b24e10322b67757ddb92ab8d86717 upstream.
 
-Irrespective as to whether CONFIG_MODULE_SIG is configured, specifying
-"module.sig_enforce=1" on the boot command line sets "sig_enforce".
-Only allow "sig_enforce" to be set when CONFIG_MODULE_SIG is configured.
+This reverts commit 1c0b0efd148d5b24c4932ddb3fa03c8edd6097b3.
 
-This patch makes the presence of /sys/module/module/parameters/sig_enforce
-dependent on CONFIG_MODULE_SIG=y.
+Reason for revert: Side effect of enlarging CP_MEC_DOORBELL_RANGE may
+cause some APUs fail to enter gfxoff in certain user cases.
 
-Fixes: fda784e50aac ("module: export module signature enforcement status")
-Reported-by: Nayna Jain <nayna@linux.ibm.com>
-Tested-by: Mimi Zohar <zohar@linux.ibm.com>
-Tested-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/module.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 908d46abe165..185b2655bc20 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -272,9 +272,18 @@ static void module_assert_mutex_or_preempt(void)
- #endif
- }
+diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+index 3c92dacbc24a..fc8da5fed779 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -6590,12 +6590,8 @@ static int gfx_v10_0_kiq_init_register(struct amdgpu_ring *ring)
+ 	if (ring->use_doorbell) {
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_LOWER,
+ 			(adev->doorbell_index.kiq * 2) << 2);
+-		/* If GC has entered CGPG, ringing doorbell > first page doesn't
+-		 * wakeup GC. Enlarge CP_MEC_DOORBELL_RANGE_UPPER to workaround
+-		 * this issue.
+-		 */
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_UPPER,
+-			(adev->doorbell.size - 4));
++			(adev->doorbell_index.userqueue_end * 2) << 2);
+ 	}
  
-+#ifdef CONFIG_MODULE_SIG
- static bool sig_enforce = IS_ENABLED(CONFIG_MODULE_SIG_FORCE);
- module_param(sig_enforce, bool_enable_only, 0644);
- 
-+void set_module_sig_enforced(void)
-+{
-+	sig_enforce = true;
-+}
-+#else
-+#define sig_enforce false
-+#endif
-+
- /*
-  * Export sig_enforce kernel cmdline parameter to allow other subsystems rely
-  * on that instead of directly to CONFIG_MODULE_SIG_FORCE config.
-@@ -285,11 +294,6 @@ bool is_module_sig_enforced(void)
- }
- EXPORT_SYMBOL(is_module_sig_enforced);
- 
--void set_module_sig_enforced(void)
--{
--	sig_enforce = true;
--}
--
- /* Block module loading/unloading? */
- int modules_disabled = 0;
- core_param(nomodule, modules_disabled, bint, 0);
+ 	WREG32_SOC15(GC, 0, mmCP_HQD_PQ_DOORBELL_CONTROL,
 -- 
 2.30.2
 
