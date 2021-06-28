@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC333B65B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375573B6609
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbhF1Pe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:34:26 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58951 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237395AbhF1PO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:14:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624893118;
-        bh=lnaS0khkFiNZeGbwO0JvtszbWiBzvDOrzu+0uBQfHdE=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=MZ5yCBxHL7wmKQdC5r56PfgyN1dfc/9LaTY3VYlwBPRHRR11HUpDA3s0V9CtJdk7z
-         tFY7Bovi42NA0va0lEodFE0bNwR/mrd2uflhZwi+H9eFPFVH/Z3FmPYJxYgbEcoWTZ
-         mJ5RaU0Pl5GtEGR0KDAC/FAevxqgs/CYvROoiHGU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.151.107]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MiacR-1lLXIY3qOF-00fjnf; Mon, 28
- Jun 2021 17:11:58 +0200
-Message-ID: <a3351a71cff5d00d7815ff2ef4ec19786d8db0fd.camel@gmx.de>
-Subject: Re: v5.13 regression - suspend went belly up
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Date:   Mon, 28 Jun 2021 17:11:57 +0200
-In-Reply-To: <20210628145116.GB3840@techsingularity.net>
-References: <760cf981588a31b9a51fa1f6d485d5dbdc61400a.camel@gmx.de>
-         <20210628145116.GB3840@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S236102AbhF1Pta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236468AbhF1PtV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:49:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA67C07022D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UCh6iBPEHja/qgpskO076dXtlVpWQGRfETtCClODLVM=; b=KhMq2skMcLoT0pZ6RSLrk2YnT4
+        08mYoUEg7SCbX/wfnfg+oa4pp81I00dbMmwqWfX1b5KWKyCeLvSwQqRZzRrE6/2tW0JJYDYjvL8U0
+        Qjsmv+XE3iZz6+xHjkga+5/veHTMxC3fTc+BSHHkRi8RxHSZkQ+JmNxxZ4vlfbl5EsncCdchB31In
+        aS5NR8SnFekEqOYUVoQyaTt+D2pQ5PyD8dKiBQ0pLVRWy9Gdy1UD4WYZ8slisp1gQzCJt3GdZg7yA
+        df/S+HnBPlCGVlUJknXG7V+AKT7zEx0wcQfBS3lj9nU7ta98QCVxSSgw1bxjxckNhfGIlmqeElwiU
+        aIVBZoqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxsvt-0038AI-T6; Mon, 28 Jun 2021 15:12:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87A8130022B;
+        Mon, 28 Jun 2021 17:12:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 466192041E874; Mon, 28 Jun 2021 17:12:17 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 17:12:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
+        bsegall@google.com, dietmar.eggemann@arm.com,
+        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
+        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
+        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
+        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
+        shanpeic@linux.alibaba.com, tj@kernel.org,
+        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v6 2/3] sched/fair: Add cfs bandwidth burst statistics
+Message-ID: <YNnm0bUfCmB54FYW@hirez.programming.kicks-ass.net>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+ <20210621092800.23714-3-changhuaixin@linux.alibaba.com>
+ <YNnkDnJtliEInwTY@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VyIUIPEEyLsTEphaI5KPmcP+gcPAmRSJXxZcf86WEozwKDwwLrX
- k/BYmMv0ctC3SszWIBZhAZfOlvXT6K/tZhxqEfMvb1uwoLUhyYhkzRUNqhvnXYyVZOIYlMJ
- xWqHLFjGYVQ/qvqwUtaQUYaz9GEICWRzJFtpEh9m+O6zsAeQuIFqLmd6+bsv21vbnhLgxMU
- Ad7bUXCnJQHcJz+pnyBSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ql4SHUEsOso=:5LQwE3H+ExbnBghiTkKmG0
- 0j80P68f01tQcA1rWP6RBGTZaXaGTmW2bULdWOIzbR+2DkEeymncIULxY07aKcWjzopYqgJw5
- LDF5qTiJhHcd+REwPqXrjWZpQD7Wglz44xHicSaNtBT20QfjRqVwdFnniFTd3RmMNLSCI1gZy
- Wa9RNtACKcn5RUOJb5xEjKsheerogsXLUqQ4o4grRN9cw2ojRRIJlATV1i+/kZ/3XsWkFlyHp
- myRabau63NRxSMLrEGwcgwoKgDr3AGnEaUCHYn+Ju6mlDoeEHhAPAZSgdo2YHDYEZkI8D716E
- fQHbQ47Xz9O354+RhvLlnbhKOPi2RJrZEHVueL06AVIcfL3AG/F5/4xdr270JeJV1lUtSZp0U
- PDIngyMHpePU5tSGhtbtZVpRHTqglfCmmsfbtqLZk4WEbv/ozFAusMQlYb1NSnaGT+BpbBwJM
- vN2OgN0azXvkJ6kcSPJ3v6YvNCujn5eM45boe76mNnbguYat7rASbTmtOCnTLC47OyRiYsrRF
- 71Gzbz3z0hrXIfVxW1oTcCFcptjIOTHCxiyaLQgtU+c8igEG+Zv9OXLu8JWZ6AnrDKWhkzALF
- MeacKvIDraE5KqAoB/HrFJtDipP8goP35S/3vVtru7v2JliiVBde1n9KT0sMDFg//usCufEbQ
- DA0h/8kslssE4R1ELRBUiDQpdyn7LtJAPChqGIcoKHUJjF8XRY3zGcbfjkUzpWwJaV9VvkiyN
- 3YbFK7Wa3+PsuI8RX0dR0+3LEcevJIVSkTuWlUKNLxAj5hbp1jmBWBFCPrpVE7kYOQBEGvD+3
- nuZ+C2WTootg8AcSk/Zjhb57avE926g3xHTza78oD4BD8LnY8Ea3QMr+UGKpbydsqOfMd/Oaw
- OzyxZlIMGhQQS4EFMf/XOJiwd3kakOthHze+I/TM4r4NCd8+tY+Yx0Z+AwNnsJ4ZWwiN9AsvS
- Nic8g9VA07OdSpVp3KYdqslnr65kU9iFAnjztUe6LYyaPAZgtyE5LvTqPGl3A4Fm4V9fppa4a
- 3sZLqmFMLI1mnNZhu9BfqJvg81bs9LAY7b5a6aV5+cxPkuDSfi29nugZiwjODGLJGtl5HVlmH
- zedliTuPYG1KGDHDSeo9E3GnbFBGhE5o+7e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNnkDnJtliEInwTY@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-28 at 15:51 +0100, Mel Gorman wrote:
->
-> Hi Mike, this may be NFS-related fallout given that it appears in the
-> stack. Can you try this please?
+On Mon, Jun 28, 2021 at 05:00:30PM +0200, Peter Zijlstra wrote:
+> I was hoping we could get away with something simpler, like maybe:
+> 
+> 	u64 old_runtim = cfs_b->runtime;
+> 
+> 	cfs_b->runtime += cfs_b->quota
+> 	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+> 
+> 	if (cfs_b->runtime - old_runtime > cfs_b->quota)
+> 		cfs_b->nr_bursts++;
+> 
+> Would that be good enough?
 
-Yup, all better.  Thanks.
-
-	-Mike
-
+Bah,, of course not ... :-/ At best we can detect == quota, which might
+be a good enough indicator of burst.
