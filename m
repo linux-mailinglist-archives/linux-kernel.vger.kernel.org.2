@@ -2,138 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482F83B6876
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52963B687C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhF1Sad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:30:33 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57082 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236486AbhF1SaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:30:01 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SIHgNO176957;
-        Mon, 28 Jun 2021 14:27:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yhI9Htr+Isf+QMPOa+/1CcKkeoTijDFM9CPPE8eUNqY=;
- b=HVufB39nUYZcFTQ5RkjYEjlmUT4GTCaytG/FPmVwlp+5/4mzRAlaTYStogEj8g9ahzts
- zvsga3aGgolTdNIaizwotWcdvuAlcd3ZFYduXQwpm2crNa6VgvW2cTeg/CJNH9uDgUOQ
- bTbet9rvX6Jw35n/yAWmKp+SVRWnoxg35sC2GL7rxm8xdHtqg2xHA1lP4SUP+knTtgHc
- qDjlNOFTxu7PiRJHsf4AqgE2ZN3r2SByo8AdxX6xhp4Y9C+pBj2YdGWtQEO8YOuBVrXe
- 4PHclmybhnRnCyynAJHR1rxPlpzNXs3B0lx79sXgQ8Xi2+k8fXVSKwwxt+PzTWkBrQS7 jQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fkk0r7cq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:27:34 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SIOVHf028356;
-        Mon, 28 Jun 2021 14:27:33 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fkk0r7c4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:27:33 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SIMNw1031904;
-        Mon, 28 Jun 2021 18:27:32 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 39ejyx41h2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 18:27:32 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SIRVpv31588682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 18:27:31 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5280D7890E;
-        Mon, 28 Jun 2021 18:27:30 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC96D788E2;
-        Mon, 28 Jun 2021 18:27:27 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.148.87])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Jun 2021 18:27:27 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
- <20210628173448.GG4459@nvidia.com>
- <cc14f238-ba11-e388-06ec-027912fc313c@linux.ibm.com>
- <20210628182248.GH4459@nvidia.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <f098fc11-d328-8130-bab9-bf38e18a7400@linux.ibm.com>
-Date:   Mon, 28 Jun 2021 14:27:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233203AbhF1SfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:35:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:8039 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230220AbhF1SfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 14:35:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195162442"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="195162442"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 11:32:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="454588644"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga008.jf.intel.com with ESMTP; 28 Jun 2021 11:32:37 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com, amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH -next] thermal: int340x: processor_thermal: Fix warning for return value
+Date:   Mon, 28 Jun 2021 11:32:32 -0700
+Message-Id: <20210628183232.62877-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210628182248.GH4459@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Nv96jAtlyoKi5Tc2FgpF9Z1TjRAVqDqe
-X-Proofpoint-ORIG-GUID: gng92e5pMiaR7jyLm9gPHSGWaVH_OnzP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 phishscore=0 bulkscore=0 adultscore=0
- malwarescore=0 mlxscore=0 spamscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106280118
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix smatch warnings:
+drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c:258 proc_thermal_pci_probe() warn: missing error code 'ret'
 
+Use PTR_ERR to return failure of thermal_zone_device_register().
 
-On 6/28/21 2:22 PM, Jason Gunthorpe wrote:
-> On Mon, Jun 28, 2021 at 02:20:55PM -0400, Tony Krowiak wrote:
->>
->> On 6/28/21 1:34 PM, Jason Gunthorpe wrote:
->>> On Fri, Jun 25, 2021 at 06:07:58PM -0400, Tony Krowiak wrote:
->>>>    static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->>>>    {
->>>> +	mutex_lock(&matrix_dev->lock);
->>>> +	if ((matrix_mdev->kvm) && (matrix_mdev->kvm->arch.crypto.crycbd)) {
->>>>    		mutex_unlock(&matrix_dev->lock);
->>>> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->>>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->>>> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
->>>> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->>>>    		mutex_lock(&matrix_dev->lock);
->>>>    		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->>>>    		kvm_put_kvm(matrix_mdev->kvm);
->>>>    		matrix_mdev->kvm = NULL;
->>>> +		mutex_unlock(&matrix_dev->lock);
->>>>    	}
->>> Doesn't a flow exit the function with matrix_dev->lock held he
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ .../intel/int340x_thermal/processor_thermal_device_pci.c      | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Yes, you are correct. Stupid mistake.
-
->> How can that happen? What flow?
-> When the if isn't taken
->
->>> Write it with 'success oriented flow'
->> I'm not sure what you mean, can you clarify this statement?
-> Basically, don't write the bulk of the function under an if statement
->
-> mutex_lock(&matrix_dev->lock);
-> if (!matrix_mdev->kvm || !matrix_mdev->kvm->arch.crypto.crycbd) {
->      mutex_unlock(&matrix_dev->lock);
->      return;
-> }
-
-Sure.
-
->
-> Jason
->
+diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+index fea4a3ffd838..99ac7994b8f4 100644
+--- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
++++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
+@@ -254,8 +254,10 @@ static int  proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device
+ 	pci_info->tzone = thermal_zone_device_register("TCPU_PCI", 1, 1, pci_info,
+ 							&tzone_ops,
+ 							&tzone_params, 0, 0);
+-	if (IS_ERR(pci_info->tzone))
++	if (IS_ERR(pci_info->tzone)) {
++		ret = PTR_ERR(pci_info->tzone);
+ 		goto err_ret_mmio;
++	}
+ 
+ 	/* request and enable interrupt */
+ 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+-- 
+2.27.0
 
