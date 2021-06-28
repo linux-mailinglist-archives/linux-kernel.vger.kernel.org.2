@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9163B65CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967CF3B65DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhF1Piu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:38:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60062 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236105AbhF1Ph4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:37:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624894530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yXwdIk3X8hXQxAHomN/zLsNCwHoCvetUnw2dOV3ipe8=;
-        b=RKvLHe4/ThqnKTNqRBIhVIaUeT+lXCuuHs6focPnjNZ4fdGK8xBISB2s5Wi25xRT7N+qHt
-        GHapbhx+W1gbLpVjqXE4ZnOAkc/8OgCj6umEuqkTM+I8pVWfEc0l7gwGwjrhQdvlBoM/FO
-        crcbdQTEqJ3i9fYx7TUl6maVtsVlU3k=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-tAKEMIPPNH-mwpouXFpV9g-1; Mon, 28 Jun 2021 11:35:28 -0400
-X-MC-Unique: tAKEMIPPNH-mwpouXFpV9g-1
-Received: by mail-ed1-f69.google.com with SMTP id o8-20020aa7dd480000b02903954c05c938so2942079edw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:35:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yXwdIk3X8hXQxAHomN/zLsNCwHoCvetUnw2dOV3ipe8=;
-        b=Rx51WpdPFMy9B3/3bSUQX8p8nKikuu9b/XqBLxh2hU2xqyUYsDo0cMJCAS7sjMgMk4
-         l8HAa/8V5OZGhJ4oDTW6rPp1SQwv7ifwyPmRC2VLY2Gj/teFAHf7nwk2/sK7cEkzp0H+
-         +XZ5RfYptY6/Q5Ev6Hp2rV1cAynIDSaT4qyYlpR396gRoMI0s3hKhd6EOhF5cpmvqKaZ
-         Mtw8Sb1KHuDsWuYMWJeRNtZXgUK1s1veCfk2lZWx3FBCsbR1AgTF9bKe/fxRCYDasFx8
-         62zVegPsfMihiKPgRZGTSJJz3MmpdmE03+V5o7y3AE2SYebBopHlSftt9uUnaDAgjGA3
-         Acyg==
-X-Gm-Message-State: AOAM530HsUWhafn5wIb6pBd7c9A/IoNB/4WshD1D2FI2r4MH9xZWn7ZZ
-        2adXxbs6f2dbKJH72n+1P333iTOd/dYsXR3Cxsb2gJ16Ny9UmodkR6ifI4QYvYGLBy8M6g6f0O5
-        mhOTLdeUwKpEQnwMQW9IZ+vcollfa+dB65E0I4ny9C/IFRSOOqGDdI2nKo0K1XdG7duGI07PDwr
-        hP
-X-Received: by 2002:aa7:c607:: with SMTP id h7mr89206edq.13.1624894527324;
-        Mon, 28 Jun 2021 08:35:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKWcVzXXSjUNAeYogJWwHAKcI3fCfXMxf8iGT7Bp9zXKW8ASVkVRrfL85WYQ0LvKJPEAucQg==
-X-Received: by 2002:aa7:c607:: with SMTP id h7mr89188edq.13.1624894527155;
-        Mon, 28 Jun 2021 08:35:27 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gz17sm7039974ejc.91.2021.06.28.08.35.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 08:35:26 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: Fix a resource leak in sd_int_dpc
-To:     Xiangyang Zhang <xyz.sun.ok@gmail.com>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, fabioaiuto83@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210628152239.5475-1-xyz.sun.ok@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1ed687fa-3831-8dcf-35a4-6e32f5c26e97@redhat.com>
-Date:   Mon, 28 Jun 2021 17:35:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235498AbhF1PlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:41:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238156AbhF1PkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBFDC61465;
+        Mon, 28 Jun 2021 15:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624894666;
+        bh=eI2Fxjq2q3yk0vo9kgq4VdGiAnhKB9IrVvGHiaOvbaM=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=rkTVeWwWBCwhh5R6NA+GjArDyHlgG7LyRi28i/da3j+inKpdhyagF7R5tbqLAxofm
+         MhFUJm/S8odKz89GhIAG1tfLex3qB+yEoxlOEfaiy4ZHkjykrukR78CPmRHlDiM8mW
+         2tbl46gi8gHDfFpwits5I0zeOcRjOMkkSljtWcGBarurx4AU2u1ocJpglUzgLEeStg
+         JRWRzv++FxJtP/xY0y5XbybxRB5mD62dGi/epL6pAFtVnTmYtGQ8H3tfk5oERTxlLl
+         C0C1k8lVEmsYRcarROuAF86pPO9RZmq5SNzJhKecgG6MUSHhvhG4FrsILGDgEDE/Kw
+         YO+45PZo1ndSg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A9FC95C065A; Mon, 28 Jun 2021 08:37:46 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 08:37:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     liuyixian@huawei.com
+Cc:     jgg@nvidia.com, liweihang@huawei.com, sfr@canb.auug.org.au,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Subject: Lockdep splat in -next
+Message-ID: <20210628153746.GA2237462@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210628152239.5475-1-xyz.sun.ok@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello, Yixian Liu,
 
-On 6/28/21 5:22 PM, Xiangyang Zhang wrote:
-> The "c2h_evt" variable is not freed when function call
-> "c2h_evt_read_88xx" failed
-> 
-> Fixes: 554c0a3abf21 ("staging: Add rtl8723bs sdio wifi driver")
-> Signed-off-by: Xiangyang Zhang <xyz.sun.ok@gmail.com>
+The following -next commit results in a lockdep splat:
 
-Thanks, patch looks good to me:
+591f762b2750 ("RDMA/hns: Remove the condition of light load for posting DWQE")
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+The repeat-by is as follows:
 
-Regards,
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --trust-make --duration 1 --configs TASKS01
 
-Hans
+The resulting splat is as shown below.  This appears to have been either
+fixed or obscured by a later commit, but it does affect bisectability.
+Which I found out about the hard way.  ;-)
+
+							Thanx, Paul
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-rc1+ #2218 Not tainted
+------------------------------------------------------
+rcu_torture_sta/66 is trying to acquire lock:
+ffffffffa0063c90 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_enable+0x9/0x20
+
+but task is already holding lock:
+ffffffffa01754e8 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-> ---
->  drivers/staging/rtl8723bs/hal/sdio_ops.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> index 2dd251ce177e..a545832a468e 100644
-> --- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> +++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> @@ -909,6 +909,8 @@ void sd_int_dpc(struct adapter *adapter)
->  				} else {
->  					rtw_c2h_wk_cmd(adapter, (u8 *)c2h_evt);
->  				}
-> +			} else {
-> +				kfree(c2h_evt);
->  			}
->  		} else {
->  			/* Error handling for malloc fail */
-> 
+-> #1 (slab_mutex){+.+.}-{3:3}:
+       __mutex_lock+0x99/0x950
+       slub_cpu_dead+0x15/0xf0
+       cpuhp_invoke_callback+0x181/0x850
+       cpuhp_invoke_callback_range+0x3b/0x80
+       _cpu_down+0xdf/0x2a0
+       cpu_down+0x2c/0x50
+       device_offline+0x82/0xb0
+       remove_cpu+0x1a/0x30
+       torture_offline+0x80/0x140
+       torture_onoff+0x147/0x260
+       kthread+0x123/0x160
+       ret_from_fork+0x22/0x30
 
+-> #0 (cpu_hotplug_lock){++++}-{0:0}:
+       __lock_acquire+0x12e6/0x27c0
+       lock_acquire+0xc8/0x3a0
+       cpus_read_lock+0x26/0xb0
+       static_key_enable+0x9/0x20
+       __kmem_cache_create+0x39e/0x440
+       kmem_cache_create_usercopy+0x146/0x250
+       kmem_cache_create+0xd/0x10
+       rcu_torture_stats+0x79/0x280
+       kthread+0x123/0x160
+       ret_from_fork+0x22/0x30
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(slab_mutex);
+                               lock(cpu_hotplug_lock);
+                               lock(slab_mutex);
+  lock(cpu_hotplug_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by rcu_torture_sta/66:
+ #0: ffffffffa01754e8 (slab_mutex){+.+.}-{3:3}, at: kmem_cache_create_usercopy+0x2d/0x250
+
+stack backtrace:
+CPU: 1 PID: 66 Comm: rcu_torture_sta Not tainted 5.13.0-rc1+ #2218
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ dump_stack+0x6d/0x89
+ check_noncircular+0xfe/0x110
+ ? rcu_read_lock_sched_held+0x4d/0x80
+ ? __alloc_pages+0x329/0x360
+ __lock_acquire+0x12e6/0x27c0
+ lock_acquire+0xc8/0x3a0
+ ? static_key_enable+0x9/0x20
+ cpus_read_lock+0x26/0xb0
+ ? static_key_enable+0x9/0x20
+ static_key_enable+0x9/0x20
+ __kmem_cache_create+0x39e/0x440
+ kmem_cache_create_usercopy+0x146/0x250
+ ? rcu_torture_stats_print+0xd0/0xd0
+ kmem_cache_create+0xd/0x10
+ rcu_torture_stats+0x79/0x280
+ kthread+0x123/0x160
+ ? kthread_park+0x80/0x80
+ ret_from_fork+0x22/0x30
