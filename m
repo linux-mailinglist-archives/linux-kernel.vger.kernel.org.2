@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0B53B6352
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2283B6387
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236422AbhF1OzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:55:24 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59592 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234491AbhF1Ol0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:41:26 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0L93tlgmsoZAA--.8933S3;
-        Mon, 28 Jun 2021 22:38:54 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] MIPS: Loongson64: DTS: Add pm block node for Loongson-2K1000
-Date:   Mon, 28 Jun 2021 22:38:52 +0800
-Message-Id: <20210628143852.11504-2-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210628143852.11504-1-zhangqing@loongson.cn>
-References: <20210628143852.11504-1-zhangqing@loongson.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxb0L93tlgmsoZAA--.8933S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF43KFWxZFyxZFW8GFWxZwb_yoWfCFg_ta
-        s293WkCrWfJF4ft3y8Xr1UGFy3u3y7Z3WrCFn8XF10qa90vFn3JFWUAayDCr1fWFyY9rs3
-        Xr4kWr18AF1xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbf8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUCVW8JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF
-        7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F4
-        0Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC
-        6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8M7K3UUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        id S234745AbhF1O5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:57:34 -0400
+Received: from kanga.kvack.org ([205.233.56.17]:58349 "EHLO kanga.kvack.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234382AbhF1OnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:43:18 -0400
+Received: by kanga.kvack.org (Postfix, from userid 63042)
+        id C8C298D0016; Mon, 28 Jun 2021 10:40:51 -0400 (EDT)
+Date:   Mon, 28 Jun 2021 10:40:51 -0400
+From:   Benjamin LaHaise <ben@communityfibre.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: linux-mm@kvack.org - limping on a backup
+Message-ID: <20210628144051.GM4058@kvack.org>
+References: <20210622145954.GA4058@kvack.org> <214c41fae1f1b148e5b04a58c1b018fb091d7e83.camel@HansenPartnership.com> <20210625171259.GG4058@kvack.org> <6f309c63f5b7be968ae679e81ab959db05681e8a.camel@HansenPartnership.com> <20210625192607.GH4058@kvack.org> <20210628134607.GA4604@ziepe.ca> <20210628135352.GL4058@kvack.org> <20210628142659.GB4604@ziepe.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628142659.GB4604@ziepe.ca>
+User-Agent: Mutt/1.4.2.2i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module is now supported, enable it.
+On Mon, Jun 28, 2021 at 11:26:59AM -0300, Jason Gunthorpe wrote:
+> Isn't a 7-bit conversion what I pointed at last time we talked about
+> this?
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I changed several options in postfix last time this was raised, but as
+nobody ever provided a test case, I had no way of knowing if it worked or
+not.  Personally, I think DKIM provides very little value considering that
+a good chunk of the spam that goes by has valid DKIM signatures, not to
+mention that it doesn't help with modern phishing attempts much either.
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..e31176ac0ac2 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -101,6 +101,15 @@ uart0: serial@1fe00000 {
- 			no-loopback-test;
- 		};
- 
-+		pm: power-controller {
-+			device_type = "power management";
-+			compatible = "loongson, reset-controller";
-+			reg = <0 0x1fe0700c 0 0x8>,
-+				<0 0x1fe07014 0 0x8>,
-+				<0 0x1fe07030 0 0x8>;
-+			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
-+		};
-+
- 		pci@1a000000 {
- 			compatible = "loongson,ls2k-pci";
- 			device_type = "pci";
+> DKIM assumes a "modern" mail system, there should not be 7bit
+> conversions in the mail pipeline. Anyone sending DKIM needs to be 8
+> bit clean.
+
+"Be strict in what you send, and be liberal in what you receive."  DKIM
+makes assumptions about the mail transport layer that are not true.  If
+the signatures had been applied on content *after* the quoted printable
+conversion, this would never have been an issue.  DKIM is a poorly done
+spec that ignores decades of that philosophy at the IETF.  And even if a
+DKIM signature passes, that's still not enough to trust the resulting
+email.  All it does is ensure that a small subset of valid emails get
+dropped on the floor.  This doesn't seem like an overall win.
+
+		-ben
 -- 
-2.31.0
-
+"Thought is the essence of where you are now."
