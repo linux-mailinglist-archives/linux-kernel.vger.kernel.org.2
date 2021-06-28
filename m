@@ -2,162 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DA93B5E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16CC3B5E64
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhF1MvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
+        id S233069AbhF1Mvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbhF1MvF (ORCPT
+        with ESMTP id S233057AbhF1Mve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:51:05 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30EDC061574;
-        Mon, 28 Jun 2021 05:48:38 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id bu12so29878896ejb.0;
-        Mon, 28 Jun 2021 05:48:38 -0700 (PDT)
+        Mon, 28 Jun 2021 08:51:34 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C1BC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:49:07 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id w19so3851406lfk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NPhqsvNIof7wCDk0v6mRn0i9DTXUk2KH9LJ6omkVnw8=;
-        b=XfpoPH/o6now8GJy5K4IFDLCf3samF3Lny2YtRW9BX4osNfdac0RacNYj8Sp++bubv
-         grrtn0LvR8gOEC4YGHoIq7r2ng4wVWuZqZJDcM25Wx20Ztb3Aowsl7sLo627W3pJcIUl
-         mY7/1XzgmadeXZoGmZMqipkHrCAe02VjaIya5GzbJp5JXc9NuYfUY1CSpFF85pAxwniY
-         17gAdPzUjv/dcetj4n0dlV8kwM8sqWxhulP5KWPRcQWN3CdGq8k5VMDYYarV5N0hLqP9
-         UVZ8jtlIORtuuU3puui6JDKK7xJx1ImZE5q/hO+FfowCwtayN8dL8Ab52uxzcPoVEBxz
-         EIiA==
+        bh=9YjsxWTv0kQVrcHNY3VGvdRvBxzuUPPPSmtpb6NmJ50=;
+        b=YNZnxgyvRhhJNb3vzFToay8JPWo3nncmo9cy1cuzW1SihA1UiLkcTzuPnrj/dmzP10
+         wAH2RSJ0Zj9dWhI/N6Y1GE4oM69cwn1xYNddwr0OPJlrujrDWLxrpk8TaHLzV95Qwq0B
+         5jDonBN6O7j45FbnFnZVZVKouSsweskeWu8G3F+Sz79ognFxAcdgiBg0SSXOF5qfaRgv
+         VWdp60u1N9fKrX/ACQBvzCNIGJ5RSGV2LR2aEuFNKPJ8A+Dw2MMCNwCtCnqozaDK0aBS
+         3nunYq4hfSF2BrvP0XAayvthPFo3UyoNMsLxGP3YpuB4I0oLs9CshX+kdvP7ny8oKK2U
+         81vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NPhqsvNIof7wCDk0v6mRn0i9DTXUk2KH9LJ6omkVnw8=;
-        b=bTBojPD+rRq/Z22n4e6ep1s2//Ktfpv3zi+R3aGRFPq1o45sV0wiB+rHwVH6AfDymr
-         I86qNFGsPjdsWLuNt/Pd5UyC4S+yaNWD1EmVBdLLk8+dPNJcyRO+GNoGZPLEIK+vsOP+
-         SNOZM4ccT6D55xw9rTnO6zm1BTb/0FW99XKbdSivvRJhLUXyJuRPNrlsQMOfEf2YfTnY
-         ibFC0rwZyMJm/5TjPb3qQm6SzsZYCXIJhYud62kzcUYc/H43sjPhJoW77BJBv34/2hYx
-         e3lSiq8fZhOIaolADD7kQ6ysnrC5YHdhmDwFDryp4q1hqLFALQYfRaNd118qojKk+dZ9
-         uLrw==
-X-Gm-Message-State: AOAM532EW+UvhwiEyrAIaYLf0ZBtqZdTtGX8z8JfVhd2LPwdPDs5vBlK
-        p5I6eJ+mNnK6bMsnpOch5PWSEnQoCR4=
-X-Google-Smtp-Source: ABdhPJxLfYjUfeSENFz0wM2VzYsQ/ssbwmU2WGfDz7Ry5IMNbmnystKo9pZoaR8zvE9DerEM9oXXNA==
-X-Received: by 2002:a17:906:8a72:: with SMTP id hy18mr23577505ejc.393.1624884517425;
-        Mon, 28 Jun 2021 05:48:37 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id p23sm9426745edt.71.2021.06.28.05.48.36
+        bh=9YjsxWTv0kQVrcHNY3VGvdRvBxzuUPPPSmtpb6NmJ50=;
+        b=rTNEzK+PEU8Mu2MOia6yp9HQrgWTbx4/nmYt22wO9q0fR9TgLKRKD/mqRsTIeC3rPD
+         UMQvPoIAJtZa82P6qTg7XAgkdxd5lQCIIkHBwssAyoKn7PW7zWbjTN8M8OzpURE4eqC5
+         qXnMLl8ikFILz+T9TtV0fY3+S+m2wdDcrBI4JwRGVUZ7ZAqEw+LZS/AJxmKNAOkTQXjq
+         U0jDoTt/NgX0GAAxKf+tWBshCOdvidOOfi7VtEM0AQ5uns9EGNGAhTXi0YDbTF/JJQui
+         ddrvIB0FAVt3Y9AR+d3Px6vpaAuDq8fmB+uRrxiBex5hpeYo6KFUOWyRh2BRgLiIA8vR
+         gyNg==
+X-Gm-Message-State: AOAM5306jGEXggPs8x/1OKkavWyt/mKCEr9CZYpK53eznJr7rzgihake
+        Ke1Am1OHhxNxSpT/12fratKb4g==
+X-Google-Smtp-Source: ABdhPJy5doUOoTBWEbaiUSSG4ylkr1yyjwbZH0tbB92CloI0zoeov7u71L3C4nVfRk5umkBFFcSPWw==
+X-Received: by 2002:ac2:4211:: with SMTP id y17mr17641025lfh.607.1624884546282;
+        Mon, 28 Jun 2021 05:49:06 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id j2sm1216847lfb.212.2021.06.28.05.49.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 05:48:37 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 15:48:35 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210628124835.zbuija3hwsnh2zmd@skbuf>
-References: <YNH7vS9FgvEhz2fZ@lunn.ch>
- <20210623133704.334a84df@ktm>
- <YNOTKl7ZKk8vhcMR@lunn.ch>
- <20210624125304.36636a44@ktm>
- <YNSJyf5vN4YuTUGb@lunn.ch>
- <20210624163542.5b6d87ee@ktm>
- <YNSuvJsD0HSSshOJ@lunn.ch>
- <20210625115935.132922ff@ktm>
- <YNXq1bp7XH8jRyx0@lunn.ch>
- <20210628140526.7417fbf2@ktm>
+        Mon, 28 Jun 2021 05:49:05 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 3A79010280E; Mon, 28 Jun 2021 15:49:05 +0300 (+03)
+Date:   Mon, 28 Jun 2021 15:49:05 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v12 32/33] fs/netfs: Add folio fscache functions
+Message-ID: <20210628124905.5ndzvzltnuycrf2k@box.shutemov.name>
+References: <20210622114118.3388190-1-willy@infradead.org>
+ <20210622114118.3388190-33-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628140526.7417fbf2@ktm>
+In-Reply-To: <20210622114118.3388190-33-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 02:05:26PM +0200, Lukasz Majewski wrote:
-> Hi Andrew,
->
-> > > I do believe that I can just extend the L2 switch driver (fec_mtip.c
-> > > file to be precise) to provide full blown L2 switch functionality
-> > > without touching the legacy FEC more than in this patch set.
-> > >
-> > > Would you consider applying this patch series then?
-> >
-> > What is most important is the ABI. If something is merged now, we need
-> > to ensure it does not block later refactoring to a clean new
-> > driver. The DT binding is considered ABI. So the DT binding needs to
-> > be like a traditional switchdev driver. Florian already pointed out,
-> > you can use a binding very similar to DSA. ti,cpsw-switch.yaml is
-> > another good example.
->
-> The best I could get would be:
->
-> &eth_switch {
-> 	compatible = "imx,mtip-l2switch";
-> 	reg = <0x800f8000 0x400>, <0x800fC000 0x4000>;
->
-> 	interrupts = <100>;
-> 	status = "okay";
->
-> 	ethernet-ports {
-> 		port1@1 {
-> 			reg = <1>;
-> 			label = "eth0";
-> 			phys = <&mac0 0>;
-> 		};
->
-> 		port2@2 {
-> 			reg = <2>;
-> 			label = "eth1";
-> 			phys = <&mac1 1>;
-> 		};
-> 	};
-> };
->
-> Which would abuse the "phys" properties usages - as 'mac[01]' are
-> referring to ethernet controllers.
->
-> On TI SoCs (e.g. am33xx-l4.dtsi) phys refer to some separate driver
-> responsible for PHY management. On NXP this is integrated with FEC
-> driver itself.
+On Tue, Jun 22, 2021 at 12:41:17PM +0100, Matthew Wilcox (Oracle) wrote:
+> Match the page writeback functions by adding
+> folio_start_fscache(), folio_end_fscache(), folio_wait_fscache() and
+> folio_wait_fscache_killable().  Remove set_page_private_2().  Also rewrite
+> the kernel-doc to describe when to use the function rather than what the
+> function does, and include the kernel-doc in the appropriate rst file.
+> Saves 31 bytes of text in netfs_rreq_unlock() due to set_page_fscache()
+> calling page_folio() once instead of three times.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-If we were really honest, the binding would need to be called
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-port@0 {
-	puppet = <&mac0>;
-};
-
-port@1 {
-	puppet = <&mac1>;
-};
-
-which speaks for itself as to why accepting "puppet master" drivers is
-not really very compelling. I concur with the recommendation given by
-Andrew and Florian to refactor FEC as a multi-port single driver.
-
-> >
-> > So before considering merging your changes, i would like to see a
-> > usable binding.
-> >
-> > I also don't remember seeing support for STP. Without that, your
-> > network has broadcast storm problems when there are loops. So i would
-> > like to see the code needed to put ports into blocking, listening,
-> > learning, and forwarding states.
-> >
-> > 	  Andrew
-
-I cannot stress enough how important it is for us to see STP support and
-consequently the ndo_start_xmit procedure for switch ports.
-Let me see if I understand correctly. When the switch is enabled, eth0
-sends packets towards both physical switch ports, and eth1 sends packets
-towards none, but eth0 handles the link state of switch port 0, and eth1
-handles the link state of switch port 1?
+-- 
+ Kirill A. Shutemov
