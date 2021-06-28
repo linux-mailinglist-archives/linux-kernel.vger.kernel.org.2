@@ -2,138 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10903B592A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A063B5985
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhF1Gf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:35:57 -0400
-Received: from mail-eopbgr150052.outbound.protection.outlook.com ([40.107.15.52]:55464
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229911AbhF1Gfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:35:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kOlkTdtozWMIe2nNFQh7hdHwlWMafHvXAUVnpdxz9i95by02Jyl1NyRHdetOcX4jPwjK0QeElJ9F3ALye6fRapkmEYswSkyjlR8e0hZlsZ4Yh4fhq8cGtNef+du4L1CRB75xdBkbDjnLz1hm23GIgwOky2PDlUhJm9E+hpHCxx28q2mjC+z7LdHDCPzc8s0mmM0zclieOzqM7TJ1azqIeiRmjliWSeZm1HHV2VwVQzmcIuJohMQRR8CnA8w0vLL0SS6ppDx2/HEmoe90lARrBgqXXQKowXpupKtcXrJNVNzgl2wL0wtNUE8opBpH0GGmoQ12KrlrpAY3sFDD7Pi1MQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vADxpnqeGHEVJUG1BS3hUuPo56+5/E+OfHOafAQiQyY=;
- b=dRaPd/hn3d/okXUvG5VhhzBzhLK8ZZ4S5ZGYdsGkQBVEeTUbst/axfli4rIC5m3mgQCZgXwn/9vGTgdEKBZKWuDlBXXUMtUt+xg3i05KjJZA4I0y4prQr3VdeinT1vI09EjQHZmJ4MoZI8bb1iEM6JQ0DCcXFv8eaC0hRKYzd4QhPqURRZBenCYwcKCyZdWGsBMiEqp51NvwtjH7hBVuws6ev0rzkpGjnhkePrVZRFnibaA3kmeVcT3+CwjVpqQoGtoyfI8d4amgZ1wQa5xJllkcFwMQ+ch9s1fUDUafmmXw9OF40cCuQ2WCmWHlwUbKYPxN/dUI5OMb1lUAPvxXcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vADxpnqeGHEVJUG1BS3hUuPo56+5/E+OfHOafAQiQyY=;
- b=a7IyBijpfUTO+4hBf83GfsX4ORGXRkQErVJRrbhRiDOpF1hnOiRwL5IuibBQucgIYhUGswLg4eYfyIRPn9s69Q4GJNIjzlexN8ZDDh4NVYOj0vAE1QYXE1OGL13YAFDXdasp6IUKRFNdnD1IIQK1z1HS31JzTe3y3TJw6GZGP2A=
-Authentication-Results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR04MB3128.eurprd04.prod.outlook.com (2603:10a6:6:10::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.24; Mon, 28 Jun
- 2021 06:33:25 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 06:33:25 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] remoteproc: elf_loader: fix loading segment when is_iomem true
-Date:   Mon, 28 Jun 2021 15:06:57 +0800
-Message-Id: <20210628070657.7669-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.30.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S232304AbhF1HMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:12:40 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:27235 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhF1HMi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:12:38 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210628071011epoutp0198d8585f7b35ef450176718213afcf64~MrWRUMv053042030420epoutp01b
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 07:10:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210628071011epoutp0198d8585f7b35ef450176718213afcf64~MrWRUMv053042030420epoutp01b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624864212;
+        bh=V1WLpqpnXsh2R9fgZV91rcr1af7vaYAXhnpGE3a7hkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EVt7ch6+H+25K2Ur3GhTZ1OZGA5uwOSvLXw4ZsUWudRNQxhA69yfKciYwgD5OGG5Y
+         qAjraLm/imkgwyb9TBnQE0SAVbc8hSIhDxng3f2njd4jv+KcPbI7EZGiLlLmLYgjcb
+         pdMp2QfrS8G1sXjy4wW6j+W1Qro5RrW0rtA9W0bE=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210628071011epcas2p19507323982e2cf8355622cd7b14909ea~MrWREZoGD1919219192epcas2p1X;
+        Mon, 28 Jun 2021 07:10:11 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4GCzJf3Z76z4x9QB; Mon, 28 Jun
+        2021 07:10:10 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        11.78.09541.1D579D06; Mon, 28 Jun 2021 16:10:09 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210628071009epcas2p47fa2a3f9c13b6a3a745cc376e4fb7664~MrWPFIxKl2617926179epcas2p4o;
+        Mon, 28 Jun 2021 07:10:09 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210628071009epsmtrp12f52167fd3f041df7b5b16349020348e~MrWPEOirR1527615276epsmtrp1F;
+        Mon, 28 Jun 2021 07:10:09 +0000 (GMT)
+X-AuditID: b6c32a46-095ff70000002545-ad-60d975d123d9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        ED.B7.08289.1D579D06; Mon, 28 Jun 2021 16:10:09 +0900 (KST)
+Received: from ubuntu (unknown [12.36.155.120]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210628071009epsmtip20846b3873c879fd5ec9023d53b2d419a~MrWO7o6he0086100861epsmtip26;
+        Mon, 28 Jun 2021 07:10:09 +0000 (GMT)
+Date:   Mon, 28 Jun 2021 15:55:53 +0900
+From:   Jung Daehwan <dh10.jung@samsung.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: usb: host: Reduce xhci_handshake timeout in xhci_reset
+Message-ID: <20210628065553.GA83203@ubuntu>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.5 via Frontend Transport; Mon, 28 Jun 2021 06:33:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a0724a15-4325-4a54-072c-08d939fea204
-X-MS-TrafficTypeDiagnostic: DB6PR04MB3128:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR04MB312838D16CC8D2CE1B4F4A27C9039@DB6PR04MB3128.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UqOo8dz2fYy7RAoZErTgrpzE6nuva2SoAJBdQv4z9JLNzQGO56jrCnxHr2EjU+6qr2+ayT1NA+YAIdJ8BPO0ujij1LEPkgQw4vUbnYVxScil6r30hNB5BV/7TgVUZKGh2anbVwaaWAGWbn+N789I/z/qF4KlPyTSLUmiUJooXUqDKYkC+tKeb7aPbxdwcNXHBhDL5CC3nOVu2g4saPO0zxs4EKPwsD4P7qMJFvqFhlDCeJjE2bl/RX4o7E+QtXbNJJ9zA1VBq77JXsT06VQMbhnTEE2RPOaStkHFIzgb+l02qlhBx8muIHzJbwP5LcECYEEf9cGu9rHIOapDJoms5yMpc+kjKQ3Wyra/cSQXLF0Zuj7vLKqHdiwHxfnVYGc6VO5IxYmcOBx5Ph0qkPsJbhKlkEUwXrdJsHxccOPlYg0AkebyrB20Zh/PLLvKeIK+ad5QvVPe2KiLKs+aAQ2rNrHaJxjneKNjgcGarLVqIkqrIxavXvM6RBnAqJwu6shtbkilJvhroN28KKlWTwVZcupS1o8IPGTjUTvLE1GbezmY9DEiRnEY+Un90xG8wxWBHwXgkviOEZG8Dqs27I4J0OUkknKWzWNYQe2oWhA8NNkAZTuDWq2AWpUs9W8L8izzsepj6P752x7EF2nv8VqZ4DPwcfz941EuPvuXIp2DIcwVW7+3imCuAq8LLxHoe5R9cJOY+EQlrygI25tsVBep1g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(366004)(66556008)(186003)(83380400001)(16526019)(6506007)(66476007)(8676002)(2906002)(6512007)(8936002)(66946007)(86362001)(52116002)(5660300002)(6486002)(956004)(38350700002)(38100700002)(6666004)(478600001)(1076003)(7416002)(2616005)(316002)(4326008)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RTRjLLuuL4cFCGRnQQcdO7KJu/H8SW+HWOmrG6Jmt8++TDLjb1IxJbqP5UbY?=
- =?us-ascii?Q?a2NX2/DAgDCWE9KRZY8G5KToGXWHo9K/yS6KZW1rWcmYoFxiz+QyuZpgX32t?=
- =?us-ascii?Q?20LITyczbiD5g19gMMyFuGZxmGRWhjXm7AxZhLiFO2t2r/+UQpdkhHJiWime?=
- =?us-ascii?Q?KZH8oxiGbq5kbzbA6Czk9R73lRsXwh+TqE6VXnQQNTRAtaijN2U8MPofF7bK?=
- =?us-ascii?Q?g/ztYoH7oBiZ8PkbUMVM8fHJVF+bjEyAq03IE9VUGZVpZvuwvXfJmRB8N+xV?=
- =?us-ascii?Q?d3qYtVxSKjZ7pk++RL+crVLZLQtar/P/I/bqzHLH/MEkVbLOxvnVWtGIyWD6?=
- =?us-ascii?Q?Zn71MxtODXpleTz51HyURr9f0UmQY+F2NWwR1dboSbGG+pINaD9Y4RF/Jgqt?=
- =?us-ascii?Q?LHpyH1djpBRBCiFmXot8Mpyn7SAqTkImBDXFdmrwh0OrwwpZ5YFcebYew1GQ?=
- =?us-ascii?Q?8K0HMfVXVQpqcGw6e7XKXgVMxjs39E9L8YaFDxbczUc1x2nro7P2IxDULQZl?=
- =?us-ascii?Q?QmQwG+7gbpiPuamEWx72hPnXtRYTXxNDQPrtiXKIBbYndQ8MT9+HdCr93pOR?=
- =?us-ascii?Q?Pv6zr5UGLLq+szei+tSCPzKEMp8hRO5eeslwsW/bwumbIIrOvJYu97M1Lh1x?=
- =?us-ascii?Q?zdtyK5lzcGt2XQcgwaadyR/i20mJk+IF5HahrSdKXdgcRjwiazF4vj773Pda?=
- =?us-ascii?Q?DB2Nomg3PccOh//jvIScWrcSBj8SS+8QHlkWYFdMFIS65m0KSl27DlAK9U71?=
- =?us-ascii?Q?tC3H715LrmDt7U/6ShPuQvstGlMpQyrcq+/d2YJb0/D0DhmmYJ5cOv/wE5cC?=
- =?us-ascii?Q?3YM2GDR4UBcv9WCgGn75jooE/qqcdPI9IMuMsyGsOgLMXoQsOGorouS/47QY?=
- =?us-ascii?Q?htIoqqCFG9vmyVb8w079FE4izdNFNo4N9y4JovufKJSrUwoJYdQzuXX/hZ70?=
- =?us-ascii?Q?CV0N7cX5V0/eupP4AT1UeoMlC8R6dkyTeNaUs35EwYfoAmdkEKSuxUeR1H3b?=
- =?us-ascii?Q?cfFXfV9LJ2OKnAptKlLQEYgHQLUKWapE/IcXkEjb7V35AP/aWvuvj6aOtinp?=
- =?us-ascii?Q?vUFBy/3UtfWTTaZIUl/73o6PSPt54qzmPfbyY4Lu5/F1hMWxR0rAPF+ftdu7?=
- =?us-ascii?Q?giRjR/607U+5AI+WLtrMBcwl8uAX+w+CqJbJcaYpvw5v5ehDg8TSum70dsah?=
- =?us-ascii?Q?Kx7gURx11B5b4SmzlVFTgvKl7bzqD1e84D9jdvopkV8UF76D1q85PyHAaCWZ?=
- =?us-ascii?Q?O1JmqzPzp9QFa3eOP1FSMHi/6a/fA7N0PR2nRviJt0IyZyuMK1P0e2dOTBSG?=
- =?us-ascii?Q?n9+OaScFxVuF4RvN3mLJko1U?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0724a15-4325-4a54-072c-08d939fea204
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 06:33:25.6893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W8DCRmljz7YO4KxAYw7aMIwcO4uD4hBEOv0ody2RrVQ4ktYJj9lp/6h8NcG2vRgIKCn+NaZAqb6z0wwUzpw/Tw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3128
+In-Reply-To: <YNlxzj7KXG43Uyrp@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmme7F0psJBu0LzS2aF69ns7i8aw6b
+        xaJlrcwWzZumsDqweCze85LJY//cNewenzfJBTBH5dhkpCampBYppOYl56dk5qXbKnkHxzvH
+        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
+        pRak5BQYGhboFSfmFpfmpesl5+daGRoYGJkCVSbkZKyfL1/wV6Di9Zr37A2MPbxdjJwcEgIm
+        EoeXn2HtYuTiEBLYwShx8tErdgjnE6PEng2f2SCcz4wSM//sZ4Fp+du5hBnEFhLYxSgxaZMM
+        RNETRokXb94ygiRYBFQl3jStZQex2QS0JO79OAHWICJgLNF/dhZYnFkgTeL6yj1gtrCAs8S2
+        d3OA7uDg4BXQlljzSAUkzCsgKHFy5hOwvZwCmhIfLvSAlYgKqEi8OlgPslZC4Bq7xMXT+9kg
+        bnOR2PR6HZQtLPHq+BZ2CFtK4mV/GztIr4RAucSi+XYQvR2MEms+nWWEqDGWmPWsnRHitEyJ
+        eRsOsUHUK0scucUCEeaT6Dj8F2oMr0RHmxBEp7LE9MsTWCFsSYmDr88xQ9geEhdfLGOEhNR3
+        RoklHTkTGOVnIXlsFpJlELaOxILdn4BsDiBbWmL5Pw4IU1Ni/S79BYysqxjFUguKc9NTi40K
+        jJAjehMjOBVque1gnPL2g94hRiYOxkOMEhzMSiK8YlXXEoR4UxIrq1KL8uOLSnNSiw8xmgIj
+        aSKzlGhyPjAZ55XEG5oamZkZWJpamJoZWSiJ83KwH0oQEkhPLEnNTk0tSC2C6WPi4JRqYPKZ
+        pv6+vKVZWv2+fvTG+YUJEsUh1/kOztoiIcEkq/ziQ7/C2XVpoYp8aa6uD+5y3Tvb2GSQOi8z
+        98ByjZqMhvVrz+64+kdBblnXu7CvRgzyrXOYFzBY6VrlNj05IL+ltebO0nuqtv1xaV9uHnfZ
+        t3H570LZgq02jLbTtDNuvk1Q+V5dXmmipvBxmuP/TPEf70yvvF1c8/DgMunK2H3/+Qx/mIlO
+        +BojKH3EeGr3hPzltZIC1zTebZ4avOlVE/feL+0vp3F8cmBTtvj3P252njqj65t5ixcI+wrZ
+        5elOEOicv3vloodvjlbWx3nnSuR1PAi4kbFZWvrfl3vJNjZ7Eh4rzal5fOJOdeGizRxS8Uos
+        xRmJhlrMRcWJACUWobQOBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMLMWRmVeSWpSXmKPExsWy7bCSvO7F0psJBl0L5C2aF69ns7i8aw6b
+        xaJlrcwWzZumsDqweCze85LJY//cNewenzfJBTBHcdmkpOZklqUW6dslcGXcaZnCUrCLr2LS
+        rVUsDYyPuLoYOTkkBEwk/nYuYe5i5OIQEtjBKPF+UR87REJSYuncG1C2sMT9liOsEEWPGCU2
+        ftvAApJgEVCVeNO0FqyITUBL4t6PE8wgtoiAsUT/2VlgcWaBNInrK/eA2cICzhLb3s0BGsTB
+        wSugLbHmkQrEzJ+MEhumfwGr4RUQlDg58wkLRK+WxI1/L5lA6pkFpCWW/+MACXMKaEp8uNAD
+        NkZUQEXi1cH6CYyCs5A0z0LSPAuheQEj8ypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxN
+        jOBw1tLawbhn1Qe9Q4xMHIyHGCU4mJVEeMWqriUI8aYkVlalFuXHF5XmpBYfYpTmYFES573Q
+        dTJeSCA9sSQ1OzW1ILUIJsvEwSnVwNTaueIGe418XNyOPVvnW05cePpIYSpn8L6uw62/d4i7
+        7JjmJxpy69n7mXNy976t3BRYNr17mtHle4XPavfwKUy05WOewf6twGCWhuItibR/Yjtn773p
+        +ebbPem7kTP3BJ8Nr8uZl7v4qIXm88dFvxp7cm5PyAvq3BG/gHHuH4sdOYeveC91uP7Sh2Vf
+        7O1173Y3Rxxbp2yw6ZDs7doHYbl191sXuB/y6j9zakG+w4Wtmy+csbjoWnHvprDtay3WC6+O
+        aNyf9vKEnGZzW9bM7B/Mrps2lD21KT+qfv5j5slg9oRpd/5cFS+29wxwu5EgNjNA0eLSrLlZ
+        +oe//LmeZlQ8KXQtz9r1cQzmyS1HogSElViKMxINtZiLihMBCihXFNYCAAA=
+X-CMS-MailID: 20210628071009epcas2p47fa2a3f9c13b6a3a745cc376e4fb7664
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----c2YBr1xbOYfB2IDqioM.uLYc5x244uDgwyTZAqanlpYp6BQp=_130472_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210622113915epcas2p284c61291fc9d83487f6dfebb65fd4e9b
+References: <CGME20210622113915epcas2p284c61291fc9d83487f6dfebb65fd4e9b@epcas2p2.samsung.com>
+        <1624361096-41282-1-git-send-email-dh10.jung@samsung.com>
+        <YNJAZDwuFmEoTJHe@kroah.com> <20210628022548.GA69289@ubuntu>
+        <YNlxzj7KXG43Uyrp@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+------c2YBr1xbOYfB2IDqioM.uLYc5x244uDgwyTZAqanlpYp6BQp=_130472_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-It seems luckliy work on i.MX platform, but it is wrong.
-Need use memcpy_toio, not memcpy_fromio.
+On Mon, Jun 28, 2021 at 08:53:02AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jun 28, 2021 at 11:25:48AM +0900, Jung Daehwan wrote:
+> > On Tue, Jun 22, 2021 at 09:56:20PM +0200, Greg Kroah-Hartman wrote:
+> > > On Tue, Jun 22, 2021 at 08:24:56PM +0900, Daehwan Jung wrote:
+> > > > It seems 10 secs timeout is too long in general case. A core would wait for
+> > > > 10 secs without doing other task and it can be happended on every device.
+> > >
+> > > Only if the handshake does not come back sooner, right?
+> >
+> > Yes, right.
+> >
+> > > What is causing your device to timeout here?
+> >
+> > Host Controller doesn't respond handshake. I don't know why and I ask HW team
+> > to debug it.
+>
+> Please work to fix your hardware, that feels like the root of the
+> problem here.  If you require the timeout for xhci_reset() to happen,
+> then how do you know that the hardware really did reset properly in the
+> reduced amount of time you just provided?
+>
 
-Fixes: 40df0a91b2a52 ("remoteproc: add is_iomem to da_to_va")
-Tested-by: Dong Aisheng <aisheng.dong@nxp.com> (i.MX8MQ)
-Reported-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I continue fixing this issue with hardware engineer, but currently just
+host controller can crash whole system and that's why I want to fix it.
+How about adding some error logs in this situation for recognizing this issue?
+We can add error log in xhci_stop as xhci_reset can returns error like below.
 
-diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-index 469c52e62faf..e8078efb3dec 100644
---- a/drivers/remoteproc/remoteproc_elf_loader.c
-+++ b/drivers/remoteproc/remoteproc_elf_loader.c
-@@ -220,7 +220,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
- 		/* put the segment where the remote processor expects it */
- 		if (filesz) {
- 			if (is_iomem)
--				memcpy_fromio(ptr, (void __iomem *)(elf_data + offset), filesz);
-+				memcpy_toio(ptr, (void __iomem *)(elf_data + offset), filesz);
- 			else
- 				memcpy(ptr, elf_data + offset, filesz);
- 		}
--- 
-2.30.0
+static void xhci_stop(struct usb_hcd *hcd)
+{
+        u32 temp;
+        struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++       int ret;
 
+        mutex_lock(&xhci->mutex);
+
+@@ -733,6 +734,9 @@ static void xhci_stop(struct usb_hcd *hcd)
+        xhci->cmd_ring_state = CMD_RING_STATE_STOPPED;
+        xhci_halt(xhci);
+        xhci_reset(xhci);
++       if (ret)
++               xhci_err(xhci, "%s: Error while reset xhci Host controller - ret = %d\n"
++                       , __func__, ret);
+        spin_unlock_irq(&xhci->lock);
+
+
+> thanks,
+>
+> greg k-h
+>
+
+
+
+------c2YBr1xbOYfB2IDqioM.uLYc5x244uDgwyTZAqanlpYp6BQp=_130472_
+Content-Type: text/plain; charset="utf-8"
+
+
+------c2YBr1xbOYfB2IDqioM.uLYc5x244uDgwyTZAqanlpYp6BQp=_130472_--
