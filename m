@@ -2,147 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3442C3B687E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02E23B687F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbhF1Sfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:35:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33146 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230220AbhF1Sfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:35:46 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SI4L01018784;
-        Mon, 28 Jun 2021 14:33:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rD0Mllce7o9ZzJ8Ke5E2rxYbC1DQAEShWwnSntQMtgw=;
- b=APQYJldCiRwDbqzZsVu3eQYsa7AY9tTHuDDuSL7SyzrHq/oVkTnVUad3FHpfmgy0XhQO
- 3LF8eo6Q0Ic8IbpBMvVo8KuRQtmDQc4JW2wRmNX8+30OpQEP8ak5/B9BZ9xsr328CGfv
- TYyRrdYr+udGG+/FXH1TOA9jfGWfn8kvwuM/pY8/HwkZ+Oo01UZ1EQaxzcMfZWMbXc0Z
- bLsneZ2KH+LOA2h+Tggiev6jcsP+QITQeMIYNKSmBdn1dM2jBLbS4nI/LGei6vIoyom8
- X77Bl+WQyePMzEZQks4udkAy1tS+GM694ZYPMqm8dh9mZFmoTF2yH2M0pWMJx1pp2cp2 nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fhse3jtw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:33:18 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15SI4Rea019625;
-        Mon, 28 Jun 2021 14:33:17 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fhse3jtf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:33:17 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SISNdN022460;
-        Mon, 28 Jun 2021 18:33:16 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01wdc.us.ibm.com with ESMTP id 39ejyx46a5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 18:33:16 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SIXFZ829032842
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 18:33:15 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 638E678F16;
-        Mon, 28 Jun 2021 18:33:15 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0893478F11;
-        Mon, 28 Jun 2021 18:33:14 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Jun 2021 18:33:14 +0000 (GMT)
-Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        James Morris James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Peter Huewe <peterhuewe@gmx.de>
-References: <20210623135600.n343aglmvu272fsg@kernel.org>
- <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <8de9d45e-4389-8316-b0d0-e9a43be9fade@linux.ibm.com>
-Date:   Mon, 28 Jun 2021 14:33:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5V-UhUDvez3V8zY1-nwvI6xqrjHfvL9o
-X-Proofpoint-GUID: Czzx6BhMAaK9L2I2APhY2sWgg9WNrG0e
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 adultscore=0 spamscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106280118
+        id S233805AbhF1Sgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:36:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230220AbhF1Sgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 14:36:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1A32F61456;
+        Mon, 28 Jun 2021 18:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624905265;
+        bh=VaOQ0YMaG7aDmIWE7zKp4MZY/P6VduubE2yBcd2dh5E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=elKwoJdFvM8XBPTUhOgfwNRWd6r2cvia4xVkXO8WuxRGzRMku/YzQ7jM5t8vrT5U5
+         f12tOKxDlB6BdxwNUxYT4yB30wlThKpa5QD2rgpkEQMVH1YmjTrQDhkPGjmoZAZyVQ
+         TvQPNuqn4RgsMwmI/snqaPHlu6myuSsMng8ykALsHYUV3mcQsUdjPswzPUEl1rxIch
+         xo3+q3R4f7rP3tgQn1NxGCa0wf0QIzH/cIPGltT8Udkwz5TBZmNsCmmF5ikPPu6d/x
+         ISoUMf4TOwt5qo1NWACj22uMWJxMYvJ240W5Io6vHO7qwdF2yKkkz8R/bU5VLUSNXS
+         QrYycsGhbEcQg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0567560A6C;
+        Mon, 28 Jun 2021 18:34:25 +0000 (UTC)
+Subject: Re: [GIT PULL] RAS updates for v5.14
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YNmFt5yMpePkeb6Z@zn.tnic>
+References: <YNmFt5yMpePkeb6Z@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YNmFt5yMpePkeb6Z@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_core_for_v5.14_rc1
+X-PR-Tracked-Commit-Id: 429b2ba70812fc8ce7c591e787ec0f2b48d13319
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f565b20734d32bab5a899123d2c58909dbf46a5d
+Message-Id: <162490526496.16283.11958857932461328509.pr-tracker-bot@kernel.org>
+Date:   Mon, 28 Jun 2021 18:34:24 +0000
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Mon, 28 Jun 2021 10:17:59 +0200:
 
-On 6/28/21 1:34 PM, Linus Torvalds wrote:
-> On Wed, Jun 23, 2021 at 6:56 AM Jarkko Sakkinen <jarkko@kernel.org> wrote:
->> Contains bug fixes for TPM, and support for signing modules using elliptic
->> curve keys, which I promised to pick up to my tree.
-> I pulled this, but then I looked at the key type changes, and that
-> made me so scared that I unpulled it again.
->
-> In particular, that code will do
->
->      shell rm -f $(CONFIG_MODULE_SIG_KEY)
->
-> from the Makefile if some config options have changed.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_core_for_v5.14_rc1
 
-I suppose it is from this part here.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f565b20734d32bab5a899123d2c58909dbf46a5d
 
-+# Support user changing key type
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-+ifeq ($(openssl_available),yes)
-+$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f 
-$(CONFIG_MODULE_SIG_KEY)))
-+endif
-+endif # CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-+
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
-+ifeq ($(openssl_available),yes)
-  $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f 
-$(CONFIG_MODULE_SIG_KEY)))
-  endif
-+endif # CONFIG_MODULE_SIG_KEY_TYPE_RSA
+Thank you!
 
-
-If the user changed the build option from an ECDSA module signing key to 
-an RSA signing key or vice versa then this code deletes the current 
-signing key and subsequent code in the Makefile will create an RSA or 
-ECDSA signing key following the user's choice. I suppose this is 
-expected behavior that when a user chooses an RSA signing key it will 
-use an RSA signing key. Maybe we should make a backup copy of the 
-previous key, if that helps.
-
-
->
-> That just seems too broken for words. Maybe I misunderstand this, but
-> this really seems like an easy mistake might cause the kernel build to
-> actively start removing some random user key files that the user
-> pointed at previously.
-
-The removal is triggered by the user changing the type of key from what 
-is in the keyfile.
-
-   Stefan
-
-
-
->
->                    Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
