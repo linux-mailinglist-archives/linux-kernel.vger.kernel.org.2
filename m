@@ -2,140 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16293B57EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955253B57ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhF1Dlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 23:41:46 -0400
-Received: from mail-lj1-f169.google.com ([209.85.208.169]:44861 "EHLO
-        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbhF1Dlp (ORCPT
+        id S232087AbhF1Dri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 23:47:38 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8474 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhF1Drh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 23:41:45 -0400
-Received: by mail-lj1-f169.google.com with SMTP id u25so7760472ljj.11
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 20:39:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TA9GkBikXPkJmyUCmRN+fLpWXV97fC3gAkW1HN3aY3A=;
-        b=SJOnmEDzsOmte1Cwt5WWx6xVcQt7vODZxGo2CjiXS2aWTvgxjNc6YM64KqRwjI7U/k
-         8nRERv6wPamq12OwLBtexFMJL6LwB6UHxLt4Gv803TvIBftClLZrHe/RubkbKGfWSi88
-         eulX/vV9rprvdwLkP2P+2IPXj3WYCCldD16+jLbjJBTNJ9GBuQmjY9PjI7rq3i5YaxRY
-         0k+PV1N3XnxJcH5tgXnj0Atb1enLMCtgTChJOYf4iBueaiJgQUpw6JLzVr5O89k5PtYs
-         +LlUzUZvogif8bg/CgFjT+28qa21ducUSCW17Wly7OJAM/4+RhXVqsVn0lMCXZ3mmgkz
-         u50w==
-X-Gm-Message-State: AOAM532Z5khF8a9aY10hdH5ZXtgJYd2szWEaqLftb6FgfE0sKR4dUMwQ
-        HmR2YX4/wT4fozIGmAz4KG2HaSnnNABPjlRTLAU=
-X-Google-Smtp-Source: ABdhPJylA0BUC2OsncY/Qwk7/NHW3cORubGPCJoOy76H21YfiKPDZr8alwWFDLfz25eHHpJ+5DYfffNjqh3l9MzOWA0=
-X-Received: by 2002:a2e:8e82:: with SMTP id z2mr18085641ljk.275.1624851558515;
- Sun, 27 Jun 2021 20:39:18 -0700 (PDT)
+        Sun, 27 Jun 2021 23:47:37 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GCthY1CC9zZnCc;
+        Mon, 28 Jun 2021 11:42:05 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 11:45:08 +0800
+Received: from [10.67.102.248] (10.67.102.248) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 11:45:08 +0800
+Subject: Re: [PATCH] perf arm-spe: Fix incorrect sample timestamp in perf
+ script
+To:     Leo Yan <leo.yan@linaro.org>
+CC:     <john.garry@huawei.com>, <will@kernel.org>,
+        <mathieu.poirier@linaro.org>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <james.clark@arm.com>,
+        <andre.przywara@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210626032115.16742-1-yangjihong1@huawei.com>
+ <20210628014953.GA163942@leoy-ThinkPad-X240s>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <75dac5f8-9c82-0db1-d362-44289dcaa206@huawei.com>
+Date:   Mon, 28 Jun 2021 11:45:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210622153918.688500-1-jolsa@kernel.org> <YNIgXkH1xaF7H3Tr@kernel.org>
- <CAP-5=fU=AAJ0_s1orsF=OCO0=bSmr9BhAmtN251bU_pf0ZFJ6Q@mail.gmail.com>
- <YNIobHgfVbiiNscn@kernel.org> <YNJT0wvghSZzPJ8Y@krava> <CAM9d7chs=4mdRG389G8eDzeKmvB7PDuWp7mxd_ScuFiy0hYt3g@mail.gmail.com>
- <YNi0j8nhh8X6j/ZE@krava>
-In-Reply-To: <YNi0j8nhh8X6j/ZE@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 27 Jun 2021 20:39:07 -0700
-Message-ID: <CAM9d7cheTJDq89BypiFwC8wEZ9VMUaZjN7JWVM3+AXR4kgjBAA@mail.gmail.com>
-Subject: Re: [RFC 00/10] perf: Add build id parsing fault detection/fix
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210628014953.GA163942@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.248]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm000003.china.huawei.com (7.185.36.128)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 10:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Jun 23, 2021 at 12:48:30PM -0700, Namhyung Kim wrote:
-> > Hi Jiri,
-> >
-> > Thanks for your work!
-> >
-> > On Tue, Jun 22, 2021 at 2:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Tue, Jun 22, 2021 at 03:14:04PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > Em Tue, Jun 22, 2021 at 10:47:54AM -0700, Ian Rogers escreveu:
-> > > > > On Tue, Jun 22, 2021 at 10:39 AM Arnaldo Carvalho de Melo
-> > > > > <acme@kernel.org> wrote:
-> > > > > >
-> > > > > > Em Tue, Jun 22, 2021 at 05:39:08PM +0200, Jiri Olsa escreveu:
-> > > > > > > hi,
-> > > > > > > this *RFC* patchset adds support to detect faults during
-> > > > > > > mmap2's build id parsing and a way to fix such maps in
-> > > > > > > generated perf.data.
-> > > > > > >
-> > > > > > > It adds support to record build id faults count for session
-> > > > > > > and store it in perf.data and perf inject support to find
-> > > > > > > these maps and reads build ids for them in user space.
-> > > > > >
-> > > > > > > It's probably best explained by the workflow:
-> > > > > > >
-> > > > > > >   Record data with --buildid-mmap option:
-> > > > > > >
-> > > > > > >     # perf record --buildid-mmap ...
-> > > > > > >     ...
-> > > > > > >     [ perf record: Woken up 1 times to write data ]
-> > > > > > >     [ perf record: Failed to parse 4 build ids]
-> > > > > > >     [ perf record: Captured and wrote 0.008 MB perf.data ]
-> > > > > > >
-> > > > > > >   Check if there's any build id fault reported:
-> > > > > > >
-> > > > > > >     # perf report --header-only
-> > > > > > >     ...
-> > > > > > >     # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
-> > > > > > >
-> > > > > > >   There is, check the stats:
-> > > > > > >
-> > > > > > >     # perf report --stat
-> > > > > > >
-> > > > > > >     Aggregated stats:
-> > > > > > >              TOTAL events:        104
-> > > > > > >                       ....
-> > > > > > >            BUILD_ID fails:          4  (14.3%)
-> > > > > > >
-> > > > > > >   Yep, let's fix it:
-> > > > > > >
-> > > > > > >     # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
-> > > > > >
-> > > > > > Can we make it possible to automate this with --fixup-buildids or a
-> > > > > > perfconfig 'record' knob?
-> > > > > >
-> > > > > > This would entail requesting that build-ids that _fail_ be sent to the
-> > > > > > side-band thread we have in 'perf record', this way we wouldn't have to
-> > > > > > traverse the whole perf.data file, be it with 'perf-record' at the end
-> > > > > > of a session with faulty build ids, or in a similar fashion using 'perf
-> > > > > > inject' as you suggest.
-> > > > > >
-> > > > > > I even think that we can have all these modes and let the user to decide
-> > > > > > how important is this for them and how convenient they want the whole
-> > > > > > process to be.
-> > >
-> > > right, that might be good to decide first.. because as I said,
-> > > I never hit faulted build id, so it probably needs the special
-> > > setup you guys are using.. could you try on your setup and check
-> > > how many faulted build ids you see?
-> >
-> > Did you check data mmaps?  It might be easy to get faults
-> > from data files and we don't know if it's an ELF or not
-> > before reading the ELF header in the first page.
->
-> well, AFAICS the mmap event is sent right after the elf file
-> is loaded, so it does not have a chance to be swapped out
+Hello Leo,
 
-I'm talking about the normal data files when we use
-perf record -d.  Those mmap files might not have page 0
-in memory.  I'm afraid it's reported as a build-id fault.
+On 2021/6/28 9:49, Leo Yan wrote:
+> Hi Jihong,
+> 
+> On Sat, Jun 26, 2021 at 11:21:15AM +0800, Yang Jihong wrote:
+>> When use perf script to parse ARM SPE data, sample timestamp does not match
+>> the timestamp stored in the AUX buffer, arm_spe_prep_sample function set
+>> "samlpe->time = speq->timestamp", "speq->timestamp" is the timestamp of first
+>> packet in auxtrace buffer. As a result, the time of all samples in a auxtrace
+>> buffer uses the same timestamp.
+> 
+> Could you confirm if the patch set [1] can fix your issue?
+> 
+After I apply this patch set, and verify it as follows:
+
+# ./perf/perf record -e arm_spe_0/ts_enable=1,branch_filter=1/ ls
+accounting  bootconfig  build   debugging  elf.s     firmware  hv 
+include   kvm     leds  Makefile      objtool  pcmcia  perf.data 
+scripts  testing  time     usb     vm
+arch        bpf         cgroup  edid       firewire  gpio      iio 
+io_uring  laptop  lib   memory-model  pci      perf    power      spi 
+    thermal  tracing  virtio  wmi
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.031 MB perf.data ]
+# ./perf/perf script --ns
+               ls 23104 [030] 314938.859071370:          1 
+               branch-miss:  ffffb7ee2a20e100 __pi_memcpy+0x80 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.859753820:          1 
+               branch-miss:  ffffb7ee29f360e0 __split_vma+0x110 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.859820430:          1 
+               branch-miss:      fffe85dd87e0 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.859941110:          1 
+               branch-miss:      fffe85dd7a28 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.859948890:          1 
+               branch-miss:      fffe85dd7a28 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.859953610:          1 
+               branch-miss:      fffe85dc8f58 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.859955730:          1 
+               branch-miss:  ffffb7ee2a12856c common_mmap.part.23+0x34 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.860059900:          1 
+               branch-miss:      fffe85dc8f58 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.860095470:          1 
+               branch-miss:      fffe85dc8f58 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.860105460:          1 
+               branch-miss:      fffe85dc8f58 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.860111870:          1 
+               branch-miss:      fffe85dd7a20 [unknown] 
+(/usr/lib64/ld-2.28.so)
+               ls 23104 [030] 314938.860237310:          1 
+               branch-miss:      fffe85bc8e00 [unknown] 
+(/usr/lib64/libc-2.28.so)
+               ls 23104 [030] 314938.860419000:          1 
+               branch-miss:      fffe85bd4638 __strcoll_l+0xc58 
+(/usr/lib64/libc-2.28.so)
+               ls 23104 [030] 314938.860455790:          1 
+               branch-miss:  ffffb7ee2a20e10c __pi_memcpy+0x8c 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.860473730:          1 
+               branch-miss:  ffffb7ee29d0af50 __queue_work+0x1a8 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.860485020:          1 
+               branch-miss:  ffffb7ee2a20e0c0 __pi_memcpy+0x40 
+([kernel.kallsyms])
+               ls 23104 [030] 314938.860533380:          1 
+               branch-miss:  ffffb7ee29f39158 tlb_flush+0x30 
+([kernel.kallsyms])
+# ./perf/perf script -D
+[...]
+.  00000a7c:  b0 00 e1 20 2a ee b7 ff c0                      PC 
+0xffb7ee2a20e100 el2 ns=1
+.  00000a85:  99 02 00                                        LAT 2 ISSUE
+.  00000a88:  98 03 00                                        LAT 3 TOT
+.  00000a8b:  52 c2 00                                        EV RETIRED 
+NOT-TAKEN MISPRED
+.  00000a8e:  4a 01                                           B COND
+.  00000a90:  b1 04 e1 20 2a ee b7 ff c0                      TGT 
+0xffb7ee2a20e104 el2 ns=1
+.  00000a99:  00 00 00 00 00 00                               PAD
+.  00000a9f:  71 3f e9 51 b9 a9 1c 00 00                      TS 
+31515284203839
+[...]
+.  000018c0:  b0 e0 60 f3 29 ee b7 ff c0                      PC 
+0xffb7ee29f360e0 el2 ns=1
+.  000018c9:  99 02 00                                        LAT 2 ISSUE
+.  000018cc:  98 03 00                                        LAT 3 TOT
+.  000018cf:  52 82 00                                        EV RETIRED 
+MISPRED
+.  000018d2:  4a 01                                           B COND
+.  000018d4:  b1 68 61 f3 29 ee b7 ff c0                      TGT 
+0xffb7ee29f36168 el2 ns=1
+.  000018dd:  00 00 00 00 00 00                               PAD
+.  000018e3:  71 d4 f3 52 b9 a9 1c 00 00                      TS 
+31515284272084
+[...]
+.  000019f4:  b0 e0 87 dd 85 fe ff 00 80                      PC 
+0xfffe85dd87e0 el0 ns=1
+.  000019fd:  99 02 00                                        LAT 2 ISSUE
+.  00001a00:  98 03 00                                        LAT 3 TOT
+.  00001a03:  52 c2 00                                        EV RETIRED 
+NOT-TAKEN MISPRED
+.  00001a06:  4a 01                                           B COND
+.  00001a08:  b1 e4 87 dd 85 fe ff 00 80                      TGT 
+0xfffe85dd87e4 el0 ns=1
+.  00001a11:  00 00 00 00 00 00                               PAD
+.  00001a17:  71 d9 0d 53 b9 a9 1c 00 00                      TS 
+31515284278745
+[...]
+.  00001f48:  b0 28 7a dd 85 fe ff 00 80                      PC 
+0xfffe85dd7a28 el0 ns=1
+.  00001f51:  99 07 00                                        LAT 7 ISSUE
+.  00001f54:  98 08 00                                        LAT 8 TOT
+.  00001f57:  52 c2 00                                        EV RETIRED 
+NOT-TAKEN MISPRED
+.  00001f5a:  4a 01                                           B COND
+.  00001f5c:  b1 2c 7a dd 85 fe ff 00 80                      TGT 
+0xfffe85dd7a2c el0 ns=1
+.  00001f65:  00 00 00 00 00 00                               PAD
+.  00001f6b:  71 fd 3c 53 b9 a9 1c 00 00                      TS 
+31515284290813
+[...]
+.  00001fcc:  b0 28 7a dd 85 fe ff 00 80                      PC 
+0xfffe85dd7a28 el0 ns=1
+.  00001fd5:  99 08 00                                        LAT 8 ISSUE
+.  00001fd8:  98 09 00                                        LAT 9 TOT
+.  00001fdb:  52 82 00                                        EV RETIRED 
+MISPRED
+.  00001fde:  4a 01                                           B COND
+.  00001fe0:  b1 10 7a dd 85 fe ff 00 80                      TGT 
+0xfffe85dd7a10 el0 ns=1
+.  00001fe9:  00 00 00 00 00 00                               PAD
+.  00001fef:  71 07 40 53 b9 a9 1c 00 00                      TS 
+31515284291591
+[...]
+.  00002050:  b0 58 8f dc 85 fe ff 00 80                      PC 
+0xfffe85dc8f58 el0 ns=1
+.  00002059:  99 22 00                                        LAT 34 ISSUE
+.  0000205c:  98 23 00                                        LAT 35 TOT
+.  0000205f:  52 82 00                                        EV RETIRED 
+MISPRED
+.  00002062:  4a 01                                           B COND
+.  00002064:  b1 40 8f dc 85 fe ff 00 80                      TGT 
+0xfffe85dc8f40 el0 ns=1
+.  0000206d:  00 00 00 00 00 00                               PAD
+.  00002073:  71 df 41 53 b9 a9 1c 00 00                      TS 
+31515284292063
+[...]
+
+The timestamp does not match. Each timestamp has a difference of 
+213.98296702 seconds. Is the command I executed wrong?
+
+|symbol_address|perf script| perf script -D|
+|ffffb7ee2a20e100|314938.859071370|31515284203839|
+|ffffb7ee29f360e0|314938.859753820|31515284272084|
+|fffe85dd87e0|314938.859820430|31515284278745|
+|fffe85dd7a28|314938.859941110|31515284290813|
+|fffe85dd7a28|314938.859948890|31515284291591|
+|fffe85dc8f58|314938.859953610|31515284292063|
 
 Thanks,
-Namhyung
+Jihong
+> Thanks,
+> Leo
+> 
+> [1] https://lore.kernel.org/patchwork/cover/1431624/
+> .
+> 
