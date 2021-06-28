@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6243B5C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8335B3B5C53
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhF1KQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231935AbhF1KQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:16:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7840F61C67;
-        Mon, 28 Jun 2021 10:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624875227;
-        bh=xc6ZMpYRxnrW9nQ1Zq5NnDEAQ868wsvNoh+qThZ0uWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mdAgPtX4+glgCpYKxdpoROB+RfkksJw93REfnY8VMxUSs7+qtxPqWF+IM2oR+uw4r
-         sjFAYF9jpJKqVfiocmSPv28e5mULJkecwoXma7t1FGleVh6CXtaWAs/sDvEGqhQhsi
-         tXWEosT1c+QpWggw9WukELj0wwRmpEk8y9j9OWYaiCXSKo2qfJqX5lPveUkg5OeKsM
-         dgrB1siNlXOxcckHphrRnQnSu2MdZkjmzYQPYEHsMPP6h85dOsgGYv3qZ8KU4L1SWn
-         1UbrUFYiyJh4NKxpiFNVUhe2hSK8SdzXuoyUDvK0hnwi3grZ2xvDwpF/EDB632i+ff
-         +qZ9HVsp3vccQ==
-Date:   Mon, 28 Jun 2021 12:13:44 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNmg2IEpUlArZXPK@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+        id S232490AbhF1KRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:17:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:33075 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231935AbhF1KRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:17:30 -0400
+Received: from [192.168.1.155] ([77.9.21.236]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mq33i-1lTPOc2NxS-00nDbm; Mon, 28 Jun 2021 12:14:08 +0200
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Len Brown <lenb@kernel.org>, Florian Weimer <fweimer@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Willy Tarreau <w@1wt.eu>
+References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de>
+ <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+ <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+ <87pmxk87th.fsf@oldenburg.str.redhat.com>
+ <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
+ <87wnqkzklg.fsf@oldenburg.str.redhat.com>
+ <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net>
+Date:   Mon, 28 Jun 2021 12:14:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3gmtKsZb/eceSmxh"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+In-Reply-To: <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:lSyi4PgVQ1Q3XMSWurC8SV8Bg+7YTr6EDcg0xFwZhAa7CdyqBwo
+ y2/PQTszne3zHE2CsHWbDrsqI1aT0Fw+n02sncfcu7QcpMZEty6ObhDerSaUl0s9CfeDbEW
+ J2Bc+/nkZppt5TRvJoWV34h+G8u5LaqhHPfRNRzz2bOHkBKsxApDfFYKNkE0YoY/tRdKYbV
+ 1Bg7WvHflG+7NRsPIiLEQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g8YuvF7/MfU=:oBD29W2LKejICBROVCUpSA
+ zT5DGff/UY7BI0cMzJmmJP24/uK3IfbR5+WZcqyOE+1SzEs48igl1vOzV78iqfe5pROsVrCTb
+ j6TfKvTeZJ+UY8fHM4x2USvej2b449ydTYG1/TAu1uEgBLINXfla7hDQfeZh6CTuQhObNUyWE
+ P/p6kobIV17khYQcJOHrk1ZDl5J1WmPwJFyB38AbfoSBV0JtLyuik7Vy8gRDDNhdNgK/Mj6s1
+ /G/ySKHQyVfeq8P77klUuIbY3PkxmUqkeHxXtDsVKEvQD3jdtiL2OLrLhiUJhTka7cadkvRb5
+ kuzoKaHgc8Fy+7u8klD2h+oG0X4FAfEsKS94cdfKSZ00xUvGFK5tpmAs/l/Mf1s+QL64daG0Y
+ Ei6+vAoZlmcLH5bNg6k5rO4ZsUJHAlfbr+Ip/4w0gJyJChAoBybjtVcaSUAW4cJ+giK0CRc4Z
+ ub49WhLJ4YbDE6XtcmdKZhpq/NZ1k/TWlaEQLo2Ur8/v12gy4EcrvxaAizThD0tvBcm4ZKgAU
+ J366UcY8EfYz9wf+mQr1ok=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24.06.21 01:11, Len Brown wrote:
+>>    x86 CPU features detection for applications (and AMX)
+>>    <https://lore.kernel.org/linux-api/87tulo39ms.fsf@oldenburg.str.redhat.com/>
+> 
+> FWIW, I didn't receive it, because you excluded
+> 
+> linux-kernel@vger.kernel.org
 
---3gmtKsZb/eceSmxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+me neither :(
 
+Maybe just repost it to LKML ?
 
-> Ok, that's what I thought. There is one corner case that I've struggled
-> with though: Suppose the host has an SMBus-only driver, and the
-> proposed driver exposes this as an I2C device to the guest, which
-> makes it available to guest user space (or a guest kernel driver)
-> using the emulated smbus command set. Is it always possible for
-> the host user space to turn the I2C transaction back into the
-> expected SMBus transaction on the host?
+You mention the interface *was* designed with cpu features remaining
+constant over a process' lifetime. Between the line I'm reading that
+this might not be the case anymore.
 
-If an SMBus commands gets converted to I2C messages, it can be converted
-back to an SMBus command. I don't see anything preventing that right
-now. However, the mapping-back code does look a bit clumsy, now that I
-envision it. Maybe it is better, after all, to support I2C_SMBUS
-directly and pass SMBus transactions as is. It should be a tad more
-effiecient, too.
+How could that happen ? Process migration on a different CPU (or perhaps
+on a different host) ?
 
-Speaking of it, I recall another gory detail: SMBus has transfers named
-"read block data" and "block process call". These also need special
-support from I2C host controllers before they can be emulated because
-the length of the read needs to be adjusted in flight. These commands
-are rare and not hard to implement. However, it makes exposing what is
-supported a little more difficult.
+This is gonna be tricky, because this somehow needs to be synchronized
+with the application (even if we check the bits before calling some
+cpu-specific opcode, which also has some performance cost), there's
+still some window where the application might not yet recognize the
+change. So either we need some explicit migration points (where app
+tells, please let me finish this func first) or transparent emulation.
 
-> This is certainly possible, but is independent of the implementation of
-> the guest driver. It's up to the host to provision the devices that
-> are actually passed down to the guest, and this could in theory
-> be any combination of emulated devices with devices connected to
-> any of the host's physical buses. The host may also decide to remap
-> the addresses of the devices during passthrough.
-
-That sounds good.
+Damn, how could the cpu designers come up with such weird concepts
+in the first place ? :o
 
 
---3gmtKsZb/eceSmxh
-Content-Type: application/pgp-signature; name="signature.asc"
+--mtx
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDZoNMACgkQFA3kzBSg
-KbZeERAAlxLVin/Zmc6B+XbRcyhltAFcvOYutvLVeWSbLZ1iJ6ynsZlMmsxsgoHx
-7eeljnSLAYGXS0Nqv3YEVSC6gx07139YQHyLhitc3sxo15PES8TAdr0caAHnJPN/
-QLsYZhl/NDELoHtR+ULqfaFRu84XhFxmGp0Yb+7Q/p8F+JUalLSsFB3uAE2Blo/K
-YElcUrp+v6JdLV22J1dahQ1SvvQV/w922vJ9HeOlvbaVqxRSA8DvYyh48gDD8qXG
-SGRaFIHOiif7HtyiVFy7FVEDYoZyFRoOz/QpG6VxNfrqlbaSTkjk/kUhy01rp5hX
-yTQ5jm1bkE+2u2zc7XHHwqdzDb8WaT7r6C8dtA4LvDA44XDQ99vyUE//x23SnI73
-PsY9Wyf4hbMwrZ9NC/CN9pZtLmRhSbSRKkoUSRdUj110Hk+iJZqHy9KuQfBgJey2
-tpGYG5FC8kbMYKB0WrNpWQTTlHrCWRP8ULnhky1l7pqjsCLwIobMjC2mBk1uuqyZ
-Vhk8YM0yUTsq8VA5cNJXnMpHtvIYnGnQj9lH1V1cnJjPaUpg3ZzrGW9tmibaMLdp
-PnswWUWtSBv/kZZQQdqSY9zsTdpgQ6s6Dh0Lxyc7eAyL8UokFbRmlMkJx427jYWv
-9Jzjro0d6MeoHZ116XtJ1zEZ3fLX4XPtZMr5LPvH2dNjbnTkqGY=
-=vBE7
------END PGP SIGNATURE-----
-
---3gmtKsZb/eceSmxh--
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
