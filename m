@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD433B5928
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790683B592C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhF1Ge7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 02:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S232035AbhF1GiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhF1Ge5 (ORCPT
+        with ESMTP id S229911AbhF1Gh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 02:34:57 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97025C061574;
-        Sun, 27 Jun 2021 23:32:31 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s15so24048107edt.13;
-        Sun, 27 Jun 2021 23:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=Txib2lQrDDQhvhBqeRPpUjNCWW8HeQrOQj6T4O5KwlY=;
-        b=JhPkhH3Q1zA/DAr3MkYkso+Y8TrPAXPOfWSPbcikGR1MhOMgFr4VxnP3yUZldp4b46
-         aZOQKjJ8yd1BqPW9AtOd9K7h2sH4G54JpjOE9RVw85E0WvD8SvriN3aQ6SaflsJf914o
-         gN3b/uWwfMFYXsQkLSzKg13zr0TB2qF7ep6M1aS48b/bw+kDRxYj46Mlcatpmn23++TL
-         /vQgyRhLh/pMXoYDZ/JVzCT1VmBQaV6oxQqLOhixi7nNQAikk+K50aO4RpVrPvB4pBhm
-         NG4+VUET9eiXlucmNedhKc/3+raEFDFU8XK9O7reiYCQC1COE2W+jmLutTLX2oufVh5R
-         Lt+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Txib2lQrDDQhvhBqeRPpUjNCWW8HeQrOQj6T4O5KwlY=;
-        b=PfbaOJbUC0pZJvy2PQZHuWLHzA46pX+bXJSrZs8gZBXmlUqUwW+BK6V5Kn/CgFupoV
-         dUwE4WjmNtlSUwMZ9beC11JG5i4lcd1CxPnDGDIuCJcbAGVLW9iufgK/QdjVvALAAgNU
-         hg9u9oOS/5cZIajUx6m9R0lbnJWvp2g07g3KT7UjfzRtyscNKQiOoCcL5BZ5gCl+0cgs
-         wTLQOsR8LyTJEaHwOvpEA6Csk7k4lcaVpOQKJCWwj9kN+qYCyUlTmbXTEZNQuLpozT38
-         MKV84lbXpQEM7v1oEzDVQ41G8m8jvBFAkrRov3Dm1u3odeeQaLUpgnZx4mkM4QcWiov9
-         CcKg==
-X-Gm-Message-State: AOAM530a84J67KlAioWqcmHHzNjKKj+AiWDU1S7g63ZHKfOPo29xGjsM
-        2oBseDjPpz0sYROeINxz8CA=
-X-Google-Smtp-Source: ABdhPJyrYnrhvNmi1u8txWBJT4/at6h8o1jT0bbgA7tVl1vQp1uocjMswBZIZMYOrDFP3OP3pqImMA==
-X-Received: by 2002:a05:6402:5248:: with SMTP id t8mr31128621edd.110.1624861950287;
-        Sun, 27 Jun 2021 23:32:30 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id bx28sm6430311ejc.39.2021.06.27.23.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 23:32:30 -0700 (PDT)
-Message-ID: <5b4717c407a7998380d5edb61ec5b0a1b82a50fc.camel@gmail.com>
-Subject: Re: [PATCH v2] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-From:   Bean Huo <huobean@gmail.com>
-To:     keosung.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jpinto@synopsys.com" <jpinto@synopsys.com>,
-        "joe@perches.com" <joe@perches.com>
-Date:   Mon, 28 Jun 2021 08:32:28 +0200
-In-Reply-To: <1891546521.01624860001810.JavaMail.epsvc@epcpadp3>
-References: <CGME20210628055801epcms2p449fdffa1a6c801497d7e65bae2896b79@epcms2p4>
-         <1891546521.01624860001810.JavaMail.epsvc@epcpadp3>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 28 Jun 2021 02:37:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516E3C061574;
+        Sun, 27 Jun 2021 23:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m8O1gYnNGbTtfvr0xBpn9cMvKiMrqp+DD2LjyIwlVHU=; b=EZ2tqzN0BRMpZbbINUkrW8Sf7L
+        9i9w/XLGD/NyUslJ3ytbhc1NX1MX95KJkhKFXXjiM4PKvM8MgqN6FTT0MAP8bGhxK/XPIHaeYhMHO
+        WJwKsI+S8PG9nyo19SSxntu5Kdg9FNga8H/PAVlpxQak2OI2b0y87m8lVsLJDtSwF/1ta20O6V64h
+        w8OVMs6oARgEdnsPSUD6imvql8jUynp7iS2z7szNU70zj69lh+8Eo2PRX2a3AEkHUGjrqAQhAhkSx
+        lBem3AVl6AyL+KKqc9UkIYBaaQ5km+kZw9l/hKBrP45VWG6M3pPfBbUPyRVd2+CyJHuCv+KMqDkOV
+        lGJeZdFg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxkpQ-002f3T-Jn; Mon, 28 Jun 2021 06:33:20 +0000
+Date:   Mon, 28 Jun 2021 07:33:08 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 24/46] mm/writeback: Add __folio_end_writeback()
+Message-ID: <YNltJOhAGT1M2G8R@infradead.org>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-25-willy@infradead.org>
+ <YNL7yxWFqlL7/Fd+@infradead.org>
+ <YNTM3P/lem6P8ie/@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNTM3P/lem6P8ie/@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-28 at 14:58 +0900, Keoseong Park wrote:
-> Simplify if else statement to return statement,
+On Thu, Jun 24, 2021 at 07:20:12PM +0100, Matthew Wilcox wrote:
+> > While this looks good, I think the whole abstraction is wrong.  I think
+> > test_clear_page_writeback should just be merged into it's only caller.
 > 
-> and remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
+> I'm not opposed to doing that, but something else has to get
+> un-static'ed in order to make that happen.
 > 
+> folio_end_writeback (exported, filemap.c)
+>  -> folio_wake (static, filemap.c)
+>      -> folio_wake_bit (static, filemap.c)
+>  -> __folio_end_writeback (non-static, page-writeback.c)
+>      -> __wb_writeout_add (static, page-writeback.c)
 > 
-> 
-> v1 -> v2
-> 
-> Remove code related to CONFIG_SCSI_UFS_DWC that is not in use.
-> 
-> 
-> 
-> Cc: Joao Pinto <jpinto@synopsys.com>
-> 
-> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+> I'm not sure there's an obviously better split than where it is right
+> now.
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-
+Ok, let's ignore that whole mess for now.  There is plenty bigger fish to
+fry.
