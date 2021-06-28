@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C51F3B6919
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951AC3B6927
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbhF1Tch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        id S236649AbhF1Te6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbhF1Tcd (ORCPT
+        with ESMTP id S236643AbhF1Tez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:32:33 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AA5C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:30:07 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so20050646otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:30:07 -0700 (PDT)
+        Mon, 28 Jun 2021 15:34:55 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508CEC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:32:29 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id h6so11143306ljl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VFJY8505wyLq/TqpNtGxx/X4mufdytmO16W0L0dHIgg=;
-        b=om4/U1E+hj6T7UkgHhPtAr+MURu4APHxmHXxUJG1zNOw+zEl+i9NmsNx3QnEYmmNCp
-         t5rlS5d/Weh7HtAbUzHIz3gebtjOexW6hV5er/4UNfgesAv55oB0eNOqwh5ZbTOJK/g5
-         mmELdGLy/6PiyMJtTefdbQ9vqO+4dpJxQb8bhb2sD26EtqVaM4l+VBwLu8z+oLgnGrJA
-         7JRvkVcgqJbA8TVSkSmHJyxT5B3B42fPTHenlSLt9m4gER/SRYB5BU3YJlnvVC3d/nAV
-         /4/i8jJd4gUGylUuI7MzMh6daNP+Kz6t7IWsXvW6dw6k1KHRxIMnL8Oq2oE4S1HsyORb
-         8DoQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Y/bR8wUkGVGzhBdcSek4wesHYZCjuAjxxcejF3EnLQ=;
+        b=gfJRI600rr+UJrrk36UduQIC/Mlr+94+zjyh5Dw3k/qSrlCmRHQHOYMm1z/LbO0QS3
+         js9GEsLvs1tHtLx6Z68jgqnnV5bDN9eC90k0v07W+lS97xNmXLUFJD+DdVY3eJg5xJPv
+         avoRUjdC/9NNvm7tNfBNkF9bedlQhlKHCknsY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VFJY8505wyLq/TqpNtGxx/X4mufdytmO16W0L0dHIgg=;
-        b=MFn3Fkcv+JkIKIAsDiqUPHtxrQUFKiQBxQOiyXeWr94ldEl2FUiSZJuRt80dqT8TQc
-         1GlZHxcxgINYHaYMBWunwuakD4O0AjuaK4d6bk0klGGDXSlAgCYY6OidDRWqr1WVujTx
-         oZKRqarfaroI1nT1stN2OplO1YLUXgUJoZaIYOlhB+A1CCIawlpSPDrL/oZ9zdSmIC8N
-         I4D/jSGsZ2ECq3bFHb6tNH57F/9xg8xgPxw5ia0JYO+cgWi4OAIHQdboakz4VbfUXBWw
-         6jXM0g2o4rxcfPmPezt15iwzVGPj5KJG3FrxVJVZ1tUb5LPlh61WpNwMyIkARtZeNehH
-         NtWA==
-X-Gm-Message-State: AOAM532C7eOICkmeR73YoigqF9SqnDrsQFvCTwPvY/V+e0egs72M69Gp
-        LHzN5ThlEoSKZtYzlHg4Aix+toKVwq+8Itdu
-X-Google-Smtp-Source: ABdhPJyQF1m0BxNSgT0anmTMLiJYKDNJJnKXUgkXT4+p9bUZ460gWnijh9Yo+M4Apn9fU8Cn89ZRYw==
-X-Received: by 2002:a9d:62cf:: with SMTP id z15mr1002438otk.306.1624908606386;
-        Mon, 28 Jun 2021 12:30:06 -0700 (PDT)
-Received: from [192.168.86.166] ([136.62.4.88])
-        by smtp.gmail.com with ESMTPSA id p190sm259011oop.2.2021.06.28.12.30.05
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Y/bR8wUkGVGzhBdcSek4wesHYZCjuAjxxcejF3EnLQ=;
+        b=Npx49Q+EKrlkjBUe3lzP0bTmcwt0Cz3QheSg5FNZmNlgX8vNe7JGCUeQuZ0FyYStNg
+         LvAZtgqD4hfKKCZknDlBstOWhh8DDXFZspERZ8j8EJd6m1KaZGfznryX5hB8y3iaR/JC
+         pmO8J4erduiwm5i6lmRb/U55fSqtxBE18ax5eSDA1NI+y8sIExnrsUu4HeM4/xaQ5REj
+         5b2XzEBqEASroPiK9qg8OjTXcEA/qlJUsBlMZ/zWx0GbK+b0y4YXa5+B8FSrEWcaekjk
+         liH3sk17WCnbxnc7c98NexVUaNQwxLQvn/OZtghq74r2yM1A0mVw+vVOHglrN8A3nYdM
+         ES4A==
+X-Gm-Message-State: AOAM531tqxzUot6laK1//uLHgUzhcopHYg0DHYkYYatBt8vjSw5+Qnju
+        j0U1KlUzf+PBScrtztGf5uSdR+szc1PhPAyj
+X-Google-Smtp-Source: ABdhPJwrRC7K5JaxDH1dxaLMHt0oWawsg6o2vAz+cvnCpip29biFcoC7PxOtqLjPfeO80+9CVKOiOA==
+X-Received: by 2002:a2e:81d3:: with SMTP id s19mr728926ljg.446.1624908747386;
+        Mon, 28 Jun 2021 12:32:27 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id b15sm1398318lff.186.2021.06.28.12.32.26
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 12:30:05 -0700 (PDT)
-Subject: Re: dma_declare_coherent_memory and SuperH
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210623133205.GA28589@lst.de>
- <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
- <20210628133858.GA21602@lst.de>
- <4d6b7c35-f2fa-b476-b814-598a812770e6@landley.net>
- <20210628134955.GA22559@lst.de>
- <1141b20f-7cdf-1477-ef51-876226db7a37@landley.net>
- <20210628163312.GA29659@lst.de>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <4415e2cf-5a6a-8e83-a6d8-391c25e1f041@landley.net>
-Date:   Mon, 28 Jun 2021 14:47:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 28 Jun 2021 12:32:26 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id a18so12450556lfs.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:32:26 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr19397814lfc.201.1624908745815;
+ Mon, 28 Jun 2021 12:32:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628163312.GA29659@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YNlxcCpk4shGcPrU@gmail.com>
+In-Reply-To: <YNlxcCpk4shGcPrU@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Jun 2021 12:32:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wisVoq7COhA-B+5UAbisJqTn7Sehh-brqn6K3UVuFzoew@mail.gmail.com>
+Message-ID: <CAHk-=wisVoq7COhA-B+5UAbisJqTn7Sehh-brqn6K3UVuFzoew@mail.gmail.com>
+Subject: Re: [GIT PULL] scheduler changes for v5.14
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 11:33 AM, Christoph Hellwig wrote:
-> On Mon, Jun 28, 2021 at 09:29:59AM -0500, Rob Landley wrote:
-> >> Your plan is to eliminate the ability for non-device-tree boards to do DMA?
+On Sun, Jun 27, 2021 at 11:51 PM Ingo Molnar <mingo@kernel.org> wrote:
 >
->> > No.
->
->> Which part of this exchange have I misunderstood?
-> 
-> The part that there is no easy way out without the device tree
-> conversion.
+>     - Add "Core Scheduling" via CONFIG_SCHED_CORE=y,
 
-Interesting use of the word "No".
+Grr.
 
-I didn't ask for easy, I asked what needed to be done. What is the patch you
-want to apply to kernel/dma so I can see what infrastructure needs to be moved
-into arch/sh so it's our problem and not yours.
+Why is this feature "default y"? I see no reason why anybody would
+enable it outside of cloud providers, which doesn't argue for it being
+on by default.
 
-If a wrapper function has to fake up a temporary device tree snippet to lie to
-new DMA infrastructure that refuses to export non-systemd APIs to handle this,
-fine. It's still less intrusive than converting EVERY device to a new API on
-boards I can't easily regression test. (And hey, if you squint that would be a
-little like a partial incremental device tree conversion.)
-
-Rob
+               Linus
