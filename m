@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C313B63D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C803B63BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhF1PAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
+        id S236033AbhF1PAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235440AbhF1OpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:45:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D214861CF5;
-        Mon, 28 Jun 2021 14:34:01 +0000 (UTC)
+        id S235575AbhF1OpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:45:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57CE761D02;
+        Mon, 28 Jun 2021 14:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890842;
-        bh=R5F1oULPOgZlx/P2vuEqNQtbdEtO1rJFWXwqVij34BU=;
+        s=k20201202; t=1624890843;
+        bh=zxjRkZnDBhEz7uG1aTArlITa2Eb48qPa6igD/F77RkI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eazKE8el0QKupxQuOouYY6JNJVbrnz4rMgPRZUxqG34OlFcwXN6b7WZJuKF3V9a0P
-         GcoMhk7PwEr/9zgVdiPbdf2iR/LftoyOHcuDln+jPS0Ycuy2YeVPfpKPWDEjRbXBGX
-         Z3wn6p88F2QqgXd7G/7P6EeLcYF8uul3UxMKgVk5tW2JoAb25WVvdRzngzQEkCvu57
-         GPjng0ORz1jHGDwnkuAWdT7lEf/SVD4c6gzPHSfevMw5mz3IG9ll78THBZD+tyjd4b
-         bWdms1d3KUCK94R+FEsautbXHHJCrcBi3frb6wRpPiGisps3gDqFUDznZTkturziJZ
-         U/cqDXWfUaLpw==
+        b=GzCCq1TB43WjxC81SIwglNh7xgZg2NNyNnRH3I6uOTuh0cJoZajdTEA+zNPSnnL5f
+         0EbBka9RpyvQ5pZcdlY0hO0aLzZAV7QcxsuYb8Z+p6/T26va3Y5GYjlbhN+/g46qm7
+         duyuN6JxS00riijnG0dFNvK4gYsIohvpzLnA75DNHSBzr/gVp6ESkd6+B8UDsFyZz6
+         o8+rSVVT63oWWKFCmw+kbjeHy8yHxSQ7g+HUR8QkcHWv3k6grLmlNAo8KE7vh3LP4z
+         35toeBOFfyU4bkRgk/v/d2hvXdZqcL5VURzrGeGGf00Mdl+fkSs3brH+092+a4Q+7G
+         IKxkINsjYLdkw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+Cc:     Shanker Donthineni <sdonthineni@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sinan Kaya <okaya@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.19 063/109] tracing: Do no increment trace_clock_global() by one
-Date:   Mon, 28 Jun 2021 10:32:19 -0400
-Message-Id: <20210628143305.32978-64-sashal@kernel.org>
+Subject: [PATCH 4.19 065/109] PCI: Mark some NVIDIA GPUs to avoid bus reset
+Date:   Mon, 28 Jun 2021 10:32:21 -0400
+Message-Id: <20210628143305.32978-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
@@ -47,134 +49,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Shanker Donthineni <sdonthineni@nvidia.com>
 
-commit 89529d8b8f8daf92d9979382b8d2eb39966846ea upstream.
+commit 4c207e7121fa92b66bf1896bf8ccb9edfb0f9731 upstream.
 
-The trace_clock_global() tries to make sure the events between CPUs is
-somewhat in order. A global value is used and updated by the latest read
-of a clock. If one CPU is ahead by a little, and is read by another CPU, a
-lock is taken, and if the timestamp of the other CPU is behind, it will
-simply use the other CPUs timestamp.
+Some NVIDIA GPU devices do not work with SBR.  Triggering SBR leaves the
+device inoperable for the current system boot. It requires a system
+hard-reboot to get the GPU device back to normal operating condition
+post-SBR. For the affected devices, enable NO_BUS_RESET quirk to avoid the
+issue.
 
-The lock is also only taken with a "trylock" due to tracing, and strange
-recursions can happen. The lock is not taken at all in NMI context.
+This issue will be fixed in the next generation of hardware.
 
-In the case where the lock is not able to be taken, the non synced
-timestamp is returned. But it will not be less than the saved global
-timestamp.
-
-The problem arises because when the time goes "backwards" the time
-returned is the saved timestamp plus 1. If the lock is not taken, and the
-plus one to the timestamp is returned, there's a small race that can cause
-the time to go backwards!
-
-	CPU0				CPU1
-	----				----
-				trace_clock_global() {
-				    ts = clock() [ 1000 ]
-				    trylock(clock_lock) [ success ]
-				    global_ts = ts; [ 1000 ]
-
-				    <interrupted by NMI>
- trace_clock_global() {
-    ts = clock() [ 999 ]
-    if (ts < global_ts)
-	ts = global_ts + 1 [ 1001 ]
-
-    trylock(clock_lock) [ fail ]
-
-    return ts [ 1001]
- }
-				    unlock(clock_lock);
-				    return ts; [ 1000 ]
-				}
-
- trace_clock_global() {
-    ts = clock() [ 1000 ]
-    if (ts < global_ts) [ false 1000 == 1000 ]
-
-    trylock(clock_lock) [ success ]
-    global_ts = ts; [ 1000 ]
-    unlock(clock_lock)
-
-    return ts; [ 1000 ]
- }
-
-The above case shows to reads of trace_clock_global() on the same CPU, but
-the second read returns one less than the first read. That is, time when
-backwards, and this is not what is allowed by trace_clock_global().
-
-This was triggered by heavy tracing and the ring buffer checker that tests
-for the clock going backwards:
-
- Ring buffer clock went backwards: 20613921464 -> 20613921463
- ------------[ cut here ]------------
- WARNING: CPU: 2 PID: 0 at kernel/trace/ring_buffer.c:3412 check_buffer+0x1b9/0x1c0
- Modules linked in:
- [..]
- [CPU: 2]TIME DOES NOT MATCH expected:20620711698 actual:20620711697 delta:6790234 before:20613921463 after:20613921463
-   [20613915818] PAGE TIME STAMP
-   [20613915818] delta:0
-   [20613915819] delta:1
-   [20613916035] delta:216
-   [20613916465] delta:430
-   [20613916575] delta:110
-   [20613916749] delta:174
-   [20613917248] delta:499
-   [20613917333] delta:85
-   [20613917775] delta:442
-   [20613917921] delta:146
-   [20613918321] delta:400
-   [20613918568] delta:247
-   [20613918768] delta:200
-   [20613919306] delta:538
-   [20613919353] delta:47
-   [20613919980] delta:627
-   [20613920296] delta:316
-   [20613920571] delta:275
-   [20613920862] delta:291
-   [20613921152] delta:290
-   [20613921464] delta:312
-   [20613921464] delta:0 TIME EXTEND
-   [20613921464] delta:0
-
-This happened more than once, and always for an off by one result. It also
-started happening after commit aafe104aa9096 was added.
-
+Link: https://lore.kernel.org/r/20210608054857.18963-8-ameynarkhede03@gmail.com
+Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Sinan Kaya <okaya@kernel.org>
 Cc: stable@vger.kernel.org
-Fixes: aafe104aa9096 ("tracing: Restructure trace_clock_global() to never block")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace_clock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/pci/quirks.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/trace/trace_clock.c b/kernel/trace/trace_clock.c
-index c1637f90c8a3..4702efb00ff2 100644
---- a/kernel/trace/trace_clock.c
-+++ b/kernel/trace/trace_clock.c
-@@ -115,9 +115,9 @@ u64 notrace trace_clock_global(void)
- 	prev_time = READ_ONCE(trace_clock_struct.prev_time);
- 	now = sched_clock_cpu(this_cpu);
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index bc4858b056f9..285b361831ec 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3463,6 +3463,18 @@ static void quirk_no_bus_reset(struct pci_dev *dev)
+ 	dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET;
+ }
  
--	/* Make sure that now is always greater than prev_time */
-+	/* Make sure that now is always greater than or equal to prev_time */
- 	if ((s64)(now - prev_time) < 0)
--		now = prev_time + 1;
-+		now = prev_time;
- 
- 	/*
- 	 * If in an NMI context then dont risk lockups and simply return
-@@ -131,7 +131,7 @@ u64 notrace trace_clock_global(void)
- 		/* Reread prev_time in case it was already updated */
- 		prev_time = READ_ONCE(trace_clock_struct.prev_time);
- 		if ((s64)(now - prev_time) < 0)
--			now = prev_time + 1;
-+			now = prev_time;
- 
- 		trace_clock_struct.prev_time = now;
- 
++/*
++ * Some NVIDIA GPU devices do not work with bus reset, SBR needs to be
++ * prevented for those affected devices.
++ */
++static void quirk_nvidia_no_bus_reset(struct pci_dev *dev)
++{
++	if ((dev->device & 0xffc0) == 0x2340)
++		quirk_no_bus_reset(dev);
++}
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
++			 quirk_nvidia_no_bus_reset);
++
+ /*
+  * Some Atheros AR9xxx and QCA988x chips do not behave after a bus reset.
+  * The device will throw a Link Down error on AER-capable systems and
 -- 
 2.30.2
 
