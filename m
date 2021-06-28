@@ -2,179 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C973B691D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF113B691A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236588AbhF1Tcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236582AbhF1Tcw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:32:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624908625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4aDinynGafajdrFAUt+N4CTx5HYHFQkR8BqRweQ4D0Y=;
-        b=VlaJGig4ONJLrG+56SBCFW1YavqbjQO7Ww92zq9VnyT4AfnM/UXYnq3oRIgmlFp8eEAvTg
-        HyEsosGx5xjiivcfQ96RPgsgeC/nrZdBVX+nptr6NJH2cBaomBkxqbH2KPL9OIoChrgdUX
-        Q2ggsAruCx7G8omBSGeOPLkpDUUkmkE=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-dID1gGYOPbybFZzsQdNh8w-1; Mon, 28 Jun 2021 15:30:21 -0400
-X-MC-Unique: dID1gGYOPbybFZzsQdNh8w-1
-Received: by mail-oo1-f71.google.com with SMTP id b9-20020a4a87890000b0290248cb841124so12249454ooi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:30:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4aDinynGafajdrFAUt+N4CTx5HYHFQkR8BqRweQ4D0Y=;
-        b=BBSCsea2aK3b2kTX8DpwPIIlX9rD7X854+EJUQza/D/v5GzbbwEJAZRShKDnY0RheL
-         GcoqZoV+6XZ90sVodN63rMypChFsc8mD9RNhc4CWMg+pQAoqSdG4Zpx2l5lm/vpwEEin
-         so7bxGAngodPk0Z76vfeYFtX3nVQko/7iva33aRyhyG6g9tx4gNMFdBZagJNuqSwUcI/
-         pJp00qXm7Ra6JmZndftKole87r8CwJTMDKvs4s8UvFzMHWObPJq5LPy/xHsZz9fGzix7
-         hTaXWzFy57t1MUbxiPNSF8uqwAecjEQv3DZDt58H9eW0NYEFhdpMu3H2bKkqjhPBx2xl
-         AgzA==
-X-Gm-Message-State: AOAM531KUrIijwMLwjCqqFYD3H/PG4bdr4px8nOQbUpcRAO/d76iBkxg
-        7mxA2Sa45nRRYkmMHzHEwARz4xKplRQpJgFfO2q5xFAEMFAdlO/UNqu3qInZK6g5wJP2XTI4FcP
-        BiF0pu5BJx97UzXeEiZXFaVoq
-X-Received: by 2002:a54:4f99:: with SMTP id g25mr22137013oiy.132.1624908620954;
-        Mon, 28 Jun 2021 12:30:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHkDsJ/vlm84kWczYHiEPW2vUWVs3lqbZWoF2KSYi5CmBFOLj4QzsAch5CX8CfxouV5F4pOg==
-X-Received: by 2002:a54:4f99:: with SMTP id g25mr22137005oiy.132.1624908620753;
-        Mon, 28 Jun 2021 12:30:20 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id y11sm1245357oto.28.2021.06.28.12.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 12:30:20 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 13:30:19 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, prime.zeng@hisilicon.com, cohuck@redhat.com
-Subject: Re: [PATCH v2] vfio/pci: Handle concurrent vma faults
-Message-ID: <20210628133019.6a246fec.alex.williamson@redhat.com>
-In-Reply-To: <20210628185242.GI4459@nvidia.com>
-References: <161540257788.10151.6284852774772157400.stgit@gimli.home>
-        <20210628104653.4ca65921.alex.williamson@redhat.com>
-        <20210628173028.GF4459@nvidia.com>
-        <20210628123621.7fd36a1b.alex.williamson@redhat.com>
-        <20210628185242.GI4459@nvidia.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S236565AbhF1Tcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:32:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:1186 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236553AbhF1Tcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 15:32:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="188399721"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="188399721"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 12:30:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="419287684"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Jun 2021 12:30:05 -0700
+Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
+ dynamically loaded shared object
+To:     Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210627131818.810-1-adrian.hunter@intel.com>
+ <e2a57ee8-6489-40d5-04d0-7d985eba961f@linux.intel.com>
+ <ea9a04ad-26b2-7072-9f45-9ddbd8f61c10@intel.com>
+ <65fc17a8-cefa-f7a8-8ffc-8ef88b773991@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <4e94511d-858b-bd46-add8-cb525be4875b@intel.com>
+Date:   Mon, 28 Jun 2021 22:30:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <65fc17a8-cefa-f7a8-8ffc-8ef88b773991@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Jun 2021 15:52:42 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Mon, Jun 28, 2021 at 12:36:21PM -0600, Alex Williamson wrote:
-> > On Mon, 28 Jun 2021 14:30:28 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > On Mon, Jun 28, 2021 at 10:46:53AM -0600, Alex Williamson wrote:  
-> > > > On Wed, 10 Mar 2021 11:58:07 -0700
-> > > > Alex Williamson <alex.williamson@redhat.com> wrote:
-> > > >     
-> > > > > vfio_pci_mmap_fault() incorrectly makes use of io_remap_pfn_range()
-> > > > > from within a vm_ops fault handler.  This function will trigger a
-> > > > > BUG_ON if it encounters a populated pte within the remapped range,
-> > > > > where any fault is meant to populate the entire vma.  Concurrent
-> > > > > inflight faults to the same vma will therefore hit this issue,
-> > > > > triggering traces such as:    
-> > > 
-> > > If it is just about concurrancy can the vma_lock enclose
-> > > io_remap_pfn_range() ?  
-> > 
-> > We could extend vma_lock around io_remap_pfn_range(), but that alone
-> > would just block the concurrent faults to the same vma and once we
-> > released them they'd still hit the BUG_ON in io_remap_pfn_range()
-> > because the page is no longer pte_none().  We'd need to combine that
-> > with something like __vfio_pci_add_vma() returning -EEXIST to skip the
-> > io_remap_pfn_range(), but I've been advised that we shouldn't be
-> > calling io_remap_pfn_range() from within the fault handler anyway, we
-> > should be using something like vmf_insert_pfn() instead, which I
-> > understand can be called safely in the same situation.  That's rather
-> > the testing I was hoping someone who reproduced the issue previously
-> > could validate.  
+On 28/06/21 5:57 pm, Andi Kleen wrote:
 > 
-> Yes, using the vmf_ stuff is 'righter' for sure, but there isn't
-> really a vmf for IO mappings..
+> On 6/28/2021 12:23 AM, Adrian Hunter wrote:
+>> On 27/06/21 7:13 pm, Andi Kleen wrote:
+>>> On 6/27/2021 6:18 AM, Adrian Hunter wrote:
+>>>> Hi In some cases, users want to filter very large amounts of data
+>>>> (e.g. from AUX area tracing like Intel PT) looking for something
+>>>> specific. While scripting such as Python can be used, Python is 10
+>>>> to 20 times slower than C. So define a C API so that custom filters
+>>>> can be written and loaded.
+>>> While I appreciate this for complex cases, in my experience filtering
+>>> is usually just a simple expression. It would be nice to also have a
+>>> way to do this reasonably fast without having to write a custom C
+>> I do not agree that writing C filters is a hassle e.g. a minimal do-nothing
+>> filter is only a few lines:
 > 
-> > > I assume there is a reason why vm_lock can't be used here, so I
-> > > wouldn't object, though I don't especially like the loss of tracking
-> > > either.  
-> > 
-> > There's no loss of tracking here, we were only expecting a single fault
-> > per vma to add the vma to our list.  This just skips adding duplicates
-> > in these cases where we can have multiple faults in-flight.  Thanks,  
+> It still doesn't seem user friendly. Maybe it's obvious to you, but I suspect we left behind most of even the sophisticated perf users here.
 > 
-> I mean the arch tracking of IO maps that is hidden inside ioremap_pfn
 
-Ok, so I take it you'd feel more comfortable with something like this,
-right?  Thanks,
+Fair enough.
 
-Alex
+> 
+>>
+>>>                   Maybe we could have some kind of python fast path
+>>> just for filters?
+>> I expect there are ways to make it more efficient, but I doubt it would ever
+>> come close to C.
+> 
+> If it's within 2-3x I guess it would be ok. For any larger data files we should parallelize anyways, and that works fine with the --time x/y method (although it usually also needs some custom scripting, perhaps need to figure out how to make it more user friendly)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 759dfb118712..74fc66cf9cf4 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1584,6 +1584,7 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct vfio_pci_device *vdev = vma->vm_private_data;
-+	struct vfio_pci_mmap_vma *mmap_vma;
- 	vm_fault_t ret = VM_FAULT_NOPAGE;
- 
- 	mutex_lock(&vdev->vma_lock);
-@@ -1591,24 +1592,33 @@ static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
- 
- 	if (!__vfio_pci_memory_enabled(vdev)) {
- 		ret = VM_FAULT_SIGBUS;
--		mutex_unlock(&vdev->vma_lock);
- 		goto up_out;
- 	}
- 
--	if (__vfio_pci_add_vma(vdev, vma)) {
--		ret = VM_FAULT_OOM;
--		mutex_unlock(&vdev->vma_lock);
--		goto up_out;
-+	/*
-+	 * Skip existing vmas, assume concurrent in-flight faults to avoid
-+	 * BUG_ON from io_remap_pfn_range() hitting !pte_none() pages.
-+	 */
-+	list_for_each_entry(mmap_vma, &vdev->vma_list, vma_next) {
-+		if (mmap_vma->vma == vma)
-+			goto up_out;
- 	}
- 
--	mutex_unlock(&vdev->vma_lock);
--
- 	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
-+			       vma->vm_end - vma->vm_start,
-+			       vma->vm_page_prot)) {
- 		ret = VM_FAULT_SIGBUS;
-+		goto up_out;
-+	}
-+
-+	if (__vfio_pci_add_vma(vdev, vma)) {
-+		ret = VM_FAULT_OOM;
-+		zap_vma_ptes(vma, vma->vm_start, vma->vm_end - vma->vm_start);
-+	}
- 
- up_out:
- 	up_read(&vdev->memory_lock);
-+	mutex_unlock(&vdev->vma_lock);
- 	return ret;
- }
- 
+I am not sure Python could do that, maybe something else.
+
+Parallelization is on the list of things to do.  Splitting by time is OK but gets trickier if you want to put the results back together in time order.  Also call chains get broken at the splits in time.
+
+> 
+> 
+>>
+>>> just for filters? Or maybe the alternative would be to have a
+>>> frontend in perf that can automatically generate/compile such a C
+>>> filter based on a simple expression, but I'm not sure if that would
+>>> be much simpler.
+>> If gcc is available, perf script could, in fact, build the .so on the fly
+>> since the compile time is very quick.
+>>
+>> Another point is that filters can be used for more than just filtering.
+>> Here is an example which sums cycles per-cpu and prints them, and the difference
+>> to the last print, at the beginning of each line.  I think this was something
+>> you were interested in doing?
+> 
+> Yes that's great and useful, but I would prefer to not maintain custom plugins for it. Often when I write a script it has to run in all kinds of weird environments that some random person installed, and it's not clear how portable building C will be there. And I doubt I can just copy the .so files around.
+
+That is true.  .so files have limitations.
+
+> 
+> BTW I'm not arguing to not do the plugin (I can imagine extreme cases where such a plugin is the best option), but really for most of these things there should be easier and more portable alternatives, even if they are slightly slower.
+
+Right.  The documentation could definitely point out limitations and more user-friendly alternatives like using Python scripting.
+
+
+
 
