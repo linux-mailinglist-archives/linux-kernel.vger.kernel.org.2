@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67233B5962
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C533B5965
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhF1HEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:04:42 -0400
-Received: from mail-bn1nam07on2044.outbound.protection.outlook.com ([40.107.212.44]:42917
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        id S232307AbhF1HEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:04:46 -0400
+Received: from mail-mw2nam08on2080.outbound.protection.outlook.com ([40.107.101.80]:45088
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232252AbhF1HEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:04:33 -0400
+        id S231935AbhF1HEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:04:42 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oBqIBsciAjKu9ohdKehK1wfRUZAZcoBx3vDlGkLZvahad+P/BzwJtiJ0M0xaPgOOn8u8epnV+K/m7pJ565jYog+2sbduMt4qaOYl+AUNZsoIWPMYOcaETkVm2SCWMUfEGMM3nEO73VKBMWrlKGU83S6BdqetQIhXow1iGrTSg00cw44Ui7mUD5ZkYgCXSKk04TN+nEb2tpXnKcQrTGMo7fBGx7jwdvHFPg47I77qHcITNS1N1tVzVSkkFHLYo5Cy7RoKZB3xk+EgBboQqJe7wesBMh19uDyXChcc3q8wrJfu9ASfj/lhEPNZ1nEi4fxlHWRfL27eAyjZpeErJEZnkg==
+ b=MoHqtSAnM9NwZVcPkFiHzZ2dXKeRx0/xN8K/1gZUD5dBHCyD7sb1ADUy8/x7FYBDeOWKPGKqaVOQl6Gm8ivjSt7aEkhE3FmIDzxQYBJG5zA6DQKW8xlweFtwdVsruT4vomeHoyWNBHucWQRu7XRxroE6h0/YRNO9QNfALy3+le82LWWf51Yzmi9PxPzK7pQ5GuCfl026RdzNbQiVmi2grwiuaD8JlTrV/9fRSqOq6640rxQQMV4n4ayDdHIkR3ZzudO5WF4SALhMflKIeV49w8I4YdEZ4hnH7x1I+NjhHPvTJTlrD7caqduUzQaH2h8M/7yxVMpr8KCSgsrCIgxCjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XOMKaj8YIocOlF1Sui/2a6EWB9RxSJ7E6RkjX/Ik9q0=;
- b=P64IIpgOFxTGMiRqDhe9P4pxwBfQUQhK6oqZu8s5U8u4Vrx6F7i7/d//tXEqwNB2onLriZpUpIdwZ5Bputbo4y2rwfY0ffQYlca4j7PkA3TwlHicLoBpVlXMHpH6M8PvD6gRKBArxc4g2VqjRkhdS/eqXIXvD3trgBtWllR1tlFEobgG1wdcNZJO832tmkB6YXEInrQ7mb0kDH2cuek28wmqCEqnO6GYn6cJPVmdyu0kT1Ae0y+oRNlRuGWjQg1BWZT19el5TlCJf7RMmqAWJPrLSUg5/57RD/Dc5t3gfG4XVIdjr1kH0eUwpOlxSdbP01b9pXklh5cKkHziLGjwIQ==
+ bh=vhlVUi4lv652qpQujF/BDsTHYG250X1r6wcmnzUHoAM=;
+ b=HjB95FlQ6c4WTDLXxl1VxWns3yxdX9x9cpMlCaWnGXtMvFUVqyCwPZBDk87Cg4IIi66orRrl57Z2k5XUJANACwvtRt6pDtFdJIhFTv1ljtvtyuwysQ5RmdGW9NRbLed34ipfteRdClKYQ0lTX/A5VnsCiULD8EKksOOr4Kzq9ImmfA8tzY0QHeaY5bWg0tZmGuPPG2XJI1anS5Z5C9aJvNsgisiTWIpH9sBg5JLwmXLTSffGAgv6OidnrG2rnphI02sawv/Cvo/pnofv8U0bJXGHUlLqWdpqt84V/Aom5m/bmxzbN0Ts1H1mztUSEUSY28TFP6zdKjljIgX+kzJJGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -26,17 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XOMKaj8YIocOlF1Sui/2a6EWB9RxSJ7E6RkjX/Ik9q0=;
- b=H1EVzBdbyA+WGfNyI/zGOczwLGc1TID5lyHSzcrJylvp43qhxqhURVcKjgjKJVcIO/ZFVd599WwjclRvg4XUsvbsKPLDeni9Zy61cR31OOelehPix0NB6zvoA1dWu0WvV5pLlxjlGGEmSBOMug+Wr+a86HS0Sigi1eWJiu85UTA=
-Received: from DM6PR01CA0026.prod.exchangelabs.com (2603:10b6:5:296::31) by
- PH0PR02MB7752.namprd02.prod.outlook.com (2603:10b6:510:59::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.20; Mon, 28 Jun 2021 07:02:06 +0000
-Received: from DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:296:cafe::e0) by DM6PR01CA0026.outlook.office365.com
- (2603:10b6:5:296::31) with Microsoft SMTP Server (version=TLS1_2,
+ bh=vhlVUi4lv652qpQujF/BDsTHYG250X1r6wcmnzUHoAM=;
+ b=P5rPZKlA0Mew8VN2TLUDOKZ6lJov88wlTVugqZXNiP6FGO8Q4/buQKpUxZ7k1IvkyosdD4kgrU7b5S8caoO4EcSLUgblpwp2UwZpTSKE16RNqXTR+x/V5dTi9bfRYynfV29UAUnsGooXhp2UQML3xGyeWYH0wwKzFJT3JqJ2RI4=
+Received: from DM6PR18CA0034.namprd18.prod.outlook.com (2603:10b6:5:15b::47)
+ by SN1PR02MB3885.namprd02.prod.outlook.com (2603:10b6:802:2d::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.23; Mon, 28 Jun
+ 2021 07:02:14 +0000
+Received: from DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:15b:cafe::a2) by DM6PR18CA0034.outlook.office365.com
+ (2603:10b6:5:15b::47) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend
- Transport; Mon, 28 Jun 2021 07:02:06 +0000
+ Transport; Mon, 28 Jun 2021 07:02:14 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
  header.d=none;baylibre.com; dmarc=pass action=none header.from=xilinx.com;
@@ -44,16 +45,16 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
 Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT004.mail.protection.outlook.com (10.13.5.122) with Microsoft SMTP
+ DM3NAM02FT057.mail.protection.outlook.com (10.13.5.64) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4264.18 via Frontend Transport; Mon, 28 Jun 2021 07:02:06 +0000
+ 15.20.4264.18 via Frontend Transport; Mon, 28 Jun 2021 07:02:14 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 28 Jun 2021 00:02:03 -0700
+ 15.1.2176.2; Mon, 28 Jun 2021 00:02:04 -0700
 Received: from smtp.xilinx.com (172.19.127.95) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 28 Jun 2021 00:02:03 -0700
+ 15.1.2176.2 via Frontend Transport; Mon, 28 Jun 2021 00:02:04 -0700
 Envelope-to: mturquette@baylibre.com,
  sboyd@kernel.org,
  lee.jones@linaro.org,
@@ -65,7 +66,7 @@ Envelope-to: mturquette@baylibre.com,
 Received: from [172.19.2.91] (port=42476 helo=xsjjollys50.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <rajan.vaja@xilinx.com>)
-        id 1lxlHP-0000Ik-Jx; Mon, 28 Jun 2021 00:02:03 -0700
+        id 1lxlHP-0000Ik-Tr; Mon, 28 Jun 2021 00:02:03 -0700
 From:   Rajan Vaja <rajan.vaja@xilinx.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <michal.simek@xilinx.com>, <lee.jones@linaro.org>,
@@ -73,9 +74,9 @@ To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
 CC:     <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Rajan Vaja <rajan.vaja@xilinx.com>
-Subject: [PATCH v6 1/4] clk: zynqmp: Use firmware specific common clock flags
-Date:   Mon, 28 Jun 2021 00:01:19 -0700
-Message-ID: <20210628070122.26217-2-rajan.vaja@xilinx.com>
+Subject: [PATCH v6 2/4] clk: zynqmp: Use firmware specific divider clock flags
+Date:   Mon, 28 Jun 2021 00:01:20 -0700
+Message-ID: <20210628070122.26217-3-rajan.vaja@xilinx.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a
 In-Reply-To: <20210628070122.26217-1-rajan.vaja@xilinx.com>
 References: <20210628070122.26217-1-rajan.vaja@xilinx.com>
@@ -84,192 +85,100 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a5be53b-e048-4aa4-133f-08d93a02a3de
-X-MS-TrafficTypeDiagnostic: PH0PR02MB7752:
-X-Microsoft-Antispam-PRVS: <PH0PR02MB7752B83556C3752A9E56CA5DB7039@PH0PR02MB7752.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 99c29697-c106-41a9-e602-08d93a02a888
+X-MS-TrafficTypeDiagnostic: SN1PR02MB3885:
+X-Microsoft-Antispam-PRVS: <SN1PR02MB388540B4CB043C6E0F7547ADB7039@SN1PR02MB3885.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Oob-TLC-OOBClassifiers: OLM:873;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gt7PCRSrI8FGf90yKW9Kxj7OXxO94U4IbPCH3mD8QBhARdvhVdSIs7w1KdEIiF4JKkozjj4tVtqMGbgH5u7e8CUsvRjpuE1l81+GRnnR//kleNFC6liE+b081gpu9cOLWz7e4LO2BHh+lgv0rp1q5Nvw2sCc5pyQaxwjt5DdiPaT4YZR7U6PvKGCblisNtUip85vAY31B2ASEBzcKh40hxSsvVuJeuVCj0Ye0DII1r+13gyT/GJhBVLD1V7qukP2N4DYCVmypEUDOquBunSVTb4f+jJReXIZHXGX0vaX6R1fPUy40FHylhgY6XG7DtcWsTI3nlb/6oWqwC96Sb+mUoxSYtcdDbzYcapciKl0r9xzh/nyIm7YpRsWVyZPNpBFKRFJoMaqjGHgGDJ0TMpQRC+sMu1UNOpzrfkGRu7THaMP/JCn4QhVpbheSlu3CB/P/quoZBUWzHNQFECOPgRp+SkQeqPJ3z0m1T7OCk4+7Pw3ai1xNKVm73t4HRpBgEuPVOKSn6mFTnipy95HTGTdGawmflTDqoGAvLt6+XhOBH//1FR/Fg/V+1/eGRTl08Rg2BlO1Pw8vqJQOMvoF917gp8y92vJY2CDVigx0vhG1EIseAk7JndTMyAS5dP2YjV54FRk5P7jblzVk+Afu//UZyOXtWH4b0wd9/pqU8TO2F6lGY5rIFePXzXTn2TuUVYaxFe3zqkyTixRpx5RgJGCJTpxXGlDCejlUpbxIAZDNKY=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(39850400004)(136003)(396003)(376002)(46966006)(36840700001)(47076005)(70586007)(2906002)(1076003)(70206006)(36756003)(478600001)(426003)(8676002)(2616005)(5660300002)(44832011)(6666004)(36906005)(54906003)(336012)(7696005)(82740400003)(82310400003)(8936002)(9786002)(316002)(4326008)(83380400001)(186003)(356005)(7636003)(26005)(107886003)(36860700001)(110136005)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: PsoxO0z/KKO8Lz9CsscZxXFz802AIno693fplZ0MLa02tbGppF0qj8aYoH9cSnwgTUiEk9rwYwVbHMGjqqJwmDfbro1yElwLIM2jj5bz4aXGaxrjhgo+sknKOFPZtNpfH5YTBNVgB1gCPQzlFk6njs+ueen58Pl/S3vnqU538OXj3F0UMeQzHh6OuNpZ/q142fjFt4JlCgayOMMAjEZ/vdFGo+pWxB075e7AT+dEh9ZojTegWqjpC/G8YMJ/tgsrGcY6kKg6k3aDpsN4Grt3cFKJ969MAAcuA57/PMtVRgExxPhKbzxwM4NmSgfXkJ6HmtDtIA+t/mx5iRALCVvOfPcUrbxo7Z5jvdoq83DRAs7WlaJV1U8BVTvYKpsRHh7DZdin8snpYj5Qzv/NebOo91pi/PnkuOTXiN46xleVqQyWMGk38nKJ9aboYizj5ncZ2+oQLsd/ZnkSPwZAzpvB5OUXtsKcwJnBFwUXGrQbG51cXjVwtFdrfA8dEeY92C/ixtbYqewRgK8rWrAS7yGdLL7iTniA3apJ57S/hnl990Lco4PTZ6UJVlARHJK+J9G0otHlca8fLAc05wLAD5s/SHxfppw92E/V13u3M38Rm9aJVeghbrVHvn5SxSPTKv5q6f1bJnooYAojsAql05hmTa0mYzS+ULbGbeASlfbYXfKs6f6yLc70P5G1JGZ5PeRNSf9foaDckk8lhUqzMKY8gEcNgjn2gLnwYZiYv+aPubw=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39850400004)(376002)(36840700001)(46966006)(70586007)(9786002)(110136005)(426003)(2616005)(44832011)(186003)(7696005)(4326008)(8676002)(107886003)(356005)(6666004)(8936002)(36860700001)(82310400003)(54906003)(82740400003)(1076003)(47076005)(5660300002)(7636003)(2906002)(336012)(36756003)(70206006)(316002)(83380400001)(36906005)(478600001)(26005)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 07:02:06.2302
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 07:02:14.0625
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a5be53b-e048-4aa4-133f-08d93a02a3de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99c29697-c106-41a9-e602-08d93a02a888
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7752
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR02MB3885
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently firmware passes CCF specific flags to ZynqMP clock driver.
-So firmware needs to be updated if CCF flags are changed. The firmware
-should have its own 'flag number space' that is distinct from the
-common clk framework's 'flag number space'. So define and use ZynqMP
-specific common clock flags instead of using CCF flags.
+Use ZynqMP specific divider clock flags instead of using CCF flags.
 
 Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
 ---
- drivers/clk/zynqmp/clk-gate-zynqmp.c |  4 +++-
- drivers/clk/zynqmp/clk-mux-zynqmp.c  |  4 +++-
- drivers/clk/zynqmp/clk-zynqmp.h      | 16 ++++++++++++++++
- drivers/clk/zynqmp/clkc.c            | 25 ++++++++++++++++++++++++-
- drivers/clk/zynqmp/divider.c         |  5 +++--
- drivers/clk/zynqmp/pll.c             |  4 +++-
- 6 files changed, 52 insertions(+), 6 deletions(-)
+ drivers/clk/zynqmp/clk-zynqmp.h |  9 +++++++++
+ drivers/clk/zynqmp/divider.c    | 25 ++++++++++++++++++++++++-
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/zynqmp/clk-gate-zynqmp.c b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-index 10c9b889324f..695feaa82da5 100644
---- a/drivers/clk/zynqmp/clk-gate-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-@@ -121,7 +121,9 @@ struct clk_hw *zynqmp_clk_register_gate(const char *name, u32 clk_id,
- 
- 	init.name = name;
- 	init.ops = &zynqmp_clk_gate_ops;
--	init.flags = nodes->flag;
-+
-+	init.flags = zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
- 	init.parent_names = parents;
- 	init.num_parents = 1;
- 
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-index 06194149be83..a49b1c586d5e 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -120,7 +120,9 @@ struct clk_hw *zynqmp_clk_register_mux(const char *name, u32 clk_id,
- 		init.ops = &zynqmp_clk_mux_ro_ops;
- 	else
- 		init.ops = &zynqmp_clk_mux_ops;
--	init.flags = nodes->flag;
-+
-+	init.flags = zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
- 	init.parent_names = parents;
- 	init.num_parents = num_parents;
- 	mux->flags = nodes->type_flag;
 diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqmp.h
-index 5beeb41b29fa..aa013a59c7cc 100644
+index aa013a59c7cc..925a727eb383 100644
 --- a/drivers/clk/zynqmp/clk-zynqmp.h
 +++ b/drivers/clk/zynqmp/clk-zynqmp.h
-@@ -10,6 +10,20 @@
+@@ -24,6 +24,15 @@
+ /* do not gate, ever */
+ #define ZYNQMP_CLK_IS_CRITICAL		BIT(11)
  
- #include <linux/firmware/xlnx-zynqmp.h>
- 
-+/* Common Flags */
-+/* must be gated across rate change */
-+#define ZYNQMP_CLK_SET_RATE_GATE	BIT(0)
-+/* must be gated across re-parent */
-+#define ZYNQMP_CLK_SET_PARENT_GATE	BIT(1)
-+/* propagate rate change up one level */
-+#define ZYNQMP_CLK_SET_RATE_PARENT	BIT(2)
-+/* do not gate even if unused */
-+#define ZYNQMP_CLK_IGNORE_UNUSED	BIT(3)
-+/* don't re-parent on rate change */
-+#define ZYNQMP_CLK_SET_RATE_NO_REPARENT	BIT(7)
-+/* do not gate, ever */
-+#define ZYNQMP_CLK_IS_CRITICAL		BIT(11)
++/* Type Flags for divider clock */
++#define ZYNQMP_CLK_DIVIDER_ONE_BASED		BIT(0)
++#define ZYNQMP_CLK_DIVIDER_POWER_OF_TWO		BIT(1)
++#define ZYNQMP_CLK_DIVIDER_ALLOW_ZERO		BIT(2)
++#define ZYNQMP_CLK_DIVIDER_HIWORD_MASK		BIT(3)
++#define ZYNQMP_CLK_DIVIDER_ROUND_CLOSEST	BIT(4)
++#define ZYNQMP_CLK_DIVIDER_READ_ONLY		BIT(5)
++#define ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO		BIT(6)
 +
  enum topology_type {
  	TYPE_INVALID,
  	TYPE_MUX,
-@@ -33,6 +47,8 @@ struct clock_topology {
- 	u8 custom_type_flag;
- };
- 
-+unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag);
-+
- struct clk_hw *zynqmp_clk_register_pll(const char *name, u32 clk_id,
- 				       const char * const *parents,
- 				       u8 num_parents,
-diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
-index db8d0d7161ce..871184e406e1 100644
---- a/drivers/clk/zynqmp/clkc.c
-+++ b/drivers/clk/zynqmp/clkc.c
-@@ -271,6 +271,26 @@ static int zynqmp_pm_clock_get_topology(u32 clock_id, u32 index,
- 	return ret;
+diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
+index 0becdc0a8bff..c07423e03bc8 100644
+--- a/drivers/clk/zynqmp/divider.c
++++ b/drivers/clk/zynqmp/divider.c
+@@ -284,6 +284,29 @@ static u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 type)
+ 	return ret_payload[1];
  }
  
-+unsigned long zynqmp_clk_map_common_ccf_flags(const u32 zynqmp_flag)
++static inline unsigned long zynqmp_clk_map_divider_ccf_flags(
++					       const u32 zynqmp_type_flag)
 +{
 +	unsigned long ccf_flag = 0;
 +
-+	if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_GATE)
-+		ccf_flag |= CLK_SET_RATE_GATE;
-+	if (zynqmp_flag & ZYNQMP_CLK_SET_PARENT_GATE)
-+		ccf_flag |= CLK_SET_PARENT_GATE;
-+	if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_PARENT)
-+		ccf_flag |= CLK_SET_RATE_PARENT;
-+	if (zynqmp_flag & ZYNQMP_CLK_IGNORE_UNUSED)
-+		ccf_flag |= CLK_IGNORE_UNUSED;
-+	if (zynqmp_flag & ZYNQMP_CLK_SET_RATE_NO_REPARENT)
-+		ccf_flag |= CLK_SET_RATE_NO_REPARENT;
-+	if (zynqmp_flag & ZYNQMP_CLK_IS_CRITICAL)
-+		ccf_flag |= CLK_IS_CRITICAL;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ONE_BASED)
++		ccf_flag |= CLK_DIVIDER_ONE_BASED;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_POWER_OF_TWO)
++		ccf_flag |= CLK_DIVIDER_POWER_OF_TWO;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ALLOW_ZERO)
++		ccf_flag |= CLK_DIVIDER_ALLOW_ZERO;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_POWER_OF_TWO)
++		ccf_flag |= CLK_DIVIDER_HIWORD_MASK;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_ROUND_CLOSEST)
++		ccf_flag |= CLK_DIVIDER_ROUND_CLOSEST;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_READ_ONLY)
++		ccf_flag |= CLK_DIVIDER_READ_ONLY;
++	if (zynqmp_type_flag & ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO)
++		ccf_flag |= CLK_DIVIDER_MAX_AT_ZERO;
 +
 +	return ccf_flag;
 +}
 +
  /**
-  * zynqmp_clk_register_fixed_factor() - Register fixed factor with the
-  *					clock framework
-@@ -292,6 +312,7 @@ struct clk_hw *zynqmp_clk_register_fixed_factor(const char *name, u32 clk_id,
- 	struct zynqmp_pm_query_data qdata = {0};
- 	u32 ret_payload[PAYLOAD_ARG_CNT];
- 	int ret;
-+	unsigned long flag;
- 
- 	qdata.qid = PM_QID_CLOCK_GET_FIXEDFACTOR_PARAMS;
- 	qdata.arg1 = clk_id;
-@@ -303,9 +324,11 @@ struct clk_hw *zynqmp_clk_register_fixed_factor(const char *name, u32 clk_id,
- 	mult = ret_payload[1];
- 	div = ret_payload[2];
- 
-+	flag = zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
- 	hw = clk_hw_register_fixed_factor(NULL, name,
- 					  parents[0],
--					  nodes->flag, mult,
-+					  flag, mult,
- 					  div);
- 
- 	return hw;
-diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
-index e9bf7958b821..0becdc0a8bff 100644
---- a/drivers/clk/zynqmp/divider.c
-+++ b/drivers/clk/zynqmp/divider.c
-@@ -312,8 +312,9 @@ struct clk_hw *zynqmp_clk_register_divider(const char *name,
- 
- 	init.name = name;
- 	init.ops = &zynqmp_clk_divider_ops;
--	/* CLK_FRAC is not defined in the common clk framework */
--	init.flags = nodes->flag & ~CLK_FRAC;
-+
-+	init.flags = zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
- 	init.parent_names = parents;
- 	init.num_parents = 1;
- 
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index abe6afbf3407..e0bceb07740f 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -312,7 +312,9 @@ struct clk_hw *zynqmp_clk_register_pll(const char *name, u32 clk_id,
- 
- 	init.name = name;
- 	init.ops = &zynqmp_pll_ops;
--	init.flags = nodes->flag;
-+
-+	init.flags = zynqmp_clk_map_common_ccf_flags(nodes->flag);
-+
- 	init.parent_names = parents;
- 	init.num_parents = 1;
- 
+  * zynqmp_clk_register_divider() - Register a divider clock
+  * @name:		Name of this clock
+@@ -321,7 +344,7 @@ struct clk_hw *zynqmp_clk_register_divider(const char *name,
+ 	/* struct clk_divider assignments */
+ 	div->is_frac = !!((nodes->flag & CLK_FRAC) |
+ 			  (nodes->custom_type_flag & CUSTOM_FLAG_CLK_FRAC));
+-	div->flags = nodes->type_flag;
++	div->flags = zynqmp_clk_map_divider_ccf_flags(nodes->type_flag);
+ 	div->hw.init = &init;
+ 	div->clk_id = clk_id;
+ 	div->div_type = nodes->type;
 -- 
 2.32.0.93.g670b81a
 
