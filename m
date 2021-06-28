@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEC03B6074
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0280A3B60C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhF1OZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:25:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52636 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhF1OVg (ORCPT
+        id S234565AbhF1OaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:30:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39910 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233651AbhF1O0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:21:36 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lxs6M-0001mq-1O; Mon, 28 Jun 2021 16:19:06 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lxs6L-000VbA-PF; Mon, 28 Jun 2021 16:19:05 +0200
-Subject: Re: [PATCH] bpf: fix false positive kmemleak report in
- bpf_ringbuf_area_alloc()
-To:     Rustam Kovhaev <rkovhaev@gmail.com>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dvyukov@google.com, andrii@kernel.org
-References: <20210626181156.1873604-1-rkovhaev@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <254ef541-6fd6-9ddf-3491-97b854a09554@iogearbox.net>
-Date:   Mon, 28 Jun 2021 16:19:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 28 Jun 2021 10:26:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624890229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gS97gb30cUD6A4GFBfFHF0i2JBykL2d9ZYSKCC/RISc=;
+        b=fOs6PnbEn2MbLCZWRamMdPCsvnGnxOwh7wVZXYNHylK0Z3fQsy+oR6Dhc8yh5g8CeJV4w4
+        cdyzX4bMi3t+zkQN0SZdnxSHBfNIAE0syssdtJLKAc2LbCfUyUXvO/O14zdVSMIt4K6sLA
+        GFXBz6A2RDMQPt8kTptZ1k6ylibCTFA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-uRlX0CkpPIC1JOWAJN4THw-1; Mon, 28 Jun 2021 10:23:37 -0400
+X-MC-Unique: uRlX0CkpPIC1JOWAJN4THw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA0DD81CCB4;
+        Mon, 28 Jun 2021 14:23:05 +0000 (UTC)
+Received: from localhost (ovpn-112-191.ams2.redhat.com [10.36.112.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6DBFD5C1D0;
+        Mon, 28 Jun 2021 14:23:05 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        alex.williamson@redhat.com
+Cc:     kwankhede@nvidia.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com
+Subject: Re: [PATCH] vfio/mtty: Enforce available_instances
+In-Reply-To: <162465624894.3338367.12935940647049917981.stgit@omen>
+Organization: Red Hat GmbH
+References: <162465624894.3338367.12935940647049917981.stgit@omen>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 28 Jun 2021 16:23:03 +0200
+Message-ID: <875yxym5ko.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210626181156.1873604-1-rkovhaev@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26215/Mon Jun 28 13:09:26 2021)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/26/21 8:11 PM, Rustam Kovhaev wrote:
-> kmemleak scans struct page, but it does not scan the page content.
-> if we allocate some memory with kmalloc(), then allocate page with
-> alloc_page(), and if we put kmalloc pointer somewhere inside that page,
-> kmemleak will report kmalloc pointer as a false positive.
-> 
-> we can instruct kmemleak to scan the memory area by calling
-> kmemleak_alloc()/kmemleak_free(), but part of struct bpf_ringbuf is
-> mmaped to user space, and if struct bpf_ringbuf changes we would have to
-> revisit and review size argument in kmemleak_alloc(), because we do not
-> want kmemleak to scan the user space memory.
-> let's simplify things and use kmemleak_not_leak() here.
-> 
-> Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10/
-> Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com/
-> Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-> Reported-and-tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+On Fri, Jun 25 2021, Alex Williamson <alex.williamson@redhat.com> wrote:
 
-Applied, thanks! (Also included Andrii's prior analysis as well to the commit
-log so there's a bit more context if we need to revisit in future [0].)
+> The sample mtty mdev driver doesn't actually enforce the number of
+> device instances it claims are available.  Implement this properly.
+>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>
+> Applies to vfio next branch + Jason's atomic conversion
+>
+>  samples/vfio-mdev/mtty.c |   22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+>
 
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=ccff81e1d028bbbf8573d3364a87542386c707bf
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+
