@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443203B5A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CED3B5A49
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhF1IOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:14:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:60152 "EHLO mga09.intel.com"
+        id S232421AbhF1IOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:14:19 -0400
+Received: from mail.monom.org ([188.138.9.77]:37530 "EHLO mail.monom.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232317AbhF1IOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230294AbhF1IOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Jun 2021 04:14:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="207851469"
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="207851469"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 01:11:31 -0700
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="456227756"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.26]) ([10.249.227.26])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 01:11:28 -0700
-Subject: Re: [PATCH v7 00/20] Introduce threaded trace streaming for basic
- perf record operation
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
- <CAM9d7ciOMPTbwTzHwDp2sjn59KButCQpPOpQsqttopodGC7_kg@mail.gmail.com>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <8b738198-c77e-e35e-2bc8-f709d8ec937f@linux.intel.com>
-Date:   Mon, 28 Jun 2021 11:11:26 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 00FBD50051C;
+        Mon, 28 Jun 2021 10:11:36 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.41])
+        by mail.monom.org (Postfix) with ESMTPSA id BBC2A500143;
+        Mon, 28 Jun 2021 10:11:35 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 10:11:35 +0200
+From:   Daniel Wagner <wagi@monom.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     John Kacur <jkacur@redhat.com>,
+        RT <linux-rt-users@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Johnathan Schwender <schwenderjonathan@gmail.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [ANNOUNCE] rt-tests-2.0
+Message-ID: <20210628081135.l7yvya7iaygb23ye@beryllium.lan>
+References: <20210625160801.9283-1-jkacur@redhat.com>
+ <549a4a5579068b9b1ca7741cb0f4aafbd04f4389.camel@gmx.de>
+ <1c1966dd51ae6f8ddcd892cba485c332281fbd37.camel@gmx.de>
+ <3d6a6c593eed6f5d59209ba2d8db29fadcc72ad7.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ciOMPTbwTzHwDp2sjn59KButCQpPOpQsqttopodGC7_kg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d6a6c593eed6f5d59209ba2d8db29fadcc72ad7.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Mike,
 
-On 27.06.2021 3:46, Namhyung Kim wrote:
-> Hello,
-> 
-> On Tue, Jun 22, 2021 at 1:42 AM Alexey Bayduraev
-> <alexey.v.bayduraev@linux.intel.com> wrote:
->>
->> Changes in v7:
->> - fixed possible crash after out_free_threads label
->> - added missing pthread_attr_destroy() call
->> - added check of correctness of user masks
->> - fixed zsts_data finalization
->>
-[SNIP]
-> Thanks for your work, mostly looks good now.
-> 
-> I have a question, where are the synthesized records saved?
-> Is it the data.0 file?
+On Sat, Jun 26, 2021 at 02:45:27PM +0200, Mike Galbraith wrote:
+> On Sat, 2021-06-26 at 13:47 +0200, Mike Galbraith wrote:
+> > On Sat, 2021-06-26 at 08:55 +0200, Mike Galbraith wrote:
+> > > On Fri, 2021-06-25 at 12:08 -0400, John Kacur wrote:
+> > > > I'm pleased to announce rt-tests-2.0
+> > >
+> > > Greetings,
+> > >
+> > > cyclictest seems to have grown an mlock related regression.
+> >
+> > Ok, chores done, I did a quick bisect/confirm.  I didn't go stare
+> > at rt_test_start() to ponder what the mlockall connection may be.
+>
+> Moving the call above "Get current time" stops it mucking things up.
 
-Thanks for the review.
+Thanks a lot for your excellent report. rt_test_start does
 
-As I understand the synthesized records (as well as other user-space
-records) are saved to perf.data/data, kernel records are saved to
-perf.data/data.<CPU>
+  static char ts_start[MAX_TS_SIZE];
 
-Regards,
-Alexey
+  static void get_timestamp(char *tsbuf)
+  {
+          struct timeval tv;
+          struct tm *tm;
+          time_t t;
 
-> 
-> Thanks,
-> Namhyung
-> 
-> 
->>
->>  tools/include/linux/bitmap.h             |   11 +
->>  tools/lib/api/fd/array.c                 |   17 +
->>  tools/lib/api/fd/array.h                 |    1 +
->>  tools/lib/bitmap.c                       |   14 +
->>  tools/perf/Documentation/perf-record.txt |   30 +
->>  tools/perf/builtin-inject.c              |    3 +-
->>  tools/perf/builtin-record.c              | 1094 ++++++++++++++++++++--
->>  tools/perf/util/evlist.c                 |   16 +
->>  tools/perf/util/evlist.h                 |    1 +
->>  tools/perf/util/mmap.c                   |    6 +
->>  tools/perf/util/mmap.h                   |    6 +
->>  tools/perf/util/ordered-events.h         |    1 +
->>  tools/perf/util/record.h                 |    2 +
->>  tools/perf/util/session.c                |  500 +++++++---
->>  tools/perf/util/session.h                |    5 +
->>  tools/perf/util/tool.h                   |    3 +-
->>  16 files changed, 1508 insertions(+), 202 deletions(-)
->>
->> --
->> 2.19.0
->>
+          gettimeofday(&tv, NULL);
+          t = tv.tv_sec;
+          tm = localtime(&t);
+          /* RFC 2822-compliant date format */
+          strftime(tsbuf, MAX_TS_SIZE, "%a, %d %b %Y %T %z", tm);
+  }
+
+  void rt_test_start(void)
+  {
+          get_timestamp(ts_start);
+  }
+
+I'd say the tsbuf access is the one which triggers a pagefault.
+
+John, I would suggest to move the rt_test_start() into rt_init() and
+take the timestamp at the execution start (as my initial version was). I
+think the additional pain in slightly more correct start timestamp
+(which is also not defined what it actually means in this context) is
+just not worth the effort.
+
+Thanks,
+Daniel
