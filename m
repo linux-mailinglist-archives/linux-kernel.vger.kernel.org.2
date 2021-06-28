@@ -2,433 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CF73B5CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431C53B5CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhF1LDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:03:24 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51022 "EHLO deadmen.hmeau.com"
+        id S232782AbhF1LIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:08:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:56678 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232617AbhF1LDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:03:22 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lxp0X-0007dg-Ny; Mon, 28 Jun 2021 19:00:53 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lxp0V-0003CA-1V; Mon, 28 Jun 2021 19:00:51 +0800
-Date:   Mon, 28 Jun 2021 19:00:51 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Update for 5.14
-Message-ID: <20210628110050.GA12162@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20201012033249.GA25179@gondor.apana.org.au>
- <20201214055515.GA14196@gondor.apana.org.au>
- <20210215024721.GA20593@gondor.apana.org.au>
- <20210426123200.kgbyk6ayey4l4lrw@gondor.apana.org.au>
+        id S232617AbhF1LID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:08:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6363AD6E;
+        Mon, 28 Jun 2021 04:05:37 -0700 (PDT)
+Received: from [10.57.89.43] (unknown [10.57.89.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D8E53F694;
+        Mon, 28 Jun 2021 04:05:36 -0700 (PDT)
+Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
+ instead
+To:     Chunyou Tang <tangchunyou@163.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+References: <20210617062054.1864-1-tangchunyou@163.com>
+ <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
+ <20210619111852.00003e52@163.com>
+ <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
+ <20210622094000.00004f7e@163.com>
+ <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
+ <20210625174937.0000183f@163.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+Date:   Mon, 28 Jun 2021 11:48:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210625174937.0000183f@163.com>
+Content-Type: text/plain; charset=gb18030
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210426123200.kgbyk6ayey4l4lrw@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+On 25/06/2021 10:49, Chunyou Tang wrote:
+> Hi Steve,
+> 	Thinks for your reply.
+> 	When I only set the pte |= ARM_LPAE_PTE_SH_NS;there have no "GPU
+> Fault",When I set the pte |= ARM_LPAE_PTE_SH_IS(or
+> ARM_LPAE_PTE_SH_OS);there have "GPU Fault".I don't know how the pte
+> effect this issue?
+> 	Can you give me some suggestions again?
+> 
+> Thinks.
+> 
+> Chunyou
 
-Algorithms:
+Hi Chunyou,
 
-- Fix rmmod crash with x86/curve25519.
-- Add ECDH NIST P384.
-- Generate assembly files at build-time with perl scripts on arm.
-- Switch to HMAC SHA512 DRBG as default DRBG.
+You haven't given me much context so I'm not entirely sure which PTE you
+are talking about (GPU or CPU), or indeed where you are changing the PTE
+values.
 
-Drivers:
+The PTEs control whether a page is shareable or not, the GPU requires
+that accesses are consistent (i.e. either all accesses to a page are
+shareable or all are non-shareable) and will race a fault if it detects
+this isn't the case. Mali also has a quirk for its version of 'LPAE'
+where inner shareable actually means only within the GPU and outer
+shareable means outside the GPU (which I think usually means Inner
+Shareable on the external bus).
 
-- Add sl3516 crypto engine.
-- Add ECDH NIST P384 support in hisilicon/hpre.
-- Add {ofb,cfb,ctr} over {aes,sm4} in hisilicon/sec.
-- Add {ccm,gcm} over {aes,sm4} in hisilicon/sec.
-- Enable omap hwrng driver for TI K3 family.
-- Add support for AEAD algorithms in qce.
+Steve
 
-Please note that there is a merge conflict with cavium/nitrox,
-the fix is to simply use the version from the crypto tree.
+> 于 Thu, 24 Jun 2021 14:22:04 +0100
+> Steven Price <steven.price@arm.com> 写道:
+> 
+>> On 22/06/2021 02:40, Chunyou Tang wrote:
+>>> Hi Steve,
+>>> 	I will send a new patch with suitable subject/commit
+>>> message. But I send a V3 or a new patch?
+>>
+>> Send a V3 - it is a new version of this patch.
+>>
+>>> 	I met a bug about the GPU,I have no idea about how to fix
+>>> it, If you can give me some suggestion,it is perfect.
+>>>
+>>> You can see such kernel log:
+>>>
+>>> Jun 20 10:20:13 icube kernel: [  774.566760] mvp_gpu 0000:05:00.0:
+>>> GPU Fault 0x00000088 (SHAREABILITY_FAULT) at 0x000000000310fd00 Jun
+>>> 20 10:20:13 icube kernel: [  774.566764] mvp_gpu 0000:05:00.0:
+>>> There were multiple GPU faults - some have not been reported Jun 20
+>>> 10:20:13 icube kernel: [  774.667542] mvp_gpu 0000:05:00.0:
+>>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  774.767900]
+>>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:13 icube
+>>> kernel: [  774.868546] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck
+>>> Jun 20 10:20:13 icube kernel: [  774.968910] mvp_gpu 0000:05:00.0:
+>>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  775.069251]
+>>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:22 icube
+>>> kernel: [  783.693971] mvp_gpu 0000:05:00.0: gpu sched timeout,
+>>> js=1, config=0x7300, status=0x8, head=0x362c900, tail=0x362c100,
+>>> sched_job=000000003252fb84
+>>>
+>>> In
+>>> https://lore.kernel.org/dri-devel/20200510165538.19720-1-peron.clem@gmail.com/
+>>> there had a same bug like mine,and I found you at the mail list,I
+>>> don't know how it fixed?
+>>
+>> The GPU_SHAREABILITY_FAULT error means that a cache line has been
+>> accessed both as shareable and non-shareable and therefore coherency
+>> cannot be guaranteed. Although the "multiple GPU faults" means that
+>> this may not be the underlying cause.
+>>
+>> The fact that your dmesg log has PCI style identifiers
+>> ("0000:05:00.0") suggests this is an unusual platform - I've not
+>> previously been aware of a Mali device behind PCI. Is this device
+>> working with the kbase/DDK proprietary driver? It would be worth
+>> looking at the kbase kernel code for the platform to see if there is
+>> anything special done for the platform.
+>>
+>> From the dmesg logs all I can really tell is that the GPU seems
+>> unhappy about the memory system.
+>>
+>> Steve
+>>
+>>> I need your help!
+>>>
+>>> thinks very much!
+>>>
+>>> Chunyou
+>>>
+>>> 于 Mon, 21 Jun 2021 11:45:20 +0100
+>>> Steven Price <steven.price@arm.com> 写道:
+>>>
+>>>> On 19/06/2021 04:18, Chunyou Tang wrote:
+>>>>> Hi Steve,
+>>>>> 	1,Now I know how to write the subject
+>>>>> 	2,the low 8 bits is the exception type in spec.
+>>>>>
+>>>>> and you can see prnfrost_exception_name()
+>>>>>
+>>>>> switch (exception_code) {
+>>>>>                 /* Non-Fault Status code */
+>>>>> case 0x00: return "NOT_STARTED/IDLE/OK";
+>>>>> case 0x01: return "DONE";
+>>>>> case 0x02: return "INTERRUPTED";
+>>>>> case 0x03: return "STOPPED";
+>>>>> case 0x04: return "TERMINATED";
+>>>>> case 0x08: return "ACTIVE";
+>>>>> ........
+>>>>> ........
+>>>>> case 0xD8: return "ACCESS_FLAG";
+>>>>> case 0xD9 ... 0xDF: return "ACCESS_FLAG";
+>>>>> case 0xE0 ... 0xE7: return "ADDRESS_SIZE_FAULT";
+>>>>> case 0xE8 ... 0xEF: return "MEMORY_ATTRIBUTES_FAULT";
+>>>>> }
+>>>>> return "UNKNOWN";
+>>>>> }
+>>>>>
+>>>>> the exception_code in case is only 8 bits,so if fault_status
+>>>>> in panfrost_gpu_irq_handler() don't & 0xFF,it can't get correct
+>>>>> exception reason,it will be always UNKNOWN.
+>>>>
+>>>> Yes, I'm happy with the change - I just need a patch that I can
+>>>> apply. At the moment this patch only changes the first '0x%08x'
+>>>> output rather than the call to panfrost_exception_name() as well.
+>>>> So we just need a patch which does:
+>>>>
+>>>> - fault_status & 0xFF, panfrost_exception_name(pfdev,
+>>>> fault_status),
+>>>> + fault_status, panfrost_exception_name(pfdev, fault_status &
+>>>> 0xFF),
+>>>>
+>>>> along with a suitable subject/commit message describing the
+>>>> change. If you can send me that I can apply it.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Steve
+>>>>
+>>>> PS. Sorry for going round in circles here - I'm trying to help you
+>>>> get setup so you'll be able to contribute patches easily in
+>>>> future. An important part of that is ensuring you can send a
+>>>> properly formatted patch to the list.
+>>>>
+>>>> PPS. I'm still not receiving your emails directly. I don't think
+>>>> it's a problem at my end because I'm receiving other emails, but
+>>>> if you can somehow fix the problem you're likely to receive a
+>>>> faster response.
+>>>>
+>>>>> 于 Fri, 18 Jun 2021 13:43:24 +0100
+>>>>> Steven Price <steven.price@arm.com> 写道:
+>>>>>
+>>>>>> On 17/06/2021 07:20, ChunyouTang wrote:
+>>>>>>> From: ChunyouTang <tangchunyou@icubecorp.cn>
+>>>>>>>
+>>>>>>> of the low 8 bits.
+>>>>>>
+>>>>>> Please don't split the subject like this. The first line of the
+>>>>>> commit should be a (very short) summary of the patch. Then a
+>>>>>> blank line and then a longer description of what the purpose of
+>>>>>> the patch is and why it's needed.
+>>>>>>
+>>>>>> Also you previously had this as part of a series (the first part
+>>>>>> adding the "& 0xFF" in the panfrost_exception_name() call). I'm
+>>>>>> not sure we need two patches for the single line, but as it
+>>>>>> stands this patch doesn't apply.
+>>>>>>
+>>>>>> Also I'm still not receiving any emails from you directly (only
+>>>>>> via the list), so it's possible I might have missed something
+>>>>>> you sent.
+>>>>>>
+>>>>>> Steve
+>>>>>>
+>>>>>>>
+>>>>>>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+>>>>>>> ---
+>>>>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
+>>>>>>> 1fffb6a0b24f..d2d287bbf4e7 100644 ---
+>>>>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
+>>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@
+>>>>>>> static irqreturn_t panfrost_gpu_irq_handler(int irq, void
+>>>>>>> *data) address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
+>>>>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at
+>>>>>>> 0x%016llx\n",
+>>>>>>> -			 fault_status & 0xFF,
+>>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
+>>>>>>> +			 fault_status,
+>>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF), address);
+>>>>>>>  
+>>>>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
+>>>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+> 
+> 
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-
-for you to fetch changes up to 9f38b678ffc4e2ccf167a1131c0403dc4f5e1bb7:
-
-  crypto: sl3516 - depends on HAS_IOMEM (2021-06-24 14:57:28 +0800)
-
-----------------------------------------------------------------
-Ard Biesheuvel (2):
-      crypto: tcrypt - enable tests for xxhash and blake2
-      crypto: shash - avoid comparing pointers to exported functions under CFI
-
-Arnd Bergmann (1):
-      crypto: ixp4xx - convert to platform driver
-
-Baokun Li (1):
-      crypto: ccp - Use list_move_tail instead of list_del/list_add_tail in ccp-dmaengine.c
-
-Bixuan Cui (1):
-      crypto: nx - add missing MODULE_DEVICE_TABLE
-
-Christophe JAILLET (3):
-      crypto: cpt - Use 'hlist_for_each_entry' to simplify code
-      crypto: ccp - Fix a resource leak in an error handling path
-      crypto: cavium/nitrox - Fix an error rhandling path in 'nitrox_probe()'
-
-Colin Ian King (2):
-      hwrng: amd - remove redundant initialization of variable err
-      crypto: hisilicon/sec - Fix spelling mistake "fallbcak" -> "fallback"
-
-Corentin Labbe (15):
-      crypto: ixp4xx - dma_unmap the correct address
-      crypto: ixp4xx - update IV after requests
-      crypto: ixp4xx - fallback when having more than one SG
-      crypto: ixp4xx - convert unsigned to unsigned int
-      crypto: ixp4xx - convert all printk to dev_xxx
-      crypto: ixp4xx - whitespace fixes
-      crypto: ixp4xx - Do not initialize static to NULL
-      crypto: ixp4xx - remove brackets from single statement
-      crypto: ixp4xx - Correct functions alignment
-      MAINTAINERS: add ixp4xx_crypto to the right arch list
-      MAINTAINERS: add myself as maintainer of ixp4xx_crypto
-      dt-bindings: crypto: Add documentation for sl3516-ce
-      crypto: sl3516 - Add sl3516 crypto engine
-      MAINTAINERS: add gemini crypto sl3516-ce
-      crypto: sl3516 - depends on HAS_IOMEM
-
-Hangbin Liu (1):
-      crypto: x86/curve25519 - fix cpu feature checking logic in mod_exit
-
-Herbert Xu (4):
-      crypto: sa2ul - Remove unused auth_len variable
-      crypto: api - Move crypto attr definitions out of crypto.h
-      crypto: nx - Fix RCU warning in nx842_OF_upd_status
-      crypto: nx - Fix numerous sparse byte-order warnings
-
-Hongbo Li (1):
-      crypto: sm2 - fix a memory leak in sm2
-
-Horia Geant膬 (1):
-      MAINTAINERS: update caam crypto driver maintainers list
-
-Hui Tang (20):
-      crypto: testmgr - fix initialization of 'secret_size'
-      crypto: ecdh - extend 'cra_driver_name' with curve name
-      crypto: hisilicon/hpre - extend 'cra_driver_name' with curve name
-      crypto: hisilicon/hpre - fix unmapping invalid dma address
-      crypto: hisilicon/hpre - the macro 'HPRE_ADDR' expands
-      crypto: hisilicon/hpre - init a structure member each line
-      crypto: hisilicon/hpre - replace macro with inline function
-      crypto: hisilicon/hpre - remove the macro of 'HPRE_DEV'
-      crypto: hisilicon/hpre - delete rudundant initialization
-      crypto: hisilicon/hpre - use 'GENMASK' to generate mask value
-      crypto: hisilicon/hpre - delete rudundant macro definition
-      crypto: hisilicon/hpre - add 'default' for switch statement
-      crypto: khazad,wp512 - remove leading spaces before tabs
-      crypto: ecdh - fix ecdh-nist-p192's entry in testmgr
-      crypto: ecdh - fix 'ecdh_init'
-      crypto: ecdh - register NIST P384 tfm
-      crypto: ecdh - add test suite for NIST P384
-      crypto: hisilicon/hpre - fix ecdh self test issue
-      crypto: hisilicon/hpre - add check before gx modulo p
-      crypto: hisilicon/hpre - register ecdh NIST P384
-
-Jack Xu (5):
-      crypto: qat - return error when failing to map FW
-      crypto: qat - check MMP size before writing to the SRAM
-      crypto: qat - report an error if MMP file size is too large
-      crypto: qat - check return code of qat_hal_rd_rel_reg()
-      crypto: qat - remove unused macro in FW loader
-
-Jiapeng Chong (1):
-      crypto: qce - Fix inconsistent indenting
-
-Joerg Roedel (1):
-      crypto: ccp - Annotate SEV Firmware file names
-
-Juerg Haefliger (1):
-      hwrng: Kconfig - Remove leading spaces
-
-Kai Ye (19):
-      crypto: hisilicon/qm - add dfx log if not use hardware crypto algs
-      crypto: hisilicon/qm - fix the process of VF's list adding
-      crypto: hisilicon/sec - add new type of SQE
-      crypto: hisilicon/sec - driver adapt to new SQE
-      crypto: hisilicon/sec - add new skcipher mode for SEC
-      crypto: hisilicon/sec - add fallback tfm supporting for XTS mode
-      crypto: hisilicon/sec - fixup 3des minimum key size declaration
-      crypto: hisilicon/sec - add new algorithm mode for AEAD
-      crypto: hisilicon/sec - add fallback tfm supporting for aeads
-      crypto: hisilicon/sec - add hardware integrity check value process
-      crypto: hisilicon/sec - modify the SEC request structure
-      crypto: hisilicon/qm - supports writing QoS int the host
-      crypto: hisilicon/qm - add the "alg_qos" file node
-      crypto: hisilicon/qm - merges the work initialization process into a single function
-      crypto: hisilicon/qm - add pf ping single vf function
-      crypto: hisilicon/qm - supports to inquiry each function's QoS
-      crypto: hisilicon/sec - adds the max shaper type rate
-      crypto: hisilicon/hpre - adds the max shaper type rate
-      crypto: hisilicon/zip - adds the max shaper type rate
-
-Kees Cook (1):
-      crypto: nx - Fix memcpy() over-reading in nonce
-
-Lee Jones (3):
-      crypto: cavium: Fix a bunch of kernel-doc related issues
-      crypto: nx: nx-aes-gcm: Kernel-doc formatting should not be used for headers
-      crypto: ccp: ccp-dev: Fix a little doc-rot
-
-Linus Walleij (2):
-      crypto: ixp4xx - Add DT bindings
-      crypto: ixp4xx - Add device tree support
-
-Liu Shixin (1):
-      crypto: api - remove CRYPTOA_U32 and related functions
-
-Longfang Liu (1):
-      crypto: hisilicon/qm - support address prefetching
-
-Masahiro Yamada (4):
-      crypto: arm - generate *.S by Perl at build time instead of shipping them
-      crypto: arm - use a pattern rule for generating *.S files
-      crypto: arm64 - generate *.S by Perl at build time instead of shipping them
-      crypto: arm64 - use a pattern rule for generating *.S files
-
-Shaokun Zhang (2):
-      hwrng: core - remove redundant initialization of variable err
-      crypto: nx - Fix typo in comment
-
-Srujana Challa (4):
-      crypto: octeontx2 - Add mailbox support for CN10K
-      crypto: octeontx2 - add support to map LMTST region for CN10K
-      crypto: octeontx2 - add support for CPT operations on CN10K
-      crypto: octeontx2 - enable and handle ME interrupts
-
-Stephan M眉ller (1):
-      crypto: DRBG - switch to HMAC SHA512 DRBG as default DRBG
-
-Suman Anna (6):
-      hwrng: omap - Enable driver for TI K3 family
-      crypto: sa2ul - Fix leaks on failure paths with sa_dma_init()
-      crypto: sa2ul - Fix pm_runtime enable in sa_ul_probe()
-      crypto: sa2ul - Use of_device_get_match_data() helper
-      crypto: sa2ul - Use devm_platform_ioremap_resource()
-      crypto: sa2ul - Remove child devices in remove
-
-Thara Gopinath (9):
-      crypto: qce - Add MAC failed error checking
-      crypto: qce - Make result dump optional
-      crypto: qce - Add mode for rfc4309
-      crypto: qce - Add support for AEAD algorithms
-      crypto: qce - Clean up qce_auth_cfg
-      crypto: qce - Add support for AEAD algorithms
-      crypto: qce - Schedule fallback aead algorithm
-      crypto: qce: skcipher: Fix incorrect sg count for dma transfers
-      MAINTAINERS: Add maintainer for Qualcomm crypto drivers
-
-Tian Tao (3):
-      hwrng: exynos - Use pm_runtime_resume_and_get() to replace open coding
-      hwrng: omap - Use pm_runtime_resume_and_get() to replace open coding
-      hwrng: ks-sa - Use pm_runtime_resume_and_get() to replace open coding
-
-Tom Rix (1):
-      crypto: marvell/cesa - change FPGA indirect article to an
-
-Tong Tiangen (1):
-      crypto: nitrox - fix unchecked variable in nitrox_register_interrupts
-
-Wei Yongjun (2):
-      crypto: qce - Fix some error handling path
-      crypto: qce - fix error return code in qce_skcipher_async_req_handle()
-
-Weili Qian (9):
-      crypto: hisilicon/qm - initialize the device before doing tasks
-      crypto: hisilicon/qm - modify 'QM_RESETTING' clearing error
-      crypto: hisilicon/qm - adjust order of device error configuration
-      crypto: hisilicon/qm - enable to close master ooo when NFE occurs
-      crypto: hisilicon/qm - add MSI detection steps on Kunpeng930
-      crypto: hisilicon/qm - adjust reset interface
-      crypto: hisilicon/qm - enable PF and VFs communication
-      crypto: hisilicon/qm - add callback to support communication
-      crypto: hisilicon/qm - update reset flow
-
-Wenkai Lin (1):
-      crypto: hisilicon/qm - implement for querying hardware tasks status.
-
-Wu Bo (1):
-      crypto: af_alg - use DIV_ROUND_UP helper macro for calculations
-
-Yang Li (2):
-      crypto: cavium/nitrox - Remove redundant initialization of 'sg'
-      crypto: cavium/nitrox - Fix kernel-doc
-
-YueHaibing (2):
-      hwrng: core - Use DEVICE_ATTR_<RW|RO> macro
-      crypto: sl3516 - Fix build warning without CONFIG_PM
-
-Zhang Qilong (2):
-      crypto: omap-des - using pm_runtime_resume_and_get instead of pm_runtime_get_sync
-      crypto: omap-sham - Fix PM reference leak in omap sham ops
-
-Zhen Lei (2):
-      crypto: ux500 - Fix error return code in hash_hw_final()
-      crypto: header - Fix spelling errors
-
-Zou Wei (1):
-      crypto: hisilicon - switch to memdup_user_nul()
-
-kernel test robot (1):
-      crypto: sl3516 - fix duplicated inclusion
-
-艁ukasz Stelmach (1):
-      hwrng: exynos - Fix runtime PM imbalance on error
-
- .../bindings/crypto/cortina,sl3516-crypto.yaml     |   50 +
- .../bindings/crypto/intel,ixp4xx-crypto.yaml       |   47 +
- .../intel,ixp4xx-network-processing-engine.yaml    |   22 +-
- MAINTAINERS                                        |   23 +-
- arch/arm/crypto/Makefile                           |   10 +-
- arch/arm/crypto/poly1305-core.S_shipped            | 1158 --------
- arch/arm/crypto/sha256-core.S_shipped              | 2816 --------------------
- arch/arm/crypto/sha512-core.S_shipped              | 1869 -------------
- arch/arm/mach-ixp4xx/common.c                      |   26 +
- arch/arm64/crypto/Makefile                         |   10 +-
- arch/arm64/crypto/poly1305-core.S_shipped          |  835 ------
- arch/arm64/crypto/sha256-core.S_shipped            | 2069 --------------
- arch/arm64/crypto/sha512-core.S_shipped            | 1093 --------
- arch/x86/crypto/curve25519-x86_64.c                |    2 +-
- crypto/af_alg.c                                    |    2 +-
- crypto/algapi.c                                    |   18 -
- crypto/algboss.c                                   |   31 +-
- crypto/drbg.c                                      |   12 +-
- crypto/ecdh.c                                      |   49 +-
- crypto/internal.h                                  |   12 +
- crypto/khazad.c                                    |    2 +-
- crypto/shash.c                                     |   18 +-
- crypto/sm2.c                                       |   24 +-
- crypto/tcrypt.c                                    |   36 +
- crypto/testmgr.c                                   |   10 +-
- crypto/testmgr.h                                   |   71 +-
- crypto/wp512.c                                     |   40 +-
- drivers/char/hw_random/Kconfig                     |   10 +-
- drivers/char/hw_random/amd-rng.c                   |    2 +-
- drivers/char/hw_random/core.c                      |   38 +-
- drivers/char/hw_random/exynos-trng.c               |    7 +-
- drivers/char/hw_random/ks-sa-rng.c                 |    3 +-
- drivers/char/hw_random/omap-rng.c                  |    6 +-
- drivers/crypto/Kconfig                             |   41 +
- drivers/crypto/Makefile                            |    1 +
- drivers/crypto/cavium/cpt/cptpf_main.c             |    2 +-
- drivers/crypto/cavium/cpt/cptvf_reqmanager.c       |   10 +-
- drivers/crypto/cavium/nitrox/nitrox_isr.c          |    4 +
- drivers/crypto/cavium/nitrox/nitrox_main.c         |   22 +-
- drivers/crypto/cavium/nitrox/nitrox_mbx.c          |    4 +-
- drivers/crypto/cavium/nitrox/nitrox_reqmgr.c       |   16 +-
- drivers/crypto/cavium/nitrox/nitrox_skcipher.c     |    2 +-
- drivers/crypto/ccp/ccp-dev.c                       |    2 +-
- drivers/crypto/ccp/ccp-dmaengine.c                 |    3 +-
- drivers/crypto/ccp/sev-dev.c                       |    4 +
- drivers/crypto/ccp/sp-pci.c                        |    6 +-
- drivers/crypto/gemini/Makefile                     |    2 +
- drivers/crypto/gemini/sl3516-ce-cipher.c           |  387 +++
- drivers/crypto/gemini/sl3516-ce-core.c             |  535 ++++
- drivers/crypto/gemini/sl3516-ce-rng.c              |   61 +
- drivers/crypto/gemini/sl3516-ce.h                  |  347 +++
- drivers/crypto/hisilicon/hpre/hpre_crypto.c        |  185 +-
- drivers/crypto/hisilicon/hpre/hpre_main.c          |  256 +-
- drivers/crypto/hisilicon/qm.c                      | 2181 +++++++++++----
- drivers/crypto/hisilicon/qm.h                      |   17 +
- drivers/crypto/hisilicon/sec2/sec.h                |   23 +-
- drivers/crypto/hisilicon/sec2/sec_crypto.c         | 1036 ++++++-
- drivers/crypto/hisilicon/sec2/sec_crypto.h         |  193 ++
- drivers/crypto/hisilicon/sec2/sec_main.c           |  100 +-
- drivers/crypto/hisilicon/zip/zip_main.c            |   99 +-
- drivers/crypto/ixp4xx_crypto.c                     |  413 +--
- drivers/crypto/marvell/cesa/cesa.h                 |    2 +-
- drivers/crypto/marvell/octeontx2/Makefile          |   13 +-
- drivers/crypto/marvell/octeontx2/cn10k_cpt.c       |   93 +
- drivers/crypto/marvell/octeontx2/cn10k_cpt.h       |   36 +
- drivers/crypto/marvell/octeontx2/otx2_cpt_common.h |   23 +
- .../crypto/marvell/octeontx2/otx2_cpt_hw_types.h   |   16 +-
- drivers/crypto/marvell/octeontx2/otx2_cptlf.c      |    9 +-
- drivers/crypto/marvell/octeontx2/otx2_cptlf.h      |   10 +
- drivers/crypto/marvell/octeontx2/otx2_cptpf.h      |    1 +
- drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c |  160 +-
- .../crypto/marvell/octeontx2/otx2_cptpf_ucode.c    |   32 +-
- .../crypto/marvell/octeontx2/otx2_cptpf_ucode.h    |    8 +-
- drivers/crypto/marvell/octeontx2/otx2_cptvf.h      |    3 +
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c |   49 +-
- drivers/crypto/marvell/octeontx2/otx2_cptvf_mbox.c |   43 +
- .../crypto/marvell/octeontx2/otx2_cptvf_reqmgr.c   |   17 +-
- drivers/crypto/nx/nx-842-pseries.c                 |   31 +-
- drivers/crypto/nx/nx-aes-cbc.c                     |    2 +-
- drivers/crypto/nx/nx-aes-ccm.c                     |    4 +-
- drivers/crypto/nx/nx-aes-ctr.c                     |    4 +-
- drivers/crypto/nx/nx-aes-ecb.c                     |    2 +-
- drivers/crypto/nx/nx-aes-gcm.c                     |    2 +-
- drivers/crypto/nx/nx-common-powernv.c              |    4 +-
- drivers/crypto/nx/nx-sha256.c                      |   19 +-
- drivers/crypto/nx/nx-sha512.c                      |   19 +-
- drivers/crypto/nx/nx_csbcpb.h                      |    4 +-
- drivers/crypto/omap-des.c                          |    9 +-
- drivers/crypto/omap-sham.c                         |    4 +-
- .../qat/qat_common/icp_qat_fw_loader_handle.h      |    2 +-
- drivers/crypto/qat/qat_common/qat_hal.c            |   14 +-
- drivers/crypto/qat/qat_common/qat_uclo.c           |   12 +-
- drivers/crypto/qce/Makefile                        |    1 +
- drivers/crypto/qce/aead.c                          |  847 ++++++
- drivers/crypto/qce/aead.h                          |   56 +
- drivers/crypto/qce/common.c                        |  196 +-
- drivers/crypto/qce/common.h                        |    9 +-
- drivers/crypto/qce/core.c                          |    4 +
- drivers/crypto/qce/skcipher.c                      |   19 +-
- drivers/crypto/sa2ul.c                             |   50 +-
- drivers/crypto/ux500/hash/hash_core.c              |    1 +
- drivers/soc/ixp4xx/ixp4xx-npe.c                    |    7 +
- include/crypto/aead.h                              |    2 +-
- include/crypto/algapi.h                            |   10 +-
- include/crypto/engine.h                            |    2 +-
- include/crypto/hash.h                              |    2 +-
- include/crypto/internal/hash.h                     |    8 +-
- include/linux/crypto.h                             |   26 -
- 108 files changed, 7084 insertions(+), 11176 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/crypto/cortina,sl3516-crypto.yaml
- create mode 100644 Documentation/devicetree/bindings/crypto/intel,ixp4xx-crypto.yaml
- delete mode 100644 arch/arm/crypto/poly1305-core.S_shipped
- delete mode 100644 arch/arm/crypto/sha256-core.S_shipped
- delete mode 100644 arch/arm/crypto/sha512-core.S_shipped
- delete mode 100644 arch/arm64/crypto/poly1305-core.S_shipped
- delete mode 100644 arch/arm64/crypto/sha256-core.S_shipped
- delete mode 100644 arch/arm64/crypto/sha512-core.S_shipped
- create mode 100644 drivers/crypto/gemini/Makefile
- create mode 100644 drivers/crypto/gemini/sl3516-ce-cipher.c
- create mode 100644 drivers/crypto/gemini/sl3516-ce-core.c
- create mode 100644 drivers/crypto/gemini/sl3516-ce-rng.c
- create mode 100644 drivers/crypto/gemini/sl3516-ce.h
- create mode 100644 drivers/crypto/marvell/octeontx2/cn10k_cpt.c
- create mode 100644 drivers/crypto/marvell/octeontx2/cn10k_cpt.h
- create mode 100644 drivers/crypto/qce/aead.c
- create mode 100644 drivers/crypto/qce/aead.h
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
