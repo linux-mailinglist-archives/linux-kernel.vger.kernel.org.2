@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEF73B6B12
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 00:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26F83B6B15
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 00:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhF1Wxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 18:53:43 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:42761 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233746AbhF1Wxd (ORCPT
+        id S235157AbhF1WzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 18:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233746AbhF1WzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 18:53:33 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4GDNBD5l3Wzyk8;
-        Tue, 29 Jun 2021 08:51:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1624920665;
-        bh=/uxx2/XMQ5Xn4hhQm234IexsORg6ynHGjqB67VOSi74=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QG7REzv0/Xp8xY7qsIXKwX0UX3gDejLyJm+KHWzQNVvWykg2YwKz83NxMnOiczG0+
-         97ZolQARyWCogOWa56SdUZMtQ3EdsNW1NARlvTzETLXKpcFBA1r8MD1J4tTxXtNkNN
-         06U6mbEzak2k6bVjgyV312wfdz4sbqEx+bzdgUy2cXyArkYp8T5jBho2fpq9+1y6v/
-         Qtb7o84eludtZ1WhJc4PydWQ4BNXkLPogby6Gk5tXdzV+CcBtuA2OChCstOmspjTKc
-         nhgMQZTVf9sdZm8cX2rYLa58fp5GOIjT59wHRKrlU5+FKsyIpCKcjaZM1OGvhjRqJ5
-         PY8lVn7sKGNYg==
-Date:   Tue, 29 Jun 2021 08:50:59 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Miller <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Subject: Re: linux-next: manual merge of the block tree with the ide and
- kspp-gustavo trees
-Message-ID: <20210629085059.10ab5080@elm.ozlabs.ibm.com>
-In-Reply-To: <YNm0MBV6Sn+ceEZ9@smile.fi.intel.com>
-References: <20210621141110.548ec3d0@canb.auug.org.au>
-        <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
-        <20210621223045.018223b9@elm.ozlabs.ibm.com>
-        <YNm0MBV6Sn+ceEZ9@smile.fi.intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 28 Jun 2021 18:55:05 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF93C061574;
+        Mon, 28 Jun 2021 15:52:37 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id i5so28468041eds.1;
+        Mon, 28 Jun 2021 15:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r7tlZtsBPeNaAbSj9MQWDyFr7yrmHlDxoloBGKnf6hw=;
+        b=iJv6h2b/HU24CnnT4Idc3fSSEnU2BX+aBjk6IGawp3RzvqRM8l56MsApJH0tyIatkK
+         iRX7EMdp/XeWfDE8lsATDFQ8bGxb+zS184dlDeq9bBJtHn81JER7iQYDT/7CRJ/c4i5d
+         Jv6YeTEUq5gipxNiQlr1rJx/+Ht/RoI7OZW8C4qHPJ78OquY5QpQOjhtb9XgAWN30WBd
+         DhNK3s0qWbg+vGaV8b2XryMdsqmqFQj8q/KsIz/5VVXWFQXk+yj5yc0UqA49etnXYHJG
+         tUIbZlbgigu4EawmR83h31eB1vuxBqFG0u5VgultsN17CdSa3VPqiKUNaWY2Z2Bvbx2z
+         66cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r7tlZtsBPeNaAbSj9MQWDyFr7yrmHlDxoloBGKnf6hw=;
+        b=VJehBLVSuGSAHoyui5GLrGG1ADrWIAzX4jj7Nfq2YmNiU4cyu52rzo0HkBWDgEP9oG
+         p8/ZPu6LD2F3PnbOv+Inalq3HJgbrn03iLnSCKOHrlG2rwPoLYY45COJvyRuPqdovB1h
+         G4KKcExvPF5dG/ylSm36yAm/9ealtuJHmLxJhEIYKQl5xIV6EICBr3g98HOHm32Eo8y3
+         /0U2v/BijC+ypMCP2mu7IIrGezvs8E9uAWIbeX1ipopGG0l3HxJdDxbORt8iwjayJFzZ
+         vq1LNkyQio7e05jg5AYoOuXcfYFH+RL0USpReYBazcsDg9FzsHbAaGPY44FtFnBKVKWi
+         PWBg==
+X-Gm-Message-State: AOAM531WzrMWvoxPhJhWXPkKipBsFie6yAYU0RI8sUSVxfiMjWGNJFGg
+        c+7tVcxdST7yVZPksM3fUgsTGBpz4Owb1EapQuQ=
+X-Google-Smtp-Source: ABdhPJzwyaJdUa9LIVv2wGMaosgVbNqNvl0y+YfXBQHEykJVXXK/rkhZ8t66muJlihYvBZF+2lXoyRlklFxIIbBmGb8=
+X-Received: by 2002:a05:6402:31b4:: with SMTP id dj20mr36658729edb.186.1624920755698;
+ Mon, 28 Jun 2021 15:52:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wIs9KiAiv9TORwvmFtUACfm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAF78GY0jB_oeKgfZc4SHWBVusGnNfxKk5jTC4UBDsteSEVEzTw@mail.gmail.com>
+ <CAHp75VeZwUiK2v8HZ=MLGSkK8wLudDEJFhBSm--Wu9gzABhmSg@mail.gmail.com> <CAHp75Vd6M6D9baiGi8fU8a=pfXnSKtEgQ4+eMiwPh6P9cg1ojA@mail.gmail.com>
+In-Reply-To: <CAHp75Vd6M6D9baiGi8fU8a=pfXnSKtEgQ4+eMiwPh6P9cg1ojA@mail.gmail.com>
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+Date:   Tue, 29 Jun 2021 07:52:24 +0900
+Message-ID: <CAF78GY1PO3YwYHgQkEhYF1_FRQ=HVOOWFtECcHen9PFCR1=JOA@mail.gmail.com>
+Subject: Re: gpiochip_lock_as_irq on pins without FLAG_REQUESTED: bug or
+ feature ?
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wIs9KiAiv9TORwvmFtUACfm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 28, 2021 at 10:42 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> And one important note: do NOT use sysfs GPIO interface. Use a GPIO
+> character device instead.
 
-Hi all,
+I am indeed aware of this. My IRQ issue is unrelated to the gpios
+being claimed by anything, and I was doing it while trying to get
+more information about the current state of the gpio driver.
 
-On Mon, 28 Jun 2021 14:36:16 +0300 Andy Shevchenko <andy.shevchenko@gmail.c=
-om> wrote:
->
-> On Mon, Jun 21, 2021 at 10:30:45PM +1000, Stephen Rothwell wrote:
-> > On Mon, 21 Jun 2021 13:56:13 +0300 Andy Shevchenko <andy.shevchenko@gma=
-il.com> wrote: =20
-> > > On Mon, Jun 21, 2021 at 7:13 AM Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote:
-> > >  =20
-> > > >   2c8cbe0b2971 ("IDE SUBSYSTEM: Replace HTTP links with HTTPS ones")
-> > > >   9a51ffe845e4 ("ide: use generic power management")
-> > > >   f9e09a0711ca ("ide: sc1200: use generic power management")
-> > > >   d41b375134a9 ("ide: delkin_cb: use generic power management")
-> > > >   6800cd8cbc6e ("ide-acpi: use %*ph to print small buffer")
-> > > >   731d5f441e1c ("ide: Fix fall-through warnings for Clang")
-> > > >
-> > > > from the ide and kspp-gustavo trees and commits:   =20
-> > >=20
-> > > As far as I can tell the IDE hasn't sent PR to LInus for a long time
-> > > (like a few release cycles). I don't know what happened there, though=
-. =20
-> >=20
-> > Yeah, the top commit in the ide tree (which is intended to hold bug
-> > fixes for Linus' tree) is dated 4 Aug 2020, so hopefully this will
-> > prompt Dave to do something with it.  There has been no ide "future
-> > development" tree in linux-next since 2011. =20
->=20
-> Yep, I think the best approach here may be to apply those (by sending a P=
-R)
-> followed by marking subsystem orphaned or delete it entirely.
->=20
-> David, what are your thoughts?
+For more background, the context of my IRQ issue is:
+  PMIC (da9063) /irq -> GPIO pin 1 -> PLIC irq 24
+The PMIC has several internal interrupt sources, like the power
+button being pressed or the ADC conversion completion signal.
+The first time after a boot that I press the power button, I do
+get an interrupt and the da9063-onkey driver produces a keypress
+input event.
+But any further button press does not produce an IRQ. So something
+is going wrong in the IRQ acknowledgement.
+AFAIK the PLIC (platform-level interrupt controller) works: it is
+used for PCIe interrupts, and those work.
+The PMIC driver exists since 2013, so I assume any bug would have
+been identified long ago.
+But I believe the GPIO level has not handled any interrupt until I
+enabled the power button event source, and this one is a lot more
+recent: gpio-sifive.c from late 2019. So this is where I turned my
+attention. Discovering that the pin is somehow only half-claimed
+made me wonder if there was some important initialisation step
+missing, which could maybe be related to these IRQ issues.
 
-Well the conflicting block tree commits have now been merged into
-Linus' tree and completely remove drivers/ide, so I will just remove
-the ide tree from linux-next starting tomorrow.
+While on this topic, there is a bullet point in
+Documentation/driver-api/gpio/driver.rst which I fail to understand:
 
---=20
-Cheers,
-Stephen Rothwell
+| - Nominally set all handlers to handle_bad_irq() in the setup call and pass
+|   handle_bad_irq() as flow handler parameter in
+gpiochip_irqchip_add() if it is
+|   expected for GPIO driver that irqchip .set_type() callback will be called
+|   before using/enabling each GPIO IRQ. Then set the handler to
+|   handle_level_irq() and/or handle_edge_irq() in the irqchip .set_type()
+|   callback depending on what your controller supports and what is requested
+|   by the consumer.
 
---Sig_/wIs9KiAiv9TORwvmFtUACfm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- why the plural in "set all handlers to handle_bad_irq()" ? Isn't
+  there only a single handler in struct gpio_irq_chip ?
+- I do not find a function named gpiochip_irqchip_add(), only
+  gpiochip_irqchip_add_domain()
+- "Then set the handler to [...] in the irqchip .set_type() callback"
+  Isn't set_type per-pin, and isn't the interrupt handler chip-level ?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDaUlMACgkQAVBC80lX
-0GyrHwgAollpbnqh8PTS//6xHSm/ZWQJLifI2b/xCENwIeWSol/IZH/dTNcXRVCT
-+GL7RFFOrNWgkQNgDWy+wMN640wuTvllK3Ggn1/XapjWV5rOcqSFMnfjJXImpxkg
-TvvNluc17nddxFX1SfA10Y8oOGcbRCCQqV4bofpjxu5Bbo0MHxTqzWhfZ8QejEAp
-KWmaGjMjTxoqpk0bVR8t6H8Kg2Vfw7e/Aa8MavZwz8Um7bQ+fZmlUYoZEcaYfSfd
-XIEtKwd9qP0XKZ0p45our0NqD/N+rtjtFq2efiMGwSuwjzbvEJOpsFxZk1aYlYWd
-yzJV0pBmkUmmJiOT01i3+1hYpj2daA==
-=jRXm
------END PGP SIGNATURE-----
-
---Sig_/wIs9KiAiv9TORwvmFtUACfm--
+Regards,
+-- 
+Vincent Pelletier
