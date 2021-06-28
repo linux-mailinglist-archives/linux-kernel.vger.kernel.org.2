@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD283B5F7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DA93B5F55
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhF1OAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        id S232131AbhF1Ntk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbhF1OAd (ORCPT
+        with ESMTP id S232079AbhF1Nti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:00:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDC7C061574;
-        Mon, 28 Jun 2021 06:58:07 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 13:58:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624888686;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EA49D6jjvfTlGevWpnlR1iszrSoWl6SMVQnnoJ7fGqw=;
-        b=UJnMJ2MA7/SKmCq87VvNM1jwi/VKXr79u6gdEc/5C/o3fQqvERmxC5QOAhkhvGIYfnYRAp
-        Dc6xpMBHe7d7wkxlPrPSo+Uu/tCY/HUrj36gwF25bm5BAcAQRcqKoscPrLOybEXvnDJ7Je
-        fPTmPlZG1TRv12NrEyvAhDN2JnFqoEFDCb+7ykfjEm5jHOIWFEU3Hd85oCU3+sHCjSNiHG
-        XOVPxFg9lLYnix1WKcXsKsiQHb5eAERwRJZRMsltyGg5LXasRq3u+rsZmQoBubKysnkEPo
-        +PWFVLIq4htdDN2OzAoaLFAusZGGi4lkiy8M+0EbfMA12CL+zfVkGvC5JkWvaw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624888686;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EA49D6jjvfTlGevWpnlR1iszrSoWl6SMVQnnoJ7fGqw=;
-        b=1JLBBZm+UfIKDwE2LUJCd2szVYD4eF9xsdXPtij4IMjkAniNKbQth94KP8e5IK1Mbg8OCh
-        qYPuuVyxp1VZ4gCg==
-From:   "tip-bot2 for Odin Ugedal" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Ensure _sum and _avg values stay consistent
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        Mon, 28 Jun 2021 09:49:38 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F634C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:47:11 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id g13-20020a4ac4cd0000b029024c717ed8aeso1648015ooq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 06:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qceIscsR0qrG5qBxyFH8+s8zOb1JhNM9G4ZV0IV+llI=;
+        b=Ui5tbzleCKtxQLzeaeNusdncvAYbZ0YVOaGFOd9hPcTFcKVdYk3QY7gbBOjNaFJN6v
+         BTKz1fQcFColqlgOehqK1lCndPtgfQ7g5E07dU8Ga6wHXAqFg1S62r3U7snNJAGS8awD
+         VE0Bv+6UzQCojhJjbb+wdf5OQpg2M6RJaulStQP6nxup6C4jaL+/ljjWn1OL10iv5ofs
+         PsOum6XwhXMAILXuiX/Xl38nrmFKYNGiN5pDMRX0LYIEDwsIsiIXxwRhXJqwufJnfwSB
+         nUsHJ2JeGNdd6Z9YeVWdo1+VFc+QPUboRwHfLrsLGKXIak/048eDNKCJ59FydZXXbb6Z
+         WJrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qceIscsR0qrG5qBxyFH8+s8zOb1JhNM9G4ZV0IV+llI=;
+        b=l/CZFyS51UPwrneYACxMpOI/SuQZYi6ahPRM44IhnJ49+Tv9koVcs6YBSHsIFTmu8X
+         YTRsHjZwBMA9nLxIC6598KrrOXqtNNWrtecs+sNwCdoddZOcjJfQ6lc5oGcq1wxinohQ
+         LkrDN5fshPH9NZaN5DFd5zVBokLsEQdpT9VUWFd7MN2ZpzeZmnQbI3N9zqoY0W6CFA30
+         PJarcpSd9OVA3otFXcF+hlQlKsqZ7PaGOdNemCx5Jd9VB4SPTqVpfG2MA41x8JOwbkRx
+         +XDB7xGt7Pvdimdqom8FyR3JceikqCdE7K7kajBToRuUHLNMfUwAxEExjeH7LcGDBv/x
+         YDjw==
+X-Gm-Message-State: AOAM531R5uAgbd4g25wS+N+axIIbt5Q3b7fn3U0GCCDDfYZg/xwNmgsK
+        qZwWWXwtkoTtEGn+3ErYHAzaZ2mWEexmuK05
+X-Google-Smtp-Source: ABdhPJzW850hkyCet8ockBb2pXWxsK9Q32fy3TmhkXzxvuk4dJrRBVxkfdylqxd+lYT1oDAev5TCSA==
+X-Received: by 2002:a4a:b815:: with SMTP id g21mr19202867oop.70.1624888030261;
+        Mon, 28 Jun 2021 06:47:10 -0700 (PDT)
+Received: from [192.168.86.166] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id y20sm1619791ots.23.2021.06.28.06.47.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 06:47:09 -0700 (PDT)
+Subject: Re: dma_declare_coherent_memory and SuperH
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210624111815.57937-1-odin@uged.al>
-References: <20210624111815.57937-1-odin@uged.al>
+References: <20210623133205.GA28589@lst.de>
+ <1a55cf69-8fe1-dca0-68c7-f978567f9ca0@landley.net>
+ <20210628133858.GA21602@lst.de>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <4d6b7c35-f2fa-b476-b814-598a812770e6@landley.net>
+Date:   Mon, 28 Jun 2021 09:04:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <162488868552.395.3605721602918699622.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210628133858.GA21602@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     1c35b07e6d3986474e5635be566e7bc79d97c64d
-Gitweb:        https://git.kernel.org/tip/1c35b07e6d3986474e5635be566e7bc79d97c64d
-Author:        Odin Ugedal <odin@uged.al>
-AuthorDate:    Thu, 24 Jun 2021 13:18:15 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 28 Jun 2021 15:42:24 +02:00
 
-sched/fair: Ensure _sum and _avg values stay consistent
+On 6/28/21 8:38 AM, Christoph Hellwig wrote:
+> On Sat, Jun 26, 2021 at 05:36:08PM -0500, Rob Landley wrote:
+>> On 6/23/21 8:32 AM, Christoph Hellwig wrote:
+>> > Hi SuperH maintainers,
+>> > 
+>> > I have a vague recollection that you were planning on dropping support
+>> > for non-devicetree platforms, is that still the case?
+>> 
+>> We'd like to convert them, but have to rustle up test hardware for what _is_
+>> still available. (There was some motion towards this a year or so back, but it
+>> petered out because pandemic and everyone got distracted halfway through.)
+>> 
+>> (We should definitely START by converting the r2d board qemu emulates. :)
+>> 
+>> > The reason I'm asking is because all but one users of
+>> > dma_declare_coherent_memory are in the sh platform setup code, and
+>> > I'd really like to move towards killing this function off.
+>> 
+>> Understood. Is there an easy "convert to this" I could do to those callers?
+> 
+> Well, the replacement is to declare the device memory carveouts in the
+> Device Tree.
 
-The _sum and _avg values are in general sync together with the PELT
-divider. They are however not always completely in perfect sync,
-resulting in situations where _sum gets to zero while _avg stays
-positive. Such situations are undesirable.
+Your plan is to eliminate the ability for non-device-tree boards to do DMA?
 
-This comes from the fact that PELT will increase period_contrib, also
-increasing the PELT divider, without updating _sum and _avg values to
-stay in perfect sync where (_sum == _avg * divider). However, such PELT
-change will never lower _sum, making it impossible to end up in a
-situation where _sum is zero and _avg is not.
-
-Therefore, we need to ensure that when subtracting load outside PELT,
-that when _sum is zero, _avg is also set to zero. This occurs when
-(_sum < _avg * divider), and the subtracted (_avg * divider) is bigger
-or equal to the current _sum, while the subtracted _avg is smaller than
-the current _avg.
-
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Link: https://lore.kernel.org/r/20210624111815.57937-1-odin@uged.al
----
- kernel/sched/fair.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4a3e61a..45edf61 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3657,15 +3657,15 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
- 
- 		r = removed_load;
- 		sub_positive(&sa->load_avg, r);
--		sub_positive(&sa->load_sum, r * divider);
-+		sa->load_sum = sa->load_avg * divider;
- 
- 		r = removed_util;
- 		sub_positive(&sa->util_avg, r);
--		sub_positive(&sa->util_sum, r * divider);
-+		sa->util_sum = sa->util_avg * divider;
- 
- 		r = removed_runnable;
- 		sub_positive(&sa->runnable_avg, r);
--		sub_positive(&sa->runnable_sum, r * divider);
-+		sa->runnable_sum = sa->runnable_avg * divider;
- 
- 		/*
- 		 * removed_runnable is the unweighted version of removed_load so we
+Rob
