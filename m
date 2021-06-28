@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E7D3B59F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5810F3B5A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhF1HtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:49:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61410 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229953AbhF1HtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:49:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="204898890"
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="204898890"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 00:46:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="446458597"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga007.jf.intel.com with ESMTP; 28 Jun 2021 00:46:43 -0700
-Subject: Re: usb: host: Reduce xhci_handshake timeout in xhci_reset
-To:     Jung Daehwan <dh10.jung@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CGME20210622113915epcas2p284c61291fc9d83487f6dfebb65fd4e9b@epcas2p2.samsung.com>
- <1624361096-41282-1-git-send-email-dh10.jung@samsung.com>
- <YNJAZDwuFmEoTJHe@kroah.com> <20210628022548.GA69289@ubuntu>
- <YNlxzj7KXG43Uyrp@kroah.com> <20210628065553.GA83203@ubuntu>
-From:   Mathias Nyman <mathias.nyman@intel.com>
-Message-ID: <496c9d86-70d7-1050-5bbb-9f841e4b464a@intel.com>
-Date:   Mon, 28 Jun 2021 10:49:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232367AbhF1HwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 03:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232332AbhF1HwK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:52:10 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254F2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:49:45 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id r9so6633486ual.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SpDL1yFtnBlqCZuK3CHLVZzWipOCqhkoV76MfrS+XPw=;
+        b=A5/4xK8X5ZR9E6P0cb6x18jpF/MTNKiIOalvBQM5I6HhZXFVSz2dSXs0cAiVXGV0aA
+         sJJACsN13TmWPg8rDJl4YEJZne/raXh78ys4/AQLdqRaWpdK0t8jr1RJLd1cvu8DjxiQ
+         g9M8adyqxjEqoYCD7CKDM8jhlwgpri6pDL1JP4nhOGGuzG5dY/ylyD6Co/yJGl1eIlow
+         fnlKTZoOUSHMzON7o4f61g7JQJfTZdINfFKd8Ic7FY0KFoxeBgmmqZ7ZQv7bQhA2ahA5
+         81IsTLQ30fVZkW2Z4RwWJjmv0y40jADbq08AkUwX1hBCZ1h++xpmXsPn5hWaCKqr+PaJ
+         SIBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SpDL1yFtnBlqCZuK3CHLVZzWipOCqhkoV76MfrS+XPw=;
+        b=ILB6RVYuDAW3I6B2jngY9AHMfqALjHdwZ4re8c/OGHwbPSqoEtcaCjv6sUOpZeXs8N
+         rpjf+j7xvvjr8U/Ddp4RZ/OQL78G2B0lnKyxp9NPF92ho48+HsITQ6UUzalMGIDXK5y6
+         PE9fPz1INWBpmRwLlfOp/sYRV+EcGzZJVdiwOa9/PIn6gXytNWfXbuXxY1Lqpc0V0oTt
+         gVQN3TaToqmq4IriKoUvTSeZlddEPwP882bWW9jwFzMNMY97LNK1Qe+R9TOOlQx4Z1Jg
+         315QGxate+/Hk2OjYx/wYciCHIUecN2sx41oUZ17Dj+0XKz4hH4UkrNRCDQkTrK/GD1p
+         YvVw==
+X-Gm-Message-State: AOAM530z5+nrwtyifOx8m7Q7f6fG1851VJhUe1vDyBtRfi66nii9k5/0
+        AUes+vle2l79JssbN/Atjqm4UitPKW+wr51oVss3qDR+L6mg3aPR
+X-Google-Smtp-Source: ABdhPJwUdpg7JYcrOq4EEhy5BIfAtqS1t34Bu6KnY7BMgxcOojDtQELRD0HYCUiNtgyLQ6rB4dvjQDmC00Zf/FXrgBM=
+X-Received: by 2002:ab0:484b:: with SMTP id c11mr19690937uad.100.1624866583711;
+ Mon, 28 Jun 2021 00:49:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628065553.GA83203@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210624123251.191299-1-ulf.hansson@linaro.org> <CAHk-=whn_yTjV=YAU4xMBkLEb+E76zUKM_Xy5ZwMp_504wqR9A@mail.gmail.com>
+In-Reply-To: <CAHk-=whn_yTjV=YAU4xMBkLEb+E76zUKM_Xy5ZwMp_504wqR9A@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 28 Jun 2021 09:49:07 +0200
+Message-ID: <CAPDyKFrLSMpPJOgd5e4B1x3Vwfg4q23zgy4ESc8EmFL2MnyK7g@mail.gmail.com>
+Subject: Re: [GIT PULL] MMC fixes for v5.13-rc8
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.6.2021 9.55, Jung Daehwan wrote:
-> On Mon, Jun 28, 2021 at 08:53:02AM +0200, Greg Kroah-Hartman wrote:
->> On Mon, Jun 28, 2021 at 11:25:48AM +0900, Jung Daehwan wrote:
->>> On Tue, Jun 22, 2021 at 09:56:20PM +0200, Greg Kroah-Hartman wrote:
->>>> On Tue, Jun 22, 2021 at 08:24:56PM +0900, Daehwan Jung wrote:
->>>>> It seems 10 secs timeout is too long in general case. A core would wait for
->>>>> 10 secs without doing other task and it can be happended on every device.
->>>>
->>>> Only if the handshake does not come back sooner, right?
->>>
->>> Yes, right.
->>>
->>>> What is causing your device to timeout here?
->>>
->>> Host Controller doesn't respond handshake. I don't know why and I ask HW team
->>> to debug it.
->>
->> Please work to fix your hardware, that feels like the root of the
->> problem here.  If you require the timeout for xhci_reset() to happen,
->> then how do you know that the hardware really did reset properly in the
->> reduced amount of time you just provided?
->>
-> 
-> I continue fixing this issue with hardware engineer, but currently just
-> host controller can crash whole system and that's why I want to fix it.
-> How about adding some error logs in this situation for recognizing this issue?
-> We can add error log in xhci_stop as xhci_reset can returns error like below.
-> 
-> static void xhci_stop(struct usb_hcd *hcd)
-> {
->         u32 temp;
->         struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-> +       int ret;
-> 
->         mutex_lock(&xhci->mutex);
-> 
-> @@ -733,6 +734,9 @@ static void xhci_stop(struct usb_hcd *hcd)
->         xhci->cmd_ring_state = CMD_RING_STATE_STOPPED;
->         xhci_halt(xhci);
->         xhci_reset(xhci);
-> +       if (ret)
-> +               xhci_err(xhci, "%s: Error while reset xhci Host controller - ret = %d\n"
-> +                       , __func__, ret);
->         spin_unlock_irq(&xhci->lock);
-> 
++ Neil, Robin
 
-We can check the xhci_reset() return value here and print a message, makes sense.
+On Thu, 24 Jun 2021 at 20:00, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Jun 24, 2021 at 5:32 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > Neil Armstrong (1):
+> >       mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk
+>
+> Ugh. How horribly ugly.
+>
+> Why is that 'host->dram_access_quirk' test _inside_ the loop, rather
+> than be something like
+>
+>         if (host->dram_access_quirk)
+>                 return sg_copy_to_buffer(data->sg, data->sg_len,
+>                                 host->bounce_buf, xfer_bytes);
+>
+> at the top of the function, with meson_mmc_copy_buffer() then only
+> handling the mmio case?
+>
+> No, I don't know this code, I'm just looking at the patch and going
+> "that looks really ugly".
+>
+> Anyway, I've pulled it, but I thought I'd voice my reaction to it..
 
-The original reason for the 10 second timeout was because a host actually took 9 seconds:
+Thanks, good point!
 
-commit 22ceac191211cf6688b1bf6ecd93c8b6bf80ed9b
+Robin and Neil did discuss some cleanup that could be made on top [1],
+but it looks like that was targeting a different part.
 
-    xhci: Increase reset timeout for Renesas 720201 host.
-    
-    The NEC/Renesas 720201 xHCI host controller does not complete its reset
-    within 250 milliseconds.  In fact, it takes about 9 seconds to reset the
-    host controller, and 1 second for the host to be ready for doorbell
-    rings.  Extend the reset and CNR polling timeout to 10 seconds each.
+In any case, Neil, would you mind sending a cleanup according to the
+comment from Linus?
 
--Mathias
+Kind regards
+Uffe
+
+[1]
+https://www.spinics.net/lists/arm-kernel/msg901045.html
