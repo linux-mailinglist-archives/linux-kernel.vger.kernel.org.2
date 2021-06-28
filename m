@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AFB3B698B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EA53B698F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237323AbhF1UQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S237337AbhF1UQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236965AbhF1UQI (ORCPT
+        with ESMTP id S236965AbhF1UQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:16:08 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9BCC061574;
-        Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id a7so5713566pga.1;
-        Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+        Mon, 28 Jun 2021 16:16:50 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E029C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:14:23 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e33so16441407pgm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
-        b=JK/dcwlV5HtjZwqC4/JKo2T5Iu8KcG9Kcd0VQ5ut3njx9t8wLXG9YHp25nmsBb6aKA
-         QFK96qg/LIuguGMS5VsnxqiR3trE5g/dNI1VqluPWV2qMtM1ykGmJeBeHCyrv+5mj+1r
-         W6Vh6SPJHhb9MBqFzMFGTyck3DLP+ZSHxn91KB6neU6wzP39XgV1HpGfm/BiJ7JHBYI/
-         ZNJ+wbclln4o63iRuhoRlW+yVD+wQDCajjefih3eqnQFROwySSE/gtCb7APBz1ul6PFJ
-         XoEX1OWC2IVXgrl6NQXaTbivO5f+1TEv0Rq+1tu9bEk21eThKtcAOW8r2qMbgiDm+aYG
-         TdkA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7ZnGDtl1tfzZOtqDAq6jjVvtwOuBD0ilGwgxqjlrpl0=;
+        b=xOia3izt7iY8wngK+5KXACBIu+zIQfxgrqgjif9gw0nfalcOoMkpoR/Msi2WhM5y7E
+         PIAFQwe8w3irXL6E3icdJ7MiVz4VF9QLtnAOv6TOKAAEtYfRGlgYQdscBfs6ZIwtetQg
+         kouiyKS1lMZG/MBGFK7O/rDaqnGma1YHo/eZHD1BnrReneRvxl4Dqpn91gQLFVp5B1yD
+         K95hcyXUpG4/7nwJP1/1IrBLILyeaCXxinCBe2RUNG6KxZmH8blXX63qYH7xmh7g+pEd
+         XDj58YxTgt2D9cDSEpxurD4ESpE+H744cYpJKgApC30N6gCHeKx32u951Kv5AmnvejO1
+         y34w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
-        b=uPykcR5n+xSHCwkR1CukKeJJdLxX+pmugPTrIh3QcoSggSHr7N0LUrAK4w1QU8CvJS
-         Bf4Lo6QyfeF2Aa+ZIwZ+z1BnjZOlflkC4/ipiyqEQBcWSw9SgPmot+ac/WdbwXyvMWmH
-         BenXdHgHoHFyaBZ9R5aRMedMMQPajD8CbPRjbWuJI7WyAOB6Rj8kzTjJdY6t0xC3Rk+R
-         Qc0hw36XW/sD6TpTo0uoPU6Xye42kcyAwBxyxo77Llag6TdhLr+Lmwch6/hW2WCUs3hd
-         l9dKit2czj9FL6yj4XwwvKDuwV5UAgnB+fwzHAoRtvQ0Z6OtJ+fhOezib4nD5BnAVhyc
-         WUKQ==
-X-Gm-Message-State: AOAM530+9pUkDa2/JYfrD4Fvyv9Xw7TK8jQilRFl/8MAchdJQGcBlrE3
-        FE0cy6kEeghZyqX9Ujg3i6Q=
-X-Google-Smtp-Source: ABdhPJxyQ/1DoRnjU5lf6igsVabo2ZeY13D7p5RiA9jKlGU/j2Sut1YGa+bd6AiG1JPX6EHy2PoRwg==
-X-Received: by 2002:a62:7cc4:0:b029:302:f75a:69ab with SMTP id x187-20020a627cc40000b0290302f75a69abmr26829379pfc.74.1624911221022;
-        Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:1c9b:7d7f:b312:1fae? ([2001:df0:0:200c:1c9b:7d7f:b312:1fae])
-        by smtp.gmail.com with ESMTPSA id ga1sm981249pjb.43.2021.06.28.13.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 13:13:40 -0700 (PDT)
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
- <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
- <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
-Date:   Tue, 29 Jun 2021 08:13:32 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7ZnGDtl1tfzZOtqDAq6jjVvtwOuBD0ilGwgxqjlrpl0=;
+        b=cO3ZxCIwcjSaMJCoG93N4lTBjH9F+UAwcid+75COg0x9KM1weQkwOtAvrYuDnM8dtp
+         IePxbEqVBrzFrd9AUFKDYIc7Gzwca9u3fpRnBGknliQK/0V7oi4WJGyD6SRIEoqfdvQh
+         smnk1wmSBTcl27UVqd7VLb+K5TL2+5f3AXxSjtxJgUDljCQZ1nvdFW6VE0cG91wBPbq5
+         GFLzMof9vaYoZGJjoWFcS5hNy/Q/Su6GYgpv6ENt9fhVe1soEIXjAxhwhtlcu446Ss6H
+         46T0c3L7uHpoM6tdH+SC/1KHKYSJpCvQjx4M6uLqC8FA/nQ0zmLbyOxvCHDZTJDdvRs1
+         N/hA==
+X-Gm-Message-State: AOAM5332wg/GVJQPM7orm6LrENZALhXqzhoBke91Zxgm0IMu3ysg55mw
+        EqXDmMU2jiocEIZA4yRI+aXQ+iAt1uUS/g==
+X-Google-Smtp-Source: ABdhPJxVVN3NPc4d9nLhD1Dfr/CZoIM2R8nyecogy9yQcGx2BveE4Qsh5qPv1sZ5R4fRCSu0WHx3Yw==
+X-Received: by 2002:a63:445b:: with SMTP id t27mr24798686pgk.413.1624911262721;
+        Mon, 28 Jun 2021 13:14:22 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id y6sm15293195pjr.48.2021.06.28.13.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 13:14:21 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 14:14:19 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: remoteproc DMA API abuse status
+Message-ID: <20210628201419.GC1200359@p14s>
+References: <20210623134307.GA29505@lst.de>
+ <20210624193514.GA1090275@p14s>
+ <011dac94-cfe0-d276-980a-b8ffe1447521@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <011dac94-cfe0-d276-980a-b8ffe1447521@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On 29/06/21 7:17 am, Geert Uytterhoeven wrote:
->>> The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
->>> which is a very old ramdisk from right after the m68k a.out to ELF
->>> transition:
->>>
->>>      warning: process `update' used the obsolete bdflush system call
->>>      Fix your initscripts?
->>>
->>> I still boot it, once in a while.
->> OK; you take the cake. That ramdisk came to mind when I thought about
->> where I'd last seen bdflush, but I've not used it in ages (not sure 14
->> MB are enough for that).
-> Of course it will work on your 14 MiB machine!  It fits on a floppy, _after_
-> decompression.  It was used by people to install Linux on the hard disks
-> of their beefy m68k machines, after they had set up the family Christmas
-> tree, in December 1996.
-Been there, done that. Wrote the HOWTO for ext2 filesystem byte-swapping.
-> I also have a slightly larger one, built from OpenWRT when I did my first
-> experiments on that.  Unlike filesys-ELF-2.0.x-1400K-2.gz, it does open
-> a shell on the serial console, so it is more useful to me.
+On Fri, Jun 25, 2021 at 09:27:09AM +0200, Arnaud POULIQUEN wrote:
+> Hello Mathieu,
+> 
+> On 6/24/21 9:35 PM, Mathieu Poirier wrote:
+> > Good day Christoph,
+> > 
+> > On Wed, Jun 23, 2021 at 03:43:07PM +0200, Christoph Hellwig wrote:
+> >> Hi remoteproc maintainers,
+> >>
+> >> did you make any progress to get remoteproc out of creating fake
+> >> devices that fake their dma ops status and the abuse of
+> >> dma_declare_coherent_memory in removeproc_virtio?  I remember we had
+> >> a discussion on this a long time ago, and there was an unfinished
+> >> patchset to change the memory pool handling.  What happened to all that?
+> > 
+> > I believe the conversation and patchset you are referring to are pre-dating my
+> > time in this subsystem.  To make sure I am looking at the right thing, can you
+> > (or anyone else) point me to that discussion and related patches?
+> 
+> 2 references:
+> 
+> 1)Previous discussion thread on the topic:
+> 
+> https://patchwork.kernel.org/project/linux-remoteproc/patch/AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch/
 >
->> The question then is - will bdflush fail gracefully, or spin retrying
->> the syscall?
-> Will add to my todo list...
-> BTW, you can boot this ramdisk on ARAnyM, too.
 
-True. I can't find that ramdisk image anywhere - if you can point me to 
-some archive, I'll give that a try.
+I remember that one.  Glad to see there wasn't anything else before that.
 
-Cheers,
+> 2) My patchset related to the refactoring of remoteproc virtio which tries to
+> address the point by creating a remoteproc platform driver and declaring a
+> virtio subnode in the device tree remoteproc node.
+> 
+> https://lkml.org/lkml/2020/4/16/1817
+> 
 
-     Michael
+I thought your current work on refactoring the rpmsg_char driver was part of the
+early steps on the way to splitting that patchset up...
 
+> No time yet on my side to come back on the patchset :(
+> 
 
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+I know the feeling.
+
+Thanks for the info,
+Mathieu
+
