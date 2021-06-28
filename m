@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF363B604B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9982D3B5FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhF1OXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:23:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232915AbhF1OVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B84DD61C7D;
-        Mon, 28 Jun 2021 14:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624889937;
-        bh=CLTuuoFwywq1hHxTJ3AIr3/xb3KbmESfbeouoSsX3pY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TqqeSkqjt2GBe/vPnGkGyBm6T5+WiWLHbTOCGc4W+BxeGbf1mYZvihGAqlW4PrNAO
-         1M+CbxrCyIkauENQ6CuirFxAsG7pcM3HSODUZijLObeQf/yMvEbD7grET2u7v2pwvS
-         IhSksxkC3L0oQGIYV4FJ+ApFTp22HeYXEZiBWBzHn1I8XuR1W89h3RzBTTZRkDPU4U
-         DWnSSu5clFpCQ9nis7jVkzktwoOsNBFubOF0k0+0LNV8HLynYVFEwQQ/BVnnRRZ7G1
-         WcRAB9Jls3T8JLEt10aum0/p0LlWwUs9pnCvmWbrwqO1Yuo0lsqFEOUM5S2KInGbRi
-         BwL4aAvvoKLrA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Guillaume Ranquet <granquet@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 031/110] dmaengine: mediatek: free the proper desc in desc_free handler
-Date:   Mon, 28 Jun 2021 10:17:09 -0400
-Message-Id: <20210628141828.31757-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628141828.31757-1-sashal@kernel.org>
-References: <20210628141828.31757-1-sashal@kernel.org>
+        id S232561AbhF1OTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhF1OTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:19:50 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 07:17:25 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id g198so3638439wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 07:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JuNJweosuipucr4vhg0XhclqW1q8Ja8Oi1r1gTGSAjc=;
+        b=QygiPxCHhdIGBTdAvUgBSVXLuBadR+p7jLqHUw3tyMpunPOzeNyjovnSSD4TTT8RyR
+         roQKK2BbsVBmSHAm82YwdthcpaN6J1rsmeJDjV+amE+v6tEduKw9K7g7mmt0kJtd7Nfp
+         UQAvV6s5pggiDGHDClkwZeIzyRhXCZaoWP4WGsh1cPHqyoa7iDDn8/aENJ+IeWrRnu2G
+         hmd4HFBwUJT7E9zf3P6+wjpgjCP+yzvVbghQXOYY59H8jn1PBm8z7WW5l4aIFSSuvE8g
+         fhoygFTLfbUVeAr0gg0mMAtXS9yHuqhCoNie5QwM0W5I0NYiZ/F7DPgMewo5ruLID+iI
+         +l3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JuNJweosuipucr4vhg0XhclqW1q8Ja8Oi1r1gTGSAjc=;
+        b=L/roz/xDxESqhtEkfL7b49KB7GM4ify/+Verl+/MAJo6n87PtvKcU376caef+h28LA
+         rlnp4pDToyTN/9Rp6OE2OZMhZeePFtJcZpO2VqneRrA/i4Tunem5XO+KaapzIM2rKwLD
+         jx6phcmCJbYeXzTUjXthkheWBn+ad5Yq86HR/eIVL9oXOkWY2Y+Cnihcrtl25w3CPV4e
+         3j64P5XSqyO4G6UYS1WkxPAHnBJp56Mpl/Q9g8MvgL+q9XdlQcI16rpB9fDIdZt7IpC0
+         2MmEjk+AdKlX4kNXXJRDexLGNOFi9B/MJs9aTDUJrWZ/aJmc/YLHYz3haazw95rESQFC
+         rGRA==
+X-Gm-Message-State: AOAM533GnkQ3RMIwj7djXUQT87RY4XW6Y33TtO2v2XaZrFH5kojOHbQO
+        csXhmphToCL/TMxVMzOcB32QEw==
+X-Google-Smtp-Source: ABdhPJz0TSrLse6qo1VCS1JWg6bZxhe+0Bg6alEz8bitTBlTCij+dn3eWVo/Cms/yJrkW8rO7zCegg==
+X-Received: by 2002:a05:600c:2318:: with SMTP id 24mr27530614wmo.36.1624889843664;
+        Mon, 28 Jun 2021 07:17:23 -0700 (PDT)
+Received: from neptune.anevia.com (ip-149-62-159-73.naitways.net. [149.62.159.73])
+        by smtp.gmail.com with ESMTPSA id x81sm22524012wmg.36.2021.06.28.07.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 07:17:23 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: accel: da280: convert probe to device-managed functions
+Date:   Mon, 28 Jun 2021 17:17:09 +0300
+Message-Id: <20210628141709.80534-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.14-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.12.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.12.14-rc1
-X-KernelTest-Deadline: 2021-06-30T14:18+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Ranquet <granquet@baylibre.com>
+This is another simple conversion to device-managed functions, requiring
+the use of devm_iio_device_register() and moving the disabling of the
+device on a devm_add_action_or_reset() hook.
 
-[ Upstream commit 0a2ff58f9f8f95526ecb0ccd7517fefceb96f661 ]
+The i2c_set_clientdata() can be removed, as the PM functions can work with
+just the device object, to obtain the i2c_client object.
 
-The desc_free handler assumed that the desc we want to free was always
- the current one associated with the channel.
-
-This is seldom the case and this is causing use after free crashes in
- multiple places (tx/rx/terminate...).
-
-  BUG: KASAN: use-after-free in mtk_uart_apdma_rx_handler+0x120/0x304
-
-  Call trace:
-   dump_backtrace+0x0/0x1b0
-   show_stack+0x24/0x34
-   dump_stack+0xe0/0x150
-   print_address_description+0x8c/0x55c
-   __kasan_report+0x1b8/0x218
-   kasan_report+0x14/0x20
-   __asan_load4+0x98/0x9c
-   mtk_uart_apdma_rx_handler+0x120/0x304
-   mtk_uart_apdma_irq_handler+0x50/0x80
-   __handle_irq_event_percpu+0xe0/0x210
-   handle_irq_event+0x8c/0x184
-   handle_fasteoi_irq+0x1d8/0x3ac
-   __handle_domain_irq+0xb0/0x110
-   gic_handle_irq+0x50/0xb8
-   el0_irq_naked+0x60/0x6c
-
-  Allocated by task 3541:
-   __kasan_kmalloc+0xf0/0x1b0
-   kasan_kmalloc+0x10/0x1c
-   kmem_cache_alloc_trace+0x90/0x2dc
-   mtk_uart_apdma_prep_slave_sg+0x6c/0x1a0
-   mtk8250_dma_rx_complete+0x220/0x2e4
-   vchan_complete+0x290/0x340
-   tasklet_action_common+0x220/0x298
-   tasklet_action+0x28/0x34
-   __do_softirq+0x158/0x35c
-
-  Freed by task 3541:
-   __kasan_slab_free+0x154/0x224
-   kasan_slab_free+0x14/0x24
-   slab_free_freelist_hook+0xf8/0x15c
-   kfree+0xb4/0x278
-   mtk_uart_apdma_desc_free+0x34/0x44
-   vchan_complete+0x1bc/0x340
-   tasklet_action_common+0x220/0x298
-   tasklet_action+0x28/0x34
-   __do_softirq+0x158/0x35c
-
-  The buggy address belongs to the object at ffff000063606800
-   which belongs to the cache kmalloc-256 of size 256
-  The buggy address is located 176 bytes inside of
-   256-byte region [ffff000063606800, ffff000063606900)
-  The buggy address belongs to the page:
-  page:fffffe00016d8180 refcount:1 mapcount:0 mapping:ffff00000302f600 index:0x0 compound_mapcount: 0
-  flags: 0xffff00000010200(slab|head)
-  raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00000302f600
-  raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-  page dumped because: kasan: bad access detected
-
-Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
-
-Link: https://lore.kernel.org/r/20210513192642.29446-2-granquet@baylibre.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/dma/mediatek/mtk-uart-apdma.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/iio/accel/da280.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
-index 27c07350971d..e38b67fc0c0c 100644
---- a/drivers/dma/mediatek/mtk-uart-apdma.c
-+++ b/drivers/dma/mediatek/mtk-uart-apdma.c
-@@ -131,10 +131,7 @@ static unsigned int mtk_uart_apdma_read(struct mtk_chan *c, unsigned int reg)
- 
- static void mtk_uart_apdma_desc_free(struct virt_dma_desc *vd)
- {
--	struct dma_chan *chan = vd->tx.chan;
--	struct mtk_chan *c = to_mtk_uart_apdma_chan(chan);
--
--	kfree(c->desc);
-+	kfree(container_of(vd, struct mtk_uart_apdma_desc, vd));
+diff --git a/drivers/iio/accel/da280.c b/drivers/iio/accel/da280.c
+index 5edff9ba72da..9633bdae5fd4 100644
+--- a/drivers/iio/accel/da280.c
++++ b/drivers/iio/accel/da280.c
+@@ -100,6 +100,11 @@ static enum da280_chipset da280_match_acpi_device(struct device *dev)
+ 	return (enum da280_chipset) id->driver_data;
  }
  
- static void mtk_uart_apdma_start_tx(struct mtk_chan *c)
++static void da280_disable(void *client)
++{
++	da280_enable(client, false);
++}
++
+ static int da280_probe(struct i2c_client *client,
+ 			const struct i2c_device_id *id)
+ {
+@@ -118,7 +123,6 @@ static int da280_probe(struct i2c_client *client,
+ 
+ 	data = iio_priv(indio_dev);
+ 	data->client = client;
+-	i2c_set_clientdata(client, indio_dev);
+ 
+ 	indio_dev->info = &da280_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+@@ -142,22 +146,11 @@ static int da280_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret < 0) {
+-		dev_err(&client->dev, "device_register failed\n");
+-		da280_enable(client, false);
+-	}
+-
+-	return ret;
+-}
+-
+-static int da280_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-
+-	iio_device_unregister(indio_dev);
++	ret = devm_add_action_or_reset(&client->dev, da280_disable, client);
++	if (ret)
++		return ret;
+ 
+-	return da280_enable(client, false);
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -194,7 +187,6 @@ static struct i2c_driver da280_driver = {
+ 		.pm = &da280_pm_ops,
+ 	},
+ 	.probe		= da280_probe,
+-	.remove		= da280_remove,
+ 	.id_table	= da280_i2c_id,
+ };
+ 
 -- 
-2.30.2
+2.31.1
 
