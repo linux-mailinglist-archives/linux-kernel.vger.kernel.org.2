@@ -2,170 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11093B67D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5433B67BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhF1Rn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:43:26 -0400
-Received: from forward3-smtp.messagingengine.com ([66.111.4.237]:47081 "EHLO
-        forward3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232719AbhF1RnY (ORCPT
+        id S233656AbhF1RhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232266AbhF1RhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:43:24 -0400
-X-Greylist: delayed 539 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Jun 2021 13:43:24 EDT
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailforward.nyi.internal (Postfix) with ESMTP id B0F1019408F3;
-        Mon, 28 Jun 2021 13:32:03 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 28 Jun 2021 13:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=GWKq2EyJGwGZbgi4ujs6lIVnpbb6K31l1aQySTXp12c=; b=hC/hWktO
-        AKMbHlUg1ay7CUnrkVH9nFt3Dg3L+QPhHGGNmKdG6a3y1xQ+KBCEZBbcBK68kvpf
-        WdM9rn2uhZt3fNnVy0iOHszi+GXQAcHKhItX9PczqhtJE9g4ER2nH4lF2lgjmSwP
-        fvgs2UCKohL4878EUKTUU+75qcCvjuC2LsTC7fCukKNAaLg5bkhLccwzubJGXhsP
-        bAgueFkxavCy4K+mGHuBx4e+7JKfEd1mCgU9j6N7zLOimIr1JJNuWW+HF1wrnyim
-        T94Mqi/zUqH8t3xv62tMDNhUTJkyRNXpdsDzY3Opvxp6dHiLTf6I4xJgeMLQ/ABo
-        YwQcGD/njiVgrg==
-X-ME-Sender: <xms:kAfaYDECftFZM83hJLYUV4M5iSdTioQ83aB8JfbGsyM8D3hqn37s0Q>
-    <xme:kAfaYAURwTPBhlVMjY13A8UtXsrQwNsmDiM-54X_OKHe95rdbke4Wc-KS3rvTEFpo
-    9aUSUv31T3blcndexg>
-X-ME-Received: <xmr:kAfaYFIVe3wA3Ec1G7mhMgbJYHmekUtroB0FV0QxIyMUYRu79Bu5BsyviPDT0c0Gdlv6A0WC8Vr5S_djah4ceKrv5t2B6RlhZvdvLSqej0c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedguddufecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrvhhi
-    ugcugfgumhhonhgushhonhcuoegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvg
-    drtghomheqnecuggftrfgrthhtvghrnhepudefteejgfefhfdtjefhhedtffethfetkeeh
-    gfelheffhfeihfeglefgjedtheeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepuggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgt
-    ohhm
-X-ME-Proxy: <xmx:kAfaYBEsC54ZY4eqI7Fm1K0j5uwogr18yWOXd2Hny7QF5W4cE96lYQ>
-    <xmx:kAfaYJXNSO42acLSvmEDNreHuXUHOtXODke6qZqSB93XSjV7D-XWww>
-    <xmx:kAfaYMMC9hk1u2m9stR8p4g-z0DcWZYqNBOl1k6nVRxRWvOJ92bHPw>
-    <xmx:kwfaYCPvAaotylDdxU-IVKkQRTHp1Zt31zYZc3d3V77kZOhzBsi6UcrLqyo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 28 Jun 2021 13:31:59 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 9a1db742;
-        Mon, 28 Jun 2021 17:31:52 +0000 (UTC)
-From:   David Edmondson <david.edmondson@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
-        David Edmondson <david.edmondson@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit reason to userspace
-Date:   Mon, 28 Jun 2021 18:31:52 +0100
-Message-Id: <20210628173152.2062988-3-david.edmondson@oracle.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628173152.2062988-1-david.edmondson@oracle.com>
-References: <20210628173152.2062988-1-david.edmondson@oracle.com>
+        Mon, 28 Jun 2021 13:37:12 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DA0C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:34:45 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id a15so26176944lfr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJDbCx+qi4xW555r0qRFKAgiEIbkRlABSN+3WwDGl3k=;
+        b=Q6k+QvZ0eciuIKA/C8b0AX6T6lJtu9hoWk6TJBvASBRaCclEZBY9DzvAkNdv8DtHxA
+         9nUE5g6ZRWzitkvPxQhbeN114x21BfWIDIM3OCz3wmqOhePIIq/qJHoERvi5s1IATprq
+         hAb1fofRdlQMGhGRb4hfi96qWpWlCMpkOvsco=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJDbCx+qi4xW555r0qRFKAgiEIbkRlABSN+3WwDGl3k=;
+        b=SlCLLMwUtsrufmKapB7Nh2fAcycIb4153LSd3xLVvAekY4PJ8m8nLZS99DEmpaWCKu
+         37SKsIWfTHm4LiWnsYkv14GKGyoHGWngAN2FiwNVgR5iSm+9cu+thfCyqZgs3/9/j/kn
+         IgZ5xCNvJ841rLZ17jvvN5fSazYY2hzyvufkcmaslkHUKcuwMFw1qmMSZeNukTOeEI8c
+         VR2lnM/QWs4WVrVq9yAlKbqPnwHkcv2qQLMaFIfBFLuCzNQOLskO4ChObUKInHL1P58j
+         7Fwob9TO71fgrsqmPGef7m9aMye+Ym1jYGjMCg+LjF0nkYOOlZy++9SVZ3cGBsqjbKAe
+         9X4g==
+X-Gm-Message-State: AOAM532H5yyM9sBWOvELGTnblFA4vSVsEeUK6tEW8Vz8OiEyIQx1P4xt
+        FTDjqCIcYE3LmsdQ/rcw8nB94+J04WZkkJuq
+X-Google-Smtp-Source: ABdhPJwuxdNzsQKuL6Y2nHgRGaCRT3IUom+DYt//7FGeRycOgs1/Zmz2V9K9CA0UXs9whmk9oaAslw==
+X-Received: by 2002:ac2:420d:: with SMTP id y13mr19504221lfh.304.1624901683163;
+        Mon, 28 Jun 2021 10:34:43 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id w17sm1369304lft.285.2021.06.28.10.34.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 10:34:42 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id d16so33958442lfn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:34:42 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr19235333lfs.377.1624901682120;
+ Mon, 28 Jun 2021 10:34:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210623135600.n343aglmvu272fsg@kernel.org>
+In-Reply-To: <20210623135600.n343aglmvu272fsg@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Jun 2021 10:34:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
+Message-ID: <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To aid in debugging.
+On Wed, Jun 23, 2021 at 6:56 AM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> Contains bug fixes for TPM, and support for signing modules using elliptic
+> curve keys, which I promised to pick up to my tree.
 
-Suggested-by: Joao Martins <joao.m.martins@oracle.com>
-Signed-off-by: David Edmondson <david.edmondson@oracle.com>
----
- arch/x86/kvm/x86.c       | 23 +++++++++++++++++------
- include/uapi/linux/kvm.h |  2 ++
- 2 files changed, 19 insertions(+), 6 deletions(-)
+I pulled this, but then I looked at the key type changes, and that
+made me so scared that I unpulled it again.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8166ad113fb2..48ef0dc68faf 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7455,7 +7455,7 @@ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip)
- }
- EXPORT_SYMBOL_GPL(kvm_inject_realmode_interrupt);
- 
--static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
-+static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, uint64_t flags)
- {
- 	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
- 	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
-@@ -7466,7 +7466,8 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
- 	run->emulation_failure.ndata = 0;
- 	run->emulation_failure.flags = 0;
- 
--	if (insn_size) {
-+	if (insn_size &&
-+	    (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES)) {
- 		run->emulation_failure.ndata = 3;
- 		run->emulation_failure.flags |=
- 			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-@@ -7476,6 +7477,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
- 		memcpy(run->emulation_failure.insn_bytes,
- 		       ctxt->fetch.data, insn_size);
- 	}
-+
-+	if (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON) {
-+		run->emulation_failure.ndata = 4;
-+		run->emulation_failure.flags |=
-+			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
-+		run->emulation_failure.exit_reason =
-+			static_call(kvm_x86_get_exit_reason)(vcpu);
-+	}
- }
- 
- static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
-@@ -7492,16 +7501,18 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
- 
- 	if (kvm->arch.exit_on_emulation_error ||
- 	    (emulation_type & EMULTYPE_SKIP)) {
--		prepare_emulation_failure_exit(vcpu);
-+		prepare_emulation_failure_exit(
-+			vcpu,
-+			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES |
-+			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
- 		return 0;
- 	}
- 
- 	kvm_queue_exception(vcpu, UD_VECTOR);
- 
- 	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
--		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
--		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
--		vcpu->run->internal.ndata = 0;
-+		prepare_emulation_failure_exit(
-+			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
- 		return 0;
- 	}
- 
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 68c9e6d8bbda..3e4126652a67 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -282,6 +282,7 @@ struct kvm_xen_exit {
- 
- /* Flags that describe what fields in emulation_failure hold valid data. */
- #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
-+#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
- 
- /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
- struct kvm_run {
-@@ -404,6 +405,7 @@ struct kvm_run {
- 			__u64 flags;
- 			__u8  insn_size;
- 			__u8  insn_bytes[15];
-+			__u64 exit_reason;
- 		} emulation_failure;
- 		/* KVM_EXIT_OSI */
- 		struct {
--- 
-2.30.2
+In particular, that code will do
 
+    shell rm -f $(CONFIG_MODULE_SIG_KEY)
+
+from the Makefile if some config options have changed.
+
+That just seems too broken for words. Maybe I misunderstand this, but
+this really seems like an easy mistake might cause the kernel build to
+actively start removing some random user key files that the user
+pointed at previously.
+
+                  Linus
