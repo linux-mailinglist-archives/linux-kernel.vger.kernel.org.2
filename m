@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4F73B5D33
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEE73B5D38
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 13:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhF1Lhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        id S232825AbhF1Lj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbhF1Lhl (ORCPT
+        with ESMTP id S232353AbhF1Ljv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:37:41 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499C0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 04:35:16 -0700 (PDT)
+        Mon, 28 Jun 2021 07:39:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527DEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 04:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JMsHJSSbXaQYgBW3BFBIwAUGgAX3mrsrM7nhL0T/Drg=; b=Cxr7JzzN1bLRFrP8HzaMDHwHT5
-        HgpNmCokRl2yfvhZok0m+XpK81eq8Zc/fzPjAizJR12BLobVBHAmX7FqWfnSbOSlpkg+jOPtK6NC3
-        rpDAldsauwolMU7Wze2Bb9MYyZ3Tdd63eqCQPBm6RsNX4edXbzYMbszXlkThLhUVaaBPMUL+A/bU9
-        gjcf0+BTmqr0vnzlO0udZQeOp55UufQoUlgS6avj00OzQxMYG+sgUTwHS+Gh/be1DnUNKGu5LvX6a
-        LBVYaPCm4HUrk9w58p6Tf9V3qBlI+WJM9lYwk1gcJm9smS4PBnx6WraNPvmfdKmY8ruBdC10axHpn
-        VYqvPehQ==;
+        bh=gIqo8lRwVVH69oc8YU7He7pv/Fq+9Goq0bsCOExsGOo=; b=bqza/5QnNvxaPg+U+c3+ARLaYM
+        GkifKwQhU80Hu9SpEYGFbaaUrXFWNLOlCNYC5PpY0G0ZWAs9wx0G5Uhv4s+TPrbjbspsQoOstuwEr
+        7SjJlSwNlZoPrkhbB8Sd7KZxjuuQ3LLO4UWZWyGHEWQ29S5sIJlUz1jTab822ZkM44pVWgMiWkT5v
+        ypjSxyw8gtOOsQYzIhKP3uwqyYYaHbixccoWwGU1cVNmLNPPWUFXyLgM8xbQF/0rAbY2tUuvTZp0J
+        MYIviUw6XRO/Xv7KrcgAAa4wP4xyG8Uk3I60R+o8HHg1zn3ydaR7hYS2PNzywZ96u9YHngn8eM4no
+        /D3iXvAg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxpXX-00CXuz-3M; Mon, 28 Jun 2021 11:34:59 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxpYe-002ulU-Kd; Mon, 28 Jun 2021 11:36:15 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9266030022B;
-        Mon, 28 Jun 2021 13:34:58 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 14E2430022B;
+        Mon, 28 Jun 2021 13:36:08 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7947D203AAC61; Mon, 28 Jun 2021 13:34:58 +0200 (CEST)
-Date:   Mon, 28 Jun 2021 13:34:58 +0200
+        id 0493A2BF0CB33; Mon, 28 Jun 2021 13:36:08 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 13:36:07 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
-        ardb@kernel.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, mhiramat@kernel.org,
-        davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] kprobe/static_call: Restore missing
- static_call_text_reserved()
-Message-ID: <YNmz4nvH84jzX1aB@hirez.programming.kicks-ass.net>
-References: <20210628112409.233121975@infradead.org>
- <20210628113045.167127609@infradead.org>
+To:     "Liu, Yujie" <yujie.liu@intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [LKP] Re: [jump_label, x86]  e7bf1ba97a:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <YNm0J6etioinNhJH@hirez.programming.kicks-ass.net>
+References: <20210623022826.GA20282@xsang-OptiPlex-9020>
+ <YNLtSKUtqxqPxmGP@hirez.programming.kicks-ass.net>
+ <SJ0PR11MB5598608507B7EB38983113BCFB079@SJ0PR11MB5598.namprd11.prod.outlook.com>
+ <YNmUzDjX6sECp37P@hirez.programming.kicks-ass.net>
+ <YNmflj/WpFG5Ivmb@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628113045.167127609@infradead.org>
+In-Reply-To: <YNmflj/WpFG5Ivmb@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 01:24:12PM +0200, Peter Zijlstra wrote:
-> Restore two hunks from commit 6333e8f73b83 ("static_call: Avoid
-> kprobes on inline static_call()s") that went walkabout.
-> 
-> Fixes: 76d4acf22b48 ("Merge tag 'perf-kprobes-2020-12-14' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
+On Mon, Jun 28, 2021 at 12:08:22PM +0200, Peter Zijlstra wrote:
+> Let me go write up a proper patch and do the same for static_call.
 
-FWIW, it was a royal pain in the arse to find that commit...
+https://lkml.kernel.org/r/20210628112409.233121975@infradead.org
