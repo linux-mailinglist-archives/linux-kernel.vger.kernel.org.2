@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39ED3B6788
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0F53B678E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhF1RWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:22:21 -0400
-Received: from smtpbg702.qq.com ([203.205.195.102]:39869 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232601AbhF1RWM (ORCPT
+        id S234258AbhF1RXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234009AbhF1RXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:22:12 -0400
-X-QQ-mid: bizesmtp54t1624900777t9azchgn
-Received: from localhost.localdomain (unknown [182.148.13.55])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 29 Jun 2021 01:19:30 +0800 (CST)
-X-QQ-SSF: 01000000002000B0B000B00A0000000
-X-QQ-FEAT: /mQQSsXFegSriAZDE3x/iJDEuP0KAbaKoTz5NohIqLQozcM13k2yrxAdsX+tQ
-        +htBTTXZWe75npDiNlEEwF6zLZcOegowPnDslMkWekHI/XOdxd+0VIar5uc4Dnl0TCo6pd4
-        31CnyzucVH3UfbbYtf5/niLi2lGlf54LLwgbBfRzR0em7JfoJExa9g4AT/bLmU1HJO/FRmE
-        /lIfTjASCtCKNAP97EIb/9RHH76xmm3IQWN6ZTJXgtrAHkwbiw7BbOVQ1j/SgZOKvJUTUmt
-        XjgvfJeZAhkgV35U06oUSNLa47F6U9M2VQuUl0od7M/llJzEzv0kLMBxG1avvfFFWNZsmVS
-        RUchDHc
-X-QQ-GoodBg: 0
-From:   Jinchao Wang <wjc@cdjrlc.com>
-To:     broonie@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, Jinchao Wang <wjc@cdjrlc.com>
-Subject: [PATCH v2 2/2] driver: base: Prefer unsigned int to bare use of unsigned
-Date:   Tue, 29 Jun 2021 01:19:07 +0800
-Message-Id: <20210628171907.63646-2-wjc@cdjrlc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210628171907.63646-1-wjc@cdjrlc.com>
-References: <20210628171907.63646-1-wjc@cdjrlc.com>
+        Mon, 28 Jun 2021 13:23:05 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE83C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:20:38 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id x1so10480695vsc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WCfkgePdAXqOIxhYMCh7+nsE9UVEyCQyOezwXfK4jGU=;
+        b=cnlUh8EZePV1fNVsbGOiqKW75J+KfI5/gEcMyctU0EmsvIcxkeYGl3T6oMfbhC+1zh
+         sVJFonJ8gW+si52FHTLci4zSkwVuZnHN4Sp9B5z3h9nRXrHoa6Hd1S08ETGbo3hJwBB5
+         da0vEcvoePuMHcOjRMvRfqoUSrevbVZjKbW39sNZA7o9JdW2Y19sA9F1kTxE+kH1WGOW
+         2nuTex3S4aaKH0BljzW5nyVqfhWdJb+GiHYvx451BhzROMAlFaVKxzcZRQcH8vCfzyNo
+         bVi+9DoiqCZqceYFGhQFY2D5PQT4456zvGJr33FA4JqNnkc+tljZ7EVQCsXZ5zmTrmHP
+         nZcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WCfkgePdAXqOIxhYMCh7+nsE9UVEyCQyOezwXfK4jGU=;
+        b=I82TA3QPRI3/IE0POE5+++1DeB8V+cOJbW2wFVjrQre8WNZh6zk86IEPtTxR4vYqJm
+         SjX5PF3inXBK9vC9Yzy1xW04ppBlqpclNCpffUAfCaJ41ln3bvK6ZR+umvjFm8Toveij
+         0aU359u/bzup2l4X7D10nDbfEHZoHG7BipE/+JH8ZfatCbLMTkjLD9DfVo81N2K5ihN/
+         nPxqvPmWhuCC0PaQCpzhRBymkpir5ciLS6g5KrRKrK2MTpDH0vgsx38+SJEOXqiuBtcF
+         nmyYIz6RF4K2xws31bsmXQ5HXZA6lCOLdnv3n0qOUAHxZv8DEz8mo/t89LSzaez/EBjG
+         6Upg==
+X-Gm-Message-State: AOAM530DJaYoysXS+Ai40S0n8FiWwdRbGeTkuSzrg92xqYZUBq+o0Ptl
+        hNOj1T8M/8150Tt8F9U7HhegvJv/KJmC5VCrM3Ib2g==
+X-Google-Smtp-Source: ABdhPJxiKGOBlX6w0xH2HLn2GlsqI0HtgVj7rs+38+B/6UkhcME+/mVuUGZ1XtNhmjxXMIik+jcx5oyKhKQDcSRdi1o=
+X-Received: by 2002:a67:7707:: with SMTP id s7mr20202441vsc.16.1624900837435;
+ Mon, 28 Jun 2021 10:20:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign1
-X-QQ-Bgrelay: 1
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+ <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com>
+In-Reply-To: <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Mon, 28 Jun 2021 13:20:19 -0400
+Message-ID: <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Phi Nguyen <phind.uet@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch warnings:
-    WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+)
 
-Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
----
--change for v2 2/2:
--Split patch
----
- drivers/base/cpu.c  |  4 ++--
- drivers/base/map.c  | 12 ++++++------
- drivers/base/node.c |  8 ++++----
- 3 files changed, 12 insertions(+), 12 deletions(-)
+On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com> wrote:
+>
+> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
+>
+> > Thanks.
+> >
+> > Can you also please provide a summary of the event sequence that
+> > triggers the bug? Based on your Reported-by tag, I guess this is based
+> > on the syzbot reproducer:
+> >
+> >   https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
+> >
+> > but perhaps you can give a summary of the event sequence that causes
+> > the bug? Is it that the call:
+> >
+> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+> > &(0x7f0000000000)='cdg\x00', 0x4)
+> >
+> > initializes the CC and happens before the connection is established,
+> > and then when the connection is established, the line that sets:
+> >    icsk->icsk_ca_initialized = 0;
+> > is incorrect, causing the CC to be initialized again without first
+> > calling the cleanup code that deallocates the CDG-allocated memory?
+> >
+> > thanks,
+> > neal
+> >
+>
+> Hi Neal,
+>
+> The gdb stack trace that lead to init_transfer_input() is as bellow, the
+> current sock state is TCP_SYN_RECV.
 
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 5ef14db97904..5fc258073bc7 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -388,7 +388,7 @@ int register_cpu(struct cpu *cpu, int num)
- 	return 0;
- }
- 
--struct device *get_cpu_device(unsigned cpu)
-+struct device *get_cpu_device(unsigned int cpu)
- {
- 	if (cpu < nr_cpu_ids && cpu_possible(cpu))
- 		return per_cpu(cpu_sys_devices, cpu);
-@@ -484,7 +484,7 @@ static const struct attribute_group *cpu_root_attr_groups[] = {
- 	NULL,
- };
- 
--bool cpu_is_hotpluggable(unsigned cpu)
-+bool cpu_is_hotpluggable(unsigned int cpu)
- {
- 	struct device *dev = get_cpu_device(cpu);
- 	return dev && container_of(dev, struct cpu, dev)->hotpluggable;
-diff --git a/drivers/base/map.c b/drivers/base/map.c
-index 5650ab2b247a..83aeb09ca161 100644
---- a/drivers/base/map.c
-+++ b/drivers/base/map.c
-@@ -33,9 +33,9 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
- 	     struct module *module, kobj_probe_t *probe,
- 	     int (*lock)(dev_t, void *), void *data)
- {
--	unsigned n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
--	unsigned index = MAJOR(dev);
--	unsigned i;
-+	unsigned int n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
-+	unsigned int index = MAJOR(dev);
-+	unsigned int i;
- 	struct probe *p;
- 
- 	if (n > 255)
-@@ -67,9 +67,9 @@ int kobj_map(struct kobj_map *domain, dev_t dev, unsigned long range,
- 
- void kobj_unmap(struct kobj_map *domain, dev_t dev, unsigned long range)
- {
--	unsigned n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
--	unsigned index = MAJOR(dev);
--	unsigned i;
-+	unsigned int n = MAJOR(dev + range - 1) - MAJOR(dev) + 1;
-+	unsigned int index = MAJOR(dev);
-+	unsigned int i;
- 	struct probe *found = NULL;
- 
- 	if (n > 255)
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 4a4ae868ad9f..2bc9089f3e78 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -75,7 +75,7 @@ static DEVICE_ATTR_RO(cpulist);
- struct node_access_nodes {
- 	struct device		dev;
- 	struct list_head	list_node;
--	unsigned		access;
-+	unsigned int		access;
- #ifdef CONFIG_HMEM_REPORTING
- 	struct node_hmem_attrs	hmem_attrs;
- #endif
-@@ -122,7 +122,7 @@ static void node_access_release(struct device *dev)
- }
- 
- static struct node_access_nodes *node_init_node_access(struct node *node,
--						       unsigned access)
-+						       unsigned int access)
- {
- 	struct node_access_nodes *access_node;
- 	struct device *dev;
-@@ -187,7 +187,7 @@ static struct attribute *access_attrs[] = {
-  * @access: The access class the for the given attributes
-  */
- void node_set_perf_attrs(unsigned int nid, struct node_hmem_attrs *hmem_attrs,
--			 unsigned access)
-+			 unsigned int access)
- {
- 	struct node_access_nodes *c;
- 	struct node *node;
-@@ -711,7 +711,7 @@ int register_cpu_under_node(unsigned int cpu, unsigned int nid)
-  */
- int register_memory_node_under_compute_node(unsigned int mem_nid,
- 					    unsigned int cpu_nid,
--					    unsigned access)
-+					    unsigned int access)
- {
- 	struct node *init_node, *targ_node;
- 	struct node_access_nodes *initiator, *target;
--- 
-2.31.1
+Thanks. That makes sense as a snapshot of time for
+tcp_init_transfer(), but I think what would be more useful would be a
+description of the sequence of events, including when the CC was
+initialized previous to that point (as noted above, was it that the
+setsockopt(TCP_CONGESTION) completed before that point?).
 
-
-
+thanks,
+neal
