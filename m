@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9E73B664D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1873B6655
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhF1QAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhF1QAo (ORCPT
+        id S232633AbhF1QEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:04:38 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:16953 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232012AbhF1QEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:00:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53122C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rG1NX/+sDzX1eduBfUfZaOFDlE/1LorIyYoFI7/cQzU=; b=arVULtrj4cq1zut8yJ7w5gzBGi
-        oBc0wx3fLJ8ZvaIGkUtJUH/XcbHyQ/RWlrlpvQBKDhh4rS5fm/2IJ5gfy4WUM/jG/gmBS8p51ZgeA
-        lO5vrAOPNwGqgQTDWrO/xdhVWxKmD6A15ppptm+B5KmIH4yzANO9GbqTHRXLxftyAgf/NAcM26gb8
-        cr/RyLFDOBDfbNWP06OlHuv4spdfRF+br5kwnvpqg+ifXGNHEB+nJEEhdl7V5hI9dPF/ye8kQ9Kor
-        38egFUsyror3tvbAP0gLw4l/j1Q24zjq8mrpe3UZP/O7q+AyxZxuhadCo6Qj0LseHjIuJx0z8rkkP
-        pO30FrZQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxte9-00Cb4Y-6W; Mon, 28 Jun 2021 15:58:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72A3A3002D3;
-        Mon, 28 Jun 2021 17:58:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 61A752C0F4835; Mon, 28 Jun 2021 17:58:04 +0200 (CEST)
-Date:   Mon, 28 Jun 2021 17:58:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 0/7] posix-cpu-timers: Bunch of fixes v2
-Message-ID: <YNnxjI7ermkZ0/Er@hirez.programming.kicks-ass.net>
-References: <20210622234155.119685-1-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622234155.119685-1-frederic@kernel.org>
+        Mon, 28 Jun 2021 12:04:36 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 28 Jun 2021 09:02:10 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Jun 2021 09:02:08 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Jun 2021 21:31:49 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 9E9392241D; Mon, 28 Jun 2021 21:31:47 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     bryan.odonoghue@linaro.org, linux-media@vger.kernel.org,
+        stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: [V2] venus: helper: do not set constrained parameters for UBWC
+Date:   Mon, 28 Jun 2021 21:31:45 +0530
+Message-Id: <1624896105-26852-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 01:41:48AM +0200, Frederic Weisbecker wrote:
-> Frederic Weisbecker (7):
->       posix-cpu-timers: Fix rearm racing against process tick
->       posix-cpu-timers: Assert task sighand is locked while starting cputime counter
->       posix-cpu-timers: Force next_expiration recalc after timer deletion
->       posix-cpu-timers: Force next expiration recalc after itimer reset
->       posix-cpu-timers: Remove confusing error code override
->       posix-cpu-timers: Consolidate timer base accessor
->       posix-cpu-timers: Recalc next expiration when timer_settime() ends up not queueing
+onstrained parameters are to override the default alignment for
+a given color format. By default venus hardware has alignments as
+128x32, but NV12 was defined differently to meet various usecases.
+Compressed NV12 has always been aligned as 128x32, hence not needed
+to override the default alignment.
 
-Looks good, Thanks!
+Fixes: bc28936bbba9 ("media: venus: helpers, hfi, vdec: Set actual plane
+constraints to FW")
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Changes in V2:
+- Elaborated commit message as per comments by Bryan
+---
+ drivers/media/platform/qcom/venus/helpers.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 1fe6d46..601ee3e 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -1137,8 +1137,12 @@ int venus_helper_set_format_constraints(struct venus_inst *inst)
+ 	if (!IS_V6(inst->core))
+ 		return 0;
+ 
++	if (inst->opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC)
++		return 0;
++
+ 	pconstraint.buffer_type = HFI_BUFFER_OUTPUT2;
+ 	pconstraint.num_planes = 2;
++
+ 	pconstraint.plane_format[0].stride_multiples = 128;
+ 	pconstraint.plane_format[0].max_stride = 8192;
+ 	pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
