@@ -2,183 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8214A3B5F4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0134F3B5F2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 15:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbhF1NqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 09:46:25 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:34833 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhF1NqY (ORCPT
+        id S231978AbhF1NkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 09:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232122AbhF1NkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 09:46:24 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210628134357epoutp010a3b5ed8e99b349b4baec195e7a71ea0~MwuEDl-Uw0160601606epoutp01U
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:43:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210628134357epoutp010a3b5ed8e99b349b4baec195e7a71ea0~MwuEDl-Uw0160601606epoutp01U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624887837;
-        bh=ANfBLqIe/IpafTRn4Rdd9A8v/+LQS9MPXh6/5mSbrF8=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=UnoSNge1RTJf3Vo5TtnhheuwbHij5LjZP2EOQhGX2ZheyN5Vy4y9ceeGGHn0ilS7/
-         Sb2ZJqE3idZSjbruB6RxonTOvEBsyEODp+KZPfxyDJ/6qK5cNKcBUtky1G5vUXwKu9
-         PE7N9J7M62tWaNzOfVBMMjYscNpPTF20cqB67g1s=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210628134356epcas5p12e307b6f1ab67287d13660ea277d96d3~MwuDHwBT00730107301epcas5p1U;
-        Mon, 28 Jun 2021 13:43:56 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        26.48.09452.C12D9D06; Mon, 28 Jun 2021 22:43:56 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210628133713epcas5p3f4d801f37d32bef752e5fb19252a786c~MwoLyknx60058100581epcas5p3V;
-        Mon, 28 Jun 2021 13:37:13 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210628133713epsmtrp2cf6f298c5e9d0526f59848eb071d30c3~MwoLxrOub1775117751epsmtrp29;
-        Mon, 28 Jun 2021 13:37:13 +0000 (GMT)
-X-AuditID: b6c32a4b-43fff700000024ec-66-60d9d21ceee5
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C8.08.08289.980D9D06; Mon, 28 Jun 2021 22:37:13 +0900 (KST)
-Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210628133711epsmtip12e4d3b9ec28bdf5df78606ee1a6969d7~MwoKTU_Bu1243412434epsmtip1W;
-        Mon, 28 Jun 2021 13:37:11 +0000 (GMT)
-From:   "M Tamseel Shams" <m.shams@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>,
-        <robin.murphy@arm.com>
-In-Reply-To: <3aa88ee4-c662-8069-fb04-90df82038dbe@canonical.com>
-Subject: RE: [PATCH v4] serial: samsung: use dma_ops of DMA if attached
-Date:   Mon, 28 Jun 2021 19:07:10 +0530
-Message-ID: <022901d76c22$b3af0a80$1b0d1f80$@samsung.com>
+        Mon, 28 Jun 2021 09:40:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362B3C0617AE;
+        Mon, 28 Jun 2021 06:37:39 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:fc14:fe1d:1736:64c2] (unknown [IPv6:2a01:e0a:4cb:a870:fc14:fe1d:1736:64c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 8493F1F42794;
+        Mon, 28 Jun 2021 14:37:36 +0100 (BST)
+Subject: Re: [PATCH v3 4/8] media: Add P010 video format
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>, hverkuil@xs4all.nl,
+        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+ <20210618131526.566762-5-benjamin.gaignard@collabora.com>
+ <d6925e114f142b8844b6e112f837b9ef32566212.camel@ndufresne.ca>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <e81bd766-fa5b-ba79-69e3-ef6b88a0da79@collabora.com>
+Date:   Mon, 28 Jun 2021 15:37:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQK2IkAgtIfCRGonZQvdeYnU2JkFyAHqIlofAj9D7r2pSnSzIA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7bCmlq7MpZsJBofusFsceH+QxeLBvG1s
-        Fs2L17NZvJsrY7Hx7Q8mi02Pr7FaXN41h81ixvl9TBZnFveyWxz88ITVgctjzbw1jB6zGnrZ
-        PDat6mTz2D93DbvH5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJXx+VZewTyxiiu3e5kb
-        GHuEuhg5OSQETCR+nZ7A2MXIxSEksJtR4tHNIywQzidGiYvbfkBlPjNKHJ52G8jhAGtZ9jsK
-        Ir6LUWLSrk9QRc8YJa4v72MBmcsmoCsx6WAbM4gtIlAucX7GbDYQm1ngCaPE2ffqIDangKPE
-        7zO/2UFsYQF3iTeTJoLVsAioSnRPuAo2h1fAUmJ7zxdWCFtQ4uTMJywQc7Qlli18zQzxg4LE
-        z6fLWCF2OUkcX/AJqkZc4uXRI+wgx0kI7OGQ+HavmRWiwUVi4ufbLBC2sMSr41vYIWwpic/v
-        9rJB2PkS8+etglpQIbHywhso217iwJU5LKCQYBbQlFi/Sx8iLCsx9dQ6Joi9fBK9v58wQcR5
-        JXbMg7EVJf7v7odaJS7xbsUU1gmMSrOQvDYLyWuzkLwwC2HbAkaWVYySqQXFuempxaYFxnmp
-        5XrFibnFpXnpesn5uZsYwUlLy3sH46MHH/QOMTJxMB5ilOBgVhLhFau6liDEm5JYWZValB9f
-        VJqTWnyIUZqDRUmcdyn7oQQhgfTEktTs1NSC1CKYLBMHp1QD0xl3fl79fdUqD3zCZBrfzf7+
-        mGGL5CPRrZ/OJyVeXLa2mTvg/bmUtVIb/k1jU9c4+v7VA88nQnP+HM5ce63gjNu9FwVusa9t
-        2MwljNeenKNw+an/wVCl6uMrYjIEwvN89uiYakhfN7yos9/wWsyzQ893Gs5+sKM9U/Zz9Obz
-        XzyqF/r/qG/vvWaXGDY78UGQp3+cX6BpALc3M0/Y1xN2tqpOiks+H3r3sKtnfqpfBbPYL/fg
-        omo9t4B5SZtCjW6wbdD7liQz4+P3oLzJT/86nyhM2jdhZYuF5VHGyw2/1goWXdlj7pCsGt8c
-        xn1W5+zvnW2HZkxJn1Gk75558F6vjxdPwafzb8LXKMTct1JRVmIpzkg01GIuKk4EAMuT6trJ
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSnG7nhZsJBuv/clgceH+QxeLBvG1s
-        Fs2L17NZvJsrY7Hx7Q8mi02Pr7FaXN41h81ixvl9TBZnFveyWxz88ITVgctjzbw1jB6zGnrZ
-        PDat6mTz2D93DbvH5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJUx/cAapoJGsYoly2ax
-        NjC+FOxi5OCQEDCRWPY7qouRi0NIYAejxP6Gu6xdjJxAcXGJab/2M0LYwhIr/z1nhyh6wijx
-        bOsssCI2AV2JSQfbmEEGiQhUSixp0gOpYRZ4xSjx6dxtNoiG/YwSp7YeYQJp4BRwlPh95jc7
-        iC0s4C7xZtJENhCbRUBVonvCVRYQm1fAUmJ7zxdWCFtQ4uTMJ2BxZgFtid6HrYww9rKFr5kh
-        rlOQ+Pl0GVi9iICTxPEFn6DqxSVeHj3CPoFReBaSUbOQjJqFZNQsJC0LGFlWMUqmFhTnpucW
-        GxYY5aWW6xUn5haX5qXrJefnbmIER5+W1g7GPas+6B1iZOJgPMQowcGsJMIrVnUtQYg3JbGy
-        KrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQYmVtdpe20u3fpjs09M
-        MY2TZ9Lq5B1Su46LnneatmLyYbM1l3b9PjFfjVFkZw/vCWdGrrDbzk4HJ83Q/Ln6b3jnqsNT
-        zaQ0uusvlytx2Req5cvJ7qkXdF15fde3t5J8T0Sesl5u+Je8fl2wqExSy5V71yNUpv6auYmV
-        fZOJ05mYd7yC/EHWq7d4t3bf5QzlC9eNcnXJE1wdeILfS+LgKxZhrX1XN9kuKHE0/S/f87xm
-        71Xj2TITf/m9fXxJ7U/5BHE21zmzONvfn2tS5tLksi7XdYpQ5ajmubSjhmvpA/NuT/Zm3S//
-        d+1Y5nmiIakrP/oc/+6a/uasXyzb14qedDgpO2EJ2++42DcV/dcVOn4psRRnJBpqMRcVJwIA
-        oO39eC0DAAA=
-X-CMS-MailID: 20210628133713epcas5p3f4d801f37d32bef752e5fb19252a786c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210625074751epcas5p125067e47c4ff1ad24a1e595d85f82540
-References: <CGME20210625074751epcas5p125067e47c4ff1ad24a1e595d85f82540@epcas5p1.samsung.com>
-        <20210625075114.71155-1-m.shams@samsung.com>
-        <3aa88ee4-c662-8069-fb04-90df82038dbe@canonical.com>
+In-Reply-To: <d6925e114f142b8844b6e112f837b9ef32566212.camel@ndufresne.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > When DMA is used for TX and RX by serial driver, it should pass the
-> > DMA device pointer to DMA API instead of UART device pointer. DMA
-> > device should be used for DMA API because only the DMA device is aware
-> > of how the device connects to the memory.
-> > There might be an extra level of address translation due to a SMMU
-> > attached to the DMA device. When serial device is used for DMA API,
-> > the DMA API will have no clue of the SMMU attached to the DMA device.
-> >
-> > This patch is necessary to fix the SMMU page faults which is observed
-> > when a DMA(with SMMU enabled) is attached to UART for transfer.
-> >
-> > Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
-> > Signed-off-by: Ajay Kumar <ajaykumar.rs=40samsung.com>
-> > ---
-> > Changes since v1:
-> > 1. Rebased the patch on =22tty-next=22 branch of TTY driver tree
-> >
-> > Changes since v2:
-> > 1. Updated the commit message.
-> > 2. Changed the comment description
-> >
-> > Changes since v3:
-> > 1. Removed the null pointer check for =22dma=22, =22dma->tx_chan=22 and
-> > =22dma->rx_chan=22 and instead sending DMA device pointer while calling
-> > DMA API.
-> >
-> >  drivers/tty/serial/samsung_tty.c =7C 32
-> > ++++++++++++++++----------------
-> >  1 file changed, 16 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/samsung_tty.c
-> > b/drivers/tty/serial/samsung_tty.c
-> > index 9fbc61151c2e..fa30aa20a13f 100644
-> > --- a/drivers/tty/serial/samsung_tty.c
-> > +++ b/drivers/tty/serial/samsung_tty.c
-> > =40=40 -305,7 +305,7 =40=40 static void s3c24xx_serial_stop_tx(struct u=
-art_port
-> *port)
-> >  		dmaengine_pause(dma->tx_chan);
-> >  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
-> >  		dmaengine_terminate_all(dma->tx_chan);
-> > -		dma_sync_single_for_cpu(ourport->port.dev,
-> > +		dma_sync_single_for_cpu(dma->tx_chan->device->dev,
-> >  			dma->tx_transfer_addr, dma->tx_size,
-> DMA_TO_DEVICE);
-> >  		async_tx_ack(dma->tx_desc);
-> >  		count =3D dma->tx_bytes_requested - state.residue; =40=40 -338,8
-> +338,8
-> > =40=40 static void s3c24xx_serial_tx_dma_complete(void *args)
-> >  	count =3D dma->tx_bytes_requested - state.residue;
-> >  	async_tx_ack(dma->tx_desc);
-> >
-> > -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
-> > -				dma->tx_size, DMA_TO_DEVICE);
-> > +	dma_sync_single_for_cpu(dma->tx_chan->device->dev,
-> > +			dma->tx_transfer_addr, dma->tx_size,
-> DMA_TO_DEVICE);
->=20
-> Looks like alignment is broken here. However even if the line was not ali=
-gned
-> before, please fix it up now - align the arguments like checkpatch sugges=
-ts.
->=20
-> This applies to other places as well. Thanks.
->=20
-> Best regards,
-> Krzysztof
 
-Hi Krzysztof,
-Will fix the alignments in the next version.
+Le 25/06/2021 à 21:33, Nicolas Dufresne a écrit :
+> Le vendredi 18 juin 2021 à 15:15 +0200, Benjamin Gaignard a écrit :
+>> P010 is a YUV format with 10-bits per pixel with interleaved UV.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Acked-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-Thanks & Regards,
-Tamseel Shams
+Hi Nicolas,
+Thanks for the ack and, since it is the same patch, we could applied on v4 serie.
 
+Benjamin
+
+>> ---
+>> version 2:
+>>   - Add documentation about P010 padding
+>>   - Fix the number of bits per component (16)
+>>
+>>   .../media/v4l/pixfmt-yuv-planar.rst           | 78 ++++++++++++++++++-
+>>   drivers/media/v4l2-core/v4l2-common.c         |  1 +
+>>   drivers/media/v4l2-core/v4l2-ioctl.c          |  1 +
+>>   include/uapi/linux/videodev2.h                |  1 +
+>>   4 files changed, 79 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> index 090c091affd2..af400d37c8fd 100644
+>> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+>> @@ -100,8 +100,13 @@ All components are stored with the same number of bits per component.
+>>         - Cb, Cr
+>>         - No
+>>         - 64x32 macroblocks
+>> -
+>> -        Horizontal Z order
+>> +    * - V4L2_PIX_FMT_P010
+>> +      - 'P010'
+>> +      - 16
+>> +      - 4:2:0
+>> +      - Cb, Cr
+>> +      - No
+>> +      - Linear
+>>       * - V4L2_PIX_FMT_NV12MT_16X16
+>>         - 'VM12'
+>>         - 8
+>> @@ -171,6 +176,7 @@ horizontally.
+>>   .. _V4L2-PIX-FMT-NV21:
+>>   .. _V4L2-PIX-FMT-NV12M:
+>>   .. _V4L2-PIX-FMT-NV21M:
+>> +.. _V4L2-PIX-FMT-P010:
+>>   
+>>   NV12, NV21, NV12M and NV21M
+>>   ---------------------------
+>> @@ -470,6 +476,74 @@ number of lines as the luma plane.
+>>         - Cb\ :sub:`33`
+>>         - Cr\ :sub:`33`
+>>   
+>> +.. _V4L2_PIX_FMT_P010:
+>> +
+>> +P010
+>> +----
+>> +
+>> +The number of bytes in one luminance row must be divisible by 16,
+>> +which means there will be padded 0 in the right edge when necessary.
+>> +
+>> +.. raw:: latex
+>> +
+>> +    \begingroup
+>> +    \small
+>> +    \setlength{\tabcolsep}{2pt}
+>> +
+>> +.. tabularcolumns:: |p{2.6cm}|p{0.70cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|p{0.22cm}|
+>> +
+>> +.. flat-table:: P010 16 Bits per component
+>> +    :header-rows:  2
+>> +    :stub-columns: 0
+>> +
+>> +    * - Identifier
+>> +      - Code
+>> +      - :cspan:`7` Byte 0 in memory
+>> +
+>> +      - :cspan:`7` Byte 1
+>> +    * -
+>> +      -
+>> +      - 7
+>> +      - 6
+>> +      - 5
+>> +      - 4
+>> +      - 3
+>> +      - 2
+>> +      - 1
+>> +      - 0
+>> +
+>> +      - 7
+>> +      - 6
+>> +      - 5
+>> +      - 4
+>> +      - 3
+>> +      - 2
+>> +      - 1
+>> +      - 0
+>> +    * - ``V4L2_PIX_FMT_P010``
+>> +      - 'P010'
+>> +
+>> +      - Y\ :sub:`9`
+>> +      - Y\ :sub:`8`
+>> +      - Y\ :sub:`7`
+>> +      - Y\ :sub:`6`
+>> +      - Y\ :sub:`5`
+>> +      - Y\ :sub:`4`
+>> +      - Y\ :sub:`3`
+>> +      - Y\ :sub:`2`
+>> +
+>> +      - Y\ :sub:`1`
+>> +      - Y\ :sub:`0`
+>> +      - 0
+>> +      - 0
+>> +      - 0
+>> +      - 0
+>> +      - 0
+>> +      - 0
+>> +
+>> +.. raw:: latex
+>> +
+>> +    \endgroup
+>>   
+>>   Fully Planar YUV Formats
+>>   ========================
+>> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+>> index 04af03285a20..37b5d82359dd 100644
+>> --- a/drivers/media/v4l2-core/v4l2-common.c
+>> +++ b/drivers/media/v4l2-core/v4l2-common.c
+>> @@ -266,6 +266,7 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
+>>   		{ .format = V4L2_PIX_FMT_NV61,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+>>   		{ .format = V4L2_PIX_FMT_NV24,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+>>   		{ .format = V4L2_PIX_FMT_NV42,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+>> +		{ .format = V4L2_PIX_FMT_P010,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 2, .bpp = { 2, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+>>   
+>>   		{ .format = V4L2_PIX_FMT_YUV410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
+>>   		{ .format = V4L2_PIX_FMT_YVU410,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 4, .vdiv = 4 },
+>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+>> index 2673f51aafa4..6404d5b6e350 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>> @@ -1282,6 +1282,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+>>   	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
+>>   	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
+>>   	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
+>> +	case V4L2_PIX_FMT_P010:		descr = "10-bit Y/CrCb 4:2:0"; break;
+>>   	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
+>>   	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
+>>   	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index 9260791b8438..e5f7acde0730 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -602,6 +602,7 @@ struct v4l2_pix_format {
+>>   #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
+>>   #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
+>>   #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
+>> +#define V4L2_PIX_FMT_P010    v4l2_fourcc('P', '0', '1', '0') /* 15  Y/CbCr 4:2:0 10-bit per pixel*/
+>>   
+>>   /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
+>>   #define V4L2_PIX_FMT_NV12M   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
+>
