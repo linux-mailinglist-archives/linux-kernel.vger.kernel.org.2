@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7111D3B5AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B0B3B5AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhF1IvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhF1IvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:51:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD026108B;
-        Mon, 28 Jun 2021 08:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624870121;
-        bh=8A0dJggrHgLUXVOsaEGaAZv0/ji2VPqrS/XWZsuMxXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BrJzt5xIBjMEQUtgjX81Gef4fBD3HxfzeB/7PQ8Vyb+0e+b5REpD68bspiYDau2Bk
-         lvzn3L8aQnn9iVhICcZ9391LNkwkzzVriwM5UwNs/1zka9aEQ6HpR4o4yQr3Sx/2Tj
-         fXKcD02qYr7NcM9/hBh6buLVpmll4J7lM7VE/UV8=
-Date:   Mon, 28 Jun 2021 10:48:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     bing fan <hptsfb@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm pl011 serial: support multi-irq request
-Message-ID: <YNmM518c49k9V3Hv@kroah.com>
-References: <CADVmyHWOVRNfVaJMm9D9KsFsi+t5cDwYtHcA9wn=v_Jh1QK-Rw@mail.gmail.com>
+        id S232459AbhF1IwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231698AbhF1IwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 04:52:12 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1315C061574;
+        Mon, 28 Jun 2021 01:49:46 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c7-20020a17090ad907b029016faeeab0ccso12360273pjv.4;
+        Mon, 28 Jun 2021 01:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eZ1Rz1gXRWLyBZZfCueyrqEMIScQMf1t2w1D89bLOgo=;
+        b=rfTw8XaKSHWcqHJxkheAzQ21uJzBLsplbqxEKwnI9qgIgVpYnSZGcYf1B3OYHGQID5
+         DEi/AweUbYvOcuf6umV17HOIbgBqL1cUL0tKxcJQemqhB6FElk1IocDYd/ErG6BV6Wlr
+         cZG6XSVtS3hmOMGusyRcufUgp7TD7113ElJ3C7mjMw96gmsYsR/ElwcHpEqFiIJvgVzd
+         GFcAD+QAEyebHIoXodTC0JEwex282LGKpxIBDozDp0dwrbz6w26CuIR+EVRjuUMXCnfP
+         sP35bKT3KL7iwCMuAWY+2VQnPMcbDU7akffhilqSkVjUw2aRnc0+M1jFtuN55iBe/Y2f
+         hOiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eZ1Rz1gXRWLyBZZfCueyrqEMIScQMf1t2w1D89bLOgo=;
+        b=qrGzkEYPBdBZSztQyR7rBoc6+VDZvH/KuFqiIG8BK+3yZLNfmle2mVdle6AvKF+Qak
+         PTKgYQmFSTdvekDuNdwwcbxwGHRHnMV8iMUmvfNfg79o/WKhMCoP2Hbn5bgsq8H+LGAG
+         pJK7X8MMW9wXfIvDCwp7tA0WB1v8zydBtO7kaUEsKQdPxwT4p6nthbDb6Ge17dJIxAXy
+         nu0ofUTrm9fFI0luO63U5N08oI4QbG8ZKsrbB5uBvhB2moASHZC9b4wRJE+eOeTp+nno
+         KEv0dLJJU1yIyJF2Of+EzquM4yI4ImaaXaHWO5bYUMBLnMTZC17kqYbOh27LqAiFWhP3
+         ZTrQ==
+X-Gm-Message-State: AOAM531bUXYJVHub0BQdokGi+Z3VTaVuK6Vg2eE6CwGjBOFo74W+vx7k
+        GQ9utPzlJuYn5/pGgRCuAMg=
+X-Google-Smtp-Source: ABdhPJzf+FJ+FM3ZjovOUDgK4fBx+vzkYpOfwxL7vC868dap89boW8lhRJKU51/MZ4vk5xge9NrzVw==
+X-Received: by 2002:a17:90a:ee95:: with SMTP id i21mr6081359pjz.231.1624870186501;
+        Mon, 28 Jun 2021 01:49:46 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.213.78])
+        by smtp.gmail.com with ESMTPSA id u14sm13429397pfk.10.2021.06.28.01.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 01:49:46 -0700 (PDT)
+From:   Prasanth KSR <kosigiprasanth@gmail.com>
+X-Google-Original-From: Prasanth KSR <prasanth.ksr@dell.com>
+To:     Hans de Goede <hdegoede@redhat.com>, dvhart@infradead.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Prasanth KSR <prasanth.ksr@dell.com>,
+        Divya Bharathi <divya.bharathi@dell.com>
+Subject: [PATCH] platform/x86: dell-wmi-sysman: Change user experience when Admin/System Password is modified
+Date:   Mon, 28 Jun 2021 14:19:06 +0530
+Message-Id: <20210628084906.4233-1-prasanth.ksr@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADVmyHWOVRNfVaJMm9D9KsFsi+t5cDwYtHcA9wn=v_Jh1QK-Rw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 03:19:13PM +0800, bing fan wrote:
-> From: Bing Fan <tombinfan@tencent.com>
-> 
-> In order to make pl011 work better, multiple interrupts are
-> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-> at the same time, pl011 to GIC does not merge the interrupt
-> lines(each serial-interrupt corresponding to different GIC hardware
-> interrupt), so need to enable and request multiple gic interrupt
-> numbers in the driver.
-> 
-> Signed-off-by: Bing Fan <hptsfb@gmail.com>
-> ---
->  drivers/tty/serial/amba-pl011.c | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 78682c12156a..2b6f43c27dea 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -1703,9 +1703,30 @@ static void pl011_write_lcr_h(struct
-> uart_amba_port *uap, unsigned int lcr_h)
-> 
->  static int pl011_allocate_irq(struct uart_amba_port *uap)
->  {
-> +       int ret = -1;
-> +       int i = 0;
-> +       unsigned int virq = 0;
-> +       struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
-> +
-> +       if (!amba_dev)
-> +               return -1;
-> +
->         pl011_write(uap->im, uap, REG_IMSC);
-> 
-> -       return request_irq(uap->port.irq, pl011_int, IRQF_SHARED,
-> "uart-pl011", uap);
-> +       for (i = 0; i < AMBA_NR_IRQS; i++) {
-> +               virq = amba_dev->irq[i];
-> +               if (virq == 0)          // request irq until virq is 0
-> +                       break;
-> +
-> +               ret = request_irq(virq, pl011_int, IRQF_SHARED,
-> "uart-pl011-*", uap);
-> +               if (ret < 0) {
-> +                       dev_info(uap->port.dev, "%s %d request %u
-> interrupt failed\n",
-> +                                       __func__, __LINE__, virq);
-> +                       break;
-> +               }
-> +       }
-> +
-> +       return ret;
->  }
-> 
->  /*
-> -- 
-> 2.17.1
+Whenever user has changed an Admin/System Password using the sysfs,
+then we are automatically copying the new password to existing
+password field.
 
+Co-developed-by: Divya Bharathi <divya.bharathi@dell.com>
+Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
+Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
+---
+ .../x86/dell/dell-wmi-sysman/passwordattr-interface.c         | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi,
+diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c b/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
+index 339a082d6c18..86ec962aace9 100644
+--- a/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
++++ b/drivers/platform/x86/dell/dell-wmi-sysman/passwordattr-interface.c
+@@ -95,9 +95,9 @@ int set_new_password(const char *password_type, const char *new)
+ 
+ 	print_hex_dump_bytes("set new password data: ", DUMP_PREFIX_NONE, buffer, buffer_size);
+ 	ret = call_password_interface(wmi_priv.password_attr_wdev, buffer, buffer_size);
+-	/* clear current_password here and use user input from wmi_priv.current_password */
++	/* on success copy the new password to current password */
+ 	if (!ret)
+-		memset(current_password, 0, MAX_BUFF);
++		strscpy(current_password, new, MAX_BUFF);
+ 	/* explain to user the detailed failure reason */
+ 	else if (ret == -EOPNOTSUPP)
+ 		dev_err(&wmi_priv.password_attr_wdev->dev, "admin password must be configured\n");
+-- 
+2.25.1
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
-
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
