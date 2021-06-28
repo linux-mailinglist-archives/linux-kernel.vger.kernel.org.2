@@ -2,126 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5968D3B5C6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA4F3B5C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbhF1KWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:22:42 -0400
-Received: from muru.com ([72.249.23.125]:57516 "EHLO muru.com"
+        id S232656AbhF1KXr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Jun 2021 06:23:47 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8771 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhF1KWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:22:41 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id EFAE68047;
-        Mon, 28 Jun 2021 10:20:25 +0000 (UTC)
-Date:   Mon, 28 Jun 2021 13:20:11 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-omap@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
- memory map alignment
-Message-ID: <YNmiW6CYzy9lG8ks@atomide.com>
-References: <20210519141436.11961-1-rppt@kernel.org>
- <20210519141436.11961-4-rppt@kernel.org>
+        id S232507AbhF1KXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:23:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="204919617"
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="204919617"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 03:21:20 -0700
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="456271518"
+Received: from mdosreme-mobl.amr.corp.intel.com (HELO localhost) ([10.252.19.149])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 03:21:18 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519141436.11961-4-rppt@kernel.org>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210624095359.GA29649@duo.ucw.cz>
+References: <20210624095359.GA29649@duo.ucw.cz>
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+To:     Pavel Machek <pavel@ucw.cz>, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com,
+        kernel list <linux-kernel@vger.kernel.org>,
+        rodrigo.vivi@intel.com
+Subject: Re: 5.13-rc6 on thinkpad X220: graphics hangs with recent mainline
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <162487567602.6944.6736788493261786550@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Mon, 28 Jun 2021 13:21:16 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Looks like this patch causes a boot regression at least for Cortex-A15.
-That's commit 990e6d0e1de8 ("arm: extend pfn_valid to take into accound
-freed memory map alignment") in Linux next.
-
-Most of the time I see the following on beagle-x15 right after init starts:
-
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-CPU0: stopping
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7-next-20210625 #100
-Hardware name: Generic DRA74X (Flattened Device Tree)
-[<c0110c54>] (unwind_backtrace) from [<c010b408>] (show_stack+0x10/0x14)
-[<c010b408>] (show_stack) from [<c09fae04>] (dump_stack_lvl+0x40/0x4c)
-[<c09fae04>] (dump_stack_lvl) from [<c010e768>] (do_handle_IPI+0x2c8/0x334)
-[<c010e768>] (do_handle_IPI) from [<c010e7e8>] (ipi_handler+0x14/0x20)
-[<c010e7e8>] (ipi_handler) from [<c01a5f14>] (handle_percpu_devid_irq+0xa8/0x22c)
-[<c01a5f14>] (handle_percpu_devid_irq) from [<c019fc78>] (handle_domain_irq+0x64/0xa4)
-[<c019fc78>] (handle_domain_irq) from [<c05b9bdc>] (gic_handle_irq+0x88/0xb0)
-[<c05b9bdc>] (gic_handle_irq) from [<c0100b6c>] (__irq_svc+0x6c/0x90)
-Exception stack(0xc0f01f08 to 0xc0f01f50)
-1f00:                   00000f38 00000f37 00000000 fe600000 c0ff90c0 00000000
-1f20: c0f0520c c0f05260 00000000 c0f00000 00000000 c0e788f0 00000000 c0f01f58
-1f40: c0126aa0 c0107dc4 60000013 ffffffff
-[<c0100b6c>] (__irq_svc) from [<c0107dc4>] (arch_cpu_idle+0x1c/0x3c)
-[<c0107dc4>] (arch_cpu_idle) from [<c0a098d8>] (default_idle_call+0x38/0xe0)
-[<c0a098d8>] (default_idle_call) from [<c0172860>] (do_idle+0x214/0x2cc)
-[<c0172860>] (do_idle) from [<c0172c0c>] (cpu_startup_entry+0x18/0x1c)
-[<c0172c0c>] (cpu_startup_entry) from [<c0e00ef8>] (start_kernel+0x5cc/0x6c4)
-
-Sometimes the system boots to console, but maybe only about 20% of the
-time. Reverting 990e6d0e1de8 makes Linux next boot again for me.
-
-Regards,
-
-Tony
-
-#regzb introduced: 990e6d0e1de8 ("arm: extend pfn_valid to take into accound freed memory map alignment")
-
-
-* Mike Rapoport <rppt@kernel.org> [700101 02:00]:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+Quoting Pavel Machek (2021-06-24 12:53:59)
+> Hi!
 > 
-> When unused memory map is freed the preserved part of the memory map is
-> extended to match pageblock boundaries because lots of core mm
-> functionality relies on homogeneity of the memory map within pageblock
-> boundaries.
+> I'm getting graphics problems with 5.13-rc:
 > 
-> Since pfn_valid() is used to check whether there is a valid memory map
-> entry for a PFN, make it return true also for PFNs that have memory map
-> entries even if there is no actual memory populated there.
+> Debian 10.9, X, chromium and flightgear is in use. Things were more
+> stable than this with previous kernels.
 > 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/arm/mm/init.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+> Any ideas?
+
+The error you are seeing:
+
+> [185300.784992] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbeat on rcs0
+> [185300.888694] i915 0000:00:02.0: [drm] fgfs[27370] context reset due to GPU hang
+
+That just indicates that the rendering took too long. It could be caused
+by a change in how the application renders, userspace driver or i915. So
+a previously on-the-edge-of-timeout operation may have got pushed beyond
+the timeout, or the rendering genuinely got completely stuck.
+
+If you only updated the kernel, not the application or userspace, could
+you bisect the commit that introduced the behavior and report:
+
+https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
+
+We have changes around this area, so would be helpful if you can bisect
+the commit that started the behavior.
+
+Regards, Joonas
+
 > 
-> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-> index 9d4744a632c6..6162a070a410 100644
-> --- a/arch/arm/mm/init.c
-> +++ b/arch/arm/mm/init.c
-> @@ -125,11 +125,22 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
->  int pfn_valid(unsigned long pfn)
->  {
->  	phys_addr_t addr = __pfn_to_phys(pfn);
-> +	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
->  
->  	if (__phys_to_pfn(addr) != pfn)
->  		return 0;
->  
-> -	return memblock_is_map_memory(addr);
-> +	/*
-> +	 * If address less than pageblock_size bytes away from a present
-> +	 * memory chunk there still will be a memory map entry for it
-> +	 * because we round freed memory map to the pageblock boundaries.
-> +	 */
-> +	if (memblock_overlaps_region(&memblock.memory,
-> +				     ALIGN_DOWN(addr, pageblock_size),
-> +				     pageblock_size))
-> +		return 1;
-> +
-> +	return 0;
->  }
->  EXPORT_SYMBOL(pfn_valid);
->  #endif
+> Best regards,
+>                                                                 Pavel
+> 
+> [185233.329693] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=GROUP_KEY_HANDSHAKE_TIMEOUT)
+> [185234.040352] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
+> [185234.043836] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
+> [185234.046652] wlp3s0: authenticated
+> [185234.049087] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
+> [185234.052667] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=0x411 status=0 aid=1)
+> [185234.055398] wlp3s0: associated
+> [185300.784992] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbeat on rcs0
+> [185300.888694] i915 0000:00:02.0: [drm] fgfs[27370] context reset due to GPU hang
+> [185472.274563] usb 2-1.1: USB disconnect, device number 3
+> [185472.274578] usb 2-1.1.2: USB disconnect, device number 5
+> [185472.281518] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) failed: -19
+> [185472.299837] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) failed: -19
+> [185472.305986] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) failed: -19
+> [185472.328012] hid-generic 0003:04F2:0111.0003: usb_submit_urb(ctrl) failed: -19
+> [185472.333738] usb 2-1.1.3: USB disconnect, device number 6
+> [185673.454821] usb 2-1.1: new high-speed USB device number 7 using ehci-pci
+> [185673.563486] usb 2-1.1: New USB device found, idVendor=1a40, idProduct=0101, bcdDevice= 1.11
+> [185673.563502] usb 2-1.1: New USB device strings: Mfr=0, Product=1, SerialNumber=0
+> [185673.563509] usb 2-1.1: Product: USB 2.0 Hub
+> [185673.564488] hub 2-1.1:1.0: USB hub found
+> [185673.564595] hub 2-1.1:1.0: 4 ports detected
+> ...
+> [207277.385543] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=GROUP_KEY_HANDSHAKE_TIMEOUT)
+> [207278.062061] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
+> [207278.068175] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
+> [207278.070985] wlp3s0: authenticated
+> [207278.075545] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
+> [207278.080793] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=0x411 status=0 aid=1)
+> [207278.084081] wlp3s0: associated
+> [207564.046469] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbeat on rcs0
+> [207564.150293] i915 0000:00:02.0: [drm] fgfs[25729] context reset due to GPU hang
+> [209075.178776] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=GROUP_KEY_HANDSHAKE_TIMEOUT)
+> [209075.841872] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
+> [209075.845305] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
+> [209075.851186] wlp3s0: authenticated
+> [209075.852537] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
+> [209075.855972] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=0x411 status=0 aid=1)
+> [209075.858522] wlp3s0: associated
+> [210159.723726] PM: suspend entry (deep)
+> [210159.741497] Filesystems sync: 0.017 seconds
+> [210159.743585] Freezing user space processes ... (elapsed 0.009 seconds) done.
+> [210159.753345] OOM killer disabled.
+> [210159.753349] Freezing remaining freezable tasks ... (elapsed 0.003 seconds) done.
+> [210159.757357] printk: Suspending console(s) (use no_console_suspend to debug)
+> [210159.945365] sd 2:0:0:0: [sdb] Synchronizing SCSI cache
+> [210159.945443] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+> [210159.945651] sd 0:0:0:0: [sda] Stopping disk
+> [210159.947225] sd 2:0:0:0: [sdb] Stopping disk
+> [210160.019791] wlp3s0: deauthenticating from 5c:f4:ab:10:d2:bb by local choice (Reason: 3=DEAUTH_LEAVING)
+> [210160.021158] e1000e: EEE TX LPI TIMER: 00000011
+> [210161.245106] PM: suspend devices took 1.488 seconds
+> [210161.266601] ACPI: EC: interrupt blocked
+> [210161.305431] ACPI: Preparing to enter system sleep state S3
+> [210161.313532] ACPI: EC: event blocked
+> [210161.313535] ACPI: EC: EC stopped
+> [210161.313537] PM: Saving platform NVS memory
+> [210161.313548] Disabling non-boot CPUs ...
+> ...
+> [224698.957159] wlp3s0: associated
+> [229707.724067] wlp3s0: deauthenticated from 5c:f4:ab:10:d2:bb (Reason: 16=GROUP_KEY_HANDSHAKE_TIMEOUT)
+> [229708.370607] wlp3s0: authenticate with 5c:f4:ab:10:d2:bb
+> [229708.373732] wlp3s0: send auth to 5c:f4:ab:10:d2:bb (try 1/3)
+> [229708.376501] wlp3s0: authenticated
+> [229708.379997] wlp3s0: associate with 5c:f4:ab:10:d2:bb (try 1/3)
+> [229708.383773] wlp3s0: RX AssocResp from 5c:f4:ab:10:d2:bb (capab=0x411 status=0 aid=1)
+> [229708.386423] wlp3s0: associated
+> [229756.518759] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbeat on rcs0
+> [229756.622596] i915 0000:00:02.0: [drm] fgfs[2648] context reset due to GPU hang
+> 
 > -- 
-> 2.28.0
-> 
+> http://www.livejournal.com/~pavelmachek
