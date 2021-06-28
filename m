@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD3B3B635E
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD443B635D
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236183AbhF1O41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
+        id S236926AbhF1O4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234791AbhF1OmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:42:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D6961CD4;
-        Mon, 28 Jun 2021 14:33:37 +0000 (UTC)
+        id S234814AbhF1OmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61BB961CC0;
+        Mon, 28 Jun 2021 14:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890818;
-        bh=7B9aiw+wYeIaVZab/3hke8iSwixN+0gVlwP/Gwm/9y4=;
+        s=k20201202; t=1624890819;
+        bh=EVrBlPelXsMPhaLqpFwS7PJEuEFvz25UUEbaqvot6Lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QX7zIxapEsg0YxsDoIS+soVYUPPYaTjYU2m4LX9sag9HjKhqqN9d5IIRbdWvqfFqh
-         d2djlapBBhA647iPjBZMqktUMrSCT3yZtt0IXreyCkhMdKTyQYOWYq22z26qr7HJ79
-         ibHgN8P9Xskc2AOk2wCiBx8pCZdmM4mwiX1JsZ2WALV5cyj+UXEvBdMZFE7czAwekw
-         zkz80fp1ldGyIhUnWztPhAGK//RDmK1E6l0+06p1yvp+7GHj52P6LHGqgeJ6nHKJiN
-         CDv0Oj6pXVXuXW6c+yIb3EaLdke6JXqri9Z3ZgXIr8l8AwXbgxf+DN4Y11CtgblrjW
-         8c8Q7aChQW3wQ==
+        b=RsLyY9129uHKTm6IDfq98Dj0WzkNk1ywC1Xo2OWBVz2nwj/bHwZwvnPdWtnXNfvJd
+         fp7dUwZYwPCrUEoY2Rx1jj46o2hoVt91lrk+9LG7G9vxFEZLqwP78n5acn/mWBW7+A
+         Bnd2MuqaZJUzTrsBlTCyV7CaY9BnqPUPtuU4UWWhoS/QShV56JrCbnktKqbaui9QVn
+         YbOzCO3fpjZ8m2+hRiuPb24rWGR6/Lwv52OAkW/R3d0/b5WizQ3WORUj/bQBKvm+Ym
+         Jd8SL1XQHJJuxr7sfaIlg9a91xx8xl05ZYgMbWZCa7ImSLKA9j7Yt1CJY1h6sKkAtW
+         hcgHfuA24MWog==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Young Xiao <92siuyang@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 034/109] sch_cake: Fix out of bounds when parsing TCP options and header
-Date:   Mon, 28 Jun 2021 10:31:50 -0400
-Message-Id: <20210628143305.32978-35-sashal@kernel.org>
+Subject: [PATCH 4.19 036/109] net: stmmac: dwmac1000: Fix extended MAC address registers definition
+Date:   Mon, 28 Jun 2021 10:31:52 -0400
+Message-Id: <20210628143305.32978-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
 References: <20210628143305.32978-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.196-rc1.gz
 X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
 X-KernelTest-Branch: linux-4.19.y
@@ -51,67 +48,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@nvidia.com>
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-[ Upstream commit ba91c49dedbde758ba0b72f57ac90b06ddf8e548 ]
+[ Upstream commit 1adb20f0d496b2c61e9aa1f4761b8d71f93d258e ]
 
-The TCP option parser in cake qdisc (cake_get_tcpopt and
-cake_tcph_may_drop) could read one byte out of bounds. When the length
-is 1, the execution flow gets into the loop, reads one byte of the
-opcode, and if the opcode is neither TCPOPT_EOL nor TCPOPT_NOP, it reads
-one more byte, which exceeds the length of 1.
+The register starts from 0x800 is the 16th MAC address register rather
+than the first one.
 
-This fix is inspired by commit 9609dad263f8 ("ipv4: tcp_input: fix stack
-out of bounds when parsing TCP options.").
-
-v2 changes:
-
-Added doff validation in cake_get_tcphdr to avoid parsing garbage as TCP
-header. Although it wasn't strictly an out-of-bounds access (memory was
-allocated), garbage values could be read where CAKE expected the TCP
-header if doff was smaller than 5.
-
-Cc: Young Xiao <92siuyang@gmail.com>
-Fixes: 8b7138814f29 ("sch_cake: Add optional ACK filter")
-Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Fixes: cffb13f4d6fb ("stmmac: extend mac addr reg and fix perfect filering")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_cake.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/sched/sch_cake.c b/net/sched/sch_cake.c
-index 32712e7dcbdc..2025f0f559de 100644
---- a/net/sched/sch_cake.c
-+++ b/net/sched/sch_cake.c
-@@ -900,7 +900,7 @@ static struct tcphdr *cake_get_tcphdr(const struct sk_buff *skb,
- 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000.h b/drivers/net/ethernet/stmicro/stmmac/dwmac1000.h
+index 184ca13c8f79..1a84cf459e40 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000.h
+@@ -86,10 +86,10 @@ enum power_event {
+ #define LPI_CTRL_STATUS_TLPIEN	0x00000001	/* Transmit LPI Entry */
  
- 	tcph = skb_header_pointer(skb, offset, sizeof(_tcph), &_tcph);
--	if (!tcph)
-+	if (!tcph || tcph->doff < 5)
- 		return NULL;
+ /* GMAC HW ADDR regs */
+-#define GMAC_ADDR_HIGH(reg)	(((reg > 15) ? 0x00000800 : 0x00000040) + \
+-				(reg * 8))
+-#define GMAC_ADDR_LOW(reg)	(((reg > 15) ? 0x00000804 : 0x00000044) + \
+-				(reg * 8))
++#define GMAC_ADDR_HIGH(reg)	((reg > 15) ? 0x00000800 + (reg - 16) * 8 : \
++				 0x00000040 + (reg * 8))
++#define GMAC_ADDR_LOW(reg)	((reg > 15) ? 0x00000804 + (reg - 16) * 8 : \
++				 0x00000044 + (reg * 8))
+ #define GMAC_MAX_PERFECT_ADDRESSES	1
  
- 	return skb_header_pointer(skb, offset,
-@@ -924,6 +924,8 @@ static const void *cake_get_tcpopt(const struct tcphdr *tcph,
- 			length--;
- 			continue;
- 		}
-+		if (length < 2)
-+			break;
- 		opsize = *ptr++;
- 		if (opsize < 2 || opsize > length)
- 			break;
-@@ -1061,6 +1063,8 @@ static bool cake_tcph_may_drop(const struct tcphdr *tcph,
- 			length--;
- 			continue;
- 		}
-+		if (length < 2)
-+			break;
- 		opsize = *ptr++;
- 		if (opsize < 2 || opsize > length)
- 			break;
+ #define GMAC_PCS_BASE		0x000000c0	/* PCS register base */
 -- 
 2.30.2
 
