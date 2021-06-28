@@ -2,130 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1333B5A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54F73B5ABC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 10:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbhF1IrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 04:47:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56710 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhF1IrV (ORCPT
+        id S232473AbhF1Iyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 04:54:52 -0400
+Received: from esa1.fujitsucc.c3s2.iphmx.com ([68.232.152.245]:64337 "EHLO
+        esa1.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232282AbhF1Iys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:47:21 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lxmsv-0001hY-Ka
-        for linux-kernel@vger.kernel.org; Mon, 28 Jun 2021 08:44:53 +0000
-Received: by mail-ej1-f70.google.com with SMTP id p5-20020a17090653c5b02903db1cfa514dso4067444ejo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 01:44:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KmtJfV8NItnsIFSWg4xXgNASx94tom0VLkFkXbFAOfI=;
-        b=t8BZpqMSZLdh+RiJwKBN95eccyXsE8nN045L+yI5la43Zqt6LLpbEuqQCPb2NnLGYp
-         daWiIlDW3sp3Yd3tormIalj5aNltJOMz4lHyTfaZ6cebwJle4g9AKLAQ7YfR184x1TYn
-         mucR7SVoNGr9txW7MTX+F+PLWPW2YklOBx4JLP7E0bsqCTuuHoN76ayoSfAWEp+4QTtL
-         3hPFc6MQDJ8cjwZ8YK2mOtdAlMapf56mwi1wd9C5NrlYWLCWCvw4bxL57QKKlbzJubFp
-         JX9ILlma8TpV+J/GD136g7tqp/cH8kg1QZdiE3ZbCL2gbsM52U34P8VSz1SK5qF8FN+e
-         UyOg==
-X-Gm-Message-State: AOAM530+4cfRyNNthnZcbstFVVpSTye8Pp2D/1fyclDjTKBCxlFUm92T
-        AWhUc/2DoNs4e8ufoh7CvSvnGTAPMy3VojBaKZDhdXjRFTO+GX9Il1xVgceS4oHLTYxGKMu8Vf6
-        ijsafktoCBZEfvt7ALxH7LrpgQEECvxlqBLj/IJ1aZw==
-X-Received: by 2002:a05:6402:214:: with SMTP id t20mr32006499edv.20.1624869893174;
-        Mon, 28 Jun 2021 01:44:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgeLioIsaaCeLGrQTkc0wZAz537qLD1J7tTEDktZUt/kPkCQJJfbSv7dTimZbtgaouriCEhA==
-X-Received: by 2002:a05:6402:214:: with SMTP id t20mr32006482edv.20.1624869893042;
-        Mon, 28 Jun 2021 01:44:53 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id h14sm3068530ejl.118.2021.06.28.01.44.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 01:44:52 -0700 (PDT)
-Subject: Re: [PATCH v4] serial: samsung: use dma_ops of DMA if attached
-To:     Tamseel Shams <m.shams@samsung.com>, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        ajaykumar.rs@samsung.com, robin.murphy@arm.com
-References: <CGME20210625074751epcas5p125067e47c4ff1ad24a1e595d85f82540@epcas5p1.samsung.com>
- <20210625075114.71155-1-m.shams@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3aa88ee4-c662-8069-fb04-90df82038dbe@canonical.com>
-Date:   Mon, 28 Jun 2021 10:44:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 28 Jun 2021 04:54:48 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Jun 2021 04:54:47 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1624870344; x=1656406344;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=5Pb5ph1xsOCkl8sgY5rnnVAM6ntrS3G6BC91RmR6QQE=;
+  b=t8cK/D4LNrn/z9m9t6OC0xV1edsshXoYtcqVavBTFkf13bDxVj6o6Prh
+   LGbox2j9x7XLMQpqSp2UgakFlWLwq3oYLkUujZNLcHwBGZ6Aw3q5vGAp2
+   DAVzVEPLkWfQQ2ndiDM1yYpKPhYjuiE8Fk4qEIc+9ebMvesZbIMwgNA7e
+   zqGmjQtXA6ck4RNjlq6B/rZJQsnpJ/zuc/DjBL1hAAJa3yk6vbTmobtI2
+   tvDIra5wmKHaQM1oLjN+eNje070r3Fsi+e7Z7874tbcwmGPXIXv5yqm+Q
+   JBP/ah68T/0PPBTmwz0xyhvkImxT+s72VF6M6vkFiTgikuJL7Cs1Kr422
+   Q==;
+IronPort-SDR: e4sYbtf6w2YhKfWclTC08HwUuT72pSck0uOR+DbsaVoMGXRTU0FOuu721E11HgjgWevk3Gz3oO
+ PoxYv8vMdtLcAdQ+8yjs4ddw5U+q0fnpTqGbZjBl3NuSsANPWarXLC9Fg9jx6Tx5qO/i9t9TH6
+ gNGeUbZXlciCLV6ZXfSyPdDw3dN8aq40NigB7R3dQ8a6wHd0IVfe+vun8uHTMJ9XX3UK5sk3z6
+ W1dVQbNbIdLab74RnL/+2L+S/6+JNSDau5eSGrdv2Gbl16ZjcuF3Rs6eOf3Qy1jQ0Pz6qtQ8f1
+ zg0=
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="42108607"
+X-IronPort-AV: E=Sophos;i="5.83,305,1616425200"; 
+   d="scan'208";a="42108607"
+Received: from mail-ty1jpn01lp2052.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.52])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 17:44:56 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ETv85iFad3o4WZfQdTze4tndj52BVPDL7HrxpYO24bBe3FzpK+TeFkJPI5hOZ41Pg00PxO1Bqz6OxaEWmsxUN5LCZDxSGar9Bqr0mrJv2lbwr+I3AaRleoIK52wtNUD7j6YJ3nSQ9Jn52ApzVfoLb3Y1qGMkc0KLYsHH9jylcWbp3ZkAWS9q1pmsKAB87cGCUr8TyLOTEgsn6NIbVkO4JrkHjkWxYV2Bf4zWcNpF1BKm9Pj1ebaCt5SXhUGBWhAjx9Z4oLjgjXkY4A9lW1k4StYO7GEPAkl57U72YSeNUOhUKN12l+eyzXEwB09nIP3Cv/1wnDOcijlZ20cS4PhNCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Pb5ph1xsOCkl8sgY5rnnVAM6ntrS3G6BC91RmR6QQE=;
+ b=kqfzDpw2vnbh4QiOQAVP/cUUuh0HYkOiKfpKvcxQytkQTZOv0AKhEcLW5pUafsPmn1usXVw5i0CJGw6mCNMRtUo6qZffj24T6CF18NPrgriiZk4gub3SQ++dRkLnRXQfTjmFpQL8rgRwnHARgUnzocF/vHk9Ii6p+WN6uY0X7ZSBJWpvuV7RESEmH8hcd+P+QSpOJFfVwnoSpzd38NfEz3NM/38D5uN8UVc98Dvbu7q8EbVIEPLOQtSJ2s/ErB+8X1+HyqDNINvBD2hbH/enc9lJ64Q8I+3Cfy6ltrJATj2B+XRpKDU9VGcXJepQ7PwBLLGLqVVZVRK3UIK/mh+kug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Pb5ph1xsOCkl8sgY5rnnVAM6ntrS3G6BC91RmR6QQE=;
+ b=O1OzyVzJaDc7qfXDexfJKtU7/rYPrlQQy5GuukaS0qazFPNxwvO+yPfVyU6Y860v/OV62XMwmtQAJS0Wf3j9maMGa1yWlw7LPQiX/lqRx/HVM8R66yaQcHOgtDnp29eFxJeMlGguyGRScfptt7HAeWVAeRaIzOfbXDrAgILIu0U=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSAPR01MB2643.jpnprd01.prod.outlook.com (2603:1096:603:3c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Mon, 28 Jun
+ 2021 08:44:52 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284%6]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
+ 08:44:52 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: libperf : Can not create event group
+Thread-Topic: libperf : Can not create event group
+Thread-Index: AQHXYOz1byLB4GfrUUijoG/ejweJRKsTW8YAgAxaN1OAAN0rAIAInH1O
+Date:   Mon, 28 Jun 2021 08:44:52 +0000
+Message-ID: <OSBPR01MB46001F16CB31046C42947ACBF7039@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <YMc6tBoIQiUQkRbq@krava>
+ <OSBPR01MB4600B6FCE4D95F6B84E7E17CF7099@OSBPR01MB4600.jpnprd01.prod.outlook.com>,<YNJQ5P3jgOcL7sMD@krava>
+In-Reply-To: <YNJQ5P3jgOcL7sMD@krava>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-06-28T08:44:52.096Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.175]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 332acde9-439d-4ff1-f849-08d93a10ff43
+x-ms-traffictypediagnostic: OSAPR01MB2643:
+x-microsoft-antispam-prvs: <OSAPR01MB26433F8B884A2E0C2016397FF7039@OSAPR01MB2643.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IgRX9eFt9OYvpfVXqOWAX8yFdsno4bbi2uW9fB5mR5/qKzZ66GU3jn962U4fG6wk+RMxdfvZhjthAU0JIMfSuhgfErgD44BC6UQSzxC/6V4+E0yfhZapDjIyWDLlDblKN1GDZYh3RdgGeOVqGAXU0pkS+8GiT+/hNdyE/uD9m5FD7WBkhEqkxrO5m+iucqT7Ublsu5Uun68fUHB4S3q5RqvrOtjghrHSS/VVfhFb9LZ1NLP55rOgQHyuc2/6wriDfbteU/pIDjAgU9FVyDRSoIlcrN1OjpEYrCplpd1MQAwa/oUj08qBguM4HjuZ59Adu+ED/fvSmNmvRzOnKklHUEaFGe2u+nSC+zQaz/zd2dbktBjoR/uoWEL6CPqOtXtY4QtAZs6Xfb5STKiEBkgcP+OwsqhD8xNI1eRFzOWquEQ4lKRRSx0OdlBByfH9ibokZEuUIQyXxfeSo1L8bjOGNg/xeDVIFUa7fXWUNduaRLT1+p3Db/aIynbpBvvo+n3Y95p4+9JzyfiTMJ0SY8BSNGiAUS2BgskneoB6QSGyq9FcW+1T18dL/FIU1cRc4p6vYZjhgfhc2FVGyfQ+kMbiEBu+Ourp5RQNhFs8oIpQNDDOu/xBAwilHOQeL5tarQSluYWav2pHbYLUNiH8bE7RRA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39860400002)(346002)(136003)(2906002)(7696005)(86362001)(66476007)(64756008)(66946007)(316002)(66556008)(5660300002)(76116006)(478600001)(122000001)(85182001)(38100700002)(91956017)(8936002)(66446008)(55016002)(186003)(54906003)(6916009)(71200400001)(33656002)(83380400001)(9686003)(4744005)(6506007)(8676002)(4326008)(26005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?cFRqTHFac3RJRGxWSWZLS25rNGtQWktYYUR0eG5GaGpObHBCWkxPV0hz?=
+ =?iso-2022-jp?B?YjMrcFg5dXdrSFVSdWV5bS9LQTVzRUhMRHFqU1ZEbG8wSTNxdjYrZVU4?=
+ =?iso-2022-jp?B?QWo5T1RaZDZMZmFyUUk0S3VkbCtYUmRPTVFwckZxelIxbkxmUkdQOXFS?=
+ =?iso-2022-jp?B?ZXVhOGx4MEFSYVowWnkwN05TUkxnc2p6LzFoZzNyZDVEWnFWUUU5Z3Ry?=
+ =?iso-2022-jp?B?YkxyMmEwdk5OckFLSHZsWVR2Ny9iQWdTL29KYm9vM1RGQS9mYnFlMEpo?=
+ =?iso-2022-jp?B?anBEODIyektLVWdtMWtIeEZHVmhsWXlEZVRkRmpmWUdIdW1iSnNGMHdO?=
+ =?iso-2022-jp?B?UUtpQ09GVXV0NXcvMWNkTSsxVCt0emVvM080ZXI5aU45bitPQmpHSVVU?=
+ =?iso-2022-jp?B?T1FXWGNETk1vVTJGVGpmMjlHdldFcFlrKzBXRlNoMWM4aGQyTjVCYk1w?=
+ =?iso-2022-jp?B?eWQ3UGc4TjQySmx4RnVlSERhYStzbnVFNXJvL0NUdGcxVDBVb3Y5em14?=
+ =?iso-2022-jp?B?KzM3ZmdpODR2VWQ2cTcvbDl5akp1VFhmYXZ1WW4wcmg4am9EWkxpallY?=
+ =?iso-2022-jp?B?Nk5yZjJjdEJPb1IzL3pnbzgydEY3UnFxN1JaSkpSY0lEMHI1dHJMVlBv?=
+ =?iso-2022-jp?B?enU5Vm1IV3NXaWFwZnh3LzBqamNYaXRMajRBYXNGSDl0K3hLbGdsOWJ5?=
+ =?iso-2022-jp?B?LytnVTROUUh4bHpXdlFLNUZocjVBbG9tbUJUbWpsaGxHZWwyVnlJY0g1?=
+ =?iso-2022-jp?B?cmVDMUl5NEtnOUJkSDk0bjU1SXVOMzh3cVRwczlCTFZaUHc3cUp0U0Jq?=
+ =?iso-2022-jp?B?ZkpRRWlqckpTV0VQSHhrQU44M21ZYytXd1dNcC9NZVdnSVg2V0VyUE9T?=
+ =?iso-2022-jp?B?SU8rSVg5TkI4MStQNTlZYm5xNlo3RnplM3RlWFVrcWRmZGhkUnNWc1Ni?=
+ =?iso-2022-jp?B?YytHbkd6ZksrcktrSkRoZGEzY3BkYmx0aysrU2RVMVRRTkRHczNaek81?=
+ =?iso-2022-jp?B?dHd4TEQ1VlhteERGTTlTdGh1aC9GaThzMFk4c0lLR0NlRUdHdU9odHoz?=
+ =?iso-2022-jp?B?Ulh6UE9HU3ppSkF2RjhxcTNOK00zdzJQaGFFWTVCN2RWSGl6aitQZ3hr?=
+ =?iso-2022-jp?B?Yll1LzlXcVpHakxwaGxYTTNCU2JxbVBVci80dnZkK1YvK3FWUDhrRVVS?=
+ =?iso-2022-jp?B?a2hZbGlsQlZHd1l2dUNNejZSWXEyUkNmbXlNZUNjK0Z4NUphRTZFd3cw?=
+ =?iso-2022-jp?B?eEp2WmNiM1UreThoVERMMEo2eFgrNzRXcER1a2w5MFZoMjNwUS8yOG14?=
+ =?iso-2022-jp?B?L0lTWGNOVHdpNUFReWcxZGU2SnpXMlZrZkdtS2RaYXU5YVN1LzZCZUNr?=
+ =?iso-2022-jp?B?OHZHdkFiTjV5dGFCTU5WM0VxS2ZOK1l6MFhIY01kVzhlZnhJaFd6TTlW?=
+ =?iso-2022-jp?B?Z2IwVjRzOW10cEFWVXdQV2RIelpCV0IyZTd0Z0UrQThrVG1OY1FuYWhY?=
+ =?iso-2022-jp?B?YkJCQWg0SUE4Ri9IUGJGdytOd2N2TGo0UDV1eU9RVEtwNlBlK2lFeCt6?=
+ =?iso-2022-jp?B?YzFNMk5uWkNzNG1VaUVPNHhXU1lVcWluS2x0TlNYeDFtN3J2bzFFSW9h?=
+ =?iso-2022-jp?B?aHJuVVl2M2FhNDU5V282eDN5clB6akVCOTFuVk9QTkRvaUhUeTNFS05n?=
+ =?iso-2022-jp?B?UmdaUER4MUtrSFBCZ3BwMHVMcXhYUHR5ckVFSEZ1eVpMSW1GY0tvbnhN?=
+ =?iso-2022-jp?B?S3VpU1FIYXdGSnFMMzhsYVArWFJpb2xkOWZ1WDVHR1lHUFEvL0tES0px?=
+ =?iso-2022-jp?B?dU1vRGFTYm5BeTVETk9RY243QllmVGNJUGc0enN1dW5XRDQxcS9sVk9E?=
+ =?iso-2022-jp?B?Nys3eisvZ0FPY0FUOHZmaUhIZ0VrPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20210625075114.71155-1-m.shams@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 332acde9-439d-4ff1-f849-08d93a10ff43
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2021 08:44:52.5528
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zo/zWF3jx4ufQKawZZJq7BI/xpSR+GQiK211NjmDQyCbuT/Sz3F6ErN3kZfR6Tj3qHWgz2QRDi/akgXx5wsI1ZJmU0spwkmVPaUYuU2Cgbc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2643
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/2021 09:51, Tamseel Shams wrote:
-> When DMA is used for TX and RX by serial driver, it should
-> pass the DMA device pointer to DMA API instead of UART device
-> pointer. DMA device should be used for DMA API because only
-> the DMA device is aware of how the device connects to the memory.
-> There might be an extra level of address translation due to a
-> SMMU attached to the DMA device. When serial device is used for
-> DMA API, the DMA API will have no clue of the SMMU attached to
-> the DMA device.
-> 
-> This patch is necessary to fix the SMMU page faults
-> which is observed when a DMA(with SMMU enabled) is attached
-> to UART for transfer.
-> 
-> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
-> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
-> ---
-> Changes since v1:
-> 1. Rebased the patch on "tty-next" branch of TTY driver tree
-> 
-> Changes since v2:
-> 1. Updated the commit message.
-> 2. Changed the comment description
-> 
-> Changes since v3:
-> 1. Removed the null pointer check for "dma", "dma->tx_chan" and
-> "dma->rx_chan" and instead sending DMA device pointer while calling
-> DMA API.
-> 
->  drivers/tty/serial/samsung_tty.c | 32 ++++++++++++++++----------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 9fbc61151c2e..fa30aa20a13f 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -305,7 +305,7 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
->  		dmaengine_pause(dma->tx_chan);
->  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
->  		dmaengine_terminate_all(dma->tx_chan);
-> -		dma_sync_single_for_cpu(ourport->port.dev,
-> +		dma_sync_single_for_cpu(dma->tx_chan->device->dev,
->  			dma->tx_transfer_addr, dma->tx_size, DMA_TO_DEVICE);
->  		async_tx_ack(dma->tx_desc);
->  		count = dma->tx_bytes_requested - state.residue;
-> @@ -338,8 +338,8 @@ static void s3c24xx_serial_tx_dma_complete(void *args)
->  	count = dma->tx_bytes_requested - state.residue;
->  	async_tx_ack(dma->tx_desc);
->  
-> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
-> -				dma->tx_size, DMA_TO_DEVICE);
-> +	dma_sync_single_for_cpu(dma->tx_chan->device->dev,
-> +			dma->tx_transfer_addr, dma->tx_size, DMA_TO_DEVICE);
-
-Looks like alignment is broken here. However even if the line was not
-aligned before, please fix it up now - align the arguments like
-checkpatch suggests.
-
-This applies to other places as well. Thanks.
-
-Best regards,
-Krzysztof
+Hi, jirka=0A=
+=0A=
+> > Do you have any plans to support the event group in libperf?=0A=
+> =0A=
+> hi,=0A=
+> not until now I guess ;-) what's your use case?=0A=
+=0A=
+PAPI uses event group to measure multiple events.=0A=
+libperf uses multiplexing regardless of the user's intent.=0A=
+=0A=
+I thought it would be nice if users could choose to use multiplexing or eve=
+nt groups.=0A=
+=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=0A=
+=0A=
+jirka=
