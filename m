@@ -2,142 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2741C3B6259
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF76E3B61FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhF1OqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:46:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235333AbhF1OfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:35:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A984361C9A;
-        Mon, 28 Jun 2021 14:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624890628;
-        bh=nVcg9KpDetKdIwCLpjQNOQqeestfcqBo/bZqwkmON2M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MNmripF5tJaN0xFAneSKXpZwguimv2tBTcfeFKzuqaE8PUsQS6q53CsX1AV3JDQ7T
-         iiqANCiF7AcweEzzPWVz5rMZwHQ5m1duHOll+nod3KkWvTdjeRuJVfMybKek6IMYTn
-         Z5jJuShUrRwygJWXCGV97DrpjF6GwTQgah/V+A0D1gsEG+sEH1TrF+3UcK2w1jSWso
-         Zl9sDLojVgYuCxe7rwlfOyoJHxoPKVCmQ/J9Q2IHKbi9zC9n7i6mw0TQZmXjlRWQeh
-         wedWbhjrLyLKiQu8N9xW66WZERbXAM9WKqf/xRfw1SfFge90ZpDEPfmWxgbfZEzy8U
-         wu6khfcM7HAdw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/71] inet: annotate date races around sk->sk_txhash
-Date:   Mon, 28 Jun 2021 10:29:18 -0400
-Message-Id: <20210628143004.32596-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
-References: <20210628143004.32596-1-sashal@kernel.org>
+        id S235518AbhF1OkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:40:03 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:38603 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233798AbhF1Ob5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:31:57 -0400
+Received: by mail-vs1-f51.google.com with SMTP id o7so10124625vss.5;
+        Mon, 28 Jun 2021 07:29:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MJfl2dK57KiZa2924NmaS6ccSWynT7w2dh6/tJZbRtc=;
+        b=IZEuaGHeqpAZTt2Yme8ZVmDUzkUVYj0nhlLdBh9lQ+HWEUW8bFyoItR8TY5DeVMbmI
+         eiJAUwatoGahUZ23iSnVBCsnwLkqwyqcQkI626+oMYGxv2jK9T7b5hRfXdmECjlbv5oW
+         yQ0Jjfvnr1DUNv1srbxQL3DqjhQPfTPq1k/EnEy4NrSBXwnBuQ6BziKLbc7OG6rs7Bm9
+         gRK+fEOhAcIM3bs93pAk8djueqMfxmTRUwwLAmA2PzttSv0CkIEFzXVpy3tsbUufs6wt
+         4n51pGV23mZJU7sLPkKngBDO4Yh04uNvhOXLyVv6dZBOpE5M0EJYbv2sgwNR0u/ykuyd
+         K+LA==
+X-Gm-Message-State: AOAM5338mhsjbA4N6MURGKCjqul8w7DID2ME3C3uorkxN5PeWPZduXPC
+        PUpcxmqTdUN/fk/meBL3ecS+NpJWvZajVng0ElHCosHDELKJIw==
+X-Google-Smtp-Source: ABdhPJwLxmk3uBOFWBCL5M1PkiIvkNI0F6ru0t+EyWqbf43UiQg3ml/MQ2WF5uxWE6LMCi1SOdDHAsk+aVvf/IRS22E=
+X-Received: by 2002:a67:770d:: with SMTP id s13mr5897612vsc.40.1624890569715;
+ Mon, 28 Jun 2021 07:29:29 -0700 (PDT)
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.129-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.129-rc1
-X-KernelTest-Deadline: 2021-06-30T14:29+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210623133205.GA28589@lst.de>
+In-Reply-To: <20210623133205.GA28589@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 28 Jun 2021 16:29:18 +0200
+Message-ID: <CAMuHMdUOaRiJcO1fq3u4tgeB0aUbfn_qn7DEZtW4BC+7ECcx4Q@mail.gmail.com>
+Subject: Re: dma_declare_coherent_memory and SuperH
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+Hi Christoph,
 
-[ Upstream commit b71eaed8c04f72a919a9c44e83e4ee254e69e7f3 ]
+On Wed, Jun 23, 2021 at 3:33 PM Christoph Hellwig <hch@lst.de> wrote:
+> I have a vague recollection that you were planning on dropping support
+> for non-devicetree platforms, is that still the case?
+>
+> The reason I'm asking is because all but one users of
+> dma_declare_coherent_memory are in the sh platform setup code, and
+> I'd really like to move towards killing this function off.
 
-UDP sendmsg() path can be lockless, it is possible for another
-thread to re-connect an change sk->sk_txhash under us.
+I guess you mean drivers/remoteproc/remoteproc_virtio.c?
 
-There is no serious impact, but we can use READ_ONCE()/WRITE_ONCE()
-pair to document the race.
+BeagleV Starlight Beta will be adding two more in
+drivers/nvdla/nvdla_gem.c.
+https://github.com/esmil/linux/commit/ce5cffcc8e618604a0d442758321fc5577751c9d
 
-BUG: KCSAN: data-race in __ip4_datagram_connect / skb_set_owner_w
+Gr{oetje,eeting}s,
 
-write to 0xffff88813397920c of 4 bytes by task 30997 on cpu 1:
- sk_set_txhash include/net/sock.h:1937 [inline]
- __ip4_datagram_connect+0x69e/0x710 net/ipv4/datagram.c:75
- __ip6_datagram_connect+0x551/0x840 net/ipv6/datagram.c:189
- ip6_datagram_connect+0x2a/0x40 net/ipv6/datagram.c:272
- inet_dgram_connect+0xfd/0x180 net/ipv4/af_inet.c:580
- __sys_connect_file net/socket.c:1837 [inline]
- __sys_connect+0x245/0x280 net/socket.c:1854
- __do_sys_connect net/socket.c:1864 [inline]
- __se_sys_connect net/socket.c:1861 [inline]
- __x64_sys_connect+0x3d/0x50 net/socket.c:1861
- do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+                        Geert
 
-read to 0xffff88813397920c of 4 bytes by task 31039 on cpu 0:
- skb_set_hash_from_sk include/net/sock.h:2211 [inline]
- skb_set_owner_w+0x118/0x220 net/core/sock.c:2101
- sock_alloc_send_pskb+0x452/0x4e0 net/core/sock.c:2359
- sock_alloc_send_skb+0x2d/0x40 net/core/sock.c:2373
- __ip6_append_data+0x1743/0x21a0 net/ipv6/ip6_output.c:1621
- ip6_make_skb+0x258/0x420 net/ipv6/ip6_output.c:1983
- udpv6_sendmsg+0x160a/0x16b0 net/ipv6/udp.c:1527
- inet6_sendmsg+0x5f/0x80 net/ipv6/af_inet6.c:642
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg net/socket.c:674 [inline]
- ____sys_sendmsg+0x360/0x4d0 net/socket.c:2350
- ___sys_sendmsg net/socket.c:2404 [inline]
- __sys_sendmmsg+0x315/0x4b0 net/socket.c:2490
- __do_sys_sendmmsg net/socket.c:2519 [inline]
- __se_sys_sendmmsg net/socket.c:2516 [inline]
- __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2516
- do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0xbca3c43d -> 0xfdb309e0
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 31039 Comm: syz-executor.2 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/net/sock.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index a0728f24ecc5..d3dd89b6e2cb 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1860,7 +1860,8 @@ static inline u32 net_tx_rndhash(void)
- 
- static inline void sk_set_txhash(struct sock *sk)
- {
--	sk->sk_txhash = net_tx_rndhash();
-+	/* This pairs with READ_ONCE() in skb_set_hash_from_sk() */
-+	WRITE_ONCE(sk->sk_txhash, net_tx_rndhash());
- }
- 
- static inline void sk_rethink_txhash(struct sock *sk)
-@@ -2125,9 +2126,12 @@ static inline void sock_poll_wait(struct file *filp, struct socket *sock,
- 
- static inline void skb_set_hash_from_sk(struct sk_buff *skb, struct sock *sk)
- {
--	if (sk->sk_txhash) {
-+	/* This pairs with WRITE_ONCE() in sk_set_txhash() */
-+	u32 txhash = READ_ONCE(sk->sk_txhash);
-+
-+	if (txhash) {
- 		skb->l4_hash = 1;
--		skb->hash = sk->sk_txhash;
-+		skb->hash = txhash;
- 	}
- }
- 
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
