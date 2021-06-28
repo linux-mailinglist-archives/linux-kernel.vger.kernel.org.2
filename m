@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3540A3B5C3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D993B5C46
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbhF1KOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:14:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:21428 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232735AbhF1KOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:14:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="229541755"
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="229541755"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 03:11:43 -0700
-X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
-   d="scan'208";a="419115990"
-Received: from unknown (HELO [10.238.130.181]) ([10.238.130.181])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 03:11:40 -0700
-Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
- dynamic user state
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-15-chang.seok.bae@intel.com>
- <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
- <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
- <36D0486A-D955-4C32-941A-A2A4985A450C@intel.com>
- <48e86785-838d-f5d4-c93c-3232b8ffd915@intel.com>
- <16681A30-59EA-4E35-8A51-CCD403026C92@intel.com>
- <6cdba263-889f-ce98-b7da-4a1380cedc65@intel.com>
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-Message-ID: <4411de99-e827-6119-394b-b994131d6554@linux.intel.com>
-Date:   Mon, 28 Jun 2021 18:11:38 +0800
+        id S232893AbhF1KOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:14:38 -0400
+Received: from saphodev.broadcom.com ([192.19.11.229]:35520 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232520AbhF1KO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:14:29 -0400
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 365027DBA;
+        Mon, 28 Jun 2021 03:12:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 365027DBA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1624875123;
+        bh=7GV6KFu0g0aVtH9w1qkWYhk+UZVnJoVDXbi4mnUgM8A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=a0t9svh8UgV3kAvIFMZjZNffcxOes+3AdcHzR64lGDUt3nqfZ6PvQg132ULT7WKMI
+         pEiivpVU0xzcyHds+hTrtVSQGclFkprkY5G6EfQRCzjZGP39BV/vF+3Dacas1d2lwz
+         6/3Su9Qs1DFX/BXjE9cs55UXff96WHRaSJXOh3OY=
+Received: from [10.176.68.80] (39y1yf2.dhcp.broadcom.net [10.176.68.80])
+        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 857B71874BE;
+        Mon, 28 Jun 2021 03:11:59 -0700 (PDT)
+Subject: Re: [PATCH] brcmfmac: use separate firmware for 43430 revision 2
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Double Lo <double.lo@cypress.com>,
+        Remi Depommier <rde@setrix.com>,
+        Amar Shankar <amsr@cypress.com>,
+        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
+        Frank Kao <frank.kao@cypress.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210509233010.2477973-1-mike.rudenko@gmail.com>
+ <d1bac6c3-aa52-5d76-1f2a-4af9edef71c5@broadcom.com>
+ <87a6oxpsn8.fsf@gmail.com> <87o8bvgqt8.fsf@tynnyri.adurom.net>
+From:   Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <bb4eece6-e164-7dc2-bd9a-33fe0714d7a7@broadcom.com>
+Date:   Mon, 28 Jun 2021 12:11:57 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <6cdba263-889f-ce98-b7da-4a1380cedc65@intel.com>
+In-Reply-To: <87o8bvgqt8.fsf@tynnyri.adurom.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/17/2021 3:28 AM, Dave Hansen wrote:
-> On 6/16/21 12:23 PM, Bae, Chang Seok wrote:
->> On Jun 16, 2021, at 12:01, Hansen, Dave <dave.hansen@intel.com> wrote:
->>> On 6/16/21 11:47 AM, Bae, Chang Seok wrote:
->>>> Reading XINUSE via XGETBV is cheap but not free. I don't know spending a
->>>> hundred cycles for this WARN is big deal but this is one of the most
->>>> performance-critical paths.
->>> Is XGETBV(1) really a hundred cycles?  That seems absurdly high for a
->>> non-serializing register read.
->> This was checked to convince the benefit intended by PATCH25 --
->> https://lore.kernel.org/lkml/20210523193259.26200-26-chang.seok.bae@intel.com/
-> That's odd.  How is it possible that the performance of XGETBV(1)
-> informed the design of that patch without there being any mention of
-> XGETBV in the comments or changelog?
-Hi Chang,
+On 6/24/2021 6:39 PM, Kalle Valo wrote:
+> Mikhail Rudenko <mike.rudenko@gmail.com> writes:
+> 
+>> On 2021-05-10 at 11:06 MSK, Arend van Spriel <arend.vanspriel@broadcom.com> wrote:
+>>> On 5/10/2021 1:30 AM, Mikhail Rudenko wrote:
+>>>> A separate firmware is needed for Broadcom 43430 revision 2.  This
+>>>> chip can be found in e.g. certain revisions of Ampak AP6212 wireless
+>>>> IC. Original firmware file from IC vendor is named
+>>>> 'fw_bcm43436b0.bin', but brcmfmac and also btbcm drivers report chip
+>>>
+>>> That is bad naming. There already is a 43436 USB device.
+>>>
+>>>> id 43430, so requested firmware file name is
+>>>> 'brcmfmac43430b0-sdio.bin' in line with other 43430 revisions.
+>>>
+>>> As always there is the question about who will be publishing this
+>>> particular firmware file to linux-firmware.
+>>
+>> The above mentioned file can be easily found by web search. Also, the
+>> corresponding patch for the bluetooth part has just been accepted
+>> [1]. Is it strictly necessary to have firmware file in linux-firmware in
+>> order to have this patch accepted?
+> 
+> This patch is a bit in the gray area. We have a rule that firmware
+> images should be in linux-firmware, but as the vendor won't submit one
+> and I assume the license doesn't approve the community submit it either,
+> there is not really any solution for the firmware problem.
 
-I noticed the XGETBV(1) cycles you ran, however I calculated only ~16 
-cycles
-in the corresponding machine.
+At the moment I am not sure which company/division is shipping the 43430 
+rev 2 or 43436. Having it in linux-firmware is still preferred.
 
-BRs,
-Jing
+> On the other hand some community members have access to the firmware
+> somehow so this patch is useful to the community, and I think taking an
+> exception to the rule in this case is justified. So I am inclined
+> towards applying the patch.
 
+As an end-user community members using the device are allowed to use the 
+firmware to run on that device. So I tend to agree with you.
+
+> Thoughts? I also have another similar patch in the queue:
+> 
+> https://patchwork.kernel.org/project/linux-wireless/patch/20210307113550.7720-1-konrad.dybcio@somainline.org/
+
+I will review both and comment/ack them.
+
+Regards,
+Arend
