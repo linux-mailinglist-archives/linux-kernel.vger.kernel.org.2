@@ -2,173 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA97F3B681B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217673B6821
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 20:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhF1SNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 14:13:33 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20304 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231950AbhF1SN1 (ORCPT
+        id S231950AbhF1SOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 14:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233615AbhF1SOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 14:13:27 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SI4FOn027964;
-        Mon, 28 Jun 2021 14:11:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=oOmE9JuSCNuN6JdtSlav75wscAap/nbuPNBBwMY5CS0=;
- b=sse4daR0hKDKT76gCI41m/cHt5zjWVW9t/8347eGtrslFak8FUzl9NfqSpFtLh/Kb6hc
- YIdfJ+uJi4BwXwUmm8igfJykAilAGgFlj9bSEV8LtLxj7vJaoFtwgUY5yv8PP8s1MDNO
- 9w5aeWKWyISndvc7eMz/KUrDhEVPKCi0LthYOO6IQiby05JG6GfcByOUpbEL+jFT+W3F
- lsMGNjJEWFY3O0g7zMEQXwZXO5bU/OpgaoLrZAOK6tX8Ajn+r1oWaZYfhJbHjgyaSy2u
- nLLFwD8Gn4F4rCxmIzKyReG2ym+5PP97IiiRcY/aVN9OoSuBRf9QkQwGW+v7KaE7eX6A ZA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39fjqb1an8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 14:11:00 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15SIAvPp004675;
-        Mon, 28 Jun 2021 18:10:57 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 39duv88fsw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Jun 2021 18:10:56 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15SIAsJl34537778
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Jun 2021 18:10:54 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A9B552077;
-        Mon, 28 Jun 2021 18:10:54 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.112.169])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3FC2E5207C;
-        Mon, 28 Jun 2021 18:10:53 +0000 (GMT)
-Message-ID: <12f950a86631e83e9af52faa843cd335ac867af8.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity subsystem updates for v5.14
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 28 Jun 2021 14:10:52 -0400
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4yigeBkAkShjWLvFzVQH3tOVoWdZDmrA
-X-Proofpoint-GUID: 4yigeBkAkShjWLvFzVQH3tOVoWdZDmrA
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 28 Jun 2021 14:14:04 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3D7C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:11:38 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id u190so16147992pgd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 11:11:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3CTgejj7lyDfhzX2dzFowMolpFgct9NOBpKU9MNvQtw=;
+        b=Sc6OqygxSFouqdOlogrAUiHLeOwpITrPTjkw/k2XBGHIR+ewdts2BLoNOigqRunYY2
+         NQfK/sE2nm+OPBV+wUEon7YtBOPCs8oGY0fBiCUk9MwRI23Ywn7rQLdX7tC+JbwduDcI
+         8mWebW8GUvPLzfIeXg3Ys58oS241vhtkwLq8E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3CTgejj7lyDfhzX2dzFowMolpFgct9NOBpKU9MNvQtw=;
+        b=tYo91aWc6qyl/l6Ntz6H8WFO3Sc/nv7+dzXGW6RAco5iIzxlCCKcN3Jvq0YMpsFI4a
+         wBsZa7SGlzTrl9eLCBhsvraVS/cLpiRIm3fAo1+oOqHfml7IrqspK7l4r6Ct1o8OxfBt
+         7wqek2TcZa2kOIWngTlS7VWpSH+ZAo2McURgzAQXxFrYkkgaj08mrYlGCD1B6cWRE7PL
+         GFtK1au0XMfLpHO4yP4VnSfqI9OHmzxRnL0N3nsy9+W2pY1ObfSvTLhRGuPCwZlIFPNO
+         jsFxyTfKWmNmLhZ1GjqyMMl2nxQIi9QArz+Fu7XHpWg611iMl/+eHL0B+aq+dAGgiALu
+         JmfQ==
+X-Gm-Message-State: AOAM530cN2Z0IeV+x94dN3wjKcAB4qIaEFQJKWOx3LKpMLevXgSsXPH2
+        uNjxwQjQlbBV9c8SikQbjs1xAA==
+X-Google-Smtp-Source: ABdhPJwDDSKq52s0pA5ZRq7/h6wngl4jVxfxRf//SwJNyTD1XT3Z5MwE0vonZHCEmP2mLfWZPTi04g==
+X-Received: by 2002:a62:174c:0:b029:30d:fab7:ef5a with SMTP id 73-20020a62174c0000b029030dfab7ef5amr923165pfx.75.1624903897438;
+        Mon, 28 Jun 2021 11:11:37 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:df70:d2d8:b384:35cf])
+        by smtp.gmail.com with UTF8SMTPSA id x13sm15787159pjh.30.2021.06.28.11.11.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 11:11:37 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 11:11:33 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
+        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH 6/9] arm64: dts: qcom: sc7280: Update reserved memory map
+Message-ID: <YNoQ1d1hUyIh/qxz@google.com>
+References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
+ <1624564058-24095-7-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- clxscore=1015 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 bulkscore=0
- adultscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106280118
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624564058-24095-7-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Jun 25, 2021 at 01:17:35AM +0530, Sibi Sankar wrote:
 
-The large majority of the changes are EVM portable & immutable
-signature related: removing a dependency on loading an HMAC key, safely
-allowing file metadata included in the EVM portable & immutable
-signatures to be modified, allowing EVM signatures to fulfill IMA file
-signature policy requirements, including the EVM file metadata
-signature in lieu of an IMA file data signature in the measurement
-list, and adding dynamic debugging of EVM file metadata.
+> Subject: arm64: dts: qcom: sc7280: Update reserved memory map
 
-In addition, in order to detect critical data or file change
-reversions, duplicate measurement records are permitted in the IMA
-measurement list.  The remaining patches address compiler, sparse, and
-doc warnings.
+That's very vague. Also personally I'm not a fan of patches that touch
+SoC and board files with a commit message that only mentions the SoC, as
+is frequently done for IDP boards. Why not split this in (at least) two,
+one for adding the missing memory regions to the SoC, and one for the
+IDP.
 
-thanks,
+> Add missing regions and remove unused regions from the reserved memory
+> map, as described in version 1.
 
-Mimi
-
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
-
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.14
-
-for you to fetch changes up to 907a399de7b0566236c480d0c01ff52220532fb1:
-
-  evm: Check xattr size discrepancy between kernel and user (2021-06-21 08:34:21 -0400)
-
-----------------------------------------------------------------
-integrity-v5.14
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      ima: Fix fall-through warning for Clang
-
-Lakshmi Ramasubramanian (1):
-      ima: Fix warning: no previous prototype for function 'ima_add_kexec_buffer'
-
-Mimi Zohar (5):
-      evm: fix writing <securityfs>/evm overflow
-      Merge branch 'misc-evm-v7' into next-integrity
-      Merge branch 'verify-evm-portable-sig-v2' into next-integrity
-      ima: differentiate between EVM failures in the audit log
-      evm: output EVM digest calculation info
-
-Roberto Sassu (25):
-      evm: Execute evm_inode_init_security() only when an HMAC key is loaded
-      evm: Load EVM key in ima_load_x509() to avoid appraisal
-      evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
-      evm: Introduce evm_revalidate_status()
-      evm: Introduce evm_hmac_disabled() to safely ignore verification errors
-      evm: Allow xattr/attr operations for portable signatures
-      evm: Pass user namespace to set/remove xattr hooks
-      evm: Allow setxattr() and setattr() for unmodified metadata
-      evm: Deprecate EVM_ALLOW_METADATA_WRITES
-      ima: Allow imasig requirement to be satisfied by EVM portable signatures
-      ima: Introduce template field evmsig and write to field sig as fallback
-      ima: Don't remove security.ima if file must not be appraised
-      ima: Add ima_show_template_uint() template library function
-      ima: Define new template fields iuid and igid
-      ima: Define new template field imode
-      evm: Verify portable signatures against all protected xattrs
-      ima: Define new template fields xattrnames, xattrlengths and xattrvalues
-      ima: Define new template evm-sig
-      evm: Don't return an error in evm_write_xattrs() if audit is not enabled
-      doc: Fix warning in Documentation/security/IMA-templates.rst
-      ima: Set correct casting types
-      ima/evm: Fix type mismatch
-      ima: Include header defining ima_post_key_create_or_update()
-      ima: Pass NULL instead of 0 to ima_get_action() in ima_file_mprotect()
-      evm: Check xattr size discrepancy between kernel and user
-
-Tushar Sugandhi (1):
-      IMA: support for duplicate measurement records
-
- Documentation/ABI/testing/evm                |  36 ++-
- Documentation/security/IMA-templates.rst     |  12 +-
- include/linux/evm.h                          |  34 ++-
- include/linux/integrity.h                    |   1 +
- security/integrity/evm/evm.h                 |   1 +
- security/integrity/evm/evm_crypto.c          |  58 ++++-
- security/integrity/evm/evm_main.c            | 376 ++++++++++++++++++++++++---
- security/integrity/evm/evm_secfs.c           |  31 ++-
- security/integrity/iint.c                    |   4 +-
- security/integrity/ima/Kconfig               |   7 +
- security/integrity/ima/ima_appraise.c        |  44 +++-
- security/integrity/ima/ima_asymmetric_keys.c |   1 +
- security/integrity/ima/ima_crypto.c          |   4 +-
- security/integrity/ima/ima_fs.c              |   6 +-
- security/integrity/ima/ima_init.c            |   4 +
- security/integrity/ima/ima_kexec.c           |   1 +
- security/integrity/ima/ima_main.c            |   2 +-
- security/integrity/ima/ima_queue.c           |   5 +-
- security/integrity/ima/ima_template.c        |  30 ++-
- security/integrity/ima/ima_template_lib.c    | 211 ++++++++++++++-
- security/integrity/ima/ima_template_lib.h    |  16 ++
- security/security.c                          |   4 +-
- 22 files changed, 804 insertions(+), 84 deletions(-)
+What is this 'version 1'?
 
