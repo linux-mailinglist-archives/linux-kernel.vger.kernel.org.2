@@ -2,94 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365473B65F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B853B65B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbhF1PqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237432AbhF1Pph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:45:37 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960A3C0575FC
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:07:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso199600pjp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ULn7DIu4wwa5GXTqLwaOz3Z66Z8PfP99SnS+I7xsRHs=;
-        b=Km2QoyDwZDeRvpQWFJj2Oklrs8bFDQOuHnqfM/z7OkNSv+69D2qERWqZk7Xb2z44qU
-         /bU5I3GyU8Oee86tFVDjufMGNPjeww1sAxP6rHtZvC4WoIPsTxNm5GFZZU9AeXpjWbgK
-         uJPX5vKilC4qT3wX3aO3lLel4Bv09CM8NL7SA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ULn7DIu4wwa5GXTqLwaOz3Z66Z8PfP99SnS+I7xsRHs=;
-        b=pOgkjxnQO1Cvpg9Fgyc3rA6R47okmTAG2u4UjS8Af84MUdPl41T6QWII5p7fNUS+O9
-         ZdaVZg2Sc7qJ6V+ODGX9HscbN4nInIUChx52/K6xTZ7nxXixLFobLZ+Id42bbCMUYSB9
-         ShWlfpQfJLvAmQHjKvP3E/Lpan3ATBMQwQEqCLnZFSMQB0Ebp1YrAnTNqpvctAHVyOsx
-         e0YgTZF15rA6duo3aS3OQbUP9sxuAN8EpdYoNjOI8fny6boES31YVHDlOiTAE6PxNBbE
-         9XNd4ThFobnyBvB/35hlcuNhXY+sMXMZjZ4IWaGx6sePCv6BTm8Nl7rmIJJrg2wXEpMt
-         gdsQ==
-X-Gm-Message-State: AOAM5321R0K+uMTEo3kCjDqR2/1gD7gSboS8GKuB5M31s66rc9IjxGHt
-        a2hp+rbdk+uBfo0PYoSv2qfnxQ==
-X-Google-Smtp-Source: ABdhPJynLhIrI4Ec/Pi8a+UDxpqcBNKVYwi1xF2Z3p9w13WpPyERu1mDpA9ujWCI8mGWcJne8PRpsQ==
-X-Received: by 2002:a17:90b:30c3:: with SMTP id hi3mr27886839pjb.188.1624892823966;
-        Mon, 28 Jun 2021 08:07:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v8sm14011101pff.34.2021.06.28.08.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 08:07:03 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 08:07:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        David Laight <David.Laight@aculab.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-Subject: Re: [selftests/lkdtm]  7ecfffe9bc:
- kernel_BUG_at_drivers/misc/lkdtm/bugs.c
-Message-ID: <202106280805.5620A53D08@keescook>
-References: <20210628145922.GC22448@xsang-OptiPlex-9020>
+        id S237353AbhF1PeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:34:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237621AbhF1PKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:10:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D05261206;
+        Mon, 28 Jun 2021 15:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624892853;
+        bh=FwccOg7lWtm3GpmgF7Fn+80t3t2Y0enfuppOeDV+qe4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tpjs1s36JlyC1Vcouw20e/hfY0kJ36jszlb0hgTOHD4LurBqc2FVIAeidxhdWMKXD
+         tfc5Ou1MTImgsHkPLfQaSTNDGV3mx4elWQpk/yZHwyXH+I/ibYLntUGlug7YndAxyJ
+         UeJpIZcIl/fMRFXVbgC6eWpPhWQrR7c8kJL6gZ9s=
+Date:   Mon, 28 Jun 2021 17:07:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        "# 3.13+" <stable@vger.kernel.org>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH 5.12 004/110] drm: add a locked version of
+ drm_is_current_master
+Message-ID: <YNnls/uN1bme5eud@kroah.com>
+References: <20210628141828.31757-1-sashal@kernel.org>
+ <20210628141828.31757-5-sashal@kernel.org>
+ <CACvgo50q9NLRjo3XMN63wQJywiZ_Z=yUoQLuVfy-Ht1URYdO-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210628145922.GC22448@xsang-OptiPlex-9020>
+In-Reply-To: <CACvgo50q9NLRjo3XMN63wQJywiZ_Z=yUoQLuVfy-Ht1URYdO-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 10:59:22PM +0800, kernel test robot wrote:
+On Mon, Jun 28, 2021 at 04:01:46PM +0100, Emil Velikov wrote:
+> Hi Sasha, Greg,
 > 
+> On Mon, 28 Jun 2021 at 15:18, Sasha Levin <sashal@kernel.org> wrote:
+> >
+> > From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> >
+> > commit 1815d9c86e3090477fbde066ff314a7e9721ee0f upstream.
+> >
 > 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 7ecfffe9bcb6657ae3a86c58f8eae2fe37b54807 ("selftests/lkdtm: Avoid needing explicit sub-shell")
-> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git for-next/lkdtm
-> 
-> 
-> in testcase: kernel-selftests
-> version: kernel-selftests-x86_64-f8879e85-1_20210621
-> with following parameters:
-> 
-> 	group: lkdtm
-> 	ucode: 0xe2
-> 
-> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
-> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> Please drop this patch from all stable trees. See following drm-misc
+> revert for details:
+> https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-fixes&id=f54b3ca7ea1e5e02f481cf4ca54568e57bd66086
 
-When running the "lkdtm" subsystem of tests, CI systems should ignore
-console Oopses, since those are "working as intended" for lkdtm (which
-is explicitly testing for those Oopses).
+The revert is later in the series already :)
 
--Kees
+thanks,
 
--- 
-Kees Cook
+greg k-h
