@@ -2,474 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67453B65BB
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2763B65B9
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhF1Pep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:34:45 -0400
-Received: from mail-yb1-f177.google.com ([209.85.219.177]:46068 "EHLO
-        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234344AbhF1PQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:16:08 -0400
-Received: by mail-yb1-f177.google.com with SMTP id k184so12206394ybf.12;
-        Mon, 28 Jun 2021 08:13:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a+hJo3DaRApRxM158a7wXHEXGoVcUg0u5drKcVtRkrs=;
-        b=kJhNoeD4cE8+itP0/kB3+9ouDRWKmX6/Ms6g7TAppwHIhVXTx1CMk7m81o6MOUcCjA
-         tsx3PqDV1ZKe1T9kI4s3QVXQtlUK5eWJ06vJwRbahBbMnbAujMzP2IvFts9bYbcXF3fi
-         Ky7ZK6V3/h3pxMwZUPglEjmSmfDX+zyo+h0VV27EbZURkCkRJGZxMPzx+y2xyJsj0WWg
-         +b2neAOWDefqTqXJKq1IY/Q0RNXZKEoU6tiPit7B/22LBWHrB7emRsWW38F8ASaz047j
-         Z8m0arHwfs2c4bJjGVtilBXWSl+EAbfc0lGR4iLRngDazBzqxzWTu0/mEz9+oIYZr8L0
-         Uikw==
-X-Gm-Message-State: AOAM53029xTyN2iyjge2LVpGh5yJL/CGb8/4h8RB1oQBnLwDKhSoXVcx
-        sViPitfRFXdKvZ901RmMMvt6gkRmXNs6vsX318I=
-X-Google-Smtp-Source: ABdhPJw0TWdYKGnez06biK0e3IGthVhSWOHpnop3dITSz/Gk6+p2nDD5gbLHM0zJ002MLqN76dlJxF6LVeBXKWUmJXE=
-X-Received: by 2002:a25:a549:: with SMTP id h67mr33110563ybi.393.1624893220841;
- Mon, 28 Jun 2021 08:13:40 -0700 (PDT)
+        id S238619AbhF1Pef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:34:35 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:36392 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235682AbhF1PQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:16:03 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz0Ia59lgs88ZAA--.8919S2;
+        Mon, 28 Jun 2021 23:13:30 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
+Date:   Mon, 28 Jun 2021 23:13:29 +0800
+Message-Id: <20210628151330.11952-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20210624162108.832518-1-esmil@mailme.dk> <20210624162108.832518-3-esmil@mailme.dk>
- <20210628150803.GA441036@roeck-us.net>
-In-Reply-To: <20210628150803.GA441036@roeck-us.net>
-From:   Esmil <esmil@mailme.dk>
-Date:   Mon, 28 Jun 2021 17:13:29 +0200
-Message-ID: <CANBLGcyP8cZEEQqJEw_u0F=AW-Qw3uN9WmMb4E_60Sk7qcpYmg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] hwmon: (sfctemp) Add StarFive JH7100 temperature sensor
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxz0Ia59lgs88ZAA--.8919S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy8WrWDXw4kCw17AF15twb_yoW5CF1rpF
+        Z8Gw43Cr4rG3W7Kw4rtF1UuFW5Z3Z3tFWjkFW2v34UZ3sxWFZ8Jwn8tFyrArnrGrW7AFW3
+        ZFsYgFW8CF4ru3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCY
+        02Avz4vE14v_XrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUkwvKUUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Jun 2021 at 17:08, Guenter Roeck <linux@roeck-us.net> wrote:
-> On Thu, Jun 24, 2021 at 06:21:08PM +0200, Emil Renner Berthing wrote:
-> > From: Emil Renner Berthing <kernel@esmil.dk>
-> >
-> > Register definitions and conversion constants based on sfctemp driver by
-> > Samin in the StarFive 5.10 kernel.
-> >
-> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
-> > ---
-> >  Documentation/hwmon/index.rst   |   1 +
-> >  Documentation/hwmon/sfctemp.rst |  32 ++++
-> >  MAINTAINERS                     |   8 +
-> >  drivers/hwmon/Kconfig           |  10 ++
-> >  drivers/hwmon/Makefile          |   1 +
-> >  drivers/hwmon/sfctemp.c         | 288 ++++++++++++++++++++++++++++++++
-> >  6 files changed, 340 insertions(+)
-> >  create mode 100644 Documentation/hwmon/sfctemp.rst
-> >  create mode 100644 drivers/hwmon/sfctemp.c
-> >
-> > diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> > index 9ed60fa84cbe..f23308e97d2e 100644
-> > --- a/Documentation/hwmon/index.rst
-> > +++ b/Documentation/hwmon/index.rst
-> > @@ -161,6 +161,7 @@ Hardware Monitoring Kernel Drivers
-> >     sch5627
-> >     sch5636
-> >     scpi-hwmon
-> > +   sfctemp
-> >     sht15
-> >     sht21
-> >     sht3x
-> > diff --git a/Documentation/hwmon/sfctemp.rst b/Documentation/hwmon/sfctemp.rst
-> > new file mode 100644
-> > index 000000000000..465edce2fea5
-> > --- /dev/null
-> > +++ b/Documentation/hwmon/sfctemp.rst
-> > @@ -0,0 +1,32 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +Kernel driver sfctemp
-> > +=====================
-> > +
-> > +Supported chips:
-> > + - StarFive JH7100
-> > +
-> > +Authors:
-> > + - Emil Renner Berthing <kernel@esmil.dk>
-> > +
-> > +Description
-> > +-----------
-> > +
-> > +This driver adds support for reading the built-in temperature sensor on the
-> > +JH7100 RISC-V SoC by StarFive Technology Co. Ltd.
-> > +
-> > +``sysfs`` interface
-> > +-------------------
-> > +
-> > +The temperature sensor can be enabled, disabled and queried via the standard
-> > +hwmon interface in sysfs under ``/sys/class/hwmon/hwmonX`` for some value of
-> > +``X``:
-> > +
-> > +================ ==== =============================================
-> > +Name             Perm Description
-> > +================ ==== =============================================
-> > +temp1_enable     RW   Enable or disable temperature sensor.
-> > +                      Automatically enabled by the driver,
-> > +                      but may be disabled to save power.
-> > +temp1_input      RO   Temperature reading in milli-degrees Celsius.
-> > +================ ==== =============================================
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8c5ee008301a..a7d25a672270 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -16535,6 +16535,14 @@ L:   netdev@vger.kernel.org
-> >  S:   Supported
-> >  F:   drivers/net/ethernet/sfc/
-> >
-> > +SFCTEMP HWMON DRIVER
-> > +M:   Emil Renner Berthing <kernel@esmil.dk>
-> > +L:   linux-hwmon@vger.kernel.org
-> > +S:   Maintained
-> > +F:   Documentation/devicetree/bindings/hwmon/starfive,jh7100-temp.yaml
-> > +F:   Documentation/hwmon/sfctemp.rst
-> > +F:   drivers/hwmon/sfctemp.c
-> > +
-> >  SFF/SFP/SFP+ MODULE SUPPORT
-> >  M:   Russell King <linux@armlinux.org.uk>
-> >  L:   netdev@vger.kernel.org
-> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > index 87624902ea80..7da8fd8beb06 100644
-> > --- a/drivers/hwmon/Kconfig
-> > +++ b/drivers/hwmon/Kconfig
-> > @@ -1751,6 +1751,16 @@ config SENSORS_STTS751
-> >         This driver can also be built as a module. If so, the module
-> >         will be called stts751.
-> >
-> > +config SENSORS_SFCTEMP
-> > +     tristate "Starfive JH7100 temperature sensor"
-> > +     depends on OF && (RISCV || COMPILE_TEST)
-> > +     help
-> > +       If you say yes here you get support for temperature sensor
-> > +       on the Starfive JH7100 SoC.
-> > +
-> > +       This driver can also be built as a module.  If so, the module
-> > +       will be called sfctemp.
-> > +
-> >  config SENSORS_SMM665
-> >       tristate "Summit Microelectronics SMM665"
-> >       depends on I2C
-> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> > index 59e78bc212cf..3723eb580bf3 100644
-> > --- a/drivers/hwmon/Makefile
-> > +++ b/drivers/hwmon/Makefile
-> > @@ -167,6 +167,7 @@ obj-$(CONFIG_SENSORS_SBTSI)       += sbtsi_temp.o
-> >  obj-$(CONFIG_SENSORS_SCH56XX_COMMON)+= sch56xx-common.o
-> >  obj-$(CONFIG_SENSORS_SCH5627)        += sch5627.o
-> >  obj-$(CONFIG_SENSORS_SCH5636)        += sch5636.o
-> > +obj-$(CONFIG_SENSORS_SFCTEMP)        += sfctemp.o
-> >  obj-$(CONFIG_SENSORS_SL28CPLD)       += sl28cpld-hwmon.o
-> >  obj-$(CONFIG_SENSORS_SHT15)  += sht15.o
-> >  obj-$(CONFIG_SENSORS_SHT21)  += sht21.o
-> > diff --git a/drivers/hwmon/sfctemp.c b/drivers/hwmon/sfctemp.c
-> > new file mode 100644
-> > index 000000000000..4328aacf9272
-> > --- /dev/null
-> > +++ b/drivers/hwmon/sfctemp.c
-> > @@ -0,0 +1,288 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-> > + * Copyright (C) 2021 Samin Guo <samin.guo@starfivetech.com>
-> > + */
-> > +#include <linux/completion.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/hwmon.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +/*
-> > + * TempSensor reset. The RSTN can be de-asserted once the analog core has
-> > + * powered up. Trst(min 100ns)
-> > + * 0:reset  1:de-assert
-> > + */
-> > +#define SFCTEMP_RSTN BIT(0)
-> > +
-> > +/*
-> > + * TempSensor analog core power down. The analog core will be powered up
-> > + * Tpu(min 50us) after PD is de-asserted. RSTN should be held low until the
-> > + * analog core is powered up.
-> > + * 0:power up  1:power down
-> > + */
-> > +#define SFCTEMP_PD   BIT(1)
-> > +
-> > +/*
-> > + * TempSensor start conversion enable.
-> > + * 0:disable  1:enable
-> > + */
-> > +#define SFCTEMP_RUN  BIT(2)
-> > +
-> > +/*
-> > + * TempSensor conversion value output.
-> > + * Temp(C)=DOUT*Y/4094 - K
-> > + */
-> > +#define SFCTEMP_DOUT_POS     16
-> > +#define SFCTEMP_DOUT_MSK     GENMASK(27, 16)
-> > +
-> > +/* DOUT to Celcius conversion constants */
-> > +#define SFCTEMP_Y1000        237500L
-> > +#define SFCTEMP_Z    4094L
-> > +#define SFCTEMP_K1000        81100L
-> > +
-> > +struct sfctemp {
-> > +     /* serialize access to hardware register and enabled below */
-> > +     struct mutex lock;
-> > +     struct completion conversion_done;
-> > +     void __iomem *regs;
-> > +     bool enabled;
-> > +};
-> > +
-> > +static irqreturn_t sfctemp_isr(int irq, void *data)
-> > +{
-> > +     struct sfctemp *sfctemp = data;
-> > +
-> > +     complete(&sfctemp->conversion_done);
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static void sfctemp_power_up(struct sfctemp *sfctemp)
-> > +{
-> > +     /* make sure we're powered down first */
-> > +     writel(SFCTEMP_PD, sfctemp->regs);
-> > +     udelay(1);
-> > +
-> > +     writel(0, sfctemp->regs);
-> > +     /* wait t_pu(50us) + t_rst(100ns) */
-> > +     usleep_range(60, 200);
-> > +
-> > +     /* de-assert reset */
-> > +     writel(SFCTEMP_RSTN, sfctemp->regs);
-> > +     udelay(1); /* wait t_su(500ps) */
-> > +}
-> > +
-> > +static void sfctemp_power_down(struct sfctemp *sfctemp)
-> > +{
-> > +     writel(SFCTEMP_PD, sfctemp->regs);
-> > +}
-> > +
-> > +static void sfctemp_run_single(struct sfctemp *sfctemp)
-> > +{
-> > +     writel(SFCTEMP_RSTN | SFCTEMP_RUN, sfctemp->regs);
-> > +     udelay(1);
-> > +     writel(SFCTEMP_RSTN, sfctemp->regs);
-> > +}
-> > +
-> > +static int sfctemp_enable(struct sfctemp *sfctemp)
-> > +{
-> > +     mutex_lock(&sfctemp->lock);
-> > +     if (sfctemp->enabled)
-> > +             goto done;
-> > +
-> > +     sfctemp_power_up(sfctemp);
-> > +     sfctemp->enabled = true;
-> > +done:
-> > +     mutex_unlock(&sfctemp->lock);
-> > +     return 0;
-> > +}
-> > +
-> > +static int sfctemp_disable(struct sfctemp *sfctemp)
-> > +{
-> > +     mutex_lock(&sfctemp->lock);
-> > +     if (!sfctemp->enabled)
-> > +             goto done;
-> > +
-> > +     sfctemp_power_down(sfctemp);
-> > +     sfctemp->enabled = false;
-> > +done:
-> > +     mutex_unlock(&sfctemp->lock);
-> > +     return 0;
-> > +}
-> > +
-> > +static void sfctemp_disable_action(void *data)
-> > +{
-> > +     sfctemp_disable(data);
-> > +}
-> > +
-> > +static int sfctemp_convert(struct sfctemp *sfctemp, long *val)
-> > +{
-> > +     int ret;
-> > +
-> > +     mutex_lock(&sfctemp->lock);
-> > +     if (!sfctemp->enabled) {
-> > +             ret = -ENODATA;
-> > +             goto out;
-> > +     }
-> > +
-> > +     sfctemp_run_single(sfctemp);
-> > +
-> > +     ret = wait_for_completion_interruptible_timeout(&sfctemp->conversion_done,
-> > +                                                     msecs_to_jiffies(10));
-> > +     if (ret < 0)
-> > +             goto out;
->
-> Does this need to handle timeouts ?
->
->         if (ret == 0)
->                 return -ETIMEDOUT;
+Add power management register operations to support reboot and poweroff.
 
-Oh yes. Good catch. I thought it would automatically return -ETIMEDOUT
-on timeout. I'll add that to the next version.
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-> > +     ret = 0;
-> > +out:
-> > +     mutex_unlock(&sfctemp->lock);
-> > +     return ret;
-> > +}
-> > +
-> > +static umode_t sfctemp_is_visible(const void *data, enum hwmon_sensor_types type,
-> > +                               u32 attr, int channel)
-> > +{
-> > +     switch (type) {
-> > +     case hwmon_temp:
-> > +             switch (attr) {
-> > +             case hwmon_temp_enable:
-> > +                     return 0644;
-> > +             case hwmon_temp_input:
-> > +                     return 0444;
-> > +             }
-> > +             return 0;
-> > +     default:
-> > +             return 0;
-> > +     }
-> > +}
-> > +
-> > +static int sfctemp_read(struct device *dev, enum hwmon_sensor_types type,
-> > +                     u32 attr, int channel, long *val)
-> > +{
-> > +     struct sfctemp *sfctemp = dev_get_drvdata(dev);
-> > +
-> > +     switch (type) {
-> > +     case hwmon_temp:
-> > +             switch (attr) {
-> > +             case hwmon_temp_enable:
-> > +                     *val = sfctemp->enabled;
-> > +                     return 0;
-> > +             case hwmon_temp_input:
-> > +                     return sfctemp_convert(sfctemp, val);
-> > +             }
-> > +             return -EINVAL;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> > +static int sfctemp_write(struct device *dev, enum hwmon_sensor_types type,
-> > +                      u32 attr, int channel, long val)
-> > +{
-> > +     struct sfctemp *sfctemp = dev_get_drvdata(dev);
-> > +
-> > +     switch (type) {
-> > +     case hwmon_temp:
-> > +             switch (attr) {
-> > +             case hwmon_temp_enable:
-> > +                     if (val == 0)
-> > +                             return sfctemp_disable(sfctemp);
-> > +                     if (val == 1)
-> > +                             return sfctemp_enable(sfctemp);
-> > +                     break;
-> > +             }
-> > +             return -EINVAL;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> > +static const struct hwmon_channel_info *sfctemp_info[] = {
-> > +     HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
-> > +     HWMON_CHANNEL_INFO(temp, HWMON_T_ENABLE | HWMON_T_INPUT),
-> > +     NULL
-> > +};
-> > +
-> > +static const struct hwmon_ops sfctemp_hwmon_ops = {
-> > +     .is_visible = sfctemp_is_visible,
-> > +     .read = sfctemp_read,
-> > +     .write = sfctemp_write,
-> > +};
-> > +
-> > +static const struct hwmon_chip_info sfctemp_chip_info = {
-> > +     .ops = &sfctemp_hwmon_ops,
-> > +     .info = sfctemp_info,
-> > +};
-> > +
-> > +static int sfctemp_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev = &pdev->dev;
-> > +     struct device *hwmon_dev;
-> > +     struct resource *mem;
-> > +     struct sfctemp *sfctemp;
-> > +     int ret;
-> > +
-> > +     sfctemp = devm_kzalloc(dev, sizeof(*sfctemp), GFP_KERNEL);
-> > +     if (!sfctemp)
-> > +             return -ENOMEM;
-> > +
-> > +     dev_set_drvdata(dev, sfctemp);
-> > +     mutex_init(&sfctemp->lock);
-> > +     init_completion(&sfctemp->conversion_done);
-> > +
-> > +     mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     sfctemp->regs = devm_ioremap_resource(dev, mem);
-> > +     if (IS_ERR(sfctemp->regs))
-> > +             return PTR_ERR(sfctemp->regs);
-> > +
-> > +     ret = platform_get_irq(pdev, 0);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     ret = devm_request_irq(dev, ret, sfctemp_isr,
-> > +                            IRQF_SHARED, pdev->name, sfctemp);
-> > +     if (ret) {
-> > +             dev_err(dev, "request irq failed: %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = devm_add_action(dev, sfctemp_disable_action, sfctemp);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret = sfctemp_enable(sfctemp);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     hwmon_dev = devm_hwmon_device_register_with_info(dev, pdev->name, sfctemp,
-> > +                                                      &sfctemp_chip_info, NULL);
-> > +     return PTR_ERR_OR_ZERO(hwmon_dev);
-> > +}
-> > +
-> > +static const struct of_device_id sfctemp_of_match[] = {
-> > +     { .compatible = "starfive,jh7100-temp" },
-> > +     { /* sentinel */ }
-> > +};
-> > +
-> > +MODULE_DEVICE_TABLE(of, sfctemp_of_match);
-> > +
-> > +static struct platform_driver sfctemp_driver = {
-> > +     .driver = {
-> > +             .name = "sfctemp",
-> > +             .of_match_table = of_match_ptr(sfctemp_of_match),
-> > +     },
-> > +     .probe  = sfctemp_probe,
-> > +};
-> > +module_platform_driver(sfctemp_driver);
-> > +
-> > +MODULE_AUTHOR("Emil Renner Berthing");
-> > +MODULE_DESCRIPTION("StarFive JH7100 temperature sensor driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.32.0
-> >
+v2-v3:
+-make reset support as a driver
+
+v3-v4:
+-Modify patch title
+
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
+ drivers/platform/mips/Kconfig      |  6 +++
+ drivers/platform/mips/Makefile     |  1 +
+ drivers/platform/mips/ls2k-reset.c | 60 ++++++++++++++++++++++++++++++
+ 3 files changed, 67 insertions(+)
+ create mode 100644 drivers/platform/mips/ls2k-reset.c
+
+diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+index 8ac149173c64..d421e1482395 100644
+--- a/drivers/platform/mips/Kconfig
++++ b/drivers/platform/mips/Kconfig
+@@ -30,4 +30,10 @@ config RS780E_ACPI
+ 	help
+ 	  Loongson RS780E PCH ACPI Controller driver.
+ 
++config LS2K_RESET
++	bool "Loongson-2K1000 Reset Controller"
++	depends on MACH_LOONGSON64 || COMPILE_TEST
++	help
++	  Loongson-2K1000 Reset Controller driver.
++
+ endif # MIPS_PLATFORM_DEVICES
+diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
+index 178149098777..4c71444e453a 100644
+--- a/drivers/platform/mips/Makefile
++++ b/drivers/platform/mips/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
+ obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
++obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
+diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
+new file mode 100644
+index 000000000000..c5f073c82c5e
+--- /dev/null
++++ b/drivers/platform/mips/ls2k-reset.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
++ *  Loongson-2K1000 reset support
++ */
++
++#include <linux/of_address.h>
++#include <linux/pm.h>
++#include <asm/reboot.h>
++
++static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
++
++static void __iomem *get_reg_byname(struct device_node *node, const char *name)
++{
++	int index = of_property_match_string(node, "reg-names", name);
++
++	if (index < 0)
++		return NULL;
++
++	return of_iomap(node, index);
++}
++
++static void ls2k_restart(char *command)
++{
++	writel(0x1, (void *)pm_reg_name[2]);
++}
++
++static void ls2k_poweroff(void)
++{
++	/* Clear */
++	writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void *)pm_reg_name[0]);
++	/* Sleep Enable | Soft Off*/
++	writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
++}
++
++static int ls2k_reset_init(void)
++{
++	struct device_node *np;
++	int i;
++
++	np = of_find_node_by_type(NULL, "power management");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
++		pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
++		if (!pm_reg_name[i])
++			iounmap(pm_reg_name[i]);
++	}
++
++	_machine_restart = ls2k_restart;
++	pm_power_off = ls2k_poweroff;
++
++	of_node_put(np);
++	return 0;
++}
++
++arch_initcall(ls2k_reset_init);
+-- 
+2.31.0
+
