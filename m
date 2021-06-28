@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF76E3B61FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06723B625B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbhF1OkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:40:03 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:38603 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhF1Ob5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:31:57 -0400
-Received: by mail-vs1-f51.google.com with SMTP id o7so10124625vss.5;
-        Mon, 28 Jun 2021 07:29:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MJfl2dK57KiZa2924NmaS6ccSWynT7w2dh6/tJZbRtc=;
-        b=IZEuaGHeqpAZTt2Yme8ZVmDUzkUVYj0nhlLdBh9lQ+HWEUW8bFyoItR8TY5DeVMbmI
-         eiJAUwatoGahUZ23iSnVBCsnwLkqwyqcQkI626+oMYGxv2jK9T7b5hRfXdmECjlbv5oW
-         yQ0Jjfvnr1DUNv1srbxQL3DqjhQPfTPq1k/EnEy4NrSBXwnBuQ6BziKLbc7OG6rs7Bm9
-         gRK+fEOhAcIM3bs93pAk8djueqMfxmTRUwwLAmA2PzttSv0CkIEFzXVpy3tsbUufs6wt
-         4n51pGV23mZJU7sLPkKngBDO4Yh04uNvhOXLyVv6dZBOpE5M0EJYbv2sgwNR0u/ykuyd
-         K+LA==
-X-Gm-Message-State: AOAM5338mhsjbA4N6MURGKCjqul8w7DID2ME3C3uorkxN5PeWPZduXPC
-        PUpcxmqTdUN/fk/meBL3ecS+NpJWvZajVng0ElHCosHDELKJIw==
-X-Google-Smtp-Source: ABdhPJwLxmk3uBOFWBCL5M1PkiIvkNI0F6ru0t+EyWqbf43UiQg3ml/MQ2WF5uxWE6LMCi1SOdDHAsk+aVvf/IRS22E=
-X-Received: by 2002:a67:770d:: with SMTP id s13mr5897612vsc.40.1624890569715;
- Mon, 28 Jun 2021 07:29:29 -0700 (PDT)
+        id S236136AbhF1OqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:46:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235336AbhF1OfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:35:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A6CC61C9B;
+        Mon, 28 Jun 2021 14:30:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624890629;
+        bh=eFC8b5XC/EPZQcbaZi9DnD2eoiADfWr+e4VZWow7xhc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rKFrxU+hxVrRtCT+ikMZ+Xx759l0eC6ryTu7H2rUUzfJGqaIy4SdMG0P6bZzdRjU7
+         3UIRpyL7Pu/209gfyCMWa3R3bj/upmrHx3FF6CcbvPA7DPLSjUjDiWAkSq9kX/aW4s
+         /K2PmqsGyWFtnxYzb25L1ot+IFS75/yxY0QyaN1A/oj6KM3hgKfbPR8nXe9Dcqh5u9
+         B3sVUfvhic6oHEgTjeTvvsA/6OC0RxRApP5AsCW6TVJk+jn4tTUuSUmSyQ+ZPzw8rw
+         olsq1ma65dywl3t3BOC0JUrO4TDm/JHoVlBLGs+CDXrOONoIwv9BYym0N2pZQhb4W0
+         vlV4qXATN9GtQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Praneeth Bajjuri <praneeth@ti.com>, Geet Modi <geet.modi@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 26/71] net: phy: dp83867: perform soft reset and retain established link
+Date:   Mon, 28 Jun 2021 10:29:19 -0400
+Message-Id: <20210628143004.32596-27-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
+References: <20210628143004.32596-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210623133205.GA28589@lst.de>
-In-Reply-To: <20210623133205.GA28589@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 16:29:18 +0200
-Message-ID: <CAMuHMdUOaRiJcO1fq3u4tgeB0aUbfn_qn7DEZtW4BC+7ECcx4Q@mail.gmail.com>
-Subject: Re: dma_declare_coherent_memory and SuperH
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.129-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.129-rc1
+X-KernelTest-Deadline: 2021-06-30T14:29+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+From: Praneeth Bajjuri <praneeth@ti.com>
 
-On Wed, Jun 23, 2021 at 3:33 PM Christoph Hellwig <hch@lst.de> wrote:
-> I have a vague recollection that you were planning on dropping support
-> for non-devicetree platforms, is that still the case?
->
-> The reason I'm asking is because all but one users of
-> dma_declare_coherent_memory are in the sh platform setup code, and
-> I'd really like to move towards killing this function off.
+[ Upstream commit da9ef50f545f86ffe6ff786174d26500c4db737a ]
 
-I guess you mean drivers/remoteproc/remoteproc_virtio.c?
+Current logic is performing hard reset and causing the programmed
+registers to be wiped out.
 
-BeagleV Starlight Beta will be adding two more in
-drivers/nvdla/nvdla_gem.c.
-https://github.com/esmil/linux/commit/ce5cffcc8e618604a0d442758321fc5577751c9d
+as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
+8.6.26 Control Register (CTRL)
 
-Gr{oetje,eeting}s,
+do SW_RESTART to perform a reset not including the registers,
+If performed when link is already present,
+it will drop the link and trigger re-auto negotiation.
 
-                        Geert
+Signed-off-by: Praneeth Bajjuri <praneeth@ti.com>
+Signed-off-by: Geet Modi <geet.modi@ti.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/phy/dp83867.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
+diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
+index 31a559513362..87c0cdbf262a 100644
+--- a/drivers/net/phy/dp83867.c
++++ b/drivers/net/phy/dp83867.c
+@@ -468,16 +468,12 @@ static int dp83867_phy_reset(struct phy_device *phydev)
+ {
+ 	int err;
+ 
+-	err = phy_write(phydev, DP83867_CTRL, DP83867_SW_RESET);
++	err = phy_write(phydev, DP83867_CTRL, DP83867_SW_RESTART);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	usleep_range(10, 20);
+ 
+-	/* After reset FORCE_LINK_GOOD bit is set. Although the
+-	 * default value should be unset. Disable FORCE_LINK_GOOD
+-	 * for the phy to work properly.
+-	 */
+ 	return phy_modify(phydev, MII_DP83867_PHYCTRL,
+ 			 DP83867_PHYCR_FORCE_LINK_GOOD, 0);
+ }
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
