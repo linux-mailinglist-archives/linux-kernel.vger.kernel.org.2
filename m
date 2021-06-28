@@ -2,59 +2,636 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BEC3B6B6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA5E3B6B74
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 01:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbhF1Xja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 19:39:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234008AbhF1XjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 19:39:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5D7FC61D04;
-        Mon, 28 Jun 2021 23:36:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624923396;
-        bh=u6VnLbf3ZulenKFDKRRWSDU0BLQs2pttUgLwSu+cnEM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TOdZbzM8LgUT2Lszv2JIDHXEByO7KZF81e0s4LTEeMtNM6I+zlI/Ke+gy0326xlp+
-         eUCvSwTk+0uGMIvtslhiLu2laGj56b/XtSzLhIa6jn2jDaTohXzmqnD9qtacvjOxIZ
-         iTATB/kohcY3w0m5+XWWO4yZCH4W7a4YG9m5seel70LpFBtFx1ru5JJ0hvtJa1GhJ9
-         ixuK/y44VjCgf+YkXywxQrHT9Io4pTCuJkdvHwNBUD6I4ZnQsnsWKQDDN7k0GJplk/
-         54UktHg91acY8ducbpWsGQZSqubR5bzKQG2tWgg7UXZxP8tD/TmQ/TZju7T8Oltvxm
-         5u8/m+t9JPG/w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5767160A3A;
-        Mon, 28 Jun 2021 23:36:36 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes for Linux 5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210625154805.133099-1-pbonzini@redhat.com>
-References: <20210625154805.133099-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210625154805.133099-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: b8917b4ae44d1b945f6fba3d8ee6777edb44633b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 36824f198c621cebeb22966b5e244378fa341295
-Message-Id: <162492339635.13806.1858328284331539337.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Jun 2021 23:36:36 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        id S235711AbhF1Xkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 19:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235561AbhF1Xkb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 19:40:31 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC1DC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 16:38:04 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj15so29270018qkb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 16:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xdpnfmj08WLMarmLZ+rrfJ5BJlgSMicFkBXDYXSvGR8=;
+        b=PkPoRIqf/0MDO9iOS99WH8r/73VMI9F0KzQqCxVG8/pndAflSSMpcxXWVqspV0NG4F
+         EBEAIHXWomhxOls6eYc1cG+LHYFmO4tKGd1YoO5Yi1bEK+56aqIUUK5oizIEB+0fz0rq
+         F4fXTCMU4BddwGSuZz1S7KgB4QZ33aFtREIsw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xdpnfmj08WLMarmLZ+rrfJ5BJlgSMicFkBXDYXSvGR8=;
+        b=gSx57eklQ3oKDxVCNfYfHHCA3VaETkZZzopGTqD+T4vTN72M4f9vRoYFMNCdW1yubW
+         Ej9L9KxU3kbrJtdtr4BH5vrALFYiRAtzkGdhRvqYxfFTnthb2LOAX2ReT57txgdn4MjH
+         B0RMtayeGk3fw4QsBetvaldJ+FTlcz0KExVkNHMkmTjp6ZQDZa6CkZdv3QhyatRX7tKZ
+         6NYrFcsD9pLcGGbwz18jU2pfRM1tAJXhqPaYxw3eKXyC62zmvbvSr1HE+APQVUZ88VK5
+         1Dm3VWg1VSeNeQAZlQq0Y/NkrMvPai0AGsXKa/2UtVofpxRzCeYHPdd1fymFnBsuQqYC
+         hfPQ==
+X-Gm-Message-State: AOAM533Q3FuBbxPIhirNOoswh7weZMffoHSbVcFwZbyuynFOE7G8Nt1O
+        CcLZuwk50bJv7dPjtVGnEXxYZYCxxzblrg==
+X-Google-Smtp-Source: ABdhPJxlXlTux/ANkbkl82xueQsSYnsMbM0IbB/899ZH6I+zRUynJOzMm7D891PCmwA0tu69NmgLCw==
+X-Received: by 2002:a37:65c3:: with SMTP id z186mr18485447qkb.481.1624923483774;
+        Mon, 28 Jun 2021 16:38:03 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id y3sm11190457qkf.2.2021.06.28.16.38.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 16:38:02 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id b64so21348292yba.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 16:38:02 -0700 (PDT)
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr34178571ybm.345.1624923481876;
+ Mon, 28 Jun 2021 16:38:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210625052213.32260-1-vkoul@kernel.org> <20210625052213.32260-5-vkoul@kernel.org>
+In-Reply-To: <20210625052213.32260-5-vkoul@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 28 Jun 2021 16:37:48 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UfZxKyUZMK9c74KmMBBqgYROn1zp+vLfHaj_ghUK1t+g@mail.gmail.com>
+Message-ID: <CAD=FV=UfZxKyUZMK9c74KmMBBqgYROn1zp+vLfHaj_ghUK1t+g@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] spi: spi-geni-qcom: Add support for GPI dma
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Jun 2021 11:48:05 -0400:
+Hi,
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+On Thu, Jun 24, 2021 at 10:22 PM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> We can use GPI DMA for devices where it is enabled by firmware. Add
+> support for this mode
+>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/spi/spi-geni-qcom.c | 329 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 315 insertions(+), 14 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/36824f198c621cebeb22966b5e244378fa341295
+Not a truly full review since I haven't looked into the whole GSI DMA
+driver, but I tried to go over most of your changes.
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> +#define GSI_LOOPBACK_EN                (BIT(0))
+> +#define GSI_CS_TOGGLE          (BIT(3))
+> +#define GSI_CPHA               (BIT(4))
+> +#define GSI_CPOL               (BIT(5))
+> +
+> +#define MAX_TX_SG              (3)
+> +#define NUM_SPI_XFER           (8)
+> +#define SPI_XFER_TIMEOUT_MS    (250)
+
+nit: don't need the extra parenthesis around everything above and it
+doesn't match the existing definitions too.
+
+
+> +struct gsi_desc_cb {
+> +       struct spi_geni_master *mas;
+> +       struct spi_transfer *xfer;
+> +};
+> +
+> +struct spi_geni_gsi {
+> +       dma_cookie_t tx_cookie;
+> +       dma_cookie_t rx_cookie;
+> +       struct dma_async_tx_descriptor *tx_desc;
+> +       struct dma_async_tx_descriptor *rx_desc;
+> +       struct gsi_desc_cb tx_cb;
+> +       struct gsi_desc_cb rx_cb;
+> +};
+
+I'd be curious if others feel the same way, but to me it kinda feels
+like this should be:
+
+struct spi_geni_gsi_pipe {
+  dma_cookie_t cookie;
+  struct dma_async_tx_descriptor *desc;
+  struct gsi_desc_cb cb;
+};
+
+struct spi_geni_gsi {
+  spi_geni_gsi_pipe tx;
+  spi_geni_gsi_pipe rx;
+};
+
+That would actually make spi_gsi_callback_result() more elegant
+because you could pass in the correct structure and then a string "RX"
+or "TX" and get rid of the bool.
+
+
+> @@ -84,6 +110,13 @@ struct spi_geni_master {
+>         int irq;
+>         bool cs_flag;
+>         bool abort_failed;
+> +       struct spi_geni_gsi *gsi;
+
+Maybe do something to make it obvious that this points to an array of
+NUM_SPI_XFER transfers.
+
+If my math is right then "gsi" is expected to be about 256 bytes big.
+I guess you made this a pointer and only allocated it in GSI mode to
+save those 256 bytes in non-GSI mode?
+
+
+> +static void
+> +spi_gsi_callback_result(void *cb, const struct dmaengine_result *result, bool tx)
+> +{
+> +       struct gsi_desc_cb *gsi = cb;
+> +
+> +       if (result->result != DMA_TRANS_NOERROR) {id'd do
+> +               dev_err(gsi->mas->dev, "%s DMA txn failed\n", tx ? "TX" : "RX");
+> +               return;
+> +       }
+> +
+> +       if (!result->residue) {
+> +               if (tx)
+> +                       complete(&gsi->mas->tx_cb);
+> +               else
+> +                       complete(&gsi->mas->rx_cb);
+> +       } else {
+> +               dev_err(gsi->mas->dev, "%s DMA txn has pending %d data\n",
+> +                       tx ? "TX" : "RX", result->residue);
+
+I guess you just wait for the timeout in this case since you don't complete?
+
+
+> +static int setup_gsi_xfer(struct spi_transfer *xfer, struct spi_geni_master *mas,
+> +                         struct spi_device *spi_slv, struct spi_master *spi)
+> +{
+> +       unsigned long flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
+> +       struct spi_geni_gsi *gsi;
+> +       struct dma_slave_config config = {};
+> +       struct gpi_spi_config peripheral = {};
+> +       unsigned long timeout, jiffies;
+
+Is it really a good idea to have a local variable called "jiffies"?
+Isn't the global called "jiffies"?
+
+
+> +       int ret, i;
+> +
+> +       config.peripheral_config = &peripheral;
+> +       config.peripheral_size = sizeof(peripheral);
+> +       peripheral.set_config = true;
+> +
+> +       if (xfer->bits_per_word != mas->cur_bits_per_word ||
+> +           xfer->speed_hz != mas->cur_speed_hz) {
+> +               mas->cur_bits_per_word = xfer->bits_per_word;
+> +               mas->cur_speed_hz = xfer->speed_hz;
+> +       }
+
+It seems a bit pointless to copy these things into "mas" for GSI mode
+and even more pointless to have the "if" test first.
+
+In FIFO mode I believe we stored them in "mas" because we needed them
+from the interrupt handler. It also lets us optimize and avoid calls
+if the config didn't change. You don't need them for either of these
+reasons, do you?
+
+Actually, you might possibly want to keep "cur_speed_hz" and use it to
+avoid a call to get_spi_clk_cfg() which, at least at one point in
+time, was a bit slow.
+
+
+> +       if (!(mas->cur_bits_per_word % MIN_WORD_LEN)) {
+> +               peripheral.rx_len = ((xfer->len << 3) / mas->cur_bits_per_word);
+> +       } else {
+> +               int bytes_per_word = (mas->cur_bits_per_word / BITS_PER_BYTE) + 1;
+> +
+> +               peripheral.rx_len = (xfer->len / bytes_per_word);
+> +       }
+
+I guess you could only do the above if "rx_buf" and then you don't
+have to zero it back out below.
+
+
+> +       if (xfer->tx_buf && xfer->rx_buf) {
+> +               peripheral.cmd = SPI_DUPLEX;
+> +       } else if (xfer->tx_buf) {
+> +               peripheral.cmd = SPI_TX;
+> +               peripheral.rx_len = 0;
+> +       } else if (xfer->rx_buf) {
+> +               peripheral.cmd = SPI_RX;
+> +       }
+> +
+> +       if (spi_slv->mode & SPI_LOOP)
+> +               peripheral.loopback_en = true;
+> +       if (spi_slv->mode & SPI_CPOL)
+> +               peripheral.clock_pol_high = true;
+> +       if (spi_slv->mode & SPI_CPHA)
+> +               peripheral.data_pol_high = true;
+
+nit: I'd do it without the "if"s.
+
+peripheral.loopback_en = spi_slv->mode & SPI_LOOP;
+
+In theory much of this could also be done at function init time but I
+dunno if it makes a huge difference, like:
+
+struct gpi_spi_config peripheral = {
+  .loopback_en = spi_slv->mode & SPI_LOOP,
+  .clock_pol_high = spi_slv->mode & SPI_CPOL,
+  ...
+};
+
+
+> +       peripheral.cs = spi_slv->chip_select;
+> +       peripheral.pack_en = true;
+> +       peripheral.word_len = xfer->bits_per_word - MIN_WORD_LEN;
+> +       peripheral.fragmentation = FRAGMENTATION;
+> +
+> +       ret = get_spi_clk_cfg(mas->cur_speed_hz, mas,
+> +                             &peripheral.clk_src, &peripheral.clk_div);
+> +       if (ret) {
+> +               dev_err(mas->dev, "Err in get_spi_clk_cfg() :%d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       gsi = &mas->gsi[mas->num_xfers];
+
+It sure feels like you should error-check this against NUM_SPI_XFER.
+Otherwise if someone does a transfer with more than 8 parts you're
+totally hosed, right?
+
+Actually, why do you even need an array here? It seems like by the
+time this function exits the transfer will be all done, right? So you
+can just keep using the same structure over and over again? It can
+even be on the stack?
+
+
+> +       gsi->rx_cb.mas = mas;
+> +       gsi->rx_cb.xfer = xfer;
+> +
+> +       if (peripheral.cmd & SPI_RX) {
+> +               dmaengine_slave_config(mas->rx, &config);
+> +               gsi->rx_desc = dmaengine_prep_slave_sg(mas->rx, xfer->rx_sg.sgl, xfer->rx_sg.nents,
+> +                                                      DMA_DEV_TO_MEM, flags);
+> +               if (!gsi->rx_desc) {
+> +                       dev_err(mas->dev, "Err setting up rx desc\n");
+> +                       return -EIO;
+> +               }
+> +               gsi->rx_desc->callback_result = spi_gsi_rx_callback_result;
+> +               gsi->rx_desc->callback_param = &gsi->rx_cb;
+> +       }
+> +
+> +       dmaengine_slave_config(mas->tx, &config);
+> +       gsi->tx_desc = dmaengine_prep_slave_sg(mas->tx, xfer->tx_sg.sgl, xfer->tx_sg.nents,
+> +                                              DMA_MEM_TO_DEV, flags);
+> +       if (!gsi->tx_desc) {
+> +               dev_err(mas->dev, "Err setting up tx desc\n");
+> +               return -EIO;
+> +       }
+
+I haven't dug deeply, but it surprises me that we do all the TX config
+even if "xfer->tx_buf" is NULL.
+
+
+> +       gsi->tx_cb.mas = mas;
+> +       gsi->tx_cb.xfer = xfer;
+> +       gsi->tx_desc->callback_result = spi_gsi_tx_callback_result;
+> +       gsi->tx_desc->callback_param = &gsi->tx_cb;
+> +
+> +       if (peripheral.cmd & SPI_RX)
+> +               gsi->rx_cookie = dmaengine_submit(gsi->rx_desc);
+> +       gsi->tx_cookie = dmaengine_submit(gsi->tx_desc);
+> +
+> +       if (peripheral.cmd & SPI_RX)
+> +               dma_async_issue_pending(mas->rx);
+> +       dma_async_issue_pending(mas->tx);
+> +       mas->num_xfers++;
+> +
+> +       jiffies = msecs_to_jiffies(SPI_XFER_TIMEOUT_MS);
+> +       timeout = wait_for_completion_timeout(&mas->tx_cb, jiffies);
+
+You're waiting a hardcoded 250 ms for every transfer. That could be
+too short for a long transfer. Can you use some logic like the SPI
+framework?
+
+It's probably also worth adding a comment about why you can't just
+return "1" from transfer_one() for GSI mode and let the SPI framework
+handle the timeout calculations. My guess is that you might need extra
+time because another processor might hold the SPI bus and keep you
+from starting your transfer right away and thus your timeout needs to
+be somehow longer than the normal SPI framework. Is that true?
+
+Actually, it looks like spi_transfer_wait() already has 200 ms of
+slop. Is that enough for you? Can you just let the SPI framework
+handle the timeout?
+
+
+> +       if (timeout <= 0) {
+
+Just "== 0". "timeout" is unsigned, right?
+
+
+> +               dev_err(mas->dev, "Tx[%d] timeout%lu\n", i, timeout);
+
+timeout is always 0 in this printout.
+
+
+> +               ret = -ETIMEDOUT;
+> +               goto err_gsi_geni_transfer_one;
+> +       }
+> +
+> +       if (peripheral.cmd & SPI_RX) {
+> +               jiffies = msecs_to_jiffies(SPI_XFER_TIMEOUT_MS);
+> +               timeout = wait_for_completion_timeout(&mas->rx_cb, jiffies);
+
+Why do you need to re-init the timeout? You should just wait for
+however much is left from the previous wait? The TX and RX should be
+happening in parallel, right? So you don't want to wait for a full
+second transfer.
+
+
+> +               if (timeout <= 0) {
+> +                       dev_err(mas->dev, "Rx[%d] timeout%lu\n", i, timeout);
+> +                       ret = -ETIMEDOUT;
+> +                       goto err_gsi_geni_transfer_one;
+> +               }
+> +       }
+> +
+> +       spi_finalize_current_transfer(spi);
+> +       return 0;
+> +
+> +err_gsi_geni_transfer_one:
+> +       dmaengine_terminate_all(mas->tx);
+
+I know not what I'm talking about, but the description of
+dmaengine_terminate_all says "This function is DEPRECATED". It also
+seems like the old "terminate_all" is async? That's bad because you
+gave it stack pointers...
+
+You almost certainly want a WARN_ON or something like that if you fail
+to terminate the transfer because, presumably, the DMA engine will
+keep looking at your config that's stored on the stack (that you're
+freeing by ending the function). That's super bad and I'd want a
+pretty serious warning in my logs if it might be happening.
+
+
+> +static bool geni_can_dma(struct spi_controller *ctlr,
+> +                        struct spi_device *slv, struct spi_transfer *xfer)
+> +{
+> +       struct spi_geni_master *mas = spi_master_get_devdata(slv->master);
+> +
+> +       /* check if dma is supported */
+> +       if (mas->cur_xfer_mode == GENI_GPI_DMA)
+> +               return true;
+> +
+> +       return false;
+> +}
+
+nit: might as well handle GENI_SE_DMA as well since it's just as easy
+to test against GENI_SE_FIFO?
+
+nit: no need for an if.
+
+So just: return mas->cur_xfer_mode != GENI_SE_FIFO;
+
+
+>  static int spi_geni_prepare_message(struct spi_master *spi,
+>                                         struct spi_message *spi_msg)
+>  {
+> -       int ret;
+>         struct spi_geni_master *mas = spi_master_get_devdata(spi);
+> +       int ret;
+>
+> -       if (spi_geni_is_abort_still_pending(mas))
+> -               return -EBUSY;
+> +       switch (mas->cur_xfer_mode) {
+> +       case GENI_SE_FIFO:
+> +               if (spi_geni_is_abort_still_pending(mas))
+> +                       return -EBUSY;
+> +               ret = setup_fifo_params(spi_msg->spi, spi);
+> +               if (ret)
+> +                       dev_err(mas->dev, "Couldn't select mode %d\n", ret);
+> +               return ret;
+>
+> -       ret = setup_fifo_params(spi_msg->spi, spi);
+> -       if (ret)
+> -               dev_err(mas->dev, "Couldn't select mode %d\n", ret);
+> +       case GENI_GPI_DMA:
+> +               mas->num_xfers = 0;
+> +               reinit_completion(&mas->tx_cb);
+> +               reinit_completion(&mas->rx_cb);
+> +               memset(mas->gsi, 0, (sizeof(struct spi_geni_gsi) * NUM_SPI_XFER));
+
+nit: make a #define for the size and use it here and in allocation?
+
+
+> +static int spi_geni_grab_gpi_chan(struct spi_geni_master *mas)
+> +{
+> +       size_t gsi_sz;
+> +       int ret;
+> +
+> +       mas->tx = dma_request_chan(mas->dev, "tx");
+> +       if (IS_ERR_OR_NULL(mas->tx)) {
+
+I don't think dma_request_chan() can return NULL.
+
+
+> +               dev_err(mas->dev, "Failed to get tx DMA ch %ld", PTR_ERR(mas->tx));
+> +               ret = PTR_ERR(mas->tx);
+
+niftier: ret = dev_err_probe(mas->dev, PTR_ERR(mas->tx), "Failed to
+get tx DMA ch\n");
+
+If you don't think that's nifty, at least you should add a "\n" to
+your error message.
+
+
+> +               goto err_tx;
+> +       }
+
+Personally I'm a fan of devm_add_action_or_reset() to simplify error
+handling like this. Everything becomes easier to handle then.
+
+ret = devm_add_action_or_reset(mas->dev, spi_geni_dma_release_chan, mas->tx);
+if (ret)
+  return ret;
+
+You've got to make a tiny spi_geni_dma_release_chan() function that
+just wraps dma_release_chan() (or cast and violate the C standard) but
+then you get rid of all error handling in this function, get rid of
+the code you had to add to remove and the code you forgot to add the
+the probe() function (see below). :-)
+
+
+> +       mas->rx = dma_request_chan(mas->dev, "rx");
+> +       if (IS_ERR_OR_NULL(mas->rx)) {
+> +               dev_err(mas->dev, "Failed to get rx DMA ch %ld", PTR_ERR(mas->rx));
+> +               ret = PTR_ERR(mas->rx);
+> +               goto err_rx;
+> +       }
+> +
+> +       gsi_sz = sizeof(struct spi_geni_gsi) * NUM_SPI_XFER;
+> +       mas->gsi = devm_kzalloc(mas->dev, gsi_sz, GFP_KERNEL);
+> +       if (IS_ERR_OR_NULL(mas->gsi))
+> +               goto err_mem;
+
+This is not correct. kzalloc() never returns errors, just NULL. ...and
+you don't set "ret".
+
+Also: since you re-use this over and over and zero it before each
+transfer, you could probably avoid the zero-allocation.
+
+
+> @@ -349,15 +594,15 @@ static int spi_geni_init(struct spi_geni_master *mas)
+>  {
+>         struct geni_se *se = &mas->se;
+>         unsigned int proto, major, minor, ver;
+> -       u32 spi_tx_cfg;
+> +       u32 spi_tx_cfg, fifo_disable;
+> +       int ret = -ENXIO;
+>
+>         pm_runtime_get_sync(mas->dev);
+>
+>         proto = geni_se_read_proto(se);
+>         if (proto != GENI_SE_SPI) {
+>                 dev_err(mas->dev, "Invalid proto %d\n", proto);
+> -               pm_runtime_put(mas->dev);
+> -               return -ENXIO;
+> +               goto out_pm;
+
+nit: In theory this change could be relegated to a tiny cleanup patch
+just to make your GPI change smaller to review, but I won't insist.
+
+
+> @@ -380,15 +625,38 @@ static int spi_geni_init(struct spi_geni_master *mas)
+>         else
+>                 mas->oversampling = 1;
+>
+> -       geni_se_select_mode(se, GENI_SE_FIFO);
+> +       fifo_disable = readl(se->base + GENI_IF_DISABLE_RO) & FIFO_IF_DISABLE;
+> +       switch (fifo_disable) {
+> +       case 1:
+> +               ret = spi_geni_grab_gpi_chan(mas);
+> +               if (!ret) { /* success case */
+> +                       mas->cur_xfer_mode = GENI_GPI_DMA;
+> +                       geni_se_select_mode(se, GENI_GPI_DMA);
+> +                       dev_dbg(mas->dev, "Using GPI DMA mode for SPI\n");
+> +                       break;
+> +               }
+> +               /*
+> +                * in case of failure to get dma channel, we can till do the
+> +                * FIFO mode, so fallthrough
+
+s/till/still/
+
+> +                */
+> +               dev_warn(mas->dev, "FIFO mode disabled, but couldn't get DMA, fall back to FIFO mode\n");
+> +               fallthrough;
+
+I was under the impression that if `FIFO_IF_DISABLE` was set that the
+FIFO was, how shall we say it, "disabled". ;-) If you can in fact fall
+back to FIFO mode then that bit seems pretty poorly named.
+
+
+>  static irqreturn_t geni_spi_isr(int irq, void *data)
+> @@ -671,6 +942,15 @@ static int spi_geni_probe(struct platform_device *pdev)
+>         if (irq < 0)
+>                 return irq;
+>
+> +       ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+
+nit: this function already has the line:
+
+struct device *dev = &pdev->dev;
+
+...so you can use "dev". :-)
+
+
+> +       if (ret) {
+> +               ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "could not set DMA mask\n");
+> +                       return ret;
+
+niftier: return dev_err_probe(dev, ret, "could not set DMA mask\n");
+
+
+> @@ -710,14 +990,17 @@ static int spi_geni_probe(struct platform_device *pdev)
+>         spi->max_speed_hz = 50000000;
+>         spi->prepare_message = spi_geni_prepare_message;
+>         spi->transfer_one = spi_geni_transfer_one;
+> +       spi->can_dma = geni_can_dma;
+> +       spi->dma_map_dev = mas->dev->parent;
+
+mas->dev->parent == dev->parent ?
+
+
+> @@ -738,6 +1021,14 @@ static int spi_geni_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto spi_geni_probe_runtime_disable;
+>
+> +       /*
+> +        * check the mode supported and set_cs for fifo mode only
+> +        * for dma (gsi) mode, the gsi will set cs based on params passed in
+> +        * TRE
+> +        */
+> +       if (mas->cur_xfer_mode == GENI_SE_FIFO)
+> +               spi->set_cs = spi_geni_set_cs;
+
+I'm curious: is there no way to get set_cs() working in GPI mode? In
+an off-thread conversation Qualcomm seemed to indicate that it was
+possible, but maybe they didn't quite understand what I was asking.
+
+Without an implementation of set_cs() there will be drivers in Linux
+that simply aren't compatible because they make the assumption that
+they can lock the bus, set the CS, and do several transfers that are
+part of some logical "transaction". I believe that both of the SPI
+peripherals on boards that I work on, cros-ec and the SPI TPM make
+this assumption. I don't even believe that the drivers can be "fixed"
+because the requirement is more at the protocol level. The protocol
+requires you to do things like:
+
+0. Lock the bus.
+1. Set the CS.
+2. Transfer a few bytes, reading the response as you go.
+3. Once you see the other side respond that it's ready, transfer some
+more bytes.
+4. Release the CS.
+5. Unlock the bus.
+
+You can't do this without a set_cs() implementation because of the
+requirement to read the responses of the other side before moving on
+to the next phase of the transfer.
+
+As I understand it this is roughly the equivalent of i2c clock
+stretching but much more ad-hoc and defined peripherals-by-peripheral.
+
+In any case, I guess you must have examples of peripherals that need
+GPI mode and don't need set_cs() so we shouldn't block your way
+forward, but I'm just curious if you had more info on this.
+
+
+>  static int spi_geni_remove(struct platform_device *pdev)
+>  {
+>         struct spi_master *spi = platform_get_drvdata(pdev);
+> @@ -762,6 +1061,8 @@ static int spi_geni_remove(struct platform_device *pdev)
+>         /* Unregister _before_ disabling pm_runtime() so we stop transfers */
+>         spi_unregister_master(spi);
+>
+> +       spi_geni_release_dma_chan(mas);
+> +
+
+Why isn't there a call to spi_geni_release_dma_chan() in the error
+paths for probe?
+
+
+-Doug
