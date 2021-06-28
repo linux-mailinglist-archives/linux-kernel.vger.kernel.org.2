@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65CE3B69B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359423B69C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237433AbhF1UgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235335AbhF1UgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:36:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1096361CDB;
-        Mon, 28 Jun 2021 20:33:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624912414;
-        bh=fOc+9fbp7eSWLBIG0EV8ztJzQ+mKd44VRt589wKtT3A=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=T3tWLgkMZQfWbn9q4dzozRFnVgmBCUFRMX3TEk1SeqiwWykwhkzkr6Oxth01s7sXk
-         Q4Tb15Nu7E4CqGA2mcq/d66s3rkfuIU5f0gO7pualYWTrkMejE1Cl9TUOdKG0A73ke
-         dnx3UgJIzEp40rOT7MsJV7cPBa09dUpYEK1/1s/k8zZBQK0YFd7diWJYyKIZm6yKX0
-         hGXo2JR2mfMi0IKf06pEumDofSSocAvN4gxLrBRD2Aw4XXlAhhYaz2kubQviJaHGw3
-         ezruQOJFY0omjVGJBPAVtMro1YE9SQHTURu2Mz5dl3UUW+kEVPm9zOS6hcNLTQ5kXM
-         e6rZmkNkfc1cA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 068FB60A56;
-        Mon, 28 Jun 2021 20:33:34 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/misc UAPI fix for v5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YNl7F5G4CIHaVpvb@gmail.com>
-References: <YNl7F5G4CIHaVpvb@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YNl7F5G4CIHaVpvb@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-misc-2021-06-28
-X-PR-Tracked-Commit-Id: d06aca989c243dd9e5d3e20aa4e5c2ecfdd07050
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e98e8864b0b553389bbb7d2ed197729a434ba0f0
-Message-Id: <162491241402.14584.2441278187046568230.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Jun 2021 20:33:34 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
+        id S235505AbhF1Ukv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234590AbhF1Ukt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 16:40:49 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15572C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:38:23 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id f21so8303443ioh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S2IN8Z+sIZlGv6g5jbxKMc3TDU/gH2bfUrQ5chPxP8A=;
+        b=Ie/uAPjKe+SAVEb99c07SDXehZOV7xkesFAzpljdesiolQA7N5HAv3IcaRFVrIqKGk
+         MkYTKeZuoz5X6xafhC4e82mT9IzBdZwskrLqKSDTHwRsVnX1KAJgVyea++4VZ3qaXFzD
+         4WvEXmUqC4LVXKm/1zUlS9/6ZgzZw3fzil+Ap7H47nFxhwh5P1W3+yA3wSRDJ6e3IoUu
+         yjWA4OK2QnQrLO9X6l2hNmIYqSHJ7KtzFsk9iAjijOzornnVc/twfE+T1vDmtkAQi89M
+         C676feJP+sSR7/YNZgMtny4d7wkrArgGVWD79Ad5mgtoh+nGY4XeiVx/Qe9aSzHBl/TF
+         JmBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S2IN8Z+sIZlGv6g5jbxKMc3TDU/gH2bfUrQ5chPxP8A=;
+        b=P07pvt/5sxQ9y2P8pdhghwESPSjBUG7cuCOB3A/7gz/5tQom6k7u/320mbNDrbUGDV
+         uXxjGEJrCdqK3RPc0uNLefMAwauY4vODIw3ZY+1Lqwp03aWqn8UgEjyumyqZjT7ww7bk
+         B6cC/6n1EhIpvxQV3DcV4dQ7dbMfOMxDEMyArnpYqdLj4dMUmMy8xgEQXl3O7dBd8+MD
+         YdhVRfHoETgJW7OeA0TDXo0nivnanIn7c7+0MWIaBdUZeMxvn6dse4AagbEBBiUqiKZn
+         hiSLpydwFvuEGeaZ1gMVp1y9SN6Tr6aBvHX3JNjWAwoCqjErnMr9sKKAXgpCReKmp17a
+         0JVw==
+X-Gm-Message-State: AOAM530fxL4OKEK6eOq9pNxURx0olikAIspOVVeiKxnoY61RYbWG8g92
+        TbE797Z+KA832WQD94r/wwvFaAKkLgNaFjikMbo/jA==
+X-Google-Smtp-Source: ABdhPJy4bIpkvfhQXmKg7hXoiT4mdXx5NrgDmTmRoIgofDOHTgMABtx/f8l6gLuZgi/rTHFgJiBsY6n8wqEKbURXFuw=
+X-Received: by 2002:a02:77d1:: with SMTP id g200mr1248012jac.132.1624912702185;
+ Mon, 28 Jun 2021 13:38:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1623421410.git.ashish.kalra@amd.com> <8c581834c77284d5b9465b3388f07fa100f9fc4e.1623421410.git.ashish.kalra@amd.com>
+ <CABayD+ckOsM4+sab00SggrH3_iFaiV-7h9tHHuL1J-o6_YQVKA@mail.gmail.com>
+ <YNZXPEPxv54UmzNj@zn.tnic> <20210628193441.GB23232@ashkalra_ubuntu_server>
+In-Reply-To: <20210628193441.GB23232@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 28 Jun 2021 13:37:46 -0700
+Message-ID: <CABayD+e2n+7YB5a9he2VKLKSA80kXVteBMFQgtTG2-oNqqPDYA@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] x86/kvm: Add guest support for detecting and
+ enabling SEV Live Migration feature.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>, pbonzini@redhat.com,
+        seanjc@google.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Jun 2021 09:32:39 +0200:
+On Mon, Jun 28, 2021 at 12:34 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+>
+> Hello Steve,
+>
+> Do you have any final thoughts on this ?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-misc-2021-06-28
+Hi Ashish,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e98e8864b0b553389bbb7d2ed197729a434ba0f0
+Don't block this because of my lack of understanding.  I'm still
+curious about the interactions between SEV and kexec
+--preserved-state. If you have concerns about --preserved-state
+breaking live-migration (when returning to the original kernel), you
+could have kexec's with that flag return an error on Live Migratable
+SEV kernels.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Steve
