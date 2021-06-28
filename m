@@ -2,222 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942683B68EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DF43B68F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbhF1TRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:17:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58859 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236223AbhF1TRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:17:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="271875263"
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="271875263"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 12:14:52 -0700
-X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
-   d="scan'208";a="419284453"
-Received: from maryafar-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.184.65])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 12:14:51 -0700
-Subject: Re: [PATCH v3 04/11] x86: Introduce generic protected guest
- abstraction
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210618225755.662725-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <9e188172-772c-8a33-46c0-e1e4bbf2668d@amd.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <4853f140-9406-6d94-1546-6545472f86da@linux.intel.com>
-Date:   Mon, 28 Jun 2021 12:14:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235383AbhF1TTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234103AbhF1TTx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 15:19:53 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B017C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:17:27 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id y3so3176732wrq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aVDOoSwsEqFnt7m177UdWRoEvgZeeb+7aORURgAHeO0=;
+        b=aW5A7/HTlwu7afrmKWijmi6EQCPWv348Ei9iI8BRY/qjcMnnQqatxEHlM7+j6wT1r8
+         gyK9hmlrKx96syJ/pcbmMXkcKdqcEZl1U5fhhtnJRMdkzrFp01RY7jCkDa6dafWm9J5g
+         HStGHtgS9MMX9sotxLbVJmz5ytR4g+4JiAgwoH2x+knmjua8ppLjFGQMhgPqqPGT/r88
+         NqSOpzA9wCLD4kmslWQePAL9JvXkeq+NcJNor/L/O4c10wrcYAWM9JM03Hig5XeKOyiL
+         HSx1IReUv2bgpI7YRzoECSLmvDhhYmJJHNVAIh8ivCVUAgxgGPPspmdoKmyCwRS/0ikJ
+         wjSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aVDOoSwsEqFnt7m177UdWRoEvgZeeb+7aORURgAHeO0=;
+        b=ff3ujppMVw6AvOAukuoHHdaVCgcDbQ4lHrkPjUWBDI/v3yjmN3/Gym08h8iGk+Ltuq
+         SvCmRfoCLJowAzO53YC5dWkjpDvnlSRPBtSTqnwZnmMM0ljnlLFLNvVwUt0OLWS0K6GU
+         BJV8enB8wEz4AO7oU+aCOU1YLyvvHZlUqdhRWA3L/hw2UgOONOLT8FYFWeCpB3E1RTus
+         Loy0abjSggs1LwMlw/Trddl9otuIaU5E1+XkNkE3Eo9xFFa87RrSvyfgp98q7+qlo3bx
+         CSLHW8I2Uu8lA+FuwOmnHx2iQpa2J4NtTKBuXR8S4YTv6ayJr3Ol3xioBKvSMgctx3mO
+         bXtw==
+X-Gm-Message-State: AOAM531bc3ccfU/6ItBiLYf9DiPBe1d8oi6R9NaeaxZyKzSrmE/+EVYc
+        2sMPcKtt4XhKmQNvXqQJiKkQ7Q==
+X-Google-Smtp-Source: ABdhPJzLJyg3lju7n1j6bePPTjj3oCBn/d+c5mXFM96aBCrOhY+nDEm7WOhSUszNmuojhhlSGCeyKg==
+X-Received: by 2002:a5d:5004:: with SMTP id e4mr4565045wrt.205.1624907845800;
+        Mon, 28 Jun 2021 12:17:25 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id i5sm4352391wrr.4.2021.06.28.12.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 12:17:25 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     pavel@ucw.cz, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] leds: remove ide-disk trigger
+Date:   Mon, 28 Jun 2021 19:17:19 +0000
+Message-Id: <20210628191719.2823947-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <9e188172-772c-8a33-46c0-e1e4bbf2668d@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+No user of ide-disk remains, so remove this deprecated trigger.
 
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ Documentation/devicetree/bindings/leds/common.yaml | 3 ---
+ drivers/leds/trigger/ledtrig-disk.c                | 1 -
+ 2 files changed, 4 deletions(-)
 
-On 6/28/21 10:52 AM, Tom Lendacky wrote:
-> On 6/18/21 5:57 PM, Kuppuswamy Sathyanarayanan wrote:
->> Add a generic way to check if we run with an encrypted guest,
->> without requiring x86 specific ifdefs. This can then be used in
->> non architecture specific code.
->>
->> prot_guest_has() is used to check for protected guest feature
->> flags.
->>
->> Originally-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->> ---
->>
->> Change since v1:
->>   * Introduced PR_GUEST_TDX and PR_GUEST_SEV vendor flags as per
->>     Boris suggestion.
->>   * Replaced is_tdx_guest() with if (boot_cpu_data.x86_vendor ==
->>     X86_VENDOR_INTEL) in prot_guest_has().
->>   * Modified tdx_protected_guest_has() and sev_protected_guest_has()
->>     to support vendor flags.
->>
->>   arch/Kconfig                           |  3 +++
->>   arch/x86/Kconfig                       |  2 ++
->>   arch/x86/include/asm/protected_guest.h | 20 +++++++++++++++++
->>   arch/x86/include/asm/sev.h             |  3 +++
->>   arch/x86/include/asm/tdx.h             |  4 ++++
->>   arch/x86/kernel/sev.c                  | 17 +++++++++++++++
->>   arch/x86/kernel/tdx.c                  | 17 +++++++++++++++
->>   include/linux/protected_guest.h        | 30 ++++++++++++++++++++++++++
->>   8 files changed, 96 insertions(+)
->>   create mode 100644 arch/x86/include/asm/protected_guest.h
->>   create mode 100644 include/linux/protected_guest.h
->>
-
->> +static inline bool prot_guest_has(unsigned long flag)
->> +{
->> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
->> +		return tdx_protected_guest_has(flag);
->> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
->> +		return sev_protected_guest_has(flag);
-> 
-> So as I think about this, I don't think this will work if the hypervisor
-> decides to change the vendor name, right?
-
-For TDX guest, vendor name cannot be changed. It is set by TDX module and
-it is fixed as per TDX module spec.
-
-> 
-> And doesn't TDX supply "IntelTDX    " as a signature. I don't see where
-> the signature is used to set the CPU vendor to X86_VENDOR_INTEL.
-
-We don't need to specially handle it for TDX. Generic early_identify_cpu() will
-set boot_cpu_data.x86_vendor as X86_VENDOR_INTEL for TDX guest. I think it is
-based on Intel in vendor string.
-
-> 
-> The current SEV checks to set sev_status, which is used by sme_active(),
-> sev_active, etc.) are based on the max leaf and CPUID bits, but not a
-> CPUID vendor check.
-> 
-
-You also set x86_vendor id as AMD based on SEV checks?
-
-> So maybe we can keep the prot_guest_has() but I think it will have to be a
-> common routine, with a "switch" statement that has supporting case element
-> that check for "sev_active() || static_cpu_has(X86_FEATURE_TDX_GUEST)", etc.
-
->>   }
->> +
->> +bool sev_protected_guest_has(unsigned long flag)
->> +{
->> +	switch (flag) {
->> +	case PR_GUEST_MEM_ENCRYPT:
->> +	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
->> +	case PR_GUEST_UNROLL_STRING_IO:
->> +	case PR_GUEST_HOST_MEM_ENCRYPT:
->> +		return true;
-> 
-> This will need to be fixed up because this function will be called for
-> baremetal and legacy guests and those properties aren't true for those
-> situations. Something like (although I'm unsure of the difference between
-> PR_GUEST_MEM_ENCRYPT and PR_GUEST_MEM_ENCRYPT_ACTIVE):
-
-MEM_ENCRYPT_ACTIVE is suggested for mem_encrypt_active() case (I think it
-means some sort of encryption is active).
-
-PR_GUEST_MEM_ENCRYPT means guest supports memory encryption (sev_active()
-case).
-
-Yes, I can include following changes in next version.
-
-> 
-> 	case PR_GUEST_MEM_ENCRYPT:
-> 	case PR_GUEST_MEM_ENCRYPT_ACTIVE:
-> 		return sev_active();
-> 	case PR_GUEST_UNROLL_STRING_IO:
-> 		return sev_active() && !sev_es_active();
-> 	case PR_GUEST_HOST_MEM_ENCRYPT:
-> 		return sme_active();
-> 
-> But you (or I) would have to audit all of the locations where
-> mem_encrypt_active(), sme_active(), sev_active() and sev_es_active() are
-> used, to be sure the right thing is being done. And for bisectability,
-> that should probably be the first patch if you will be invoking
-> prot_guest_has() in the same location as any of the identified functions.
-> 
-> Create the new helper and fixup the locations should be one (or more)
-> patches. Then add the TDX support to the helper function as a follow-on patch.
-
-Can you submit a patch to replace all existing uses cases of mem_encrypt_active()
-,sme_active(), sev_active() and sev_es_active() with prot_guest_has() calls? Since
-I cannot test any of these changes for AMD, it would be better if you could do it.
-
-Once you submit a tested version, I can enable these features for TDX and test
-and submit it separately.
-
-This patch can be split as below:
-
-1. x86: Introduce generic protected guest abstraction patch (with below changes).
-    - Remove all PR_GUEST flags in sev_protected_guest_has() and
-      tdx_protected_guest_has().
-2. Patch from you to use prot_guest_has() for AMD code and enable relevant
-    PR_GUEST flags in sev_protected_guest_has().
-3. Patch from me to us prot_guest_has() for TDX cases and enable relevant
-    PR_GUEST flags in tdx_protected_guest_has().
-
-Agree?
-
-
->> diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
->> new file mode 100644
->> index 000000000000..c5b7547e5a68
->> --- /dev/null
->> +++ b/include/linux/protected_guest.h
->> @@ -0,0 +1,30 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef _LINUX_PROTECTED_GUEST_H
->> +#define _LINUX_PROTECTED_GUEST_H 1
->> +
->> +/* Protected Guest Feature Flags (leave 0-0xfff for vendor specific flags) */
->> +
->> +/* 0-ff is reserved for Intel specific flags */
->> +#define PR_GUEST_TDX				0x0000
->> +
->> +/* 100-1ff is reserved for AMD specific flags */
->> +#define PR_GUEST_SEV				0x0100
->> +
->> +/* Support for guest encryption */
->> +#define PR_GUEST_MEM_ENCRYPT			0x1000
-> 
-> I'm not sure I follow the difference between this and
-> PR_GUEST_MEM_ENCRYPT_ACTIVE. Is this saying that the host has support for
-> starting guests that support memory encryption or the guest has support
-> for memory encryption but it hasn't been activated yet (which doesn't seem
-> possible)?
-
-Explained it above.
-
-> 
-> Thanks,
-> Tom
-> 
-
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+index a9b8c21779e3..2d3d4af1d35e 100644
+--- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -91,9 +91,6 @@ properties:
+       - disk-activity
+       - disk-read
+       - disk-write
+-        # LED indicates IDE disk activity (deprecated), in new implementations
+-        # use "disk-activity"
+-      - ide-disk
+         # LED flashes at a fixed, configurable rate
+       - timer
+         # LED alters the brightness for the specified duration with one software
+diff --git a/drivers/leds/trigger/ledtrig-disk.c b/drivers/leds/trigger/ledtrig-disk.c
+index 0741910785bb..38a5c21c0466 100644
+--- a/drivers/leds/trigger/ledtrig-disk.c
++++ b/drivers/leds/trigger/ledtrig-disk.c
+@@ -40,7 +40,6 @@ static int __init ledtrig_disk_init(void)
+ 	led_trigger_register_simple("disk-activity", &ledtrig_disk);
+ 	led_trigger_register_simple("disk-read", &ledtrig_disk_read);
+ 	led_trigger_register_simple("disk-write", &ledtrig_disk_write);
+-	led_trigger_register_simple("ide-disk", &ledtrig_ide);
+ 
+ 	return 0;
+ }
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.31.1
+
