@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F6D3B57E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEC33B57E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 05:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhF1Dih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 23:38:37 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38539 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231678AbhF1Die (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 23:38:34 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GCtYf4sVwz9sWG;
-        Mon, 28 Jun 2021 13:36:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624851368;
-        bh=rXCYJ2rpixugftqiA1OEFkibotF9G+HgUlfu0YFc3io=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ljX5sr52R0vz3+JXY4WIhMYkkosjXYNJJ2a/9l5mH88AAI36Vn9Gs2mcaqweD+h29
-         AUr21MPrgSDwvJsG2CueSf7PE1V77nqPanohyqzw0Y1Dxp4Gb27KpJiL1pQApF87tm
-         0gMvxpf+Y8gHWuxqHzIrzq4bb/YYS6eWP4jAqJg5UcCLxvopZEAtgXFOkNeXGE+saq
-         uoDBddYR53EyKiikG2NHjJMWOEDhT95saJKzC0ILCVxvgfzbNA+ontdZEvkRAbmxMk
-         YXGwGbJdGk3wESKIu30hNbmLqpCsxRy7CyZN3Jsqt4xW3aRRVQePGM42u0RCdXALjF
-         Y4OmGHRNGx7SQ==
-Date:   Mon, 28 Jun 2021 13:36:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20210628133602.1ca94b56@canb.auug.org.au>
+        id S232085AbhF1Djd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 23:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhF1Djb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 23:39:31 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2D1C061574;
+        Sun, 27 Jun 2021 20:37:05 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i5so23603225eds.1;
+        Sun, 27 Jun 2021 20:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=S+xTtvyf1TTdB36er16+HKLGmH62vQAYFuvDeWyNd0g=;
+        b=eTYukS3vLHJ6TCOfp73FLsOLH67UVr8/0vryD6rNl8z6Th5v9GEdkXlL8E7yC+ANgS
+         tEhQaEWwMjTgE7ZpfxPHbCRLvRuxac+XEVVov+nfmmS51FhwUb3WZtri5sCslyY01n+H
+         YG+Ohnm8zh/bvYg1Iq9p1AFSg5l9JnQ+rfnS8AK+4vQRRNlvi0Gzeb9s4gt8fj5tZrYj
+         0HsyHdSd5f5mZ5Ig0NN5U+VU+J9u50QhlsE5wHGzHskB1VhLG6EiFQ3h2VDWZKQCdNUZ
+         Q2HKukjdcYa4KTQrt1ZxU9e46oyve9OKAB2T/NQdtfYWuC6NxBJdqSM0wU270jaNwINT
+         o+6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=S+xTtvyf1TTdB36er16+HKLGmH62vQAYFuvDeWyNd0g=;
+        b=RsIZvEKCsyciafHhnOzjn8BQudFleuue3+z48tutLGkNYaDNuQNH62XKGj2VOtlPyU
+         lx/56jtUdWVzvRtWZg8+69+9y2ofO7CLK2NrMMqaStzwxKJzTnOpe5XVBE4xpEZ45xhS
+         7qeH1FyV1y0gtn0XwMzV9k+z/TBAjnpYI7PORFDVF0HvAMboS3iDtiF7XjcYm4gO5URa
+         3KPCr1AYgaExgymj4oefX9j8gZsN8W8UowLwBgx3r0LDwoT9lTwcMgqMBx2LVeIOn9cb
+         tXrCkjXWKApRmsXSW04bvxG6CQEc0+pr+mMv3ayxYxjw0Hv83cmBeSX7yeHY/YNvsbPb
+         ixkw==
+X-Gm-Message-State: AOAM531eL3wke7e+A5q71qXbp8I24bOjy6+uXg2VbvTLNdE+F8R0r+Du
+        4f3obFdFKQRff9M5gzuKhLIrNROmKNnit11e0qg=
+X-Google-Smtp-Source: ABdhPJwaW1a30AKscFeX6OiFf741RydW1YQCSGI2IOz4qiTjGZt4Plkfs4d0i+KcVrommOmr9w5JgU1F/nUy91nopqQ=
+X-Received: by 2002:a50:f68d:: with SMTP id d13mr30750719edn.318.1624851424468;
+ Sun, 27 Jun 2021 20:37:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KJqGq8WpQGF8VZY2menm/Fx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+Date:   Mon, 28 Jun 2021 12:36:53 +0900
+Message-ID: <CAF78GY0jB_oeKgfZc4SHWBVusGnNfxKk5jTC4UBDsteSEVEzTw@mail.gmail.com>
+Subject: gpiochip_lock_as_irq on pins without FLAG_REQUESTED: bug or feature ?
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KJqGq8WpQGF8VZY2menm/Fx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+While trying to debug an IRQ handling issue on a sifive-unmatched board
+(which is a very recent board on a recent architecture, so I would not
+be overly surprised if there were bugs in hiding), I realised that I was able
+to claim via sysfs GPIO pins which are being actively used as IRQ sources.
 
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+Checking drivers/gpio/gpiolib.c and kernel/irq/chip.c, I believe this is because
+gpiolib (gpiochip_irq_reqres, gpiochip_reqres_irq, gpiochip_lock_as_irq)
+does not call gpiod_request_{,commit}, resulting in a pin which is available
+for use. I could confirm this by adding (just as a debugging aid):
+  WARN_ON(!test_bit(FLAG_REQUESTED, &desc->flags));
+early in gpiochip_lock_as_irq, and this statement gets triggered.
 
-In file included from include/linux/module.h:21,
-                 from include/kunit/test.h:15,
-                 from kernel/time/time_test.c:3:
-kernel/time/time_test.c:99:16: error: expected ',' or ';' before 'GPL'
-   99 | MODULE_LICENSE(GPL);
-      |                ^~~
-include/linux/moduleparam.h:26:47: note: in definition of macro '__MODULE_I=
-NFO'
-   26 |   =3D __MODULE_INFO_PREFIX __stringify(tag) "=3D" info
-      |                                               ^~~~
-include/linux/module.h:229:46: note: in expansion of macro 'MODULE_INFO'
-  229 | #define MODULE_LICENSE(_license) MODULE_FILE MODULE_INFO(license, _=
-license)
-      |                                              ^~~~~~~~~~~
-kernel/time/time_test.c:99:1: note: in expansion of macro 'MODULE_LICENSE'
-   99 | MODULE_LICENSE(GPL);
-      | ^~~~~~~~~~~~~~
+Is this intentional ?
+Does this requesting belong to something else in the codepath from
+request_threaded_irq (and similar) ?
+Could it be something missing in the devicetree for this board ?
 
-Caused by commit
+Also, I notice that both gpiochip_hierarchy_add_domain and
+gpiochip_reqres_irq call gpiochip_lock_as_irq, and I am surprised I do not
+get any error about this: in my understanding only the first call on a given pin
+should succeed, but with my WARN_ON I am seeing both stack traces and
+no other warning.
 
-  34c7342ac1b4 ("time/kunit: Add missing MODULE_LICENSE()")
+FWIW, my builds are based on vanilla 5.13-rc6.
 
-I have used the tip tree from next-20210625 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/KJqGq8WpQGF8VZY2menm/Fx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDZQ6IACgkQAVBC80lX
-0Gwl1wgApWs8DkSPY09EaCL+S4onJROeDkZeM6VFwrYJWIlFzatqvG6BneU3GIO2
-236FoOAwCqcWWbp5EYKnQ6/D88NZUaX8SUfwjrWRhG4NJmqhxK2RaDUBDxEvp1jm
-jlVYpMX8ftmV+vYRIxQY/r1T+Pr+80vO0Tj+gX3AHdNk2GWT5DoxqprvevJT94Tk
-yZGi2LDD1ybo4Esn7gkjGx4ixXz3kAdVAXTue3Rblj/BeG3hnQLw/ZVQEQgGxYvf
-tVAAhHoeCYCbxY3XkDN59s80Me8bRPKso8WwEDvI/qmJEcpKUeObiVQVpcst16vT
-bBKdVjqfXiaaJCSvhR2eCHyEzOTWpg==
-=Em7S
------END PGP SIGNATURE-----
-
---Sig_/KJqGq8WpQGF8VZY2menm/Fx--
+Regards,
+-- 
+Vincent Pelletier
