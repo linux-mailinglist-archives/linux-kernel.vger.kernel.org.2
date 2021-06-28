@@ -2,165 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAA33B6306
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9931F3B6353
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbhF1OvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:51:09 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51356 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234200AbhF1OiP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:38:15 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E0A53222BC;
-        Mon, 28 Jun 2021 14:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624890948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lzl5ets5eB5Dq/q2i/0wuJBZwKopr9+a77SurnLm4X8=;
-        b=fZ+7fksWt1bqacMr8vJA/yaRYssQXmpXNZuOl9hzv73i5JUSBSr9x2pfQxTZv67Got1dGy
-        247cjtEX1vvQaYRFiOhabUNjPChGq9+xRfRo+k0Sfysx08ivUMIAR1aeKDTVAqQ0NrlrV0
-        jd0dRt7VpJlKOw8EZAN1pMkQcmoY70A=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C63DEA3B9E;
-        Mon, 28 Jun 2021 14:35:48 +0000 (UTC)
-Date:   Mon, 28 Jun 2021 16:35:48 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S236481AbhF1Ozf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:55:35 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59590 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234490AbhF1Ol0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:41:26 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0L93tlgmsoZAA--.8933S2;
+        Mon, 28 Jun 2021 22:38:53 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 6/6] printk: syslog: close window between wait
- and read
-Message-ID: <YNneRIEIa7pHahTu@alley>
-References: <20210624111148.5190-1-john.ogness@linutronix.de>
- <20210624111148.5190-7-john.ogness@linutronix.de>
- <20210625093354.12384711@oasis.local.home>
+Subject: [PATCH v3 1/2] MIPS: Loongson-3: Add Loongson-2K1000 reset platform driver
+Date:   Mon, 28 Jun 2021 22:38:51 +0800
+Message-Id: <20210628143852.11504-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625093354.12384711@oasis.local.home>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxb0L93tlgmsoZAA--.8933S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy8WrWDXw4kCw17AF15twb_yoW5CryUpF
+        Z8Gw43CrWrG3W7Kw4rtFyUuFW5Z3Z3tFWjkFW2v345Z3sxWFZ8Jws8tFyFyrnrGrW7AFW3
+        ZFsYgFW8CF4ru3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Xryl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07boD7-UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-06-25 09:33:54, Steven Rostedt wrote:
-> On Thu, 24 Jun 2021 13:17:48 +0206
-> John Ogness <john.ogness@linutronix.de> wrote:
-> 
-> > +	 * @syslog_lock is held when entering the read loop to prevent
-> > +	 * another reader from modifying @syslog_seq.
-> 
-> You should add to the above comment:
-> 
-> 	 * And the @syslog_lock is released before exiting the loop.
-> 
-> Because it's not normal to enter a loop locked, and have it unlocked
-> when exiting the loop. And I can envision in the future, someone might
-> add a break (for error) while still holding the lock.
+Add power management register operations to support reboot and poweroff.
 
-I was double checking the code and the locking is really hard to
-follow. I would if the following approach make it easier. The main
-trick is that the lock is taken at the beginnig and release at
-the end. It is only temporary released around a single line
-when needed.
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-static int syslog_print(char __user *buf, int size)
-{
-	struct printk_info info;
-	struct printk_record r;
-	char *text;
-	int len = 0;
-	u64 seq;
+v2-v3:
+-make reset support as a driver
 
-	text = kmalloc(CONSOLE_LOG_MAX, GFP_KERNEL);
-	if (!text)
-		return -ENOMEM;
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
+ drivers/platform/mips/Kconfig      |  6 +++
+ drivers/platform/mips/Makefile     |  1 +
+ drivers/platform/mips/ls2k-reset.c | 60 ++++++++++++++++++++++++++++++
+ 3 files changed, 67 insertions(+)
+ create mode 100644 drivers/platform/mips/ls2k-reset.c
 
-	prb_rec_init_rd(&r, &info, text, CONSOLE_LOG_MAX);
+diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+index 8ac149173c64..d421e1482395 100644
+--- a/drivers/platform/mips/Kconfig
++++ b/drivers/platform/mips/Kconfig
+@@ -30,4 +30,10 @@ config RS780E_ACPI
+ 	help
+ 	  Loongson RS780E PCH ACPI Controller driver.
+ 
++config LS2K_RESET
++	bool "Loongson-2K1000 Reset Controller"
++	depends on MACH_LOONGSON64 || COMPILE_TEST
++	help
++	  Loongson-2K1000 Reset Controller driver.
++
+ endif # MIPS_PLATFORM_DEVICES
+diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
+index 178149098777..4c71444e453a 100644
+--- a/drivers/platform/mips/Makefile
++++ b/drivers/platform/mips/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
+ obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
++obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
+diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
+new file mode 100644
+index 000000000000..c5f073c82c5e
+--- /dev/null
++++ b/drivers/platform/mips/ls2k-reset.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
++ *  Loongson-2K1000 reset support
++ */
++
++#include <linux/of_address.h>
++#include <linux/pm.h>
++#include <asm/reboot.h>
++
++static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
++
++static void __iomem *get_reg_byname(struct device_node *node, const char *name)
++{
++	int index = of_property_match_string(node, "reg-names", name);
++
++	if (index < 0)
++		return NULL;
++
++	return of_iomap(node, index);
++}
++
++static void ls2k_restart(char *command)
++{
++	writel(0x1, (void *)pm_reg_name[2]);
++}
++
++static void ls2k_poweroff(void)
++{
++	/* Clear */
++	writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void *)pm_reg_name[0]);
++	/* Sleep Enable | Soft Off*/
++	writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
++}
++
++static int ls2k_reset_init(void)
++{
++	struct device_node *np;
++	int i;
++
++	np = of_find_node_by_type(NULL, "power management");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
++		pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
++		if (!pm_reg_name[i])
++			iounmap(pm_reg_name[i]);
++	}
++
++	_machine_restart = ls2k_restart;
++	pm_power_off = ls2k_poweroff;
++
++	of_node_put(np);
++	return 0;
++}
++
++arch_initcall(ls2k_reset_init);
+-- 
+2.31.0
 
-	mutex_lock(&syslog_lock);
-
-	/*
-	 * Wait for the @syslog_seq record to be vailable. @syslog_seq may
-	 * change while waiting.
-	 */
-	do {
-		seq = syslog_seq;
-
-		mutex_unlock(&syslog_lock);
-		len = wait_event_interruptible(log_wait, prb_read_valid(prb, seq, NULL));
-		mutex_lock(&syslog_lock);
-
-		if (len)
-			goto out;
-	} while (syslog_seq != seq);
-
-	/*
-	 * Copy records that fit into the buffer. The above cycle makes sure
-	 * that the first record is always available.
-	 */
-	do {
-		size_t n;
-		size_t skip;
-		unsigned long err;
-
-		if (!prb_read_valid(prb, syslog_seq, &r))
-			break;
-
-		if (r.info->seq != syslog_seq) {
-			/* message is gone, move to next valid one */
-			syslog_seq = r.info->seq;
-			syslog_partial = 0;
-		}
-
-		/*
-		 * To keep reading/counting partial line consistent,
-		 * use printk_time value as of the beginning of a line.
-		 */
-		if (!syslog_partial)
-			syslog_time = printk_time;
-
-		skip = syslog_partial;
-		n = record_print_text(&r, true, syslog_time);
-		if (n - syslog_partial <= size) {
-			/* message fits into buffer, move forward */
-			syslog_seq = r.info->seq + 1;
-			n -= syslog_partial;
-			syslog_partial = 0;
-		} else if (!len){
-			/* partial read(), remember position */
-			n = size;
-			syslog_partial += n;
-		} else
-			n = 0;
-
-		if (!n)
-			break;
-
-		mutex_unlock(&syslog_lock);
-		err = copy_to_user(buf, text + skip, n);
-		mutex_lock(&syslog_lock);
-
-		if (err && !len) {
-			len = -EFAULT;
-			break;
-		}
-
-		len += n;
-		size -= n;
-		buf += n;
-	} while(size);
-out:
-	mutex_unlock(&syslog_lock);
-	kfree(text);
-	return len;
-}
-
-Best Regards,
-Petr
