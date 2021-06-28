@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCE43B69EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BED3B69EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 22:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237512AbhF1U63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 16:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        id S237588AbhF1U7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 16:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237324AbhF1U6Y (ORCPT
+        with ESMTP id S237487AbhF1U7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:58:24 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26E0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id x16so15218314pfa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
+        Mon, 28 Jun 2021 16:59:49 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92968C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:57:22 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id a11so18795144ilf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 13:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mb3LYqy4tYD5twHKe5/2sd9B60PMKocbZfeTltPQ2BA=;
-        b=WoMDjJl05tWoY3t7FXLznAV+bl/f6pLz4aarqzGr13/vJAPKaCxvZL67tRZ/YyXDQK
-         9Lfmzgk1eSp/x8IPsTQZpkaXBQoCVI/VKTMB5MMnIE+yXPAGWiNsiTS4MDMoVUyk3U88
-         OG+0y5jxaQO9t0xj6a1Umh0mmutPOFBWj6SeU=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ExBqZ4fFUGq6qkTuRSNlnPB5XbkHr6PXqlYIc7Ox2Gs=;
+        b=MP/NoRKbbNbwlDwYC4z6ywv/AjMVI4ZK/CFru+nutHTxlMTkOmyeHDO9pwhlE1lFfr
+         Djp+rFJ4SXmE9TLYwX5cbleaN/lQP8W7YJjpmLEd2HbzJRZzXxPUPQw7JvzmrrYH4Pqv
+         NfnIhmzGOEeyRqD33CB2PsY2DAizLopHicpTM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mb3LYqy4tYD5twHKe5/2sd9B60PMKocbZfeTltPQ2BA=;
-        b=k2yW5IN70ghqyztpybDMbYDaa3Eq5U0pYHj2CWh7sWI+j+9+NiUVsYTt2wXsKR6eiW
-         lzA1B8ry7FUPyIy1+i1Z1spSQjPYjBwEHWpbzUJlvC78VPXUPrwFgFxgPLVufa/xC1Wl
-         xATJt/AgtgjTxCLXpIEYrpuDc4gEw8fBASkaCAmalts3fhph8riICkHcIGf9hNZMAowm
-         ZLZiL/rsn21nJJxFb90NMPrU+qBoLlvUJVF/BJHocEpSmZE5vJlkDSLsJVCAXb3/Ihc9
-         pQChvg1kVFxRFpyG8V0DaJWOErqHEa6qH2PLglFdlIIPIHF2EJ8mg8OnEvmmTMPSim1G
-         Xazg==
-X-Gm-Message-State: AOAM530WUjF8QoJrBcPkaOaS+J5O5/hf39SiL89O1GADicSBdshD2DEe
-        n7GjO8wcO/vnZvI8r9l6yYnACnNmq5RSXw==
-X-Google-Smtp-Source: ABdhPJzz2Q5BWj5HcfRU5luan48X8U8Ub4ra1oEA1Wtzyo2swVZR+LOj24GVC6RH2OnD7ufNiwcjaw==
-X-Received: by 2002:aa7:9436:0:b029:30b:30ba:5942 with SMTP id y22-20020aa794360000b029030b30ba5942mr11026196pfo.47.1624913758326;
-        Mon, 28 Jun 2021 13:55:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j20sm14572965pfc.85.2021.06.28.13.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 13:55:57 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 13:55:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lkdtm: remove duplicated include of init.h
-Message-ID: <202106281355.3FEE09E@keescook>
-References: <20210628123512.38090-1-wanjiabing@vivo.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ExBqZ4fFUGq6qkTuRSNlnPB5XbkHr6PXqlYIc7Ox2Gs=;
+        b=IgDnQzJvNYjpXItEK6eNIS5DfdzP6dUtNBnCdphq9LDEDflLww+ieZp6jmSZLlijbD
+         tiBhs+QrT3J+591kbYZcAuLeoT6x8sQti/IJcmBIDbyvnZEip+v4U4Pdr0Ns7nU0/EeF
+         2XR6PjGCt4M591XH+QWMMpRL5QH/Q4eKDFwHIOb5fpl49GHvQlmcjtnVm5vljaymNm1F
+         NV7wOxJW+M9+HcIIJIyuW1NGgb4uR23U+wviDxN+g1gq+9ej4oMVqR0c14Ix2ELyuYq1
+         OMgGtG5lwlysNJyUFJnV1SC0fLfbnbOJVW/0oazbkcvPOvuQR8fJJKPI824L/tzLyKNF
+         k7aw==
+X-Gm-Message-State: AOAM532XLNjpOUUgxxAq+dBXZK2q95Krx1z7O3BpMkHLrwkeRL1bvSKU
+        hzbLMBAzTWGwLJy2pJycoqNDcA==
+X-Google-Smtp-Source: ABdhPJyjNcIyebxLcpZEWQ2jHEjcP2S2ihsmlQxGsuFA1DBlfrOSmHeDYiMMmBzRehafymNSj0haZA==
+X-Received: by 2002:a92:b50d:: with SMTP id f13mr19623232ile.253.1624913841964;
+        Mon, 28 Jun 2021 13:57:21 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a24sm2380976ioa.35.2021.06.28.13.57.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 13:57:21 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210628143004.32596-1-sashal@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d3122f35-4659-8bed-65eb-77087eec82fe@linuxfoundation.org>
+Date:   Mon, 28 Jun 2021 14:57:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628123512.38090-1-wanjiabing@vivo.com>
+In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:35:12PM +0800, Wan Jiabing wrote:
-> Fix following checkincludes.pl warning:
-> ./drivers/misc/lkdtm/core.c
-> 26	#include <linux/init.h>
->     29	#include <linux/init.h>
+On 6/28/21 8:28 AM, Sasha Levin wrote:
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-
-Whoops! Thank you. :)
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> ---
->  drivers/misc/lkdtm/core.c | 1 -
->  1 file changed, 1 deletion(-)
+> This is the start of the stable review cycle for the 5.4.129 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-> index 9dda87c6b54a..c9a0ad6d5d72 100644
-> --- a/drivers/misc/lkdtm/core.c
-> +++ b/drivers/misc/lkdtm/core.c
-> @@ -26,7 +26,6 @@
->  #include <linux/init.h>
->  #include <linux/slab.h>
->  #include <linux/debugfs.h>
-> -#include <linux/init.h>
->  
->  #define DEFAULT_COUNT 10
->  
-> -- 
-> 2.20.1
+> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.128
 
--- 
-Kees Cook
+My tools are failing on this link. Is it possible to keep the rc patch 
+convention consistent with Greg KH's naming scheme?
+
+The whole patch series can be found in one patch at:
+
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
+
+thanks,
+-- Shuah
