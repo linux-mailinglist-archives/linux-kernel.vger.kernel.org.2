@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5113B5BCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC453B5BCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 11:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhF1J4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 05:56:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:55342 "EHLO foss.arm.com"
+        id S232548AbhF1J6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 05:58:52 -0400
+Received: from ozlabs.org ([203.11.71.1]:33141 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232512AbhF1J4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:56:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AEA41FB;
-        Mon, 28 Jun 2021 02:54:28 -0700 (PDT)
-Received: from [10.57.8.89] (unknown [10.57.8.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 862B33F694;
-        Mon, 28 Jun 2021 02:54:27 -0700 (PDT)
-Subject: Re: [PATCH] drm/rockchip: Check iommu itself instead of it's parent
- for device_is_available
-To:     Andy Yan <andy.yan@rock-chips.com>, hjc@rock-chips.com,
-        heiko@sntech.de, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210627084737.309163-1-andy.yan@rock-chips.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <66fb4977-4e6f-f7ed-0dac-18710ebd782a@arm.com>
-Date:   Mon, 28 Jun 2021 10:54:21 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230256AbhF1J6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:58:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GD30S1CY7z9sT6;
+        Mon, 28 Jun 2021 19:56:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624874185;
+        bh=DZNIfQVrWlttYmCGu5ye7TC2D4EmqHr4nUgO5sXzjgk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EmkkJGQl34vveOjjKzzYJgX5nZD5E15svrS++il3/H0V3u+twTf7UeWqTkFMzBIH7
+         RYYC7tfJPOGgl+9mt6iCNkk8zcqFB34jWu5frapNsgV21bMCfNp4LZFzbmsPxaGOnj
+         3bYB7DHlVmttqQ7pvmP/+pxzbxXK2TlerGeNSHAi6wKg17GufrYXG3nrbObJCbyMzq
+         BYumoyNVNTXyaJqNLAXVLuFgzfD5Ounld7DWtGigEvmKfJGxCPQKYTY5REO0AjD6uP
+         apMU+pLL42KvX683JYxaZVs+oyXg3W41XifaAsuF9B/znMIqYQWujO63j6GiEqI0TP
+         CXlqnJwmsNYmg==
+Date:   Mon, 28 Jun 2021 19:56:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm tree with the powerpc tree
+Message-ID: <20210628195621.05913135@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210627084737.309163-1-andy.yan@rock-chips.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/kXpS+cmPI/L.YfNVhvGYYgt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-27 09:47, Andy Yan wrote:
-> When iommu itself is disabled in dts, we should
-> fallback to non-iommu buffer, check iommu parent
-> is meanless here.
-> 
-> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-> ---
-> 
->   drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> index 212bd87c0c4a..0d20c8cc1ffa 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> @@ -366,7 +366,7 @@ static int rockchip_drm_platform_of_probe(struct device *dev)
->   		}
->   
->   		iommu = of_parse_phandle(port->parent, "iommus", 0);
-> -		if (!iommu || !of_device_is_available(iommu->parent)) {
-> +		if (!iommu || !of_device_is_available(iommu)) {
+--Sig_/kXpS+cmPI/L.YfNVhvGYYgt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just wondering, could you use device_iommu_mapped() to avoid poking at 
-the DT at all here, or is it that you need to check remote graph 
-endpoints whose struct device may not be ready yet?
+Hi all,
 
-Robin.
+Today's linux-next merge of the akpm tree got a conflict in:
 
->   			DRM_DEV_DEBUG(dev,
->   				      "no iommu attached for %pOF, using non-iommu buffers\n",
->   				      port->parent);
-> 
+  arch/powerpc/kernel/setup-common.c
+
+between commit:
+
+  56afad885228 ("powerpc: Remove klimit")
+
+from the powerpc tree and commit:
+
+  6e6e0df2a484 ("powerpc: convert to setup_initial_init_mm()")
+
+from the akpm tree.
+
+I fixed it up (I just used the latter since it had also decided to use
+_end directly) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kXpS+cmPI/L.YfNVhvGYYgt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDZnMUACgkQAVBC80lX
+0GzotwgAjN0ousRTuOOhlqsVHvuzF8YYXVwitj4vN9tnoCKkARvV09Plv4Bk1+Lg
+0ruFkGISlkHDSWTArOxNGLMabbQcQCSeS7hYke549ubyB+t+kQ5m+XQtcKYqeR8U
+Wxz9J52BVczf8aqzjYzffFRn3Io9+JHsfT/J34HGuAgrcay1oyiE+Ohgv49L+qzC
+bQ0BYpJnL5N0+luT9UJFxn+MhHJ5O9WfSwl/STeHuadhxE0RF04oCQWlLv1y0XFR
+IEKr0XkBaku7AYTvwhQ7a0nyVW/z4vSrN0SrmdcKBaEMYypQ90YV/ARoHW41L4Y9
+wEvsUYcoAmnqZd/gltnMZgfX2wmbeg==
+=seFv
+-----END PGP SIGNATURE-----
+
+--Sig_/kXpS+cmPI/L.YfNVhvGYYgt--
