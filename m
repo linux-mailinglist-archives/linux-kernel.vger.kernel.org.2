@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8793B673F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6BD3B6742
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 19:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhF1RJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 13:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbhF1RJZ (ORCPT
+        id S232819AbhF1RJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 13:09:45 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:55170 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232831AbhF1RJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:09:25 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC85C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:06:59 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id a18so11660007lfs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i8xDOyJ3LavDXHLbsdcYAyH/4RDP5lTkaIHc3Uc8npA=;
-        b=htoR2qtuvvWWrBCEwU5CZRnDkcAfg4lvqp+OKxdcxlIMvCBV0act99GPc4fxnp3kQG
-         mL01srRVJbyo+ALMwwKAq0aTxxTPSgycYaWbixzL73vUxX7WXajQSgw3so2O0xz6sf/C
-         9XDKqf7aZxD8WxY528Ufmmw2Z5mxV4JF1naa4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i8xDOyJ3LavDXHLbsdcYAyH/4RDP5lTkaIHc3Uc8npA=;
-        b=KBOi5tpyYKwve1TnO5+kjovNZhRt90lkbc3NoIOL/cXmZpGhIEhfENl+1TTCnsmi+k
-         1hrrI80bhfjtk5MOmZFnJZ/aQJCYXQ2YSCdb4jAALKBalmvJuwe1v00yPD0hC+j3xbeg
-         cZbUbt9sEjZkT0ePe72neKbhxBqNSKylXLvTT8ANBbZf48KM6WPqHPWj9WnJiNNxgHtR
-         OQWuYjDMHXIUl3UIOx3O6QSBUJEanz3KdYIyNn4nArTE+o/yR0uBNoP5wBhEf3dLFGlD
-         bpZsyAHmFI8s2gOaMaXbY16v8rFzsvXyrqMezCUa6Zj1aRH9/9l4bTkf0uJzLEjS/t3v
-         P+9Q==
-X-Gm-Message-State: AOAM531f5zIWdxBD3oNnIM99iHSekDwVXHWXNmbY805yVr5jCW7MJ4dp
-        wzIX7tP4oikhczw+AwXDPOXtohHhfA6CBV5X
-X-Google-Smtp-Source: ABdhPJyifYudFqvZ+J/dRmVTb1sH0LhPsQGBpW8Ie4UnNr6sF/laECMVYle52jwcTPY6ftrDTWvaWA==
-X-Received: by 2002:ac2:5088:: with SMTP id f8mr19859006lfm.233.1624900017535;
-        Mon, 28 Jun 2021 10:06:57 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id o11sm200208lfb.218.2021.06.28.10.06.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 10:06:56 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id d16so33802052lfn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 10:06:55 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr19158370lfs.377.1624900014858;
- Mon, 28 Jun 2021 10:06:54 -0700 (PDT)
+        Mon, 28 Jun 2021 13:09:32 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15SH6cn8029761;
+        Mon, 28 Jun 2021 10:07:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=EjZsAdLIRrqAhmY4fqXvnkVpQXham+EAoT81lJMX9B4=;
+ b=dZdbnTAnCd5oJHF/JjVs5DDGZbSskNraapygBquJVN75uPLNXeXlnJql3og8B837p6pM
+ UU3GLOM1HE02gA/fpdWR6pSNn4fpXdEPdDFbk9qZMsmjeMJF/1BQ97dlROus8G27B2hx
+ 6MKJ7VDSzaJbPEDErhtA8pkbijbZ45e8W09yidpc/yBGHZQ0Qx4iqambacRcuamT6x5C
+ lHbFTZgJQg0613eISet2pSBJTpGwGTE64J8dPTO7U4ZoCvNPZpLJubAEsf7EwSeiRcaU
+ gns9dmhDwT9K/sKYKa0oxIoAmwASFgPIIIufukhl8+FUYkZ/hDkSS1ZCTIlwCjKPyLux zg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 39f11y3bpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 28 Jun 2021 10:07:00 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 28 Jun
+ 2021 10:06:59 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 28 Jun 2021 10:06:59 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id F1A253F7097;
+        Mon, 28 Jun 2021 10:06:55 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [net-next 0/3] DMAC based packet filtering
+Date:   Mon, 28 Jun 2021 22:36:51 +0530
+Message-ID: <20210628170654.22995-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <YNQwgTR3n3mSO9+3@gmail.com> <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
- <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
- <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com> <YNlapAKObfeVPoQO@gmail.com>
-In-Reply-To: <YNlapAKObfeVPoQO@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Jun 2021 10:06:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
-Message-ID: <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
-Subject: Re: [GIT PULL] sigqueue cache fix
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-GUID: 7l4TTB2t9FSWt119Ou74ZJRT7I2VR9Uu
+X-Proofpoint-ORIG-GUID: 7l4TTB2t9FSWt119Ou74ZJRT7I2VR9Uu
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-28_14:2021-06-25,2021-06-28 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 10:14 PM Ingo Molnar <mingo@kernel.org> wrote:
->
-> The most fundamental race we can have is this:
+Each MAC block supports 32 DMAC filters which can be
+configured to accept or drop packets based on address match
+This patch series adds mbox handlers and extends ntuple filter
+callbacks to accomdate DMAC filters such that user can install
+DMAC based filters on interface from ethtool.
 
-No. It's this (all on the same CPU):
+Patch1 adds necessary mbox handlers such that mbox consumers
+like PF netdev can add/delete/update DMAC filters and Patch2 adds
+debugfs support to dump current list of installed filters.
+Patch3 adds support to call mbox handlers upon receiving DMAC
+filters from ethtool ntuple commans.
 
-   sigqueue_cache_or_free():
+Hariprasad Kelam (2):
+  octeontx2-af: Debugfs support for DMAC filters
+  octeontx2-pf: offload DMAC filters to CGX/RPM block
 
-       if (!READ_ONCE(current->sigqueue_cache))
-                     <-- Interrupt happens here
-               WRITE_ONCE(current->sigqueue_cache, q);
+Sunil Kumar Kori (1):
+  octeontx2-af: DMAC filter support in MAC block
 
-and then the interrupt sends a SIGCONT, which ends up flushing
-previous process control signals, which ends up freeing them, which
-ends up in sigqueue_cache_or_free() again, at which point you have
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 291 +++++++++++++++++-
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  10 +
+ .../marvell/octeontx2/af/lmac_common.h        |   5 +-
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  48 ++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   3 +
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 111 ++++++-
+ .../marvell/octeontx2/af/rvu_debugfs.c        |  87 +++++-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   3 +
+ .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   3 +
+ .../marvell/octeontx2/nic/otx2_common.h       |  11 +
+ .../marvell/octeontx2/nic/otx2_dmac_flt.c     | 173 +++++++++++
+ .../marvell/octeontx2/nic/otx2_flows.c        | 225 +++++++++++++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |   9 +
+ 14 files changed, 945 insertions(+), 36 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
 
-       if (!READ_ONCE(current->sigqueue_cache))
-               WRITE_ONCE(current->sigqueue_cache, q);
-
-again.
-
-And both the original and the interrupting one sees a NULL
-current->sigqueue_cache, so both of them will do that WRITE_ONCE(),
-and when the interrupt returns, the original case will overwrite the
-value that the interrupt free'd.
-
-Boom - memory leak.
-
-It does seem to be very small race window, and it's "only" a memory
-leak, but it's a very simple example of how this cache was broken even
-on UP.
-
-              Linus
+--
+2.17.1
