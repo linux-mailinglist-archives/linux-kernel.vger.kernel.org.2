@@ -2,127 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C193B5957
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 09:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10903B592A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 08:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhF1HCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 03:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhF1HCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 03:02:45 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5970FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:00:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id v20so9552474eji.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 00:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/ZTnZkYKek+5EDiWJLcDLFzzSu7VX9SBVVqHtordz78=;
-        b=KdTQmykmJOGUbeEE6oEB5bGZTq63btGbVnCfp9JgeTiG3lj6tYaS2LzIUu+xvHkiy4
-         FAyd02jW0DpRPpk4IzYKZ3b6BwvHB9MaZixrzgaxDXAzD3nclAzSlpIJrTdtuiuhURK1
-         yYSPJi9UYDXY294a5QeaZGHUrvfsHbI6xTPWkCJoAJfwhvQur6g9X+5sJFBqFgT2+y/r
-         k6SXx8ahIkb68D7nuQRt5wE7vmMMF/gITDHEBCOW7oQRRudVCo68DVYEyHCN0lYm3ZB4
-         UJWbRoemdyJc8tC9ti1tGH5i4x6j9jmJXbcwbglH/bzBTI3HhaIPx2fcAK1LUhYXg4ne
-         epbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=/ZTnZkYKek+5EDiWJLcDLFzzSu7VX9SBVVqHtordz78=;
-        b=MuD3GtCSc8XeTsFtdErLvJN1cSe9nvG+YBQTokQ7CJPfs7imqDMTLx3ITtsczKoqLZ
-         +p3FxLvvoDU9GqAj+H1HOQrRn9CR9TjdzsBRP/iHaq2IAitXKQiQGcHkXMwlx0BFAv9w
-         MzX0qXwIJKPUVEXFoyl6TNNrBJQV+J2/NOxI95XZn1Zwat8aWgEgu69i2iwC09cEzL54
-         UnskJig+sY8W4dFOLJFPjJ+Ao7H2cb02vjvvU8Y9SovPnUaoGdVtWgdC3YGUcM2glAvz
-         l8qeilLF+cZzqhy2/S0hxyPNDKArd2bl+cxGa0KIMbkdQR1y8EL+Q0i5rW0XUf62ccEK
-         gAwQ==
-X-Gm-Message-State: AOAM533m06MXGDE88+j4ZuhszH0Q5BupXzdT8WPMXh3ATkNlgbI8FYFP
-        QCHS2b06n4x2ltEk+CTLWh0HeU01SuE=
-X-Google-Smtp-Source: ABdhPJyu6H+i6XA4mpGDRZ1N7TQmyTvt8dtGj9LtVHgkT67q5y8kw1LBum3Tp25sglOGZxmfikhXgw==
-X-Received: by 2002:a17:907:9fd:: with SMTP id ce29mr21953245ejc.62.1624863617954;
-        Mon, 28 Jun 2021 00:00:17 -0700 (PDT)
-Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
-        by smtp.gmail.com with ESMTPSA id x2sm612347edv.61.2021.06.28.00.00.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 00:00:17 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 28 Jun 2021 09:00:15 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] timers/nohz updates for v5.14
-Message-ID: <YNlzf+i1j/4wIUtC@gmail.com>
+        id S232168AbhF1Gf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 02:35:57 -0400
+Received: from mail-eopbgr150052.outbound.protection.outlook.com ([40.107.15.52]:55464
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229911AbhF1Gfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 02:35:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kOlkTdtozWMIe2nNFQh7hdHwlWMafHvXAUVnpdxz9i95by02Jyl1NyRHdetOcX4jPwjK0QeElJ9F3ALye6fRapkmEYswSkyjlR8e0hZlsZ4Yh4fhq8cGtNef+du4L1CRB75xdBkbDjnLz1hm23GIgwOky2PDlUhJm9E+hpHCxx28q2mjC+z7LdHDCPzc8s0mmM0zclieOzqM7TJ1azqIeiRmjliWSeZm1HHV2VwVQzmcIuJohMQRR8CnA8w0vLL0SS6ppDx2/HEmoe90lARrBgqXXQKowXpupKtcXrJNVNzgl2wL0wtNUE8opBpH0GGmoQ12KrlrpAY3sFDD7Pi1MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vADxpnqeGHEVJUG1BS3hUuPo56+5/E+OfHOafAQiQyY=;
+ b=dRaPd/hn3d/okXUvG5VhhzBzhLK8ZZ4S5ZGYdsGkQBVEeTUbst/axfli4rIC5m3mgQCZgXwn/9vGTgdEKBZKWuDlBXXUMtUt+xg3i05KjJZA4I0y4prQr3VdeinT1vI09EjQHZmJ4MoZI8bb1iEM6JQ0DCcXFv8eaC0hRKYzd4QhPqURRZBenCYwcKCyZdWGsBMiEqp51NvwtjH7hBVuws6ev0rzkpGjnhkePrVZRFnibaA3kmeVcT3+CwjVpqQoGtoyfI8d4amgZ1wQa5xJllkcFwMQ+ch9s1fUDUafmmXw9OF40cCuQ2WCmWHlwUbKYPxN/dUI5OMb1lUAPvxXcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vADxpnqeGHEVJUG1BS3hUuPo56+5/E+OfHOafAQiQyY=;
+ b=a7IyBijpfUTO+4hBf83GfsX4ORGXRkQErVJRrbhRiDOpF1hnOiRwL5IuibBQucgIYhUGswLg4eYfyIRPn9s69Q4GJNIjzlexN8ZDDh4NVYOj0vAE1QYXE1OGL13YAFDXdasp6IUKRFNdnD1IIQK1z1HS31JzTe3y3TJw6GZGP2A=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR04MB3128.eurprd04.prod.outlook.com (2603:10a6:6:10::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.24; Mon, 28 Jun
+ 2021 06:33:25 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
+ 06:33:25 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] remoteproc: elf_loader: fix loading segment when is_iomem true
+Date:   Mon, 28 Jun 2021 15:06:57 +0800
+Message-Id: <20210628070657.7669-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.5 via Frontend Transport; Mon, 28 Jun 2021 06:33:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0724a15-4325-4a54-072c-08d939fea204
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3128:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR04MB312838D16CC8D2CE1B4F4A27C9039@DB6PR04MB3128.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UqOo8dz2fYy7RAoZErTgrpzE6nuva2SoAJBdQv4z9JLNzQGO56jrCnxHr2EjU+6qr2+ayT1NA+YAIdJ8BPO0ujij1LEPkgQw4vUbnYVxScil6r30hNB5BV/7TgVUZKGh2anbVwaaWAGWbn+N789I/z/qF4KlPyTSLUmiUJooXUqDKYkC+tKeb7aPbxdwcNXHBhDL5CC3nOVu2g4saPO0zxs4EKPwsD4P7qMJFvqFhlDCeJjE2bl/RX4o7E+QtXbNJJ9zA1VBq77JXsT06VQMbhnTEE2RPOaStkHFIzgb+l02qlhBx8muIHzJbwP5LcECYEEf9cGu9rHIOapDJoms5yMpc+kjKQ3Wyra/cSQXLF0Zuj7vLKqHdiwHxfnVYGc6VO5IxYmcOBx5Ph0qkPsJbhKlkEUwXrdJsHxccOPlYg0AkebyrB20Zh/PLLvKeIK+ad5QvVPe2KiLKs+aAQ2rNrHaJxjneKNjgcGarLVqIkqrIxavXvM6RBnAqJwu6shtbkilJvhroN28KKlWTwVZcupS1o8IPGTjUTvLE1GbezmY9DEiRnEY+Un90xG8wxWBHwXgkviOEZG8Dqs27I4J0OUkknKWzWNYQe2oWhA8NNkAZTuDWq2AWpUs9W8L8izzsepj6P752x7EF2nv8VqZ4DPwcfz941EuPvuXIp2DIcwVW7+3imCuAq8LLxHoe5R9cJOY+EQlrygI25tsVBep1g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(136003)(366004)(66556008)(186003)(83380400001)(16526019)(6506007)(66476007)(8676002)(2906002)(6512007)(8936002)(66946007)(86362001)(52116002)(5660300002)(6486002)(956004)(38350700002)(38100700002)(6666004)(478600001)(1076003)(7416002)(2616005)(316002)(4326008)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RTRjLLuuL4cFCGRnQQcdO7KJu/H8SW+HWOmrG6Jmt8++TDLjb1IxJbqP5UbY?=
+ =?us-ascii?Q?a2NX2/DAgDCWE9KRZY8G5KToGXWHo9K/yS6KZW1rWcmYoFxiz+QyuZpgX32t?=
+ =?us-ascii?Q?20LITyczbiD5g19gMMyFuGZxmGRWhjXm7AxZhLiFO2t2r/+UQpdkhHJiWime?=
+ =?us-ascii?Q?KZH8oxiGbq5kbzbA6Czk9R73lRsXwh+TqE6VXnQQNTRAtaijN2U8MPofF7bK?=
+ =?us-ascii?Q?g/ztYoH7oBiZ8PkbUMVM8fHJVF+bjEyAq03IE9VUGZVpZvuwvXfJmRB8N+xV?=
+ =?us-ascii?Q?d3qYtVxSKjZ7pk++RL+crVLZLQtar/P/I/bqzHLH/MEkVbLOxvnVWtGIyWD6?=
+ =?us-ascii?Q?Zn71MxtODXpleTz51HyURr9f0UmQY+F2NWwR1dboSbGG+pINaD9Y4RF/Jgqt?=
+ =?us-ascii?Q?LHpyH1djpBRBCiFmXot8Mpyn7SAqTkImBDXFdmrwh0OrwwpZ5YFcebYew1GQ?=
+ =?us-ascii?Q?8K0HMfVXVQpqcGw6e7XKXgVMxjs39E9L8YaFDxbczUc1x2nro7P2IxDULQZl?=
+ =?us-ascii?Q?QmQwG+7gbpiPuamEWx72hPnXtRYTXxNDQPrtiXKIBbYndQ8MT9+HdCr93pOR?=
+ =?us-ascii?Q?Pv6zr5UGLLq+szei+tSCPzKEMp8hRO5eeslwsW/bwumbIIrOvJYu97M1Lh1x?=
+ =?us-ascii?Q?zdtyK5lzcGt2XQcgwaadyR/i20mJk+IF5HahrSdKXdgcRjwiazF4vj773Pda?=
+ =?us-ascii?Q?DB2Nomg3PccOh//jvIScWrcSBj8SS+8QHlkWYFdMFIS65m0KSl27DlAK9U71?=
+ =?us-ascii?Q?tC3H715LrmDt7U/6ShPuQvstGlMpQyrcq+/d2YJb0/D0DhmmYJ5cOv/wE5cC?=
+ =?us-ascii?Q?3YM2GDR4UBcv9WCgGn75jooE/qqcdPI9IMuMsyGsOgLMXoQsOGorouS/47QY?=
+ =?us-ascii?Q?htIoqqCFG9vmyVb8w079FE4izdNFNo4N9y4JovufKJSrUwoJYdQzuXX/hZ70?=
+ =?us-ascii?Q?CV0N7cX5V0/eupP4AT1UeoMlC8R6dkyTeNaUs35EwYfoAmdkEKSuxUeR1H3b?=
+ =?us-ascii?Q?cfFXfV9LJ2OKnAptKlLQEYgHQLUKWapE/IcXkEjb7V35AP/aWvuvj6aOtinp?=
+ =?us-ascii?Q?vUFBy/3UtfWTTaZIUl/73o6PSPt54qzmPfbyY4Lu5/F1hMWxR0rAPF+ftdu7?=
+ =?us-ascii?Q?giRjR/607U+5AI+WLtrMBcwl8uAX+w+CqJbJcaYpvw5v5ehDg8TSum70dsah?=
+ =?us-ascii?Q?Kx7gURx11B5b4SmzlVFTgvKl7bzqD1e84D9jdvopkV8UF76D1q85PyHAaCWZ?=
+ =?us-ascii?Q?O1JmqzPzp9QFa3eOP1FSMHi/6a/fA7N0PR2nRviJt0IyZyuMK1P0e2dOTBSG?=
+ =?us-ascii?Q?n9+OaScFxVuF4RvN3mLJko1U?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0724a15-4325-4a54-072c-08d939fea204
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 06:33:25.6893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W8DCRmljz7YO4KxAYw7aMIwcO4uD4hBEOv0ody2RrVQ4ktYJj9lp/6h8NcG2vRgIKCn+NaZAqb6z0wwUzpw/Tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: Peng Fan <peng.fan@nxp.com>
 
-Please pull the latest timers/nohz git tree from:
+It seems luckliy work on i.MX platform, but it is wrong.
+Need use memcpy_toio, not memcpy_fromio.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-nohz-2021-06-28
+Fixes: 40df0a91b2a52 ("remoteproc: add is_iomem to da_to_va")
+Tested-by: Dong Aisheng <aisheng.dong@nxp.com> (i.MX8MQ)
+Reported-by: Dong Aisheng <aisheng.dong@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   # HEAD: 09fe880ed7a160ebbffb84a0a9096a075e314d2f MAINTAINERS: Add myself as context tracking maintainer
+diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+index 469c52e62faf..e8078efb3dec 100644
+--- a/drivers/remoteproc/remoteproc_elf_loader.c
++++ b/drivers/remoteproc/remoteproc_elf_loader.c
+@@ -220,7 +220,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+ 		/* put the segment where the remote processor expects it */
+ 		if (filesz) {
+ 			if (is_iomem)
+-				memcpy_fromio(ptr, (void __iomem *)(elf_data + offset), filesz);
++				memcpy_toio(ptr, (void __iomem *)(elf_data + offset), filesz);
+ 			else
+ 				memcpy(ptr, elf_data + offset, filesz);
+ 		}
+-- 
+2.30.0
 
-Updates to the tick/nohz code in this cycle:
-
- - Micro-optimize tick_nohz_full_cpu()
-
- - Optimize idle exit tick restarts to be less eager
-
- - Optimize tick_nohz_dep_set_task() to only wake up
-   a single CPU. This reduces IPIs and interruptions
-   on nohz_full CPUs.
-
- - Optimize tick_nohz_dep_set_signal() in a similar
-   fashion.
-
- - Skip IPIs in tick_nohz_kick_task() when trying
-   to kick a non-running task.
-
- - Micro-optimize tick_nohz_task_switch() IRQ flags
-   handling to reduce context switching costs.
-
- - Misc cleanups and fixes
-
- Thanks,
-
-	Ingo
-
------------------->
-Frederic Weisbecker (4):
-      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-      tick/nohz: Update nohz_full Kconfig help
-      tick/nohz: Only wake up a single target cpu when kicking a task
-      MAINTAINERS: Add myself as context tracking maintainer
-
-Marcelo Tosatti (2):
-      tick/nohz: Change signal tick dependency to wake up CPUs of member tasks
-      tick/nohz: Kick only _queued_ task whose tick dependency is updated
-
-Peter Zijlstra (2):
-      tick/nohz: Evaluate the CPU expression after the static key
-      tick/nohz: Call tick_nohz_task_switch() with interrupts disabled
-
-Yunfeng Ye (2):
-      tick/nohz: Conditionally restart tick on idle exit
-      tick/nohz: Update idle_exittime on actual idle exit
-
-
- MAINTAINERS                    |   6 ++
- include/linux/sched.h          |   2 +
- include/linux/tick.h           |  26 +++++----
- kernel/sched/core.c            |   7 ++-
- kernel/time/Kconfig            |  11 ++--
- kernel/time/posix-cpu-timers.c |   4 +-
- kernel/time/tick-sched.c       | 129 ++++++++++++++++++++++++++++-------------
- 7 files changed, 125 insertions(+), 60 deletions(-)
