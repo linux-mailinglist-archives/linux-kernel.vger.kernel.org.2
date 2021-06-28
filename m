@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154D33B65EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EC33B65EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 17:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237321AbhF1PpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 11:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S237237AbhF1Poa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 11:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236840AbhF1PoE (ORCPT
+        with ESMTP id S237046AbhF1PoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 11:44:04 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DA2C0527D9;
-        Mon, 28 Jun 2021 08:01:58 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id v12so10166952vsg.10;
-        Mon, 28 Jun 2021 08:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdMl/1OJLnnTo+EUbTvGj/r/oum5522THEOlxxDHOLE=;
-        b=XsQrrgMwHXsom864s4VwaXx5bKdtHcc7g2oRdxHLXcPAnjCt0xq6AhFP+lhYJocbd5
-         /obwVRF9+N1wlvMuJBR0knCX+GbhQsF17N3oNOr/7HoHtXxp2Tj9SGycUM3R07ueFnCc
-         JAY+V1pvtYy8fFe15kiekIK9k6Ms7HqsGysdQ2V+wcfRgNmDOb4zxvcVvqaQOhIk2t1p
-         UZEKYkbXMU8IgPtXBP+ykkoMEeBBUO2UzhI2TZeQkED4+9J/C6DhUm3rVDF5mku0ILzA
-         dKLGW23AKzI79jJtTt1QPQMATlqIgFUmwBt4T8B5uLYJvNLzeSS6Nnakb4Qe3aYb+CxR
-         nkLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sdMl/1OJLnnTo+EUbTvGj/r/oum5522THEOlxxDHOLE=;
-        b=aeApArzwhCUjILQaohPFj+xfwKjSXMHje7m4xBlpIJn0koPajSS3ZYDOB3S6XusPZb
-         Weu2oFpjNEHOLYiFbgcYfrAWj0MiAxtJsB1JFndVZDjbV/cJ6jtCMtAFfWViZDdzRmF4
-         Jkiiw2NUjRs8km9H5EPheL0tbNobe8kjsoQR1Rzm9MSqPsLwRgvT3fnZOJ8IFND3o2RD
-         868hRUOM47zyVtL8C45riZza6wfVhjOKGGm82lvobBYRGRckG5A4yHFnd4IqUsDe9Exx
-         s3SQVX0y5q+JDOYpdpPo0mmGqYJ5UhE4s6Ou8EupB027jGRcwrw+/yO+BRaK6dBUIfYQ
-         /90g==
-X-Gm-Message-State: AOAM533RyPDPrT52D5n4VQjOlvwBdbXnO33BhNh8cn3J3MZq7t+wV1wz
-        58DTEIIl9uGfV36qxyb8MARHhiobA9AERmRhcFo=
-X-Google-Smtp-Source: ABdhPJzSmDlMQXfSvX9SRLQHuAWraJXYiwI84JNlpUmHs3E2iC2rfroji+5EVJ3FBkmlh2bxL5R37mfvVAaS1VUYOTM=
-X-Received: by 2002:a67:e00b:: with SMTP id c11mr18727093vsl.22.1624892517243;
- Mon, 28 Jun 2021 08:01:57 -0700 (PDT)
+        Mon, 28 Jun 2021 11:44:13 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7F0C094246
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 08:03:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VB1DknrWVbY9Khq707YQZej2CCQ0Z5AyZ8g92XnuLGY=; b=eLBbjA+5vJeyt+CnksfQ3fboOY
+        pe2Be/sjm6+fhtNUFj4L5obZ32R7c8SB65RJGT9scHvwkkc4X5Sp3XLJsRZUxZPFWhouj0PozxD5L
+        ewEkcQU6dLqbiJwZx8v7nR/upAkYBnkI5rlfm3eXM2geNZQu7zkyetEn8uTEYRsmR91r5QnFS6rBu
+        GTG3EdmnziVahU4uSxvkx8e5px2rTT01xdEbFu51r2NRSybuorNDDp//XQgWSJ4VBfJ9qH+mW4MtL
+        YYKUHr7Z0KLmNXtjsWD/nP/I5SGbPUwzVElR8yVppORDOvquPC/6JwlJhi+rybE0lYi5WSK35VRP9
+        Hsb/hODw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxsnH-00CaSU-E7; Mon, 28 Jun 2021 15:03:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79FC33001DC;
+        Mon, 28 Jun 2021 17:03:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 470612041E859; Mon, 28 Jun 2021 17:03:26 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 17:03:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
+        ardb@kernel.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] kprobe/static_call: Restore missing
+ static_call_text_reserved()
+Message-ID: <YNnkvpLoDsql2mdq@hirez.programming.kicks-ass.net>
+References: <20210628112409.233121975@infradead.org>
+ <20210628113045.167127609@infradead.org>
+ <YNmz4nvH84jzX1aB@hirez.programming.kicks-ass.net>
+ <20210628232447.540fe9d53f0d2011d6590379@kernel.org>
 MIME-Version: 1.0
-References: <20210628141828.31757-1-sashal@kernel.org> <20210628141828.31757-5-sashal@kernel.org>
-In-Reply-To: <20210628141828.31757-5-sashal@kernel.org>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Mon, 28 Jun 2021 16:01:46 +0100
-Message-ID: <CACvgo50q9NLRjo3XMN63wQJywiZ_Z=yUoQLuVfy-Ht1URYdO-A@mail.gmail.com>
-Subject: Re: [PATCH 5.12 004/110] drm: add a locked version of drm_is_current_master
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        "# 3.13+" <stable@vger.kernel.org>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628232447.540fe9d53f0d2011d6590379@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha, Greg,
+On Mon, Jun 28, 2021 at 11:24:47PM +0900, Masami Hiramatsu wrote:
+> On Mon, 28 Jun 2021 13:34:58 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > On Mon, Jun 28, 2021 at 01:24:12PM +0200, Peter Zijlstra wrote:
+> > > Restore two hunks from commit 6333e8f73b83 ("static_call: Avoid
+> > > kprobes on inline static_call()s") that went walkabout.
+> > > 
+> > > Fixes: 76d4acf22b48 ("Merge tag 'perf-kprobes-2020-12-14' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
+> > 
+> > FWIW, it was a royal pain in the arse to find that commit...
+> 
+> I think if this is a fix, that fixes static_call introduction commit,
+> because anyway kprobes has to check the static_call site as a reserved
+> area for another self code modifying.
 
-On Mon, 28 Jun 2021 at 15:18, Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->
-> commit 1815d9c86e3090477fbde066ff314a7e9721ee0f upstream.
->
-
-Please drop this patch from all stable trees. See following drm-misc
-revert for details:
-https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-fixes&id=f54b3ca7ea1e5e02f481cf4ca54568e57bd66086
-
--Emil
+Yeah, so 6333e8f73b83 has these two hunks, so the initial commit was
+fine, but the merge commit from the Fixes: tag lost them again for some
+reason. So this really is a fix for a merge commit afaict.
