@@ -2,268 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E26F3B5C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5968D3B5C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhF1KWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhF1KWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:22:14 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38ECC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 03:19:47 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a18so9469368lfs.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 03:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ine6V2enSE0x/gosxEwrCjqckJ3LAzUMWP8HGmmuSp8=;
-        b=dmit0bhDxjwxxkNzc6y69zsxk8K62fC6Oh2Hynkzee4xKWPdOIFj/9gm2V07uy9k+s
-         b3r6SI5Fv+OHWhHJ6gQB+odqHPlk3RP50oRJ0ETJeSvGsWRsvZ+RPEX1VXg8DTKgTGKq
-         8C7PKhu41vhD8ZjeuHIcIT+15QtOSsB2dvsbq13HMdyIv10h9g6JvSwfvlFsRQcGdhNN
-         y4AVEbd79B/DTqnLwMrGrdMfkRYAcGd72Q5f6pAFw7L8xz1o2g+XsJ9mVlBVzuzuhjRw
-         FJG+LiFnmPkMChxD6iFA1AA9IM4LxHQQltMGyIk80xgjmnNS8tYxSmiqfwY+c3+ywtk/
-         H+Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ine6V2enSE0x/gosxEwrCjqckJ3LAzUMWP8HGmmuSp8=;
-        b=tzIe4WI2jQ2ED+v1NzyMWwH4lHwvWCZFganov3yr0r+1RRZYvL9dlKQfuC+W0iDgsA
-         +hudQQbFSLj7BBrzkXCM5KZj629/Gr8/n3DD8Omde02Lo1qNbaOnr5R81EpQGqcn40x6
-         6aTdnWpgOlFTL12GnB7OxpGhyi/yham5+okVhT8ahGYfrawJS/vykX5XAH/eEMgaI+YU
-         PC3NJpVNjz+hgYVEKhNIpMmBjuNPGw4PfcyYDQWCWJrqE3zvGgXJXQwqwHjJkOIRXjKf
-         joWc3ho0WdI673GxkWUgbmrOmX82byEa3sBOPt/A+WKH43oV2tVhNbsjE0hGfVs0Z9xO
-         1v5g==
-X-Gm-Message-State: AOAM530LLjbmI9Onn7cJUiSq3oiqyXZrG8rf6BZ6I4ryCKT1PtVOOJ3s
-        xCj4ZQRUF4IuSW9xWi7qfrzbc+sFrFplLfx9
-X-Google-Smtp-Source: ABdhPJxylk55IZcQEpHZ1aNHKTgfXb/YAfHWHH5bzzl7xMim3P9ix5tygRImbuIcWBz1RI1d8zls4w==
-X-Received: by 2002:a19:6a05:: with SMTP id u5mr18542582lfu.628.1624875585976;
-        Mon, 28 Jun 2021 03:19:45 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id z1sm1136221lfh.137.2021.06.28.03.19.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 03:19:45 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC and MEMSTICK updates for v5.14
-Date:   Mon, 28 Jun 2021 12:19:44 +0200
-Message-Id: <20210628101944.205357-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S232634AbhF1KWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:22:42 -0400
+Received: from muru.com ([72.249.23.125]:57516 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232426AbhF1KWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:22:41 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id EFAE68047;
+        Mon, 28 Jun 2021 10:20:25 +0000 (UTC)
+Date:   Mon, 28 Jun 2021 13:20:11 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-omap@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
+ memory map alignment
+Message-ID: <YNmiW6CYzy9lG8ks@atomide.com>
+References: <20210519141436.11961-1-rppt@kernel.org>
+ <20210519141436.11961-4-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519141436.11961-4-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Here's the pull-request with updates for MMC and MEMSTICK for v5.14. Details
-about the highlights are as usual found in the signed tag.
+Looks like this patch causes a boot regression at least for Cortex-A15.
+That's commit 990e6d0e1de8 ("arm: extend pfn_valid to take into accound
+freed memory map alignment") in Linux next.
 
-Please pull this in!
+Most of the time I see the following on beagle-x15 right after init starts:
 
-Kind regards
-Ulf Hansson
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+CPU0: stopping
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7-next-20210625 #100
+Hardware name: Generic DRA74X (Flattened Device Tree)
+[<c0110c54>] (unwind_backtrace) from [<c010b408>] (show_stack+0x10/0x14)
+[<c010b408>] (show_stack) from [<c09fae04>] (dump_stack_lvl+0x40/0x4c)
+[<c09fae04>] (dump_stack_lvl) from [<c010e768>] (do_handle_IPI+0x2c8/0x334)
+[<c010e768>] (do_handle_IPI) from [<c010e7e8>] (ipi_handler+0x14/0x20)
+[<c010e7e8>] (ipi_handler) from [<c01a5f14>] (handle_percpu_devid_irq+0xa8/0x22c)
+[<c01a5f14>] (handle_percpu_devid_irq) from [<c019fc78>] (handle_domain_irq+0x64/0xa4)
+[<c019fc78>] (handle_domain_irq) from [<c05b9bdc>] (gic_handle_irq+0x88/0xb0)
+[<c05b9bdc>] (gic_handle_irq) from [<c0100b6c>] (__irq_svc+0x6c/0x90)
+Exception stack(0xc0f01f08 to 0xc0f01f50)
+1f00:                   00000f38 00000f37 00000000 fe600000 c0ff90c0 00000000
+1f20: c0f0520c c0f05260 00000000 c0f00000 00000000 c0e788f0 00000000 c0f01f58
+1f40: c0126aa0 c0107dc4 60000013 ffffffff
+[<c0100b6c>] (__irq_svc) from [<c0107dc4>] (arch_cpu_idle+0x1c/0x3c)
+[<c0107dc4>] (arch_cpu_idle) from [<c0a098d8>] (default_idle_call+0x38/0xe0)
+[<c0a098d8>] (default_idle_call) from [<c0172860>] (do_idle+0x214/0x2cc)
+[<c0172860>] (do_idle) from [<c0172c0c>] (cpu_startup_entry+0x18/0x1c)
+[<c0172c0c>] (cpu_startup_entry) from [<c0e00ef8>] (start_kernel+0x5cc/0x6c4)
+
+Sometimes the system boots to console, but maybe only about 20% of the
+time. Reverting 990e6d0e1de8 makes Linux next boot again for me.
+
+Regards,
+
+Tony
+
+#regzb introduced: 990e6d0e1de8 ("arm: extend pfn_valid to take into accound freed memory map alignment")
 
 
-The following changes since commit 103a5348c22c3fca8b96c735a9e353b8a0801842:
-
-  mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk (2021-06-14 14:02:33 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.14
-
-for you to fetch changes up to 98b5ce4c08ca85727888fdbd362d574bcfa18e3c:
-
-  mmc: sdhci-iproc: Add support for the legacy sdhci controller on the BCM7211 (2021-06-15 17:27:48 +0200)
-
-----------------------------------------------------------------
-MMC core:
- - Add support for Cache Ctrl for SD cards
- - Add support for Power Off Notification for SD cards
- - Add support for read/write of the SD function extension registers
- - Allow broken eMMC HS400 mode to be disabled via DT
- - Allow UHS-I voltage switch for SDSC cards if supported
- - Disable command queueing in the ioctl path
- - Enable eMMC sleep commands to use HW busy polling to minimize delay
- - Extend re-use of the common polling loop to standardize behaviour
- - Take into account MMC_CAP_NEED_RSP_BUSY for eMMC HPI commands
-
-MMC host:
- - jz4740: Add support for the JZ4775 variant
- - sdhci-acpi: Disable write protect detection on Toshiba Encore 2 WT8-B
- - sdhci-esdhc-imx: Advertise HS400 support through MMC caps
- - sdhci-esdhc-imx: Enable support for system wakeup for SDIO
- - sdhci-iproc: Add support for the legacy sdhci controller on the BCM7211
- - vub3000: Fix control-request direction
-
-MEMSTICK:
- - A couple of fixes/cleanups.
-
-----------------------------------------------------------------
-Al Cooper (2):
-      dt-bindings: mmc: sdhci-iproc: Add brcm,bcm7211a0-sdhci
-      mmc: sdhci-iproc: Add support for the legacy sdhci controller on the BCM7211
-
-Andreas Färber (1):
-      dt-bindings: mmc: rockchip-dw-mshc: Add Rockchip RK1808
-
-Andrew Jeffery (1):
-      mmc: sdhci-of-aspeed: Turn down a phase correction warning
-
-Andy Shevchenko (2):
-      mmc: mmc_spi: Drop duplicate 'mmc_spi' in the debug messages
-      mmc: mmc_spi: Imply container_of() to be no-op
-
-Aviral Gupta (1):
-      mmc: core: Add a missing SPDX license header
-
-Bean Huo (1):
-      mmc: block: Disable CMDQ on the ioctl path
-
-Ben Chuang (1):
-      mmc: sdhci-pci-gli: Fine tune GL9763E L1 entry delay
-
-Christian Löhle (1):
-      mmc: core: Allow UHS-I voltage switch for SDSC cards if supported
-
-Geert Uytterhoeven (2):
-      dt-bindings: mmc: renesas,mmcif: Convert to json-schema
-      mmc: dw_mmc-pltfm: Remove unused <linux/clk.h>
-
-Haibo Chen (1):
-      mmc: sdhci-esdhc-imx: Enable support for system wakeup for SDIO
-
-Hans de Goede (1):
-      mmc: sdhci-acpi: Disable write protect detection on Toshiba Encore 2 WT8-B
-
-Johan Hovold (1):
-      mmc: vub3000: fix control-request direction
-
-Krzysztof Kozlowski (2):
-      mmc: sdhci-esdhc-imx: remove unused is_imx6q_usdhc
-      mmc: sdhci-sprd: use sdhci_sprd_writew
-
-Liang Chen (1):
-      dt-bindings: mmc: rockchip-dw-mshc: add description for rk3568
-
-Lucas Stach (3):
-      dt-bindings: mmc: add no-mmc-hs400 flag
-      mmc: sdhci-esdhc-imx: advertise HS400 mode through MMC caps
-      mmc: core: add support for disabling HS400 mode via DT
-
-Rob Herring (1):
-      dt-bindings: mmc: Clean-up examples to match documented bindings
-
-Shubhankar Kuranagatti (1):
-      drivers: memstick: core:ms_block.c: Fix alignment of block comment
-
-Steven Lee (1):
-      mmc: sdhci-of-aspeed: Configure the SDHCIs as specified by the devicetree.
-
-Suman Anna (1):
-      dt-bindings: mmc: sdhci-am654: Remove duplicate ti,j721e-sdhci-4bit
-
-Tian Tao (4):
-      mmc: s3cmci: move to use request_irq by IRQF_NO_AUTOEN flag
-      mmc: core: Use pm_runtime_resume_and_get() to replace open coding
-      mmc: sdhci_am654: Use pm_runtime_resume_and_get() to replace open coding
-      mmc: sdhci-omap: Use pm_runtime_resume_and_get() to replace open coding
-
-Tong Zhang (1):
-      memstick: rtsx_usb_ms: fix UAF
-
-Ulf Hansson (14):
-      mmc: core: Drop open coding when preparing commands with busy signaling
-      mmc: core: Take into account MMC_CAP_NEED_RSP_BUSY for eMMC HPI commands
-      mmc: core: Re-structure some code in __mmc_poll_for_busy()
-      mmc: core: Extend re-use of __mmc_poll_for_busy()
-      mmc: core: Enable eMMC sleep commands to use HW busy polling
-      mmc: core: Prepare mmc_send_cxd_data() to be re-used for additional cmds
-      mmc: core: Drop open coding in mmc_sd_switch()
-      mmc: core: Parse the SD SCR register for support of CMD48/49 and CMD58/59
-      mmc: core: Read the SD function extension registers for power management
-      mmc: core: Read performance enhancements registers for SD cards
-      mmc: core: Add support for Power Off Notification for SD cards
-      mmc: core: Move eMMC cache flushing to a new bus_ops callback
-      mmc: core: Add support for cache ctrl for SD cards
-      Merge branch 'fixes' into next
-
-Wolfram Sang (2):
-      mmc: debugfs: add description for module parameter
-      mmc: Improve function name when aborting a tuning cmd
-
-Yue Hu (4):
-      mmc: mediatek: use data instead of mrq parameter from msdc_{un}prepare_data()
-      mmc: mediatek: remove useless data parameter from msdc_data_xfer_next()
-      mmc: cqhci: fix typo
-      mmc: cqhci: introduce get_trans_desc_offset()
-
-Zhen Lei (2):
-      mmc: usdhi6rol0: fix error return code in usdhi6_probe()
-      mmc: jz4740: Remove redundant error printing in jz4740_mmc_probe()
-
-Zheyu Ma (1):
-      mmc: via-sdmmc: add a check against NULL pointer dereference
-
-周琰杰 (Zhou Yanjie) (2):
-      dt-bindings: mmc: JZ4740: Add bindings for JZ4775
-      mmc: JZ4740: Add support for JZ4775
-
- .../devicetree/bindings/mmc/brcm,iproc-sdhci.yaml  |   1 +
- .../devicetree/bindings/mmc/ingenic,mmc.yaml       |   1 +
- .../devicetree/bindings/mmc/mmc-controller.yaml    |  25 +-
- .../devicetree/bindings/mmc/renesas,mmcif.txt      |  53 ---
- .../devicetree/bindings/mmc/renesas,mmcif.yaml     | 135 ++++++
- .../devicetree/bindings/mmc/rockchip-dw-mshc.yaml  |  10 +-
- .../devicetree/bindings/mmc/sdhci-am654.yaml       |   1 -
- drivers/memstick/core/ms_block.c                   |  37 +-
- drivers/memstick/host/rtsx_usb_ms.c                |  10 +-
- drivers/mmc/core/block.c                           |  11 +-
- drivers/mmc/core/core.c                            |  22 +-
- drivers/mmc/core/core.h                            |   9 +
- drivers/mmc/core/debugfs.c                         |   1 +
- drivers/mmc/core/host.c                            |   3 +
- drivers/mmc/core/mmc.c                             |  68 ++-
- drivers/mmc/core/mmc_ops.c                         | 163 ++++---
- drivers/mmc/core/mmc_ops.h                         |  12 +-
- drivers/mmc/core/sd.c                              | 481 ++++++++++++++++++++-
- drivers/mmc/core/sd_ops.c                          |  38 +-
- drivers/mmc/core/sdio.c                            |   6 +-
- drivers/mmc/host/Kconfig                           |   2 +-
- drivers/mmc/host/cqhci-core.c                      |  21 +-
- drivers/mmc/host/dw_mmc-pltfm.c                    |   1 -
- drivers/mmc/host/jz4740_mmc.c                      |   6 +-
- drivers/mmc/host/mmc_spi.c                         |  12 +-
- drivers/mmc/host/mtk-sd.c                          |  25 +-
- drivers/mmc/host/of_mmc_spi.c                      |   2 +-
- drivers/mmc/host/renesas_sdhi_core.c               |   2 +-
- drivers/mmc/host/s3cmci.c                          |   7 +-
- drivers/mmc/host/sdhci-acpi.c                      |  11 +
- drivers/mmc/host/sdhci-esdhc-imx.c                 |  18 +-
- drivers/mmc/host/sdhci-iproc.c                     |  30 ++
- drivers/mmc/host/sdhci-of-aspeed.c                 |  50 ++-
- drivers/mmc/host/sdhci-omap.c                      |   5 +-
- drivers/mmc/host/sdhci-pci-gli.c                   |   4 +-
- drivers/mmc/host/sdhci-sprd.c                      |   1 +
- drivers/mmc/host/sdhci.c                           |   2 +-
- drivers/mmc/host/sdhci.h                           |   2 +
- drivers/mmc/host/sdhci_am654.c                     |   6 +-
- drivers/mmc/host/usdhi6rol0.c                      |   1 +
- drivers/mmc/host/via-sdmmc.c                       |   3 +
- drivers/mmc/host/vub300.c                          |   2 +-
- include/linux/mmc/card.h                           |  23 +
- include/linux/mmc/host.h                           |   2 +-
- include/linux/mmc/sd.h                             |   4 +
- 45 files changed, 987 insertions(+), 342 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mmc/renesas,mmcif.txt
- create mode 100644 Documentation/devicetree/bindings/mmc/renesas,mmcif.yaml
+* Mike Rapoport <rppt@kernel.org> [700101 02:00]:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> When unused memory map is freed the preserved part of the memory map is
+> extended to match pageblock boundaries because lots of core mm
+> functionality relies on homogeneity of the memory map within pageblock
+> boundaries.
+> 
+> Since pfn_valid() is used to check whether there is a valid memory map
+> entry for a PFN, make it return true also for PFNs that have memory map
+> entries even if there is no actual memory populated there.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  arch/arm/mm/init.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+> index 9d4744a632c6..6162a070a410 100644
+> --- a/arch/arm/mm/init.c
+> +++ b/arch/arm/mm/init.c
+> @@ -125,11 +125,22 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
+>  int pfn_valid(unsigned long pfn)
+>  {
+>  	phys_addr_t addr = __pfn_to_phys(pfn);
+> +	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
+>  
+>  	if (__phys_to_pfn(addr) != pfn)
+>  		return 0;
+>  
+> -	return memblock_is_map_memory(addr);
+> +	/*
+> +	 * If address less than pageblock_size bytes away from a present
+> +	 * memory chunk there still will be a memory map entry for it
+> +	 * because we round freed memory map to the pageblock boundaries.
+> +	 */
+> +	if (memblock_overlaps_region(&memblock.memory,
+> +				     ALIGN_DOWN(addr, pageblock_size),
+> +				     pageblock_size))
+> +		return 1;
+> +
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(pfn_valid);
+>  #endif
+> -- 
+> 2.28.0
+> 
