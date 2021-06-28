@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFFF3B5DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C6F3B5DB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 14:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhF1MNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 08:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232933AbhF1MNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:13:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24EE161C49;
-        Mon, 28 Jun 2021 12:10:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624882252;
-        bh=hsJq4K0UQ3estcFibPEXpVe1Nv88MXs/+qqxawzOhRA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uIjOf7bJMdxmc2t375ISss25RTVzbzHsiMEPv2P0ql5aUoNpaN1TapTQ7XrsZoxb4
-         FmPH7fWnwS363O/j+8BwgFoeh/p296Ysq+o0oe39c7Pjdw94/SgMoWVTBx7vRJASm2
-         3mGyp/cGGqGddC1RHccFv6Mtq8qEnZPRJrZwmTwQ+O0bQosOku2N57JpgrdrtUIGip
-         9uK+xRqlv5wqzAtnByrf23IwZyMBsdim68G1PWlbDA4k+ERpZV9bYlu7UU3Rsx6x43
-         7pYrl7n2IFPI/p/dPwX4AS4c01czhmI1EEA8ICefL0aZNY0gjh8JCqjOjNDFDy7kBa
-         QGqOnkevPWkTQ==
-Received: by pali.im (Postfix)
-        id D3AD170A; Mon, 28 Jun 2021 14:10:49 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: armada-3720-turris-mox.dts: remove mrvl,i2c-fast-mode
-Date:   Mon, 28 Jun 2021 14:10:15 +0200
-Message-Id: <20210628121015.22660-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S232897AbhF1MNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 08:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhF1MNH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 08:13:07 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C795C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:10:42 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso13581751wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 05:10:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/s5ntRR1JmxnVmTebmtMvo/S0ha2iJsjhTLPq9iWUNo=;
+        b=r8DcmgKnJzDsSe9H9XdHRMx+qFTw3ab7ZUGEi94m8rfq2F5rg2c3b66zKeWc47rsv+
+         JXd54tjxiqLkS9ohZddHT2jh4w8bexyyZygC3N5k/EWMhLA3bafolhAO3nook56HshOO
+         Yi1knHs/uDdKJCblnujaNy+A2FKiAU2HOp4u8NJyR73sYUdOkgof9wm4kI52ASzszIMq
+         BgRNtuxIqpkS/WQ2/+LImWHrNB1AYq0nmfPmUZZSi2GH9XUdpJcoEEtzy8YIlZn1uZ3V
+         22oNnxICMAA/HAbsCgfU7gVpvob6AebRLP5qib+NOaraQ3V8o5fgcmrzPGGj8ThS2da4
+         4X3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/s5ntRR1JmxnVmTebmtMvo/S0ha2iJsjhTLPq9iWUNo=;
+        b=rr/jGi4ZHlusKyu9b8GHzBV9xWA/rgEtCcUos1MTU8XvfQUs+Gr4xbywdn3wet15NN
+         fMYarulP4Ge5C7JmiO7y+fUGaJkCc5io90QtmVuDEiHVzq9FT6+q8FxkBF1C9wbuzqC/
+         ffJWqgYL4Uzd5mdHEYiny9krWD1s91QvgTSTl1NJUJg/tnW0MCX1KzLdbzGOsVlj2de8
+         f/xNTBZRv2QGzJm1ITiCz+KDiWnqXWyKsOnS0j9YnQ1j+YIer8oQz0k3Yu+oOIjijojP
+         mUGzHraHZF33Wapdtq8/9w2TWY+eNs6m1ycGIRoFLZ9anor5Ak3pi36S1/IuQa+HLr4v
+         4rVg==
+X-Gm-Message-State: AOAM531DrDkS8CFdJSDNAFvNOmNr20poRsSjrNJVvjS/hjNi6Tm0ENx+
+        im28wYtX33hREfP/S1cBK/g=
+X-Google-Smtp-Source: ABdhPJw0b+zEVGJoy+JpR4p2RvtMfiKkQ7V22N6GI37OQ3+H+aRCKqKL/+Qe9aHWKx8qF5tmN77JFg==
+X-Received: by 2002:a05:600c:2cb5:: with SMTP id h21mr1646938wmc.91.1624882240885;
+        Mon, 28 Jun 2021 05:10:40 -0700 (PDT)
+Received: from [10.8.0.150] ([195.53.121.100])
+        by smtp.gmail.com with ESMTPSA id c133sm19076433wmf.0.2021.06.28.05.10.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 05:10:40 -0700 (PDT)
+Subject: Re: [RFC] strcpys(): New function for copying strings safely
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        glibc <libc-alpha@sourceware.org>
+Cc:     "tech@openbsd.org" <tech@openbsd.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        drepper@gmail.com
+References: <755875ec-baae-6cab-52a8-3c9530db1ce6@gmail.com>
+ <38428d5e-ead2-bf18-e198-cecd4caeb3e7@gmail.com>
+ <f5bfab0dce604736b6a563a4f9f7ce43@AcuMS.aculab.com>
+ <52e57bd5-0d04-4b4f-978a-8c1dbc08115c@gmail.com>
+ <d27912e6-f090-68af-295d-d40b00c1b0a7@gmail.com>
+Message-ID: <6ea2efaf-7898-9723-54e7-2cd59702f854@gmail.com>
+Date:   Mon, 28 Jun 2021 14:10:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d27912e6-f090-68af-295d-d40b00c1b0a7@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SFP modules are not detected when i2c-fast-mode is enabled even when
-clock-frequency is already set to 100000. The I2C bus violates the timing
-specifications when run in fast mode. So disable fast mode on Turris Mox.
+On 6/28/21 2:00 PM, Alejandro Colomar (man-pages) wrote:
+> l = strscat(n - l, dest + l, src2);
 
-Same change was already applied for uDPU (also Armada 3720 board with SFP)
-in commit fe3ec631a77d ("arm64: dts: uDPU: remove i2c-fast-mode").
+Hmm, that's a bug; I wrote it too fast.
 
-Fixes: 7109d817db2e ("arm64: dts: marvell: add DTS for Turris Mox")
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 1 +
- 1 file changed, 1 insertion(+)
+Either
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index 6bcc319a0161..27ded36a1a13 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -119,6 +119,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2c1_pins>;
- 	clock-frequency = <100000>;
-+	/delete-property/mrvl,i2c-fast-mode;
- 	status = "okay";
- 
- 	rtc@6f {
+l += strscpy(n - l, dest + l, src2);
+
+or
+
+l = strscat(n - l, dest, src2);
+
+should be used instead.
+
 -- 
-2.20.1
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
