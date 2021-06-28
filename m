@@ -2,122 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B193B68C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EAB3B68D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 21:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235904AbhF1TFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 15:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        id S233101AbhF1THx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 15:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbhF1TFn (ORCPT
+        with ESMTP id S233962AbhF1THp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 15:05:43 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBECC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:16 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id a15so26650863lfr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:16 -0700 (PDT)
+        Mon, 28 Jun 2021 15:07:45 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E037BC061768
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:05:17 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id e13-20020a37e50d0000b02903ad5730c883so18539373qkg.22
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=uR/ZxXYOfetOCIPFRvKNULFj2/1YAj7wkBUuAw2Y1ls=;
-        b=RACA7+LLO50Cky/qJJNkQqRagEmWSnMIqo1OLMpw0plnLeIC9kJ68PHAMATFyfmYhV
-         P7c7jTDmTegZ0lzfLxA0pq400U8jSROY9IHCUFMn2wvIAvlcuJdkmJpy9cviHj2M3WKn
-         NMTgV8nXT0gT0ca/CBswfP0oxbRlf6qT0p5no=
+        bh=mrnpINK5iyhqWzOKn2U+Wb/F3LThfuiu21IBE0XytmI=;
+        b=PL0eaGkGjLHjo5hDnJb77vqMKVTVhf2fxFMhRvzRBn8zsFFpoQSu1FnpPDtw8E/bc3
+         AMrJk/Kt2I55zY6ZSSw0qFGrGeA45AOhfnAMtbLb55D0ZP/jFrBW2lA20s0AZ4NKLZjj
+         hGtsniOwSXweW51qJOcoq8mlV1hI7oAPKAcHKY6uOaCdFCUUumPpnJ27wGdzt4rmQ3Y3
+         kJhTk66vpeDQvlJg8NGY/MkQ/iO9cFlg3P0R88IXN+n6Y1Gs9CZrgEZy6gXf71AIl1Hs
+         cy8MgK8/m3cdw1oQBhvbkl5H4WOA4/0ZafFMeAw0WDshRGFGTqYeWuM4SCQrLr+CMr0O
+         6Y8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uR/ZxXYOfetOCIPFRvKNULFj2/1YAj7wkBUuAw2Y1ls=;
-        b=qWN5CBEGylsDIS6UkPEC4FL/OzWtWuqIz96S5NPFy5aW+97KInqcMUEOuj3VVVvmrj
-         BUCFlwm8s/PB/+AmA80TbTPdpkAPpVtqcUByzbXFTgZoOGzl0BeqwJoWozh8JfnmOeQo
-         /XXrqs/Bj1Hr+JvkYVJXMnR9jQIRgXdYKfEJNsyWibKe/Tb2WNmJF2XNssEkNWt9xzMu
-         woRuWrj9SkdEkSeBgNjXc6LxvQHpyINb/PXYHL3yPhkmIy/1bAwhPPOGaF4BGZMJK4ma
-         H4ApwZVXMQ8Kdhl84QLczVyDx6uWPsHxkW9JqJvTzv6LhRrs9zlp9xdxU4wbLoLWf4YS
-         t8Hw==
-X-Gm-Message-State: AOAM531+8tT6OwfTKq7gARRRwv8H8ix2WuY3l8IZKj8iRm5HNrKMp8AM
-        Ztm0VwsHq1NhbGT112pO8zeq5sLduX8RO1he
-X-Google-Smtp-Source: ABdhPJwHYzl/QvvsAAj8TXnSR6YtLnzLceMotdmJi27A1P3SAL0Zit+80mpv2ak33dDCvpIBXC/1WQ==
-X-Received: by 2002:ac2:546a:: with SMTP id e10mr20440271lfn.244.1624906994467;
-        Mon, 28 Jun 2021 12:03:14 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id a7sm1513098lfg.220.2021.06.28.12.03.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id w19so5910781lfk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr19320422lfc.201.1624906993250;
- Mon, 28 Jun 2021 12:03:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <YNQwgTR3n3mSO9+3@gmail.com> <CAHk-=wiebYt6ZG4Cp8fWqVnNqxMN4pybDZQ6gwsTWFc0XP=XPw@mail.gmail.com>
- <CAHk-=wgEyk9X5NefUL7gaqXOSDkdzCEDi6RafxGvG+Uq8rGrgA@mail.gmail.com>
- <CAHk-=wiJq0Ns7_AFRW+rvZcD_m+1t5cYgvQRO-Gbp8TEK1x1bQ@mail.gmail.com>
- <YNlapAKObfeVPoQO@gmail.com> <CAHk-=wjLNCm5kNnbHkw38c1t80FAPVYmNOOiTvdqedNm1SQRZg@mail.gmail.com>
- <YNoZIVgboj6YKo3V@gmail.com>
-In-Reply-To: <YNoZIVgboj6YKo3V@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Jun 2021 12:02:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
-Message-ID: <CAHk-=wjrd6-ZHyQGznpM+O0CtTHjzZ5P2Ozddh68WmDH9c+hBg@mail.gmail.com>
-Subject: Re: [GIT PULL] sigqueue cache fix
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=mrnpINK5iyhqWzOKn2U+Wb/F3LThfuiu21IBE0XytmI=;
+        b=m6JwLIA62G40IpgTsnUdrWNsaBHsB3aGVbpYfZhiMLE+1TKtLTIAtkVXiCcU+xpoPw
+         9igevEDpg3rbPST4gOiv0WirCohLqPAbOyo87w8EcaqKwABNkwA8rUscUZeejNzSFM9F
+         K2Uu2TiaknFm6DKlZqBl9Wf8g7jIMlHtq1iKGqyMfGL/lEkh1PQ5DY2GbO+NpKVDu7ER
+         50IZrz4jgxHsUBkk7su29k7DQpaYdtd8+eQ1Okh6lZjUXwkhJO3Yq7D4djzzDCxvIVa+
+         q888g6Pu2AvLfUcQzxNYqaCqzX4WAspHYknD1X5cRPtYVcius1jUW/lB6SrsiKX3My/h
+         n7fQ==
+X-Gm-Message-State: AOAM532N8Ph06B28GlsFfsRkb/UB07rZfbcmURFAPXtkgxXgnwkwkDMK
+        NvXbIQDGg1hmhIjznO4G7knHACSK9dAcjyAlsP4=
+X-Google-Smtp-Source: ABdhPJweW2J8MnrNOBgv+m5W/MxRvgvrrXeRg9lc+wUJC2COr0ElaWRD5nUE4okde33LXiPxseTT/Z7ixL2jKHES+GY=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:6f7:d09:f550:3380])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:1cb:: with SMTP id
+ c11mr26921739qvt.47.1624907116853; Mon, 28 Jun 2021 12:05:16 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 12:05:06 -0700
+In-Reply-To: <20210622201822.ayavok3d2fw3u2pl@google.com>
+Message-Id: <20210628190509.2486992-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210622201822.ayavok3d2fw3u2pl@google.com>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2] kallsyms: strip LTO suffixes from static functions
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "KE . LI" <like1@oppo.com>, Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Miroslav Benes <mbenes@suse.cz>, Jessica Yu <jeyu@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:47 AM Ingo Molnar <mingo@kernel.org> wrote:
->
-> But even if release_posix_timer() is changed to call sigqueue_free() with
-> IRQs disabled, or sigqueue_free() disables interrupts itself, I think we
-> need to be mindful of the Consumer <-> Producer SMP races, which only
-> appear to be safe due to an accidental barrier by free_uid().
+Similar to:
+commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
+functions")
 
-Oh, I agree. The SMP memory ordering issues are subtle and while I
-suspect they aren't something that can be triggered in reality, it's
-an example of how broken some WRITE_ONCE -> READ_ONCE serialization
-is.
+It's very common for compilers to modify the symbol name for static
+functions as part of optimizing transformations. That makes hooking
+static functions (that weren't inlined or DCE'd) with kprobes difficult.
 
-I don't mind READ_ONCE/WRITE_ONCE in general, but I absolutely detest
-them when they are used to hide KCSAN things, and when they are used
-randomly for pointers.
+LLVM has yet another name mangling scheme used by thin LTO.  Strip off
+these suffixes so that we can continue to hook such static functions.
 
-I think they are much better suited for one-time flag things, and
-pretty much every time you see a READ_ONCE/WRITE_ONCE you should
-likely see a barrier somewhere.
+Reported-by: KE.LI(Lieke) <like1@oppo.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes v1 -> v2:
+* Both mangling schemes can occur for thinLTO + CFI, this new scheme can
+  also occur for thinLTO without CFI. Split cleanup_symbol_name() into
+  two function calls.
+* Drop KE.LI's tested by tag.
+* Do not carry Fangrui's Reviewed by tag.
+* Drop the inline keyword; it is meaningless.
 
-And no, we don't want them to be some subtle barriers that are just
-"in the context of this code, we can depend on the barrier in that
-other function".
+ kernel/kallsyms.c | 33 +++++++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
 
-In general, if you have a WRITE_ONCE -> READ_ONCE chain an dnot some
-obvious required barrier for other reasons right *there*, it should
-almost certainly not be one of those ONCE things at all. It should be
-a proper smp_store_release() -> smp_load_acquire(). Those have real -
-and on sane hardware cheap - memory orderings.
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 4067564ec59f..fbce4a1ec700 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -171,14 +171,30 @@ static unsigned long kallsyms_sym_address(int idx)
+ 	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
+ }
+ 
+-#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
++#ifdef CONFIG_LTO_CLANG_THIN
++/*
++ * LLVM appends a suffix for local variables that must be promoted to global
++ * scope as part of thin LTO. foo() becomes foo.llvm.974640843467629774. This
++ * can break hooking of static functions with kprobes.
++ */
++static bool cleanup_symbol_name_thinlto(char *s)
++{
++	char *res;
++
++	res = strstr(s, ".llvm.");
++	if (res)
++		*res = '\0';
++
++	return res != NULL;
++}
++#ifdef CONFIG_CFI_CLANG
+ /*
+  * LLVM appends a hash to static function names when ThinLTO and CFI are
+  * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
+  * This causes confusion and potentially breaks user space tools, so we
+  * strip the suffix from expanded symbol names.
+  */
+-static inline bool cleanup_symbol_name(char *s)
++static bool cleanup_symbol_name_thinlto_cfi(char *s)
+ {
+ 	char *res;
+ 
+@@ -189,8 +205,17 @@ static inline bool cleanup_symbol_name(char *s)
+ 	return res != NULL;
+ }
+ #else
+-static inline bool cleanup_symbol_name(char *s) { return false; }
+-#endif
++static bool cleanup_symbol_name_thinlto_cfi(char *s) { return false; }
++#endif /* CONFIG_CFI_CLANG */
++#else
++static bool cleanup_symbol_name_thinlto(char *s) { return false; }
++#endif /* CONFIG_LTO_CLANG_THIN */
++
++static bool cleanup_symbol_name(char *s)
++{
++	return cleanup_symbol_name_thinlto(s) &&
++		cleanup_symbol_name_thinlto_cfi(s);
++}
+ 
+ /* Lookup the address for this symbol. Returns 0 if not found. */
+ unsigned long kallsyms_lookup_name(const char *name)
+-- 
+2.32.0.93.g670b81a890-goog
 
-And as the whole - and only - point of the sigqueue cache was a very
-subtle performance and latency issue, I don't think we want to use
-locks or atomics. It's why my revert commit suggests re-purposing the
-"percpu_cmpxchg()" functionality: that would likely be a good model at
-least for x86 and arm.
-
-But while we have "percpu_cmpxchg()", I don't think we currently don't
-really have that kind of operation where it
-
- (a) works on a non-percpu variable (but we can force casts, I guess)
-
- (b) has "acquire" semantics
-
-We do have the *atomic* cmpxchg with acquire semantics, but atomics
-are rather more expensive than we'd probably really want.
-
-                 Linus
