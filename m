@@ -2,52 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718DA3B5688
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188943B5691
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhF1BOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231706AbhF1BOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:14:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC08619C5;
-        Mon, 28 Jun 2021 01:12:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1624842747;
-        bh=jHVvl6fcFfg+IVQ3lBpd7cBJiC21/SiQ2M2n/J/aDeQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aus9ryL+DgdKH4ZNAJ5wqeFEe6w9+xkQn3TmuhatvYPqjRvTfTCqQsNQm3nJrmYD/
-         X3DX2v1FqasZlVOaBS1sW/lXxvheF8cEwJVuOjRQZm7cTjQNhBT3i/tCFbtBeIq3yj
-         bupVyrvJDARUQXHC8Ly6sHJgcxIsv6qUTNCdNM7w=
-Date:   Sun, 27 Jun 2021 18:12:26 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Steven Price <steven.price@arm.com>, linux-mm@kvack.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, dja@axtens.net,
-        "Oliver O'Halloran" <oohall@gmail.com>, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm: pagewalk: Fix walk for hugepage tables
-Message-Id: <20210627181226.983d899cc30c02420e1a6af5@linux-foundation.org>
-In-Reply-To: <38d04410700c8d02f28ba37e020b62c55d6f3d2c.1624597695.git.christophe.leroy@csgroup.eu>
-References: <38d04410700c8d02f28ba37e020b62c55d6f3d2c.1624597695.git.christophe.leroy@csgroup.eu>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231891AbhF1BSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhF1BSY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 21:18:24 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BF7C061574;
+        Sun, 27 Jun 2021 18:15:58 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id o139so7645533ybg.9;
+        Sun, 27 Jun 2021 18:15:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UkMAHfuwy4T4nE/9j7AY6+wibmFtWQXZ1+xqS+q+V5g=;
+        b=NiCCYiUWUhiAheTITykpwC+dxbmQnBiVsbXJeWf4dUKX2eI0lZUrhz9lUFWBcjrQGU
+         +aWXbl5TV9GdjKY4+9o68L1u694oOKZL/SzN9nNH6Y4N7xNMQeNq6G10JRjDf35D6wTY
+         F2rsufzPhXAHmZj0oeKCnUvCWITQrwhoiQ++WLpY/B+ixnOQE0qT7mbZfq0pCBMHDoIH
+         iox3aeR24DjoMgweX/+KUATDThgS+IxPni54ORr/uRHhPUMxGpxjS5h2PeuNEuDlZh2z
+         TqFiSaZI8B8XEMnVPZkW8mx01MVQQm/oEaaw8i4mX459Fm3hxGHIbfn9llruFHiK7FyG
+         lSgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UkMAHfuwy4T4nE/9j7AY6+wibmFtWQXZ1+xqS+q+V5g=;
+        b=dyeisYhs+HWIKRZ3HlfbcG2LQy6qtmz5I+Z+qNJiinzv4IGbAcMUdw4Ht2IaeSMYA4
+         OAJ3aOAaWFK12QLeo6sBNUFXKn2gMXXle32XTcctSqCtV/SaEwhNpipG0m/t+IGllZsi
+         VCTZk9JMLF6KWcuGkX0CaJ/5fDmL7Cate9Rh1x0wxyOGiyeP+jom2WkBrdVVOObk3zM5
+         YSM+Y2xYvr8EDZtipvKAPvrR0vbGV0bAw6yPxmJqCEbtu+dB2t9V8SfiMJuvIpoMwcQ+
+         hps+vX8VzUy8Vy5pmg0Kl7nQ3USSkVQulhfBV/50HyAmS6RVo6On2G/P6Ro03I49wqwx
+         l+Wg==
+X-Gm-Message-State: AOAM533pqorM+K9kSTBfe8v/XMEwP/49N+nBIKNzdidriPKPaCmQfvM7
+        83asVAAoZw5KgRskNYQWcvjJOLLSb4PDmmOh8EQ=
+X-Google-Smtp-Source: ABdhPJwluPXetY+X6ZHjkQQfTC3XBMX2pKdbuji9mHu2sB5uWOFxPXFw9g3V7NBJI494uGJDv9k0gBK9KL5GAP4zZH0=
+X-Received: by 2002:a25:ac86:: with SMTP id x6mr26783670ybi.314.1624842957907;
+ Sun, 27 Jun 2021 18:15:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210627135117.28641-1-bmeng.cn@gmail.com> <11706f7e-a53a-5640-d713-bc4562db71fa@huawei.com>
+In-Reply-To: <11706f7e-a53a-5640-d713-bc4562db71fa@huawei.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Mon, 28 Jun 2021 09:15:46 +0800
+Message-ID: <CAEUhbmV=h3nZ8Aa94_uyjrZ_NGe+9-xAorUMubSPJXu3y60PeQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fix 32-bit RISC-V boot failure
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 05:10:12 +0000 (UTC) Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+On Mon, Jun 28, 2021 at 8:53 AM Kefeng Wang <wangkefeng.wang@huawei.com> wr=
+ote:
+>
+> Hi=EF=BC=8C sorry for the mistake=EF=BC=8Cthe bug is fixed by
+>
+> https://lore.kernel.org/linux-riscv/20210602085517.127481-2-wangkefeng.wa=
+ng@huawei.com/
 
-> Pagewalk ignores hugepd entries and walk down the tables
-> as if it was traditionnal entries, leading to crazy result.
-> 
-> Add walk_hugepd_range() and use it to walk hugepage tables.
+What are we on the patch you mentioned?
 
-More details, please?  I assume "crazy result" is userspace visible? 
-For how long has this bug existed?  Is a -stable backport needed?  Has
-a Fixes: commit been identified?  etcetera!
+I don't see it applied in the linux/master.
+
+Also there should be a "Fixes" tag and stable@vger.kernel.org cc'ed
+because 32-bit is broken since v5.12.
+
+Regards,
+Bin
