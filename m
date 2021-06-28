@@ -2,68 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A3A3B56DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29F93B56E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhF1Bp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231706AbhF1Bp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:45:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2758C61A1D;
-        Mon, 28 Jun 2021 01:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624844582;
-        bh=066YMFHqSGCgkK9gz/RQO+n11OjyRE0FlxJc5NciWS0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=tF2R/1UeKoBw+YfNGIuMni8e/F24wDYu6UgRnJO65rSiuzSqX0ht37aQtoJbB5qTl
-         Gc6cTbF0kJ4ItKbo+MJhSo5w+eRgxBbjlUmK8TKkpBZTlHUFq5ybSUc80gLz4ITKAD
-         13UGSDy3pzuTT84DldFJdRqkIwoibcW8ZegVYGaBbTEC3BDUK+K58TDgyAVekRTRe/
-         KidmuMALXGEVTF+wFE6rnL28ckAqKXwAevmC0CyS9J6t87tC6x+CrmqYCuxWbBmvFM
-         x3lBrQ+m7ZjNE80ZnmhgBZPXCvzUkieUvpxyuy9BPuRTS/xJpFFPtHa3yRm9PYWYP5
-         c/Arh4ZkpATXA==
-Content-Type: text/plain; charset="utf-8"
+        id S231892AbhF1Brv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:47:51 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39042 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231678AbhF1Brr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Jun 2021 21:47:47 -0400
+Received: from [10.130.0.191] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH0OaKdlgoWYZAA--.32349S3;
+        Mon, 28 Jun 2021 09:45:08 +0800 (CST)
+Subject: Re: [PATCH v2] MIPS: Loongson64: Add Loongson-2K1000 reset support
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+References: <20210627073806.32564-1-zhangqing@loongson.cn>
+ <08a4ce65-91e0-122e-6f17-b66e08270350@flygoat.com>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <120495f9-ad22-29a2-a7a5-b9dd933a41ad@loongson.cn>
+Date:   Mon, 28 Jun 2021 09:44:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <937ed0828486a08e2d00bce2815d491c1c9c49b4.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1621937490.git.matti.vaittinen@fi.rohmeurope.com> <937ed0828486a08e2d00bce2815d491c1c9c49b4.1621937490.git.matti.vaittinen@fi.rohmeurope.com>
-Subject: Re: [PATCH 5/9] clk: bd718xx: Drop BD70528 support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Date:   Sun, 27 Jun 2021 18:43:00 -0700
-Message-ID: <162484458090.3259633.13766939155374243434@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <08a4ce65-91e0-122e-6f17-b66e08270350@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxH0OaKdlgoWYZAA--.32349S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFy5ur1xCF47KF18trW3trb_yoWrXrykpr
+        9xAa1DKF4fZr1UuF1FqFyDCFWUZr98Jrs2kFW2q3WUC3sF934ftwn5GFyFkFn7ZrW7ua10
+        vrW8WrWxCF4fu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
+        r21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU8xMaUUUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matti Vaittinen (2021-05-25 03:15:10)
-> The only known BD70528 use-cases are such that the PMIC is controlled
-> from separate MCU which is not running Linux. I am not aware of
-> any Linux driver users. Furthermore, it seems there is no demand for
-> this IC. Let's ease the maintenance burden and drop the driver. We can
-> always add it back if there is sudden need for it.
->=20
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
->=20
-> ---
+On 06/28/2021 09:12 AM, Jiaxun Yang wrote:
+>
+> 在 2021/6/27 下午3:38, Qing Zhang 写道:
+>> Add power management register operations to support reboot and poweroff.
+>>
+>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>> ---
+>>
+>> v1-v2:
+>> - Add pm block node
+>>
+>> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>>
+>> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi 
+>> b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+>> index 569e814def83..929e8ddf86eb 100644
+>> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+>> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+>> @@ -101,6 +101,14 @@ uart0: serial@1fe00000 {
+>>               no-loopback-test;
+>>           };
+>>   +        pm: power-controller {
+>> +            device_type = "power management";
+>
+> Hi Qing,
+>
+> Not compatible?
+>
+>
+>> +            reg = <0 0x1fe0700c 0 0x8>,
+>> +                <0 0x1fe07014 0 0x8>,
+>> +                <0 0x1fe07030 0 0x8>;
+>> +            reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
+>> +        };
+>> +
+>>           pci@1a000000 {
+>>               compatible = "loongson,ls2k-pci";
+>>               device_type = "pci";
+>> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+>> index c97bfdc8c922..ea125e925d44 100644
+>> --- a/arch/mips/loongson64/reset.c
+>> +++ b/arch/mips/loongson64/reset.c
+>> @@ -10,6 +10,7 @@
+>>   #include <linux/delay.h>
+>>   #include <linux/init.h>
+>>   #include <linux/kexec.h>
+>> +#include <linux/of_address.h>
+>>   #include <linux/pm.h>
+>>   #include <linux/slab.h>
+>>   @@ -20,12 +21,50 @@
+>>   #include <loongson.h>
+>>   #include <boot_param.h>
+>>   +static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
+>> +
+>> +static void __iomem *get_reg_byname(struct device_node *node, const 
+>> char *name)
+>> +{
+>> +    int index = of_property_match_string(node, "reg-names", name);
+>> +
+>> +    if (index < 0)
+>> +        return NULL;
+>> +
+>> +    return of_iomap(node, index);
+>> +}
+>
+> We do have that helper in of_address.h.
+>
+> Btw, I'd prefer make it as a driver in driver/platform/mips.
+>
+> Also the approach using PRID to tell protocol type doesn't really make 
+> sense to me.
+>
+> You can override _machine_restart callback in diver once FDT node is 
+> found.
 
-Applied to clk-next
+Hi jiaxun,
+
+Thanks for your suggestion,
+I will send v3 in the soon.
+
+Thanks.,
+
+Qing
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>> +
+>> +static int  __init loongson_fdt_reset_init(void)
+>> +{
+>> +    struct device_node *np;
+>> +    int i;
+>> +
+>> +    np = of_find_node_by_type(NULL, "power management");
+>> +    if (!np) {
+>> +        pr_info("Failed to get PM node\n");
+>> +        return -ENODEV;
+>> +    }
+>> +
+>> +    for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
+>> +        pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
+>> +        if (!pm_reg_name[i])
+>> +            iounmap(pm_reg_name[i]);
+>> +    }
+>> +
+>> +    of_node_put(np);
+>> +    return 0;
+>> +}
+>> +arch_initcall(loongson_fdt_reset_init);
+>> +
+>>   static void loongson_restart(char *command)
+>>   {
+>> +    if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+>> +        writel(0x1, (void *)pm_reg_name[2]);
+>> +    } else {
+>> +        void (*fw_restart)(void) = (void 
+>> *)loongson_sysconf.restart_addr;
+>>   -    void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+>> +        fw_restart();
+>> +    }
+>>   -    fw_restart();
+>>       while (1) {
+>>           if (cpu_wait)
+>>               cpu_wait();
+>> @@ -34,9 +73,18 @@ static void loongson_restart(char *command)
+>>     static void loongson_poweroff(void)
+>>   {
+>> -    void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
+>> +    if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+>> +        /* Clear */
+>> +        writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void 
+>> *)pm_reg_name[0]);
+>> +        /* Sleep Enable | Soft Off*/
+>> +        writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
+>> +    } else {
+>> +
+>> +        void (*fw_poweroff)(void) = (void 
+>> *)loongson_sysconf.poweroff_addr;
+>> +
+>> +        fw_poweroff();
+>> +    }
+>>   -    fw_poweroff();
+>>       while (1) {
+>>           if (cpu_wait)
+>>               cpu_wait();
+
