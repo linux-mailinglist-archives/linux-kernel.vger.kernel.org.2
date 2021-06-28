@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8510E3B58D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93BC3B58D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 07:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhF1F7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 01:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbhF1F73 (ORCPT
+        id S232161AbhF1F7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 01:59:53 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47001 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232259AbhF1F7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 01:59:29 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD02C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:57:04 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id df12so24005566edb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZDwMJE4yQ7gTGAaqD2+KvgjsrJdHr7Oxry9Dry3zCIk=;
-        b=ZRnolCddnSmW8y9WHGbuDWRK2AsWdKprLwsIT2v+suOf5FfWWHRfH2ZrFZmluzAuWl
-         uCDYftSdFmrvJqc+EkDY1k7gu3WgOvLWsy7Xjj1ceC8iVhgUDFrKfWh3Ha7A63R/wDZ0
-         oVdlNRQRIKfnVLsdRzK1DGg+jYjVC4l+mTzX6RxLyTOsqx26LLcpq9C9AR4NpXIhs3CU
-         gvsPTVy2KpCi74+e285heVowFSg0CKMPTNH/VHkcdgLi8POF6X35GYKRUzCKH5FMmlrj
-         PjdU6Xylj3fjOsGNsV/cA/uUar8eEDOvFenxEpiIODIMD5yFsIWclSTG6cW7S4qHWQFP
-         TtVg==
+        Mon, 28 Jun 2021 01:59:40 -0400
+Received: by mail-il1-f200.google.com with SMTP id p12-20020a92d28c0000b02901ee741987a7so4779835ilp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 22:57:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=ZDwMJE4yQ7gTGAaqD2+KvgjsrJdHr7Oxry9Dry3zCIk=;
-        b=tQz0vXPsXnp3L86tZd+bmStoCKbeD7iQflt0bhaPf7shT0WnvY3dX2Ovk/Mj5oLe4W
-         rnfUQ01y6p27gvwqNM2xXXS4V6avmZajYHyNVbKsttRkxo+l/+plh5zPXlDh/Wzoa2nk
-         v79DjG/VU6nHOFnurntgaApvqXG+fF/lSwsHeAo3sx/dZcSKG0x96vsapA3wFPup1pnz
-         BJCqH1O+UAaYsjLF3pDme80+YbqYSHQ7Eb+LDrA0A6bntmNWZAm/1e4yiFL0qqmxrMHz
-         vQJMTFsA7m9o0qf2HFwXkeCbqC8uMbCB74euQKpl0N0fv8IdDuXc1/LnbFJD6jYwzPKP
-         LBGg==
-X-Gm-Message-State: AOAM531J2Es9F8uHhNHle4O3wl+voisqXnd17xz9qkdHX7WL4cQsPP7B
-        tz9+iRNolnfVlPQRKjXC1UrcsH2/hV0=
-X-Google-Smtp-Source: ABdhPJzmgw3/PpD5/+VemNUsJ6eCyjDlFU9nDF31og43KXMHU8/zG6nQBhRLf34cmRnkawjcqf/reA==
-X-Received: by 2002:aa7:c648:: with SMTP id z8mr18311975edr.384.1624859823107;
-        Sun, 27 Jun 2021 22:57:03 -0700 (PDT)
-Received: from gmail.com (94-21-131-96.pool.digikabel.hu. [94.21.131.96])
-        by smtp.gmail.com with ESMTPSA id aq12sm6247881ejc.77.2021.06.27.22.57.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 22:57:02 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 28 Jun 2021 07:57:01 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] objtool changes for v5.14
-Message-ID: <YNlkrfFqO/bsKq5D@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NZiHOP66CN3/d3r09QWR20u5KTe63dZhDT9GX98ADZE=;
+        b=GpPlEaylUZHrnKcI8jmEmAJRVNwIcF0jrUZxf8eiJo3bsuv6Emae3ymkyAETdjb7fB
+         ALnVuuLUEB/FzGwKa6FcgTLyKOMAZ30SXGW9FYd7HaAd6RFVjiATaYfUjUgdFXFSEnyc
+         MMw/zl6U+fNsyuJ+Gp46MrPzz01FfWhHuMr2z1KgPNbaAzJgTwQDNH5lForVPkO+bVtK
+         jSFtujqRXKAvf1GAR/yb6hl8z95A7Fc+cs9970jIcArMu9BhwBIN1YV/YUTHQ3Km4V1E
+         DSMJ4DNuCoNrs18MulxrS4Kdv66hZWJAewShOl6jWUhJ2+pOMh27g9SuhTP8Ir8QAQIt
+         LO5Q==
+X-Gm-Message-State: AOAM533nDLorLh41f5FLQQ2fQfuzx7bIt7/WuuwPNTTWNtzhS9VXgImV
+        +pVuuAvoq7WKv+QuLJmp8sC6s+9VydTKkKQ75SPDgCYX+Q14
+X-Google-Smtp-Source: ABdhPJyVpCwX1N8AuMDdD5DBKGlQWtCf2XKmIlAljvfGYQzEV66j1fnci6D6i9DyvzjYqPhyRYwdvaPHdX0++rYkrNEepIueusfi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a6b:5c0a:: with SMTP id z10mr19934094ioh.122.1624859834952;
+ Sun, 27 Jun 2021 22:57:14 -0700 (PDT)
+Date:   Sun, 27 Jun 2021 22:57:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000045ad9705c5cd29ab@google.com>
+Subject: [syzbot] INFO: task can't die in p9_client_rpc (3)
+From:   syzbot <syzbot+716aab0e63b2895e1811@syzkaller.appspotmail.com>
+To:     asmadeus@codewreck.org, davem@davemloft.net, ericvh@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, lucho@ionkov.net,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        v9fs-developer@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hello,
 
-Please pull the latest objtool/core git tree from:
+syzbot found the following issue on:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2021-06-28
+HEAD commit:    a1f92694 Add linux-next specific files for 20210518
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10805a64300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d612e75ffd53a6d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=716aab0e63b2895e1811
 
-   # HEAD: d33b9035e14a35f6f2a5f067f0b156a93581811d objtool: Improve reloc hash size guestimate
+Unfortunately, I don't have any reproducer for this issue yet.
 
-The biggest change in this cycle is the new code to handle
-and rewrite variable sized jump labels - which results in
-slightly tighter code generation in hot paths, through the
-use of short(er) NOPs.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+716aab0e63b2895e1811@syzkaller.appspotmail.com
 
-Also a number of cleanups and fixes, and a change to the
-generic include/linux/compiler.h to handle a s390 GCC quirk.
+INFO: task syz-executor.2:17696 can't die for more than 143 seconds.
+task:syz-executor.2  state:D stack:27376 pid:17696 ppid:  8468 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4688 [inline]
+ __schedule+0xb38/0x58c0 kernel/sched/core.c:5945
+ schedule+0xcf/0x270 kernel/sched/core.c:6024
+ p9_client_rpc+0x405/0x1240 net/9p/client.c:759
+ p9_client_flush+0x1f9/0x430 net/9p/client.c:667
+ p9_client_rpc+0xfe3/0x1240 net/9p/client.c:784
+ p9_client_version net/9p/client.c:955 [inline]
+ p9_client_create+0xae1/0x1110 net/9p/client.c:1055
+ v9fs_session_init+0x1dd/0x17b0 fs/9p/v9fs.c:406
+ v9fs_mount+0x79/0x9c0 fs/9p/vfs_super.c:126
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1498
+ do_new_mount fs/namespace.c:2905 [inline]
+ path_mount+0x132a/0x1fa0 fs/namespace.c:3235
+ do_mount fs/namespace.c:3248 [inline]
+ __do_sys_mount fs/namespace.c:3456 [inline]
+ __se_sys_mount fs/namespace.c:3433 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
+ do_syscall_64+0x31/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+RSP: 002b:00007f42a9fe9188 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000020000200 RSI: 0000000020000000 RDI: 0000000000000000
+RBP: 00000000004bfcb9 R08: 0000000020000440 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffdec5a8f0f R14: 00007f42a9fe9300 R15: 0000000000022000
 
- Thanks,
+Showing all locks held in the system:
+1 lock held by khungtaskd/1641:
+ #0: ffffffff8c17afe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
+1 lock held by in:imklog/8364:
+ #0: ffff888025c12370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
+4 locks held by rs:main Q:Reg/8365:
+ #0: ffff8880b9c35718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:460
+ #1: ffff8880b9c1f988 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x24c/0x670 kernel/sched/psi.c:872
+ #2: ffff88802e7cf230 (&sb->s_type->i_mutex_key#10){++++}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff88802e7cf230 (&sb->s_type->i_mutex_key#10){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:263
+ #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:359 [inline]
+ #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: ext4_do_update_inode fs/ext4/inode.c:5033 [inline]
+ #3: ffff88802e7cf4f8 (&ei->i_raw_lock){+.+.}-{2:2}, at: ext4_mark_iloc_dirty+0x213/0x38d0 fs/ext4/inode.c:5724
+2 locks held by agetty/8383:
+ #0: ffff888015b94098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:253
+ #1: ffffc90000fdc2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xcf0/0x1230 drivers/tty/n_tty.c:2113
 
-	Ingo
-
------------------->
-Josh Poimboeuf (1):
-      kbuild: Fix objtool dependency for 'OBJECT_FILES_NON_STANDARD_<obj> := n'
-
-Peter Zijlstra (16):
-      objtool: Rewrite hashtable sizing
-      x86, objtool: Dont exclude arch/x86/realmode/
-      jump_label, x86: Strip ASM jump_label support
-      jump_label, x86: Factor out the __jump_table generation
-      jump_label, x86: Improve error when we fail expected text
-      jump_label, x86: Introduce jump_entry_size()
-      jump_label, x86: Add variable length patching support
-      jump_label: Free jump_entry::key bit1 for build use
-      jump_label, x86: Emit short JMP
-      objtool: Decode jump_entry::key addend
-      objtool: Rewrite jump_label instructions
-      objtool: Provide stats for jump_labels
-      jump_label, x86: Allow short NOPs
-      jump_label/x86: Remove unused JUMP_LABEL_NOP_SIZE
-      objtool: Reflow handle_jump_alt()
-      objtool: Improve reloc hash size guestimate
-
-Vasily Gorbik (2):
-      compiler.h: Avoid using inline asm operand modifiers
-      instrumentation.h: Avoid using inline asm operand modifiers
+=============================================
 
 
- arch/x86/include/asm/jump_label.h             |  79 +++++++-----------
- arch/x86/kernel/jump_label.c                  |  81 ++++++++++++-------
- arch/x86/realmode/Makefile                    |   1 -
- include/linux/compiler.h                      |  22 ++++--
- include/linux/instrumentation.h               |  20 +++--
- include/linux/jump_label.h                    |  16 +++-
- kernel/jump_label.c                           |  12 +--
- scripts/Makefile.build                        |   5 +-
- tools/objtool/arch/x86/include/arch/special.h |   1 +
- tools/objtool/check.c                         |  38 ++++++++-
- tools/objtool/elf.c                           | 110 ++++++++++++++++----------
- tools/objtool/include/objtool/elf.h           |  18 +++--
- tools/objtool/include/objtool/objtool.h       |   3 +
- tools/objtool/include/objtool/special.h       |   1 +
- tools/objtool/special.c                       |  14 ++++
- 15 files changed, 267 insertions(+), 154 deletions(-)
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
