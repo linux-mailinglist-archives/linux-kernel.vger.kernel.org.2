@@ -2,203 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284F83B5CD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1E13B5CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhF1LAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 07:00:55 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39804 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbhF1LAy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:00:54 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15SAwQpX103933;
-        Mon, 28 Jun 2021 05:58:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624877906;
-        bh=79lPMj2fBXO2/pJTAfmUC6u1Xh8Gzm5MRaeG51N6SnM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=aRE02PpZa5LT23OGnZvWDmpuj1xZ78+Y3tNIgurUDrUdR6onAkoirFbnNtzF8Y24c
-         kEzySy9OqjmEP+37QtjILUiRhTju19rUARa3F1kBadKu4MgLgXYFQpdLQFzTeVEHmi
-         XoQdvtY2a5mLK64/ClLJnYU+7YEssu9vHFxsjZno=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15SAwQ9U049788
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Jun 2021 05:58:26 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 28
- Jun 2021 05:58:25 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 28 Jun 2021 05:58:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15SAwPTW083972;
-        Mon, 28 Jun 2021 05:58:25 -0500
-Date:   Mon, 28 Jun 2021 16:28:24 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
-CC:     Vinod Koul <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
-Message-ID: <20210628105822.ighgnu6ebs5npbv3@ti.com>
-References: <20210624182449.31164-1-p.yadav@ti.com>
- <6b8662e2-2dd5-b1c4-6bc1-24a69776ffac@gmail.com>
+        id S232808AbhF1LCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 07:02:01 -0400
+Received: from phobos.denx.de ([85.214.62.61]:51970 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232745AbhF1LB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:01:59 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id F18FA82DA2;
+        Mon, 28 Jun 2021 12:59:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624877973;
+        bh=/uSwIhUTGzgWud23+aNg1TbxMnbf4cZss/WEmETMEjk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=x/vH1wVtGgHw+yvzhphYwEHnlVO5UOyO9VVWdjw6WXS5MjtoaIjT5EZZcYgEIRod4
+         ynJMaTJHC4Gx3F5FJhvJSPTBK15iV9wiODNuoGRDjbAbnliz5inXIdwXgRU/eWciTF
+         MLawKS6d+wtLoqTyouuSAiCsF9WrNxYjFMwU/aPQ25DSkNlufyl+LDSiz1V0+nLIJS
+         //mkv8ZCZgZx/9WjF021RhUhAKYjOVYYTQ+r2tdzaCmlEGwhBsoJ4P2zEbiae4U5uJ
+         FcYa+pdSUE47JCm4mZXKMXMK0mDTtjsxHW8Mi1P99BymubE1Hh+a1zgSynqj9nyeSk
+         5hVWfLoPBP2Bg==
+Subject: Re: [PATCH V7 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
+To:     Adam Ford <aford173@gmail.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
+References: <20210612133134.2738-1-peng.fan@oss.nxp.com>
+ <20210612133134.2738-5-peng.fan@oss.nxp.com>
+ <CAHCN7x+bCVcfgb-MmOApBgM=69rz0G8WhsU171SHF3H-12wSfw@mail.gmail.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <2c39672b-780a-8e33-038e-0856e32ede7a@denx.de>
+Date:   Mon, 28 Jun 2021 12:59:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6b8662e2-2dd5-b1c4-6bc1-24a69776ffac@gmail.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAHCN7x+bCVcfgb-MmOApBgM=69rz0G8WhsU171SHF3H-12wSfw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/06/21 01:38PM, Péter Ujfalusi wrote:
+On 6/14/21 8:07 PM, Adam Ford wrote:
+> On Sat, Jun 12, 2021 at 7:58 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>>
+>> From: Peng Fan <peng.fan@nxp.com>
+>>
+>> The i.MX8MM SoC has dispmix BLK-CTL and vpumix BLK-CTL, so we add
+>> that support in this driver.
+>>
+>> Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > 
+> Maybe my TF-A is too old, but I am not able to wake the device from
+> suspend-to-ram with this series.  I used the device tree from [1] to
+> enable both the GPCv2 and the blk-ctl stuff.
 > 
-> On 24/06/2021 21:24, Pratyush Yadav wrote:
-> > The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory.
+> [1] - https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210604111005.6804-1-peng.fan@oss.nxp.com/
 > 
-> If we want to be correct:
-> The CSI2RX subsystem in j721e is serviced by UDMA via PSI-L to transfer
-> frames to memory.
-> 
-> If you update the commit message you can also add my:
+> I based both off Shawn's for-next branch.
 
-Ah, I thought you were picking the patch up. Does Vinod pick them up
-instead?
-
-Vinod,
-
-Can you update the commit message when applying or do you want me to 
-send another re-roll?
-
-> 
-> Acked-by: Peter Ujfalusi <peter.ujflausi@gmail.com>
-> 
-> > It can
-> > have up to 32 threads per instance. J721E has two instances of the
-> > subsystem, so there are 64 threads total. Add them to the endpoint map.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > 
-> > ---
-> > This patch has been split off from [0] to facilitate easier merging. I
-> > have still kept it as v3 to maintain continuity with the previous patches.
-> > 
-> > [0] https://patchwork.linuxtv.org/project/linux-media/list/?series=5526&state=%2A&archive=both
-> > 
-> > Changes in v3:
-> > - Update commit message to mention that all 64 threads are being added.
-> > 
-> > Changes in v2:
-> > - Add all 64 threads, instead of having only the one thread being
-> >   currently used by the driver.
-> > 
-> >  drivers/dma/ti/k3-psil-j721e.c | 73 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 73 insertions(+)
-> > 
-> > diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
-> > index 7580870ed746..34e3fc565a37 100644
-> > --- a/drivers/dma/ti/k3-psil-j721e.c
-> > +++ b/drivers/dma/ti/k3-psil-j721e.c
-> > @@ -58,6 +58,14 @@
-> >  		},					\
-> >  	}
-> >  
-> > +#define PSIL_CSI2RX(x)					\
-> > +	{						\
-> > +		.thread_id = x,				\
-> > +		.ep_config = {				\
-> > +			.ep_type = PSIL_EP_NATIVE,	\
-> > +		},					\
-> > +	}
-> > +
-> >  /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
-> >  static struct psil_ep j721e_src_ep_map[] = {
-> >  	/* SA2UL */
-> > @@ -138,6 +146,71 @@ static struct psil_ep j721e_src_ep_map[] = {
-> >  	PSIL_PDMA_XY_PKT(0x4707),
-> >  	PSIL_PDMA_XY_PKT(0x4708),
-> >  	PSIL_PDMA_XY_PKT(0x4709),
-> > +	/* CSI2RX */
-> > +	PSIL_CSI2RX(0x4940),
-> > +	PSIL_CSI2RX(0x4941),
-> > +	PSIL_CSI2RX(0x4942),
-> > +	PSIL_CSI2RX(0x4943),
-> > +	PSIL_CSI2RX(0x4944),
-> > +	PSIL_CSI2RX(0x4945),
-> > +	PSIL_CSI2RX(0x4946),
-> > +	PSIL_CSI2RX(0x4947),
-> > +	PSIL_CSI2RX(0x4948),
-> > +	PSIL_CSI2RX(0x4949),
-> > +	PSIL_CSI2RX(0x494a),
-> > +	PSIL_CSI2RX(0x494b),
-> > +	PSIL_CSI2RX(0x494c),
-> > +	PSIL_CSI2RX(0x494d),
-> > +	PSIL_CSI2RX(0x494e),
-> > +	PSIL_CSI2RX(0x494f),
-> > +	PSIL_CSI2RX(0x4950),
-> > +	PSIL_CSI2RX(0x4951),
-> > +	PSIL_CSI2RX(0x4952),
-> > +	PSIL_CSI2RX(0x4953),
-> > +	PSIL_CSI2RX(0x4954),
-> > +	PSIL_CSI2RX(0x4955),
-> > +	PSIL_CSI2RX(0x4956),
-> > +	PSIL_CSI2RX(0x4957),
-> > +	PSIL_CSI2RX(0x4958),
-> > +	PSIL_CSI2RX(0x4959),
-> > +	PSIL_CSI2RX(0x495a),
-> > +	PSIL_CSI2RX(0x495b),
-> > +	PSIL_CSI2RX(0x495c),
-> > +	PSIL_CSI2RX(0x495d),
-> > +	PSIL_CSI2RX(0x495e),
-> > +	PSIL_CSI2RX(0x495f),
-> > +	PSIL_CSI2RX(0x4960),
-> > +	PSIL_CSI2RX(0x4961),
-> > +	PSIL_CSI2RX(0x4962),
-> > +	PSIL_CSI2RX(0x4963),
-> > +	PSIL_CSI2RX(0x4964),
-> > +	PSIL_CSI2RX(0x4965),
-> > +	PSIL_CSI2RX(0x4966),
-> > +	PSIL_CSI2RX(0x4967),
-> > +	PSIL_CSI2RX(0x4968),
-> > +	PSIL_CSI2RX(0x4969),
-> > +	PSIL_CSI2RX(0x496a),
-> > +	PSIL_CSI2RX(0x496b),
-> > +	PSIL_CSI2RX(0x496c),
-> > +	PSIL_CSI2RX(0x496d),
-> > +	PSIL_CSI2RX(0x496e),
-> > +	PSIL_CSI2RX(0x496f),
-> > +	PSIL_CSI2RX(0x4970),
-> > +	PSIL_CSI2RX(0x4971),
-> > +	PSIL_CSI2RX(0x4972),
-> > +	PSIL_CSI2RX(0x4973),
-> > +	PSIL_CSI2RX(0x4974),
-> > +	PSIL_CSI2RX(0x4975),
-> > +	PSIL_CSI2RX(0x4976),
-> > +	PSIL_CSI2RX(0x4977),
-> > +	PSIL_CSI2RX(0x4978),
-> > +	PSIL_CSI2RX(0x4979),
-> > +	PSIL_CSI2RX(0x497a),
-> > +	PSIL_CSI2RX(0x497b),
-> > +	PSIL_CSI2RX(0x497c),
-> > +	PSIL_CSI2RX(0x497d),
-> > +	PSIL_CSI2RX(0x497e),
-> > +	PSIL_CSI2RX(0x497f),
-> >  	/* CPSW9 */
-> >  	PSIL_ETHERNET(0x4a00),
-> >  	/* CPSW0 */
-> > 
-> 
-> -- 
-> Péter
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+I also ran into issues with this, although it could also be related to 
+GPCv2. On MX8MM , the system sometimes hangs when bringing up the GPCv2 
+power domain 6 (VPUMIX). It seems that the GPCv2 driver sets 
+GPC_PU_PGC_SW_PUP_REQ register to 0x100 to bring up the VPUMIX and the 
+bit never self-clears. After that, it seems the entire GPC locks up. 
+Have you ever seen that kind of behavior ?
