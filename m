@@ -2,150 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E953B5CB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D3F3B5CB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 12:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhF1Kv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 06:51:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:56396 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232486AbhF1Kv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 06:51:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC94D6E;
-        Mon, 28 Jun 2021 03:49:31 -0700 (PDT)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B06E63F694;
-        Mon, 28 Jun 2021 03:49:30 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 11:49:29 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 4/4] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210628104929.GA29595@arm.com>
-References: <cover.1624266901.git.viresh.kumar@linaro.org>
- <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
- <20210624094812.GA6095@arm.com>
- <20210624130418.poiy4ph66mbv3y67@vireshk-i7>
- <20210625085454.GA15540@arm.com>
- <20210625165418.shi3gkebumqllxma@vireshk-i7>
+        id S232746AbhF1Kw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 06:52:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5926 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232486AbhF1KwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 06:52:25 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GD46Q1nplz70yR;
+        Mon, 28 Jun 2021 18:46:38 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 18:49:58 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 28
+ Jun 2021 18:49:57 +0800
+Subject: Re: [PATCH v7 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     John Garry <john.garry@huawei.com>, Linuxarm <linuxarm@huawei.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
+References: <1624532384-43002-1-git-send-email-liuqi115@huawei.com>
+ <1624532384-43002-3-git-send-email-liuqi115@huawei.com>
+ <485dcb90-01bc-766a-466a-f32563e2076f@huawei.com>
+ <95de93f7-1618-5aa6-9a23-6445c5cb3515@huawei.com>
+ <1b164e4b-b30b-f071-51fa-841cc76ec017@huawei.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <403d09f8-6fe8-c04c-151b-40816c344b55@huawei.com>
+Date:   Mon, 28 Jun 2021 18:49:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625165418.shi3gkebumqllxma@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1b164e4b-b30b-f071-51fa-841cc76ec017@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 Jun 2021 at 22:24:18 (+0530), Viresh Kumar wrote:
-> On 25-06-21, 09:54, Ionela Voinescu wrote:
-> > Hey,
-> > 
-> > On Thursday 24 Jun 2021 at 18:34:18 (+0530), Viresh Kumar wrote:
-> > > On 24-06-21, 10:48, Ionela Voinescu wrote:
-> > > > On Monday 21 Jun 2021 at 14:49:37 (+0530), Viresh Kumar wrote:
-> > > > > The Frequency Invariance Engine (FIE) is providing a frequency scaling
-> > > > > correction factor that helps achieve more accurate load-tracking.
-> > > > [..]
-> > > > > +static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
-> > > > > +{
-> > > > > +	struct cppc_freq_invariance *cppc_fi;
-> > > > > +	int cpu;
-> > > > > +
-> > > > > +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> > > > > +		return;
-> > > > > +
-> > > > > +	/* policy->cpus will be empty here, use related_cpus instead */
-> > > > > +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, policy->related_cpus);
-> > > > > +
-> > > > > +	for_each_cpu(cpu, policy->related_cpus) {
-> > > > > +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> > > > 
-> > > > Do you think it might be worth having here something like:
-> > > > 
-> > > > 		if (!cppc_fi->cpu_data)
-> > > > 			continue;
-> > > > 
-> > > > This would be to protect against cases where the platform does not boot
-> > > > with all CPUs or the module is loaded after some have already been
-> > > > offlined. Unlikely, but..
-> > > 
-> > > Even in that case policy->cpus will contain all offline+online CPUs (at ->init()
-> > > time), isn't it ?
-> > > 
-> > 
-> > Right, my bad. I missed cpumask_and(policy->cpus, policy->cpus,
-> > cpu_online_mask) being done after init(). It logically seems a bit
-> > wrong, but drivers are in control of setting policy->cpus and acting on
-> > it, and in this case the driver does the right thing.
+
+
+On 2021/6/26 19:44, John Garry wrote:
+> On 26/06/2021 03:13, liuqi (BA) wrote:
+>>
+>>
+>> On 2021/6/25 23:53, John Garry wrote:
+>>> On 24/06/2021 11:59, Qi Liu wrote:
+>>>> +
+>>>> +/*
+>>>> + * Events with the "dl" suffix in their names count performance in 
+>>>> DL layer,
+>>>> + * otherswise, events count performance in TL layer.
+>>>> + */
+>>>> +static struct attribute *hisi_pcie_pmu_events_attr[] = {
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mwr, 0x010004),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mrd, 0x100005),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mwr, 0x010005),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mrd, 0x200004),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mwr, 0x000010),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mrd, 0x020010),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_tx_mrd, 0x000011),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_dl, 0x010084),
+>>>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_dl, 0x030084),
+>>>> +    NULL
+>>>> +};
+>>>> +
+>>>> +static struct attribute_group hisi_pcie_pmu_events_group = {
+>>>> +    .name = "events",
+>>>> +    .attrs = hisi_pcie_pmu_events_attr,
+>>>> +};
+>>>> +
+>>>> +static struct attribute *hisi_pcie_pmu_format_attr[] = {
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(event, "config:0-15"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(subevent, "config:16-23"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(thr_len, "config1:0-3"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(thr_mode, "config1:4"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(trig_len, "config1:5-8"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(trig_mode, "config1:9"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(port, "config2:0-15"),
+>>>> +    HISI_PCIE_PMU_FORMAT_ATTR(bdf, "config2:16-31"),
+>>>> +    NULL
+>>>> +};
+>>>
+>>> I am just wondering how this now works.
+>>>
+>>> So if the user programs the following:
+>>> ./perf stat -v -e hisi_pcieX/lat_rx_mrd/
+>>>
+>>> Then the value (incremented) in HISI_PCIE_CNT (I think that's the 
+>>> right one) is returned as the event count. But one would expect 
+>>> bandwidth from that event, while we only return here the delay cycles 
+>>> - how is the count in HISI_PCIE_CNT_EXT exposed, so userspace can do 
+>>> the calc for bw?
+>>>
+>>
 > 
-> Do you want me to re-add your Reviewed-by here ?
+> Hi Qi,
 > 
+>>
+>> Hardware counter and ext_counter work together for bandwidth, latency,
+>> bus utilization and buffer occupancy events. For example, for latency
+>> events(idx = 0x10), counter counts total delay cycles and ext_counter
+>> counts PCIe packets number.
+>>
+>> As we don't want PMU driver to process these two data, "delay cycles"
+>> can be treated as an event(id = 0x10), "packets number" as another event
+>> (id = 0x10 << 8), and driver could export these data separately.
+>>
+>> if the user want to calculate latency of rx memory read, they should:
+>> ./perf stat -v -e '{hisi_pcieX/event=0x10, 
+>> subevent=0x01/,hisi_pcieX/event=0x0400, subevent=0x01/
+>>
+>> and for bandwidth event:
+>> ./perf stat -v -e '{hisi_pcieX/event=0x4, 
+>> subevent=0x02/,hisi_pcieX/event=0x1000, subevent=0x02/
+> 
+Hi John,
+> I would suggest supporting a perf metric for this then, which would be 
+> like:
+> 
+> {
+>     "BriefDescription": "Latency for inbound traffic...",
+>     "MetricName": "hisi_pcie_lat_rx_mrd",
+>     "MetricExpr": "hisi_pcieX@event\\=0x4@subevent\\=0x02 \ 
+> hisi_pcieX@event\\=0x1000@subevent\\=0x02 \",
+>     "Unit": "hisi_pci",
+>     "Compat": "v1"
+> },
+> 
+> (syntax may be incorrect - illustration only)
+> 
+yes, we could add these metrics in json file, thanks.
+>>
+>> Then the value in HISI_PCIE_CNT and HISI_PCIE_EXT_CNT returned 
+>> separately, and userspace could do the calculation.
+> 
+> But I am still curious about lat_rx_mrd and the other events which we 
+> continue to advertise. They don't really provide latency or bandwidth on 
+> their own, but only half the necessary data. So I doubt their purpose.
+> 
+So how about changing the event name to show the real purpose of this 
+event, like changing "bw_rx_mrd" to "flux_rx_mrd", and changing 
+"lat_rx_mrd" to "delay_rx_mrd"?
 
-To be honest I would like to have more time on this before you merge the
-set, to better understand Qian's results and some observations I have
-for Thunder X2 (I will share in a bit).
+Thanks, Qi
 
-For the code, I think it's fine. I have a single observation regarding
-the following code:
+> Thanks,
+> John
+> 
+> .
 
-> +static void cppc_cpufreq_cpu_fie_init(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	int cpu, ret;
-> +
-> +	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-> +		return;
-> +
-> +	for_each_cpu(cpu, policy->cpus) {
-> +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> +		cppc_fi->cpu = cpu;
-> +		cppc_fi->cpu_data = policy->driver_data;
-> +		kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-> +		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-> +
-> +		ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
-> +		if (ret) {
-> +			pr_warn("%s: failed to read perf counters for cpu:%d: %d\n",
-> +				__func__, cpu, ret);
-> +			return;
-> +		}
-
-For this condition above, think about a scenario where reading counters
-for offline CPUs returns an error. I'm not sure if that can happen, to
-be honest. That would mean here that you will never initialise the freq
-source unless all CPUs in the policy are online at policy creation.
-
-My recommendation is to warn about the failed read of perf counters but
-only return from this function if the target CPU is online as well when
-reading counters fails.
-
-This is probably a nit, so I'll let you decide if you want to do something
-about this.
-
-Thanks,
-Ionela.
-
-> +	}
-> +
-> +	/* Register for freq-invariance */
-> +	topology_set_scale_freq_source(&cppc_sftd, policy->cpus);
-> +}
-
-
-
-> -- 
-> viresh
