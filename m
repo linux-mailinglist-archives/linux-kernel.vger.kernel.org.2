@@ -2,84 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678BA3B6A68
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B1E3B6A69
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 23:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238264AbhF1V2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 17:28:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238059AbhF1VYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 17:24:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF52361D0B;
-        Mon, 28 Jun 2021 21:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624915284;
-        bh=cwwtqavFK7tU7JXzqiqwlEYlXq2bfP6ekDHIVIt8nIE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKkOWJ6dqG837vdtnS3J2t3k575q4aWV/DyPo0qug3DS8T8oU6kMyVuzXrc5IfzKx
-         qzegfCLvGfFnS7dxRABc4r7FvIzt+CK4cKkocttmPnt33GOSf6AMUjvT0jkVJWNxIm
-         Sdc7hW8MB7GTAHOnH+/qnJGT39uRRGiwNjjXAS+HCbaYXcZeAFlvY/Hw8k1V1J3j9E
-         OcZb6xa/xKL38bdq1ksN3dv45RWfjeQMjdXEZ4W94W613wkwwgQAU8VTTIqs5S5LZW
-         ViAuRc92WRjDpX4eqIjOv5S1qryRD3D0LicUVOKJzdygBQ7cH3Mp1ZWy+H8BGWvs9N
-         mIgRu6thocDwQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.4 2/2] drm/nouveau: fix dma_address check for CPU/GPU sync
-Date:   Mon, 28 Jun 2021 17:21:21 -0400
-Message-Id: <20210628212121.43749-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210628212121.43749-1-sashal@kernel.org>
-References: <20210628212121.43749-1-sashal@kernel.org>
+        id S238271AbhF1V3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 17:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238287AbhF1VZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 17:25:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36586C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 14:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=BGlr9DHHCiuYzdZBYi7Kf2gIU29JYUpZ5JYhQsivVFs=; b=CHsuiNZNlNdl7KK8LrmD/VJukI
+        dGbwbUTLRRNqKgO1W1PtuZwH5G8mQ6S0qQuGO+oX5muuN4zocijMyhP6c+pNnhtiB9ywM4iuPwB3w
+        W5SQ6cO7fmlqr6321skyN4TpniPIWIPeTD0JQVttUn4s7/CkMDU6gnuMwEvg8ePPXHIzn6tu3AqtL
+        2uk8r9ur3LvRKCFpgs48IfPGDhuQA1IzNf5fE9C6b8KecG0w2FonTUlUyNOVlApajrTTz2GyqZgVq
+        lVrK6keKafpDPTFkIQVdwzKao5pXMCNn5YPeqTmHSU1QBZ7GmExa9GJHxMXqnVJOv7L1I5AfM8uFk
+        EEunCsfg==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lxyht-009ET0-0y; Mon, 28 Jun 2021 21:22:17 +0000
+Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
+ ARCH_ATOMIC
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
+        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
+        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
+        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
+        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
+        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
+        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
+        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
+        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tsbogend@alpha.franken.de, vgupta@synopsys.com,
+        ysato@users.sourceforge.jp
+References: <20210525140232.53872-1-mark.rutland@arm.com>
+ <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+ <20210618084847.GA93984@C02TD0UTHF1T.local>
+ <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
+Message-ID: <4ec7308f-02c6-a357-eab8-63b6f2b7a5eb@infradead.org>
+Date:   Mon, 28 Jun 2021 14:22:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian König <christian.koenig@amd.com>
+On 6/27/21 2:47 PM, Randy Dunlap wrote:
+> On 6/18/21 1:48 AM, Mark Rutland wrote:
+>> On Fri, Jun 04, 2021 at 10:56:16PM -0700, Randy Dunlap wrote:
+>>> On 5/25/21 7:01 AM, Mark Rutland wrote:
+>>>> This series (based on v5.13-rc2) converts all architectures to
+>>>> ARCH_ATOMIC. This will allow the use of instrumented atomics on all
+>>>> architectures (e.g. for KASAN and similar), and simplifies the core
+>>>> atomic code (which should allow for easier rework of the fallbacks and
+>>>> other bits in future).
+>>
+>> [...]
+>>
+>>> Hi Mark,
+>>> Sorry for the late reply. 
+>>
+>> Hi Randy,
+>>
+>> Likewise, apologies in the delay in getting to this!
+>>
+>>> I was just trying to update a patch
+>>> to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
+>>>
+>>> https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
+>>>
+>>> The patch simply converts xchg() to a GCC statement expression to
+>>> eliminate a build warning.
+> 
+> Hm, with your locking/atomic patch series applied (in linux-next), I can
+> no longer make arch/sh/ get this build warning:
+> 
+> ../fs/ocfs2/file.c: In function 'ocfs2_file_write_iter':
+> ../arch/sh/include/asm/cmpxchg.h:49:3: warning: value computed is not used [-Wunused-value]
+>    49 |  ((__typeof__(*(ptr)))__xchg((ptr),(unsigned long)(x), sizeof(*(ptr))))
+> 
+> 
+> so I will go ahead with the rest of my arch/sh/ patches and then contemplate
+> what to do about this one.
+> 
+> 
+>>> Arnd has done this for m68k and I have done it for sparc in the past.
+>>>
+>>> Is there any (good) reason that all versions of arch_xchg() are not
+>>> statement expressions?  In this patch series, they seem to be quite
+>>> mixed (as they were before this patch series). I count 11 arches
+>>> that use a statement expression and 4 that do not (including arch/sh/).
+>>
+>> Largely I tried to make the minimal change from what was there before,
+>> and I didn't have any specific reason to either use or avoid statement
+>> expressions.
+>>
+>> This series has been queued in the tip tree's locking/core branch for a
+>> while now, but we could spin a patch atop. Do you want to spin a patch
+>> to convert the remaining 4 architectures in one go?
+> 
+> I'll look at the 4 remaining arches later..
+> 
 
-[ Upstream commit d330099115597bbc238d6758a4930e72b49ea9ba ]
+Hi Mark,
 
-AGP for example doesn't have a dma_address array.
+I checked xchg(), __xchg(), and cmpxchg() in all
+arch/*/include/asm/cmpxchg.h.  They are use static inline
+functions or statement expressions so I don't see any need
+for follow-ups to fix warnings like this (old) one, which
+I cannot cause with your series applied:
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210614110517.1624-1-christian.koenig@amd.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> ../fs/ocfs2/file.c: In function 'ocfs2_file_write_iter':
+> ../arch/sh/include/asm/cmpxchg.h:49:3: warning: value computed is not used [-Wunused-value]
+>    49 |  ((__typeof__(*(ptr)))__xchg((ptr),(unsigned long)(x), sizeof(*(ptr))))
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index 78f520d05de9..58c310930bf2 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -458,7 +458,7 @@ nouveau_bo_sync_for_device(struct nouveau_bo *nvbo)
- 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
- 	int i;
- 
--	if (!ttm_dma)
-+	if (!ttm_dma || !ttm_dma->dma_address)
- 		return;
- 
- 	/* Don't waste time looping if the object is coherent */
-@@ -478,7 +478,7 @@ nouveau_bo_sync_for_cpu(struct nouveau_bo *nvbo)
- 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
- 	int i;
- 
--	if (!ttm_dma)
-+	if (!ttm_dma || !ttm_dma->dma_address)
- 		return;
- 
- 	/* Don't waste time looping if the object is coherent */
+
+However, something in arch/arc/ did look suspicious so I decided to
+try an ARC allmodconfig build, where I did see a few errors FYI:
+
+
+  CC      drivers/iommu/io-pgtable-arm.o
+In file included from ../include/linux/atomic.h:80,
+                 from ../drivers/iommu/io-pgtable-arm.c:12:
+../drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
+../include/linux/atomic-arch-fallback.h:60:32: error: implicit declaration of function 'arch_cmpxchg64'; did you mean 'arch_cmpxchg'? [-Werror=implicit-function-declaration]
+   60 | #define arch_cmpxchg64_relaxed arch_cmpxchg64
+      |                                ^~~~~~~~~~~~~~
+../include/asm-generic/atomic-instrumented.h:1261:2: note: in expansion of macro 'arch_cmpxchg64_relaxed'
+ 1261 |  arch_cmpxchg64_relaxed(__ai_ptr, __VA_ARGS__); \
+      |  ^~~~~~~~~~~~~~~~~~~~~~
+../drivers/iommu/io-pgtable-arm.c:320:8: note: in expansion of macro 'cmpxchg64_relaxed'
+  320 |  old = cmpxchg64_relaxed(ptep, curr, new);
+      |        ^~~~~~~~~~~~~~~~~
+
+
+
 -- 
-2.30.2
+~Randy
 
