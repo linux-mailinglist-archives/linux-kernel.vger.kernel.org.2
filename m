@@ -2,78 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0263B6230
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B183B638F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 16:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233709AbhF1Omj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 10:42:39 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57635 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234871AbhF1OeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:34:24 -0400
-Received: (qmail 658330 invoked by uid 1000); 28 Jun 2021 10:31:58 -0400
-Date:   Mon, 28 Jun 2021 10:31:58 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "i.kononenko" <i.kononenko@yadro.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>, openbmc@lists.ozlabs.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] fms: Add TOC/PMA/ATIP DVD-ROM capabilities
-Message-ID: <20210628143158.GD656159@rowland.harvard.edu>
-References: <20210626211820.107310-1-i.kononenko@yadro.com>
- <20210626211820.107310-4-i.kononenko@yadro.com>
- <20210627142952.GE624763@rowland.harvard.edu>
- <3f9c6e4a-18b7-db11-8b23-f0473a649d06@yadro.com>
+        id S234927AbhF1O5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 10:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234532AbhF1Onm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BDB261CF2;
+        Mon, 28 Jun 2021 14:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624890827;
+        bh=2uviBU3tBOfcmtzuPg+xIxGNwDOKGgf7R4VIgL56wYQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TIpkaaBzZmn+t/U/5LVrhFj+cA3e38g6VLwSa41o36Ix0ubom2QAb027uKbb4BAWD
+         rD1e32tUx59pLd4OunJP7X/8do6RFgcLlwf0Z4u99Q5Rzi/R57iqnRzW0vKzzN78x7
+         /sW3QFXiimJ+Dtpc6rGHrfqPCv9AE/iMWoCxrc1XZO7g6FPGmm+E85GJVJaPQkM/fn
+         0ExRnUfCzd3IK+CjeOL6PZ01gqoh6qLevhJmnXV4cc06mQ1R+ihUBhmjfRsdfG16QO
+         saIZafbbZ1YhUeHwMI9NfldOWlO/+dk5gDwLFI9Ty4xlf3LQaGEhsAUQkjBBeI3quf
+         6Wb/4zsxxRrSA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 044/109] net: cdc_ncm: switch to eth%d interface naming
+Date:   Mon, 28 Jun 2021 10:32:00 -0400
+Message-Id: <20210628143305.32978-45-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
+References: <20210628143305.32978-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f9c6e4a-18b7-db11-8b23-f0473a649d06@yadro.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.196-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.196-rc1
+X-KernelTest-Deadline: 2021-06-30T14:32+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 27, 2021 at 09:45:07PM +0300, i.kononenko wrote:
-> 
-> 
-> On 27.06.2021 17:29, Alan Stern wrote:
-> > Is any of this really needed?  What usage scenarios require
-> > f_mass_storage to emulate a DVD-ROM that couldn't use f_tcm instead?
-> 
-> I can't see any impediments to supplement the already existing 
-> implementation of MMC-(2/3) specification of multimedia devices to 
-> represent the DVD/BD features. If the kernel presents the CD-ROM SCSI 
-> commands, why the mass_storage:usb-gadget-function still doesn't include
-> that for DVD/BD?
-> 
-> Many modern embedded systems (e.g., BMC, OpenBMC) implements their 
-> required features, e.g., Virtual Media Device, which is based on the 
-> usb:gadget:mass-storage. 
-> The purpose of that features is extensive, and their use the mass-storage
-> not only as a cdrom-device.
-> 
-> The required features of such systems might expect image back-end files
-> that size is significant than 2.1Gb, but such medium is not the CD-ROM 
-> device. USB-gadget consumers can incorrectly interpret such device by 
-> loading the wrong driver. I believe that should be the DVD-medium device,
-> at least. 
+From: Maciej Żenczykowski <maze@google.com>
 
-You should include this information in the patch description, so that 
-people will understand why you wrote the patch.
+[ Upstream commit c1a3d4067309451e68c33dbd356032549cc0bd8e ]
 
-> Additionally, please note the current patch also fixes the incorrect 
-> implementation of retrieving TOC/PMA/ATIP data, which is required for the 
-> CD-ROM. One system might correct works with retrieving first with the 
-> last session together, but for some systems, e.g., OS ESXi, OS Windows, 
-> should retrieving first and last border sessions in separate SCSI-request. 
+This is meant to make the host side cdc_ncm interface consistently
+named just like the older CDC protocols: cdc_ether & cdc_ecm
+(and even rndis_host), which all use 'FLAG_ETHER | FLAG_POINTTOPOINT'.
 
-What's wrong with the existing implementation?  Are you talking about 
-the do_read_toc function?  The driver only supports one session in any 
-case.
+include/linux/usb/usbnet.h:
+  #define FLAG_ETHER	0x0020		/* maybe use "eth%d" names */
+  #define FLAG_WLAN	0x0080		/* use "wlan%d" names */
+  #define FLAG_WWAN	0x0400		/* use "wwan%d" names */
+  #define FLAG_POINTTOPOINT 0x1000	/* possibly use "usb%d" names */
 
-In general, fixes to existing code and additions of new code should go 
-in separate patches.
+drivers/net/usb/usbnet.c @ line 1711:
+  strcpy (net->name, "usb%d");
+  ...
+  // heuristic:  "usb%d" for links we know are two-host,
+  // else "eth%d" when there's reasonable doubt.  userspace
+  // can rename the link if it knows better.
+  if ((dev->driver_info->flags & FLAG_ETHER) != 0 &&
+      ((dev->driver_info->flags & FLAG_POINTTOPOINT) == 0 ||
+       (net->dev_addr [0] & 0x02) == 0))
+          strcpy (net->name, "eth%d");
+  /* WLAN devices should always be named "wlan%d" */
+  if ((dev->driver_info->flags & FLAG_WLAN) != 0)
+          strcpy(net->name, "wlan%d");
+  /* WWAN devices should always be named "wwan%d" */
+  if ((dev->driver_info->flags & FLAG_WWAN) != 0)
+          strcpy(net->name, "wwan%d");
 
-Alan Stern
+So by using ETHER | POINTTOPOINT the interface naming is
+either usb%d or eth%d based on the global uniqueness of the
+mac address of the device.
+
+Without this 2.5gbps ethernet dongles which all seem to use the cdc_ncm
+driver end up being called usb%d instead of eth%d even though they're
+definitely not two-host.  (All 1gbps & 5gbps ethernet usb dongles I've
+tested don't hit this problem due to use of different drivers, primarily
+r8152 and aqc111)
+
+Fixes tag is based purely on git blame, and is really just here to make
+sure this hits LTS branches newer than v4.5.
+
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Fixes: 4d06dd537f95 ("cdc_ncm: do not call usbnet_link_change from cdc_ncm_bind")
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/usb/cdc_ncm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index 82ec00a7370d..f3f78ccdb274 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1666,7 +1666,7 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
+ static const struct driver_info cdc_ncm_info = {
+ 	.description = "CDC NCM",
+ 	.flags = FLAG_POINTTOPOINT | FLAG_NO_SETINT | FLAG_MULTI_PACKET
+-			| FLAG_LINK_INTR,
++			| FLAG_LINK_INTR | FLAG_ETHER,
+ 	.bind = cdc_ncm_bind,
+ 	.unbind = cdc_ncm_unbind,
+ 	.manage_power = usbnet_manage_power,
+-- 
+2.30.2
+
