@@ -2,128 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59793B66C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC32A3B66CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 18:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbhF1Qd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 12:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233108AbhF1QdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 12:33:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E08F6198D;
-        Mon, 28 Jun 2021 16:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624897856;
-        bh=sKyqPO15EImCw3svh4v8lKYkwAoCpB9/n9aUDIsf1q4=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=QFNA5j0vI8jLovwax7NHz2zyoe1WSwCttoe+l2NqK0c+A9C1WJLsapEYOlDV5NN/7
-         pJ3cEIMqaCUgavTAPp3FV3X6GbPrkshvHIX4KjTkI5lCqY/FEjrfHnSvWGSEcloUMg
-         51Xm80XTAnXBCSXVEy5NJo0K/9kbpP5oY9cqwlBsB/KkZT0zTsl5JkAQivs6Zxkhzn
-         iAx8YfBLH4U6IJkBXesAdSN/n2+CROQ0tdg9X+thfR/8XaAXvmI3LUOlUlg+P36DfY
-         6cp6PnKni9TR7JYxnaXudh4KvdhoA036sLuqY+F5HLE6ZRq8gjZDWL0GXirRI0fjHW
-         o8pzJnZvgNf9A==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 2882D27C0060;
-        Mon, 28 Jun 2021 12:30:54 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute6.internal (MEProxy); Mon, 28 Jun 2021 12:30:54 -0400
-X-ME-Sender: <xms:PPnZYO39LH4FBrTmGu_S-v39xiVujdiV8U2wGLRQTBLes97BQS1AQw>
-    <xme:PPnZYBEovQkNPTheGrXSbdyza8HHVdIuAftqy68ln6qYbwJnpabsO0uwRKKz3kbDH
-    Fg3njYskbrtEPjblio>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehgedguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:PPnZYG6tlbzKCHxNF_IB4ikW4MJH4oj2A0f2ckUfzwvA4UkBZEa27g>
-    <xmx:PPnZYP0X108S2YRONIv1FFggAREuJfckBhZ4G8cYJCn36d9iCYmxag>
-    <xmx:PPnZYBFJov0Y5jG0VhjNMdhH4_4eg_LCXAOPGL4AabvKcOmFFAvXxg>
-    <xmx:PvnZYHUwjbJak9e-BJsYJFC-K0me8Y9bA7LKg9N_51G7pZ61d6dYHdMiyDs>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2BC6251C0060; Mon, 28 Jun 2021 12:30:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-530-gd0c265785f-fm-20210616.002-gd0c26578
-Mime-Version: 1.0
-Message-Id: <f64f960b-d978-4022-9e56-0d9d9a3c0ebc@www.fastmail.com>
-In-Reply-To: <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
-References: <20210414055217.543246-1-avagin@gmail.com>
- <20210414055217.543246-3-avagin@gmail.com>
- <CAG48ez3UrzPE8rkucTgCu8ggcTEjx_h3Gj2FES1qM-uv2KD8bQ@mail.gmail.com>
-Date:   Mon, 28 Jun 2021 09:30:31 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Jann Horn" <jannh@google.com>, "Andrei Vagin" <avagin@gmail.com>
-Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
-        "Christian Brauner" <christian.brauner@ubuntu.com>,
-        "Dmitry Safonov" <0x7f454c46@gmail.com>,
-        "Ingo Molnar" <mingo@redhat.com>, "Jeff Dike" <jdike@addtoit.com>,
-        "Mike Rapoport" <rppt@linux.ibm.com>,
-        "Michael Kerrisk" <mtk.manpages@gmail.com>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Thomas Gleixner" <tglx@linutronix.de>
-Subject: Re: [PATCH 2/4] arch/x86: implement the process_vm_exec syscall
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S234181AbhF1QfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 12:35:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45890 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233189AbhF1QfQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:35:16 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 09051202E5;
+        Mon, 28 Jun 2021 16:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1624897970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sjzGZYePvIIaGO11WBPWnpQt5eSI/Ls63u3nQRytpxM=;
+        b=v5P5suiPXZIsXITysRQW8T4KMY+HTzJY06wwv9ANmWT0+UoRk0KF2UcNSgGAcU8/xrnnyF
+        kPpUVGYkpHSgNykI30VVBsAWWwV+JZ/NUZTUXx/jze71iGhD7eXPDiNlx2lkJ1KGufh45l
+        F24EpgMLP+MgR+HzUjF07HT0FmnQU8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1624897970;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sjzGZYePvIIaGO11WBPWnpQt5eSI/Ls63u3nQRytpxM=;
+        b=D1mI1F4oNy1ntZwMqfAaXFZh0By6E5mcAqJTJRlL2LDTIsrfdcrngZyYSiO77RRsiF88Od
+        AeY1VaqSDh4oEuCA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id CE6C6A3B94;
+        Mon, 28 Jun 2021 16:32:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9B57A1E125C; Mon, 28 Jun 2021 18:32:49 +0200 (CEST)
+Date:   Mon, 28 Jun 2021 18:32:49 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, axboe@fb.com,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v3] writeback: fix obtain a reference to a freeing memcg
+ css
+Message-ID: <20210628163249.GC17026@quack2.suse.cz>
+References: <20210402091145.80635-1-songmuchun@bytedance.com>
+ <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
 
+On Thu 20-05-21 11:45:23, Muchun Song wrote:
+> It seems like this patch has not been added to the linux-next
+> tree. Can anyone help with this? Thanks.
 
-On Mon, Jun 28, 2021, at 9:13 AM, Jann Horn wrote:
-> On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:=
+Muchun, did someone pickup this patch? I don't see it merged so unless
+somebody yells, I'll pick it up to my tree and send it to Linus for rc2.
 
-> > This change introduces the new system call:
-> > process_vm_exec(pid_t pid, struct sigcontext *uctx, unsigned long fl=
-ags,
-> >                 siginfo_t * uinfo, sigset_t *sigmask, size_t sizemas=
-k)
+								Honza
+
+> 
+> On Fri, Apr 2, 2021 at 5:13 PM Muchun Song <songmuchun@bytedance.com> wrote:
 > >
-> > process_vm_exec allows to execute the current process in an address
-> > space of another process.
-> [...]
->=20
-> I still think that this whole API is fundamentally the wrong approach
-> because it tries to shoehorn multiple usecases with different
-> requirements into a single API. But that aside:
->=20
-> > +static void swap_mm(struct mm_struct *prev_mm, struct mm_struct *ta=
-rget_mm)
-> > +{
-> > +       struct task_struct *tsk =3D current;
-> > +       struct mm_struct *active_mm;
+> > The caller of wb_get_create() should pin the memcg, because
+> > wb_get_create() relies on this guarantee. The rcu read lock
+> > only can guarantee that the memcg css returned by css_from_id()
+> > cannot be released, but the reference of the memcg can be zero.
+> >
+> >   rcu_read_lock()
+> >   memcg_css = css_from_id()
+> >   wb_get_create(memcg_css)
+> >       cgwb_create(memcg_css)
+> >           // css_get can change the ref counter from 0 back to 1
+> >           css_get(memcg_css)
+> >   rcu_read_unlock()
+> >
+> > Fix it by holding a reference to the css before calling
+> > wb_get_create(). This is not a problem I encountered in the
+> > real world. Just the result of a code review.
+> >
+> > Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > ---
+> > Changelog in v3:
+> >  1. Do not change GFP_ATOMIC.
+> >  2. Update commit log.
+> >
+> >  Thanks for Michal's review and suggestions.
+> >
+> > Changelog in v2:
+> >  1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
+> >
+> >
+> >  fs/fs-writeback.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > index 3ac002561327..dedde99da40d 100644
+> > --- a/fs/fs-writeback.c
+> > +++ b/fs/fs-writeback.c
+> > @@ -506,9 +506,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+> >         /* find and pin the new wb */
+> >         rcu_read_lock();
+> >         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+> > -       if (memcg_css)
+> > -               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> > +       if (memcg_css && !css_tryget(memcg_css))
+> > +               memcg_css = NULL;
+> >         rcu_read_unlock();
+> > +       if (!memcg_css)
+> > +               goto out_free;
 > > +
-> > +       task_lock(tsk);
-> > +       /* Hold off tlb flush IPIs while switching mm's */
-> > +       local_irq_disable();
-> > +
-> > +       sync_mm_rss(prev_mm);
-> > +
-> > +       vmacache_flush(tsk);
-> > +
-> > +       active_mm =3D tsk->active_mm;
-> > +       if (active_mm !=3D target_mm) {
-> > +               mmgrab(target_mm);
-> > +               tsk->active_mm =3D target_mm;
-> > +       }
-> > +       tsk->mm =3D target_mm;
->=20
-> I'm pretty sure you're not currently allowed to overwrite the ->mm
-> pointer of a userspace thread. For example, zap_threads() assumes that=
-
-> all threads running under a process have the same ->mm. (And if you're=
-
-> fiddling with ->mm stuff, you should probably CC linux-mm@.)
-
-exec_mmap() does it, so it can=E2=80=99t be entirely impossible.
+> > +       isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> > +       css_put(memcg_css);
+> >         if (!isw->new_wb)
+> >                 goto out_free;
+> >
+> > --
+> > 2.11.0
+> >
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
