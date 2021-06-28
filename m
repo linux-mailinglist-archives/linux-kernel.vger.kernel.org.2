@@ -2,209 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE1C3B569D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BDD3B56A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 03:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhF1BaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 21:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhF1BaT (ORCPT
+        id S231970AbhF1Bb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 21:31:26 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:37667 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231678AbhF1BbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:30:19 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1C2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 18:27:53 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id y17so1716298pgf.12
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Jun 2021 18:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X6bVyS44WwFXAw7wP5PVaLANCpMLdUNhY7gEBvcwzvg=;
-        b=TzfGmSMQYMmghKX5SsZsYk5xOa1gpjS5jXjsWD6ZEaZ2JuIwmT/PgNgxhyj4NECKsW
-         QhzmZMF29kB5LJJy2mBUcXb1DSW72oI4N0hVsZ1A/gI8G5uZk+n7r2yqiNz0/EIdgmAO
-         PwL7WyHFTpcnEZ6YljHB5e0s6IdXNbW0Be9vYSg00J6rVzyd6U2NHYY25caQ5/Qt1tAQ
-         edwIODMcSyR1687ZabT0paF3/ZD8/6XlRuHdGwJaodEZ86DXd4MvS21DC440m5jkep7x
-         qhTTDG+eurWbsvLkGK6gn0tN/YF/uzh0dhIbFOAkdPojUdeMfYVZ+zegCneBjUMsmRM6
-         rRwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X6bVyS44WwFXAw7wP5PVaLANCpMLdUNhY7gEBvcwzvg=;
-        b=Mg5NQjXfE7YCs0KRcH4sUOqWWRmp0pxMUa7zmwyaCdJSVDbjGE3ioiERIDdjsq3IjS
-         6rTV5+ffMgiKR6rRgSyHj8uIopjI4DJKDjtXubpKe/keXvWed8hJ2Y0CDZPMUp145Hov
-         sSXRKpncYctKnqiW0Hu6qdzMKcvZedTUhmlgxR5rmcekg3GkIlc+bn2QmZ+ZU9STf6m4
-         Fd6lzirS1p66AGVadatcG5+8w4Ag4qCPSCnZOanU0387W/drVfilY+m7AL8HsUI9dFSc
-         4QMfpK/MAb3pcYdGHQ0m01dT3rUxrFwBfijOjbbVS8uus8PjJ2eCHe1l6tYtmPNYeap1
-         ALMg==
-X-Gm-Message-State: AOAM533cDmpLbAliH2kHMcW7RJM3y2Tb9oGIA4ixGI5QtwrBsw05IAg0
-        3yXJFm86r7uYsfoTWJrdcwVEAQ==
-X-Google-Smtp-Source: ABdhPJw51HZwY4OqeK3vsXR6mLJFeM3m0otkwCk3XIocioSF67NTURfk6ArIXBRVxSoxGHkl+/a2zw==
-X-Received: by 2002:a63:e04e:: with SMTP id n14mr20399612pgj.324.1624843673098;
-        Sun, 27 Jun 2021 18:27:53 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id t189sm5689388pfb.59.2021.06.27.18.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 18:27:52 -0700 (PDT)
-Date:   Mon, 28 Jun 2021 09:27:44 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
-Message-ID: <20210628012744.GA158794@leoy-ThinkPad-X240s>
-References: <20210624164303.28632-1-james.clark@arm.com>
- <20210624164303.28632-3-james.clark@arm.com>
+        Sun, 27 Jun 2021 21:31:24 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CC16B58058B;
+        Sun, 27 Jun 2021 21:28:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Sun, 27 Jun 2021 21:28:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=T
+        F6xgqJW9aa0I1y93nwwqu4DjE6A5nIJGCY4aXMnpwQ=; b=YGNi3DTZucJpPAtQa
+        zTb9SO+9sxW96s3gX3Zl1ppZRkMtjjTnxUeJVeTJ2JOY60qqo8top4oDQKmGzrbC
+        SvkTM5UhAuHcIvuPQIft1Gx2RTkwWst/xBrDrvXsZbXT7krAdIJz4k3vvl6qOWYP
+        CC4Ur3bzwA2LVj51u4OO/CLukSEFq7+vvsqYbzfl9PnqJ1H4/5bo5an2UI+ssdww
+        LOXQtaPCgPIcCEcklesbvxTi9miFgAL6DUVSG2lVX/LVb57T8UyR72J99wsDsC8d
+        elJvdHPdFyeJZGym7wUEP3CffuuUcbRFbtXDjK9MHB2/0iN/mpwIMdU28fEtSWq+
+        heWPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=TF6xgqJW9aa0I1y93nwwqu4DjE6A5nIJGCY4aXMnp
+        wQ=; b=KkKxBqEH3LtQR9HDiC5ayysitWoP9I4E9HPg6LFUI06F06/hBO5T0Xayp
+        ZcduWXL3sqtW/oM8GmRM5x5yILpQAa/6U4+4kuYk/zw4kAEhCbSI99iisSQJF6iu
+        9nRmjNpUBFc67/dmo3lJ/cyuUtyhXXEnWEiKMG6WI+uMkrxIJ4+PdBD8AMjNNu/V
+        A3QLXgcE2KxuMI5QEQJ1DxQJFIPfdd9QSX0Dw7bs0h/6e8uApq6oKnZOKwxcDNv7
+        YdehWcuuypmHESkF+Wzot1/z2OJrNKGq61GfFp7M1UijbXs+pxTMUJNukfp4j5um
+        +AU5Qpalc3r/RoU193Og1ebclNUqg==
+X-ME-Sender: <xms:1iXZYM4FNyqwIjSXogqgkm0K8kBNQh6QONBLgYb7E0Kv7fmTe2YTNw>
+    <xme:1iXZYN6ogq5cskYUAvJdP28T_dR3lLWUnEeOJMPqlyy67jrMmu-cUppQiBaZ6RqNY
+    Ou6Lntb_3HCXGjpDB4>
+X-ME-Received: <xmr:1iXZYLeyYdmYIY_fxBXceAhK4QJGVRrL34YuTyZiHxzCbooHGsxC3mvZLsjF5CO9Q2OVFTSmbf2-3xHAipXdiw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehfedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpedtheeivdevtdevkeegueffheeugeduueffvddthfekgfejvdeg
+    veehhffhteefgfenucffohhmrghinheplhhinhhugidqmhhiphhsrdhorhhgpdgrrhgthh
+    hivhgvrdhorhhgpdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrd
+    gtohhm
+X-ME-Proxy: <xmx:1iXZYBLuwAz__wzaihERzN3vUemI0tn7wgSIgl1cIwE2U_1UIDV0Xg>
+    <xmx:1iXZYAJO5RTsd0CczAbZ7bg4ipIc8BqqbgGk3UNVdkmHSXbQ2Zx0dQ>
+    <xmx:1iXZYCyfdhARmW9JylRwKeNiPHNiZ0GNxvGzTxHW3guwCKyzzohjQA>
+    <xmx:2CXZYCA0OwvnPck6AhVR-kga8Tt5OgkJagBPaBP10HAAcJABuEmfGw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 27 Jun 2021 21:28:49 -0400 (EDT)
+Subject: Re: [PATCH v2 0/3] Remove dead linux-mips.org references
+To:     Joe Perches <joe@perches.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Kurt Martin <kmartin@wavecomp.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Willy Tarreau <w@1wt.eu>,
+        "Maciej W. Rozycki" <macro@linux-mips.org>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210625110419.24503-1-lukas.bulwahn@gmail.com>
+ <alpine.DEB.2.21.2106251722470.37803@angie.orcam.me.uk>
+ <4c3900ab7d9493e3ce516d3f03ed1de17c1fcb10.camel@perches.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <3fd473be-011b-7cb2-8356-045e5265ea0a@flygoat.com>
+Date:   Mon, 28 Jun 2021 09:28:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624164303.28632-3-james.clark@arm.com>
+In-Reply-To: <4c3900ab7d9493e3ce516d3f03ed1de17c1fcb10.camel@perches.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
 
-On Thu, Jun 24, 2021 at 05:43:03PM +0100, James Clark wrote:
-> Currently --dump-raw-trace skips queueing and splitting buffers because
-> of an early exit condition in cs_etm__process_auxtrace_info(). Once
-> that is removed we can print the split data by using the queues
-> and searching for split buffers with the same reference as the
-> one that is currently being processed.
-> 
-> This keeps the same behaviour of dumping in file order when an AUXTRACE
-> event appears, rather than moving trace dump to where AUX records are in
-> the file.
-> 
-> There will be a newline and size printout for each fragment. For example
-> this buffer is comprised of two AUX records, but was printed as one:
-> 
->   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
-> 
->   . ... CoreSight ETM Trace data: size 160 bytes
->           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
->           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
->           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
->           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
-> 
-> But is now printed as two fragments:
-> 
->   0 0 0x8098 [0x30]: PERF_RECORD_AUXTRACE size: 0xa0  offset: 0  ref: 0x491a4dfc52fc0e6e  idx: 0  t
-> 
->   . ... CoreSight ETM Trace data: size 80 bytes
->           Idx:0; ID:10;   I_ASYNC : Alignment Synchronisation.
->           Idx:12; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->           Idx:17; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0x0000000000000000;
-> 
->   . ... CoreSight ETM Trace data: size 80 bytes
->           Idx:80; ID:10;  I_ASYNC : Alignment Synchronisation.
->           Idx:92; ID:10;  I_TRACE_INFO : Trace Info.; INFO=0x0 { CC.0 }
->           Idx:97; ID:10;  I_ADDR_L_64IS0 : Address, Long, 64 bit, IS0.; Addr=0xFFFFDE2AD3FD76D4;
-> 
-> Decoding errors that appeared in problematic files are now not present,
-> for example:
-> 
->         Idx:808; ID:1c; I_BAD_SEQUENCE : Invalid Sequence in packet.[I_ASYNC]
->         ...
->         PKTP_ETMV4I_0016 : 0x0014 (OCSD_ERR_INVALID_PCKT_HDR) [Invalid packet header]; TrcIdx=822
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
+在 2021/6/27 上午7:45, Joe Perches 写道:
+> On Fri, 2021-06-25 at 17:49 +0200, Maciej W. Rozycki wrote:
+>> [Adding Ralf and Kurt to the list of recipients.]
+>>
+>> On Fri, 25 Jun 2021, Lukas Bulwahn wrote:
+>>
+>>> The domain lookup for linux-mips.org fails for quite some time now. Hence,
+>>> webpages, the patchwork instance and Ralf Baechle's email there is not
+>>> reachable anymore.
+>>   Well, mail forwarding has now been set up for my old LMO address, and so
+>> I believe for Ralf's.  Any other resources remain unavailable.
+>>
+>>> In the discussion of that patch series, Kurt Martin promised to get
+>>> linux-mips.org back online. Four months have now passed and the webpage is
+>>> still not back online. So, I suggest to remove these dead references.
+>>> Probably, we do not lose much if the linux-mips.org webpage never comes back.
+>>   While most resources have been migrated I think the wiki was unique and
+>> valuable.  Perhaps we could preserve read-only references to archive.org
+>> dumps?  It's not clear to me what our policy is here though, if any.
+> Perhaps better to wholesale copy the content and keep it
+> around somewhere else like lore.kernel.org.
 
-I tested this patch and the result looks good for me.
+I made a request to kernel.org infrastructure team to create a wiki site 
+for linux-mips project
 
-I found a side effect introduced by this change is the perf raw dump
-also synthesizes events PERF_RECORD_ATTR.  This is because function
-cs_etm__synth_events() will execute after applying this patch and it
-synthesizes PERF_RECORD_ATTR events.  I don't see any harm for this,
-so:
+to restore contents from old linux-mips.org back in April. I think that 
+would be another approach
 
-Tested-by: Leo Yan <leo.yan@linaro.org>
+as I saw PA-RISC migrated their wiki site to kernel.org as well.
 
-Please see an extra comment in below.
 
-> ---
->  tools/perf/util/cs-etm.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 88e8122f73c9..ad777c2a342f 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -2430,6 +2430,22 @@ static int cs_etm__process_event(struct perf_session *session,
->  	return 0;
->  }
->  
-> +static void dump_queued_data(struct cs_etm_auxtrace *etm,
-> +			     struct perf_record_auxtrace *event)
-> +{
-> +	struct auxtrace_buffer *buf;
-> +	unsigned int i;
-> +	/*
-> +	 * Find all buffers with same reference in the queues and dump them.
-> +	 * This is because the queues can contain multiple entries of the same
-> +	 * buffer that were split on aux records.
-> +	 */
-> +	for (i = 0; i < etm->queues.nr_queues; ++i)
-> +		list_for_each_entry(buf, &etm->queues.queue_array[i].head, list)
-> +			if (buf->reference == event->reference)
-> +				cs_etm__dump_event(etm, buf);
-> +}
-> +
->  static int cs_etm__process_auxtrace_event(struct perf_session *session,
->  					  union perf_event *event,
->  					  struct perf_tool *tool __maybe_unused)
-> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->  				cs_etm__dump_event(etm, buffer);
->  				auxtrace_buffer__put_data(buffer);
->  			}
-> -	}
-> +	} else if (dump_trace)
-> +		dump_queued_data(etm, &event->auxtrace);
+Thanks.
 
-IIUC, in the function cs_etm__process_auxtrace_event(), since
-"etm->data_queued" is always true, below flow will never run:
 
-    if (!etm->data_queued) {
-        ......
+- Jiaxun
 
-        if (dump_trace)
-            if (auxtrace_buffer__get_data(buffer, fd)) {
-                    cs_etm__dump_event(etm, buffer);
-                    auxtrace_buffer__put_data(buffer);
-            }
-    }
 
-If so, it's better to use a new patch to polish the code.
-
-Thanks,
-Leo
-
->  
->  	return 0;
->  }
-> @@ -3038,7 +3055,6 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
->  
->  	if (dump_trace) {
->  		cs_etm__print_auxtrace_info(auxtrace_info->priv, num_cpu);
-> -		return 0;
->  	}
->  
->  	err = cs_etm__synth_events(etm, session);
-> -- 
-> 2.28.0
-> 
+>
+>
