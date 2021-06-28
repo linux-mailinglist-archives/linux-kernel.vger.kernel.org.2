@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4B53B565D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9197D3B5660
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Jun 2021 02:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhF1AmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Jun 2021 20:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S231833AbhF1Amk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Jun 2021 20:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhF1AmW (ORCPT
+        with ESMTP id S231678AbhF1Ami (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Jun 2021 20:42:22 -0400
+        Sun, 27 Jun 2021 20:42:38 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDA3C061574;
-        Sun, 27 Jun 2021 17:39:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E67C061574;
+        Sun, 27 Jun 2021 17:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-ID:Content-Description:In-Reply-To:References;
-        bh=vT5MOL85OD3uCD6pHmG/cA0FIka8DTN+aoVuSZv8xvY=; b=KC5xK9pp7yov9VZkLVaVvSpGzP
-        tqgXnPO4xkgz8Xsx7O6Cb16vwx6GxBtu0rpa7F6DwV9lE1p74TyV9aDmF+SpLa38FmLHgp3K67SDl
-        ykmb82F2M2iwaQtoegDWyH0RdADDBqe8Nl1WyHjA7M18j+jOHsjzYP1VMfAOUwUnKp6BV+qmf3SQP
-        TcFsAfMcrI4fyxqOzTICIzywp2N0nwejD7UjU/fFz5FWNGqneAvG7k+cZ4SGZfgQ3d178AL4qcMHr
-        L1BIL6Za1bapbvGXiVQVU0/yiQDcV8vg64EUwE/eRrIeQr/yrAxGCc1GG2VBCFKp2Tzz90jf7lYQL
-        zZMMCizg==;
+        bh=lra+cUKfxwndGLkV7ZWKLMN4hPRlMGF3o/8Xt0/nRac=; b=bJx5T8WWjr/W2k/br2OI9ZqEsE
+        iwsRP2qCtB7KQOjyszj+otTS5KTtffDEDByBCOWoJK+Cf61AV5EbBcajb0eneIRrF1b13b4AqK7Ed
+        YjoQEeeSQzswxHSwWoa7RS4l4wmvV/rEvrb/XUM0AqdpHXRQwTSkGpXu6ZWYM+boeeTtdNQp8RcVe
+        MirbaL5h84zzr3BfCSQTJQm3uzQQlwSrcMEQvYW+GxtTvTBxy0udL50t9BxzF0lEvxQ/RNFAxDFjj
+        7zPcuvZbL8KIYbT9AKkz5EApJRNUMQneccicByPk4JVsy7yMmR8CMP6LbQ8DAMvfRrhoGyfdWAJ3s
+        WyHgmAGQ==;
 Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lxfJd-006MU1-5e; Mon, 28 Jun 2021 00:39:57 +0000
+        id 1lxfJt-006MWD-LC; Mon, 28 Jun 2021 00:40:13 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
-Subject: [PATCH] host1x: bus.c: drop excess kernel-doc entry @key
-Date:   Sun, 27 Jun 2021 17:39:53 -0700
-Message-Id: <20210628003953.5456-1-rdunlap@infradead.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH -next] <linux/dma-resv.h>: correct a function name in kernel-doc
+Date:   Sun, 27 Jun 2021 17:40:12 -0700
+Message-Id: <20210628004012.6792-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warning in host1x:
+Fix kernel-doc function name warning:
 
-../drivers/gpu/host1x/bus.c:774: warning: Excess function parameter 'key' description in '__host1x_client_register'
+../include/linux/dma-resv.h:227: warning: expecting prototype for dma_resv_exclusive(). Prototype was for dma_resv_excl_fence() instead
 
-Fixes: 0cfe5a6e758f ("gpu: host1x: Split up client initalization and registration")
+Fixes: 6edbd6abb783d ("ma-buf: rename and cleanup dma_resv_get_excl v3")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-tegra@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 ---
- drivers/gpu/host1x/bus.c |    1 -
- 1 file changed, 1 deletion(-)
+ include/linux/dma-resv.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20210625.orig/drivers/gpu/host1x/bus.c
-+++ linux-next-20210625/drivers/gpu/host1x/bus.c
-@@ -761,7 +761,6 @@ EXPORT_SYMBOL(host1x_client_exit);
+--- linux-next-20210625.orig/include/linux/dma-resv.h
++++ linux-next-20210625/include/linux/dma-resv.h
+@@ -212,7 +212,7 @@ static inline void dma_resv_unlock(struc
+ }
+ 
  /**
-  * __host1x_client_register() - register a host1x client
-  * @client: host1x client
-- * @key: lock class key for the client-specific mutex
+- * dma_resv_exclusive - return the object's exclusive fence
++ * dma_resv_excl_fence - return the object's exclusive fence
+  * @obj: the reservation object
   *
-  * Registers a host1x client with each host1x controller instance. Note that
-  * each client will only match their parent host1x controller and will only be
+  * Returns the exclusive fence (if any). Caller must either hold the objects
