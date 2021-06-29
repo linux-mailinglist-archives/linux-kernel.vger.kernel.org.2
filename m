@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5353B71E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637703B71F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhF2MPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:15:34 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:49507 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233384AbhF2MP3 (ORCPT
+        id S233624AbhF2MVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233589AbhF2MVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:15:29 -0400
-X-UUID: 1808bfb60d774362bc069ba1ed953987-20210629
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4SbG1vndPjwBWteOUa61pelj+E3Mh/QyjRjIiC1LL3s=;
-        b=kt4DZhFF3c3qEU+rHgUIkRCJ65aiuh9VZPAoBNm0UUHyEc+i9i4qh8107WVX5qavw/gN1w3KZ4XG/XKmEEyr+s5FaRuJiZX8yfeLuny12Bf61yqxQjpk8sJ+pFDV2Mem95Lfi/jUiN5WXQm/YUlI8nEUSOeEq1u8ls5smIZxl4o=;
-X-UUID: 1808bfb60d774362bc069ba1ed953987-20210629
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1263429074; Tue, 29 Jun 2021 20:12:57 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
- 2021 20:12:48 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Jun 2021 20:12:47 +0800
-Message-ID: <1624968767.5647.2.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/3] i2c: mediatek: Dump i2c/dma register when a timeout
- occurs
-From:   Kewei Xu <kewei.xu@mediatek.com>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>, <wsa@the-dreams.de>,
-        <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
-        <liguo.zhang@mediatek.com>
-Date:   Tue, 29 Jun 2021 20:12:47 +0800
-In-Reply-To: <CA+Px+wU8qqEDU+bV0QpoJssNOxebutzRGgHo6WpC9VFJwckKKQ@mail.gmail.com>
-References: <1623122200-1896-1-git-send-email-kewei.xu@mediatek.com>
-         <1623122200-1896-3-git-send-email-kewei.xu@mediatek.com>
-         <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
-         <1623206624.14050.10.camel@mhfsdcap03>
-         <CA+Px+wU8qqEDU+bV0QpoJssNOxebutzRGgHo6WpC9VFJwckKKQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 29 Jun 2021 08:21:14 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5F4C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:18:47 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id q18so4746328lfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RxHGY7S/PGo9l+epfA3kfSLzx4lK4ynQ52nhtavStLI=;
+        b=N7S+pQWxu2P+OqTBZjsZwN+Aq8bnjh2R156qgQ+pkDEwvqz4RQk19NBs3DTJJGjWA2
+         SJHxMquhxUS+ZhoWZj0/FRN3vwp1H7uNWuHABPO2rjhJT7vxJ1Hlrr70LDHdrHFgQmIx
+         ezRop4HX3kKJo0E4TbRP6r4vjEipby8u65I8p1YKQjX+hgx8JzCAcFn0m+Onu8vCWaa8
+         kMpDmRFX3PetwCzbCPT8bZ89STrMQ9HoUJl8AVu3RrpbaIrqJDJKpDwLXZDcr4rsgU3s
+         mlPvgL9IqM5dYYa/DemyxekA4vskJo0zmenUwOWVtWMiIozbbaqfiQiLnG3D/DPaJanv
+         ULQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RxHGY7S/PGo9l+epfA3kfSLzx4lK4ynQ52nhtavStLI=;
+        b=OjwtOCunejeaJtvBrpf3pnIQbyJ/F6MS36qkjOimhGLBqh6yPJNmteC2c9dnxA7l6X
+         XS4NXBbfyOq9sVacZ4ZDwDgXO6YN1dE2CM8oL7ksHAsCY7OQVAu9ffXwV1pXg5764j2J
+         AiqK7epWdgEGdYy1hH0p74fIRpAI58H5gJsKAj+E8Ju+tdzhYFUElpr/HlLl+7VbysiS
+         8XEy0VfKkALn4Nd2859z9wM60RhvTtjH5CBdWhTQXwwMEqWXrF9hoHUYP5cK+KPD2yx/
+         4O0Qf/kRpJZXmhqWkBNHGlUy5tF5bxf9/ijML07MBpVc1MDte92o0WbO/ZAyi3KO45pt
+         pqPg==
+X-Gm-Message-State: AOAM532VFmqTpjEi2anLgpD5CKikSW/AmllHpg3qD5/L+PUYcPWtwqSP
+        +geJQwdbydAtLI4H4xvB9llNLw==
+X-Google-Smtp-Source: ABdhPJxTlCYxtMQrgBeCVYcJvkUFgtW9Cfsuj5jfhDAx+1Fiq9L2Yo2NN8h6Egq3cLdCmqiqTp/wgA==
+X-Received: by 2002:a19:410c:: with SMTP id o12mr4736548lfa.10.1624969125704;
+        Tue, 29 Jun 2021 05:18:45 -0700 (PDT)
+Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
+        by smtp.gmail.com with ESMTPSA id w13sm542021ljd.27.2021.06.29.05.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 05:18:45 -0700 (PDT)
+From:   Odin Ugedal <odin@uged.al>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>
+Subject: [PATCH] sched/fair: Fix CFS bandwidth hrtimer expiry type
+Date:   Tue, 29 Jun 2021 14:14:52 +0200
+Message-Id: <20210629121452.18429-1-odin@uged.al>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 99D115C5B010B0D7F3D44B52D5ED0835CC3A0712A95D069472FE4D2D1B8632C52000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA2LTI5IGF0IDEyOjE5ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0K
-PiBPbiBXZWQsIEp1biA5LCAyMDIxIGF0IDEwOjQ0IEFNIEtld2VpIFh1IDxrZXdlaS54dUBtZWRp
-YXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gVHVlLCAyMDIxLTA2LTA4IGF0IDE2OjAxICsw
-MjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0KPiA+ID4gSXMgdGhpcyBvZmZzZXQgb25seSBm
-b3IgbXQ4MTkyIG9yIGFsc28gZm9yIG10ODE4Mz8NCj4gPiA+IEluIGFueSBjYXNlIHRoYXQgc2hv
-dWxkIGdvIGluIGFzIGFub3RoZXIgcGF0Y2guIEVpdGhlciBhIGZpeCBvciBhIG5ldw0KPiA+ID4g
-bXRfaTJjX3JlZ3NfdjNbXQ0KPiA+DQo+ID4gVGhpcyBvZmZzZXQgdmFsdWUgaXMgc3VpdGFibGUg
-Zm9yIHRoZSBJQyBvZiBtdF9pMmNfcmVnc192MiBoYXJkd2FyZQ0KPiA+IGRlc2lnbiBzaW1pbGFy
-IHRvIG10ODE5Mi84MTk1LCBub3QgZm9yIDgxODMuDQo+ID4NCj4gPiBUaGUgcmVhc29uIGZvciB0
-aGUgbW9kaWZpY2F0aW9uIGhlcmUgaXMgdGhhdCB0aGUgcHJldmlvdXMNCj4gPiBvZmZzZXQgaW5m
-b3JtYXRpb24gaXMgaW5jb3JyZWN0LCBPRkZTRVRfREVCVUdTVEFUID0gMFhFNCBpcw0KPiA+IHRo
-ZSBjb3JyZWN0IHZhbHVlLg0KPiANCj4gUGxlYXNlIHN1Ym1pdCBhbm90aGVyIHBhdGNoIGZvciBm
-aXhpbmcgdGhlIGluY29ycmVjdCB2YWx1ZS4NCg0KT2theSwgSSB3aWxsIHJlc3VibWl0IGEgcGF0
-Y2ggdG8gZml4aW5nIHRoZSBpbmNvcnJlY3QgdmFsdWUsVGhhbmtzLg0KDQo=
+The time remaining until expiry of the refresh_timer can be negative.
+Casting the type to an unsigned 64-bit value will cause integer
+underflow, making the runtime_refresh_within return false instead of
+true. These situations are rare, but they do happen.
+
+This does not cause user-facing issues or errors; other than
+possibly unthrottling cfs_rq's using runtime from the previous period(s),
+making the CFS bandwidth enforcement less strict in those (special)
+situations.
+
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 23663318fb81..62446c052efb 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5108,7 +5108,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
+ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+ {
+ 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
+-	u64 remaining;
++	s64 remaining;
+ 
+ 	/* if the call-back is running a quota refresh is already occurring */
+ 	if (hrtimer_callback_running(refresh_timer))
+@@ -5116,7 +5116,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+ 
+ 	/* is a quota refresh about to occur? */
+ 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
+-	if (remaining < min_expire)
++	if (remaining < (s64)min_expire)
+ 		return 1;
+ 
+ 	return 0;
+-- 
+2.32.0
 
