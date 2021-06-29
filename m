@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BF23B786D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005223B7872
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhF2TQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 15:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        id S235385AbhF2TSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbhF2TQU (ORCPT
+        with ESMTP id S233670AbhF2TSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 15:16:20 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ED3C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:13:52 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id t24-20020a9d7f980000b029046f4a1a5ec4so1898991otp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:13:52 -0700 (PDT)
+        Tue, 29 Jun 2021 15:18:09 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AD8C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:15:40 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id r20so16967304qtp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IXvp6iYKQ7LnDZgY4w/YeVt41OnTxqbG05Qy728iqDQ=;
-        b=XBe6ZNy9PinPV3StEvl00KHi2NGx4DwYVRdaw7sfW5C17MpRktVuuTgcyqre+nt+ad
-         f7Xtb7JecKipWjzeAfQhChNAx2oHAK841c3lVi8OHGVsBbQN29bqdQg8T4Pg3yHju47S
-         chdICXJHMFQTMGyHvXrPFw3tuQlmN/ujJiRyVgNoZoBdEkkKr3ZnRwbcEwGXlvY3jGU+
-         a767VexQaeNRSbD48jFoCwPwYQ/NFc3hlBBbQb+NdrgOW0leYl6fOQHrUdamAQ5WArwu
-         jy+/9M3YBlPs9H2asOze84NOpQDyX7318bXoJYNLUusR4T1Vp0ENPt0nUjbZgInMF5cO
-         fwvw==
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=hHxgr0mrPWLXjFG/R6cpZEYimEXFUGiQWGJT6Wj4ipU=;
+        b=ZufjOGLeP345ZUv3Bo/2BAgLWQrfzZJ+FahDfsH2xIwD/n3YrwE3GSmK4xxEdFjEbe
+         c/8xXMWnTuOzlrJCRAmBj4L70GYh33zm9pqnc564/2cxNWM2HCh0Pqj+ac0aPbNYDE4k
+         yHAodOAU9rvOFS+dNnaSl0DPXOwIsN4HwTeXY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=IXvp6iYKQ7LnDZgY4w/YeVt41OnTxqbG05Qy728iqDQ=;
-        b=l2VDBxEiFZYY8dz7jl2o5YmRYH1BMTCdVjsGLPOHjPsceZUlUc+cJAzwWvpd2mamAl
-         xfPPvgSvmBm9tPAdSxrtviCxY1er0fxgzmjyDJ8ATDk1yxHm4uHeWtvYfMkNRWZuEZv1
-         o2Zh49WDUAUhbRjw7jJIBQdzExOxiBVFpi7TGLwuPotUbBn0vd5HIf2qSiqx3hthjcnm
-         ao5cg1ETSsf2mPl3OpNGDPL+yo7gkm0LE2LKo2x0WHlAzDYY/U9G2y60ZfiEFqhDJO4B
-         L2CDDMkhPV7HzVoX3ahtxDBTKbywdFeaNySy2kgGNTT0cKa0kTWFd62Em473+dhig5SE
-         3tRQ==
-X-Gm-Message-State: AOAM533SoXQmeMSvbEXExF/Tldgcq6jgGOfYuzhMETyvg3nS9slLmaIK
-        TuGL1RItKF5rbaFpy/XkM4UXDmXPcydq6asv
-X-Google-Smtp-Source: ABdhPJz4Km15cqKpfqYG6bnFUHdFiJMXgnHFhUkf/d8pxk+AZBjQcf/VOpdyt5J1c7n79donpSlTrw==
-X-Received: by 2002:a9d:2781:: with SMTP id c1mr5747720otb.34.1624994031775;
-        Tue, 29 Jun 2021 12:13:51 -0700 (PDT)
-Received: from smtpclient.apple ([2600:1700:42f0:6600:f8e3:a853:8646:6bc8])
-        by smtp.gmail.com with ESMTPSA id n72sm4101436oig.5.2021.06.29.12.13.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Jun 2021 12:13:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH 1/3] hfs: add missing clean-up in hfs_fill_super
-From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <20210629144803.62541-2-desmondcheongzx@gmail.com>
-Date:   Tue, 29 Jun 2021 12:13:46 -0700
-Cc:     gustavoars@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <28CCF4E3-51D1-43BE-A2BA-4708175A59C0@dubeyko.com>
-References: <20210629144803.62541-1-desmondcheongzx@gmail.com>
- <20210629144803.62541-2-desmondcheongzx@gmail.com>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=hHxgr0mrPWLXjFG/R6cpZEYimEXFUGiQWGJT6Wj4ipU=;
+        b=juboG92B5xZdAeUzB5tNN7zwBCIzRDqq9z0a8K/Q+OKfcSXu72iSYLLp6/32bKnykz
+         KIK3mx5TYhl4cu4Zuixx5TRaiI5SfooMcZgBbrJXAb2sFh+yhu+ujBp70JS4jC8QWlEL
+         rjN62Q5c/1uKrTeTuPkcrAs+biPLJ0oWtTvum6sflrGv4jkdwrNO0dbg0oYDnda3rNGG
+         Fi73xtPl2aB+oJLn6uSejBey1AL4MpDsdnRszozbaMQPlBMjUcM81uiUfO7/kVk9CiXt
+         LxNPh/SnVSuVHeMjF58z7zvGz/ysk+f8hNw/JMszIf0nno66xWUUZDBAvuaBjxRQFFht
+         0wgg==
+X-Gm-Message-State: AOAM5331imJfZO5qfMqvLqG8oB1a+EHsbABeCt4J3PROvscGosicBrCT
+        guhNfgchGJ/79xtF/uGDZVxDJzF7vpPNGQ==
+X-Google-Smtp-Source: ABdhPJw6Y8UZvv3cOLyYnyz6fXVG6cKa78pxCIgUA6y7jJCDgbOA1LvPHSGxCIhn+cmZ7QKSFgVN/w==
+X-Received: by 2002:ac8:584f:: with SMTP id h15mr28268174qth.362.1624994139783;
+        Tue, 29 Jun 2021 12:15:39 -0700 (PDT)
+Received: from nitro.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id m18sm4344625qtk.91.2021.06.29.12.15.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 12:15:39 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 15:15:37 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Subject: linux.dev email accounts for kernel developers
+Message-ID: <20210629191537.7kow6vupolahi5it@nitro.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello, all:
 
+A few weeks ago we announced that we'll be providing linux.dev accounts for
+kernel developers that need access to a mailbox that is well suited for
+patch-based email workflows. During the beta stage, this service was only
+available to people listed in MAINTAINERS (which was intentionally very
+narrow, to make sure that we test the service before making it more widely
+available), but we are now ready to extend it to a wider audience.
 
-> On Jun 29, 2021, at 7:48 AM, Desmond Cheong Zhi Xi =
-<desmondcheongzx@gmail.com> wrote:
->=20
-> On exiting hfs_fill_super, the file descriptor used in hfs_find_init
-> should be passed to hfs_find_exit to be cleaned up, and to release the
-> lock held on the btree.
->=20
-> The call to hfs_find_exit is missing from this error path, so we add
-> it in to release resources.
->=20
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
-> fs/hfs/super.c | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/fs/hfs/super.c b/fs/hfs/super.c
-> index 44d07c9e3a7f..48340b77eb36 100644
-> --- a/fs/hfs/super.c
-> +++ b/fs/hfs/super.c
-> @@ -419,6 +419,7 @@ static int hfs_fill_super(struct super_block *sb, =
-void *data, int silent)
-> 	res =3D hfs_cat_find_brec(sb, HFS_ROOT_CNID, &fd);
-> 	if (!res) {
-> 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) =
-{
-> +			hfs_find_exit(&fd);
+You are invited to apply if you fit the following criteria:
 
-I see that there are several places of hfs_find_exit() calls in =
-hfs_fill_super(). Maybe, it makes sense to move the hfs_find_exit() call =
-to the end of the hfs_fill_super()? In this case we could process this =
-activity of resources freeing into one place. I mean line 449 in the =
-source code (failure case).
+- you're a developer with an established history of contributions to the kernel
+- your current mail situation is not well-suited for sending/reviewing patches
 
-Thanks,
-Slava.
+This is not intended to be a vanity address, so please do not apply if you do
+not actually need it. Linux.dev mailboxes come with daily send/receive
+limitations (read the doc linked below), so if you are able to use a free
+service like gmail, then I assure you that you don't need a linux.dev account.
 
-> 			res =3D  -EIO;
-> 			goto bail;
-> 		}
-> --=20
-> 2.25.1
->=20
+(Also, if you're paid to work on Linux by your employer, check their policy on
+which email address you are allowed to use for DCO purposes before you apply.)
 
+For the rest of the details and for information on how to apply, please see
+the following document:
+
+https://korg.docs.kernel.org/linuxdev.html
+
+Best regards,
+-K
