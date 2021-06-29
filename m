@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C813B6FD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1CB3B6FD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhF2JEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 05:04:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232591AbhF2JEA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:04:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624957291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pCMVXVrREB+3xGNYng722JG4/x5ib1E9Ik1DbsMH2eo=;
-        b=XvP2DgnLTfPulSVOprFj2Sy72RsqC2V+WuaBzVxit+av8Uqh5NJRprFl1hQHeXxLASHvcG
-        Kpujbvl45hqaFjf36UxoWWZ82dmSi0fuBP7WR+xV72eBWT5Eoh6BH8ckJrwi3ybrSySwg1
-        b1EGigmfBqfvoQV1eObSQ99DxsPTS1U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576---DtsV0JMHiHA9ooIgDEmw-1; Tue, 29 Jun 2021 05:01:29 -0400
-X-MC-Unique: --DtsV0JMHiHA9ooIgDEmw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5ED0BBF0B;
-        Tue, 29 Jun 2021 09:01:28 +0000 (UTC)
-Received: from T590 (ovpn-13-8.pek2.redhat.com [10.72.13.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6FFBC5C1D1;
-        Tue, 29 Jun 2021 09:01:21 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 17:01:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Wen Xiong <wenxiong@us.ibm.com>, james.smart@broadcom.com,
-        linux-kernel@vger.kernel.org, sagi@grimberg.me,
-        wenxiong@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] block: System crashes when cpu hotplug + bouncing
- port
-Message-ID: <YNrhXFgv/gEWbhbl@T590>
-References: <YNp1Bho5yypHkPfW@T590>
- <1624850072-17776-1-git-send-email-wenxiong@linux.vnet.ibm.com>
- <20210628090703.apaowrsazl53lza4@beryllium.lan>
- <YNmdhqd+W3XbJCwd@T590>
- <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
- <OFE573413D.44652DC5-ON00258703.000DB949-00258703.000EFCD4@ibm.com>
- <OF8889275F.DC758B38-ON00258703.001297BC-00258703.00143502@ibm.com>
- <YNqX6w8YHO61oqvY@T590>
- <20210629082542.vm3yh6k36d2zh3k5@beryllium.lan>
- <20210629083549.unco3f7atybqypw3@beryllium.lan>
+        id S232675AbhF2JFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 05:05:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:46676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232518AbhF2JFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 05:05:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B5ECD6E;
+        Tue, 29 Jun 2021 02:03:25 -0700 (PDT)
+Received: from bogus (unknown [10.57.78.75])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5932F3F694;
+        Tue, 29 Jun 2021 02:03:23 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 10:02:38 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Hector Yuan <hector.yuan@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v12 1/2] cpufreq: mediatek-hw: Add support for CPUFREQ HW
+Message-ID: <20210629090238.n23zcttkiqvzpbb5@bogus>
+References: <1622307153-3639-1-git-send-email-hector.yuan@mediatek.com>
+ <1622307153-3639-2-git-send-email-hector.yuan@mediatek.com>
+ <20210614104058.jdwb7godqzhf7rgd@vireshk-i7>
+ <1624781848.1958.16.camel@mtkswgap22>
+ <20210628072641.amqk5d3svwolvhic@vireshk-i7>
+ <20210628090956.uwkrozdqvawsm3xp@bogus>
+ <20210629024719.nmcygaigtx5wn7g5@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210629083549.unco3f7atybqypw3@beryllium.lan>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210629024719.nmcygaigtx5wn7g5@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 10:35:49AM +0200, Daniel Wagner wrote:
-> On Tue, Jun 29, 2021 at 10:25:43AM +0200, Daniel Wagner wrote:
-> > On Tue, Jun 29, 2021 at 11:47:55AM +0800, Ming Lei wrote:
-> > > >    >>data.ctx = __blk_mq_get_ctx(q, cpu);
-> > > >    cpu=2048 if hctx_idx = 4
-> > > 
-> > > Yeah, that is the issue I mentioned, any CPU in hctx->cpumask becomes
-> > > offline, please try the following patch and see if it makes a
-> > > difference:
-> > 
-> > Given that cpumask_first_and() will return nr_cpu_ids in this case,
-> > can't we just bail out here and have to caller handle the error?
-> 
-> To answer my own question, you want to avoid adding the if into the
-> hotpath.
+On Tue, Jun 29, 2021 at 08:17:19AM +0530, Viresh Kumar wrote:
+> On 28-06-21, 10:09, Sudeep Holla wrote:
+> > Probably in driver/cpufreq or some related headers if it needs to access
+> > related_cpus and is more cpufreq related in that way ?
+>
+> It just needs to set a mask, so doesn't really depend on cpufreq. I
+> was wondering if drivers/opp/of.c may be used for this, and I am not
+> sure.
+>
 
-No, this way fails the request allocation, which isn't expected from
-NVMe fc/rdma/tcp/loop, since io queue can't be connected in this way.
+Sounds good to me.
 
-
-Thanks,
-Ming
-
+--
+Regards,
+Sudeep
