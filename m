@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474713B6ECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA273B6EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhF2Hgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 03:36:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21605 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232301AbhF2Hga (ORCPT
+        id S232320AbhF2Hl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 03:41:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:37749 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232284AbhF2HlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 03:36:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624952042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7aRa/ari9ndRrZW6yGfSw3dQvpOEYQN4vmyoY/ZeNU=;
-        b=QDgeywfxmxZQEo7IQCYNxePBlSYwC86akw8fgAgO/QLSDydrDl2sqmap5r/QOLm97tjKTA
-        T8xcDv1m+hsijuTv9FQpWP5yQqNGNAwvXE77vE1nYKL1yrHPgYMGAChsipVyqPyaavNvU0
-        nX/PIZXaxUNcZNzrdh8syfJGh1brgIc=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-A7gmfVNDPnC-cXzl0IpStw-1; Tue, 29 Jun 2021 03:34:01 -0400
-X-MC-Unique: A7gmfVNDPnC-cXzl0IpStw-1
-Received: by mail-pj1-f70.google.com with SMTP id g19-20020a17090adb13b029016f4a877b4fso1232399pjv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:34:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=X7aRa/ari9ndRrZW6yGfSw3dQvpOEYQN4vmyoY/ZeNU=;
-        b=RqhRmAKnAaEXGCgEdqRszSm9pQFALSPp4MfxepbS3SmS5GYqSbmonGXnMQWDUYbnGL
-         GbZEwfd3OP+JZ67XzB4hHcXzag9W6Mpc4r9OI4lu1nv5SukBLReNCVIpBJIS4pD/nDQa
-         tQaxtv5HVRg6qOGy+Ul91WtohT5MW2KPKimKZU+GpADH4Fo6EysfrbB7vj1lZ5m+BpTO
-         aec6Xo1PGpfDUpMOQ8aEPHuaP/Z6k3m7EhYXtvTJTxEa+f4Oy9qlhBrKJqyeY+SwFB4z
-         /heG/XMMjz01thWn3dAZC/36f6H/P0O2Ge2wuRZWspQrIhUNcixMuAbsg19waajF3Qxa
-         6q/g==
-X-Gm-Message-State: AOAM531Y6nZaVj27R66s9GIoBIpBHOi4Z6PBIDHC9f1WEvrL1g4n/t6G
-        o2GiwnSX2TFAQIBBC8WkJ7l+1r5oHrEG2NSyWtDZrMczjUSRZpsWhf+mhJVPrbeHGJC7Ke7mAUG
-        A3/7Tp2CVkkVxT5oIFad9EXMa
-X-Received: by 2002:a63:43c4:: with SMTP id q187mr12256857pga.172.1624952039965;
-        Tue, 29 Jun 2021 00:33:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7prtHQtaiL3wMVzoCQQ1u9za913WVNoujdQYVZqZ/2wS5MelCYOe6dyArhR9IgMLsZIzYyg==
-X-Received: by 2002:a63:43c4:: with SMTP id q187mr12256834pga.172.1624952039684;
-        Tue, 29 Jun 2021 00:33:59 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c2sm17127924pjv.10.2021.06.29.00.33.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 00:33:59 -0700 (PDT)
-Subject: Re: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     Yongji Xie <elohimes@gmail.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        kvm <kvm@vger.kernel.org>, netdev@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        iommu@lists.linux-foundation.org, songmuchun@bytedance.com,
-        linux-fsdevel@vger.kernel.org
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <20210628103309.GA205554@storage2.sh.intel.com>
- <CAONzpcbjr2zKOAQrWa46Tv=oR1fYkcKLcqqm_tSgO7RkU20yBA@mail.gmail.com>
- <d5321870-ef29-48e2-fdf6-32d99a5fa3b9@redhat.com>
- <CACycT3vVhNdhtyohKJQuMXTic5m6jDjEfjzbzvp=2FJgwup8mg@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <90e30d9e-5709-2a0b-0449-858eea9dfec9@redhat.com>
-Date:   Tue, 29 Jun 2021 15:33:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Tue, 29 Jun 2021 03:41:24 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mspy4-1l4vHc0dbs-00tDGL for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021
+ 09:38:56 +0200
+Received: by mail-wr1-f50.google.com with SMTP id u11so24516354wrw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:38:56 -0700 (PDT)
+X-Gm-Message-State: AOAM530B/grLXBSYlhua255jwRZ1d5pdUFDDelnjgHcsAEOD+JR09SrM
+        2+PDd97QYxHda88V3cHK1GR3l2BpJ83kTfxYAFU=
+X-Google-Smtp-Source: ABdhPJw9pHs7dYczJPgU//N0dx30V5NbNID6LbBuUsUHg4SH8Wz7NtH60Q2sc97coNjPhMc1cJSCiOqqUlBykw4nQDg=
+X-Received: by 2002:a5d:5012:: with SMTP id e18mr32760783wrt.286.1624952335774;
+ Tue, 29 Jun 2021 00:38:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACycT3vVhNdhtyohKJQuMXTic5m6jDjEfjzbzvp=2FJgwup8mg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210525140232.53872-1-mark.rutland@arm.com> <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+ <20210618084847.GA93984@C02TD0UTHF1T.local> <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
+ <4ec7308f-02c6-a357-eab8-63b6f2b7a5eb@infradead.org> <YNpJnzqg0yySeEE7@hirez.programming.kicks-ass.net>
+ <a38e3284-62ee-4894-0475-2668733c5903@infradead.org>
+In-Reply-To: <a38e3284-62ee-4894-0475-2668733c5903@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 29 Jun 2021 09:36:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2yH+dSWrS=1E0UbwcRhYJEThgrk2i9=omCQvcMMQZcww@mail.gmail.com>
+Message-ID: <CAK8P3a2yH+dSWrS=1E0UbwcRhYJEThgrk2i9=omCQvcMMQZcww@mail.gmail.com>
+Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to ARCH_ATOMIC
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Brian Cain <bcain@codeaurora.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:OusdAOhpIuCSTgWlDfBxnWE30OE+d7OHCuiGMbxIUXyAx+OhO+X
+ QURiDjQdF8jIGtmIgzMWiwrvCnNLHMVpwCqMTs/pyxoNChnYt/nzfZbGQalz4dWU1rWezWT
+ CP1k6jCGF5K6554KCOCT432MkRh+t91lYw/kgFDOVQkxgtfAea/3ZI5n9y7ktQeMZULrQ8X
+ GM7/pvGCdNB4PwYE7gSXQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iwAbF8R4eNA=:0nWU0f6Nu/er2SUG9PLkr6
+ rZ08t/Oy7cWy6o1FQy7G/h6TAH+V3pIzVaTe7s64qU0ePiD/MI3DmCd9mZn2TTiV0wYSem7WV
+ lM26yviPQ5xDzd1vKjMkfjuuehnRSjNEOdQpfSeahk7Ay7phUUm8ve2OfMUofE6mnlL8eMosS
+ qdhgBtdO2ox/LtQAnvRA/0M2x6M1UwkUlaCziZgwA6d/n/6SwuIfbUCY4Vqv6ndSmU5wULt2p
+ pIc8TJX3raD8PBeF50y3tQP97oe6y8AA3O8xcrVTUs7a9sCidUrsi+zwXC5Eh4jPN9FIwiEEL
+ OvAKKRMycw8o/B85OldmmFM3SULYWgBywwOM23qfWfbv9yx4OryXZFJMp+/CFy4kUT7oE2b7Z
+ J+X8e44Pubv6t6zsaCFx3VsCiNWKmRCxg9/pB+AZgaz3pHiBT8lxsnghs/IHUg2K4+r2xSJWN
+ DE4+XhNlq7gWftAJooEkLvxWxi/vr+JNE/fzpBTt2GxyObRXFKkhKnGMFGNrM0AWS0IWeVcxd
+ ll0lWb27xS52lZmR0GJ+RufWV2kJ4YgBHPEAPgtW6H0OH8Cjc9Nj2IHeL48VqzJD81RT+nNZg
+ f5X3/lajwNxoInlgp3jqZB7TCKzn3e/2x/QXTS6ZaKXChy3XP6zwgyAO47LSMMdrGPsldZfmp
+ dCgA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/6/29 下午2:40, Yongji Xie 写道:
-> On Tue, Jun 29, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> wrote:
->>
->> 在 2021/6/28 下午6:32, Yongji Xie 写道:
->>>> The large barrier is bounce-buffer mapping: SPDK requires hugepages
->>>> for NVMe over PCIe and RDMA, so take some preallcoated hugepages to
->>>> map as bounce buffer is necessary. Or it's hard to avoid an extra
->>>> memcpy from bounce-buffer to hugepage.
->>>> If you can add an option to map hugepages as bounce-buffer,
->>>> then SPDK could also be a potential user of vduse.
->>>>
->>> I think we can support registering user space memory for bounce-buffer
->>> use like XDP does. But this needs to pin the pages, so I didn't
->>> consider it in this initial version.
->>>
->> Note that userspace should be unaware of the existence of the bounce buffer.
->>
-> If so, it might be hard to use umem. Because we can't use umem for
-> coherent mapping which needs physical address contiguous space.
+On Tue, Jun 29, 2021 at 12:21 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 6/28/21 3:13 PM, Peter Zijlstra wrote:
+> > On Mon, Jun 28, 2021 at 02:22:15PM -0700, Randy Dunlap wrote:
+> >
+> > 0day also reported something like that. We found that this was a
+> > pre-existing error, and Mark's patches only changed the error, it never
+> > successfully build.
+> >
+> > cmpxchg64 is an optional feature for 32bit architectures, one that ARMv7
+> > does provide, and uses, for it's iommu bits. Building the ARM iommu
+> > drivers on ARC seem somewhat daft but is a result of that COMPILE_TEST
+> > config.
+> >
 >
-> Thanks,
-> Yongji
+> Yes, I realize it's just a COMPILE_TEST config. Not very interesting IMHO.
 
+Agreed as well. However, there is an interesting question in who gets to decide
+which compile-test configurations are relevant and which ones are not.
 
-We probably can use umem for memory other than the virtqueue (still via 
-mmap()).
+I'm definitely interested in seeing any compile-time regression on the
+architectures
+I most care about (arm, arm64, x86) and I can see the same thing making
+sense for other architectures that have someone chasing randconfig regressions,
+but less so on architectures that fail general randconfig builds already.
 
-Thanks
+For the specific case of cmpxchg64(), I do think it would make sense to either
+have a Kconfig symbol that controls the few users, or to provide a spinlock
+based fallback for those that don't have a native implementation.
 
-
+        Arnd
