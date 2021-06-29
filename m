@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1F73B7060
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8113B7063
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhF2KJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:09:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232420AbhF2KJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:09:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624961197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=twhDQ4HTaqBbixqNEeTtjk8dI06dUYLdtqAEjTaLXSM=;
-        b=XtQkohbwqf8QdGVrbG9xx0VuInXEvV7av3KMBn4U+UWLDiA9OEviVMwKmHP69sez2zrdDm
-        ejEetHYj0dFrt7aZU/2S7EPf4XV6sSZVWEyDs9Lb6dTFniD02KgYF3FdkdP5V5SB+EdoH4
-        B3Suemjwaoex8Wrgty0yFfthuYDpi2w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-Hm-WF9O1MFu1rVgXmaK_tw-1; Tue, 29 Jun 2021 06:06:36 -0400
-X-MC-Unique: Hm-WF9O1MFu1rVgXmaK_tw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6F41804142;
-        Tue, 29 Jun 2021 10:06:34 +0000 (UTC)
-Received: from T590 (ovpn-13-8.pek2.redhat.com [10.72.13.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A17D45C1D0;
-        Tue, 29 Jun 2021 10:06:26 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 18:06:21 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Wen Xiong <wenxiong@us.ibm.com>, james.smart@broadcom.com,
-        linux-kernel@vger.kernel.org, sagi@grimberg.me,
-        wenxiong@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] block: System crashes when cpu hotplug + bouncing
- port
-Message-ID: <YNrwnWfsxf8cJcoe@T590>
-References: <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
- <OFE573413D.44652DC5-ON00258703.000DB949-00258703.000EFCD4@ibm.com>
- <OF8889275F.DC758B38-ON00258703.001297BC-00258703.00143502@ibm.com>
- <YNqX6w8YHO61oqvY@T590>
- <20210629082542.vm3yh6k36d2zh3k5@beryllium.lan>
- <20210629083549.unco3f7atybqypw3@beryllium.lan>
- <YNrhXFgv/gEWbhbl@T590>
- <20210629092719.n33t2pnjiwwe6qun@beryllium.lan>
- <YNrpdy3pJ/3DIxpW@T590>
- <20210629094938.r3h5cb7wwu2v3r3m@beryllium.lan>
+        id S232854AbhF2KKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:10:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232420AbhF2KKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:10:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FD2261DC6;
+        Tue, 29 Jun 2021 10:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624961253;
+        bh=hBu3TVaxzr1OtOhEnLxnl/WDurfyVHcGEvbTE8Q+8sU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EQ6BA91R2vkfMyzmH75oYpQiRJ6xssmL9TEr7h/QoD44bLDhEGwcpL2hUh/OixVPr
+         LCKQupp86LtLLFrX/gTfY8bLKZFK9HWk6ntodrCUJPRoefq2w4TfrvP/DdBu3cQ7Vk
+         UT8fb4GH2k5p1P8v/8ApyuWcstSsUFfwKLyhUdCb4Dfmg5BnCdkpoVPr8G9aUPRa+m
+         jggs1h0FVCERNDPMnt611/zv/v8JAPI1qZ73z+lP3AncLhQySd4hwu3e1e4hI2T4Io
+         MaqmjhXr3paNd0HOA2RqpO6oWsWZ5A2BOQzxjxA8ZU3P80a1Cth2namVh9GxXRRFrX
+         6umqxi8ikU1IA==
+Date:   Tue, 29 Jun 2021 12:07:30 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YNrw4rxihFLuqLtY@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
+        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
+        loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com, pbonzini@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="A4hLuA+K1dh/nKMu"
 Content-Disposition: inline
-In-Reply-To: <20210629094938.r3h5cb7wwu2v3r3m@beryllium.lan>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 11:49:38AM +0200, Daniel Wagner wrote:
-> On Tue, Jun 29, 2021 at 05:35:51PM +0800, Ming Lei wrote:
-> > With the two patches I posted, __nvme_submit_sync_cmd() shouldn't return
-> > error, can you observe the error?
-> 
-> There are still ways the allocation can fail:
-> 
->         ret = blk_queue_enter(q, flags);
->         if (ret)
->                 return ERR_PTR(ret);
-> 
->         ret = -EXDEV;
->         data.hctx = q->queue_hw_ctx[hctx_idx];
->         if (!blk_mq_hw_queue_mapped(data.hctx))
->                 goto out_queue_exit;
 
-The above failure is supposed to be handled as error, either queue is
-frozen or hctx is unmapped.
+--A4hLuA+K1dh/nKMu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> No, I don't see any errors. I am still trying to reproduce it on real
-> hardware. The setup with blktests running in Qemu did work with all
-> patches applied (the once from me and your patches).
-> 
-> About the error argument: Later in the code path, e.g. in
-> __nvme_submit_sync_cmd() transport errors (incl. canceled request) are
-> handled as well, hence the upper layer will see errors during connection
-> attempts. My point is, there is nothing special about the connection
-> attempt failing. We have error handling code in place and the above
-> state machine has to deal with it.
+Hi,
 
-My two patches not only avoids the kernel panic, but also allow
-request to be allocated successfully, then connect io queue request can
-be submitted to driver even though all CPUs in hctx->cpumask is offline,
-then nvmef can be setup well.
+so some minor comments left:
 
-That is the difference with yours to fail the request allocation, then
-connect io queues can't be done, and the whole host can't be setup
-successfully, then become a brick. The point is that cpu offline shouldn't
-fail to setup nvme fc/rdma/tcp/loop.
+> +		if (!msgs[i].len)
+> +			break;
 
-> 
-> Anyway, avoiding the if in the hotpath is a good thing. I just don't
-> think your argument about no error can happen is correct.
+I hope this can extended in the future to allow zero-length messages. If
+this is impossible we need to set an adapter quirk instead.
 
-Again, it isn't related with avoiding the if, and it isn't in hotpath
-at all.
+> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
+> +		if (err < 0) {
+> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
 
-Thanks,
-Ming
+Is it really helpful for the user to know that msg5 failed? We don't
+even say which transfer.
 
+> +static u32 virtio_i2c_func(struct i2c_adapter *adap)
+> +{
+> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+
+You are not emulating I2C_FUNC_SMBUS_QUICK, so you need to mask it out.
+
+> +	snprintf(vi->adap.name, sizeof(vi->adap.name), "Virtio I2C Adapter");
+
+Is there something to add so you can distinguish multiple instances?
+Most people want that.
+
+> +	vi->adap.class = I2C_CLASS_DEPRECATED;
+> +	vi->adap.algo = &virtio_algorithm;
+> +	vi->adap.dev.parent = &vdev->dev;
+> +	vi->adap.timeout = HZ / 10;
+
+Why so short? HZ is the kinda default value.
+
+> +	i2c_set_adapdata(&vi->adap, vi);
+> +
+> +	/* Setup ACPI node for controlled devices which will be probed through ACPI */
+> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
+> +
+> +	ret = i2c_add_adapter(&vi->adap);
+> +	if (ret) {
+> +		virtio_i2c_del_vqs(vdev);
+> +		dev_err(&vdev->dev, "failed to add virtio-i2c adapter.\n");
+
+Won't the driver core print that for us?
+
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+
+> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
+> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	0x00000001
+
+BIT(0)?
+
+Happy hacking,
+
+   Wolfram
+
+
+--A4hLuA+K1dh/nKMu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa8N0ACgkQFA3kzBSg
+KbbPvhAAk6mml6Q2KA+40wjOlgNPqkMUfubuHQg71AwGqTWjPvqGe2UEUrcCptxl
+6AASCDXIOrbWpeYVxhCVBgMCM7T1mqqO9Q3jzc8bwiJFw4m3m6uMPyjdrYe9STX0
+p2ksFX3jD9lBddRBwL7oM0bZSayceBuDnxQ8xvJPTI3PyVsnPVirqTv5rIAiDmuV
+X2H+k5uAuDThsUM8fTioKZoYeAmO+3RccULlbjey1ML1+vBNT7LmWOhprJLL3S4W
+JpGaqPKS2kCGEt2LFls3GYeG6QcXyj4l9qwoJxgWrVVY71Ky+7cbwc+nVb28EpAc
+d1Mo0ObhN1NuLzRTrpCrCO0k+Pi5SGhDZTwv5LQOmEY0KFaowaKCw9gevi3j0p/t
+Tf0FetbAIk7N8k4GOzk8HhXVEOV20y3zLUp4OLytn9ueQcrCOqkvnUPWpRxxsHid
+/1ZRcC1l87rPtQqTX1tGFSGJvHvj3uOHwLo6Wjp/2pxYmjvEgUdajdQGSfBNEtXP
+JwuUpybOFBqZ5tDv91zGKnQeYZ+MD6/i5hQFeig/TSugL10hGiDtsUmpG0ennXND
+okhQjIpN35kWXWzEGAGWYzHL6SAT0fXoXvk4wYQTQYbvvW/wi7S5a1ob9HEzJV5X
+r7sfPKN86zwtRjMZ24A9nXNQ6iebZhEK3/QFRC2rdjFv76Kj+XI=
+=Fg/m
+-----END PGP SIGNATURE-----
+
+--A4hLuA+K1dh/nKMu--
