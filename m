@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D381E3B735B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80AF3B735E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhF2Nmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58596 "EHLO mail.kernel.org"
+        id S234117AbhF2NnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:43:13 -0400
+Received: from mout.gmx.net ([212.227.17.20]:60227 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232535AbhF2Nmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:42:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2006161DC2;
-        Tue, 29 Jun 2021 13:40:09 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 15:40:07 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     yang.yang29@zte.com.cn
-Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        menglong8.dong@gmail.com
-Subject: Re: [PATCH] sysctl: fix permission check while owner isn't
- GLOBAL_ROOT_UID
-Message-ID: <20210629134007.6edxcohqmlffsoip@wittgenstein>
-References: <20210628121729.xsbm63b5lxpsvhbu@wittgenstein>
- <202106282114107052565@zte.com.cn>
+        id S233957AbhF2NnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:43:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624974026;
+        bh=p5AhWvJObj5E48c5fHGcL6jXDuBVZdpgQb8yMlXS5lQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=kbNAu9qrfhjH8KLiI0jIC/qkXlvAf5WyXLSyNdHAHYUDGWZB2UDKqDUZHp4kCXDwE
+         7GreXgsYkwrIovrYN8d6/PUWSVJ3HlwnQOZhRTtrP07B//BdrpL6FPD5hKZknLbSeh
+         KdKcMrGbq5DZrA7ghlvFfDFahf0FTEtGdOlIXPhY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([88.152.144.157]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMbU-1m3iAQ26PU-00EOFS; Tue, 29
+ Jun 2021 15:40:26 +0200
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>, linux-efi@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] RISC-V: load initrd wherever it fits into memory
+Date:   Tue, 29 Jun 2021 15:40:18 +0200
+Message-Id: <20210629134018.62859-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202106282114107052565@zte.com.cn>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EgBc8Ey65V6us9wivMljuEpQjELTw45ZYekN3WeWP7EoTZQqdi9
+ lSTJfNjLwwn39LG5t+wlOV95sd/H5CVCUd2fcTQeINYy7VKpqnR5PvKUBw3tFj8vXTlLIRA
+ xdg/VFCpoGQmlBASv2EnqDMC7oyUTAD6jzc3KfeuAsAwck59dBCiQSEcBkvVgxPraBjZQWy
+ QzaGFch8Z/36PVcA2KcMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4vb5uaMYpIE=:5sDfrtR1QE2vNvA9ao0JqE
+ QCuwt/pPqkBuNXZG6n+V0YepLxjcDmHWEkz0B/7tbDMrZGb/RnsgaYGZzPLYOEl7j+euc12aY
+ XhImlGTnVQKvO0n0d/aR83TCkr5ie+etSl2BFe1F+ten38vMmkK6dH3m2/jyZCGLM1GaGHxhG
+ /NrnWeNUlldqlRm1CjK8bTxj2fgFd2qf9zo2PXx9Ha41vtJGyMGa8KapunitBeV1AmA1QcVSU
+ XmM+G3zQLGAOYSoOynunILlEH3yhiJ8LWGjSqk7hevu+vMd+z9XZKNnCD0iNhA2ku0L1frBdG
+ RSGLwQXnMzokwwZW8PMySbic0VYy5yqGo7Fk901OokEfTHoz2GkqbSDnHid9VABbWDXBRV65+
+ aT+PUuAP/iD0QHGflYWOokZXuzh3+twCKwHMMdU5GcKw1JyEv3/7zsg2WnLUSDM2xgiGwMscW
+ Hg41CcaZbAIQMbjHQ7Tecy3Ko28hQKQ3rjid0kMd3mzIh97wARBfXgm8PJukYxEPbbe4CbSGA
+ Y/2ecd0XEp2pUcsgDuaMut2NGQYgJGkddbyucAuEKt7c0n+ekRyio0GVwoQuTJwAqRoLJUZRD
+ EeH8s20BCAd56PLxDnGjaItR8G+qr72D/GxG6h3Ga4G9ZP4cYuQpEpzz4zbD9aDOc+pHJheAT
+ uFjQGNOnG4ipeXTV0ObUibh+cGmUlVZeOnqey1oaeIcvi18+a0aziBynTRKemC1rbt7pQgxeE
+ CMTHgTVfIQIzSm0zff2ftyvvj68P73k3HiRUF7yMbrUwmOsfLjEd5nTdGLV+h3nOS3SSO1Zxj
+ hHu9PBop3QFRgmjYDwwoteERFqYfTHT619wxtfXK07JYySnYm/xcneyAcuNj8XFsKXJ94+elh
+ +/jbr4Y73K+6iBruxN4XKYdmXthtKJKdKp/wwNAppODlqcCwQsAq1vvAVJnZCT75XYdvuC5AZ
+ CUIzh8gPAHE3PyQskMkvh1Wk73ICGpPKbQ0DXKUb16f1js3XVvkTpD3LGfp8uiNcYAKk8LVT/
+ YllnIUhcVaO8EqtkpePpN58I/qAaX4j2Z4Cz/h1cz786BolNO+kNT86hIDjiIm9tH69AOOEBw
+ t4xkpPWoQ4ZF1DyrfS2jXuD5ZZu3aA08NeJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 09:14:10PM +0800, yang.yang29@zte.com.cn wrote:
-> > I'm confused about what the actual problem is tbh:
-> > 
-> > root@h3:~# stat -c "%A %a %n" /proc/sys/net/ipv4/ip_forward
-> > -rw-r--r-- 644 /proc/sys/net/ipv4/ip_forward
-> > 
-> > root@h3:~# echo 0 > /proc/sys/net/ipv4/ip_forward
-> > 
-> > root@h3:~# cat /proc/sys/net/ipv4/ip_forward
-> > 0
-> > 
-> > root@h3:~# cat /proc/self/uid_map  
-> >          0     100000 1000000000
-> 
-> Sorry to describe too simple. More specific:
-> 1.Run dockerd with user namespace enbled
-> echo dockremap:296608:65536 >  /etc/subuid;echo dockremap:296608:65536 >  /etc/subgid
-> dockerd ... --userns-remap=default
-> 2.Create a container
-> docker run -it ... sh
-> 
-> Then root account in the container is 296608 account in the host:
-> / # cat /proc/self/uid_map
->          0     296608      65536
-> 
-> In the container, /proc/sys/net/ipv4/ip_forward's owner is root, but root can't modify it:
-> / # whoami
-> root
-> / # ls -l /proc/sys/net/ipv4/ip_forward
-> -rw-r--r--    1 root     root             0 Jun 28 12:46 /proc/sys/net/ipv4/ip_forward
-> / # cat /proc/sys/net/ipv4/ip_forward
-> 1
-> / # echo 0 > /proc/sys/net/ipv4/ip_forward
-> sh: can't create /proc/sys/net/ipv4/ip_forward: Permission denied
-> 
-> And /proc/sys/net/ipv4/ip_forward has considerd about net namespace, 
-> see net_ctl_set_ownership() in net\sysctl_net.c.
-> So root in container should be able to modify /proc/sys/net/ipv4/ip_forward.
-> This doesn't impact /proc/sys/net/ipv4/ip_forward in the host or other container with other net namespace.
+Requiring that initrd is loaded below RAM start + 256 MiB led to failure
+to boot SUSE Linux with GRUB on QEMU, cf.
+https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
 
-Sorry to resort to "It works on my machine" but I just pasted you the
-exact same setup and showed you that this works as expected.
+Remove the constraint.
 
-So the reason here is likely that you're lacking capabilities
-specifically CAP_NET_ADMIN. If I reproduce with your setup I can't even
-create a dummy network device:
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ arch/riscv/include/asm/efi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-/ #  ip link add bla type dummy
-ip: RTNETLINK answers: Operation not permitted
+diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
+index 7542282f1141..649ab513dc99 100644
+=2D-- a/arch/riscv/include/asm/efi.h
++++ b/arch/riscv/include/asm/efi.h
+@@ -33,10 +33,10 @@ static inline unsigned long efi_get_max_fdt_addr(unsig=
+ned long image_addr)
 
-whereas on any unprivileged container that reatins CAP_NET_ADMIN that
-just works fine.
+ #define ARCH_EFI_IRQ_FLAGS_MASK (SR_IE | SR_SPIE)
 
-So I would think that if you retain CAP_NET_ADMIN things will work out
-just fine. Take a look at net_ctl_permissions.
+-/* Load initrd at enough distance from DRAM start */
++/* Load initrd anywhere in system RAM */
+ static inline unsigned long efi_get_max_initrd_addr(unsigned long image_a=
+ddr)
+ {
+-	return image_addr + SZ_256M;
++	return ULONG_MAX;
+ }
 
-There's really no reason to drop CAP_NET_ADMIN in a network namespace
-that is owned by a non-initial user namespace anyway.
+ #define alloc_screen_info(x...)		(&screen_info)
+=2D-
+2.30.2
 
-Christian
