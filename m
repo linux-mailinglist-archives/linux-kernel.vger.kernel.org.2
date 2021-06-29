@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAFB3B7335
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401863B7339
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhF2NcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:32:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55804 "EHLO mga11.intel.com"
+        id S233901AbhF2NfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233665AbhF2NcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:32:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="205137198"
-X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="205137198"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 06:29:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="557939978"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 29 Jun 2021 06:29:35 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lyDnz-00099q-5b; Tue, 29 Jun 2021 13:29:35 +0000
-Date:   Tue, 29 Jun 2021 21:29:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Mark Brown <broonie@kernel.org>,
+        id S233665AbhF2Nex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2780C61D4D;
+        Tue, 29 Jun 2021 13:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624973546;
+        bh=N5nKZVhyVnaXFO9+amiH8e/fbL4qqMXzYfOv0Kle2zE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eVP7SmWCkWzDclN1i8ksCFuxBtjFOEqTGF51EEW8UVNImYHbhS//oBYnmqtviOHJ/
+         /1tWsd9FG8UlSlOi48GENozjsYxriURvrCjaxFYU+NjwC+E4uT9mICxEl/Lbyw7joj
+         lZeh7hu24NZAQTUBCAV8L83tQZEUG+AUJ+OsLl5dgaxfRSzh1jrBwOI83ugSVIkTBp
+         5RDRi9qZEw0twKcHfMzslO14t6hrn93z/HDj607kTvBoKrObYyBd5DCEch3OOFb6zm
+         DedgGmwp9UFymfXgaYbc6Q1063ETsm/i3SafneAqL24zPQuRP+ESzwsb6PBU9XvI2c
+         r7yoDMcjb74SA==
+Date:   Tue, 29 Jun 2021 15:32:20 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: codecs: wcd938x: fix returnvar.cocci warnings
-Message-ID: <20210629132909.GA7935@233d919f385f>
-References: <202106292156.mWNAaVQA-lkp@intel.com>
+        Mark Brown <broonie@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v10 2/5] regulator: hi6421v600-regulator: fix platform
+ drvdata
+Message-ID: <20210629153220.52fffece@coco.lan>
+In-Reply-To: <CAFRkauCPKQyD_Dooqrxvra94RyLXrPDeCSSdfBfvh-o0Zh8q3g@mail.gmail.com>
+References: <cover.1624962269.git.mchehab+huawei@kernel.org>
+        <eed34e8897c79a2ab13573d3da12c86569bca0f6.1624962269.git.mchehab+huawei@kernel.org>
+        <CAFRkauCzHqUfva+zTRhOyiMMb4WsKPHvYJuqpOPwy+siPMZGOQ@mail.gmail.com>
+        <20210629130957.484f5c43@coco.lan>
+        <CAFRkauCPKQyD_Dooqrxvra94RyLXrPDeCSSdfBfvh-o0Zh8q3g@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106292156.mWNAaVQA-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Em Tue, 29 Jun 2021 20:51:01 +0800
+Axel Lin <axel.lin@ingics.com> escreveu:
 
-sound/soc/codecs/wcd938x.c:1628:5-8: Unneeded variable: "ret". Return "0" on line 1656
-sound/soc/codecs/wcd938x.c:1871:5-8: Unneeded variable: "ret". Return "0" on line 1907
+> > If you're in doubt, try to apply this series, and then change the
+> > driver again to use platform data. You'll see that it will stop
+> > booting after initializing the first regulator.
+> >  
+> 
+> Sorry I don't have this h/w to test.
 
+Then, why do you care? Your patch broke the driver. Changes like
+that should be tested on a real hardware, in order to avoid
+regressions.
 
- Remove unneeded variable used to store return value.
-
-Generated by: scripts/coccinelle/misc/returnvar.cocci
-
-Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
-CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   73748627df83aab934c81332ca83a44ab8c7b3e3
-commit: 04544222886881cb0865040dcdf747fe7e025947 [8525/14055] ASoC: codecs: wcd938x: add audio routing and Kconfig
-:::::: branch date: 4 hours ago
-:::::: commit date: 2 weeks ago
-
- wcd938x.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -1625,7 +1625,6 @@ static int wcd938x_codec_aux_dac_event(s
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
--	int ret = 0;
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -1653,7 +1652,7 @@ static int wcd938x_codec_aux_dac_event(s
- 				WCD938X_ANA_RX_DIV4_CLK_EN_MASK, 0);
- 		break;
- 	}
--	return ret;
-+	return 0;
- 
- }
- 
-@@ -1868,7 +1867,6 @@ static int wcd938x_codec_enable_aux_pa(s
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
- 	int hph_mode = wcd938x->hph_mode;
--	int ret = 0;
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -1904,7 +1902,7 @@ static int wcd938x_codec_enable_aux_pa(s
- 						      WCD938X_EN_CUR_DET_MASK, 1);
- 		break;
- 	}
--	return ret;
-+	return 0;
- }
- 
- static int wcd938x_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
+Thanks,
+Mauro
