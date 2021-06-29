@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071283B71F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394543B71F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhF2MUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233384AbhF2MUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:20:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6F861D86;
-        Tue, 29 Jun 2021 12:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624969088;
-        bh=xJthybkGih3MFMOF3skw+21+YncJAonVo4+8Ol8qVbo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G0dcM6cX+TbGVl0FfK4kDcQJNtzCAWPhusD6p1106AFe9m+x0FDnqU2BbtNFfPAhc
-         I1DX/jJF371OK/iex3fbQrNLRFQjTbUFDWe4j6JKXQieA1S8P8j6pyaauUITQH+3sF
-         E+FUVoWrB9l++fVn0ih3yLstAAQeOA0P1r8I1p7M=
-Date:   Tue, 29 Jun 2021 14:18:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bing Fan <hptsfb@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm pl011 serial: support multi-irq request
-Message-ID: <YNsPfvcjH3Z6gSUw@kroah.com>
-References: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
- <YNq7Uwj/yJi7NvE8@kroah.com>
- <d2ba9f70-2ace-d796-8ce8-fd56d73d145b@gmail.com>
+        id S233638AbhF2MWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233278AbhF2MV7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:21:59 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36078C061760;
+        Tue, 29 Jun 2021 05:19:32 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id s137so9395845pfc.4;
+        Tue, 29 Jun 2021 05:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LbbWX3kzjiR8qd3C6tMA1iMcCJEbQrwW1wisqFEE6eo=;
+        b=CiwrAGbBBkL09wtznxor+hUawt4GMD+TAkpbAhW9CEWWlP9Ru2jLMxVNUPAvfBChCv
+         rYDOPDhCo5wSXqKraUIZLSKSglwd8WEurGvSpIHkP/spzMrtsm0GSPE23P/TonQ52Z/4
+         qNZCTzkIVPBTyj6O1mcJbB/0Xc47w00n4H/53wgV+SvHjINdH21anWu7snAwjeS0qHWX
+         +UcZJEMaUyEKk3pnGwX8HPnFCJAR5kr9tiLGEFRs+qOKTfPhr7SS8mgmHrSdNaZN7kBV
+         ZBGFIzQ3efamjm7nk8QP2gCZ3TXsb8T02S/1pdavlqdD5w+S4Q2iwN4ABMIKqHOIcNUs
+         c4ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LbbWX3kzjiR8qd3C6tMA1iMcCJEbQrwW1wisqFEE6eo=;
+        b=TvdUGLl407ZbV9hLyKK81zsb5SqXYAgBCoP3Gl8aI0Karm4V1QphrmvguRcXDO6W04
+         QkHz1IvN/a8GIWcdzCMt9FajFP9ieQNrk3zA2sG1DO9324u/vBNzqOtq1WDTOtWOze4j
+         /roXLbpveGt0Z+KBGPOCgtR441kJ24lsGGhzRAdYhfXpZVO9K3OhtVncmslyDBKo/9bH
+         MWN6yrlEKrt5G1Tvww/JvmnB91TsZwGuTQxxEeIauyADqN8AfA9qaWrEXZgMiBV+XDef
+         u8WcWKxDc8jx/6XaWkI/+4/iGKykWOQBd1u2UiLfCvbWTRmyGpuLV7KxsGI05vNElUeX
+         U5qA==
+X-Gm-Message-State: AOAM531bd0l+RKK4u/3PQIKdJHwFLNZq2WXT76hch8sZ0vZJCbSqm8V/
+        pc8wUafuX4yzWA71HfCeT/Y=
+X-Google-Smtp-Source: ABdhPJwgEWD9yoqfctTRjncqD3b1L4F/TJFDXJAVBNMjtgkexqbPnBFFhHtf1MWe8URlnVLgjXJmSA==
+X-Received: by 2002:a63:df0f:: with SMTP id u15mr327288pgg.57.1624969171830;
+        Tue, 29 Jun 2021 05:19:31 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.37])
+        by smtp.gmail.com with ESMTPSA id gg5sm8314730pjb.42.2021.06.29.05.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 05:19:31 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCHv1] arm64: amlogic: Fix the pwm regulator supply property in node
+Date:   Tue, 29 Jun 2021 12:18:47 +0000
+Message-Id: <20210629121848.6527-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d2ba9f70-2ace-d796-8ce8-fd56d73d145b@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 07:32:36PM +0800, Bing Fan wrote:
-> hello,
-> 
-> replied as below.
-> 
-> and new patch is at the bottom.
+On enable CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
+Changes help link VDDCPU_A and VDDCPU_B pwm regulator to 12V regulator
+supply instead of dummy regulator.
 
-Please submit this properly as the documentation says to do so, I can't
-take an attachment :(
+[    4.147196] VDDCPU_A: will resolve supply early: pwm
+[    4.147216] pwm-regulator regulator-vddcpu-a: Looking up pwm-supply from device tree
+[    4.147227] pwm-regulator regulator-vddcpu-a: Looking up pwm-supply property in node /regulator-vddcpu-a failed
+[    4.147258] VDDCPU_A: supplied by regulator-dummy
+[    4.147288] regulator-dummy: could not add device link regulator.12: -ENOENT
+[    4.147353] VDDCPU_A: 721 <--> 1022 mV at 871 mV, enabled
+[    4.152014] VDDCPU_B: will resolve supply early: pwm
+[    4.152035] pwm-regulator regulator-vddcpu-b: Looking up pwm-supply from device tree
+[    4.152047] pwm-regulator regulator-vddcpu-b: Looking up pwm-supply property in node /regulator-vddcpu-b failed
+[    4.152079] VDDCPU_B: supplied by regulator-dummy
+[    4.152108] regulator-dummy: could not add device link regulator.13: -ENOENT
 
-> > > +	struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
-> > Are you sure you can just cast this like this?  Did you test this?
-> 
-> 
-> Yes, i have tested and applied in my project.
-> 
-> The function pl011_probe calls pl011_setup_port with &amba_dev->dev and uap
-> params;
-> 
-> and pl011_setup_port set uap->port.dev to the address of amba_dev->dev;
-> 
-> the two structs' relationship is:
-> 
->     struct amba_device {
-> 
->         struct device dev;
-> 
->         ……
-> 
->     };
-> 
-> When pointer(uap->port.dev) points to amba_dev->dev address, the momery
-> actully stores
-> 
-> content of struct amba_device; so the cast assignment can be forced to
-> amba_dev.
+Fixes: d14734a04a8a ("arm64: dts: meson-g12b-odroid-n2: enable DVFS")
 
-That is now how this should work, use the correct container_of() cast
-instead.  That will always work no matter where struct device is in the
-structure.  You got lucky here :)
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > > +
-> > > +	if (!amba_dev)
-> > > +		return -1;
-> > Do not make up error numbers, return a specific -ERR* value.
-> 
-> changed to "return -ENODEV"
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 344573e157a7..4f33820aba1f 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -130,7 +130,7 @@ vddcpu_a: regulator-vddcpu-a {
+ 		regulator-min-microvolt = <721000>;
+ 		regulator-max-microvolt = <1022000>;
+ 
+-		vin-supply = <&main_12v>;
++		pwm-supply = <&main_12v>;
+ 
+ 		pwms = <&pwm_ab 0 1250 0>;
+ 		pwm-dutycycle-range = <100 0>;
+@@ -149,7 +149,7 @@ vddcpu_b: regulator-vddcpu-b {
+ 		regulator-min-microvolt = <721000>;
+ 		regulator-max-microvolt = <1022000>;
+ 
+-		vin-supply = <&main_12v>;
++		pwm-supply = <&main_12v>;
+ 
+ 		pwms = <&pwm_AO_cd 1 1250 0>;
+ 		pwm-dutycycle-range = <100 0>;
+-- 
+2.31.1
 
-So this changed the logic of this function, is that ok?
-
-> > 
-> > And how can this happen?
-> 
-> The function pl011_setup_port isn't called, event pl011_probe isn't called.
-
-And how can that ever happen?
-
-
-thanks,
-
-greg k-h
