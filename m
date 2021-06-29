@@ -2,101 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6903B7085
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9823B7097
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhF2K0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:26:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232692AbhF2K0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E855161DB3;
-        Tue, 29 Jun 2021 10:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624962235;
-        bh=WI/UAppXOdbESXWr8RhaWg+kL9hjURC+JQQV6ypPhGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JIHXDWq3KLwh2q542tAe7jCNTsG9jezgcWPVY5blh7S36WxukITw/V4gKBTCgP010
-         djqflO18PYvU8O+YyVB49QzTnpzdEDk/7qcAUWLQsGTwxtTXGq8dGaT8A58IDT230j
-         0OSk+vsZiJWVSZaSfCIIi9ff6rMTO7/IXfEQeSYDKHUV60vT53FGTOo5dTxB5YnWjN
-         HNjVC8BIvMQGeVdX6BcSzleAOaJuV+WpkdoDYJ1liRzookk0BvhGgpK4Dp26RD31qh
-         aHqYZCMMK6HEFmuTwHFKQ0m6YxWdl7LW5KxThtabX4G4nWRQQXYJzfew7HEb5C5EOB
-         aNPhQ/QT25C1Q==
-Date:   Tue, 29 Jun 2021 12:23:52 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNr0uDx1fv+Gjd7m@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
-        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
-        loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
+        id S233105AbhF2K1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233045AbhF2K1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:27:13 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2636C061767;
+        Tue, 29 Jun 2021 03:24:43 -0700 (PDT)
+Received: from localhost.localdomain (bband-dyn27.178-40-203.t-com.sk [178.40.203.27])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 7A92B3EBA6;
+        Tue, 29 Jun 2021 12:24:38 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        paul.bouchara@somainline.org,
+        Martin Botka <martin.botka@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2 0/3] RPMCC for SM6125
+Date:   Tue, 29 Jun 2021 12:24:01 +0200
+Message-Id: <20210629102405.192053-1-martin.botka@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iTOdtFFZlvMpSSzc"
-Content-Disposition: inline
-In-Reply-To: <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds support for the
+RPMCC found in SM6125 SoC.
 
---iTOdtFFZlvMpSSzc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In this resend i didnt include 2 patches
+that were already merged.
 
+Changes in v2:
+Add commit description to all the patches
 
-> > You are not emulating I2C_FUNC_SMBUS_QUICK, so you need to mask it out.
->=20
-> What is it that we need to have to emulate it ? I did use it in my
-> qemu and rust backends, not sure if this was ever sent by device I
-> used for testing SMBUS though.
+Martin Botka (3):
+  rpmcc: Add sm6125 compatible
+  dt-bindings: clk: qcom: smd-rpm: Document SM6125 compatible
+  rpmcc: Add support for SM6125
 
-The biggest use is to scan busses for devices, i.e. use 'i2cdetect'
-without the -r parameter.
+ .../devicetree/bindings/clock/qcom,rpmcc.txt  |  1 +
+ drivers/clk/qcom/clk-smd-rpm.c                | 56 +++++++++++++++++++
+ include/linux/soc/qcom/smd-rpm.h              |  1 +
+ 3 files changed, 58 insertions(+)
 
+-- 
+2.32.0
 
---iTOdtFFZlvMpSSzc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa9LgACgkQFA3kzBSg
-KbbzoBAAmOEdNXW8icMnkSzbohgKRINC2D5gEOYvji3EtJKabbWm3ANmwOJsDpr6
-KxB0ccjGmNLSDjJNNZcARKyzBo5GfPdWayK/vmrWTITkDglfYm3XD/9XQ2geZrfk
-7jPrWBStYM+EXL+cSBOKTu2UnV8FgsbUQEpWYnreblgCkRR7RMtvRmakalELb2CJ
-r5hCcM6ncSfNQM9OW4iBpJUFZr0Obk0gjixfz+JAmlr+KHSsncdvhESSQZLzQljX
-K15ODeh/yilJ2/8gjx4vnz66/Lh8USdvMyPJ6FAFZZ02CjlnL4BFFW14dY5FfPhN
-9nhk0k2SYJQ6UzvxcqVDlJ7nyzSlxHBldp3Y27feoO5/cSEDHuJpHHyUAdUE/JHj
-rxpiUD2+1ri3NDCmgrnsI2ZKh+owCpwm0JmsVFkk8QQJw0xtTgM9sn4J497tePJL
-c6TShRjvI+pY8OaBzsTcGojUuZ5Ac1WRnnkvyY1h8me+xJ7kWNO0aD5vj++gnWe8
-75I/uA+VqVEJzIWt9dRNNwkZgzpdtRK+bvf+5Vvp7j8WUzowS98Z/NSJaIIerzTq
-oOXg7tV6IiA3jE+cqc5gca4OG4pdDG8+Tbw9m1NAF7btXYlfSgc3jtlAy+l2J8jL
-mU4mV2oHDvOhxlQjWNQsz7fy8UuY1yPUtkKs5VV/SGgSXpcwtOI=
-=GQdq
------END PGP SIGNATURE-----
-
---iTOdtFFZlvMpSSzc--
