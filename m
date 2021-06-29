@@ -2,172 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D933B7617
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BE03B762A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbhF2QCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        id S232142AbhF2QGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232698AbhF2QC2 (ORCPT
+        with ESMTP id S234228AbhF2QE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:02:28 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6708FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:00:01 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id o7so12396261vss.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:00:01 -0700 (PDT)
+        Tue, 29 Jun 2021 12:04:57 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15252C061767;
+        Tue, 29 Jun 2021 09:01:56 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id a2so18891926pgi.6;
+        Tue, 29 Jun 2021 09:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XhBLIZ8SeN0Q4YkyREg3OHNcuvIGJYM1mFWikBEBPjU=;
-        b=FNLQ9Y+Fv5j4B6qlfvyZe82uBP23klCkWrC+zqTQCsIKE9CExq5Wu3RYv92l0WWnuX
-         OZOi5q2iZAlkBZZONRziR9DxhUBzG9qRJIWj+85GGmVWGjSJESzhulPiLgA8E1cOS7gi
-         Q6ybHlbpK/8HeKc4zyiPQXwNfl4mWqhmi0pJz3az+GiZzWjUqgAjXPbrZvmZTkkeFA9j
-         MyzyZWHf2KRP14eJYRtPRi0l6A5wzUfiu689G7caqSon0tLYoLxQn9T9/7PbERYJ8Ysi
-         Pb2WtmowmxRgENSjeCtuNeE/oir4tnyMBUjVkCwlvP+9tVCdhRe3IE3znOORbBtwhHn0
-         7DsQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZ95XS6vBWSUxF/juHUgKaWI9vzuOl5nUNvKuyjmcyQ=;
+        b=mt6877pp/SnGLtdNtmtvUBzSMtRbHNSc/dBruh2PdNStctR3smvij1Koe713sVEmJ8
+         idmSiwoH4/e980gIzHV6ENYtZLSUnYIbkQDlH8scIB2j0dgsBbUgljkK2uwOPjgYWMmg
+         KVgWqUsF7v/wQl8SRlGXqPU7vsdx49WUotFG7AOBZJ7LB9CJZSKZMVz7XXldOHgSDi7G
+         Y9Nf1Y6VTJZxD3o0YkAJLIL6DnwAsTU46d4aL2VulIIEfXKkGLNY5OLcKfr8UOkQG+2P
+         oujVNFztI8QToPGvtmWPfb7gCQqjJyMPSdWPizSnbOqdO4rYwj/rYEQBvZ1zyRFzdpCi
+         SJtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XhBLIZ8SeN0Q4YkyREg3OHNcuvIGJYM1mFWikBEBPjU=;
-        b=kywXT5qMUu8oOL873EMLG1GnKWdneEgmz/rJzNUkNS7mwuqQHlJuB1RFaEfHMk4zV+
-         GO9wsfyaDVvMKAIN9BVFpT6mw92Rc55cND0pnnsEw0r+Y4wfsI82asnBUtzHdgTTWalY
-         k+KivC3ep4nmY/U/4j5mwbBOhSutTUbZ9ihjU5cf2v1dfsCoTNcUZqX/UQHUq27m7xRM
-         eymaxA5TkDXRJEyrLuVWXHTFywENWZwWIgT+/u6CHq5hdLuoh8KXwXmeH6kN5EB4as5T
-         eWY7uMFJAg9ZObFGpUPSW2cypYgyf3i8FgodjboKAuGMG1XO1roWw15gwKYuI3zGQrMe
-         BEWw==
-X-Gm-Message-State: AOAM530dBcuXgXW3mSvMxDoFzS7PysH66qynrX+Nwn1AblFVF+ikFEh+
-        DqjyBexmYnEbCNgisnQjv9RNch7fmFyQdnJJciGF8w==
-X-Google-Smtp-Source: ABdhPJwobUDC1855lf1exKUJy1yWcCxV2mM/hLHb8peV3rSrtPvrKzHsicCp5dWdk4WZMrWLD9E2gkICoF7r5fVgRlY=
-X-Received: by 2002:a05:6102:a33:: with SMTP id 19mr24990687vsb.54.1624982400345;
- Tue, 29 Jun 2021 09:00:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aZ95XS6vBWSUxF/juHUgKaWI9vzuOl5nUNvKuyjmcyQ=;
+        b=NLadAaNEFY5OWhPnrodwTqoYe9qkv4GAunbDGrad6bzabHgpKOAp9DwcgcKBZKG2V+
+         1Kw5WFxhjNEWggEQn/sQ3bXJjTLuw+lhDC+yT4iPWnBT0ah1KymI+ZlyHiFOl5oBkpug
+         Ri2uyZblNNZHOZVTxH249AShdh1Frt67QVri/k26xbNSNuaL0EMKDjX/ER/NEobYctTa
+         jlKVc8fD/r1KMXitvJMhv6Ww+0XDvyX70nmBrWKDXqXc2DCeNVXW9ONhiO3FloSAKN/h
+         rFuCZvDym+CGlIiFW62Xg2deM8rQ9YaE1xaCVlOrGgGwIG7Dak1r/uzjMb6q8SINI3Bo
+         /xfg==
+X-Gm-Message-State: AOAM533QB/i7pBYG8KreESddn/HKRl7OR4oAEOsWoP6Ga4IVrssQiUnt
+        98M7ZnIRHCoxg2tVHOJoofA=
+X-Google-Smtp-Source: ABdhPJxJ9Cl/1XRty79tUGB6y6w3+3bKFXBJ1FcQDEhh/MpqbRrzyDYAIeG6fbyai+9ocPsdYzuSzg==
+X-Received: by 2002:a65:6783:: with SMTP id e3mr28974407pgr.281.1624982515634;
+        Tue, 29 Jun 2021 09:01:55 -0700 (PDT)
+Received: from localhost.localdomain ([103.200.106.119])
+        by smtp.googlemail.com with ESMTPSA id m14sm19166240pgu.84.2021.06.29.09.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 09:01:55 -0700 (PDT)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH v8 0/8] Expose and manage PCI device reset
+Date:   Tue, 29 Jun 2021 21:30:56 +0530
+Message-Id: <20210629160104.2893-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
- <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com> <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
-In-Reply-To: <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Tue, 29 Jun 2021 11:59:43 -0400
-Message-ID: <CADVnQyk9maCc+tJ4-b6kufcBES9+Y2KpHPZadXssoVWX=Xr1Vw@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  On Tue, Jun 29, 2021 at 8:58 AM Eric Dumazet <edumazet@google.com> wrote:
-> > Because the problem only happens with CDG, is adding check in its tcp_cdg_init() function Ok? And about  icsk_ca_initialized, Could I expect it to be 0 in CC's init functions?
->
-> I think icsk_ca_initialized  lost its strong meaning when CDG was
-> introduced (since this is the only CC allocating memory)
->
-> The bug really is that before clearing icsk_ca_initialized we should
-> call cc->release()
->
-> Maybe we missed this cleanup in commit
-> 8919a9b31eb4fb4c0a93e5fb350a626924302aa6 ("tcp: Only init congestion
-> control if not initialized already")
+PCI and PCIe devices may support a number of possible reset mechanisms
+for example Function Level Reset (FLR) provided via Advanced Feature or
+PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+Currently the PCI subsystem creates a policy prioritizing these reset methods
+which provides neither visibility nor control to userspace.
 
-From my perspective, the bug was introduced when that 8919a9b31eb4
-commit introduced icsk_ca_initialized and set icsk_ca_initialized to 0
-in tcp_init_transfer(), missing the possibility that a process could
-call setsockopt(TCP_CONGESTION)  in state TCP_SYN_SENT (i.e. after the
-connect() or TFO open sendmsg()), which would call
-tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend
-to reset any initialization that the user had already explicitly made;
-it just missed the possibility of that particular sequence (which
-syzkaller managed to find!).
+Expose the reset methods available per device to userspace, via sysfs
+and allow an administrative user or device owner to have ability to
+manage per device reset method priorities or exclusions.
+This feature aims to allow greater control of a device for use cases
+as device assignment, where specific device or platform issues may
+interact poorly with a given reset method, and for which device specific
+quirks have not been developed.
 
-> Although I am not sure what happens at accept() time when the listener
-> socket is cloned.
+Changes in v8:
+	- Added has_flr bitfield to struct pci_dev to cache flr
+	  capability
+	- Updated encoding scheme used in reset_methods array as per
+	  Bjorn's suggestion
+	- Updated Shanker's ACPI patches
 
-It seems that for listener sockets, they cannot initialize their CC
-module state, because there is no way for them to reach
-tcp_init_congestion_control(), since:
+Changes in v7:
+	- Fix the pci_dev_acpi_reset() prototype mismatch
+	  in case of CONFIG_ACPI=n
 
-(a) tcp_set_congestion_control() -> tcp_reinit_congestion_control()
-will not call tcp_init_congestion_control() on a socket in CLOSE or
-LISTEN
+Changes in v6:
+	- Address Bjorn's and Krzysztof's review comments
+	- Add Shanker's updated patches along with new
+	  "PCI: Setup ACPI_COMPANION early" patch
 
-(b) tcp_init_transfer() -> tcp_init_congestion_control() can only
-happen for established sockets and successful TFO SYN_RECV sockets
+Changes in v5:
+	- Rebase the series over pci/reset branch of
+	  Bjorn's pci tree to avoid merge conflicts
+	  caused by recent changes in existing reset
+	  sysfs attribute
 
-So it seems my previously suggested change (yesterday in this thread)
-to add icsk_ca_initialized=0 in tcp_ca_openreq_child() is not needed.
+Changes in v4:
+	- Change the order or strlen and strim in reset_method_store
+	  function to avoid extra strlen call.
+	- Use consistent terminology in new
+	  pci_reset_mode enum and rename the probe argument
+	  of reset functions.
 
-> If we make any hypothesis, we need to check all CC modules to make
-> sure they respect it.
+Changes in v3:
+	- Dropped "PCI: merge slot and bus reset implementations" which was
+	  already accepted separately
+	- Grammar fixes
+	- Added Shanker's patches which were rebased on v2 of this series
+	- Added "PCI: Change the type of probe argument in reset functions"
+	  and additional user input sanitization code in reset_method_store
+	  function per review feedback from Krzysztof
 
-AFAICT the fix is correct; it just needs a Fixes: tag and a more clear
-description in the commit message.
+Changes in v2:
+	- Use byte array instead of bitmap to keep track of
+	  ordering of reset methods
+	- Fix incorrect use of reset_fn field in octeon driver
+	- Allow writing comma separated list of names of supported reset
+	  methods to reset_method sysfs attribute
+	- Writing empty string instead of "none" to reset_method attribute
+	  disables ability of reset the device
 
-I have cherry-picked the patch into our kernel and verified it passes
-all of our internal packetdrill tests.
+Amey Narkhede (5):
+  PCI: Add pcie_reset_flr to follow calling convention of other reset
+    methods
+  PCI: Add new array for keeping track of ordering of reset methods
+  PCI: Remove reset_fn field from pci_dev
+  PCI/sysfs: Allow userspace to query and set device reset mechanism
+  PCI: Change the type of probe argument in reset functions
 
-So the diff seems OK, but I would suggest a commit message something
-like the following:
+Shanker Donthineni (3):
+  PCI: Define a function to set ACPI_COMPANION in pci_dev
+  PCI: Setup ACPI fwnode early and at the same time with OF
+  PCI: Add support for ACPI _RST reset method
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  19 ++
+ drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
+ .../ethernet/cavium/liquidio/lio_vf_main.c    |   2 +-
+ drivers/pci/hotplug/pciehp.h                  |   2 +-
+ drivers/pci/hotplug/pciehp_hpc.c              |   4 +-
+ drivers/pci/pci-acpi.c                        |  38 ++-
+ drivers/pci/pci-sysfs.c                       | 106 ++++++++-
+ drivers/pci/pci.c                             | 222 ++++++++++--------
+ drivers/pci/pci.h                             |  23 +-
+ drivers/pci/pcie/aer.c                        |  12 +-
+ drivers/pci/probe.c                           |  17 +-
+ drivers/pci/quirks.c                          |  44 ++--
+ drivers/pci/remove.c                          |   1 -
+ include/linux/pci.h                           |  21 +-
+ include/linux/pci_hotplug.h                   |   2 +-
+ 15 files changed, 366 insertions(+), 151 deletions(-)
 
 --
-[PATCH] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-
-This commit fixes a bug (found by syzkaller) that could cause spurious
-double-initializations for congestion control modules, which could cause memory
-leaks orother problems for congestion control modules (like CDG) that allocate
-memory in their init functions.
-
-The buggy scenario constructed by syzkaller was something like:
-
-(1) create a TCP socket
-(2) initiate a TFO connect via sendto()
-(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
-    which calls:
-       tcp_set_congestion_control() ->
-         tcp_reinit_congestion_control() ->
-           tcp_init_congestion_control()
-(4) receive ACK, connection is established, call tcp_init_transfer(),
-    set icsk_ca_initialized=0 (without first calling cc->release()),
-    call tcp_init_congestion_control() again.
-
-Note that in this sequence tcp_init_congestion_control() is called twice
-without a cc->release() call in between. Thus, for CC modules that allocate
-memory in their init() function, e.g, CDG, a memory leak may occur. The
-syzkaller tool managed to find a reproducer that triggered such a leak in CDG.
-
-The bug was introduced when that 8919a9b31eb4 commit introduced
-icsk_ca_initialized and set icsk_ca_initialized to 0 in tcp_init_transfer(),
-missing the possibility for a sequence like the one above, where a process
-could call setsockopt(TCP_CONGESTION) in state TCP_SYN_SENT (i.e. after the
-connect() or TFO open sendmsg()), which would call
-tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend to reset
-any initialization that the user had already explicitly made; it just missed
-the possibility of that particular sequence (which syzkaller managed to find).
-
-Fixes: 8919a9b31eb4 ("tcp: Only init congestion control if not
-initialized already")
-Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
---
-
-neal
+2.32.0
