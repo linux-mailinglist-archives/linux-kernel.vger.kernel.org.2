@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59563B79C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC73E3B79CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbhF2VQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 17:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235664AbhF2VQ1 (ORCPT
+        id S235934AbhF2VRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 17:17:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235664AbhF2VRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 17:16:27 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4995FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:13:59 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id u11so431427oiv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U74U+iEn5Am5+kX3N0VS9opfa7Yy7NUE/0AOkeeLZSE=;
-        b=lh/WrrXMroWGGnIqlMGVQxW+VoxGnNc+tj6xNgIhRuotpvHEdNQe08qn92E8yCYIIO
-         i+TlkPSaRSi0Yflyaw8nIY6aFzSdwE7ilTSAZRu+JGWJMPcgHSFs9Ft8c8Qef9d16/ML
-         6bPEUmYNYLvDFbNbdqx50gM70+5OIeiZIyzWYtjQeqAnFPg5RQuVnVHWk2zDn/lpd8nA
-         FCqTpcKPOdVVg3sqsWJIMX1NhVIN0p38+oXinZ4rLJocqxmWVcIPsHc2AVOIzhIVkab4
-         5QA8zMA3uWoLcBbc8pXqghUTsKMF3+DrWsiCZkFq8KsStl/xBuceD73aR7a/Rt7f/1nf
-         aU3w==
+        Tue, 29 Jun 2021 17:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625001314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BtNniAR3aNmz2uMVQM4AwwxUgN4rwsFqmZzzMcX07mw=;
+        b=WqX072UYYF1RXrqE0KipI6CSlq3op3xm15yWe3BLfNe8YiE2pidAXaqKJxJM6ysIBIdTrR
+        stBqS++RBjHO4xYV33HgFatz+S4oiYx1CNznaze9YESbbXpdGz9i8wakkuQWLzmYd91MTB
+        JlNZ7hb0mmg3mJ++r8CjhC5HZaS+g9E=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-eQHgxjaFNjmZMzuNiBND5w-1; Tue, 29 Jun 2021 17:15:12 -0400
+X-MC-Unique: eQHgxjaFNjmZMzuNiBND5w-1
+Received: by mail-ed1-f71.google.com with SMTP id y17-20020a0564023591b02903951740fab5so8791052edc.23
+        for <Linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:15:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U74U+iEn5Am5+kX3N0VS9opfa7Yy7NUE/0AOkeeLZSE=;
-        b=NnVpR1P+JQOVrBLnc4XqeN8yDV/hJ47KOV66uOql4k4DZwRgcm3rmE7u1Rd/3unRSk
-         zX5rLUE6utBWf6Qs+1/v8bqvMDQKymLknCltp6SpVV7nPKcPYsWGE5cr6HcSk+k2CI/u
-         /xQvJowaiT+KXlVrz6z86xUU8SOncqan5ENyCssr1AqsldPhy2PXAHt9Tk1vKuDuuguI
-         2TK48Fsqe0rptTrgDLOc4HDyn0QMqO0f7T2C9jYm1+jkmJn2x1Fc5gwZgTMBiFmMHFT4
-         Mgc8oxO8B3j94BbdNICZDfXMZCwWl+heAAgesb9Rdi79LiDfYUd9b+U+xkcBg1ercTKX
-         2/pw==
-X-Gm-Message-State: AOAM532XxSUt2mmiV15S6vLu3rxkWNLG0F8I7rELosHldNEMPmYTQ4kc
-        mBbq6ClZIYq6wrTf3NczxylC3w==
-X-Google-Smtp-Source: ABdhPJz74smIKy3vpdkAtG9TjzPJN8VOtP7iUper90rhSA1q4NycNiwb0I47lYywHVlKsY0x3xUltA==
-X-Received: by 2002:a05:6808:1451:: with SMTP id x17mr633681oiv.55.1625001238673;
-        Tue, 29 Jun 2021 14:13:58 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x5sm2292665oto.63.2021.06.29.14.13.57
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BtNniAR3aNmz2uMVQM4AwwxUgN4rwsFqmZzzMcX07mw=;
+        b=MV1FTSjS/wT6krMt7dy5+V4NTYfncqTZVNSKzL0tdn5Dg9/DxIKkr77xIfgjQUPZpf
+         Qu9cK4BaYsBJ6zdgZU5k08VDwvQ2DLg3Qmm3uNDL+/nVYG6F3LKv4VBu9658d6gSyV1U
+         7+nLcRpbd+GgxLLclkfjV4t6goQtwiEwLqsuj3Uu4UjO7X0fBmc3d9buJ2PrB2VLsDTW
+         kwzA+4uFg9Ml3pbGUFUEvJna+CV3tqmpzrZvRlwAg1GbjnIt6v6AJGUxvqI0uovZWTHg
+         T/c2RMAgaY83fuGS+RHSLpoq7ATb1KIkfrAJuKwSNvto4p0IOQXiPFahBwl9jBCErC6y
+         JHFw==
+X-Gm-Message-State: AOAM532ve4JSkVqdYvZS9u4pZjl4sY8XFxal1o4MbKyn/foCH3sNZvGx
+        KokFsjBVq+iQU7jGyxBESvoyPJPpB9yDgRLeiPF7AjtoBYbmcMeY3xFLpMY6ydwcojv8d1bNSHk
+        wQn8c77q6QIOY5p897ld/fNIa
+X-Received: by 2002:a05:6402:1355:: with SMTP id y21mr43046623edw.136.1625001311421;
+        Tue, 29 Jun 2021 14:15:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwPdic8ySHCUXUWfvqARJEpfHp6BONt14O8Z9MSLWZoKfOh2DG03I/cr9IwsJHNM3EEneOnhw==
+X-Received: by 2002:a05:6402:1355:: with SMTP id y21mr43046609edw.136.1625001311242;
+        Tue, 29 Jun 2021 14:15:11 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id r23sm10135142edv.26.2021.06.29.14.15.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 14:13:58 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 16:13:56 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmitry.baryshkov@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] clk: qcom: gdsc: Ensure regulator init state matches
- GDSC state
-Message-ID: <YNuNFNZm7qRpD/eG@yoga>
-References: <20210625225414.1318338-1-bjorn.andersson@linaro.org>
- <162494849279.2516444.9302337933628102536@swboyd.mtv.corp.google.com>
+        Tue, 29 Jun 2021 14:15:10 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 23:15:07 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v1] perf tools: Fix pattern matching for same substring
+ used in different pmu type
+Message-ID: <YNuNW/Afd/X25fNe@krava>
+References: <20210609045738.1051-1-yao.jin@linux.intel.com>
+ <982714a5-8a5d-8f8a-4e30-bd9a497ffa40@linux.intel.com>
+ <4787334d-cf28-5b25-8d11-c767c52288f1@linux.intel.com>
+ <YNWr7zsEaNPCn4CR@krava>
+ <14a70048-ddd0-3297-9ae9-6b76dd0f1000@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <162494849279.2516444.9302337933628102536@swboyd.mtv.corp.google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14a70048-ddd0-3297-9ae9-6b76dd0f1000@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29 Jun 01:34 CDT 2021, Stephen Boyd wrote:
+On Mon, Jun 28, 2021 at 09:52:42AM +0800, Jin, Yao wrote:
 
-> Quoting Bjorn Andersson (2021-06-25 15:54:14)
-> > As GDSCs are registered and found to be already enabled
-> > gdsc_toggle_logic() will be invoked for votable GDSCs and ensure that
-> > the vote is matching the hardware state. Part of this the related
-> > regulator will be enabled.
-> > 
-> > But for non-votable GDSCs the regulator and GDSC status will be out of
-> > sync and as the GDSC is later disabled regulator_disable() will face an
-> > unbalanced enable-count, or something might turn off the supply under
-> > the feet of the GDSC.
-> > 
-> > So ensure that the regulator is enabled even for non-votable GDSCs.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  drivers/clk/qcom/gdsc.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > index 51ed640e527b..f7e7759cdb90 100644
-> > --- a/drivers/clk/qcom/gdsc.c
-> > +++ b/drivers/clk/qcom/gdsc.c
-> > @@ -359,10 +359,17 @@ static int gdsc_init(struct gdsc *sc)
-> >  
-> >         /*
-> >          * Votable GDSCs can be ON due to Vote from other masters.
-> > -        * If a Votable GDSC is ON, make sure we have a Vote.
-> > +        * If a Votable GDSC is ON, make sure we have a Vote. If
-> > +        * non-votable, ensure that the supply is kept enabled (as
-> > +        * is done by gdsc_enable).
-> >          */
-> > -       if ((sc->flags & VOTABLE) && on)
-> > +       if ((sc->flags & VOTABLE) && on) {
-> >                 gdsc_enable(&sc->pd);
-> > +       } else if (on) {
-> > +               ret = regulator_enable(sc->rsupply);
-> > +               if (ret < 0)
-> > +                       return ret;
-> 
-> Looking at this makes me think we've messed something up with
-> gdsc_enable() being called or cherry-picking the regulator enable (and
-> other stuff in this gdsc_init()) out of the enable path. Maybe we should
-> have a followup patch that replaces the gdsc_enable() with
-> gdsc_toggle_logic(sc, GDSC_ON) so that we know it isn't doing anything
-> else during init like asserting a reset when presumably all we want to
-> do is toggle the enable bit to assert our vote.
-> 
-> And I notice that we already call gdsc_toggle_logic() in gdsc_init(), so
-> then we'll have a double regulator_enable() in the case of PWRSTS_ON?
-> And then if the flag is ALWAYS_ON we'll call regulator_enable() yet
-> again, but luckily only if it isn't on initially, phew! This code is
-> quite twisted.
-> 
-> It would be super nice to make it more like
-> 
-> 	if (on) {
-> 		/* It was on in hardware, sync kernel state */
-> 		regulator_enable();
-> 
-> 		if (votable)
-> 			write bit, why do any wait?
-> 
-> 		if (retain ff)
-> 			write bit
-> 	} else if (always_on) {
-> 		/* Force on */
-> 		gdsc_enable();
-> 		on = true;
-> 	}
-> 
-> 	if (on || ...)
-> 
+SNIP
 
-This does look cleaner, I will dig through the logic here once more
-before figuring out what to do for v2.
+> > > > > +    /*
+> > > > > +     * The pmu_name has substring tok. If the format of
+> > > > > +     * pmu_name is <tok> or <tok>_<digit>, return true.
+> > > > > +     */
+> > > > > +    p = pmu_name + strlen(tok);
+> > > > > +    if (*p == 0)
+> > > > > +        return true;
+> > > > > +
+> > > > > +    if (*p != '_')
+> > > > > +        return false;
+> > > > > +
+> > > > > +    ++p;
+> > > > > +    if (*p == 0 || !isdigit(*p))
+> > > > > +        return false;
+> > > > > +
+> > > > > +    return true;
+> > > > > +}
+> > 
+> > hum, so we have pattern serch and then another function checking
+> > if that search was ok..
+> 
+> Yes, that's what this patch does.
+> 
+> I understand that's convenient, because
+> > it's on 2 different places
+> 
+> Yes, on pmu_uncore_alias_match() and on parse-events.y.
+> 
+> but could we have some generic solution,
+> > line one function/search that returns/search for valid pmu name?
+> > 
+> 
+> Sorry, I don't understand this idea well. Would you like to further explain?
+> 
+> Or can you accept the regex approach?
 
-Thanks,
-Bjorn
+I don't really have any suggestion, just would be great to have
+this encapsulated in one function.. but if there's not any good
+one, we can go with this change
 
-> > +       }
-> >  
-> >         /*
-> >          * Make sure the retain bit is set if the GDSC is already on, otherwise
+Andi, Kan, are you ok with this change?
+
+thanks,
+jirka
+
