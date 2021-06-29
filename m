@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38943B719F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EA43B7198
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhF2LzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:55:17 -0400
-Received: from muru.com ([72.249.23.125]:58522 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232556AbhF2LzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:55:11 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 9808580FC;
-        Tue, 29 Jun 2021 11:52:54 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 14:52:39 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-omap@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
- memory map alignment
-Message-ID: <YNsJh7trg4up5l26@atomide.com>
-References: <20210519141436.11961-1-rppt@kernel.org>
- <20210519141436.11961-4-rppt@kernel.org>
- <YNmiW6CYzy9lG8ks@atomide.com>
- <YNnLxFM4ZeQ5epX3@linux.ibm.com>
- <YNnqIv3PApHFZMgp@atomide.com>
- <YNqwl8EPVYZJV0EF@linux.ibm.com>
- <YNrfqtBpKsNj033w@atomide.com>
- <YNr6+wOiR7/Yx9M1@linux.ibm.com>
+        id S232817AbhF2Lwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:52:37 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9427 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232498AbhF2Lwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 07:52:36 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GDjPd1y53zZndd;
+        Tue, 29 Jun 2021 19:47:01 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 29 Jun 2021 19:50:07 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 29 Jun
+ 2021 19:50:06 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>
+Subject: [PATCH net] net/802/garp: fix memleak in garp_request_join()
+Date:   Tue, 29 Jun 2021 19:53:28 +0800
+Message-ID: <20210629115328.1328947-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNr6+wOiR7/Yx9M1@linux.ibm.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mike Rapoport <rppt@linux.ibm.com> [210629 10:51]:
-> As it seems, the new version of pfn_valid() decides that last pages are not
-> valid because of the overflow in memblock_overlaps_region(). As the result,
-> __sync_icache_dcache() skips flushing these pages.
-> 
-> The patch below should fix this. I've left the prints for now, hopefully
-> they will not appear anymore. 
+I got kmemleak report when doing fuzz test:
 
-Yes this allows the system to boot for me :)
+BUG: memory leak
+unreferenced object 0xffff88810c909b80 (size 64):
+  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
+  backtrace:
+    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
+    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
+    [<0000000024005e72>] vlan_dev_open+0x706/0x980
+    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
+    [<0000000066573004>] __dev_change_flags+0x501/0x650
+    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
+    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
+    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
+    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
+    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
+    [<00000000c373ce66>] netlink_unicast+0x550/0x750
+    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
+    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
+    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
+    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
+    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
 
-I'm still seeing these three prints though:
+Calling garp_request_leave() after garp_request_join(), the attr->state
+is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
+transmit event in garp_uninit_applicant(), the attr of applicant will be
+leaked. To fix this leak, iterate and free each attr of applicant before
+rerturning from garp_uninit_applicant().
 
-...
-smp: Brought up 1 node, 2 CPUs
-SMP: Total of 2 processors activated (3994.41 BogoMIPS).
-CPU: All CPU(s) started in SVC mode.
-pfn_valid(__pageblock_pfn_to_page+0x14/0xa8): pfn: afe00: is_map: 0 overlaps: 1
-pfn_valid(__pageblock_pfn_to_page+0x28/0xa8): pfn: affff: is_map: 0 overlaps: 1
-pfn_valid(__pageblock_pfn_to_page+0x38/0xa8): pfn: afe00: is_map: 0 overlaps: 1
-devtmpfs: initialized
-...
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ net/802/garp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Regards,
+diff --git a/net/802/garp.c b/net/802/garp.c
+index 400bd857e5f5..95f3f91f1be4 100644
+--- a/net/802/garp.c
++++ b/net/802/garp.c
+@@ -203,6 +203,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
+ 	kfree(attr);
+ }
+ 
++static void garp_attr_destroy_all(struct garp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct garp_attr *attr;
++
++	for (node = rb_first(&app->gid);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct garp_attr, node);
++		garp_attr_destroy(app, attr);
++	}
++}
++
+ static int garp_pdu_init(struct garp_applicant *app)
+ {
+ 	struct sk_buff *skb;
+@@ -609,6 +622,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
+ 
+ 	spin_lock_bh(&app->lock);
+ 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
++	garp_attr_destroy_all(app);
+ 	garp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
+ 
+-- 
+2.25.1
 
-Tony
-
-
-> diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-> index 6162a070a410..7ba22d23eca4 100644
-> --- a/arch/arm/mm/init.c
-> +++ b/arch/arm/mm/init.c
-> @@ -126,10 +126,16 @@ int pfn_valid(unsigned long pfn)
->  {
->  	phys_addr_t addr = __pfn_to_phys(pfn);
->  	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
-> +	bool overlaps = memblock_overlaps_region(&memblock.memory,
-> +				     ALIGN_DOWN(addr, pageblock_size),
-> +				     pageblock_size - 1);
->  
->  	if (__phys_to_pfn(addr) != pfn)
->  		return 0;
->  
-> +	if (memblock_is_map_memory(addr) != overlaps)
-> +		pr_info("%s(%pS): pfn: %lx: is_map: %d overlaps: %d\n", __func__, (void *)_RET_IP_, pfn, memblock_is_map_memory(addr), overlaps);
-> +
->  	/*
->  	 * If address less than pageblock_size bytes away from a present
->  	 * memory chunk there still will be a memory map entry for it
-> @@ -137,7 +143,7 @@ int pfn_valid(unsigned long pfn)
->  	 */
->  	if (memblock_overlaps_region(&memblock.memory,
->  				     ALIGN_DOWN(addr, pageblock_size),
-> -				     pageblock_size))
-> +				     pageblock_size - 1))
->  		return 1;
->  
->  	return 0;
->  
-> -- 
-> Sincerely yours,
-> Mike.
