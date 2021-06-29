@@ -2,106 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531973B7134
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7933B7139
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhF2LTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S233433AbhF2LTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233335AbhF2LTC (ORCPT
+        with ESMTP id S233281AbhF2LTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:19:02 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DACC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:16:33 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g24-20020a17090ace98b029017225d0c013so403935pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:16:33 -0700 (PDT)
+        Tue, 29 Jun 2021 07:19:54 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B926AC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:17:26 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id f30so38899060lfj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xjV/iKi34jYFMReQkJHVyPn/3R5zf+ElzbUkU1MRvAQ=;
-        b=dKJFli8NYw/mQKH3Kw4Xh/mZ1c75VxNBWzg2+Q31Y4qkdcoAI/y405XkWNU8+TlS4f
-         zX3H5e5QzRv47ovxV/fZR0a2D8g1VDKvN37yUK9i7Lk3xCny/f5logx3MyHjdJO00P8e
-         u3Js/sBNx6gl08KPRHp6lzQsxUCb60h+4Ep1hlpzJTACykLZhadUKt+onNeH3ossfpx7
-         INL/XMqjN/KfiLrBaVcUGAIokQh9Bxz4z2/9ESGXFmx7KQFDFzuT64+WsCU/yR+1eyVR
-         RQ8nO2Gz2D4W46BWxZDzoNW6tUm6i4eTxkp4IyfBwzJ6ZvZlzrNZUifZ/BmrVwPdXlq/
-         gAgw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=co2MnmhqTunRm8w19zQP35XSCvF/jJ76gA/W9GlIUz0=;
+        b=JBet+L1/xGCXdWUkOprU0gLpjHcspyWMX41k11zgcAWXmzhI9gm3YIixLkNTJlqVB/
+         XcWiFb1eTuuQ0kZPvEkUrb3UuAcYdsKHD/D12Eaov5Lzyd9QnJCwNNchJ8ukHTIasmKs
+         SFGy7bdYdELyUi/4Cs4D+h5baTLqNvlmps9/xqsI+9OHQKc8Rq13MEKERP9VFoa5IgQG
+         W+ULAaQCMLpup1hbsAmWwrAshrxJwNGepLcM9rge/JvfV2nG6weCZl5M0tIBdw+xf5i9
+         7vS+4WIflZLG5RqKPfZoLlErqKzj99hms0mYKEi1B3mu0Gv99P1J6P91mtxFB1BPzUWQ
+         zw6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xjV/iKi34jYFMReQkJHVyPn/3R5zf+ElzbUkU1MRvAQ=;
-        b=DaX8xIW9n8TwCsWc5IfNQja+J1cD02RU2SQF+c+riQ2JAWdjorGyZz8qCCZBL9mP8n
-         UTuicAI3heTOSzNt0vFSg9VSRw45t9arc0CPeA/je6XdT29O6sCH5EdwV9NdXegDNj9N
-         HerOkYpv+yX3wlBDSwvzF1G+dy9WnI9fGrEdtq867fxY5XUt6aoSrBGcZsEDxJkHZjHt
-         VrV8MEdU9Z5pVoy25URqtKtU0pw89hQPhcs6fn5rJOexp5n5E+e2Sp8KA3jn72Xo1yYp
-         RWTtZzdis0EQ/P0jDHnKlHTTSR8QyTv2JXJpjiZEO6ug39xL3GKOxDRejn42qm+9ut8z
-         ki/w==
-X-Gm-Message-State: AOAM533YE+bXmshxIOjqUA5icv5TljV/m0o8TIZI5/v/HjcIysWF6lJL
-        7xYGkW8Lh+RICnvi/SX3mwqexw==
-X-Google-Smtp-Source: ABdhPJy+UGCUCuflwbi6dPqqusA18cX4k4AwlBxGfReRGnObOnWyb1uOJgfgGDyhAKi/3y/XEkRRMw==
-X-Received: by 2002:a17:903:18e:b029:127:a5ba:7243 with SMTP id z14-20020a170903018eb0290127a5ba7243mr22916869plg.4.1624965392695;
-        Tue, 29 Jun 2021 04:16:32 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id u11sm17854532pjf.46.2021.06.29.04.16.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=co2MnmhqTunRm8w19zQP35XSCvF/jJ76gA/W9GlIUz0=;
+        b=gUeMD1PBH4LIzbVIjhGMDLa+epunFOucVdmeoBZV+S7MBfAC5bAgiOaQQybhU95wAE
+         R+T4zfdfKqlc2ga55L6EBMP/Ak1wGDwXWCBR+5s64P55BDvX8nQyVaCll3QU/qOgSRmw
+         SJDMoTxJFLbWvxeQklNKlzo1gj/CcCskyyNI0OQxyLQN/DgUtDdJ44tmnnSZYkswZfxz
+         H+ykjyS4MwemWeqOcPTyqgvvCJ5P9UJgyxpK1IN5AYTP3hM9K9KqAs4B5p1FeXLK+wEa
+         tHBLnR6CFwPCUUcvWsRh+DcqYmfDdMKJ4fIoQzyt75m/e7J6zZhz2v33/NQFFJxYhFwi
+         uQJw==
+X-Gm-Message-State: AOAM532sTCqCJIAdbNy0bnwkFLAV79aM7fJn4RQNhGFJBlI0Wl69LmUK
+        ELlBV14mU+riYxbTrl/ErkI=
+X-Google-Smtp-Source: ABdhPJyGUNfsY7ynhRA9iabVuy2UenX5kT6gcct7E/4hF5q63/J3+g9SwmUC5LFXj4H6uuIg3SuXrQ==
+X-Received: by 2002:a05:6512:3305:: with SMTP id k5mr22335683lfe.132.1624965444978;
+        Tue, 29 Jun 2021 04:17:24 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id v19sm1848185ljh.118.2021.06.29.04.17.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 04:16:32 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 16:46:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629111630.badum3mtumcujbyk@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
- <YNr0uDx1fv+Gjd7m@ninjato>
- <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
- <YNr5Jf3WDTH7U5b7@ninjato>
- <YNr5ZRhT3qn+e9/m@ninjato>
- <20210629105649.nt63mxtiy6u7de3g@vireshk-i7>
- <YNr/2E/T4FRjLOgy@ninjato>
+        Tue, 29 Jun 2021 04:17:24 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:17:12 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Werner Sembach <wse@tuxedocomputers.com>,
+        amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm
+ property as setting for userspace
+Message-ID: <20210629141712.21f00c38@eldfell>
+In-Reply-To: <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+        <20210618091116.14428-13-wse@tuxedocomputers.com>
+        <20210622101516.6a53831c@eldfell>
+        <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNr/2E/T4FRjLOgy@ninjato>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/LAj=Yh72UIUuJMQi5B=dyga";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-21, 13:11, Wolfram Sang wrote:
-> 
-> > The case when ``length of \field{write_buf}''=0, and at the same time,
-> > ``length of \field{read_buf}''=0 is called not-a-read-write request
-> > and result for such a request is I2C device specific.
-> 
-> Obviously, I don't know much about the specs and their wording. Still I
-> wonder if we can't call it a zero length transfer?
+--Sig_/LAj=Yh72UIUuJMQi5B=dyga
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Maybe that.
+On Tue, 29 Jun 2021 08:12:54 +0000
+Simon Ser <contact@emersion.fr> wrote:
 
-> This is allowed by
-> the I2C standard and SMBus has even a proper name for it (SMBUS_QUICK).
-> From my point of view, I would not say it is device specific because
-> devices are expected to ACK such a message.
+> On Tuesday, June 22nd, 2021 at 09:15, Pekka Paalanen <ppaalanen@gmail.com=
+> wrote:
+>=20
+> > yes, I think this makes sense, even if it is a property that one can't
+> > tell for sure what it does before hand.
+> >
+> > Using a pair of properties, preference and active, to ask for something
+> > and then check what actually worked is good for reducing the
+> > combinatorial explosion caused by needing to "atomic TEST_ONLY commit"
+> > test different KMS configurations. Userspace has a better chance of
+> > finding a configuration that is possible.
+> >
+> > OTOH, this has the problem than in UI one cannot tell the user in
+> > advance which options are truly possible. Given that KMS properties are
+> > rarely completely independent, and in this case known to depend on
+> > several other KMS properties, I think it is good enough to know after
+> > the fact.
+> >
+> > If a driver does not use what userspace prefers, there is no way to
+> > understand why, or what else to change to make it happen. That problem
+> > exists anyway, because TEST_ONLY commits do not give useful feedback
+> > but only a yes/no. =20
+>=20
+> By submitting incremental atomic reqs with TEST_ONLY (i.e. only changing =
+one
+> property at a time), user-space can discover which property makes the ato=
+mic
+> commit fail.
 
-Actually we should skip the last line from my diff, i.e. completely
-drop "and result for such a request is I2C device specific".
+That works if the properties are independent of each other. Color
+range, color format, bpc and more may all be interconnected,
+allowing only certain combinations to work.
 
-The device (host in virtio spec terminology) still needs to return
-success/failure as it does for other requests. Nothing special here.
+If all these properties have "auto" setting too, then it would be
+possible to probe each property individually, but that still does not
+tell which combinations are valid.
 
--- 
-viresh
+If you probe towards a certain configuration by setting the properties
+one by one, then depending on the order you pick the properties, you
+may come to a different conclusion on which property breaks the
+configuration.
+
+> I'm not a fan of this "preference" property approach. The only way to fin=
+d out
+> whether it's possible to change the color format is to perform a user-vis=
+ible
+> change (with a regular atomic commit) and check whether it worked
+> after-the-fact. This is unlike all other existing KMS properties.
+
+I agree. FWIW, "max bpc" exists already.
+
+> I'd much rather see a more general approach to fix this combinatorial exp=
+losion
+> than to add special-cases like this.
+
+What would you suggest?
+
+Maybe all properties should have an "auto" value in addition to the
+explicit no-negotiation values where at all possible?
+
+That might help probing each property individually with TEST_ONLY
+commits, but it says nothing about combinations.
+
+A feedback list perhaps? TEST_ONLY commit somehow returning a list of
+property/value tuples indicating what value the "auto" valued
+properties actually get?
+
+What should a kernel driver optimize for when determining "auto" values?
+
+
+Thanks,
+pq
+
+--Sig_/LAj=Yh72UIUuJMQi5B=dyga
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDbATgACgkQI1/ltBGq
+qqcYExAAkwmMC2LyEGzVad5N3ja6Gax0qc3Wpe2Cw40DuxFKcr1j6wJ7AHT4Rmli
+R334a3TJ+3OPRzjeDnw28S4Ycx3ZEDVgPQ7g0pVBCGfSGze1gCaJRGd3sUFQDQxn
+OVdgRoP/sSHbOKylhXb74+UPYcw3MJfUed0EiPAZC9XE2gnxiv8tprcGkm6N0Xm3
+WYzu6Ssr7VGzKGmVDGg0cyjHHVZ6aOwmk9vxgI2KAoqeIr4rxycR07qxGARik5XP
+6GlZZ0s+zysJSPCwLu6gfDK//BhCGIdEXZ7wFp1k7Di5mPbygR/KJIa9rWmLLW7k
+RUi+QFcdfnJj7JNOq3Zx99ksh3RTjBzl0PQVa7YyTl0uZbBCR0JKb7BXntqhCKRL
+PY5ELnIRjezTDJ/9+gYQcnwASN7iyshKTXQAcg9aAmUz5u0pD8QcW/xC7+gq1MNQ
+v06S4Is633ONw5MAti7FsdqT42FxwoNdaDXgZKnnJV9UW2s81yUUkKftw2d1krXR
+EeWumEOlIIFqo95FCs9PW5PiAYMODq3tukBkaJyZnTf1rX7bqfuf4Z9rxI+dFIsc
+CKiql+ZpWTaJmp9sAGeaUcVtW52kiq4spGHRKct36Ahc1QeKsNzhmrmebHhAPMcB
+Klt909YOQ1LqqP0SiDmTZQVvQ8qYeS2wViXZE0e8ezLgLUe97pA=
+=9IoA
+-----END PGP SIGNATURE-----
+
+--Sig_/LAj=Yh72UIUuJMQi5B=dyga--
