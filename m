@@ -2,172 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0483B74D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BCA3B751E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbhF2PJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:09:49 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60446 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234529AbhF2PJr (ORCPT
+        id S234705AbhF2P1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:27:38 -0400
+Received: from atlmailgw2.ami.com ([63.147.10.42]:49814 "EHLO
+        atlmailgw2.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234549AbhF2P1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:09:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 49F041F42FFF
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, jack@radxa.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: add rock-pi-4 analog audio
-In-Reply-To: <7f806d30-594e-2325-615a-8fee875c83a8@gmail.com>
-References: <20210628113033.9145-1-adrian.ratiu@collabora.com>
- <7f806d30-594e-2325-615a-8fee875c83a8@gmail.com>
-Date:   Tue, 29 Jun 2021 18:07:15 +0300
-Message-ID: <87eeck3e1o.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
+        Tue, 29 Jun 2021 11:27:34 -0400
+X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Jun 2021 11:27:34 EDT
+X-AuditID: ac10606f-903ff70000006d35-7a-60db37ccab66
+Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by atlmailgw2.ami.com (Symantec Messaging Gateway) with SMTP id D2.DB.27957.DC73BD06; Tue, 29 Jun 2021 11:10:05 -0400 (EDT)
+Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
+ atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
+ 14.3.498.0; Tue, 29 Jun 2021 11:10:04 -0400
+From:   Hongwei Zhang <hongweiz@ami.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>
+CC:     Hongwei Zhang <hongweiz@ami.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/1] mtd: spi-nor: Add some M45PEx ids
+Date:   Tue, 29 Jun 2021 11:08:45 -0400
+Message-ID: <20210629150846.21547-1-hongweiz@ami.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain
+X-Originating-IP: [172.16.98.207]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNLMWRmVeSWpSXmKPExsWyRiBhgu5Z89sJBt8nS1lc3jWHzWJ30zJ2
+        i7enN7Bb3H3+g93i4xIHB1aPzUvqPe78WMrocfzGdiaPz5vkPA7sbWELYI3isklJzcksSy3S
+        t0vgyph4bwVbwUvGildv97A1MG5i7GLk5JAQMJH4MPUYkM3FISSwi0mibV8vG5TDKLFy3wuw
+        KjYBNYm9m+cwgdgiAiUSa9q/gNnMAukSr76eZwaxhQUsJaZdbmcBsVkEVCWWz/jOBmLzCphK
+        bJn8lwVim7zE6g0HmCHighInZz5hgZgjIXHwxQuwuJCArMStQ4+ZIOoVJR78+s46gZFvFpKW
+        WUhaFjAyrWIUSizJyU3MzEkvN9JLzM3US87P3cQICcD8HYwfP5ofYmTiYDzEKMHBrCTC+zbv
+        VoIQb0piZVVqUX58UWlOavEhRmkOFiVx3lXuR+OFBNITS1KzU1MLUotgskwcnFINjOcmnxJb
+        WnDu0YJtrlGdcz5F7tvgsn+jd0DHHrazwokP8903nt5f3un3Ityw8MiLe/t3ijH+Xa1dtc7c
+        iOEUm9267VUdbe7f7XdPtDE4+vx/Iv9qpVsfczZHK923enb3YrFZdIlNm/v7v5V/s788Sle6
+        fnT7+hzbhRseXbReL9V2snzFk0C/ldpKLMUZiYZazEXFiQAhBnBLLgIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Dear Reviewer,
 
-On Tue, 29 Jun 2021, Alex Bee <knaerzche@gmail.com> wrote:
-> Hi Adrian, 
-> 
-> I've submitted similar patch already. Its part of [1]
+Add some Micron M45PEx flash memeories into the IDs table.
 
-Thank you for pointing out your patch, I was not aware of it as it 
-was not merged yet (I tested latest linux-next).
+Hongwei Zhang (1):
+  mtd: spi-nor: Add some M45PEx ids
 
-It is a good sign that our code is almost identical except for the 
-headphone detect pin which you mention.
- 
-> 
-> There is no headphone detection pin in the schematics, btw. 
->
+ drivers/mtd/spi-nor/micron-st.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-There are two reasons I added it:
+-- 
+2.17.1
 
-1. The es8316 codec failed to probe() in my testing unless the irq 
-was defined. That might have been due to me testing the codec 
-directly with the simple card driver instead of the graph driver.
-
-Point 1 doesn't appear to be an issue anymore, the codec + graph 
-driver probe correctly and audio supposedly (see below) works even 
-without the irq.
-
-2. I got the gpio bank 1 pin 0 location from various headphone 
-detection commits in the vendor v4.4 kernel, like for example [1].
-
-Are you 100% sure there is no hp detection pin wired on the 
-rock-pi-4? 
-
-Even if it might be missing from the schematics, the vendor driver 
-code apparently defines and uses it?
-
-From booting with the irq defined I get the following in 
-/proc/interrupts however I'm having an unrelated difficulty 
-testing because the audio connector literally broke off the board 
-like in [2]. 
-
-90: 1  0  0  0  0  rockchip_gpio_irq   0 Level     es8316
-
-Team Radxa was very nice in offering me a replacement but until 
-that arrives I can't test this anymore.
-
-[1] 
-https://github.com/radxa/kernel/commit/e945cad5c3ec82d171760465d3c7a84bb10ed1b7
-
-[2] https://forum.radxa.com/t/audio-jack-broke-off/935
-
-> [1] 
-> https://patchwork.kernel.org/project/linux-rockchip/cover/20210618181256.27992-1-knaerzche@gmail.com/
->
-> Best,
->
-> Alex
->
-> Am 28.06.21 um 13:30 schrieb Adrian Ratiu:
->> This adds the necessary pinctrl and nodes to enable the
->> analog audio on rk3399 rock-pi-4 SBCs using the es8316
->> codec and the audio-graph-card driver.
->>
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->> ---
->>   .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 38 +++++++++++++++++++
->>   1 file changed, 38 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->> index b28888ea9262..77781d9150ac 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->> @@ -128,6 +128,12 @@ vdd_log: vdd-log {
->>   		regulator-max-microvolt = <1400000>;
->>   		vin-supply = <&vcc5v0_sys>;
->>   	};
->> +
->> +	sound {
->> +		compatible = "audio-graph-card";
->> +		label = "rockchip,rk3399";
->> +		dais = <&i2s0_p0>;
->> +	};
->>   };
->>   
->>   &cpu_l0 {
->> @@ -422,6 +428,24 @@ &i2c1 {
->>   	i2c-scl-rising-time-ns = <300>;
->>   	i2c-scl-falling-time-ns = <15>;
->>   	status = "okay";
->> +
->> +	es8316: codec@11 {
->> +		compatible = "everest,es8316";
->> +		reg = <0x11>;
->> +		clocks = <&cru SCLK_I2S_8CH_OUT>;
->> +		clock-names = "mclk";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&hp_det_pin>;
->> +		interrupt-parent = <&gpio1>;
->> +		interrupts = <RK_PA0 IRQ_TYPE_LEVEL_HIGH>;
->> +		#sound-dai-cells = <0>;
->> +
->> +		port {
->> +			es8316_p0_0: endpoint {
->> +				remote-endpoint = <&i2s0_p0_0>;
->> +			};
->> +		};
->> +	};
->>   };
->>   
->>   &i2c3 {
->> @@ -441,6 +465,14 @@ &i2s0 {
->>   	rockchip,capture-channels = <2>;
->>   	rockchip,playback-channels = <2>;
->>   	status = "okay";
->> +
->> +	i2s0_p0: port {
->> +		i2s0_p0_0: endpoint {
->> +			dai-format = "i2s";
->> +			mclk-fs = <256>;
->> +			remote-endpoint = <&es8316_p0_0>;
->> +		};
->> +	};
->>   };
->>   
->>   &i2s1 {
->> @@ -556,6 +588,12 @@ wifi_host_wake_l: wifi-host-wake-l {
->>   			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
->>   		};
->>   	};
->> +
->> +	es8316 {
->> +		hp_det_pin: hp-det-pin {
->> +			rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
->> +		};
->> +	};
->>   };
->>   
->>   &pwm2 {
