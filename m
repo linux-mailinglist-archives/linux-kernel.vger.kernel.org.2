@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FAA3B7774
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C453B7779
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbhF2R4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:56:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:43913 "EHLO mga02.intel.com"
+        id S234275AbhF2SAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:00:36 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52983 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231856AbhF2R4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:56:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195355832"
+        id S231856AbhF2SAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 14:00:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="206379724"
 X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="195355832"
+   d="scan'208";a="206379724"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:54:10 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:58:06 -0700
 X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="643805469"
+   d="scan'208";a="643806408"
 Received: from bzhang2-mobl1.amr.corp.intel.com (HELO [10.255.231.86]) ([10.255.231.86])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:54:09 -0700
-Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
- dynamic user state
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     "Lutomirski, Andy" <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-15-chang.seok.bae@intel.com>
- <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
- <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
- <36D0486A-D955-4C32-941A-A2A4985A450C@intel.com>
- <48e86785-838d-f5d4-c93c-3232b8ffd915@intel.com>
- <3AB6DECB-2A53-4EC2-84A6-0CACE44CFC1C@intel.com>
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:58:05 -0700
+Subject: Re: [PATCH RFC 2/7] kvm: x86: Introduce XFD MSRs as passthrough to
+ guest
+To:     "Liu, Jing2" <jing2.liu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jing2.liu@intel.com
+References: <20210207154256.52850-1-jing2.liu@linux.intel.com>
+ <20210207154256.52850-3-jing2.liu@linux.intel.com>
+ <YKwd5OTXr97Fxfok@google.com>
+ <d6e7328d-335f-b244-48d7-4ffe8b04fb05@intel.com>
+ <3c63438b-2a42-0b81-f002-b937095570e1@linux.intel.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -81,12 +75,12 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <6754330a-bbbb-aa29-7800-f2d16216ad8c@intel.com>
-Date:   Tue, 29 Jun 2021 10:54:06 -0700
+Message-ID: <895e41d7-b64c-e398-c4e2-6309c747068d@intel.com>
+Date:   Tue, 29 Jun 2021 10:58:05 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3AB6DECB-2A53-4EC2-84A6-0CACE44CFC1C@intel.com>
+In-Reply-To: <3c63438b-2a42-0b81-f002-b937095570e1@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -94,17 +88,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 10:43 AM, Bae, Chang Seok wrote:
-> On Jun 16, 2021, at 12:01, Dave Hansen <dave.hansen@intel.com> wrote:
->> On 6/16/21 11:47 AM, Bae, Chang Seok wrote:
->>> Reading XINUSE via XGETBV is cheap but not free. I don't know spending a
->>> hundred cycles for this WARN is big deal but this is one of the most
->>> performance-critical paths.
->> Is XGETBV(1) really a hundred cycles?  That seems absurdly high for a
->> non-serializing register read.
-> My apologies -- I neglect not to check the log immediately. XGETBV(1) took
-> about 26 cycles on my test.
 
-How about we pay this 26-cycle cost, but only when XFD is in use?  We
-could either look at the shadowed value of the XFD MSR, or flip a global
-variable the first time XFD gets used.
+On 6/27/21 7:00 PM, Liu, Jing2 wrote:
+> On 6/24/2021 1:50 AM, Dave Hansen wrote:
+>> On 5/24/21 2:43 PM, Sean Christopherson wrote:
+>>> On Sun, Feb 07, 2021, Jing Liu wrote:
+>>>> Passthrough both MSRs to let guest access and write without vmexit.
+>>> Why?  Except for read-only MSRs, e.g. MSR_CORE_C1_RES,
+>>> passthrough MSRs are costly to support because KVM must context
+>>> switch the MSR (which, by the by, is completely missing from the
+>>> patch).
+>>>
+>>> In other words, if these MSRs are full RW passthrough, guests
+>>> with XFD enabled will need to load the guest value on entry, save
+>>> the guest value on exit, and load the host value on exit.  That's
+>>> in the neighborhood of a 40% increase in latency for a single
+>>> VM-Enter/VM-Exit roundtrip (~1500 cycles =>
+>>>> 2000 cycles).
+>> I'm not taking a position as to whether these _should_ be passthrough or
+>> not.  But, if they are, I don't think you strictly need to do the
+>> RDMSR/WRMSR at VM-Exit time.
+> Hi Dave,
+> 
+> Thanks for reviewing the patches.
+> 
+> When vmexit, clearing XFD (because KVM thinks guest has requested AMX) can
+> be deferred to the time when host does XSAVES, but this means need a new
+> flag in common "fpu" structure or a common macro per thread which works
+> only dedicated for KVM case, and check the flag in 1) switch_fpu_prepare()
+> 2) kernel_fpu_begin() . This is the concern to me.
+
+Why is this a concern?  You're worried about finding a single bit worth
+of space somewhere?
