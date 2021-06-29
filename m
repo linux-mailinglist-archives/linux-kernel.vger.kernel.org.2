@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637703B71F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911B03B71E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhF2MVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        id S233557AbhF2MRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbhF2MVO (ORCPT
+        with ESMTP id S233384AbhF2MRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:21:14 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5F4C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:18:47 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id q18so4746328lfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:18:47 -0700 (PDT)
+        Tue, 29 Jun 2021 08:17:37 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C569AC061760;
+        Tue, 29 Jun 2021 05:15:08 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id v7so18334540pgl.2;
+        Tue, 29 Jun 2021 05:15:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RxHGY7S/PGo9l+epfA3kfSLzx4lK4ynQ52nhtavStLI=;
-        b=N7S+pQWxu2P+OqTBZjsZwN+Aq8bnjh2R156qgQ+pkDEwvqz4RQk19NBs3DTJJGjWA2
-         SJHxMquhxUS+ZhoWZj0/FRN3vwp1H7uNWuHABPO2rjhJT7vxJ1Hlrr70LDHdrHFgQmIx
-         ezRop4HX3kKJo0E4TbRP6r4vjEipby8u65I8p1YKQjX+hgx8JzCAcFn0m+Onu8vCWaa8
-         kMpDmRFX3PetwCzbCPT8bZ89STrMQ9HoUJl8AVu3RrpbaIrqJDJKpDwLXZDcr4rsgU3s
-         mlPvgL9IqM5dYYa/DemyxekA4vskJo0zmenUwOWVtWMiIozbbaqfiQiLnG3D/DPaJanv
-         ULQQ==
+        bh=mlqRgdeiXEIYSrXLcXViAJxLAnONyVn/mV1IwG0OAbE=;
+        b=bW4owkmj3xr8ZQb2A3aCyS1AqXdnbfAz+x61VdR5tSaFnD63cXTpQcNTncWTzlN9br
+         tNFPYFdKrf3Bjk27qeG7cToVRSa05Bd+3PEoqrEkteRvtNCuhzMZFAxWwpaPsXm0twNH
+         6CgIpdWqKtuFc3iUB2XrG1lMo42gtZUGGXEfEnvx9l5fdGjuA5Qo7/74rsBV0ncizrV4
+         Q1c9UluMJphyGuDqTcjk7sR/er2Arn11/U89bKnIFWLuYiotCYC0QqpP6X60VqVd655q
+         z38GSrCaIa4J+E7u1WGG6StfOodcFetaBCob5/vrLzxhXpILKBQJbgRFydcXVKomWc8W
+         SFLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RxHGY7S/PGo9l+epfA3kfSLzx4lK4ynQ52nhtavStLI=;
-        b=OjwtOCunejeaJtvBrpf3pnIQbyJ/F6MS36qkjOimhGLBqh6yPJNmteC2c9dnxA7l6X
-         XS4NXBbfyOq9sVacZ4ZDwDgXO6YN1dE2CM8oL7ksHAsCY7OQVAu9ffXwV1pXg5764j2J
-         AiqK7epWdgEGdYy1hH0p74fIRpAI58H5gJsKAj+E8Ju+tdzhYFUElpr/HlLl+7VbysiS
-         8XEy0VfKkALn4Nd2859z9wM60RhvTtjH5CBdWhTQXwwMEqWXrF9hoHUYP5cK+KPD2yx/
-         4O0Qf/kRpJZXmhqWkBNHGlUy5tF5bxf9/ijML07MBpVc1MDte92o0WbO/ZAyi3KO45pt
-         pqPg==
-X-Gm-Message-State: AOAM532VFmqTpjEi2anLgpD5CKikSW/AmllHpg3qD5/L+PUYcPWtwqSP
-        +geJQwdbydAtLI4H4xvB9llNLw==
-X-Google-Smtp-Source: ABdhPJxTlCYxtMQrgBeCVYcJvkUFgtW9Cfsuj5jfhDAx+1Fiq9L2Yo2NN8h6Egq3cLdCmqiqTp/wgA==
-X-Received: by 2002:a19:410c:: with SMTP id o12mr4736548lfa.10.1624969125704;
-        Tue, 29 Jun 2021 05:18:45 -0700 (PDT)
-Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
-        by smtp.gmail.com with ESMTPSA id w13sm542021ljd.27.2021.06.29.05.18.44
+        bh=mlqRgdeiXEIYSrXLcXViAJxLAnONyVn/mV1IwG0OAbE=;
+        b=UBiqZV1mYCFp5BDjD3FBuDuwmAEEiXqr4Y3WloiCRgw8yBLcRixn6CUz1AGqMUYsRZ
+         +ykKyBYMYKwQMsISy86mqm4cLFp9AbclahJF/XRxDU7uPbmTT9iURM/NKQIf5AFwAd5v
+         BEff941ywsd+QGlivVb3lKl3GWN1q3fP0fNWO8PkfmkzGinASNC6qAa6hiysRLkgoNGu
+         RNBFUpOqAgsy/xmNZqjoMKIYqI97TWMCrw0XsBSlgZeZFzMQ44eGVfK/jFouYKKwUi/v
+         4eA/+YDBoouhB1uCGe0d8xponB83c6DvoU7TMLEUhVyqmhKBFsV+VIjIQs2Uc7FJMfI1
+         Y6Tg==
+X-Gm-Message-State: AOAM531db44r1Ja4JI07xVWs/5pUouDelCWCZCYUm9z0y6Axw2iYyonD
+        e97xhlJ5Gmz0IThMItD7BAo=
+X-Google-Smtp-Source: ABdhPJz6IDnmzNNrr0eZ/jlPZz8aRmiSr1TQxpE+yHlMpP7iqM9Uea0AslVBxgA0SSdA1DVWiu5LZA==
+X-Received: by 2002:a63:234a:: with SMTP id u10mr6507856pgm.322.1624968908431;
+        Tue, 29 Jun 2021 05:15:08 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.37])
+        by smtp.gmail.com with ESMTPSA id j79sm19324714pfd.172.2021.06.29.05.15.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:18:45 -0700 (PDT)
-From:   Odin Ugedal <odin@uged.al>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>
-Subject: [PATCH] sched/fair: Fix CFS bandwidth hrtimer expiry type
-Date:   Tue, 29 Jun 2021 14:14:52 +0200
-Message-Id: <20210629121452.18429-1-odin@uged.al>
-X-Mailer: git-send-email 2.32.0
+        Tue, 29 Jun 2021 05:15:07 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCHv1] arm: dts: meson: Fix the pwm regulator supply property in node
+Date:   Tue, 29 Jun 2021 12:14:58 +0000
+Message-Id: <20210629121459.6341-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The time remaining until expiry of the refresh_timer can be negative.
-Casting the type to an unsigned 64-bit value will cause integer
-underflow, making the runtime_refresh_within return false instead of
-true. These situations are rare, but they do happen.
+On enable CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
+Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
+instead of dummy regulator.
 
-This does not cause user-facing issues or errors; other than
-possibly unthrottling cfs_rq's using runtime from the previous period(s),
-making the CFS bandwidth enforcement less strict in those (special)
-situations.
+[    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
+[    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
+[    7.117184] VCCK: supplied by regulator-dummy
+[    7.117194] regulator-dummy: could not add device link regulator.8: -ENOENT
+[    7.117266] VCCK: 860 <--> 1140 mV at 986 mV, enabled
+[    7.118498] VDDEE: will resolve supply early: pwm
+[    7.118515] pwm-regulator regulator-vddee: Looking up pwm-supply from device tree
+[    7.118526] pwm-regulator regulator-vddee: Looking up pwm-supply property in node /regulator-vddee failed
+[    7.118553] VDDEE: supplied by regulator-dummy
+[    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
+Fixes: 524d96083b66 ("ARM: dts: meson8b: odroidc1: add the CPU voltage regulator")
+Fixes: 8bdf38be712d ("ARM: dts: meson8b: odroidc1: add the VDDEE regulator")
+
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
- kernel/sched/fair.c | 4 ++--
+ arch/arm/boot/dts/meson8b-odroidc1.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 23663318fb81..62446c052efb 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5108,7 +5108,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
- static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- {
- 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
--	u64 remaining;
-+	s64 remaining;
+diff --git a/arch/arm/boot/dts/meson8b-odroidc1.dts b/arch/arm/boot/dts/meson8b-odroidc1.dts
+index c440ef94e082..04356bc639fa 100644
+--- a/arch/arm/boot/dts/meson8b-odroidc1.dts
++++ b/arch/arm/boot/dts/meson8b-odroidc1.dts
+@@ -131,7 +131,7 @@ vcck: regulator-vcck {
+ 		regulator-min-microvolt = <860000>;
+ 		regulator-max-microvolt = <1140000>;
  
- 	/* if the call-back is running a quota refresh is already occurring */
- 	if (hrtimer_callback_running(refresh_timer))
-@@ -5116,7 +5116,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+-		vin-supply = <&p5v0>;
++		pwm-supply = <&p5v0>;
  
- 	/* is a quota refresh about to occur? */
- 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
--	if (remaining < min_expire)
-+	if (remaining < (s64)min_expire)
- 		return 1;
+ 		pwms = <&pwm_cd 0 12218 0>;
+ 		pwm-dutycycle-range = <91 0>;
+@@ -163,7 +163,7 @@ vddee: regulator-vddee {
+ 		regulator-min-microvolt = <860000>;
+ 		regulator-max-microvolt = <1140000>;
  
- 	return 0;
+-		vin-supply = <&p5v0>;
++		pwm-supply = <&p5v0>;
+ 
+ 		pwms = <&pwm_cd 1 12218 0>;
+ 		pwm-dutycycle-range = <91 0>;
 -- 
-2.32.0
+2.31.1
 
