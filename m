@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763413B6C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8939C3B6C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhF2C3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhF2C3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:29:19 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C04C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:26:52 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id nd37so33557494ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=436iowW5G+3AhfaQeY6hf4XjL/XjrpmKBydXgJfyA5c=;
-        b=ZgaNzCWSgvDCp3W0+7M7fWukxNa4zA3fTXV1kaarlE9zTzD1fKf8iVqwLsF89vugIC
-         9dcjxKh/qW9PROxd2BblzqndRgBWoyP5PWT7Ca0ICMXU2kOiD9nPC5NZCH7Nma3nK2os
-         2K/GV+jZyxe0vUCCbu/qFMoo7E6Bazc+6seVNiXIzEemn9BPky8X1/7asxp/mTgIzD1W
-         CT63JHVJQej9lyEXcyVFIWegTp3xYHaOiWsZmD4lzu37ZCa2EQox0aV1EIgVm7S2D+fg
-         fPQiuXCDISqeRNxnowY3Ocd+N0XVi3/L5afCqOsq3fxqaVRCugUmPevg2EzrnSIm+lMT
-         GKVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=436iowW5G+3AhfaQeY6hf4XjL/XjrpmKBydXgJfyA5c=;
-        b=ebwRKG27bSVxv6sdlroLHwrO6JTtbVxaSgbiOoxPCkEx6FSPfsIBnZ1gN3aGRtIrjY
-         cI9GpxPvfOFhAz9cSRhhwu4SwcG60W9nN2XmihUdFw3Y124DAt2YigelmhS8WFB6Y2Jk
-         BO2NFNEsOfrzirQgCbuknAaJiVJf4MYL9t9Amiocns6uc5TDySI8yeNnLEMnUDHzO5gJ
-         RADicAnZJFKoEC5vT1b9IQKnHxRr31WqQAQ/qS5bnUoLCT2EBdF1zGC6fW9vdEoWhHuQ
-         525Um36nCVx+WBFrUvnXoEpP66tHc1a/gb0fD9J/zc5/olzbHrMVZav/k5jirMoSeKAx
-         ZZpA==
-X-Gm-Message-State: AOAM531WBicSfADrbaESqkvevESyIyf8DfxkSAxf3xsfdVIM0WJFShwG
-        PqmSzd7fzTSAdnlJp2aQractr2O2GgbFPmaJtRq0
-X-Google-Smtp-Source: ABdhPJxZ3odiQnt9cl8KrT87lSdpmglQti+N9ZByUxEwzMT+zjXAVbmRXZy8vuZGeYWwod7YWLY2hOoSJaOTu2UwbQo=
-X-Received: by 2002:a17:906:a28e:: with SMTP id i14mr26931454ejz.395.1624933611032;
- Mon, 28 Jun 2021 19:26:51 -0700 (PDT)
+        id S231775AbhF2Cap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:30:45 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54777 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230152AbhF2Cao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 22:30:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GDT0v20qNz9sWq;
+        Tue, 29 Jun 2021 12:28:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624933696;
+        bh=bZh2RvEloGm+LxzFe6ghkkDHqSLyezmGmE4gkmNXo8Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LHEq7EFHPV3xcFrHgRuuhbQmut+jGEqKSZwfOZxHW+Yx+E+cmkThuX1M8EegEgfNA
+         eSoyrRX3ZZNPDHDpA2cWOjMarq8gSLx6eUzHN5hhU3Up90Fw6FIbokgHRmqrd8WgTF
+         x66YXDLRINWyG2+vqlbLBPrvKaC4/5eUGY1SzyWPqy4FC9IAkKe3hTuuHKO40hmWJw
+         g57YcR3nDpNP4VAPuUcc+fLUjyivbFW/1hS16n7lnxUb2Sf7V8L3ATHnpfjPq3VH49
+         jAcT5eLNsKHofS+kap05d7Nevoo9CQggTOiVfqsrhJvVyEqR6qeKN8kyZb5BXSX2tk
+         pbwUJcJLHE3NA==
+Date:   Tue, 29 Jun 2021 12:28:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: linux-next: manual merge of the arm64 tree with the arm tree
+Message-ID: <20210629122813.3e0a57b6@canb.auug.org.au>
+In-Reply-To: <20210615092025.7c474d57@canb.auug.org.au>
+References: <20210615092025.7c474d57@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
- <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
- <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
- <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
- <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
- <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com> <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
- <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com> <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
- <b10b3916-74d4-3171-db92-be0afb479a1c@redhat.com> <CACycT3vpMFbc9Fzuo9oksMaA-pVb1dEVTEgjNoft16voryPSWQ@mail.gmail.com>
- <d7e42109-0ba6-3e1a-c42a-898b6f33c089@redhat.com>
-In-Reply-To: <d7e42109-0ba6-3e1a-c42a-898b6f33c089@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 29 Jun 2021 10:26:40 +0800
-Message-ID: <CACycT3u9-id2DxPpuVLtyg4tzrUF9xCAGr7nBm=21HfUJJasaQ@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/tmkW2cOxmwRefyMopW6wNLl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 12:40 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/6/25 =E4=B8=8B=E5=8D=8812:19, Yongji Xie =E5=86=99=E9=81=
-=93:
-> >> 2b) for set_status(): simply relay the message to userspace, reply is =
-no
-> >> needed. Userspace will use a command to update the status when the
-> >> datapath is stop. The the status could be fetched via get_stats().
-> >>
-> >> 2b looks more spec complaint.
-> >>
-> > Looks good to me. And I think we can use the reply of the message to
-> > update the status instead of introducing a new command.
-> >
->
-> Just notice this part in virtio_finalize_features():
->
->          virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
->          status =3D dev->config->get_status(dev);
->          if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
->
-> So we no reply doesn't work for FEATURES_OK.
->
-> So my understanding is:
->
-> 1) We must not use noreply for set_status()
-> 2) We can use noreply for get_status(), but it requires a new ioctl to
-> update the status.
->
-> So it looks to me we need synchronize for both get_status() and
-> set_status().
->
+--Sig_/tmkW2cOxmwRefyMopW6wNLl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-We should not send messages to userspace in the FEATURES_OK case. So
-the synchronization is not necessary.
+Hi all,
 
-Thanks,
-Yongji
+On Tue, 15 Jun 2021 09:20:25 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> Today's linux-next merge of the arm64 tree got a conflict in:
+>=20
+>   arch/arm64/kernel/process.c
+>=20
+> between commit:
+>=20
+>   ab6cef1d1447 ("ARM: 9095/1: ARM64: Remove arm_pm_restart()")
+>=20
+> from the arm tree and commit:
+>=20
+>   b5df5b8307b1 ("arm64: idle: don't instrument idle code with KCOV")
+>=20
+> from the arm64 tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+>=20
+> diff --cc arch/arm64/kernel/process.c
+> index 5591725cebcc,161e8df31a0d..000000000000
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@@ -72,63 -71,8 +71,6 @@@ EXPORT_SYMBOL(__stack_chk_guard)
+>   void (*pm_power_off)(void);
+>   EXPORT_SYMBOL_GPL(pm_power_off);
+>  =20
+> - static void noinstr __cpu_do_idle(void)
+> - {
+> - 	dsb(sy);
+> - 	wfi();
+> - }
+> -=20
+> - static void noinstr __cpu_do_idle_irqprio(void)
+> - {
+> - 	unsigned long pmr;
+> - 	unsigned long daif_bits;
+> -=20
+> - 	daif_bits =3D read_sysreg(daif);
+> - 	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
+> -=20
+> - 	/*
+> - 	 * Unmask PMR before going idle to make sure interrupts can
+> - 	 * be raised.
+> - 	 */
+> - 	pmr =3D gic_read_pmr();
+> - 	gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
+> -=20
+> - 	__cpu_do_idle();
+> -=20
+> - 	gic_write_pmr(pmr);
+> - 	write_sysreg(daif_bits, daif);
+> - }
+> -=20
+> - /*
+> -  *	cpu_do_idle()
+> -  *
+> -  *	Idle the processor (wait for interrupt).
+> -  *
+> -  *	If the CPU supports priority masking we must do additional work to
+> -  *	ensure that interrupts are not masked at the PMR (because the core w=
+ill
+> -  *	not wake up if we block the wake up signal in the interrupt controll=
+er).
+> -  */
+> - void noinstr cpu_do_idle(void)
+> - {
+> - 	if (system_uses_irq_prio_masking())
+> - 		__cpu_do_idle_irqprio();
+> - 	else
+> - 		__cpu_do_idle();
+> - }
+> -=20
+> - /*
+> -  * This is our default idle handler.
+> -  */
+> - void noinstr arch_cpu_idle(void)
+> - {
+> - 	/*
+> - 	 * This should do all the clock switching and wait for interrupt
+> - 	 * tricks
+> - 	 */
+> - 	cpu_do_idle();
+> - 	raw_local_irq_enable();
+> - }
+>  -void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
+> --
+>   #ifdef CONFIG_HOTPLUG_CPU
+>   void arch_cpu_idle_dead(void)
+>   {
+
+This is now a conflict between Linus' tree and the arm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/tmkW2cOxmwRefyMopW6wNLl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDahT0ACgkQAVBC80lX
+0Gx4gQf/VTxou7nkAhcKm1125mnstULz78yXb2fUf7Wl5Cz39RDo42B46tH1lW8+
+GXKECk1SXhXi5IAf7iYtyHHRN3P7AsJgZYr92fhpf0wNK7kPjK55udXgwLq7YJ32
+CB2ZZ0c8RrAgoN1RXcDif0XdHBrySRcD4kKkGfe20kX/xA1TaSfMnWv+/rJZBUdM
+TR5qXHpeLeTcqzqdoxaNDptSAw80a5n2+YVWkwsffz4S0LyMZkYwTZZzJ6MbAl/H
+zrbSDTSoBYX7d0Tew8Rkox9RWRTw3D7p7PLcG0rwgTIkhcDjPJ6QDgl1kGkR/ca7
+6vKwjSQvJ71ERgUt2nCMQ3kuycIk0Q==
+=LrtH
+-----END PGP SIGNATURE-----
+
+--Sig_/tmkW2cOxmwRefyMopW6wNLl--
