@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5683B7AC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69793B7ACB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbhF2XrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 19:47:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:14594 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232615AbhF2XrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:47:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="293897879"
-X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
-   d="scan'208";a="293897879"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 16:44:47 -0700
-X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
-   d="scan'208";a="641504140"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 16:44:47 -0700
-Date:   Tue, 29 Jun 2021 16:44:46 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Bixuan Cui <cuibixuan@huawei.com>,
-        Borislav Petkov <bp@suse.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ras/edac changes for v5.14
-Message-ID: <20210629234446.GA1239895@agluck-desk2.amr.corp.intel.com>
+        id S235538AbhF2XxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:53:10 -0400
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:48874 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233056AbhF2XxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 19:53:02 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 15TNo5fA027394; Wed, 30 Jun 2021 08:50:05 +0900
+X-Iguazu-Qid: 2wGqimLSptaMBrzYf3
+X-Iguazu-QSIG: v=2; s=0; t=1625010605; q=2wGqimLSptaMBrzYf3; m=8tXOEjdEbXlzXauNDjXtyxN5zZQtkWtU8usVbLVyB3s=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1113) id 15TNo3b5034107
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Jun 2021 08:50:04 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1F7111000FD;
+        Wed, 30 Jun 2021 08:50:03 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 15TNo23H001568;
+        Wed, 30 Jun 2021 08:50:02 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v4 0/3] Visconti: Add Toshiba Visconti PCIe host controller driver
+Date:   Wed, 30 Jun 2021 08:49:49 +0900
+X-TSB-HOP: ON
+Message-Id: <20210629234952.306578-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Hi,
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
+This patch series is v4, and the updating record of each file is below:
 
-are available in the Git repository at:
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+    v3 -> v4:
+     - Changed the redundant clock name.
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - Remove white space.
+      - Drop num-viewport and bus-range from required.
+      - Drop status line from example.
+      - Drop bus-range from required.
+      - Removed lines defined in pci-bus.yaml from required.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.14
+  PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+    v3 -> v4:
+      - Change variable from pci_addr to cpu_addr in visconti_pcie_cpu_addr_fixup().
+      - Change the calculation method of CPU addres from subtraction to mask, and
+        add comment.
+      - Drop dma_set_mask_and_coherent().
+      - Drop set MAX_MSI_IRQS.
+      - Drop dev_dbg for Link speed.
+      - Use use the dev_err_probe() to handle the devm_clk_get() failed.
+      - Changed the redundant clock name.
+    v2 -> v3:
+      - Update subject.
+      - Wrap description in 75 columns.
+      - Change config name to PCIE_VISCONTI_HOST.
+      - Update Kconfig text.
+      - Drop empty lines.
+      - Adjusted to 80 columns.
+      - Drop inline from functions for register access.
+      - Changed function name from visconti_pcie_check_link_status to
+        visconti_pcie_link_up.
+      - Update to using dw_pcie_host_init().
+      - Reorder these in the order of use in visconti_pcie_establish_link().
+      - Rewrite visconti_pcie_host_init() without dw_pcie_setup_rc().
+      - Change function name from  visconti_device_turnon() to
+        visconti_pcie_power_on().
+      - Unify formats such as dev_err().
+      - Drop error label in visconti_add_pcie_port(). 
+    v1 -> v2:
+      - Fix typo in commit message.
+      - Drop "depends on OF && HAS_IOMEM" from Kconfig.
+      - Stop using the pointer of struct dw_pcie.
+      - Use _relaxed variant.
+      - Drop dw_pcie_wait_for_link.
+      - Drop dbi resource processing.
+      - Drop MSI IRQ initialization processing.
+  
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+    v3 -> v4:
+      - No update.
+    v2 -> v3:
+      - No update.
+    v1 -> v2:
+      - No update.
 
-for you to fetch changes up to 0a9ece9ba154dd6205709108180952c55e630833:
+Best regards,
+  Nobuhiro
 
-  EDAC/igen6: fix core dependency (2021-06-20 14:04:48 -0700)
+Nobuhiro Iwamatsu (3):
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+  PCI: visconti: Add Toshiba Visconti PCIe host controller driver
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
 
-----------------------------------------------------------------
-Various fixes and support for new CPUS
-- Clean up error messages from thunderx_edac
-- Add MODULE_DEVICE_TABLE to ti_edac so it will autoload
-- Use %pR to print resources in aspeed_edac
-- Add Yazen Ghannam as MAINTAINER for AMD edac drivers
-- Fix Ice Lake and Sapphire Rapids drivers to report correct
-  "near" or "far" device for errors in 2LM configurations
-- Add support of on package high bandwidth memory in Sapphire Rapids
-- New CPU support for three CPUs supporting in-band ECC (IOT SKUs for
-  ICL-NNPI, Tiger Lake and Alder Lake)
-- Don't even try to load Intel EDAC drivers when running as a guest
-- Fix Kconfig dependency on X86_MCE_INTEL for EDAC_IGEN6
+ .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++
+ MAINTAINERS                                   |   2 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-visconti.c    | 360 ++++++++++++++++++
+ 5 files changed, 482 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
 
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      EDAC/aspeed: Use proper format string for printing resource
+-- 
+2.32.0
 
-Bixuan Cui (1):
-      EDAC/ti: Add missing MODULE_DEVICE_TABLE
-
-Christophe JAILLET (1):
-      EDAC/thunderx: Remove irrelevant variable from error messages
-
-Qiuxu Zhuo (6):
-      EDAC/skx_common: Add new ADXL components for 2-level memory
-      EDAC/i10nm: Add detection of memory levels for ICX/SPR servers
-      EDAC/i10nm: Add support for high bandwidth memory
-      EDAC/igen6: Add Intel ICL-NNPI SoC support
-      EDAC/igen6: Add Intel Tiger Lake SoC support
-      EDAC/igen6: Add Intel Alder Lake SoC support
-
-Randy Dunlap (1):
-      EDAC/igen6: fix core dependency
-
-Tony Luck (1):
-      EDAC/Intel: Do not load EDAC driver when running as a guest
-
-Yazen Ghannam (1):
-      MAINTAINERS: Make Yazen Ghannam maintainer for EDAC-AMD64
-
- MAINTAINERS                  |   5 +-
- drivers/edac/Kconfig         |   3 +-
- drivers/edac/aspeed_edac.c   |   4 +-
- drivers/edac/i10nm_base.c    | 174 ++++++++++++++++++--
- drivers/edac/igen6_edac.c    | 374 ++++++++++++++++++++++++++++++++++++++++---
- drivers/edac/pnd2_edac.c     |   3 +
- drivers/edac/sb_edac.c       |   3 +
- drivers/edac/skx_base.c      |   3 +
- drivers/edac/skx_common.c    |  82 ++++++++--
- drivers/edac/skx_common.h    |  34 +++-
- drivers/edac/thunderx_edac.c |   4 +-
- drivers/edac/ti_edac.c       |   1 +
- 12 files changed, 628 insertions(+), 62 deletions(-)
