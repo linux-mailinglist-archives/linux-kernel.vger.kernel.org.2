@@ -2,168 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909C33B7352
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569983B734D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhF2Njl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
+        id S232920AbhF2NjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhF2Nje (ORCPT
+        with ESMTP id S232535AbhF2NjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:39:34 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F39C061760;
-        Tue, 29 Jun 2021 06:37:06 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id z4so1605747plg.8;
-        Tue, 29 Jun 2021 06:37:06 -0700 (PDT)
+        Tue, 29 Jun 2021 09:39:04 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD447C061760;
+        Tue, 29 Jun 2021 06:36:35 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id o11so23263575ejd.4;
+        Tue, 29 Jun 2021 06:36:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zio1lOhtG4EyFNe7HsOIIbxHd7wmDa19V1E41XFuv1o=;
-        b=QKqCSEbf3r5/3ahfxkCWiGFGWMm2Gv2lEAIFmzvp6SohntKV+rz/kKv4TsSqFDMmqJ
-         x2d29scCzZEI9dBPJCiS3U0tRQC12fdJbUAbL9LDs21f04ftV2mQ+DyY/ikZh0MCXsRS
-         qO9MH9rpeiObY6b3ShJyUi+cNDTt3uKN6kxNg9SV5/+hM5pMuKqUTM3UTb+iEkeALkUV
-         qdbIYUwIExxLXIhB/DbFu3T5EJ9MqgryNjGcJftUaN+eoSA4S7V5/XVT/6UNUsgzEKU5
-         pAKiRaWwDJf6b8LWnFPcU0qOsc6EHAJ60+hZr+KkBZ6nwbWlb/9f0q0QWgIHW26V4+iL
-         rPrw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=32vFRN7z5omgoPVrUXlvXHuIAEBAvCU++16V1o40YfQ=;
+        b=P8mbYKF8/NUycXHIHmxKn9v+aCfEg9q7gIEJZOLbb3qLcgn0DG7h0hCtRbyZTLKlxc
+         fWz4qayRVylDRh+rqyx97Q5aMs37f5pzlwu7vUCK18zZZ2hKs+rTR9nev/DKauRaLkgc
+         hBWPgstg/UrUMdGA6/wQjJSL7xOBn8qlhRgaEDgvTJpa4B10R2TRhY3btPdt9JIdKkfu
+         dADVXcI0ZxHu2i0cmsig4gKpqq45bMyq8OmlLEJSEvVv2Z6Uhaj4rVTIHVNGWkYjEz6b
+         4H0FzFlrtZArkFRZ2siDZ+uWcb8pil3p+ZYTZGDX0YueTU+pyyRsG26o2Lalm2Run3W+
+         lgPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zio1lOhtG4EyFNe7HsOIIbxHd7wmDa19V1E41XFuv1o=;
-        b=RlicZLgu8Vf9J6bdz1HlAgVWzQnyM8FUp6565vFNa8QQd5ZelSIeW+WIBiV5xfpjtB
-         MUF04PFaW6vYlb255BUd497i6YARCBROBSxXxcefgLiR026nm6AcJByDDkhUD3x00hka
-         kPRzak9J2KWYWL1vp8Huml4DzXOqYnOZ2P0dax4JqbwVvHBvJo1TQQqVhCuLPkCgrHs2
-         kWWjd0ugwZP33cuBXTopTbAqyfjbG/EHj3qmri1EXG4N2SUMFaLitKa32JWicCkJZj+j
-         0XI+2fFCqvf9F3UJJrvS2ILaK4KuLyETvk74lPA8MMmKOPUsBWwLc3gDEGPcYGsTKvMz
-         bmew==
-X-Gm-Message-State: AOAM5303GdCX1pnsBXS9oesbzMRxtAe1zJX2V8xUx6igjGTVI7HwPXtJ
-        u2+nknLhjSbnV986sUmCGIY=
-X-Google-Smtp-Source: ABdhPJxT9XmVbs1wB+Pc8OCoEZk0cTF8wXN2v0ua6UfCpRvCCjvao0T2oxjaCqTrrcdWeD8WjxoTLw==
-X-Received: by 2002:a17:902:ea0e:b029:128:ad9a:8c68 with SMTP id s14-20020a170902ea0eb0290128ad9a8c68mr17955940plg.68.1624973825988;
-        Tue, 29 Jun 2021 06:37:05 -0700 (PDT)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id m2sm3549327pja.9.2021.06.29.06.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 06:37:05 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Tue, 29 Jun 2021 21:35:41 +0800
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 16/19] staging: qlge: remove deadcode in qlge_build_rx_skb
-Message-ID: <20210629133541.2n3rr7vzglcoy56x@Rk>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-17-coiby.xu@gmail.com>
- <20210622072939.GL1861@kadam>
- <20210624112500.rhtqp7j3odq6b6bq@Rk>
- <20210624124926.GI1983@kadam>
- <20210627105349.pflw2r2b4qus64kf@Rk>
- <20210628064645.GK2040@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=32vFRN7z5omgoPVrUXlvXHuIAEBAvCU++16V1o40YfQ=;
+        b=mYoEgakCl1BRFDNw5kyrsY5Gnu3+om5isMnLncENN70A9aEiF36JuhDbSQlapXbAr/
+         0CJP4Hglmpo/H3eYL9PX6f/tes6+YXH05G4Uoo1ICuuffUrA9KPEa5RZWwoPhz1wnIXR
+         XLaHEgTEDVR7hXi+CVIRiulHiEuFAWPfDmZ0QWpI39PawoxFIZVPXX/k4CvbBBt80dsu
+         difuIWm+7vDulPYcYBw14ziw+qdpqHz0PeK1wQcvWjfQZRuZE1DrOLmtulD2V69bR8r1
+         aLCz59UlgITb14Zp65Zmy7L+XMmCxk/NupPWVtV8X1EWF+CBuozgAcmsKNWbcvIBi3wD
+         j37A==
+X-Gm-Message-State: AOAM531K2kDNC7g9KS+05gAi0y5zg7x7m1HDu3whA2h4L7bYBImJOVbS
+        QtJcGO/DtTzKvyslO8iI3uayIYf5eSLo1tEzakc=
+X-Google-Smtp-Source: ABdhPJzaWTEP4/WdrVuO2XYM02laTSOHQ2IvwusTYzJqSW1lTdc8flTrVKD1fZBT/WhHzmuu/YILPYoPg4b24eHir6Q=
+X-Received: by 2002:a17:906:2844:: with SMTP id s4mr29851513ejc.263.1624973794318;
+ Tue, 29 Jun 2021 06:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210628064645.GK2040@kadam>
+References: <20210604111005.6804-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20210604111005.6804-1-peng.fan@oss.nxp.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 29 Jun 2021 08:36:23 -0500
+Message-ID: <CAHCN7xKYooBQzREdoa8ybhQUBXxy6RPaFX9rp1keD7_HgnVA9Q@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: add pgc/blk_ctl nodes
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Marek Vasut <marex@denx.de>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 09:46:45AM +0300, Dan Carpenter wrote:
->On Sun, Jun 27, 2021 at 06:53:49PM +0800, Coiby Xu wrote:
->> On Thu, Jun 24, 2021 at 03:49:26PM +0300, Dan Carpenter wrote:
->> > On Thu, Jun 24, 2021 at 07:25:00PM +0800, Coiby Xu wrote:
->> > > On Tue, Jun 22, 2021 at 10:29:39AM +0300, Dan Carpenter wrote:
->> > > > On Mon, Jun 21, 2021 at 09:48:59PM +0800, Coiby Xu wrote:
->> > > > > This part of code is for the case that "the headers and data are in
->> > > > > a single large buffer". However, qlge_process_mac_split_rx_intr is for
->> > > > > handling packets that packets underwent head splitting. In reality, with
->> > > > > jumbo frame enabled, the part of code couldn't be reached regardless of
->> > > > > the packet size when ping the NIC.
->> > > > >
->> > > >
->> > > > This commit message is a bit confusing.  We're just deleting the else
->> > > > statement.  Once I knew that then it was easy enough to review
->> > > > qlge_process_mac_rx_intr() and see that if if
->> > > > ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL is set then
->> > > > ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV must be set.
->> > >
->> > > Do you suggest moving to upper if, i.e.
->> > >
->> > >         } else if (ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL && ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS) {
->> > >
->> > > and then deleting the else statement?
->> > >
->> >
->> > I have a rule that when people whinge about commit messages they should
->> > write a better one themselves, but I have violated my own rule.  Sorry.
->> > Here is my suggestion:
->> >
->> >    If the "ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL" condition is true
->> >    then we know that "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" must be
->> >    true as well.  Thus, we can remove that condition and delete the
->> >    else statement which is dead code.
->> >
->> >    (Originally this code was for the case that "the headers and data are
->> >    in a single large buffer". However, qlge_process_mac_split_rx_intr
->> >    is for handling packets that packets underwent head splitting).
->>
->> Thanks for sharing your commit message! Now I see what you mean. But I'm
->> not sure if "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" is true when
->> "ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL" is true.
+On Fri, Jun 4, 2021 at 5:37 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
 >
->Well... It is true.  qlge_process_mac_split_rx_intr() is only called
->when "->flags4 & IB_MAC_IOCB_RSP_HS" is true or when
->"->flags3 & IB_MAC_IOCB_RSP_DL" is false.
-
-Actually qlge_process_mac_rx_intr calls qlge_process_mac_split_rx_intr when 
-"ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV" is true or in the last else,
-
-     /* Process an inbound completion from an rx ring. */
-     static unsigned long qlge_process_mac_rx_intr(struct qlge_adapter *qdev,
-     					      struct rx_ring *rx_ring,
-     					      struct qlge_ib_mac_iocb_rsp *ib_mac_rsp)
-     {
-         ...
-     	if (ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV) {
-     		/* The data and headers are split into
-     		 * separate buffers.
-     		 */
-     		qlge_process_mac_split_rx_intr(qdev, rx_ring, ib_mac_rsp,
-     					       vlan_id);
-     	} else if (ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DS) {
-             ...
-     	} else {
-     		/* Non-TCP/UDP large frames that span multiple buffers
-     		 * can be processed corrrectly by the split frame logic.
-     		 */
-     		qlge_process_mac_split_rx_intr(qdev, rx_ring, ib_mac_rsp,
-     					       vlan_id);
-     	}
-
-So I think we can't say that if "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV" 
-is true,  then "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" must be true. And 
-I don't know how to reach the conclusion that the last else means 
-"->flags3 & IB_MAC_IOCB_RSP_DL" is false.
-
+> From: Peng Fan <peng.fan@nxp.com>
 >
->To me the fact that it's clearly dead code, helps me to verify that the
->patch doesn't change behavior.  Anyway, "this part of code" was a bit
->vague and it took me a while to figure out the patch deletes the else
->statement.
+> With PGC and BLK-CTL landed, we could add pgc and blk-ctl nodes,
+> because some pgc domain relies on blk-ctl power domain, so
+> they need to be added together.
 >
->regards,
->dan carpenter
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
 >
+> V1:
+>  Depends on the blk-ctl patchset,
+>  https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210522134249.15322-1-peng.fan@oss.nxp.com/
+>
+>  Shawn,
+>   Since the blk-ctl patchset is in good shape and tested, is it ok for
+>   you to pick up?
+>  Thanks
+>
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 128 ++++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index e7648c3b8390..0e01ff649956 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -7,6 +7,8 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/power/imx8mm-power.h>
+> +#include <dt-bindings/reset/imx8mq-reset.h>
+>  #include <dt-bindings/thermal/thermal.h>
+>
+>  #include "imx8mm-pinfunc.h"
+> @@ -609,6 +611,109 @@ src: reset-controller@30390000 {
+>                                 interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+>                                 #reset-cells = <1>;
+>                         };
+> +
+> +                       gpc: gpc@303a0000 {
+> +                               compatible = "fsl,imx8mm-gpc";
+> +                               reg = <0x303a0000 0x10000>;
+> +                               interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+> +                               interrupt-parent = <&gic>;
+> +                               interrupt-controller;
+> +                               #interrupt-cells = <3>;
+> +
+> +                               pgc {
+> +                                       #address-cells = <1>;
+> +                                       #size-cells = <0>;
+> +
+> +                                       pgc_hsiomix: power-domain@0 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_HSIOMIX>;
+> +                                               clocks = <&clk IMX8MM_CLK_USB1_CTRL_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_pcie: power-domain@1 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_PCIE>;
+> +                                               power-domains = <&pgc_hsiomix>;
+> +                                               clocks = <&clk IMX8MM_CLK_PCIE1_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_otg1: power-domain@2 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_OTG1>;
+> +                                               power-domains = <&pgc_hsiomix>;
+> +                                       };
+> +
+> +                                       pgc_otg2: power-domain@3 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_OTG2>;
+> +                                               power-domains = <&pgc_hsiomix>;
+> +                                       };
+> +
 
--- 
-Best regards,
-Coiby
+Any change you could add the references to pgc_otg1 and pgc_otg2 to
+their respective OTG nodes?  Without them, enabling OTG1 or OTG2 can
+result in a hang unless it was started in U-Boot.
+
+> +                                       pgc_gpumix: power-domain@4 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_GPUMIX>;
+> +                                               clocks = <&clk IMX8MM_CLK_GPU_BUS_ROOT>,
+> +                                                        <&clk IMX8MM_CLK_GPU_AHB>;
+> +                                       };
+> +
+> +                                       pgc_gpu: power-domain@5 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_GPU>;
+> +                                               clocks = <&clk IMX8MM_CLK_GPU_AHB>,
+> +                                                        <&clk IMX8MM_CLK_GPU_BUS_ROOT>,
+> +                                                        <&clk IMX8MM_CLK_GPU2D_ROOT>,
+> +                                                        <&clk IMX8MM_CLK_GPU3D_ROOT>;
+> +                                               resets = <&src IMX8MQ_RESET_GPU_RESET>;
+> +                                               power-domains = <&pgc_gpumix>;
+> +                                       };
+> +
+> +                                       pgc_vpumix: power-domain@6 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUMIX>;
+> +                                               clocks = <&clk IMX8MM_CLK_VPU_DEC_ROOT>;
+> +                                               resets = <&src IMX8MQ_RESET_VPU_RESET>;
+> +                                       };
+> +
+> +                                       pgc_vpu_g1: power-domain@7 {
+> +                                               #power-domain-cells = <0>;
+> +                                               power-domains =
+> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUG1>;
+> +                                               clocks = <&clk IMX8MM_CLK_VPU_G1_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_vpu_g2: power-domain@8 {
+> +                                               #power-domain-cells = <0>;
+> +                                               power-domains =
+> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUG2>;
+> +                                               clocks = <&clk IMX8MM_CLK_VPU_G2_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_vpu_h1: power-domain@9 {
+> +                                               #power-domain-cells = <0>;
+> +                                               power-domains =
+> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUH1>;
+> +                                               clocks = <&clk IMX8MM_CLK_VPU_H1_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_dispmix: power-domain@10 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_DISPMIX>;
+> +                                               clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
+> +                                                        <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
+> +                                                        <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+> +                                       };
+> +
+> +                                       pgc_mipi: power-domain@11 {
+> +                                               #power-domain-cells = <0>;
+> +                                               reg = <IMX8MM_POWER_DOMAIN_MIPI>;
+> +                                               power-domains =
+> +                                               <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_BUS>;
+> +                                       };
+> +                               };
+> +                       };
+>                 };
+>
+>                 aips2: bus@30400000 {
+> @@ -960,6 +1065,18 @@ aips4: bus@32c00000 {
+>                         #size-cells = <1>;
+>                         ranges = <0x32c00000 0x32c00000 0x400000>;
+>
+> +                       dispmix_blk_ctl: blk_ctl@32e28000 {
+> +                               compatible = "fsl,imx8mm-dispmix-blk-ctl", "syscon";
+> +                               reg = <0x32e28000 0x100>;
+> +                               #power-domain-cells = <1>;
+> +                               #reset-cells = <1>;
+> +                               power-domains = <&pgc_dispmix>, <&pgc_mipi>;
+> +                               power-domain-names = "dispmix", "mipi";
+> +                               clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
+> +                                        <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
+> +                                        <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+> +                       };
+> +
+>                         usbotg1: usb@32e40000 {
+>                                 compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
+>                                 reg = <0x32e40000 0x200>;
+> @@ -1029,6 +1146,17 @@ gpmi: nand-controller@33002000{
+>                         status = "disabled";
+>                 };
+>
+> +               vpumix_blk_ctl: blk-ctl@38330000 {
+> +                       compatible = "fsl,imx8mm-vpumix-blk-ctl", "syscon";
+> +                       reg = <0x38330000 0x100>;
+> +                       #power-domain-cells = <1>;
+> +                       #reset-cells = <1>;
+> +                       power-domains = <&pgc_vpumix>, <&pgc_vpu_g1>, <&pgc_vpu_g2>, <&pgc_vpu_h1>;
+> +                       power-domain-names = "vpumix", "vpu-g1", "vpu-g2", "vpu-h1";
+> +                       clocks = <&clk IMX8MM_CLK_VPU_DEC_ROOT>, <&clk IMX8MM_CLK_VPU_G1_ROOT>,
+> +                                <&clk IMX8MM_CLK_VPU_G2_ROOT>, <&clk IMX8MM_CLK_VPU_H1_ROOT>;
+> +               };
+> +
+>                 gic: interrupt-controller@38800000 {
+>                         compatible = "arm,gic-v3";
+>                         reg = <0x38800000 0x10000>, /* GIC Dist */
+> --
+> 2.30.0
+>
