@@ -2,255 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1D73B70C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F283B70CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233205AbhF2Ke1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232937AbhF2KeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:34:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6BF861DC1;
-        Tue, 29 Jun 2021 10:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624962694;
-        bh=3wkeS6LjECniYU0Q4Rka5Hwi5+LM8FaepjAduPS6+SM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NfvFkd1MbqmHY9tv4wy8XR3sFpJbGs/jCfRfCg6MOADyWBApoe206jFDvNF+Iyf6X
-         b1yq0qqCdjnxskI8qb1BQ3dtQyvzcj0OpKnlqoAIjdDeZifF4oqBCwDCMAhUdBtEWd
-         FBd/a8lVpKPvp0q8aeWTXcZiMGJ34zs/nORRseKVOjHgcVwqzoswlUNWsFALDkc9gW
-         nnI+RR7N1rEZzyxJYpV5cDaXAH1HCjcJDjeTpZoVbCDREgm/CkXF6hB0ObschukNVn
-         sjcgsyLKcIl4uc/vpn9XnJ2VOgcKekliPS7uCwnRxupJL9hqi7KbOJgbt5xqN2pNTY
-         cyeQfGT5icr3A==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lyB1h-00Cx7g-01; Tue, 29 Jun 2021 12:31:33 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Axel Lin" <axel.lin@ingics.com>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10 5/5] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Tue, 29 Jun 2021 12:31:31 +0200
-Message-Id: <b8224f826e243d1fc63967fc67a936616c1f2e7c.1624962269.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624962269.git.mchehab+huawei@kernel.org>
-References: <cover.1624962269.git.mchehab+huawei@kernel.org>
+        id S232969AbhF2Kjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhF2Kje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:39:34 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39959C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:37:06 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:7d95:f75f:5ece:4663])
+        by andre.telenet-ops.be with bizsmtp
+        id Nyd22500E4F6zkK01yd2d6; Tue, 29 Jun 2021 12:37:02 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lyB6z-004qjN-Qv; Tue, 29 Jun 2021 12:37:01 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lyB6z-0087TX-Cy; Tue, 29 Jun 2021 12:37:01 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] pstore/blk: Use "%lu" to format unsigned long
+Date:   Tue, 29 Jun 2021 12:37:00 +0200
+Message-Id: <20210629103700.1935012-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+On 32-bit:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    fs/pstore/blk.c: In function ‘__best_effort_init’:
+    include/linux/kern_levels.h:5:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+	5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+	  |                  ^~~~~~
+    include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
+       14 | #define KERN_INFO KERN_SOH "6" /* informational */
+	  |                   ^~~~~~~~
+    include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
+      373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+	  |         ^~~~~~~~~
+    fs/pstore/blk.c:314:3: note: in expansion of macro ‘pr_info’
+      314 |   pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
+	  |   ^~~~~~~
+
+Fixes: 7bb9557b48fcabaa ("pstore/blk: Use the normal block device I/O path")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
- 2 files changed, 163 insertions(+)
+ fs/pstore/blk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 5e6d7b329771..9e3dfe877ebe 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
+diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
+index 04ce58c939a0ba15..6093088de49fd161 100644
+--- a/fs/pstore/blk.c
++++ b/fs/pstore/blk.c
+@@ -311,7 +311,7 @@ static int __init __best_effort_init(void)
+ 	if (ret)
+ 		kfree(best_effort_dev);
+ 	else
+-		pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
++		pr_info("attached %s (%lu) (no dedicated panic_write!)\n",
+ 			blkdev, best_effort_dev->zone.total_size);
  
- /*
-@@ -430,3 +454,86 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&usb_phy {
-+	phy-supply = <&ldo17>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795c8efc..6476149d99e3 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: usb@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
+ 	return ret;
 -- 
-2.31.1
+2.25.1
 
