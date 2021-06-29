@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551F13B6FF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843403B6FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhF2JSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 05:18:35 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:37565 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbhF2JSc (ORCPT
+        id S232783AbhF2JSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 05:18:39 -0400
+Received: from regular1.263xmail.com ([211.150.70.200]:45410 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232752AbhF2JSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:18:32 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 76C7E200012;
-        Tue, 29 Jun 2021 09:16:02 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH 3/3] riscv: Make sure the kernel mapping does not overlap with IS_ERR_VALUE
-Date:   Tue, 29 Jun 2021 11:13:48 +0200
-Message-Id: <20210629091349.3802690-3-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210629091349.3802690-1-alex@ghiti.fr>
-References: <20210629091349.3802690-1-alex@ghiti.fr>
+        Tue, 29 Jun 2021 05:18:34 -0400
+Received: from localhost (unknown [192.168.167.130])
+        by regular1.263xmail.com (Postfix) with ESMTP id A7FA71C5D;
+        Tue, 29 Jun 2021 17:16:01 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED2: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 1
+Received: from [168.168.4.18] (unknown [183.57.25.242])
+        by smtp.263.net (postfix) whith ESMTP id P12976T140334009423616S1624958159864211_;
+        Tue, 29 Jun 2021 17:16:00 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a0ef72e31076ad47cd5fe2cc15cf44d0>
+X-RL-SENDER: djw@t-chip.com.cn
+X-SENDER: djw@t-chip.com.cn
+X-LOGIN-NAME: djw@t-chip.com.cn
+X-FST-TO: linux-kernel@vger.kernel.org
+X-RCPT-COUNT: 15
+X-SENDER-IP: 183.57.25.242
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v0 2/2] arm64: dts: rockchip: add support for Firefly
+ ROC-RK3399-PC-PLUS
+To:     linux-rockchip@lists.infradead.org
+Cc:     Wayne Chou <zxf@t-chip.com.cn>, Kongxin Deng <dkx@t-chip.com.cn>,
+        Heiko Stuebner <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210628035402.16812-1-djw@t-chip.com.cn>
+ <20210628035402.16812-3-djw@t-chip.com.cn>
+From:   Levin <djw@t-chip.com.cn>
+Message-ID: <149c2171-471e-343e-8126-38394746b044@t-chip.com.cn>
+Date:   Tue, 29 Jun 2021 17:15:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210628035402.16812-3-djw@t-chip.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check that is done in setup_bootmem currently only works for 32-bit
-kernel since the kernel mapping has been moved outside of the linear
-mapping for 64-bit kernel. So make sure that for 64-bit kernel, the kernel
-mapping does not overlap with the last 4K of the addressable memory.
+Hi all, is it possible to turn on some codec mixer switch in the device 
+tree?
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/mm/init.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index a1a0c4afa80f..a90c41bc9485 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -156,7 +156,7 @@ static void __init setup_bootmem(void)
- {
- 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
- 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
--	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
-+	phys_addr_t __maybe_unused max_mapped_addr;
- 	phys_addr_t dram_end;
- 
- #ifdef CONFIG_XIP_KERNEL
-@@ -179,14 +179,20 @@ static void __init setup_bootmem(void)
- 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
- 
- 	dram_end = memblock_end_of_DRAM();
-+#ifndef CONFIG_64BIT
- 	/*
- 	 * memblock allocator is not aware of the fact that last 4K bytes of
- 	 * the addressable memory can not be mapped because of IS_ERR_VALUE
- 	 * macro. Make sure that last 4k bytes are not usable by memblock
--	 * if end of dram is equal to maximum addressable memory.
-+	 * if end of dram is equal to maximum addressable memory. For 64-bit
-+	 * kernel, this problem can't happen here as the end of the virtual
-+	 * address space is occupied by the kernel mapping then this check must
-+	 * be done in create_kernel_page_table.
- 	 */
-+	max_mapped_addr = __pa(~(ulong)0);
- 	if (max_mapped_addr == (dram_end - 1))
- 		memblock_set_current_limit(max_mapped_addr - 4096);
-+#endif
- 
- 	min_low_pfn = PFN_UP(memblock_start_of_DRAM());
- 	max_low_pfn = max_pfn = PFN_DOWN(dram_end);
-@@ -556,6 +562,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
- 	uintptr_t va, end_va;
- 
- 	end_va = kernel_virt_addr + load_sz;
-+
- 	for (va = kernel_virt_addr; va < end_va; va += map_size)
- 		create_pgd_mapping(pgdir, va,
- 				   load_pa + (va - kernel_virt_addr),
-@@ -602,6 +609,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	/* Sanity check alignment and size */
- 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
- 	BUG_ON((load_pa % map_size) != 0);
-+#ifdef CONFIG_64BIT
-+	/*
-+	 * The last 4K bytes of the addressable memory can not be mapped because
-+	 * of IS_ERR_VALUE macro.
-+	 */
-+	BUG_ON((kernel_virt_addr + load_sz) > ADDRESS_SPACE_END - SZ_4K);
-+#endif
- 
- 	pt_ops.alloc_pte = alloc_pte_early;
- 	pt_ops.get_pte_virt = get_pte_virt_early;
+Currently, to hear to sound, we need to run the following commands from 
+the user space:
+
+   # turn on mixer switch
+
+   amixer -c 1 sset 'Left Mixer' on
+   amixer -c 1 sset 'Right Mixer' on
+
+   # raise volume
+
+   amixer -c 1 sset 'Output 2' 36
+
+
+If these settings can be embedded into device tree, and set by kernel as 
+initial ALSA path settings,
+
+user can hear the sound with zero ALSA config. That'll be great.
+
+
+On 2021-06-28 11:54 AM, djw@t-chip.com.cn wrote:
+> +
+> +	es8388-sound {
+> +		compatible = "simple-audio-card";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&hp_det_pin>;
+> +		simple-audio-card,name = "rockchip,es8388-codec";
+> +		simple-audio-card,format = "i2s";
+> +		simple-audio-card,mclk-fs = <256>;
+> +
+> +		simple-audio-card,widgets =
+> +			"Microphone", "Mic Jack",
+> +			"Headphone", "Headphones";
+> +		simple-audio-card,routing =
+> +			"LINPUT1", "Mic Jack",
+> +			"Headphone Amp INL", "LOUT2",
+> +			"Headphone Amp INR", "ROUT2",
+> +			"Headphones", "Headphone Amp OUTL",
+> +			"Headphones", "Headphone Amp OUTR";
+> +
+> +		simple-audio-card,hp-det-gpio = <&gpio2 RK_PA6 GPIO_ACTIVE_HIGH>;
+> +		simple-audio-card,aux-devs = <&headphones_amp>;
+> +		simple-audio-card,pin-switches = "Headphones";
+> +
+> +		simple-audio-card,cpu {
+> +			sound-dai = <&i2s1>;
+> +		};
+> +
+> +		simple-audio-card,codec {
+> +			sound-dai = <&es8388>;
+> +		};
+> +	};
+> +
+>
 -- 
-2.30.2
+Best Regards!
+
+Levin Du
+
+
 
