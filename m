@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AFE3B71C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B903B71C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhF2MI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233141AbhF2MI0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:08:26 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1454C061760;
-        Tue, 29 Jun 2021 05:05:58 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id u11so25471784wrw.11;
-        Tue, 29 Jun 2021 05:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZwIbVY3ptEtNpb22rcbQnSOWt2ow/tmLYWCDFy/3Iz0=;
-        b=RQkZIPgvq1iS040WwRb0k8ogk8bTE/CA0W+7DQhZ8x5UqN++TftOTvF3f8mSRlyoKa
-         lj7qaX2Rw5x0sJCNNlJOWIdC1TFfkLnCyTCtdVPP/w2QRqw3TmG9BIRZpqxUYFWMI1y9
-         UHm7OC6FVy+p7jVqBIOlssFqNrjQTHslNiyJya5D6vjWRIUTaU2ho/CsLKeditqYt1+6
-         J/OaojI+QdbgHsvgFlO4hRvLX73M2m4o/W5S8gz+U/yQBUgLA8C1YIK+w2NK2ilUSViO
-         sW7M9eb187PmmQdtusasIojKH2IyvUnVZoxHJn27h2t470iIn1uIc4ugCPdl3DcQrLVs
-         zSVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZwIbVY3ptEtNpb22rcbQnSOWt2ow/tmLYWCDFy/3Iz0=;
-        b=ZzOs6+NWmIVfgf9SBZQz4xdmk6z8b8cl0et2e/tjeHit5YVYl/hL6l4Dhyh58FxjUt
-         RgV13KPiHvz7pNRAQvIuGBpkO7VKiHzJ/oD4hD8ORMcUIFp7lu5Nqsp4+EhmFFl86jJo
-         2dgS5l11x+nkG8+Q0QjCt5J0YiW6JP9y+2rDfx7yJM9drIvnmmnEGZvplwZ8PJWtknKO
-         dKijkJqLweEoeDiAibmISAan2x9evzQ6RYL+GJfFRn1Ppd1Inilvvo5rdB1jbZVWPmYT
-         5oSasleQ4B1kM6TrEWjjie/s5Of6TgSc7Ay0nyC+NFij9jZi0UmPBcPizOrASdLkbAPG
-         d79g==
-X-Gm-Message-State: AOAM532xrwPEeDlh0gozuB0Z4M89x7IF6r/eRVLDtamcpraHfWmvbMn+
-        4RzCu7yAJzd/xKXBZLkHGs4=
-X-Google-Smtp-Source: ABdhPJxhgDSSIFaN/G5+3sTWvUpyzwYWXxmsIqiQ2zWgJ61EXcYSBaDFiN7WPYlYbxivyFtKwiIdTA==
-X-Received: by 2002:a5d:6547:: with SMTP id z7mr5054177wrv.27.1624968357425;
-        Tue, 29 Jun 2021 05:05:57 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id r10sm18070759wrq.17.2021.06.29.05.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:05:57 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 13:05:55 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
-Message-ID: <YNsMo7UOBZrL5Dht@debian>
-References: <20210628143004.32596-1-sashal@kernel.org>
+        id S233235AbhF2MJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:09:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:5802 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232937AbhF2MJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:09:24 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GDjrb5W3wzB9jv;
+        Tue, 29 Jun 2021 14:06:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zHQr_DDFz2aM; Tue, 29 Jun 2021 14:06:55 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GDjrZ4ZgvzB9f4;
+        Tue, 29 Jun 2021 14:06:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7AD418B7C1;
+        Tue, 29 Jun 2021 14:06:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id dNp7uxly07AA; Tue, 29 Jun 2021 14:06:54 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C9F38B7BE;
+        Tue, 29 Jun 2021 14:06:53 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/4xx: Fix setup_kuep() on SMP
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <b9c2a9add0f11754539e24c6f421bd2009327c36.1624863323.git.christophe.leroy@csgroup.eu>
+ <87tulg7uh6.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <920c4c49-5185-a0d5-0ab2-484effc307cc@csgroup.eu>
+Date:   Tue, 29 Jun 2021 14:06:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
+In-Reply-To: <87tulg7uh6.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
 
-On Mon, Jun 28, 2021 at 10:28:53AM -0400, Sasha Levin wrote:
+
+Le 29/06/2021 à 13:58, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> On SMP, setup_kuep() is also called from start_secondary() since
+>> commit 86f46f343272 ("powerpc/32s: Initialise KUAP and KUEP in C").
+>>
+>> start_secondary() is not an __init function.
+>>
+>> Remove the __init marker from setup_kuep() and bail out when
+>> not caller on the first CPU as the work is already done.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Fixes: 10248dcba120 ("powerpc/44x: Implement Kernel Userspace Exec Protection (KUEP)")
+>> Fixes: 86f46f343272 ("powerpc/32s: Initialise KUAP and KUEP in C").
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/mm/nohash/44x.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/mm/nohash/44x.c b/arch/powerpc/mm/nohash/44x.c
+>> index 7da6d1e9fc9b..20c18bd5b9a0 100644
+>> --- a/arch/powerpc/mm/nohash/44x.c
+>> +++ b/arch/powerpc/mm/nohash/44x.c
+>> @@ -241,8 +241,11 @@ void __init mmu_init_secondary(int cpu)
+>>   #endif /* CONFIG_SMP */
+>>   
+>>   #ifdef CONFIG_PPC_KUEP
+>> -void __init setup_kuep(bool disabled)
+>> +void setup_kuep(bool disabled)
+>>   {
+>> +	if (smp_processor_id() != boot_cpuid)
+>> +		return;
+>> +
+>>   	if (disabled)
+>>   		patch_instruction_site(&patch__tlb_44x_kuep, ppc_inst(PPC_RAW_NOP()));
+>>   	else
 > 
-> This is the start of the stable review cycle for the 5.4.129 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Building ppc44x_defconfig gives me:
 > 
-> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
-> Anything received after that time might be too late.
-
-Build test:
-mips (gcc version 11.1.1 20210615): 65 configs -> no failure
-arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+>    /linux/arch/powerpc/mm/nohash/44x.c: In function 'setup_kuep':
+>    /linux/arch/powerpc/mm/nohash/44x.c:246:35: error: 'boot_cpuid' undeclared (first use in this function); did you mean 'boot_cpu_init'?
+>      246 |         if (smp_processor_id() != boot_cpuid)
+>          |                                   ^~~~~~~~~~
+>          |                                   boot_cpu_init
+>    /linux/arch/powerpc/mm/nohash/44x.c:246:35: note: each undeclared identifier is reported only once for each function it appears in
 
 
---
-Regards
-Sudip
+Seems like we need <asm/smp.h> when we don't have CONFIG_SMP.
 
+I tested it with akebono_defconfig, looks like it has CONFIG_SMP.
