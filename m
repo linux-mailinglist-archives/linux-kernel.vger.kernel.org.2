@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44433B7931
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BCA3B793D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhF2URP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbhF2URO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:17:14 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2F8C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:14:46 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id dj3so11740240qvb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=uvaby5gvroAX5HC+y94a4O9K04hquk3bJ0y+KPQxC60=;
-        b=QOfJ1i6doLCaLKvWd7QE9NcumeGgRhUUqOsGSH37yiiZvQQeBlo+twAHzgkC/+xR7G
-         6Gg9pFiJhN1lWfpjA2zS3jC+D6wkGR9bfz1jquysNgTuoGXVLVahVI1FVAcB1VxBjV39
-         t6577/bHE6eEfg+R9ulGJnpOWWrdmLpbmi9eS7TnD6GwJXCHTzCfRHKrhX2WKFo0SGzV
-         yD5Urp7YBqb2aYcMX/Rw/R7k74UByXC6DXvtlpt6pluEbX4EGYahLBoChaUMfn+R8HDA
-         yPRQNBfJ6HD/6BgKEYC3L1lB9xORbDL9RPu6KBv4uzViTDFbaVVZAf8r0w2VZ6M+O3xV
-         BC0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uvaby5gvroAX5HC+y94a4O9K04hquk3bJ0y+KPQxC60=;
-        b=cEZr2NzAW0FCFHTZmhzae1bs0EDmW6D1QncfH+P42asiJYBZ5X9b74raOn1gd+pnvs
-         6GMNzb7MS6kUBWAyQjpKMUxlvosj/kR24Rnwuxo9lwh0K1Yk6eRvx34zBQXuWx411kdu
-         hsCYdj2W4lyQpjmOKW0I7bljJ9hL1PqFZjtpA3/r6uEBSpfsMKTL313kxtaVu+tqbSfZ
-         5tUuYk3CrBlzC5NJJmiGKL8gl+JAlAXFQV8SnDVcDPvXCiL79N3077WN0SdHvEHo2WrM
-         XHxFkqPXAb2k20ih+jsyJ+24vkAAqPJX6/Rr9AqiUkN78kXQ9GVqGgazohYDKwh28aKz
-         /2jQ==
-X-Gm-Message-State: AOAM5309uUvsOvj/JWZe5IXxHSu2/0098+vALh8gUosq9NOPih36jovI
-        JHA1uNM0TRuZGo9b9IozoEq7/A==
-X-Google-Smtp-Source: ABdhPJypSBP2VAgao4SXGRkrO8wNKGE5V/NO4blik1cOk9WCQLNz/7YlzWaQ8Zkw6IZ3ZZ9yUrNTXg==
-X-Received: by 2002:ad4:4d85:: with SMTP id cv5mr17887549qvb.33.1624997685578;
-        Tue, 29 Jun 2021 13:14:45 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c1::12d2? ([2620:10d:c091:480::1:1f64])
-        by smtp.gmail.com with ESMTPSA id o200sm10300043qke.105.2021.06.29.13.14.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 13:14:45 -0700 (PDT)
-Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
+        id S235265AbhF2UW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233487AbhF2UW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 16:22:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA3861D8C;
+        Tue, 29 Jun 2021 20:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624998031;
+        bh=bICSGDYFeSkCNUGnuvKNS7/wSSeOYM2U/FpPXiDmJgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RATlm6Zf8tzxMTcLPSAQjL1NtGvovqj51un+T+TbgGoACI9EJPlJUydfCOQhAoOve
+         LImjE5NNPEnrwC5jrxEUiXw1epfAXG9ErX91m/i+kpuAZsiVmAmmOt1Q+x7oS54KcS
+         h9zBSm9hzgc5gFg70POaQeuzH3B1hIQRu2wHoESrx30VR+utvNP/bO8O1Vf7dUm9bH
+         mAKYFMvykaXSLjuKgSVXO1xxNakdIiqT8ySa9dx9uBJFeoJHR4daQQwR7mFN/UAbCD
+         +qoBiaiB4ha2p1dwAbt/7h3TDpQypg9SjaK+dZtGttgky96ubTzgLm0Zpn3y/EXUp1
+         rcrtXGKGWOgUw==
+Date:   Tue, 29 Jun 2021 22:20:28 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
- <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
- <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
- <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
- <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <62d1df14-7ee5-8ff4-5676-cf98cdd966df@toxicpanda.com>
-Date:   Tue, 29 Jun 2021 16:14:43 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Linux Containers <containers@lists.linux.dev>
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+Message-ID: <20210629202028.gduluywejae75icj@example.org>
+References: <87fsx1vcr9.fsf@disp2133>
+ <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+ <20210629171757.shyr222zjpm6ev5t@example.org>
+ <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 2:28 PM, Krzysztof Kozlowski wrote:
-> On 29/06/2021 20:06, Krzysztof Kozlowski wrote:
->> Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
->> and 64 cores) fail similarly. I'll try later also QEMU machines with
->> different amount of CPUs.
->>
+On Tue, Jun 29, 2021 at 11:07:11AM -0700, Linus Torvalds wrote:
+> On Tue, Jun 29, 2021 at 10:18 AM Alexey Gladkov <legion@kernel.org> wrote:
+> >
+> >
+> > > And why test for "ucounts" being non-NULL in
+> > >
+> > >                 if (ucounts && dec_rlimit_ucounts(ucounts,
+> > > UCOUNT_RLIMIT_SIGPENDING, 1))
+> > >                         put_ucounts(ucounts);
+> > >
+> > > when afaik both of those should be happy with a NULL 'ucounts' pointer
+> > > (if it was NULL, we certainly already used it for the reverse
+> > > operations for get_ucounts() and inc_rlimit_ucounts()..)
+> >
+> > The get_ucount() can theoretically return NULL. It increments the
+> > reference counter and if it overflows, the function will return NULL.
 > 
-> Test on QEMU machine with 31 CPUs passes. With 32 CPUs - failure as
-> reported.
+> .. but my point is that dec_rlimit_ucounts() and put_ucounts() should
+> be fine with whatever get_ucounts() returned. No
 > 
-> dmesg is empty - no error around this.
+> It looks like put_ucounts() is unhappy with a NULL ucounts argument,
+> but I think _that_ is what should get fixed.
 > 
-> Maybe something with per-cpu variables?
+> I think that conceptually we should have two clear alternatives:
 > 
+>  (a) either "get_ucounts()" returning NULL should be an error, and we
+> would have returned long before
 
-Can I get y'alls .config?  I ran it on one of my 80cpu boxes and it didn't 
-reproduce on my new code or on 5.12.  Thanks,
+get_ucounts() in the __sigqueue_alloc() performs the get_uid() function
+but does not ignore the counter overflow. Basically get_uid() can fail in
+same way as get_ucounts(), but we just ignore it.
 
-Josef
+> or
+> 
+>  (b) a NULL uncounts is usable, and a sequence like
+> put_ucounts(get_ucounts()) should just always work.
+> 
+> And honestly, a lot of the other ucounts funcrtions seem to take that
+> (b) approach. Example in that very function:
+> 
+>         ucounts = task_ucounts(t);
+>         sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
+> 
+> which at no point tested for NULL or returned an error.
+
+Waaaait. task_ucounts() is a different thing. This function only gets a
+field from the task structure without any reference counting. But the
+get_ucounts() is more like get_user_ns() or get_uid(), but does not ignore
+counter overflow.
+
+Earlier I tried to use refcount_t which never returns errors [1]. We
+talked and you said that ignoring counter overflow errors is bad
+design for this case.
+
+> (And that also implies that the comment in dec_rlimit_ucounts() about
+> "Silence compiler warning" should just go away, because it's not just
+> a compiler warning, it's a required initialization).
+> 
+>               Linus
+
+[1] https://lore.kernel.org/lkml/CAHk-%3dwjYOCgM%2bmKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com/
+
+-- 
+Rgrds, legion
+
