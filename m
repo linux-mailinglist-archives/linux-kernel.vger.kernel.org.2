@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E3E3B765C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFD43B765E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhF2QVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S232555AbhF2QVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhF2QUz (ORCPT
+        with ESMTP id S232355AbhF2QVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:20:55 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DB3C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:17:45 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id q207-20020a3743d80000b02903ab34f7ef76so21184757qka.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:17:45 -0700 (PDT)
+        Tue, 29 Jun 2021 12:21:01 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F442C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:18:10 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id k184so18411257ybf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=0F7hMZHCIK+7v4XQf0d2VY6BLy6L3ZoxZU11ibykN9g=;
-        b=B7xyVqn1vrbzkQJ6kBNJL7fDADQ/1pWXqIy1hGlkPun62lYL9b3Y3oczyOZtu3/N3W
-         O+gYGvyqL70jMCAOQhJ51MPhsqJduW0z0m4q9118ZzRPxUlZ+HmyzDjz9kkrqUkaoTxO
-         jePjiVM6SizeP2G0SnOwLsTNKbNJGJSiX9uU2iqCaa6+q75SEJOBHcNiHJTzE7InP8d0
-         EiAISPOa6pv8LEhXJ6HnZmqbVVlO787ozJ1X2DVJp/8n7rfD1zmZvwNS+GsXj6bV81V3
-         4xua1fSjMGaN+Co8+70OXxk7WHtAX4+O+CgMEvQn8OwAOgjvkZFRy3Y/ThEwS+Dg/UFn
-         wKwg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=BYOpa0eRY0yzPQc4EKGSvGo2/Gvb6Wg+JaJbHp+FJMg=;
+        b=U0bvUja8KAHFvp4u97lL8GYu51cJLD0pFeGZ+OlNdRZMP9KG04HiPNYHy/P8W8PGqj
+         fzKAeSboYJBoYWaHDBRzmqA1cvH7URp1/BxmioYXm9LsPp0144pY7AwVa0JZFVl9EBhs
+         hvLjVq/2ZJG+i9kLM1wNpzp5A0dh0p4Oq7ZYMonog1NVhrbcf9RP2rxVnRZWS/fOs9ML
+         BdfCrskGQVp19w4SvllD20ezD0867SEeS76DbxwyRPZ1Oe8f9E0aP5+p2bBVQKQQCrZ2
+         QHyG8n11A0lE0JKjjKm9cHhPWmzSPMJIrtnwMCV7dovf3vjdTHa1qC7bOk0zUPJ+8nnV
+         Hpvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=0F7hMZHCIK+7v4XQf0d2VY6BLy6L3ZoxZU11ibykN9g=;
-        b=OYiXeJ6Nis0HNPzoSAMPn+AjN3daXFktQbqYG5Qy8XXjZr//qEWOYBMeHRyyqcrhFy
-         lNlnq+pyIwK+UcQWQRKJsVHE936035SMU/SOwunks9QNLSq05GHFOhwoy43aF2UnaxXS
-         WL1pmJB4vk4Xf3s4tX8EShE4+A1iog3uu4Hy6TD4lCPjW9Cp2cv3VnyhK8BSeSowGVBk
-         HxRV0u2es17aIAUc35PmZ5N0TKQO3tRiTqAtujUqm+uKDE6IQu8ek1+GYgKzc5iw0pPp
-         jLflEWElKqCqIF/Zn6FxkgQDjxzvqTTboaA7k9JOh+2MMr3DRTkz07hRffF6z6Oopu0V
-         IysQ==
-X-Gm-Message-State: AOAM530CKP3v0wQS4hIkv0kq0IrttNi3eyed+YCojHvngVm+6QinYQVq
-        Em+rWjT+eeCnKm2G0oJx2ResC3KApqs=
-X-Google-Smtp-Source: ABdhPJwuv+f1T/wt98yyV150j1MTUMjtZxdEp86M+9xIWeVtiNpwXJghmBwm5VThdjvcChZFgXs7V4K55zc=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:b4f8:c933:870a:c31d])
- (user=glider job=sendgmr) by 2002:a05:6214:9c6:: with SMTP id
- dp6mr32184504qvb.30.1624983464121; Tue, 29 Jun 2021 09:17:44 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 18:17:38 +0200
-Message-Id: <20210629161738.936790-1-glider@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2] kfence: skip DMA allocations
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org
-Cc:     dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org, Alexander Potapenko <glider@google.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=BYOpa0eRY0yzPQc4EKGSvGo2/Gvb6Wg+JaJbHp+FJMg=;
+        b=ajiMC6dJTxgb2YF+pyFOWjQqMMgrRJHwe61H2XNV6zL2/kvSFAEvu0aaw+CMw4lnjn
+         a+1jEpMALnq7SiXax7+9KOjcTNG1JyApGiXvijD7oSnurzDqlVnPKGci5KTlR3eoT9On
+         CXDxLeZtDMABO1LBwMAi88qBGlVh74ouV/h3VhDmrUDBJ3TCW/sp9Eap2AJtewjeu1Jc
+         x2E20/KiZ0qiyOccTsojQYpk1QH+tfXfpZL4RMLcdV4d+bY15W3K8Ei0rtxA/mLu6HHI
+         C7nYV/DQVL5lNPdd2tqrbIVWdUaPuIzxHQCcPjw/UC8MqOb2ZWVlQ/F/oBHXFGVTi8zi
+         8dPA==
+X-Gm-Message-State: AOAM533FaLW9Kkw+7tfVZV6YRuvZQNkWKUGwCnJxrq/8FAixIQ0owr7n
+        WyYjW2baWt/IobOgH30BYIwqpxxgThw1ep2Oj/Aia4/3
+X-Google-Smtp-Source: ABdhPJz8q2ZJFQK8wtxi5vk878dc8pTsJzkq6gYSstyWqg6wriglt5J+pPTWrrIpeAQ6LXEG01YqPHsl7R3EB3gfqVs=
+X-Received: by 2002:a25:b8d:: with SMTP id 135mr16352021ybl.12.1624983489626;
+ Tue, 29 Jun 2021 09:18:09 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:7010:65d2:b029:bd:9255:88d1 with HTTP; Tue, 29 Jun 2021
+ 09:18:09 -0700 (PDT)
+Reply-To: mrs.bill_chantal66@europe.com
+From:   "Mrs.Bill.Chantal" <kateindina897@gmail.com>
+Date:   Tue, 29 Jun 2021 18:18:09 +0200
+Message-ID: <CADF789vkLQRb=4gbtzHX8yDF5ZsKXPA0GybGyYv4myajUpVd_w@mail.gmail.com>
+Subject: atm visa card compensated
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocation requests with __GFP_DMA/__GFP_DMA32 or
-SLAB_CACHE_DMA/SLAB_CACHE_DMA32 cannot be fulfilled by KFENCE, because
-they must reside in low memory, whereas KFENCE memory pool is located in
-high memory.
+Dear Friend
 
-Skip such allocations to avoid crashes where DMAable memory is expected.
+You have been compensated with the sum of 4 million dollars in this
+united nation the payment will be Issue
 
-Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org # 5.12+
-Signed-off-by: Alexander Potapenko <glider@google.com>
+into atm visa card and send to
 
----
+you from the Santander bank we need your address passport and
+yourwhatsapp number.
 
-v2:
- - added parentheses around the GFP clause, as requested by Marco
----
- mm/kfence/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 4d21ac44d5d35..f7ce3d876bc9e 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -760,6 +760,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
- 	if (size > PAGE_SIZE)
- 		return NULL;
- 
-+	/*
-+	 * Skip DMA allocations. These must reside in the low memory, which we
-+	 * cannot guarantee.
-+	 */
-+	if ((flags & (__GFP_DMA | __GFP_DMA32)) ||
-+	    (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
-+		return NULL;
-+
- 	return kfence_guarded_alloc(s, size, flags);
- }
- 
--- 
-2.32.0.93.g670b81a890-goog
-
+Thanks
+Mrs. bill Chantal
