@@ -2,87 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4933B6F8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB923B6F8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhF2Il0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
+        id S232517AbhF2ImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbhF2IlY (ORCPT
+        with ESMTP id S232432AbhF2ImK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:41:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D740C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:38:57 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ly9Ge-0000KY-En; Tue, 29 Jun 2021 10:38:52 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ly9Gd-0004Fe-IF; Tue, 29 Jun 2021 10:38:51 +0200
-Date:   Tue, 29 Jun 2021 10:38:51 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-Message-ID: <20210629083851.dsejopbe3pbgjer2@pengutronix.de>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
+        Tue, 29 Jun 2021 04:42:10 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C27AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:39:42 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id l24so5684343ejq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2Ihh6r/yiOCC8FK7WVXakw7KuO/gas1k/LFq/CMxqIw=;
+        b=W7ai1jx3PqJhHw6wkmJbdvIXvN29X6Sg/SU0vPMNlmWjo05iPBdMaE2yVk3DLVCHgE
+         hS0HakC3wXcyIVecWOhcbKj8ta7wjc6z8XqPiL6nZ/6rwlGj+pUQ/ClNahC0OI2GyJqX
+         uw57eeqxpBQ7/IfkVwx8iO9mPopuqw6zEIHFLdjLeIBbNhBEXAr/t7pEKeS0o/uPGWCB
+         QZRMBrJyJYF/x0bJVgr/Zg443Hw7HFudhsTixSKD8sDv0PnYlNhbttTc1pLJIk30/uqH
+         UgwD+vgumShL5yqByg/vJ7OVie7vJD3mQAYAz8QnTW/n4vR+9UVIgUbdQrBfql46Rjuw
+         dX9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2Ihh6r/yiOCC8FK7WVXakw7KuO/gas1k/LFq/CMxqIw=;
+        b=SYCCi5kld1P8HvL0SiTvyAgGnVVv+DHaqi7utwutVaiLrDXtMrz8xRoNd00nfb5QJR
+         rYdOtExKntassUwqMGqJec1PU12htOMmPsJkIIgYVohWthqQrUOvDDK3+ihNQHaoT/Ow
+         8vhuXgc2ZspWrGR9xodWGahqV7UqKZyfAxqGTlqaglFwisRzQfQlLZsv3DaG10GcM4mo
+         7C8WvfONX83uAbq0cH0fbEFqzX7mrkCe4Si07A85Cr4yXvbWb7WqDMeWPkrUuS6cKVNB
+         JNA47R3nxj14pHjO3cI8kfKhRt1jbpt4XUSBEsL3nzTj6tSh6xZXZizZA7gtQu4g/Qi8
+         8vXw==
+X-Gm-Message-State: AOAM530x5go5+fkwAOlgQq6E4Ym3lzYyEMjFRO5MaGr8jNmIKeqLYyxh
+        /tDt8a9eeNZXNSjIM6p/mvnPPUHBu5MwOwOv8VZQAw==
+X-Google-Smtp-Source: ABdhPJxTKzO48V3ea8B6W5ebQ4grMwaGmTD7bCRkySEidQTZbPogvLQ/qZHn3Yafb4i8kBCZHNoIQyJ0y3Rjlcrpd6E=
+X-Received: by 2002:a17:906:bc83:: with SMTP id lv3mr4251512ejb.133.1624955981042;
+ Tue, 29 Jun 2021 01:39:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="twcsnips74edkkg2"
-Content-Disposition: inline
-In-Reply-To: <20210528214522.617435-1-sean.anderson@seco.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210628143004.32596-1-sashal@kernel.org>
+In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Jun 2021 14:09:29 +0530
+Message-ID: <CA+G9fYvFLhk4d5LoqcbTs-OoXEWfVzkGtmEyreYK2AKxoSz2tQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Jun 2021 at 20:00, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 5.4.129 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-5.4.y&id2=3Dv5.4.128
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
---twcsnips74edkkg2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Hello Sean,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I wonder what tree you chose as a base here. I found tags/v5.13-rc1~44^2
-as a tree that your patches can be applied to (and tags/v5.13-rc1~44 or
-later doesn't work). I recommend using
+## Build
+* kernel: 5.4.129-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: aeef06043807450ba2a47bc9f5f06c23fc8d9ff9
+* git describe: v5.4.128-71-gaeef06043807
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+28-71-gaeef06043807
 
-	git format-patch --base ...
+## No regressions (compared to v5.4.128-11-g44abe5613656)
 
-=2E This makes it easier for the responsible maintainers to pick the
-right base and allows easier automatic testing.
 
-Best regards
-Uwe
+## No fixes (compared to v5.4.128-11-g44abe5613656)
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+## Test result summary
+ total: 69899, pass: 56272, fail: 1308, skip: 11360, xfail: 959,
 
---twcsnips74edkkg2
-Content-Type: application/pgp-signature; name="signature.asc"
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
 
------BEGIN PGP SIGNATURE-----
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDa3BcACgkQwfwUeK3K
-7AlJowf/dNyTC7mU7OK5CaeXltx0/w38Sm6ieyqX98gYRz2FHFEZ5426HyjnHUe3
-PnlLJSwWJL9dTJUyP4IsjLxMJhZFRzMSUnMOUQLSP1+pVUyhdgubCaLsF5X7aROo
-9mmeaf5C8RC7zhXyUDJluqAL1tEbOKjsQnFeTG+t4mCpHi6MSIFb6F6nT+vEzCOO
-fGNPYMnD17DzB+Cs990uTFHbK4X4Y8GQteRIqxP9BuUI0dPjAs4Ca2UEF9LrN0vm
-aq+6YTbgKSLFEQOUULFJt69tsx0boFLS+YlmggAjwSLFUXnwYsrY2JUsX4IcsFis
-6wCY4K65/h4cq1PN/SPYQzQsi3fvfg==
-=7gCo
------END PGP SIGNATURE-----
-
---twcsnips74edkkg2--
+--
+Linaro LKFT
+https://lkft.linaro.org
