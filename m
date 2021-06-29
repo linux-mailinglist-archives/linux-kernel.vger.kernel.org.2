@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FF83B7304
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B2D3B7306
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhF2NQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:16:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:50892 "EHLO foss.arm.com"
+        id S233900AbhF2NRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:17:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233056AbhF2NQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:16:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11EFC106F;
-        Tue, 29 Jun 2021 06:14:11 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.7.175])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E55A83F718;
-        Tue, 29 Jun 2021 06:14:06 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 14:14:00 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
-Message-ID: <20210629131400.GA24514@C02TD0UTHF1T.local>
-References: <202106281231.E99B92BB13@keescook>
+        id S232487AbhF2NRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:17:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF2B61D5D;
+        Tue, 29 Jun 2021 13:14:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624972493;
+        bh=DO025SKb+VEs0Eqlb7EEbyLJkhVsdGH2nOLagnB7ls4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nFfFr5uQSgSl4CHUmb6b0zI3skWp2FFGTuWEnLkGwm/7cgCgMPUT+1QPJH2G8pWjX
+         F+dXre2v7J8EU9JhQzU5o6lhV7Fuz8zs1YPwPevJH1bQ0lHUhbKZDSvWCvkATOBGwB
+         9H60pQLVmyxpz1vScjk7NUds80FuykyjKQ9Rn1cI=
+Date:   Tue, 29 Jun 2021 15:14:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bing Fan <hptsfb@gmail.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm pl011 serial: support multi-irq request
+Message-ID: <YNscy0UkPr7JaTp1@kroah.com>
+References: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
+ <YNq7Uwj/yJi7NvE8@kroah.com>
+ <d2ba9f70-2ace-d796-8ce8-fd56d73d145b@gmail.com>
+ <YNsPfvcjH3Z6gSUw@kroah.com>
+ <8e3133f8-a528-70fb-d539-9508a6cdcd3a@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202106281231.E99B92BB13@keescook>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e3133f8-a528-70fb-d539-9508a6cdcd3a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On Tue, Jun 29, 2021 at 08:31:00PM +0800, Bing Fan wrote:
+> hello,
+> 
+> 
+> 在 6/29/2021 20:18, Greg KH 写道:
+> > On Tue, Jun 29, 2021 at 07:32:36PM +0800, Bing Fan wrote:
+> > > hello, replied as below. and new patch is at the bottom.
+> > Please submit this properly as the documentation says to do so, I can't
+> > take an attachment :(
+> Ok.
+> > > > > + struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
+> > > > Are you sure you can just cast this like this? Did you test this?
+> > > Yes, i have tested and applied in my project. The function
+> > > pl011_probe calls pl011_setup_port with &amba_dev->dev and uap
+> > > params; and pl011_setup_port set uap->port.dev to the address of
+> > > amba_dev->dev; the two structs' relationship is:     struct
+> > > amba_device {         struct device dev;         ……     }; When
+> > > pointer(uap->port.dev) points to amba_dev->dev address, the momery
+> > > actully stores content of struct amba_device; so the cast assignment
+> > > can be forced to amba_dev.
+> > That is now how this should work, use the correct container_of() cast
+> > instead. That will always work no matter where struct device is in the
+> > structure. You got lucky here :)
+> 
+> changed to "struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);"
+> 
+> 
+> > > > > + + if (!amba_dev) + return -1;
+> > > > Do not make up error numbers, return a specific -ERR* value.
+> > > changed to "return -ENODEV"
+> > So this changed the logic of this function, is that ok?
+> 
+> No, just sanity check.
 
-On Mon, Jun 28, 2021 at 12:32:24PM -0700, Kees Cook wrote:
-> Hi Linus,
-> 
-> Please pull these Clang feature updates for v5.14-rc1.
-> 
-> Thanks!
-> 
-> -Kees
-> 
-> The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
-> 
->   Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/clang-features-v5.14-rc1
-> 
-> for you to fetch changes up to 6a0544606ec7f03e4a2534c87ea989de4bac41ae:
-> 
->   pgo: rectify comment to proper kernel-doc syntax (2021-06-28 12:10:31 -0700)
-> 
-> ----------------------------------------------------------------
-> Clang feature updates for v5.14-rc1
-> 
-> The big addition for this merge window is the core support for Clang's
-> Profile Guided Optimization, which lets Clang build the kernel for
-> improved performance when running specific kernel workloads. This
-> currently covers only vmlinux, but module support is under active
-> development. (Sami Tolvanen, Bill Wendling, Kees Cook, Jarmo Tiitto,
-> Lukas Bulwahn)
+If it can never happen, no need to check for it.
 
-I thought the PGO stuff was on hold given Peter had open concerns, e.g.
+> > > > And how can this happen?
+> > > The function pl011_setup_port isn't called, event pl011_probe isn't
+> > > called.
+> > And how can that ever happen?
+> 
+> If there is no pl011 device.
 
-https://lore.kernel.org/r/20210614154639.GB68749@worktop.programming.kicks-ass.net
+How can that happen here?
 
-... and there didn't seem to be a strong conclusion to the contrary.
+thanks,
 
-> Added CC_HAS_NO_PROFILE_FN_ATTR in preparation for PGO support in
-> the face of the noinstr attribute, paving the way for PGO and fixing
-> GCOV. (Nick Desaulniers)
-> 
-> x86_64 LTO coverage is expaned to 32-bit x86. (Nathan Chancellor)
-> 
-> Small fixes to CFI. (Mark Rutland, Nathan Chancellor)
-
-FWIW, all the rest of this looks good to me.
-
-Thanks,
-Mark.
-
-> 
-> ----------------------------------------------------------------
-> Bill Wendling (1):
->       pgo: rename the raw profile file to vmlinux.profraw
-> 
-> Jarmo Tiitto (2):
->       pgo: Limit allocate_node() to vmlinux sections
->       pgo: Fix sleep in atomic section in prf_open()
-> 
-> Kees Cook (2):
->       MAINTAINERS: Expand and relocate PGO entry
->       pgo: Clean up prf_open() error paths
-> 
-> Lukas Bulwahn (1):
->       pgo: rectify comment to proper kernel-doc syntax
-> 
-> Mark Rutland (1):
->       CFI: Move function_nocfi() into compiler.h
-> 
-> Nathan Chancellor (2):
->       MAINTAINERS: Add Clang CFI section
->       x86, lto: Enable Clang LTO for 32-bit as well
-> 
-> Nick Desaulniers (3):
->       compiler_attributes.h: define __no_profile, add to noinstr
->       compiler_attributes.h: cleanups for GCC 4.9+
->       Kconfig: Introduce ARCH_WANTS_NO_INSTR and CC_HAS_NO_PROFILE_FN_ATTR
-> 
-> Sami Tolvanen (1):
->       pgo: Add Clang's Profile Guided Optimization infrastructure
-> 
->  Documentation/dev-tools/index.rst     |   1 +
->  Documentation/dev-tools/pgo.rst       | 127 +++++++++++
->  MAINTAINERS                           |  25 ++
->  Makefile                              |   3 +
->  arch/Kconfig                          |   8 +
->  arch/arm64/Kconfig                    |   1 +
->  arch/arm64/include/asm/compiler.h     |  16 ++
->  arch/arm64/include/asm/memory.h       |  16 --
->  arch/s390/Kconfig                     |   1 +
->  arch/x86/Kconfig                      |   6 +-
->  arch/x86/boot/Makefile                |   1 +
->  arch/x86/boot/compressed/Makefile     |   1 +
->  arch/x86/crypto/Makefile              |   3 +
->  arch/x86/entry/vdso/Makefile          |   1 +
->  arch/x86/kernel/Makefile              |   3 +
->  arch/x86/kernel/vmlinux.lds.S         |   2 +
->  arch/x86/platform/efi/Makefile        |   1 +
->  arch/x86/purgatory/Makefile           |   1 +
->  arch/x86/realmode/rm/Makefile         |   1 +
->  arch/x86/um/vdso/Makefile             |   1 +
->  drivers/firmware/efi/libstub/Makefile |   1 +
->  include/asm-generic/vmlinux.lds.h     |  32 +++
->  include/linux/compiler.h              |  10 +
->  include/linux/compiler_attributes.h   |  19 +-
->  include/linux/compiler_types.h        |   2 +-
->  include/linux/mm.h                    |  10 -
->  init/Kconfig                          |   3 +
->  kernel/Makefile                       |   1 +
->  kernel/gcov/Kconfig                   |   1 +
->  kernel/pgo/Kconfig                    |  37 +++
->  kernel/pgo/Makefile                   |   5 +
->  kernel/pgo/fs.c                       | 413 ++++++++++++++++++++++++++++++++++
->  kernel/pgo/instrument.c               | 188 ++++++++++++++++
->  kernel/pgo/pgo.h                      | 211 +++++++++++++++++
->  scripts/Makefile.lib                  |  10 +
->  35 files changed, 1130 insertions(+), 32 deletions(-)
->  create mode 100644 Documentation/dev-tools/pgo.rst
->  create mode 100644 kernel/pgo/Kconfig
->  create mode 100644 kernel/pgo/Makefile
->  create mode 100644 kernel/pgo/fs.c
->  create mode 100644 kernel/pgo/instrument.c
->  create mode 100644 kernel/pgo/pgo.h
-> 
-> -- 
-> Kees Cook
+greg k-h
