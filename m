@@ -2,125 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8623B6F2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C3D3B6F47
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhF2IYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        id S232646AbhF2IYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbhF2IYB (ORCPT
+        with ESMTP id S232565AbhF2IYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:24:01 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6FDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:21:34 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d12so8865226pfj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:21:34 -0700 (PDT)
+        Tue, 29 Jun 2021 04:24:39 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36400C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id c8so23164581ybq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VxHib6d2K90USWogCay1vwTHEN43n+hlATnAyEzxsfQ=;
-        b=cgNbDDzaLpsFqfD5U/M/ogaZl5LZIK5vIuXcUeXU7bcqAVe489Xsq9PVQOa1R5dFpT
-         8g1vMH9P/a3A053OZ+04Yhgx3AXOFF3lQN2xRYRnhs15+rIaHUNWF5xMoCqTD9x0gqxN
-         rilMk5q2P+fdv3QaigtxXRmsIgHcl7gg2cbNHcuKYdS3trafyy9zCLUlvGp0534+/NHH
-         mwo7bK9+RcdOKNQ+vse7Yij5OXlDHTQMzpPKe1Uva8+r+1ZZFsIudQRLdwh62QpaxigA
-         wsQB5GhOPyBemc/FKOntJGBvYW8/+N7ms6cYJkfwt4j42RNJNyf5aKwglmwk2a5Z58lG
-         qEyg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
+        b=SiX9r9dgg6r6z6VL+6XFCBA8PtLqqP8EjVjknH/LRrL0MsSzgzW6NoXOwoh0xQNgPV
+         6zIu/InaqEx5zmydhC+QuLMT+UMrbsEXBw2JBgAPME4uXG67oygSZzmwUNSox69rlWOl
+         MX8DDVzp8OTnMDPgbU3dYgjX+GSSPjCuZ14XCNAxPWIgvPccT/Hzd3IOYj+o0/eUUvdb
+         Xp+he1Qspq+Fdop1raUQPjpzigswTnTn1q2/UJAdIYap8JNAzHw0+GAejHDASg54Q5bo
+         S4TvOHlDZq/nWPxwgJroeOGnUqlY5YSG7WsfshaVlEH555kOnVTzX/B0chf7qEMnaXED
+         hqOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VxHib6d2K90USWogCay1vwTHEN43n+hlATnAyEzxsfQ=;
-        b=H84ZMr5RyWcBEi/OMamK0z5vB5pj/wAX3ohV7MDY423y9nK0IiNlOR2/a8lX3c233j
-         TKKD1VKuB5LX6eCH/n0bemlvmu9yhMEGw6Hj4ttvjUDxwCiJ3jBdOdOj+op+aEBKRSDK
-         oyZeltkw+m09DqZJSj+dIG2vfRCcHD63/KyrA+5Yt3Z7lMDiToNx0UDCEEBZFQ4hRJdy
-         9IFuYcVkOdK+kzNxIjR5mRr/RBV9IJBkt2JlxAXSuKrKx1iFWFx7t+J+mk0LiWtYH2P6
-         ItxFBNUemJz26CUwRo7IN0iukhycIwEiFbtKGD9noo0NqyhYfjW2UnxNUKy8Y7718Gsk
-         ivhQ==
-X-Gm-Message-State: AOAM531gv67ms+llfhNLvkPWqd10DDy+o4x122mW8pfzpBSgr2lRfmNS
-        UcebWAkMD+7a6B6EKn3tbR8=
-X-Google-Smtp-Source: ABdhPJyA0b6cE2R38QqM2s77Z01XxTbG4EMb5qtLKhIs9I7hU2ylXBPbOoRRcPQP4J+KmNYXsNY75Q==
-X-Received: by 2002:a05:6a00:8c4:b029:2b4:8334:ed4d with SMTP id s4-20020a056a0008c4b02902b48334ed4dmr28844309pfu.36.1624954894494;
-        Tue, 29 Jun 2021 01:21:34 -0700 (PDT)
-Received: from localhost.localdomain ([13.88.222.67])
-        by smtp.gmail.com with ESMTPSA id 22sm16682073pfo.80.2021.06.29.01.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 01:21:34 -0700 (PDT)
-From:   YeeLi <seven.yi.lee@gmail.com>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        seven.yi.lee@gmail.com
-Subject: [PATCH] driver core: fix e1000e ltr bug
-Date:   Tue, 29 Jun 2021 16:21:28 +0800
-Message-Id: <20210629082128.255988-1-seven.yi.lee@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
+        b=J5Ucw+IiagAuUQaVW7v2SOPa1h5EQiC89+9qVvOgx3/ZsQEuirfBYVNBOQPtHzvBBr
+         u+MhQx1bC3L+s1cUhB8rz9H4xRQGvoNh0Bw3WyGwOGBNuUmUVvhPs4bXyQCnsOJfypI5
+         0e0lZqO3s4rL17M2tZtAaD39ydXg6hGKrz57n9rh6DW+CmmZIR2YaUOuLGkMNuHrCOqb
+         lfV9X9tFOSSpVlznVUtFE+45P8+lAoViXJM6x+05D9zfhM1U7J3sGExACQ/i+A/CFUBz
+         IC+S8eYsl4JlA+Mb3zIPwlzsozlwlkm89o1m1gZ5Opig/KQht0/+AXEUgIjtHC6G9dae
+         zJBw==
+X-Gm-Message-State: AOAM5306wq4wBgz0XRZtnZIJSWZWL9+d7p+K7Ny+4aFT1HdgKxd7HQl3
+        KByEOHVJsDlrhNH0xXi7GyHHvBhAs0VybpkHpxfOyQ==
+X-Google-Smtp-Source: ABdhPJxeB+P2TJ4vfKfTrwgdN9swrJc/3hVQCio5bE343GXZDKj6fcFsoFxiEZmmVoGyrBJ22yERCtdFyRrcpJD+H8o=
+X-Received: by 2002:a25:f0b:: with SMTP id 11mr21678043ybp.518.1624954930973;
+ Tue, 29 Jun 2021 01:22:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+ <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+ <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
+In-Reply-To: <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 29 Jun 2021 10:21:59 +0200
+Message-ID: <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     Neal Cardwell <ncardwell@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In e1000e driver, a PCIe-like device, the max snoop/no-snoop latency
-is the upper limit.So, directly compare the size of lat_enc and
-max_ltr_enc is incorrect.
+On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
+>
+> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell <ncardwell@google.com> wrote:
+> >)
+> >
+> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com> wrote:
+> >>
+> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
+> >>
+> >> > Thanks.
+> >> >
+> >> > Can you also please provide a summary of the event sequence that
+> >> > triggers the bug? Based on your Reported-by tag, I guess this is
+> >based
+> >> > on the syzbot reproducer:
+> >> >
+> >> >
+> >https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
+> >> >
+> >> > but perhaps you can give a summary of the event sequence that
+> >causes
+> >> > the bug? Is it that the call:
+> >> >
+> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+> >> > &(0x7f0000000000)='cdg\x00', 0x4)
+> >> >
+> >> > initializes the CC and happens before the connection is
+> >established,
+> >> > and then when the connection is established, the line that sets:
+> >> >    icsk->icsk_ca_initialized = 0;
+> >> > is incorrect, causing the CC to be initialized again without first
+> >> > calling the cleanup code that deallocates the CDG-allocated memory?
+> >> >
+> >> > thanks,
+> >> > neal
+> >> >
+> >>
+> >> Hi Neal,
+> >>
+> >> The gdb stack trace that lead to init_transfer_input() is as bellow,
+> >the
+> >> current sock state is TCP_SYN_RECV.
+> >
+> >Thanks. That makes sense as a snapshot of time for
+> >tcp_init_transfer(), but I think what would be more useful would be a
+> >description of the sequence of events, including when the CC was
+> >initialized previous to that point (as noted above, was it that the
+> >setsockopt(TCP_CONGESTION) completed before that point?).
+> >
+> >thanks,
+> >neal
+>
+> I resend my message because I accidently used html format in last one. I am very sorry for the inconvenience caused.
+> ---
+> Yes, the CC had been initialized by the setsockopt, after that, it was initialized again in function tcp_init_transfer() because of setting isck_ca_initialized to 0.
 
-    In 1000Mbps, 0x8b9 < 0x1003, 189440 ns < 3145728 ns, correct.
+"the setsockopt" is rather vague, sorry.
 
-    In 100Mbps, 0xc3a < 0x1003, 1900544 ns < 3145728 ns, correct.
 
-    In 10Mbps, 0xe40 < 0x1003, 18874368 > 3145728, incorrect.
+The hard part is that all scenarios have to be considered.
 
-Decoded the lat_enc and max_ltr_enc before compare them is necessary.
+TCP flows can either be passive and active.
 
-Signed-off-by: YeeLi <seven.yi.lee@gmail.com>
----
- drivers/net/ethernet/intel/e1000e/ich8lan.c | 23 ++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+CC can be set :
 
-diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-index 590ad110d383..3bff1b570b76 100644
---- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
-+++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
-@@ -986,6 +986,27 @@ static s32 e1000_k1_workaround_lpt_lp(struct e1000_hw *hw, bool link)
- 	return ret_val;
- }
- 
-+static u32 convert_e1000e_ltr_scale(u32 val)
-+{
-+	if (val > 5)
-+		return 0;
-+
-+	return 1U << (5 * val);
-+}
-+
-+static u64 decoded_ltr(u32 val)
-+{
-+	u64 decoded_latency;
-+	u32 value;
-+	u32 scale;
-+
-+	value = val & 0x03FF;
-+	scale = (val & 0x1C00) >> 10;
-+	decoded_latency = value * convert_e1000e_ltr_scale(scale);
-+
-+	return decoded_latency;
-+}
-+
- /**
-  *  e1000_platform_pm_pch_lpt - Set platform power management values
-  *  @hw: pointer to the HW structure
-@@ -1059,7 +1080,7 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
- 				     E1000_PCI_LTR_CAP_LPT + 2, &max_nosnoop);
- 		max_ltr_enc = max_t(u16, max_snoop, max_nosnoop);
- 
--		if (lat_enc > max_ltr_enc)
-+		if (decoded_ltr(lat_enc) > decoded_ltr(max_ltr_enc))
- 			lat_enc = max_ltr_enc;
- 	}
- 
--- 
-2.25.1
+1) Before the connect() or accept()
+2) After the connect() or accept()
+3) after the connect() but before 3WHS is completed.
 
+So we need to make sure all cases will still work with any combination
+of CDG CC (before/after) in the picture.
+
+Note that a memory leak for a restricted CC (CDG can only be used by
+CAP_NET_ADMIN privileged user)
+ is a small problem compared to more serious bug that could be added
+by an incomplete fix.
+
+I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
+tcp_cdg would no longer need a dynamic memory allocation.
+
+Thank you.
