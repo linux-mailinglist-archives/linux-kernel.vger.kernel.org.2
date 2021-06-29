@@ -2,209 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DA13B7113
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3653B711B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhF2LEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        id S233348AbhF2LIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbhF2LEj (ORCPT
+        with ESMTP id S233096AbhF2LIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:04:39 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9560FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:02:10 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 1F7E8C80062;
-        Tue, 29 Jun 2021 13:02:07 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id c6i2xe2oxy6M; Tue, 29 Jun 2021 13:02:06 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:84eb:1779:dd70:1696] (p200300e37f39490084eB1779Dd701696.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:84eb:1779:dd70:1696])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id E2958C80042;
-        Tue, 29 Jun 2021 13:02:05 +0200 (CEST)
-Subject: Re: [PATCH v4 03/17] drm/uAPI: Add "active bpc" as feedback channel
- for "max bpc" drm property
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-4-wse@tuxedocomputers.com>
- <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
-Message-ID: <11cd3340-46a1-9a6a-88f5-95c225863509@tuxedocomputers.com>
-Date:   Tue, 29 Jun 2021 13:02:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 07:08:09 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3868C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:05:41 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id d7so4657668vkf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WP9FCchbYJUzB6R/6/ON+Jxuohq8iRqrZSlVU+Rrjw4=;
+        b=zNr+QhaljzVJUuIU6WIzFWUp2fx5Zye3NMgh8bh6xk0b2roPZpTtoVSfeLaT2XxQjS
+         xdLhk5kJbjFk1+xksm0cEpgAHjr0/+emTpi1vydDyk1uP74+O1Yp4leXdmkCl8qIHxto
+         V1bQDPVwF3QzMjvMuzEdzUhCED4YX5HknrFMp0sBqG05hVIgSLoFaeSQUI3W72g8O/vU
+         SMbEkekpIK6mnmmE0DxLP67UdCNud2T4zSy+dXafM+5JrrgoFh9N0G3oG+C6RhqJiYy4
+         9xkmzqR5CZnfXuOX0AV5D/Hr8AnoOZnuoRtF+91O3hIUCdtBw1uG9wSxgPGCYC20S8XF
+         emVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WP9FCchbYJUzB6R/6/ON+Jxuohq8iRqrZSlVU+Rrjw4=;
+        b=LWQ9w6JHRGHJ1Tap2McxQUo52wZL0zJcnvxocI22YLwWfp6zU+e9xM6NjJyR9vnmrb
+         S7qsJZkkCUn+LhBe2qAhsG5zX6fO3MpO9g08o37lCpm4GRSaaUSCkA8uA0gUCL7SnJ48
+         fJB1KKEK873peqPVqyKUMlgdGJaTH0leCoLGbBwaIBBcqIPc/6eK6veLSiqWDZrshEmG
+         RHEBRMlG1f8VHsxFOFHSc1mG/TPJX7248HS8qHRrF1mW846isqJOf5ybi290ltxWHWIN
+         noWjxAhc4dImSgXAR2Kz0LI5jy/l8fdOZ711zyHyFZE0OURiRdJ70ioxWygB2iEN+Kl2
+         n8Xg==
+X-Gm-Message-State: AOAM530greiIi1c2tsKttxSQAM3uGrQh+DZUeHf3BNtg1R7JALgwy6cP
+        rhgRV2eEXDfuN2lnPcpieJMAWH0Fodp9qY+Gpq4Z2Q==
+X-Google-Smtp-Source: ABdhPJwXMYfdnb7T7AYFJna2nyocO4egiU9UjX+Mf3NaiSST/rUSiqCxhW5VJEWDTjoBKswtFQdyPzENurhdzMgN/2U=
+X-Received: by 2002:a1f:1d94:: with SMTP id d142mr21604483vkd.6.1624964740826;
+ Tue, 29 Jun 2021 04:05:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <18bbd0cf-4c37-ce9d-eb63-de4131a201e1@tuxedocomputers.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
+ <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
+ <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
+ <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
+ <YMjNaM0z+OzhAeO/@yoga> <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
+ <c6e99362-56c1-f2bd-7170-7b001e0f96fe@linaro.org>
+In-Reply-To: <c6e99362-56c1-f2bd-7170-7b001e0f96fe@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 29 Jun 2021 13:05:04 +0200
+Message-ID: <CAPDyKFqEn2JNao3w9FYmxN92Hrf=e71W77_4ZB=d0NfSEqoY7A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 28.06.21 um 19:03 schrieb Werner Sembach:
-> Am 18.06.21 um 11:11 schrieb Werner Sembach:
->> Add a new general drm property "active bpc" which can be used by graphic
->> drivers to report the applied bit depth per pixel back to userspace.
->>
->> While "max bpc" can be used to change the color depth, there was no way to
->> check which one actually got used. While in theory the driver chooses the
->> best/highest color depth within the max bpc setting a user might not be
->> fully aware what his hardware is or isn't capable off. This is meant as a
->> quick way to double check the setup.
->>
->> In the future, automatic color calibration for screens might also depend on
->> this information being available.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>  drivers/gpu/drm/drm_connector.c | 51 +++++++++++++++++++++++++++++++++
->>  include/drm/drm_connector.h     |  8 ++++++
->>  2 files changed, 59 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
->> index da39e7ff6965..943f6b61053b 100644
->> --- a/drivers/gpu/drm/drm_connector.c
->> +++ b/drivers/gpu/drm/drm_connector.c
->> @@ -1197,6 +1197,14 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
->>   *	drm_connector_attach_max_bpc_property() to create and attach the
->>   *	property to the connector during initialization.
->>   *
->> + * active bpc:
->> + *	This read-only range property tells userspace the pixel color bit depth
->> + *	actually used by the hardware display engine on "the cable" on a
->> + *	connector. The chosen value depends on hardware capabilities, both
->> + *	display engine and connected monitor, and the "max bpc" property.
->> + *	Drivers shall use drm_connector_attach_active_bpc_property() to install
->> + *	this property.
->> + *
-> Regarding "on the cable" and dithering: As far as I can tell, what the dithering option does, is setting a hardware
-> register here:
+On Mon, 28 Jun 2021 at 21:55, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
 >
-> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4534
+> Hi,
 >
-> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4571
+> On 17/06/2021 12:07, Ulf Hansson wrote:
+> > + Rajendra
+> >
+> > On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> >>
+> >> On Tue 15 Jun 05:17 CDT 2021, Ulf Hansson wrote:
+> >>
+> >>> + Mark
+> >>>
+> >>> On Fri, 11 Jun 2021 at 16:34, Dmitry Baryshkov
+> >>> <dmitry.baryshkov@linaro.org> wrote:
+> >>>>
+> >>>> Added Stephen to Cc list
+> >>>>
+> >>>> On Fri, 11 Jun 2021 at 16:50, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >>>>>
+> >>>>> On Fri, 11 Jun 2021 at 12:15, Dmitry Baryshkov
+> >>>>> <dmitry.baryshkov@linaro.org> wrote:
+> >>>>>>
+> >>>>>> In case of nested genpds it is easy to get the following warning from
+> >>>>>> lockdep, because all genpd's mutexes share same locking class. Use the
+> >>>>>> per-genpd locking class to stop lockdep from warning about possible
+> >>>>>> deadlocks. It is not possible to directly use genpd nested locking, as
+> >>>>>> it is not the genpd code calling genpd. There are interim calls to
+> >>>>>> regulator core.
+> >>>>>>
+> >>>>>> [    3.030219] ============================================
+> >>>>>> [    3.030220] WARNING: possible recursive locking detected
+> >>>>>> [    3.030221] 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480 Not tainted
+> >>>>>> [    3.030222] --------------------------------------------
+> >>>>>> [    3.030223] kworker/u16:0/7 is trying to acquire lock:
+> >>>>>> [    3.030224] ffffde0eabd29aa0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> >>>>>> [    3.030236]
+> >>>>>> [    3.030236] but task is already holding lock:
+> >>>>>> [    3.030236] ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> >>>>>> [    3.030240]
+> >>>>>> [    3.030240] other info that might help us debug this:
+> >>>>>> [    3.030240]  Possible unsafe locking scenario:
+> >>>>>> [    3.030240]
+> >>>>>> [    3.030241]        CPU0
+> >>>>>> [    3.030241]        ----
+> >>>>>> [    3.030242]   lock(&genpd->mlock);
+> >>>>>> [    3.030243]   lock(&genpd->mlock);
+> >>>>>> [    3.030244]
+> >>>>>> [    3.030244]  *** DEADLOCK ***
+> >>>>>> [    3.030244]
+> >>>>>> [    3.030244]  May be due to missing lock nesting notation
+> >>>>>> [    3.030244]
+> >>>>>> [    3.030245] 6 locks held by kworker/u16:0/7:
+> >>>>>> [    3.030246]  #0: ffff6cca00010938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> >>>>>> [    3.030252]  #1: ffff8000100c3db0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1f0/0x730
+> >>>>>> [    3.030255]  #2: ffff6cca00ce3188 (&dev->mutex){....}-{3:3}, at: __device_attach+0x3c/0x184
+> >>>>>> [    3.030260]  #3: ffffde0eabcfd6d0 (&genpd->mlock){+.+.}-{3:3}, at: genpd_lock_mtx+0x18/0x2c
+> >>>>>> [    3.030264]  #4: ffff8000100c3968 (regulator_ww_class_acquire){+.+.}-{0:0}, at: regulator_lock_dependent+0x6c/0x1b0
+> >>>>>> [    3.030270]  #5: ffff6cca00a59158 (regulator_ww_class_mutex){+.+.}-{3:3}, at: regulator_lock_recursive+0x94/0x1d0
+> >>>>>> [    3.030273]
+> >>>>>> [    3.030273] stack backtrace:
+> >>>>>> [    3.030275] CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.13.0-rc3-00054-gf8f0a2f2b643-dirty #2480
+> >>>>>> [    3.030276] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+> >>>>>> [    3.030278] Workqueue: events_unbound deferred_probe_work_func
+> >>>>>> [    3.030280] Call trace:
+> >>>>>> [    3.030281]  dump_backtrace+0x0/0x1a0
+> >>>>>> [    3.030284]  show_stack+0x18/0x24
+> >>>>>> [    3.030286]  dump_stack+0x108/0x188
+> >>>>>> [    3.030289]  __lock_acquire+0xa20/0x1e0c
+> >>>>>> [    3.030292]  lock_acquire.part.0+0xc8/0x320
+> >>>>>> [    3.030294]  lock_acquire+0x68/0x84
+> >>>>>> [    3.030296]  __mutex_lock+0xa0/0x4f0
+> >>>>>> [    3.030299]  mutex_lock_nested+0x40/0x50
+> >>>>>> [    3.030301]  genpd_lock_mtx+0x18/0x2c
+> >>>>>> [    3.030303]  dev_pm_genpd_set_performance_state+0x94/0x1a0
+> >>>>>> [    3.030305]  reg_domain_enable+0x28/0x4c
+> >>>>>> [    3.030308]  _regulator_do_enable+0x420/0x6b0
+> >>>>>> [    3.030310]  _regulator_enable+0x178/0x1f0
+> >>>>>> [    3.030312]  regulator_enable+0x3c/0x80
+> >>>>>
+> >>>>> At a closer look, I am pretty sure that it's the wrong code design
+> >>>>> that triggers this problem, rather than that we have a real problem in
+> >>>>> genpd. To put it simply, the code in genpd isn't designed to work like
+> >>>>> this. We will end up in circular looking paths, leading to deadlocks,
+> >>>>> sooner or later if we allow the above code path.
+> >>>>>
+> >>>>> To fix it, the regulator here needs to be converted to a proper PM
+> >>>>> domain. This PM domain should be assigned as the parent to the one
+> >>>>> that is requested to be powered on.
+> >>>>
+> >>>> This more or less resembles original design, replaced per review
+> >>>> request to use separate regulator
+> >>>> (https://lore.kernel.org/linux-arm-msm/160269659638.884498.4031967462806977493@swboyd.mtv.corp.google.com/,
+> >>>> https://lore.kernel.org/linux-arm-msm/20201023131925.334864-1-dmitry.baryshkov@linaro.org/).
+> >>>
+> >>> Thanks for the pointers. In hindsight, it looks like the
+> >>> "regulator-fixed-domain" DT binding wasn't the right thing.
+> >>>
+> >>> Fortunately, it looks like the problem can be quite easily fixed, by
+> >>> moving to a correct model of the domain hierarchy.
+> >>>
+> >>
+> >> Can you give some pointers to how we actually fix this?
+> >>
+> >> The problem that lead us down this path is that drivers/clk/qcom/gdsc.c
+> >> describes power domains, which are parented by domains provided by
+> >> drivers/soc/qcom/rpmhpd.c.
+> >>
+> >> But I am unable to find a way for the gdsc driver to get hold of the
+> >> struct generic_pm_domain of the resources exposed by the rpmhpd driver.
+> >
+> > You don't need a handle to the struct generic_pm_domain, to assign a
+> > parent/child domain. Instead you can use of_genpd_add_subdomain(),
+> > which takes two "struct of_phandle_args*" corresponding to the
+> > parent/child device nodes of the genpd providers and then let genpd
+> > internally do the look up.
 >
-> So dithering seems to be calculated by fixed purpose hardware/firmware outside of the driver?
+> I've taken a look onto of_genpd_add_subdomain. Please correct me if I'm
+> wrong, I have the feeling that this function is badly designed. It
+> provokes to use the following sequence:
+> - register child domain
+> - register child's domain provider
+> - mark child as a subdomain of a parent.
 >
-> The Intel driver does not seem to set a target bpc/bpp for this hardware so I guess it defaults to 6 or 8 bpc?
+> So we have a (short) timeslice when users can get hold of child domain,
+> but the system knows about a child domain, but does not about a
+> parent/child relationship.
 
-Never mind it does. This switch-case does affect the dithering output:
-https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/i915/display/intel_display.c#L4537
+Correct!
 
-As found in this documentation p.548:
-https://01.org/sites/default/files/documentation/intel-gfx-prm-osrc-lkf-vol02c-commandreference-registers-part2.pdf
+This is tricky, but the best we have managed to come up with, so far.
 
-So max bpc and active bpc are affecting/affected by the bpc after dithering.
+Additionally, I think this hasn't been an issue, because providers and
+subdomains have been registered way earlier than consumers. Of course,
+it would be nice with a more robust solution.
 
 >
-> Similar things happen on amd. Here the output dither depth seems to be written to a fixed value however:
+> I think this function should be changed to take struct generic_pm_domain
+> as a second argument. I will attempt refactoring cpuidle-psci-domain to
+> follow this, let's see if this will work.
+
+I am not sure what is the best approach here. You may be right.
+
 >
-> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c#L828
+> Another option would be to export genpd_get_from_provider() and to use
+> genpd_add_subdomain() directly.
+
+That could work too.
+
+Another option would be to introduce an intermediate state for the
+genpd provider, that can be used to prevent devices from getting
+attached to it (returning -EPROBE_DEFER if that happens), until the
+topology (child/parent domains) has been initialized as well. Just
+thinking out loud...
+
 >
-> - https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c#L769
->
-> Does anyone know about a resource where I can read up on the used registers and what this hardware actually does?
-Searching now for a similar register reference for AMD GPUs.
->
-> My proposal for now: "max bpc" affects what happens before dither, so I would keep "active bpc" the same and add another
-> drm property "dither active: true/false". No additional property to control dither, as amdgpu does have one already
-> (which isn't always active?) and Intel driver does only seem prepared for dithering at 6bpc (albeit I don't know why to
-> dither at 6bpc and what depth to dither to?).
->
->>   * Connectors also have one standardized atomic property:
->>   *
->>   * CRTC_ID:
->> @@ -2152,6 +2160,49 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
->>  }
->>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
->>  
->> +/**
->> + * drm_connector_attach_active_bpc_property - attach "active bpc" property
->> + * @connector: connector to attach active bpc property on.
->> + * @min: The minimum bit depth supported by the connector.
->> + * @max: The maximum bit depth supported by the connector.
->> + *
->> + * This is used to check the applied bit depth on a connector.
->> + *
->> + * Returns:
->> + * Zero on success, negative errno on failure.
->> + */
->> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector, int min, int max)
->> +{
->> +	struct drm_device *dev = connector->dev;
->> +	struct drm_property *prop;
->> +
->> +	if (!connector->active_bpc_property) {
->> +		prop = drm_property_create_range(dev, DRM_MODE_PROP_IMMUTABLE, "active bpc",
->> +						 min, max);
->> +		if (!prop)
->> +			return -ENOMEM;
->> +
->> +		connector->active_bpc_property = prop;
->> +		drm_object_attach_property(&connector->base, prop, 0);
->> +	}
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(drm_connector_attach_active_bpc_property);
->> +
->> +/**
->> + * drm_connector_set_active_bpc_property - sets the active bits per color property for a connector
->> + * @connector: drm connector
->> + * @active_bpc: bits per color for the connector currently active on "the cable"
->> + *
->> + * Should be used by atomic drivers to update the active bits per color over a connector.
->> + */
->> +void drm_connector_set_active_bpc_property(struct drm_connector *connector, int active_bpc)
->> +{
->> +	drm_object_property_set_value(&connector->base, connector->active_bpc_property, active_bpc);
->> +}
->> +EXPORT_SYMBOL(drm_connector_set_active_bpc_property);
->> +
->>  /**
->>   * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
->>   * @connector: connector to attach the property on.
->> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
->> index 714d1a01c065..eee86de62a5f 100644
->> --- a/include/drm/drm_connector.h
->> +++ b/include/drm/drm_connector.h
->> @@ -1380,6 +1380,12 @@ struct drm_connector {
->>  	 */
->>  	struct drm_property *max_bpc_property;
->>  
->> +	/**
->> +	 * @active_bpc_property: Default connector property for the active bpc
->> +	 * to be driven out of the connector.
->> +	 */
->> +	struct drm_property *active_bpc_property;
->> +
->>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
->>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
->>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
->> @@ -1702,6 +1708,8 @@ int drm_connector_set_panel_orientation_with_quirk(
->>  	int width, int height);
->>  int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
->>  					  int min, int max);
->> +int drm_connector_attach_active_bpc_property(struct drm_connector *connector, int min, int max);
->> +void drm_connector_set_active_bpc_property(struct drm_connector *connector, int active_bpc);
->>  
->>  /**
->>   * struct drm_tile_group - Tile group metadata
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> I think I'd need this function anyway for the gdsc code. During
+> gdsc_init() we check gdsc status and this requires register access (and
+> thus powering on the parent domain) before the gdsc is registered itself
+> as a power domain.
+
+As a workaround (temporary), perhaps you can add a ->sync_state()
+callback to mitigate part of the problems (which gets called when
+*all* consumers are attached), along the lines of what we also do in
+the cpuidle-psci-domain.
+
+Kind regards
+Uffe
