@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF20F3B7126
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B373B7128
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhF2LNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233329AbhF2LNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:13:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBE9261DC7;
-        Tue, 29 Jun 2021 11:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624965083;
-        bh=qR7dpwEkDa37N8fq1JF+niB5xx9wYkD8oDf8aWqJvS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gsv0XlgkoGrCqUJuMrRL6ilJXwxyc5UDgKzptH+i1jtOVWAzGXi5L3+KFbOJGNENQ
-         qX0bQ8ZFEkb3ecE6dT1/EIsDi4WRRLRoUxRRKJiqlLw+U7tCjDtroMdIJFrM3N21lm
-         ZBcC12OTfBFFPZNNrz9eqk6NGZD4jJ8GtEGnV/vJgGDPRn8AJrBbv9N3vb3h0Pm/3A
-         2HOfIoQkUzwW2IAIe3MSSDAVs754SRfQUjgws1BHg1kYkmSqe3sAL+T1uFFRYyAdNV
-         EQC6bhJsu67vkUA4vCn5iIZB/+Kuzh3CK+J2qKooOeWSZhUPJhbGLgSaN2MSPEs1Pj
-         6TYUx3ManeaoA==
-Date:   Tue, 29 Jun 2021 13:11:20 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNr/2E/T4FRjLOgy@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
-        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
-        loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
- <YNr0uDx1fv+Gjd7m@ninjato>
- <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
- <YNr5Jf3WDTH7U5b7@ninjato>
- <YNr5ZRhT3qn+e9/m@ninjato>
- <20210629105649.nt63mxtiy6u7de3g@vireshk-i7>
+        id S233425AbhF2LOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:14:08 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:9297 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhF2LOF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 07:14:05 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GDhVZ36TVz1BSN7;
+        Tue, 29 Jun 2021 19:06:14 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 29 Jun 2021 19:11:32 +0800
+Received: from [10.174.179.5] (10.174.179.5) by dggpemm500002.china.huawei.com
+ (7.185.36.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 29 Jun
+ 2021 19:11:31 +0800
+Subject: Re: [PATCH net-next 1/3] arm64: barrier: add DGH macros to control
+ memory accesses merging
+To:     Will Deacon <will@kernel.org>,
+        Guangbin Huang <huangguangbin2@huawei.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <catalin.marinas@arm.com>, <maz@kernel.org>,
+        <mark.rutland@arm.com>, <dbrazdil@google.com>,
+        <qperret@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
+        <peterz@infradead.org>
+References: <1624360271-17525-1-git-send-email-huangguangbin2@huawei.com>
+ <1624360271-17525-2-git-send-email-huangguangbin2@huawei.com>
+ <20210622121630.GC30757@willie-the-truck>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <0c8f931b-9da8-ffb0-4b7c-7d291e9af8aa@huawei.com>
+Date:   Tue, 29 Jun 2021 19:11:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sAaNsJX8TpQmVU+g"
-Content-Disposition: inline
-In-Reply-To: <20210629105649.nt63mxtiy6u7de3g@vireshk-i7>
+In-Reply-To: <20210622121630.GC30757@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.5]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Will,
 
---sAaNsJX8TpQmVU+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2021/6/22 20:16, Will Deacon wrote:
+> On Tue, Jun 22, 2021 at 07:11:09PM +0800, Guangbin Huang wrote:
+>> From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>>
+>> DGH prohibits merging memory accesses with Normal-NC or Device-GRE
+>> attributes before the hint instruction with any memory accesses
+>> appearing after the hint instruction. Provide macros to expose it to the
+>> arch code.
+> 
+> Hmm.
+> 
+> The architecture states:
+> 
+>   | DGH is a hint instruction. A DGH instruction is not expected to be
+>   | performance optimal to merge memory accesses with Normal Non-cacheable
+>   | or Device-GRE attributes appearing in program order before the hint
+>   | instruction with any memory accesses appearing after the hint instruction
+>   | into a single memory transaction on an interconnect.
+> 
+> which doesn't make a whole lot of sense to me, in all honesty.
+> 
+>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+>> Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/assembler.h | 7 +++++++
+>>  arch/arm64/include/asm/barrier.h   | 1 +
+>>  2 files changed, 8 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+>> index 8418c1bd8f04..d723899328bd 100644
+>> --- a/arch/arm64/include/asm/assembler.h
+>> +++ b/arch/arm64/include/asm/assembler.h
+>> @@ -90,6 +90,13 @@
+>>  	.endm
+>>  
+>>  /*
+>> + * Data gathering hint
+>> + */
+>> +	.macro	dgh
+>> +	hint	#6
+>> +	.endm
+>> +
+>> +/*
+>>   * RAS Error Synchronization barrier
+>>   */
+>>  	.macro  esb
+>> diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+>> index 451e11e5fd23..02e1735706d2 100644
+>> --- a/arch/arm64/include/asm/barrier.h
+>> +++ b/arch/arm64/include/asm/barrier.h
+>> @@ -22,6 +22,7 @@
+>>  #define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
+>>  #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+>>  
+>> +#define dgh()		asm volatile("hint #6" : : : "memory")
+> 
+> Although I'm fine with this in arm64, I don't think this is the interface
+> which drivers should be using. Instead, once we know what this instruction
+> is supposed to do, we should look at exposing it as part of the I/O barriers
+> and providing a NOP implementation for other architectures. That way,
+> drivers can use it without having to have the #ifdef CONFIG_ARM64 stuff that
+> you have in the later patches here.
 
+How about we adding a interface called flush_wc_writeX(), which can be used to
+flush the write-combined buffers to the device immediately.
+I found it has been disscussed in the below link, but it is unnessary in their
+situation.
+https://patchwork.ozlabs.org/project/netdev/patch/20200102180830.66676-3-liran.alon@oracle.com/
 
-> The case when ``length of \field{write_buf}''=3D0, and at the same time,
-> ``length of \field{read_buf}''=3D0 is called not-a-read-write request
-> and result for such a request is I2C device specific.
+Thanks,
+Xiongfeng
 
-Obviously, I don't know much about the specs and their wording. Still I
-wonder if we can't call it a zero length transfer? This is allowed by
-the I2C standard and SMBus has even a proper name for it (SMBUS_QUICK).
-=46rom my point of view, I would not say it is device specific because
-devices are expected to ACK such a message.
-
-
---sAaNsJX8TpQmVU+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa/9gACgkQFA3kzBSg
-Kba1Jw//QCapndYVkCEmAxCDb4OuBgOzHn/nM06PE9m2MBtPSuR+dRU98n47Bmay
-3VQASHJA+ZydINhHEbMhgClGxDs/jnLV1vx20XraVPzwKLrHG9UDv5dVJCmY6YZq
-3F7GV7bIrbPtFVxDt0d0OjEmDcmSHxG/HQeiVwWKDC+RB/5Ono2oemIN/mrmafqZ
-vP2Pf46cbQNMHbcgOPG8GxFI6jUtVvPB/xXHAf0TA2U/DzuxIbNH69ymhE57VMV2
-ZEQFy+/am9LnhNWbcoaaJCSjVps2e7JqS4en7LOIAexdZGJkNQmog/qZNPmZZkVu
-XY0eLGKS2erq94vh6Wp76VKwRLhG/T2rwkFQxFdzHK89otRcfhHRBr9bMtKdkxkw
-bihc4FqiM4NiejvF0b+wDDGXSLXnT1UNUuyQ8MYHHxl+2bjTEKBajqBL2bzlege4
-upHspbvf/8L3HRlF0UVG01exPBpeUAeiFDM7imoQL6g7Q2itMcYnB0zhxABXZKYm
-xNGbmdd8mftRCnxlYV1qyCYFxACYnrIQAY70d9IaLHjaKEpG2XeHEpMWEopG52Fk
-M4K/JXnhae3vwVCl1ya5aRpMbIZK6wNzyPewXe0FqdZ8NnlITgxyJImPJI2WBy5p
-OBV3Bghg0b/L8vlgFPJP5QLcOY4KjF2VmKBy7Tw/4nB3oxVDihU=
-=hGo0
------END PGP SIGNATURE-----
-
---sAaNsJX8TpQmVU+g--
+> 
+> Will
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> .
+> 
