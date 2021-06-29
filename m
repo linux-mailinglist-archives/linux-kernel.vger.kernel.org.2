@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB883B6C05
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215433B6C0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhF2Baf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
+        id S232072AbhF2Bbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhF2Bae (ORCPT
+        with ESMTP id S231947AbhF2Bby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:30:34 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08407C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 18:28:08 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g24so11386849pji.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 18:28:08 -0700 (PDT)
+        Mon, 28 Jun 2021 21:31:54 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196BDC061574;
+        Mon, 28 Jun 2021 18:29:27 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so771178pjb.5;
+        Mon, 28 Jun 2021 18:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sdAmp65hciYeluIbPve30oHR/GPcy6OyyGVJziF+xHE=;
-        b=ajlC3Y2BbwpJvb//BGwKk0iVmUKdgr6EEkltyLi6EKddugzIYMyVm811CxYaTI5RZ3
-         XRN3lZcqg0qg+ZKvi6Csnfs2+RUTbc+LchNfBOOelhMYtnA1/2shvLGUzCo6Cz8I6y6n
-         Wgb5Dyeh2Nax5GQ3GRJeG23tObPIf5m6B4JIc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JRlGj/MQ8RE/ZATYAF6lewLI2xCcGnw8emgVF67u0j4=;
+        b=COr3/rdPwWZrvA57IqpNwQKkAkOdlgw9G3zxEDMklJgKvsOHPYj0u7v4JmWsSVTyxs
+         doewSEpIm/nJq3/nDL+gWgjXlNMod6G8Lkkg9lWK2KTgcSSXVaf0tS6bHLONuymmcWwV
+         BUeuQiipACrk6f4ypekuWX76xRXJJ9xbbI6gtpP0NlY0plOVn8ckYzpGVoAySpInIzer
+         4SdLUBqnv+FYnoiTGmTADxFAN3Fw1jKxi4PjEiQ3yKJz5GuTyyycqpTwulLBTGKDVXFA
+         /l36zxcs1wp+shDW1rUqUcYwczveCW/z7+4XrmGCesmYVpd1ga5kBxmaHBgaaeKMLejG
+         1r7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sdAmp65hciYeluIbPve30oHR/GPcy6OyyGVJziF+xHE=;
-        b=DMgs51/RRYnTW71Hpmpx9lUOXgDXKXp+aPyrEolx3vamDJNnQkbMi8xkPW/NCUlPuF
-         VMHNv4OMiWfJlmH3rK1x1depqlsHodCViY/tQWQ7ttFw48Lm/PsUrV8UFJjyqz8+AxXP
-         ycmRALrVRVOngkxcweZRCxmQdK9jMucZiYs4s5iu4TyFZxQCSbwqaSgjg3IkxvwTt99G
-         0ZSfT+TEQ/yXpQt+whgHkFxZVVwqmmrR+wlkQ5iTVm5HrS1oMEn4DxSlbwSwftvf+ZfM
-         5EO5C/BF7RG7VUym8eHD4j+yt2Q20fCjqIKm7jRawZrwIRCCdM5eSfOsFbCvozc7BNWf
-         ANyg==
-X-Gm-Message-State: AOAM533sgcy02O8g6CXbRveQAFQ+Cbednz0eWFNpCoyszdws8I6yxw7r
-        hOUs+ASQ6GUANw/WIgN8uLpHig==
-X-Google-Smtp-Source: ABdhPJxeHRsy5dAA1iYKi4mxjymB6XbfjeJZ1igdinqFlEjY7nzYbW2LIcSh8iUm3CRRIRAqczWUSA==
-X-Received: by 2002:a17:90a:ba94:: with SMTP id t20mr16441598pjr.11.1624930087449;
-        Mon, 28 Jun 2021 18:28:07 -0700 (PDT)
-Received: from localhost ([2401:fa00:9:14:7a14:49d8:be7f:e60e])
-        by smtp.gmail.com with UTF8SMTPSA id u10sm15664815pfh.123.2021.06.28.18.28.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 18:28:06 -0700 (PDT)
-From:   Reka Norman <rekanorman@chromium.org>
-X-Google-Original-From: Reka Norman <rekanorman@google.com>
-To:     amd-gfx@lists.freedesktop.org
-Cc:     Reka Norman <rekanorman@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Leo Li <sunpeng.li@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Will Deacon <will@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: Respect CONFIG_FRAME_WARN=0 in dml Makefile
-Date:   Tue, 29 Jun 2021 11:27:18 +1000
-Message-Id: <20210629112647.1.I7813d8e7298aa1a1c6bee84e6fd44a82ca24805c@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JRlGj/MQ8RE/ZATYAF6lewLI2xCcGnw8emgVF67u0j4=;
+        b=a9LlgtYCksG1LznUagm0XrvkeHOzdYAwomvZuDQ9XIcfTcrmIZzJIQMYXI3l9t41AW
+         FHnHJiIiCw7geeI0dUaCYLARMDZXM43UZH3WCSTcyqlJuVYjoXtXZ1qxznlsTmuhvnUO
+         FS6W3jJ/Sd+XXFod/ZXfiHJfet6ob8RBaAfBpd6nRZhzX6bhYAvOGfd6fIiPfeU32e4Z
+         TxlCe+sa9hNCvYxLr0fMKfcv8UgDIEsgmaX56ZKuxGRR6ZsQa0bUbgyTWN3N6NqTmcQ6
+         VAXQVHwYBGOLOnGIc0PbwRD3rSrDgg5mb108b7YUCvm31fFlue1WqFv3OVDRN72ZJcZQ
+         HjFg==
+X-Gm-Message-State: AOAM532Kx/+RE/jAi4Dr8WkUZFFnLYN0Enpj9vZD+h06DdVcZL3K6HNt
+        zeNURAIKzg6iPxgpgRyEqfJNRtp3/xAc9J5cRTA=
+X-Google-Smtp-Source: ABdhPJxfXGa28G4Gw9FxA/WuMOhFcXUJo8D2KmdLkusLDi27M4jCX3Bez4Ajbp4UB3i5EXvhG86joA==
+X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr31418084pjr.213.1624930166649;
+        Mon, 28 Jun 2021 18:29:26 -0700 (PDT)
+Received: from localhost.localdomain ([150.109.127.35])
+        by smtp.gmail.com with ESMTPSA id k13sm15183933pfu.57.2021.06.28.18.29.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Jun 2021 18:29:26 -0700 (PDT)
+From:   Bing Fan <hptsfb@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm pl011 serial: support multi-irq request
+Date:   Tue, 29 Jun 2021 09:29:24 +0800
+Message-Id: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting CONFIG_FRAME_WARN=0 should disable 'stack frame larger than'
-warnings. This is useful for example in KASAN builds. Make the dml
-Makefile respect this config.
+From: Bing Fan <tombinfan@tencent.com>
 
-Fixes the following build warnings with CONFIG_KASAN=y and
-CONFIG_FRAME_WARN=0:
+In order to make pl011 work better, multiple interrupts are
+required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+at the same time, pl011 to GIC does not merge the interrupt
+lines(each serial-interrupt corresponding to different GIC hardware
+interrupt), so need to enable and request multiple gic interrupt
+numbers in the driver.
 
-drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3642:6:
-warning: stack frame size of 2216 bytes in function
-'dml30_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
-drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_mode_vba_31.c:3957:6:
-warning: stack frame size of 2568 bytes in function
-'dml31_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
-
-Signed-off-by: Reka Norman <rekanorman@google.com>
+Signed-off-by: Bing Fan <tombinfan@tencent.com>
 ---
+ drivers/tty/serial/amba-pl011.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
- drivers/gpu/drm/amd/display/dc/dml/Makefile | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index d34024fd798a..45862167e6ce 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -50,6 +50,10 @@ dml_ccflags += -msse2
- endif
- endif
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index 78682c12156a..b63164e89903 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -1703,9 +1703,30 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
  
-+ifneq ($(CONFIG_FRAME_WARN),0)
-+frame_warn_flag := -Wframe-larger-than=2048
-+endif
+ static int pl011_allocate_irq(struct uart_amba_port *uap)
+ {
++	int ret = -1;
++	int i = 0;
++	unsigned int virq = 0;
++	struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
 +
- CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
++	if (!amba_dev)
++		return -1;
++
+ 	pl011_write(uap->im, uap, REG_IMSC);
  
- ifdef CONFIG_DRM_AMD_DC_DCN
-@@ -60,9 +64,9 @@ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) -Wframe-larger-than=2048
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
--CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) -Wframe-larger-than=2048
-+CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) $(frame_warn_flag)
- CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_rq_dlg_calc_31.o := $(dml_ccflags)
- CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
- CFLAGS_REMOVE_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_rcflags)
+-	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
++	for (i = 0; i < AMBA_NR_IRQS; i++) {
++		virq = amba_dev->irq[i];
++		if (virq == 0)
++			break;
++
++		ret = request_irq(virq, pl011_int, IRQF_SHARED, "uart-pl011-*", uap);
++		if (ret < 0) {
++			dev_info(uap->port.dev, "%s %d request %u interrupt failed\n",
++					__func__, __LINE__, virq);
++			break;
++		}
++	}
++
++	return ret;
+ }
+ 
+ /*
 -- 
-2.32.0.93.g670b81a890-goog
+2.17.1
 
