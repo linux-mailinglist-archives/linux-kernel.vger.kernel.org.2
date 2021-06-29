@@ -2,127 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E143B74CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882E73B74D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhF2PHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:07:35 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:34656 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhF2PHb (ORCPT
+        id S234638AbhF2PJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:09:25 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33002 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232521AbhF2PJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:07:31 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyFIN-008dtP-NA; Tue, 29 Jun 2021 09:05:03 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:58984 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyFIM-001WCn-AL; Tue, 29 Jun 2021 09:05:03 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-References: <87fsx1vcr9.fsf@disp2133>
-        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-Date:   Tue, 29 Jun 2021 10:04:19 -0500
-In-Reply-To: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 28 Jun 2021 20:47:12 -0700")
-Message-ID: <87r1gku2z0.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 29 Jun 2021 11:09:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 414EF226E1;
+        Tue, 29 Jun 2021 15:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624979214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CnoGUWZWescFG63BPG+GMarf/Hucped34IpDrlKz2gg=;
+        b=iNMQ8UvJlELZoB5YsU09KmWI4DZsfZZl8UZd6cDWp1Q0MxPEUGdJRvAk3yRfbobbHSJ8Uy
+        Uj3CuUxOaP/cZxWtDgXUAPV89/jUWQO+G5VnRyh6+LWI+zEYgoamf8dVodJ3JGIKuCdT1o
+        niJp8FQcNObZh8th+blLb94DyyQTCqk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624979214;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CnoGUWZWescFG63BPG+GMarf/Hucped34IpDrlKz2gg=;
+        b=pEXsZQWoVQ0W6ut7caDBQbVafZ23Gh2UKDLOKnGZkqsnn7Gu31iIlSlAuJHeOpacz1nO9I
+        o2fjz3X9ObGlFYDw==
+Received: from un68u.suse.de (unknown [10.163.42.126])
+        by relay2.suse.de (Postfix) with ESMTP id EFC46A3B88;
+        Tue, 29 Jun 2021 15:06:53 +0000 (UTC)
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        bruno.thomsen@gmail.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        biwen.li@nxp.com, Mian Yousaf Kaukab <ykaukab@suse.de>
+Subject: [PATCH v6] rtc: pcf2127: handle timestamp interrupts
+Date:   Tue, 29 Jun 2021 17:06:43 +0200
+Message-Id: <20210629150643.31551-1-ykaukab@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lyFIM-001WCn-AL;;;mid=<87r1gku2z0.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX192t3ZGKJh38+xv4Fmewi8hlGXzg4wt6Nc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4997]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 689 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (1.8%), b_tie_ro: 11 (1.6%), parse: 1.24
-        (0.2%), extract_message_metadata: 20 (2.9%), get_uri_detail_list: 2.2
-        (0.3%), tests_pri_-1000: 15 (2.1%), tests_pri_-950: 1.15 (0.2%),
-        tests_pri_-900: 1.04 (0.2%), tests_pri_-90: 307 (44.6%), check_bayes:
-        296 (43.0%), b_tokenize: 6 (0.8%), b_tok_get_all: 102 (14.8%),
-        b_comp_prob: 3.4 (0.5%), b_tok_touch_all: 182 (26.4%), b_finish: 0.92
-        (0.1%), tests_pri_0: 315 (45.8%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 2.7 (0.4%), poll_dns_idle: 0.55 (0.1%), tests_pri_10:
-        3.3 (0.5%), tests_pri_500: 9 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+added support for timestamp interrupts. However they are not being
+handled in the irq handler. If a timestamp interrupt occurs it
+results in kernel disabling the interrupt and displaying the call
+trace:
 
-> On Mon, Jun 28, 2021 at 3:35 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> This is the work mainly by Alexey Gladkov to limit rlimits to the
->> rlimits of the user that created a user namespace, and to allow users to
->> have stricter limits on the resources created within a user namespace.
->
-> I guess all the performance issues got sorted, since I haven't seen
-> any reports from the test robots.
+[  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+...
+[  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+[  121.248971] Disabling IRQ #78
 
-Yes.  The structure was made to not change anything unnecessarily
-(such as the ordering in sigqueue_alloc) and the performances
-differences went away.
+Handle timestamp interrupts in pcf2127_rtc_irq(). Save time stamp
+before clearing TSF1 and TSF2 flags so that it can't be overwritten.
+Set a flag to mark if the timestamp is valid and only report to sysfs
+if the flag is set. To mimic the hardware behavior, don’t save
+another timestamp until the first one has been read by the userspace.
 
-With the code in linux-next the entire cycle I think that is a reliable
-result.  There are probably some things we could do to further optimize
-things but we did not need them to avoid regressions.
+However, if the alarm irq is not configured, keep the old way of
+handling timestamp interrupt in the timestamp0 sysfs calls.
 
-> I do end up with two questions, mainly because of looking at the
-> result of the conflict resolution.
->
-> In particular, in __sigqueue_alloc(), two oddities..
->
-> Why the "sigpending < LONG_MAX" test in that
->
->         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
-> task_rlimit(t, RLIMIT_SIGPENDING))) {
->
-> thing?
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+---
+Sorry, once again compile tested only due to lack of hardware
+availability. Hopefully, I will be able to do some real tests tomorrow.
 
-> And why test for "ucounts" being non-NULL in
->
->                 if (ucounts && dec_rlimit_ucounts(ucounts,
-> UCOUNT_RLIMIT_SIGPENDING, 1))
->                         put_ucounts(ucounts);
->
-> when afaik both of those should be happy with a NULL 'ucounts' pointer
-> (if it was NULL, we certainly already used it for the reverse
-> operations for get_ucounts() and inc_rlimit_ucounts()..)
->
-> Hmm?
+history:
+v6: -Fix pcf2127_wdt_active_ping() calls according to comments from Bruno
+    -Call pcf2127_rtc_ts_read() with correct dev pointer
+v5: -Add irq_enabled flag to keep track of alarm irq. Revert
+     to current way of handling timestamp interrupt in sysfs callsbacks
+     if alarm irq is not configured
+v4: -Save timestamp before clearing TSF1 and TSF2 flags
+    -Rename timstamp_valid flag to ts_valid
+v3: -Restore call to pcf2127_wdt_active_ping() in timestamp0_store().
+     It was removed by mistake.
+v2: -Add a flag to mark the occurrence of timestamp interrupt
+    -Add Biwen Li in Cc
 
-Yes.  I suspect that those tests are left over from a previous version
-of the change.  Alex do you remember why those tests are there?
+ drivers/rtc/rtc-pcf2127.c | 192 ++++++++++++++++++++++++++------------
+ 1 file changed, 133 insertions(+), 59 deletions(-)
 
-> And somebody should verify that I didn't screw anything up in my merge
-> resolution. It all looked very straightforward, but mistakes happen..
+diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+index 48ce1e85deb1..56c58b055dff 100644
+--- a/drivers/rtc/rtc-pcf2127.c
++++ b/drivers/rtc/rtc-pcf2127.c
+@@ -94,10 +94,20 @@
+ #define PCF2127_WD_VAL_MAX		255
+ #define PCF2127_WD_VAL_DEFAULT		60
+ 
++/* Mask for currently enabled interrupts */
++#define PCF2127_CTRL1_IRQ_MASK (PCF2127_BIT_CTRL1_TSF1)
++#define PCF2127_CTRL2_IRQ_MASK ( \
++		PCF2127_BIT_CTRL2_AF | \
++		PCF2127_BIT_CTRL2_WDTF | \
++		PCF2127_BIT_CTRL2_TSF2)
++
+ struct pcf2127 {
+ 	struct rtc_device *rtc;
+ 	struct watchdog_device wdd;
+ 	struct regmap *regmap;
++	time64_t ts;
++	bool ts_valid;
++	bool irq_enabled;
+ };
+ 
+ /*
+@@ -434,23 +444,96 @@ static int pcf2127_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+ 	return pcf2127_rtc_alarm_irq_enable(dev, alrm->enabled);
+ }
+ 
++/*
++ * This function reads ctrl2 register, caller is responsible for calling
++ * pcf2127_wdt_active_ping()
++ */
++static int pcf2127_rtc_ts_read(struct device *dev, time64_t *ts)
++{
++	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
++	struct rtc_time tm;
++	int ret;
++	unsigned char data[25];
++
++	ret = regmap_bulk_read(pcf2127->regmap, PCF2127_REG_CTRL1, data,
++			       sizeof(data));
++	if (ret) {
++		dev_err(dev, "%s: read error ret=%d\n", __func__, ret);
++		return ret;
++	}
++
++	dev_dbg(dev,
++		"%s: raw data is cr1=%02x, cr2=%02x, cr3=%02x, ts_sc=%02x, ts_mn=%02x, ts_hr=%02x, ts_dm=%02x, ts_mo=%02x, ts_yr=%02x\n",
++		__func__, data[PCF2127_REG_CTRL1], data[PCF2127_REG_CTRL2],
++		data[PCF2127_REG_CTRL3], data[PCF2127_REG_TS_SC],
++		data[PCF2127_REG_TS_MN], data[PCF2127_REG_TS_HR],
++		data[PCF2127_REG_TS_DM], data[PCF2127_REG_TS_MO],
++		data[PCF2127_REG_TS_YR]);
++
++	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
++	tm.tm_min = bcd2bin(data[PCF2127_REG_TS_MN] & 0x7F);
++	tm.tm_hour = bcd2bin(data[PCF2127_REG_TS_HR] & 0x3F);
++	tm.tm_mday = bcd2bin(data[PCF2127_REG_TS_DM] & 0x3F);
++	/* TS_MO register (month) value range: 1-12 */
++	tm.tm_mon = bcd2bin(data[PCF2127_REG_TS_MO] & 0x1F) - 1;
++	tm.tm_year = bcd2bin(data[PCF2127_REG_TS_YR]);
++	if (tm.tm_year < 70)
++		tm.tm_year += 100; /* assume we are in 1970...2069 */
++
++	ret = rtc_valid_tm(&tm);
++	if (ret) {
++		dev_err(dev, "Invalid timestamp. ret=%d\n", ret);
++		return ret;
++	}
++
++	*ts = rtc_tm_to_time64(&tm);
++	return 0;
++};
++
++static void pcf2127_rtc_ts_snapshot(struct device *dev)
++{
++	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
++	int ret;
++
++	/* Let userspace read the first timestamp */
++	if (pcf2127->ts_valid)
++		return;
++
++	ret = pcf2127_rtc_ts_read(dev, &pcf2127->ts);
++	if (!ret)
++		pcf2127->ts_valid = true;
++}
++
+ static irqreturn_t pcf2127_rtc_irq(int irq, void *dev)
+ {
+ 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
+-	unsigned int ctrl2 = 0;
++	unsigned int ctrl1, ctrl2;
+ 	int ret = 0;
+ 
++	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
++	if (ret)
++		return IRQ_NONE;
++
+ 	ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
+ 	if (ret)
+ 		return IRQ_NONE;
+ 
+-	if (!(ctrl2 & PCF2127_BIT_CTRL2_AF))
++	if (!(ctrl1 & PCF2127_CTRL1_IRQ_MASK || ctrl2 & PCF2127_CTRL2_IRQ_MASK))
+ 		return IRQ_NONE;
+ 
+-	regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
+-		     ctrl2 & ~(PCF2127_BIT_CTRL2_AF | PCF2127_BIT_CTRL2_WDTF));
++	if (ctrl1 & PCF2127_BIT_CTRL1_TSF1 || ctrl2 & PCF2127_BIT_CTRL2_TSF2)
++		pcf2127_rtc_ts_snapshot(dev);
++
++	if (ctrl1 & PCF2127_CTRL1_IRQ_MASK)
++		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL1,
++			ctrl1 & ~PCF2127_CTRL1_IRQ_MASK);
++
++	if (ctrl2 & PCF2127_CTRL2_IRQ_MASK)
++		regmap_write(pcf2127->regmap, PCF2127_REG_CTRL2,
++			ctrl2 & ~PCF2127_CTRL2_IRQ_MASK);
+ 
+-	rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
++	if (ctrl2 & PCF2127_BIT_CTRL2_AF)
++		rtc_update_irq(pcf2127->rtc, 1, RTC_IRQF | RTC_AF);
+ 
+ 	pcf2127_wdt_active_ping(&pcf2127->wdd);
+ 
+@@ -475,23 +558,27 @@ static ssize_t timestamp0_store(struct device *dev,
+ 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
+ 	int ret;
+ 
+-	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+-				 PCF2127_BIT_CTRL1_TSF1, 0);
+-	if (ret) {
+-		dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
+-		return ret;
+-	}
++	if (pcf2127->irq_enabled) {
++		pcf2127->ts_valid = false;
++	} else {
++		ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
++			PCF2127_BIT_CTRL1_TSF1, 0);
++		if (ret) {
++			dev_err(dev, "%s: update ctrl1 ret=%d\n", __func__, ret);
++			return ret;
++		}
+ 
+-	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
+-				 PCF2127_BIT_CTRL2_TSF2, 0);
+-	if (ret) {
+-		dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
+-		return ret;
+-	}
++		ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL2,
++			PCF2127_BIT_CTRL2_TSF2, 0);
++		if (ret) {
++			dev_err(dev, "%s: update ctrl2 ret=%d\n", __func__, ret);
++			return ret;
++		}
+ 
+-	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
+-	if (ret)
+-		return ret;
++		ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
++		if (ret)
++			return ret;
++	}
+ 
+ 	return count;
+ };
+@@ -500,50 +587,36 @@ static ssize_t timestamp0_show(struct device *dev,
+ 			       struct device_attribute *attr, char *buf)
+ {
+ 	struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
+-	struct rtc_time tm;
++	unsigned int ctrl1, ctrl2;
+ 	int ret;
+-	unsigned char data[25];
+-
+-	ret = regmap_bulk_read(pcf2127->regmap, PCF2127_REG_CTRL1, data,
+-			       sizeof(data));
+-	if (ret) {
+-		dev_err(dev, "%s: read error ret=%d\n", __func__, ret);
+-		return ret;
+-	}
+-
+-	dev_dbg(dev,
+-		"%s: raw data is cr1=%02x, cr2=%02x, cr3=%02x, ts_sc=%02x, "
+-		"ts_mn=%02x, ts_hr=%02x, ts_dm=%02x, ts_mo=%02x, ts_yr=%02x\n",
+-		__func__, data[PCF2127_REG_CTRL1], data[PCF2127_REG_CTRL2],
+-		data[PCF2127_REG_CTRL3], data[PCF2127_REG_TS_SC],
+-		data[PCF2127_REG_TS_MN], data[PCF2127_REG_TS_HR],
+-		data[PCF2127_REG_TS_DM], data[PCF2127_REG_TS_MO],
+-		data[PCF2127_REG_TS_YR]);
++	time64_t ts;
++
++	if (pcf2127->irq_enabled) {
++		if (!pcf2127->ts_valid)
++			return 0;
++		ts = pcf2127->ts;
++	} else {
++		ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL1, &ctrl1);
++		if (ret)
++			return 0;
+ 
+-	ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
+-	if (ret)
+-		return ret;
++		ret = regmap_read(pcf2127->regmap, PCF2127_REG_CTRL2, &ctrl2);
++		if (ret)
++			return 0;
+ 
+-	if (!(data[PCF2127_REG_CTRL1] & PCF2127_BIT_CTRL1_TSF1) &&
+-	    !(data[PCF2127_REG_CTRL2] & PCF2127_BIT_CTRL2_TSF2))
+-		return 0;
++		if (!(ctrl1 & PCF2127_BIT_CTRL1_TSF1) &&
++		    !(ctrl2 & PCF2127_BIT_CTRL2_TSF2))
++			return 0;
+ 
+-	tm.tm_sec = bcd2bin(data[PCF2127_REG_TS_SC] & 0x7F);
+-	tm.tm_min = bcd2bin(data[PCF2127_REG_TS_MN] & 0x7F);
+-	tm.tm_hour = bcd2bin(data[PCF2127_REG_TS_HR] & 0x3F);
+-	tm.tm_mday = bcd2bin(data[PCF2127_REG_TS_DM] & 0x3F);
+-	/* TS_MO register (month) value range: 1-12 */
+-	tm.tm_mon = bcd2bin(data[PCF2127_REG_TS_MO] & 0x1F) - 1;
+-	tm.tm_year = bcd2bin(data[PCF2127_REG_TS_YR]);
+-	if (tm.tm_year < 70)
+-		tm.tm_year += 100; /* assume we are in 1970...2069 */
+-
+-	ret = rtc_valid_tm(&tm);
+-	if (ret)
+-		return ret;
++		ret = pcf2127_rtc_ts_read(dev->parent, &ts);
++		if (ret)
++			return 0;
+ 
+-	return sprintf(buf, "%llu\n",
+-		       (unsigned long long)rtc_tm_to_time64(&tm));
++		ret = pcf2127_wdt_active_ping(&pcf2127->wdd);
++		if (ret)
++			return ret;
++	}
++	return sprintf(buf, "%llu\n", (unsigned long long)ts);
+ };
+ 
+ static DEVICE_ATTR_RW(timestamp0);
+@@ -594,6 +667,7 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+ 			dev_err(dev, "failed to request alarm irq\n");
+ 			return ret;
+ 		}
++		pcf2127->irq_enabled = true;
+ 	}
+ 
+ 	if (alarm_irq > 0 || device_property_read_bool(dev, "wakeup-source")) {
+-- 
+2.26.2
 
-Just reading through the resolution looks correct.
-
-Eric
