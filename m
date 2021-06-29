@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057523B728D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B1D3B72A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbhF2Mz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbhF2MzL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:55:11 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D8C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:52:44 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1624971161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=eIkEast40xy5RwPxoGV+rwDbDTG/tZGo7a7nH58KTpQ=;
-        b=gahOXFbMlnpzl93rXfbwxxjiX9Ok6fUXi4tlzoVB74a/EUQti6b0iV9rn9HV6bQJBCk7AR
-        0ag0wgW3D6Sonu/PQLjJNXQcx5bmp6SRxx7HatuUwsWgtnNkh35cGuWWakuUMJqKomTnj9
-        VFGKNOgl9gZHVH3Vi4zw6VPvXdyiUNc=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] x86/fpu/xstate: Remove the unlinkly in cpu_has_xfeatures()
-Date:   Tue, 29 Jun 2021 20:52:29 +0800
-Message-Id: <20210629125229.14666-1-yajun.deng@linux.dev>
+        id S233581AbhF2M4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:56:36 -0400
+Received: from muru.com ([72.249.23.125]:58584 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232498AbhF2M4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:56:30 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id C6DF580FC;
+        Tue, 29 Jun 2021 12:54:13 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 15:53:58 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-omap@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
+ memory map alignment
+Message-ID: <YNsX5pyqNeRlwtyf@atomide.com>
+References: <20210519141436.11961-1-rppt@kernel.org>
+ <20210519141436.11961-4-rppt@kernel.org>
+ <YNmiW6CYzy9lG8ks@atomide.com>
+ <YNnLxFM4ZeQ5epX3@linux.ibm.com>
+ <YNnqIv3PApHFZMgp@atomide.com>
+ <YNqwl8EPVYZJV0EF@linux.ibm.com>
+ <YNrfqtBpKsNj033w@atomide.com>
+ <YNr6+wOiR7/Yx9M1@linux.ibm.com>
+ <YNsJh7trg4up5l26@atomide.com>
+ <YNsXDEgreCpshZxb@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNsXDEgreCpshZxb@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The '&feature_name' isn't NULL in print_xstate_feature(), and also the
-same as in cast5_init(). so remove the unlinkly in cpu_has_xfeatures().
+* Mike Rapoport <rppt@linux.ibm.com> [210629 12:50]:
+> On Tue, Jun 29, 2021 at 02:52:39PM +0300, Tony Lindgren wrote:
+> > * Mike Rapoport <rppt@linux.ibm.com> [210629 10:51]:
+> > > As it seems, the new version of pfn_valid() decides that last pages are not
+> > > valid because of the overflow in memblock_overlaps_region(). As the result,
+> > > __sync_icache_dcache() skips flushing these pages.
+> > > 
+> > > The patch below should fix this. I've left the prints for now, hopefully
+> > > they will not appear anymore. 
+> > 
+> > Yes this allows the system to boot for me :)
+> > 
+> > I'm still seeing these three prints though:
+> > 
+> > ...
+> > smp: Brought up 1 node, 2 CPUs
+> > SMP: Total of 2 processors activated (3994.41 BogoMIPS).
+> > CPU: All CPU(s) started in SVC mode.
+> > pfn_valid(__pageblock_pfn_to_page+0x14/0xa8): pfn: afe00: is_map: 0 overlaps: 1
+> > pfn_valid(__pageblock_pfn_to_page+0x28/0xa8): pfn: affff: is_map: 0 overlaps: 1
+> > pfn_valid(__pageblock_pfn_to_page+0x38/0xa8): pfn: afe00: is_map: 0 overlaps: 1
+> 
+> These pfns do have memory map despite they are stolen in
+> arm_memblock_steal():
+> 
+> memblock_free: [0xaff00000-0xafffffff] arm_memblock_steal+0x50/0x70
+> memblock_remove: [0xaff00000-0xafffffff] arm_memblock_steal+0x5c/0x70
+> ...
+> memblock_free: [0xafe00000-0xafefffff] arm_memblock_steal+0x50/0x70
+> memblock_remove: [0xafe00000-0xafefffff] arm_memblock_steal+0x5c/0x70
+> 
+> But the struct pages there are never initialized.
+> 
+> I'll resend v3 of the entire set with an addition patch to take care of
+> that as well.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- arch/x86/kernel/fpu/xstate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK sounds good to me :)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index c8def1b7f8fb..2a6f9685f605 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -87,7 +87,7 @@ int cpu_has_xfeatures(u64 xfeatures_needed, const char **feature_name)
- {
- 	u64 xfeatures_missing = xfeatures_needed & ~xfeatures_mask_all;
- 
--	if (unlikely(feature_name)) {
-+	if (feature_name) {
- 		long xfeature_idx, max_idx;
- 		u64 xfeatures_print;
- 		/*
--- 
-2.32.0
+Thanks,
 
+Tony
