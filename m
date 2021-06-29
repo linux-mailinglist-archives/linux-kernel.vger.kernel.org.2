@@ -2,86 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64553B7161
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A783B7173
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhF2Lih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhF2Li2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:38:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A5761DC0;
-        Tue, 29 Jun 2021 11:36:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624966561;
-        bh=pYliXn2M4VfrJX8TzwqqkNaDbTWyLeW26vN692MeXFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JB41puISmEDTBggcW/EYaznSop6rFYX2iLsu8IUr4Ib1HOx7mcN/kow8Ne2CpoPcc
-         LKfikAk8ni6eiIS4p3lmSxFeyD60q0BqG0S4JSJySkh+Z0/GfbtAzDIt0b5Oe82mK8
-         4/tFYGv8W2xerL90zBreG6phNFPT8o2y6SZh3cuKXg3QnAWDjAJb5V+JsISGWpi/oz
-         v3PKi9+Zs0z0F4YSE6ZSmulEELDL7kErk0HxD9E619m4z4owRFzSUDK2GR7YMSRIAx
-         otRJYxDE+Pzj/CUjq3I/jkD0n1f/nvcyOusrutZ6dWj06AfZ16DWb1H88OJ/1/GCX0
-         ZzBmdxGOl1hcw==
-Date:   Tue, 29 Jun 2021 12:35:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] spi: spi-altera-dfl: support n5010 feature
- revision
-Message-ID: <20210629113533.GA4613@sirena.org.uk>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-4-martin@geanix.com>
- <YNoJSxnm4g1vufbB@epycbox.lan>
+        id S233421AbhF2Llt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233271AbhF2Llr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 07:41:47 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EFFC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:39:20 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id EDBD9C80062;
+        Tue, 29 Jun 2021 13:39:18 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id I7QdrTSmtBys; Tue, 29 Jun 2021 13:39:18 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:4900:84eb:1779:dd70:1696] (p200300E37f39490084eB1779dd701696.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:84eb:1779:dd70:1696])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 735CDC80042;
+        Tue, 29 Jun 2021 13:39:18 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm
+ property as setting for userspace
+To:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Simon Ser <contact@emersion.fr>
+Cc:     sunpeng.li@amd.com, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        tzimmermann@suse.de, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-13-wse@tuxedocomputers.com>
+ <20210622101516.6a53831c@eldfell>
+ <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
+ <20210629141712.21f00c38@eldfell>
+Message-ID: <6d8716e0-e68a-e7b7-a341-a7471c413e9c@tuxedocomputers.com>
+Date:   Tue, 29 Jun 2021 13:39:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
-In-Reply-To: <YNoJSxnm4g1vufbB@epycbox.lan>
-X-Cookie: Use extra care when cleaning on stairs.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210629141712.21f00c38@eldfell>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---liOOAslEiF7prFVr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Am 29.06.21 um 13:17 schrieb Pekka Paalanen:
+> On Tue, 29 Jun 2021 08:12:54 +0000
+> Simon Ser <contact@emersion.fr> wrote:
+>
+>> On Tuesday, June 22nd, 2021 at 09:15, Pekka Paalanen <ppaalanen@gmail.com> wrote:
+>>
+>>> yes, I think this makes sense, even if it is a property that one can't
+>>> tell for sure what it does before hand.
+>>>
+>>> Using a pair of properties, preference and active, to ask for something
+>>> and then check what actually worked is good for reducing the
+>>> combinatorial explosion caused by needing to "atomic TEST_ONLY commit"
+>>> test different KMS configurations. Userspace has a better chance of
+>>> finding a configuration that is possible.
+>>>
+>>> OTOH, this has the problem than in UI one cannot tell the user in
+>>> advance which options are truly possible. Given that KMS properties are
+>>> rarely completely independent, and in this case known to depend on
+>>> several other KMS properties, I think it is good enough to know after
+>>> the fact.
+>>>
+>>> If a driver does not use what userspace prefers, there is no way to
+>>> understand why, or what else to change to make it happen. That problem
+>>> exists anyway, because TEST_ONLY commits do not give useful feedback
+>>> but only a yes/no.  
+>> By submitting incremental atomic reqs with TEST_ONLY (i.e. only changing one
+>> property at a time), user-space can discover which property makes the atomic
+>> commit fail.
+> That works if the properties are independent of each other. Color
+> range, color format, bpc and more may all be interconnected,
+> allowing only certain combinations to work.
+>
+> If all these properties have "auto" setting too, then it would be
+> possible to probe each property individually, but that still does not
+> tell which combinations are valid.
+>
+> If you probe towards a certain configuration by setting the properties
+> one by one, then depending on the order you pick the properties, you
+> may come to a different conclusion on which property breaks the
+> configuration.
 
-On Mon, Jun 28, 2021 at 10:39:23AM -0700, Moritz Fischer wrote:
+My mind crossed another point that must be considered: When plugin in a Monitor a list of possible Resolutions+Framerate
+combinations is created for xrandr and other userspace (I guess by atomic checks? but I don't know). During this drm
+properties are already considered, which is no problem atm because as far as i can tell there is currently no drm
+property that would make a certain Resolutions+Framerate combination unreachable that would be possible with everything
+on default.
 
-> Since this depends on the previous patch: Mark do you want to take both
-> patches once they're reviewed? From what I can tell the BMC and HWMON
-> don't directly depend on it, so taking them through SPI tree might be
-> easiest.
+However for example forcing YCbCr420 encoding would limit the available resolutions (my screen for example only supports
+YCbCr420 on 4k@60 and @50Hz and on no other resolution or frequency (native is 2560x1440@144Hz).
 
-> Alternatively I can provide a tag for the DFL change for you to pull.
+So would a "force color format" that does not get resetted on repluging/reenabling a monitor break the output, for
+example, of an not updated xrandr, unaware of this new property?
 
-Sure, I can do whichever - I guess me applying both is probably
-simplest?
-
---liOOAslEiF7prFVr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDbBYQACgkQJNaLcl1U
-h9BVYQf+JHlDZbFReYVDmGaonZ6Kw48CZV8LHo+jLUaByBMUiETh7/O8ynfZXJEK
-/Hh2rsQls2ie/mwegg7Zp6cyMfCprAeM5b7hNAx1T9fKC0Q8SixDqadBX5mhuFXy
-S/cjjvc11+oBy/qpiguv9cKOb3uxs7dkCTYyHrUqPAWraCUw5U1NktIKSY+mALsz
-X44jgAhHhklyPeoqSWtgszclt6W3I9+337q80QasWuxVLeYoujWd4M0j+5ClLzv1
-ccYKrOOKOUmu7ilTzPZoGC9qlPNg16Nefo3BsGiK6ZUniWiQspHCpSbwBQzy5Yvl
-jL9yactFQlx5XCt8wSetmfJFw6ynMA==
-=4W2f
------END PGP SIGNATURE-----
-
---liOOAslEiF7prFVr--
+>> I'm not a fan of this "preference" property approach. The only way to find out
+>> whether it's possible to change the color format is to perform a user-visible
+>> change (with a regular atomic commit) and check whether it worked
+>> after-the-fact. This is unlike all other existing KMS properties.
+> I agree. FWIW, "max bpc" exists already.
+>
+>> I'd much rather see a more general approach to fix this combinatorial explosion
+>> than to add special-cases like this.
+> What would you suggest?
+>
+> Maybe all properties should have an "auto" value in addition to the
+> explicit no-negotiation values where at all possible?
+>
+> That might help probing each property individually with TEST_ONLY
+> commits, but it says nothing about combinations.
+>
+> A feedback list perhaps? TEST_ONLY commit somehow returning a list of
+> property/value tuples indicating what value the "auto" valued
+> properties actually get?
+>
+> What should a kernel driver optimize for when determining "auto" values?
+>
+>
+> Thanks,
+> pq
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
