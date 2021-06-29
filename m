@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8841C3B76A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DD93B76AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234203AbhF2QuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:50:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42936 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234171AbhF2QuM (ORCPT
+        id S234291AbhF2Qvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhF2Qvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:50:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624985265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+bJvwmYTs4hsRIzvijlTBKZHCJnIV9JSQ/ae942P0nQ=;
-        b=TRWT2D2MZA1qjDDTpPsXkqzp5kK0OwTPjfnvk6Yuh34Zf0y8MZyOeyW45XIP1yO7NsyLsR
-        0KbiPAa/d84IZ360PJRH/M3RJiqLxFbH2l1zxm1vgAsbiD3aiSLADBkLSvmx+GP1LB9hOM
-        SZ5JRyhU5AzNlw6vhcvt6zz06xEOjnk=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-nCPPTRupOWmJrbsVFMxhnw-1; Tue, 29 Jun 2021 12:47:43 -0400
-X-MC-Unique: nCPPTRupOWmJrbsVFMxhnw-1
-Received: by mail-pg1-f200.google.com with SMTP id p2-20020a63e6420000b02902271082c631so11674569pgj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:47:43 -0700 (PDT)
+        Tue, 29 Jun 2021 12:51:41 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D406CC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:49:13 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id ay19so4873774vkb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2gs6ng6eXSeLBE7G02zVESPi05shOhO+DT8DF5/0FKo=;
+        b=HDbdu3aMS8NbTPubgZ/GPenboxVpoxZtyjgzxgOoq3xf7iBcr6a8wCDn8tSZ8/dbFn
+         4XhlroFvKZom9e8gX0Goj0Bh+oAUG/UoBWBFw1SVbQVBpUOTSzkjdZ3KfVjERMkcrrPG
+         ts87Y7U8MvAUiBZNvd1mTUxQzlP23BXeW2YR+/NNeLUjypHPpQsn5mEOl65caIN3tIKj
+         kddjXi+9yjrBPMGc6RPnz+7Fg7+IROBv2tEvea3F/GmUeSWGZC7ZwFMNp53cD8W8TsZT
+         EFClJOfdDnpWfWGVO1s04mKTE4ULXFlOGCti+2frJ9J0Jd/8gscJ36W/qWHcjVerTvli
+         QKEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+bJvwmYTs4hsRIzvijlTBKZHCJnIV9JSQ/ae942P0nQ=;
-        b=lAG+nBbDpGSs0/IQRb3iHDjusZ3MwSfj6YqHuGQlv6c2vCjhghLtSJm0XP9niFoKVn
-         Z6XyYRzLC6Bx/lJECfwqQZMFxb4okkUMeSDmLzRY1X/c3zvC989lHsqq5Bh3rav/Ai45
-         shXrpDDH/99fZEKUXLZgKRoFqCZwB4jftPOLfVjsillBtupE4sBa89FzaRPUN4jU12K1
-         D7/fCj4AuuEammDqxVUkaRQLghtVRO19lhApolCLbA6q3y3VX0a2Hq1LD0ZDfq0bKntr
-         3yxam0jbB9YYXVAt471eXk9/nO93VGgjgq2onpPrdkRQERvAnmRajLOlUI9KAzDvZ7KB
-         3c7w==
-X-Gm-Message-State: AOAM530necaQ6ggf7JUNsDgFQ6cAFolVj6nB23lOTl0OISpllvmzd0La
-        eKjx33WipFt8Vo41gGlkxeCvcVAAStNX/tSZkParXmVRK/zIFpoPe0m72lBfrxwN9LsMFpXm0hE
-        kZgK+hLouCHF64s402cIBdxM1
-X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr34962308pjj.39.1624985262581;
-        Tue, 29 Jun 2021 09:47:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3vTTwAHy6BETIsORLHGghBWZRgo8av0Cd/hHZW70tMvDWoqyHwTA6FD/HIjdC3imDZWBejQ==
-X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr34962286pjj.39.1624985262349;
-        Tue, 29 Jun 2021 09:47:42 -0700 (PDT)
-Received: from treble ([2600:380:8772:6cac:dfb6:1d6c:e068:2f39])
-        by smtp.gmail.com with ESMTPSA id u2sm6013505pja.20.2021.06.29.09.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 09:47:41 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 11:47:36 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     madvenka@linux.microsoft.com, broonie@kernel.org, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-Message-ID: <20210629164736.dnysynhkjjxya4vc@treble>
-References: <ea0ef9ed6eb34618bcf468fbbf8bdba99e15df7d>
- <20210526214917.20099-1-madvenka@linux.microsoft.com>
- <20210526214917.20099-2-madvenka@linux.microsoft.com>
- <20210624144021.GA17937@C02TD0UTHF1T.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2gs6ng6eXSeLBE7G02zVESPi05shOhO+DT8DF5/0FKo=;
+        b=WutYK+bluIFGZ7besVeCV99Ru4MdFqVKCkqbvPt7yUcNaOP0xzDaqupwDOKIr2H7qS
+         3EruhBt8DzaOTLMCuL3aUSWEQuuI7rqT+xLdC9LJo7X8RZtd1Tthi85C8Vgvt/gUjfXL
+         ZY08rddqrlAiuHFeumztKXu+3XxBrjrj6YArP5ALwqmJNBRHEAw1mcTsMYLg+kOme1k8
+         wvGKhAtfYqra37YHmAcFRBDGbwFNjOEuiS91l8LUrgLaCg17kdeJMecDkhGUD215t+Jj
+         hRfEuEm9MQ1J26ay2QI94i1lNojUUhzTeuJUNAd/CJxlzMdQyjMh6+3F//LS6m0i1cVS
+         F/wg==
+X-Gm-Message-State: AOAM533szoIFEXSzcKgsTZxN64x7EGz95NwXtEGndXX1V4/pVqIxuqYx
+        HEQuzbV/SOPKOtk9pSRmBnS2fbconkA9MmTTMz9IwOjSzMH7QQ==
+X-Google-Smtp-Source: ABdhPJw+8HPPSWPTsuhEfVq2FqJD8ZwvvVpAvSCw41k8Hf0ed+tkoJVxJb40Fc8zgjAC4CoeM0E/MGfOGluZqZ7lIZ4=
+X-Received: by 2002:a1f:290:: with SMTP id 138mr10727153vkc.3.1624985352970;
+ Tue, 29 Jun 2021 09:49:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624144021.GA17937@C02TD0UTHF1T.local>
+References: <20210626034016.170306-1-jim.cromie@gmail.com> <20210626034016.170306-2-jim.cromie@gmail.com>
+ <075e07c40b99f93123051ef8833612bc88a55120.camel@perches.com> <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
+In-Reply-To: <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Tue, 29 Jun 2021 10:48:46 -0600
+Message-ID: <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] checkpatch: skip spacing tests on linker scripts
+To:     Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 03:40:21PM +0100, Mark Rutland wrote:
-> Hi Madhavan,
-> 
-> On Wed, May 26, 2021 at 04:49:16PM -0500, madvenka@linux.microsoft.com wrote:
-> > From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> > 
-> > The unwinder should check for the presence of various features and
-> > conditions that can render the stack trace unreliable and mark the
-> > the stack trace as unreliable for the benefit of the caller.
-> > 
-> > Introduce the first reliability check - If a return PC is not a valid
-> > kernel text address, consider the stack trace unreliable. It could be
-> > some generated code.
-> > 
-> > Other reliability checks will be added in the future.
-> > 
-> > Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> 
-> At a high-level, I'm on-board with keeping track of this per unwind
-> step, but if we do that then I want to be abel to use this during
-> regular unwinds (e.g. so that we can have a backtrace idicate when a
-> step is not reliable, like x86 does with '?'), and to do that we need to
-> be a little more accurate.
+hi Joe,
 
-On x86, the '?' entries don't come from the unwinder's determination of
-whether a frame is reliable.  (And the x86 unwinder doesn't track
-reliable-ness on a per-frame basis anyway; it keeps a per-unwind global
-error state.)
+> >
+> > This .lds.h test is also used in one other place.
+> >
+> > It might be better to avoid all tests in .lds.h files by using a
+> > "next if" much earlier.
+>
 
-The stack dumping code blindly scans the stack for kernel text
-addresses, in lockstep with calls to the unwinder.  Any text addresses
-which aren't also reported by the unwinder are prepended with '?'.
+checkpatch: subtle decrufting
 
-The point is two-fold:
+sub process() uses a next-if statement to end a block of tests early,
+because following tests pertain only to certain types of source files.
+That statement has some history:
 
-  a) failsafe in case the unwinder fails or skips a frame;
+ $ grep -P 'sub process|next if \(\$realfile' blame-check
+ 0a920b5b666d0 (Andy Whitcroft      2007-06-01 00:46:48 -0700 2558)
+sub process {
+ d6430f71805aa (Joe Perches         2016-12-12 16:46:28 -0800 3621)
+next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
+ de4c924c26504 (Geert Uytterhoeven  2014-10-13 15:51:46 -0700 3712)
+next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
+ b9ea10d691ecb (Andy Whitcroft      2008-10-15 22:02:24 -0700 3973)
+next if ($realfile !~ /\.(h|c)$/);
 
-  b) showing of breadcrumbs from previous execution contexts which can
-     help the debugging of more difficult scenarios.
+Commit:b9ea adds the early-block-termination line, then 2 subsequent
+commits (de4c, d643) copy that line up/earlier in sub process (with
+different filetype selection), largely masking the purposes of the
+older/later lines (block-early-terminate to skip file-type specific
+tests).
 
--- 
-Josh
+This code is hurting my brain.
+its the combo of
+3 different multiple file-type selections, each stricter than previous
+early block terminate semantics
+!~ (one more logical inversion)
 
+commit:de4c   allows further testing on *.pl files
+but commit:d643  doesnt allow those same files to reach that spot
+ISTM this wasnt quite intended.
+
+The 3rd/original usage still has some effect,
+forex when a dts file reaches that line
+
+How to resolve these issues ?
+changing d643 to allow *.pl to fall thru for further testing
+is probably the best small move.
+
+FWIW, one version of a 1-line fix for *.lds.h files.
+this one adds the new line after the 1st of the 3 blame-lines.
+Maybe it should be added after the SPDX check (which would complain)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 6469870837d0..1655d88fe5e3 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3633,6 +3633,7 @@ sub process {
+
+ # check we are in a valid source file if not then ignore this hunk
+                next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
++               next if ($realfile =~ /\.lds\.h$/); # linker scripts
+arent real *.h
+
+ # check for using SPDX-License-Identifier on the wrong line number
+                if ($realline != $checklicenseline &&
