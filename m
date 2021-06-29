@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFD43B765E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93EE3B7660
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhF2QVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbhF2QVB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:21:01 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F442C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:18:10 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id k184so18411257ybf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=BYOpa0eRY0yzPQc4EKGSvGo2/Gvb6Wg+JaJbHp+FJMg=;
-        b=U0bvUja8KAHFvp4u97lL8GYu51cJLD0pFeGZ+OlNdRZMP9KG04HiPNYHy/P8W8PGqj
-         fzKAeSboYJBoYWaHDBRzmqA1cvH7URp1/BxmioYXm9LsPp0144pY7AwVa0JZFVl9EBhs
-         hvLjVq/2ZJG+i9kLM1wNpzp5A0dh0p4Oq7ZYMonog1NVhrbcf9RP2rxVnRZWS/fOs9ML
-         BdfCrskGQVp19w4SvllD20ezD0867SEeS76DbxwyRPZ1Oe8f9E0aP5+p2bBVQKQQCrZ2
-         QHyG8n11A0lE0JKjjKm9cHhPWmzSPMJIrtnwMCV7dovf3vjdTHa1qC7bOk0zUPJ+8nnV
-         Hpvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=BYOpa0eRY0yzPQc4EKGSvGo2/Gvb6Wg+JaJbHp+FJMg=;
-        b=ajiMC6dJTxgb2YF+pyFOWjQqMMgrRJHwe61H2XNV6zL2/kvSFAEvu0aaw+CMw4lnjn
-         a+1jEpMALnq7SiXax7+9KOjcTNG1JyApGiXvijD7oSnurzDqlVnPKGci5KTlR3eoT9On
-         CXDxLeZtDMABO1LBwMAi88qBGlVh74ouV/h3VhDmrUDBJ3TCW/sp9Eap2AJtewjeu1Jc
-         x2E20/KiZ0qiyOccTsojQYpk1QH+tfXfpZL4RMLcdV4d+bY15W3K8Ei0rtxA/mLu6HHI
-         C7nYV/DQVL5lNPdd2tqrbIVWdUaPuIzxHQCcPjw/UC8MqOb2ZWVlQ/F/oBHXFGVTi8zi
-         8dPA==
-X-Gm-Message-State: AOAM533FaLW9Kkw+7tfVZV6YRuvZQNkWKUGwCnJxrq/8FAixIQ0owr7n
-        WyYjW2baWt/IobOgH30BYIwqpxxgThw1ep2Oj/Aia4/3
-X-Google-Smtp-Source: ABdhPJz8q2ZJFQK8wtxi5vk878dc8pTsJzkq6gYSstyWqg6wriglt5J+pPTWrrIpeAQ6LXEG01YqPHsl7R3EB3gfqVs=
-X-Received: by 2002:a25:b8d:: with SMTP id 135mr16352021ybl.12.1624983489626;
- Tue, 29 Jun 2021 09:18:09 -0700 (PDT)
+        id S232574AbhF2QVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:21:20 -0400
+Received: from mga17.intel.com ([192.55.52.151]:31956 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232355AbhF2QVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 12:21:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="188559933"
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="188559933"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 09:18:31 -0700
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="489305510"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 09:18:25 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lyGRH-006Ktj-7b; Tue, 29 Jun 2021 19:18:19 +0300
+Date:   Tue, 29 Jun 2021 19:18:19 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 0/8] all: use find_next_*_bit() instead of
+ find_first_*_bit() where possible
+Message-ID: <YNtHy/CpPZhaTQEE@smile.fi.intel.com>
+References: <20210612123639.329047-1-yury.norov@gmail.com>
+ <YNp75K4n9KQD5Cw3@yury-ThinkPad>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:65d2:b029:bd:9255:88d1 with HTTP; Tue, 29 Jun 2021
- 09:18:09 -0700 (PDT)
-Reply-To: mrs.bill_chantal66@europe.com
-From:   "Mrs.Bill.Chantal" <kateindina897@gmail.com>
-Date:   Tue, 29 Jun 2021 18:18:09 +0200
-Message-ID: <CADF789vkLQRb=4gbtzHX8yDF5ZsKXPA0GybGyYv4myajUpVd_w@mail.gmail.com>
-Subject: atm visa card compensated
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNp75K4n9KQD5Cw3@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
+On Mon, Jun 28, 2021 at 06:48:20PM -0700, Yury Norov wrote:
+> On Sat, Jun 12, 2021 at 05:36:31AM -0700, Yury Norov wrote:
+> > find_first_*_bit() is simpler and faster than 'next' version [1], and they
+> > work identically if start == 0. But in many cases kernel code uses the
+> > 'next' version where 'first' can be used. This series addresses this issue.
+> > 
+> > Patches 1-3 move find.h under include/linux as it simplifies development.
+> > Patches 4-8 switch the kernel and tools to find_first_*_bit() implementation
+> > where appropriate. 
+> 
+> Guys, do we have any blocker for this series? If not, I'd like to have it
+> merged in this window.
+> 
+> And this too: https://lore.kernel.org/lkml/YNirnaYw1GSxg1jK@yury-ThinkPad/T/
 
-You have been compensated with the sum of 4 million dollars in this
-united nation the payment will be Issue
+"This window" now equals for v5.15-rc1, hence we have a few weeks time anyway.
 
-into atm visa card and send to
+-- 
+With Best Regards,
+Andy Shevchenko
 
-you from the Santander bank we need your address passport and
-yourwhatsapp number.
 
-Thanks
-Mrs. bill Chantal
