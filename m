@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F773B7083
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6903B7085
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhF2K0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:26:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49676 "EHLO mail.kernel.org"
+        id S232784AbhF2K0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232694AbhF2K0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:26:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A50861DB3;
-        Tue, 29 Jun 2021 10:23:35 +0000 (UTC)
+        id S232692AbhF2K0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:26:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E855161DB3;
+        Tue, 29 Jun 2021 10:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624962218;
-        bh=Apt+mTUvqShoNmNq7Ll6mm1UxSNfdxh6yWN/C+poPkE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aT7tmWnU9INfBhSd5eSAVFuD2cFlcNfA069oon6xbZUicquITLorOs2EWb8icWj14
-         DPhzNMhkqPprl3biinG78pTkBFOCQuT6nL4C6MaDbB1Mez+KujmfM5eWTFMgcctUSZ
-         5jeh9HjR66rp0e2Vs1O/X9ghsKFi1agRTFrW3UtiQhYB7U8QXbhc1GxzcHyw8M2bR6
-         c837r+NSQBZAYr56+cqzf5Gwgp7esnbbwY1MKV2aqCdKQx7M4UHFXXtccJbWZ5IDds
-         +melvIPa2dSpwuUp84vZ7wxHw0l08tlIL9o/KDSbsuwjYEgzobOXrTL8an7277kK1Z
-         0pXKhvhNtNe7Q==
-Date:   Tue, 29 Jun 2021 12:23:32 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v9 2/5] regulator: hi6421v600-regulator: fix platform
- drvdata
-Message-ID: <20210629122332.398668b2@coco.lan>
-In-Reply-To: <CAFRkauBcXDVihxN8MHoStGHjDyx-VyOe6tT8dkY2tAisHoeE8w@mail.gmail.com>
-References: <cover.1624640087.git.mchehab+huawei@kernel.org>
-        <ef0ff659a875b91b454df12b57888f2b473877fa.1624640087.git.mchehab+huawei@kernel.org>
-        <CAFRkauBcXDVihxN8MHoStGHjDyx-VyOe6tT8dkY2tAisHoeE8w@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1624962235;
+        bh=WI/UAppXOdbESXWr8RhaWg+kL9hjURC+JQQV6ypPhGA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JIHXDWq3KLwh2q542tAe7jCNTsG9jezgcWPVY5blh7S36WxukITw/V4gKBTCgP010
+         djqflO18PYvU8O+YyVB49QzTnpzdEDk/7qcAUWLQsGTwxtTXGq8dGaT8A58IDT230j
+         0OSk+vsZiJWVSZaSfCIIi9ff6rMTO7/IXfEQeSYDKHUV60vT53FGTOo5dTxB5YnWjN
+         HNjVC8BIvMQGeVdX6BcSzleAOaJuV+WpkdoDYJ1liRzookk0BvhGgpK4Dp26RD31qh
+         aHqYZCMMK6HEFmuTwHFKQ0m6YxWdl7LW5KxThtabX4G4nWRQQXYJzfew7HEb5C5EOB
+         aNPhQ/QT25C1Q==
+Date:   Tue, 29 Jun 2021 12:23:52 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YNr0uDx1fv+Gjd7m@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
+        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
+        loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNrw4rxihFLuqLtY@ninjato>
+ <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iTOdtFFZlvMpSSzc"
+Content-Disposition: inline
+In-Reply-To: <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 26 Jun 2021 11:41:50 +0800
-Axel Lin <axel.lin@ingics.com> escreveu:
 
-> > @@ -231,7 +228,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
-> >  {
-> >         struct device *pmic_dev = pdev->dev.parent;
-> >         struct regulator_config config = { };
-> > -       struct hi6421_spmi_reg_priv *priv;
-> > +       struct hi6421_spmi_reg_info *sreg;
-> >         struct hi6421_spmi_reg_info *info;
-> >         struct device *dev = &pdev->dev;
-> >         struct hi6421_spmi_pmic *pmic;
-> > @@ -247,18 +244,17 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
-> >         if (WARN_ON(!pmic))
-> >                 return -ENODEV;
-> >
-> > -       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> > -       if (!priv)
-> > +       sreg = devm_kzalloc(dev, sizeof(*sreg), GFP_KERNEL);
-> > +       if (!sreg)
-> >                 return -ENOMEM;
-> >
-> > -       mutex_init(&priv->enable_mutex);
-> > -       platform_set_drvdata(pdev, priv);
-> > +       sreg->enable_mutex = &pmic->enable_mutex;
-> >
-> >         for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
-> >                 info = &regulator_info[i];
-> >
-> >                 config.dev = pdev->dev.parent;
-> > -               config.driver_data = info;
-> > +               config.driver_data = sreg;  
-> 
-> This won't work and that was what my patch fixed.
-> e.g. When you call
-> struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-> sreg->eco_mode_mask and sreg->eco_uA will always be 0.
+--iTOdtFFZlvMpSSzc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, probably something got lost during the several rebases. 
-Anyway, I'll send in a few a new patch series addressing this issue.
 
-Thanks,
-Mauro
+> > You are not emulating I2C_FUNC_SMBUS_QUICK, so you need to mask it out.
+>=20
+> What is it that we need to have to emulate it ? I did use it in my
+> qemu and rust backends, not sure if this was ever sent by device I
+> used for testing SMBUS though.
+
+The biggest use is to scan busses for devices, i.e. use 'i2cdetect'
+without the -r parameter.
+
+
+--iTOdtFFZlvMpSSzc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa9LgACgkQFA3kzBSg
+KbbzoBAAmOEdNXW8icMnkSzbohgKRINC2D5gEOYvji3EtJKabbWm3ANmwOJsDpr6
+KxB0ccjGmNLSDjJNNZcARKyzBo5GfPdWayK/vmrWTITkDglfYm3XD/9XQ2geZrfk
+7jPrWBStYM+EXL+cSBOKTu2UnV8FgsbUQEpWYnreblgCkRR7RMtvRmakalELb2CJ
+r5hCcM6ncSfNQM9OW4iBpJUFZr0Obk0gjixfz+JAmlr+KHSsncdvhESSQZLzQljX
+K15ODeh/yilJ2/8gjx4vnz66/Lh8USdvMyPJ6FAFZZ02CjlnL4BFFW14dY5FfPhN
+9nhk0k2SYJQ6UzvxcqVDlJ7nyzSlxHBldp3Y27feoO5/cSEDHuJpHHyUAdUE/JHj
+rxpiUD2+1ri3NDCmgrnsI2ZKh+owCpwm0JmsVFkk8QQJw0xtTgM9sn4J497tePJL
+c6TShRjvI+pY8OaBzsTcGojUuZ5Ac1WRnnkvyY1h8me+xJ7kWNO0aD5vj++gnWe8
+75I/uA+VqVEJzIWt9dRNNwkZgzpdtRK+bvf+5Vvp7j8WUzowS98Z/NSJaIIerzTq
+oOXg7tV6IiA3jE+cqc5gca4OG4pdDG8+Tbw9m1NAF7btXYlfSgc3jtlAy+l2J8jL
+mU4mV2oHDvOhxlQjWNQsz7fy8UuY1yPUtkKs5VV/SGgSXpcwtOI=
+=GQdq
+-----END PGP SIGNATURE-----
+
+--iTOdtFFZlvMpSSzc--
