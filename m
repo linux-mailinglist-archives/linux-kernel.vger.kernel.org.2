@@ -2,132 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469B53B6E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E0C3B6E2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhF2GTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:19:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54484 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231952AbhF2GTh (ORCPT
+        id S232069AbhF2GUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231952AbhF2GU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:19:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624947430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r5rtMzus3P+lVYlXRaQspruCr0CNxzJODyOUb0KYDic=;
-        b=cpoeMezfnoENfhmSzCbsIGF0lv5GS95ymaJaFkDN9O3WvO8glBl+bYxkzMK+pH1VaJZcMO
-        R8hv3Z4B+uhwJog2hTCgzU8rF/p1sNfJ7jltEV5OsIqlZqw9Fg1nMadyhUnAFHnG1pHZkP
-        fg8pbXH0YoQn+v97qGCyQJgQcNTFdvc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-Dz02W7a4MEybPValxCD4Qw-1; Tue, 29 Jun 2021 02:17:06 -0400
-X-MC-Unique: Dz02W7a4MEybPValxCD4Qw-1
-Received: by mail-wr1-f70.google.com with SMTP id g4-20020a5d64e40000b029012469ad3be8so5310457wri.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:17:06 -0700 (PDT)
+        Tue, 29 Jun 2021 02:20:29 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA79FC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:18:01 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso1717195pjp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hI1DeZ2pRK8aek3pSY+ZixxRt/uy7BhVNJwpyrPvK4U=;
+        b=kVGPtew0Kx8eTy5szjyeACr/mtbC6DaMpT7oBhHleodDrSuAeIPnJJRJg/8ULx/Ug4
+         miyM9Y33Nk8kTSd2gcZOEIK+yD2NbSqh1RWOiZCs1+2FjnZrn/UXhe7gt/OSDAcpS5iE
+         gjWx5+xrYvSW8yx7Px8yi5+1T2pdpX7XR1E9lqBBhZZj9oI8vSih+hYfMSWylFGsdnl6
+         1c/pZREkNYk7Hza1b1ZEw3wzjm5ou/k7B6cmPI0b+6O8dlCBOKJa6TembetnP+L8Ewoy
+         DGIp5sYYtPHfcBSEY8iUzYqovqxQsAjPVoaoUUEMInLIGzvI848yhX7Ot/W4dQgJJxiE
+         jQ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r5rtMzus3P+lVYlXRaQspruCr0CNxzJODyOUb0KYDic=;
-        b=ZlXdywjPn4pB4uFcsjoH/a7KbDkhGD0qZ1eiNPR5t61KttgHLNYy46r9h1qKG0Eyts
-         zTMXxMZcQG6usTmGOfWLklUpRUwmqoNMUr3dTNggtdZ+28AZ9EqDQXL3vzuzj0GjJUTn
-         n3vRYGuWHastjKKyd9tIa/EO+Xmqd12wRVf5+8L8RLjQ82IVKw++TKmjr/nQZ1E6Qzv/
-         hXQy4NGsx2O4NP25sPhNrcZc23UI8UOXBjPKq4iXBrUxuXz6KBCLr2+RVCZig+4Oosmz
-         JIqS1PCipORQjJ9IDi7txks7xDk6fZxdliWRQmanq444f27iEo2NrKmbZ8DE+5wX62vh
-         N8aA==
-X-Gm-Message-State: AOAM533keNq4NtMgYXLkqFzIDq3GqyO9uf6dwp7c6szXwphPkbk0fly+
-        5tqytcr0PA0TrjE67Sw6Zm29M6ISffhUOvKBk9dvG5tFvQ7SQVCEC40Ic5+46P3NtaIR5+z1YDS
-        VkGbLGjJvAuldCII+9koBy4gg
-X-Received: by 2002:a1c:9884:: with SMTP id a126mr9898381wme.59.1624947425626;
-        Mon, 28 Jun 2021 23:17:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwENZ0HLqQb4ZwkvvzpA0iQ3ffLbLA5shQGhTj0xUToPMfioID+ETv8jiuPJgiveOwkf+pTyA==
-X-Received: by 2002:a1c:9884:: with SMTP id a126mr9898344wme.59.1624947425375;
-        Mon, 28 Jun 2021 23:17:05 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id h8sm1801392wrt.85.2021.06.28.23.17.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 23:17:04 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-References: <20210629003829.GA3978248@bjorn-Precision-5520>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <2317a4bc-bd4d-53a7-7fa6-87728d5393cd@redhat.com>
-Date:   Tue, 29 Jun 2021 08:17:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hI1DeZ2pRK8aek3pSY+ZixxRt/uy7BhVNJwpyrPvK4U=;
+        b=esouGnuvgjNdwcL8VJGQR0rQuq1DxXP1OyPmhl1MSV+dbGyv0taUs6lC+tvDJvTYHZ
+         UXXuDkSbg+h+LK04dp59isuk0U731D2yNSjebR0Q7KKhVDo8af9STVluvINnXLYq25PV
+         I0qdDTcHBndK/ebeBA/oZO4iw8khG1F5YVFq2yz+7WRpIHRGLTitVZhBi5li/gnm7XRz
+         sbT6oRDuhiFSZFRyZKGrGhUxFTuO0Ts11NMc91mvAec3WZ0x2A3QW2O/TRkblIWLSgLI
+         z+6tfWNV5OqMufRSvr89djD4rLT4COTz+NW6LzJe4tAX8HQuk6HXbKOsW1aD11hE9v1k
+         olsQ==
+X-Gm-Message-State: AOAM530byQ7QmiS1lIJKtbQlkEds3d3HXFm3jzvjxzD+3TrRRaWGbT5B
+        aQtgqhHUWQQznc8Gy8NVcOohRA==
+X-Google-Smtp-Source: ABdhPJyfVA20O8oNr9ThebtXXkg4YVGPQnBLR6jQoWQ0+A/rjn+bS5SKjwFuYmN2Dc2Yxk82ratFFw==
+X-Received: by 2002:a17:90a:ba91:: with SMTP id t17mr43507438pjr.89.1624947481144;
+        Mon, 28 Jun 2021 23:18:01 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id fv8sm17093546pjb.21.2021.06.28.23.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 23:18:00 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 11:47:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     TungChen Shih <tung-chen.shih@mediatek.com>
+Cc:     rjw@rjwysocki.net, matthias.bgg@gmail.com,
+        wsd_upstream@mediatek.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] cpufreq: fix the target freq not in the range of
+ policy->min & max
+Message-ID: <20210629061758.wdavb2a4bpklmqi3@vireshk-i7>
+References: <20210626162324.8236-1-tung-chen.shih@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210629003829.GA3978248@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210626162324.8236-1-tung-chen.shih@mediatek.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 2:38 AM, Bjorn Helgaas wrote:
-> On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
+On 27-06-21, 00:23, TungChen Shih wrote:
+>     The function cpufreq_driver_resolve_freq() should return the lowest
 
-[snip]
+Don't add extra spaces at the beginning of paragraphs here.
 
->>>
->>> So let's just move all the IRQ init before the pci_host_probe() call, that
->>> will prevent issues like this and seems to be the correct thing to do too.
->>
->> Previously we registered rockchip_pcie_subsys_irq_handler() and
->> rockchip_pcie_client_irq_handler() before the PCIe clocks were
->> enabled.  That's a problem because they depend on those clocks being
->> enabled, and your patch fixes that.
->>
->> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
->> which isn't initialized until rockchip_pcie_init_irq_domain().
->> Previously we registered rockchip_pcie_legacy_int_handler() as the
->> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
->>
->> I think your patch *also* fixes that problem, right?
+> supported freq greater than or equal to the given target_freq, subject
+> to policy (min/max) and driver limitations. However, the index returned
+> by cpufreq_frequency_table_target() won't subject to policy min/max in
+> some cases.
 > 
-> The lack of consistency in how we use
-> irq_set_chained_handler_and_data() really bugs me.
+>     In cpufreq_frequency_table_target(), this function will try to find
+> an index for @target_freq in freq_table, and the frequency of selected
+> index should be in the range [policy->min, policy->max], which means:
 > 
-> Your patch fixes the ordering issue where we installed
-> rockchip_pcie_legacy_int_handler() before initializing data
-> (rockchip->irq_domain) that it depends on.
+>     policy->min <= policy->freq_table[idx].frequency <= policy->max
 > 
-> But AFAICT, rockchip still has the problem that we don't *unregister*
-> rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
-> removed.  Doesn't this mean that if we unload the module, then receive 
-> an interrupt from the device, we'll try to call a function that is no
-> longer present?
+>     Though "clamp_val(target_freq, policy->min, policy->max);" would
+> have been called to check this condition, when policy->max or min is
+> not exactly one of the frequency in the frequency table,
+> policy->freq_table[idx].frequency may still go out of the range
 > 
+>     For example, if our sorted freq_table is [3000, 2000, 1000], and
+> suppose we have:
+> 
+>     @target_freq = 2500
+>     @policy->min = 2000
+>     @policy->max = 2200
+>     @relation = CPUFREQ_RELATION_L
+> 
+> 1. After clamp_val(target_freq, policy->min, policy->max); @target_freq
+> becomes 2200
+> 2. Since we use CPUFREQ_REALTION_L, final selected freq will be 3000 which
+> beyonds policy->max
 
-Good question, I don't to be honest. I'll have to dig deeper on this but
-my experience is that the module removal (and device unbind) is not that
-well tested on ARM device drivers in general.
+Right so the problem does exist, and not only with
+cpufreq_driver_resolve_freq(), but __cpufreq_driver_target() as well.
+I have a sent a patchset to update both of these to start sharing some
+code and we need to fix this for both now.
 
-Best regards,
+> Signed-off-by: TungChen Shih <tung-chen.shih@mediatek.com>
+> ---
+>  drivers/cpufreq/cpufreq.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 802abc925b2a..8e3a17781618 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -544,8 +544,23 @@ unsigned int cpufreq_driver_resolve_freq(struct cpufreq_policy *policy,
+>  	if (cpufreq_driver->target_index) {
+>  		unsigned int idx;
+>  
+> +		/*  to find the frequency >= target_freq */
+>  		idx = cpufreq_frequency_table_target(policy, target_freq,
+>  						     CPUFREQ_RELATION_L);
+> +
+> +		/* frequency should subject to policy (min/max) */
+> +		if (policy->freq_table[idx].frequency > policy->max) {
+> +			if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
+> +				idx--;
+> +			else
+> +				idx++;
+> +		} else if (policy->freq_table[idx].frequency < policy->min) {
+> +			if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
+> +				idx++;
+> +			else
+> +				idx--;
+> +		}
+
+This doesn't look clean to be honest.
+
+Rafael, does it make sense to update cpufreq_frequency_table_target()
+(and its internal routines) to take policy bounds in consideration, or
+something else ?
+
 -- 
-Javier Martinez Canillas
-Software Engineer
-New Platform Technologies Enablement team
-RHEL Engineering
-
+viresh
