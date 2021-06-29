@@ -2,128 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4693B6E88
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A398A3B6E8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhF2HJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 03:09:54 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:1478 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232097AbhF2HJy (ORCPT
+        id S232207AbhF2HMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 03:12:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45894 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232097AbhF2HMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 03:09:54 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15T70du6002270;
-        Tue, 29 Jun 2021 07:07:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=F2nO6KhDW4v6veTEQnwjOs2scu2iwkeGP00AAd7JfM0=;
- b=It2LbuvCulSho5Y6fVXWYR2GJuj/ey8+sRaHD8o8/q4B3RP3yOCOdqAfFLBS7wjRpGTl
- L0AetBGj3OCxHAesr/+/n6RSWU1dfIPvwpLpZJOyOMkK8iMlKgsEvxmDylRBXXK587zy
- qNV/KHNPgcEMfhzKfawTJEFLyv0HRasEiRYN+8PSB4fLOPk79ZVmVnhejCeqbYAJNBoL
- 5zdlnSOzy52lsRz9+7+Szzr1NyIiFlpzFDyImTTBKfb4VriqmJh/aup862KPful2DUwC
- HGwTW2xQ1Vc0K+f0MQCBaRr5shoK8cg0M1brULWjthYhdLl3QNa7rBBy6Af12k8hk911 6Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39f174jya7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 07:07:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15T6xsr4162051;
-        Tue, 29 Jun 2021 07:07:15 GMT
+        Tue, 29 Jun 2021 03:12:07 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15T72eGQ157361;
+        Tue, 29 Jun 2021 03:09:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VQ+o3KS8isrTC67pG09sfdIU/bD0QsRYOjzDDSvBL18=;
+ b=okC2X3HMhl+/fwvde9FCOJNYJ21tdRTlGje+/zOh5onIyepqw435uPj9Zqm8Ld2rNHGo
+ oE6efJ1k8Z0IUza0zSunMw5zu4LfGgLeE3ljzIBprm8WTfdLv6K+K4CTSejn6CKhQ1qG
+ zo+TUQBmHoCwynvIZoodcvxXtL2nki3t03kpw/8aFsRYrEN7EwO6FD8AfOLB0sPJ6NdY
+ V0RgpxNoqVOZjjxNJnmXbxMB8DO/imi8c6dSUWw4/CGnH0R9NZCwTcMModSzljl9+5MV
+ 67f5RoTy909QsgK8PIHsBsnzU8wDytJDZemREYrg7j7nnQ0Qwq98serElW5SgoX5DT3Z sg== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 39ee0u4rwp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 07:07:15 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15T74LHT179657;
-        Tue, 29 Jun 2021 07:07:15 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 39ee0u4rv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 07:07:15 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15T7776J025527;
-        Tue, 29 Jun 2021 07:07:10 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Jun 2021 00:07:06 -0700
-Date:   Tue, 29 Jun 2021 10:06:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [kbuild] drivers/mtd/parsers/ofpart_bcm4908.c:41
- bcm4908_partitions_fw_offset() warn: should 'offset << 10' be a 64 bit type?
-Message-ID: <202106290224.39KCjBKr-lkp@intel.com>
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fx7hrynm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 03:09:34 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15T73KOD160494;
+        Tue, 29 Jun 2021 03:09:34 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39fx7hryn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 03:09:34 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15T72V8c029037;
+        Tue, 29 Jun 2021 07:09:33 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 39ekxb0g5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 07:09:33 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15T79WFQ28639652
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 07:09:32 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2E4EBE0A9;
+        Tue, 29 Jun 2021 07:09:31 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17594BE05B;
+        Tue, 29 Jun 2021 07:09:26 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.45.57])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Jun 2021 07:09:26 +0000 (GMT)
+Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
+ perf script
+To:     "Paul A. Clarke" <pc@us.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com
+References: <20210628062341.155839-1-kjain@linux.ibm.com>
+ <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
+Date:   Tue, 29 Jun 2021 12:39:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EU3O553ZQLHTZB2ZBG7ZV4NF5SX5YKVA
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: LbI7-rS0lIoThdA2oDBqelB2u4f_UfPE
-X-Proofpoint-ORIG-GUID: LbI7-rS0lIoThdA2oDBqelB2u4f_UfPE
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: M51rqWXXc1ILHZVa-XH_DEWp1tyX1LjL
+X-Proofpoint-ORIG-GUID: kQCq-T8FhUHS1qIYh-wv44lmr2YUF2il
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_02:2021-06-25,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   62fb9874f5da54fdb243003b386128037319b219
-commit: bb17230c61a6424b622e92006ec52ba23aa5a967 mtd: parsers: ofpart: support BCM4908 fixed partitions
-config: microblaze-randconfig-m031-20210628 (attached as .config)
-compiler: microblaze-linux-gcc (GCC) 9.3.0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-smatch warnings:
-drivers/mtd/parsers/ofpart_bcm4908.c:41 bcm4908_partitions_fw_offset() warn: should 'offset << 10' be a 64 bit type?
+On 6/28/21 8:19 PM, Paul A. Clarke wrote:
+> On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
+>> Commit 48a1f565261d ("perf script python: Add more PMU fields
+>> to event handler dict") added functionality to report fields like
+>> weight, iregs, uregs etc via perf report.
+>> That commit predefined buffer size to 512 bytes to print those fields.
+>>
+>> But incase of powerpc, since we added extended regs support
+>> in commits:
+>>
+>> Commit 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+>> Counter SPRs as part of extended regs")
+>> Commit d735599a069f ("powerpc/perf: Add extended regs support for
+>> power10 platform")
+>>
+>> Now iregs can carry more bytes of data and this predefined buffer size
+>> can result to data loss in perf script output.
+>>
+>> Patch resolve this issue by making buffer size dynamic based on number
+>> of registers needed to print. It also changed return type for function
+>> "regs_map" from int to void, as the return value is not being used by
+>> the caller function "set_regs_in_dict".
+>>
+>> Fixes: 068aeea3773a ("perf powerpc: Support exposing Performance Monitor
+>> Counter SPRs as part of extended regs")
+>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>> ---
+>>  .../util/scripting-engines/trace-event-python.c | 17 ++++++++++++-----
+>>  1 file changed, 12 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+>> index 4e4aa4c97ac5..c8c9706b4643 100644
+>> --- a/tools/perf/util/scripting-engines/trace-event-python.c
+>> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
+> [...]
+>> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
+>>  			     struct evsel *evsel)
+>>  {
+>>  	struct perf_event_attr *attr = &evsel->core.attr;
+>> -	char bf[512];
+>> +
+>> +	/*
+>> +	 * Here value 28 is a constant size which can be used to print
+>> +	 * one register value and its corresponds to:
+>> +	 * 16 chars is to specify 64 bit register in hexadecimal.
+>> +	 * 2 chars is for appending "0x" to the hexadecimal value and
+>> +	 * 10 chars is for register name.
+>> +	 */
+>> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+>> +	char bf[size];
+> 
+> I propose using a template rather than a magic number here. Something like:
+> const char reg_name_tmpl[] = "10 chars  ";
+> const char reg_value_tmpl[] = "0x0123456789abcdef";
+> const int size = __sw_hweight64(attr->sample_regs_intr) +
+>                  sizeof reg_name_tmpl + sizeof reg_value_tmpl;
+> 
 
-vim +41 drivers/mtd/parsers/ofpart_bcm4908.c
+Hi Paul,
+   Thanks for reviewing the patch. Yes these are
+some standardization we can do by creating macros for different
+fields.
+The basic idea is, we want to provide significant buffer size
+based on number of registers present in sample_regs_intr to accommodate
+all data.
 
-bb17230c61a642 Rafał Miłecki 2021-03-01  17  static long long bcm4908_partitions_fw_offset(void)
-bb17230c61a642 Rafał Miłecki 2021-03-01  18  {
-bb17230c61a642 Rafał Miłecki 2021-03-01  19  	struct device_node *root;
-bb17230c61a642 Rafał Miłecki 2021-03-01  20  	struct property *prop;
-bb17230c61a642 Rafał Miłecki 2021-03-01  21  	const char *s;
-bb17230c61a642 Rafał Miłecki 2021-03-01  22  
-bb17230c61a642 Rafał Miłecki 2021-03-01  23  	root = of_find_node_by_path("/");
-bb17230c61a642 Rafał Miłecki 2021-03-01  24  	if (!root)
-bb17230c61a642 Rafał Miłecki 2021-03-01  25  		return -ENOENT;
-bb17230c61a642 Rafał Miłecki 2021-03-01  26  
-bb17230c61a642 Rafał Miłecki 2021-03-01  27  	of_property_for_each_string(root, "brcm_blparms", prop, s) {
-bb17230c61a642 Rafał Miłecki 2021-03-01  28  		size_t len = strlen(BLPARAMS_FW_OFFSET);
-bb17230c61a642 Rafał Miłecki 2021-03-01  29  		unsigned long offset;
-bb17230c61a642 Rafał Miłecki 2021-03-01  30  		int err;
-bb17230c61a642 Rafał Miłecki 2021-03-01  31  
-bb17230c61a642 Rafał Miłecki 2021-03-01  32  		if (strncmp(s, BLPARAMS_FW_OFFSET, len) || s[len] != '=')
-bb17230c61a642 Rafał Miłecki 2021-03-01  33  			continue;
-bb17230c61a642 Rafał Miłecki 2021-03-01  34  
-bb17230c61a642 Rafał Miłecki 2021-03-01  35  		err = kstrtoul(s + len + 1, 0, &offset);
-bb17230c61a642 Rafał Miłecki 2021-03-01  36  		if (err) {
-bb17230c61a642 Rafał Miłecki 2021-03-01  37  			pr_err("failed to parse %s\n", s + len + 1);
-bb17230c61a642 Rafał Miłecki 2021-03-01  38  			return err;
-bb17230c61a642 Rafał Miłecki 2021-03-01  39  		}
-bb17230c61a642 Rafał Miłecki 2021-03-01  40  
-bb17230c61a642 Rafał Miłecki 2021-03-01 @41  		return offset << 10;
+But before going to optimizing code, Arnaldo/Jiri, is this approach looks good to you?
 
-We likely do not care about this microblaze .config too much in this
-context, but it would be simple enough to declare offset as a long long.
+> Pardon my ignorance, but is there no separation/whitespace between the name
+> and the value?
 
-bb17230c61a642 Rafał Miłecki 2021-03-01  42  	}
-bb17230c61a642 Rafał Miłecki 2021-03-01  43  
-bb17230c61a642 Rafał Miłecki 2021-03-01  44  	return -ENOENT;
-bb17230c61a642 Rafał Miłecki 2021-03-01  45  }
+This is how we will get data via perf script
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
+r0:0xc000000000112008
+r1:0xc000000023b37920
+r2:0xc00000000144c900
+r3:0xc0000000bc566120
+r4:0xc0000000c5600000
+r5:0x2606c6506ca
+r6:0xc000000023b378f8
+r7:0xfffffd9f93a48f0e
+.....
 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+ And is there some significance to 10 characters for the
+> register name, or is that a magic number?
 
+Most of the register name are within 10 characters, basically we are giving this
+magic number to make sure we have enough space in buffer to contain all registers
+name with colon.
+
+Thanks,
+Kajol Jain
+ 
+> 
+> PC
+> 
