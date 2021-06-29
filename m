@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4373B75E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A23B75F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhF2Pyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:54:35 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:46354 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232929AbhF2Pyd (ORCPT
+        id S233073AbhF2P5Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Jun 2021 11:57:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:42328 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232698AbhF2P5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:54:33 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyG1t-007HkF-AW; Tue, 29 Jun 2021 09:52:05 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:59472 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyG1s-001hct-9Q; Tue, 29 Jun 2021 09:52:04 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-References: <87fsx1vcr9.fsf@disp2133>
-        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-Date:   Tue, 29 Jun 2021 10:51:57 -0500
-In-Reply-To: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 28 Jun 2021 20:47:12 -0700")
-Message-ID: <87czs4u0rm.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 29 Jun 2021 11:57:22 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-220-mzX9PE73Nm-qclt7qrCrOA-1; Tue, 29 Jun 2021 16:54:52 +0100
+X-MC-Unique: mzX9PE73Nm-qclt7qrCrOA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 29 Jun
+ 2021 16:54:51 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Tue, 29 Jun 2021 16:54:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bjorn Andersson' <bjorn.andersson@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
+ cooling_devs
+Thread-Topic: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
+ cooling_devs
+Thread-Index: AQHXbP2JqXYxU5tlYEOLPsfLv/20yqsrIr2A
+Date:   Tue, 29 Jun 2021 15:54:51 +0000
+Message-ID: <4a0f56e3cb02435b911e8d35f6a83529@AcuMS.aculab.com>
+References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
+ <YNs/o7VVh+JnbxK9@yoga>
+In-Reply-To: <YNs/o7VVh+JnbxK9@yoga>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lyG1s-001hct-9Q;;;mid=<87czs4u0rm.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/CH09AIniFLWzy282KwTH+6uGeoCx45RM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3735]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 282 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.7 (1.3%), b_tie_ro: 2.6 (0.9%), parse: 0.62
-        (0.2%), extract_message_metadata: 8 (2.7%), get_uri_detail_list: 0.43
-        (0.2%), tests_pri_-1000: 3.9 (1.4%), tests_pri_-950: 0.98 (0.3%),
-        tests_pri_-900: 0.81 (0.3%), tests_pri_-90: 135 (47.8%), check_bayes:
-        127 (45.0%), b_tokenize: 3.2 (1.1%), b_tok_get_all: 3.4 (1.2%),
-        b_comp_prob: 0.95 (0.3%), b_tok_touch_all: 117 (41.5%), b_finish: 0.62
-        (0.2%), tests_pri_0: 118 (41.6%), check_dkim_signature: 0.35 (0.1%),
-        check_dkim_adsp: 2.2 (0.8%), poll_dns_idle: 0.48 (0.2%), tests_pri_10:
-        2.3 (0.8%), tests_pri_500: 7 (2.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+From: Bjorn Andersson
+> Sent: 29 June 2021 16:44
+> 
+> On Mon 28 Jun 12:27 CDT 2021, Manivannan Sadhasivam wrote:
+> 
+> > In "qmp_cooling_devices_register", the count value is initially
+> > QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
+> > the memory for cooling_devs is allocated. Then while calling the
+> > "qmp_cooling_device_add" function, count value is post-incremented for
+> > each child node.
+> >
+> > This makes the out of bound access to the cooling_dev array. Fix it by
+> > resetting the count value to zero before adding cooling devices.
+> >
+> > While at it, let's also free the memory allocated to cooling_dev if no
+> > cooling device is found in DT and during unroll phase.
+> >
+> > Cc: stable@vger.kernel.org # 5.4
+> > Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake
+> up the SoC.")
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >
+> > Bjorn: I've just compile tested this patch.
+> >
+> >  drivers/soc/qcom/qcom_aoss.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> > index 934fcc4d2b05..98c665411768 100644
+> > --- a/drivers/soc/qcom/qcom_aoss.c
+> > +++ b/drivers/soc/qcom/qcom_aoss.c
+> > @@ -488,6 +488,7 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
+> >  	if (!qmp->cooling_devs)
+> >  		return -ENOMEM;
+> >
+> > +	count = 0;
+> 
+> This will address the immediate problem, which is that we assign
+> cooling_devs[2..] in this loop. But, like Matthias I don't think we
+> should use "count" as a constant in the first hunk and then reset it
+> and use it as a counter in the second hunk.
+> 
+> Frankly, I don't see why cooling_devs is dynamically allocated (without
+> being conditional on there being any children).
 
-> Why the "sigpending < LONG_MAX" test in that
->
->         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
-> task_rlimit(t, RLIMIT_SIGPENDING))) {
-> thing?
+Not to mention what happens if there are 3 matching nodes.
+Given that qmp_cooling_device is only 4 pointers why bother
+allocating a pointer to it at all.
+Just instantiate 2 of them in the outer structure.
+No is going to notice 56 bytes - it is probably hidden in the
+padding when the outer structure is allocated.
 
-On second look that sigpending < LONG_MAX check is necessary.  When
-inc_rlimit_ucounts detects a problem it returns LONG_MAX.
 
-So the check for LONG_MAX is the condensed check to see if there is a
-problem in any other levels of the ucount hierarchy.
+> So, could you please make the cooling_devs an array of size
+> QMP_NUM_COOLING_RESOURCES, remove the dynamic allocation here, just
+> initialize count to 0 and add a check in the loop to generate an error
+> if count == QMP_NUM_COOLING_RESOURCES?
+> 
 
-Eric
+You should set count to 0 just before this loop - not at the top
+of the function.
+
+> >  	for_each_available_child_of_node(np, child) {
+> >  		if (!of_find_property(child, "#cooling-cells", NULL))
+> >  			continue;
+> > @@ -497,12 +498,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
+> >  			goto unroll;
+> >  	}
+> >
+> > +	if (!count)
+> > +		devm_kfree(qmp->dev, qmp->cooling_devs);
+> 
+> I presume this is just an optimization, to get some memory back when
+> there's no cooling devices specified in DT.  I don't think this is
+> necessary and this made me want the static sizing of the array..
+> 
+> > +
+> >  	return 0;
+> >
+> >  unroll:
+> >  	while (--count >= 0)
+> >  		thermal_cooling_device_unregister
+> >  			(qmp->cooling_devs[count].cdev);
+> > +	devm_kfree(qmp->dev, qmp->cooling_devs);
+> 
+> I don't remember why we don't fail probe() when this happens, seems like
+> the DT properties should be optional but the errors adding them should
+> be fatal. But that's a separate issue.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
