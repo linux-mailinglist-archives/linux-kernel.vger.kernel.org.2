@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DDD3B79B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365A23B79C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbhF2VNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 17:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55228 "EHLO mail.kernel.org"
+        id S235702AbhF2VOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 17:14:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235288AbhF2VNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 17:13:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F75C61D8E;
-        Tue, 29 Jun 2021 21:10:46 +0000 (UTC)
+        id S235288AbhF2VOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 17:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 98B5C61D92;
+        Tue, 29 Jun 2021 21:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625001046;
-        bh=Vihb2Lt7gLwYGR7pQK/C0fGk+fZKr6WmhBI8AO8i67E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uO0/sgh2b1mrAbPPLwV1wcu4h6LskX0VVtGXkKZh4CYgWc6NbbzKLofUVZk5MjpBv
-         qQj/V+lP+rsc+1cucf5XRx8+Q17gfvLYpXcIo9+yFhwRv3s7A/tQPcBWwdaBOpfQRl
-         eYLUppPBxaolNF5V36Q1zOfsOM/TOEkPzDkDlTNpdxb/+AA+T1mAVkTgjHt5u3IbmU
-         tIPH5oa/RUr4OiRuQnOkpMb00FQxwN0Xe2boaW8ghsvTOK04Ie4zRRfuS89sXUIkcc
-         y09NqGnMnIVQXVH7Ghhgh6Ylu09n6ts+erKmwwyE882OFVD1TzpAp2p6s4OnseFTUx
-         OJRGqxjaA9OiQ==
-Date:   Wed, 30 Jun 2021 00:10:44 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Stefan Berger <stefanb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        James Morris James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Peter Huewe <peterhuewe@gmx.de>
-Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
-Message-ID: <20210629211044.nqumpnkxt3ouhxcs@kernel.org>
-References: <20210623135600.n343aglmvu272fsg@kernel.org>
- <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
- <20210629202041.4ptesmrs67hkbzxn@kernel.org>
- <CAHk-=who-5aibKGaCgn75KjDDJ_0OVR5SiXPJhvgvLT+BGN8kQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=who-5aibKGaCgn75KjDDJ_0OVR5SiXPJhvgvLT+BGN8kQ@mail.gmail.com>
+        s=k20201202; t=1625001100;
+        bh=+6XrR1IedjpmCWyFFmE8lUZLdI08JUB2Noc+XVG1t5o=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Z9hZv8qVI6SRJsFA0XMsgizQ3C7PkdWtUuu9Y9pw07GpfRNLzHRY/LolfHoY/GfK/
+         kTm/QXELfT4BpSmizFv6HM+9JKTsCM5/VKJ9u36lVF8DySB/NjOS9sC5BkIEq3mEG0
+         qfsYkekSFGOPBGlPnmFvABo2p45C+M7SN9ehAGPdnG/mzK6308nUh8B8krTQimAgDO
+         7+8B5g8uYYK07T0VXbR0LoeP9FDjGbF/DiO9xPe8oqBhLYRUjazQmDGwW4K7Sdm/MP
+         lwk9fFNeo4pQpJYnhaB6n5rsjPvkQN2yUB8elJnnuMNcxpDq3Zvi4MVArpzOSMpQ12
+         dvG/vmkVRpA2g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 87BD16095A;
+        Tue, 29 Jun 2021 21:11:40 +0000 (UTC)
+Subject: Re: [GIT PULL] Power management updates for v5.14-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0i+RhTN4LYqG0X5oUg8e2gs1AbwHP__PSvCRoFT48P7Ug@mail.gmail.com>
+References: <CAJZ5v0i+RhTN4LYqG0X5oUg8e2gs1AbwHP__PSvCRoFT48P7Ug@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0i+RhTN4LYqG0X5oUg8e2gs1AbwHP__PSvCRoFT48P7Ug@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.14-rc1
+X-PR-Tracked-Commit-Id: 22b65d31ad9d10cdd726239966b6d6f67db8f251
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3563f55ce65462063543dfa6a8d8c7fbfb9d7772
+Message-Id: <162500110049.4657.4126985644338376220.pr-tracker-bot@kernel.org>
+Date:   Tue, 29 Jun 2021 21:11:40 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 02:08:53PM -0700, Linus Torvalds wrote:
-> On Tue, Jun 29, 2021 at 1:20 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> >
-> > Since there was still a new fix for the series [*], I'd rather refine
-> > the pull request without these patches, and not risk them being blocker
-> > for the rest of the commits.
-> 
-> They seemed to be just the last two commits at the end of the series,
-> so I could take everything up to 0178f9d0f60b ("tpm: Replace
-> WARN_ONCE() with dev_err_once() in tpm_tis_status()") perhaps?
-> 
-> I can do that even without a new pull request (I've done that kind of
-> thing before where I decide to pull everything but the last few
-> commits). But admittedly I'd prefer to see a new pull request just so
-> that I get a signed tag (which I wouldn't get if I just merged that
-> top commit).
-> 
->                      Linus
+The pull request you sent on Tue, 29 Jun 2021 20:58:30 +0200:
 
-OK, that would be great! Please, do that. Thank you.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.14-rc1
 
-/Jarkko
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3563f55ce65462063543dfa6a8d8c7fbfb9d7772
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
