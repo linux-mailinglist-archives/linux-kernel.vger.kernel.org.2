@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFA23B73A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413E63B73B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbhF2OCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:02:01 -0400
-Received: from pv50p00im-tydg10011801.me.com ([17.58.6.52]:51581 "EHLO
-        pv50p00im-tydg10011801.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233478AbhF2OB5 (ORCPT
+        id S234322AbhF2OCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234285AbhF2OCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:01:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1624975170; bh=U8jC3Z4NOxymfl0o3wyubDPnPgL2VYYqJT5yEYjtwkc=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=qdme7DUMDA1fziS5X2m0XVyDx3vCy0QJ6qaR4I2Xu/g9mb7rQMN5gMaCfK57Lyy+J
-         NwliffLl/veLsYy6t6ka4Uqy5D4H3H57iry6UoHft7YLPMELnxeJ5dlHceXCXQ2+Kl
-         YMolxuO63Y0TweJYAAOMdAF0URpLVRQ1BQlslYEckQY157NoAQwzKkRj33dW3GSjhI
-         W50bhDT40LF7wR1nXOEbnFBxMowPvFy/4iNcN/T3NQpl3CKUR3hdMQgP26iSqX69u6
-         HoOrouQTCHuCfvHlyqID3wZPEOjiQfihAsXtLn3DaBxY0juzvq5KCTcT46Ndj9sxes
-         6W5zEUMBP4ObA==
-Received: from xiongwei.. (unknown [120.245.2.115])
-        by pv50p00im-tydg10011801.me.com (Postfix) with ESMTPSA id 56254660161;
-        Tue, 29 Jun 2021 13:59:27 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH v3] locking/lockdep: Fix meaningless usages output of lock classes
-Date:   Tue, 29 Jun 2021 21:59:16 +0800
-Message-Id: <20210629135916.308210-1-sxwjean@me.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 29 Jun 2021 10:02:32 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE4FC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:00:04 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id z1so20983088ils.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LiPBJHutY2JT3x1rtt17GDMx4lGLUKiSnYapmAQzqkY=;
+        b=FV3cFk4tB7yhnj/7aMI1tyutOIEixWTcp2MsxpxdxQA65Qvna33nzotfnN7/AzgNgL
+         ek1RKFOoIUz32fEM3JgqXnp4gNQzXkCFS2Ek+hrywbJgukWjiJZpq2u09UT9fB0WZg8Q
+         XRmVGfh3Fk1AhwepCgLENmQinGPupafWa4Pkc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LiPBJHutY2JT3x1rtt17GDMx4lGLUKiSnYapmAQzqkY=;
+        b=UhFQddR2l4kymSwbkgA5gDY41Fmk89Pn3MxpqczMfIgUNohK8E2tuTw1TQjLtkTUSi
+         6LGUwEm8WbR9NR91SoHJjA2EbuFSH/+lh/ql/8SuHqqcqr1if8oWMaHzcFrcHu0VoVJd
+         1SbrLqKwmtIhtcSIo1P0tJn+PRij8WmNZqe3OUKjPNO8SSEsJr9wIfyPOfLa4gjtOFK3
+         x4msxz60d7+LLKAixSSUb5eVQc/m6S7w8TR9/61+OMBlif3yniIzPqhtqDQfC/CJHKoC
+         jMcVawF/psw/jW4BICBjqZlw9LEzv5BXUeamX4jkYqCUO+pKuT3JBpGEz1SDa9KHX0wX
+         Fv9g==
+X-Gm-Message-State: AOAM532SeBAh1sLdlGzfRbMYEFrZGy/WelgLzSvmKqiVvOkp+65g0oIf
+        7hIy1iTydDM8Mn3EjbkfsRSCcA==
+X-Google-Smtp-Source: ABdhPJyzufp6Kg7E9n0waFJLeQepIcJX8JWih+Xg6HWqJfZpBasOfT+RTB/VFy+cbUt+0coC/JOUow==
+X-Received: by 2002:a05:6e02:1aa7:: with SMTP id l7mr21771403ilv.187.1624975204243;
+        Tue, 29 Jun 2021 07:00:04 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a12sm2785560ilt.3.2021.06.29.07.00.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 07:00:03 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210628143004.32596-1-sashal@kernel.org>
+ <d3122f35-4659-8bed-65eb-77087eec82fe@linuxfoundation.org>
+ <YNq5mSk5MW3Uq60H@kroah.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <b3ebfc9b-ab6f-db28-f64a-a6cdd0bf2dfd@linuxfoundation.org>
+Date:   Tue, 29 Jun 2021 08:00:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2106290095
+In-Reply-To: <YNq5mSk5MW3Uq60H@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+On 6/29/21 12:11 AM, Greg Kroah-Hartman wrote:
+> On Mon, Jun 28, 2021 at 02:57:20PM -0600, Shuah Khan wrote:
+>> On 6/28/21 8:28 AM, Sasha Levin wrote:
+>>>
+>>> This is the start of the stable review cycle for the 5.4.129 release.
+>>> There are 71 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
+>>> Anything received after that time might be too late.
+>>>
+>>> The whole patch series can be found in one patch at:
+>>>           https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.4.y&id2=v5.4.128
+>>
+>> My tools are failing on this link. Is it possible to keep the rc patch
+>> convention consistent with Greg KH's naming scheme?
+> 
+> What is failing on this, the use of "&" in the link?  The patch itself
+> from this link works for me.
+> 
 
-When enabling CONFIG_LOCK_STAT, then CONFIG_LOCKDEP is forcedly enabled.
-We can get output from /proc/lockdep, which currently includes usages of
-lock classes. But the usages are meaningless, see the output below:
+The link itself is good. My scripts assumes patch-5.4.128-rc1.gz naming
+convention. I can adjust my scripts to work with either.
 
-/ # cat /proc/lockdep
-all lock classes:
-ffffffff9af63350 ....: cgroup_mutex
+Easier to adjust my script if it is a pain to adjust on your end. :)
 
-ffffffff9af54eb8 ....: (console_sem).lock
+thanks,
+-- Shuah
 
-ffffffff9af54e60 ....: console_lock
 
-ffffffff9ae74c38 ....: console_owner_lock
-
-ffffffff9ae74c80 ....: console_owner
-
-ffffffff9ae66e60 ....: cpu_hotplug_lock
-
-Only one usage context for each lock, this is because each usage is only
-changed in mark_lock() that is in CONFIG_PROVE_LOCKING defined section,
-however in the test situation, it's not.
-
-The fix is to move the usages reading and seq_print from
-CONFIG_PROVE_LOCKING undefined setcion to its defined section. Also,
-locks_after list of lock_class is empty when CONFIG_PROVE_LOCKING
-undefined, so do the same thing as what have done for usages of lock
-classes.
-
-With this patch with CONFIG_PROVE_LOCKING undefined, we can get the
-results below:
-
-/ # cat /proc/lockdep
-all lock classes:
-ffffffff85163290: cgroup_mutex
-ffffffff85154dd8: (console_sem).lock
-ffffffff85154d80: console_lock
-ffffffff85074b58: console_owner_lock
-ffffffff85074ba0: console_owner
-ffffffff85066d60: cpu_hotplug_lock
-
-a class key and the relevant class name each line.
-
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
-
-v3: Improve commit log. Thank Longman very much for the comments.
-v2: https://lkml.org/lkml/2021/6/28/1549
-
----
- kernel/locking/lockdep_proc.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 806978314496..b8d9a050c337 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -70,26 +70,28 @@ static int l_show(struct seq_file *m, void *v)
- #ifdef CONFIG_DEBUG_LOCKDEP
- 	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
- #endif
--#ifdef CONFIG_PROVE_LOCKING
--	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
--	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
--#endif
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
-+		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
- 
--	get_usage_chars(class, usage);
--	seq_printf(m, " %s", usage);
-+		get_usage_chars(class, usage);
-+		seq_printf(m, " %s", usage);
-+	}
- 
- 	seq_printf(m, ": ");
- 	print_name(m, class);
- 	seq_puts(m, "\n");
- 
--	list_for_each_entry(entry, &class->locks_after, entry) {
--		if (entry->distance == 1) {
--			seq_printf(m, " -> [%p] ", entry->class->key);
--			print_name(m, entry->class);
--			seq_puts(m, "\n");
-+	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-+		list_for_each_entry(entry, &class->locks_after, entry) {
-+			if (entry->distance == 1) {
-+				seq_printf(m, " -> [%p] ", entry->class->key);
-+				print_name(m, entry->class);
-+				seq_puts(m, "\n");
-+			}
- 		}
-+		seq_puts(m, "\n");
- 	}
--	seq_puts(m, "\n");
- 
- 	return 0;
- }
--- 
-2.30.2
 
