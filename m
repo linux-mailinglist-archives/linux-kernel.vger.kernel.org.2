@@ -2,184 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3283B75CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9EA3B75CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhF2Pom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:44:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:53774 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhF2Pok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:44:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 932A26D;
-        Tue, 29 Jun 2021 08:42:12 -0700 (PDT)
-Received: from [10.57.46.146] (unknown [10.57.46.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA6E03F718;
-        Tue, 29 Jun 2021 08:42:10 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: rockchip: add rock-pi-4 analog audio
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alex Bee <knaerzche@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, jack@radxa.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Rob Herring <robh+dt@kernel.org>
-References: <20210628113033.9145-1-adrian.ratiu@collabora.com>
- <7f806d30-594e-2325-615a-8fee875c83a8@gmail.com>
- <87eeck3e1o.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <6a9d976e-22fe-2723-9897-da58b3af456a@arm.com>
-Date:   Tue, 29 Jun 2021 16:42:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232761AbhF2Pot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232929AbhF2Por (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 11:44:47 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFD8C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:42:20 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso2710787pjp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S1nyxTNyKIv6xPRsPeUnMhjNpagEaP2nZRgi4aFLtaw=;
+        b=UeEhSFFPEVOqaeCDh9HPSYx9BslW6V/lxvu1G8a1WGahdxjh/bPELhJiLcJW8DAcPF
+         7cULCet3DIstVFDjtFQOX0cG97gyRNrZedE3QIEKlZFk0Lp98uw3V6qLoRO9VqgG48Cw
+         GVgw8v7pcVWA+PKvYn5bFhsRpB0JImGixeFtw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S1nyxTNyKIv6xPRsPeUnMhjNpagEaP2nZRgi4aFLtaw=;
+        b=sbVqhwZKLTlrWzcmcTlcSvGDbaVwTjFgyjZ/hEoADks3rWo+4JHdesghD/+y/CYgih
+         eaczvpqdnoGD83IC5Rk2FN5h+HBGfU/iTo77uiF/h03+f6X/YtY3BrxUuY0fvqaprtZX
+         GeTlJg1/yX0SeFy16s3qt7zxDKEmZ5VZ8LYrY4aUpyvLj3DQgBR+Rm8pancT923Ym24L
+         DtqA/pe4ZHAkFf9lh/PtYww6rD2B91Wa4qslkAMI8bA0may0GGM8xUuj1KVS/AbsyB/G
+         KA5TxBKWyBQT8VQbwi2xt41U+J//9AetIOCZZrgz29YKFCA0jnqMQNfxwA11daKpQNfG
+         Gq+Q==
+X-Gm-Message-State: AOAM530E0TTOLlF7RPaczgojKkaWZDW+i2l13EHV1j4ugccJU7aZE8ex
+        E27J53Oxql3hje7mrW0MPnHNfw==
+X-Google-Smtp-Source: ABdhPJymoQ3YJNOyzIF+WKlkFMhbnMI+nB6DPkOBsPxlAC6ibhrSWi0U6DceQHlMpLstqbjQgR8ZJQ==
+X-Received: by 2002:a17:90a:14a4:: with SMTP id k33mr32674856pja.13.1624981339641;
+        Tue, 29 Jun 2021 08:42:19 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:d87f:6819:b50a:74b])
+        by smtp.gmail.com with ESMTPSA id ck1sm3650199pjb.3.2021.06.29.08.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 08:42:18 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 00:42:13 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] printk/console: Check consistent sequence number when
+ handling race in console_unlock()
+Message-ID: <YNs/Vbi2Yt0s10Ye@google.com>
+References: <20210629143341.19284-1-pmladek@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <87eeck3e1o.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629143341.19284-1-pmladek@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-29 16:07, Adrian Ratiu wrote:
-> Hi Alex,
+On (21/06/29 16:33), Petr Mladek wrote:
+> The standard printk() tries to flush the message to the console
+> immediately. It tries to take the console lock. If the lock is
+> already taken then the current owner is responsible for flushing
+> even the new message.
 > 
-> On Tue, 29 Jun 2021, Alex Bee <knaerzche@gmail.com> wrote:
->> Hi Adrian,
->> I've submitted similar patch already. Its part of [1]
-> 
-> Thank you for pointing out your patch, I was not aware of it as it was 
-> not merged yet (I tested latest linux-next).
-> 
-> It is a good sign that our code is almost identical except for the 
-> headphone detect pin which you mention.
-> 
->>
->> There is no headphone detection pin in the schematics, btw.
-> 
-> There are two reasons I added it:
-> 
-> 1. The es8316 codec failed to probe() in my testing unless the irq was 
-> defined. That might have been due to me testing the codec directly with 
-> the simple card driver instead of the graph driver.
-> 
-> Point 1 doesn't appear to be an issue anymore, the codec + graph driver 
-> probe correctly and audio supposedly (see below) works even without the 
-> irq.
-> 
-> 2. I got the gpio bank 1 pin 0 location from various headphone detection 
-> commits in the vendor v4.4 kernel, like for example [1].
-> 
-> Are you 100% sure there is no hp detection pin wired on the rock-pi-4?
-> Even if it might be missing from the schematics, the vendor driver code 
-> apparently defines and uses it?
+> There is a small race window between checking whether a new message is
+> available and releasing the console lock. It is solved by re-checking
+> the state after releasing the console lock. If the check is positive
+> then console_unlock() tries to take the lock again and process the new
+> message as well.
+[..]
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 142a58d124d9..87411084075e 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2545,6 +2545,7 @@ void console_unlock(void)
+>  	bool do_cond_resched, retry;
+>  	struct printk_info info;
+>  	struct printk_record r;
+> +	u64 next_seq;
+>  
+>  	if (console_suspended) {
+>  		up_console_sem();
+> @@ -2654,8 +2655,10 @@ void console_unlock(void)
+>  			cond_resched();
+>  	}
+>  
+> -	console_locked = 0;
+> +	/* Get consistent value of the next-to-be-used sequence number. */
+> +	next_seq = console_seq;
+>  
+> +	console_locked = 0;
+>  	up_console_sem();
+>  
+>  	/*
+> @@ -2664,7 +2667,7 @@ void console_unlock(void)
+>  	 * there's a new owner and the console_unlock() from them will do the
+>  	 * flush, no worries.
+>  	 */
+> -	retry = prb_read_valid(prb, console_seq, NULL);
+> +	retry = prb_read_valid(prb, next_seq, NULL);
+>  	printk_safe_exit_irqrestore(flags);
+>  
+>  	if (retry && console_trylock())
 
-FWIW according to the schematics it *is* wired up on the Model C board, 
-but not on the Model A or B.
+Maybe it's too late here in my time zone, but what are the consequences
+of this race?
 
-Robin.
+`retry` can be falsely set, console_trylock() does not spin on owner,
+so the context that just released the lock can grab it again only if
+it's unlocked. For the context that just has released the console_sem
+and then acquired it again, because of the race, - console_seq will be
+valid after it acquires the lock, then it'll jump to `retry` and
+re-validated the console_seq - prb_read_valid(). If it's valid, it'll
+print the message; and should another CPU printk that CPU will spin on
+owner and then the current console_sem owner will yield to it via
+console_lock_spinning branch.
 
->  From booting with the irq defined I get the following in 
-> /proc/interrupts however I'm having an unrelated difficulty testing 
-> because the audio connector literally broke off the board like in [2].
-> 90: 1  0  0  0  0  rockchip_gpio_irq   0 Level     es8316
-> 
-> Team Radxa was very nice in offering me a replacement but until that 
-> arrives I can't test this anymore.
-> 
-> [1] 
-> https://github.com/radxa/kernel/commit/e945cad5c3ec82d171760465d3c7a84bb10ed1b7 
-> 
-> 
-> [2] https://forum.radxa.com/t/audio-jack-broke-off/935
-> 
->> [1] 
->> https://patchwork.kernel.org/project/linux-rockchip/cover/20210618181256.27992-1-knaerzche@gmail.com/ 
->>
->>
->> Best,
->>
->> Alex
->>
->> Am 28.06.21 um 13:30 schrieb Adrian Ratiu:
->>> This adds the necessary pinctrl and nodes to enable the
->>> analog audio on rk3399 rock-pi-4 SBCs using the es8316
->>> codec and the audio-graph-card driver.
->>>
->>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->>> ---
->>>   .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 38 +++++++++++++++++++
->>>   1 file changed, 38 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi 
->>> b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->>> index b28888ea9262..77781d9150ac 100644
->>> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
->>> @@ -128,6 +128,12 @@ vdd_log: vdd-log {
->>>           regulator-max-microvolt = <1400000>;
->>>           vin-supply = <&vcc5v0_sys>;
->>>       };
->>> +
->>> +    sound {
->>> +        compatible = "audio-graph-card";
->>> +        label = "rockchip,rk3399";
->>> +        dais = <&i2s0_p0>;
->>> +    };
->>>   };
->>>   &cpu_l0 {
->>> @@ -422,6 +428,24 @@ &i2c1 {
->>>       i2c-scl-rising-time-ns = <300>;
->>>       i2c-scl-falling-time-ns = <15>;
->>>       status = "okay";
->>> +
->>> +    es8316: codec@11 {
->>> +        compatible = "everest,es8316";
->>> +        reg = <0x11>;
->>> +        clocks = <&cru SCLK_I2S_8CH_OUT>;
->>> +        clock-names = "mclk";
->>> +        pinctrl-names = "default";
->>> +        pinctrl-0 = <&hp_det_pin>;
->>> +        interrupt-parent = <&gpio1>;
->>> +        interrupts = <RK_PA0 IRQ_TYPE_LEVEL_HIGH>;
->>> +        #sound-dai-cells = <0>;
->>> +
->>> +        port {
->>> +            es8316_p0_0: endpoint {
->>> +                remote-endpoint = <&i2s0_p0_0>;
->>> +            };
->>> +        };
->>> +    };
->>>   };
->>>   &i2c3 {
->>> @@ -441,6 +465,14 @@ &i2s0 {
->>>       rockchip,capture-channels = <2>;
->>>       rockchip,playback-channels = <2>;
->>>       status = "okay";
->>> +
->>> +    i2s0_p0: port {
->>> +        i2s0_p0_0: endpoint {
->>> +            dai-format = "i2s";
->>> +            mclk-fs = <256>;
->>> +            remote-endpoint = <&es8316_p0_0>;
->>> +        };
->>> +    };
->>>   };
->>>   &i2s1 {
->>> @@ -556,6 +588,12 @@ wifi_host_wake_l: wifi-host-wake-l {
->>>               rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
->>>           };
->>>       };
->>> +
->>> +    es8316 {
->>> +        hp_det_pin: hp-det-pin {
->>> +            rockchip,pins = <1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
->>> +        };
->>> +    };
->>>   };
->>>   &pwm2 {
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+One way or the other, good catch and nice to have it fixed.
+
+Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
