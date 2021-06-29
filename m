@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C253E3B6E4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08DF3B6E58
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhF2Gi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:38:57 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:9316 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhF2Gi4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:38:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GDZQQ4BP5z70st;
-        Tue, 29 Jun 2021 14:32:14 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 14:36:27 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 14:36:26 +0800
-Subject: Re: [PATCH 3/9] sections: Move and rename core_kernel_data() to
- is_kernel_data()
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210626073439.150586-1-wangkefeng.wang@huawei.com>
- <20210626073439.150586-4-wangkefeng.wang@huawei.com>
- <20210628210538.0fdded1c@oasis.local.home>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <dc64df91-f89c-8e48-de9a-f5c864cdce12@huawei.com>
-Date:   Tue, 29 Jun 2021 14:36:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S232105AbhF2GnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231958AbhF2Gm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8983261CC7;
+        Tue, 29 Jun 2021 06:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624948833;
+        bh=uiM4ZLlUWZ7h4sImIXL++IvKwJZNxgmEDXyACS1QTvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j6zrxtJXNmcJ0vPKYlN/1Pzt7zNEI2j40Jkd3N/MyETUJ6fx6rpLOVJ2FrzVz/WGM
+         CCXlSV7ex+o2UyH+HaEkFDYM6/B5a66SO7X/E4KuUo8PztoNnCc+QEE0J2Vd9PoFyc
+         AJyZodXD8XqUNmvakICvix3VewBfBAFnJ80eDaYG5g08jvXpAy3cMQjFZzW/vfExmB
+         5JTS1GDI0AivZ/qubH9PWOPAhto2D71jMUgZ7PSlCSdTCxi7mVo6SI9e3NNBC4EkLs
+         dUoDBA0XFhu9IE5871dUnmiBMTLI3ZPOx9oH78JdnRZWCKmyPZ9KeS10O24XvvpjD/
+         CL9MjO2pvR7yA==
+Date:   Tue, 29 Jun 2021 09:40:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack
+ object
+Message-ID: <YNrAXW/94SJkOO0g@unreal>
+References: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
+ <20210624174841.GA2906108@nvidia.com>
+ <YNgxxTQ4NW0yGHq1@unreal>
+ <20210627231528.GA4459@nvidia.com>
+ <YNlcpfdsdJdwMp5l@unreal>
+ <20210628113813.GA21676@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628210538.0fdded1c@oasis.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628113813.GA21676@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 08:38:13AM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 28, 2021 at 08:22:45AM +0300, Leon Romanovsky wrote:
+> > > The previous code didn't call restrack_del. restrack_del undoes the
+> > > restrack_set_name stuff, not just add - so it does not leave things
+> > > back the way it found them
+> > 
+> > The previous code didn't call to restrack_add and this is why it didn't
+> > call to restrack_del later. In old and new code, we are still calling to
+> > acquire and release dev (cma_acquire_dev_by_src_ip/cma_release_dev) and
+> > this is where the CM_ID is actually attached.
+> 
+> Which is my point, you can't call restrack_del anyplace except the
+> final destroy. It cannot be used for error unwinding in these kinds of
+> functions
 
-On 2021/6/29 9:05, Steven Rostedt wrote:
-> On Sat, 26 Jun 2021 15:34:33 +0800
-> Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->> Move core_kernel_data() into sections.h and rename it to
->> is_kernel_data(), also make it return bool value, then
->> update all the callers.
-> Removing the "core" part of "core_kernel_data()" is misleading. As
-> modules can have kernel data, but this will return false on module data
-> (as it should). This is similar to core_kernel_text() which this series
-> doesn't seem to touch.
+ok, let's remove the controversial hunks.
 
-Yes, The series only collect and move the basic part(aka, the 'core' 
-part, which only
-
-contains the start/end address check of sections) into 
-include/asm-generic/sections.h,
-
-the core_kernel_text() contains system_state validation, it's not 
-inappropriate into sections.h,
-
-so it won't be modified and moved.
-
->
-> I'd like to keep the "core" in the name which makes it obvious this is
-> not about module data, and if someone were to make it about module
-> data, it will break ftrace synchronization.
-
-After this series, we have 5 APIs, only use core_kernel_data() is a 
-little strange,
-
-  * is_kernel_data()       --- come from core_kernel_data() in kernel.h
-  * is_kernel_rodata()    --- already in sections.h
-  * is_kernel_text()        --- come from kallsyms.h
-  * is_kernel_inittext()   --- come from kernel.h and kallsyms.h
-  * is_kernel()                --- come from kallsyms.h
-
-Could we rename is_kernel_data() to is_kernel_core_data(), and add some 
-comment your mentioned,
-
-or any better naming, thanks.
-
->
-> -- Steve
-> .
->
+> 
+> Jason
