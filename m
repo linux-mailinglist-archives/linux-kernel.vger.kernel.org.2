@@ -2,150 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC7D3B75D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC473B75D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhF2PqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S233812AbhF2PtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbhF2PqC (ORCPT
+        with ESMTP id S232428AbhF2PtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:46:02 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED0FC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:43:35 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id w127so26733582oig.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:43:35 -0700 (PDT)
+        Tue, 29 Jun 2021 11:49:05 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D581C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:46:38 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id m9so25086044ybo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XsjqZMs995RZPUKa7Q5/5AxsEU09PC6mvpt5UNfBSbc=;
-        b=aNZQHqziLdBPmizCqjLrDoTbPgAeY3ThB2AANo2X0axgp9SWL+O312VSvON2cz3ViJ
-         Sil4A6ZGz7G/Pwbf9NqyzhQLnPuIOWiBNnP3T9y7+HkpjnFWaok2rlQUIZwQ/DH1HL/A
-         oxQwj9n+FHcXyKz6U7gKYrxmDF0sBbPhIJWsD4AZSUPMLMFS5H9NezSaeuIKoR+t/cR9
-         j24B/YPGIxn7FS2a2WeiPTIBjtlmETCz4lbGfqebFHtRQQPnGKd/NqiHSiq7SwcpBJ6C
-         wr4CBP66vmI0byNcxkA8zk0WWQTNyEOZdrKesPC5xxKVSkFlOdU6Brnh6OAcWHRrY8+Q
-         miBQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=ER92E1wnQyGj3sJwx6aNR/9/QTZb6pyKweu43EKzpFFXGMeIKmMtCT0o67YaRzWEja
+         yVKIXfF/cQN5fM4P+9yE9zhJUdq6vBIe7rzSVbAD3Yei5kSsd0N3H5S2n4FH3PaMcRJY
+         NrKL0ea2YnzCMVt0Q7yA17c2mwKFuaEwaweScOQ0MGtxvjtJ4hF/TX2ceKFgNSASXM+P
+         e8KDYzps/7oqOA+0OAjUwPP4JaPHIm6rIaduwsisJbXjTTNi/pc6txbkIVCEcq54pjnd
+         UBN6xZmlITJN1KJAPxSUt0Rw4L7xNwSPTei+9d8sOuY7CO+awV+QQNFb2uvZSGky8vq8
+         CO/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XsjqZMs995RZPUKa7Q5/5AxsEU09PC6mvpt5UNfBSbc=;
-        b=K4v2bG0dLvs+dQ/qna7UMFadVIMRcb01NGnAOiptFtyECFqXAVDKCm5MDa9vxgrB89
-         +0jdNLU7RQukG3icaEVaxRiWKK/XjrCb5A4JFgqEhoQE/xNGFJ4zIbE5ZTV4QzGwVP3W
-         uW9cpdT9wicPeXG3Vm/M3whsFHFosyNdVzBQ1X91f/CP0bhnyo98O/91wQJOL75sGTbw
-         2uZuzrt86yTcDRE57XBUYyT2uwZuy+EPqQDVyEN/4FlgDkbOwmjLLE2wW4dSRhHZ6ss/
-         12Gk/J5Zabh5QzA2hOm0N0qt4qXQg0eZSGdwooIpROlq+bTaQ5qvs83B2gJcEl0c/9ZP
-         Vz3A==
-X-Gm-Message-State: AOAM530tSU3OuEb6jKxnlAbbfg+jzgKcrz+1NiB2i8xsq6ecABl36a9t
-        5y0rkfFaoZ3lo7u4PlRLWAjUKQ==
-X-Google-Smtp-Source: ABdhPJz/C5pa381rdz8DJYFMT9aZLoQFlSY+j1NNlhImFGfHK3CslwnJ5bg+fZXHsJj/Tvobyo/H4w==
-X-Received: by 2002:a54:460a:: with SMTP id p10mr25566936oip.47.1624981414258;
-        Tue, 29 Jun 2021 08:43:34 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m11sm3057128otp.29.2021.06.29.08.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 08:43:33 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 10:43:31 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thara.gopinath@linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
- cooling_devs
-Message-ID: <YNs/o7VVh+JnbxK9@yoga>
-References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=Nm/23d1xnX+Q9qY6tMFo5Ve4ftQMqBYAtIT7hUbmqaWQLMimKgMsYRyXfubUKYVGpq
+         Za2s6x1vAtmIwaL+EkYA538a9Pty6ZLXmK4J8KO9DCr/tH/+CwwzXeFstFzNMv8d9P3T
+         nI9r0xfzSEHmc9/EPWTYZ3i9ZIuXdR4s/5NPKYhwIQLpFSNrNfp6DFIMcjG+wjdbOfyF
+         pWk/lI4v/xBnqcOXMgNoT6QYyjq0q2jlBluZr8TDIhCoxB7WxpyRCwEnA/G+1JdIHYQ8
+         vIjNcnWNyYJOIbMST350wSUQSXszgf/bgg7wX5/6vAXg2zEh/Stylj6zP65gmkpw2XEh
+         EcIQ==
+X-Gm-Message-State: AOAM5330ZKGZInYrAg73/695RdLsn9qhvfOFWrJjELUr/T3zc3bj6NN4
+        6JojwU6/lktXu1dZiA1MEIjOBsokZYXDMZ3oKg==
+X-Google-Smtp-Source: ABdhPJwK/Lv1gokf97n4Rasg1pXurGFBHhJLNbwu3Tn/OV40WnWGFA819Zyb8K9Ieu/+oEvKm3W06Zu7YCm6oJW4VNo=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr38133503ybj.504.1624981597045;
+ Tue, 29 Jun 2021 08:46:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
+Sender: mrsaijheidi36@gmail.com
+Received: by 2002:a05:7110:5484:b029:d1:1886:427f with HTTP; Tue, 29 Jun 2021
+ 08:46:36 -0700 (PDT)
+From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
+Date:   Tue, 29 Jun 2021 15:46:36 +0000
+X-Google-Sender-Auth: TGklwj131y7YduHR4nTlI0QWqao
+Message-ID: <CAES6YYZjrwVGP+xNRKyQtw--knL6ZskCu0vtKf_JOxakr262zA@mail.gmail.com>
+Subject: Dear Child of God
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28 Jun 12:27 CDT 2021, Manivannan Sadhasivam wrote:
+Dear Child of God,
 
-> In "qmp_cooling_devices_register", the count value is initially
-> QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
-> the memory for cooling_devs is allocated. Then while calling the
-> "qmp_cooling_device_add" function, count value is post-incremented for
-> each child node.
-> 
-> This makes the out of bound access to the cooling_dev array. Fix it by
-> resetting the count value to zero before adding cooling devices.
-> 
-> While at it, let's also free the memory allocated to cooling_dev if no
-> cooling device is found in DT and during unroll phase.
-> 
-> Cc: stable@vger.kernel.org # 5.4
-> Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-> 
-> Bjorn: I've just compile tested this patch.
-> 
->  drivers/soc/qcom/qcom_aoss.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 934fcc4d2b05..98c665411768 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -488,6 +488,7 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
->  	if (!qmp->cooling_devs)
->  		return -ENOMEM;
->  
-> +	count = 0;
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
+CHRIST the giver of every good thing. Good day and compliments of the
+seasons, i know this letter will definitely come to you as a huge
+surprise, but I implore you to take the time to go through it
+carefully as the decision you make will go off a long way to determine
+my future and continued existence. I am Mrs Lila Haber aging widow of
+57 years old suffering from long time illness.I have some funds I
+inherited from my late husband, the sum of (19.1Million Dollars) and I
+needed a very honest and God fearing who can withdraw this money then
+use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
+CHARITY WORKS. I found your email address from the internet after
+honest prayers to the LORD to bring me a helper and i decided to
+contact you if you may be willing and interested to handle these trust
+funds in good faith before anything happens to me.
 
-This will address the immediate problem, which is that we assign
-cooling_devs[2..] in this loop. But, like Matthias I don't think we
-should use "count" as a constant in the first hunk and then reset it
-and use it as a counter in the second hunk.
+I accept this decision because I do not have any child who will
+inherit this money after I die. I want your urgent reply to me so that
+I will give you the deposit receipt which the SECURITY COMPANY issued
+to me as next of kin for immediate transfer of the money to your
+account in your country, to start the good work of God, I want you to
+use the 25/percent of the total amount to help yourself in doing the
+project. I am desperately in keen need of assistance and I have
+summoned up courage to contact you for this task, you must not fail me
+and the millions of the poor people in our todays WORLD. This is no
+stolen money and there are no dangers involved,100% RISK FREE with
+full legal proof. Please if you would be able to use the funds for the
+Charity works kindly let me know immediately.I will appreciate your
+utmost confidentiality and trust in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish.
+Please
+kindly respond quickly for further details.
 
-Frankly, I don't see why cooling_devs is dynamically allocated (without
-being conditional on there being any children).
-
-
-So, could you please make the cooling_devs an array of size
-QMP_NUM_COOLING_RESOURCES, remove the dynamic allocation here, just
-initialize count to 0 and add a check in the loop to generate an error
-if count == QMP_NUM_COOLING_RESOURCES?
-
->  	for_each_available_child_of_node(np, child) {
->  		if (!of_find_property(child, "#cooling-cells", NULL))
->  			continue;
-> @@ -497,12 +498,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
->  			goto unroll;
->  	}
->  
-> +	if (!count)
-> +		devm_kfree(qmp->dev, qmp->cooling_devs);
-
-I presume this is just an optimization, to get some memory back when
-there's no cooling devices specified in DT.  I don't think this is
-necessary and this made me want the static sizing of the array..
-
-> +
->  	return 0;
->  
->  unroll:
->  	while (--count >= 0)
->  		thermal_cooling_device_unregister
->  			(qmp->cooling_devs[count].cdev);
-> +	devm_kfree(qmp->dev, qmp->cooling_devs);
-
-I don't remember why we don't fail probe() when this happens, seems like
-the DT properties should be optional but the errors adding them should
-be fatal. But that's a separate issue.
-
-Regards,
-Bjorn
-
->  
->  	return ret;
->  }
-> -- 
-> 2.25.1
-> 
+Warmest Regards,
+Mrs Lila Haber
