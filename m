@@ -2,143 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0FC3B6EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495CC3B6EA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhF2HTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 03:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbhF2HTy (ORCPT
+        id S232252AbhF2HZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 03:25:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232182AbhF2HY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 03:19:54 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C796C061574;
-        Tue, 29 Jun 2021 00:17:26 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u14so11215342pga.11;
-        Tue, 29 Jun 2021 00:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=2+Cu9SpYbGPGq/dBp+lKzry3SpkbCUR6ztL08O/s6WQ=;
-        b=Umuv1mRarTEy7QYktWElHfzYOUIMQAxnUe/gAE87BfSvtXV148jd6rBS8Ul1b6lGh+
-         xOYYGHOPnoX2KjubjaYmiUeyFjOrZGT8Klzmxc9S9/OH1fxWYcSx/e76lHnrhmEGU/k4
-         aTd0452z6DYuwkx+UJEYnmqiLDN5FBj66uizlNWYf6pnhJTI4qO1Mh3F5rfjSEz8TCZG
-         nRy31ybaRVlpCLOfEgQmBgAnGQH4jGFJXYrf2rF8Q4CzTYGKl55Rol0mUf6nz3lIaQSj
-         hjDOfMgsJAy0S0nMlwPf+U2TkjBZmSCPcn7x8kYgPjUfE+O39TVekj7mJJYhcxM8Q7B9
-         P/QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=2+Cu9SpYbGPGq/dBp+lKzry3SpkbCUR6ztL08O/s6WQ=;
-        b=kefJckr0MJRmZbABxHvRgwS/jd6qPHktBluOHPY63rV98xDkMs6cEbav7ExeGuPpLF
-         nC47biV+VspQl3X4Mg2Muc+nlK3tSoZTuTjUzkTBF0bntNmJc7qBwPPAJpykdp13fi9x
-         uha9/8zVATo5fj7F/2j68ZyhwuEN6xDe3R1dMqe9+xP6l0bLsDaW08MaV/ffzIbFTF6+
-         zWE6fL1ktNQO1zF8gQ0lnY58MYeeey2taElSbh+XXlCsyuTBuYVEKakLsoFurIdgNMVE
-         6Mm7vIgaRxo+ZUm1aFY2LhTkaoif/nLX9OwMZDJ/u4se1WfsBcPO0DVLKnGsbtbAP06E
-         myWw==
-X-Gm-Message-State: AOAM5303C8qQEYJRjtQ5XyA37tjXqZ+xetJj+5K4ukl7iefak5DYkMia
-        osUisosPPDJwrbB3GaBqEy4=
-X-Google-Smtp-Source: ABdhPJzjAoL145d3X7MXU034uajL/zhC7Mwao65kP6f3NvgS2bgyLNfXBRdAW/gyqWLcWtJQzOnTlw==
-X-Received: by 2002:a62:3244:0:b029:308:22b0:52ff with SMTP id y65-20020a6232440000b029030822b052ffmr26641060pfy.68.1624951045936;
-        Tue, 29 Jun 2021 00:17:25 -0700 (PDT)
-Received: from [10.122.117.192] ([183.90.37.214])
-        by smtp.gmail.com with ESMTPSA id w18sm18337383pjg.50.2021.06.29.00.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 00:17:25 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 15:17:20 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com> <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com> <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+        Tue, 29 Jun 2021 03:24:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624951350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fi/7Qx2yln55j8zBjq30/tL733tojfBq2QD0UYX+4+s=;
+        b=XANzJSyxero02BBSBfecMlZlWyOIaZCEyyKSu0qStRk/NgJVdovw0TrcOU9OuHF2lueHnv
+        MwX/E1mhYoN/9AzXOuZd0UaHXN73MgnnZoGytKHW3JIhHm7TNzP8D4JPu6UlVJDzFox38S
+        EfaWxG4aFx+SAL+sFNOfBtuXSKEK1hc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-7W97HWoRMweEThjS2c5Ejg-1; Tue, 29 Jun 2021 03:22:28 -0400
+X-MC-Unique: 7W97HWoRMweEThjS2c5Ejg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA70B804158;
+        Tue, 29 Jun 2021 07:22:26 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-113-168.ams2.redhat.com [10.36.113.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AA4C60854;
+        Tue, 29 Jun 2021 07:22:20 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        linux-kernel@vger.kernel.org, mihai.carabas@oracle.com,
+        gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com
+Cc:     arnd@arndb.de, pizhenwei@bytedance.com, pbonzini@redhat.com,
+        joe@perches.com, drjones@redhat.com
+Subject: [PATCH v2] misc/pvpanic-pci: Allow automatic loading
+Date:   Tue, 29 Jun 2021 09:22:14 +0200
+Message-Id: <20210629072214.901004-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Neal Cardwell <ncardwell@google.com>
-CC:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-Message-ID: <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell <ncardwell@google=2Eco=
-m> wrote:
->)
->
->On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind=2Euet@gmail=2Ecom> wrot=
-e:
->>
->> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
->>
->> > Thanks=2E
->> >
->> > Can you also please provide a summary of the event sequence that
->> > triggers the bug? Based on your Reported-by tag, I guess this is
->based
->> > on the syzbot reproducer:
->> >
->> > =20
->https://groups=2Egoogle=2Ecom/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCA=
-AJ
->> >
->> > but perhaps you can give a summary of the event sequence that
->causes
->> > the bug? Is it that the call:
->> >
->> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
->> > &(0x7f0000000000)=3D'cdg\x00', 0x4)
->> >
->> > initializes the CC and happens before the connection is
->established,
->> > and then when the connection is established, the line that sets:
->> >    icsk->icsk_ca_initialized =3D 0;
->> > is incorrect, causing the CC to be initialized again without first
->> > calling the cleanup code that deallocates the CDG-allocated memory?
->> >
->> > thanks,
->> > neal
->> >
->>
->> Hi Neal,
->>
->> The gdb stack trace that lead to init_transfer_input() is as bellow,
->the
->> current sock state is TCP_SYN_RECV=2E
->
->Thanks=2E That makes sense as a snapshot of time for
->tcp_init_transfer(), but I think what would be more useful would be a
->description of the sequence of events, including when the CC was
->initialized previous to that point (as noted above, was it that the
->setsockopt(TCP_CONGESTION) completed before that point?)=2E
->
->thanks,
->neal
+The virtual machine monitor (QEMU) exposes the pvpanic-pci
+device to the guest. On guest side the module exists but
+currently isn't loaded automatically. So the driver fails
+to be probed and does not its job of handling guest panic
+events.
 
-I resend my message because I accidently used html format in last one=2E I=
- am very sorry for the inconvenience caused=2E
+Instead of requiring manual modprobe, let's include a device
+database using the MODULE_DEVICE_TABLE macro and let the
+module auto-load when the guest gets exposed with such a
+pvpanic-pci device.
+
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+
 ---
-Yes, the CC had been initialized by the setsockopt, after that, it was ini=
-tialized again in function tcp_init_transfer() because of setting isck_ca_i=
-nitialized to 0=2E
-Regards,=20
-Phi=2E
+
+v1 -> v2:
+- enhance the commit message with additional info (Greg, Andy)
+---
+ drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
+index 9ecc4e8559d5d..30290d42d8aa8 100644
+--- a/drivers/misc/pvpanic/pvpanic-pci.c
++++ b/drivers/misc/pvpanic/pvpanic-pci.c
+@@ -122,4 +122,6 @@ static struct pci_driver pvpanic_pci_driver = {
+ 	},
+ };
+ 
++MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
++
+ module_pci_driver(pvpanic_pci_driver);
+-- 
+2.26.3
+
