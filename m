@@ -2,191 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F813B6F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F403B6F50
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhF2IRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbhF2IRP (ORCPT
+        id S232731AbhF2IZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:25:12 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3328 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232644AbhF2IYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:17:15 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAA3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:14:47 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id o5so9821635ejy.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uptPqcgshGnCftIWPnxGiyLOnUUUIP0/+ojiVFO1k00=;
-        b=DRDFZWTpGi9GCyTDEZBHK+CH/M843cbtTy9vUm8a5IsHg/jkfiUZbd4xYJX6iZu6cW
-         9GFiPjoCONUMKxg5SnLXbhDBJ/pjzDoy1JqsZXHVy8Kr2mESTA8qWpG1fam0YYiIMbhU
-         9GQywd2enJcCN300YNcOenjqf+z61wovjpxOBODz/aIV6xIqUGQr1Ssg3Hyiv4mAs1Cc
-         kfrvmN8IkAPcaOiP2ZLt/twpqM4r/ihXgA9G7NK7+twdlzhXEEjkO9OxziYqElX+Wri1
-         /EcksaYxLEvAl4P9igdr5L643F8OFvKS3ZRNWd9sxRl+uBkLH/YyNWfUL3Qa4HWi9OmH
-         NBOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uptPqcgshGnCftIWPnxGiyLOnUUUIP0/+ojiVFO1k00=;
-        b=NqEiwFm6oeCt/Gy0jabrqhRurvR7he0tv792kgWSxBEr/UWWIY6e7iRGyxJK0nMpWe
-         W4QSamx+TrW0blUdoO2PiB41ddf/ki8ijx+fRX/Fx3/YfVcD8R4FuqHfWOM6aEsENNji
-         MEePMdxivtxB0MdDJgEOXNf85U/HwADvIXNpdrgP74fLQ+RWKu/adS9a+WUitOtXhLOm
-         kJcULj2xlL1AwWRoD3W4f6SpgBkeEUBvWD1lqABHNeCguKgI91YIkwgNjlznBMgsYYyl
-         TmntQTiIaZRL6DpyPJq8EnCnx5kOWUdwou0eYvz0VWkgS9t2dEOdQyqz3Myxn624X2gf
-         3SUg==
-X-Gm-Message-State: AOAM533mVZMA98Lwx8zZNC9He0Mk6WKrOcbOLjyRVfmM5Hum0or3U6li
-        KSfnUBM0ZnAM5wMCYzSNptVx42rLTS4Hy+RYoJsY
-X-Google-Smtp-Source: ABdhPJzdlnMCYGA3kLT4t5c8ykTQcQqn/qmqlv/E8TGGEpG2riZ7T0plVIhIHa9FvZNn80TVOmuS6b2nFy6yQNioXsA=
-X-Received: by 2002:a17:906:7142:: with SMTP id z2mr28262180ejj.427.1624954486045;
- Tue, 29 Jun 2021 01:14:46 -0700 (PDT)
+        Tue, 29 Jun 2021 04:24:55 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GDcdd4jBLz6GBS1;
+        Tue, 29 Jun 2021 16:12:05 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 29 Jun 2021 10:22:26 +0200
+Received: from [10.47.83.88] (10.47.83.88) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 29 Jun
+ 2021 09:22:26 +0100
+Subject: Re: [PATCH] scsi: Delete scsi_{get,free}_host_dev()
+To:     Hannes Reinecke <hare@suse.de>, <martin.petersen@oracle.com>,
+        <jejb@linux.ibm.com>
+CC:     <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <ming.lei@redhat.com>
+References: <1624640314-93055-1-git-send-email-john.garry@huawei.com>
+ <044a31ed-f6e9-3017-4973-3a02765933e0@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <77afd764-4195-188d-ef0e-c4adcfa38f8b@huawei.com>
+Date:   Tue, 29 Jun 2021 09:15:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210628103309.GA205554@storage2.sh.intel.com>
- <bdbe3a79-e5ce-c3a5-4c68-c11c65857377@redhat.com> <BYAPR11MB2662FFF6140A4C634648BB2E8C039@BYAPR11MB2662.namprd11.prod.outlook.com>
- <41cc419e-48b5-6755-0cb0-9033bd1310e4@redhat.com> <BYAPR11MB266276002F42D91FCE6E83CE8C029@BYAPR11MB2662.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB266276002F42D91FCE6E83CE8C029@BYAPR11MB2662.namprd11.prod.outlook.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 29 Jun 2021 16:14:35 +0800
-Message-ID: <CACycT3sfZCpWqB+GKQYMi3WjOkU0jAkBPU-u+MHHDCbLUvvu4w@mail.gmail.com>
-Subject: Re: RE: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
-To:     "Liu, Xiaodong" <xiaodong.liu@intel.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "parav@nvidia.com" <parav@nvidia.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "christian.brauner@canonical.com" <christian.brauner@canonical.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mika.penttila@nextfour.com" <mika.penttila@nextfour.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <044a31ed-f6e9-3017-4973-3a02765933e0@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.83.88]
+X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 3:56 PM Liu, Xiaodong <xiaodong.liu@intel.com> wrot=
-e:
->
->
->
-> >-----Original Message-----
-> >From: Jason Wang <jasowang@redhat.com>
-> >Sent: Tuesday, June 29, 2021 12:11 PM
-> >To: Liu, Xiaodong <xiaodong.liu@intel.com>; Xie Yongji
-> ><xieyongji@bytedance.com>; mst@redhat.com; stefanha@redhat.com;
-> >sgarzare@redhat.com; parav@nvidia.com; hch@infradead.org;
-> >christian.brauner@canonical.com; rdunlap@infradead.org; willy@infradead.=
-org;
-> >viro@zeniv.linux.org.uk; axboe@kernel.dk; bcrl@kvack.org; corbet@lwn.net=
-;
-> >mika.penttila@nextfour.com; dan.carpenter@oracle.com; joro@8bytes.org;
-> >gregkh@linuxfoundation.org
-> >Cc: songmuchun@bytedance.com; virtualization@lists.linux-foundation.org;
-> >netdev@vger.kernel.org; kvm@vger.kernel.org; linux-fsdevel@vger.kernel.o=
-rg;
-> >iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org
-> >Subject: Re: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
-> >
-> >
-> >=E5=9C=A8 2021/6/28 =E4=B8=8B=E5=8D=881:54, Liu, Xiaodong =E5=86=99=E9=
-=81=93:
-> >>> Several issues:
-> >>>
-> >>> - VDUSE needs to limit the total size of the bounce buffers (64M if I=
- was not
-> >>> wrong). Does it work for SPDK?
-> >> Yes, Jason. It is enough and works for SPDK.
-> >> Since it's a kind of bounce buffer mainly for in-flight IO, so limited=
- size like
-> >> 64MB is enough.
-> >
-> >
-> >Ok.
-> >
-> >
-> >>
-> >>> - VDUSE can use hugepages but I'm not sure we can mandate hugepages (=
-or
-> >we
-> >>> need introduce new flags for supporting this)
-> >> Same with your worry, I'm afraid too that it is a hard for a kernel mo=
-dule
-> >> to directly preallocate hugepage internal.
-> >> What I tried is that:
-> >> 1. A simple agent daemon (represents for one device)  `preallocates` a=
-nd maps
-> >>      dozens of 2MB hugepages (like 64MB) for one device.
-> >> 2. The daemon passes its mapping addr&len and hugepage fd to kernel
-> >>      module through created IOCTL.
-> >> 3. Kernel module remaps the hugepages inside kernel.
-> >
-> >
-> >Such model should work, but the main "issue" is that it introduce
-> >overheads in the case of vhost-vDPA.
-> >
-> >Note that in the case of vhost-vDPA, we don't use bounce buffer, the
-> >userspace pages were shared directly.
-> >
-> >And since DMA is not done per page, it prevents us from using tricks
-> >like vm_insert_page() in those cases.
-> >
->
-> Yes, really, it's a problem to handle vhost-vDPA case.
-> But there are already several solutions to get VM served, like vhost-user=
-,
-> vfio-user, so at least for SPDK, it won't serve VM through VDUSE. If a us=
-er
-> still want to do that, then the user should tolerate Introduced overhead.
->
-> In other words, software backend like SPDK, will appreciate the virtio
-> datapath of VDUSE to serve local host instead of VM. That's why I also dr=
-afted
-> a "virtio-local" to bridge vhost-user target and local host kernel virtio=
--blk.
->
-> >
-> >> 4. Vhost user target gets and maps hugepage fd from kernel module
-> >>      in vhost-user msg through Unix Domain Socket cmsg.
-> >> Then kernel module and target map on the same hugepage based
-> >> bounce buffer for in-flight IO.
-> >>
-> >> If there is one option in VDUSE to map userspace preallocated memory, =
-then
-> >> VDUSE should be able to mandate it even it is hugepage based.
-> >>
-> >
-> >As above, this requires some kind of re-design since VDUSE depends on
-> >the model of mmap(MAP_SHARED) instead of umem registering.
->
-> Got it, Jason, this may be hard for current version of VDUSE.
-> Maybe we can consider these options after VDUSE merged later.
->
-> Since if VDUSE datapath could be directly leveraged by vhost-user target,
-> its value will be propagated immediately.
->
+On 26/06/2021 12:55, Hannes Reinecke wrote:
+> On 6/25/21 6:58 PM, John Garry wrote:
+>> Functions scsi_{get,free}_host_dev() no longer have any in-tree users, so
+>> delete them.
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+>> An alt agenda of this patch is to get clarification on whether this API
+>> should be used for Hannes' reserved commands series.
+>>
+>> Originally the recommendation was to use it, but now it seems to be to
+>> not use it:
+>> https://lore.kernel.org/linux-scsi/55918d68-7385-0153-0bd9-d822d3ce4c21@suse.de/ 
+>>
+>>
+> Please don't.
 
-Agreed=EF=BC=81
+ok, we can take that as a nacked-by for now.
+
+> 
+> Before we're doing something like this I would like to have 
+> clarification from Christoph which way he prefers for reserved commands. 
+> Personally I _do_ like the host dev approach for reserved commands as it 
+> allows us to re-use existing infrastructure.
+
+So when you deleted the gdth driver, the request there was to delete 
+this API. And in the v8 series, again, the request was not to use it, 
+and use the dedicated request queue instead - I do know that this 
+conflicts with the much earlier suggestion not to do that, but that was 
+when gdth existed.
+
+As for reuse of existing infrastructure, using this API seems to add 
+more code than it reuses.
+
+So don't we just need to add a dedicated request_queue for host? I don't 
+know the use in having the scsi_device. Having said all that, we don't 
+seem to have a host request_queue sysfs entry with either solution, 
+which would be good.
+
+> 
+> Christoph?
+> 
 
 Thanks,
-Yongji
+John
