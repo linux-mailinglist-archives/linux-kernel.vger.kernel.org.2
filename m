@@ -2,156 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AAA3B779D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8639A3B779E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbhF2SJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:09:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46157 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234894AbhF2SJB (ORCPT
+        id S234922AbhF2SKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233944AbhF2SJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:09:01 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lyI80-0005oa-Sf
-        for linux-kernel@vger.kernel.org; Tue, 29 Jun 2021 18:06:32 +0000
-Received: by mail-ed1-f69.google.com with SMTP id ee28-20020a056402291cb0290394a9a0bfaeso11838349edb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:06:32 -0700 (PDT)
+        Tue, 29 Jun 2021 14:09:59 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D42C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:07:31 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id a15so33176119lfr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrPyRQ5IO5eewgSwjbnscAxAW9L+6cXFp6QTzBqY4/w=;
+        b=DwLkNq7SHWRjgUjXov7smOgfFqoIqfdHao/1+I+k6kXqTB0ouzJ2e3lTxDYIKpVJtx
+         36G6M4NcrwNK/ZnKdheqPNTEAHi9hS4WBY4wAUpV8OHUzqzjYLXvUEa2URrzj4q0A4gL
+         GDI1gvURikS6TbLfSGHymcR86Fx1v041Ly1Co=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1sVQNHAiS/W2i5o2hr99eStOUpYVcSh7ZDin7Mpc0cU=;
-        b=YISjwQy2w8+DkavlwfDKEOVPxKVdbbABFRZ/AeT0TuJCZGOWY1mK6PSpgjsLCJnSi2
-         fi5r4JPaQt3zKSWCwk8fu+MOwT7dHACPJSevT9koaTnHz/VMo0xftbmknbhNdeFWSFqZ
-         AfVLqqdRg0cplfmm3Gy1WaZa4Bpy8bPtJz/LiyizhHq4hT8ahpBZv7GLLJTHlYIL8npY
-         Xa0PYZNU9l6KnSDWoeDz1wSemx74dMnHxHJaSlNqYivVD5OrHfqm5THCg07+yk9sFufZ
-         GgOBqaEAg8G6fiMVaE4wDzzhduR9hKkNjo1GC7gR4jwx5yG5ABRIC/W0udwgDyKkMfnK
-         utCw==
-X-Gm-Message-State: AOAM530fQeqSD+O4TvlM7kFxMR1KCEWS2Lz+9PfV7TrERoRo/sh7J6qM
-        cURUFOKkGh8vTeauNxr5LnBi/4Qqf+NtMmwkSe2WBCUMsyQucz/YBFuyqXqfo+4FdFAgXT4a0QQ
-        m1+aaMYwip2kdwlkXNEHaOLlFbnYBs1o6lYvPJxCreA==
-X-Received: by 2002:a50:935a:: with SMTP id n26mr42276814eda.8.1624989991235;
-        Tue, 29 Jun 2021 11:06:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTuOakoVILBoO7OTyCnoSp6AApNCYVL4pAvYGfXG5VRBZx+0rJbjTvqZHj1Uvtttw8JTlYRw==
-X-Received: by 2002:a50:935a:: with SMTP id n26mr42276796eda.8.1624989991101;
-        Tue, 29 Jun 2021 11:06:31 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id e13sm6969604ejl.98.2021.06.29.11.06.30
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrPyRQ5IO5eewgSwjbnscAxAW9L+6cXFp6QTzBqY4/w=;
+        b=HxrfDpC+1V5WvhJil7WDdmP8MXSCmRyGs4AV0BaRQTYmXSnli6f8/Q0xbIim86T2C1
+         xByXuiynrzcB4rDXkIJ8MIBEhtGLPuPLkTixdR4KmISnL11hBT5hqm6y9Rh59/vAEoZ+
+         XHS3moGzX+O9oRL/t5YG9M87l/P2xmke3JnYTBmdP5N48Mfsd4z11RmotATM+XM18cis
+         IIR4NG/2eQpKQlQy67rX8UJED39/XQf1/chJ3IccI6yT0Hq8ZLkCa4mlB9bK2aC4aU0W
+         r9dBrWeSjLh8JZt1dlM+Tp5ASz1xLRDqAkfbilR0Yr1a06ukIG8BajO0TGX6/YHuBmTC
+         QXUw==
+X-Gm-Message-State: AOAM533Lll316eX4VmqsTcZNBCeRXMJb6UpwKiIHI4/95D0ipa+OVq2g
+        PdzW9IsHp5bJ6hoTJ8DpNqUcvHAP5NFGSzJySuM=
+X-Google-Smtp-Source: ABdhPJwmVt0IGwA+vvlKMagvglcW07ZYGUaQsgFR7Cy31agwN+tvwTfMwTcC6LXwCBs7UGA3m7k4nQ==
+X-Received: by 2002:a19:f70b:: with SMTP id z11mr25308278lfe.156.1624990049567;
+        Tue, 29 Jun 2021 11:07:29 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id q15sm1627593ljg.126.2021.06.29.11.07.27
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 11:06:30 -0700 (PDT)
-Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
-To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
- <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
- <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
-Date:   Tue, 29 Jun 2021 20:06:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 11:07:27 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id r16so32158779ljk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:07:27 -0700 (PDT)
+X-Received: by 2002:a2e:b553:: with SMTP id a19mr4820656ljn.507.1624990047466;
+ Tue, 29 Jun 2021 11:07:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87fsx1vcr9.fsf@disp2133> <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+ <20210629171757.shyr222zjpm6ev5t@example.org>
+In-Reply-To: <20210629171757.shyr222zjpm6ev5t@example.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Jun 2021 11:07:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
+Message-ID: <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/2021 19:28, Josef Bacik wrote:
-> On 6/29/21 1:26 PM, Krzysztof Kozlowski wrote:
->> On 29/06/2021 19:24, Josef Bacik wrote:
->>> On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
->>>> Dear BTRFS folks,
->>>>
->>>> I am hitting a potential regression of btrfs, visible only with
->>>> fallocate05 test from LTP (Linux Test Project) only on 32+ core Azure
->>>> instances (x86_64).
->>>>
->>>> Tested:
->>>> v5.8 (Ubuntu with our stable patches): PASS
->>>> v5.11 (Ubuntu with our stable patches): FAIL
->>>> v5.13 mainline: FAIL
->>>>
->>>> PASS means test passes on all instances
->>>> FAIL means test passes on other instance types (e.g. 4 or 16 core) but
->>>> fails on 32 and 64 core instances (did not test higher),
->>>> e.g.: Standard_F32s_v2, Standard_F64s_v2, Standard_D32s_v3,
->>>> Standard_E32s_v3
->>>>
->>>> Reproduction steps:
->>>> git clone https://github.com/linux-test-project/ltp.git
->>>> cd ltp
->>>> ./build.sh && make install -j8
->>>> cd ../ltp-install
->>>> sudo ./runltp -f syscalls -s fallocate05
->>>>
->>>> Failure output:
->>>> tst_test.c:1379: TINFO: Testing on btrfs
->>>> tst_test.c:888: TINFO: Formatting /dev/loop4 with btrfs opts='' extra opts=''
->>>> tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file7 size 76896492
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file8 size 72228649
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file9 size 36207821
->>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file10 size 81483962
->>>> tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
->>>> fallocate05.c:81: TPASS: write() wrote 65536 bytes
->>>> fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS
->>>> fallocate05.c:114: TPASS: fallocate() on full FS
->>>> fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
->>>> fallocate05.c:134: TFAIL: write(): ENOSPC (28)
->>>>
->>>> Test code:
->>>> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fallocate/fallocate05.c#L134
->>>>
->>>> See also: https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1933112
->>>>
->>>> Other FS tests succeed on that machines/kernels. Other file systems
->>>> also pass - only btrfs fails. The issue was not bisected. Full test
->>>> log attached.
->>>>
->>>
->>> Also it looks like you're using a loop device, the instructions you gave me
->>> aren't complete enough for me to reproduce.  What is the actual setup you are
->>> using?  How big is your loop device?  Is it a backing device?  I had to do -b
->>> <device> to get the test to even start to run, but I've got a 2tib ssd, am I
->>> supposed to be using something else?  Thanks,
->>
->> The test takes care about loop device, nothing is needed from your side.
->> Just run the test and wait till you see:
->> "tst_test.c:1379: TINFO: Testing on btrfs"
->>
->> That's where the interesting part starts :)
->>
-> 
-> *cough*
-> # CONFIG_BLK_DEV_LOOP is not set
-> *cough*
-> 
-> I think I found the problem, my bad,
-> 
+On Tue, Jun 29, 2021 at 10:18 AM Alexey Gladkov <legion@kernel.org> wrote:
+>
+>
+> > And why test for "ucounts" being non-NULL in
+> >
+> >                 if (ucounts && dec_rlimit_ucounts(ucounts,
+> > UCOUNT_RLIMIT_SIGPENDING, 1))
+> >                         put_ucounts(ucounts);
+> >
+> > when afaik both of those should be happy with a NULL 'ucounts' pointer
+> > (if it was NULL, we certainly already used it for the reverse
+> > operations for get_ucounts() and inc_rlimit_ucounts()..)
+>
+> The get_ucount() can theoretically return NULL. It increments the
+> reference counter and if it overflows, the function will return NULL.
 
-Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
-and 64 cores) fail similarly. I'll try later also QEMU machines with
-different amount of CPUs.
+.. but my point is that dec_rlimit_ucounts() and put_ucounts() should
+be fine with whatever get_ucounts() returned. No
 
-Best regards,
-Krzysztof
+It looks like put_ucounts() is unhappy with a NULL ucounts argument,
+but I think _that_ is what should get fixed.
+
+I think that conceptually we should have two clear alternatives:
+
+ (a) either "get_ucounts()" returning NULL should be an error, and we
+would have returned long before
+
+or
+
+ (b) a NULL uncounts is usable, and a sequence like
+put_ucounts(get_ucounts()) should just always work.
+
+And honestly, a lot of the other ucounts funcrtions seem to take that
+(b) approach. Example in that very function:
+
+        ucounts = task_ucounts(t);
+        sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
+
+which at no point tested for NULL or returned an error.
+
+(And that also implies that the comment in dec_rlimit_ucounts() about
+"Silence compiler warning" should just go away, because it's not just
+a compiler warning, it's a required initialization).
+
+              Linus
