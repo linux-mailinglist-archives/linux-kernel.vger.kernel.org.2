@@ -2,86 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACE83B77CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFAE3B77CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbhF2Sae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:30:34 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46492 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234631AbhF2Sac (ORCPT
+        id S235052AbhF2Sat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:30:49 -0400
+Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:54880 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234140AbhF2Sar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:30:32 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lyISp-000725-PT
-        for linux-kernel@vger.kernel.org; Tue, 29 Jun 2021 18:28:03 +0000
-Received: by mail-ed1-f71.google.com with SMTP id n13-20020a05640206cdb029039589a2a771so399290edy.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:28:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fYgcjWPuVQQkM+ld3lTDa/zt5ky7hqz4IgAOmjoJRPQ=;
-        b=EwqpJ1DJWzcs/futriKc7S/2h/HUwmlFJhAT+xdHnIvV5m2Zcnse6ISP8wL2BFp4GO
-         iahrTqDl+E6MMNnB/oKX0YX1NKuQXBOwmH0stPs4AEojyvbHOeDX0kX3mSx1L8j8S3JQ
-         FFN5yjjPq4OFR+hjwcgZmwh7/F3TwrpPNI6O87fCwRIIyjARh5BYe0dHJWNsw4fRCBjl
-         c/+EMajMIYK4oP9vv4Yu7RCHvG7oUA9oz1y6yPSLCI9REN6Pk86fl1JP1d3OvtpOJ0GC
-         msuIQg0sL+myb3OnZAHMsOD7rS45RuHyLQ2ASFJ4jm8yZiAE3Y0QDiQpdMQ8ZiR7vmw1
-         3rxA==
-X-Gm-Message-State: AOAM532pyXerBQE01B6/wdyhG2gb1AKjFeBHmA3lVGQqSh2Us3LnR70Y
-        atpvSfTmHz749aFHBQvA4bKCKFxYNzjSfYlFP8yJtY18cQw7HmkO6mcuZDeUEn3M3uLSB3p+iKS
-        TAaF1Kpm/4PGLS9GsWf7cDTc6V8w91cse0SALEHCaeg==
-X-Received: by 2002:a17:906:3e15:: with SMTP id k21mr5923601eji.423.1624991283445;
-        Tue, 29 Jun 2021 11:28:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGLqw1AwUxKpu6bhggUbVqYJuFIfNL6mC+UNE1sLGRBFc9Q0iOasyqzGrIJbdWtKTmTRhc+w==
-X-Received: by 2002:a17:906:3e15:: with SMTP id k21mr5923594eji.423.1624991283312;
-        Tue, 29 Jun 2021 11:28:03 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id n13sm8598198ejk.97.2021.06.29.11.28.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 11:28:02 -0700 (PDT)
-Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
- <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
- <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
- <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
-Message-ID: <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-Date:   Tue, 29 Jun 2021 20:28:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 14:30:47 -0400
+Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 61EF818224D99;
+        Tue, 29 Jun 2021 18:28:19 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 4A2BD1124F9;
+        Tue, 29 Jun 2021 18:28:18 +0000 (UTC)
+Message-ID: <5d28704b131e375347f266b10fc54891ba2a4fc4.camel@perches.com>
+Subject: Re: [PATCH 1/3] checkpatch: skip spacing tests on linker scripts
+From:   Joe Perches <joe@perches.com>
+To:     jim.cromie@gmail.com
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 29 Jun 2021 11:28:16 -0700
+In-Reply-To: <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
+References: <20210626034016.170306-1-jim.cromie@gmail.com>
+         <20210626034016.170306-2-jim.cromie@gmail.com>
+         <075e07c40b99f93123051ef8833612bc88a55120.camel@perches.com>
+         <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
+         <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: k457dckdzaqjyfqu6t5a34aagc7ut1ue
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 4A2BD1124F9
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18Tc4uxIqS2Y5tOlLXlQ7XG3hNh11y9RSE=
+X-HE-Tag: 1624991298-758213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/2021 20:06, Krzysztof Kozlowski wrote:
-> Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
-> and 64 cores) fail similarly. I'll try later also QEMU machines with
-> different amount of CPUs.
+On Tue, 2021-06-29 at 10:48 -0600, jim.cromie@gmail.com wrote:
+> hi Joe,
+
+hey Jim.
+
+> > > This .lds.h test is also used in one other place.
+> > > 
+> > > It might be better to avoid all tests in .lds.h files by using a
+> > > "next if" much earlier.
 > 
+> checkpatch: subtle decrufting
+> 
+> sub process() uses a next-if statement to end a block of tests early,
+> because following tests pertain only to certain types of source files.
+> That statement has some history:
+> 
+>  $ grep -P 'sub process|next if \(\$realfile' blame-check
+>  0a920b5b666d0 (Andy Whitcroft      2007-06-01 00:46:48 -0700 2558) sub process {
+>  d6430f71805aa (Joe Perches         2016-12-12 16:46:28 -0800 3621) next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
+>  de4c924c26504 (Geert Uytterhoeven  2014-10-13 15:51:46 -0700 3712) next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
 
-Test on QEMU machine with 31 CPUs passes. With 32 CPUs - failure as
-reported.
+Looks like I should have also removed the |pl from this block
+when I removed it from commit d6430f71805aa. 
 
-dmesg is empty - no error around this.
+Oh well, no real harm done...
 
-Maybe something with per-cpu variables?
+>  b9ea10d691ecb (Andy Whitcroft      2008-10-15 22:02:24 -0700 3973) next if ($realfile !~ /\.(h|c)$/);
+> 
+> Commit:b9ea adds the early-block-termination line, then 2 subsequent
+> commits (de4c, d643) copy that line up/earlier in sub process (with
+> different filetype selection), largely masking the purposes of the
+> older/later lines (block-early-terminate to skip file-type specific
+> tests).
 
-Best regards,
-Krzysztof
+Not really.
+
+The first in file order next-if commit d6430f71805aa was a
+modification of the earlier commits listed below:
+
+5368df20fb364e
+00df344fd06fd6
+0a920b5b666d0b
+
+All of these were just additions of various file types to the test.
+
+> This code is hurting my brain.
+
+Perhaps Advil or another leaded or unleaded beverage might help.
+They help me...
+
+> changing d643 to allow *.pl to fall thru for further testing
+> is probably the best small move.
+
+Definitely not as it's there specifically to avoid long line tests in perl.
+
+> FWIW, one version of a 1-line fix for *.lds.h files.
+> this one adds the new line after the 1st of the 3 blame-lines.
+> Maybe it should be added after the SPDX check (which would complain)
+
+Maybe a slight reworking of all the "next if" tests would work.
+
+I moved the incorrect spdx line number test up, but didn't test
+whether or not it's appropriate here as I don't know of a case
+of the top of my head.  I also don't know if the linker .lds.h
+files should be tested for long lines or not.
+
+It looks like these files are mostly < 80 columns
+
+$ git ls-files -- '*.lds.h'| xargs cat | awk '{print length($0), $0;}' | sort -rn | head
+106 #define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$L*
+94 #if defined(CONFIG_GCOV_KERNEL) || defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN) || \
+79 /* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
+78  * [__init_begin, __init_end] is the init section that may be freed after init
+78 #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_CLANG)
+77  * .init section and thus will be preserved for later use in the decompressed
+77 #define RESERVEDMEM_OF_TABLES()	OF_TABLE(CONFIG_OF_RESERVED_MEM, reservedmem)
+77  * <asm/module.lds.h> can specify arch-specific sections for linking modules.
+76 #define CPUIDLE_METHOD_OF_TABLES() OF_TABLE(CONFIG_CPU_IDLE, cpuidle_method)
+76  * .boot.data variables are kept in separate .boot.data.<var name> sections,
+
+---
+ scripts/checkpatch.pl | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4a..ea198499e16df 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3617,9 +3617,6 @@ sub process {
+ 			     "It's generally not useful to have the filename in the file\n" . $herecurr);
+ 		}
+ 
+-# check we are in a valid source file if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
+-
+ # check for using SPDX-License-Identifier on the wrong line number
+ 		if ($realline != $checklicenseline &&
+ 		    $rawline =~ /\bSPDX-License-Identifier:/ &&
+@@ -3628,6 +3625,9 @@ sub process {
+ 			     "Misplaced SPDX-License-Identifier tag - use line $checklicenseline instead\n" . $herecurr);
+ 		}
+ 
++# check we are in a valid source file if not then ignore this hunk
++		next if ($realfile !~ /\.(?:h|c|s|S|sh|dtsi|dts)$/);
++
+ # line length limit (with some exclusions)
+ #
+ # There are a few types of lines that may extend beyond $max_line_length:
+@@ -3708,8 +3708,8 @@ sub process {
+ 			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
+ 		}
+ 
+-# check we are in a valid source file C or perl if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
++# check we are in a valid source C or .dts? file, if not then ignore this hunk
++		next if ($realfile !~ /\.(?:h|c|dtsi|dts)$/);
+ 
+ # at the beginning of a line any tabs must come first and anything
+ # more than $tabsize must use tabs.
+@@ -3737,6 +3737,9 @@ sub process {
+ 			}
+ 		}
+ 
++# skip all following test for linker files.
++		next if ($realfile =~ /\.lds\.h$/);
++
+ # check for assignments on the start of a line
+ 		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
+ 			my $operator = $1;
+@@ -3970,7 +3973,7 @@ sub process {
+ 		}
+ 
+ # check we are in a valid C source file if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c)$/);
++		next if ($realfile !~ /\.(?:h|c)$/);
+ 
+ # check for unusual line ending [ or (
+ 		if ($line =~ /^\+.*([\[\(])\s*$/) {
+
