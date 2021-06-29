@@ -2,166 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B933B6D52
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A943B6D45
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhF2ENL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 00:13:11 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:53154 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232000AbhF2ENE (ORCPT
+        id S229785AbhF2EMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 00:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhF2EMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 00:13:04 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15T45acR010457;
-        Tue, 29 Jun 2021 04:10:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=vTNzeHAdB8wjTYZQUjTvh/LYi5sQG2GHOZ+Cuw7DAvc=;
- b=ueuKNgvogmUkXBm/+6UKyORHW0mlWsiAKDWxhl/vw5wu4twNc8mmD87GEOVpgBIjuD15
- JA1D8MJ8+SDEVqFXbJ6d6DGajqtO93Ej7zW73do8tIuVLe5LUzkNvfc+j/Riw5B8vZZd
- o4nboQ/Uoj43u43soJGj64cy+gaHusXIaIUwT0XLrwvMGZfXSl/3z5NI3tr7rb7JquIE
- Cw9AQPfwQ5C1QDoR7lKS05+xnjbxEjivv9EW6FN5llfLuTTgnjd2OgajgsBg5rXwq2PF
- sBXl4e3h32dQQjhLbDmbpAtgKQscQODnHt/oUhyXqj2dn0vYI3oXn3YOpyAyqr2gSRgW Kg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39fpu2gcv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 04:10:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15T49rjX052345;
-        Tue, 29 Jun 2021 04:10:28 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by userp3020.oracle.com with ESMTP id 39ee0tv4n0-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 04:10:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nSQLB/ISrilEDz+fgcz+K8pn3iqdEXvxqSQdx+v2AWA4LKpPW21eLykqSIp2ttMp6IzR2laaaLerRXQkPfNSZ70/3ckPyOsjF8KZfxELygG/SJB4GNKwEvkpKNevKeypv1K5O4nVaNe4AVDKi/skasFUndGLofqDd7uCwzRz8JsV2fQ7VDgQyArbNyZtRRj58c4K49rmpkXd/URZXBb8LGBKWNvkqE+68NOvkUrz5GAcA1emlAYTYgLoQOuo9uRi6dldw7aCDd/HzV+eP3IQTxLiAIWJduVA3/SaRRN4WXHRDVncCcuTSmSCJ3o+Dcfi/sH2ThQIsX1Y2AnwJpc8LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTNzeHAdB8wjTYZQUjTvh/LYi5sQG2GHOZ+Cuw7DAvc=;
- b=PizwUUMxRX7glt/djZTEuoKwin19rjFwkAor9ZdcacdpHDlYkRIkJE3hs0UfFGPGFm+R1HTnWNSqvw60hcw89mFI+gXUXL/TtorIoJtfqvql6ujTeNIlQKPPBmRfW0qgiRAuL23U2EbrZPLgef42WHoWGaSceFseDJt6SCleCfy342jtd7O+WXBw0ZMfHJiYPsj7cgyuSWjrXb/m9zxULOxIXIKkGuFbcaQDSGgFAXwKTlLdyW6SL/l8miFlwiHbgfHD2mEDEZm0SGzbzr1T6cFEX7PvKQjltpgXljioAdTULKBVjernJt7ON+IMSNDGkszDtm3/eM+zD7A9UY9SUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 29 Jun 2021 00:12:47 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A20C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:10:20 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 80so1574582pgg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:10:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTNzeHAdB8wjTYZQUjTvh/LYi5sQG2GHOZ+Cuw7DAvc=;
- b=MSLt4DoeSDjE/xW8yi1JtolrA9pb6sBydAJscARYgbnGU7Xy8EMoDs1ruFf9D/cAGxjO1Jo3u61e+tezHSMAyYhKjGKMg+HtKqLJ2zE0skJVbR7d/wlL9hYASX3WDnOxkyzjVoOazl82iMRZGn03rFpwtmKvKnvQfzEKmvmVU60=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5417.namprd10.prod.outlook.com (2603:10b6:510:e4::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 29 Jun
- 2021 04:10:26 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
- 04:10:26 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     YueHaibing <yuehaibing@huawei.com>, jejb@linux.ibm.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] scsi: ufs: fix build warning without CONFIG_PM
-Date:   Tue, 29 Jun 2021 00:10:12 -0400
-Message-Id: <162493961197.16549.18425442612444713958.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210617031326.36908-1-yuehaibing@huawei.com>
-References: <20210617031326.36908-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [138.3.201.9]
-X-ClientProxiedBy: SA0PR12CA0029.namprd12.prod.outlook.com
- (2603:10b6:806:6f::34) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HbCIMJbXR00eV4jPyvQKtQotReipOTL/gg7Z8DJ8llQ=;
+        b=KevEF2v/WbbhBrvu98MkRX2tgsJuIqO1/X0aBDBYmv8nqgbtIXE/gSpKRIi16iOJuf
+         SOIak/iEwfohjS2dbJc932HfBoabsNbUOByEpKmvS4q3pznuX1/v43kcZ/dCWeccQH5l
+         cXC+GHjt0NZflDe1/EU02kA/laewf6bVJF6ty7mwv6rTa5YRUKDDnv3qLCVUIg9Ysu3Y
+         RD/xmgFsTwE+04voR7i+0aiZGct5b7daYDZC/x5qSVrsCOtplbOGBhLcNJcwdn04JHe6
+         xkjPCY04gld9AMc7SGJpO0iwZUpUl1pm+0ptTRGPldkg5cirW2lP+Gyhkrp0ZpUo+59q
+         hPoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HbCIMJbXR00eV4jPyvQKtQotReipOTL/gg7Z8DJ8llQ=;
+        b=KBy4xrMyDXdPimoOgZo1r1g4f5QAEWWdzLJjAVOGpaS01wGEZ/vYXmXuoh7sJuFb2K
+         VmXoUHJO/261sUOZ33T6fwJwSxYKZ/qjte8sPPbRMifmcwJyTls1dWGeN+VbcYpyZMGI
+         NJb3Wl7HRpddkDHGdRsRGjTWxdy+z3rjFtCRq97oo5GSRz1c0/Xs4zTsUcNy0rrVnatv
+         bYouXJcs+oV1ioKxKDG4C0ZJf7e8JFGGduJr7R7cIhjTBI2z5PEgQ3amTqMFqocpIqvS
+         y8q3ju8CN6e0qgUnqdMUhGyaHYldDY3CW1rZY8bDDX7GH1HEDj3jqDWaqmeEmMTjiyg3
+         Y0CQ==
+X-Gm-Message-State: AOAM533PH3sJacBRAbFQHsusUyDZMvjwPaLlAEQymMq1l3u0aES2j0FN
+        92HhsncF3EDYHcg4jxSbQM9wjw==
+X-Google-Smtp-Source: ABdhPJx3CFYgS7XBI0CTsMRECG2jABxyuESu9uV4cFATrGVq+dZFzWsPOGAEWkZup9hNd5IWwipNPA==
+X-Received: by 2002:a63:d811:: with SMTP id b17mr4522914pgh.286.1624939819758;
+        Mon, 28 Jun 2021 21:10:19 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id y3sm16469487pga.72.2021.06.28.21.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 21:10:19 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 09:40:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210629041017.dsvzldikvsaade37@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNmK0MP5ffQpiipt@ninjato>
+ <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+ <YNmVg3ZhshshlbSx@ninjato>
+ <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+ <YNmg2IEpUlArZXPK@ninjato>
+ <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+ <YNnjh3xxyaZZSo9N@ninjato>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.mkp.ca.oracle.com (138.3.201.9) by SA0PR12CA0029.namprd12.prod.outlook.com (2603:10b6:806:6f::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 04:10:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c81fcdd-10eb-40c4-2ba6-08d93ab3d311
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5417:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB54175288E9B1E069D34DDD7E8E029@PH0PR10MB5417.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:119;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qReNKfLa6MagyC787mZUwbsByZ9zhalXhqcU6ZPmVlU7HfD8s37QqU3U7UhyHvK+/bjV4CH8m633+91R4csuJEKjHLP1KpSj/lpDlmo2PBnK5FYR82Fr+zTD8D3OaeIHOhqzdPnUUB9cOg5snMqKP4yjX+/klo5OlfFS62KDWkr9fnFy103y4ttFX5txXUuAeZqgJbA3W1JeqPn8MG7CA41l4fpyzRGvhOSj6yofD4Go4eBXx0I2Zy3YbdYPL27vTkQbt42s5HUYTZznMIqnHaraITj7s6yFWtPX05KmSaHWJHaUPTfVwTY9TSWmYzLK8VNH/lbPZdBRlmFRx3TdrQB7EgQ8rGqGlMu63iKkMxyPpTNlw3nZe4te6MW6CUGJnHAI6wBnFdo6489p7ZMQ1XN+mZCahmsWYkIr+43modIiOpXJLSIWSyLwCspHQ+HT9Pp6skUtIqaGPv6TE/vYXQLxAJElB7TMV142dEHZPad4ilXEc46p9jpHTQuHU7MFMvQjEosgwVAoYLd+mQJmYduZYWLA5BieBtkxbnG78nTCFtjbJBQwqjydEfeD8Q67dL5Sj0riIiY7Kvem7JEYPkt4WQY0jBcTOeeyqUmeKwAtOah9mxBH1MybS85aHWS0y4YK0JON6RhVZIgks0HbQ9DzQ86S0453OyNhkifP4GOuzeRyCdDuGtEIEJop5J6ftTgyjKpNMKiPZXi4rda3VSjFYauqyCdldziAY+sSCwzuCp8wMGzqif22X82fkEzLOf4iVXl5xAdpG3nAlGMjbUCe+D1TupNTe6Mk6V30jhUxOa+LWtSPwY5f9oAmcZknz3ABh4Z+xN7wEzBHFttwPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39860400002)(346002)(396003)(966005)(103116003)(36756003)(478600001)(6486002)(83380400001)(7696005)(8936002)(52116002)(8676002)(4744005)(66476007)(66556008)(316002)(66946007)(26005)(186003)(86362001)(16526019)(6666004)(956004)(38100700002)(2906002)(2616005)(38350700002)(5660300002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjZWRW55bXZpYm43R2ZqOVJ5RkdrWUVRZnFqMnNIVTZoQnBtcnhVWGVHRlJR?=
- =?utf-8?B?dUFqMTM5NmIzZ2k2Wk1Ob1YxV3dsa0tZR09GaTd2VHZzcEdMcUVNQ2xNc3Jj?=
- =?utf-8?B?R0ZxOGZPZzNSdzM1Q1ZoemhzMENoV3NXQmJiTjNka3pUZFFVSS8rWThGYmxt?=
- =?utf-8?B?eFplbUgwYUkzZWt4SUE4b2xaaVJFOTE0MFNsaXlzZTNEdnFtOWNuczVDNlBH?=
- =?utf-8?B?TVJoaEk2dlV4RWtOMnhaQ24xRGJpbmhBQnpPVmRQZGs3Q3ptNnJSVjUraXlk?=
- =?utf-8?B?NjAzS3RDMkdCQ1QzaDBJVWtFcWVFbUk3MytBWjVLbDRVUnBxVHAyaHhPNkxS?=
- =?utf-8?B?by9aRUpIcTBXN0RxR1lqbmQveGV6TnExc0xlVTU4ZG9saHlmYlpUdnhSbUFF?=
- =?utf-8?B?STRKQmlrT1A2OFFhM09nN0Noam00NXh1YS9HbTZFRWVBYW9nZSt5YWU5amJj?=
- =?utf-8?B?OUFzSi9rM3gxdWxUSHJRSGhXR25vcVIzSHc2ZXppeVhBZ2dtRkM2T1N6UVN1?=
- =?utf-8?B?bDRmSmlaeENpMG5oWmh0eHN3Z2JuczVJbThmenRBYVFpamNKY1RKYlpQRHFZ?=
- =?utf-8?B?Ukp3TDNJZnVXZ2JBQUpoenpmZDl2ODJuckl2TlcwMW5ZV0lKbDRzZktpQW9t?=
- =?utf-8?B?ZERIbnZXaXdLVkZVMzZZaWJRb3d6SDVidUIwUm5WNTVCMkoya2JkdU1oZy9l?=
- =?utf-8?B?bmltRjdaM3M0cDlnYVJKVkd6MVphMnhHNDRqU3ptRWRXcitkYmM5QldDWjV6?=
- =?utf-8?B?MlBkRFBVV3N5dUFCZmpxR1dYSG9GenZqc0RxbnFWN3RkRUdJaDN3dGErSGwz?=
- =?utf-8?B?T3hBeGphdDJhYmk2RHk4QTdBVVVWYWxWZit0Zmp6dWxQaHJmdi8xempBV3hy?=
- =?utf-8?B?U2pJUHhZcHAzdnIxbmtucmhEdVNqQUNxQy9zRG5FNnhjM3dvOW1RcXpURUJP?=
- =?utf-8?B?clNxY09MUVVHMG56cmNqdjRZWW1iNkxoZVlWNXRPOUNsaWFJTktWOEJ2STdY?=
- =?utf-8?B?RzR6MmpPeXhsamZENVBJekVOT3REZWI3VUZralRHRGVOT2hNVVQ1UEYvQkJu?=
- =?utf-8?B?ckdMQkJCVUw0aUgrUzBEMUd2YjUyTVozbUhyUE1BQTgxVGhRR1Jvb2xyUmox?=
- =?utf-8?B?VWlNSlZIeEdwc0pNb1NyWU1OdFFGT0Q3Z1lIZUIzSUFJMnEyeWx2NlFNK1BO?=
- =?utf-8?B?SXNBT2FuRXJuSkxodkFzMWc2RzF0Rkp0RXhWN2pjWndLdEZjZkZ2K0lPMUl2?=
- =?utf-8?B?MDhPZEFlZklMWk5JdUx1UDd5aXNKQVEvakZYL3NPMHJDUnlwT3NCUUlvWXhw?=
- =?utf-8?B?OTdzR0pnZ3ZFS0RERWtuaHBnSDBtOVdsQm1ISG81a2U4YnZVNjBpMm5xMFFk?=
- =?utf-8?B?MFArOVh0S0pyc3MweUhESFllSW5CbnRURUxzdGRCZW93ZXhoaTJhdnhvTFdI?=
- =?utf-8?B?YjF4NGNvOVM1eXZLL21FaGVyTU9aYndRM0FPV01rais0eUR2NXQ5WGJpQ3Bh?=
- =?utf-8?B?TCt0MlIrbE9SZFVKYlJJSnhudmlPMC9xeG5aY2RFMlY3TXQ2STZ6QmVWTU5S?=
- =?utf-8?B?Z09wWUdGYVBTUzRjQmlZSkoxMWxFZUhsMlNkUzhjRndWYjJ1UTRZTytmWlQz?=
- =?utf-8?B?OVZqbEtEeWg2YmRNMmZNNkZ5Uzkxbjh5cDYzejNOM1lxd1JXWUtHMkF1UzJI?=
- =?utf-8?B?ZGNHU2ViNkdHbFFmM1pqc3BTSkVqR0NsNWlqbEtFdGwzMC80NDgyM3FwM2JX?=
- =?utf-8?Q?JTXeL0ew/BHFPMNe/VYR83BASi2EqEstAMxNXIK?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c81fcdd-10eb-40c4-2ba6-08d93ab3d311
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 04:10:26.5953
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m0hoBpsRJDNWlzehpUqeVksgWQ0VeSEKa6z4SF5micQiwUdtymwMOJTY9NsMcP+pKrNhVV/bouPe1GJZOqjmt/BxGcvjvPFwITeJLsufokg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5417
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10029 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106290029
-X-Proofpoint-GUID: c0-w1pqVBk2b26geuibe8mMYZatkh5Hv
-X-Proofpoint-ORIG-GUID: c0-w1pqVBk2b26geuibe8mMYZatkh5Hv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNnjh3xxyaZZSo9N@ninjato>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 11:13:26 +0800, YueHaibing wrote:
+I will be replying here instead of replying to each and every msg :)
 
-> drivers/scsi/ufs/ufshcd.c:9770:12: warning: ‘ufshcd_rpmb_resume’ defined but not used [-Wunused-function]
->  static int ufshcd_rpmb_resume(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~
-> drivers/scsi/ufs/ufshcd.c:9037:12: warning: ‘ufshcd_wl_runtime_resume’ defined but not used [-Wunused-function]
->  static int ufshcd_wl_runtime_resume(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/scsi/ufs/ufshcd.c:9017:12: warning: ‘ufshcd_wl_runtime_suspend’ defined but not used [-Wunused-function]
->  static int ufshcd_wl_runtime_suspend(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~~~~~~~~
+On 28-06-21, 16:58, Wolfram Sang wrote:
 > 
-> [...]
+> > You can fine Viresh's vhost-user implementation at
+> > https://lore.kernel.org/qemu-devel/cover.1617278395.git.viresh.kumar@linaro.org/t/#m3b5044bad9769b170f505e63bd081eb27cef8db2
+> 
+> It looks OK so far; yet, it is not complete. But it might be bearable
+> in the end.
 
-Applied to 5.14/scsi-queue, thanks!
+While we are at it, this has been replaced by a Rust counterpart [1]
+(as that makes it hypervisor agnostic, which is the goal of my work
+here) and I need someone with I2C knowledge to help review it. It
+should be okay even if you don't understand Rust a lot, just review
+this file[2] which is where most of i2c specific stuff lies.
 
-[1/1] scsi: ufs: fix build warning without CONFIG_PM
-      https://git.kernel.org/mkp/scsi/c/75d645a61cf9
+> > As you say, it does get a bit clumsy, but I think there is also a good argument
+> > to be made that the clumsiness is based on the host Linux user interface
+> > more than the on the requirements of the physical interface,
+> > and that should not have to be reflected in the virtio specification.
+> 
+> Makes sense to me.
+> 
+> > Right, this one has come up before as well: the preliminary result
+> > was to assume that this probably won't be needed, but would be easy
+> > enough to add later if necessary.
+> 
+> If adding support incrementally works for such an interface, this makes
+> sense as well.
+
+Yes, we don't support few of SMBUS transaction (the block ones) as you
+specified.
+
+> So, where are we?
+
+The virtio specification is already merged and here is the latest
+version [3].
+
+> As I understand, this v10 does not support I2C transactions (or
+> I2C_RDWR as you said).
+
+I am not sure why you say I2C_RDWR isn't supported. The spec and Linux
+driver (+ my Rust/qemu backend), they all support I2C_RDWR as well as
+SMBUS. To clarify on an earlier point, every virtio transfer may
+contain one or more struct i2c_msg instances, all processed together
+(as expected).
+
+If you see virtio_i2c_send_reqs() in this patch, you will see that it
+converts a stream of i2c_req messages to their virtio counterparts and
+send them together, consider it a single transaction.
+
+> But you want to support all clients. So, this doesn't match, or?
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+viresh
+
+[1] https://github.com/rust-vmm/vhost-device/pull/1
+[2] https://github.com/rust-vmm/vhost-device/blob/5aa22c92faac84ab07b6b15a214513556e8b1d01/src/i2c/src/i2c.rs
+[3] https://github.com/oasis-tcs/virtio-spec/blob/master/virtio-i2c.tex
