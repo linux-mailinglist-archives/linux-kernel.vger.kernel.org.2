@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042483B72E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F54F3B72E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbhF2NFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhF2NFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:05:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5C2C061760;
-        Tue, 29 Jun 2021 06:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=5eW633CBtlNjJXdomlGqoeVgjzec3P9oExDdZMOf324=; b=LyTXxavTIzGMjVZLcnkS5+EE/
-        Z4B4RC8w5fuYqBzcpxlQ3f5u2VkEPF/U10sJU1M29FctxCrNgGsmP4EIzy65AgKFSFJLYQ/FEbYc1
-        oG5foRgYgsA77FZCUvcUj7fEXjACgvqKV+I/PLgmyOtKhuFbtz1HDVBMkV6aemLjnlk785cV8zjSJ
-        IIwxcjNO2UGnLIq5iq/GZ1RKQuCqM4B7SDenuwlcuwzQyGde1g+fcCiW8uzcSuX2RgyfYVxSQe3Q4
-        pvmzB5s3y11NrCa8mBTspyZ+kKYLiSvoUzIfgYKnp534s4jYxm0kXBYC6kkxHzT1Ih+1FCkj9JRDn
-        PDfZl0SHQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45470)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lyDOV-0004f0-9z; Tue, 29 Jun 2021 14:03:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lyDOQ-00021q-Qg; Tue, 29 Jun 2021 14:03:10 +0100
-Date:   Tue, 29 Jun 2021 14:03:10 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Ling Pei Lee <pei.lee.ling@intel.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Behun <marek.behun@nic.cz>,
-        weifeng.voon@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com
-Subject: Re: [PATCH net-next V2] net: phy: marvell10g: enable WoL for mv2110
-Message-ID: <20210629130310.GC22278@shell.armlinux.org.uk>
-References: <20210629105554.1443676-1-pei.lee.ling@intel.com>
+        id S233846AbhF2NHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:07:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233593AbhF2NHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:07:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 646F061CFA;
+        Tue, 29 Jun 2021 13:04:53 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 15:04:50 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Mike Christie <michael.christie@oracle.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mst@redhat.com,
+        sgarzare@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        christian@brauner.io, akpm@linux-foundation.org,
+        peterz@infradead.org
+Subject: Re: [PATCH 2/3] kernel/fork, cred.c: allow copy_process to take user
+Message-ID: <20210629130450.tvrweqy7z2hlwsbh@wittgenstein>
+References: <20210624030804.4932-1-michael.christie@oracle.com>
+ <20210624030804.4932-3-michael.christie@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210629105554.1443676-1-pei.lee.ling@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210624030804.4932-3-michael.christie@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 06:55:54PM +0800, Ling Pei Lee wrote:
-> From: Voon Weifeng <weifeng.voon@intel.com>
+On Wed, Jun 23, 2021 at 10:08:03PM -0500, Mike Christie wrote:
+> This allows kthread to pass copy_process the user we want to check for the
+> RLIMIT_NPROC limit for and also charge for the new process. It will be used
+> by vhost where userspace has that driver create threads but the kthreadd
+> thread is checked/charged.
 > 
-> Basically it is just to enable to WoL interrupt and enable WoL detection.
-> Then, configure the MAC address into address detection register.
+> Signed-off-by: Mike Christie <michael.christie@oracle.com>
+> ---
+>  include/linux/cred.h |  3 ++-
+>  kernel/cred.c        |  7 ++++---
+>  kernel/fork.c        | 12 +++++++-----
+>  3 files changed, 13 insertions(+), 9 deletions(-)
 > 
-> Change Log:
->  V2:
->  (1) Reviewer Marek request to rorganize code to readable way.
->  (2) Reviewer Rusell request to put phy_clear_bits_mmd() outside of if(){}else{}
->      and modify return ret to return phy_clear_bits_mmd().
->  (3) Reviewer Rusell request to add return on phy_read_mmd() in set_wol().
->  (4) Reorganize register layout to be put before MV_V2_TEMP_CTRL.
+> diff --git a/include/linux/cred.h b/include/linux/cred.h
+> index 14971322e1a0..9a2c1398cdd4 100644
+> --- a/include/linux/cred.h
+> +++ b/include/linux/cred.h
+> @@ -153,7 +153,8 @@ struct cred {
+>  
+>  extern void __put_cred(struct cred *);
+>  extern void exit_creds(struct task_struct *);
+> -extern int copy_creds(struct task_struct *, unsigned long);
+> +extern int copy_creds(struct task_struct *, unsigned long,
+> +		      struct user_struct *);
+>  extern const struct cred *get_task_cred(struct task_struct *);
+>  extern struct cred *cred_alloc_blank(void);
+>  extern struct cred *prepare_creds(void);
+> diff --git a/kernel/cred.c b/kernel/cred.c
+> index e1d274cd741b..e006aafa8f05 100644
+> --- a/kernel/cred.c
+> +++ b/kernel/cred.c
+> @@ -330,7 +330,8 @@ struct cred *prepare_exec_creds(void)
+>   * The new process gets the current process's subjective credentials as its
+>   * objective and subjective credentials
+>   */
+> -int copy_creds(struct task_struct *p, unsigned long clone_flags)
+> +int copy_creds(struct task_struct *p, unsigned long clone_flags,
+> +	       struct user_struct *user)
+>  {
+>  	struct cred *new;
+>  	int ret;
+> @@ -351,7 +352,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+>  		kdebug("share_creds(%p{%d,%d})",
+>  		       p->cred, atomic_read(&p->cred->usage),
+>  		       read_cred_subscribers(p->cred));
+> -		atomic_inc(&p->cred->user->processes);
+> +		atomic_inc(&user->processes);
 
-I actually said:
+Hey Mike,
 
-"Please put these new register definitions in address order. This list
-is first sorted by MMD and then by address. So these should be before
-the definition of MV_V2_TEMP_CTRL."
+This won't work anymore since this has moved into ucounts. So in v5.14
+atomic_inc(&p->cred->user->processes);
+will have been replaced by
+inc_rlimit_ucounts(task_ucounts(p), UCOUNT_RLIMIT_NPROC, 1);
 
-Which you have partially done.
+From what I can see from your code vhost will always create this kthread
+for current. So you could e.g. add an internal flag/bitfield entry to
+struct kernel_clone_args that you can use to tell copy_creds() that you
+want to charge this thread against current's process limit.
 
-> @@ -99,6 +100,17 @@ enum {
->  	MV_V2_33X0_PORT_CTRL_MACTYPE_10GBASER_NO_SGMII_AN	= 0x5,
->  	MV_V2_33X0_PORT_CTRL_MACTYPE_10GBASER_RATE_MATCH	= 0x6,
->  	MV_V2_33X0_PORT_CTRL_MACTYPE_USXGMII			= 0x7,
-> +	MV_V2_MAGIC_PKT_WORD0	= 0xf06b,
-> +	MV_V2_MAGIC_PKT_WORD1	= 0xf06c,
-> +	MV_V2_MAGIC_PKT_WORD2	= 0xf06d,
-> +	/* Wake on LAN registers */
-> +	MV_V2_WOL_CTRL		= 0xf06e,
-> +	MV_V2_WOL_STS		= 0xf06f,
-> +	MV_V2_WOL_CLEAR_STS	= BIT(15),
-> +	MV_V2_WOL_MAGIC_PKT_EN	= BIT(0),
-> +	MV_V2_PORT_INTR_STS	= 0xf040,
-> +	MV_V2_PORT_INTR_MASK	= 0xf043,
-> +	MV_V2_WOL_INTR_EN	= BIT(8),
-
-Clearly MV_V2_PORT_INTR_STS is at a lower address than
-MV_V2_MAGIC_PKT_WORD0, so the list is not sorted as it originally was.
-
-Apart from that, the rest of the patch looks good, thanks!
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>  		return 0;
+>  	}
+>  
+> @@ -384,7 +385,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+>  	}
+>  #endif
+>  
+> -	atomic_inc(&new->user->processes);
+> +	atomic_inc(&user->processes);
+>  	p->cred = p->real_cred = get_cred(new);
+>  	alter_cred_subscribers(new, 2);
+>  	validate_creds(new);
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index dc06afd725cb..6389aea6d3eb 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1860,6 +1860,7 @@ static __latent_entropy struct task_struct *copy_process(
+>  	struct file *pidfile = NULL;
+>  	u64 clone_flags = args->flags;
+>  	struct nsproxy *nsp = current->nsproxy;
+> +	struct user_struct *user = args->user;
+>  
+>  	/*
+>  	 * Don't allow sharing the root directory with processes in a different
+> @@ -1976,16 +1977,17 @@ static __latent_entropy struct task_struct *copy_process(
+>  #ifdef CONFIG_PROVE_LOCKING
+>  	DEBUG_LOCKS_WARN_ON(!p->softirqs_enabled);
+>  #endif
+> +	if (!user)
+> +		user = p->real_cred->user;
+>  	retval = -EAGAIN;
+> -	if (atomic_read(&p->real_cred->user->processes) >=
+> -			task_rlimit(p, RLIMIT_NPROC)) {
+> -		if (p->real_cred->user != INIT_USER &&
+> +	if (atomic_read(&user->processes) >= task_rlimit(p, RLIMIT_NPROC)) {
+> +		if (user != INIT_USER &&
+>  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+>  			goto bad_fork_free;
+>  	}
+>  	current->flags &= ~PF_NPROC_EXCEEDED;
+>  
+> -	retval = copy_creds(p, clone_flags);
+> +	retval = copy_creds(p, clone_flags, user);
+>  	if (retval < 0)
+>  		goto bad_fork_free;
+>  
+> @@ -2385,7 +2387,7 @@ static __latent_entropy struct task_struct *copy_process(
+>  #endif
+>  	delayacct_tsk_free(p);
+>  bad_fork_cleanup_count:
+> -	atomic_dec(&p->cred->user->processes);
+> +	atomic_dec(&user->processes);
+>  	exit_creds(p);
+>  bad_fork_free:
+>  	p->state = TASK_DEAD;
+> -- 
+> 2.25.1
