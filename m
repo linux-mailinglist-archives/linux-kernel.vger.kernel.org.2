@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C3D3B6F47
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8F73B6F60
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbhF2IYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhF2IYj (ORCPT
+        id S232438AbhF2I2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:28:12 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41596 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhF2I2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:24:39 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36400C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id c8so23164581ybq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
-        b=SiX9r9dgg6r6z6VL+6XFCBA8PtLqqP8EjVjknH/LRrL0MsSzgzW6NoXOwoh0xQNgPV
-         6zIu/InaqEx5zmydhC+QuLMT+UMrbsEXBw2JBgAPME4uXG67oygSZzmwUNSox69rlWOl
-         MX8DDVzp8OTnMDPgbU3dYgjX+GSSPjCuZ14XCNAxPWIgvPccT/Hzd3IOYj+o0/eUUvdb
-         Xp+he1Qspq+Fdop1raUQPjpzigswTnTn1q2/UJAdIYap8JNAzHw0+GAejHDASg54Q5bo
-         S4TvOHlDZq/nWPxwgJroeOGnUqlY5YSG7WsfshaVlEH555kOnVTzX/B0chf7qEMnaXED
-         hqOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
-        b=J5Ucw+IiagAuUQaVW7v2SOPa1h5EQiC89+9qVvOgx3/ZsQEuirfBYVNBOQPtHzvBBr
-         u+MhQx1bC3L+s1cUhB8rz9H4xRQGvoNh0Bw3WyGwOGBNuUmUVvhPs4bXyQCnsOJfypI5
-         0e0lZqO3s4rL17M2tZtAaD39ydXg6hGKrz57n9rh6DW+CmmZIR2YaUOuLGkMNuHrCOqb
-         lfV9X9tFOSSpVlznVUtFE+45P8+lAoViXJM6x+05D9zfhM1U7J3sGExACQ/i+A/CFUBz
-         IC+S8eYsl4JlA+Mb3zIPwlzsozlwlkm89o1m1gZ5Opig/KQht0/+AXEUgIjtHC6G9dae
-         zJBw==
-X-Gm-Message-State: AOAM5306wq4wBgz0XRZtnZIJSWZWL9+d7p+K7Ny+4aFT1HdgKxd7HQl3
-        KByEOHVJsDlrhNH0xXi7GyHHvBhAs0VybpkHpxfOyQ==
-X-Google-Smtp-Source: ABdhPJxeB+P2TJ4vfKfTrwgdN9swrJc/3hVQCio5bE343GXZDKj6fcFsoFxiEZmmVoGyrBJ22yERCtdFyRrcpJD+H8o=
-X-Received: by 2002:a25:f0b:: with SMTP id 11mr21678043ybp.518.1624954930973;
- Tue, 29 Jun 2021 01:22:10 -0700 (PDT)
+        Tue, 29 Jun 2021 04:28:10 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3582A203A0;
+        Tue, 29 Jun 2021 08:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624955143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cbMPs8lfp7DAJiGmeNL7OnW/w+tsl+PEThIBkrDu+7k=;
+        b=YHP9hlZf73EaeJtsq0QyZRj9H8/sxB7yFhkQSY/r6pDGQ6cMuV6J6g8qGOmpdMJZ0TyPfG
+        x0WfVJOvUY8E6qYWmI5TH/lqaNZiuqCMoxwZChETGI4dyNaANtLZdJmpwpWwuUAPfX841Z
+        1yGBdNsBFno+hbqQ806FKwPXSX+dZh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624955143;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cbMPs8lfp7DAJiGmeNL7OnW/w+tsl+PEThIBkrDu+7k=;
+        b=tvOENhi0+KLGkTfSsUJfsFXgjGlScE2I4+zjVokj1Ub1Vo0WAPlgO/YL8/Zn7PrrY5Y13w
+        hhUNHmQKCdCubvDQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1B4AA11906;
+        Tue, 29 Jun 2021 08:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624955143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cbMPs8lfp7DAJiGmeNL7OnW/w+tsl+PEThIBkrDu+7k=;
+        b=YHP9hlZf73EaeJtsq0QyZRj9H8/sxB7yFhkQSY/r6pDGQ6cMuV6J6g8qGOmpdMJZ0TyPfG
+        x0WfVJOvUY8E6qYWmI5TH/lqaNZiuqCMoxwZChETGI4dyNaANtLZdJmpwpWwuUAPfX841Z
+        1yGBdNsBFno+hbqQ806FKwPXSX+dZh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624955143;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cbMPs8lfp7DAJiGmeNL7OnW/w+tsl+PEThIBkrDu+7k=;
+        b=tvOENhi0+KLGkTfSsUJfsFXgjGlScE2I4+zjVokj1Ub1Vo0WAPlgO/YL8/Zn7PrrY5Y13w
+        hhUNHmQKCdCubvDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id SU+wBQfZ2mD+OQAALh3uQQ
+        (envelope-from <dwagner@suse.de>); Tue, 29 Jun 2021 08:25:43 +0000
+Date:   Tue, 29 Jun 2021 10:25:42 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Wen Xiong <wenxiong@us.ibm.com>, james.smart@broadcom.com,
+        linux-kernel@vger.kernel.org, sagi@grimberg.me,
+        wenxiong@linux.vnet.ibm.com
+Subject: Re: [PATCH 1/1] block: System crashes when cpu hotplug + bouncing
+ port
+Message-ID: <20210629082542.vm3yh6k36d2zh3k5@beryllium.lan>
+References: <YNqL+3LDsIPKm1ol@T590>
+ <YNp1Bho5yypHkPfW@T590>
+ <1624850072-17776-1-git-send-email-wenxiong@linux.vnet.ibm.com>
+ <20210628090703.apaowrsazl53lza4@beryllium.lan>
+ <YNmdhqd+W3XbJCwd@T590>
+ <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
+ <OFE573413D.44652DC5-ON00258703.000DB949-00258703.000EFCD4@ibm.com>
+ <OF8889275F.DC758B38-ON00258703.001297BC-00258703.00143502@ibm.com>
+ <YNqX6w8YHO61oqvY@T590>
 MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
-In-Reply-To: <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 29 Jun 2021 10:21:59 +0200
-Message-ID: <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     Neal Cardwell <ncardwell@google.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNqX6w8YHO61oqvY@T590>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
->
-> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell <ncardwell@google.com> wrote:
-> >)
-> >
-> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com> wrote:
-> >>
-> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
-> >>
-> >> > Thanks.
-> >> >
-> >> > Can you also please provide a summary of the event sequence that
-> >> > triggers the bug? Based on your Reported-by tag, I guess this is
-> >based
-> >> > on the syzbot reproducer:
-> >> >
-> >> >
-> >https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
-> >> >
-> >> > but perhaps you can give a summary of the event sequence that
-> >causes
-> >> > the bug? Is it that the call:
-> >> >
-> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
-> >> > &(0x7f0000000000)='cdg\x00', 0x4)
-> >> >
-> >> > initializes the CC and happens before the connection is
-> >established,
-> >> > and then when the connection is established, the line that sets:
-> >> >    icsk->icsk_ca_initialized = 0;
-> >> > is incorrect, causing the CC to be initialized again without first
-> >> > calling the cleanup code that deallocates the CDG-allocated memory?
-> >> >
-> >> > thanks,
-> >> > neal
-> >> >
-> >>
-> >> Hi Neal,
-> >>
-> >> The gdb stack trace that lead to init_transfer_input() is as bellow,
-> >the
-> >> current sock state is TCP_SYN_RECV.
-> >
-> >Thanks. That makes sense as a snapshot of time for
-> >tcp_init_transfer(), but I think what would be more useful would be a
-> >description of the sequence of events, including when the CC was
-> >initialized previous to that point (as noted above, was it that the
-> >setsockopt(TCP_CONGESTION) completed before that point?).
-> >
-> >thanks,
-> >neal
->
-> I resend my message because I accidently used html format in last one. I am very sorry for the inconvenience caused.
-> ---
-> Yes, the CC had been initialized by the setsockopt, after that, it was initialized again in function tcp_init_transfer() because of setting isck_ca_initialized to 0.
+On Tue, Jun 29, 2021 at 11:47:55AM +0800, Ming Lei wrote:
+> >    >>data.ctx = __blk_mq_get_ctx(q, cpu);
+> >    cpu=2048 if hctx_idx = 4
+> 
+> Yeah, that is the issue I mentioned, any CPU in hctx->cpumask becomes
+> offline, please try the following patch and see if it makes a
+> difference:
 
-"the setsockopt" is rather vague, sorry.
+Given that cpumask_first_and() will return nr_cpu_ids in this case,
+can't we just bail out here and have to caller handle the error? I am
+able to reproduce the crash you reported in [1] and the fix [2] here
+works for me:
 
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -469,6 +469,8 @@ struct request *blk_mq_alloc_request_hctx(struct request_queue *q,
+        if (!blk_mq_hw_queue_mapped(data.hctx))
+                goto out_queue_exit;
+        cpu = cpumask_first_and(data.hctx->cpumask, cpu_online_mask);
++       if (cpu >= nr_cpu_ids)
++               goto out_queue_exit;
+        data.ctx = __blk_mq_get_ctx(q, cpu);
+ 
+        if (!q->elevator)
 
-The hard part is that all scenarios have to be considered.
-
-TCP flows can either be passive and active.
-
-CC can be set :
-
-1) Before the connect() or accept()
-2) After the connect() or accept()
-3) after the connect() but before 3WHS is completed.
-
-So we need to make sure all cases will still work with any combination
-of CDG CC (before/after) in the picture.
-
-Note that a memory leak for a restricted CC (CDG can only be used by
-CAP_NET_ADMIN privileged user)
- is a small problem compared to more serious bug that could be added
-by an incomplete fix.
-
-I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
-tcp_cdg would no longer need a dynamic memory allocation.
-
-Thank you.
+[1] https://lore.kernel.org/linux-block/20191117041233.GA30615@ming.t460p/
+[2] https://lore.kernel.org/linux-block/20210608183339.70609-1-dwagner@suse.de/
