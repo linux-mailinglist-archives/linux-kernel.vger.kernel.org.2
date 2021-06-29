@@ -2,169 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7083B7270
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37E33B727C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbhF2Mxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:53:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22062 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233798AbhF2MxW (ORCPT
+        id S233723AbhF2My3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233943AbhF2Mxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:53:22 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TCXShT141620;
-        Tue, 29 Jun 2021 08:50:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=CnbDDy1qBRTR6I8xPAryzlZwyz6haJ4TUbW322uchuY=;
- b=BT3HZMmm2+n8amin9lx3oRJCDnWvZnB4DEwGs8vkeNStDIOrEBcghhWkwIm0Yg+nRnEX
- gvKRL1Yd5Z+bOrCMChODJVewQzMGBGphBhGETFbcpTIyBGr8CbOl02O8TRKzVuSO49sy
- Ij0ZnGtdKxnuFgb2bsvAN8fQiQzd7VvKn+ZPeGQ7WGB39feM61rxMY9hyz4GSIIYFOb9
- DsEycz/GqGaIHSNBEvv3+0k8wR9+B9IgyDOyV4QJZ6yA2h54QsE789dN3CQoTSIaNXvO
- rwj3/WP7CJx+U/T8xIda/agautIckqX2uZwlvxZuyYzzjO9yJFKhYgubekpX28Ortcse oA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39g2ng26qh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 08:50:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TCllAA013222;
-        Tue, 29 Jun 2021 12:50:30 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39duv8h9q5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 12:50:30 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TCoRqA32244068
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 12:50:27 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AEB8EA409A;
-        Tue, 29 Jun 2021 12:50:23 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A130DA4094;
-        Tue, 29 Jun 2021 12:50:22 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.56.105])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 29 Jun 2021 12:50:22 +0000 (GMT)
-Date:   Tue, 29 Jun 2021 15:50:20 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-omap@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
- memory map alignment
-Message-ID: <YNsXDEgreCpshZxb@linux.ibm.com>
-References: <20210519141436.11961-1-rppt@kernel.org>
- <20210519141436.11961-4-rppt@kernel.org>
- <YNmiW6CYzy9lG8ks@atomide.com>
- <YNnLxFM4ZeQ5epX3@linux.ibm.com>
- <YNnqIv3PApHFZMgp@atomide.com>
- <YNqwl8EPVYZJV0EF@linux.ibm.com>
- <YNrfqtBpKsNj033w@atomide.com>
- <YNr6+wOiR7/Yx9M1@linux.ibm.com>
- <YNsJh7trg4up5l26@atomide.com>
+        Tue, 29 Jun 2021 08:53:34 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF78C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:51:06 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id j11so5634387edq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+wWT811g+EZoum3+0GL6gvNCRUuriJ6tNDv+ihrdI4c=;
+        b=YwlTTPauB/VjkKZBToaJSqg3L9yNUD7x5+5bA95UNciEf2LLbHjarNws6PwiJNFVkM
+         D5Wjs/ShWWyiw09LX2T9/zLBmetpj/6wDInDdaf272s9TbWZU+pcUxBEckHtspPgyXCr
+         5n02xeuX9OyM3i9j8I25V+EytaVVdifnTPIJs9GNhR9oNeioOMUSBRySLS9iBx6xP7UT
+         JkPjqFqNnwqnbmp1ZHUGBBwD8AZANj/f6zgzLjJek9RG/vKN6xsSLn2m0c+umOrLodS+
+         otYQ8RoA2bB4XxmY0dpk+ou/mGeOmKVMcdxXmPbCtywQbY/5Vx4Zt71KL9vKQvP/WPWH
+         1V/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+wWT811g+EZoum3+0GL6gvNCRUuriJ6tNDv+ihrdI4c=;
+        b=Iq5rCBCMEXPnqiqc+6/ObSi0ehHHx8IDqqr6v6bVyTgypGu4PzOQNzoDmtd/uVvk24
+         KUL/uXF18l9ye+oK3o/bUJnLcOr/OqAhHAURKR7igG8jPAcbv/MC1HZjEpLMd9oOTm9l
+         pQoLSJPc61nw1Ud8UhzSzMUzi8T1EEMIOl1guRN/OH21eV4FxzYBZ+BUJNsL9kr6zT/g
+         Ua/Jzlz1y6IEOtKQTH3fxxPe76qzGyfgO6pG9LtHmJYFycKOPF2mSvEyiGIndu+C5fKn
+         bkbfginhCH346ojsl5eQcB+2rd25lQ1HK8LSL6UCBLneZ3wCsbAAYgt237HPGCa8irpb
+         Ex4w==
+X-Gm-Message-State: AOAM533g9nvWdRxkb83Vlqg5rA+YlteuOgFa9HBD6p25DuSQK+qndSKZ
+        mxvvUCzg1BZiiFUTunJKAQ6wWsL9EamzqFudoivdWw==
+X-Google-Smtp-Source: ABdhPJwhX338tmGvYeIGSjHyHOGFmNoG7GGAyucwpt4r8D68uRQM/lkAmkPIkdgN5k0KrRWTjh5DJTT8bs6cjg4bMss=
+X-Received: by 2002:a05:6402:90a:: with SMTP id g10mr39885659edz.365.1624971065255;
+ Tue, 29 Jun 2021 05:51:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNsJh7trg4up5l26@atomide.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: v7hCJL7vrjg3_7YU6HWRhdA8vxTcIx80
-X-Proofpoint-GUID: v7hCJL7vrjg3_7YU6HWRhdA8vxTcIx80
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=815
- spamscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106290085
+References: <20210628144003.34260-1-sashal@kernel.org>
+In-Reply-To: <20210628144003.34260-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Jun 2021 18:20:53 +0530
+Message-ID: <CA+G9fYvWYsHC_55PFq5s-OO7fkkfk0V=UbW+6ZCHpGV3jNuZ=g@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/71] 4.9.274-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 02:52:39PM +0300, Tony Lindgren wrote:
-> * Mike Rapoport <rppt@linux.ibm.com> [210629 10:51]:
-> > As it seems, the new version of pfn_valid() decides that last pages are not
-> > valid because of the overflow in memblock_overlaps_region(). As the result,
-> > __sync_icache_dcache() skips flushing these pages.
-> > 
-> > The patch below should fix this. I've left the prints for now, hopefully
-> > they will not appear anymore. 
-> 
-> Yes this allows the system to boot for me :)
-> 
-> I'm still seeing these three prints though:
-> 
-> ...
-> smp: Brought up 1 node, 2 CPUs
-> SMP: Total of 2 processors activated (3994.41 BogoMIPS).
-> CPU: All CPU(s) started in SVC mode.
-> pfn_valid(__pageblock_pfn_to_page+0x14/0xa8): pfn: afe00: is_map: 0 overlaps: 1
-> pfn_valid(__pageblock_pfn_to_page+0x28/0xa8): pfn: affff: is_map: 0 overlaps: 1
-> pfn_valid(__pageblock_pfn_to_page+0x38/0xa8): pfn: afe00: is_map: 0 overlaps: 1
+On Mon, 28 Jun 2021 at 20:14, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 4.9.274 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 30 Jun 2021 02:39:51 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-4.9.y&id2=3Dv4.9.273
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
-These pfns do have memory map despite they are stolen in
-arm_memblock_steal():
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-memblock_free: [0xaff00000-0xafffffff] arm_memblock_steal+0x50/0x70
-memblock_remove: [0xaff00000-0xafffffff] arm_memblock_steal+0x5c/0x70
-...
-memblock_free: [0xafe00000-0xafefffff] arm_memblock_steal+0x50/0x70
-memblock_remove: [0xafe00000-0xafefffff] arm_memblock_steal+0x5c/0x70
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-But the struct pages there are never initialized.
+## Build
+* kernel: 4.9.274-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: a12e33370009130a2628d2a2cdca0cfd421a2f5b
+* git describe: v4.9.273-71-ga12e33370009
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+73-71-ga12e33370009
 
-I'll resend v3 of the entire set with an addition patch to take care of
-that as well.
+## No regressions (compared to v4.9.273-55-g9cd83a1b77d2)
 
-> devtmpfs: initialized
-> ...
-> 
-> Regards,
-> 
-> Tony
-> 
-> 
-> > diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-> > index 6162a070a410..7ba22d23eca4 100644
-> > --- a/arch/arm/mm/init.c
-> > +++ b/arch/arm/mm/init.c
-> > @@ -126,10 +126,16 @@ int pfn_valid(unsigned long pfn)
-> >  {
-> >  	phys_addr_t addr = __pfn_to_phys(pfn);
-> >  	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
-> > +	bool overlaps = memblock_overlaps_region(&memblock.memory,
-> > +				     ALIGN_DOWN(addr, pageblock_size),
-> > +				     pageblock_size - 1);
-> >  
-> >  	if (__phys_to_pfn(addr) != pfn)
-> >  		return 0;
-> >  
-> > +	if (memblock_is_map_memory(addr) != overlaps)
-> > +		pr_info("%s(%pS): pfn: %lx: is_map: %d overlaps: %d\n", __func__, (void *)_RET_IP_, pfn, memblock_is_map_memory(addr), overlaps);
-> > +
-> >  	/*
-> >  	 * If address less than pageblock_size bytes away from a present
-> >  	 * memory chunk there still will be a memory map entry for it
-> > @@ -137,7 +143,7 @@ int pfn_valid(unsigned long pfn)
-> >  	 */
-> >  	if (memblock_overlaps_region(&memblock.memory,
-> >  				     ALIGN_DOWN(addr, pageblock_size),
-> > -				     pageblock_size))
-> > +				     pageblock_size - 1))
-> >  		return 1;
-> >  
-> >  	return 0;
-> >  
-> > -- 
-> > Sincerely yours,
-> > Mike.
+## No fixes (compared to v4.9.273-55-g9cd83a1b77d2)
 
--- 
-Sincerely yours,
-Mike.
+## Test result summary
+ total: 59943, pass: 46910, fail: 1073, skip: 10404, xfail: 1556,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
