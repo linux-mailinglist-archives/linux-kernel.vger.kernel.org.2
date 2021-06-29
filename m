@@ -2,160 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7673B7698
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28C43B7699
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhF2QoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:44:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232441AbhF2Qn6 (ORCPT
+        id S234036AbhF2Qoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:44:37 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:33016 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhF2Qog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:43:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624984890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R6lsvhzrygbJh4AwNqvmWZ2sHvNWKnTHpejWGaVE6/Q=;
-        b=Vek6keY6+sKxtieEM3dL0/7DcPZ7jsjSpYGCDSqDCOJ+NEIoL720u7/vi5me3dY9g+i+Ze
-        TEfcoM99ZQ7WJnBICkG3tZ9xpTZ2TA3jwXTopgdQW8zta79yzzjCUOqPuwVH9rFoqUg4Bx
-        NFPcKosd9Rq95zxyZuciUV4zfHtp9NQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-f715RpGQP3qNIbLFL9-G8w-1; Tue, 29 Jun 2021 12:41:27 -0400
-X-MC-Unique: f715RpGQP3qNIbLFL9-G8w-1
-Received: by mail-wm1-f70.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so1539182wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:41:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R6lsvhzrygbJh4AwNqvmWZ2sHvNWKnTHpejWGaVE6/Q=;
-        b=ARCjaUpi3VjsCd10hEqtp7r9itkQGSoxmltCNXqERphYHxuoOoZZPeAJKjJWYn8NJe
-         /amOHvkKNWpHrgp0xx/HMSc++VK/+H48mMB66yBlXCKpmcV4auuGHowS05BcPZO85G3t
-         Ni5SzwI0jJMBdIA0Qwrdhrno3N0OptsWP/TWzAszyLr9BwcMrATN7frgSjneMG5UFY14
-         5MsHsuEdDf8o/CWz6ga39eyIswrc8wvSWviLnU28W7UBZILAZ0FSEF8kO/vkvBpBgU28
-         iCaalbR72pgh3l/zbPsou8H+ahIEqKFOt9NWa3nf0ysANNPVqubn27wEq57e7hnL5x11
-         v8Sw==
-X-Gm-Message-State: AOAM53245un581goEPjLiFkdJm+0WxDcNKUwhBYdxTRAxlHkkJKSKGt1
-        Wyv/4iZzo+OEBnhj+PyouMIUu8VTcJVu7c8UXt+pCSJcFYQO+MBUTDJTOWxaenY4pXgCGl4d8lx
-        wjoYw6MQg5cfSl+1Uk9/i2obU
-X-Received: by 2002:a05:600c:33a6:: with SMTP id o38mr18188279wmp.126.1624984884908;
-        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtkavlaXf3Z3/wVm1xSHl973s+nq+E8K48zkjSONEaCMRvgep32bNqxaRm0rT1LRFZcUt0CA==
-X-Received: by 2002:a05:600c:33a6:: with SMTP id o38mr18188269wmp.126.1624984884791;
-        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
-Received: from krava ([109.53.3.246])
-        by smtp.gmail.com with ESMTPSA id h10sm3339837wmb.40.2021.06.29.09.41.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 18:41:21 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>
-Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
- bounds to registers in atomics w/ BPF_FETCH
-Message-ID: <YNtNMSSZh3LTp2we@krava>
-References: <20210202135002.4024825-1-jackmanb@google.com>
- <YNiadhIbJBBPeOr6@krava>
- <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
- <YNspwB8ejUeRIVxt@krava>
- <YNtEcjYvSvk8uknO@krava>
- <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+        Tue, 29 Jun 2021 12:44:36 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyGoK-007Oh9-AZ; Tue, 29 Jun 2021 10:42:08 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:60056 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyGoI-002Txf-FL; Tue, 29 Jun 2021 10:42:07 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+References: <87fsx1vcr9.fsf@disp2133>
+        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+        <87czs4u0rm.fsf@disp2133>
+        <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
+Date:   Tue, 29 Jun 2021 11:42:00 -0500
+In-Reply-To: <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 29 Jun 2021 09:34:17 -0700")
+Message-ID: <87mtr8sjvr.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1lyGoI-002Txf-FL;;;mid=<87mtr8sjvr.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+RhPiZBQsPCPrf7dkJU9N3BdG6qpff208=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4573]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1304 ms - load_scoreonly_sql: 0.13 (0.0%),
+        signal_user_changed: 13 (1.0%), b_tie_ro: 11 (0.8%), parse: 1.10
+        (0.1%), extract_message_metadata: 17 (1.3%), get_uri_detail_list: 1.28
+        (0.1%), tests_pri_-1000: 25 (1.9%), tests_pri_-950: 1.38 (0.1%),
+        tests_pri_-900: 1.12 (0.1%), tests_pri_-90: 67 (5.2%), check_bayes: 66
+        (5.0%), b_tokenize: 5 (0.4%), b_tok_get_all: 5 (0.4%), b_comp_prob:
+        1.79 (0.1%), b_tok_touch_all: 49 (3.8%), b_finish: 0.99 (0.1%),
+        tests_pri_0: 1165 (89.4%), check_dkim_signature: 0.60 (0.0%),
+        check_dkim_adsp: 2.8 (0.2%), poll_dns_idle: 0.95 (0.1%), tests_pri_10:
+        2.2 (0.2%), tests_pri_500: 7 (0.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
-> On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
-> > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
-> > > > On Sun, 27 Jun 2021 at 17:34, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > On Tue, Feb 02, 2021 at 01:50:02PM +0000, Brendan Jackman wrote:
-> [snip]
-> > > > Hmm, is the test prog from atomic_bounds.c getting JITed there (my
-> > > > dumb guess at what '0xc0000000119efb30 (unreliable)' means)? That
-> > > > shouldn't happen - should get 'eBPF filter atomic op code %02x (@%d)
-> > > > unsupported\n' in dmesg instead. I wonder if I missed something in
-> > > > commit 91c960b0056 (bpf: Rename BPF_XADD and prepare to encode other
-> >
-> > I see that for all the other atomics tests:
-> >
-> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 21
-> > #21/p BPF_ATOMIC_AND without fetch FAIL
-> > Failed to load prog 'Unknown error 524'!
-> > verification time 32 usec
-> > stack depth 8
-> > processed 10 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
-> > Summary: 0 PASSED, 0 SKIPPED, 2 FAILED
-> 
-> Hm that's also not good - failure to JIT shouldn't mean failure to
-> load. Are there other test_verifier failures or is it just the atomics
-> ones?
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-I have CONFIG_BPF_JIT_ALWAYS_ON=y so I think that's fine
+> On Tue, Jun 29, 2021 at 8:52 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>>
+>> > Why the "sigpending < LONG_MAX" test in that
+>> >
+>> >         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
+>> > task_rlimit(t, RLIMIT_SIGPENDING))) {
+>> > thing?
+>>
+>> On second look that sigpending < LONG_MAX check is necessary.  When
+>> inc_rlimit_ucounts detects a problem it returns LONG_MAX.
+>
+> I saw that, but _without_ that test you'd be left with just that
+>
+>     sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
+>
+> and if task_rlimit() is LONG_MAX, then that means "no limits", so it is all ok.
 
-> 
-> > console:
-> >
-> >         [   51.850952] eBPF filter atomic op code db (@2) unsupported
-> >         [   51.851134] eBPF filter atomic op code db (@2) unsupported
-> >
-> >
-> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 22
-> > #22/u BPF_ATOMIC_AND with fetch FAIL
-> > Failed to load prog 'Unknown error 524'!
-> > verification time 38 usec
-> > stack depth 8
-> > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
-> > #22/p BPF_ATOMIC_AND with fetch FAIL
-> > Failed to load prog 'Unknown error 524'!
-> > verification time 26 usec
-> > stack depth 8
-> > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
-> >
-> > console:
-> >         [  223.231420] eBPF filter atomic op code db (@3) unsupported
-> >         [  223.231596] eBPF filter atomic op code db (@3) unsupported
-> >
-> > ...
-> >
-> >
-> > but no such console output for:
-> >
-> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 24
-> > #24/u BPF_ATOMIC bounds propagation, mem->reg OK
-> >
-> >
-> > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
-> > > >
-> > >
-> > > hum, I guess not.. will check
-> >
-> > nope, it locks up the same:
-> 
-> Do you mean it locks up at commit 91c960b0056 too?
-> 
+It means no limits locally.  The creator of your user namespace might
+have had a limit which you are also bound by.
 
-I tried this one:
-  37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+The other possibility is that inc_rlimits_ucounts caused a sigpending
+counter to overflow.  In which case we need to fail and run
+dec_rlimit_ucounts to keep the counter from staying overflowed.
 
-I will check also 91c960b0056, but I think it's the new test issue
+So I don't see a clever way to avoid the sigpending < LONG_MAX  test.
 
-jirka
-
+Eric
