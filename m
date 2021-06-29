@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2013B76E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4E23B76E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhF2RHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:07:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45003 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhF2RHj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:07:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lyHAc-00022F-8e; Tue, 29 Jun 2021 17:05:10 +0000
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: NFS: nfs_find_open_context() may only select open files
-Message-ID: <81cc22c8-051d-6826-e7e2-bd9b7e03bede@canonical.com>
-Date:   Tue, 29 Jun 2021 18:05:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232516AbhF2RKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 13:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232398AbhF2RKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 13:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5248661CA2;
+        Tue, 29 Jun 2021 17:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624986489;
+        bh=g/mppS63LinC/XGMDdSs70lnw5zZae5ZvS4wtptza28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pHunzWU0kS4zfdoYSMe5QVEtKsjImjiQh8g+kN33WW5dy1YPvSeSVWs2F91GU3NrI
+         z0/ZS1ob3QTHoR3F3++I36RmD6vSjAvH4Iya+EqB6DjOcFpIENOr7LJZfpsESqxfU+
+         otIn17v/DpfVdSuyLevVubkqb8z15olvGex7E0g+8Lho/YJXbpATJnMQ1k3Uq0R0Rs
+         RQUlLzqAcO9IqdLYLbbnnG5hZI1kHC4UQfgJX9//kYmENM1i5IfbNERmOIeqNaty3i
+         +SaY445eH0uQxYnaI8Owj615zb8v26kDn7r5qByfPbIKvvqf2Cv4yJKiNDuVHqhkxr
+         Ux/KuMBxsZorg==
+Date:   Tue, 29 Jun 2021 18:07:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dan.Sneddon@microchip.com
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Tudor.Ambarus@microchip.com,
+        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
+        Ludovic.Desroches@microchip.com
+Subject: Re: [PATCH] spi: atmel: Fix CS and initialization bug
+Message-ID: <20210629170741.GF4613@sirena.org.uk>
+References: <20210629162914.23286-1-dan.sneddon@microchip.com>
+ <20210629164733.GE4613@sirena.org.uk>
+ <c849eb7a-d019-b88e-583a-78e1eba7624c@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lIrNkN/7tmsD/ALM"
+Content-Disposition: inline
+In-Reply-To: <c849eb7a-d019-b88e-583a-78e1eba7624c@microchip.com>
+X-Cookie: Use extra care when cleaning on stairs.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Static analysis on linux-next with Coverity has found a potential null
-pointer dereference in the following commit:
+--lIrNkN/7tmsD/ALM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-commit 92735943dc6cf52aeaf2ce9aee397dee55e3ef05
-Author: Trond Myklebust <trond.myklebust@hammerspace.com>
-Date:   Tue May 11 23:41:10 2021 -0400
+On Tue, Jun 29, 2021 at 05:01:57PM +0000, Dan.Sneddon@microchip.com wrote:
+> On 6/29/21 9:47 AM, Mark Brown wrote:
 
-    NFS: nfs_find_open_context() may only select open files
+>  >In what way does it do that?  I can't tell what the patch is supposed >=
+to
+>  >do.
 
-The analysis is as follows:
+> The SPI_MASTER_GPIO_SS flag has to be set so that the set_cs function=20
+> gets called even when using gpio cs pins.
 
-1113 struct nfs_open_context *nfs_find_open_context(struct inode *inode,
-const struct cred *cred, fmode_t mode)
-1114 {
-1115        struct nfs_inode *nfsi = NFS_I(inode);
+This all needs to be clear in the changelog.
 
-    1. assign_zero: Assigning: ctx = NULL.
+>  >> -	enable =3D3D (!!(spi->mode & SPI_CS_HIGH) =3D3D=3D3D enable);
+>  >> =3D20
+>  >> -	if (enable) {
+>  >> +	if ((enable && (spi->mode & SPI_CS_HIGH))
+>  >> +			|| (!enable && !(spi->mode & SPI_CS_HIGH))) {
 
-1116        struct nfs_open_context *pos, *ctx = NULL;
-1117
-1118        rcu_read_lock();
+>  >This looks especially suspicious.
 
-    2. Condition 1 /* !0 */, taking true branch.
-    3. Condition !rcu_read_lock_any_held(), taking true branch.
-    4. Condition debug_lockdep_rcu_enabled(), taking true branch.
-    5. Condition !__warned, taking true branch.
-    6. Condition 0 /* !((((sizeof (nfsi->open_files.next) == sizeof
-(char) || sizeof (nfsi->open_files.next) == sizeof (short)) || sizeof
-(nfsi->open_files.next) == sizeof (int)) || sizeof
-(nfsi->open_files.next) == sizeof (long)) || sizeof
-(nfsi->open_files.next) == sizeof (long long)) */, taking false branch.
-    7. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-!__builtin_types_compatible_p()) */, taking false branch.
-    8. Condition &pos->list != &nfsi->open_files, taking true branch.
-    13. Condition 0 /* !((((sizeof (pos->list.next) == sizeof (char) ||
-sizeof (pos->list.next) == sizeof (short)) || sizeof (pos->list.next) ==
-sizeof (int)) || sizeof (pos->list.next) == sizeof (long)) || sizeof
-(pos->list.next) == sizeof (long long)) */, taking false branch.
-    14. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-!__builtin_types_compatible_p()) */, taking false branch.
-    15. Condition &pos->list != &nfsi->open_files, taking true branch.
-    20. Condition 0 /* !((((sizeof (pos->list.next) == sizeof (char) ||
-sizeof (pos->list.next) == sizeof (short)) || sizeof (pos->list.next) ==
-sizeof (int)) || sizeof (pos->list.next) == sizeof (long)) || sizeof
-(pos->list.next) == sizeof (long long)) */, taking false branch.
-    21. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-!__builtin_types_compatible_p()) */, taking false branch.
-    22. Condition &pos->list != &nfsi->open_files, taking true branch.
-1119        list_for_each_entry_rcu(pos, &nfsi->open_files, list) {
-    9. Condition cred != NULL, taking true branch.
-    10. Condition cred_fscmp(pos->cred, cred) != 0, taking false branch.
-    16. Condition cred != NULL, taking true branch.
-    17. Condition cred_fscmp(pos->cred, cred) != 0, taking false branch.
-    23. Condition cred != NULL, taking true branch.
-    24. Condition cred_fscmp(pos->cred, cred) != 0, taking false branch.
+> It's due to the fact that the spi core tells set_cs if the cs should be=
+=20
+> high or low, not active or disabled.  This logic is to convert from=20
+> high/low to active/disabled.
 
-1120                if (cred != NULL && cred_fscmp(pos->cred, cred) != 0)
-1121                        continue;
+spi_set_cs() handles SPI_CS_HIGH...  this looks like a separate existing
+driver bug, it should just be ignoring SPI_CS_HIGH if it's providing a
+set_cs() operation and letting the core implement SPI_CS_HIGH for it.  I
+only checked breifly but it looks like spi-atmel is trying to use the
+core support for chipselect handling here.
 
-    11. Condition (pos->mode & (3U /* (fmode_t)1 | (fmode_t)2 */)) !=
-mode, taking true branch.
-    18. Condition (pos->mode & (3U /* (fmode_t)1 | (fmode_t)2 */)) !=
-mode, taking true branch.
-    25. Condition (pos->mode & (3U /* (fmode_t)1 | (fmode_t)2 */)) !=
-mode, taking false branch.
-1122                if ((pos->mode & (FMODE_READ|FMODE_WRITE)) != mode)
-    12. Continuing loop.
-    19. Continuing loop.
-1123                        continue;
+--lIrNkN/7tmsD/ALM
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    Explicit null dereferenced (FORWARD_NULL)
-    26. var_deref_model: Passing null pointer &ctx->flags to test_bit,
-which dereferences it.
+-----BEGIN PGP SIGNATURE-----
 
-1124                if (!test_bit(NFS_CONTEXT_FILE_OPEN, &ctx->flags))
-1125                        continue;
-1126                ctx = get_nfs_open_context(pos);
-1127                if (ctx)
-1128                        break;
-1129        }
-1130        rcu_read_unlock();
-1131        return ctx;
-1132 }
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDbU10ACgkQJNaLcl1U
+h9ApfQf/UlWZOjyuLMxNZC/DdFCts0gN87q8qapmg8cYuOFDA+3LAnhouvdJ2nzX
+TaUY7Rl7UUQ5WUX/PkTqfG3jHSZiY2pr3UsNr1aVf54qIxxF85VXvOkaWURzso3A
+DVjJs1cQR/tQJ+VpWTofhQJniEMTKvk34ttKboxSh6wVpsy5Eo3VharE7YyyjBMr
+0JKnvF2mwxnEvPwaeahreUCpoFZ/Akz9g67egUELEZCZEZIXdkkkcjevzGhsl6nU
+rL/JmSauIcGfLQAGqu6Dyhi1AbvWOEntqXOidjvwOhRae2pDP5UvgRnt4Ro1hAdo
+QD6njWzWK9x6lpiccEgTyGDy18IUEA==
+=1igo
+-----END PGP SIGNATURE-----
 
-Coverity is indicating that the test_bit call on &ctx->flags can cause a
-null pointer dereference when ctx is NULL.  I'm not entirely convinced
-if this is a false positive, so I though I had better report this issue.
-
-Colin
-
+--lIrNkN/7tmsD/ALM--
