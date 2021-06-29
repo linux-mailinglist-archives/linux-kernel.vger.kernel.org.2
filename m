@@ -2,191 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517443B6EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE293B6EEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhF2Hkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 03:40:41 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:36183 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232233AbhF2Hkj (ORCPT
+        id S232290AbhF2Hos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 03:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232254AbhF2Hor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 03:40:39 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 305505802F1;
-        Tue, 29 Jun 2021 03:38:12 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Tue, 29 Jun 2021 03:38:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=xPpV66HQWYVIE36VUh3s2k+KXaQN
-        uzOi6HGwB2vvLlI=; b=AazxlZZVrmqm57X0pNXcZihlgEw8Rja3NTqf4rJAhrId
-        sZzWqzxnLqo9mXUeGtBkomuHVceuBcpOlkThWQ8sOCGcUEAuGD7E84/1QgptxDxp
-        VohUFHg1FgeZAkZM2TuUVE2+3LnW1tT6vvKOOsE5ulSvvJJYmwHOfxGqIKe4F8/V
-        tewSxjjE5XOKAqhA6el1jejPmzn4RT05Sh1L3odwkPPLSZTZNhe5q3yGyLkLzgT5
-        j+mhG6OzVYFkdnZS7X0UaF1NnkY/Iu+b2mupZW6OfpC70kQXkA+3gSuv7eEnsqu8
-        75vU/K8OhArsVgjGt0825AP9cpRgKIGF0h2MQw+33w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xPpV66
-        HQWYVIE36VUh3s2k+KXaQNuzOi6HGwB2vvLlI=; b=TVuybdMj+mIXjt/SMDwlbh
-        sXV0LMaYWH58nxAH7/2fyt/n3U4cV6gQiBPI4xJYnAfdtof8Nadjo7h1zqcoMTRc
-        wms/fAYBxqNKdFdeLMQuUdZA9wdSyBQpQ7izbbYNtShwZKI62QDMOgxnxqy/23BI
-        lOJ1xx+YDU2E46iftghvIJLGtijpPE4z2vFrUfrANhOreffUS6hxqfY84+uGqCkD
-        beAxPx8FwIZcpClmn+SrFwQESJ9v5O2t3dE5dvw/ZnHgTlyBp5+sZmd7Chm/mg0B
-        OSwlldu12dqSG9D4HEWm0ibGdmUcvxU/fN/fVSx5ttYRTBeFIdHZFoWbWZWlpIyw
-        ==
-X-ME-Sender: <xms:4s3aYCw9WS5tkBhIVaEiwWmfJPFFLn1LHq14l3laXRWdD1wXOecRLA>
-    <xme:4s3aYOSver13dt2IzApPeQtnAmFfKdnSi9E3IqwmT1HVPizgWmgX4UEHkjRjIijUg
-    qZeuIwj8Q9T6AXB7tM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehhedguddujecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:4s3aYEUU1LxQqndKn8vTxCWrNEdOpMqbGFQbrzw1B8yG1edecv94EQ>
-    <xmx:4s3aYIgLArskBRvcBRNz_paU13207fSaGy1M4-9hkrZA5MUjpRPqNg>
-    <xmx:4s3aYEDd3kPwpjbysHG8_AAKYdSwen0ND6HnGlmS-C_FYcfb00uq1A>
-    <xmx:5M3aYMaNWz_GSwOBNaTU7SxjDGMOZpvJXMTXg9BzOj_uaV5jLK3e4g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3F1AB51C0060; Tue, 29 Jun 2021 03:38:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-530-gd0c265785f-fm-20210616.002-gd0c26578
-Mime-Version: 1.0
-Message-Id: <fedb8d5a-a0f1-4216-bb46-1af31b716309@www.fastmail.com>
-In-Reply-To: <3a43b2de-6a71-2373-8695-5e96657c8fc2@amazon.com>
-References: <20210627143405.77298-1-sven@svenpeter.dev>
- <20210627143405.77298-2-sven@svenpeter.dev>
- <3a43b2de-6a71-2373-8695-5e96657c8fc2@amazon.com>
-Date:   Tue, 29 Jun 2021 09:37:48 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Alexander Graf" <graf@amazon.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>, devicetree@vger.kernel.org,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Stan Skowronek" <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Petr Mladek via iommu" <iommu@lists.linux-foundation.org>,
-        "Alyssa Rosenzweig" <alyssa.rosenzweig@collabora.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Rouven Czerwinski" <r.czerwinski@pengutronix.de>
-Subject: Re: [PATCH v4 1/3] iommu: io-pgtable: add DART pagetable format
-Content-Type: text/plain
+        Tue, 29 Jun 2021 03:44:47 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE289C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:42:20 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id a18so15595556lfs.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FReXYEj5Ibwbff/u+KhknD1QWDTjlXsVnChFbqLOhzY=;
+        b=JYxocqHRpwAlODdbmKohYKIbIbv71wQb1E1PD3TTEuDq7X6IDLfJhT38RIp2gfV3hJ
+         +K9HtXpO1GVXxKvBaYBWotimOv0iH3VVdA6U5z7IMHXT9O36/aTZl8gkoVBuy4aK0+lf
+         CogXeLJKTeMX4VnH1KJOgm/Qt949H69ANb//8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FReXYEj5Ibwbff/u+KhknD1QWDTjlXsVnChFbqLOhzY=;
+        b=p3cn9dOEyUnj6Hdo/kjfgFw1Q0t4F8CX4JMkC2NB2CFtdW+fdu/u2SKuI0F6CSgACf
+         EwjC8HNNtONUkaLZpNKoDEPAGX0kYSr8ZyVNAy9WrzCEnAlW21cEOI4HfZH221cB8e5H
+         T7UlpunIgVy0WHeMDhBQYnz258wj3B4NCq7oEGY+2BmkzpaH8TcbxmVlxHSCO64C7dRd
+         Rpiueb6IAK+SX5TxlPz7Eash4AVpnUqaVmHMgBB/O73Aq+jNKdUVGdhCQY7rBV2D/o4z
+         EunCFrOV/aEs6KZf1PhdYdWsLpjp/qzyldSE6T4MIo+3bR6JX1BC+syQKBJRXm+Tirwv
+         qrow==
+X-Gm-Message-State: AOAM531vT8jSzQe+sX9KOl12qkzmcpZmutAenbZyHZJ70eSiXbyXGwkB
+        hdOTZ3D/CIjI3T5RJsNxQHsZPsUrGyT8AZ9n
+X-Google-Smtp-Source: ABdhPJx4K79rey9K8oNZe5ijOraDJkthIobaetoIDQkQuUqCbAIcqDNzGnf4fli1hC8Ko7Ft6nZ9Pw==
+X-Received: by 2002:a05:6512:b8e:: with SMTP id b14mr22374104lfv.287.1624952538027;
+        Tue, 29 Jun 2021 00:42:18 -0700 (PDT)
+Received: from [172.17.20.254] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id e20sm1735414ljk.67.2021.06.29.00.42.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 00:42:17 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IOWbnuS/oTogUmU6IFtSRkMgMi8zXSBtdGQ6IHNwaS1ub3I6IGNv?=
+ =?UTF-8?Q?re=3a_compare_JEDEC_bytes_to_already_found_flash=5finfo?=
+To:     Tudor.Ambarus@microchip.com, jaimeliao@mxic.com.tw,
+        michael@walle.cc
+Cc:     bbrezillon@kernel.org, esben@geanix.com,
+        frieder.schrempf@kontron.de, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, masonccyang@mxic.com.tw,
+        p.yadav@ti.com, ycllin@mxic.com.tw, zhengxunli@mxic.com.tw
+References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
+ <20210621152320.3811194-3-linux@rasmusvillemoes.dk>
+ <223232ecd0865e819477f17cd464ab08@walle.cc>
+ <OF7CD5328D.D33B2BE2-ON482586FD.0027BCF2-482586FD.00280249@mxic.com.tw>
+ <dcd4e64f-348c-fadd-1044-61c7b6fa93c8@microchip.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <1767e220-b76f-a661-b274-7fec3e7dd8b5@rasmusvillemoes.dk>
+Date:   Tue, 29 Jun 2021 09:42:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <dcd4e64f-348c-fadd-1044-61c7b6fa93c8@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23/06/2021 10.33, Tudor.Ambarus@microchip.com wrote:
+> On 6/23/21 10:17 AM, jaimeliao@mxic.com.tw wrote:
+>> You don't often get email from jaimeliao@mxic.com.tw. Learn why this is important<http://aka.ms/LearnAboutSenderIdentification>
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>> Hi Michael and Rasmus
+>>
+>>
+>>>
+>>> Re: [RFC 2/3] mtd: spi-nor: core: compare JEDEC bytes to already
+>>> found flash_info
+>>>
+>>> [+ some people from MXIC as they are ones who posted to the ML
+>>> lately. Feel free to forward this mail to the corresponding people.]
+>>>
+>>> Am 2021-06-21 17:23, schrieb Rasmus Villemoes:
+>>>> Macronix engineers, in their infinite wisdom, have a habit of reusing
+>>>> JEDEC ids for different chips. There's already one
+>>>> workaround (MX25L25635F v MX25L25635E), but the same problem exists
+>>>> for MX25L3205D v MX25L3233F, the latter of which is not currently
+>>>> supported by linux.
+>>>>
+>>>> AFAICT, that case cannot really be handled with any of the ->fixup
+>>>> machinery: The correct entry for the MX25L3233F would read
+>>>>
+>>>>         { "mx25l3233f",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K |
+>>>> SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ ) },
+>>>>
+>>>> while the existing one is
+>>>>
+>>>>    { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+>>>>
+>>>> So in spi_nor_init_params(), we won't even try reading the sfdp
+>>>> info (i.e. call spi_nor_sfdp_init_params), and hence
+>>>> spi_nor_post_sfdp_fixups() has no way of distinguishing the
+>>>> chips.
+>>>>
+>>>> Replacing the existing entry with the mx25l3233f one to coerce the
+>>>> core into issuing the SPINOR_OP_RDSFDP is also not really an option,
+>>>> because the data sheet for the mx25l3205d explicitly says not to issue
+>>>> any commands not listed ("It is not recommended to adopt any other
+>>>> code not in the command definition table, which will potentially enter
+>>>> the hidden mode.", whatever that means).
+>>>
 
-
-On Mon, Jun 28, 2021, at 12:54, Alexander Graf wrote:
+> Do any of these flashed define an extended ID, i.e. more that 3 bytes of ID?
+> Rasmus, would you please try to read more bytes of ID?
 > 
-> 
-> On 27.06.21 16:34, Sven Peter wrote:
-> > 
-> > Apple's DART iommu uses a pagetable format that shares some
-> > similarities with the ones already implemented by io-pgtable.c.
-> > Add a new format variant to support the required differences
-> > so that we don't have to duplicate the pagetable handling code.
-> > 
-> > Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> > ---
-> >   drivers/iommu/io-pgtable-arm.c | 62 ++++++++++++++++++++++++++++++++++
-> >   drivers/iommu/io-pgtable.c     |  1 +
-> >   include/linux/io-pgtable.h     |  7 ++++
-> >   3 files changed, 70 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> > index 87def58e79b5..1dd5c45b4b5b 100644
-> > --- a/drivers/iommu/io-pgtable-arm.c
-> > +++ b/drivers/iommu/io-pgtable-arm.c
-> > @@ -127,6 +127,9 @@
-> >   #define ARM_MALI_LPAE_MEMATTR_IMP_DEF  0x88ULL
-> >   #define ARM_MALI_LPAE_MEMATTR_WRITE_ALLOC 0x8DULL
-> > 
-> > +#define APPLE_DART_PTE_PROT_NO_WRITE (1<<7)
-> > +#define APPLE_DART_PTE_PROT_NO_READ (1<<8)
-> > +
-> >   /* IOPTE accessors */
-> >   #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
-> > 
-> > @@ -381,6 +384,15 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
-> >   {
-> >          arm_lpae_iopte pte;
-> > 
-> > +       if (data->iop.fmt == ARM_APPLE_DART) {
-> > +               pte = 0;
-> > +               if (!(prot & IOMMU_WRITE))
-> > +                       pte |= APPLE_DART_PTE_PROT_NO_WRITE;
-> > +               if (!(prot & IOMMU_READ))
-> > +                       pte |= APPLE_DART_PTE_PROT_NO_READ;
-> > +               return pte;
-> 
-> What about the other bits, such as sharability, XN, etc? Do they not 
-> exist on DART? Or have they not been reverse engineered and 0s happen to 
-> "just work"?
 
-I'm fairly certain they don't exist (or are at least not used by XNU).
+No, neither mx25l3205d nor mx25l3233f do according to their data sheets.
 
-The co-processors that can run code also either use an entire separate iommu
-(e.g. the GPU) or only use DART as a "second stage" and have their own
-MMU which e.g. handles XN (e.g. the SEP or AOP).
+And when actually reading more bytes, one gets as expected just the c2
+20 16 repeating all over.
 
-> 
-> > +       }
-> > +
-> >          if (data->iop.fmt == ARM_64_LPAE_S1 ||
-> >              data->iop.fmt == ARM_32_LPAE_S1) {
-> >                  pte = ARM_LPAE_PTE_nG;
-> > @@ -1043,6 +1055,51 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-> >          return NULL;
-> >   }
-> > 
-> > +static struct io_pgtable *
-> > +apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-> > +{
-> > +       struct arm_lpae_io_pgtable *data;
-> > +       int i;
-> > +
-> > +       if (cfg->oas > 36)
-> > +               return NULL;
-> > +
-> > +       data = arm_lpae_alloc_pgtable(cfg);
-> > +       if (!data)
-> > +               return NULL;
-> > +
-> > +       /*
-> > +        * Apple's DART always requires three levels with the first level being
-> > +        * stored in four MMIO registers. We always concatenate the first and
-> > +        * second level so that we only have to setup the MMIO registers once.
-> > +        * This results in an effective two level pagetable.
-> > +        */
-> > +       if (data->start_level < 1)
-> > +               return NULL;
-> > +       if (data->start_level == 1 && data->pgd_bits > 2)
-> > +               return NULL;
-> > +       if (data->start_level > 1)
-> > +               data->pgd_bits = 0;
-> > +       data->start_level = 2;
-> > +       cfg->apple_dart_cfg.n_ttbrs = 1 << data->pgd_bits;
-> 
-> Maybe add a BUG_ON if n_ttbrs > ARRAY_SIZE(ttbr)? Or alternatively, do a 
-> normal runtime check and bail out then.
-
-n_ttbrs can't actually be larger than 4 at this point already due to the
-previous checks.
-I can add a BUG_ON though just to make it explicit and be safe in case those
-checks or the array size ever change.
-
-
-Sven
-
-
+Rasmus
