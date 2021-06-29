@@ -2,277 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4398B3B7AA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3103B7AA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbhF2XQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 19:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbhF2XQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:16:16 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C811FC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 16:13:47 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id i13so914373ilu.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 16:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tiobBDIQld9dYsgkm0AZ3GKWgOyeCJkyHrH4ASDqKKs=;
-        b=r3SFSKaUJ+xM0Jzgxudbu7aSagqo6b9gN7Boc+4lvfnCFoyrgGX5cIMGS8x+KtHtJV
-         zAIBOboZ/tpZU2Zob57pPW8b+PoZuFs7+4xsxSTkFrTftwa1r6+RnVDbuuaZxC3dka9X
-         7ZTJrHCL9D2Q2oWpG2Z8gczU+TPB6sNKYbyEEo2xffnYUt17Ln7Ai2to8WuTdkgGkRb3
-         HF7zXaqFIE7IbZlFag3MxzBcTyuQ2WBrOAf2fX6PUmIU6ZSZxDwjGi2VWQX4b58K8p+6
-         YQA/xZo3vCoWN9f+QpSdORN0UhOuJBfjNPWletbaDpH8b83S2yHPlbgZDKEocwflaJzY
-         aXPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tiobBDIQld9dYsgkm0AZ3GKWgOyeCJkyHrH4ASDqKKs=;
-        b=bqBZ//Uh8Kv/vPG/QAaiJCuaT3flKqVfx4pEYNTpJWO0vdb0idhP+YWr3jR2eqa7Si
-         kF4wiD7JApS7+Q5pB5z94rBcuBrU4U05uZTVjYLpGg7nBze26FqiWlVgjBO0ddo8i73T
-         sMVni1VSsbypwq/OvK0VEhvBD7DbEkzuG1BH7w1jWyuYtaPMqMWrF28cHjdU3FAYHfAx
-         0vWKIBVzwheTOtmqY3U32peL2tY4yQy7I1UtorVievGlCNc3FfTGNQr3Ap/YtdxO2Enx
-         /mtRmOiyWwyLWVDUeQ8Y6FNgDkfxJRDcv4xLt60GIZICr0AUQR4u3KjAEyZ0qcNKcZO5
-         21LA==
-X-Gm-Message-State: AOAM530W5Z9SXtLtsAzq2GNiSNUYh+MxjvE+fqtB27JzjPFHewwij4hS
-        +v315xWbyVisy7CO+wMEvVV39E1xjtpYCSDvmhNlLA==
-X-Google-Smtp-Source: ABdhPJy5Bm3pG2e1+1hqMJQzY6xlJP2gjDA8cjgszq9Jt6mGe8ljIjXt86IF2hDqP/zP7MCQ89xG5dYCdiinLeYq8oA=
-X-Received: by 2002:a92:2a0a:: with SMTP id r10mr24263642ile.274.1625008426775;
- Tue, 29 Jun 2021 16:13:46 -0700 (PDT)
+        id S235415AbhF2XQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233329AbhF2XQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 19:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 890A061D16;
+        Tue, 29 Jun 2021 23:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625008451;
+        bh=B9niwO40e9W9wr3Oqskh655dcl5dlMNvAjpZ/8BRQaE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WKUu6rfYtfCck0isLyJxRq53hVBBHIe9UPk83ec+yu81yY0P1LjgQ4pm51qmoNI7m
+         O2GDQ9/0MNb21bfDfrQzUo7TzG29mohPNwdYxoy5ZW385X+dWsEO/u68aXTphVSmHp
+         LhqzUNqKofRqPONUNzBsHoH8cpB3DEBIW58R/fKRnMR9ebymoCe9vkrGUZE7Qm2fQV
+         +La8XXcOObtRLcgqdDVIOvde+PjxFhOSyyHklgSTUp8wH/oPabZ7C/HDobWhdLsNEI
+         IwX5wl09+G2kodABsPjHtSCH432NRzKSWyZXfCS0KUu9FqiBgaBWgfoqz/H0INYtz2
+         S2mwHscZmOjHg==
+Date:   Tue, 29 Jun 2021 18:14:10 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210629231410.GA4097899@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210629223541.1512296-1-rmoar@google.com>
-In-Reply-To: <20210629223541.1512296-1-rmoar@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 29 Jun 2021 16:13:35 -0700
-Message-ID: <CAGS_qxpbVZQva0bGPyGkWQccqoPXu-fCi5Jk4=tgFUEPsXgBFw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: Fix error messages for cases of no tests and
- wrong TAP header
-To:     Rae Moar <rmoar@google.com>
-Cc:     brendanhiggins@google.com, davidgow@google.com, shuah@kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d5a983f-bfdd-d79b-4ec9-357ea26dd2c8@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 3:36 PM Rae Moar <rmoar@google.com> wrote:
->
-> In the case of the TAP output having an incorrect header format, the
-> parser used to output an error message of 'no tests run!'. Additionally,
-> in the case of TAP output with the correct header but no tests, the
-> parser used to output an error message of 'could not parse test
-> results!'.  This patch corrects the error messages for these two cases
-> by switching the original outputted error messages and correcting the
-> tests in kunit_toot_test.py.
+On Tue, Jun 29, 2021 at 11:52:44AM +0100, Robin Murphy wrote:
+> On 2021-06-29 07:17, Javier Martinez Canillas wrote:
+> > On 6/29/21 2:38 AM, Bjorn Helgaas wrote:
+> > > On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
+> > 
+> > [snip]
+> > 
+> > > > > 
+> > > > > So let's just move all the IRQ init before the pci_host_probe() call, that
+> > > > > will prevent issues like this and seems to be the correct thing to do too.
+> > > > 
+> > > > Previously we registered rockchip_pcie_subsys_irq_handler() and
+> > > > rockchip_pcie_client_irq_handler() before the PCIe clocks were
+> > > > enabled.  That's a problem because they depend on those clocks being
+> > > > enabled, and your patch fixes that.
+> > > > 
+> > > > rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
+> > > > which isn't initialized until rockchip_pcie_init_irq_domain().
+> > > > Previously we registered rockchip_pcie_legacy_int_handler() as the
+> > > > handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
+> > > > 
+> > > > I think your patch *also* fixes that problem, right?
+> > > 
+> > > The lack of consistency in how we use
+> > > irq_set_chained_handler_and_data() really bugs me.
+> > > 
+> > > Your patch fixes the ordering issue where we installed
+> > > rockchip_pcie_legacy_int_handler() before initializing data
+> > > (rockchip->irq_domain) that it depends on.
+> > > 
+> > > But AFAICT, rockchip still has the problem that we don't *unregister*
+> > > rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
+> > > removed.  Doesn't this mean that if we unload the module, then receive
+> > > an interrupt from the device, we'll try to call a function that is no
+> > > longer present?
+> > 
+> > Good question, I don't to be honest. I'll have to dig deeper on this but
+> > my experience is that the module removal (and device unbind) is not that
+> > well tested on ARM device drivers in general.
+> 
+> Well, it does use devm_request_irq() so the handler should be unregistered
+> by devres *after* ->remove has finished, however that does still leave a
+> potential race window in which a pending IRQ could be taken during the later
+> part of rockchip_pcie_remove() after it has started turning off critical
+> things. Unless the clocks and regulators can also be delegated to devres, it
+> might be more robust to explicitly manage the IRQs as well. Mixing the two
+> schemes can be problematic when the exact order of both setup and teardown
+> matters.
 
-You might want to include an example like this in your commit description:
+I don't understand the devm_request_irq() connection.  I'm looking at
+this irq_set_chained_handler_and_data() call [1]:
 
-Before:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] no tests run!
-...
+  static int rockchip_pcie_setup_irq(struct rockchip_pcie *rockchip)
+  {
+    ...
+    irq = platform_get_irq_byname(pdev, "legacy");
+    irq_set_chained_handler_and_data(irq,
+				     rockchip_pcie_legacy_int_handler,
+				     rockchip);
 
-After:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] could not parse test results!
-...
+    irq = platform_get_irq_byname(pdev, "client");
+    ...
 
-We could also include an example with a header but 0 tests, but I
-think /dev/null illustrates this enough.
-But if we wanted to:
+We look up "irq", pass it to irq_set_chained_handler_and_data(), and
+throw it away without saving it anywhere.  How would anything know how
+to unregister rockchip_pcie_legacy_int_handler()?
 
-Before:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] could not parse test results!
+I could imagine irq_set_chained_handler_and_data() saving what's
+needed for unregistration, but I would think that would require a
+device pointer, which we don't give it.
 
-After:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] no tests run!
+I'm IRQ-illiterate, so please educate me!
 
+Bjorn
 
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-Looks good to me.
-One minor nit/request about the new test log we've added.
-
-> ---
->  tools/testing/kunit/kunit_parser.py           |  6 +-
->  tools/testing/kunit/kunit_tool_test.py        | 16 +++-
->  ...is_test_passed-no_tests_run_no_header.log} |  0
->  ...s_test_passed-no_tests_run_with_header.log | 77 +++++++++++++++++++
->  4 files changed, 94 insertions(+), 5 deletions(-)
->  rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
->  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
->
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index c3c524b79db8..b88db3f51dc5 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
->  def parse_test_result(lines: LineStream) -> TestResult:
->         consume_non_diagnostic(lines)
->         if not lines or not parse_tap_header(lines):
-> -               return TestResult(TestStatus.NO_TESTS, [], lines)
-> +               return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
->         expected_test_suite_num = parse_test_plan(lines)
-> -       if not expected_test_suite_num:
-> +       if expected_test_suite_num == 0:
-> +               return TestResult(TestStatus.NO_TESTS, [], lines)
-> +       elif expected_test_suite_num is None:
->                 return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
->         test_suites = []
->         for i in range(1, expected_test_suite_num + 1):
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index bdae0e5f6197..75045aa0f8a1 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
->                         kunit_parser.TestStatus.FAILURE,
->                         result.status)
->
-> +       def test_no_header(self):
-> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
-> +               with open(empty_log) as file:
-> +                       result = kunit_parser.parse_run_tests(
-> +                               kunit_parser.extract_tap_lines(file.readlines()))
-> +               self.assertEqual(0, len(result.suites))
-> +               self.assertEqual(
-> +                       kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
-> +                       result.status)
-> +
->         def test_no_tests(self):
-> -               empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
-> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
->                 with open(empty_log) as file:
->                         result = kunit_parser.parse_run_tests(
->                                 kunit_parser.extract_tap_lines(file.readlines()))
-> @@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
->                 with open(crash_log) as file:
->                         result = kunit_parser.parse_run_tests(
->                                 kunit_parser.extract_tap_lines(file.readlines()))
-> -               print_mock.assert_any_call(StrContains('no tests run!'))
-> +               print_mock.assert_any_call(StrContains('could not parse test results!'))
->                 print_mock.stop()
->                 file.close()
->
-> @@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
->                         result["sub_groups"][1]["test_cases"][0])
->
->         def test_no_tests_json(self):
-> -               result = self._json_for('test_is_test_passed-no_tests_run.log')
-> +               result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
->                 self.assertEqual(0, len(result['sub_groups']))
->
->  class StrContains(str):
-> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-> similarity index 100%
-> rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
-> rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-> new file mode 100644
-> index 000000000000..18215b236783
-> --- /dev/null
-> +++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-
-Can we truncate this log down to a smaller one w/ just the essential bits?
-I don't know that printing out lines about Brendan's workstation is
-necessarily relevant to the test :)
-
-The main part we need is
-
-+TAP version 14
-+1..0
-
-I know this is just copying from what we had before in the "no_header"
-version, but it feels a bit excessive to have all this.
-
-> @@ -0,0 +1,77 @@
-> +Core dump limits :
-> +       soft - 0
-> +       hard - NONE
-> +Checking environment variables for a tempdir...none found
-> +Checking if /dev/shm is on tmpfs...OK
-> +Checking PROT_EXEC mmap in /dev/shm...OK
-> +Adding 24743936 bytes to physical memory to account for exec-shield gap
-> +Linux version 4.12.0-rc3-00010-g7319eb35f493-dirty (brendanhiggins@mactruck.svl.corp.google.com) (gcc version 7.3.0 (Debian 7.3.0-5) ) #29 Thu Mar 15 14:57:19 PDT 2018
-> +Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 14038
-> +Kernel command line: root=98:0
-> +PID hash table entries: 256 (order: -1, 2048 bytes)
-> +Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
-> +Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
-> +Memory: 27868K/56932K available (1681K kernel code, 480K rwdata, 400K rodata, 89K init, 205K bss, 29064K reserved, 0K cma-reserved)
-> +SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-> +NR_IRQS:15
-> +clocksource: timer: mask: 0xffffffffffffffff max_cycles: 0x1cd42e205, max_idle_ns: 881590404426 ns
-> +Calibrating delay loop... 7384.26 BogoMIPS (lpj=36921344)
-> +pid_max: default: 32768 minimum: 301
-> +Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-> +Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes)
-> +Checking that host ptys support output SIGIO...Yes
-> +Checking that host ptys support SIGIO on close...No, enabling workaround
-> +Using 2.6 host AIO
-> +clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-> +futex hash table entries: 256 (order: 0, 6144 bytes)
-> +clocksource: Switched to clocksource timer
-> +console [stderr0] disabled
-> +mconsole (version 2) initialized on /usr/local/google/home/brendanhiggins/.uml/6Ijecl/mconsole
-> +Checking host MADV_REMOVE support...OK
-> +workingset: timestamp_bits=62 max_order=13 bucket_order=0
-> +Block layer SCSI generic (bsg) driver version 0.4 loaded (major 254)
-> +io scheduler noop registered
-> +io scheduler deadline registered
-> +io scheduler cfq registered (default)
-> +io scheduler mq-deadline registered
-> +io scheduler kyber registered
-> +Initialized stdio console driver
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 1 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 2 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 3 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 4 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 5 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 6 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 7 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 8 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 9 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 10 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 11 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 12 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 13 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 14 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 15 : Configuration failed
-> +Console initialized on /dev/tty0
-> +console [tty0] enabled
-> +console [mc-1] enabled
-> +TAP version 14
-> +1..0
-> +List of all partitions:
-> +No filesystem could mount root, tried:
-> +
-> +Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(98,0)
-> --
-> 2.32.0.93.g670b81a890-goog
->
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pcie-rockchip-host.c?id=v5.13#n562
