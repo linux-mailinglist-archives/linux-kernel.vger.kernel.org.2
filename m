@@ -2,142 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514733B6DE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 07:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDEE3B6DEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 07:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbhF2FUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 01:20:17 -0400
-Received: from mail-bn8nam12on2079.outbound.protection.outlook.com ([40.107.237.79]:50784
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229480AbhF2FUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 01:20:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R1nD7jVWxAVqom3aFVRK2kuNHHFTBw6vFxmKCbIMfrY6nQ3JrbGJpBCPP9g3kB3xralCwrgjGqmao84fEqw/kqB6FKct0Qvncs1d4T6GigmOZ6Tpyn4IIFv2r2tCWqegneKXWgHufMcZgJvYYlTSfRJElBBPAAgyUTgviXXBMY/eeQFYzg88VQ/pjKie6cleSfjvJSmgyYQOPTu+1UrQTqveYIYSoN6Cpdq6Gl3vbZsZ8MwgkOkOlMkC7ES/wOxplmblbYZ3jq95x+QKCMUvC78F2ZJwAloTQuxMUL7Hbl+3aFg3Mo5+Ia+VPw4QL/ZZNDITaiZxzTtX4CrCXohwaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C4FNYMpbFG9VwxjTld03H7PPG0JHTWYSfE8D2JTrnQs=;
- b=natRV+pkxMO68Zzxvp6WOtk1g6JpS/ZvkrVDeqUzUj47UYBrFXP35IeYm7GP4iVWHY+bYqqOMl0nHhN7TCUC2vcoFnBS9SwDpaX6UhO6tBYb6bGrKaNkFygXjvTdDJzifXU3Haq3B06u5eUy6GR67xjpEvv83xUNdsk7F2xs3unD3SZjJCZDkhbRdQm3j/NcV/RUsKSpQZX1p65lmDNj2lKdUdA5iOoQq+zcq5dAJjwmO0+xWwN1WAnmV3PBjYn7dkXaVseob1gPhCA6POph9/h6cr5mCiDhQ0cze6RfqOCurNeNQmXSqSeVH/w/SN6p7wLy4jI9Oi4lx3/o8/J7UA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C4FNYMpbFG9VwxjTld03H7PPG0JHTWYSfE8D2JTrnQs=;
- b=XyQRn/3deVfx4FqLjQABxsdZYH5y+9A6jVdEX5qWDQha8qzV/tcnFbwo5HcU88Cdwq716Iwjx6TzXqIw4JiycAONlCjBPw0PGp37Z+gQuUjo156AWl97id4+T0/9SKmPEQpoXGc7FsUv0Md1yn5X6PvR3GVbBgs3aZm+s9pqqXvn4fW5uN1CoE0jBJv31OWu7wLWvkKRG2LLeZAp40iJxUnjFctSUYA8KprJeI60yAvXmfr5yByRJS4uuSaKbF78UvYlhJgRd9tJGhjxt7p1oyKr30KbRMXdry/DRHZPBEeaAPXRmEdTRQzpVb0+1dj3Nokm3kCf0nYcAGfESc/IUA==
-Received: from DM5PR21CA0044.namprd21.prod.outlook.com (2603:10b6:3:ed::30) by
- BY5PR12MB3921.namprd12.prod.outlook.com (2603:10b6:a03:1a2::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 29 Jun
- 2021 05:17:41 +0000
-Received: from DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:ed:cafe::35) by DM5PR21CA0044.outlook.office365.com
- (2603:10b6:3:ed::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.2 via Frontend
- Transport; Tue, 29 Jun 2021 05:17:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT024.mail.protection.outlook.com (10.13.172.159) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 05:17:41 +0000
-Received: from [10.40.205.49] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
- 2021 05:17:34 +0000
-Subject: Re: [PATCH V3 0/5] Update pcie-tegra194 driver
-To:     <kw@linux.com>, <helgaas@kernel.org>, <vidyas@nvidia.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>
-References: <20210623100525.19944-1-omp@nvidia.com>
-From:   Om Prakash Singh <omp@nvidia.com>
-Message-ID: <a3c03fba-78ee-d3fe-66e7-0f4e43c15e51@nvidia.com>
-Date:   Tue, 29 Jun 2021 10:47:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231817AbhF2FXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 01:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhF2FW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 01:22:59 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E106AC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 22:20:32 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id s137so8595119pfc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 22:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wKr7FA0vqoMz5lZ8aQYZkFOpTvgXxSqPGAHyogWXhmA=;
+        b=BQTcGyEaOFgaEzNWgL0U3aAv4ua18qKVcpzUgxZjcUZ1qkLiCuG4edKFSRP+of3CyG
+         lODkt0mtAg+ovzEkkeiMHky/zg5rnZsmD7OObSqHe8/NN1Fnj6HFuMNjVWufKo0pzVDg
+         IUX7UJ8RsE6JVcERMvfW6+uQnNXucT5RGsaHU9o5ZfHmckYLGYN4XVcwieVaCcILlmZ2
+         3H9MYkzb38aLGYaD4RrwsPjwGZvjutRA1Kv3+xovuwfPOBzIV8qEYPd25EB6pWQVAaHM
+         8PFSMOUXbk5e88JZq5n9vi5P0B+qEph7lrj2QCKCy3g9R3UJV5W6fW4V9UlPuvtK99b3
+         Lwug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wKr7FA0vqoMz5lZ8aQYZkFOpTvgXxSqPGAHyogWXhmA=;
+        b=OjcUHV+4Rm5jKw+0EO8cBxofQkzMzWh2ACxxD/pqmnX81APpu59H2mO8Et7p2XlO+3
+         MABJLPUDdM0FjIqt2ad+wQUUT6ywzowJplirvFd5MisGf3n3irpsRYdi7AOx/PCP69+6
+         BZXUxBZuNqi8PHVZzGWyQlEXsAAeeiWXfjGmz9BXSXpNF/1QpMGA0jKQzSnY5/v1dgFp
+         Gih3UxGbvGN+FTw7JNWk1+r8lGW4Lwf+/hKOF+qtKNVLfQZw+vqHDzhnWPlxvyD2SyyI
+         5ffIG2Bp3qTVATF9TZ/V990r45zLVoep2EIFIxUMwD6qK9rManQd2VQS0ujyihUESszK
+         MK4g==
+X-Gm-Message-State: AOAM533u4axLNn0sl52EeW9iDw50jvN72QQ7VVV2wOxBkAcPBa13sMG1
+        Ir9FuzFyqt6O9fjwHsL4E3STIA==
+X-Google-Smtp-Source: ABdhPJxQoxMvsY+8msj2d7ojur78Qh6vYgssLxqEcJRU+k1k0HimFDS5ePM1wiuDDChVReESndK9cw==
+X-Received: by 2002:aa7:82cb:0:b029:2e6:f397:d248 with SMTP id f11-20020aa782cb0000b02902e6f397d248mr28776722pfn.52.1624944032106;
+        Mon, 28 Jun 2021 22:20:32 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id g11sm16843191pgj.3.2021.06.28.22.20.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 22:20:30 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 10:50:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-pm@vger.kernel.org,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+Message-ID: <20210629052028.srt6metmtylsxukw@vireshk-i7>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <20210628115452.GA28797@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210623100525.19944-1-omp@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 72267716-c20c-4b64-2ec4-08d93abd3836
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3921:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB3921E82E5C101E4E7DB09709DA029@BY5PR12MB3921.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:551;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ztE5keJM3SR2EfmdXs1pQwIsYEoyOYcF13w46mWO8r+dy0ROFTIxaYM28aEz3f91CqMC2JiRntPh13EtQ2VsRL8QS7rJ8elLVopheIQMkYfE12H7ma2gf05ssbD6C6apZ1oJkazjQY6DOdgK7NGEvt9wbHBSg9pJKLCn6dDeogVsrhm8ogifPPoq1UvVQ0BH6YkCb2kSYbnYPVf5MyeZJLlMwa6ENvapR8Qmw5jwouAliU591b6ZvV+FUlhJoGvLGkEKZiHNzZJLxcDlYoQtTijZMRXQoQ/JdQkMMUA7SBrLPTQWlpk63Zh5Py8Dj8EPu3oWuh99E4aPQXB63XsnWRZCY5lCpjrT0oJ2MIOQZy7WhIwEN6YgbDnapDqFHZ9pxAUgF9+B5xBO1QR4QLq+G2O5tZFjIbIPJ3W7i9LMsOhKRpQ7o8c7dCLPiV3/5VIUwMJOQVotrxXLAYu+tCSpfq/dPUqo4lEOTbNvqVjtdtd1AL4ZbKvZTiLvHE8lc7ai6A3vXCve5kI7ZsLm448+gHqpH4CntORx52yIW1YEXwtIm/aUCrPflzvgzs1dA+Xx5B0e5ioXHZiutWXUC/f/RSgA6/V2yUMznCGpgYQn7ttGdC7+lf5GtNutfz/MqCSzEv8ri+FeQV/NmTLybCXWRkrmZvA3p2GLTI0lrXRRdNpfalioVqFUMh8sywNKbVWzRW/MCPZnQVp9u0VO/5fhoRqx/fUBTjKoQScmyCrNH2FBfp2g1PPJTFHrjC/N/MS4L0KPJFd+eUA0/V952wM1Lxrx7OwIfLpMcuv1EbKwLeaengXUpn2Rl43xYkf3kbbiRHGcQIfvp56JULxz/yua67JPtCj5gYlxgGMO5fSm3hyhqtioSEXwqwBTg9EAgHCrb2D+SbRvnXkp6QCoik0VRQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(36840700001)(46966006)(15650500001)(8676002)(8936002)(82740400003)(6666004)(336012)(426003)(2616005)(7636003)(6636002)(356005)(5660300002)(31686004)(2906002)(70206006)(70586007)(107886003)(53546011)(54906003)(47076005)(31696002)(478600001)(4326008)(186003)(16576012)(16526019)(83380400001)(26005)(316002)(966005)(82310400003)(84040400003)(36860700001)(36906005)(86362001)(36756003)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 05:17:41.4891
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72267716-c20c-4b64-2ec4-08d93abd3836
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT024.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3921
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628115452.GA28797@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
-Can you help review these patches.
+On 28-06-21, 12:54, Ionela Voinescu wrote:
+> If you happen to have the data around, I would like to know more about
+> your observations on ThunderX2.
+> 
+> 
+> I tried ThunderX2 as well, with the following observations:
+> 
+> Booting with userspace governor and all CPUs online, the CPPC frequency
+> scale factor was all over the place (even much larger than 1024).
+> 
+> My initial assumptions:
+>  - Counters do not behave properly in light of SMT
+>  - Firmware does not do a good job to keep the reference and core
+>    counters monotonic: save and restore at core off.
+> 
+> So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
+> a single core (part of policy0). With this all works very well:
 
-Thanks,
-Om
+Interesting.
 
-On 6/23/2021 3:35 PM, Om Prakash Singh wrote:
-> External email: Use caution opening links or attachments
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1863.095370] CPU96: cppc scale: 697.
+> [ 1863.175370] CPU0: cppc scale: 492.
+> [ 1863.215367] CPU64: cppc scale: 492.
+> [ 1863.235366] CPU96: cppc scale: 492.
+> [ 1863.485368] CPU32: cppc scale: 492.
 > 
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1891.395363] CPU96: cppc scale: 558.
+> [ 1891.415362] CPU0: cppc scale: 595.
+> [ 1891.435362] CPU32: cppc scale: 615.
+> [ 1891.465363] CPU96: cppc scale: 635.
+> [ 1891.495361] CPU0: cppc scale: 673.
+> [ 1891.515360] CPU32: cppc scale: 703.
+> [ 1891.545360] CPU96: cppc scale: 738.
+> [ 1891.575360] CPU0: cppc scale: 779.
+> [ 1891.605360] CPU96: cppc scale: 829.
+> [ 1891.635360] CPU0: cppc scale: 879.
 > 
-> Update pcie-tegra194 driver with bug fixing and cleanup
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
+> root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> [ 1896.585363] CPU32: cppc scale: 1004.
+> [ 1896.675359] CPU64: cppc scale: 973.
+> [ 1896.715359] CPU0: cppc scale: 1024.
 > 
-> Changes from V2->V3
->    Updated subject line from "PCI: tegra:" to  "PCI: tegra194:"
+> I'm doing a rate limited printk only for increase/decrease values over
+> 64 in the scale factor value.
 > 
-> Changes from V1->V2
->    PCI: tegra: Fix handling BME_CHGED event
->          - Update variable naming
->    PCI: tegra: Fix MSI-X programming
->          - No change
->    PCI: tegra: Disable interrupts before entering L2
->          - Rephrase the commit message
->    PCI: tegra: Don't allow suspend when Tegra PCIe is in EP mode
->          - Update return value to -ENOTSUPP.
->    PCI: tegra: Cleanup unused code
->          - No Change
+> This showed me that SMT is handled properly.
 > 
-> V1:
-> http://patchwork.ozlabs.org/project/linux-pci/cover/20210527115246.20509-1-omp@nvidia.com/
-> V2:
-> http://patchwork.ozlabs.org/project/linux-pci/cover/20210606082204.14222-1-omp@nvidia.com/
+> Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
+> stops being even close to correct, for example:
 > 
-> Om Prakash Singh (5):
->    PCI: tegra: Fix handling BME_CHGED event
->    PCI: tegra: Fix MSI-X programming
->    PCI: tegra: Disable interrupts before entering L2
->    PCI: tegra: Don't allow suspend when Tegra PCIe is in EP mode
->    PCI: tegra: Cleanup unused code
+> [238394.770328] CPU96: cppc scale: 22328.
+> [238395.628846] CPU96: cppc scale: 245.
+> [238516.087115] CPU96: cppc scale: 930.
+> [238523.385009] CPU96: cppc scale: 245.
+> [238538.767473] CPU96: cppc scale: 936.
+> [238538.867546] CPU96: cppc scale: 245.
+> [238599.367932] CPU97: cppc scale: 2728.
+> [238599.859865] CPU97: cppc scale: 452.
+> [238647.786284] CPU96: cppc scale: 1438.
+> [238669.604684] CPU96: cppc scale: 27306.
+> [238676.805049] CPU96: cppc scale: 245.
+> [238737.642902] CPU97: cppc scale: 2035.
+> [238737.664995] CPU97: cppc scale: 452.
+> [238788.066193] CPU96: cppc scale: 2749.
+> [238788.110192] CPU96: cppc scale: 245.
+> [238817.231659] CPU96: cppc scale: 2698.
+> [238818.083687] CPU96: cppc scale: 245.
+> [238845.466850] CPU97: cppc scale: 2990.
+> [238847.477805] CPU97: cppc scale: 452.
+> [238936.984107] CPU97: cppc scale: 1590.
+> [238937.029079] CPU97: cppc scale: 452.
+> [238979.052464] CPU97: cppc scale: 911.
+> [238980.900668] CPU97: cppc scale: 452.
+> [239149.587889] CPU96: cppc scale: 803.
+> [239151.085516] CPU96: cppc scale: 245.
+> [239303.871373] CPU64: cppc scale: 956.
+> [239303.906837] CPU64: cppc scale: 245.
+> [239308.666786] CPU96: cppc scale: 821.
+> [239319.440634] CPU96: cppc scale: 245.
+> [239389.978395] CPU97: cppc scale: 4229.
+> [239391.969562] CPU97: cppc scale: 452.
+> [239415.894738] CPU96: cppc scale: 630.
+> [239417.875326] CPU96: cppc scale: 245.
 > 
->   drivers/pci/controller/dwc/pcie-tegra194.c | 36 +++++++++++++---------
->   1 file changed, 22 insertions(+), 14 deletions(-)
+> The counter values shown by feedback_ctrs do not seem monotonic even
+> when only core 0 threads are online.
 > 
-> --
-> 2.17.1
+> ref:2812420736 del:166051103
+> ref:3683620736 del:641578595
+> ref:1049653440 del:1548202980
+> ref:2099053440 del:2120997459
+> ref:3185853440 del:2714205997
+> ref:712486144  del:3708490753
+> ref:3658438336 del:3401357212
+> ref:1570998080 del:2279728438
 > 
+> For now I was just wondering if you have seen the same and whether you
+> have an opinion on this.
+
+I think we also saw numbers like this, which didn't explain a lot on
+ThunderX2. We thought they may be due to rounding issues, but the
+offlining stuff adds an interesting factor to that.
+
+-- 
+viresh
