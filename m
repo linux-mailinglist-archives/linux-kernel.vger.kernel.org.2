@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2CF3B6D1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685233B6D20
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhF2DrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:47:12 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.80]:15961 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231598AbhF2DrK (ORCPT
+        id S231931AbhF2Dtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231598AbhF2Dte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:47:10 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 350281495E
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 22:44:42 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id y4fylYtRKMGeEy4fylADpV; Mon, 28 Jun 2021 22:44:42 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8bHhcBI3oukYyTdqV5uxgQTbLz8FHxPHJwAaOKccwVc=; b=dpvTwbiDdJ0iaW24Xsy3Ex2wnY
-        P2ny48w+CJ3MHj7SBBsrSKPJ70PMlgULfNJ0/my147+6y+/Mk/2bQaorb/rje8p/+sCaJuY5tD7D/
-        rDWkk2Xptu44BQNPMUJwsWjjckm1EJifYvuuphzlfRLGO1nIPw5/YOB46/hXpOPVO1NvliP9Dtdlz
-        1j54LSWQrpf6N3e3DToSv4SUT8pAyPmSnMs8RKFR1LFjYELnMUoNWKqbzlQAW6KrvSeywKr6IyFHI
-        63CG0NuD90r8Rqp0OQITU0522NgCrKQs2quhe9PpOeTUxSW99EGeQYPTVnevexpfDUBBLN7M8YLno
-        iHjASjVQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:37824 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1ly4fw-001ii7-RZ; Mon, 28 Jun 2021 22:44:40 -0500
-Subject: Re: [GIT PULL] fallthrough fixes for Clang for 5.14-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210628205947.GA10869@embeddedor>
- <CAHk-=wik-iqVYJyDxfPsOk_8vt1BrsKF-H-nunAYHw3HHuvZqA@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <4a2ef94c-c5cb-c6d4-d36a-e6f5c23c076b@embeddedor.com>
-Date:   Mon, 28 Jun 2021 22:46:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Mon, 28 Jun 2021 23:49:34 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB51FC061574;
+        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id e20so17319185pgg.0;
+        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hZzqtbvkB7GBRgetqJbBkcO8TSNI10ddi6eSpYQhmjk=;
+        b=u9wduzDmN6NnfbfcHJ6Z+ZIf6NZApRuPIqHspA8SfbBh44cMhfCkLtrmvuSzR/Xwm3
+         fBnpUaot1FuwKG4xF4umBk3biBH/iWmOmSR+2+wsE4WKI4IN6eoXRaRXbzTFnHww3Kv3
+         tfVTMMwBqoAdXFHD0jIi2OkTZ8opsWfIb+T5Qhz8QjewANwp6IDySHQMi5XXfxJy1qz6
+         zqsSV3g3mBMRKeUa8eXrj+kmeWQHSOGSrmbMTHnSL/mWY4wXSYLuSJ1EcmrrFGDRx3PC
+         u0dwJYmv8icWioAO5t9W1OoGYTudl61L+SJAccGz8C9NS83YoPB7KJXzDXGn/+ENPvW5
+         uGdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hZzqtbvkB7GBRgetqJbBkcO8TSNI10ddi6eSpYQhmjk=;
+        b=luX4s3fQvpmkcID5hiPteQFKzlHHVd1E6fSPmAbLUfEsd1W4NkPXdioT7TvAZ3J4Pe
+         AYQRW/MEfapsM0f8Xtww/ELnRWD5phC5kbh1MY+47U+lqBfvJe72Vxgd6jDZKfyIVpCq
+         G2ziFve6jGUNjdxdSy/F193VUX2flPU5uYvJSv93xiO6H1gNOo8g4/NyMVndeT0Wz955
+         Ca51vvrShvCiLB7XzM0FQrlCmDwDRE2XwA+eNUjWvhmpXS4LUKE/sIOHAF/TNFkkL1UA
+         JemW+kiEsK/gXih7u9kWU929uPHTKFNlYPkCbVje+/39PNOPaSfMmpYA3ySQJLIH+uiK
+         j3QQ==
+X-Gm-Message-State: AOAM530QLN7QFxB2rht29vvFW1U4DBIFRcoRNJcBltBEMbLrMSVklpB2
+        di0ddLPgH+Hwzgi4KUa/xCQng6dhV0Q=
+X-Google-Smtp-Source: ABdhPJzr517gUfci9KTm5fRHv38JUMaAO8LsYEEvRWR63qVQgiEE0MWdkUoZkzyGDsqiWHeaFmFtyg==
+X-Received: by 2002:a63:d909:: with SMTP id r9mr26771453pgg.285.1624938427052;
+        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id z15sm9134313pgc.13.2021.06.28.20.47.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 20:47:06 -0700 (PDT)
+Subject: Re: [PATCH net] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210625215732.209588-1-opendmb@gmail.com>
+ <79839c8f-4c4d-a70d-178c-1d7674e2b429@gmail.com>
+Message-ID: <8076667b-59e7-5289-362d-5cc55bfb56f5@gmail.com>
+Date:   Mon, 28 Jun 2021 20:47:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wik-iqVYJyDxfPsOk_8vt1BrsKF-H-nunAYHw3HHuvZqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <79839c8f-4c4d-a70d-178c-1d7674e2b429@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1ly4fw-001ii7-RZ
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:37824
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 6/28/21 22:12, Linus Torvalds wrote:
-> On Mon, Jun 28, 2021 at 1:58 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
+On 6/25/2021 3:03 PM, Florian Fainelli wrote:
+> On 6/25/21 2:57 PM, Doug Berger wrote:
+>> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
+>> logic of the internal PHY to prevent the system from sleeping. Some
+>> internal PHYs will report that energy is detected when the network
+>> interface is closed which can prevent the system from going to sleep
+>> if WoL is enabled when the interface is brought down.
 >>
->> Please, pull the following patches that fix many fall-through warnings
->> when building with Clang 12.0.0 and this[1] change reverted. Notice
->> that in order to enable -Wimplicit-fallthrough for Clang, such change[1]
->> is meant to be reverted at some point. So, these patches help to move
->> in that direction.
+>> Since the driver does not support waking the system on this logic,
+>> this commit clears the bit whenever the internal PHY is powered up
+>> and the other logic for manipulating the bit is removed since it
+>> serves no useful function.
+>>
+>> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+>> Signed-off-by: Doug Berger <opendmb@gmail.com>
 > 
-> I've pulled this, but I really don't like how random it is.
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 > 
-> Just as an example - and there are many others - look at the patch to
-> net/netrom/nr_route.c.
-> 
-> It does
-> 
->                 case 0:
->                         nr_node->routes[0] = nr_node->routes[1];
->                         fallthrough;
->                 case 1:
->                         nr_node->routes[1] = nr_node->routes[2];
-> +                       fallthrough;
->                 case 2:
->                         break;
-> 
-> and then about a hundred lines later it does
->                 case 0:
->                         s->routes[0] = s->routes[1];
->                         fallthrough;
->                 case 1:
->                         s->routes[1] = s->routes[2];
-> +                       break;
->                 case 2:
->                         break;
-> 
-> Notice? One does a 'fallthrough' to the next case that does the
-> 'break', and the other - very much equivalent case - does a 'break'.
-> 
-> So the whole "add 'fallthrough' or 'break'" decision doesn't seem to
-> have any pattern or rule at all.
 
-I see, you're right.
+Doug, it looks like this patch introduces an unused "reg" variable 
+warning at lines 3296 and 4137 which is why the patch was marked as 
+"Changes Requested":
 
-I still have another PR with more of these fixes (the last ones before finally
-being able to enable -Wimplicit-fallthrough for Clang :) ) pending to be sent
-later this week. I'll double check and fix any similar issues before sending it.
+https://patchwork.kernel.org/project/netdevbpf/patch/20210625215732.209588-1-opendmb@gmail.com/
+https://patchwork.hopto.org/static/nipa//507371/12345957/build_32bit
 
-Thanks for the feedback.
---
-Gustavo
+
+-- 
+Florian
