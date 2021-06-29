@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57E73B727A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7083B7270
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbhF2MyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:54:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:50492 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhF2Mxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:53:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 612B711D4;
-        Tue, 29 Jun 2021 05:51:02 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 60A233F718;
-        Tue, 29 Jun 2021 05:51:01 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: [PATCH v3 13/13] irqchip/gic-v3: Convert to handle_strict_flow_irq()
-Date:   Tue, 29 Jun 2021 13:50:10 +0100
-Message-Id: <20210629125010.458872-14-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210629125010.458872-1-valentin.schneider@arm.com>
-References: <20210629125010.458872-1-valentin.schneider@arm.com>
+        id S234004AbhF2Mxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:53:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22062 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233798AbhF2MxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:53:22 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TCXShT141620;
+        Tue, 29 Jun 2021 08:50:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=CnbDDy1qBRTR6I8xPAryzlZwyz6haJ4TUbW322uchuY=;
+ b=BT3HZMmm2+n8amin9lx3oRJCDnWvZnB4DEwGs8vkeNStDIOrEBcghhWkwIm0Yg+nRnEX
+ gvKRL1Yd5Z+bOrCMChODJVewQzMGBGphBhGETFbcpTIyBGr8CbOl02O8TRKzVuSO49sy
+ Ij0ZnGtdKxnuFgb2bsvAN8fQiQzd7VvKn+ZPeGQ7WGB39feM61rxMY9hyz4GSIIYFOb9
+ DsEycz/GqGaIHSNBEvv3+0k8wR9+B9IgyDOyV4QJZ6yA2h54QsE789dN3CQoTSIaNXvO
+ rwj3/WP7CJx+U/T8xIda/agautIckqX2uZwlvxZuyYzzjO9yJFKhYgubekpX28Ortcse oA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39g2ng26qh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 08:50:32 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TCllAA013222;
+        Tue, 29 Jun 2021 12:50:30 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 39duv8h9q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 12:50:30 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TCoRqA32244068
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 12:50:27 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEB8EA409A;
+        Tue, 29 Jun 2021 12:50:23 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A130DA4094;
+        Tue, 29 Jun 2021 12:50:22 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.56.105])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 29 Jun 2021 12:50:22 +0000 (GMT)
+Date:   Tue, 29 Jun 2021 15:50:20 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-omap@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
+ memory map alignment
+Message-ID: <YNsXDEgreCpshZxb@linux.ibm.com>
+References: <20210519141436.11961-1-rppt@kernel.org>
+ <20210519141436.11961-4-rppt@kernel.org>
+ <YNmiW6CYzy9lG8ks@atomide.com>
+ <YNnLxFM4ZeQ5epX3@linux.ibm.com>
+ <YNnqIv3PApHFZMgp@atomide.com>
+ <YNqwl8EPVYZJV0EF@linux.ibm.com>
+ <YNrfqtBpKsNj033w@atomide.com>
+ <YNr6+wOiR7/Yx9M1@linux.ibm.com>
+ <YNsJh7trg4up5l26@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNsJh7trg4up5l26@atomide.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v7hCJL7vrjg3_7YU6HWRhdA8vxTcIx80
+X-Proofpoint-GUID: v7hCJL7vrjg3_7YU6HWRhdA8vxTcIx80
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ suspectscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=815
+ spamscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the proper infrastructure is in place, convert the irq-gic-v3 chip
-to use handle_strict_flow_irq() along with IRQCHIP_AUTOMASKS_FLOW.
+On Tue, Jun 29, 2021 at 02:52:39PM +0300, Tony Lindgren wrote:
+> * Mike Rapoport <rppt@linux.ibm.com> [210629 10:51]:
+> > As it seems, the new version of pfn_valid() decides that last pages are not
+> > valid because of the overflow in memblock_overlaps_region(). As the result,
+> > __sync_icache_dcache() skips flushing these pages.
+> > 
+> > The patch below should fix this. I've left the prints for now, hopefully
+> > they will not appear anymore. 
+> 
+> Yes this allows the system to boot for me :)
+> 
+> I'm still seeing these three prints though:
+> 
+> ...
+> smp: Brought up 1 node, 2 CPUs
+> SMP: Total of 2 processors activated (3994.41 BogoMIPS).
+> CPU: All CPU(s) started in SVC mode.
+> pfn_valid(__pageblock_pfn_to_page+0x14/0xa8): pfn: afe00: is_map: 0 overlaps: 1
+> pfn_valid(__pageblock_pfn_to_page+0x28/0xa8): pfn: affff: is_map: 0 overlaps: 1
+> pfn_valid(__pageblock_pfn_to_page+0x38/0xa8): pfn: afe00: is_map: 0 overlaps: 1
 
-For EOImode=1, the Priority Drop is moved from gic_handle_irq() into
-chip->irq_ack(). This effectively pushes the EOIR write down into
-->handle_irq(), but doesn't change its ordering wrt the irqaction
-handling.
+These pfns do have memory map despite they are stolen in
+arm_memblock_steal():
 
-The EOImode=1 irqchip also gains IRQCHIP_EOI_THREADED, which allows the
-->irq_eoi() call to be deferred to the tail of ONESHOT IRQ threads. This
-means a threaded ONESHOT IRQ can now be handled entirely without a single
-chip->irq_mask() call.
+memblock_free: [0xaff00000-0xafffffff] arm_memblock_steal+0x50/0x70
+memblock_remove: [0xaff00000-0xafffffff] arm_memblock_steal+0x5c/0x70
+...
+memblock_free: [0xafe00000-0xafefffff] arm_memblock_steal+0x50/0x70
+memblock_remove: [0xafe00000-0xafefffff] arm_memblock_steal+0x5c/0x70
 
-Despite not having an Active state, LPIs are made to use
-handle_strict_flow_irq() as well. This lets them re-use
-gic_eoimode1_chip.irq_ack() as Priority Drop, rather than special-case them
-in gic_handle_irq().
+But the struct pages there are never initialized.
 
-EOImode=0 handling remains unchanged.
+I'll resend v3 of the entire set with an addition patch to take care of
+that as well.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- drivers/irqchip/irq-gic-v3.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+> devtmpfs: initialized
+> ...
+> 
+> Regards,
+> 
+> Tony
+> 
+> 
+> > diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+> > index 6162a070a410..7ba22d23eca4 100644
+> > --- a/arch/arm/mm/init.c
+> > +++ b/arch/arm/mm/init.c
+> > @@ -126,10 +126,16 @@ int pfn_valid(unsigned long pfn)
+> >  {
+> >  	phys_addr_t addr = __pfn_to_phys(pfn);
+> >  	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
+> > +	bool overlaps = memblock_overlaps_region(&memblock.memory,
+> > +				     ALIGN_DOWN(addr, pageblock_size),
+> > +				     pageblock_size - 1);
+> >  
+> >  	if (__phys_to_pfn(addr) != pfn)
+> >  		return 0;
+> >  
+> > +	if (memblock_is_map_memory(addr) != overlaps)
+> > +		pr_info("%s(%pS): pfn: %lx: is_map: %d overlaps: %d\n", __func__, (void *)_RET_IP_, pfn, memblock_is_map_memory(addr), overlaps);
+> > +
+> >  	/*
+> >  	 * If address less than pageblock_size bytes away from a present
+> >  	 * memory chunk there still will be a memory map entry for it
+> > @@ -137,7 +143,7 @@ int pfn_valid(unsigned long pfn)
+> >  	 */
+> >  	if (memblock_overlaps_region(&memblock.memory,
+> >  				     ALIGN_DOWN(addr, pageblock_size),
+> > -				     pageblock_size))
+> > +				     pageblock_size - 1))
+> >  		return 1;
+> >  
+> >  	return 0;
+> >  
+> > -- 
+> > Sincerely yours,
+> > Mike.
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index af11396996e3..c2677c5353a4 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -626,8 +626,6 @@ static inline void gic_handle_nmi(u32 irqnr, struct pt_regs *regs)
- 	if (irqs_enabled)
- 		nmi_enter();
- 
--	if (static_branch_likely(&supports_deactivate_key))
--		gic_write_eoir(irqnr);
- 	/*
- 	 * Leave the PSR.I bit set to prevent other NMIs to be
- 	 * received while handling this one.
-@@ -663,9 +661,11 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
- 		gic_arch_enable_irqs();
- 	}
- 
--	if (static_branch_likely(&supports_deactivate_key))
--		gic_write_eoir(irqnr);
--	else
-+	/*
-+	 * eoimode1 will give us an isb in handle_domain_irq(), before
-+	 * handle_irq_event().
-+	 */
-+	if (!static_branch_likely(&supports_deactivate_key))
- 		isb();
- 
- 	if (handle_domain_irq(gic_data.domain, irqnr, regs)) {
-@@ -1276,6 +1276,7 @@ static struct irq_chip gic_eoimode1_chip = {
- 	.name			= "GICv3",
- 	.irq_mask		= gic_eoimode1_mask_irq,
- 	.irq_unmask		= gic_unmask_irq,
-+	.irq_ack                = gic_eoi_irq,
- 	.irq_eoi		= gic_eoimode1_eoi_irq,
- 	.irq_set_type		= gic_set_type,
- 	.irq_set_affinity	= gic_set_affinity,
-@@ -1288,7 +1289,9 @@ static struct irq_chip gic_eoimode1_chip = {
- 	.ipi_send_mask		= gic_ipi_send_mask,
- 	.flags			= IRQCHIP_SET_TYPE_MASKED |
- 				  IRQCHIP_SKIP_SET_WAKE |
--				  IRQCHIP_MASK_ON_SUSPEND,
-+				  IRQCHIP_MASK_ON_SUSPEND |
-+				  IRQCHIP_AUTOMASKS_FLOW |
-+				  IRQCHIP_EOI_THREADED,
- };
- 
- static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
-@@ -1312,7 +1315,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
- 	case SPI_RANGE:
- 	case ESPI_RANGE:
- 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
--				    handle_fasteoi_irq, NULL, NULL);
-+				    static_branch_likely(&supports_deactivate_key) ?
-+				    handle_strict_flow_irq : handle_fasteoi_irq,
-+				    NULL, NULL);
- 		irq_set_probe(irq);
- 		irqd_set_single_target(irqd);
- 		break;
-@@ -1321,7 +1326,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
- 		if (!gic_dist_supports_lpis())
- 			return -EPERM;
- 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
--				    handle_fasteoi_irq, NULL, NULL);
-+				    static_branch_likely(&supports_deactivate_key) ?
-+				    handle_strict_flow_irq : handle_fasteoi_irq,
-+				    NULL, NULL);
- 		break;
- 
- 	default:
 -- 
-2.25.1
-
+Sincerely yours,
+Mike.
