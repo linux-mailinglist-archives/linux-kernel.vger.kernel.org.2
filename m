@@ -2,132 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620C03B734B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909C33B7352
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhF2Nhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:37:33 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49138 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhF2NhU (ORCPT
+        id S234074AbhF2Njl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhF2Nje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:37:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B490022186;
-        Tue, 29 Jun 2021 13:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624973691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=Sjii0conm7nXek4F00rSCybHQnljsExZM/nN8KDYUHs=;
-        b=dbfIhr7ofLLN7OFd0AweDGPT310DynNQYgbdqOVXm594UKEBOwo/2kcTuobFvvuslXHc9p
-        BIoJ0eXCnom5QqHGXDV7gvZvBx0jqCGxsvahNNUaD6/vEZKl8mWwIoF0J2Y+BfendicGpQ
-        sk0HmjgBQhVtvdx+LDfRl8rI5uiIpVw=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5040FA3BC9;
-        Tue, 29 Jun 2021 13:34:51 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 15:34:50 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] printk for 5.14
-Message-ID: <YNshegt/DQV1JDc9@alley>
+        Tue, 29 Jun 2021 09:39:34 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F39C061760;
+        Tue, 29 Jun 2021 06:37:06 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id z4so1605747plg.8;
+        Tue, 29 Jun 2021 06:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zio1lOhtG4EyFNe7HsOIIbxHd7wmDa19V1E41XFuv1o=;
+        b=QKqCSEbf3r5/3ahfxkCWiGFGWMm2Gv2lEAIFmzvp6SohntKV+rz/kKv4TsSqFDMmqJ
+         x2d29scCzZEI9dBPJCiS3U0tRQC12fdJbUAbL9LDs21f04ftV2mQ+DyY/ikZh0MCXsRS
+         qO9MH9rpeiObY6b3ShJyUi+cNDTt3uKN6kxNg9SV5/+hM5pMuKqUTM3UTb+iEkeALkUV
+         qdbIYUwIExxLXIhB/DbFu3T5EJ9MqgryNjGcJftUaN+eoSA4S7V5/XVT/6UNUsgzEKU5
+         pAKiRaWwDJf6b8LWnFPcU0qOsc6EHAJ60+hZr+KkBZ6nwbWlb/9f0q0QWgIHW26V4+iL
+         rPrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zio1lOhtG4EyFNe7HsOIIbxHd7wmDa19V1E41XFuv1o=;
+        b=RlicZLgu8Vf9J6bdz1HlAgVWzQnyM8FUp6565vFNa8QQd5ZelSIeW+WIBiV5xfpjtB
+         MUF04PFaW6vYlb255BUd497i6YARCBROBSxXxcefgLiR026nm6AcJByDDkhUD3x00hka
+         kPRzak9J2KWYWL1vp8Huml4DzXOqYnOZ2P0dax4JqbwVvHBvJo1TQQqVhCuLPkCgrHs2
+         kWWjd0ugwZP33cuBXTopTbAqyfjbG/EHj3qmri1EXG4N2SUMFaLitKa32JWicCkJZj+j
+         0XI+2fFCqvf9F3UJJrvS2ILaK4KuLyETvk74lPA8MMmKOPUsBWwLc3gDEGPcYGsTKvMz
+         bmew==
+X-Gm-Message-State: AOAM5303GdCX1pnsBXS9oesbzMRxtAe1zJX2V8xUx6igjGTVI7HwPXtJ
+        u2+nknLhjSbnV986sUmCGIY=
+X-Google-Smtp-Source: ABdhPJxT9XmVbs1wB+Pc8OCoEZk0cTF8wXN2v0ua6UfCpRvCCjvao0T2oxjaCqTrrcdWeD8WjxoTLw==
+X-Received: by 2002:a17:902:ea0e:b029:128:ad9a:8c68 with SMTP id s14-20020a170902ea0eb0290128ad9a8c68mr17955940plg.68.1624973825988;
+        Tue, 29 Jun 2021 06:37:05 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id m2sm3549327pja.9.2021.06.29.06.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 06:37:05 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Tue, 29 Jun 2021 21:35:41 +0800
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 16/19] staging: qlge: remove deadcode in qlge_build_rx_skb
+Message-ID: <20210629133541.2n3rr7vzglcoy56x@Rk>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-17-coiby.xu@gmail.com>
+ <20210622072939.GL1861@kadam>
+ <20210624112500.rhtqp7j3odq6b6bq@Rk>
+ <20210624124926.GI1983@kadam>
+ <20210627105349.pflw2r2b4qus64kf@Rk>
+ <20210628064645.GK2040@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <20210628064645.GK2040@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, Jun 28, 2021 at 09:46:45AM +0300, Dan Carpenter wrote:
+>On Sun, Jun 27, 2021 at 06:53:49PM +0800, Coiby Xu wrote:
+>> On Thu, Jun 24, 2021 at 03:49:26PM +0300, Dan Carpenter wrote:
+>> > On Thu, Jun 24, 2021 at 07:25:00PM +0800, Coiby Xu wrote:
+>> > > On Tue, Jun 22, 2021 at 10:29:39AM +0300, Dan Carpenter wrote:
+>> > > > On Mon, Jun 21, 2021 at 09:48:59PM +0800, Coiby Xu wrote:
+>> > > > > This part of code is for the case that "the headers and data are in
+>> > > > > a single large buffer". However, qlge_process_mac_split_rx_intr is for
+>> > > > > handling packets that packets underwent head splitting. In reality, with
+>> > > > > jumbo frame enabled, the part of code couldn't be reached regardless of
+>> > > > > the packet size when ping the NIC.
+>> > > > >
+>> > > >
+>> > > > This commit message is a bit confusing.  We're just deleting the else
+>> > > > statement.  Once I knew that then it was easy enough to review
+>> > > > qlge_process_mac_rx_intr() and see that if if
+>> > > > ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL is set then
+>> > > > ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV must be set.
+>> > >
+>> > > Do you suggest moving to upper if, i.e.
+>> > >
+>> > >         } else if (ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL && ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS) {
+>> > >
+>> > > and then deleting the else statement?
+>> > >
+>> >
+>> > I have a rule that when people whinge about commit messages they should
+>> > write a better one themselves, but I have violated my own rule.  Sorry.
+>> > Here is my suggestion:
+>> >
+>> >    If the "ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL" condition is true
+>> >    then we know that "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" must be
+>> >    true as well.  Thus, we can remove that condition and delete the
+>> >    else statement which is dead code.
+>> >
+>> >    (Originally this code was for the case that "the headers and data are
+>> >    in a single large buffer". However, qlge_process_mac_split_rx_intr
+>> >    is for handling packets that packets underwent head splitting).
+>>
+>> Thanks for sharing your commit message! Now I see what you mean. But I'm
+>> not sure if "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" is true when
+>> "ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DL" is true.
+>
+>Well... It is true.  qlge_process_mac_split_rx_intr() is only called
+>when "->flags4 & IB_MAC_IOCB_RSP_HS" is true or when
+>"->flags3 & IB_MAC_IOCB_RSP_DL" is false.
 
-please pull the latest printk changes from
+Actually qlge_process_mac_rx_intr calls qlge_process_mac_split_rx_intr when 
+"ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV" is true or in the last else,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.14
+     /* Process an inbound completion from an rx ring. */
+     static unsigned long qlge_process_mac_rx_intr(struct qlge_adapter *qdev,
+     					      struct rx_ring *rx_ring,
+     					      struct qlge_ib_mac_iocb_rsp *ib_mac_rsp)
+     {
+         ...
+     	if (ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV) {
+     		/* The data and headers are split into
+     		 * separate buffers.
+     		 */
+     		qlge_process_mac_split_rx_intr(qdev, rx_ring, ib_mac_rsp,
+     					       vlan_id);
+     	} else if (ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_DS) {
+             ...
+     	} else {
+     		/* Non-TCP/UDP large frames that span multiple buffers
+     		 * can be processed corrrectly by the split frame logic.
+     		 */
+     		qlge_process_mac_split_rx_intr(qdev, rx_ring, ib_mac_rsp,
+     					       vlan_id);
+     	}
 
-=====================================
+So I think we can't say that if "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HV" 
+is true,  then "ib_mac_rsp->flags4 & IB_MAC_IOCB_RSP_HS" must be true. And 
+I don't know how to reach the conclusion that the last else means 
+"->flags3 & IB_MAC_IOCB_RSP_DL" is false.
 
-- Add %pt[RT]s modifier to vsprintf(). It overrides ISO 8601 separator by
-  using ' ' (space). It produces "YYYY-mm-dd HH:MM:SS" instead of
-  "YYYY-mm-ddTHH:MM:SS".
+>
+>To me the fact that it's clearly dead code, helps me to verify that the
+>patch doesn't change behavior.  Anyway, "this part of code" was a bit
+>vague and it took me a while to figure out the patch deletes the else
+>statement.
+>
+>regards,
+>dan carpenter
+>
 
-- Correctly parse long row of numbers by sscanf() when using the field
-  width. Add extensive sscanf() selftest.
-
-- Generalize re-entrant CPU lock that has already been used to serialize
-  dump_stack() output. It is part of the ongoing printk rework. It will
-  allow to remove the obsoleted printk_safe buffers and introduce atomic
-  consoles.
-
-- Some code clean up and sparse warning fix.
-
-======================================
-
-Conflict with Andrew's -mm tree:
-
-The commit generalizing the CPU lock conflicts with a patch that
-introduces dump_stack_lvl(log_lvl). The resulting code is simple.
-But the 3-way merge combined the hunks a messy way here.
-
-A sample resolution can be found at
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git origin/for-5.14-mm-dump_stack-loglvl-conflict
-
-----------------------------------------------------------------
-Andy Shevchenko (4):
-      lib/vsprintf: Allow to override ISO 8601 date and time separator
-      kdb: Switch to use %ptTs
-      nilfs2: Switch to use %ptTs
-      usb: host: xhci-tegra: Switch to use %ptTs
-
-Huilong Deng (1):
-      printk: Remove trailing semicolon in macros
-
-John Ogness (2):
-      lib/dump_stack: move cpu lock to printk.c
-      printk: fix cpu lock ordering
-
-Petr Mladek (3):
-      Merge branch 'for-5.14-vsprintf-pts' into for-linus
-      Merge branch 'for-5.14-vsprintf-scanf' into for-linus
-      Merge branch 'printk-rework' into for-linus
-
-Richard Fitzgerald (6):
-      lib: vsprintf: scanf: Negative number must have field width > 1
-      lib: vsprintf: Fix handling of number field widths in vsscanf
-      lib: test_scanf: Add tests for sscanf number conversion
-      selftests: lib: Add wrapper script for test_scanf
-      lib: test_scanf: Remove pointless use of type_min() with unsigned types
-      random32: Fix implicit truncation warning in prandom_seed_state()
-
- Documentation/core-api/printk-formats.rst |   7 +-
- MAINTAINERS                               |   1 +
- drivers/usb/host/xhci-tegra.c             |   6 +-
- fs/nilfs2/sysfs.c                         |  19 +-
- include/linux/dev_printk.h                |   2 +-
- include/linux/prandom.h                   |   2 +-
- include/linux/printk.h                    |  41 ++
- kernel/debug/kdb/kdb_main.c               |   9 +-
- kernel/printk/printk.c                    | 116 +++++
- lib/Kconfig.debug                         |   3 +
- lib/Makefile                              |   1 +
- lib/dump_stack.c                          |  38 +-
- lib/kstrtox.c                             |  13 +-
- lib/kstrtox.h                             |   2 +
- lib/test_printf.c                         |   5 +
- lib/test_scanf.c                          | 750 ++++++++++++++++++++++++++++++
- lib/vsprintf.c                            | 110 +++--
- tools/testing/selftests/lib/Makefile      |   2 +-
- tools/testing/selftests/lib/config        |   1 +
- tools/testing/selftests/lib/scanf.sh      |   4 +
- 20 files changed, 1020 insertions(+), 112 deletions(-)
- create mode 100644 lib/test_scanf.c
- create mode 100755 tools/testing/selftests/lib/scanf.sh
+-- 
+Best regards,
+Coiby
