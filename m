@@ -2,326 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4E03B77DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEEF3B77AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhF2Sbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:31:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:12482 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235193AbhF2SbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:31:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="269341979"
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="269341979"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 11:28:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="408270502"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga006.jf.intel.com with ESMTP; 29 Jun 2021 11:28:50 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, gregkh@linuxfoundation.org,
-        acme@kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 6/6] perf pmu: Add PMU alias support
-Date:   Tue, 29 Jun 2021 11:14:03 -0700
-Message-Id: <1624990443-168533-7-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
-References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
+        id S234730AbhF2SUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234470AbhF2SUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 14:20:49 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DADBC061760;
+        Tue, 29 Jun 2021 11:18:22 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v5-20020a0568301bc5b029045c06b14f83so23582051ota.13;
+        Tue, 29 Jun 2021 11:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kaLVJ3vsSWdDt4zOlxzNdOMsK05VagVjFIGPvknhz0s=;
+        b=cKjKf6L6XxfwZo2d0eFq4O+KvMmcJL+R1s8vSRd99cgzA0S/A1zc2Srt6p6OXv8laW
+         lD1kSH0a2YQ7YIl5X0/YFc5MH99773tLzGRdXXLf2M4KmvoT8Bz3aGamO79vo2Y4W8lf
+         JuDoKvh8h6ZiQYwjXJjx8OMojJzkz3cDD4y9WKJZX8eVb/V7OE/rz/i8bWBbltAzKiRk
+         IiiLeJN2VSZArmnZMUfXyeoDfQtKQ8WFUMI49ZjoZ2gCsAvb6cE/j0Uuf2rc3FtCdua3
+         8idKOmZAAIdQP4xYBx2ibLP46Jrld3fJ3TPBGqBTV9MBJPdcjcwJ6JvIILm4GN4NlS8K
+         n/jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kaLVJ3vsSWdDt4zOlxzNdOMsK05VagVjFIGPvknhz0s=;
+        b=H+xiKOM/r59tEoy96Pss1BEKdb0z3IZ7j/FBLl7AEqecVlzIx5mnKPe4hMbrWGuxIz
+         lGRK0geAD8J8xfhPwX+zElFVN83qmDzl11B3995YKqsVWaM1daprCOLwzXO0rYcb12ya
+         aMjLmZzK1u2GtWlPVFTakQavNsLpYy9qqQwChz7at8MLtqAiyiA0MpP0QRdasHTYkOt5
+         rbzNZX6EMooe5Ae0KsD6EBT91loj5xJNwsNE5gjIj97Fzi0PVOmTnbJAOqQg8Gi2VeNJ
+         3vanEQQ5po6Hob3veQG1DFo6I+iE8PrDmIPNOEZ6LUWCVMYhtXk386Hj1XbQGZga78mP
+         8Pbw==
+X-Gm-Message-State: AOAM532EAfwIQGdXoUllCPSNkLOWEMXmJpdib1Xw3NnQawhCGd0urS9c
+        Ldn2ZfSWQeoE5VZgmvh2j60=
+X-Google-Smtp-Source: ABdhPJxA5Q63ZkUSQnJTp8ot/u5Hh42xkiwBKXPPfn0biZwKbf1RKxwJdtqPdPnjwgDtzG8IU4Xkqg==
+X-Received: by 2002:a9d:dc1:: with SMTP id 59mr5506047ots.246.1624990701649;
+        Tue, 29 Jun 2021 11:18:21 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 5sm3867930oot.29.2021.06.29.11.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 11:18:20 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 29 Jun 2021 11:18:18 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
+Message-ID: <20210629181818.GA2842065@roeck-us.net>
+References: <20210628144256.34524-1-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Jun 28, 2021 at 10:41:59AM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.4.274 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
+> Anything received after that time might be too late.
+> 
 
-A perf uncore PMU may have two PMU names, a real name and an alias. The
-alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
-The perf tool should support the alias as well.
+Build results:
+	total: 160 pass: 153 fail: 7
+Failed builds:
+	arc:tb10x_defconfig
+	arcv2:defconfig
+	arcv2:allnoconfig
+	arcv2:tinyconfig
+	arcv2:axs103_defconfig
+	arcv2:nsim_hs_smp_defconfig
+	arcv2:vdk_hs38_smp_defconfig
+Qemu test results:
+	total: 326 pass: 326 fail: 0
 
-Add alias_name in the struct perf_pmu to store the alias. For the PMU
-which doesn't have an alias. It's NULL.
+Build failures as already reported.
 
-Introduce two X86 specific functions to retrieve the real name and the
-alias separately.
-
-Only go through the sysfs to retrieve the mapping between the real name
-and the alias once. The result is cached in a list, uncore_pmu_list.
-
-Nothing changed for the other ARCHs.
-
-With the patch, the perf tool can monitor the PMU with either the real
-name or the alias.
-
-Use the real name,
- $perf stat -e uncore_cha_2/event=1/ -x,
-  4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
-
-Use the alias,
- $perf stat -e uncore_type_0_2/event=1/ -x,
-  3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++++++++++-
- tools/perf/util/parse-events.y |   4 +-
- tools/perf/util/pmu.c          |  23 +++++++-
- tools/perf/util/pmu.h          |   5 ++
- 4 files changed, 156 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index d48d608..f864ba2 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -1,12 +1,28 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <string.h>
--
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <dirent.h>
-+#include <fcntl.h>
- #include <linux/stddef.h>
- #include <linux/perf_event.h>
-+#include <linux/zalloc.h>
-+#include <api/fs/fs.h>
- 
- #include "../../../util/intel-pt.h"
- #include "../../../util/intel-bts.h"
- #include "../../../util/pmu.h"
-+#include "../../../util/fncache.h"
-+
-+#define TEMPLATE_UNCORE_ALIAS	"%s/bus/event_source/devices/%s/alias"
-+
-+struct perf_uncore_pmu_name {
-+	char *name;
-+	char *alias;
-+	struct list_head list;
-+};
-+
-+static LIST_HEAD(uncore_pmu_list);
- 
- struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
- {
-@@ -18,3 +34,114 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
- #endif
- 	return NULL;
- }
-+
-+static void setup_uncore_pmu_list(void)
-+{
-+	char path[PATH_MAX];
-+	DIR *dir;
-+	struct dirent *dent;
-+	const char *sysfs = sysfs__mountpoint();
-+	struct perf_uncore_pmu_name *pmu;
-+	char buf[MAX_PMU_NAME_LEN];
-+	FILE *file;
-+	int size;
-+
-+	if (!sysfs)
-+		return;
-+
-+	snprintf(path, PATH_MAX,
-+		 "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
-+
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((dent = readdir(dir))) {
-+		if (!strcmp(dent->d_name, ".") ||
-+		    !strcmp(dent->d_name, "..") ||
-+		    strncmp(dent->d_name, "uncore_", 7))
-+			continue;
-+
-+		snprintf(path, PATH_MAX,
-+			 TEMPLATE_UNCORE_ALIAS, sysfs, dent->d_name);
-+
-+		if (!file_available(path))
-+			continue;
-+
-+		file = fopen(path, "r");
-+		if (!file)
-+			continue;
-+
-+		memset(buf, 0, sizeof(buf));
-+		if (!fread(buf, 1, sizeof(buf), file))
-+			continue;
-+
-+		pmu = zalloc(sizeof(*pmu));
-+		if (!pmu)
-+			continue;
-+
-+		size = strlen(buf) - 1;
-+		pmu->alias = zalloc(size);
-+		if (!pmu->alias) {
-+			free(pmu);
-+			continue;
-+		}
-+		strncpy(pmu->alias, buf, size);
-+		pmu->name = strdup(dent->d_name);
-+		list_add_tail(&pmu->list, &uncore_pmu_list);
-+
-+		fclose(file);
-+	}
-+
-+	closedir(dir);
-+
-+}
-+
-+static char *__pmu_find_real_name(const char *name)
-+{
-+	struct perf_uncore_pmu_name *pmu;
-+
-+	/*
-+	 * The template of the uncore alias is uncore_type_*
-+	 * Only find the real name for the uncore alias.
-+	 */
-+	if (strncmp(name, "uncore_type_", 12))
-+		return strdup(name);
-+
-+	list_for_each_entry(pmu, &uncore_pmu_list, list) {
-+		if (!strcmp(name, pmu->alias))
-+			return strdup(pmu->name);
-+	}
-+
-+	return strdup(name);
-+}
-+
-+char *pmu_find_real_name(const char *name)
-+{
-+	static bool cached_list;
-+
-+	if (strncmp(name, "uncore_", 7))
-+		return strdup(name);
-+
-+	if (cached_list)
-+		return __pmu_find_real_name(name);
-+
-+	setup_uncore_pmu_list();
-+	cached_list = true;
-+
-+	return __pmu_find_real_name(name);
-+}
-+
-+char *pmu_find_alias_name(const char *name)
-+{
-+	struct perf_uncore_pmu_name *pmu;
-+
-+	if (strncmp(name, "uncore_", 7))
-+		return NULL;
-+
-+	list_for_each_entry(pmu, &uncore_pmu_list, list) {
-+		if (!strcmp(name, pmu->name))
-+			return strdup(pmu->alias);
-+	}
-+	return NULL;
-+}
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index aba12a4..bc812af 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -316,7 +316,9 @@ event_pmu_name opt_pmu_config
- 			if (!strncmp(name, "uncore_", 7) &&
- 			    strncmp($1, "uncore_", 7))
- 				name += 7;
--			if (!fnmatch(pattern, name, 0)) {
-+
-+			if (!fnmatch(pattern, name, 0) ||
-+			    (pmu->alias_name && !fnmatch(pattern, pmu->alias_name, 0))) {
- 				if (parse_events_copy_term_list(orig_terms, &terms))
- 					CLEANUP_YYABORT;
- 				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 88c8ecdc..d7fb627 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -921,13 +921,28 @@ static int pmu_max_precise(const char *name)
- 	return max_precise;
- }
- 
--static struct perf_pmu *pmu_lookup(const char *name)
-+char * __weak
-+pmu_find_real_name(const char *name)
-+{
-+	return strdup(name);
-+}
-+
-+char * __weak
-+pmu_find_alias_name(const char *name __maybe_unused)
-+{
-+	return NULL;
-+}
-+
-+static struct perf_pmu *pmu_lookup(const char *lookup_name)
- {
- 	struct perf_pmu *pmu;
-+	char *name;
- 	LIST_HEAD(format);
- 	LIST_HEAD(aliases);
- 	__u32 type;
- 
-+	name = pmu_find_real_name(lookup_name);
-+
- 	/*
- 	 * The pmu data we store & need consists of the pmu
- 	 * type value and format definitions. Load both right
-@@ -950,7 +965,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
- 		return NULL;
- 
- 	pmu->cpus = pmu_cpumask(name);
--	pmu->name = strdup(name);
-+	pmu->name = name;
-+	pmu->alias_name = pmu_find_alias_name(name);
- 	pmu->type = type;
- 	pmu->is_uncore = pmu_is_uncore(name);
- 	if (pmu->is_uncore)
-@@ -980,7 +996,8 @@ static struct perf_pmu *pmu_find(const char *name)
- 	struct perf_pmu *pmu;
- 
- 	list_for_each_entry(pmu, &pmus, list)
--		if (!strcmp(pmu->name, name))
-+		if (!strcmp(pmu->name, name) ||
-+		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
- 			return pmu;
- 
- 	return NULL;
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index a790ef7..87212ec 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -21,6 +21,7 @@ enum {
- #define PERF_PMU_FORMAT_BITS 64
- #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
- #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
-+#define MAX_PMU_NAME_LEN 128
- 
- struct perf_event_attr;
- 
-@@ -32,6 +33,7 @@ struct perf_pmu_caps {
- 
- struct perf_pmu {
- 	char *name;
-+	char *alias_name;	/* PMU alias name */
- 	char *id;
- 	__u32 type;
- 	bool selectable;
-@@ -134,4 +136,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
- 
- bool perf_pmu__has_hybrid(void);
- 
-+char *pmu_find_real_name(const char *name);
-+char *pmu_find_alias_name(const char *name);
-+
- #endif /* __PMU_H */
--- 
-2.7.4
-
+Guenter
