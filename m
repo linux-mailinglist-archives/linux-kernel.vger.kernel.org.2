@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC473B75D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A0E3B75E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhF2PtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbhF2PtF (ORCPT
+        id S233918AbhF2Pxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:53:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12504 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233867AbhF2Pxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:49:05 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D581C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:46:38 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id m9so25086044ybo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
-        b=ER92E1wnQyGj3sJwx6aNR/9/QTZb6pyKweu43EKzpFFXGMeIKmMtCT0o67YaRzWEja
-         yVKIXfF/cQN5fM4P+9yE9zhJUdq6vBIe7rzSVbAD3Yei5kSsd0N3H5S2n4FH3PaMcRJY
-         NrKL0ea2YnzCMVt0Q7yA17c2mwKFuaEwaweScOQ0MGtxvjtJ4hF/TX2ceKFgNSASXM+P
-         e8KDYzps/7oqOA+0OAjUwPP4JaPHIm6rIaduwsisJbXjTTNi/pc6txbkIVCEcq54pjnd
-         UBN6xZmlITJN1KJAPxSUt0Rw4L7xNwSPTei+9d8sOuY7CO+awV+QQNFb2uvZSGky8vq8
-         CO/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
-        b=Nm/23d1xnX+Q9qY6tMFo5Ve4ftQMqBYAtIT7hUbmqaWQLMimKgMsYRyXfubUKYVGpq
-         Za2s6x1vAtmIwaL+EkYA538a9Pty6ZLXmK4J8KO9DCr/tH/+CwwzXeFstFzNMv8d9P3T
-         nI9r0xfzSEHmc9/EPWTYZ3i9ZIuXdR4s/5NPKYhwIQLpFSNrNfp6DFIMcjG+wjdbOfyF
-         pWk/lI4v/xBnqcOXMgNoT6QYyjq0q2jlBluZr8TDIhCoxB7WxpyRCwEnA/G+1JdIHYQ8
-         vIjNcnWNyYJOIbMST350wSUQSXszgf/bgg7wX5/6vAXg2zEh/Stylj6zP65gmkpw2XEh
-         EcIQ==
-X-Gm-Message-State: AOAM5330ZKGZInYrAg73/695RdLsn9qhvfOFWrJjELUr/T3zc3bj6NN4
-        6JojwU6/lktXu1dZiA1MEIjOBsokZYXDMZ3oKg==
-X-Google-Smtp-Source: ABdhPJwK/Lv1gokf97n4Rasg1pXurGFBHhJLNbwu3Tn/OV40WnWGFA819Zyb8K9Ieu/+oEvKm3W06Zu7YCm6oJW4VNo=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr38133503ybj.504.1624981597045;
- Tue, 29 Jun 2021 08:46:37 -0700 (PDT)
+        Tue, 29 Jun 2021 11:53:34 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TFXvoN142597;
+        Tue, 29 Jun 2021 11:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
+ from : subject : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cfbdMSBNRioXD0RiokwRCZqxeJRXrOuC//dlu0v2erc=;
+ b=lQVdr11Pwta+j4ZhNFVvTSYEy3vHkOwrE7JuwIRV/D1b7uXxSOAgkmkR/UeZUnO502FT
+ zeyRBmnKWxaxewfnLTL1hGusTvTwBNE6SUSg4Ir0FPRRyzh291OzbarBP4drtgCwpF3N
+ bX/lhuNyPOoeyUjZ/YrDZ0dPyuCFW9JuWogl1ucFfjyr8geojVph0U0IpqI21N0vHdly
+ Yb03wDVUGa5aEhZC63CDzVZn9QHBYSivqgEJn02qEYTHYFm/MmQKpEMDzFOg5l24rnSN
+ 940k/Dm89f5gfSoaISxQ+5OuLlQi0LOcuEI8TDRZLsPu2IXzvh2K/FuIYOqxCTyMn9CY Bw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39g63eguj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 11:51:06 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TFXdpG003248;
+        Tue, 29 Jun 2021 15:51:04 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 39dughhcfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 15:51:04 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TFp1rF21168546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 15:51:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5C391A4090;
+        Tue, 29 Jun 2021 15:51:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE001A407D;
+        Tue, 29 Jun 2021 15:51:00 +0000 (GMT)
+Received: from linux.fritz.box (unknown [9.145.9.112])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Jun 2021 15:51:00 +0000 (GMT)
+To:     Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210616201917.1246079-1-keescook@chromium.org>
+From:   Stefan Haberland <sth@linux.ibm.com>
+Subject: Re: [PATCH] s390/dasd: Avoid field over-reading memcpy()
+Message-ID: <bea0aa5b-a150-e5af-c22a-367f475c172f@linux.ibm.com>
+Date:   Tue, 29 Jun 2021 17:51:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Sender: mrsaijheidi36@gmail.com
-Received: by 2002:a05:7110:5484:b029:d1:1886:427f with HTTP; Tue, 29 Jun 2021
- 08:46:36 -0700 (PDT)
-From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
-Date:   Tue, 29 Jun 2021 15:46:36 +0000
-X-Google-Sender-Auth: TGklwj131y7YduHR4nTlI0QWqao
-Message-ID: <CAES6YYZjrwVGP+xNRKyQtw--knL6ZskCu0vtKf_JOxakr262zA@mail.gmail.com>
-Subject: Dear Child of God
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616201917.1246079-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 7v49Gt2J-yt-7Plw4aPn2Fr2marbQg02
+X-Proofpoint-GUID: 7v49Gt2J-yt-7Plw4aPn2Fr2marbQg02
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_07:2021-06-29,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ priorityscore=1501 mlxlogscore=947 phishscore=0 mlxscore=0 spamscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Child of God,
+Am 16.06.21 um 22:19 schrieb Kees Cook:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field array bounds checking for memcpy(), memmove(), and memset(),
+> avoid intentionally reading across neighboring array fields.
+>
+> Add a wrapping structure to serve as the memcpy() source, so the compil=
+er
+> can do appropriate bounds checking, avoiding this future warning:
+>
+> In function '__fortify_memcpy',
+>     inlined from 'create_uid' at drivers/s390/block/dasd_eckd.c:749:2:
+> ./include/linux/fortify-string.h:246:4: error: call to '__read_overflow=
+2_field' declared with attribute error: detected read beyond size of fiel=
+d (2nd parameter)
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org
 
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
-CHRIST the giver of every good thing. Good day and compliments of the
-seasons, i know this letter will definitely come to you as a huge
-surprise, but I implore you to take the time to go through it
-carefully as the decision you make will go off a long way to determine
-my future and continued existence. I am Mrs Lila Haber aging widow of
-57 years old suffering from long time illness.I have some funds I
-inherited from my late husband, the sum of (19.1Million Dollars) and I
-needed a very honest and God fearing who can withdraw this money then
-use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
-CHARITY WORKS. I found your email address from the internet after
-honest prayers to the LORD to bring me a helper and i decided to
-contact you if you may be willing and interested to handle these trust
-funds in good faith before anything happens to me.
+Thanks,
 
-I accept this decision because I do not have any child who will
-inherit this money after I die. I want your urgent reply to me so that
-I will give you the deposit receipt which the SECURITY COMPANY issued
-to me as next of kin for immediate transfer of the money to your
-account in your country, to start the good work of God, I want you to
-use the 25/percent of the total amount to help yourself in doing the
-project. I am desperately in keen need of assistance and I have
-summoned up courage to contact you for this task, you must not fail me
-and the millions of the poor people in our todays WORLD. This is no
-stolen money and there are no dangers involved,100% RISK FREE with
-full legal proof. Please if you would be able to use the funds for the
-Charity works kindly let me know immediately.I will appreciate your
-utmost confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-Please
-kindly respond quickly for further details.
+applied.
 
-Warmest Regards,
-Mrs Lila Haber
+
