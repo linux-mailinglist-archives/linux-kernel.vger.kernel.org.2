@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560B23B70A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7533B70AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhF2K3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:29:09 -0400
-Received: from m-r1.th.seeweb.it ([5.144.164.170]:48677 "EHLO
-        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbhF2K3E (ORCPT
+        id S232885AbhF2K3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:29:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232834AbhF2K3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:29:04 -0400
-Received: from localhost.localdomain (bband-dyn27.178-40-203.t-com.sk [178.40.203.27])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id C1B731F6DE;
-        Tue, 29 Jun 2021 12:26:32 +0200 (CEST)
-From:   Martin Botka <martin.botka@somainline.org>
-To:     martin.botka1@gmail.com
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        paul.bouchara@somainline.org,
-        Martin Botka <martin.botka@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2 3/3] rpmcc: Add support for SM6125
-Date:   Tue, 29 Jun 2021 12:26:23 +0200
-Message-Id: <20210629102624.194378-4-martin.botka@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210629102624.194378-1-martin.botka@somainline.org>
-References: <20210629102624.194378-1-martin.botka@somainline.org>
+        Tue, 29 Jun 2021 06:29:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624962439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=x398MrgI290saNP+FLjnBg/QVE3FScuPBdMIn1/f/oM=;
+        b=W0PEfBgdUGXTWEaLr4cC5GtuSruVYQc9FdH5N6jp4j/Q3Xk4/LokZqW3lZbbtfVQRF/Etp
+        Q196SIAcFtLNyKcmd/rjKFFHreP5OzbqorjdCrgBzLzMZo+GXgVXmyzVzZWKT+5MYIOZzZ
+        DVvmc/ldugvppYyCs5loEqrHj7d09cM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-Sq3c5XtyMduPGC4MWKn3OA-1; Tue, 29 Jun 2021 06:27:17 -0400
+X-MC-Unique: Sq3c5XtyMduPGC4MWKn3OA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D959219057A6;
+        Tue, 29 Jun 2021 10:27:16 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 425BE100164A;
+        Tue, 29 Jun 2021 10:27:12 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Various minor gfs2 cleanups and fixes
+Date:   Tue, 29 Jun 2021 12:27:10 +0200
+Message-Id: <20210629102710.1934579-1-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds support for RPM clocks found in SM6125 SoC
+Hi Linus,
 
-Signed-off-by: Martin Botka <martin.botka@somainline.org>
----
- drivers/clk/qcom/clk-smd-rpm.c   | 55 ++++++++++++++++++++++++++++++++
- include/linux/soc/qcom/smd-rpm.h |  1 +
- 2 files changed, 56 insertions(+)
+please consider pulling the following gfs2 changes for 5.14.
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 8200c26b968c..51458f740ba0 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -1059,6 +1059,61 @@ static const struct rpm_smd_clk_desc rpm_clk_sdm660 = {
- 	.num_clks = ARRAY_SIZE(sdm660_clks),
- };
- 
-+/* SM6125 */
-+DEFINE_CLK_SMD_RPM_BRANCH(sm6125, bi_tcxo, bi_tcxo_ao,
-+					QCOM_SMD_RPM_MISC_CLK, 0, 19200000);
-+DEFINE_CLK_SMD_RPM(sm6125, cnoc_clk, cnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 1);
-+DEFINE_CLK_SMD_RPM(sm6125, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, snoc_clk, snoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 2);
-+DEFINE_CLK_SMD_RPM_BRANCH(sm6125, qdss_clk, qdss_a_clk,
-+					QCOM_SMD_RPM_MISC_CLK, 1, 19200000);
-+DEFINE_CLK_SMD_RPM(sm6125, ce1_clk, ce1_a_clk, QCOM_SMD_RPM_CE_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, ipa_clk, ipa_a_clk, QCOM_SMD_RPM_IPA_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, qup_clk, qup_a_clk, QCOM_SMD_RPM_QUP_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, mmnrt_clk, mmnrt_a_clk, QCOM_SMD_RPM_MMAXI_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, mmrt_clk, mmrt_a_clk, QCOM_SMD_RPM_MMAXI_CLK, 1);
-+DEFINE_CLK_SMD_RPM(sm6125, snoc_periph_clk, snoc_periph_a_clk,
-+						QCOM_SMD_RPM_BUS_CLK, 0);
-+DEFINE_CLK_SMD_RPM(sm6125, snoc_lpass_clk, snoc_lpass_a_clk,
-+						QCOM_SMD_RPM_BUS_CLK, 5);
-+
-+/* SMD_XO_BUFFER */
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk1, ln_bb_clk1_a, 1);
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk2, ln_bb_clk2_a, 2);
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, ln_bb_clk3, ln_bb_clk3_a, 3);
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk1, rf_clk1_a, 4);
-+DEFINE_CLK_SMD_RPM_XO_BUFFER(sm6125, rf_clk2, rf_clk2_a, 5);
-+
-+static struct clk_smd_rpm *sm6125_clks[] = {
-+	[RPM_SMD_XO_CLK_SRC] = &sm6125_bi_tcxo,
-+	[RPM_SMD_XO_A_CLK_SRC] = &sm6125_bi_tcxo_ao,
-+	[RPM_SMD_SNOC_CLK] = &sm6125_snoc_clk,
-+	[RPM_SMD_SNOC_A_CLK] = &sm6125_snoc_a_clk,
-+	[RPM_SMD_BIMC_CLK] = &sm6125_bimc_clk,
-+	[RPM_SMD_BIMC_A_CLK] = &sm6125_bimc_a_clk,
-+	[RPM_SMD_QDSS_CLK] = &sm6125_qdss_clk,
-+	[RPM_SMD_QDSS_A_CLK] = &sm6125_qdss_a_clk,
-+	[RPM_SMD_RF_CLK1] = &sm6125_rf_clk1,
-+	[RPM_SMD_RF_CLK1_A] = &sm6125_rf_clk1_a,
-+	[RPM_SMD_RF_CLK2] = &sm6125_rf_clk2,
-+	[RPM_SMD_RF_CLK2_A] = &sm6125_rf_clk2_a,
-+	[RPM_SMD_LN_BB_CLK1] = &sm6125_ln_bb_clk1,
-+	[RPM_SMD_LN_BB_CLK1_A] = &sm6125_ln_bb_clk1_a,
-+	[RPM_SMD_LN_BB_CLK2] = &sm6125_ln_bb_clk2,
-+	[RPM_SMD_LN_BB_CLK2_A] = &sm6125_ln_bb_clk2_a,
-+	[RPM_SMD_LN_BB_CLK3] = &sm6125_ln_bb_clk3,
-+	[RPM_SMD_LN_BB_CLK3_A] = &sm6125_ln_bb_clk3_a,
-+	[RPM_SMD_CNOC_CLK] = &sm6125_cnoc_clk,
-+	[RPM_SMD_CNOC_A_CLK] = &sm6125_cnoc_a_clk,
-+	[RPM_SMD_CE1_CLK] = &sm6125_ce1_clk,
-+	[RPM_SMD_CE1_A_CLK] = &sm6125_ce1_a_clk,
-+};
-+
-+static const struct rpm_smd_clk_desc rpm_clk_sm6125 = {
-+	.clks = sm6125_clks,
-+	.num_clks = ARRAY_SIZE(sm6125_clks),
-+};
-+
- static const struct of_device_id rpm_smd_clk_match_table[] = {
- 	{ .compatible = "qcom,rpmcc-msm8916", .data = &rpm_clk_msm8916 },
- 	{ .compatible = "qcom,rpmcc-msm8936", .data = &rpm_clk_msm8936 },
-diff --git a/include/linux/soc/qcom/smd-rpm.h b/include/linux/soc/qcom/smd-rpm.h
-index f2645ec52520..b737d7e456e4 100644
---- a/include/linux/soc/qcom/smd-rpm.h
-+++ b/include/linux/soc/qcom/smd-rpm.h
-@@ -28,6 +28,7 @@ struct qcom_smd_rpm;
- #define QCOM_SMD_RPM_NCPA	0x6170636E
- #define QCOM_SMD_RPM_NCPB	0x6270636E
- #define QCOM_SMD_RPM_OCMEM_PWR	0x706d636f
-+#define QCOM_SMD_RPM_QUP_CLK	0x00707571
- #define QCOM_SMD_RPM_QPIC_CLK	0x63697071
- #define QCOM_SMD_RPM_SMPA	0x61706d73
- #define QCOM_SMD_RPM_SMPB	0x62706d73
--- 
-2.32.0
+Thanks a lot,
+Andreas
+
+The following changes since commit 62fb9874f5da54fdb243003b386128037319b219:
+
+  Linux 5.13 (2021-06-27 15:21:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-fixes
+
+for you to fetch changes up to 7a607a41cdc6c6f27b8e234cb44ce57070513dac:
+
+  gfs2: Clean up gfs2_unstuff_dinode (2021-06-29 10:56:51 +0200)
+
+----------------------------------------------------------------
+Various minor gfs2 cleanups and fixes
+
+----------------------------------------------------------------
+Andreas Gruenbacher (6):
+      gfs2: Fix do_gfs2_set_flags description
+      gfs2: Fix underflow in gfs2_page_mkwrite
+      gfs2: Fix error handling in init_statfs
+      gfs2: Clean up the error handling in gfs2_page_mkwrite
+      gfs2: Unstuff before locking page in gfs2_page_mkwrite
+      gfs2: Clean up gfs2_unstuff_dinode
+
+Baokun Li (1):
+      gfs2: Use list_move_tail instead of list_del/list_add_tail
+
+ fs/gfs2/bmap.c       | 62 ++++++++++++++++++++---------------------
+ fs/gfs2/bmap.h       |  2 +-
+ fs/gfs2/dir.c        |  2 +-
+ fs/gfs2/file.c       | 79 ++++++++++++++++++++++++++++++++--------------------
+ fs/gfs2/glock.c      |  3 +-
+ fs/gfs2/ops_fstype.c |  1 +
+ fs/gfs2/quota.c      |  2 +-
+ 7 files changed, 85 insertions(+), 66 deletions(-)
 
