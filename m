@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318DE3B7367
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537523B737C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbhF2NpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhF2NpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:45:12 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03563C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:42:44 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id c8so24525598ybq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=VOzNSXRNHMc5MOS4B5K3kOYpzZOVF7ZsgyKSu3O9LlA=;
-        b=mfeiTDguJHLCToAE0jujhc/udo+V++SvBMWyVOh1DC+JTPl1k1JnRXMlP3zh7q4mMn
-         KJiha+EU0G69kCPAIi9fFCtuQBO5WtMFgX/V9yMkhrus7dvvnoZmmmE225Z280vfPV74
-         AZZxC1akfsVbNBcMoP0HOMK7DeMPL/Rr4RMP+qTxGmEwCY+Ume5Xs1LifD8BERnUjTRC
-         dIT7EeOL12+WPfUl/FwHj/E20/DT4JZx0LHpPS1vhMeMtC53Ue/iLtwADhmITphjV0XJ
-         AIMuIevC/ZAz/cYRyIXT9EII6Zv7FQycxdQQhfULdKX8vBjizsoK7j9Q+Sj1vr/bWtPq
-         F1Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=VOzNSXRNHMc5MOS4B5K3kOYpzZOVF7ZsgyKSu3O9LlA=;
-        b=JhfudVrRl3/go9S9ZCGkD8jN7Xt3Nbn3cFdRljc+KvEiBFesAblr36ReecuO+V6i2a
-         /kKY/SdfsIEEGGVG2ItKi+QjIc5H8zX8owK6tB6uFb6g8i7Dglu94gfCF8svG7FmdR+K
-         k2LskECrdmCrreqB6GvdnRIh3xNwuP99EuYIpO4DeSLgNhBWicr6Epz1gZU7F82xlI39
-         D1mvfJparo2FkYZ4ZcXl2jWsTs0uY/tsvK54fVODdh2qU8i8ub9n1xAQhztJzTDpKDtR
-         sDTvYkXwpKS1BVJ3xveqQldteCqRz2e5YKgMPOeTP5G4XD5x45gUH5ldsI0sfIyHcutC
-         ahYQ==
-X-Gm-Message-State: AOAM533jMWW9QvPH0zNtoUPxrwFW4VE7PDWRMceFR3KBB1d1yw+yJqW0
-        Sbvj/uEVf1VHwboUNkpmoWZdD+M7AbTi/8Zb/9g=
-X-Google-Smtp-Source: ABdhPJz2fX4t1nsJJO+itNuMhKY5a7v0DvwjHmBc1iOTl/HB2nHswGoMwGTTrTOFkridDyfcfzECqKzhm+NCtquKmAs=
-X-Received: by 2002:a25:e08a:: with SMTP id x132mr18400012ybg.511.1624974163266;
- Tue, 29 Jun 2021 06:42:43 -0700 (PDT)
+        id S234118AbhF2Nw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:52:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:51666 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233050AbhF2Nwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:52:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 435CF106F;
+        Tue, 29 Jun 2021 06:50:28 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9432C3F718;
+        Tue, 29 Jun 2021 06:50:26 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com
+Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        zhang.lyra@gmail.com
+Subject: Re: [PATCH] sched/uclamp: Fix getting unreasonable ucalmp_max when rq is idle
+In-Reply-To: <20210618072349.503-1-xuewen.yan94@gmail.com>
+References: <20210618072349.503-1-xuewen.yan94@gmail.com>
+Date:   Tue, 29 Jun 2021 14:50:21 +0100
+Message-ID: <87fsx093vm.mognet@arm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:7242:b029:be:68eb:5bcc with HTTP; Tue, 29 Jun 2021
- 06:42:43 -0700 (PDT)
-Reply-To: drrhamabenson335@gmail.com
-From:   " Dr Rhama David Benson," <drsulemusa41@gmail.com>
-Date:   Tue, 29 Jun 2021 06:42:43 -0700
-Message-ID: <CADKD+VxSxOX_Q+hTK6xpbzwe+rGSStqh-t9Pm4XHfCg_3yJm_g@mail.gmail.com>
-Subject: TRUST AND CONFIDENCE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dr Rhama David Benson,
 
-Please read carefully,
++Cc Patrick's current address
 
-This message might meet you in utmost surprise. However, it's just my
-urgent need for foreign partner that made me to contact you for this
-transaction. I got your contact from yahoo tourist search while I was
-searching for a foreign partner. I am assured of your capability and
-reliability to champion this business opportunity when I prayed about
-you.
+On 18/06/21 15:23, Xuewen Yan wrote:
+> From: Xuewen Yan <xuewen.yan@unisoc.com>
+>
+> Now in uclamp_rq_util_with(), when the task != NULL, the uclamp_max as following:
+> uc_rq_max = rq->uclamp[UCLAMP_MAX].value;
+> uc_eff_max = uclamp_eff_value(p, UCLAMP_MAX);
+> uclamp_max = max{uc_rq_max, uc_eff_max};
+>
+> Consider the following scenario:
+> (1)the rq is idle, the uc_rq_max is last task's UCLAMP_MAX;
+> (2)the p's uc_eff_max < uc_rq_max.
+>
+> The result is the uclamp_max = uc_rq_max instead of uc_eff_max, it is unreasonable.
+>
+> The scenario often happens in find_energy_efficient_cpu(), when the task has smaller UCLAMP_MAX.
+>
+> Inserts whether the rq is idle in the uclamp_rq_util_with().
+>
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+>  kernel/sched/sched.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index a189bec13729..0feef6af89f2 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2550,7 +2550,10 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+>
+>       if (p) {
+>               min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
+> -		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
+> +		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+> +			max_util = uclamp_eff_value(p, UCLAMP_MAX);
+> +		else
+> +			max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
 
-I am a banker by profession in Burkina-Faso, West Africa and currently
-holding the post of manager in account and auditing department in our
-bank. I have the opportunity of transferring the left over funds ($5.5
-Million Dollars) belonging to our deceased customer who died along
-with his entire family in a plane crash Hence; I am inviting you for a
-business deal where this money can be shared between us in the ratio
-of 60/40 if you agree to my business proposal.
+That makes sense to me - enqueuing the task will lift UCLAMP_FLAG_IDLE and
+set the rq clamp as the task's via uclamp_idle_reset().
 
-Further details of the transfer will be forwarded to you as
-soon as I receive your return mail as soon as you receive this letter.
+Does this want a
 
-Please indicate your willingness by sending the below information for
-more clarification and easy communication.
-For more details, Contact me for more details.
+  Fixes: 9d20ad7dfc9a ("sched/uclamp: Add uclamp_util_with()")
 
-(1) YOUR FULL NAME...............................
-(2) YOUR AGE AND SEX............................
-(3) YOUR CONTACT ADDRESS..................
-(4) YOUR PRIVATE PHONE N0..........
-(5) FAX NUMBER..............
-(6) YOUR COUNTRY OF ORIGIN..................
-(7) YOUR OCCUPATION.........................
+?
 
-Trusting to hear from you immediately.
+Also, when we have UCLAMP_FLAG_IDLE, we don't even need to read the rq max
+- and I'm pretty sure the same applies to the rq min. What about something like:
 
-Thanks & Best Regards,
-Dr Rhama David Benson.
+---
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 6510f0a46789..a2c6f6ae6392 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2833,23 +2833,27 @@ static __always_inline
+ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+ 				  struct task_struct *p)
+ {
+-	unsigned long min_util;
+-	unsigned long max_util;
++	unsigned long min_util = 0;
++	unsigned long max_util = 0;
+ 
+ 	if (!static_branch_likely(&sched_uclamp_used))
+ 		return util;
+ 
+-	min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
+-	max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
+-
+ 	if (p) {
+-		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
++		min_util = uclamp_eff_value(p, UCLAMP_MIN);
++		max_util = uclamp_eff_value(p, UCLAMP_MAX);
++
++		/*
++		 * Ignore last runnable task's max clamp, as this task will
++		 * reset it. Similarly, no need to read the rq's min clamp.
++		 */
+ 		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+-			max_util = uclamp_eff_value(p, UCLAMP_MAX);
+-		else
+-			max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
++			goto out;
+ 	}
+ 
++	min_util = max_t(unsigned long, min_util, READ_ONCE(rq->uclamp[UCLAMP_MIN].value));
++	max_util = max_t(unsigned long, max_util, READ_ONCE(rq->uclamp[UCLAMP_MAX].value));
++out:
+ 	/*
+ 	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
+ 	 * RUNNABLE tasks with _different_ clamps, we can end up with an
