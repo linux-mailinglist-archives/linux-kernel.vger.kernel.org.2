@@ -2,151 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F54F3B72E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE473B72EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhF2NHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhF2NHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:07:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 646F061CFA;
-        Tue, 29 Jun 2021 13:04:53 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 15:04:50 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, mst@redhat.com,
-        sgarzare@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        christian@brauner.io, akpm@linux-foundation.org,
-        peterz@infradead.org
-Subject: Re: [PATCH 2/3] kernel/fork, cred.c: allow copy_process to take user
-Message-ID: <20210629130450.tvrweqy7z2hlwsbh@wittgenstein>
-References: <20210624030804.4932-1-michael.christie@oracle.com>
- <20210624030804.4932-3-michael.christie@oracle.com>
+        id S233932AbhF2NHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233593AbhF2NHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:07:41 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EB5C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:05:13 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id t80so4705099oie.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AEV/WRF0Y0ujX/WfxQA0NcsIjvbaet/AXkvfL06Fxro=;
+        b=Fu7/abfpV6kGILaO1P8/3DbMiuH5lUgY6AXOOuHwB9qMXmA6bB2cxMLthLx6wCwyd8
+         I8BTv7O1FzKvqYDTWbMO2hHn7ztrhhm5vjk6VSDIDR+zjwosu4eZ0+mx3sm4KLPgPj6C
+         D8PlzwaEte7Tt3Y0zVmLOBdcF7jKLL9Kajy6L2MWft4T0zAbXP2gvdytbmigqkk38KE4
+         i7t9t26AsiaRZTsUkznZ9O+SwA2TTX6fyBdAQI+wgDg/hqD8g1mEFCTVVMYOgrNYvq/2
+         IMtZoPb0mSSe4OZGg5UjNVsMcs4uKEE5vQlmJdNKUhc/WcKEHt13MBAQXZSA6h8u/wiG
+         oiAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AEV/WRF0Y0ujX/WfxQA0NcsIjvbaet/AXkvfL06Fxro=;
+        b=tqi4OiEY7b4u61vzqntaknW7Pe7uafi5fjL1sMfiLdpZ8VyhR2YULMLFAcHmhrnaVO
+         vuNfW8E9ObZNesx8xWIH6cElwb/odHhQWcjumWWsI4dKInxcmZ3L5ANp8kVaxAcukHAL
+         F5Y58h4Ud3xG7EpOZpAepw3B3CJQPamSHz9DjilPZLBeHkaa75jDhOEnkDb6nS46Wcug
+         9lDaX/fTIRvOxhgQ4PxVw5QVVHtpwj5378bemR1DhdrFd7wDLz7R8sa16TCV8eKY8Owb
+         1je4BgDM0miMjnXAMSptg17pkB+Ml7QTw6cko4B9xCSlOUIeCBk2/yCTCz+/DFJ91FaE
+         s/qg==
+X-Gm-Message-State: AOAM531PkJE1nFU3K/F9qAHoZLg12IB/3bdZz4dqvWL5vDBJFdCa+ufi
+        4Don8QP663FfIBy0KwdwLKfpF1Ft7qUi3YZmLzldDw==
+X-Google-Smtp-Source: ABdhPJwn6TCJ6i41XF6zt8tugLcu+tQNibbvlhwV6CqK+CCWRGK+s7Fb13zbr/iDARVi/nPlFWoR/Mdn8UsLbL2H+M4=
+X-Received: by 2002:a05:6808:bd5:: with SMTP id o21mr21256488oik.172.1624971912663;
+ Tue, 29 Jun 2021 06:05:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624030804.4932-3-michael.christie@oracle.com>
+References: <20210629130048.820142-1-glider@google.com>
+In-Reply-To: <20210629130048.820142-1-glider@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 29 Jun 2021 15:05:00 +0200
+Message-ID: <CANpmjNN35j2Sf17TMqpOVZZv2N6ELzBZOsG5-jpFoPvgfuVzFA@mail.gmail.com>
+Subject: Re: [PATCH] kfence: skip DMA allocations
+To:     Alexander Potapenko <glider@google.com>
+Cc:     akpm@linux-foundation.org, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:08:03PM -0500, Mike Christie wrote:
-> This allows kthread to pass copy_process the user we want to check for the
-> RLIMIT_NPROC limit for and also charge for the new process. It will be used
-> by vhost where userspace has that driver create threads but the kthreadd
-> thread is checked/charged.
-> 
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
-> ---
->  include/linux/cred.h |  3 ++-
->  kernel/cred.c        |  7 ++++---
->  kernel/fork.c        | 12 +++++++-----
->  3 files changed, 13 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/cred.h b/include/linux/cred.h
-> index 14971322e1a0..9a2c1398cdd4 100644
-> --- a/include/linux/cred.h
-> +++ b/include/linux/cred.h
-> @@ -153,7 +153,8 @@ struct cred {
->  
->  extern void __put_cred(struct cred *);
->  extern void exit_creds(struct task_struct *);
-> -extern int copy_creds(struct task_struct *, unsigned long);
-> +extern int copy_creds(struct task_struct *, unsigned long,
-> +		      struct user_struct *);
->  extern const struct cred *get_task_cred(struct task_struct *);
->  extern struct cred *cred_alloc_blank(void);
->  extern struct cred *prepare_creds(void);
-> diff --git a/kernel/cred.c b/kernel/cred.c
-> index e1d274cd741b..e006aafa8f05 100644
-> --- a/kernel/cred.c
-> +++ b/kernel/cred.c
-> @@ -330,7 +330,8 @@ struct cred *prepare_exec_creds(void)
->   * The new process gets the current process's subjective credentials as its
->   * objective and subjective credentials
->   */
-> -int copy_creds(struct task_struct *p, unsigned long clone_flags)
-> +int copy_creds(struct task_struct *p, unsigned long clone_flags,
-> +	       struct user_struct *user)
->  {
->  	struct cred *new;
->  	int ret;
-> @@ -351,7 +352,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
->  		kdebug("share_creds(%p{%d,%d})",
->  		       p->cred, atomic_read(&p->cred->usage),
->  		       read_cred_subscribers(p->cred));
-> -		atomic_inc(&p->cred->user->processes);
-> +		atomic_inc(&user->processes);
+On Tue, 29 Jun 2021 at 15:00, Alexander Potapenko <glider@google.com> wrote:
+[...]
+> +       /*
+> +        * Skip DMA allocations. These must reside in the low memory, which we
+> +        * cannot guarantee.
+> +        */
+> +       if (flags & (__GFP_DMA | __GFP_DMA32) ||
 
-Hey Mike,
+I think we want braces around "flags & (...)", so that this becomes:
 
-This won't work anymore since this has moved into ucounts. So in v5.14
-atomic_inc(&p->cred->user->processes);
-will have been replaced by
-inc_rlimit_ucounts(task_ucounts(p), UCOUNT_RLIMIT_NPROC, 1);
+    if ((flags & (...)) ||
 
-From what I can see from your code vhost will always create this kthread
-for current. So you could e.g. add an internal flag/bitfield entry to
-struct kernel_clone_args that you can use to tell copy_creds() that you
-want to charge this thread against current's process limit.
+> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> +               return NULL;
 
->  		return 0;
->  	}
->  
-> @@ -384,7 +385,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
->  	}
->  #endif
->  
-> -	atomic_inc(&new->user->processes);
-> +	atomic_inc(&user->processes);
->  	p->cred = p->real_cred = get_cred(new);
->  	alter_cred_subscribers(new, 2);
->  	validate_creds(new);
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index dc06afd725cb..6389aea6d3eb 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1860,6 +1860,7 @@ static __latent_entropy struct task_struct *copy_process(
->  	struct file *pidfile = NULL;
->  	u64 clone_flags = args->flags;
->  	struct nsproxy *nsp = current->nsproxy;
-> +	struct user_struct *user = args->user;
->  
->  	/*
->  	 * Don't allow sharing the root directory with processes in a different
-> @@ -1976,16 +1977,17 @@ static __latent_entropy struct task_struct *copy_process(
->  #ifdef CONFIG_PROVE_LOCKING
->  	DEBUG_LOCKS_WARN_ON(!p->softirqs_enabled);
->  #endif
-> +	if (!user)
-> +		user = p->real_cred->user;
->  	retval = -EAGAIN;
-> -	if (atomic_read(&p->real_cred->user->processes) >=
-> -			task_rlimit(p, RLIMIT_NPROC)) {
-> -		if (p->real_cred->user != INIT_USER &&
-> +	if (atomic_read(&user->processes) >= task_rlimit(p, RLIMIT_NPROC)) {
-> +		if (user != INIT_USER &&
->  		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
->  			goto bad_fork_free;
->  	}
->  	current->flags &= ~PF_NPROC_EXCEEDED;
->  
-> -	retval = copy_creds(p, clone_flags);
-> +	retval = copy_creds(p, clone_flags, user);
->  	if (retval < 0)
->  		goto bad_fork_free;
->  
-> @@ -2385,7 +2387,7 @@ static __latent_entropy struct task_struct *copy_process(
->  #endif
->  	delayacct_tsk_free(p);
->  bad_fork_cleanup_count:
-> -	atomic_dec(&p->cred->user->processes);
-> +	atomic_dec(&user->processes);
->  	exit_creds(p);
->  bad_fork_free:
->  	p->state = TASK_DEAD;
-> -- 
-> 2.25.1
+Thanks,
+-- Marco
