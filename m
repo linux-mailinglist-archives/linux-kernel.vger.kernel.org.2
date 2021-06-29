@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BCA3B793D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0432A3B793F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhF2UW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44048 "EHLO mail.kernel.org"
+        id S235307AbhF2UXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233487AbhF2UW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:22:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA3861D8C;
-        Tue, 29 Jun 2021 20:20:29 +0000 (UTC)
+        id S234073AbhF2UXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 16:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB8D61DBA;
+        Tue, 29 Jun 2021 20:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624998031;
-        bh=bICSGDYFeSkCNUGnuvKNS7/wSSeOYM2U/FpPXiDmJgA=;
+        s=k20201202; t=1624998044;
+        bh=gw9AVLOUztWmRXWvM9/xRh99n0bjCRmSFulGqTeihMg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RATlm6Zf8tzxMTcLPSAQjL1NtGvovqj51un+T+TbgGoACI9EJPlJUydfCOQhAoOve
-         LImjE5NNPEnrwC5jrxEUiXw1epfAXG9ErX91m/i+kpuAZsiVmAmmOt1Q+x7oS54KcS
-         h9zBSm9hzgc5gFg70POaQeuzH3B1hIQRu2wHoESrx30VR+utvNP/bO8O1Vf7dUm9bH
-         mAKYFMvykaXSLjuKgSVXO1xxNakdIiqT8ySa9dx9uBJFeoJHR4daQQwR7mFN/UAbCD
-         +qoBiaiB4ha2p1dwAbt/7h3TDpQypg9SjaK+dZtGttgky96ubTzgLm0Zpn3y/EXUp1
-         rcrtXGKGWOgUw==
-Date:   Tue, 29 Jun 2021 22:20:28 +0200
-From:   Alexey Gladkov <legion@kernel.org>
+        b=SNiQ5hALN+ur2lXkwmiG+bSeejKhOJnbAmfOvPqiSe8HJKj0vcWWuOwP83/w9+8Tr
+         Owoxv0A9P5WQWh65z+c1Y1LX2CqFviNQdrI6CwdVKtCkWErBxCUwEdn9FysG/VPBWE
+         mgi4FPA+MMRVpC8Hq/fyzeXCa/YAbqzeyjMQpDoTd2ww35pp8VgB/s/sp2PxmfoV1W
+         nCJJt9BRuroncNUoRfvamRn+nxHx638UT8RgZ5fAiuW41jz/tsLOT+OZvJflvPmfyy
+         Q8TgQTUm8V7e+Z6qnOcD4UeF7ZXBtM9gzX/9+E86WuUg4oqWsz21QWDYBO6/08JoMm
+         m++DWZBEQ3H1w==
+Date:   Tue, 29 Jun 2021 23:20:41 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+Cc:     Stefan Berger <stefanb@linux.ibm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-Message-ID: <20210629202028.gduluywejae75icj@example.org>
-References: <87fsx1vcr9.fsf@disp2133>
- <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
- <20210629171757.shyr222zjpm6ev5t@example.org>
- <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Subject: Re: [GIT PULL] TPM DEVICE DRIVER changes for v5.14
+Message-ID: <20210629202041.4ptesmrs67hkbzxn@kernel.org>
+References: <20210623135600.n343aglmvu272fsg@kernel.org>
+ <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
+In-Reply-To: <CAHk-=whhEf=xJz=rdcLWNnRU1uR6Ft-mn6xNrOg3OcQ=5cX6BQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 11:07:11AM -0700, Linus Torvalds wrote:
-> On Tue, Jun 29, 2021 at 10:18 AM Alexey Gladkov <legion@kernel.org> wrote:
+On Mon, Jun 28, 2021 at 10:34:26AM -0700, Linus Torvalds wrote:
+> On Wed, Jun 23, 2021 at 6:56 AM Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > >
-> >
-> > > And why test for "ucounts" being non-NULL in
-> > >
-> > >                 if (ucounts && dec_rlimit_ucounts(ucounts,
-> > > UCOUNT_RLIMIT_SIGPENDING, 1))
-> > >                         put_ucounts(ucounts);
-> > >
-> > > when afaik both of those should be happy with a NULL 'ucounts' pointer
-> > > (if it was NULL, we certainly already used it for the reverse
-> > > operations for get_ucounts() and inc_rlimit_ucounts()..)
-> >
-> > The get_ucount() can theoretically return NULL. It increments the
-> > reference counter and if it overflows, the function will return NULL.
+> > Contains bug fixes for TPM, and support for signing modules using elliptic
+> > curve keys, which I promised to pick up to my tree.
 > 
-> .. but my point is that dec_rlimit_ucounts() and put_ucounts() should
-> be fine with whatever get_ucounts() returned. No
+> I pulled this, but then I looked at the key type changes, and that
+> made me so scared that I unpulled it again.
 > 
-> It looks like put_ucounts() is unhappy with a NULL ucounts argument,
-> but I think _that_ is what should get fixed.
+> In particular, that code will do
 > 
-> I think that conceptually we should have two clear alternatives:
+>     shell rm -f $(CONFIG_MODULE_SIG_KEY)
 > 
->  (a) either "get_ucounts()" returning NULL should be an error, and we
-> would have returned long before
+> from the Makefile if some config options have changed.
+> 
+> That just seems too broken for words. Maybe I misunderstand this, but
+> this really seems like an easy mistake might cause the kernel build to
+> actively start removing some random user key files that the user
+> pointed at previously.
+> 
+>                   Linus
 
-get_ucounts() in the __sigqueue_alloc() performs the get_uid() function
-but does not ignore the counter overflow. Basically get_uid() can fail in
-same way as get_ucounts(), but we just ignore it.
+Since there was still a new fix for the series [*], I'd rather refine
+the pull request without these patches, and not risk them being blocker
+for the rest of the commits.
 
-> or
-> 
->  (b) a NULL uncounts is usable, and a sequence like
-> put_ucounts(get_ucounts()) should just always work.
-> 
-> And honestly, a lot of the other ucounts funcrtions seem to take that
-> (b) approach. Example in that very function:
-> 
->         ucounts = task_ucounts(t);
->         sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-> 
-> which at no point tested for NULL or returned an error.
+[*] https://lore.kernel.org/linux-integrity/20210629201257.dr77kemy66mxpox5@kernel.org/
 
-Waaaait. task_ucounts() is a different thing. This function only gets a
-field from the task structure without any reference counting. But the
-get_ucounts() is more like get_user_ns() or get_uid(), but does not ignore
-counter overflow.
-
-Earlier I tried to use refcount_t which never returns errors [1]. We
-talked and you said that ignoring counter overflow errors is bad
-design for this case.
-
-> (And that also implies that the comment in dec_rlimit_ucounts() about
-> "Silence compiler warning" should just go away, because it's not just
-> a compiler warning, it's a required initialization).
-> 
->               Linus
-
-[1] https://lore.kernel.org/lkml/CAHk-%3dwjYOCgM%2bmKzwTZwkDDg12DdYjFFkmoFKYLim7NFmR9HBg@mail.gmail.com/
-
--- 
-Rgrds, legion
-
+/Jarkko
