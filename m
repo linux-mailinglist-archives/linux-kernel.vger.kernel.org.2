@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38343B71BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AFE3B71C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbhF2MIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        id S232999AbhF2MI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbhF2MIM (ORCPT
+        with ESMTP id S233141AbhF2MI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:08:12 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD1DC061760;
-        Tue, 29 Jun 2021 05:05:45 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id q192so16994304pfc.7;
-        Tue, 29 Jun 2021 05:05:45 -0700 (PDT)
+        Tue, 29 Jun 2021 08:08:26 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1454C061760;
+        Tue, 29 Jun 2021 05:05:58 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id u11so25471784wrw.11;
+        Tue, 29 Jun 2021 05:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=m17uJ8tyJmebRyt5rUaOfyapmzq/d5La3yQTJot+jLU=;
-        b=Q4PtFiHk8v/Ty9R7u93juX8WU5Y4PytGsEhUUXJqifnKImzgL1f/5XdIlujf6jU6kb
-         a2zBHXm7AJgat7y8RgqbS5azIJYNC72KOzxivjRwyGm6hCNO/3awLwsfGULEVZzD8wgO
-         kXUV/a/NxsZRQvqwSFDV3r9O3mQQI8uB+zy7x0SEEshco/X9Ls40gkAeHs+ZbELFd8FW
-         5JsyIemmWYYut3G64NJ8Pwe4Hq/QV3ir9PJk+JYVbKshwPWib38NoI/6Rj6afHawjKbQ
-         QukPA5L3Q7nVqjsgSYAGcM1R9alKpQdSG76e/n8cQNgRSsz7+kg3tF9UGnF/CnEPdLkg
-         HDMw==
+        bh=ZwIbVY3ptEtNpb22rcbQnSOWt2ow/tmLYWCDFy/3Iz0=;
+        b=RQkZIPgvq1iS040WwRb0k8ogk8bTE/CA0W+7DQhZ8x5UqN++TftOTvF3f8mSRlyoKa
+         lj7qaX2Rw5x0sJCNNlJOWIdC1TFfkLnCyTCtdVPP/w2QRqw3TmG9BIRZpqxUYFWMI1y9
+         UHm7OC6FVy+p7jVqBIOlssFqNrjQTHslNiyJya5D6vjWRIUTaU2ho/CsLKeditqYt1+6
+         J/OaojI+QdbgHsvgFlO4hRvLX73M2m4o/W5S8gz+U/yQBUgLA8C1YIK+w2NK2ilUSViO
+         sW7M9eb187PmmQdtusasIojKH2IyvUnVZoxHJn27h2t470iIn1uIc4ugCPdl3DcQrLVs
+         zSVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=m17uJ8tyJmebRyt5rUaOfyapmzq/d5La3yQTJot+jLU=;
-        b=A4YCbqLNo0GzH2XD3OU/sRACjYwVtOoh86BNfjcM2xD3dJP5s+XJ+clXLISRB3iFLB
-         XcoWDHMO005aFqHXsTaddMDmqdv5hTHlsCiIpdXRLI3d0pWPSAPJiU5P+e4vIRjLpn+U
-         +saeN8Ef8rNmlzwgDu0fVLIAuvf+fl8Qcpu3ySu3m3L7F6DeIS9xFC79AyRPPGHewPuY
-         YxpiMOMSZGe4ULtEm8ng1UWYDK2lGAPTjtTVIAtVH/h2GIb9ooMnXLrCaxau9W6jxhxi
-         pjHj9wFWNwykqv/2IF7ksT/J1fc0r0zJkHi88DgCBK56trJqKsdl9HSnx/gfdCGWhH8s
-         4cbw==
-X-Gm-Message-State: AOAM532U5/xnNvu+n6lcmM68uq80qsWTTPSI7+SJWOH6L30VhK3yQGZe
-        h4YyodNE1kBjEuWuchwdflE=
-X-Google-Smtp-Source: ABdhPJzXJdEFvqEb7D2EbReGHhAiNo0pZpEcD7hJJMwonKIWYtWmbHQzBclCIaCqhqe2B1A0dj3+IQ==
-X-Received: by 2002:a63:c1e:: with SMTP id b30mr28409882pgl.118.1624968344711;
-        Tue, 29 Jun 2021 05:05:44 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id m10sm13250306pff.215.2021.06.29.05.05.42
+        bh=ZwIbVY3ptEtNpb22rcbQnSOWt2ow/tmLYWCDFy/3Iz0=;
+        b=ZzOs6+NWmIVfgf9SBZQz4xdmk6z8b8cl0et2e/tjeHit5YVYl/hL6l4Dhyh58FxjUt
+         RgV13KPiHvz7pNRAQvIuGBpkO7VKiHzJ/oD4hD8ORMcUIFp7lu5Nqsp4+EhmFFl86jJo
+         2dgS5l11x+nkG8+Q0QjCt5J0YiW6JP9y+2rDfx7yJM9drIvnmmnEGZvplwZ8PJWtknKO
+         dKijkJqLweEoeDiAibmISAan2x9evzQ6RYL+GJfFRn1Ppd1Inilvvo5rdB1jbZVWPmYT
+         5oSasleQ4B1kM6TrEWjjie/s5Of6TgSc7Ay0nyC+NFij9jZi0UmPBcPizOrASdLkbAPG
+         d79g==
+X-Gm-Message-State: AOAM532xrwPEeDlh0gozuB0Z4M89x7IF6r/eRVLDtamcpraHfWmvbMn+
+        4RzCu7yAJzd/xKXBZLkHGs4=
+X-Google-Smtp-Source: ABdhPJxhgDSSIFaN/G5+3sTWvUpyzwYWXxmsIqiQ2zWgJ61EXcYSBaDFiN7WPYlYbxivyFtKwiIdTA==
+X-Received: by 2002:a5d:6547:: with SMTP id z7mr5054177wrv.27.1624968357425;
+        Tue, 29 Jun 2021 05:05:57 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id r10sm18070759wrq.17.2021.06.29.05.05.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:05:44 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 21:05:39 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>, jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: intel-qep: Remove linux/bitops.h include
-Message-ID: <YNsMk4qyfyZ43MfX@shinobu>
-References: <20210629111657.2655688-1-jarkko.nikula@linux.intel.com>
+        Tue, 29 Jun 2021 05:05:57 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 13:05:55 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 5.4 00/71] 5.4.129-rc1 review
+Message-ID: <YNsMo7UOBZrL5Dht@debian>
+References: <20210628143004.32596-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TCKwjjzXl7hJJ0ql"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210629111657.2655688-1-jarkko.nikula@linux.intel.com>
+In-Reply-To: <20210628143004.32596-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sasha,
 
---TCKwjjzXl7hJJ0ql
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 28, 2021 at 10:28:53AM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 5.4.129 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:29:43 PM UTC.
+> Anything received after that time might be too late.
 
-On Tue, Jun 29, 2021 at 02:16:57PM +0300, Jarkko Nikula wrote:
-> 0-DAY CI Kernel Test Service reported following iwyu warning:
->=20
-> drivers/counter/intel-qep.c:11:1: iwyu: warning: superfluous #include <li=
-nux/bitops.h>
->=20
-> Remove that include since we don't seem to use anything from it.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Build test:
+mips (gcc version 11.1.1 20210615): 65 configs -> no failure
+arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-> ---
->  drivers/counter/intel-qep.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/counter/intel-qep.c b/drivers/counter/intel-qep.c
-> index 8d7ae28fbd67..1a9512e28519 100644
-> --- a/drivers/counter/intel-qep.c
-> +++ b/drivers/counter/intel-qep.c
-> @@ -8,7 +8,6 @@
->   * Author: Jarkko Nikula <jarkko.nikula@linux.intel.com>
->   * Author: Raymond Tan <raymond.tan@intel.com>
->   */
-> -#include <linux/bitops.h>
->  #include <linux/counter.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> --=20
-> 2.30.2
->=20
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
---TCKwjjzXl7hJJ0ql
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+--
+Regards
+Sudip
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDbDIoACgkQhvpINdm7
-VJItWQ/6A8yH0ylrY1eWdpiUQPfk9G6P7CabrMZXfd0SiCq7jVBc48thIY7fNTIS
-+bWnyfnf3vHIgHd/MJuPx/tXXovuh6lCKM5F9wxSU3YulJeOGC8VQRU7+FiEe2gX
-b7aqw2rNCWAbfu8szYap1pFFEZUbw762jDSaWrf0JOdZnhOLh1aNzxuZ33v5HO1Z
-qMXXP6WU9XKajqRiee4eViJt7JyD36WZUgm7jf8gy1jo+x0H1ispn/vJb6x6/eZh
-8DlzKixp0dyz7j+esDPLnC0Fs/RwliYdnLYNe8+oUbyidKVpemuo1bl4yK0NS4xe
-JMdSvj9EXRhF7RjHu8amwY1Si2pPtvpjWTU4axsog0pO/ixerPjwwoXoJVZhqxnB
-vvt7zVhO6B7gYRXbju+6ffovyB/c33s18tozqe2X33U39iOCez8/16dQaYbIg8Wx
-VGqBg+ZRwyHbJNi18isGuP8dsj9arG3jgm29z45DvkRUH2zAtpiKyltR6Bbtycc2
-iSKMprAXO3dTWTH48f4qhPND9pCebS5K+8ykR2ssVyOXRI3L7/kzrO6K4j1+1VUK
-yIRuiTb6JXKM1mq0ed+ZEJMW/yTA2km8le6fHCgH02hJ4pkzGvT6u3vZJARYlc/I
-6dD0lbv7HFjlLEbI9qe+vbef6ykBwVevKgq/SsJ8u/eYK8Qjp18=
-=wrYO
------END PGP SIGNATURE-----
-
---TCKwjjzXl7hJJ0ql--
