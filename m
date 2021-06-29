@@ -2,204 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6773B6F16
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506B03B6F15
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhF2IMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S232383AbhF2IMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhF2IMo (ORCPT
+        with ESMTP id S232349AbhF2IMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:12:44 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3361AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:10:17 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 17:08:35 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1624954213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H13293WG04IIsX9YrKNxnaaf4itfvgmX19IrGo9EQt8=;
-        b=ImQOkb4GJh8/nQMdUmVSZrfPpz7WcLVPgfX8rdvXEfjzwqcHN044rr5glmALcZ5PlMKqCM
-        lkiQV56CLHshrSaXL/rSOPry7FpS+CBc6FbKj6woi0D5WaG8JcYW8DdpFe4ItnOIKcnVkO
-        +c78EaG4JQk6O2hMeEc/xVzEZCn/qzg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Bin Wang <wangbin224@huawei.com>, mike.kravetz@oracle.com
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, naoya.horiguchi@nec.com, wuxu.wu@huawei.com
-Subject: Re: Re: [PATCH v2] mm: hugetlb: add hwcrp_hugepages to record memory
- failure on hugetlbfs
-Message-ID: <20210629080835.GA427744@u2004>
-References: <c38e54ea-6aae-addf-0d6b-140b097a346b@oracle.com>
- <20210628092752.2135-1-wangbin224@huawei.com>
+        Tue, 29 Jun 2021 04:12:15 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95104C061574;
+        Tue, 29 Jun 2021 01:09:48 -0700 (PDT)
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id E4BBD83121;
+        Tue, 29 Jun 2021 10:09:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624954185;
+        bh=FAYNqeS6gRGT1P8zbOQz0D0+tAy4ISiTRiBKF07uiQk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GLHdqpew3bzBUNovke7LKaB7cbIEq1WsFEPwluQ0YnsIIF90LBjiWx5OlpwJDxRLL
+         YNWcxKuSo5YdPtE2sGajLZ3ijq4uewTTWl+MJllYZis15d43iaGY0ClURiuKeMcbuc
+         mGGDTYAP7Vgkz9NyqgzKJ1U5AeDqxUEsU6yxZXIUEPej2xDdl6y7QDAIAGtS6cllZz
+         QA1TcdGHIHr8JppI+r543IZuvolFYdZSpncVEKTpcaXvfdV8ySdHjJEZsBiymwYvLZ
+         LgAEmzjPszd9huv+IGU9cjNVG9SMBMHcAX/uM1Wql3bhdC5yD2FZ8jqkvvRIOeBSIq
+         xvdcwZe/RJHow==
+Date:   Tue, 29 Jun 2021 10:09:37 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
+ L2 switch
+Message-ID: <20210629100937.10ce871d@ktm>
+In-Reply-To: <20210628142329.2y7gmykoy7uh44gd@skbuf>
+References: <YNOTKl7ZKk8vhcMR@lunn.ch>
+        <20210624125304.36636a44@ktm>
+        <YNSJyf5vN4YuTUGb@lunn.ch>
+        <20210624163542.5b6d87ee@ktm>
+        <YNSuvJsD0HSSshOJ@lunn.ch>
+        <20210625115935.132922ff@ktm>
+        <YNXq1bp7XH8jRyx0@lunn.ch>
+        <20210628140526.7417fbf2@ktm>
+        <20210628124835.zbuija3hwsnh2zmd@skbuf>
+        <20210628161314.37223141@ktm>
+        <20210628142329.2y7gmykoy7uh44gd@skbuf>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210628092752.2135-1-wangbin224@huawei.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/fL/0X0KY/DOM/P3UCC=9=NJ"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bin, Mike,
+--Sig_/fL/0X0KY/DOM/P3UCC=9=NJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 28, 2021 at 05:27:52PM +0800, Bin Wang wrote:
-> > > diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> > > index 926eeb9bf4eb..ffb6e7b6756b 100644
-> > > --- a/fs/hugetlbfs/inode.c
-> > > +++ b/fs/hugetlbfs/inode.c
-> > > @@ -986,8 +986,7 @@ static int hugetlbfs_error_remove_page(struct address_space *mapping,
-> > >  	pgoff_t index = page->index;
-> > >  
-> > >  	remove_huge_page(page);
-> > > -	if (unlikely(hugetlb_unreserve_pages(inode, index, index + 1, 1)))
-> > > -		hugetlb_fix_reserve_counts(inode);
-> > 
-> > As mentioned, huge page reserve counts are not used to record number of
-> > poisioned pages.  The calls to hugetlb_unreserve_pages and possibly
-> > hugetlb_fix_reserve_counts are necessary for reserve accounting.  They
-> > can not be removed.
-> 
-> Thanks for your explanation very much. I didn't get the point of the
-> comments from the first patch. hugetlb_fix_reserve_counts() shouldn't
-> be removed and I will fix this.
-> 
-> > > +	hugetlb_fix_hwcrp_counts(page);
-> > 
-> > This new routine just counts memory errors on 'in use' huge pages.
-> > I do not see a call anywhere to count memory errors on huge pages
-> > not in use.
-> 
-> It's my oversight. I should have considered this situation. I tested
-> it with hwcrp_hugepages count, and this is the result:
-> # cat /proc/meminfo |grep -E 'HugePages_|Hard'
-> HardwareCorrupted:     0 kB
-> HugePages_Total:      64
-> HugePages_Free:       64
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> HugePages_Hwcrp:       0
-> No count changes, even the HardwareCorrupted. I'm not sure if this is
-> normal. This is what happens in kernel(stable master branch):
-> static int memory_failure_hugetlb(unsigned long pfn, int flags)
-> {
-> 	...
-> 	/* TestSetPageHWPoison return 0 */
-> 	if (TestSetPageHWPoison(head)) {
-> 		...
-> 	}
-> 
-> 	num_poisoned_pages_inc(); /* HardwareCorrupted += PAGE_SIZE */
-> 
-> 	/* get_hwpoison_page() return 0 */
-> 	if (!(flags & MF_COUNT_INCREASED) && !get_hwpoison_page(p, flags, 0)) {
-> 		/*
-> 		 * Check "filter hit" and "race with other subpage."
-> 		 */
-> 		lock_page(head);
-> 		/* PageHWPoison() return 1 */
-> 		if (PageHWPoison(head)) {
-> 			/* (p != head && TestSetPageHWPoison(head)) is hit */
-> 			if ((hwpoison_filter(p) && TestClearPageHWPoison(p))
-> 			    || (p != head && TestSetPageHWPoison(head))) {
-> 				/* HardwareCorrupted -= PAGE_SIZE */
-> 				num_poisoned_pages_dec();
-> 				unlock_page(head);
-> 				return 0;
-> 			}
-> 		}
-> 		...
-> 	}
-> 	...
-> }
-> It seems like that memory errors on huge pages not in use hit the
-> "race with other subpage". I think I shouldn't add hwcrp_hugepages in
-> this routine. Maybe we need more conditions to distinguish this.
+Hi Vladimir,
 
-BTW, I think that the race handled by this if-block will be no longer
-necessary if mf_mutex is extended to cover unpoison_memory() by patch
-"mm/hwpoison: mf_mutex for soft offline and unpoison" [1].
-I'm thinking of updating patch 2/6 [2] to remove this if-block.
+> On Mon, Jun 28, 2021 at 04:13:14PM +0200, Lukasz Majewski wrote:
+> > > > > So before considering merging your changes, i would like to
+> > > > > see a usable binding.
+> > > > >
+> > > > > I also don't remember seeing support for STP. Without that,
+> > > > > your network has broadcast storm problems when there are
+> > > > > loops. So i would like to see the code needed to put ports
+> > > > > into blocking, listening, learning, and forwarding states.
+> > > > >
+> > > > > 	  Andrew =20
+> > >
+> > > I cannot stress enough how important it is for us to see STP
+> > > support and consequently the ndo_start_xmit procedure for switch
+> > > ports. =20
+> >
+> > Ok.
+> > =20
+> > > Let me see if I understand correctly. When the switch is enabled,
+> > > eth0 sends packets towards both physical switch ports, and eth1
+> > > sends packets towards none, but eth0 handles the link state of
+> > > switch port 0, and eth1 handles the link state of switch port 1? =20
+> >
+> > Exactly, this is how FEC driver is utilized for this switch. =20
+>=20
+> This is a much bigger problem than anything which has to do with code
+> organization. Linux does not have any sort of support for unmanaged
+> switches.
 
-  [1]: https://lore.kernel.org/linux-mm/20210614021212.223326-2-nao.horiguchi@gmail.com/
-  [2]: https://lore.kernel.org/linux-mm/20210614021212.223326-3-nao.horiguchi@gmail.com/
+My impression is similar. This switch cannot easily fit into DSA (lack
+of appending tags) nor to switchdev.
 
-# .. so you don't have to care for the detail of this part.
+The latter is caused by two modes of operation:
 
-> 
-> > >  
-> > >  	return 0;
-> > >  }
-> > > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > > index f7ca1a3870ea..1d5bada80aa5 100644
-> > > --- a/include/linux/hugetlb.h
-> > > +++ b/include/linux/hugetlb.h
-> > > @@ -171,6 +171,7 @@ void putback_active_hugepage(struct page *page);
-> > >  void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason);
-> > >  void free_huge_page(struct page *page);
-> > >  void hugetlb_fix_reserve_counts(struct inode *inode);
-> > > +void hugetlb_fix_hwcrp_counts(struct page *page);
-> > >  extern struct mutex *hugetlb_fault_mutex_table;
-> > >  u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
-> > >  
-> > > @@ -602,12 +603,14 @@ struct hstate {
-> > >  	unsigned long free_huge_pages;
-> > >  	unsigned long resv_huge_pages;
-> > >  	unsigned long surplus_huge_pages;
-> > > +	unsigned long hwcrp_huge_pages;
-> > >  	unsigned long nr_overcommit_huge_pages;
-> > >  	struct list_head hugepage_activelist;
-> > >  	struct list_head hugepage_freelists[MAX_NUMNODES];
-> > >  	unsigned int nr_huge_pages_node[MAX_NUMNODES];
-> > >  	unsigned int free_huge_pages_node[MAX_NUMNODES];
-> > >  	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-> > > +	unsigned int hwcrp_huge_pages_node[MAX_NUMNODES];
-> > 
-> > I understand your requirement to count the number of memory errors on
-> > hugetlb pages.  However, we need to think carefully about we represent
-> > that count.
-> > 
-> > Noaya, do you have opinions on where would be the best place to store
-> > this information?  The hugetlb memory error code has the comment 'needs
-> > work'.  Ideally, we could isolate memory errors to a single base (4K for
-> > x86) page and free the remaining base pages to buddy.  We could also
-> > potentially allocate a 'replacement' hugetlb page doing something like
-> > alloc_and_dissolve_huge_page.
+- Bypass mode (no switch) -> DMA1 and DMA0 are used
+- Switch mode -> only DMA0 is used
 
-Yes, these two are the important goals of hugetlb support.
 
-> > 
-> > If we get an error on a hugetlb page and can isolate it to a base page
-> > and replace the huge page, is it still a huge page memory error?
+Moreover, from my understanding of the CPSW - looks like it uses always
+just a single DMA, and the switching seems to be the default operation
+for two ethernet ports.
 
-That's not counted as a huge page error, but just a base page error.
+The "bypass mode" from NXP's L2 switch seems to be achieved inside the
+CPSW switch, by configuring it to not pass packets between those ports.
 
-> > 
-> > IMO, we should work on isolating memory errors to a base page and
-> > replacing the huge page.  Then, the existing count of base pages with
-> > memory errors would be sufficient?
+> Please try to find out if your switch is supposed to be able
+> to be managed (run control protocols on the CPU).
 
-Yes, I agree with Mike.  Adding new fields dedicated to the (maybe temporary)
-counters in struct hstate seems to me an overkill.
+It can support all the "normal" set of L2 switch features:
 
-> > 
-> > This is something I would like to work, but I have higher priorities
-> > right now.
-> 
-> Yes, splitting the huge pages and isolating a base page is ideal. And
-> we do this with dissolve_free_huge_page() when page_mapping() return
-> NULL. I think there is a reason(but I do not get it) why we don't split
-> huge pags in hugetlbfs_error_remove_page() or after. So I choose to 
-> add a new count.
+- VLANs, lookup table (with learning), filtering and forwarding
+  (Multicast, Broadcast, Unicast), priority queues, IP snooping, etc.
 
-Maybe the resource is the main reason of this incompleteness, I noticed this
-for years and continued to say "this is in my todo list", but still don't
-make it (really sorry about that...).  Anyway, if you can (I hope) solve
-your problem with "/proc/kpageflag" approach, which is a recommended solution.
+Frames for BPDU are recognized by the switch and can be used to
+implement support for RSTP. However, this switch has a separate address
+space (not covered and accessed by FEC address).
 
-Thanks,
-Naoya Horiguchi
+> If not, well, I
+> don't know what to suggest.
+
+For me it looks like the NXP's L2 switch shall be treated _just_ as
+offloading IP block to accelerate switching (NXP already support
+dpaa[2] for example).
+
+The idea with having it configured on demand, when:
+ip link add name br0 type bridge; ip link set br0 up;
+ip link set eth0 master br0;
+ip link set eth1 master br0;
+
+Seems to be a reasonable one. In the above scenario it would work hand
+by hand with FEC drivers (as those would handle PHY communication
+setup and link up/down events).
+
+It would be welcome if the community could come up with some rough idea
+how to proceed with this IP block support (especially that for example
+imx287 is used in many embedded devices and is going to be in active
+production for next 10+ years).
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/fL/0X0KY/DOM/P3UCC=9=NJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDa1UEACgkQAR8vZIA0
+zr1otAgApnelllapqfHrULNWTGmc4JtHdczHLbYNZ3aX3DM56WYNVRgs9kTJ3+Pt
+fz6pXAGbdGmbqufMiOeATp2Tuj9kT/YJB/W9/hrjUn7Ret6nvCPup/XTjn2UcQPh
+8jdtyDYX61vqz/Lzj2Fzlb1tdGUzzKJ0p+aACRz5X63P6nWMsRzmU1L5/hwwUErc
+w2tQORjpOQa1CyHfmHpud2g7URlC7yjHoPqcdHVtDwtPDmx3XOHHpJ3fQv+OcTuf
+nlWaB/9C2A5jTLwGXN2f9u/UVYe89t21E153rln9wLWwvPcBgGjjmbeq+Oh2XDrf
+GflLEKetwCp+7ukQhre3EhVfk4HTug==
+=K7rH
+-----END PGP SIGNATURE-----
+
+--Sig_/fL/0X0KY/DOM/P3UCC=9=NJ--
