@@ -2,245 +2,496 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D293B6BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC7E3B6BDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhF2As4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 20:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        id S230001AbhF2AvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 20:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhF2Asx (ORCPT
+        with ESMTP id S230090AbhF2AvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 20:48:53 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4A5C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:46:24 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id w127so24235104oig.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k/lfuQQg61ZaHC5qnN0epkerx6BqWbZmy+dWSW56u7g=;
-        b=MRrFko5vXv99rKivbMBhOMsrb+Kt4548QYyErh/iam9BLXcnClr2PWJSjauBqDyz90
-         1jehtnKAeyln+q4S3GRlzcQYrlzfJdzaaIng8nfnFpA6wRa+0PVCHlDZ/1gXIKlfSKrR
-         sYa2oTmaG7ZukAPogMu80z1AqrfWOjf1ipG/xZH7GnXeTNI5+ciBGQUUXjiJ/KFAxUlL
-         3KWpIdV3RE0todSh4bKsXNTHfnLDzoQSjTQOiTr51VFTaQiv1G3DQO+fGK6JhKVQEp6N
-         069ZojNAgcfi4OO6vVpGMpNituWgcfCOGOy+eDwGPpbc7p2rB7+KaKrEsHCEHgMkrBHW
-         usOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k/lfuQQg61ZaHC5qnN0epkerx6BqWbZmy+dWSW56u7g=;
-        b=erwUj34PC1Mh/8hEBLHKqIqxUoqUvmdU6NElSeBD9ZzKDtno1DhjlKBPTuDKd112L3
-         u+KxnqLB+EIB4QLYZQiqkuj+4vV1kR8LJKCTMWj9hO7JtHbp/s2IH6F006tIueAOVvKY
-         21p5q5lVRHWS4RtywxgWq2ucN/EhRJOXk3tedYWEiAi52oLZv7qa4nK+6uNlJMCUG9a8
-         iAklADwJMvVyO+cwq6uVxViC/z3NBBIf0q7n6LIKlj9VAbcHGcmhkZcozY/swa+TY3dk
-         p0Vqzb4ujB4LNa2hkQ+bi2TNlmJmwRbB34rAabMg/qI2VhKu/u1nDVTVbXQG87rACfjq
-         k5hg==
-X-Gm-Message-State: AOAM531s6FtbgMwTVbqk72ucaJwYK9rId8SbW2CWdIwAVnIpcSdbJtCH
-        0VyiLJ8H0gh0+ig4pxMywoIvAg==
-X-Google-Smtp-Source: ABdhPJwvjvY+hLYh+UMOhZC9CoNmZC0Mii23q2casw2afOrjmjC0qWQ2jfxtIy8Sm2Z73oSIfz6AYQ==
-X-Received: by 2002:a05:6808:20a2:: with SMTP id s34mr3167059oiw.175.1624927583884;
-        Mon, 28 Jun 2021 17:46:23 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f3sm2671979ote.74.2021.06.28.17.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 17:46:23 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] phy: qcom-qmp: Add sc8180x PCIe support
-Date:   Mon, 28 Jun 2021 17:45:09 -0700
-Message-Id: <20210629004509.1788286-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
-References: <20210629004509.1788286-1-bjorn.andersson@linaro.org>
+        Mon, 28 Jun 2021 20:51:01 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DE2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:48:34 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 09B1A806B6;
+        Tue, 29 Jun 2021 12:48:28 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1624927708;
+        bh=u2EMNyyJVZNzARjSvEVmmniuBo3AAdYapJjGP4BBgxA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=q2XbocSlyKLVUUkokPWltMJDXUyK8xAAyovraIKHxGnD2oZP91UN2Jzk/c3DpSbql
+         MqKKY3DcBR2P/rCmBfYZKtAfv/Bt9wKrU7meD5CNoF8GciEV0IyyXWjjjNkrqzN3oD
+         OBmewiyJpYaqEn9oB45OFQEBgYznfRVamRGWg0ckzVToW4b21m8WqsbJp3A2T7DZqO
+         hmcAO75Wrh7YwZdw/KlfDR77eZYLca6ARDNs4LOHH7sIoST0l97sQu0RvO9YF8/raB
+         d+iQaeggPsMEp7PA1TZUrx2WRUh4UeGiShTGUQhrdRqHeVpn/fLvSz1VoeKXNRHxT9
+         WGRnUTZ9O9ORQ==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60da6ddb0000>; Tue, 29 Jun 2021 12:48:27 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id 9C71913EE58;
+        Tue, 29 Jun 2021 12:48:27 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id 95AC1242927; Tue, 29 Jun 2021 12:48:27 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org
+Cc:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: netfilter: Add RFC-7597 Section 5.1 PSID support
+Date:   Tue, 29 Jun 2021 12:48:18 +1200
+Message-Id: <20210629004819.4750-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210426122324.GA975@breakpoint.cc>
+References: <20210426122324.GA975@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=IOh89TnG c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=r6YtysWOX24A:10 a=3HDBlxybAAAA:8 a=fFODNE8ERnhjF_FTNAEA:9 a=laEoCiVfU_Unz3mSdgXN:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm SC8180x platform has 4 PCIe controllers and PHYs, typically
-used to connect things such as a modem or NVME storage device. Add the
-programming sequence to get the PHYs up and running.
+This adds support for masquerading into a smaller subset of ports -
+defined by the PSID values from RFC-7597 Section 5.1. This is part of
+the support for MAP-E and Lightweight 4over6, which allows multiple
+devices to share an IPv4 address by splitting the L4 port / id into
+ranges.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp.c | 140 ++++++++++++++++++++++++++++
- 1 file changed, 140 insertions(+)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index b772ad4bf23d..8556d08ebe60 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -2035,6 +2035,113 @@ static const struct qmp_phy_init_tbl qmp_v4_dp_tx_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_EMP_POST1_LVL, 0x20),
+Notes:
+    Thanks for your time reviewing. I have also submitted a patch to netf=
+ilter iptables for these changes.
+   =20
+    Comments:
+    Selecting the ports for psid needs to be in nf_nat_core since the PSI=
+D ranges are not a single range. e.g. offset=3D1024, PSID=3D0, psid_lengt=
+h=3D8 generates the ranges 1024-1027, 2048-2051, ..., 63488-63491, ... (e=
+xample taken from RFC7597 B.2).
+    This is why it is enough to set NF_NAT_RANGE_PROTO_SPECIFIED and init=
+ upper/lower boundaries.
+   =20
+    Changes in v2:
+    - Moved cached range2 from struct nf_conn to nf_conn_nat.
+    - Moved psid fields out of union nf_conntrack_man_proto. Now using ra=
+nge2 fields src, dst, and base to store psid parameters.
+    - Readded removed error check for nf_ct_expect_related()
+    - Added new version to masquerade iptables extension to use the range=
+2 base field.
+
+ include/net/netfilter/nf_nat.h        |  1 +
+ include/uapi/linux/netfilter/nf_nat.h |  3 +-
+ net/netfilter/nf_nat_core.c           | 69 +++++++++++++++++++++++----
+ net/netfilter/nf_nat_ftp.c            | 29 ++++++-----
+ net/netfilter/nf_nat_helper.c         | 16 +++++--
+ net/netfilter/nf_nat_masquerade.c     | 13 +++--
+ net/netfilter/xt_MASQUERADE.c         | 44 +++++++++++++++--
+ 7 files changed, 140 insertions(+), 35 deletions(-)
+
+diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_na=
+t.h
+index 987111ae5240..67cc033f76bb 100644
+--- a/include/net/netfilter/nf_nat.h
++++ b/include/net/netfilter/nf_nat.h
+@@ -32,6 +32,7 @@ struct nf_conn_nat {
+ 	union nf_conntrack_nat_help help;
+ #if IS_ENABLED(CONFIG_NF_NAT_MASQUERADE)
+ 	int masq_index;
++	struct nf_nat_range2 *range;
+ #endif
  };
- 
-+static const struct qmp_phy_init_tbl sc8180x_qmp_pcie_serdes_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SYSCLK_EN_SEL, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CLK_SELECT, 0x34),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CORECLK_DIV_MODE1, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_PLL_IVCO, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_LOCK_CMP_EN, 0x42),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_VCO_TUNE1_MODE0, 0x24),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_VCO_TUNE2_MODE1, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_VCO_TUNE1_MODE1, 0xb4),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_VCO_TUNE_MAP, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_BIN_VCOCAL_HSCLK_SEL, 0x11),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DEC_START_MODE0, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START3_MODE0, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START2_MODE0, 0x55),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START1_MODE0, 0x55),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_LOCK_CMP2_MODE0, 0x1a),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_LOCK_CMP1_MODE0, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DEC_START_MODE1, 0x68),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START3_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START2_MODE1, 0xaa),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_DIV_FRAC_START1_MODE1, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_LOCK_CMP2_MODE1, 0x34),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_LOCK_CMP1_MODE1, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_HSCLK_SEL, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CP_CTRL_MODE0, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_PLL_RCTRL_MODE0, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_PLL_CCTRL_MODE0, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CP_CTRL_MODE1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_PLL_RCTRL_MODE1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_PLL_CCTRL_MODE1, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_BIN_VCOCAL_CMP_CODE2_MODE0, 0x1e),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_BIN_VCOCAL_CMP_CODE1_MODE0, 0xca),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_BIN_VCOCAL_CMP_CODE2_MODE1, 0x18),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_BIN_VCOCAL_CMP_CODE1_MODE1, 0xa2),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SYSCLK_BUF_ENABLE, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_EN_CENTER, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_PER1, 0x31),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_PER2, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_STEP_SIZE1_MODE0, 0xde),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_STEP_SIZE2_MODE0, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_STEP_SIZE1_MODE1, 0x4c),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SSC_STEP_SIZE2_MODE1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CLK_ENABLE1, 0x90),
-+};
+=20
+diff --git a/include/uapi/linux/netfilter/nf_nat.h b/include/uapi/linux/n=
+etfilter/nf_nat.h
+index a64586e77b24..660e53ffdb57 100644
+--- a/include/uapi/linux/netfilter/nf_nat.h
++++ b/include/uapi/linux/netfilter/nf_nat.h
+@@ -12,6 +12,7 @@
+ #define NF_NAT_RANGE_PROTO_RANDOM_FULLY		(1 << 4)
+ #define NF_NAT_RANGE_PROTO_OFFSET		(1 << 5)
+ #define NF_NAT_RANGE_NETMAP			(1 << 6)
++#define NF_NAT_RANGE_PSID			(1 << 7)
+=20
+ #define NF_NAT_RANGE_PROTO_RANDOM_ALL		\
+ 	(NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PROTO_RANDOM_FULLY)
+@@ -20,7 +21,7 @@
+ 	(NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED |	\
+ 	 NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PERSISTENT |	\
+ 	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET | \
+-	 NF_NAT_RANGE_NETMAP)
++	 NF_NAT_RANGE_NETMAP | NF_NAT_RANGE_PSID)
+=20
+ struct nf_nat_ipv4_range {
+ 	unsigned int			flags;
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 7de595ead06a..7307bb28ece2 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -195,13 +195,32 @@ static bool nf_nat_inet_in_range(const struct nf_co=
+nntrack_tuple *t,
+ static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
+ 			     enum nf_nat_manip_type maniptype,
+ 			     const union nf_conntrack_man_proto *min,
+-			     const union nf_conntrack_man_proto *max)
++			     const union nf_conntrack_man_proto *max,
++			     const union nf_conntrack_man_proto *base,
++			     bool is_psid)
+ {
+ 	__be16 port;
++	u16 offset_mask =3D 0;
++	u16 psid_mask =3D 0;
++	u16 psid =3D 0;
 +
-+static const struct qmp_phy_init_tbl sc8180x_qmp_pcie_tx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RCV_DETECT_LVL_2, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_TX_LANE_MODE_1, 0x5),
-+};
++	/* In this case we are in PSID mode, avoid checking all ranges by compu=
+ting bitmasks */
++	if (is_psid) {
++		u16 j =3D ntohs(max->all) - ntohs(min->all) + 1;
++		u16 a =3D (1 << 16) / ntohs(base->all);
 +
-+static const struct qmp_phy_init_tbl sc8180x_qmp_pcie_rx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_CNTRL, 0x03),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_ENABLES, 0x1c),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_DEGLITCH_CNTRL, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL1, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL2, 0x6e),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL3, 0x6e),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL4, 0x4a),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DFE_EN_TIMER, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CONTROLS, 0x70),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x17),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL1, 0x54),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_VGA_CAL_CNTRL2, 0x37),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_LOW, 0xd4),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH, 0x54),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH2, 0xdb),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH3, 0x39),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH4, 0x31),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_LOW, 0x24),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH, 0xe4),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH2, 0xec),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH3, 0x39),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH4, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_LOW, 0x7f),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH2, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH3, 0xdb),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH4, 0x75),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_LOW, 0xc0),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_AUX_DATA_TCOARSE_TFINE, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RCLK_AUXDATA_SEL, 0xc0),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DCC_CTRL1, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_GM_CAL, 0x05),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FO_GAIN, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_GAIN, 0x03),
-+};
++		offset_mask =3D (a - 1) * ntohs(base->all);
++		psid_mask =3D ((ntohs(base->all) / j) << 1) - 1;
++		psid =3D ntohs(min->all) & psid_mask;
++	}
+=20
+ 	switch (tuple->dst.protonum) {
+ 	case IPPROTO_ICMP:
+ 	case IPPROTO_ICMPV6:
++		if (is_psid) {
++			return ((ntohs(tuple->src.u.icmp.id) & offset_mask) !=3D 0) &&
++				((ntohs(tuple->src.u.icmp.id) & psid_mask) =3D=3D psid);
++		}
+ 		return ntohs(tuple->src.u.icmp.id) >=3D ntohs(min->icmp.id) &&
+ 		       ntohs(tuple->src.u.icmp.id) <=3D ntohs(max->icmp.id);
+ 	case IPPROTO_GRE: /* all fall though */
+@@ -215,6 +234,10 @@ static bool l4proto_in_range(const struct nf_conntra=
+ck_tuple *tuple,
+ 		else
+ 			port =3D tuple->dst.u.all;
+=20
++		if (is_psid) {
++			return ((ntohs(port) & offset_mask) !=3D 0) &&
++				((ntohs(port) & psid_mask) =3D=3D psid);
++		}
+ 		return ntohs(port) >=3D ntohs(min->all) &&
+ 		       ntohs(port) <=3D ntohs(max->all);
+ 	default:
+@@ -239,7 +262,8 @@ static int in_range(const struct nf_conntrack_tuple *=
+tuple,
+ 		return 1;
+=20
+ 	return l4proto_in_range(tuple, NF_NAT_MANIP_SRC,
+-				&range->min_proto, &range->max_proto);
++				&range->min_proto, &range->max_proto, &range->base_proto,
++				range->flags & NF_NAT_RANGE_PSID);
+ }
+=20
+ static inline int
+@@ -360,10 +384,10 @@ find_best_ips_proto(const struct nf_conntrack_zone =
+*zone,
+  *
+  * Per-protocol part of tuple is initialized to the incoming packet.
+  */
+-static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple=
+,
+-					const struct nf_nat_range2 *range,
+-					enum nf_nat_manip_type maniptype,
+-					const struct nf_conn *ct)
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct)
+ {
+ 	unsigned int range_size, min, max, i, attempts;
+ 	__be16 *keyptr;
+@@ -420,6 +444,25 @@ static void nf_nat_l4proto_unique_tuple(struct nf_co=
+nntrack_tuple *tuple,
+ 		return;
+ 	}
+=20
++	if (range->flags & NF_NAT_RANGE_PSID) {
++		/* PSID defines a group of port ranges, per PSID. PSID
++		 * is already contained in min and max.
++		 */
++		unsigned int min_to_max, base;
 +
-+static const struct qmp_phy_init_tbl sc8180x_qmp_pcie_pcs_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_P2U3_WAKEUP_DLY_TIME_AUXCLK_L, 0x01),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RX_SIGDET_LVL, 0xaa),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_RATE_SLEW_CNTRL1, 0x0b),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_REFGEN_REQ_CONFIG1, 0x0d),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_EQ_CONFIG5, 0x01),
-+};
++		min =3D ntohs(range->min_proto.all);
++		max =3D ntohs(range->max_proto.all);
++		base =3D ntohs(range->base_proto.all);
++		min_to_max =3D max - min;
++		for (; max <=3D (1 << 16) - 1; min +=3D base, max =3D min + min_to_max=
+) {
++			for (off =3D 0; off <=3D min_to_max; off++) {
++				*keyptr =3D htons(min + off);
++				if (!nf_nat_used_tuple(tuple, ct))
++					return;
++			}
++		}
++	}
 +
-+static const struct qmp_phy_init_tbl sc8180x_qmp_pcie_pcs_misc_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_OSC_DTCT_ACTIONS, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_L1P1_WAKEUP_DLY_TIME_AUXCLK_L, 0x01),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_L1P2_WAKEUP_DLY_TIME_AUXCLK_L, 0x01),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_INT_AUX_CLK_CONFIG1, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_PRESET_P10_PRE, 0x00),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_PRESET_P10_POST, 0x58),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_DRIVE, 0xc1),
-+};
+ 	/* If no range specified... */
+ 	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
+ 		/* If it's dst rewrite, can't change port */
+@@ -529,11 +572,19 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
+=20
+ 	/* Only bother mapping if it's not already in range and unique */
+ 	if (!(range->flags & NF_NAT_RANGE_PROTO_RANDOM_ALL)) {
+-		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
++		/* PSID mode is present always needs to check
++		 * to see if the source ports are in range.
++		 */
++		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED ||
++		    (range->flags & NF_NAT_RANGE_PSID &&
++		     !in_range(orig_tuple, range))) {
+ 			if (!(range->flags & NF_NAT_RANGE_PROTO_OFFSET) &&
+ 			    l4proto_in_range(tuple, maniptype,
+-			          &range->min_proto,
+-			          &range->max_proto) &&
++				  &range->min_proto,
++				  &range->max_proto,
++				  &range->base_proto,
++				  range->flags &
++				  NF_NAT_RANGE_PSID) &&
+ 			    (range->min_proto.all =3D=3D range->max_proto.all ||
+ 			     !nf_nat_used_tuple(tuple, ct)))
+ 				return;
+diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
+index aace6768a64e..f65163278db0 100644
+--- a/net/netfilter/nf_nat_ftp.c
++++ b/net/netfilter/nf_nat_ftp.c
+@@ -17,6 +17,10 @@
+ #include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/nf_conntrack_expect.h>
+ #include <linux/netfilter/nf_conntrack_ftp.h>
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct);
+=20
+ #define NAT_HELPER_NAME "ftp"
+=20
+@@ -72,8 +76,13 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	u_int16_t port;
+ 	int dir =3D CTINFO2DIR(ctinfo);
+ 	struct nf_conn *ct =3D exp->master;
++	struct nf_conn_nat *nat =3D nfct_nat(ct);
+ 	char buffer[sizeof("|1||65535|") + INET6_ADDRSTRLEN];
+ 	unsigned int buflen;
++	int ret;
 +
- static const struct qmp_phy_init_tbl sm8250_qmp_pcie_serdes_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V4_COM_SYSCLK_EN_SEL, 0x08),
- 	QMP_PHY_INIT_CFG(QSERDES_V4_COM_CLK_SELECT, 0x34),
-@@ -3440,6 +3547,36 @@ static const struct qmp_phy_combo_cfg sc8180x_usb3dpphy_cfg = {
- 	.dp_cfg			= &sc8180x_dpphy_cfg,
++	if (WARN_ON_ONCE(!nat))
++		return NF_DROP;
+=20
+ 	pr_debug("type %i, off %u len %u\n", type, matchoff, matchlen);
+=20
+@@ -86,18 +95,14 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	 * this one. */
+ 	exp->expectfn =3D nf_nat_follow_master;
+=20
+-	/* Try to get same port: if not, try to change it. */
+-	for (port =3D ntohs(exp->saved_proto.tcp.port); port !=3D 0; port++) {
+-		int ret;
+-
+-		exp->tuple.dst.u.tcp.port =3D htons(port);
+-		ret =3D nf_ct_expect_related(exp, 0);
+-		if (ret =3D=3D 0)
+-			break;
+-		else if (ret !=3D -EBUSY) {
+-			port =3D 0;
+-			break;
+-		}
++	/* Find a port that matches the MASQ rule. */
++	nf_nat_l4proto_unique_tuple(&exp->tuple, nat->range,
++				    dir ? NF_NAT_MANIP_SRC : NF_NAT_MANIP_DST,
++				    ct);
++	ret =3D nf_ct_expect_related(exp, 0);
++	port =3D ntohs(exp->tuple.dst.u.tcp.port);
++	if (ret !=3D 0 && ret !=3D -EBUSY) {
++		port =3D 0;
+ 	}
+=20
+ 	if (port =3D=3D 0) {
+diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
+c
+index a263505455fc..2d105e4eb8f8 100644
+--- a/net/netfilter/nf_nat_helper.c
++++ b/net/netfilter/nf_nat_helper.c
+@@ -179,15 +179,23 @@ EXPORT_SYMBOL(nf_nat_mangle_udp_packet);
+ void nf_nat_follow_master(struct nf_conn *ct,
+ 			  struct nf_conntrack_expect *exp)
+ {
++	struct nf_conn_nat *nat =3D NULL;
+ 	struct nf_nat_range2 range;
+=20
+ 	/* This must be a fresh one. */
+ 	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
+=20
+-	/* Change src to where master sends to */
+-	range.flags =3D NF_NAT_RANGE_MAP_IPS;
+-	range.min_addr =3D range.max_addr
+-		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++	if (exp->master && !exp->dir) {
++		nat =3D nfct_nat(exp->master);
++		if (nat)
++			range =3D *nat->range;
++	}
++	if (!nat) {
++		/* Change src to where master sends to */
++		range.flags =3D NF_NAT_RANGE_MAP_IPS;
++		range.min_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++		range.max_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++	}
+ 	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+=20
+ 	/* For DST manip, map port here to where it's expected. */
+diff --git a/net/netfilter/nf_nat_masquerade.c b/net/netfilter/nf_nat_mas=
+querade.c
+index 8e8a65d46345..d83cd3d8ad3f 100644
+--- a/net/netfilter/nf_nat_masquerade.c
++++ b/net/netfilter/nf_nat_masquerade.c
+@@ -45,10 +45,6 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned i=
+nt hooknum,
+ 		return NF_DROP;
+ 	}
+=20
+-	nat =3D nf_ct_nat_ext_add(ct);
+-	if (nat)
+-		nat->masq_index =3D out->ifindex;
+-
+ 	/* Transfer from original range. */
+ 	memset(&newrange.min_addr, 0, sizeof(newrange.min_addr));
+ 	memset(&newrange.max_addr, 0, sizeof(newrange.max_addr));
+@@ -57,6 +53,15 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned i=
+nt hooknum,
+ 	newrange.max_addr.ip =3D newsrc;
+ 	newrange.min_proto   =3D range->min_proto;
+ 	newrange.max_proto   =3D range->max_proto;
++	newrange.base_proto  =3D range->base_proto;
++
++	nat =3D nf_ct_nat_ext_add(ct);
++	if (nat) {
++		nat->masq_index =3D out->ifindex;
++		if (!nat->range)
++			nat->range =3D kmalloc(sizeof(*nat->range), 0);
++		memcpy(nat->range, &newrange, sizeof(*nat->range));
++	}
+=20
+ 	/* Hand modified range to generic setup. */
+ 	return nf_nat_setup_info(ct, &newrange, NF_NAT_MANIP_SRC);
+diff --git a/net/netfilter/xt_MASQUERADE.c b/net/netfilter/xt_MASQUERADE.=
+c
+index eae05c178336..dc6870ca2b71 100644
+--- a/net/netfilter/xt_MASQUERADE.c
++++ b/net/netfilter/xt_MASQUERADE.c
+@@ -16,7 +16,7 @@ MODULE_AUTHOR("Netfilter Core Team <coreteam@netfilter.=
+org>");
+ MODULE_DESCRIPTION("Xtables: automatic-address SNAT");
+=20
+ /* FIXME: Multiple targets. --RR */
+-static int masquerade_tg_check(const struct xt_tgchk_param *par)
++static int masquerade_tg_check_v0(const struct xt_tgchk_param *par)
+ {
+ 	const struct nf_nat_ipv4_multi_range_compat *mr =3D par->targinfo;
+=20
+@@ -31,8 +31,19 @@ static int masquerade_tg_check(const struct xt_tgchk_p=
+aram *par)
+ 	return nf_ct_netns_get(par->net, par->family);
+ }
+=20
++static int masquerade_tg_check_v1(const struct xt_tgchk_param *par)
++{
++	const struct nf_nat_range2 *range =3D par->targinfo;
++
++	if (range->flags & NF_NAT_RANGE_MAP_IPS) {
++		pr_debug("bad MAP_IPS.\n");
++		return -EINVAL;
++	}
++	return nf_ct_netns_get(par->net, par->family);
++}
++
+ static unsigned int
+-masquerade_tg(struct sk_buff *skb, const struct xt_action_param *par)
++masquerade_tg_v0(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+ 	struct nf_nat_range2 range;
+ 	const struct nf_nat_ipv4_multi_range_compat *mr;
+@@ -46,6 +57,15 @@ masquerade_tg(struct sk_buff *skb, const struct xt_act=
+ion_param *par)
+ 				      xt_out(par));
+ }
+=20
++static unsigned int
++masquerade_tg_v1(struct sk_buff *skb, const struct xt_action_param *par)
++{
++	const struct nf_nat_range2 *range =3D par->targinfo;
++
++	return nf_nat_masquerade_ipv4(skb, xt_hooknum(par), range,
++				      xt_out(par));
++}
++
+ static void masquerade_tg_destroy(const struct xt_tgdtor_param *par)
+ {
+ 	nf_ct_netns_put(par->net, par->family);
+@@ -73,6 +93,7 @@ static struct xt_target masquerade_tg_reg[] __read_most=
+ly =3D {
+ 	{
+ #if IS_ENABLED(CONFIG_IPV6)
+ 		.name		=3D "MASQUERADE",
++		.revision	=3D 0,
+ 		.family		=3D NFPROTO_IPV6,
+ 		.target		=3D masquerade_tg6,
+ 		.targetsize	=3D sizeof(struct nf_nat_range),
+@@ -84,15 +105,28 @@ static struct xt_target masquerade_tg_reg[] __read_m=
+ostly =3D {
+ 	}, {
+ #endif
+ 		.name		=3D "MASQUERADE",
++		.revision	=3D 0,
+ 		.family		=3D NFPROTO_IPV4,
+-		.target		=3D masquerade_tg,
++		.target		=3D masquerade_tg_v0,
+ 		.targetsize	=3D sizeof(struct nf_nat_ipv4_multi_range_compat),
+ 		.table		=3D "nat",
+ 		.hooks		=3D 1 << NF_INET_POST_ROUTING,
+-		.checkentry	=3D masquerade_tg_check,
++		.checkentry	=3D masquerade_tg_check_v0,
+ 		.destroy	=3D masquerade_tg_destroy,
+ 		.me		=3D THIS_MODULE,
+-	}
++	},
++	{
++		.name		=3D "MASQUERADE",
++		.revision	=3D 1,
++		.family		=3D NFPROTO_IPV4,
++		.target		=3D masquerade_tg_v1,
++		.targetsize	=3D sizeof(struct nf_nat_range2),
++		.table		=3D "nat",
++		.hooks		=3D 1 << NF_INET_POST_ROUTING,
++		.checkentry	=3D masquerade_tg_check_v1,
++		.destroy	=3D masquerade_tg_destroy,
++		.me		=3D THIS_MODULE,
++	},
  };
- 
-+static const struct qmp_phy_cfg sc8180x_pciephy_cfg = {
-+	.type = PHY_TYPE_PCIE,
-+	.nlanes = 1,
-+
-+	.serdes_tbl		= sm8250_qmp_pcie_serdes_tbl,
-+	.serdes_tbl_num		= ARRAY_SIZE(sm8250_qmp_pcie_serdes_tbl),
-+	.tx_tbl			= sc8180x_qmp_pcie_tx_tbl,
-+	.tx_tbl_num		= ARRAY_SIZE(sc8180x_qmp_pcie_tx_tbl),
-+	.rx_tbl			= sc8180x_qmp_pcie_rx_tbl,
-+	.rx_tbl_num		= ARRAY_SIZE(sc8180x_qmp_pcie_rx_tbl),
-+	.pcs_tbl		= sc8180x_qmp_pcie_pcs_tbl,
-+	.pcs_tbl_num		= ARRAY_SIZE(sc8180x_qmp_pcie_pcs_tbl),
-+	.pcs_misc_tbl		= sc8180x_qmp_pcie_pcs_misc_tbl,
-+	.pcs_misc_tbl_num	= ARRAY_SIZE(sc8180x_qmp_pcie_pcs_misc_tbl),
-+	.clk_list		= sdm845_pciephy_clk_l,
-+	.num_clks		= ARRAY_SIZE(sdm845_pciephy_clk_l),
-+	.reset_list		= sdm845_pciephy_reset_l,
-+	.num_resets		= ARRAY_SIZE(sdm845_pciephy_reset_l),
-+	.vreg_list		= qmp_phy_vreg_l,
-+	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-+	.regs			= sm8250_pcie_regs_layout,
-+
-+	.start_ctrl		= PCS_START | SERDES_START,
-+	.pwrdn_ctrl		= SW_PWRDN | REFCLK_DRV_DSBL,
-+
-+	.has_pwrdn_delay	= true,
-+	.pwrdn_delay_min	= 995,		/* us */
-+	.pwrdn_delay_max	= 1005,		/* us */
-+};
-+
- static const struct qmp_phy_cfg sm8150_usb3_uniphy_cfg = {
- 	.type			= PHY_TYPE_USB3,
- 	.nlanes			= 1,
-@@ -5272,6 +5409,9 @@ static const struct of_device_id qcom_qmp_phy_of_match_table[] = {
- 	}, {
- 		.compatible = "qcom,sc7180-qmp-usb3-dp-phy",
- 		/* It's a combo phy */
-+	}, {
-+		.compatible = "qcom,sc8180x-qmp-pcie-phy",
-+		.data = &sc8180x_pciephy_cfg,
- 	}, {
- 		.compatible = "qcom,sc8180x-qmp-ufs-phy",
- 		.data = &sm8150_ufsphy_cfg,
--- 
-2.29.2
+=20
+ static int __init masquerade_tg_init(void)
+--=20
+2.32.0
 
