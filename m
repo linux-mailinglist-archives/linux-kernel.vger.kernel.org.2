@@ -2,112 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520A33B73F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442F83B73F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbhF2OMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbhF2OMQ (ORCPT
+        id S234204AbhF2OMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:12:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233524AbhF2OMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:12:16 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C903C061760;
-        Tue, 29 Jun 2021 07:09:48 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id h9so26414883oih.4;
-        Tue, 29 Jun 2021 07:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/pfAfSG1WAT03M9in9IB99n5vlozDcqHU/A8hrRJslE=;
-        b=Sks2icFMsPkjTv3NhFgOCzYfEmtriMo91Ye4Ja/mz4bmpaAwFyZ4iXJfIDNPDrc+FT
-         wu8cOQO6MEeTtGQoiWv7d8Hph1xjhd4bruygzQ5dhKfwNQUrhWTcVM8aJbxOWgojLqkZ
-         ycMSNXBAc86unVUAVAZXHGrZVcTpkvHfVkaJqAUH72fVjdnj72P/EIgAlgvvKQ2o1Q4d
-         EcE+62R2aE5TrH9iX9A04vfYZAfolhb+XUr5KJKjw/MwKJE5HBZwRSJv/w2AOdAAUb2Y
-         XmV1zdsCV+kIhHW6iLUp0KdSv2QzHNkKYLV8dDdGTko61yVcW8019E1GIIxpha4b4nO3
-         yauA==
+        Tue, 29 Jun 2021 10:12:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624975819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Td2jaOtu1OIAJ2dbnNafo3OTJR7dFIW9/V+YM1ko/D8=;
+        b=AQEABwaSSCthlEXyTqd9M7tBsJWOk3CZgNyF/kKReGRzKRxXG92aW6Wf4NUporHEuz9jrN
+        DwyglfG6GrqCbFiDk1Pp1FP/Jez/FMPk0086s6cZRk6Se7YFNmLr8K+rxMbAUseEzD+Vdd
+        bFhilsRhzz+RxfzHm2Ai/JYXYMfflmM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-aSi2ynLONXmuDKwcUzSH7Q-1; Tue, 29 Jun 2021 10:10:13 -0400
+X-MC-Unique: aSi2ynLONXmuDKwcUzSH7Q-1
+Received: by mail-wm1-f70.google.com with SMTP id u64-20020a1cdd430000b02901ed0109da5fso1349132wmg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:10:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/pfAfSG1WAT03M9in9IB99n5vlozDcqHU/A8hrRJslE=;
-        b=NSPrr0H82S9zYibTPrstGn4GAmsWBjf+OGSJXvv7KXIxP/Oo2l1teocpKMIMLVDg84
-         hWpLEgRk6p3nqve5jqQHu+PLhAMpRR/bRDkd9ENoRe1OvYUr6/hfNxR0qDaJS8Obpoo2
-         biTC0HCRvPN+8i2h7p/TJaCWB9GbdyjbDnO8cDctx9InpUgGa1114v1g2mc/x5S3T+N2
-         35DerTJaBDJNdrBK+v5TBRPa9AvrmAskR4ayaD09iLRAfHhp1etaxastbOQGhSM9Ogth
-         7S+7vPsLpLfto1MMKS/FAi3XdhgDvlM1OWjjH7fLUoD8Lt2hctyfii18i6vwEhSdfMiB
-         3jBA==
-X-Gm-Message-State: AOAM531HIIltysyMjvqHRrBICCsIJVfowaRAEA/MbVYic6vIgnkMPMM/
-        orbdTcZyGRQh15Pl8btx2KE=
-X-Google-Smtp-Source: ABdhPJyUORqMbHID+b4PNh9oIJP1FzeF0v52dkRjuEliNUFe/yxwnCdv8FjVG04ECwgcmz2ju+lN6A==
-X-Received: by 2002:aca:afd2:: with SMTP id y201mr7655978oie.54.1624975787816;
-        Tue, 29 Jun 2021 07:09:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x3sm497635oie.24.2021.06.29.07.09.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 07:09:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org
-References: <20210628144256.34524-1-sashal@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <f396d8d7-e78a-7a8a-f509-e546fe1d2bfd@roeck-us.net>
-Date:   Tue, 29 Jun 2021 07:09:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Td2jaOtu1OIAJ2dbnNafo3OTJR7dFIW9/V+YM1ko/D8=;
+        b=PVui0svOlXQJMDH9fqqU76ii+dNJ9fcURi7wFbDT1dbgqc5wQ78BQ1BGzLOo0O9rpL
+         t1uhCpdkFxnKk5qy5PS+q2z8qndk7pyUOT8SkaIWkZiEoL1ZNjnWyBO8X6Wz1gjReS9d
+         sIa0/nqoCpkLIID+mtt1xlMFsVUvKkFGDw4eqvy0olFwWasjDiVmCNq+bu2bsCYIWRHa
+         GyQ4/6r6XsYhNJ//JHLIl7Jm2smlW7egHytauoeyymoH6+49jVr7jhe/1Lha6nlvCYkE
+         ssFQgJubdVEbBiz3NMHlbBJI+ugRe3LqcW86HXH8awpaveXyVDMIDwrZikq1wNGbmVq5
+         5ACQ==
+X-Gm-Message-State: AOAM531tLd0teD59NMzBeFRiHkTT0UX+wd6hIqLEQkmUjlINGjlzbEBX
+        LKIW6e9bCkgL/fIOPfioId43dM1JyOHkHGOOq8fUgsg7PH5v0wHbYie5sAyMnNu9vV+T4F5Cxpn
+        RGURcukjaV8VVWI4NU21EBHYV
+X-Received: by 2002:a1c:2142:: with SMTP id h63mr33528935wmh.84.1624975812359;
+        Tue, 29 Jun 2021 07:10:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLUdw5Die2LWREGG/yf8LkBUxbDjAtXMajSOHgnHtWdHBFSXTTg2TI5FV04s4W8dGxb5ka7w==
+X-Received: by 2002:a1c:2142:: with SMTP id h63mr33528890wmh.84.1624975812136;
+        Tue, 29 Jun 2021 07:10:12 -0700 (PDT)
+Received: from krava ([109.53.15.83])
+        by smtp.gmail.com with ESMTPSA id p3sm1658779wmq.17.2021.06.29.07.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 07:10:11 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 16:10:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+Message-ID: <YNspwB8ejUeRIVxt@krava>
+References: <20210202135002.4024825-1-jackmanb@google.com>
+ <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 7:41 AM, Sasha Levin wrote:
+On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+> On Sun, 27 Jun 2021 at 17:34, Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Feb 02, 2021 at 01:50:02PM +0000, Brendan Jackman wrote:
+> >
+> > SNIP
+> >
+> > > diff --git a/tools/testing/selftests/bpf/verifier/atomic_bounds.c b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+> > > new file mode 100644
+> > > index 000000000000..e82183e4914f
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+> > > @@ -0,0 +1,27 @@
+> > > +{
+> > > +     "BPF_ATOMIC bounds propagation, mem->reg",
+> > > +     .insns = {
+> > > +             /* a = 0; */
+> > > +             /*
+> > > +              * Note this is implemented with two separate instructions,
+> > > +              * where you might think one would suffice:
+> > > +              *
+> > > +              * BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> > > +              *
+> > > +              * This is because BPF_ST_MEM doesn't seem to set the stack slot
+> > > +              * type to 0 when storing an immediate.
+> > > +              */
+> > > +             BPF_MOV64_IMM(BPF_REG_0, 0),
+> > > +             BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
+> > > +             /* b = atomic_fetch_add(&a, 1); */
+> > > +             BPF_MOV64_IMM(BPF_REG_1, 1),
+> > > +             BPF_ATOMIC_OP(BPF_DW, BPF_ADD | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
+> > > +             /* Verifier should be able to tell that this infinite loop isn't reachable. */
+> > > +             /* if (b) while (true) continue; */
+> > > +             BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -1),
+> > > +             BPF_EXIT_INSN(),
+> > > +     },
+> > > +     .result = ACCEPT,
+> > > +     .result_unpriv = REJECT,
+> > > +     .errstr_unpriv = "back-edge",
+> > > +},
+> > >
+> > > base-commit: 61ca36c8c4eb3bae35a285b1ae18c514cde65439
+> > > --
+> > > 2.30.0.365.g02bc693789-goog
+> > >
+> >
+> > hi,
+> > I tracked soft lock up on powerpc to this test:
+> >
+> >         [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 25
+> >         #25/u BPF_ATOMIC bounds propagation, mem->reg SKIP
+> >         #25/p BPF_ATOMIC bounds propagation, mem->reg
+> >
+> >         Message from syslogd@ibm-p9z-07-lp1 at Jun 27 11:24:34 ...
+> >          kernel:watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_verifier:1055]
+> >
+> >         Message from syslogd@ibm-p9z-07-lp1 at Jun 27 11:25:04 ...
+> >          kernel:watchdog: BUG: soft lockup - CPU#2 stuck for 48s! [test_verifier:1055]
+> >
+> > please check the console output below.. it looks like the verifier
+> > allowed the loop to happen for some reason on powerpc.. any idea?
+> >
+> > I'm on latest bpf-next/master, I can send the config if needed
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> > ibm-p9z-07-lp1 login: [  184.108655] watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [test_verifier:1055]
+> > [  184.108679] Modules linked in: snd_seq_dummy(E) snd_hrtimer(E) snd_seq(E) snd_seq_device(E) snd_timer(E) snd(E) soundcore(E) bonding(E) tls(E) rfkill(E) pseries_rng(E) drm(E) fuse(E) drm_panel_orientation_quirks(E) xfs(E) libcrc32c(E) sd_mod(E) t10_pi(E) ibmvscsi(E) ibmveth(E) scsi_transport_srp(E) vmx_crypto(E) dm_mirror(E) dm_region_hash(E) dm_log(E) dm_mod(E)
+> > [  184.108722] CPU: 2 PID: 1055 Comm: test_verifier Tainted: G            E     5.13.0-rc3+ #3
+> > [  184.108728] NIP:  c00800000131314c LR: c000000000c56918 CTR: c008000001313118
+> > [  184.108733] REGS: c0000000119ef820 TRAP: 0900   Tainted: G            E      (5.13.0-rc3+)
+> > [  184.108739] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 44222840  XER: 20040003
+> > [  184.108752] CFAR: c008000001313150 IRQMASK: 0
+> > [  184.108752] GPR00: c000000000c5671c c0000000119efac0 c000000002a08400 0000000000000001
+> > [  184.108752] GPR04: c0080000010c0048 ffffffffffffffff 0000000001f3f8ec 0000000000000008
+> > [  184.108752] GPR08: 0000000000000000 c0000000119efae8 0000000000000001 49adb8fcb8417937
+> > [  184.108752] GPR12: c008000001313118 c00000001ecae400 0000000000000000 0000000000000000
+> > [  184.108752] GPR16: 0000000000000000 0000000000000000 0000000000000000 c0000000021cf6f8
+> > [  184.108752] GPR20: 0000000000000000 c0000000119efc34 c0000000119efc30 c0080000010c0048
+> > [  184.108752] GPR24: c00000000a1dc100 0000000000000001 c000000011fadc80 c0000000021cf638
+> > [  184.108752] GPR28: c0080000010c0000 0000000000000001 c0000000021cf638 c0000000119efaf0
+> > [  184.108812] NIP [c00800000131314c] bpf_prog_a2eb9104e5e8a5bf+0x34/0xcee8
+> > [  184.108819] LR [c000000000c56918] bpf_test_run+0x2f8/0x470
+> > [  184.108826] Call Trace:
+> > [  184.108828] [c0000000119efac0] [c0000000119efb30] 0xc0000000119efb30 (unreliable)
+> > [  184.108835] [c0000000119efb30] [c000000000c5671c] bpf_test_run+0xfc/0x470
+> > [  184.108841] [c0000000119efc10] [c000000000c57b6c] bpf_prog_test_run_skb+0x38c/0x660
+> > [  184.108848] [c0000000119efcb0] [c00000000035de6c] __sys_bpf+0x46c/0xd60
+> > [  184.108854] [c0000000119efd90] [c00000000035e810] sys_bpf+0x30/0x40
+> > [  184.108859] [c0000000119efdb0] [c00000000002ea34] system_call_exception+0x144/0x280
+> > [  184.108866] [c0000000119efe10] [c00000000000c570] system_call_vectored_common+0xf0/0x268
+> > [  184.108874] --- interrupt: 3000 at 0x7fff8bb3ef24
+> > [  184.108878] NIP:  00007fff8bb3ef24 LR: 0000000000000000 CTR: 0000000000000000
+> > [  184.108883] REGS: c0000000119efe80 TRAP: 3000   Tainted: G            E      (5.13.0-rc3+)
+> > [  184.108887] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000848  XER: 00000000
+> > [  184.108903] IRQMASK: 0
+> > [  184.108903] GPR00: 0000000000000169 00007fffe4577710 00007fff8bc27200 000000000000000a
+> > [  184.108903] GPR04: 00007fffe45777b8 0000000000000080 0000000000000001 0000000000000008
+> > [  184.108903] GPR08: 000000000000000a 0000000000000000 0000000000000000 0000000000000000
+> > [  184.108903] GPR12: 0000000000000000 00007fff8be1c400 0000000000000000 0000000000000000
+> > [  184.108903] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> > [  184.108903] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> > [  184.108903] GPR24: 0000000000000000 0000000000000000 0000000000000000 000000001000d1d0
+> > [  184.108903] GPR28: 0000000000000002 00007fffe4578128 00007fffe45782c0 00007fffe4577710
+> > [  184.108960] NIP [00007fff8bb3ef24] 0x7fff8bb3ef24
+> > [  184.108964] LR [0000000000000000] 0x0
+> > [  184.108967] --- interrupt: 3000
+> > [  184.108970] Instruction dump:
+> > [  184.108974] 60000000 f821ff91 fbe10068 3be10030 39000000 f91ffff8 38600001 393ffff8
+> > [  184.108985] 7d4048a8 7d4a1a14 7d4049ad 4082fff4 <28230000> 4082fffc 60000000 ebe10068
 > 
-> This is the start of the stable review cycle for the 4.4.274 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Hmm, is the test prog from atomic_bounds.c getting JITed there (my
+> dumb guess at what '0xc0000000119efb30 (unreliable)' means)? That
+> shouldn't happen - should get 'eBPF filter atomic op code %02x (@%d)
+> unsupported\n' in dmesg instead. I wonder if I missed something in
+> commit 91c960b0056 (bpf: Rename BPF_XADD and prepare to encode other
+> atomics in .imm). Any idea if this test was ever passing on PowerPC?
 > 
-> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
-> Anything received after that time might be too late.
-> 
 
-Build reference: v4.4.273-57-g5429409d4e80
-gcc version: arc-elf-gcc (GCC) 10.3.0
+hum, I guess not.. will check
 
-
-Building arc:tb10x_defconfig ... failed
---------------
-Error log:
-In file included from include/asm-generic/signal.h:10,
-                  from arch/arc/include/uapi/asm/signal.h:25,
-                  from include/uapi/linux/signal.h:4,
-                  from include/linux/signal.h:6,
-                  from include/linux/sched.h:37,
-                  from arch/arc/kernel/asm-offsets.c:9:
-arch/arc/include/uapi/asm/sigcontext.h:20:25: error: field 'v2abi' has incomplete type
-    20 |  struct user_regs_arcv2 v2abi;
-
----
-
-Building arcv2:defconfig ... failed
---------------
-Error log:
-In file included from include/asm-generic/signal.h:10,
-                  from arch/arc/include/uapi/asm/signal.h:25,
-                  from include/uapi/linux/signal.h:4,
-                  from include/linux/signal.h:6,
-                  from include/linux/sched.h:37,
-                  from arch/arc/kernel/asm-offsets.c:9:
-arch/arc/include/uapi/asm/sigcontext.h:20:25: error: field 'v2abi' has incomplete type
+jirka
 
