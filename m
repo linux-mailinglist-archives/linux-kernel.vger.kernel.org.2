@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBC83B7706
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D48C3B7710
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhF2RU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232222AbhF2RU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:20:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DAA61D8A;
-        Tue, 29 Jun 2021 17:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624987080;
-        bh=jdhnTCjSFMbgWJNtYg1ovwgDV4GrfVsLQusWb5bxADo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePci/+Mxd3oBZLGRl8CN9PzIZwd/679sUnO+uent/1Z9Z/di/cOo49D6V2XO0k85m
-         WBbGsuQB/UQozaVT+tjG/his5xnUx7jEszWJFVNihWW0mNY4i94av094Dg4Gyc3Ciz
-         oyMi5fBikbLx2NAYN33NPZebNzWhu4e+a55lrT8f27+l8h+8DAnhSwLbtdtA6nlsLG
-         Q4gpcHdlzhY3PFA9VP9CnMoHorbQi9gDrO/7zhqRfCjkCbrvBWkplgXAi6YdqRD9y4
-         Oer1K5pczs+I+7YQ8W4CyfPajONutprXtaO6YFVlDNBPMaxJwBBo3yL7GwkqiPUhIt
-         oit6dUzp5/S5A==
-Date:   Tue, 29 Jun 2021 19:17:57 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-Message-ID: <20210629171757.shyr222zjpm6ev5t@example.org>
-References: <87fsx1vcr9.fsf@disp2133>
- <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+        id S232693AbhF2RWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 13:22:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57847 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232573AbhF2RV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 13:21:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624987169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X1wrhUM6aBKbr8jStY3jbGPmxOeBVQvKVaTR2f6NI98=;
+        b=F0Fg1/TI+9OYnNGurHVNixTiqrvXIXSaRESm4mSaAQYBoLN7BFL0iULQe3L88W1kiPkdGh
+        sZ1z7Qk/QCLx9A08k4V4UKynce5ekOw4n3yZpie/yX24oBHi7ff9AFXACGdx//rk++/pSG
+        xV8Rk15CaENIQH+NMI/ahchx3Wx/ut4=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-aGiBEbHdNSGTjr7rb4DptQ-1; Tue, 29 Jun 2021 13:19:27 -0400
+X-MC-Unique: aGiBEbHdNSGTjr7rb4DptQ-1
+Received: by mail-ej1-f70.google.com with SMTP id c2-20020a170906d182b02904bf8ceef772so2339304ejz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 10:19:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X1wrhUM6aBKbr8jStY3jbGPmxOeBVQvKVaTR2f6NI98=;
+        b=SHIw0TfaX49bw8FrwkA52vqiaFT5Z6QcTyvVHX/bwH91oUonNqLB5g6HuBo2Tn0yBe
+         8WM85O57vovfn46+cDMdaM8blOyRZDQ6qz3newsFD8hxsaee/+aoX6kr5Ksxhoz83o3p
+         1jaHHwxmiQtvDfrIpLOXjvB0XPZoulpuxmw4qRxE9ZtwmzJh0+jTLCyA9WY6soFR3/YI
+         pPdb6u1JNibtA/OhwhGOvMyAgZ1trbo0xRc2pOII9Jhky7BZeqLBpOJOaaetd+Q3MA61
+         vOSO0A2ELSeAYyccG22/XLbPScnTXn1kxBoSVxD1+OvvC5bOe+cgbp5rd4iS0CBVT87M
+         QnGQ==
+X-Gm-Message-State: AOAM5334oGPqi4WJewh3+zVN37i1avuCq79dB9q6aYlHdu7r4gNccgJc
+        hXIExtkZ1JeQnRzCS1D96YRV81F92j/bKkU6PIbU9g8AoUqfLhPO/DMw19POXHv5cxiZwQ4Plrr
+        ncLekRLioYZcM2zCjKLAGM87j
+X-Received: by 2002:a17:906:7184:: with SMTP id h4mr31581947ejk.140.1624987166767;
+        Tue, 29 Jun 2021 10:19:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+eoZdZ3FsgZ3Q8thM2CbCsmlREY7Mr+oNSU/wMxTHo0rf6tTFPuckJ0iK6XKGziTz78SCyA==
+X-Received: by 2002:a17:906:7184:: with SMTP id h4mr31581926ejk.140.1624987166531;
+        Tue, 29 Jun 2021 10:19:26 -0700 (PDT)
+Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
+        by smtp.gmail.com with ESMTPSA id de6sm11646982edb.77.2021.06.29.10.19.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 10:19:26 -0700 (PDT)
+Subject: Re: [PATCH][next] trace: osnoise: Fix u64 less than zero comparison
+To:     Colin King <colin.king@canonical.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210629165245.42157-1-colin.king@canonical.com>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <c74e711e-71c9-df9c-8406-b9e92ef12da0@redhat.com>
+Date:   Tue, 29 Jun 2021 19:19:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+In-Reply-To: <20210629165245.42157-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:47:12PM -0700, Linus Torvalds wrote:
-> On Mon, Jun 28, 2021 at 3:35 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >
-> > This is the work mainly by Alexey Gladkov to limit rlimits to the
-> > rlimits of the user that created a user namespace, and to allow users to
-> > have stricter limits on the resources created within a user namespace.
+On 6/29/21 6:52 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I guess all the performance issues got sorted, since I haven't seen
-> any reports from the test robots.
-> 
-> I do end up with two questions, mainly because of looking at the
-> result of the conflict resolution.
-> 
-> In particular, in __sigqueue_alloc(), two oddities..
-> 
-> Why the "sigpending < LONG_MAX" test in that
-> 
->         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
-> task_rlimit(t, RLIMIT_SIGPENDING))) {
-> 
-> thing?
+> The less than zero comparison of the u64 variable 'noise' is always
+> false because the variable is unsigned. Since the time_sub macro
+> can potentially return an -ve vale, make the variable a s64 to
+> fix the issue.
 
-inc_rlimit_ucounts() returns long and uses LONG_MAX as an overflow flag.
-At the same time, we have increased the size of sigpending from int to
-long.
+Ops! concurrent bug fixing.
 
-> And why test for "ucounts" being non-NULL in
+Dan Carpenter reported the same bug (and another problem), and I was working in
+the patches... I saw yours after sending his ones:
+
+https://lore.kernel.org/lkml/acd7cd6e7d56b798a298c3bc8139a390b3c4ab52.1624986368.git.bristot@redhat.com/
+
+The patches do the same fix, but there it also:
+
+ - Made also max_noise s64 (it is snapshot of noise).
+ - Arranged the declarations in the inverted christmas tree.
+
+> Addresses-Coverity: ("Unsigned compared against 0")
+> Fixes: bce29ac9ce0b ("trace: Add osnoise tracer")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Steven, can we merge the flags?
+
+-- Daniel
+
+> ---
+>  kernel/trace/trace_osnoise.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->                 if (ucounts && dec_rlimit_ucounts(ucounts,
-> UCOUNT_RLIMIT_SIGPENDING, 1))
->                         put_ucounts(ucounts);
+> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+> index 38aa5e208ffd..02c984560ceb 100644
+> --- a/kernel/trace/trace_osnoise.c
+> +++ b/kernel/trace/trace_osnoise.c
+> @@ -1040,11 +1040,11 @@ static void osnoise_stop_tracing(void)
+>  static int run_osnoise(void)
+>  {
+>  	struct osnoise_variables *osn_var = this_cpu_osn_var();
+> -	u64 noise = 0, sum_noise = 0, max_noise = 0;
+> +	u64 sum_noise = 0, max_noise = 0;
+>  	struct trace_array *tr = osnoise_trace;
+>  	u64 start, sample, last_sample;
+>  	u64 last_int_count, int_count;
+> -	s64 total, last_total = 0;
+> +	s64 noise = 0, total, last_total = 0;
+>  	struct osnoise_sample s;
+>  	unsigned int threshold;
+>  	int hw_count = 0;
 > 
-> when afaik both of those should be happy with a NULL 'ucounts' pointer
-> (if it was NULL, we certainly already used it for the reverse
-> operations for get_ucounts() and inc_rlimit_ucounts()..)
-
-The get_ucount() can theoretically return NULL. It increments the
-reference counter and if it overflows, the function will return NULL.
-
-> Hmm?
-> 
-> And somebody should verify that I didn't screw anything up in my merge
-> resolution. It all looked very straightforward, but mistakes happen..
-
--- 
-Rgrds, legion
 
