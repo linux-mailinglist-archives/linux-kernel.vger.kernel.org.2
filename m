@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B093B6FB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CB73B6FBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhF2IyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:54:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232556AbhF2IyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C58DA61CA2;
-        Tue, 29 Jun 2021 08:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624956703;
-        bh=KJN63K8riJbDlFr2P45UgIg7HaVSqdNLwbvovnKR8ng=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FTuivG5R8i7YnrPmdsOXWGllBirBE9829gQ9RkZYjQUyXpY3urAMl/xJVDzTEdApU
-         zZeKr5+MkzcKgzob1a2q7p9Sx2D0QrIkAsbCp5C6B5Acdyb5gpYVlMdc/4JB7Qlskq
-         F5i4Td3RtoTxe1wwnRZt2FBs1+OLIa2jDo/bHe7M5VGm7MUuI2ZUvmGI+weDqAJejl
-         3x7qtqKgwGRvXc1ey/f4OwApRLhKl5Cbv7FMMcEGMmpZDRX46J/Xmiq7o9DJfBSRgF
-         /6B8BuadCVUiLGL7cW4M024HXhOjcVqN+Yalw+DnhbVDjjlr6fInjZYgu6R9p0jr2A
-         giFhDJ4OR4wxg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/mlx5: Don't access NULL-cleared mpi pointer
-Date:   Tue, 29 Jun 2021 11:51:38 +0300
-Message-Id: <899ac1b33a995be5ec0e16a4765c4e43c2b1ba5b.1624956444.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S232616AbhF2Iyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232508AbhF2Iyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 04:54:44 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EAEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:52:16 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e20so17915708pgg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VRDj6e+Lqnmeo3ZhydynJ+H5q+l8CnwAokRbOJM0nwc=;
+        b=yVj+8Vh6JwKM1tH895sPcIlFKTgBt2qxInbHnxNMFWHV4he+OcXXLT/d2niuW/CEmt
+         g9LYtuNyCBURRSH+gir2EOQsBc8Ms36tLjuJT6K3xh6IRdMyFSb/vFjLOmVfb+R1YLAR
+         QlMG1UZ5m5WdsAhU4IQSZqywzzDbpO5q2umuw49EBwIfpxKkE7DFiYuzw1Y2Er+mWb8m
+         uBtbkndiJ5HLBNFuecdEr6zQjvDbpCIzp9zK1jA91S0u2/HB63MQ9nqK9+RzGrxrXtem
+         r+8542jeuxhdX+4v6UJSi0UBXrv6FsGVqiWxulZBWrrF/rPR6NkSMZGIlzG4PaEhALZR
+         V28A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VRDj6e+Lqnmeo3ZhydynJ+H5q+l8CnwAokRbOJM0nwc=;
+        b=F+3J/A7XcyI6rMDtifuQ5cLodmdsdVw66TpmK+CPPb6nF6fgdjvx8wa4sum9YiXJZn
+         lw0oTTy0KmFbk8586i0YS+SeuKlRG5WUCXbB+aXnKaxh/dmNqCnRNf384Jie/rjHR/jA
+         bvXu/FON2lrobXG5qUkG+d7tZzZIo951AbGHgOX7fxlMWqAdYpINCragKn/GOsFGNYb6
+         HmYNIszC7JOdyXINxkSxVrersz1EMxWLGPYzcWmPOMBKFAZ5cD9oT2D/QXx++FHsLsnz
+         8qgSwMIL8YrRvKTor3ykrgghzfZL3u89mIUh3Y1TfCHH97cZa586Xi0K5SqbGv7BxWhM
+         IZlg==
+X-Gm-Message-State: AOAM531PJaTIeYjcW3x3OWI8T/IImiIqHXaLEPuCm0QZ5iNVYIEHBTKC
+        MgvCJMW30egsMwRyw+f67Rel8A==
+X-Google-Smtp-Source: ABdhPJxw2YQgANmJKSXb0azrt7CyxbCAGSM9vVRfeCOACPl0w7wdr4dlRe4f8Q2/+LafbzEvYR8owQ==
+X-Received: by 2002:a05:6a00:d0:b029:30a:4c82:181 with SMTP id e16-20020a056a0000d0b029030a4c820181mr16562171pfj.27.1624956735846;
+        Tue, 29 Jun 2021 01:52:15 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id t8sm17547212pjs.12.2021.06.29.01.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 01:52:15 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:22:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210629085213.7a7eqcgkmtk5y7nh@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNmK0MP5ffQpiipt@ninjato>
+ <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+ <YNmVg3ZhshshlbSx@ninjato>
+ <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+ <YNmg2IEpUlArZXPK@ninjato>
+ <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+ <YNnjh3xxyaZZSo9N@ninjato>
+ <20210629041017.dsvzldikvsaade37@vireshk-i7>
+ <YNrZVho/98qgJS9N@kunai>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNrZVho/98qgJS9N@kunai>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On 29-06-21, 10:27, Wolfram Sang wrote:
+> > While we are at it, this has been replaced by a Rust counterpart [1]
+> > (as that makes it hypervisor agnostic, which is the goal of my work
+> > here) and I need someone with I2C knowledge to help review it. It
+> > should be okay even if you don't understand Rust a lot, just review
+> > this file[2] which is where most of i2c specific stuff lies.
+> 
+> Can't promise I can do this before my holidays, but I will try.
 
-The "dev->port[i].mp.mpi" is set to NULL during mlx5_ib_unbind_slave_port()
-execution, however that field is needed to add device to unaffiliated list.
+Thanks.
 
-Such flow causes to the following kernel panic while unloading mlx5_ib
-module in multi-port mode, hence the device should be added to the list
-prior to unbind call.
+> > I am not sure why you say I2C_RDWR isn't supported. The spec and Linux
+> 
+> This is how I interpreted Arnd's response. I said mulitple times that I
+> might be missing something so I double check.
+> 
+> > SMBUS. To clarify on an earlier point, every virtio transfer may
+> > contain one or more struct i2c_msg instances, all processed together
+> > (as expected).
+> 
+> That was the information missing for me so far becasue...
+> 
+> > If you see virtio_i2c_send_reqs() in this patch, you will see that it
+> > converts a stream of i2c_req messages to their virtio counterparts and
+> > send them together, consider it a single transaction.
+> 
+> ... when I checked virtio_i2c_send_reqs(), I also saw
+> virtqueue_add_sgs() but I had no idea if this will end up as REP_START
+> on the physical bus or not. But it definately should.
 
- RPC: Unregistered rdma transport module.
- RPC: Unregistered rdma backchannel transport module.
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0
- Oops: 0002 [#1] SMP NOPTI
- CPU: 4 PID: 1904 Comm: modprobe Not tainted 5.13.0-rc7_for_upstream_min_debug_2021_06_24_12_08 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- RIP: 0010:mlx5_ib_cleanup_multiport_master+0x18b/0x2d0 [mlx5_ib]
- Code: 00 04 0f 85 c4 00 00 00 48 89 df e8 ef fa ff ff 48 8b 83 40 0d 00 00 48 8b 15 b9 e8 05 00 4a 8b 44 28 20 48 89 05 ad e8 05 00 <48> c7 00 d0 57 c5 a0 48 89 50 08 48 89 02 39 ab 88 0a 00 00 0f 86
- RSP: 0018:ffff888116ee3df8 EFLAGS: 00010296
- RAX: 0000000000000000 RBX: ffff8881154f6000 RCX: 0000000000000080
- RDX: ffffffffa0c557d0 RSI: ffff88810b69d200 RDI: 000000000002d8a0
- RBP: 0000000000000002 R08: ffff888110780408 R09: 0000000000000000
- R10: ffff88812452e1c0 R11: fffffffffff7e028 R12: 0000000000000000
- R13: 0000000000000080 R14: ffff888102c58000 R15: 0000000000000000
- FS:  00007f884393a740(0000) GS:ffff8882f5a00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 00000001249f6004 CR4: 0000000000370ea0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  mlx5_ib_stage_init_cleanup+0x16/0xd0 [mlx5_ib]
-  __mlx5_ib_remove+0x33/0x90 [mlx5_ib]
-  mlx5r_remove+0x22/0x30 [mlx5_ib]
-  auxiliary_bus_remove+0x18/0x30
-  __device_release_driver+0x177/0x220
-  driver_detach+0xc4/0x100
-  bus_remove_driver+0x58/0xd0
-  auxiliary_driver_unregister+0x12/0x20
-  mlx5_ib_cleanup+0x13/0x897 [mlx5_ib]
-  __x64_sys_delete_module+0x154/0x230
-  ? exit_to_user_mode_prepare+0x104/0x140
-  do_syscall_64+0x3f/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f8842e095c7
- Code: 73 01 c3 48 8b 0d d9 48 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a9 48 2c 00 f7 d8 64 89 01 48
- RSP: 002b:00007ffc68f6e758 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
- RAX: ffffffffffffffda RBX: 00005638207929c0 RCX: 00007f8842e095c7
- RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000563820792a28
- RBP: 00005638207929c0 R08: 00007ffc68f6d701 R09: 0000000000000000
- R10: 00007f8842e82880 R11: 0000000000000206 R12: 0000563820792a28
- R13: 0000000000000001 R14: 0000563820792a28 R15: 00007ffc68f6fb40
- Modules linked in: xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat xt_addrtype xt_conntrack nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter overlay rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_ipoib ib_cm ib_umad mlx5_ib(-) mlx4_ib ib_uverbs ib_core mlx4_en mlx4_core mlx5_core ptp pps_core [last unloaded: rpcrdma]
- CR2: 0000000000000000
- ---[ end trace a0bb7e20804e9e9b ]---
+Just think of virtqueue_add_sgs() as something that setups the
+structures for transfer. The actual stuff at the other end (host)
+happens only after virtqueue_kick() is called at the guest (this
+notifies the host that data is present now), in response the backend
+running at host will re-create the struct i2c_msg and issue:
 
-Fixes: 7ce6095e3bff ("RDMA/mlx5: Don't add slave port to unaffiliated list")
-Reviewed-by: Itay Aveksis <itayav@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-This is fix the patch in the for-next.
----
- drivers/infiniband/hw/mlx5/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+    struct i2c_rdwr_ioctl_data data;
+    data.nmsgs = count;
+    data.msgs = msgs;
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 90f8a6874cd1..9b8dd7a604c9 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3345,9 +3345,10 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
- 			} else {
- 				mlx5_ib_dbg(dev, "unbinding port_num: %u\n",
- 					    i + 1);
--				mlx5_ib_unbind_slave_port(dev, dev->port[i].mp.mpi);
- 				list_add_tail(&dev->port[i].mp.mpi->list,
- 					      &mlx5_ib_unaffiliated_port_list);
-+				mlx5_ib_unbind_slave_port(dev,
-+							  dev->port[i].mp.mpi);
- 			}
- 		}
- 	}
+    return ioctl(adapter->fd, I2C_RDWR, &data);
+
+So we will end up recreating the exact situation as when
+virtio_i2c_xfer() is called.
+
 -- 
-2.31.1
-
+viresh
