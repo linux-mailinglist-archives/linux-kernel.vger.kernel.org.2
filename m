@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5A63B7457
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676003B7459
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhF2OcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
+        id S234447AbhF2Oc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhF2OcB (ORCPT
+        with ESMTP id S231194AbhF2Oc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:32:01 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91ADC061760;
-        Tue, 29 Jun 2021 07:29:32 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id bu19so1180167lfb.9;
-        Tue, 29 Jun 2021 07:29:32 -0700 (PDT)
+        Tue, 29 Jun 2021 10:32:26 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34DAC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:29:58 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t3so31581375edc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yHqef71dDdDxk3wfRaTWaTfU7tVVIbFkB8emTOQrIgk=;
-        b=DD6AvVlPOLU7jCcEcwbT5RmX4LwdW8BBJ1r3NutDgTTMwIquFn+u+OXkbRy9LbxE8G
-         fD59LNz3i1LVSim55BZ05/m8x0MUQCZLuPcsZu/hks6xKbU9c19ApDrxAdZq6Dzs6nH4
-         Ai2lFRKbuxmG+mU/irok5xdlcT1CimyvRK2LEjl/Lk5P42g3bXR6hWajugMgOhpDhufP
-         OM9jNwrXjuWnOLhIeJ6n7EtffX5uwozOo4TsZlG2pJBvPop3acMXxu/AJV+AF3lEemFP
-         Rm8scEMUp1BUhqgBuWVHmYI0FWy+kOPvR5xd+b/cGUkzB5daikJ3imAENjEv+ihJX/SS
-         XfTQ==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=wB4FiBGvprIuCCVuYdV/lm3OI2xK185EMQiNBS5+SnY=;
+        b=wL3H5lyRBK5V/gXc3JaN7+WlnvM+aSSUjtlISo9Vc3LeZ+PpWz0DrnfrsBnlWeqKes
+         NwuxAaxJNLC4QQz5voli9f9L89eVz01LM+4ZHLDFkvAuhueSdpJzgHxf+P3cC9F+GBnk
+         eGMMtHb/kLRepfvZJeNScS/WhZ0Re4kSyV/NiPD0FB8u3w7kFTlsnmWr7d0fyR6VKLsA
+         ILHxyqOVKj402ILaNBi3cIJLrLSVQqxCy5ui9hWvVfVdNohDdnqPdGFgblpFWAKTK5sm
+         8DVUC0h3NbMXg5x9dTs19fWFhD5jM2Hg7odtl3xpaWAs0qJnizUO83LLoLokEYpj7UU2
+         hGDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yHqef71dDdDxk3wfRaTWaTfU7tVVIbFkB8emTOQrIgk=;
-        b=qMsEsWts1mv698Nz+o/yyUuH7V/Zd37aSrutAfyRtd3HQP38le+qJ6fz0NAhEw8YCy
-         UdQUU685S44uk8c3yqskRJ4Yr5PjvbA4KFoNf96GO9YLalUK4JdT7iNKIlNUiynkA4GC
-         iMmyDHsyjVY3L4QksVYFC7pU/P0//aThykjLZarnjY22KJbar3PxLLqNUH+K06CXlnx7
-         8zDPlA8/EdFxkDydfjQnA1OFC9iPb1Eca/bUSBcFnWvljU+IJ8KMzlKWehmrOVaQPsuo
-         K1tgRX7Lyyebtcc0dxqEiSCYSCMEGvmscwVHn2qlgu438UP+JOADG/pj7yYzOpFy3AFw
-         NWQQ==
-X-Gm-Message-State: AOAM532OESdyZxat1R9GcHBdqbkpQN9EGJH6DXWAH1BOCcwJJd5Xsu0h
-        dDS9rFea7GwfPQ4qRdp8NqBkcm5kqrx2FPdvJtU=
-X-Google-Smtp-Source: ABdhPJy513jd82VDfZeVelNPEbdavppAak0lBXBwcn8VKf5jzV3t/ROZl71UYC5G8yOhjjgNR0HhyjnTKnv3OV6GXYw=
-X-Received: by 2002:a05:6512:219:: with SMTP id a25mr24912657lfo.295.1624976971092;
- Tue, 29 Jun 2021 07:29:31 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=wB4FiBGvprIuCCVuYdV/lm3OI2xK185EMQiNBS5+SnY=;
+        b=HzkNfHYnrZ8Z7ffbV9rm5RO5v2UewSU8eCj4g6U8xY+xCl07Ind1ZM3sQfAbbPmMTY
+         5tnEMWKKDh78dzixNc6jS/24hP1yNjTbTG2mlOuB6rU5LzphzIXLLjQfFPaCz7WutCtP
+         HdFcoAVA3iiviLBF35v1SG4LRgXp9ghRCCilYrH+y528gR4NKWPW4jVosRZ92m/F32kB
+         eGS9vrB4WLdrAP1gI04TFjy0Z5qT4qB1KnPIHJ9EQMl2i35COfJRJo+dcioWVmZgH1Fa
+         3Mkbkl8EFC3Pr1126wJMbfWcHsYJueXbHoR79hPAnyoYqSQCCRArqwH1LwEX2zVjwWZx
+         rXfg==
+X-Gm-Message-State: AOAM531891eH9NZwZuzYdg2DXPj28lqiCnpY3qVXbL26kjEQBlYyBiFT
+        Zm6JC3NoMtvgKnU5VfB2V5Quvzpolx1CUcS/
+X-Google-Smtp-Source: ABdhPJzX8pEoV6y7HDTaLESYook89iZ7Y3XovaBU4OK3j3L6NuKrsK62ykIEUzhs0sqL0MYI/4QWtQ==
+X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr34953919edb.130.1624976997305;
+        Tue, 29 Jun 2021 07:29:57 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
+        by smtp.gmail.com with ESMTPSA id hy5sm8492982ejc.72.2021.06.29.07.29.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 07:29:56 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Subject: [GIT PULL] arch/microblaze patches for 5.14-rc1
+Message-ID: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+Date:   Tue, 29 Jun 2021 16:29:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210604111005.6804-1-peng.fan@oss.nxp.com> <CAHCN7xKYooBQzREdoa8ybhQUBXxy6RPaFX9rp1keD7_HgnVA9Q@mail.gmail.com>
-In-Reply-To: <CAHCN7xKYooBQzREdoa8ybhQUBXxy6RPaFX9rp1keD7_HgnVA9Q@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 29 Jun 2021 11:29:20 -0300
-Message-ID: <CAOMZO5Bwmw7kjvqp253Xf3dafdG71p=nNy9XuqnJg2R4SD12tg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm: add pgc/blk_ctl nodes
-To:     Adam Ford <aford173@gmail.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Marek Vasut <marex@denx.de>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Hi Linus,
 
-On Tue, Jun 29, 2021 at 10:36 AM Adam Ford <aford173@gmail.com> wrote:
+please pull these two small patches to your tree.
 
-> Any change you could add the references to pgc_otg1 and pgc_otg2 to
-> their respective OTG nodes?  Without them, enabling OTG1 or OTG2 can
-> result in a hang unless it was started in U-Boot.
+Thanks,
+Michal
 
-There is a patch from Lucas doing that:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20200930155006.535712-12-l.stach@pengutronix.de/
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Cheers
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
+
+for you to fetch changes up to 14a832498c23cf480243222189066a8006182b9d:
+
+  arch: microblaze: Fix spelling mistake "vesion" -> "version"
+(2021-06-02 09:50:36 +0200)
+
+----------------------------------------------------------------
+Microblaze patches for 5.14-rc1
+
+- Remove unused PAGE_UP/DOWN macros
+- Fix trivial spelling mistake
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      arch: microblaze: Fix spelling mistake "vesion" -> "version"
+
+Guo Ren (1):
+      microblaze: Cleanup unused functions
+
+ arch/microblaze/Makefile           | 2 +-
+ arch/microblaze/include/asm/page.h | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
