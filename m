@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08DF3B6E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D89A3B6E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhF2GnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:43:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231958AbhF2Gm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:42:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8983261CC7;
-        Tue, 29 Jun 2021 06:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624948833;
-        bh=uiM4ZLlUWZ7h4sImIXL++IvKwJZNxgmEDXyACS1QTvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j6zrxtJXNmcJ0vPKYlN/1Pzt7zNEI2j40Jkd3N/MyETUJ6fx6rpLOVJ2FrzVz/WGM
-         CCXlSV7ex+o2UyH+HaEkFDYM6/B5a66SO7X/E4KuUo8PztoNnCc+QEE0J2Vd9PoFyc
-         AJyZodXD8XqUNmvakICvix3VewBfBAFnJ80eDaYG5g08jvXpAy3cMQjFZzW/vfExmB
-         5JTS1GDI0AivZ/qubH9PWOPAhto2D71jMUgZ7PSlCSdTCxi7mVo6SI9e3NNBC4EkLs
-         dUoDBA0XFhu9IE5871dUnmiBMTLI3ZPOx9oH78JdnRZWCKmyPZ9KeS10O24XvvpjD/
-         CL9MjO2pvR7yA==
-Date:   Tue, 29 Jun 2021 09:40:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: Re: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack
- object
-Message-ID: <YNrAXW/94SJkOO0g@unreal>
-References: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
- <20210624174841.GA2906108@nvidia.com>
- <YNgxxTQ4NW0yGHq1@unreal>
- <20210627231528.GA4459@nvidia.com>
- <YNlcpfdsdJdwMp5l@unreal>
- <20210628113813.GA21676@nvidia.com>
+        id S232183AbhF2Gnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231958AbhF2Gnj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:43:39 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65390C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:41:11 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id i5so29786642eds.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=llkKHmBkfnr2e7nGu5wo9NWF1Rvx5VVNTXNZeIaOEY8=;
+        b=b6IxjHxgrsOeV79Ht0Ax4/VA7XYqaQCz8mEI89nlODOpkbbNQKkT86lVUMKt1PlsZi
+         aO9kArwDvjiDefLm8Gqo0xUt1Mk7mf97PWF41AYIIn47zWADydgm2jEpt5HbuvJNgu5D
+         ntPRGt8AK87ZDLLlBie2K5g/5+KlMcWQeGjcg4WsoHO2ksy66nVpAOJnvc90t5QRYxsZ
+         lmYM79ne39YAIfMIugI5AFk+AfwA9H9Bbs5SlIVioXOv0ITHb/z3Mum0jibvHXkilmpY
+         vBesh85ghF0T5N8Mk3dWMoelFiG83Ubtv9E3WAB1/u1Mox5/MvGtN3SeVQ5/0Ut6/dR8
+         OyRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=llkKHmBkfnr2e7nGu5wo9NWF1Rvx5VVNTXNZeIaOEY8=;
+        b=VZwLlI/uFheDLlpaYkGBq2qC/6XHYf5GwQf1YEpoLwASPuLaPHIbKma5vuMB5j1fzK
+         Qogn0MAjWkRPhAkbmwe219JY/6dWoSkiHDGo/HOjqu8CNINkfx956zFqPsqVUjleoDOJ
+         XUTXQ5kWZnwndHkoD7t5UoM2p0FNGQk6/aN1NJphNXLtbfjptoaseTu+58VebaOHb3Zl
+         RavetJceqPspK2CjbMhu1ZIKab/Iso8R66NzU3MEk51iF23M4rZKiDy8TUJ1Xi4w0AqI
+         mQpqsdjjx+FGXyG8/ilFEbBm82bQmqG8deztGyBmbY6qVDvTv3c8w7JhikgTpcABNcBl
+         o5wg==
+X-Gm-Message-State: AOAM530wJ/sWkX+BnPykvz9crkQCZ2+WQCgK0ufrSSYUPcDxdyH9/j4l
+        Da2PcMb2wuu0mb/srIAVg7cmt3yVtYz9vvHWzPL+
+X-Google-Smtp-Source: ABdhPJztCqFdUxDVPRMjQB4Q3BvYvtgtIsSUG1gu1hpU8fUwWsabUxu+tfnt4bzd/O6vpsvz+4mWTWvqMD3uAaEQxFk=
+X-Received: by 2002:a50:ff01:: with SMTP id a1mr37794534edu.253.1624948869940;
+ Mon, 28 Jun 2021 23:41:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628113813.GA21676@nvidia.com>
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210628103309.GA205554@storage2.sh.intel.com>
+ <CAONzpcbjr2zKOAQrWa46Tv=oR1fYkcKLcqqm_tSgO7RkU20yBA@mail.gmail.com> <d5321870-ef29-48e2-fdf6-32d99a5fa3b9@redhat.com>
+In-Reply-To: <d5321870-ef29-48e2-fdf6-32d99a5fa3b9@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 29 Jun 2021 14:40:59 +0800
+Message-ID: <CACycT3vVhNdhtyohKJQuMXTic5m6jDjEfjzbzvp=2FJgwup8mg@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Yongji Xie <elohimes@gmail.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        kvm <kvm@vger.kernel.org>, netdev@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        iommu@lists.linux-foundation.org, songmuchun@bytedance.com,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:38:13AM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 28, 2021 at 08:22:45AM +0300, Leon Romanovsky wrote:
-> > > The previous code didn't call restrack_del. restrack_del undoes the
-> > > restrack_set_name stuff, not just add - so it does not leave things
-> > > back the way it found them
-> > 
-> > The previous code didn't call to restrack_add and this is why it didn't
-> > call to restrack_del later. In old and new code, we are still calling to
-> > acquire and release dev (cma_acquire_dev_by_src_ip/cma_release_dev) and
-> > this is where the CM_ID is actually attached.
-> 
-> Which is my point, you can't call restrack_del anyplace except the
-> final destroy. It cannot be used for error unwinding in these kinds of
-> functions
+On Tue, Jun 29, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/28 =E4=B8=8B=E5=8D=886:32, Yongji Xie =E5=86=99=E9=81=93=
+:
+> >> The large barrier is bounce-buffer mapping: SPDK requires hugepages
+> >> for NVMe over PCIe and RDMA, so take some preallcoated hugepages to
+> >> map as bounce buffer is necessary. Or it's hard to avoid an extra
+> >> memcpy from bounce-buffer to hugepage.
+> >> If you can add an option to map hugepages as bounce-buffer,
+> >> then SPDK could also be a potential user of vduse.
+> >>
+> > I think we can support registering user space memory for bounce-buffer
+> > use like XDP does. But this needs to pin the pages, so I didn't
+> > consider it in this initial version.
+> >
+>
+> Note that userspace should be unaware of the existence of the bounce buff=
+er.
+>
 
-ok, let's remove the controversial hunks.
+If so, it might be hard to use umem. Because we can't use umem for
+coherent mapping which needs physical address contiguous space.
 
-> 
-> Jason
+Thanks,
+Yongji
