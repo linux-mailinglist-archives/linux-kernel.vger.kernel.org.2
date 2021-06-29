@@ -2,282 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3861E3B6F94
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A323B6F99
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhF2Imm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:42:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhF2Imk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:42:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C293361DC8;
-        Tue, 29 Jun 2021 08:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624956013;
-        bh=IdyzRcmXVpwvhqUMpa3WRL5I00BM3CX4UDH6kfhD8rI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9xBZRPbngeToC/9BzLlPyT3s4c5EBlPMHM+kaI64dfK8Z0BFN5C3ryu/3tAc8Ftj
-         mjRoqZ1EinNMCEDRuKyLZRaahnJyLvJRIjvRO+k+GTtlC0KEE+BY/enjYWknbiirSX
-         qaE+zudBjyJaOVD9nLFkGEtuCKZFjV6jRJKFPrTZjI6TKlaPj4sEyZSlq9/7Qm+zeF
-         OY+nWudSUIkwSDEpGSGkzLEFt4FO24Uh1ExAET5MLp1sIQdllhREqniNfmEtyaLvJV
-         7Bm0bGVWAVu5wjm62T1mq94oVSKU9lbsfOuFjFtan+jEbTBXbh7Vzm0/1RdQejMb9K
-         EB9FWKOmsUVOg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 2/2] RDMA: Use dma_map_sgtable for map umem pages
-Date:   Tue, 29 Jun 2021 11:40:02 +0300
-Message-Id: <70cbe6ddc2aa9bc5efb96d3c932d76fb2d68a50c.1624955710.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624955710.git.leonro@nvidia.com>
-References: <cover.1624955710.git.leonro@nvidia.com>
+        id S232502AbhF2Ipg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:45:36 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:35674 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232401AbhF2Ipf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 04:45:35 -0400
+Received: by mail-ed1-f48.google.com with SMTP id df12so30204705edb.2;
+        Tue, 29 Jun 2021 01:43:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vr9wv3OGfZSryviafokTMo7ZyJHMYGFWE5upUcJfT6g=;
+        b=Uz4CMLbxX6eoqXBOqtxElSJkTOrgh6V0tphBTvlAuHRFV88vah7RxXRcpi7amg7tOq
+         jOy2WIp9/NTTJzq+VT6z44pMrghqmwh5aFuHoyZUQ8ai7EaWQjLam/JB/LyWXlRUdDNn
+         Xer9SXUeX+C+2ikVuwOwZ1v5TFVyFkth0WH9JCCpjJakKmRDhaOR/gZ2T8BsrFn0VU0k
+         RYmXytxyTcWd55gUw3iQv8SE1709/Z33pP8Xqma8b4dxOuoNU8mPVNRcjXq/a106y1gn
+         GfF0vyR4C0OMQA77UedqnqLfVXIggyirFXJ7bOCtNbL+/B6ca0XE4jOl6vKR430s6dfE
+         FXbg==
+X-Gm-Message-State: AOAM5330GqqGkgIs77iqfT9/57s7a0/i6M7ktDV0I/q3pLgkMsNvJHIC
+        lW7Dq0abJzrcj36/2qgzMgKHjBBswpO6Nw==
+X-Google-Smtp-Source: ABdhPJzLc2HwWhEsTCwtnIcTW1x53+fUQkhioghQMxKM6EYv525La+1RWENlgbXjHHFqo8Dk65LMpQ==
+X-Received: by 2002:aa7:c54b:: with SMTP id s11mr29079920edr.373.1624956185789;
+        Tue, 29 Jun 2021 01:43:05 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id c23sm10917610eds.57.2021.06.29.01.43.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 01:43:05 -0700 (PDT)
+Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
+To:     longli@linuxonhyperv.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>, Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
+References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
+ <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <f5155516-4054-459a-c23c-a787fa429e5e@kernel.org>
+Date:   Tue, 29 Jun 2021 10:43:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On 26. 06. 21, 8:30, longli@linuxonhyperv.com wrote:
+> Azure Blob storage provides scalable and durable data storage for Azure.
+> (https://azure.microsoft.com/en-us/services/storage/blobs/)
+> 
+> This driver adds support for accelerated access to Azure Blob storage. As an
+> alternative to REST APIs, it provides a fast data path that uses host native
+> network stack and secure direct data link for storage server access.
+> 
+...
+> Cc: Jiri Slaby <jirislaby@kernel.org>
 
-In order to avoid incorrect usage of sg_table fields, change umem to
-use dma_map_sgtable for map the pages for DMA. Since dma_map_sgtable
-update the nents field (number of DMA entries), there is no need
-anymore for nmap variable, hence do some cleanups accordingly.
+I am just curious, why am I CCed? Anyway, some comments below:
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c        | 29 ++++++++++-----------------
- drivers/infiniband/core/umem_dmabuf.c |  1 -
- drivers/infiniband/hw/mlx4/mr.c       |  4 ++--
- drivers/infiniband/hw/mlx5/mr.c       |  3 ++-
- drivers/infiniband/sw/rdmavt/mr.c     |  2 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    |  3 ++-
- include/rdma/ib_umem.h                |  5 ++---
- include/rdma/ib_verbs.h               | 28 ++++++++++++++++++++++++++
- 8 files changed, 48 insertions(+), 27 deletions(-)
+> --- /dev/null
+> +++ b/drivers/hv/azure_blob.c
+> @@ -0,0 +1,655 @@
+...
+> +static void az_blob_on_channel_callback(void *context)
+> +{
+> +	struct vmbus_channel *channel = (struct vmbus_channel *)context;
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 0eb40025075f..f620d5b6b0e1 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -51,11 +51,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	struct scatterlist *sg;
- 	unsigned int i;
- 
--	if (umem->nmap > 0)
--		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
--				DMA_BIDIRECTIONAL);
-+	if (dirty)
-+		ib_dma_unmap_sgtable_attrs(dev, &umem->sg_head,
-+					   DMA_BIDIRECTIONAL, 0);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->sg_nents, i)
-+	for_each_sgtable_sg(&umem->sg_head, sg, i)
- 		unpin_user_page_range_dirty_lock(sg_page(sg),
- 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
- 
-@@ -111,7 +111,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	/* offset into first SGL */
- 	pgoff = umem->address & ~PAGE_MASK;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/* Walk SGL and reduce max page size if VA/PA bits differ
- 		 * for any address.
- 		 */
-@@ -121,7 +121,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 		 * the maximum possible page size as the low bits of the iova
- 		 * must be zero when starting the next chunk.
- 		 */
--		if (i != (umem->nmap - 1))
-+		if (i != (umem->sg_head.nents - 1))
- 			mask |= va;
- 		pgoff = 0;
- 	}
-@@ -230,7 +230,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 				0, ret << PAGE_SHIFT,
- 				ib_dma_max_seg_size(device), sg, npages,
- 				GFP_KERNEL);
--		umem->sg_nents = umem->sg_head.nents;
- 		if (IS_ERR(sg)) {
- 			unpin_user_pages_dirty_lock(page_list, ret, 0);
- 			ret = PTR_ERR(sg);
-@@ -241,16 +240,10 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	if (access & IB_ACCESS_RELAXED_ORDERING)
- 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
- 
--	umem->nmap =
--		ib_dma_map_sg_attrs(device, umem->sg_head.sgl, umem->sg_nents,
--				    DMA_BIDIRECTIONAL, dma_attr);
--
--	if (!umem->nmap) {
--		ret = -ENOMEM;
-+	ret = ib_dma_map_sgtable_attrs(device, &umem->sg_head,
-+				       DMA_BIDIRECTIONAL, dma_attr);
-+	if (ret)
- 		goto umem_release;
--	}
--
--	ret = 0;
- 	goto out;
- 
- umem_release:
-@@ -310,8 +303,8 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
- 		return -EINVAL;
- 	}
- 
--	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_nents, dst, length,
--				 offset + ib_umem_offset(umem));
-+	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_head.orig_nents,
-+				 dst, length, offset + ib_umem_offset(umem));
- 
- 	if (ret < 0)
- 		return ret;
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index 0d65ce146fc4..cd2dd1f39aa7 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -57,7 +57,6 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
- 
- 	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
- 	umem_dmabuf->umem.sg_head.nents = nmap;
--	umem_dmabuf->umem.nmap = nmap;
- 	umem_dmabuf->sgt = sgt;
- 
- wait_fence:
-diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
-index 50becc0e4b62..ab5dc8eac7f8 100644
---- a/drivers/infiniband/hw/mlx4/mr.c
-+++ b/drivers/infiniband/hw/mlx4/mr.c
-@@ -200,7 +200,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, struct mlx4_mtt *mtt,
- 	mtt_shift = mtt->page_shift;
- 	mtt_size = 1ULL << mtt_shift;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		if (cur_start_addr + len == sg_dma_address(sg)) {
- 			/* still the same block */
- 			len += sg_dma_len(sg);
-@@ -273,7 +273,7 @@ int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
- 
- 	*num_of_mtts = ib_umem_num_dma_blocks(umem, PAGE_SIZE);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/*
- 		 * Initialization - save the first chunk start as the
- 		 * current_block_start - block means contiguous pages.
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 3263851ea574..4954fb9eb6dc 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1226,7 +1226,8 @@ int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
- 	orig_sg_length = sg.length;
- 
- 	cur_mtt = mtt;
--	rdma_for_each_block (mr->umem->sg_head.sgl, &biter, mr->umem->nmap,
-+	rdma_for_each_block (mr->umem->sg_head.sgl, &biter,
-+			     mr->umem->sg_head.nents,
- 			     BIT(mr->page_shift)) {
- 		if (cur_mtt == (void *)mtt + sg.length) {
- 			dma_sync_single_for_device(ddev, sg.addr, sg.length,
-diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 34b7af6ab9c2..d955c8c4acc4 100644
---- a/drivers/infiniband/sw/rdmavt/mr.c
-+++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -410,7 +410,7 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->mr.page_shift = PAGE_SHIFT;
- 	m = 0;
- 	n = 0;
--	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->sg_head.nents, 0) {
- 		void *vaddr;
- 
- 		vaddr = page_address(sg_page_iter_page(&sg_iter));
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6aabcb4de235..a269085e0946 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -142,7 +142,8 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	if (length > 0) {
- 		buf = map[0]->buf;
- 
--		for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+		for_each_sg_page(umem->sg_head.sgl, &sg_iter,
-+				 umem->sg_head.nents, 0) {
- 			if (num_buf >= RXE_BUF_PER_MAP) {
- 				map++;
- 				buf = map[0]->buf;
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 676c57f5ca80..c754b1a31cc9 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -27,8 +27,6 @@ struct ib_umem {
- 	u32 is_dmabuf : 1;
- 	struct work_struct	work;
- 	struct sg_table sg_head;
--	int             nmap;
--	unsigned int    sg_nents;
- };
- 
- struct ib_umem_dmabuf {
-@@ -77,7 +75,8 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
- 						struct ib_umem *umem,
- 						unsigned long pgsz)
- {
--	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->nmap, pgsz);
-+	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->sg_head.nents,
-+				pgsz);
- }
- 
- /**
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 371df1c80aeb..2dba30849731 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4057,6 +4057,34 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
- 				   dma_attrs);
- }
- 
-+/**
-+ * ib_dma_map_sgtable_attrs - Map a scatter/gather table to DMA addresses
-+ * @dev: The device for which the DMA addresses are to be created
-+ * @sg: The sg_table object describing the buffer
-+ * @direction: The direction of the DMA
-+ * @attrs: Optional DMA attributes for the map operation
-+ */
-+static inline int ib_dma_map_sgtable_attrs(struct ib_device *dev,
-+					   struct sg_table *sgt,
-+					   enum dma_data_direction direction,
-+					   unsigned long dma_attrs)
-+{
-+	if (ib_uses_virt_dma(dev)) {
-+		ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
-+		return 0;
-+	}
-+	return dma_map_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
-+static inline void ib_dma_unmap_sgtable_attrs(struct ib_device *dev,
-+					      struct sg_table *sgt,
-+					      enum dma_data_direction direction,
-+					      unsigned long dma_attrs)
-+{
-+	if (!ib_uses_virt_dma(dev))
-+		dma_unmap_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
- /**
-  * ib_dma_map_sg - Map a scatter/gather list to DMA addresses
-  * @dev: The device for which the DMA addresses are to be created
+Have you fed this patch through checkpatch?
+
+> +	const struct vmpacket_descriptor *desc;
+> +
+> +	az_blob_dbg("entering interrupt from vmbus\n");
+> +	foreach_vmbus_pkt(desc, channel) {
+> +		struct az_blob_vsp_request_ctx *request_ctx;
+> +		struct az_blob_vsp_response *response;
+> +		u64 cmd_rqst = vmbus_request_addr(&channel->requestor,
+> +					desc->trans_id);
+> +		if (cmd_rqst == VMBUS_RQST_ERROR) {
+> +			az_blob_err("incorrect transaction id %llu\n",
+> +				desc->trans_id);
+> +			continue;
+> +		}
+> +		request_ctx = (struct az_blob_vsp_request_ctx *) cmd_rqst;
+> +		response = hv_pkt_data(desc);
+> +
+> +		az_blob_dbg("got response for request %pUb status %u "
+> +			"response_len %u\n",
+> +			&request_ctx->request->guid, response->error,
+> +			response->response_len);
+> +		request_ctx->request->response.status = response->error;
+> +		request_ctx->request->response.response_len =
+> +			response->response_len;
+> +		complete(&request_ctx->wait_vsp);
+> +	}
+> +
+> +}
+...
+> +static long az_blob_ioctl_user_request(struct file *filp, unsigned long arg)
+> +{
+> +	struct az_blob_device *dev = &az_blob_dev;
+> +	struct az_blob_file_ctx *file_ctx = filp->private_data;
+> +	char __user *argp = (char __user *) arg;
+> +	struct az_blob_request_sync request;
+> +	struct az_blob_vsp_request_ctx request_ctx;
+> +	unsigned long flags;
+> +	int ret;
+> +	size_t request_start, request_num_pages = 0;
+> +	size_t response_start, response_num_pages = 0;
+> +	size_t data_start, data_num_pages = 0, total_num_pages;
+> +	struct page **request_pages = NULL, **response_pages = NULL;
+> +	struct page **data_pages = NULL;
+> +	struct vmbus_packet_mpb_array *desc;
+> +	u64 *pfn_array;
+> +	int desc_size;
+> +	int page_idx;
+> +	struct az_blob_vsp_request *vsp_request;
+
+Ugh, see further.
+
+> +
+> +	/* Fast fail if device is being removed */
+> +	if (dev->removing)
+> +		return -ENODEV;
+> +
+> +	if (!az_blob_safe_file_access(filp)) {
+> +		az_blob_dbg("process %d(%s) changed security contexts after"
+> +			" opening file descriptor\n",
+> +			task_tgid_vnr(current), current->comm);
+> +		return -EACCES;
+> +	}
+> +
+> +	if (copy_from_user(&request, argp, sizeof(request))) {
+> +		az_blob_dbg("don't have permission to user provided buffer\n");
+> +		return -EFAULT;
+> +	}
+> +
+> +	az_blob_dbg("az_blob ioctl request guid %pUb timeout %u request_len %u"
+> +		" response_len %u data_len %u request_buffer %llx "
+> +		"response_buffer %llx data_buffer %llx\n",
+> +		&request.guid, request.timeout, request.request_len,
+> +		request.response_len, request.data_len, request.request_buffer,
+> +		request.response_buffer, request.data_buffer);
+> +
+> +	if (!request.request_len || !request.response_len)
+> +		return -EINVAL;
+> +
+> +	if (request.data_len && request.data_len < request.data_valid)
+> +		return -EINVAL;
+> +
+> +	init_completion(&request_ctx.wait_vsp);
+> +	request_ctx.request = &request;
+> +
+> +	/*
+> +	 * Need to set rw to READ to have page table set up for passing to VSP.
+> +	 * Setting it to WRITE will cause the page table entry not allocated
+> +	 * as it's waiting on Copy-On-Write on next page fault. This doesn't
+> +	 * work in this scenario because VSP wants all the pages to be present.
+> +	 */
+> +	ret = get_buffer_pages(READ, (void __user *) request.request_buffer,
+
+Does this need __force for sparse not to complain?
+
+> +		request.request_len, &request_pages, &request_start,
+> +		&request_num_pages);
+> +	if (ret)
+> +		goto get_user_page_failed;
+> +
+> +	ret = get_buffer_pages(READ, (void __user *) request.response_buffer,
+> +		request.response_len, &response_pages, &response_start,
+> +		&response_num_pages);
+> +	if (ret)
+> +		goto get_user_page_failed;
+> +
+> +	if (request.data_len) {
+> +		ret = get_buffer_pages(READ,
+> +			(void __user *) request.data_buffer, request.data_len,
+> +			&data_pages, &data_start, &data_num_pages);
+> +		if (ret)
+> +			goto get_user_page_failed;
+> +	}
+> +
+> +	total_num_pages = request_num_pages + response_num_pages +
+> +				data_num_pages;
+> +	if (total_num_pages > AZ_BLOB_MAX_PAGES) {
+> +		az_blob_dbg("number of DMA pages %lu buffer exceeding %u\n",
+> +			total_num_pages, AZ_BLOB_MAX_PAGES);
+> +		ret = -EINVAL;
+> +		goto get_user_page_failed;
+> +	}
+> +
+> +	/* Construct a VMBUS packet and send it over to VSP */
+> +	desc_size = sizeof(struct vmbus_packet_mpb_array) +
+> +			sizeof(u64) * total_num_pages;
+> +	desc = kzalloc(desc_size, GFP_KERNEL);
+
+Smells like a call for struct_size().
+
+> +	vsp_request = kzalloc(sizeof(*vsp_request), GFP_KERNEL);
+> +	if (!desc || !vsp_request) {
+> +		kfree(desc);
+> +		kfree(vsp_request);
+> +		ret = -ENOMEM;
+> +		goto get_user_page_failed;
+> +	}
+> +
+> +	desc->range.offset = 0;
+> +	desc->range.len = total_num_pages * PAGE_SIZE;
+> +	pfn_array = desc->range.pfn_array;
+> +	page_idx = 0;
+> +
+> +	if (request.data_len) {
+> +		fill_in_page_buffer(pfn_array, &page_idx, data_pages,
+> +			data_num_pages);
+> +		vsp_request->data_buffer_offset = data_start;
+> +		vsp_request->data_buffer_length = request.data_len;
+> +		vsp_request->data_buffer_valid = request.data_valid;
+> +	}
+> +
+> +	fill_in_page_buffer(pfn_array, &page_idx, request_pages,
+> +		request_num_pages);
+> +	vsp_request->request_buffer_offset = request_start +
+> +						data_num_pages * PAGE_SIZE;
+> +	vsp_request->request_buffer_length = request.request_len;
+> +
+> +	fill_in_page_buffer(pfn_array, &page_idx, response_pages,
+> +		response_num_pages);
+> +	vsp_request->response_buffer_offset = response_start +
+> +		(data_num_pages + request_num_pages) * PAGE_SIZE;
+> +	vsp_request->response_buffer_length = request.response_len;
+> +
+> +	vsp_request->version = 0;
+> +	vsp_request->timeout_ms = request.timeout;
+> +	vsp_request->operation_type = AZ_BLOB_DRIVER_USER_REQUEST;
+> +	guid_copy(&vsp_request->transaction_id, &request.guid);
+> +
+> +	spin_lock_irqsave(&file_ctx->vsp_pending_lock, flags);
+> +	list_add_tail(&request_ctx.list, &file_ctx->vsp_pending_requests);
+> +	spin_unlock_irqrestore(&file_ctx->vsp_pending_lock, flags);
+> +
+> +	az_blob_dbg("sending request to VSP\n");
+> +	az_blob_dbg("desc_size %u desc->range.len %u desc->range.offset %u\n",
+> +		desc_size, desc->range.len, desc->range.offset);
+> +	az_blob_dbg("vsp_request data_buffer_offset %u data_buffer_length %u "
+> +		"data_buffer_valid %u request_buffer_offset %u "
+> +		"request_buffer_length %u response_buffer_offset %u "
+> +		"response_buffer_length %u\n",
+> +		vsp_request->data_buffer_offset,
+> +		vsp_request->data_buffer_length,
+> +		vsp_request->data_buffer_valid,
+> +		vsp_request->request_buffer_offset,
+> +		vsp_request->request_buffer_length,
+> +		vsp_request->response_buffer_offset,
+> +		vsp_request->response_buffer_length);
+> +
+> +	ret = vmbus_sendpacket_mpb_desc(dev->device->channel, desc, desc_size,
+> +		vsp_request, sizeof(*vsp_request), (u64) &request_ctx);
+> +
+> +	kfree(desc);
+> +	kfree(vsp_request);
+> +	if (ret)
+> +		goto vmbus_send_failed;
+> +
+> +	wait_for_completion(&request_ctx.wait_vsp);
+
+Provided this is ioctl, this should likely be interruptible. You don't 
+want to account to I/O load. The same likely for az_blob_fop_release.
+
+> +
+> +	/*
+> +	 * At this point, the response is already written to request
+> +	 * by VMBUS completion handler, copy them to user-mode buffers
+> +	 * and return to user-mode
+> +	 */
+> +	if (copy_to_user(argp +
+> +			offsetof(struct az_blob_request_sync,
+> +				response.status),
+> +			&request.response.status,
+
+This is ugly, why don't you make argp the appropriate pointer instead of 
+char *? You'd need not do copy_to_user twice then, right?
+
+> +			sizeof(request.response.status))) {
+> +		ret = -EFAULT;
+> +		goto vmbus_send_failed;
+> +	}
+> +
+> +	if (copy_to_user(argp +
+> +			offsetof(struct az_blob_request_sync,
+> +				response.response_len),
+
+The same here.
+
+> +			&request.response.response_len,
+> +			sizeof(request.response.response_len)))
+> +		ret = -EFAULT;
+> +
+> +vmbus_send_failed:
+> +	spin_lock_irqsave(&file_ctx->vsp_pending_lock, flags);
+> +	list_del(&request_ctx.list);
+> +	if (list_empty(&file_ctx->vsp_pending_requests))
+> +		wake_up(&file_ctx->wait_vsp_pending);
+> +	spin_unlock_irqrestore(&file_ctx->vsp_pending_lock, flags);
+> +
+> +get_user_page_failed:
+> +	free_buffer_pages(request_num_pages, request_pages);
+> +	free_buffer_pages(response_num_pages, response_pages);
+> +	free_buffer_pages(data_num_pages, data_pages);
+> +
+> +	return ret;
+> +}
+
+This function is overly long. Care to split it (e.g. moving away the 
+initialization of the structs and the debug stuff)?
+
+> +
+> +static long az_blob_fop_ioctl(struct file *filp, unsigned int cmd,
+> +	unsigned long arg)
+> +{
+> +	long ret = -EIO;
+
+EINVAL would be more appropriate.
+
+> +
+> +	switch (cmd) {
+> +	case IOCTL_AZ_BLOB_DRIVER_USER_REQUEST:
+> +		if (_IOC_SIZE(cmd) != sizeof(struct az_blob_request_sync))
+> +			return -EINVAL;
+
+How can that happen, provided the switch (cmd) and case?
+
+> +		ret = az_blob_ioctl_user_request(filp, arg);
+> +		break;
+
+Simply:
+return az_blob_ioctl_user_request(filp, arg);
+
+> +
+> +	default:
+> +		az_blob_dbg("unrecognized IOCTL code %u\n", cmd);
+> +	}
+> +
+> +	return ret;
+
+So return -EINVAL here directly now.
+
+> +}
+...
+> +static int az_blob_connect_to_vsp(struct hv_device *device, u32 ring_size)
+> +{
+> +	int ret;
+...
+> +	int rc;
+
+
+Sometimes ret, sometimes rc, could you unify the two?
+
+> +static int __init az_blob_drv_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = vmbus_driver_register(&az_blob_drv);
+> +	return ret;
+
+Simply:
+return vmbus_driver_register(&az_blob_drv);
+
+regards,
 -- 
-2.31.1
-
+-- 
+js
+suse labs
