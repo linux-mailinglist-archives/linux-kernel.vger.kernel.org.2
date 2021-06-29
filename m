@@ -2,266 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569983B734D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665343B7356
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhF2NjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbhF2NjE (ORCPT
+        id S233865AbhF2Nkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:40:55 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:64887 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232535AbhF2Nkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:39:04 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD447C061760;
-        Tue, 29 Jun 2021 06:36:35 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id o11so23263575ejd.4;
-        Tue, 29 Jun 2021 06:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32vFRN7z5omgoPVrUXlvXHuIAEBAvCU++16V1o40YfQ=;
-        b=P8mbYKF8/NUycXHIHmxKn9v+aCfEg9q7gIEJZOLbb3qLcgn0DG7h0hCtRbyZTLKlxc
-         fWz4qayRVylDRh+rqyx97Q5aMs37f5pzlwu7vUCK18zZZ2hKs+rTR9nev/DKauRaLkgc
-         hBWPgstg/UrUMdGA6/wQjJSL7xOBn8qlhRgaEDgvTJpa4B10R2TRhY3btPdt9JIdKkfu
-         dADVXcI0ZxHu2i0cmsig4gKpqq45bMyq8OmlLEJSEvVv2Z6Uhaj4rVTIHVNGWkYjEz6b
-         4H0FzFlrtZArkFRZ2siDZ+uWcb8pil3p+ZYTZGDX0YueTU+pyyRsG26o2Lalm2Run3W+
-         lgPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32vFRN7z5omgoPVrUXlvXHuIAEBAvCU++16V1o40YfQ=;
-        b=mYoEgakCl1BRFDNw5kyrsY5Gnu3+om5isMnLncENN70A9aEiF36JuhDbSQlapXbAr/
-         0CJP4Hglmpo/H3eYL9PX6f/tes6+YXH05G4Uoo1ICuuffUrA9KPEa5RZWwoPhz1wnIXR
-         XLaHEgTEDVR7hXi+CVIRiulHiEuFAWPfDmZ0QWpI39PawoxFIZVPXX/k4CvbBBt80dsu
-         difuIWm+7vDulPYcYBw14ziw+qdpqHz0PeK1wQcvWjfQZRuZE1DrOLmtulD2V69bR8r1
-         aLCz59UlgITb14Zp65Zmy7L+XMmCxk/NupPWVtV8X1EWF+CBuozgAcmsKNWbcvIBi3wD
-         j37A==
-X-Gm-Message-State: AOAM531K2kDNC7g9KS+05gAi0y5zg7x7m1HDu3whA2h4L7bYBImJOVbS
-        QtJcGO/DtTzKvyslO8iI3uayIYf5eSLo1tEzakc=
-X-Google-Smtp-Source: ABdhPJzaWTEP4/WdrVuO2XYM02laTSOHQ2IvwusTYzJqSW1lTdc8flTrVKD1fZBT/WhHzmuu/YILPYoPg4b24eHir6Q=
-X-Received: by 2002:a17:906:2844:: with SMTP id s4mr29851513ejc.263.1624973794318;
- Tue, 29 Jun 2021 06:36:34 -0700 (PDT)
+        Tue, 29 Jun 2021 09:40:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1624973905; x=1656509905;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=qz8iBYKp3HmDU5GU2mZ52IEWoHzQQS4QwGIeJTIBkzI=;
+  b=qdbPUtcBKddeCSLL4DZeKpF974HwEsTGZ97VCjgAXfzLoop3l9is1A4q
+   XGDKCewWRRYxHvo2DeB0pRIFLByUVnomMERS5WlSVDJOveyznRIF+Pzuu
+   C4FnbBFcW16gBP6CbrTz9JyeD0Vf/nm3yVxSgg8Ng6NUQ6zaLRiMcGbco
+   I=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 29 Jun 2021 06:38:25 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 29 Jun 2021 06:38:24 -0700
+Received: from [10.111.173.197] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 29 Jun
+ 2021 06:38:22 -0700
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency
+ invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+CC:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <20210623041613.v2lo3nidpgw37abl@vireshk-i7>
+ <2c540a58-4fef-5a3d-85b4-8862721b6c4f@quicinc.com>
+ <20210624025414.4iszkovggk6lg6hj@vireshk-i7>
+ <CAKfTPtAXMYYrG1w-iwSWXb428FkwFArEwXQgHnjShoCEMjdYcw@mail.gmail.com>
+ <20210624104734.GA11487@arm.com>
+ <daf1ddf5-6f57-84a8-2ada-90590c0c94b5@quicinc.com>
+ <20210625102113.GB15540@arm.com>
+ <1f83d787-a796-0db3-3c2f-1ca616eb1979@quicinc.com>
+ <20210625143713.GA7092@arm.com>
+ <888b0178-00cc-ffa4-48a2-8563cef557a4@quicinc.com>
+ <20210629090553.GC2425@arm.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <253b765a-c152-4640-36cc-09d873d029c4@quicinc.com>
+Date:   Tue, 29 Jun 2021 09:38:21 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210604111005.6804-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20210604111005.6804-1-peng.fan@oss.nxp.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 29 Jun 2021 08:36:23 -0500
-Message-ID: <CAHCN7xKYooBQzREdoa8ybhQUBXxy6RPaFX9rp1keD7_HgnVA9Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm: add pgc/blk_ctl nodes
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Marek Vasut <marex@denx.de>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Abel Vesa <abel.vesa@nxp.com>, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210629090553.GC2425@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 5:37 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> With PGC and BLK-CTL landed, we could add pgc and blk-ctl nodes,
-> because some pgc domain relies on blk-ctl power domain, so
-> they need to be added together.
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->
-> V1:
->  Depends on the blk-ctl patchset,
->  https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210522134249.15322-1-peng.fan@oss.nxp.com/
->
->  Shawn,
->   Since the blk-ctl patchset is in good shape and tested, is it ok for
->   you to pick up?
->  Thanks
->
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 128 ++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index e7648c3b8390..0e01ff649956 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -7,6 +7,8 @@
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/power/imx8mm-power.h>
-> +#include <dt-bindings/reset/imx8mq-reset.h>
->  #include <dt-bindings/thermal/thermal.h>
->
->  #include "imx8mm-pinfunc.h"
-> @@ -609,6 +611,109 @@ src: reset-controller@30390000 {
->                                 interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
->                                 #reset-cells = <1>;
->                         };
-> +
-> +                       gpc: gpc@303a0000 {
-> +                               compatible = "fsl,imx8mm-gpc";
-> +                               reg = <0x303a0000 0x10000>;
-> +                               interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
-> +                               interrupt-parent = <&gic>;
-> +                               interrupt-controller;
-> +                               #interrupt-cells = <3>;
-> +
-> +                               pgc {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +
-> +                                       pgc_hsiomix: power-domain@0 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_HSIOMIX>;
-> +                                               clocks = <&clk IMX8MM_CLK_USB1_CTRL_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_pcie: power-domain@1 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_PCIE>;
-> +                                               power-domains = <&pgc_hsiomix>;
-> +                                               clocks = <&clk IMX8MM_CLK_PCIE1_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_otg1: power-domain@2 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_OTG1>;
-> +                                               power-domains = <&pgc_hsiomix>;
-> +                                       };
-> +
-> +                                       pgc_otg2: power-domain@3 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_OTG2>;
-> +                                               power-domains = <&pgc_hsiomix>;
-> +                                       };
-> +
+On 6/29/2021 5:06 AM, Ionela Voinescu wrote:
+>> Ionela, I found that set ACPI_PROCESSOR=y instead of ACPI_PROCESSOR=m
+>> will fix the previous mentioned issues here (any explanations of that?)
+>> even though the scaling down is not perfect. Now, we have the following
+>> on this idle system:
+>>
+> 
+> I don't see how this would have played a role. The cppc cpufreq driver
+> depends on functionality gated by CONFIG_ACPI_CPPC_LIB which in turn
+> needs CONFIG_ACPI_PROCESSOR to trigger the parsing of the _CPC objects.
+> If CONFIG_ACPI_PROCESSOR functionality is not built in or loaded, the
+> cppc cpufreq driver could not be used at all.
 
-Any change you could add the references to pgc_otg1 and pgc_otg2 to
-their respective OTG nodes?  Without them, enabling OTG1 or OTG2 can
-result in a hang unless it was started in U-Boot.
+Ionela, that is fine. I can live with setting ACPI_PROCESSOR=y to workaround. I
+was more of just curious about why manually loading processor.ko would set the
+lowest to 2GHz instead of 1GHz.
 
-> +                                       pgc_gpumix: power-domain@4 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_GPUMIX>;
-> +                                               clocks = <&clk IMX8MM_CLK_GPU_BUS_ROOT>,
-> +                                                        <&clk IMX8MM_CLK_GPU_AHB>;
-> +                                       };
-> +
-> +                                       pgc_gpu: power-domain@5 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_GPU>;
-> +                                               clocks = <&clk IMX8MM_CLK_GPU_AHB>,
-> +                                                        <&clk IMX8MM_CLK_GPU_BUS_ROOT>,
-> +                                                        <&clk IMX8MM_CLK_GPU2D_ROOT>,
-> +                                                        <&clk IMX8MM_CLK_GPU3D_ROOT>;
-> +                                               resets = <&src IMX8MQ_RESET_GPU_RESET>;
-> +                                               power-domains = <&pgc_gpumix>;
-> +                                       };
-> +
-> +                                       pgc_vpumix: power-domain@6 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUMIX>;
-> +                                               clocks = <&clk IMX8MM_CLK_VPU_DEC_ROOT>;
-> +                                               resets = <&src IMX8MQ_RESET_VPU_RESET>;
-> +                                       };
-> +
-> +                                       pgc_vpu_g1: power-domain@7 {
-> +                                               #power-domain-cells = <0>;
-> +                                               power-domains =
-> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUG1>;
-> +                                               clocks = <&clk IMX8MM_CLK_VPU_G1_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_vpu_g2: power-domain@8 {
-> +                                               #power-domain-cells = <0>;
-> +                                               power-domains =
-> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUG2>;
-> +                                               clocks = <&clk IMX8MM_CLK_VPU_G2_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_vpu_h1: power-domain@9 {
-> +                                               #power-domain-cells = <0>;
-> +                                               power-domains =
-> +                                               <&vpumix_blk_ctl IMX8MM_BLK_CTL_PD_VPU_BUS>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_VPUH1>;
-> +                                               clocks = <&clk IMX8MM_CLK_VPU_H1_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_dispmix: power-domain@10 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_DISPMIX>;
-> +                                               clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
-> +                                                        <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
-> +                                                        <&clk IMX8MM_CLK_DISP_APB_ROOT>;
-> +                                       };
-> +
-> +                                       pgc_mipi: power-domain@11 {
-> +                                               #power-domain-cells = <0>;
-> +                                               reg = <IMX8MM_POWER_DOMAIN_MIPI>;
-> +                                               power-domains =
-> +                                               <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_BUS>;
-> +                                       };
-> +                               };
-> +                       };
->                 };
->
->                 aips2: bus@30400000 {
-> @@ -960,6 +1065,18 @@ aips4: bus@32c00000 {
->                         #size-cells = <1>;
->                         ranges = <0x32c00000 0x32c00000 0x400000>;
->
-> +                       dispmix_blk_ctl: blk_ctl@32e28000 {
-> +                               compatible = "fsl,imx8mm-dispmix-blk-ctl", "syscon";
-> +                               reg = <0x32e28000 0x100>;
-> +                               #power-domain-cells = <1>;
-> +                               #reset-cells = <1>;
-> +                               power-domains = <&pgc_dispmix>, <&pgc_mipi>;
-> +                               power-domain-names = "dispmix", "mipi";
-> +                               clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
-> +                                        <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
-> +                                        <&clk IMX8MM_CLK_DISP_APB_ROOT>;
-> +                       };
-> +
->                         usbotg1: usb@32e40000 {
->                                 compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
->                                 reg = <0x32e40000 0x200>;
-> @@ -1029,6 +1146,17 @@ gpmi: nand-controller@33002000{
->                         status = "disabled";
->                 };
->
-> +               vpumix_blk_ctl: blk-ctl@38330000 {
-> +                       compatible = "fsl,imx8mm-vpumix-blk-ctl", "syscon";
-> +                       reg = <0x38330000 0x100>;
-> +                       #power-domain-cells = <1>;
-> +                       #reset-cells = <1>;
-> +                       power-domains = <&pgc_vpumix>, <&pgc_vpu_g1>, <&pgc_vpu_g2>, <&pgc_vpu_h1>;
-> +                       power-domain-names = "vpumix", "vpu-g1", "vpu-g2", "vpu-h1";
-> +                       clocks = <&clk IMX8MM_CLK_VPU_DEC_ROOT>, <&clk IMX8MM_CLK_VPU_G1_ROOT>,
-> +                                <&clk IMX8MM_CLK_VPU_G2_ROOT>, <&clk IMX8MM_CLK_VPU_H1_ROOT>;
-> +               };
-> +
->                 gic: interrupt-controller@38800000 {
->                         compatible = "arm,gic-v3";
->                         reg = <0x38800000 0x10000>, /* GIC Dist */
-> --
-> 2.30.0
->
+Anyway, if running below the lowest is not the a concern, then I have concluded
+my testing here. Feel free to include:
+
+Tested-by: Qian Cai <quic_qiancai@quicinc.com>
