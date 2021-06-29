@@ -2,114 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3AD3B6E33
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8060B3B6E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbhF2GVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232029AbhF2GV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:21:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9A1B61DC1;
-        Tue, 29 Jun 2021 06:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624947541;
-        bh=j/QptbEon823E8WlB8x1s+cyTfvYWt/sjkL6rYuUcHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePZcphumiKcimv6vrOnb5OBSEFKNGf24hs+NN1mYQUxyDUw1dhIFWi2u2VP7H73Sf
-         3xczPj1sk7+hXvCCw+hHpiI0UaORO6A9D3J/SoHxdzWSs9MFaFrTnuMesBW90J3iyK
-         JRz6QasoLlzTkViC5iWkwmaepdMViA+O7r/boRfs=
-Date:   Tue, 29 Jun 2021 08:18:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bing Fan <hptsfb@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm pl011 serial: support multi-irq request
-Message-ID: <YNq7Uwj/yJi7NvE8@kroah.com>
-References: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
+        id S232084AbhF2G0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:26:05 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31079 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231948AbhF2G0E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:26:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624947817; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=DdkTwy/6c3OcCt3JVBX/JqCoATNZP8AJdxUEwDuVA+g=;
+ b=SfbATpFsb241irENq2UnP7owCcz+1wV1sFX6ZVvK+gczWxrhDVN3qYevIkfXcZPd6lq7cHeU
+ 30GBeXHMGM1+agVePjMeMr1i8XCWjE6yFP3Zgylk+F3UAnLlf1rBDcJ40dsFfdrgzYzh4tjG
+ fB7/wkPugYDQKwhV9+e+v+GSkPk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60dabc61ad0600eedeeb2903 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Jun 2021 06:23:29
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 641A7C4360C; Tue, 29 Jun 2021 06:23:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21EE4C43460;
+        Tue, 29 Jun 2021 06:23:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 29 Jun 2021 14:23:28 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 06/10] scsi: ufs: Remove host_sem used in
+ suspend/resume
+In-Reply-To: <c7d9e12d-f966-44c6-27dc-4004143398aa@acm.org>
+References: <1624433711-9339-1-git-send-email-cang@codeaurora.org>
+ <1624433711-9339-8-git-send-email-cang@codeaurora.org>
+ <ed59d61a-6951-2acd-4f89-40f8dc5015e1@intel.com>
+ <9105f328ee6ce916a7f01027b0d28332@codeaurora.org>
+ <a87e5ca5-390f-8ca0-41bf-27cdc70e3316@intel.com>
+ <1b351766a6e40d0df90b3adec964eb33@codeaurora.org>
+ <a654d2ef-b333-1c56-42c6-3d69e9f44bd0@intel.com>
+ <3970b015e444c1f1714c7e7bd4c44651@codeaurora.org>
+ <7ba226fe-789c-bf20-076b-cc635530db42@acm.org>
+ <ea968eb95ef03ef16a420e7483680b75@codeaurora.org>
+ <c7d9e12d-f966-44c6-27dc-4004143398aa@acm.org>
+Message-ID: <60a5496863100976b74d8c376c9e9cb0@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 09:29:24AM +0800, Bing Fan wrote:
-> From: Bing Fan <tombinfan@tencent.com>
+On 2021-06-29 01:31, Bart Van Assche wrote:
+> On 6/28/21 1:17 AM, Can Guo wrote:
+>> On 2021-06-25 01:11, Bart Van Assche wrote:
+>>> On 6/23/21 11:31 PM, Can Guo wrote:
+>>>> Using back host_sem in suspend_prepare()/resume_complete() won't 
+>>>> have
+>>>> this problem of deadlock, right?
+>>> 
+>>> Although that would solve the deadlock discussed in this email 
+>>> thread, it
+>>> wouldn't solve the issue of potential adverse interactions of the UFS
+>>> error handler and the SCSI error handler running concurrently.
+>> 
+>> I think I've explained it before, paste it here -
+>> 
+>> ufshcd_eh_host_reset_handler() invokes ufshcd_err_handler() and 
+>> flushes it,
+>> so SCSI error handler and UFS error handler can safely run together.
 > 
-> In order to make pl011 work better, multiple interrupts are
-> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-> at the same time, pl011 to GIC does not merge the interrupt
-> lines(each serial-interrupt corresponding to different GIC hardware
-> interrupt), so need to enable and request multiple gic interrupt
-> numbers in the driver.
+> That code path is the exception. Do you agree that the following three
+> functions all invoke the ufshcd_err_handler() function asynchronously?
+> * ufshcd_uic_pwr_ctrl()
+> * ufshcd_check_errors()
+> * ufshcd_abort()
 > 
-> Signed-off-by: Bing Fan <tombinfan@tencent.com>
-> ---
->  drivers/tty/serial/amba-pl011.c | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
+
+I agree, but I don't see what's wrong with that. Any context can invoke
+ufs error handler asynchronously and ufs error handler prepare makes
+sure error handler can work safely, i.e., stopping PM ops/gating/scaling
+in error handler prepare makes sure no one shall call 
+ufshcd_uic_pwr_ctrl()
+ever again. And ufshcd_check_errors() and ufshcd_abort() are OK to run
+concurrently with UFS error handler.
+
+>>> How about using the
+>>> standard approach for invoking the UFS error handler instead of using
+>>> a custom
+>>> mechanism, e.g. by using something like the (untested) patch below? 
+>>> This
+>>> approach guarantees that the UFS error handler is only activated 
+>>> after
+>>> all
+>>> pending SCSI commands have failed or timed out and also guarantees
+>>> that no new
+>>> SCSI commands will be queued while the UFS error handler is in
+>>> progress (see
+>>> also scsi_host_queue_ready()).
+>> 
+>> Per my understanding, SCSI error handling is scsi cmd based, meaning 
+>> it
+>> only works when certain SCSI cmds failed [ ... ]
+> That is not completely correct. The SCSI error handler is activated if
+> either all pending commands have failed or if it is scheduled
+> explicitly. Please take a look at the host_eh_scheduled member 
+> variable,
+> how it is used and also at scsi_schedule_eh(). The scsi_schedule_eh()
+> function was introduced in 2006 and that the ATA code uses it since 
+> then
+> to activate the SCSI error handler even if no commands are pending. See
+> also the patch "SCSI: make scsi_implement_eh() generic API for SCSI
+> transports".
 > 
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 78682c12156a..b63164e89903 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -1703,9 +1703,30 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
->  
->  static int pl011_allocate_irq(struct uart_amba_port *uap)
->  {
-> +	int ret = -1;
-
-Pick a real error value.
-
-> +	int i = 0;
-
-Why is this initialized?
-
-> +	unsigned int virq = 0;
-
-Why is this initialized?
-
-> +	struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
-
-Are you sure you can just cast this like this?  Did you test this?
-
-> +
-> +	if (!amba_dev)
-> +		return -1;
-
-Do not make up error numbers, return a specific -ERR* value.
-
-And how can this happen?
-
-> +
->  	pl011_write(uap->im, uap, REG_IMSC);
->  
-> -	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-> +	for (i = 0; i < AMBA_NR_IRQS; i++) {
-> +		virq = amba_dev->irq[i];
-> +		if (virq == 0)
-> +			break;
-> +
-> +		ret = request_irq(virq, pl011_int, IRQF_SHARED, "uart-pl011-*", uap);
-> +		if (ret < 0) {
-> +			dev_info(uap->port.dev, "%s %d request %u interrupt failed\n",
-> +					__func__, __LINE__, virq);
-
-dev_err() is for errors, not dev_info().
-
-And no need for __func__ and __LINE__ for the dev_* calls.
-
-
-
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
->  }
->  
->  /*
-> -- 
-> 2.17.1
+>> However, most UFS (UIC) errors happens during gear scaling, clk gating
+>> and suspend/resume (due to power mode changes and/or hibern8
+>> enter/exit), during which there is NO scsi cmds in UFS driver at all
+>> (because these contexts start only when there is no ongoing data
+>> transactions).
 > 
+> Activating the SCSI error handler if no SCSI commands are in progress 
+> is
+> supported by scsi_schedule_eh().
+> 
+>> Thus, scsi_unjam_host() won't even call scsi_eh_ready_devs() because
+>> scsi_eh_get_sense() always returns TRUE in these cases (eh_work_q is
+>> empty).
+> 
+> Please take another look at the patch in my previous message. There is 
+> a
+> scsi_transport_template instance in that patch. The eh_strategy_handler
+> defined in a SCSI transport template is called *instead* of
+> scsi_unjam_host(). In other words, scsi_unjam_host() won't be called if
+> my patch would be applied to the UFS driver.
+> 
+> Please let me know if you need more information.
+
+Sorry that I missed the change of scsi_transport_template() in your 
+previous
+message. I can understand that you want to invoke UFS error hander by 
+invoking
+SCSI error handler, but I didn't go that far because I saw you changed
+pm_runtime_get_sync() to pm_runtime_get_noresume() in ufs error handler 
+prepare.
+How can that change make sure that the device is not suspending or 
+resuming
+while error handler is running?
+
+Thanks,
+
+Can Guo.
+
+> 
+> Bart.
