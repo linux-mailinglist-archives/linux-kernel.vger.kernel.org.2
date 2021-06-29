@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F423B6FF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FA13B6FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232671AbhF2JQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 05:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbhF2JQG (ORCPT
+        id S232696AbhF2JQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 05:16:27 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:59491 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232680AbhF2JQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:16:06 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2ACC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 02:13:40 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mn20-20020a17090b1894b02901707fc074e8so1594553pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 02:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=/mbR5W4jZNhMRD0mHPnAUx4Qn6VhbPpqpMkPdEN+qCw=;
-        b=h3kBBqZh8DPMfpKRMWrkgKG29VmYBFChBsDU6VX3DQIGT21s30+n7loOWNEwLULJYI
-         Jt8PlO/AdtorV+BXuwyRi5kVsr/8ziGzZMkIs3sJlT5fkFZCzN4jQe6G5vENi2ghiEy8
-         iSNsGWR26aZam456igvzC+A99sXH2vJu5VKvcUa2iqjv8WhojD8w1sNmx2vVtIh6nG9f
-         kGvt0hXL+39Ps8C7+wFO1T4JDY4eqpFtYTpVjsIOpfDJ/37P8Mv1qQdYb+kdtERLN5x3
-         feYqRfWr4ac7x/b6I81iyeAC/Ivqgui8c/Oha+9yYCJN4UyNY+e21Tm5FyYlLQlnrI+2
-         s81g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=/mbR5W4jZNhMRD0mHPnAUx4Qn6VhbPpqpMkPdEN+qCw=;
-        b=l3NlwBinrGjH3rPRaicVQfTvnRzFePgfS4KTocFcTamJ0gNWTvtmtS79zH9lBNkpk+
-         ml1WY7qXDfJuKrraG6tFjTK/MO5WFiwEl4qR8pR6+0r7xFvpzWPV3Ydj39ToXDVw44oh
-         goe8TDCsjtmWRaRSFsnxM9v8KA4qoeKuBOdYnFy0zOJcZEnkuk8Jl/3lkHDNuQpdLkI3
-         a4xGlp+1gMqBwtgAwwSOQL9YJ4K86CH0wwfEWm8NNzzKRHUvvgzQhoIe9EojWLpJRPWy
-         rEdZ6V/gyPYUBo73Sv6kFES7lOppJVSOnsjEfEUGcCNO9juhcayy5x4v0uVh2DJ4nQjc
-         lhQQ==
-X-Gm-Message-State: AOAM530OBvS/0vOHrja1GNgLhsX00xBrERcxoHSZR/qUj+YLxHFL7NbL
-        Dns2EjlKttJItnUSSHkcrK7Ciw==
-X-Google-Smtp-Source: ABdhPJwX62WyP4ZnIeHKOlZFjp5zh7GhKe84JXR5nkRF7xvHcouHhy1+axXBjzQ/kCNnfCWFOYX/iQ==
-X-Received: by 2002:a17:90a:4dc5:: with SMTP id r5mr42292126pjl.203.1624958019649;
-        Tue, 29 Jun 2021 02:13:39 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id y4sm17167803pfc.15.2021.06.29.02.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 02:13:38 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 14:43:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629091337.bcerprdyupvgr6gf@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
- <4c7f0989-305b-fe4c-63d1-966043c5d2f2@intel.com>
- <YNraQMl3yJyZ6d5+@kunai>
+        Tue, 29 Jun 2021 05:16:26 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id C57F724000F;
+        Tue, 29 Jun 2021 09:13:56 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH 1/3] riscv: Fix memory_limit for 64-bit kernel
+Date:   Tue, 29 Jun 2021 11:13:46 +0200
+Message-Id: <20210629091349.3802690-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YNraQMl3yJyZ6d5+@kunai>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-21, 10:30, Wolfram Sang wrote:
-> 
-> >     3. It seems the I2C core takes care of locking already, so is it safy to
-> > remove "struct mutex lock in struct virtio_i2c"?
-> 
-> Looks to me like the mutex is only to serialize calls to
-> virtio_i2c_xfer(). Then, it can go. The core does locking. See, we have
-> i2c_transfer and __i2c_transfer, the unlocked version.
+As described in Documentation/riscv/vm-layout.rst, the end of the
+virtual address space for 64-bit kernel is occupied by the modules/BPF/
+kernel mappings so this actually reduces the amount of memory we are able
+to map and then use in the linear mapping. So make sure this limit is
+correctly set.
 
-Right, this is what I have been suggesting as well.
+Fixes: c9811e379b21 ("riscv: Add mem kernel parameter support")
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/mm/init.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-So do you want Jie to send V11 now after fixing these three issues, or
-you have more concerns ?
-
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 12f956b3a674..04a5db3a9788 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -124,10 +124,17 @@ void __init mem_init(void)
+ }
+ 
+ /*
+- * The default maximal physical memory size is -PAGE_OFFSET,
+- * limit the memory size via mem.
++ * The default maximal physical memory size is -PAGE_OFFSET for 32-bit kernel,
++ * whereas for 64-bit kernel, the end of the virtual address space is occupied
++ * by the modules/BPF/kernel mappings which reduces the available size of the
++ * linear mapping.
++ * Limit the memory size via mem.
+  */
++#ifdef CONFIG_64BIT
++static phys_addr_t memory_limit = -PAGE_OFFSET - SZ_4G;
++#else
+ static phys_addr_t memory_limit = -PAGE_OFFSET;
++#endif
+ 
+ static int __init early_mem(char *p)
+ {
 -- 
-viresh
+2.30.2
+
