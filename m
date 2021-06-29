@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B06D3B71ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B1D3B71F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbhF2MTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhF2MTC (ORCPT
+        id S233564AbhF2MUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:20:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233384AbhF2MT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:19:02 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B7AC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:16:32 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id cx9-20020a17090afd89b0290170a3e085edso2321457pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JTFvXmTEK7ZNerH/JtM4n3rDUhmzB5t0n3YIuLeO91E=;
-        b=P/Cem1OLebedCiFEzX+z+nyRcO8XCyCPwO2cT6NQpGSax1j38jYuB8ZxuzUMG550QJ
-         N6AXqDrucmMBL3XOHkMnUUI8oG2yZmO2NzfzH3OQw+xxF2UUZp6CDJa2vRxgtl0nSOgg
-         A81exZpPokUUyZawnZohBg9MTXxaHuGNY+rx0=
+        Tue, 29 Jun 2021 08:19:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624969050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lkR0c3+f759b1MBukw4/QJ32vsAA4j16pgDMpxfOoYw=;
+        b=LPy98tg5VYNn5Jp4TFZxglNmp1CIX/gvq1Nn42wgbAQ4roCBes4+J92RQkt2NW2BR8cs46
+        XfzkPIntZAgWBxL3EVbXeQQ5a+sawz0sbjAi/7MRNO/hYm+ATuri5J3UXFQyP0aiod4hOH
+        sqltXPu7330hiCZAn5BngbY55E0K0qo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-lXouSpMCMjm3aj9enhezUw-1; Tue, 29 Jun 2021 08:17:29 -0400
+X-MC-Unique: lXouSpMCMjm3aj9enhezUw-1
+Received: by mail-wr1-f69.google.com with SMTP id e13-20020a5d530d0000b0290126d989c76eso1234304wrv.18
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:17:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JTFvXmTEK7ZNerH/JtM4n3rDUhmzB5t0n3YIuLeO91E=;
-        b=F9CcF289mGbrfS0/VtM3NmAdx2byi3/pMGOU3gEdmHBX6zGW+NxN7ffOmKndE1tAyr
-         greeoVxTQL4pgSk7dn5pI315tXufRxAWjzqP+lhZMLmnxOSW5H2owaxPB/9mSAPK17WI
-         Smwfszw82f6Jd85TdZjZ9oAZ0w95DqK/95fyls3QQviSTymVL6AjSfKqDROpS98dA8YI
-         z17CjP/1hl+BR5aY/ustBGgBPv+udTcDv7mdEP/rgEg4QFfs3CXk0fvkHOmIbEPVKERH
-         pK8egq4bfwetXE0gqFaQ2moVfYZ6blS5wKJjq6U2ao+315ROVAQAQRM+k+QR0gOxB7iM
-         WuAQ==
-X-Gm-Message-State: AOAM530EX6p+9lQSVQ3bKl8J8yqUSCtl9/OlnQoLfn1rJY1olEJGKl8+
-        U/PJxYt2zaWiyhBeriwMuQp8ag==
-X-Google-Smtp-Source: ABdhPJzbJDsgus4m2r74nhMTRhIy44L6PLzl+efQb5XZsUNrh6rba/6GUjo5ZaMgftY7iMWaxmMhLQ==
-X-Received: by 2002:a17:90b:605:: with SMTP id gb5mr13165548pjb.62.1624968992397;
-        Tue, 29 Jun 2021 05:16:32 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:3adb:8783:d6da:e6ca])
-        by smtp.gmail.com with UTF8SMTPSA id x20sm7319646pge.41.2021.06.29.05.16.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 05:16:31 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, Will Deacon <will@kernel.org>,
-        sstabellini@kernel.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Claire Chang <tientzu@chromium.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] swiotlb: fix implicit debugfs_create_dir declaration
-Date:   Tue, 29 Jun 2021 20:16:25 +0800
-Message-Id: <20210629121625.3633999-1-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        bh=lkR0c3+f759b1MBukw4/QJ32vsAA4j16pgDMpxfOoYw=;
+        b=Yfm2aHo+w6e3/wQYoa79xK5dwS/EJVp7Yf5Us7K51q6/QmKK/HzU8IbQBPslkIIhza
+         TNTzGWqF415uIuc7A3GdDvzFSKhQqUUBd+egAk9ZmiNTTYo/b1qevtapMKTlKJeHkD78
+         15MJNSiu1Qw8nxXO03I4r/oc+BihA8dibtid34kbz2svY2jZvL07OZ2xqv3aZisg2l2a
+         CO8HmGoB/HS+GSaaCPl/G3nbgc50+0vG1NNiPHUDDTWigD0l0Q4qy+/wvmlggQLYKl1D
+         OyT63xWOaV2VWwKha/zXFdumrHBLTDeY1XECXuD/QOFGy3Sb6oZnKxyCZSdfu8uZqlLx
+         oOiA==
+X-Gm-Message-State: AOAM533CquHYZk0+kNebfVkdkqUQhXkjJoSAJf4L+c3Wy+tWR43c9RzC
+        xXzoYfQsJzUjvT1COZgaxnvkQ58KrB+1ZAXLPsAkJMtP3JWc3kmIzBYKixMmV4dFFyPllAdIAmI
+        vE4s2msBoTbw3Xm9PfvdkIF/x
+X-Received: by 2002:adf:e449:: with SMTP id t9mr34362063wrm.40.1624969048217;
+        Tue, 29 Jun 2021 05:17:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2WLVKTxMcFRD6jMJdil31aytKHfmkR8Pg4EuSGDVn0CCstL4X5a+bn1K/4I3JTHdAqKPP6A==
+X-Received: by 2002:adf:e449:: with SMTP id t9mr34362048wrm.40.1624969048091;
+        Tue, 29 Jun 2021 05:17:28 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:3d14:2800:933d:abfc:d8e4:637f])
+        by smtp.gmail.com with ESMTPSA id t9sm17032631wmq.14.2021.06.29.05.17.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 05:17:27 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     mripard@kernel.org
+Cc:     emma@anholt.net, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [PATCH] drm/vc4: hdmi: Limit noise when deferring snd card registration
+Date:   Tue, 29 Jun 2021 14:17:23 +0200
+Message-Id: <20210629121723.11523-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the ifdef to fix implicit function declaration for other pools.
+We don't want to print an error message each time
+devm_snd_soc_register_card() returns -EPROBE_DEFER, the function will
+most likely succeed some time in the future, once the missing resources
+are available. So use dev_err_probe(), which will redirect the messages
+to the debug log level in such case.
 
-Fixes: 1d9f94400a7a ("swiotlb: Refactor swiotlb_create_debugfs")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Claire Chang <tientzu@chromium.org>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 ---
- kernel/dma/swiotlb.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 0ffbaae9fba2..8ae0bef392c3 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -36,9 +36,7 @@
- #include <linux/scatterlist.h>
- #include <linux/mem_encrypt.h>
- #include <linux/set_memory.h>
--#ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
--#endif
- #ifdef CONFIG_DMA_RESTRICTED_POOL
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -686,7 +684,6 @@ bool is_swiotlb_active(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(is_swiotlb_active);
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 04936cd6db8c..32da45821d3a 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1575,7 +1575,7 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 	snd_soc_card_set_drvdata(card, vc4_hdmi);
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret)
+-		dev_err(dev, "Could not register sound card: %d\n", ret);
++		dev_err_probe(dev, ret, "Could not register sound card\n");
  
--#ifdef CONFIG_DEBUG_FS
- static struct dentry *debugfs_dir;
+ 	return ret;
  
- static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
-@@ -709,8 +706,6 @@ static int __init swiotlb_create_default_debugfs(void)
- 
- late_initcall(swiotlb_create_default_debugfs);
- 
--#endif
--
- #ifdef CONFIG_DMA_RESTRICTED_POOL
- struct page *swiotlb_alloc(struct device *dev, size_t size)
- {
 -- 
-2.32.0.93.g670b81a890-goog
+2.31.1
 
