@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A15B3B7464
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3833B7466
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbhF2OgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:36:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57310 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234285AbhF2OgV (ORCPT
+        id S234469AbhF2Ogj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234256AbhF2Ogi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:36:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 81DA9226CB;
-        Tue, 29 Jun 2021 14:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624977233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=l27yWpUOt7K6JE8GkAbI88JtQoiyZZfThwFoqr+iDA4=;
-        b=U4QMH2o29Jz5J6WBl+WVh97CQszudPV29Q6xctPTJ7Ttob9J3hjuprMtUCwAf7h6nDuz/g
-        jhdMxb4IJVR/NFmJmMnDCDHOakR/5FQ0Hmkg1B+tZ01pPj9sgGwVxDoq+W8f3rUCSYVBZG
-        UqwI21drNzvRTP/YvoHtE+zzQK2CBIM=
-Received: from alley.suse.cz (unknown [10.100.216.66])
-        by relay2.suse.de (Postfix) with ESMTP id 2A645A3B85;
-        Tue, 29 Jun 2021 14:33:53 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] printk/console: Check consistent sequence number when handling race in console_unlock()
-Date:   Tue, 29 Jun 2021 16:33:41 +0200
-Message-Id: <20210629143341.19284-1-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 29 Jun 2021 10:36:38 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B005AC061760;
+        Tue, 29 Jun 2021 07:34:10 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id b3so26085506wrm.6;
+        Tue, 29 Jun 2021 07:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DjlbP7xHIVTiMz/8QK+KYO/x7VOxeKFY13KcrY6RCNw=;
+        b=Pu+/X0p3cgSpV49L2RbqTTQW9E5GfAzCB+cbuEJlMNiXT8n7jmdHvgU3tOj7NQaK6f
+         VOZ3ajAzF3Df0k8ovHUhla5AQ3O2bkNDwi78/jxbRP3saS6IRS6t25uyRcTSjFTX71gA
+         kLRUpGeoIq96TFm2ZX7UcoLxyduX365eITYbYy7TJupQ0jcgyI8O0WZfyEjMFmrTGccN
+         HnLx69LSojAxoi823YEW9x/cFFRnWHfnxOynFWCjJdcd3KXPtuCV9K8ynT8hAbQgC6iy
+         E8Z2ujuZF2SWCapQeROx84lEmpC75tVpBixGb6X77ONfS1/jeHtUc2obYAfJy3ghuXZj
+         hr5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DjlbP7xHIVTiMz/8QK+KYO/x7VOxeKFY13KcrY6RCNw=;
+        b=KlB5Ay68D8Fnumj/k/GETG5YTAEQQmicVS3B9RDrpg4NIKn5/uuo6Ai9U/7yqaU0sl
+         md2KjziUxlqXcAiJPBgkrm0Fty5f1CnKJode/TjQzYXf6tx6O5ri3HPVstduMlxd3fcO
+         K/zuTtUiF3lisVflymz4zmfhPjxO+MePDAGnStEnTCC/F6xhUPQiyfUCuVnAfuw7GDvm
+         qCek393uFdhXo2M6/RIJfWyHP81FjSXbI97qe3YyMZWbIvL51kn3rfdK84rALSGBGVDU
+         q0ON5P4PArsXepo5U/lFmzwwu3XUkYPjJBBjICh+y6YDpM4oDKy2Z7MS3FW9TpQimxlm
+         Yw7g==
+X-Gm-Message-State: AOAM533hzwyePXOCfEibNo6DimLpc5wsbBCG0loKpjlx1HFn7VfoDzrv
+        khyUBNuvXb2POiuUuESiDYk=
+X-Google-Smtp-Source: ABdhPJwxWqiXs4rGRA/jSSFSBSD4zQCDJo/4DQDonMD28ukgpf30Zx0keUfTI1j/44RVctFL75t3cw==
+X-Received: by 2002:a5d:6841:: with SMTP id o1mr4143300wrw.370.1624977249133;
+        Tue, 29 Jun 2021 07:34:09 -0700 (PDT)
+Received: from localhost.localdomain (98.red-81-38-58.dynamicip.rima-tde.net. [81.38.58.98])
+        by smtp.gmail.com with ESMTPSA id f6sm1257058wrs.13.2021.06.29.07.34.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Jun 2021 07:34:08 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linus.walleij@linaro.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] pinctrl: ralink: rt305x: add missing include
+Date:   Tue, 29 Jun 2021 16:34:07 +0200
+Message-Id: <20210629143407.14703-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard printk() tries to flush the message to the console
-immediately. It tries to take the console lock. If the lock is
-already taken then the current owner is responsible for flushing
-even the new message.
+Header 'rt305x.h' is ralink architecture dependent file where
+other general definitions which are in 'ralink_regs.h' are
+being used. This 'rt305x.h' is only being included in two
+different files: 'rt305x.c' and 'pinctrl-rt305x.c'. When
+file 'pinctrl-rt305x.c' is being compiled definitions in
+'ralink_regs.h' are need to build it properly. Hence, add
+missing include 'ralink_regs.h' in 'pinctrl-rt305x.c'
+source to avoid compilation problems.
 
-There is a small race window between checking whether a new message is
-available and releasing the console lock. It is solved by re-checking
-the state after releasing the console lock. If the check is positive
-then console_unlock() tries to take the lock again and process the new
-message as well.
-
-The commit 996e966640ddea7b535c ("printk: remove logbuf_lock") causes that
-console_seq is not longer read atomically. As a result, the re-check might
-be done with an inconsistent 64-bit index.
-
-Solve it by using the last sequence number that has been checked under
-the console lock. In the worst case, it will take the lock again only
-to realized that the new message has already been proceed. But it
-was possible even before.
-
-Fixes: commit 996e966640ddea7b535c ("printk: remove logbuf_lock")
-Cc: stable@vger.kernel.org # 5.13
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+Fixes: 3a1b0ca5a83b ("pinctrl: ralink: move RT305X SoC pinmux config into a new 'pinctrl-rt305x.c' file")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- kernel/printk/printk.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/pinctrl/ralink/pinctrl-rt305x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 142a58d124d9..87411084075e 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2545,6 +2545,7 @@ void console_unlock(void)
- 	bool do_cond_resched, retry;
- 	struct printk_info info;
- 	struct printk_record r;
-+	u64 next_seq;
+diff --git a/drivers/pinctrl/ralink/pinctrl-rt305x.c b/drivers/pinctrl/ralink/pinctrl-rt305x.c
+index 699fe18e7000..5d8fa156c003 100644
+--- a/drivers/pinctrl/ralink/pinctrl-rt305x.c
++++ b/drivers/pinctrl/ralink/pinctrl-rt305x.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  
- 	if (console_suspended) {
- 		up_console_sem();
-@@ -2654,8 +2655,10 @@ void console_unlock(void)
- 			cond_resched();
- 	}
- 
--	console_locked = 0;
-+	/* Get consistent value of the next-to-be-used sequence number. */
-+	next_seq = console_seq;
- 
-+	console_locked = 0;
- 	up_console_sem();
- 
- 	/*
-@@ -2664,7 +2667,7 @@ void console_unlock(void)
- 	 * there's a new owner and the console_unlock() from them will do the
- 	 * flush, no worries.
- 	 */
--	retry = prb_read_valid(prb, console_seq, NULL);
-+	retry = prb_read_valid(prb, next_seq, NULL);
- 	printk_safe_exit_irqrestore(flags);
- 
- 	if (retry && console_trylock())
++#include <asm/mach-ralink/ralink_regs.h>
+ #include <asm/mach-ralink/rt305x.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
 -- 
-2.26.2
+2.25.1
 
