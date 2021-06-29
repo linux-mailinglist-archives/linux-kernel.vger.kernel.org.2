@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A702B3B6C02
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB883B6C05
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbhF2BXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:23:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26254 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230163AbhF2BXI (ORCPT
+        id S232002AbhF2Baf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhF2Bae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:23:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624929641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8my+B2u6Mv5G6UAGgaoAGTY9mezH7lY6HPdTDeZfUv8=;
-        b=ZN7eurGtGRQTaT3giYOndBVxkC38XJLY7ODsk1EQ+bg6cxElfuCAMGSjjMagCqqLLoNelv
-        jjyPeOveUgIja0GTB6S105EV327g0LJ0e+0s01BlyiKSY2l4u7OoT7/J6w2JM4ZUyMeAoP
-        zCnsM1E71pd2+B4/0rjPrWxxb9yJnUE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-6CCA5cs1Nu2CnSI4SivSIQ-1; Mon, 28 Jun 2021 21:20:39 -0400
-X-MC-Unique: 6CCA5cs1Nu2CnSI4SivSIQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A270D18D6A2C;
-        Tue, 29 Jun 2021 01:20:38 +0000 (UTC)
-Received: from T590 (ovpn-12-115.pek2.redhat.com [10.72.12.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 850075D9F0;
-        Tue, 29 Jun 2021 01:20:31 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 09:20:27 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     wenxiong@us.ibm.com
-Cc:     Daniel Wagner <dwagner@suse.de>, linux-kernel@vger.kernel.org,
-        james.smart@broadcom.com, wenxiong@us.ibm.com, sagi@grimberg.me
-Subject: Re: [PATCH 1/1] block: System crashes when cpu hotplug + bouncing
- port
-Message-ID: <YNp1Bho5yypHkPfW@T590>
-References: <1624850072-17776-1-git-send-email-wenxiong@linux.vnet.ibm.com>
- <20210628090703.apaowrsazl53lza4@beryllium.lan>
- <YNmdhqd+W3XbJCwd@T590>
- <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
+        Mon, 28 Jun 2021 21:30:34 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08407C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 18:28:08 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g24so11386849pji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 18:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sdAmp65hciYeluIbPve30oHR/GPcy6OyyGVJziF+xHE=;
+        b=ajlC3Y2BbwpJvb//BGwKk0iVmUKdgr6EEkltyLi6EKddugzIYMyVm811CxYaTI5RZ3
+         XRN3lZcqg0qg+ZKvi6Csnfs2+RUTbc+LchNfBOOelhMYtnA1/2shvLGUzCo6Cz8I6y6n
+         Wgb5Dyeh2Nax5GQ3GRJeG23tObPIf5m6B4JIc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sdAmp65hciYeluIbPve30oHR/GPcy6OyyGVJziF+xHE=;
+        b=DMgs51/RRYnTW71Hpmpx9lUOXgDXKXp+aPyrEolx3vamDJNnQkbMi8xkPW/NCUlPuF
+         VMHNv4OMiWfJlmH3rK1x1depqlsHodCViY/tQWQ7ttFw48Lm/PsUrV8UFJjyqz8+AxXP
+         ycmRALrVRVOngkxcweZRCxmQdK9jMucZiYs4s5iu4TyFZxQCSbwqaSgjg3IkxvwTt99G
+         0ZSfT+TEQ/yXpQt+whgHkFxZVVwqmmrR+wlkQ5iTVm5HrS1oMEn4DxSlbwSwftvf+ZfM
+         5EO5C/BF7RG7VUym8eHD4j+yt2Q20fCjqIKm7jRawZrwIRCCdM5eSfOsFbCvozc7BNWf
+         ANyg==
+X-Gm-Message-State: AOAM533sgcy02O8g6CXbRveQAFQ+Cbednz0eWFNpCoyszdws8I6yxw7r
+        hOUs+ASQ6GUANw/WIgN8uLpHig==
+X-Google-Smtp-Source: ABdhPJxeHRsy5dAA1iYKi4mxjymB6XbfjeJZ1igdinqFlEjY7nzYbW2LIcSh8iUm3CRRIRAqczWUSA==
+X-Received: by 2002:a17:90a:ba94:: with SMTP id t20mr16441598pjr.11.1624930087449;
+        Mon, 28 Jun 2021 18:28:07 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:14:7a14:49d8:be7f:e60e])
+        by smtp.gmail.com with UTF8SMTPSA id u10sm15664815pfh.123.2021.06.28.18.28.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 18:28:06 -0700 (PDT)
+From:   Reka Norman <rekanorman@chromium.org>
+X-Google-Original-From: Reka Norman <rekanorman@google.com>
+To:     amd-gfx@lists.freedesktop.org
+Cc:     Reka Norman <rekanorman@google.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Kolesa <daniel@octaforge.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Leo Li <sunpeng.li@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Will Deacon <will@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/display: Respect CONFIG_FRAME_WARN=0 in dml Makefile
+Date:   Tue, 29 Jun 2021 11:27:18 +1000
+Message-Id: <20210629112647.1.I7813d8e7298aa1a1c6bee84e6fd44a82ca24805c@changeid>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wenxiong,
+Setting CONFIG_FRAME_WARN=0 should disable 'stack frame larger than'
+warnings. This is useful for example in KASAN builds. Make the dml
+Makefile respect this config.
 
-On Mon, Jun 28, 2021 at 01:17:34PM -0500, wenxiong wrote:
-> 
-> > 
-> > The root cause is that blk-mq doesn't work well on tag allocation from
-> > specified hctx(blk_mq_alloc_request_hctx), and blk-mq assumes that any
-> > request allocation can't cross hctx inactive/offline, see
-> > blk_mq_hctx_notify_offline()
-> 
-> Hi Ming,
-> 
-> I tried to pass online cpu_id(like cpu=8 in my case) to
-> blk_mq_alloc_request_hctx(),
-> data.hctx = q->queue_hw_ctx[hctx_idx];
-> but looks like data.hctx returned with NULL. So system crashed if accessing
-> data.hctx later.
-> 
-> blk-mq request allocation can't cross hctx inactive/offline but blk-mq still
-> reallocate the hctx for offline cpus(like cpu=4,5,6,7 in my case) in
-> blk_mq_realloc_hw_ctxs() and hctx are NULL for online(cpu=8 in my case)cpus.
-> 
-> Below is my understanding for hctxs, please correct me if I am wrong:
-> 
-> Assume a system has two cores with 16 cpus:
-> Before doing cpu hot plug events:
-> cpu0-cpu7(core 0) : hctx->state is ACTIVE and q->hctx is not NULL.
-> cpu8-cpu15(core 1): hctx->state is ACTIVE and q->hctx is not NULL
-> 
-> After doing cpu hot plug events(the second half of each core are offline)
-> cpu0-cpu3: online, hctx->state is ACTIVE and q->hctx is not NULL.
-> cpu4-cpu7: offline,hctx->state is INACTIVE and q->hctx is not NULL
-> cpu8-cpu11: online, hctx->state is ACTIVE but q->hctx = NULL
-> cpu12-cpu15:offline, hctx->state is INACTIVE and q->hctx = NULL
-> 
-> So num_online_cpus() is 8 after cpu hotplug events. Either way not working
-> for me, no matter I pass 8 online cpus or 4 online/4 offline cpus.
-> 
-> Is this correct? If nvmf pass online cpu ids to blk-mq, why it still
-> crashes/fails?
+Fixes the following build warnings with CONFIG_KASAN=y and
+CONFIG_FRAME_WARN=0:
 
-NVMe users have to pass correct hctx_idx to blk_mq_alloc_request_hctx(), but
-from the info you provided, they don't provide valid hctx_idx to blk-mq, so
-q->queue_hw_ctx[hctx_idx] is NULL and kernel panic.
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3642:6:
+warning: stack frame size of 2216 bytes in function
+'dml30_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_mode_vba_31.c:3957:6:
+warning: stack frame size of 2568 bytes in function
+'dml31_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
 
-I believe Daniel's following patch may fix this specific issue if your
-controller is FC:
+Signed-off-by: Reka Norman <rekanorman@google.com>
+---
 
-[1] https://lore.kernel.org/linux-nvme/YNXTaUMAFCA84jfZ@T590/T/#t
+ drivers/gpu/drm/amd/display/dc/dml/Makefile | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-
-Thanks,
-Ming
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+index d34024fd798a..45862167e6ce 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+@@ -50,6 +50,10 @@ dml_ccflags += -msse2
+ endif
+ endif
+ 
++ifneq ($(CONFIG_FRAME_WARN),0)
++frame_warn_flag := -Wframe-larger-than=2048
++endif
++
+ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
+ 
+ ifdef CONFIG_DRM_AMD_DC_DCN
+@@ -60,9 +64,9 @@ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
+-CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) -Wframe-larger-than=2048
++CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
+-CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) -Wframe-larger-than=2048
++CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) $(frame_warn_flag)
+ CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_rq_dlg_calc_31.o := $(dml_ccflags)
+ CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
+ CFLAGS_REMOVE_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_rcflags)
+-- 
+2.32.0.93.g670b81a890-goog
 
