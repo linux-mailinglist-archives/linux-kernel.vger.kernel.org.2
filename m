@@ -2,156 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F483B79B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B262D3B79B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbhF2VI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 17:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbhF2VIW (ORCPT
+        id S235326AbhF2VLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 17:11:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234958AbhF2VL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 17:08:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C396BC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:53 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id a18so752034lfs.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=at0ZjCEHdnjAbauppHO6g8ow1KqhQCXYe0Z+hJPVLYA=;
-        b=AZ/qR6zwYLsWzcqtsPkz97l2LxlMlRiYeyeHths2LQs4XpqgJKhvlGo5NmHKYeMSyh
-         p/TLMuZb7L3ptpeUeWhly//DSTtHdYoGyCKRB/4DChOs8FjYg2FrVE9ULy8fPv9WOmq8
-         fhlPI6M+h5fsD0DGhuOuealtNn9WKWY1l06OmfO1MMNp+BD3I3jQ6YNshOaU4GNfJxtS
-         2LF/uik/PnDPv1yTp5gmBun1yHVDhsAoZzxcUQMA1inVgVRqjLAbTeDXUdbR9o1qAx+n
-         NV21rwFkLBwMbLgfv/wC4b02ljLpXQnLkddBaPGIWf6xvNTwCskS5uw3loLvzFjY0xP+
-         6YlA==
+        Tue, 29 Jun 2021 17:11:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625000939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FrqFQPQ1Ye3XKJAdpfCoReQR+zXi3R08N7WEX3DldRo=;
+        b=hi1jAmwRj1voBEnxNwO7SloihATaQvl7njgWjQ03Aawh/xgq8gPjWF7nOHh1iTUWFle2EX
+        vOkOYJTMsBVv3iv56wx7jQaAMWepyXr456IvwisSYrzivpCgddRWzYab14y/3qNp6qzcBE
+        qXP3jUHX1YCH1F4gU7qd3J2UJVKVQMI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-77-cmkEcaZJMZuVAXDALpSxeA-1; Tue, 29 Jun 2021 17:08:57 -0400
+X-MC-Unique: cmkEcaZJMZuVAXDALpSxeA-1
+Received: by mail-ej1-f69.google.com with SMTP id u4-20020a1709061244b02904648b302151so39461eja.17
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:08:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=at0ZjCEHdnjAbauppHO6g8ow1KqhQCXYe0Z+hJPVLYA=;
-        b=BuuWBu2MAWVwtYTY1D+yc8IMoUqjrBxDyjZdKemVOU3ukL7jBVnNOpEuDbAHeCLnEi
-         u4SmHeS5YiVgk3WmPka/c6hl1FRs314qbQBdtlj7rCSCmDk40GPjm17UdLwT+nUhZVzJ
-         aO+el8E6H82pPUQnVPWH6v5B+LbOHjosfC20xtrz+swgPixkGBHDvRfEYYrxpXHrRcyK
-         oqa5pAFgPucX5fMAXg0mKMAPZopqsfL3QP3fkCbuBAvH4ftZSTah36y2xkrRsXJZ301O
-         t1tt73VR+yznEmY9mcgBdnTVhtNzKBLdfEZLKBkTTm/w5TbDcTJbYpngEYUIW+1BWnpA
-         xvYw==
-X-Gm-Message-State: AOAM5331JqqHvCplRIUKv03i5WF+s6GxnKsYpQJtg4Cwuu57IVgx8/W2
-        Moih2Ntk9YVyu5h4J4XASzKoINtpgzXdzG/jRZLDyA==
-X-Google-Smtp-Source: ABdhPJyaqWBv+mHfIg72by8ziWDMj9w+UGooEB4CHNjmJo68dboCxiw8mPPalM1oKZD3TefdariUBuRewLrZHdVebfc=
-X-Received: by 2002:a05:6512:3e24:: with SMTP id i36mr23461870lfv.368.1625000751708;
- Tue, 29 Jun 2021 14:05:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FrqFQPQ1Ye3XKJAdpfCoReQR+zXi3R08N7WEX3DldRo=;
+        b=r7g6xmAD5ewLeaVNIJdXqSmL+hXdBq2bCPb6AZJMDyCu2fGLy5+ln07RlJ5w9k6gmV
+         y2eFSHEEWWV8b6ysmRizGkI8E1ct0OTFSkQkCWWVIhOlpRA7PFNzTmkwmekQ2bKyMi8I
+         9nwn6UajVRyqJpSqU9mKPqaqihc/OWTcKEWdoZ/5HD40Yls0jeu1M+qV9YNbT9Mr1I6T
+         Pd9DMkSeC+JriXAwsvYFSLDeaBsyjYpe45uCSJnpHVY3rjgYsKHJlcboI9PdRqr/T8qT
+         diS8xBN6tQjGAXm3j05VlhQTVH+yhN7qUEvEYBIQbkZH4TgNW8rQC5sC+342jEhEDwmp
+         DLKw==
+X-Gm-Message-State: AOAM531a4JyGWH/Fg9BF9BBt8b5UPH8sIYMHokonSHXGID7sPnb1XmKB
+        oEshP+/k46SOfmPHCIazfzYCjjng0DWxNhIw09Lhvt6uTvACzCzmNbhve8btBKfkoQxA9ZhomNO
+        pJywmTG08DOtOM5oiMRErrgbB
+X-Received: by 2002:a17:907:2d0e:: with SMTP id gs14mr4894496ejc.49.1625000935279;
+        Tue, 29 Jun 2021 14:08:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgVqYGw0cntoN8bP11pixrtT7RyyQFMeavTfTRNndw6djx/6QtE2/5gO1KJxucWadFgbCt4Q==
+X-Received: by 2002:a17:907:2d0e:: with SMTP id gs14mr4894468ejc.49.1625000935004;
+        Tue, 29 Jun 2021 14:08:55 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id hz14sm8669156ejc.107.2021.06.29.14.08.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 14:08:54 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 23:08:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+Message-ID: <YNuL442y2yn5RRdc@krava>
+References: <20210202135002.4024825-1-jackmanb@google.com>
+ <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava>
+ <YNtEcjYvSvk8uknO@krava>
+ <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava>
 MIME-Version: 1.0
-References: <202106281231.E99B92BB13@keescook> <20210629131400.GA24514@C02TD0UTHF1T.local>
-In-Reply-To: <20210629131400.GA24514@C02TD0UTHF1T.local>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 29 Jun 2021 14:05:40 -0700
-Message-ID: <CAKwvOd=BRD8Yrq6QvLiZq-_GL-JdDPvx6ghO4ROCo+AtisTJvw@mail.gmail.com>
-Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>,
-        Bill Wendling <wcw@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNtNMSSZh3LTp2we@krava>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 6:14 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Kees,
->
-> I thought the PGO stuff was on hold given Peter had open concerns, e.g.
->
-> https://lore.kernel.org/r/20210614154639.GB68749@worktop.programming.kicks-ass.net
->
-> ... and there didn't seem to be a strong conclusion to the contrary.
+On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+> > > > > On Sun, 27 Jun 2021 at 17:34, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > >
+> > > > > > On Tue, Feb 02, 2021 at 01:50:02PM +0000, Brendan Jackman wrote:
+> > [snip]
+> > > > > Hmm, is the test prog from atomic_bounds.c getting JITed there (my
+> > > > > dumb guess at what '0xc0000000119efb30 (unreliable)' means)? That
+> > > > > shouldn't happen - should get 'eBPF filter atomic op code %02x (@%d)
+> > > > > unsupported\n' in dmesg instead. I wonder if I missed something in
+> > > > > commit 91c960b0056 (bpf: Rename BPF_XADD and prepare to encode other
+> > >
+> > > I see that for all the other atomics tests:
+> > >
+> > > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 21
+> > > #21/p BPF_ATOMIC_AND without fetch FAIL
+> > > Failed to load prog 'Unknown error 524'!
+> > > verification time 32 usec
+> > > stack depth 8
+> > > processed 10 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > > Summary: 0 PASSED, 0 SKIPPED, 2 FAILED
+> > 
+> > Hm that's also not good - failure to JIT shouldn't mean failure to
+> > load. Are there other test_verifier failures or is it just the atomics
+> > ones?
+> 
+> I have CONFIG_BPF_JIT_ALWAYS_ON=y so I think that's fine
+> 
+> > 
+> > > console:
+> > >
+> > >         [   51.850952] eBPF filter atomic op code db (@2) unsupported
+> > >         [   51.851134] eBPF filter atomic op code db (@2) unsupported
+> > >
+> > >
+> > > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 22
+> > > #22/u BPF_ATOMIC_AND with fetch FAIL
+> > > Failed to load prog 'Unknown error 524'!
+> > > verification time 38 usec
+> > > stack depth 8
+> > > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > > #22/p BPF_ATOMIC_AND with fetch FAIL
+> > > Failed to load prog 'Unknown error 524'!
+> > > verification time 26 usec
+> > > stack depth 8
+> > > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > >
+> > > console:
+> > >         [  223.231420] eBPF filter atomic op code db (@3) unsupported
+> > >         [  223.231596] eBPF filter atomic op code db (@3) unsupported
+> > >
+> > > ...
+> > >
+> > >
+> > > but no such console output for:
+> > >
+> > > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 24
+> > > #24/u BPF_ATOMIC bounds propagation, mem->reg OK
+> > >
+> > >
+> > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > >
+> > > >
+> > > > hum, I guess not.. will check
+> > >
+> > > nope, it locks up the same:
+> > 
+> > Do you mean it locks up at commit 91c960b0056 too?
+> > 
+> 
+> I tried this one:
+>   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+> 
+> I will check also 91c960b0056, but I think it's the new test issue
 
-Hi Mark,
-If I could rephrase Peter's concerns in my own words to see if I
-understood the intent correctly, I'd summarize the concerns as:
-1. How does instrumentation act in regards to noinstr?
+for i91c960b0056 in HEAD I'm getting just 2 fails:
 
-https://lore.kernel.org/linux-doc/20210614153545.GA68749@worktop.programming.kicks-ass.net/
-https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
+	#1097/p xadd/w check whether src/dst got mangled, 1 FAIL
+	Failed to load prog 'Unknown error 524'!
+	verification time 25 usec
+	stack depth 8
+	processed 12 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 0
+	#1098/p xadd/w check whether src/dst got mangled, 2 FAIL
+	Failed to load prog 'Unknown error 524'!
+	verification time 30 usec
+	stack depth 8
+	processed 12 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 0
 
-2. How much of this code can be reused with GCC?
+with console output:
 
-https://lore.kernel.org/linux-doc/20210614154639.GB68749@worktop.programming.kicks-ass.net/
+	[  289.499341] eBPF filter atomic op code db (@4) unsupported
+	[  289.499510] eBPF filter atomic op code c3 (@4) unsupported
 
-3. Can we avoid proliferation of compiler specific code in the kernel?
+no lock up
 
-https://lore.kernel.org/linux-doc/YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net/
+jirka
 
----
-
-Regarding point 1, I believe that was addressed by this series, which
-Peter Ack'ed, and is based on work I did in LLVM based on Peter's
-feedback, while collaborating with GCC developers on the semantics in
-regards to inlining.  I notice you weren't explicitly cc'ed on that
-thread, that's my fault and I apologize.  It wasn't intentional; once
-a cc list as recommended by get_maintainer.pl gets too long, I start
-to forget who was on previous threads and might be interested in
-updates.
-
-https://lore.kernel.org/lkml/YNGQV09E9xAvvppO@hirez.programming.kicks-ass.net/
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
-
----
-
-Regarding point 2, I believe I addressed that in my response.  Similar
-to GCOV, we need the runtime hooks which are compiler specific in
-order to capture the profiling data. Exporting such data to userspace
-via sysfs can be easily shared though, as is done currently for GCOV.
-
-https://lore.kernel.org/linux-doc/CAKwvOd=aAo72j-iE2PNE5Os8BPc0y-Zs7ZoMzd21ck+QNeboBA@mail.gmail.com/
-
----
-
-Regarding point 3, I agree. There's currently 2 big places in the
-kernel where we have very compiler specific code, IMO:
-1. frame pointer based unwinding on 32b ARM (especially but not
-limited to THUMB).
-2. GCOV
-This series does ask to add a third.
-
-At the same time, there are differences between compilers that are
-unlikely to converge without great need.  Compiler IR is generally not
-interchangeable between compilers; the compiler runtimes (ie. symbols
-typically provided by libgcc_s or compiler-rt) are (generally) tightly
-coupled to their respective compilers.  Since PGO relies on the
-respective compiler runtimes, we wind up with compiler specific
-runtime support for this feature.  For a semi-freestanding environment
-like the Linux kernel, that means duplicating the ABI for these
-compiler runtime libraries, with additional code for kernel specific
-synchronization, memory management, and data retrieval (sysfs).
-
-Further, asking compiler vendors to break their existing ABIs with
-their compiler runtimes to support a shared interface for profiling
-data is also a hard sell. That's a major issue regarding frame pointer
-based unwinding on 32b ARM as well; existing unwinders must change to
-support the latest spec, yet not all code will be recompiled to match
-it as the same time the unwinder support is added or updated.  Unless
-the compiler runtime was statically linked, then upgrading that shared
-object might break binaries when they are run next.  I'm not saying
-it's impossible, but is it worth it? Do the compiler vendors agree?
--- 
-Thanks,
-~Nick Desaulniers
