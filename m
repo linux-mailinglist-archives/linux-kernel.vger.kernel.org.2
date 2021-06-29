@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4E43B7017
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C33B701C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhF2J3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 05:29:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43342 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbhF2J3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:29:48 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 50C9F2265F;
-        Tue, 29 Jun 2021 09:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624958840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4q4LmD7SOlQLXLUrGAnOIJm9Fl0zLoCmgA3rdoB1z0=;
-        b=q1u+jMWQ6NgqT1dtiAfWRKU3wKi95ikkm5CIwXjHJDentJ+D0S/3fY20d0rHWJR5r2op3b
-        ZKJKWPxgdTcwe9yclmkzsrTopViIQ3fsAw9oPV08lk1117CAt9v1pLuP0DITkZCrRdAx+q
-        Ws52nTS1hkvNtiGSYNEVcBHZsPO6HDU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624958840;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4q4LmD7SOlQLXLUrGAnOIJm9Fl0zLoCmgA3rdoB1z0=;
-        b=B/b29eDzS5RLMOjf4DSibfCir317dBtBRHNCpdc0DLq+BiK/3aHJJaG879nqgUyHoy5zBO
-        y3eHyG04OksKW+Cw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 3764411906;
-        Tue, 29 Jun 2021 09:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624958840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4q4LmD7SOlQLXLUrGAnOIJm9Fl0zLoCmgA3rdoB1z0=;
-        b=q1u+jMWQ6NgqT1dtiAfWRKU3wKi95ikkm5CIwXjHJDentJ+D0S/3fY20d0rHWJR5r2op3b
-        ZKJKWPxgdTcwe9yclmkzsrTopViIQ3fsAw9oPV08lk1117CAt9v1pLuP0DITkZCrRdAx+q
-        Ws52nTS1hkvNtiGSYNEVcBHZsPO6HDU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624958840;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4q4LmD7SOlQLXLUrGAnOIJm9Fl0zLoCmgA3rdoB1z0=;
-        b=B/b29eDzS5RLMOjf4DSibfCir317dBtBRHNCpdc0DLq+BiK/3aHJJaG879nqgUyHoy5zBO
-        y3eHyG04OksKW+Cw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id WJSGDHjn2mDKXgAALh3uQQ
-        (envelope-from <dwagner@suse.de>); Tue, 29 Jun 2021 09:27:20 +0000
-Date:   Tue, 29 Jun 2021 11:27:19 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Wen Xiong <wenxiong@us.ibm.com>, james.smart@broadcom.com,
-        linux-kernel@vger.kernel.org, sagi@grimberg.me,
-        wenxiong@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] block: System crashes when cpu hotplug + bouncing
- port
-Message-ID: <20210629092719.n33t2pnjiwwe6qun@beryllium.lan>
-References: <1624850072-17776-1-git-send-email-wenxiong@linux.vnet.ibm.com>
- <20210628090703.apaowrsazl53lza4@beryllium.lan>
- <YNmdhqd+W3XbJCwd@T590>
- <71d1ce491ed5056bfa921f0e14fa646d@imap.linux.ibm.com>
- <OFE573413D.44652DC5-ON00258703.000DB949-00258703.000EFCD4@ibm.com>
- <OF8889275F.DC758B38-ON00258703.001297BC-00258703.00143502@ibm.com>
- <YNqX6w8YHO61oqvY@T590>
- <20210629082542.vm3yh6k36d2zh3k5@beryllium.lan>
- <20210629083549.unco3f7atybqypw3@beryllium.lan>
- <YNrhXFgv/gEWbhbl@T590>
+        id S232787AbhF2Jcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 05:32:53 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:40196 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232614AbhF2Jcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 05:32:51 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lyA4J-00023X-AF; Tue, 29 Jun 2021 11:30:11 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linux-rockchip@lists.infradead.org, Levin <djw@t-chip.com.cn>
+Cc:     Wayne Chou <zxf@t-chip.com.cn>, Kongxin Deng <dkx@t-chip.com.cn>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Marty Jones <mj8263788@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= <uwe@kleine-koenig.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v0 2/2] arm64: dts: rockchip: add support for Firefly ROC-RK3399-PC-PLUS
+Date:   Tue, 29 Jun 2021 11:30:10 +0200
+Message-ID: <3771996.aKNjEaI27c@diego>
+In-Reply-To: <149c2171-471e-343e-8126-38394746b044@t-chip.com.cn>
+References: <20210628035402.16812-1-djw@t-chip.com.cn> <20210628035402.16812-3-djw@t-chip.com.cn> <149c2171-471e-343e-8126-38394746b044@t-chip.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNrhXFgv/gEWbhbl@T590>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 05:01:16PM +0800, Ming Lei wrote:
-> No, this way fails the request allocation, which isn't expected from
-> NVMe fc/rdma/tcp/loop, since io queue can't be connected in this way.
+Hi Levin,
 
-But __nvme_submit_sync_cmd() can return errors too and they need to be
-handled in the connect path. So why is this so special? Not that I am
-against your patch, I just like to understand the reasoning.
+Am Dienstag, 29. Juni 2021, 11:15:59 CEST schrieb Levin:
+> Hi all, is it possible to turn on some codec mixer switch in the device 
+> tree?
+
+I don't think that is appropriate and/or/ possible in the devicetree.
+
+Instead I think you want an Alsa UCM profile for it, see:
+https://github.com/alsa-project/alsa-ucm-conf/tree/master/ucm2/Rockchip
+
+
+Heiko
+
+> 
+> 
+> Currently, to hear to sound, we need to run the following commands from 
+> the user space:
+> 
+>    # turn on mixer switch
+> 
+>    amixer -c 1 sset 'Left Mixer' on
+>    amixer -c 1 sset 'Right Mixer' on
+> 
+>    # raise volume
+> 
+>    amixer -c 1 sset 'Output 2' 36
+> 
+> 
+> If these settings can be embedded into device tree, and set by kernel as 
+> initial ALSA path settings,
+> 
+> user can hear the sound with zero ALSA config. That'll be great.
+> 
+> 
+> On 2021-06-28 11:54 AM, djw@t-chip.com.cn wrote:
+> > +
+> > +	es8388-sound {
+> > +		compatible = "simple-audio-card";
+> > +		pinctrl-names = "default";
+> > +		pinctrl-0 = <&hp_det_pin>;
+> > +		simple-audio-card,name = "rockchip,es8388-codec";
+> > +		simple-audio-card,format = "i2s";
+> > +		simple-audio-card,mclk-fs = <256>;
+> > +
+> > +		simple-audio-card,widgets =
+> > +			"Microphone", "Mic Jack",
+> > +			"Headphone", "Headphones";
+> > +		simple-audio-card,routing =
+> > +			"LINPUT1", "Mic Jack",
+> > +			"Headphone Amp INL", "LOUT2",
+> > +			"Headphone Amp INR", "ROUT2",
+> > +			"Headphones", "Headphone Amp OUTL",
+> > +			"Headphones", "Headphone Amp OUTR";
+> > +
+> > +		simple-audio-card,hp-det-gpio = <&gpio2 RK_PA6 GPIO_ACTIVE_HIGH>;
+> > +		simple-audio-card,aux-devs = <&headphones_amp>;
+> > +		simple-audio-card,pin-switches = "Headphones";
+> > +
+> > +		simple-audio-card,cpu {
+> > +			sound-dai = <&i2s1>;
+> > +		};
+> > +
+> > +		simple-audio-card,codec {
+> > +			sound-dai = <&es8388>;
+> > +		};
+> > +	};
+> > +
+> >
+> 
+
+
+
+
