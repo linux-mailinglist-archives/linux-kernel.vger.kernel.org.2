@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F9C3B7529
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2772E3B758E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234818AbhF2Pay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        id S234803AbhF2Pfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhF2Pav (ORCPT
+        with ESMTP id S234700AbhF2Pf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:30:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11985C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:28:24 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso2684440pjp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:28:24 -0700 (PDT)
+        Tue, 29 Jun 2021 11:35:27 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5A3C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 80so3084263pgg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VuuCdU8uAmKGBo8SImwfisVY2Ba0hcixfgMHcrixL7o=;
-        b=AKt8HPsPsJ2ywzYB8tqCs5F9/z9DqNbOFY13/dcY+xCSNrsNs6CYe5lT+IWiyMvkfG
-         fFwovFSVwNF/Hnu1M4O3dYwOKtkE/u7irgBvBu7A0XYi02tOP7U4A0+8DrPRZVw2K7cZ
-         MJGvGNqOh1JkWlbazcA1e1itTxT2tqNkDkqdQUy5TgY84UAr/uuZx1JtTnnrt+G9o5wq
-         hUnaEYBV9xyOXdRMGFXj4Van+AFQU+JUqO5srbSsJNLmT38fjNAJJTJZAXSoHyve4mVV
-         KbLLcF9YxEl0MT893LOlU/erZSMAIDOMX9WwMWGxADL81IrjIpveSAoNjHvHzEFuV4gh
-         nkZA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8u9/LGHCVwZ4midNSAwp0N6rAWr4KVJQJiuvperVNgM=;
+        b=cEDzvMJSf0V/qxS792iiW7NtANHon/YY/N4MPAq+K+5xEQgpqY43aNa4uy2J0526WD
+         hKc9tjpd+YRD003F0FPzxwcuHPW78q0epDHUcvNjH2zTxlS2g0FeyBw4KOAH9r7OdGq4
+         qqrH+2IryC/LKBTWoqL1wZuInSfMVch5La0d9zI42Cd50cbjEl8RKXXJi3UT/0E6ycXW
+         +UTJfkkEeIupxO1T7jbux79yHmLNf1TE9TnsF/m60f5uNw9j5sue8Mf3BldZvWqqwQOj
+         NrLjzX99DqL3KhV7gLshphXaaUJIBWv95KGy8fAJtSFChaxKXdKYXfOb7amtp78XBP5Y
+         OUcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VuuCdU8uAmKGBo8SImwfisVY2Ba0hcixfgMHcrixL7o=;
-        b=oNEv8RZITbqSd8ZIuYvjsN1rXzjtVpmW/584XypwdoID/FekB3PdrVwR8DSE2UZ9KL
-         GB2F/s/fKBbzCWHMUS+gTkgKxnqiWgB+GO56RQSKvE1WYnj59lYwdgEZXDHnSugWXUd+
-         W/oUPceeW+VSOBx6SpFJ8L+4aGXWUUTWZDGoRWFOrgTk3eCqOG9wPm0I9dfX4QZeByaR
-         I/y6pBsldDNz2bHl1cLehsfQEV3v7Z1eneLcc7HwHmYAsID4cZ83ukv8+TB2iIQITnjk
-         9dEAhUt3pO6baqHWdBV3PvhDa0dKBK0apD+/CC/Y4taXQRrO/rGr7ozKzYTjlx0hAzLR
-         KokQ==
-X-Gm-Message-State: AOAM533b7KMYNCBjR+vqZkZfV9h9KEZasBY19ZHfzPRFYqvw95yh1IZ9
-        Z2ShjkSg8POJVe9TPKaaTTln
-X-Google-Smtp-Source: ABdhPJzNywL9BPuI+wsO40c0iGHp9swihEt0eL3tAyyRzrd+pc0kOG4MJpi2KK1UBS2vhuxCv/2jxQ==
-X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr43719932pjb.133.1624980503512;
-        Tue, 29 Jun 2021 08:28:23 -0700 (PDT)
-Received: from workstation ([120.138.12.32])
-        by smtp.gmail.com with ESMTPSA id cs1sm3420299pjb.56.2021.06.29.08.28.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Jun 2021 08:28:22 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 20:58:19 +0530
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8u9/LGHCVwZ4midNSAwp0N6rAWr4KVJQJiuvperVNgM=;
+        b=n0MNL6d9ofOih2z4vZpiagtNfbNk1eZUH9GmIU9HHGsbztSt1DbZ4BuyBD1v9AZkbt
+         6kcPKjJX5PIVHaebzfcIbOndrse0+4rYAm9udKRz/N8kBD/dmhnc8d4SKlPKShHZSeez
+         +JHh2Jk5f3ncHHfNYQ0rE4VnD7xOK2C+KkHS2NgNIc0uLi8yVSEmBIk/Eg+qDrrIhpnZ
+         +5Gwbb7A1t60/hIraqjrfqcKMbcKU09ZUwB1D9w9MDTk8RVRhCVuNq+xYEhiSmf+336G
+         7DbbZKuqz5bmWoYV6VeXJx+BWhmZp1VWhV9NDk3qGugPpvsbrTuzJR1uPx+HQwRXifez
+         fQ/g==
+X-Gm-Message-State: AOAM532E+NaV0Bm7ytOxZWSstcqrKrU01ks1icated4coRHIlHkTeDse
+        5rUQNssAyAddVy0E0lB22LtE
+X-Google-Smtp-Source: ABdhPJysVqI66UwzRIgh1c12A4alGfEK+kITLiKGfsqSVoSssWy+HtYu9/kKugkTBFW7BHGO2SSX7Q==
+X-Received: by 2002:a63:4a53:: with SMTP id j19mr28440176pgl.144.1624980779312;
+        Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
+Received: from localhost.localdomain ([120.138.12.32])
+        by smtp.gmail.com with ESMTPSA id s79sm11444492pfc.87.2021.06.29.08.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 08:32:58 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thara.gopinath@linaro.org,
+To:     bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thara.gopinath@linaro.org, mka@chromium.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         stable@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
- cooling_devs
-Message-ID: <20210629152819.GC3580@workstation>
-References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
- <YNpVMvhEfrz9EqyO@google.com>
- <20210629042558.GA3580@workstation>
- <YNsrcHOf90rZl44z@google.com>
+Subject: [PATCH v2] soc: qcom: aoss: Fix the out of bound usage of cooling_devs
+Date:   Tue, 29 Jun 2021 21:02:49 +0530
+Message-Id: <20210629153249.73428-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNsrcHOf90rZl44z@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 07:17:20AM -0700, Matthias Kaehlcke wrote:
-> On Tue, Jun 29, 2021 at 09:55:58AM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Jun 28, 2021 at 04:03:14PM -0700, Matthias Kaehlcke wrote:
-> > 
-> > [...]
-> > 
-> > > 
-> > > 
-> > > A few more previous lines of code for context:
-> > > 
-> > >   int count = QMP_NUM_COOLING_RESOURCES;
-> > > 
-> > >   qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
-> > >                                    sizeof(*qmp->cooling_devs),
-> > >                                    GFP_KERNEL);
-> > > 
-> > > I would suggest to initialize 'count' to 0 from the start and pass
-> > > QMP_NUM_COOLING_RESOURCES to devm_kcalloc() rather than 'count',
-> > > instead of resetting 'count' afterwards.
-> > 
-> > Yeah, I thought about it but the actual bug in the code is not resetting
-> > the count value to 0. So fixing this way seems a better option.
-> 
-> I don't agree that it's the better option. IMO it's clearer to pass
-> the constant QMP_NUM_COOLING_RESOURCES directly to devm_kcalloc(),
-> rather than giving the impression that the number of allocated items
-> is variable. Repurposing variables can be confusing and led to this
-> bug. Also the resulting code doesn't need to re-initialize 'count'.
+In "qmp_cooling_devices_register", the count value is initially
+QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
+the memory for cooling_devs is allocated. Then while calling the
+"qmp_cooling_device_add" function, count value is post-incremented for
+each child node.
 
-I don't dis-agree with you on this :) Let me send v2 incorporating the
-comments.
+This makes the out of bound access to the cooling_dev array. Fix it by
+passing the QMP_NUM_COOLING_RESOURCES definition to devm_kzalloc() and
+initializing the count to 0.
 
-Thanks,
-Mani
+While at it, let's also free the memory allocated to cooling_dev if no
+cooling device is found in DT and during unroll phase.
+
+Cc: stable@vger.kernel.org # 5.4
+Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+
+Changes in v2:
+
+* Used QMP_NUM_COOLING_RESOURCES directly and initialized count to 0
+
+ drivers/soc/qcom/qcom_aoss.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+index 934fcc4d2b05..7b6b94332510 100644
+--- a/drivers/soc/qcom/qcom_aoss.c
++++ b/drivers/soc/qcom/qcom_aoss.c
+@@ -476,12 +476,12 @@ static int qmp_cooling_device_add(struct qmp *qmp,
+ static int qmp_cooling_devices_register(struct qmp *qmp)
+ {
+ 	struct device_node *np, *child;
+-	int count = QMP_NUM_COOLING_RESOURCES;
++	int count = 0;
+ 	int ret;
+ 
+ 	np = qmp->dev->of_node;
+ 
+-	qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
++	qmp->cooling_devs = devm_kcalloc(qmp->dev, QMP_NUM_COOLING_RESOURCES,
+ 					 sizeof(*qmp->cooling_devs),
+ 					 GFP_KERNEL);
+ 
+@@ -497,12 +497,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
+ 			goto unroll;
+ 	}
+ 
++	if (!count)
++		devm_kfree(qmp->dev, qmp->cooling_devs);
++
+ 	return 0;
+ 
+ unroll:
+ 	while (--count >= 0)
+ 		thermal_cooling_device_unregister
+ 			(qmp->cooling_devs[count].cdev);
++	devm_kfree(qmp->dev, qmp->cooling_devs);
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
+
