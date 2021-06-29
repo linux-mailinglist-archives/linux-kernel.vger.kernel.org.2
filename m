@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686B53B6C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371853B6C11
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhF2Bdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:33:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27309 "EHLO
+        id S232125AbhF2Bez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:34:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53639 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231947AbhF2Bdn (ORCPT
+        by vger.kernel.org with ESMTP id S231959AbhF2Bey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:33:43 -0400
+        Mon, 28 Jun 2021 21:34:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624930276;
+        s=mimecast20190719; t=1624930348;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=J83aztfmcvGFx3aprS25WPTJKUaIP1R/fWg4KY+Lskk=;
-        b=CXhgH1LG7wy4eu7LtEGLDT8J6RfayxYou5IkQbyr0bQ9Nr31DIOHzYVPprWVwrHhQ6gfUv
-        uZcTfxagG2kkczmD3Ut+RVSG9Qi8Fx/OfSTSwnhl6Y6rbgtmLwtT5BLffioSCmcJL2g7EJ
-        vyvVbSYXwJMWW4CpOBubk3tXWncKTao=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-yIZL55dFNP6U5f--yE9sgw-1; Mon, 28 Jun 2021 21:31:15 -0400
-X-MC-Unique: yIZL55dFNP6U5f--yE9sgw-1
-Received: by mail-yb1-f197.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so18690041ybp.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 18:31:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J83aztfmcvGFx3aprS25WPTJKUaIP1R/fWg4KY+Lskk=;
-        b=qwKccsEq1K80HDDsOOhu9eecHVrtGhqIDOQWSgI+KJBKIUx6ZAIXxalnxhles/Azrc
-         dbCHTsw/ZeR6fp/e65emecl3zRoEKxDzRST7spM4VLc1sag0NfHrpnAx92grt+1BHvMO
-         Xr1o6P8NyplCEm+cB1NOKs3X/P5k8/MmDBcCXzNEg5dLKaCeQOJIr/Jb+Vl+/7I+iAF6
-         Wgwc/LqV0p1OM9V1d+jCeIDWMXzz7ac86bM/nyGBst+hjKDZ+Wfb0pA5QcNuv2EtCWEt
-         ngUGjcjxt5oijro88JiHjyhd/koRy8QePFRMASC+ANTteI3aFlOSBf6dLBJ678+X//1G
-         rokQ==
-X-Gm-Message-State: AOAM532BgASjUYFcckf7nCaZcGN3gg9VqB6yushhCeqfnOWalaspv0K2
-        paDlQPgmkU2meYHKcUlF6b9KkuephKJsZzwETxQKgZdUGOcuPyYrRa4rAw1OrybqZUCz4cHDHXp
-        FSvwQ4lT6Law/JPZTEGjzMeeZXVG9G5aY7F6l/Lhb
-X-Received: by 2002:a25:cccb:: with SMTP id l194mr33056352ybf.310.1624930275042;
-        Mon, 28 Jun 2021 18:31:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxg64Am3hyT5XXI40O8sOGedigWbE1KiPXfj3EDTWrRopTpikakALD7ZrhDh6+GKLYo1bF4VY8akiYNCKLJh08=
-X-Received: by 2002:a25:cccb:: with SMTP id l194mr33056341ybf.310.1624930274874;
- Mon, 28 Jun 2021 18:31:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210625101649.49296-1-dwagner@suse.de> <20210625122156.x5yzoobuaaec5hss@beryllium.lan>
- <YNXTaUMAFCA84jfZ@T590>
-In-Reply-To: <YNXTaUMAFCA84jfZ@T590>
+        bh=9kYorP//K1VhOVzWqSp9mV6M/r7OM0NYvrvalKQnHOw=;
+        b=TpZJQBxGV66Q8xrRnDHYwMYwteTIpSdhpbhXk7S2gZLCMBElKG/YpuQbRLIPC4VwHGZPR5
+        CcLM4JnRDWHLPZk4KIt2ggaNjTxujetjurXVCv9+pPZ/TT9Qj9JwtnaEm8kGGFQpmeynyL
+        6a8EpxqsRKkL3FXWvaiHJ+rhfMTpOHQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-CeCnM6Y8McyxyIO4A5ZA2g-1; Mon, 28 Jun 2021 21:32:24 -0400
+X-MC-Unique: CeCnM6Y8McyxyIO4A5ZA2g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0592A8015F8;
+        Tue, 29 Jun 2021 01:32:23 +0000 (UTC)
+Received: from T590 (ovpn-12-115.pek2.redhat.com [10.72.12.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E74D360C13;
+        Tue, 29 Jun 2021 01:32:15 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 09:32:11 +0800
 From:   Ming Lei <ming.lei@redhat.com>
-Date:   Tue, 29 Jun 2021 09:31:03 +0800
-Message-ID: <CAFj5m9J9NL9qHjo1X9=PdE1-Nkgj2zV-ifdZ9aqqts2QNUpf8w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Handle update hardware queues and queue freeze more carefully
 To:     Daniel Wagner <dwagner@suse.de>
 Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
         James Smart <james.smart@broadcom.com>,
         Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
         Sagi Grimberg <sagi@grimberg.me>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 1/2] nvme-fc: Update hardware queues before using them
+Message-ID: <YNp4GyXwOlJeqtby@T590>
+References: <20210625101649.49296-1-dwagner@suse.de>
+ <20210625101649.49296-2-dwagner@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625101649.49296-2-dwagner@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 9:00 PM Ming Lei <ming.lei@redhat.com> wrote:
->
-> On Fri, Jun 25, 2021 at 02:21:56PM +0200, Daniel Wagner wrote:
-> > On Fri, Jun 25, 2021 at 12:16:47PM +0200, Daniel Wagner wrote:
-> > > this is a followup on the crash I reported in
-> > >
-> > >   https://lore.kernel.org/linux-block/20210608183339.70609-1-dwagner@suse.de/
-> > >
-> > > By moving the hardware check up the crash was gone. Unfortuntatly, I
-> > > don't understand why this fixes the crash. The per-cpu access is
-> > > crashing but I can't see why the blk_mq_update_nr_hw_queues() is
-> > > fixing this problem.
-> > >
-> > > Even though I can't explain why it fixes it, I think it makes sense to
-> > > update the hardware queue mapping bevore we recreate the IO
-> > > queues. Thus I avoided in the commit message to say it fixes
-> > > something.
-> >
-> > I just discussed this with Hannes and we figured out how the crash is
-> > fixed by moving the blk_mq_update_nr_hw_queues() before the
-> > nvme_fc_create_hw_io_queues()/nvme_fc_connect_io_queues().
-> >
-> > First of all, blk_mq_update_nr_hw_queues() operates on the normal
-> > tag_set and not the admin_tag_set. That means when we move the
-> > blk_mq_update_nr_hw_queues() before the nvme_fc_connect_io_queues(), we
-> > update the mapping to only CPUs and hwctx which are available. When we
-> > then do the connect call nvmf_connect_io_queue() we will only allocate
-> > tags from queues which are not in the BLK_MQ_S_INACTIVE anymore. Hence
-> > we skip the blk_mq_put_tag() call.
->
-> Your patch just reduces the race window, what if all cpus in
-> hctx->cpumask become offline when calling blk_mq_alloc_request_hctx()?
+On Fri, Jun 25, 2021 at 12:16:48PM +0200, Daniel Wagner wrote:
+> In case the number of hardware queues changes, do the update the
+> tagset and ctx to hctx first before using the mapping to recreate and
+> connnect the IO queues.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>  drivers/nvme/host/fc.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+> index 8a3c4814d21b..a9645cd89eca 100644
+> --- a/drivers/nvme/host/fc.c
+> +++ b/drivers/nvme/host/fc.c
+> @@ -2951,14 +2951,6 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+>  	if (ctrl->ctrl.queue_count == 1)
+>  		return 0;
+>  
+> -	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+> -	if (ret)
+> -		goto out_free_io_queues;
+> -
+> -	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+> -	if (ret)
+> -		goto out_delete_hw_queues;
+> -
+>  	if (prior_ioq_cnt != nr_io_queues) {
+>  		dev_info(ctrl->ctrl.device,
+>  			"reconnect: revising io queue count from %d to %d\n",
+> @@ -2968,6 +2960,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+>  		nvme_unfreeze(&ctrl->ctrl);
+>  	}
+>  
+> +	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+> +	if (ret)
+> +		goto out_free_io_queues;
+> +
+> +	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+> +	if (ret)
+> +		goto out_delete_hw_queues;
+> +
+>  	return 0;
+>  
+>  out_delete_hw_queues:
+> -- 
+> 2.29.2
+> 
 
-connect io queues after updating nr_hw_queues can cause correct hctx_idx
-to be passed to blk_mq_alloc_request_hctx(), so this patch is good, so the patch
-looks good.
+This way may cause correct hctx_idx to be passed to blk_mq_alloc_request_hctx(), so:
 
-Yeah, there is still other issue not covered during cpu hotplug, but
-that is different
-with this one.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+
 
 Thanks,
+Ming
 
