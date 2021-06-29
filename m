@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8D83B7422
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B243B7429
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhF2OTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S234383AbhF2OUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhF2OTv (ORCPT
+        with ESMTP id S234370AbhF2OUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:19:51 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B141C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:17:23 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g21so15599164pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:17:23 -0700 (PDT)
+        Tue, 29 Jun 2021 10:20:16 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2A9C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:17:49 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id v5-20020a0568301bc5b029045c06b14f83so22770373ota.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IArjopqIDg6BvXPUtumLL/oLHZrtIdyh0yhSmO6KMNo=;
-        b=cSXVWRUqtGI4bt48bQhXvOSfa9n1a8ZVYjIKAmuyaD7HhtEWK/JRkJxuEABjXMi1ML
-         mc7fCb42mJqHKfQqiX/tFabnDwBmefDYamsO/YPKy4ULbt1CxNGwvEO1hxrwZB/n9b5S
-         uTydVdvwWi2zYRs9AM44OOgeS7jlr2PSBWWdg=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ca9b/RJBp6vFH4Z8SWl5H4/Izby04wi57Lwxa0JLyrs=;
+        b=LJcaYPROk5PS/GO/KmuD4NNz/hB69mF5BLuqEZWjNJWkR5tss9yy9ob8LNmQ0LpHx1
+         T4l5ruxUNJFzXKNKUranp6fvbr8bOuweBUVqf2n95m5si7ScYTzb9eueYMIxKM5Hr+Lr
+         S6aL7we9LHKVCL5ydwi2O/GZMoFkOoil/SS2VmTT+U+fscM2Ha+KkT9h2gUP3MszFcqr
+         k4Tk2mF6jo2Z66LFTKa4FaPa2z8hPSrDBkGmea7ufgDwLTt0d0sgAIMIBRKpea0LGo0D
+         nS46tCP0MwkKsNKZfuIKLq2YBilWRgI+ywIim2+1pgg981yp4r/twiVowE88w9Nceb4D
+         0grg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IArjopqIDg6BvXPUtumLL/oLHZrtIdyh0yhSmO6KMNo=;
-        b=pgSI0VZJ21x1n/nRKLyLlwArnG1cOXzdh+p1RTivutMoECybxMpkWjOfit8MsV7CPK
-         /rTjvJX3x0MFuND7bIiwLFyubk+72cPHJwJHbsI32YI7yawfLVICaqxmiKcHcfKPq/cQ
-         crgX2bbKSbfkZCDsSwRitvIIXJgXW34j83ys7NnWY6BeWVy4hkC09zU9eR/VyOiH4JkA
-         qdwDi8r0U7Dt3CEyez2kwz5fcieETa1MXJUutHA6hKu/0eBgMNMfaRMLOynfeU7LDZgO
-         meGU3ZJV1lbhiG49CcBLzEo135W0JqQzdCAp10YEGqP/jmsMGz/YLpBctVkUj4U5usLJ
-         LWKg==
-X-Gm-Message-State: AOAM532/L6CFZEoeDdEDqEjIFSdCsV40ckAyUjeR+8mCw6p/8TScEPW1
-        AaFdvvWCoMeu42JpZMSrbVQfNw==
-X-Google-Smtp-Source: ABdhPJx7K8mQ3oTesZDtPCFys1fAQ5JZculaDZfoCHJ/pcLX1MXf9lej76mubPb12pVdVPxQsD3nwg==
-X-Received: by 2002:a63:3e0f:: with SMTP id l15mr15945191pga.23.1624976242641;
-        Tue, 29 Jun 2021 07:17:22 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7cc8:c334:f56f:576d])
-        by smtp.gmail.com with UTF8SMTPSA id e1sm18333781pfd.16.2021.06.29.07.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 07:17:22 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 07:17:20 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thara.gopinath@linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
- cooling_devs
-Message-ID: <YNsrcHOf90rZl44z@google.com>
-References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
- <YNpVMvhEfrz9EqyO@google.com>
- <20210629042558.GA3580@workstation>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ca9b/RJBp6vFH4Z8SWl5H4/Izby04wi57Lwxa0JLyrs=;
+        b=gjG9EKb+d613fuMN7OeqJGzFXa/PknPU/PEWKM5TJPvyQxkTD3IrL2+pyhYuYphpwN
+         miCv8K7Mo37Z5OlsutiZ8soBnhROK8NQFaw80JZOoN7aYYcj0fp4nDl3dEbaMwxyYs5x
+         hZisF9wGac6ZHcuRck3qyr1kBgaIXLhlbPpgGhoj0MG1I4Z8cUuzdy3RA2gwTpYfdWXb
+         aZDEcIpdRPHKQLN0B088Loz246I/yQRAI5oO4WYNxsh1KkEKB3+Y+r0hqcp0ftZRC0ne
+         lVeFSvoW9oZxdcmaaMAiN8RHguvZD0nbRwJea7RTtJSCfYV1jVWZgabndprTwyRxmC68
+         5g6A==
+X-Gm-Message-State: AOAM533o665kgm35wS2pXHECbdpO5E4L04rR7rHSQSYrVOSIIzLAG7cn
+        kPYXAijsumB5Ws9tk97YpaUiJpXXiZ0Maa/f4Fs=
+X-Google-Smtp-Source: ABdhPJw2CJEKzgyewXcuEZEPTcfsz3H8f6me+j7nAF4nXArSiuFEdABdhNogjc6cwbt9NfbqjiN/eba0bUuDjcZfZyg=
+X-Received: by 2002:a05:6830:33ef:: with SMTP id i15mr4672446otu.311.1624976269048;
+ Tue, 29 Jun 2021 07:17:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210629042558.GA3580@workstation>
+References: <20210629114455.12963-1-jingxiangfeng@huawei.com> <5ff91e15-6014-bc72-40ca-3fa8b834f692@amd.com>
+In-Reply-To: <5ff91e15-6014-bc72-40ca-3fa8b834f692@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 29 Jun 2021 10:17:38 -0400
+Message-ID: <CADnq5_P0whWU-j3ZasO2hUYLWQEy7v=2jtc7hOisfgALu84xsw@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/radeon: Add the missed drm_gem_object_put() in radeon_user_framebuffer_create()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 09:55:58AM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Jun 28, 2021 at 04:03:14PM -0700, Matthias Kaehlcke wrote:
-> 
-> [...]
-> 
-> > 
-> > 
-> > A few more previous lines of code for context:
-> > 
-> >   int count = QMP_NUM_COOLING_RESOURCES;
-> > 
-> >   qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
-> >                                    sizeof(*qmp->cooling_devs),
-> >                                    GFP_KERNEL);
-> > 
-> > I would suggest to initialize 'count' to 0 from the start and pass
-> > QMP_NUM_COOLING_RESOURCES to devm_kcalloc() rather than 'count',
-> > instead of resetting 'count' afterwards.
-> 
-> Yeah, I thought about it but the actual bug in the code is not resetting
-> the count value to 0. So fixing this way seems a better option.
+Applied.  Thanks!
 
-I don't agree that it's the better option. IMO it's clearer to pass
-the constant QMP_NUM_COOLING_RESOURCES directly to devm_kcalloc(),
-rather than giving the impression that the number of allocated items
-is variable. Repurposing variables can be confusing and led to this
-bug. Also the resulting code doesn't need to re-initialize 'count'.
+Alex
+
+On Tue, Jun 29, 2021 at 7:42 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 29.06.21 um 13:44 schrieb Jing Xiangfeng:
+> > radeon_user_framebuffer_create() misses to call drm_gem_object_put() in
+> > an error path. Add the missed function call to fix it.
+> >
+> > Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+>
+> I'm pretty sure that I already reviewed the same patch a few weeks ago,
+> but it looks like it never went upstream.
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> Maybe add CC: stable as well?
+>
+> Regards,
+> Christian.
+>
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_display.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/=
+radeon/radeon_display.c
+> > index 652af7a134bd..1d03ec763604 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_display.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> > @@ -1325,6 +1325,7 @@ radeon_user_framebuffer_create(struct drm_device =
+*dev,
+> >       /* Handle is imported dma-buf, so cannot be migrated to VRAM for =
+scanout */
+> >       if (obj->import_attach) {
+> >               DRM_DEBUG_KMS("Cannot create framebuffer from imported dm=
+a_buf\n");
+> > +             drm_gem_object_put(obj);
+> >               return ERR_PTR(-EINVAL);
+> >       }
+> >
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
