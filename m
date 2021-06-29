@@ -2,112 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1C83B7A44
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 00:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C773B7A4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 00:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhF2WKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 18:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhF2WKB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 18:10:01 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DF2C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:07:34 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id yy20so518328ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:07:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1q7Ain0DLUkGOfXS9EwfmlJ7f9E2SKVgo1z1o4tW/v8=;
-        b=sNJP561TgLPulHMOn7QGOO2ndcGumuoOg3lMJmx9mePF3ls5eTTIX0sGZ2zNpLEXaU
-         J7rzQdc5YT5pdKkAAGvaAk0gQ9sll7hgjRY21wJm9/USdN0drvSZW32uTYMAM2y/HLO/
-         dAIYpyHzjZ/TyDiws9b6v7fPcMCh7EaztHjSwWNPAjbO+vYfTnmJq+IpaWRfmneoCIAy
-         b4IKFit61HKhQ1MVC1J8wb4lZcP8k1+gcu7hEHf1rK5xmTAsfk4k6bQcAKCyhXShefaf
-         Rt11rvdrWGjo56phA0v1fYSWwwv+rhBsLbsecSW5JfB9H6yrLzroABGfbaWHPh4EyuVc
-         A35Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1q7Ain0DLUkGOfXS9EwfmlJ7f9E2SKVgo1z1o4tW/v8=;
-        b=fpRkSM2VzIlGJA7+F+/EW66MFBt7vZ11/QHvxL/v+UVCkGMN3p8oVVX7U4zo7idWOK
-         duZXZQHE4r2P6OJLQseDcJyjn1jRJQWUWxfYEPiwRq5nHOWgptNfmY5ciP96MUbBs1dF
-         8xEi46avAZmLbM3YKfMVHMsokmGN/QZ6x42/oYqMWE9s34Rx0uCsZn6nryc0jkpRztjf
-         d8qUgteo5CJweD6uo8zLbjOw5Qk9Dil90bNXP6kehIVn/R5nxp/Po0iBB1dnH5wyDmPr
-         JBmkWtUFeyUlHOkn4m8hH06+dT9QrIkyHKLjtdz1e6CCMWJs0ip9fUFkhLxFuaNJXXZd
-         q9bQ==
-X-Gm-Message-State: AOAM530YBLwiRtzE6iuliNj1Ot0PnvjGmj0m4YdiKXoqXhxkDAH/qz7D
-        fHvemx8iyDTWjvUOyaxzGrQVEVMj8Eb2CL69fO/pFw==
-X-Google-Smtp-Source: ABdhPJyFL8pCPijezwPCujfo677fGnEMrbfTjwpgNpqLmPtMLLSo5Wkmd3U8I7RWYi73MzJC1yy4wGds03Y/Y7Fh8OQ=
-X-Received: by 2002:a17:906:70cf:: with SMTP id g15mr31769008ejk.366.1625004452346;
- Tue, 29 Jun 2021 15:07:32 -0700 (PDT)
+        id S235372AbhF2WKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 18:10:42 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31494 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235291AbhF2WKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 18:10:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208069120"
+X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
+   d="scan'208";a="208069120"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 15:08:10 -0700
+X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
+   d="scan'208";a="408336090"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 15:08:10 -0700
+Date:   Tue, 29 Jun 2021 15:09:48 -0700 (PDT)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     =?ISO-8859-15?Q?Martin_Hundeb=F8ll?= <martin@geanix.com>
+cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?ISO-8859-15?Q?Martin_Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
+In-Reply-To: <20210629121214.988036-5-martin@geanix.com>
+Message-ID: <alpine.DEB.2.22.394.2106291509350.1279832@rhweight-WRK1>
+References: <20210629121214.988036-1-martin@geanix.com> <20210629121214.988036-5-martin@geanix.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <YNtlrrKZVQY4byVa@google.com>
-In-Reply-To: <YNtlrrKZVQY4byVa@google.com>
-From:   Kenneth Albanowski <kenalba@google.com>
-Date:   Tue, 29 Jun 2021 15:07:20 -0700
-Message-ID: <CALvoSf7y2WRtX5R8-_Uo1Gzhq4i_WnMRw0AGMW+JQdZvXMX_Xg@mail.gmail.com>
-Subject: Re: [PATCH] HID: input: do not report stylus battery state as "full"
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="8323328-1872359212-1625004588=:1279832"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've tested it on a 5.4 derivative, and that works as expected. Looks
-good to me.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-- Kenneth Albanowski
-
-
-
-- Kenneth
+--8323328-1872359212-1625004588=:1279832
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
 
-On Tue, Jun 29, 2021 at 11:25 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
+
+On Tue, 29 Jun 2021, Martin Hundebøll wrote:
+
+> From: Martin Hundebøll <mhu@silicom.dk>
 >
-> The power supply states of discharging, charging, full, etc, represent
-> state of charging, not the capacity level of the battery (for which
-> we have a separate property). Current HID usage tables to not allow
-> for expressing charging state of the batteries found in generic
-> styli, so we should simply assume that the battery is discharging
-> even if current capacity is at 100% when battery strength reporting
-> is done via HID interface. In fact, we were doing just that before
-> commit 581c4484769e.
+> Add the list of sensors supported by the Silicom n5010 PAC, and enable
+> the drivers as a subtype of the intel-m10-bmc multi-function driver.
 >
-> This change helps UIs to not mis-represent fully charged batteries in
-> styli as being charging/topping-off.
->
-> Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
-> Reported-by: Kenneth Albanowski <kenalba@google.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Acked-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 > ---
->  drivers/hid/hid-input.c | 2 --
->  1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-> index e982d8173c9c..e85a1a34ff39 100644
-> --- a/drivers/hid/hid-input.c
-> +++ b/drivers/hid/hid-input.c
-> @@ -417,8 +417,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
+> Changes since v2:
+> * Added Yilun's Reviewed-by
+> * Added Moritz' Reviewed-by
+> * Added Guenter's Reviewed-by
 >
->                 if (dev->battery_status == HID_BATTERY_UNKNOWN)
->                         val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
-> -               else if (dev->battery_capacity == 100)
-> -                       val->intval = POWER_SUPPLY_STATUS_FULL;
->                 else
->                         val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
->                 break;
-> --
-> 2.32.0.93.g670b81a890-goog
+> Changes since v1:
+> * Patch split out to separate hwmon changes
 >
-> --
-> Dmitry
+> drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
+> 1 file changed, 116 insertions(+)
+>
+> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> index bd7ed2ed3a1e..7a08e4c44a4b 100644
+> --- a/drivers/hwmon/intel-m10-bmc-hwmon.c
+> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
+> @@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
+> 	.hinfo = d5005bmc_hinfo,
+> };
+>
+> +static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
+> +	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
+> +	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
+> +	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
+> +	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
+> +	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
+> +	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
+> +	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
+> +	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
+> +	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
+> +	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
+> +	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
+> +	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
+> +	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
+> +	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
+> +	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
+> +	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
+> +	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
+> +};
+> +
+> +static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
+> +	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
+> +	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
+> +	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
+> +	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
+> +	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
+> +	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
+> +	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
+> +	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
+> +	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
+> +	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
+> +	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
+> +	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
+> +	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
+> +};
+> +
+> +static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
+> +	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
+> +	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
+> +	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
+> +	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
+> +	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
+> +	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
+> +	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
+> +	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
+> +	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
+> +	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
+> +	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
+> +	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
+> +	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
+> +};
+> +
+> +static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
+> +	HWMON_CHANNEL_INFO(temp,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(in,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+> +	HWMON_CHANNEL_INFO(curr,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL),
+> +	NULL
+> +};
+> +
+> +static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
+> +	.tables = {
+> +		[hwmon_temp] = n5010bmc_temp_tbl,
+> +		[hwmon_in] = n5010bmc_in_tbl,
+> +		[hwmon_curr] = n5010bmc_curr_tbl,
+> +	},
+> +
+> +	.hinfo = n5010bmc_hinfo,
+> +};
+> +
+> static umode_t
+> m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+> 			u32 attr, int channel)
+> @@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
+> 		.name = "d5005bmc-hwmon",
+> 		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
+> 	},
+> +	{
+> +		.name = "n5010bmc-hwmon",
+> +		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
+> +	},
+> 	{ }
+> };
+>
+> -- 
+> 2.31.0
+>
+>
+--8323328-1872359212-1625004588=:1279832--
