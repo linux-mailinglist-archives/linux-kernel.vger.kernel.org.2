@@ -2,406 +2,998 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F753B798D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2078A3B7987
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhF2Uy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S235558AbhF2Uwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbhF2UyG (ORCPT
+        with ESMTP id S234054AbhF2Uwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:54:06 -0400
-X-Greylist: delayed 351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Jun 2021 13:51:27 PDT
-Received: from forward105j.mail.yandex.net (forward105j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C789CC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:51:27 -0700 (PDT)
-Received: from sas1-16fb7bdf8acc.qloud-c.yandex.net (sas1-16fb7bdf8acc.qloud-c.yandex.net [IPv6:2a02:6b8:c14:1e07:0:640:16fb:7bdf])
-        by forward105j.mail.yandex.net (Yandex) with ESMTP id 6907BB207DA;
-        Tue, 29 Jun 2021 23:45:20 +0300 (MSK)
-Received: from sas2-34ddad429748.qloud-c.yandex.net (sas2-34ddad429748.qloud-c.yandex.net [2a02:6b8:c08:b787:0:640:34dd:ad42])
-        by sas1-16fb7bdf8acc.qloud-c.yandex.net (mxback/Yandex) with ESMTP id St7M9ug1nA-jJHOTJgW;
-        Tue, 29 Jun 2021 23:45:20 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orca.pet; s=mail; t=1624999520;
-        bh=QyVZCSKLCKosnWwSdcYu0WjssNofxGMBZVOKO0tuIE4=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
-        b=eJAfK9DNs6Zj7nqoytjRqjepkiYXZbH5Hqm7QHdMAkbXMwfNAYVKZ4BOENO+dgGIY
-         +VG50jpUTBRisXlmOZeeuyYJ2ffMb9A/zMcTDTInY1KbZVspGXUDBV7UZG26TbcMSu
-         8jWcHhhOo+MXMEFl9kNQsAX9IYfcvi/eS9iUGaV4=
-Authentication-Results: sas1-16fb7bdf8acc.qloud-c.yandex.net; dkim=pass header.i=@orca.pet
-Received: by sas2-34ddad429748.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id fbPyjNbkLi-jI2O21nn;
-        Tue, 29 Jun 2021 23:45:18 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH v3] x86: add NOPL and CMOV emulation
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-References: <YNWAwVfzSdML/WhO@hirez.programming.kicks-ass.net>
- <20210626130313.1283485-1-marcos@orca.pet> <YNtLlcYasFR84rp5@zn.tnic>
-From:   Marcos Del Sol Vives <marcos@orca.pet>
-Message-ID: <b69e0c78-81eb-0d4d-dce5-076b5f239e28@orca.pet>
-Date:   Tue, 29 Jun 2021 22:45:17 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 16:52:34 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389F7C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:50:07 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id d12so19675686pgd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bsVAlVGd8yejfK0dkbh4BV4gYyI9B+5fkKucgyW5ddY=;
+        b=JH6fa9j6tQYftyxIbPCCrQNHpuOTqQ/VHqsHQaTtEoiQzIO5X8+V4HBAaR9x1feLqN
+         1NyRNWBX0tuzug0kuFv7XKHQpvwqv/Swp1e8G7vfwjVit07so/NVcaONZDwgAC2aDANW
+         EV0gAQ/MUa5/KloqvNaWejYPqQQh4YrkEI3M4JjVFHuR7SV6suFx3CvmIyeWJp0yVwEh
+         dH8+0CYfnRiqJl8u0UezC2gj/zIDdAuKAvmx5KYB6ToIvny0ehhA/zssn4Ot7tZqyxSj
+         eqIKGcIGF/Sa9wrWYT6huVfok/9oqdQahIBbjaV6BC4MKy7y2WrIjcHiTvDjas/GPTRS
+         b0Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bsVAlVGd8yejfK0dkbh4BV4gYyI9B+5fkKucgyW5ddY=;
+        b=H1K/zF+Bplm5cya9LlDY776MFoYkdPOmlogaxBecIRr0f0JNgeNu9JirOZQpG3sEbp
+         FAl5pXRDh+aBwBGlji8wDMuY5kgy4MG8qz6Q00+27SOs2c0P5S8vo5fSXFI6oJzpCsoy
+         7hsBgckZhMiiStW6zb+xU+2JOS8GvO9MDTZ1Ho4kaQoOmhrBNKC9zC7PoZNmFGhAn8Wi
+         D2V51R5Wvb3BUSdc9JY/UvseXEHvqcPP1ts69O1a8gyAUqGiQEacSeANHHmbK+rb4Yaf
+         KQB2vCGoyg2871yuqJiYskGtSr4Hn9/SURClsx5mWFS9Mxb3clvKGCVVjkph7mwhldWb
+         OSmg==
+X-Gm-Message-State: AOAM531lL/BU948/u3tJsQUTmhf3Ha0KfhKJBwgP0W/1WJi8Pg5d7rtx
+        yExZ7GcKRdPDhYrwRPISoqkV2A==
+X-Google-Smtp-Source: ABdhPJy2BzZrs/eriqGJRUC2CXF3diqtFJ/2f2546m59RN5Hsd+FezrYfC1gu1glyqAj8C6IiaHEYw==
+X-Received: by 2002:a05:6a00:10cd:b029:30a:ea3a:4acf with SMTP id d13-20020a056a0010cdb029030aea3a4acfmr17990615pfu.51.1624999806645;
+        Tue, 29 Jun 2021 13:50:06 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 18sm4144603pje.22.2021.06.29.13.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 13:50:05 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:50:03 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     alexander.shishkin@linux.intel.com, suzuki.poulose@arm.com,
+        jonathan.zhouwen@huawei.com, f.fangjian@huawei.com,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        linuxarm@huawei.com
+Subject: Re: [RFC PATCH 4/4] ultrasoc: Add System Memory Buffer driver
+Message-ID: <20210629205003.GA1238591@p14s>
+References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
+ <1623749684-65432-5-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YNtLlcYasFR84rp5@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623749684-65432-5-git-send-email-liuqi115@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After some further testing I am not fully confident if this patch should 
-be merged.
+Hi Qi,
 
-I spent yesterday night trying to debug why the Debian installation was 
-behaving so erratically. It'd boot all the way to the commandline, ping 
-successfully the internet, serve a website over HTTP, connect via SSH to 
-remote machines and build stuff using GCC.
+On Tue, Jun 15, 2021 at 05:34:44PM +0800, Qi Liu wrote:
+> This patch adds driver for System Memory Buffer. It includes
+> a platform driver for the SMB device.
+> 
+> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> ---
+>  drivers/hwtracing/ultrasoc/Kconfig        |   9 +
+>  drivers/hwtracing/ultrasoc/Makefile       |   3 +
+>  drivers/hwtracing/ultrasoc/ultrasoc-smb.c | 663 ++++++++++++++++++++++++++++++
+>  drivers/hwtracing/ultrasoc/ultrasoc-smb.h | 182 ++++++++
+>  4 files changed, 857 insertions(+)
+>  create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-smb.c
+>  create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-smb.h
+> 
+> diff --git a/drivers/hwtracing/ultrasoc/Kconfig b/drivers/hwtracing/ultrasoc/Kconfig
+> index 77429f3..8899949 100644
+> --- a/drivers/hwtracing/ultrasoc/Kconfig
+> +++ b/drivers/hwtracing/ultrasoc/Kconfig
+> @@ -22,4 +22,13 @@ config ULTRASOC_AXI_COM
+>  	  the upstream channel is used to transmit user configuration, and
+>  	  downstream channel to carry response and trace data to the users.
+>  
+> +config ULTRASOC_SMB
+> +	tristate "Ultrasoc System memory buffer drivers"
+> +	help
+> +	  This config enables support for Ultrasoc System Memory Buffer
+> +	  drivers. The System Memory Buffer provides a way to buffer and
+> +	  store messages in system memory. It provides a capability to
+> +	  store messages received on its input message interface to an
+> +	  area of system memory.
+> +
+>  endif
+> diff --git a/drivers/hwtracing/ultrasoc/Makefile b/drivers/hwtracing/ultrasoc/Makefile
+> index 54711a7b..b174ca8 100644
+> --- a/drivers/hwtracing/ultrasoc/Makefile
+> +++ b/drivers/hwtracing/ultrasoc/Makefile
+> @@ -8,3 +8,6 @@ ultrasoc-drv-objs := ultrasoc.o
+>  
+>  obj-$(CONFIG_ULTRASOC_AXI_COM) += ultrasoc-axi-com-drv.o
+>  ultrasoc-axi-com-drv-objs := ultrasoc-axi-com.o
+> +
+> +obj-$(CONFIG_ULTRASOC_SMB) += ultrasoc-smb-drv.o
+> +ultrasoc-smb-drv-objs := ultrasoc-smb.o
+> diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-smb.c b/drivers/hwtracing/ultrasoc/ultrasoc-smb.c
+> new file mode 100644
+> index 0000000..ce03f5e
+> --- /dev/null
+> +++ b/drivers/hwtracing/ultrasoc/ultrasoc-smb.c
+> @@ -0,0 +1,663 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
+> + * charge, to any person obtaining a copy of this software and associated
+> + * documentation files (the "Software"), to deal in the Software without
+> + * restriction, including without limitation the rights to use, copy, modify,
+> + * merge, publish, distribute, sublicense, and/or sell copies of the Software,
+> + * and to permit persons to whom the Software is furnished to do so, subject
+> + * to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+> + * IN THE SOFTWARE.
+> + *
+> + * Code herein communicates with and accesses proprietary hardware which is
+> + * licensed intellectual property (IP) belonging to Siemens Digital Industries
+> + * Software Ltd.
+> + *
+> + * Siemens Digital Industries Software Ltd. asserts and reserves all rights to
+> + * their intellectual property. This paragraph may not be removed or modified
+> + * in any way without permission from Siemens Digital Industries Software Ltd.
+> + */
+> +
+> +#include <linux/circ_buf.h>
+> +#include <linux/err.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "ultrasoc-smb.h"
+> +
+> +static inline int smb_hw_buffer_empty(struct smb_drv_data *drvdata)
+> +{
+> +	u32 buf_status = readl(drvdata->base + SMB_LB_INT_STS);
+> +
+> +	return buf_status & BIT(0) ? 0 : 1;
+> +}
+> +
+> +static inline int smb_buffer_pointer_pos(struct smb_drv_data *drvdata)
+> +{
+> +	u32 wr_offset, rd_offset;
+> +
+> +	wr_offset = readl(drvdata->base + SMB_LB_WR_ADDR);
+> +	rd_offset = readl(drvdata->base + SMB_LB_RD_ADDR);
+> +	return wr_offset == rd_offset;
+> +}
+> +
+> +static inline int smb_hw_buffer_full(struct smb_drv_data *drvdata)
+> +{
+> +	return smb_buffer_pointer_pos(drvdata) && !smb_hw_buffer_empty(drvdata);
+> +}
+> +
+> +static inline void smb_clear_buf_status(struct smb_drv_data *drvdata)
+> +{
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +
+> +	if (smb_buffer_pointer_pos(drvdata) && !sdb->to_copy)
+> +		writel(0xf, drvdata->base + SMB_LB_INT_STS);
+> +}
+> +
+> +static void smb_update_hw_write_size(struct smb_drv_data *drvdata)
+> +{
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +	u32 write_offset, write_base;
+> +
+> +	sdb->lost = false;
+> +	writel(0x1, drvdata->base + SMB_LB_PURGE);
+> +	if (smb_hw_buffer_empty(drvdata)) {
+> +		sdb->to_copy = 0;
+> +		return;
+> +	}
+> +
+> +	if (smb_hw_buffer_full(drvdata)) {
+> +		sdb->to_copy = sdb->buf_size;
+> +		return;
+> +	}
+> +
+> +	write_base = sdb->buf_base_phys & SMB_BUF_WRITE_BASE;
+> +	write_offset = readl(drvdata->base + SMB_LB_WR_ADDR) - write_base;
+> +	sdb->to_copy = CIRC_CNT(write_offset, sdb->rd_offset, sdb->buf_size);
+> +}
+> +
+> +static int smb_open(struct inode *inode, struct file *file)
+> +{
+> +	struct smb_drv_data *drvdata = container_of(file->private_data,
+> +			struct smb_drv_data, miscdev);
+> +
+> +	if (local_cmpxchg(&drvdata->reading, 0, 1))
+> +		return -EBUSY;
+> +
+> +	smb_update_hw_write_size(drvdata);
+> +	return 0;
+> +}
+> +
+> +static ssize_t smb_read(struct file *file, char __user *data,
+> +			size_t len, loff_t *ppos)
+> +{
+> +	struct smb_drv_data *drvdata = container_of(file->private_data,
+> +			struct smb_drv_data, miscdev);
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +	struct device *dev = &drvdata->csdev->dev;
+> +	unsigned long to_copy = sdb->to_copy;
+> +
+> +	if (!to_copy) {
+> +		smb_update_hw_write_size(drvdata);
+> +		to_copy = sdb->to_copy;
+> +		if (!to_copy)
+> +			return to_copy;
+> +	}
+> +
+> +	to_copy = min(to_copy, len);
+> +	/*
+> +	 * if the read needs to cross the boundary of the data buffer, copy
+> +	 * last datas of the buffer to user
+> +	 */
+> +	if (sdb->rd_offset + to_copy > sdb->buf_size)
+> +		to_copy = sdb->buf_size - sdb->rd_offset;
+> +
+> +	if (copy_to_user(data, (void *)sdb->buf_base + sdb->rd_offset, to_copy)) {
+> +		dev_dbg(dev, "Failed to copy data to user.\n");
+> +		return -EFAULT;
+> +	}
+> +
+> +	*ppos += to_copy;
+> +	sdb->rd_offset += to_copy;
+> +	sdb->rd_offset %= sdb->buf_size;
+> +	sdb->to_copy -= to_copy;
+> +
+> +	/* update the read point */
+> +	writel(sdb->buf_base_phys + sdb->rd_offset,
+> +	       drvdata->base + SMB_LB_RD_ADDR);
+> +	smb_clear_buf_status(drvdata);
+> +	dev_dbg(dev, "%lu bytes copied.\n", to_copy);
+> +
+> +	return to_copy;
+> +}
+> +
+> +static int smb_release(struct inode *inode, struct file *file)
+> +{
+> +	struct smb_drv_data *drvdata = container_of(file->private_data,
+> +			struct smb_drv_data, miscdev);
+> +	local_set(&drvdata->reading, 0);
+> +	return 0;
+> +}
+> +
+> +static const struct file_operations smb_fops = {
+> +	.owner		= THIS_MODULE,
+> +	.open		= smb_open,
+> +	.read		= smb_read,
+> +	.release	= smb_release,
+> +	.llseek		= no_llseek,
+> +};
+> +
+> +static ssize_t smb_show_status(struct ultrasoc_com *com, char *buf,
+> +			       ssize_t wr_size)
+> +{
+> +	struct smb_drv_data *drvdata;
+> +	u32 value;
+> +
+> +	drvdata = dev_get_drvdata(com->dev);
+> +	value = readl(drvdata->base + SMB_LB_INT_STS);
+> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: 0x%08x\n",
+> +				 "interrupt status", value);
+> +	value = readl(drvdata->base + SMB_LB_WR_ADDR);
+> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %#x\n", "write point",
+> +				 value);
+> +	value = readl(drvdata->base + SMB_LB_RD_ADDR);
+> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %#x\n", "read point",
+> +				 value);
 
-However, I could neither install new packages, nor have sshd running, 
-nor properly execute "mv", which would actually move the file but then 
-complain about running out of memory. All of this without a trace of an 
-exception or any kind of error, neither on the program themselves nor on 
-dmesg.
+This will not work.  The sysfs interface requires one line per entry.  Please
+look at what other coresight drivers do in that area.
 
-All the documentation I had previously read suggested that only CMOV and 
-NOPL had been introduced with the i686, and hence these were the two 
-instructions I emulated only. As stated previously this is also enough 
-to boot Debian mostly flawless.
+> +
+> +	return wr_size;
+> +}
+> +
+> +static int smb_init_data_buffer(struct platform_device *pdev,
+> +				struct smb_data_buffer *sdb)
+> +{
+> +	struct resource *res;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (IS_ERR(res)) {
+> +		dev_err(&pdev->dev, "SMB device without data buffer.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	sdb->buf_base_phys = res->start;
+> +	sdb->buf_size = resource_size(res);
+> +	if (sdb->buf_size == 0)
+> +		return -EINVAL;
+> +
+> +	sdb->buf_base = ioremap_cache(sdb->buf_base_phys, sdb->buf_size);
 
-However, and contrary to what I thought, the i686 also saw the 
-introduction of a handful of other x87 instructions (FCMOVB, FCMOVBE, 
-FCMOVE, FCMOVNB, FCMOVNBE, FCMOVNE, FCMOVNU, FCMOVU, FCOMI, FCOMIP, 
-FUCOMI, FUCOMIP)
+Why no using devm_ioremap_resource() ?
 
-Running the program below:
+> +	if (sdb->buf_base == NULL)
+> +		return -ENOMEM;
+> +
+> +	sdb->buf_cfg_mode = SMB_BUF_CFG_STREAMING;
 
-----
+As far as I can tell there is no point in keeping the value of
+SMB_BUF_CFG_STREAMING in the smb_data_buffer since it isn't used for anything
+else other than setting a HW register in smb_set_default_hw().
 
-#include <stdio.h>
-#include <stdint.h>
+> +	return 0;
+> +}
+> +
+> +static void smb_release_data_buffer(struct smb_drv_data *drvdata)
+> +{
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +
+> +	if (sdb->buf_base)
+> +		iounmap(sdb->buf_base);
+> +}
+> +
+> +static struct uscom_ops smb_ops = {
+> +	.com_status = smb_show_status,
+> +	.put_raw_msg = NULL,
+> +};
+> +
+> +static int smb_set_buffer(struct coresight_device *csdev,
+> +		struct perf_output_handle *handle);
+> +
+> +static void smb_enable_hw(struct smb_drv_data *drvdata)
+> +{
+> +	writel(0x1, drvdata->base + SMB_GLOBAL_EN);
+> +}
+> +
+> +static void smb_disable_hw(struct smb_drv_data *drvdata)
+> +{
+> +	writel(0x1, drvdata->base + SMB_LB_PURGE);
+> +	writel(0x0, drvdata->base + SMB_GLOBAL_EN);
+> +}
+> +
+> +static int smb_enable_sysfs(struct coresight_device *csdev)
+> +{
+> +	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	unsigned long flags;
+> +	int ret = 0;
+> +
+> +	WARN_ON_ONCE(drvdata == NULL);
+> +
+> +	spin_lock_irqsave(&drvdata->spinlock, flags);
+> +
+> +	/* Don't messup with perf sessions. */
+> +	if (drvdata->mode == CS_MODE_PERF) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	if (drvdata->mode == CS_MODE_DISABLED) {
+> +		smb_enable_hw(drvdata);
+> +		drvdata->mode = CS_MODE_SYSFS;
+> +	}
+> +	atomic_inc(csdev->refcnt);
+> +out:
+> +	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+> +	return ret;
+> +}
+> +
+> +static int smb_enable_perf(struct coresight_device *csdev, void *data)
+> +{
+> +	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	struct device *dev = &drvdata->csdev->dev;
+> +	struct perf_output_handle *handle = data;
+> +	unsigned long flags;
+> +	int ret = 0;
+> +	pid_t pid;
+> +
+> +	spin_lock_irqsave(&drvdata->spinlock, flags);
+> +	if (drvdata->mode == CS_MODE_SYSFS) {
+> +		dev_err(dev, "Device is already in used by sysfs.\n");
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	/* Get a handle on the pid of the target process*/
+> +	pid = task_pid_nr(handle->event->owner);
+> +	if (drvdata->pid != -1 && drvdata->pid != pid) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * No HW configuration is needed if the sink is already in
+> +	 * use for this session.
+> +	 */
+> +	if (drvdata->pid == pid) {
+> +		atomic_inc(csdev->refcnt);
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * We don't have an internal state to clean up if we fail to setup
+> +	 * the perf buffer. So we can perform the step before we turn the
+> +	 * ETB on and leave without cleaning up.
+> +	 */
+> +	ret = smb_set_buffer(csdev, handle);
+> +	if (ret)
+> +		goto out;
+> +
+> +	smb_enable_hw(drvdata);
+> +	drvdata->pid = pid;
+> +	drvdata->mode = CS_MODE_PERF;
+> +	atomic_inc(csdev->refcnt);
+> +out:
+> +	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+> +	return ret;
+> +}
+> +
+> +static int smb_enable(struct coresight_device *csdev, u32 mode, void *data)
+> +{
+> +	int ret;
+> +
+> +	switch (mode) {
+> +	case CS_MODE_SYSFS:
+> +		ret = smb_enable_sysfs(csdev);
+> +		break;
+> +	case CS_MODE_PERF:
+> +		ret = smb_enable_perf(csdev, data);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev_dbg(&csdev->dev, "Ultrasoc smb enabled.\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static int smb_disable(struct coresight_device *csdev)
+> +{
+> +	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&drvdata->spinlock, flags);
+> +
+> +	if (atomic_dec_return(csdev->refcnt)) {
+> +		spin_unlock_irqrestore(&drvdata->spinlock, flags);
+> +		return -EBUSY;
+> +	}
+> +
+> +	/* Complain if we (somehow) got out of sync */
+> +	WARN_ON_ONCE(drvdata->mode == CS_MODE_DISABLED);
+> +	smb_disable_hw(drvdata);
+> +
+> +	/* Dissociate from the target process. */
+> +	drvdata->pid = -1;
+> +	drvdata->mode = CS_MODE_DISABLED;
+> +	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+> +
+> +	dev_dbg(&csdev->dev, "Ultrasoc smb disabled.\n");
+> +	return 0;
+> +}
+> +
+> +static void smb_set_default_hw(struct smb_drv_data *drvdata)
+> +{
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +	u32 value, base_hi, base_lo, limit_lo;
+> +
+> +	/* first disable smb and clear the status of SMB buffer */
+> +	smb_disable_hw(drvdata);
+> +	smb_clear_buf_status(drvdata);
+> +
+> +	/* using smb in single-end mode, and set other configures default */
+> +	value = sdb->buf_cfg_mode | SMB_BUF_SINGLE_END | SMB_BUF_ENABLE;
+> +	writel(value, drvdata->base + SMB_LB_CFG_LO);
+> +	value = SMB_MSG_FILTER(0x0, 0xff);
+> +	writel(value, drvdata->base + SMB_LB_CFG_HI);
+> +
+> +	writel(HISI_SMB_GLOBAL_CFG, drvdata->base + SMB_GLOBAL_CFG);
+> +	writel(HISI_SMB_GLB_INT_CFG, drvdata->base + SMB_GLOBAL_INT);
+> +	writel(HISI_SMB_BUF_INT_CFG, drvdata->base + SMB_LB_INT_CTRL);
+> +
+> +	/* config hardware registers according to physical base of SMB buffer */
+> +	base_hi = sdb->buf_base_phys >> 32;
+> +	base_lo = sdb->buf_base_phys & SMB_BUF_WRITE_BASE;
+> +	limit_lo = base_lo + sdb->buf_size;
+> +	writel(base_lo, drvdata->base + SMB_LB_BASE_LO);
+> +	writel(base_hi, drvdata->base + SMB_LB_BASE_HI);
+> +	writel(limit_lo, drvdata->base + SMB_LB_LIMIT);
+> +
+> +	/* initial hardware read-ptr address*/
+> +	writel(base_lo, drvdata->base + SMB_LB_RD_ADDR);
+> +}
+> +
+> +static void *smb_alloc_buffer(struct coresight_device *csdev,
+> +		struct perf_event *event, void **pages,
+> +		int nr_pages, bool overwrite)
+> +{
+> +	struct cs_buffers *buf;
+> +	int node;
+> +
+> +	node = (event->cpu == -1) ? NUMA_NO_NODE : cpu_to_node(event->cpu);
+> +	buf = kzalloc_node(sizeof(struct cs_buffers), GFP_KERNEL, node);
+> +	if (!buf)
+> +		return NULL;
+> +
+> +	buf->snapshot = overwrite;
+> +	buf->nr_pages = nr_pages;
+> +	buf->data_pages = pages;
+> +
+> +	return buf;
+> +}
+> +
+> +static void smb_free_buffer(void *config)
+> +{
+> +	struct cs_buffers *buf = config;
+> +
+> +	kfree(buf);
+> +}
+> +
+> +static int smb_set_buffer(struct coresight_device *csdev,
+> +		struct perf_output_handle *handle)
+> +{
+> +	struct cs_buffers *buf = etm_perf_sink_config(handle);
+> +	u32 head;
+> +
+> +	if (!buf)
+> +		return -EINVAL;
+> +
+> +	/* wrap head around to the amount of space we have */
+> +	head = handle->head & ((buf->nr_pages << PAGE_SHIFT) - 1);
+> +
+> +	/* find the page to write to and offset within that page */
+> +	buf->cur = head / PAGE_SIZE;
+> +	buf->offset = head % PAGE_SIZE;
+> +
+> +	local_set(&buf->data_size, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static void smb_sync_perf_buffer(struct smb_drv_data *drvdata,
+> +				 struct cs_buffers *buf, unsigned long to_copy)
+> +{
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +	char **dst_pages = (char **)buf->data_pages;
+> +	u32 buf_offset = buf->offset;
+> +	u32 cur = buf->cur;
+> +	u32 bytes;
+> +
+> +	while (to_copy > 0) {
+> +		/*
+> +		 * if the read needs to cross the boundary of the data buffer,
+> +		 * copy last datas of the buffer to user
+> +		 */
+> +		if (sdb->rd_offset + PAGE_SIZE - buf_offset > sdb->buf_size)
+> +			bytes = sdb->buf_size - sdb->rd_offset;
+> +		else
+> +			bytes = min(to_copy, PAGE_SIZE - buf_offset);
+> +
+> +		memcpy_fromio(dst_pages[cur] + buf_offset,
+> +		       sdb->buf_base + sdb->rd_offset, bytes);
+> +
+> +		buf_offset += bytes;
+> +		if (buf_offset >= PAGE_SIZE) {
+> +			buf_offset = 0;
+> +			cur++;
+> +			cur %= buf->nr_pages;
+> +		}
+> +		to_copy -= bytes;
+> +		/* ensure memcpy finished before update the read pointer */
+> +		sdb->rd_offset += bytes;
+> +		sdb->rd_offset %= sdb->buf_size;
+> +	}
+> +
+> +	writel(sdb->buf_base_phys + sdb->rd_offset,
+> +	       drvdata->base + SMB_LB_RD_ADDR);
+> +	sdb->to_copy = to_copy;
+> +}
+> +
+> +static unsigned long smb_update_buffer(struct coresight_device *csdev,
+> +		struct perf_output_handle *handle, void *sink_config)
+> +{
+> +	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+> +	struct smb_data_buffer *sdb = &drvdata->smb_db;
+> +	struct cs_buffers *buf = sink_config;
+> +	u64 to_copy;
+> +
+> +	if (!buf)
+> +		return 0;
+> +
+> +	smb_update_hw_write_size(drvdata);
+> +	to_copy = sdb->to_copy;
+> +	if (to_copy > handle->size) {
+> +		sdb->rd_offset += (to_copy - handle->size);
+> +		sdb->rd_offset %= sdb->buf_size;
+> +		to_copy = handle->size;
+> +		sdb->lost = true;
+> +	}
+> +
+> +	smb_sync_perf_buffer(drvdata, buf, to_copy);
+> +	smb_clear_buf_status(drvdata);
+> +	if (!buf->snapshot && sdb->lost)
+> +		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> +
+> +	return to_copy;
+> +}
+> +
+> +static const struct coresight_ops_sink smb_cs_ops = {
+> +	.enable		= smb_enable,
+> +	.disable	= smb_disable,
+> +	.alloc_buffer	= smb_alloc_buffer,
+> +	.free_buffer	= smb_free_buffer,
+> +	.update_buffer	= smb_update_buffer,
+> +};
+> +
+> +static const struct coresight_ops cs_ops = {
+> +	.sink_ops	= &smb_cs_ops,
+> +};
+> +
+> +static int smb_init_res(struct platform_device *pdev,
+> +			struct smb_drv_data *drvdata)
+> +{
+> +	struct smb_data_buffer *sdb;
+> +	int ret;
+> +
+> +	sdb = &drvdata->smb_db;
+> +	drvdata->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(drvdata->base)) {
+> +		dev_err(&pdev->dev, "Failed to ioremap resource.\n");
+> +		return PTR_ERR(drvdata->base);
+> +	}
+> +
+> +	ret = smb_init_data_buffer(pdev, sdb);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "Failed to init buffer, ret = %d.\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +DEFINE_CORESIGHT_DEVLIST(sink_devs, "sink_smb");
+> +static int smb_register_sink(struct platform_device *pdev,
+> +			     struct smb_drv_data *drvdata)
+> +{
+> +	struct coresight_platform_data *pdata = NULL;
+> +	struct coresight_desc desc = { 0 };
+> +	int ret;
+> +
+> +	pdata = coresight_get_platform_data(&pdev->dev);
+> +	if (IS_ERR(pdata))
+> +		return PTR_ERR(pdata);
+> +
+> +	drvdata->dev->platform_data = pdata;
+> +	desc.type = CORESIGHT_DEV_TYPE_SINK;
+> +	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_BUFFER;
+> +	desc.ops = &cs_ops;
+> +	desc.pdata = pdata;
+> +	desc.dev = &pdev->dev;
+> +	desc.name = coresight_alloc_device_name(&sink_devs, &pdev->dev);
+> +	if (!desc.name) {
+> +		dev_err(&pdev->dev, "Failed to alloc coresight device name.");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	drvdata->csdev = coresight_register(&desc);
+> +	if (IS_ERR(drvdata->csdev))
+> +		return PTR_ERR(drvdata->csdev);
+> +
+> +	drvdata->miscdev.name = desc.name;
+> +	drvdata->miscdev.minor = MISC_DYNAMIC_MINOR;
+> +	drvdata->miscdev.fops = &smb_fops;
+> +	ret = misc_register(&drvdata->miscdev);
+> +	if (ret) {
+> +		coresight_unregister(drvdata->csdev);
+> +		dev_err(&pdev->dev, "Failed to register misc, ret=%d\n", ret);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void smb_unregister_sink(struct smb_drv_data *drvdata)
+> +{
+> +	misc_deregister(&drvdata->miscdev);
+> +	coresight_unregister(drvdata->csdev);
+> +}
+> +
+> +static int smb_config_com_descp(struct platform_device *pdev,
+> +				struct smb_drv_data *drvdata)
+> +{
+> +	struct device *parent = pdev->dev.parent;
+> +	struct ultrasoc_com_descp com_descp = {0};
+> +	struct device *dev = &pdev->dev;
+> +	struct ultrasoc_com *com;
+> +
+> +	com_descp.name = pdev->name;
+> +	com_descp.com_type = ULTRASOC_COM_TYPE_DOWN;
+> +	com_descp.com_dev = dev;
+> +	com_descp.uscom_ops = &smb_ops;
+> +	com = ultrasoc_register_com(parent, &com_descp);
 
-int main() {
-	float val = 6.21;
-	uint16_t status;
-#ifdef __x86_64__
-	uint64_t eflags;
-#else
-	uint32_t eflags;
-#endif
+Why is this needed?  As far as I can see this device does not need to
+register with the ultrasoc core.
 
-	asm(
-		/* Set EFLAGS to a known value */
-		"xor %0, %0\n"
-		"test %0, %0\n"
+To me the very first thing do to about this patchset is to move this in
+drivers/hwtracing/coresight/.  That will dissociate this code completely from
+the ultrasoc core (more on that later) and avoid duplications as pointed out by
+Suzuki.
 
-		/* Execute FUCOMI and get x87 FLAGS and x86 EFLAGS */
-		"flds %2\n"
-		"fucomi %%st(0), %%st(0)\n"
-		"fnstsw %w0\n"
-		"pushf\n"
-		"pop %1\n"
-		:"=a"(status),"=r"(eflags)
-		:"m"(val)
-	);
+There are several things to address with this patch but there is no point in
+elaborating further until the above hasn't been done.
 
-	printf("Float value: %f\n", val);
-	printf("FPU status: %04X EFLAGS: %08X\n", status, (int) eflags);
-	return 0;
-}
-
----
-
-On my modern i7 outputs:
-
-Float value: 6.210000
-FPU status: 3800 EFLAGS: 00000242
-
-However on my i586 Vortex86MX I get:
-
-Float value: nan
-FPU status: 3800 EFLAGS: 00000246
-
-The reason why it display 6.21 as "nan" is that libc is using FUCOMI 
-(floating point unsorted comparison) to test for NaNs by comparing the 
-number to print against itself, as a comparison involving NaNs is an 
-invalid operation.
-
-If the floating value was either a normal number or infinity, this works 
-and EFLAGS are updated according to the value.
-
-If the value is NaN however, the FPU sets a couple flags (PF, CF at 
-least, I think OF too) to 1 to signal that an illegal operation 
-happened, which is checked by using a JP (jump if parity set) to branch 
-to the code path that displays "nan" instead of the value.
-
-This i586 (not sure if specific to this processor in particular, or it's 
-standard within all i586) is that it __always__ sets the parity bit on a 
-FUCOMI (bit 2 of EFLAGS), so all numbers are displayed as "nan", 
-regardless of their value.
-
-The worst part of all is that these unsupported instructions seem not to 
-raise the illegal opcode exception, so it might not be possible to 
-emulate them at all, making this patch completely pointless. There 
-doesn't seem to be any flag on the FPU's status signaling an error has 
-happened either.
-
-El 29/06/2021 a las 18:34, Borislav Petkov escribió:
-> On Sat, Jun 26, 2021 at 03:03:14PM +0200, Marcos Del Sol Vives wrote:
->> +config X86_INSN_EMU
->> +	bool "Instruction emulation"
->> +	help
->> +	  Linux can be compiled to emulate some instructions transparently to
->> +	  an application, allowing older processors to run modern software
->> +	  without recompilation, albeit with a significant performance hit.
->> +
->> +	  Currently supported instructions are:
->> +	   - CMOVxx (conditional moves).
->> +	   - NOPL (long NOPs).
->> +
->> +	  Emulating these two instructions allow i686 binaries to run
->> +	  unmodified on devices that only support i586 (Intel Pentium 1,
->> +	  AMD Geode GX1, Cyrix III, Vortex86SX/MX/DX, WinChips), or are i686
->> +	  but miss some of the instructions (Transmeta Crusoe/Efficeon,
->> +	  AMD Geode LX)
->> +
->> +	  This emulation is only used if the processor is unable execute said
-> 
-> "... unable to execute..."
-> 
->> +	  instructions, and will not be used if supported natively.
-> 
-> And this is making me wonder whether this needs to be a Kconfig option
-> at all or not simply enabled by default. Or is there a reason not to
-> emulate instructions?
-
-I added that option because enabling this features on i686/i786 machines 
-will just increase code bloat for no reason.
-
-Also, I am not an expert in cryptography but I think CMOV instructions 
-with their fixed duration are widely used for executing algorithms in 
-constant time and avoiding timing leaks.
-
-Thus given emulating them would throw that fixed timing out of the 
-window, I preferred to leave this emulation disabled by default, so only 
-someone who understands the security implications this might carry would 
-enable it.
-
-> 
-> We could do a
-> 
-> 	pr_info_once("Emulating x86 instructions... ");
-> 
-> or so to let people know that we're not running natively in unexpected
-> configurations. For example
-> 
-> 	if (cpu_feature_enabled(X86_FEATURE_CMOV))
-> 		pr_warn_once("Emulating x86 CMOV even if CPU claims it supports it!");
-> 
-> and other sanity-checks like that.
-> 
-> Which would allow us to support any mode - not only protected but also
-> long mode, in case we need that emulation there too for whatever reason.
-> 
-> And I'm trying to think of some sort of a test case for this because
-> we'd need something like that but the only thing I can think of is
-> something like:
-> 
-> 	UD2
-> 	CMOV...
-> 
-> in userspace and then in the #UD handler - since we will have a
-> soft86_execute() call there - you could advance the rIP by 2 bytes (UD2
-> is 0f 0b), i.e., do regs->ip += 2 and then land rIP at the CMOV and then
-> try to emulate it.
-> 
-> And have that testing controllable by a cmdline param or so so that it
-> is not enabled by default.
-> 
-> And then stick the test program in tools/testing/selftests/x86/
-> 
-> Something like that, at least.
-> 
->> +static bool cmov_check_condition(struct insn *insn, struct pt_regs *regs)
->> +{
->> +	bool result, invert;
->> +	int condition, flags;
->> +
->> +	/*
->> +	 * Bits 3-1 of the second opcode byte specify the condition.
->> +	 *
->> +	 * Bit 0 of the second opcode byte is a flag - if set, the result must
->> +	 * be inverted.
->> +	 */
-> 
-> This comment goes over the function. Along with documenting what that
-> function returns.
-> 
->> +static bool cmov_do_move(struct insn *insn, struct pt_regs *regs)
-> 
-> So this function could use some explanation what it is doing -
-> basically, shuffling data between pt_regs members to simulate the
-> register moves.
-> 
-> Along with an explicit
-> 
-> "CMOV: Conditionally moves from first operand (mem/reg) into second
-> operand (reg)."
-> 
-> to explain the direction of the movement so that people don't have to
-> decipher this function each time.
-> 
->> +{
->> +	int reg_off, rm_off;
->> +	void __user *src;
->> +	unsigned char *reg_bytes;
->> +
->> +	reg_bytes = (unsigned char *)regs;
->> +
->> +	/* Destination, from the REG part of the ModRM */
->> +	reg_off = insn_get_modrm_reg_off(insn, regs);
->> +	if (reg_off < 0)
->> +		return false;
->> +
->> +	/* Register to register move */
->> +	if (X86_MODRM_MOD(insn->modrm.value) == 3) {
->> +		rm_off = insn_get_modrm_rm_off(insn, regs);
->> +		if (rm_off < 0)
->> +			return false;
->> +
->> +		memcpy(reg_bytes + reg_off, reg_bytes + rm_off,
->> +		       insn->addr_bytes);
->> +	} else {
->> +		/* Source from the RM part of the ModRM */
->> +		src = insn_get_addr_ref(insn, regs);
->> +		if (src == (void __user *)-1L)
->> +			return false;
->> +
->> +		if (copy_from_user(reg_bytes + reg_off, src,
->> +				   insn->addr_bytes) != 0)
->> +			return false;
->> +	}
->> +
->> +	return true;
->> +}
->> +
->> +static bool cmov_execute(struct insn *insn, struct pt_regs *regs)
->> +{
->> +	/* CMOV is only supported for 16 and 32-bit registers */
-> 
-> I don't understand this one: addr_bytes are either 4 or 8 AFAICT.
-
-Based on experimental testing (so it might be wrong indeed) by encoding 
-multiple different CMOVs using GCC with both 16 and 32 bits as 
-destination and pr_info'ing the fields of the insn structure, addr_bytes 
-seemed to contain the length of the data to copy, hence why I did this.
-
-Again, it might be wrong.
-
-> 
->> +	if (insn->addr_bytes != 2 && insn->addr_bytes != 4)
->> +		return false;
->> +
->> +	/* If condition is met, execute the move */
->> +	if (cmov_check_condition(insn, regs)) {
-> 
-> Just like with the rest of the flow, do the same here:
-> 
-> 	if (!cmov_check_condition(insn, regs))
-> 		return false;
-> 
-> 	if (!cmov_do_move...
-> 
->> +		/* Return false if the operands were invalid */
->> +		if (!cmov_do_move(insn, regs))
->> +			return false;
->> +	}
->> +
->> +	return true;
->> +}
->> +
->> +bool soft86_execute(struct pt_regs *regs)
->> +{
->> +	int nr_copied;
->> +	unsigned char buf[MAX_INSN_SIZE];
->> +	struct insn insn;
->> +	bool ret;
-> 
-> The tip-tree preferred ordering of variable declarations at the
-> beginning of a function is reverse fir tree order::
-> 
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned long foo, bar;
-> 	unsigned int tmp;
-> 	int ret;
-> 
-> The above is faster to parse than the reverse ordering::
-> 
-> 	int ret;
-> 	unsigned int tmp;
-> 	unsigned long foo, bar;
-> 	struct long_struct_name *descriptive_name;
-> 
-> And even more so than random ordering::
-> 
-> 	unsigned long foo, bar;
-> 	int ret;
-> 	struct long_struct_name *descriptive_name;
-> 	unsigned int tmp;
-> 
-> Please fix all your functions.
-> 
->> +	/* Read from userspace */
->> +	nr_copied = insn_fetch_from_user(regs, buf);
->> +	if (!nr_copied)
->> +		return false;
->> +
->> +	/* Attempt to decode it */
->> +	if (!insn_decode_from_regs(&insn, regs, buf, nr_copied))
->> +		return false;
->> +
->> +	/* 0x0F is the two byte opcode escape */
->> +	if (insn.opcode.bytes[0] != 0x0F)
->> +		return false;
-> 
-> That function is a generic one but you start looking at bytes. What you
-> should do instead is something like:
-> 
-> 	ret = emulate_nopl(insn);
-> 	if (!ret)
-> 		goto done;
-> 
-> 	ret = emulate_cmov(insn);
-> 	if (!ret)
-> 		goto done;
-> 
-> 	...
-> 
-> done:
-> 	regs->ip += insn.length;
-> 
-> and move all the opcode checking in the respective functions. This way
-> each function does one thing and one thing only and is self-contained.
-> 
-
-That's how the V1 patch mostly worked - way more modular, using an array 
-of different isolated functions and iterating through them until either 
-succeeded, but Peter Zijlstra asked me to change it to this approach as 
-it would be faster.
-
-> Also, the logic should be flipped: the functions should return 0 on
-> success and !0 on failure so the first function which returned 0, would
-> mean it has detected and emulated the insn properly.
-> 
-> If none of them manage to succeed, you return false at the end.
-> 
-
-But I am using "bool"s not ints as return values. It doesn't make sense 
-to return a "true" (non-zero) if the operation failed.
-
-> All in all, fun stuff!
-> 
-> Thx.
+> +	if (IS_ERR(com)) {
+> +		dev_err(dev, "Failed to register smb com.\n");
+> +		return PTR_ERR(com);
+> +	}
+> +
+> +	drvdata->com = com;
+> +	return 0;
+> +}
+> +
+> +static int smb_probe(struct platform_device *pdev)
+> +{
+> +	struct smb_drv_data *drvdata;
+> +	int ret;
+> +
+> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+> +	if (!drvdata)
+> +		return -ENOMEM;
+> +
+> +	ret = smb_init_res(pdev, drvdata);
+> +	if (ret)
+> +		return ret;
+> +
+> +	smb_set_default_hw(drvdata);
+> +	spin_lock_init(&drvdata->spinlock);
+> +	drvdata->dev = &pdev->dev;
+> +	drvdata->pid = -1;
+> +
+> +	ret = smb_config_com_descp(pdev, drvdata);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = smb_register_sink(pdev, drvdata);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to register smb sink.\n");
+> +		ultrasoc_unregister_com(drvdata->com);
+> +		return ret;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, drvdata);
+> +	return 0;
+> +}
+> +
+> +static int smb_remove(struct platform_device *pdev)
+> +{
+> +	struct smb_drv_data *drvdata = platform_get_drvdata(pdev);
+> +
+> +	smb_unregister_sink(drvdata);
+> +	ultrasoc_unregister_com(drvdata->com);
+> +	smb_release_data_buffer(drvdata);
+> +	return 0;
+> +}
+> +
+> +static const struct acpi_device_id ultrasoc_smb_acpi_match[] = {
+> +	{"HISI03A1", },
+> +	{},
+> +};
+> +
+> +static struct platform_driver smb_driver = {
+> +	.driver = {
+> +		.name = "ultrasoc,smb",
+> +		.acpi_match_table = ultrasoc_smb_acpi_match,
+> +	},
+> +	.probe = smb_probe,
+> +	.remove = smb_remove,
+> +};
+> +module_platform_driver(smb_driver);
+> +
+> +MODULE_DESCRIPTION("Ultrasoc smb driver");
+> +MODULE_LICENSE("Dual MIT/GPL");
+> +MODULE_AUTHOR("Jonathan Zhou <jonathan.zhouwen@huawei.com>");
+> +MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
+> diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-smb.h b/drivers/hwtracing/ultrasoc/ultrasoc-smb.h
+> new file mode 100644
+> index 0000000..e37d510
+> --- /dev/null
+> +++ b/drivers/hwtracing/ultrasoc/ultrasoc-smb.h
+> @@ -0,0 +1,182 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
+> + * charge, to any person obtaining a copy of this software and associated
+> + * documentation files (the "Software"), to deal in the Software without
+> + * restriction, including without limitation the rights to use, copy, modify,
+> + * merge, publish, distribute, sublicense, and/or sell copies of the Software,
+> + * and to permit persons to whom the Software is furnished to do so, subject
+> + * to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+> + * IN THE SOFTWARE.
+> + *
+> + * Code herein communicates with and accesses proprietary hardware which is
+> + * licensed intellectual property (IP) belonging to Siemens Digital Industries
+> + * Software Ltd.
+> + *
+> + * Siemens Digital Industries Software Ltd. asserts and reserves all rights to
+> + * their intellectual property. This paragraph may not be removed or modified
+> + * in any way without permission from Siemens Digital Industries Software Ltd.
+> + */
+> +
+> +#ifndef _ULTRASOC_SMB_H
+> +#define _ULTRASOC_SMB_H
+> +
+> +#include <linux/coresight.h>
+> +#include <linux/list.h>
+> +#include <linux/miscdevice.h>
+> +
+> +#include "ultrasoc.h"
+> +
+> +#define SMB_GLOBAL_CFG		0X0
+> +#define SMB_GLOBAL_EN		0X4
+> +#define SMB_GLOBAL_INT		0X8
+> +#define SMB_LB_CFG_LO		0X40
+> +#define SMB_LB_CFG_HI		0X44
+> +#define SMB_LB_INT_CTRL		0X48
+> +#define SMB_LB_INT_STS		0X4C
+> +#define SMB_LB_BASE_LO		0X50
+> +#define SMB_LB_BASE_HI		0X54
+> +#define SMB_LB_LIMIT		0X58
+> +#define SMB_LB_RD_ADDR		0X5C
+> +#define SMB_LB_WR_ADDR		0X60
+> +#define SMB_LB_PURGE		0X64
+> +
+> +#define SMB_MSG_LC(lc)		((lc & 0x3) << 2)
+> +#define SMB_BST_LEN(len)	(((len - 1) & 0xff) << 4)
+> +/* idle message injection timer period */
+> +#define SMB_IDLE_PRD(period)	(((period - 216) & 0xf) << 12)
+> +#define SMB_MEM_WR(credit, rate) (((credit & 0x3) << 16) | ((rate & 0xf) << 18))
+> +#define SMB_MEM_RD(credit, rate) (((credit & 0x3) << 22) | ((rate & 0xf) << 24))
+> +#define HISI_SMB_GLOBAL_CFG                                                    \
+> +	(SMB_MSG_LC(0) | SMB_IDLE_PRD(231) | SMB_MEM_WR(0x3, 0x0) |            \
+> +	 SMB_MEM_RD(0x3, 0x6) | SMB_BST_LEN(16))
+> +
+> +#define SMB_INT_ENABLE		BIT(0)
+> +#define SMB_INT_TYPE_PULSE	BIT(1)
+> +#define SMB_INT_POLARITY_HIGH	BIT(2)
+> +#define HISI_SMB_GLB_INT_CFG	(SMB_INT_ENABLE | SMB_INT_TYPE_PULSE |         \
+> +				SMB_INT_POLARITY_HIGH)
+> +
+> +/* logic buffer config register low 32b */
+> +#define SMB_BUF_ENABLE			BIT(0)
+> +#define SMB_BUF_SINGLE_END		BIT(1)
+> +#define SMB_BUF_INIT			BIT(8)
+> +#define SMB_BUF_CONTINUOUS		BIT(11)
+> +#define SMB_FLOW_MASK			GENMASK(19, 16)
+> +#define SMB_BUF_CFG_STREAMING						       \
+> +	(SMB_BUF_INIT | SMB_BUF_CONTINUOUS | SMB_FLOW_MASK)
+> +#define SMB_BUF_WRITE_BASE		GENMASK(31, 0)
+> +
+> +/* logic buffer config register high 32b */
+> +#define SMB_MSG_FILTER(lower, upper)	((lower & 0xff) | ((upper & 0xff) << 8))
+> +#define SMB_BUF_INT_ENABLE		BIT(0)
+> +#define SMB_BUF_NOTE_NOT_EMPTY		BIT(8)
+> +#define SMB_BUF_NOTE_BLOCK_AVAIL	BIT(9)
+> +#define SMB_BUF_NOTE_TRIGGERED		BIT(10)
+> +#define SMB_BUF_NOTE_FULL		BIT(11)
+> +#define HISI_SMB_BUF_INT_CFG						\
+> +	(SMB_BUF_INT_ENABLE | SMB_BUF_NOTE_NOT_EMPTY |			\
+> +	   SMB_BUF_NOTE_BLOCK_AVAIL | SMB_BUF_NOTE_TRIGGERED |		\
+> +	    SMB_BUF_NOTE_FULL)
+> +
+> +struct smb_data_buffer {
+> +	/* memory buffer for hardware write */
+> +	u32 buf_cfg_mode;
+> +	bool lost;
+> +	void __iomem *buf_base;
+> +	u64 buf_base_phys;
+> +	u64 buf_size;
+> +	u64 to_copy;
+> +	u32 rd_offset;
+> +};
+> +
+> +struct smb_drv_data {
+> +	void __iomem *base;
+> +	struct device *dev;
+> +	struct ultrasoc_com *com;
+> +	struct smb_data_buffer smb_db;
+> +	/* to register ultrasoc smb as a coresight sink device. */
+> +	struct coresight_device	*csdev;
+> +	spinlock_t		spinlock;
+> +	local_t			reading;
+> +	pid_t			pid;
+> +	u32			mode;
+> +	struct miscdevice miscdev;
+> +};
+> +
+> +#define SMB_MSG_ALIGH_SIZE 0x400
+> +
+> +static inline struct smb_data_buffer *
+> +	dev_get_smb_data_buffer(struct device *dev)
+> +{
+> +	struct smb_drv_data *drvdata = dev_get_drvdata(dev);
+> +
+> +	if (drvdata)
+> +		return &drvdata->smb_db;
+> +
+> +	return NULL;
+> +}
+> +
+> +/*
+> + * Coresight doesn't export the following
+> + * structures(cs_mode,cs_buffers,etm_event_data),
+> + * so we redefine a copy here.
+> + */
+> +enum cs_mode {
+> +	CS_MODE_DISABLED,
+> +	CS_MODE_SYSFS,
+> +	CS_MODE_PERF,
+> +};
+> +
+> +struct cs_buffers {
+> +	unsigned int		cur;
+> +	unsigned int		nr_pages;
+> +	unsigned long		offset;
+> +	local_t			data_size;
+> +	bool			snapshot;
+> +	void			**data_pages;
+> +};
+> +
+> +struct etm_event_data {
+> +	struct work_struct work;
+> +	cpumask_t mask;
+> +	void *snk_config;
+> +	struct list_head * __percpu *path;
+> +};
+> +
+> +#if IS_ENABLED(CONFIG_CORESIGHT)
+> +int etm_perf_symlink(struct coresight_device *csdev, bool link);
+> +int etm_perf_add_symlink_sink(struct coresight_device *csdev);
+> +void etm_perf_del_symlink_sink(struct coresight_device *csdev);
+> +static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
+> +{
+> +	struct etm_event_data *data = perf_get_aux(handle);
+> +
+> +	if (data)
+> +		return data->snk_config;
+> +	return NULL;
+> +}
+> +#else
+> +static inline int etm_perf_symlink(struct coresight_device *csdev, bool link)
+> +{ return -EINVAL; }
+> +int etm_perf_add_symlink_sink(struct coresight_device *csdev)
+> +{ return -EINVAL; }
+> +void etm_perf_del_symlink_sink(struct coresight_device *csdev) {}
+> +static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
+> +{
+> +	return NULL;
+> +}
+> +
+> +#endif /* CONFIG_CORESIGHT */
+> +
+> +#endif
+> -- 
+> 2.7.4
 > 
