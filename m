@@ -2,19 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213163B708C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9EA3B7096
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhF2K1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:27:11 -0400
-Received: from relay07.th.seeweb.it ([5.144.164.168]:39055 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbhF2K1J (ORCPT
+        id S232895AbhF2K1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhF2K1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:27:09 -0400
+        Tue, 29 Jun 2021 06:27:11 -0400
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F05C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:24:43 -0700 (PDT)
 Received: from localhost.localdomain (bband-dyn27.178-40-203.t-com.sk [178.40.203.27])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 779DA3EBC7;
-        Tue, 29 Jun 2021 12:24:39 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 829173EBB7;
+        Tue, 29 Jun 2021 12:24:40 +0200 (CEST)
 From:   Martin Botka <martin.botka@somainline.org>
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         konrad.dybcio@somainline.org,
@@ -29,9 +32,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2 1/3] rpmcc: Add sm6125 compatible
-Date:   Tue, 29 Jun 2021 12:24:02 +0200
-Message-Id: <20210629102405.192053-2-martin.botka@somainline.org>
+Subject: [RESEND PATCH v2 2/3] dt-bindings: clk: qcom: smd-rpm: Document SM6125 compatible
+Date:   Tue, 29 Jun 2021 12:24:03 +0200
+Message-Id: <20210629102405.192053-3-martin.botka@somainline.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210629102405.192053-1-martin.botka@somainline.org>
 References: <20210629102405.192053-1-martin.botka@somainline.org>
@@ -42,25 +45,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible for SM6125 and assing correct data
+Document the newly added compatible for sm6125 rpmcc.
 
 Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- drivers/clk/qcom/clk-smd-rpm.c | 1 +
+ Documentation/devicetree/bindings/clock/qcom,rpmcc.txt | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 0e1dfa89489e..8200c26b968c 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -1070,6 +1070,7 @@ static const struct of_device_id rpm_smd_clk_match_table[] = {
- 	{ .compatible = "qcom,rpmcc-msm8998", .data = &rpm_clk_msm8998 },
- 	{ .compatible = "qcom,rpmcc-qcs404",  .data = &rpm_clk_qcs404  },
- 	{ .compatible = "qcom,rpmcc-sdm660",  .data = &rpm_clk_sdm660  },
-+	{ .compatible = "qcom,rpmcc-sm6125",  .data = &rpm_clk_sm6125  },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, rpm_smd_clk_match_table);
+diff --git a/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt b/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+index b44a0622fb3a..bc6ef573aa7c 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
++++ b/Documentation/devicetree/bindings/clock/qcom,rpmcc.txt
+@@ -24,6 +24,7 @@ Required properties :
+ 			"qcom,rpmcc-msm8998", "qcom,rpmcc"
+ 			"qcom,rpmcc-qcs404", "qcom,rpmcc"
+ 			"qcom,rpmcc-sdm660", "qcom,rpmcc"
++			"qcom,rpmcc-sm6125", "qcom,rpmcc"
+ 
+ - #clock-cells : shall contain 1
+ 
 -- 
 2.32.0
 
