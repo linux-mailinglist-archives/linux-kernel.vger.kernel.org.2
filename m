@@ -2,103 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4663B77DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5840A3B77F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhF2Ses (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbhF2Ser (ORCPT
+        id S235217AbhF2Sk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:40:27 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:25756 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234971AbhF2Sk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:34:47 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A9C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:32:19 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bj15so31976270qkb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=FdTAed2LSsBnzt5mppM7ptg5hTbGbhSZ1V8HyoAvOkg=;
-        b=p4LxCNymyBtzGTN48VIjv5wsucwiQGUlrGyfEAYtdryNyX1VuRilWX0IH7v919zbW1
-         hCDHX01SDCQolN4L5HVK3vJtA+VGpvaer5V0oCki282T7l9O/TJWIapCDZPjhAE3TRy4
-         InPM43x/pEXuJcHqZ8CczhXKs09JS1elwlCsgHjKulLj8AnLlmiP0AJ35gjK0wMrFooN
-         1gfIWPEUdVhRhj98Iuy08od821uAJYvM9D19LnX2CqbNCO3H4DSqKE5qFKnSf9UVsIXQ
-         EL7r1ih98PxBm9Y8zRtaAMNOb/uw2Zqw5bSEGZfvihcYr6QBSdXVzNxU2eOmiCsNmK3C
-         gqVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FdTAed2LSsBnzt5mppM7ptg5hTbGbhSZ1V8HyoAvOkg=;
-        b=FiLKfrn6yKPQSAmeOJwgLwQZ++73UUdWAHE48lGs3LBbgg0RZkfU14tkRcG1r0bU5i
-         IK9gpD5KXizLweUuucXynFkZxzUZ7bsZeCW7SvOIi07FU+KjjxlEQ+C6OPRBkDz8Gum+
-         U883EMAa8TMk/Po3Uc8H9iTwQRrmWlGQ7F843pEbzZmYvXQX3ZUG0mN3oYl/D1zF88EQ
-         WwTOj5nddWTs/4NSr0yu31ZfAT7IJqj3CJhZDiEAB4eTZtHcR/mqdqSXabv6dUDvyrOm
-         ECo3nDbMyX4VlJWT63IALdUEOImeDK6zasdFPZkhUbIc66yZSEdf27CnBECnX/AIALZ9
-         ec5g==
-X-Gm-Message-State: AOAM5317ZdFvOJFjqCVjspY38fNlSuiYwFwqXn/D5D5qIms/LLn1J8fP
-        b01Pr9VgdfKvycDLfPNW9QbooA==
-X-Google-Smtp-Source: ABdhPJwimaCD8ZfgQbaVJoflCansSCyaQJZuRQzAm8t9OSjmgNJoCCGt7uRXohHJeygN2eo+zwX3dQ==
-X-Received: by 2002:a37:ad02:: with SMTP id f2mr15664410qkm.357.1624991538273;
-        Tue, 29 Jun 2021 11:32:18 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c1::12d2? ([2620:10d:c091:480::1:98e8])
-        by smtp.gmail.com with ESMTPSA id d136sm4242135qkc.110.2021.06.29.11.32.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 11:32:17 -0700 (PDT)
-Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
+        Tue, 29 Jun 2021 14:40:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624991696;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=DmULRByj/Wruf56EMqRvLcOMlQUxpgR/pGLuuXfGYjI=;
+    b=GefT17oq0aCv/ZNE+kU5nGMlZ5icO5+EEsUDfsx7E4cyzUJ7GgpmGrUwjZSw+An9aO
+    VSNwNH3Y3VywrmZwAQaEBJsS3mzCv3osb8AS6QwhN+rJDCtCyP6hbwoIrIf4HS1N6jcl
+    vjmAP4c4HuNcviUV3epIb9prM7dA/3J4EuCbY99+XPaA9WhmMuXv5tB1EdeyLlPI8mPW
+    2ZWpu6JChTSc+k/PdE7ExZNFEHXf+MI7m7Uzy7KLuA5f6Ki/+SWM/20wqGfm8TrDaSSY
+    mS9du/EQdFuJfR9lr7vhUpsP6kohFBy0opr5LFu/uiCj+bAGWuhwFskP+q/8YW5FpfQG
+    wv7g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlWfXA0NbQ=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
+    with ESMTPSA id f0359ax5TIYtOuZ
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 29 Jun 2021 20:34:55 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
+ regulator
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20210629155922.GD4613@sirena.org.uk>
+Date:   Tue, 29 Jun 2021 20:34:55 +0200
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
- <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
- <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
- <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
- <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
-Date:   Tue, 29 Jun 2021 14:32:15 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
+References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
+ <20210629155922.GD4613@sirena.org.uk>
+To:     Mark Brown <broonie@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 2:28 PM, Krzysztof Kozlowski wrote:
-> On 29/06/2021 20:06, Krzysztof Kozlowski wrote:
->> Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
->> and 64 cores) fail similarly. I'll try later also QEMU machines with
->> different amount of CPUs.
->>
-> 
-> Test on QEMU machine with 31 CPUs passes. With 32 CPUs - failure as
-> reported.
-> 
-> dmesg is empty - no error around this.
-> 
-> Maybe something with per-cpu variables?
+Hi Mark,
 
-Ah yeah, so since you are further into this than I am, want to give my recent 
-batch of fixes a try?
+> Am 29.06.2021 um 17:59 schrieb Mark Brown <broonie@kernel.org>:
+>=20
+> On Tue, Jun 29, 2021 at 05:24:03PM +0200, H. Nikolaus Schaller wrote:
+>> Commit 98e48cd9283d ("regulator: core: resolve supply for =
+boot-on/always-on regulators")
+>>=20
+>> introduced a new rule which makes Palmas regulator registration fail:
+>>=20
+>> [    5.407712] ldo1: supplied by vsys_cobra
+>> [    5.412748] ldo2: supplied by vsys_cobra
+>> [    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed =
+to register 48070000.i2c:palmas@48:palmas_pmic regulator
+>>=20
+>> This seems to block additions initializations and finally the
+>> Pyra-Handheld hangs when trying to access MMC because there is
+>> no mmc-supply available.
+>=20
+> What is that rule and how is this patch intended to ensure that Palmas
+> meets it?
+>  As covered in submitting-patches.rst your changelog should
+> explain this so that in review we can verify that this is a good fix.
 
-https://github.com/josefbacik/linux/tree/delalloc-shrink
+I am very sorry, but I simply believed that it is not necessary to =
+copy&paste or
+describe this because it appears not to be difficult to retrieve.
 
-This might actually resolve the problems.  If not I'm getting one of our 64cpu 
-boxes setup to test this, I also couldn't reproduce it on my smaller local 
-machines.  Thanks,
+Commit 98e48cd9283d ("regulator: core: resolve supply for =
+boot-on/always-on regulators")
 
-Josef
+    regulator: core: resolve supply for boot-on/always-on regulators
+   =20
+    For the boot-on/always-on regulators the set_machine_constrainst() =
+is
+    called before resolving rdev->supply. Thus the code would try to =
+enable
+    rdev before enabling supplying regulator. Enforce resolving supply
+    regulator before enabling rdev.
+
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index f192bf19492e..e20e77e4c159 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1425,6 +1425,12 @@ static int set_machine_constraints(struct =
+regulator_dev *rdev)
+         * and we have control then make sure it is enabled.
+         */
+        if (rdev->constraints->always_on || rdev->constraints->boot_on) =
+{
++               /* If we want to enable this regulator, make sure that =
+we know
++                * the supplying regulator.
++                */
++               if (rdev->supply_name && !rdev->supply)
++                       return -EPROBE_DEFER;
++
+                if (rdev->supply) {
+                        ret =3D regulator_enable(rdev->supply);
+                        if (ret < 0) {
+
+This rule (rdev->supply_name && !rdev->supply) did not exist before =
+98e48cd9283d
+and it seems to return early with EPROBE_DEFER if there is a =
+desc->supply_name defined,
+but no supply resolved.
+
+The Palmas driver is setting desc->supply_name to some string constant =
+(i.e. not NULL)
+and is then calling devm_regulator_register().
+
+So it was working fine without having the supplying regulator resolved. =
+AFAIK they
+just serve as fixed regulators in the device tree and have no physical =
+equivalent.
+
+My proposal just moves setting the supply_name behind =
+devm_regulator_register() and
+by that restores the old behaviour.
+
+Well, unless...
+
+... devm_regulator_register() does something differently if =
+desc->supply_name
+is not set before and changed afterwards. It may miss that change.
+
+I did not observe any indications, but something could happen in the =
+guts of
+devm_regulator_register(). If it is, then my approach is clearly faulty.
+
+There may be a better solution where I hope more reviewers (especially
+those more familiar with the Palmas driver than me) can comment on.
+
+> The change itself looks worrying like it just shuts the error up and
+> could cause problems for other systems.
+
+
+Since this change is confined to the Palmas driver and results in the =
+same
+behaviour as it had before 98e48cd9283d did break it, it should not harm
+other systems.
+
+So I hope for guidance if my approach is good or needs a different =
+solution.
+
+BR and thanks,
+Nikolaus Schaller
 
