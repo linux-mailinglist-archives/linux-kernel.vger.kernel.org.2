@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82163B6C27
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EFC3B6C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhF2Bss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:48:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:55188 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230339AbhF2Bsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:48:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="271923306"
-X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
-   d="scan'208";a="271923306"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 18:46:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
-   d="scan'208";a="492527444"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Jun 2021 18:46:17 -0700
-Date:   Tue, 29 Jun 2021 09:40:58 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
-Message-ID: <20210629014058.GB85916@yilunxu-OptiPlex-7050>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-6-martin@geanix.com>
- <20210628163556.GB445250@roeck-us.net>
- <YNoGvOhMQHsqXWfc@epycbox.lan>
+        id S230116AbhF2BuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:50:19 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:33590 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229910AbhF2BuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 21:50:18 -0400
+X-UUID: 84474fcaed974a57a226c3aa63e2374a-20210629
+X-UUID: 84474fcaed974a57a226c3aa63e2374a-20210629
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 640803979; Tue, 29 Jun 2021 09:47:50 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Jun 2021 09:47:49 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 29 Jun 2021 09:47:49 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
+        <cychiang@google.com>, <aaronyu@google.com>
+Subject: [PATCH v2 0/8] ASoC: mediatek: Add support for MT8195 SoC
+Date:   Tue, 29 Jun 2021 09:47:28 +0800
+Message-ID: <20210629014736.31153-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YNoGvOhMQHsqXWfc@epycbox.lan>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 10:28:28AM -0700, Moritz Fischer wrote:
-> Hi Guenter,
-> 
-> On Mon, Jun 28, 2021 at 09:35:56AM -0700, Guenter Roeck wrote:
-> > On Fri, Jun 25, 2021 at 09:42:13AM +0200, Martin Hundebøll wrote:
-> > > From: Martin Hundebøll <mhu@silicom.dk>
-> > > 
-> > > Add the list of sensors supported by the Silicom n5010 PAC, and enable
-> > > the drivers as a subtype of the intel-m10-bmc multi-function driver.
-> > > 
-> > > Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-> > 
-> > For my reference:
-> > 
-> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Reviewed-by: Moritz Fischer <mdf@kernel.org>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+This series of patches adds support for Mediatek AFE of MT8195 SoC.
+Patches are based on broonie tree "for-next" branch.
 
-Thanks,
-Yilun
+Changes since v1:
+  - fixed some problems related to dt-bindings
+  - add some missing properties to dt-bindings
+  - add depency declaration on dt-bindings
+  - fixed some warnings found by kernel test robot
 
-> 
-> > 
-> > Not sure if I can apply this patch as-is to hwmon, or if it needs
-> > to wait for the other patches in the series. Any thoughts / comments ?
-> 
-> I don't see how it would break anything in itself since it just adds
-> extra compatible and data.
-> 
-> I'd probably wait with applying until discussions around the mfd and dfl
-> parts are resolved since otherwise there's no user.
-> 
-> > Guenter
-> 
-> Thanks,
-> Moritz
+Trevor Wu (8):
+  ASoC: mediatek: mt8195: update mediatek common driver
+  ASoC: mediatek: mt8195: support etdm in platform driver
+  ASoC: mediatek: mt8195: support adda in platform driver
+  ASoC: mediatek: mt8195: support pcm in platform driver
+  ASoC: mediatek: mt8195: add platform driver
+  dt-bindings: mediatek: mt8195: add audio afe document
+  ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and
+    rt5682
+  dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682
+    document
+
+ .../bindings/sound/mt8195-afe-pcm.yaml        |  136 +
+ .../sound/mt8195-mt6359-rt1019-rt5682.yaml    |   39 +
+ sound/soc/mediatek/Kconfig                    |   23 +
+ sound/soc/mediatek/Makefile                   |    1 +
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c    |   22 +-
+ sound/soc/mediatek/common/mtk-base-afe.h      |   10 +-
+ sound/soc/mediatek/mt8195/Makefile            |   14 +
+ sound/soc/mediatek/mt8195/mt8195-afe-clk.c    |  899 +++++
+ sound/soc/mediatek/mt8195/mt8195-afe-clk.h    |  201 +
+ sound/soc/mediatek/mt8195/mt8195-afe-common.h |  200 +
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    | 3264 +++++++++++++++++
+ sound/soc/mediatek/mt8195/mt8195-dai-adda.c   |  929 +++++
+ sound/soc/mediatek/mt8195/mt8195-dai-etdm.c   | 2666 ++++++++++++++
+ sound/soc/mediatek/mt8195/mt8195-dai-pcm.c    |  393 ++
+ .../mt8195/mt8195-mt6359-rt1019-rt5682.c      |  977 +++++
+ sound/soc/mediatek/mt8195/mt8195-reg.h        | 2793 ++++++++++++++
+ 16 files changed, 12562 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+ create mode 100644 sound/soc/mediatek/mt8195/Makefile
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-adda.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-dai-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
+ create mode 100644 sound/soc/mediatek/mt8195/mt8195-reg.h
+
+-- 
+2.18.0
+
