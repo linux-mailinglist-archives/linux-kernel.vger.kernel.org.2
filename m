@@ -2,106 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572913B7506
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EFE3B750A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbhF2PTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:19:46 -0400
-Received: from mail-bn8nam08on2068.outbound.protection.outlook.com ([40.107.100.68]:59699
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234627AbhF2PTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:19:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M5xiG06rYw76pYcq7LR/22IO2V6muIm7ZNm2tMaLjQ0d8u/bpInuqXelAezJwHcGi7Q57mMUwPl+eNB3QvBZo/+GMCS2Syc9kIX9ui9QiaNgxcpfK7ULWdfaz94USb4deMlkXnC3vFV/6q/22pTcIh5DmoCfw31WGUlmkPj8BVk7CTlzusFIhJf94204MD9N2MpXJMRariBwOEjFDXoyqlyfyKF8fkqP4gIdRl8hixC0JTGb4DMAm9tPIyuFpN7/09h3b78WlVV8GlQxoZT/nIVAkVrqxkc/LOIuZgzFs+J4K3WYQ8B0jaP/tMfl0S6QbubhmYjEnoi189O+7NvGuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ofmTvR32DBhh8UWD9mewQGu08YvjkEWP2ielW9glrsg=;
- b=Jfoq97nreO7ai0CQJghpTFhleun0kyyFcM7xbWIy5B7VWYxOPa+tmp7FnVocgdXicaAgEDYggLQVVZJAaPA8iXIGzmEoINpn3lxVEsL+mjc7IWmyxtwJN/o+9IyApz+x1Fe1qh1VLkKsxq2PI0Jl7Pr28lGkW7Jzc5JV/7yMfDdqQwaEdQXrKFScee5iL5PuM8ZeAWyZ6ZThG3tjrWOHlFxux7UKiVD/j8N6C6/l+asaDg33GO76ahJmLeoB/EJ+Fw2AN2tIiRfQRa/dIeFMjOjKTTUYUM79Psxz8n3Ul8uM8CsJlc39zbmdit7kYkQdj6oC6tgvEHLVu2VEHqftyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ofmTvR32DBhh8UWD9mewQGu08YvjkEWP2ielW9glrsg=;
- b=VLh962RMui4eQ1dGJJguPP1SlTzF51h77FeLS6qb7ut6JHTKeopuDUHbtQbhxnFXlCACjrZJWwChfWJPxoOxxpThyb/nWU6fZBzFRHMPhPHpDyV3WgszxPj6iGMItB13i8kj4R/uGQ7M1q/8zPftxMUB+JKwnv5+kex0iKVq+NSFoUpBA6jKo7RMkRSoDNfAw0Hvoglh5kCyZknbp2iUaxhufuLmVmCm+C8ZHwRxUZf4P8kWuNWn7MwZxaqbaZn+sgSIrkL+bv9wlSF4U8f1r1S0Pnr+tMO8UhgQJNaSGhlAil3g14dOxL+Bl9CGxbbrpH+v/Epti/MTOe8J6hDW2A==
-Received: from BN8PR07CA0006.namprd07.prod.outlook.com (2603:10b6:408:ac::19)
- by MN2PR12MB3488.namprd12.prod.outlook.com (2603:10b6:208:ca::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.25; Tue, 29 Jun
- 2021 15:17:16 +0000
-Received: from BN8NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ac:cafe::5) by BN8PR07CA0006.outlook.office365.com
- (2603:10b6:408:ac::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.21 via Frontend
- Transport; Tue, 29 Jun 2021 15:17:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT024.mail.protection.outlook.com (10.13.177.38) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 15:17:16 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
- 2021 15:17:15 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
- 2021 15:17:14 +0000
-Received: from kyarlagadda-linux.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Jun 2021 08:17:11 -0700
-From:   Akhil R <akhilrajeev@nvidia.com>
-To:     <akhilrajeev@nvidia.com>
-CC:     <andy.shevchenko@gmail.com>, <bgolaszewski@baylibre.com>,
-        <jonathanh@nvidia.com>, <kyarlagadda@nvidia.com>,
-        <ldewangan@nvidia.com>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <mperttunen@nvidia.com>,
-        <smangipudi@nvidia.com>, <thierry.reding@gmail.com>
-Subject: Re: [PATCH v2] gpio: tegra186: Add ACPI support
-Date:   Tue, 29 Jun 2021 20:47:08 +0530
-Message-ID: <1624979828-11699-1-git-send-email-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624288089-15278-1-git-send-email-akhilrajeev@nvidia.com>
-References: <1624288089-15278-1-git-send-email-akhilrajeev@nvidia.com>
+        id S234688AbhF2PVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:21:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48404 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234627AbhF2PVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 11:21:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624979913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o30YUldJfd4ITIQHLeb0yQSPP0iIeIlTJu5av4dFewg=;
+        b=Ln2F1WvtYb4nKTg5Ah9G9DIbStHgiyjwu+SFw3lM/D0c3Q8x6x09LJBYfsqT5KL4ARgMGO
+        y6VgqGz/A4zcVURrtJhnJVsO5bLLqTghTTdAgR6CKJSOs7Sc/8b2oPfZFAJ8KinIq550IA
+        Owm902uMiaZMZpI2B+ZGqL0j794WjZA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-ggbo3rsAOCyL8ZLQwRSNaw-1; Tue, 29 Jun 2021 11:18:31 -0400
+X-MC-Unique: ggbo3rsAOCyL8ZLQwRSNaw-1
+Received: by mail-qv1-f70.google.com with SMTP id z6-20020a0cfec60000b0290263740e5b2aso20770023qvs.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:18:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=o30YUldJfd4ITIQHLeb0yQSPP0iIeIlTJu5av4dFewg=;
+        b=lFmoKLE59OeqLUyHVRtBBPKTH9HLUk0UJZ866k4+74vHTdCQ2qb/xL7VYP1NOJemrc
+         XXlgNssvuu3ayBm5Y+SDTrJZVWUdIBp8gmYySE7VnRqwwDSuO4Di9NC2uwJFz1bPY6DN
+         pRAvflqj9RFOmRL3HKQ2aMHUDuQHk1fRSMbKkR7CmpcFCb+F6EIDVVFPUP43LruLPsX5
+         0+NGcRTvsjd0zqfZxI5+l6YOXMCL8ZSWCeQOjS7Ah7E/HX9j22wlLSMoVWv/OIJo8MJ2
+         ghsTqwOw1aj/oxiyhPFdZtezFlZt5nRAAuk+4Wvsb0fR8WcE2yriOeMw/HEwsAEHT5yP
+         L/UQ==
+X-Gm-Message-State: AOAM532ZKKQwrGmHGvl759ClC3C/GiIJ4ofgpJb3Ct9IHlaO0xRrRNrn
+        hnemT+Ge2IPD8W5aA56p40oYJpahqWcoXZthfsjTyJUz5Le/BA5sboL35Uik3ZAVqHtMzm5m5B3
+        XidV5zVPPv0cOzgs0gb5P1Kn3IDFsW3d5FyO6oKnpkht3fhFX5ukPF4gbrSV2U4mfQFveuHXC
+X-Received: by 2002:ac8:66d0:: with SMTP id m16mr12067340qtp.44.1624979911130;
+        Tue, 29 Jun 2021 08:18:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/+WnYGIKqr+KKqDIyfR/GBRIVtHjdEhL76GVTfDjA3vUceyUqVgfIXvvQ48xOqFYOpbmfIQ==
+X-Received: by 2002:ac8:66d0:: with SMTP id m16mr12067314qtp.44.1624979910840;
+        Tue, 29 Jun 2021 08:18:30 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id d129sm12285467qkf.136.2021.06.29.08.18.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 08:18:30 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] locking/mutex: fix the MUTEX_FLAG_HANDOFF bit is cleared
+ unexpected
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>,
+        Waiman Long <llong@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20210628155155.11623-1-yanfei.xu@windriver.com>
+ <e914d4fd-5afc-35f9-c068-7044ceda53dd@redhat.com>
+ <02691c73-6ba8-241c-6ec8-486d9d549c23@windriver.com>
+ <78f45c3c-191b-bd14-3b38-522907d0e24f@redhat.com>
+Message-ID: <d48fdbae-4b79-9039-4577-d3aaa18d543d@redhat.com>
+Date:   Tue, 29 Jun 2021 11:18:29 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e41b529f-255e-4b10-00ee-08d93b10fae7
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3488:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB34889D6E00DD34591557F032C0029@MN2PR12MB3488.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1AZzYYdgjYx6g7iohgvAulGan/LIqdW+XLWqnvwIxW3/BWDl5Dgo2jL92swRUDHVwo5KS1Z6aJtjcYztTkd7TE7DTLTrYb4cWzz4oP6X9umf4fQvmXpyIavcoT4r0kpHxJXkfl8WF0j4avUKFISdMtaYtD8OpkHfDnhVke8RrvAEAfYpRwB3CRwXyB3W/Bj3OVzUy0Mwk4fh0pONprVv3pzpE+5N3ga4c2c+0PRYOp8lHrT343fM2tPSigDjrOsUy6PuvaYQWPtddWkZYb9NKbOiha8n114IdbkEwWjZjF+zsVnOKLGUdKngdrn+6dOgIlMpZ/LG4l8kC+8pN1GnnkUKMTgH0sZKhHSezFW3vFdjyayORlnpERaXN9Ecrd5uO8JjhJvy7hXIbMyO0EOieHaSmC/qYcQ9CWd+drVsgGbDvwSvAtkLWFlVpiORySM1O9Up0fiwA7B0rrR0zDAsv+u++/WFrLQ6GhmOlPGJJHRL4K9MaCfr1vfJN+WKg+yyCVcCW5oaJkNb/wJqQ3tqUecCHBkHR9xFeuUm+lOTkK2ChGyBEqDiAGYu2zVvAF0rLYiJCSOq9nDoo8WzdymfHL2nI5M0JsIn8+5paaHkUs+eBWvhY4OdEUXb5PBmQtqjVUpiMfGsCsuTi/JLBRKhe+ykoIy8fLPHdYcu4TyB7Gf0NlOrdbniXB4qbhIX9IYhTKXaSmNk6chvTCjDu7STNg==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39850400004)(36840700001)(46966006)(70206006)(54906003)(336012)(37006003)(186003)(82310400003)(6862004)(83380400001)(8936002)(2906002)(36906005)(70586007)(8676002)(7049001)(7636003)(36860700001)(86362001)(36756003)(426003)(26005)(6666004)(7696005)(478600001)(558084003)(82740400003)(6200100001)(47076005)(356005)(2616005)(316002)(4326008)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 15:17:16.2815
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e41b529f-255e-4b10-00ee-08d93b10fae7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT024.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3488
+In-Reply-To: <78f45c3c-191b-bd14-3b38-522907d0e24f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On 6/29/21 10:40 AM, Waiman Long wrote:
+> On 6/29/21 5:52 AM, Xu, Yanfei wrote:
+>>
+>>
+>> On 6/29/21 1:57 AM, Waiman Long wrote:
+>>> [Please note: This e-mail is from an EXTERNAL e-mail address]
+>>>
+>>> On 6/28/21 11:51 AM, Yanfei Xu wrote:
+>>>> When the mutex unlock path is excuted with WAITERS bit and without
+>>>> HANDOFF bit set, it will wake up the first task in wait_list. If
+>>>> there are some tasks not in wait_list are stealing lock, it is very
+>>>> likely successfully due to the task field of lock is NULL and flags
+>>>> field is non-NULL. Then the HANDOFF bit will be cleared. But if the
+>>>> HANDOFF bit was just set by the waked task in wait_list, this clearing
+>>>> is unexcepted.
+>>>
+>>> I think you mean "unexpected". Right? Anyway, all the setting and
+>>
+>> Right. It's my fault.
+>>
+>>> clearing of the HANDOFF bit are atomic. There shouldn't be any
+>>> unexpected clearing.
+>>>
+>>>> __mutex_lock_common __mutex_lock_common
+>>>>    __mutex_trylock schedule_preempt_disabled
+>>>>      /*steal lock successfully*/ 
+>>>> __mutex_set_flag(lock,MUTEX_FLAG_HANDOFF)
+>>>>      __mutex_trylock_or_owner
+>>>>        if (task==NULL)
+>>>>        flags &= ~MUTEX_FLAG_HANDOFF
+>>>>        atomic_long_cmpxchg_acquire
+>>>>                                          __mutex_trylock //failed
+>>>> mutex_optimistic_spin  //failed
+>>>> schedule_preempt_disabled  //sleep without HANDOFF bit
+>>>>
+>>>> So the HANDOFF bit should be set as late as possible, here we defer
+>>>> it util the task is going to be scheduled.
+>>>> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+>>>> ---
+>>>>
+>>>> Hi maintainers,
+>>>>
+>>>> I am not very sure if I missed or misunderstanded something, please 
+>>>> help
+>>>> to review. Many thanks!
+>>>>
+>>>>   kernel/locking/mutex.c | 8 ++++----
+>>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+>>>> index 013e1b08a1bf..e57d920e96bf 100644
+>>>> --- a/kernel/locking/mutex.c
+>>>> +++ b/kernel/locking/mutex.c
+>>>> @@ -1033,17 +1033,17 @@ __mutex_lock_common(struct mutex *lock, 
+>>>> long state, unsigned int subclass,
+>>>>               }
+>>>>
+>>>>               spin_unlock(&lock->wait_lock);
+>>>> +
+>>>> +             if (first)
+>>>> +                     __mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
+>>>>               schedule_preempt_disabled();
+>>>>
+>>>>               /*
+>>>>                * ww_mutex needs to always recheck its position 
+>>>> since its waiter
+>>>>                * list is not FIFO ordered.
+>>>>                */
+>>>> -             if (ww_ctx || !first) {
+>>>> +             if (ww_ctx || !first)
+>>>>                       first = __mutex_waiter_is_first(lock, &waiter);
+>>>> -                     if (first)
+>>>> -                             __mutex_set_flag(lock, 
+>>>> MUTEX_FLAG_HANDOFF);
+>>>> -             }
+>>>>
+>>>>               set_current_state(state);
+>>>>               /*
+>>>
+>>> In general, I don't mind setting the HANDOFF bit later, but
+>>> mutex_optimistic_spin() at the end of the loop should only be called
+>>> after the HANDOFF bit is set. So the logic isn't quite right yet.
+>>
+>> Thanks for your reply.
+>>
+>> Why the mutex_optimistic_spin should be called after the HANDOFF bit is
+>> set? I think the HANDOFF bit is only related to unlock path, and the
+>> mutex_optimistic_spin and __mutex_trylock don't actually use it. （Or I
+>> missed something? ）
+>
+> The purpose of doing spinning after the HANDOFF bit is set is to 
+> eliminate the waiter wakeup latency, if possible. Before the HANDOFF 
+> bit is set, the lock can be easily stolen and there is no point in 
+> adding pressure to the lock cacheline.
+>
+>
+>>
+>> Maybe I described the issue not much clearly. Let me try again.
+>>
+>> The HANDOFF bit aims to avoid lock starvation. Lock starvation is
+>> possible because mutex_lock（） allows lock stealing, where a runing( or
+>> optimistic spinning) task beats the woken waiter to the acquire. So
+>> maintainer add HANDOFF bit, once the stealing happened, the top-waiter
+>> will must get the lock at the second wake up due to the HANDOFF bit.
+>>
+>> However, the fact is if the stealing happened, the HANDOFF will must be
+>> clear by the thief task. Hence the top-waiter still might starve at the
+>> second wake up.
+>>
+> I think you have some confusion here. If the HANDOFF bit is set before 
+> the lock is stolen by an optimistic spinner, lock stealing can't 
+> happen which is the point of having a HANDOFF bit. Also the clearing 
+> of the HANDOFF bit isn't done by the task that steal the lock, it is 
+> done by the current lock holder (i.e. the task that held the lock when 
+> the HANDOFF bit was set) in the unlock path. It can be a lock stealer 
+> that stole the lock before the HANDOFF bit is set. Of course, it will 
+> be a bug if the current code doesn't actually do that. 
 
-Please let me know if you have any inputs regarding the changes.
+Oh, you are right. The current code doesn't actually prevent lock 
+stealer from actually stealing the lock in the special case that the 
+lock is in the unlock state when the HANDOFF bit is set. In this case, 
+it is free for all and whoever gets the lock will also clear the the 
+HANDOFF bit. The comment in __mutex_trylock_or_owner() about "We set the 
+HANDOFF bit" isn't quite right.
 
---
-Best Regards,
-Akhil
+One way to address this issue is to enforce the rule that non-first 
+waiter can't steal the lock when the HANDOFF bit is set. That probably 
+eliminates the need of a separate PICKUP bit.
+
+Alternatively, we can let this state happens similar to what your patch 
+proposes. However, we should clearly document in the code this special 
+race condition.
+
+Cheers,
+Longman
+
 
