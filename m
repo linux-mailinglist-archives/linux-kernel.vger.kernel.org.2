@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32933B78F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6693B78F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhF2UAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:00:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39042 "EHLO mail.kernel.org"
+        id S235153AbhF2UAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232315AbhF2UAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 17A4F61D9A;
-        Tue, 29 Jun 2021 19:57:35 +0000 (UTC)
+        id S232315AbhF2UAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 16:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B93BF61D9A;
+        Tue, 29 Jun 2021 19:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624996655;
-        bh=19i31BQ1eXD9q2J1sX8GQunX6PxvfYuWxVptVFULJ3g=;
+        s=k20201202; t=1624996661;
+        bh=8+6a+fyxTo4lN/61UMuS5PVgBidVMf+ZXOZzcRIhg+4=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jpvsIO8v4ZdmEG4mw4Zh69fVGmZ4oipz0Gl0Nl9ePyaTx7oZHyERhNUuOWPQizvcl
-         UbPTutKE8R9nwhupN1TJ9qmRN5KHCN38sMSoGguDlqULUC7sBI912pVstPCJA5fRpU
-         IIX5q4xBO6OuHPcRYKWG+Ni81HsVotUzbGAK2nRCaeX25qgxbshmk1NOMalvgqbfid
-         ukpXZpthY++gnWqeAFvmFDznYJWnEj1UIx6N6cVUoHh+/Z2H9Ehh1iUU3204ZIMWY3
-         tEsclyKKmaqz6P9GEUZ9x6qTFcNPlvGzH7Bf5X7Xguffy/+XJ5FkmWe0TGjlX/0E3p
-         FzadPK9Vt9aXg==
+        b=klmaXkUIt7VY/0EiL1EE/bS+DyPux7pLjIiTpihlfsKuOEvKCkVK1OAbUX02fcamZ
+         +e+dm73+rLHQbffQbK9SOhmmRy139VcOOmXC24oe7lms2m7zru6774ncK9GiDPSirM
+         FPU+/OjJBo4udqIdWmwpwwynLtP7Pe2IgAlpoUFypAmcLG/BVNBoBoxDXkHSW4XzAY
+         ztxv9d00NzffAcv+LcLznK3+PGf5yo/bvVof4mjtm4BVj8AeQLBM+4WnrFWLHyvAE/
+         JENHfDhAyeJmZJmkDPwmZreFnewOWcRsEj9U71CK5jL5UvivahxMiTqfzuXDOL9kiQ
+         PUUjwRGa4VBjA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 10F1A609EA;
-        Tue, 29 Jun 2021 19:57:35 +0000 (UTC)
-Subject: Re: [GIT PULL] Hyper-V commits for 5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2EC0609A3;
+        Tue, 29 Jun 2021 19:57:41 +0000 (UTC)
+Subject: Re: [GIT PULL] printk for 5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210629110154.y7hegtxwjbo55kue@liuwe-devbox-debian-v2>
-References: <20210629110154.y7hegtxwjbo55kue@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210629110154.y7hegtxwjbo55kue@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210629
-X-PR-Tracked-Commit-Id: 7d815f4afa87f2032b650ae1bba7534b550a6b8b
+In-Reply-To: <YNshegt/DQV1JDc9@alley>
+References: <YNshegt/DQV1JDc9@alley>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YNshegt/DQV1JDc9@alley>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.14
+X-PR-Tracked-Commit-Id: 94f2be50badfa88e96033e77621c6711d58f84d3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b694011a4aec3e8df98bc59fdb78e018b09de79d
-Message-Id: <162499665505.30376.13738829394335710206.pr-tracker-bot@kernel.org>
-Date:   Tue, 29 Jun 2021 19:57:35 +0000
-To:     Wei Liu <wei.liu@kernel.org>
+X-PR-Merge-Commit-Id: e563592c3e4296780e5a184a917b8b86e126f0b3
+Message-Id: <162499666172.30376.640337616785113430.pr-tracker-bot@kernel.org>
+Date:   Tue, 29 Jun 2021 19:57:41 +0000
+To:     Petr Mladek <pmladek@suse.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Jun 2021 11:01:54 +0000:
+The pull request you sent on Tue, 29 Jun 2021 15:34:50 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210629
+> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b694011a4aec3e8df98bc59fdb78e018b09de79d
+https://git.kernel.org/torvalds/c/e563592c3e4296780e5a184a917b8b86e126f0b3
 
 Thank you!
 
