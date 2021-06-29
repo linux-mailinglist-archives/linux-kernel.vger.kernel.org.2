@@ -2,456 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BDB3B70DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C4F3B70DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhF2Kn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S233272AbhF2KoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233208AbhF2Kn0 (ORCPT
+        with ESMTP id S232410AbhF2KoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:43:26 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1A9C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:40:59 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id n61so8191817uan.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:40:59 -0700 (PDT)
+        Tue, 29 Jun 2021 06:44:04 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C090C061574;
+        Tue, 29 Jun 2021 03:41:36 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j2so25242097wrs.12;
+        Tue, 29 Jun 2021 03:41:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jnkRRmLV+3fCO8hTgmX6KcACTWSfqkECczbM2Dojizs=;
-        b=ju0Dg4Qxgy1yb+xl4adlWsFgbenX94UFGXYmDuIMQaDeK0PN62ukDWTpXvDGYX+W5z
-         1oCRitSAPsGxlCZ4T0d9sYHAJIOOWPxvoSnie+EtSEm2tq5Z9W372L5X1zu14fKKl/An
-         CaVbKzCkWEuNsRwEhSBP4VIZ0ghuUF0yR0UPIlD0/t/spMWp9esIAYUT9FrWIzlduEkq
-         dKxfuw0YdZLw4GXTRdpaKdDy9wxpNW4zH2g6e8rxGBYq6Jz4wECQbed47rCwBb7yCAjK
-         w6D8Lue61oo+hstS9B9V8amarmLMqy5SftWmN/0Bn89IUcqzi77OsbGGGJxi/AA13Pxh
-         dCKg==
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Atx/bMQYGRd73n1ITTzWnqXySXI0bjGGZE/sFbrr9go=;
+        b=N2qkQhXet97dMBuOsiFNcbisTGZ3Ldq7aVLaYQpA4ph3cqZqStBSEt5qOFp59nwk6t
+         xTqTgP5GagDFj9ehg+T5iVW8qnpA/pFHqZcefWXrQetkSTRyQ4BW9/i0wPvi5oJr2FZ5
+         T2BI7rwVr/sCAq77QTwD0SlhyTL8dTMOH2t37kXVql6jBX74thc5zgphUftxs+7bYNRs
+         Mkp8ed8f5bNZzewA/6ewn7Rm+DHRlKXhqXZnu9ClnJp/zH/S7ObipoXrTw50KDxNRqk7
+         uH9767umTI7/gTmhbdOVZK9iVunEThlD7AG1+9hUwGIuLH5imzi8JnPZ2gDuhBSjrMR6
+         nOCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jnkRRmLV+3fCO8hTgmX6KcACTWSfqkECczbM2Dojizs=;
-        b=jjsogNdo/SA6zOd/2CwXxg3dMa564ZRwsa0ZO+H0MAM/dsiU6TMF06lWvEi1+j/AIX
-         sSp6rFU7nqxnZ5lMO6bJ04PAwmqiIaiX4M2JQi+819JYpqlBtY7laEg16qLRj+7+Hi4z
-         PxaTM9DMn9lcYZMlh7VylywyLaleyPwjsdkJVUqfrfRjz8gxlKiehzlFhdl4e5nxWh3F
-         ENGVldF949q3OCob8PI28tH5JadU7WPfqCERSqC/bvk7MHqaIlQu/aNgcE3k1hVMqDon
-         UcCAUQmFer+teNkL4J/BACnHQuV72778HxPMJ6S+B/W5r6UPkgFOEUB2GCiJQa+dX9y/
-         pY0A==
-X-Gm-Message-State: AOAM531IQD8f4CB1CiELjWqxuVqd94aknZ8s0AJEXFapHY+OccX7e7nL
-        RGsOKq+yAFlpSDBIj9zJLvmLepkxZt0uCekt1TabZQ==
-X-Google-Smtp-Source: ABdhPJzgROaDauoQmBlYmniPzycAyJGFqeztot7junFkXEdjHO4ShOhYz3xAgVHSLiohL6WFjW5pOm1XKW448sBToNA=
-X-Received: by 2002:ab0:6296:: with SMTP id z22mr2187090uao.129.1624963258578;
- Tue, 29 Jun 2021 03:40:58 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Atx/bMQYGRd73n1ITTzWnqXySXI0bjGGZE/sFbrr9go=;
+        b=PiooNMWPvRTbWmVSNgzgHXLCA4YrjtI5yLmH7DgsI82+vNAHHyWXv4dczNw7psiBpk
+         hgAxc7Z8QH2wDj4A3lS/jUlKGtmr208HdQjUKK+UQ7GRtsxUv8wP5s1htvhbuDFFA5Ua
+         Xv2BLf0f1AHTdw1mlE/MUPVMhevy+CS/B6KzefTHJHuYtjKcIGjffF7vC8SwGSDV6hPK
+         U5zyrxHE9mFAdvbsc3aiBsCYInz2XNMjvYX47qHPyCJt5GdbyBTV7m8DMvLuiN32Avvo
+         wH1eKnAsZFsVgU15L5H/x9I1Z3Ka6CC3vAQin1sS6Z5YpneJEzdXDR1fuc3mb65Uq5zW
+         MpiQ==
+X-Gm-Message-State: AOAM531joUosMb7aC+6j+i3xKoYcJdY+IBAVFEB/9X+d3YcpAi2UlO8a
+        CUtcQlVvgY2nyj6YbzNBjsI=
+X-Google-Smtp-Source: ABdhPJz5uyTKaLRGlOrYLj+qSU+CwsQk2rsgIDtz7TW4sKf/zJgBeQ8Q6Hjo64iRb6EoQ3JNeqGNEQ==
+X-Received: by 2002:a5d:4c52:: with SMTP id n18mr33549277wrt.14.1624963295162;
+        Tue, 29 Jun 2021 03:41:35 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f29:3800:c1b9:29e2:4232:d74a? (p200300ea8f293800c1b929e24232d74a.dip0.t-ipconnect.de. [2003:ea:8f29:3800:c1b9:29e2:4232:d74a])
+        by smtp.googlemail.com with ESMTPSA id t16sm3492365wrx.89.2021.06.29.03.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 03:41:34 -0700 (PDT)
+To:     Harini Katakam <harini.katakam@xilinx.com>, robh+dt@kernel.org,
+        andrew@lunn.ch, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, steen.hegelund@microchip.com,
+        bjarni.jonasson@microchip.com, ioana.ciornei@nxp.com,
+        likaige@loongson.cn
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, harinikatakamlinux@gmail.com,
+        michal.simek@xilinx.com, radhey.shyam.pandey@xilinx.com
+References: <20210629094038.18610-1-harini.katakam@xilinx.com>
+ <20210629094038.18610-4-harini.katakam@xilinx.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH 3/3] phy: mscc: Add support for VSC8531_02 with RGMII
+ tuning
+Message-ID: <453afad0-4e4b-f1bf-6ec5-5675d2c9c1b6@gmail.com>
+Date:   Tue, 29 Jun 2021 12:41:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210624201802.3255370-1-swboyd@chromium.org>
-In-Reply-To: <20210624201802.3255370-1-swboyd@chromium.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 29 Jun 2021 12:40:22 +0200
-Message-ID: <CAPDyKFq3JAh8Ogts21P2bRkwKLGs4U9A1CmnMTbD-FacPTTYrg@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: domains: Shrink locking area of the gpd_list_lock
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210629094038.18610-4-harini.katakam@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 22:18, Stephen Boyd <swboyd@chromium.org> wrote:
->
-> On trogdor devices I see the following lockdep splat when stopping
-> youtube with lockdep enabled in the kernel.
->
->  ======================================================
->  WARNING: possible circular locking dependency detected
->  5.13.0-rc2 #71 Not tainted
->  ------------------------------------------------------
->  ThreadPoolSingl/3969 is trying to acquire lock:
->  ffffff80d4d5c080 (&inst->lock#3){+.+.}-{3:3}, at: vdec_buf_cleanup+0x3c/0x17c [venus_dec]
->
->  but task is already holding lock:
->  ffffff80d3c3c4f8 (&q->mmap_lock){+.+.}-{3:3}, at: vb2_core_reqbufs+0xe4/0x390 [videobuf2_common]
->
->  which lock already depends on the new lock.
->
->  the existing dependency chain (in reverse order) is:
->
->  -> #5 (&q->mmap_lock){+.+.}-{3:3}:
->         __mutex_lock_common+0xcc/0xb88
->         mutex_lock_nested+0x5c/0x68
->         vb2_mmap+0xf4/0x290 [videobuf2_common]
->         v4l2_m2m_fop_mmap+0x44/0x50 [v4l2_mem2mem]
->         v4l2_mmap+0x5c/0xa4
->         mmap_region+0x310/0x5a4
->         do_mmap+0x348/0x43c
->         vm_mmap_pgoff+0xfc/0x178
->         ksys_mmap_pgoff+0x84/0xfc
->         __arm64_compat_sys_aarch32_mmap2+0x2c/0x38
->         invoke_syscall+0x54/0x110
->         el0_svc_common+0x88/0xf0
->         do_el0_svc_compat+0x28/0x34
->         el0_svc_compat+0x24/0x34
->         el0_sync_compat_handler+0xc0/0xf0
->         el0_sync_compat+0x19c/0x1c0
->
->  -> #4 (&mm->mmap_lock){++++}-{3:3}:
->         __might_fault+0x60/0x88
->         filldir64+0x124/0x3a0
->         dcache_readdir+0x7c/0x1ec
->         iterate_dir+0xc4/0x184
->         __arm64_sys_getdents64+0x78/0x170
->         invoke_syscall+0x54/0x110
->         el0_svc_common+0xa8/0xf0
->         do_el0_svc_compat+0x28/0x34
->         el0_svc_compat+0x24/0x34
->         el0_sync_compat_handler+0xc0/0xf0
->         el0_sync_compat+0x19c/0x1c0
->
->  -> #3 (&sb->s_type->i_mutex_key#3){++++}-{3:3}:
->         down_write+0x94/0x1f4
->         start_creating+0xb0/0x174
->         debugfs_create_dir+0x28/0x138
->         opp_debug_register+0x88/0xc0
->         _add_opp_dev+0x84/0x9c
->         _add_opp_table_indexed+0x16c/0x310
->         _of_add_table_indexed+0x70/0xb5c
->         dev_pm_opp_of_add_table_indexed+0x20/0x2c
->         of_genpd_add_provider_onecell+0xc4/0x1c8
->         rpmhpd_probe+0x21c/0x278
->         platform_probe+0xb4/0xd4
->         really_probe+0x140/0x35c
->         driver_probe_device+0x90/0xcc
->         __device_attach_driver+0xa4/0xc0
->         bus_for_each_drv+0x8c/0xd8
->         __device_attach+0xc4/0x150
->         device_initial_probe+0x20/0x2c
->         bus_probe_device+0x40/0xa4
->         device_add+0x22c/0x3fc
->         of_device_add+0x44/0x54
->         of_platform_device_create_pdata+0xb0/0xf4
->         of_platform_bus_create+0x1d0/0x350
->         of_platform_populate+0x80/0xd4
->         devm_of_platform_populate+0x64/0xb0
->         rpmh_rsc_probe+0x378/0x3dc
->         platform_probe+0xb4/0xd4
->         really_probe+0x140/0x35c
->         driver_probe_device+0x90/0xcc
->         __device_attach_driver+0xa4/0xc0
->         bus_for_each_drv+0x8c/0xd8
->         __device_attach+0xc4/0x150
->         device_initial_probe+0x20/0x2c
->         bus_probe_device+0x40/0xa4
->         device_add+0x22c/0x3fc
->         of_device_add+0x44/0x54
->         of_platform_device_create_pdata+0xb0/0xf4
->         of_platform_bus_create+0x1d0/0x350
->         of_platform_bus_create+0x21c/0x350
->         of_platform_populate+0x80/0xd4
->         of_platform_default_populate_init+0xb8/0xd4
->         do_one_initcall+0x1b4/0x400
->         do_initcall_level+0xa8/0xc8
->         do_initcalls+0x5c/0x9c
->         do_basic_setup+0x2c/0x38
->         kernel_init_freeable+0x1a4/0x1ec
->         kernel_init+0x20/0x118
->         ret_from_fork+0x10/0x30
->
->  -> #2 (gpd_list_lock){+.+.}-{3:3}:
->         __mutex_lock_common+0xcc/0xb88
->         mutex_lock_nested+0x5c/0x68
->         __genpd_dev_pm_attach+0x70/0x18c
->         genpd_dev_pm_attach_by_id+0xe4/0x158
->         genpd_dev_pm_attach_by_name+0x48/0x60
->         dev_pm_domain_attach_by_name+0x2c/0x38
->         dev_pm_opp_attach_genpd+0xac/0x160
->         vcodec_domains_get+0x94/0x14c [venus_core]
->         core_get_v4+0x150/0x188 [venus_core]
->         venus_probe+0x138/0x444 [venus_core]
->         platform_probe+0xb4/0xd4
->         really_probe+0x140/0x35c
->         driver_probe_device+0x90/0xcc
->         device_driver_attach+0x58/0x7c
->         __driver_attach+0xc8/0xe0
->         bus_for_each_dev+0x88/0xd4
->         driver_attach+0x30/0x3c
->         bus_add_driver+0x10c/0x1e0
->         driver_register+0x70/0x108
->         __platform_driver_register+0x30/0x3c
->         0xffffffde113e1044
->         do_one_initcall+0x1b4/0x400
->         do_init_module+0x64/0x1fc
->         load_module+0x17f4/0x1958
->         __arm64_sys_finit_module+0xb4/0xf0
->         invoke_syscall+0x54/0x110
->         el0_svc_common+0x88/0xf0
->         do_el0_svc_compat+0x28/0x34
->         el0_svc_compat+0x24/0x34
->         el0_sync_compat_handler+0xc0/0xf0
->         el0_sync_compat+0x19c/0x1c0
->
->  -> #1 (&opp_table->genpd_virt_dev_lock){+.+.}-{3:3}:
->         __mutex_lock_common+0xcc/0xb88
->         mutex_lock_nested+0x5c/0x68
->         _set_required_opps+0x74/0x120
->         _set_opp+0x94/0x37c
->         dev_pm_opp_set_rate+0xa0/0x194
->         core_clks_set_rate+0x28/0x58 [venus_core]
->         load_scale_v4+0x228/0x2b4 [venus_core]
->         session_process_buf+0x160/0x198 [venus_core]
->         venus_helper_vb2_buf_queue+0xcc/0x130 [venus_core]
->         vdec_vb2_buf_queue+0xc4/0x140 [venus_dec]
->         __enqueue_in_driver+0x164/0x188 [videobuf2_common]
->         vb2_core_qbuf+0x13c/0x47c [videobuf2_common]
->         vb2_qbuf+0x88/0xec [videobuf2_v4l2]
->         v4l2_m2m_qbuf+0x84/0x15c [v4l2_mem2mem]
->         v4l2_m2m_ioctl_qbuf+0x24/0x30 [v4l2_mem2mem]
->         v4l_qbuf+0x54/0x68
->         __video_do_ioctl+0x2bc/0x3bc
->         video_usercopy+0x558/0xb04
->         video_ioctl2+0x24/0x30
->         v4l2_ioctl+0x58/0x68
->         v4l2_compat_ioctl32+0x84/0xa0
->         __arm64_compat_sys_ioctl+0x12c/0x140
->         invoke_syscall+0x54/0x110
->         el0_svc_common+0x88/0xf0
->         do_el0_svc_compat+0x28/0x34
->         el0_svc_compat+0x24/0x34
->         el0_sync_compat_handler+0xc0/0xf0
->         el0_sync_compat+0x19c/0x1c0
->
->  -> #0 (&inst->lock#3){+.+.}-{3:3}:
->         __lock_acquire+0x248c/0x2d6c
->         lock_acquire+0x240/0x314
->         __mutex_lock_common+0xcc/0xb88
->         mutex_lock_nested+0x5c/0x68
->         vdec_buf_cleanup+0x3c/0x17c [venus_dec]
->         __vb2_queue_free+0x98/0x204 [videobuf2_common]
->         vb2_core_reqbufs+0x14c/0x390 [videobuf2_common]
->         vb2_reqbufs+0x58/0x74 [videobuf2_v4l2]
->         v4l2_m2m_reqbufs+0x58/0x90 [v4l2_mem2mem]
->         v4l2_m2m_ioctl_reqbufs+0x24/0x30 [v4l2_mem2mem]
->         v4l_reqbufs+0x58/0x6c
->         __video_do_ioctl+0x2bc/0x3bc
->         video_usercopy+0x558/0xb04
->         video_ioctl2+0x24/0x30
->         v4l2_ioctl+0x58/0x68
->         v4l2_compat_ioctl32+0x84/0xa0
->         __arm64_compat_sys_ioctl+0x12c/0x140
->         invoke_syscall+0x54/0x110
->         el0_svc_common+0x88/0xf0
->         do_el0_svc_compat+0x28/0x34
->         el0_svc_compat+0x24/0x34
->         el0_sync_compat_handler+0xc0/0xf0
->         el0_sync_compat+0x19c/0x1c0
->
->  other info that might help us debug this:
->
->  Chain exists of:
->    &inst->lock#3 --> &mm->mmap_lock --> &q->mmap_lock
->
->   Possible unsafe locking scenario:
->
->         CPU0                    CPU1
->         ----                    ----
->    lock(&q->mmap_lock);
->                                 lock(&mm->mmap_lock);
->                                 lock(&q->mmap_lock);
->    lock(&inst->lock#3);
->
->   *** DEADLOCK ***
->
->  1 lock held by ThreadPoolSingl/3969:
->   #0: ffffff80d3c3c4f8 (&q->mmap_lock){+.+.}-{3:3}, at: vb2_core_reqbufs+0xe4/0x390 [videobuf2_common]
->
->  stack backtrace:
->  CPU: 2 PID: 3969 Comm: ThreadPoolSingl Not tainted 5.13.0-rc2 #71
->  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
->  Call trace:
->   dump_backtrace+0x0/0x1b4
->   show_stack+0x24/0x30
->   dump_stack+0xe0/0x15c
->   print_circular_bug+0x32c/0x388
->   check_noncircular+0x138/0x140
->   __lock_acquire+0x248c/0x2d6c
->   lock_acquire+0x240/0x314
->   __mutex_lock_common+0xcc/0xb88
->   mutex_lock_nested+0x5c/0x68
->   vdec_buf_cleanup+0x3c/0x17c [venus_dec]
->   __vb2_queue_free+0x98/0x204 [videobuf2_common]
->   vb2_core_reqbufs+0x14c/0x390 [videobuf2_common]
->   vb2_reqbufs+0x58/0x74 [videobuf2_v4l2]
->   v4l2_m2m_reqbufs+0x58/0x90 [v4l2_mem2mem]
->   v4l2_m2m_ioctl_reqbufs+0x24/0x30 [v4l2_mem2mem]
->   v4l_reqbufs+0x58/0x6c
->   __video_do_ioctl+0x2bc/0x3bc
->   video_usercopy+0x558/0xb04
->   video_ioctl2+0x24/0x30
->   v4l2_ioctl+0x58/0x68
->   v4l2_compat_ioctl32+0x84/0xa0
->   __arm64_compat_sys_ioctl+0x12c/0x140
->   invoke_syscall+0x54/0x110
->   el0_svc_common+0x88/0xf0
->   do_el0_svc_compat+0x28/0x34
->   el0_svc_compat+0x24/0x34
->   el0_sync_compat_handler+0xc0/0xf0
->   el0_sync_compat+0x19c/0x1c0
->
-> The 'gpd_list_lock' is nominally named as such to protect the 'gpd_list'
-> from concurrent access and mutation. Unfortunately, holding that mutex
-> around various OPP framework calls leads to lockdep splats because now
-> we're doing various operations in OPP core such as registering with
-> debugfs while holding the list lock. We don't need to hold any list
-> mutex while we're calling into OPP, so let's shrink the locking area of
-> the 'gpd_list_lock' so that lockdep isn't triggered. This also helps
-> reduce contention on this lock, which probably doesn't matter much but
-> at least is nice to have.
->
-> Cc: Len Brown <len.brown@intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: <linux-pm@vger.kernel.org>
-> Cc: Viresh Kumar <vireshk@kernel.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-
-Thanks for fixing this!
-
-As I said, when discussing the previous version, I am working on
-additional improvements, but this should be a step in the right
-direction.
-
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Kind regards
-Uffe
-
+On 29.06.2021 11:40, Harini Katakam wrote:
+> Add support for VSC8531_02 (Rev 2) device.
+> Add support for optional RGMII RX and TX delay tuning via devicetree.
+> The hierarchy is:
+> - Retain the defaul 0.2ns delay when RGMII tuning is not set.
+> - Retain the default 2ns delay when RGMII tuning is set and DT delay
+> property is NOT specified.
+> - Use the DT delay value when RGMII tuning is set and a DT delay
+> property is specified.
+> 
+> Signed-off-by: Harini Katakam <harini.katakam@xilinx.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 > ---
->
-> Changes from v1:
->  * Removed list lock in genpd_add_provider() as it serves no purpose
->
->  drivers/base/power/domain.c | 38 +++++++++++++++++--------------------
->  1 file changed, 17 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index b6a782c31613..03d18223d8bb 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -1984,8 +1984,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
->
->         mutex_lock(&gpd_list_lock);
->         list_add(&genpd->gpd_list_node, &gpd_list);
-> -       genpd_debug_add(genpd);
->         mutex_unlock(&gpd_list_lock);
-> +       genpd_debug_add(genpd);
->
->         return 0;
->  }
-> @@ -2172,12 +2172,19 @@ static int genpd_add_provider(struct device_node *np, genpd_xlate_t xlate,
->
->  static bool genpd_present(const struct generic_pm_domain *genpd)
+>  drivers/net/phy/mscc/mscc.h      |  3 +++
+>  drivers/net/phy/mscc/mscc_main.c | 41 ++++++++++++++++++++++++++++++--
+>  2 files changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/phy/mscc/mscc.h b/drivers/net/phy/mscc/mscc.h
+> index a50235fdf7d9..5a26eba0ace0 100644
+> --- a/drivers/net/phy/mscc/mscc.h
+> +++ b/drivers/net/phy/mscc/mscc.h
+> @@ -281,6 +281,7 @@ enum rgmii_clock_delay {
+>  #define PHY_ID_VSC8514			  0x00070670
+>  #define PHY_ID_VSC8530			  0x00070560
+>  #define PHY_ID_VSC8531			  0x00070570
+> +#define PHY_ID_VSC8531_02		  0x00070572
+>  #define PHY_ID_VSC8540			  0x00070760
+>  #define PHY_ID_VSC8541			  0x00070770
+>  #define PHY_ID_VSC8552			  0x000704e0
+> @@ -373,6 +374,8 @@ struct vsc8531_private {
+>  	 * package.
+>  	 */
+>  	unsigned int base_addr;
+> +	u32 rx_delay;
+> +	u32 tx_delay;
+>  
+>  #if IS_ENABLED(CONFIG_MACSEC)
+>  	/* MACsec fields:
+> diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+> index 6e32da28e138..2b501824c802 100644
+> --- a/drivers/net/phy/mscc/mscc_main.c
+> +++ b/drivers/net/phy/mscc/mscc_main.c
+> @@ -535,15 +535,16 @@ static int vsc85xx_rgmii_set_skews(struct phy_device *phydev, u32 rgmii_cntl,
+>  	u16 rgmii_tx_delay_pos = ffs(rgmii_tx_delay_mask) - 1;
+>  	u16 reg_val = 0;
+>  	int rc;
+> +	struct vsc8531_private *vsc8531 = phydev->priv;
+>  
+>  	mutex_lock(&phydev->lock);
+>  
+>  	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
+>  	    phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
+> -		reg_val |= RGMII_CLK_DELAY_2_0_NS << rgmii_rx_delay_pos;
+> +		reg_val |= vsc8531->rx_delay << rgmii_rx_delay_pos;
+>  	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+>  	    phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
+> -		reg_val |= RGMII_CLK_DELAY_2_0_NS << rgmii_tx_delay_pos;
+> +		reg_val |= vsc8531->tx_delay << rgmii_tx_delay_pos;
+>  
+>  	rc = phy_modify_paged(phydev, MSCC_PHY_PAGE_EXTENDED_2,
+>  			      rgmii_cntl,
+> @@ -1820,6 +1821,17 @@ static int vsc85xx_config_init(struct phy_device *phydev)
 >  {
-> +       bool ret = false;
->         const struct generic_pm_domain *gpd;
->
-> -       list_for_each_entry(gpd, &gpd_list, gpd_list_node)
-> -               if (gpd == genpd)
-> -                       return true;
-> -       return false;
-> +       mutex_lock(&gpd_list_lock);
-> +       list_for_each_entry(gpd, &gpd_list, gpd_list_node) {
-> +               if (gpd == genpd) {
-> +                       ret = true;
-> +                       break;
-> +               }
-> +       }
-> +       mutex_unlock(&gpd_list_lock);
+>  	int rc, i, phy_id;
+>  	struct vsc8531_private *vsc8531 = phydev->priv;
+> +	struct device_node *of_node = phydev->mdio.dev.of_node;
 > +
-> +       return ret;
->  }
->
->  /**
-> @@ -2188,15 +2195,13 @@ static bool genpd_present(const struct generic_pm_domain *genpd)
->  int of_genpd_add_provider_simple(struct device_node *np,
->                                  struct generic_pm_domain *genpd)
+> +	rc = of_property_read_u32(of_node, "vsc8531,rx-delay",
+> +				  &vsc8531->rx_delay);
+> +	if (rc < 0)
+> +		vsc8531->rx_delay = RGMII_CLK_DELAY_2_0_NS;
+> +
+> +	rc = of_property_read_u32(of_node, "vsc8531,tx-delay",
+> +				  &vsc8531->tx_delay);
+> +	if (rc < 0)
+> +		vsc8531->tx_delay = RGMII_CLK_DELAY_2_0_NS;
+>  
+>  	rc = vsc85xx_default_config(phydev);
+>  	if (rc)
+> @@ -2444,6 +2456,30 @@ static struct phy_driver vsc85xx_driver[] = {
+>  	.get_strings    = &vsc85xx_get_strings,
+>  	.get_stats      = &vsc85xx_get_stats,
+>  },
+> +{
+> +	.phy_id		= PHY_ID_VSC8531_02,
+> +	.name		= "Microsemi VSC8531-02",
+> +	.phy_id_mask	= 0xfffffff0,
+
+VSC8531 and VSC8531-02 share the same model number, therefore you
+would have to switch both PHY drivers to exact match.
+phy_id_mask = 0xffffffff, or better use macro PHY_ID_MATCH_EXACT().
+
+
+> +	/* PHY_GBIT_FEATURES */
+> +	.soft_reset	= &genphy_soft_reset,
+> +	.config_init	= &vsc85xx_config_init,
+> +	.config_aneg	= &vsc85xx_config_aneg,
+> +	.read_status	= &vsc85xx_read_status,
+> +	.handle_interrupt	= vsc85xx_handle_interrupt,
+> +	.config_intr	= &vsc85xx_config_intr,
+> +	.suspend	= &genphy_suspend,
+> +	.resume		= &genphy_resume,
+> +	.probe		= &vsc85xx_probe,
+> +	.set_wol	= &vsc85xx_wol_set,
+> +	.get_wol	= &vsc85xx_wol_get,
+> +	.get_tunable	= &vsc85xx_get_tunable,
+> +	.set_tunable	= &vsc85xx_set_tunable,
+> +	.read_page	= &vsc85xx_phy_read_page,
+> +	.write_page	= &vsc85xx_phy_write_page,
+> +	.get_sset_count = &vsc85xx_get_sset_count,
+> +	.get_strings	= &vsc85xx_get_strings,
+> +	.get_stats	= &vsc85xx_get_stats,
+> +},
 >  {
-> -       int ret = -EINVAL;
-> +       int ret;
->
->         if (!np || !genpd)
->                 return -EINVAL;
->
-> -       mutex_lock(&gpd_list_lock);
-> -
->         if (!genpd_present(genpd))
-> -               goto unlock;
-> +               return -EINVAL;
->
->         genpd->dev.of_node = np;
->
-> @@ -2207,7 +2212,7 @@ int of_genpd_add_provider_simple(struct device_node *np,
->                         if (ret != -EPROBE_DEFER)
->                                 dev_err(&genpd->dev, "Failed to add OPP table: %d\n",
->                                         ret);
-> -                       goto unlock;
-> +                       return ret;
->                 }
->
->                 /*
-> @@ -2225,16 +2230,13 @@ int of_genpd_add_provider_simple(struct device_node *np,
->                         dev_pm_opp_of_remove_table(&genpd->dev);
->                 }
->
-> -               goto unlock;
-> +               return ret;
->         }
->
->         genpd->provider = &np->fwnode;
->         genpd->has_provider = true;
->
-> -unlock:
-> -       mutex_unlock(&gpd_list_lock);
-> -
-> -       return ret;
-> +       return 0;
->  }
->  EXPORT_SYMBOL_GPL(of_genpd_add_provider_simple);
->
-> @@ -2253,8 +2255,6 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->         if (!np || !data)
->                 return -EINVAL;
->
-> -       mutex_lock(&gpd_list_lock);
-> -
->         if (!data->xlate)
->                 data->xlate = genpd_xlate_onecell;
->
-> @@ -2294,8 +2294,6 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->         if (ret < 0)
->                 goto error;
->
-> -       mutex_unlock(&gpd_list_lock);
-> -
->         return 0;
->
->  error:
-> @@ -2314,8 +2312,6 @@ int of_genpd_add_provider_onecell(struct device_node *np,
->                 }
->         }
->
-> -       mutex_unlock(&gpd_list_lock);
-> -
->         return ret;
->  }
->  EXPORT_SYMBOL_GPL(of_genpd_add_provider_onecell);
->
-> base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
-> --
-> https://chromeos.dev
->
+>  	.phy_id		= PHY_ID_VSC8540,
+>  	.name		= "Microsemi FE VSC8540 SyncE",
+> @@ -2668,6 +2704,7 @@ static struct mdio_device_id __maybe_unused vsc85xx_tbl[] = {
+>  	{ PHY_ID_VSC8514, 0xfffffff0, },
+>  	{ PHY_ID_VSC8530, 0xfffffff0, },
+>  	{ PHY_ID_VSC8531, 0xfffffff0, },
+> +	{ PHY_ID_VSC8531_02, 0xfffffff0, },
+
+Effectively this is the same as the line before. Maybe it would make sense
+to change this table in a follow-up patch to just one entry covering all
+PHY ID's with the vendor part being Microsemi, e.g. using macro
+PHY_ID_MATCH_VENDOR().
+
+>  	{ PHY_ID_VSC8540, 0xfffffff0, },
+>  	{ PHY_ID_VSC8541, 0xfffffff0, },
+>  	{ PHY_ID_VSC8552, 0xfffffff0, },
+> 
+
