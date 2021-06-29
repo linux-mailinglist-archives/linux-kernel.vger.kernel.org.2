@@ -2,210 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AEF3B71E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5353B71E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhF2MPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:15:07 -0400
-Received: from first.geanix.com ([116.203.34.67]:56706 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233532AbhF2MPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:15:00 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id A4C1C4C46C7;
-        Tue, 29 Jun 2021 12:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1624968750; bh=sO+1IflRvsDWh9YRlM/kNxr2EvoauPrJjX2NjtD7gVA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=HRJSQnHsz2vLt/oYMxqA4pSsH1cwhuTk2hBf/jBxZgoSEEyHFEGAY6H0HAKV0kSvk
-         uQU3z12QfGumI0blI/gw4p59g6RGoT4ojYyWJ5wcQNWaGXV920CZHvPXfinmkoyEaG
-         bx8LIjNH1aopV3emaQJ4/dLMLHb5r1fT31MlWycMYdGbblVHdhMF6cQOlDJawtEGSb
-         hi9KW86QMCxdNiaA2aPs5o96OZV7nzsinCcG8eLgi0AjPoDzOsa6IgDnIqhgHul7en
-         ozY224MisaG6RG38CHKtIaNBBJX0edkL1BtAbewfL97L00Lkv6jNECSBvKgs8EoKTJ
-         7+ec+EUNDBmnA==
-From:   =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>
-To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH v3 4/4] hwmon: intel-m10-bmc-hwmon: add n5010 sensors
-Date:   Tue, 29 Jun 2021 14:12:14 +0200
-Message-Id: <20210629121214.988036-5-martin@geanix.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210629121214.988036-1-martin@geanix.com>
-References: <20210629121214.988036-1-martin@geanix.com>
+        id S233647AbhF2MPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:15:34 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:49507 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233384AbhF2MP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:15:29 -0400
+X-UUID: 1808bfb60d774362bc069ba1ed953987-20210629
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4SbG1vndPjwBWteOUa61pelj+E3Mh/QyjRjIiC1LL3s=;
+        b=kt4DZhFF3c3qEU+rHgUIkRCJ65aiuh9VZPAoBNm0UUHyEc+i9i4qh8107WVX5qavw/gN1w3KZ4XG/XKmEEyr+s5FaRuJiZX8yfeLuny12Bf61yqxQjpk8sJ+pFDV2Mem95Lfi/jUiN5WXQm/YUlI8nEUSOeEq1u8ls5smIZxl4o=;
+X-UUID: 1808bfb60d774362bc069ba1ed953987-20210629
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1263429074; Tue, 29 Jun 2021 20:12:57 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
+ 2021 20:12:48 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 29 Jun 2021 20:12:47 +0800
+Message-ID: <1624968767.5647.2.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/3] i2c: mediatek: Dump i2c/dma register when a timeout
+ occurs
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>, <wsa@the-dreams.de>,
+        <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>,
+        <liguo.zhang@mediatek.com>
+Date:   Tue, 29 Jun 2021 20:12:47 +0800
+In-Reply-To: <CA+Px+wU8qqEDU+bV0QpoJssNOxebutzRGgHo6WpC9VFJwckKKQ@mail.gmail.com>
+References: <1623122200-1896-1-git-send-email-kewei.xu@mediatek.com>
+         <1623122200-1896-3-git-send-email-kewei.xu@mediatek.com>
+         <54301510-e0d5-0762-1979-b194b8fd5eb8@gmail.com>
+         <1623206624.14050.10.camel@mhfsdcap03>
+         <CA+Px+wU8qqEDU+bV0QpoJssNOxebutzRGgHo6WpC9VFJwckKKQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+X-TM-SNTS-SMTP: 99D115C5B010B0D7F3D44B52D5ED0835CC3A0712A95D069472FE4D2D1B8632C52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Hundebøll <mhu@silicom.dk>
-
-Add the list of sensors supported by the Silicom n5010 PAC, and enable
-the drivers as a subtype of the intel-m10-bmc multi-function driver.
-
-Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Moritz Fischer <mdf@kernel.org>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
----
-
-Changes since v2:
- * Added Yilun's Reviewed-by
- * Added Moritz' Reviewed-by
- * Added Guenter's Reviewed-by
-
-Changes since v1:
- * Patch split out to separate hwmon changes
-
- drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
-
-diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-index bd7ed2ed3a1e..7a08e4c44a4b 100644
---- a/drivers/hwmon/intel-m10-bmc-hwmon.c
-+++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-@@ -228,6 +228,118 @@ static const struct m10bmc_hwmon_board_data d5005bmc_hwmon_bdata = {
- 	.hinfo = d5005bmc_hinfo,
- };
- 
-+static const struct m10bmc_sdata n5010bmc_temp_tbl[] = {
-+	{ 0x100, 0x0, 0x104, 0x0, 0x0, 1000, "Board Local Temperature" },
-+	{ 0x108, 0x0, 0x10c, 0x0, 0x0, 1000, "FPGA 1 Temperature" },
-+	{ 0x110, 0x0, 0x114, 0x0, 0x0, 1000, "FPGA 2 Temperature" },
-+	{ 0x118, 0x0, 0x0, 0x0, 0x0, 1000, "Card Top Temperature" },
-+	{ 0x11c, 0x0, 0x0, 0x0, 0x0, 1000, "Card Bottom Temperature" },
-+	{ 0x128, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 1.2V Temperature" },
-+	{ 0x134, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 5V Temperature" },
-+	{ 0x140, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.9V Temperature" },
-+	{ 0x14c, 0x0, 0x0, 0x0, 0x0, 1000, "FPGA 0.85V Temperature" },
-+	{ 0x158, 0x0, 0x0, 0x0, 0x0, 1000, "AUX 12V Temperature" },
-+	{ 0x164, 0x0, 0x0, 0x0, 0x0, 1000, "Backplane 12V Temperature" },
-+	{ 0x1a8, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-1 Temperature" },
-+	{ 0x1ac, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-2 Temperature" },
-+	{ 0x1b0, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-3 Temperature" },
-+	{ 0x1b4, 0x0, 0x0, 0x0, 0x0, 1000, "QSFP28-4 Temperature" },
-+	{ 0x1b8, 0x0, 0x0, 0x0, 0x0, 1000, "CVL1 Internal Temperature" },
-+	{ 0x1bc, 0x0, 0x0, 0x0, 0x0, 1000, "CVL2 Internal Temperature" },
-+};
-+
-+static const struct m10bmc_sdata n5010bmc_in_tbl[] = {
-+	{ 0x120, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Voltage" },
-+	{ 0x12c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Voltage" },
-+	{ 0x138, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Voltage" },
-+	{ 0x144, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Voltage" },
-+	{ 0x150, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Voltage" },
-+	{ 0x15c, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Voltage" },
-+	{ 0x16c, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Voltage" },
-+	{ 0x17c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Voltage" },
-+	{ 0x184, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Voltage" },
-+	{ 0x18c, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Voltage" },
-+	{ 0x194, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Voltage" },
-+	{ 0x19c, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Voltage" },
-+	{ 0x1a4, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Voltage" },
-+};
-+
-+static const struct m10bmc_sdata n5010bmc_curr_tbl[] = {
-+	{ 0x124, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.2V Current" },
-+	{ 0x130, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 5V Current" },
-+	{ 0x13c, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.9V Current" },
-+	{ 0x148, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 0.85V Current" },
-+	{ 0x154, 0x0, 0x0, 0x0, 0x0, 1, "AUX 12V Current" },
-+	{ 0x160, 0x0, 0x0, 0x0, 0x0, 1, "Backplane 12V Current" },
-+	{ 0x168, 0x0, 0x0, 0x0, 0x0, 1, "DDR4 1.2V Current" },
-+	{ 0x178, 0x0, 0x0, 0x0, 0x0, 1, "FPGA 1.8V Current" },
-+	{ 0x180, 0x0, 0x0, 0x0, 0x0, 1, "QDR 1.3V Current" },
-+	{ 0x188, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 0.8V Current" },
-+	{ 0x190, 0x0, 0x0, 0x0, 0x0, 1, "CVL1 1.05V Current" },
-+	{ 0x198, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 1.05V Current" },
-+	{ 0x1a0, 0x0, 0x0, 0x0, 0x0, 1, "CVL2 0.8V Current" },
-+};
-+
-+static const struct hwmon_channel_info *n5010bmc_hinfo[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_CRIT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL),
-+	HWMON_CHANNEL_INFO(in,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL),
-+	HWMON_CHANNEL_INFO(curr,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL),
-+	NULL
-+};
-+
-+static const struct m10bmc_hwmon_board_data n5010bmc_hwmon_bdata = {
-+	.tables = {
-+		[hwmon_temp] = n5010bmc_temp_tbl,
-+		[hwmon_in] = n5010bmc_in_tbl,
-+		[hwmon_curr] = n5010bmc_curr_tbl,
-+	},
-+
-+	.hinfo = n5010bmc_hinfo,
-+};
-+
- static umode_t
- m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
- 			u32 attr, int channel)
-@@ -438,6 +550,10 @@ static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
- 		.name = "d5005bmc-hwmon",
- 		.driver_data = (unsigned long)&d5005bmc_hwmon_bdata,
- 	},
-+	{
-+		.name = "n5010bmc-hwmon",
-+		.driver_data = (unsigned long)&n5010bmc_hwmon_bdata,
-+	},
- 	{ }
- };
- 
--- 
-2.31.0
+T24gVHVlLCAyMDIxLTA2LTI5IGF0IDEyOjE5ICswODAwLCBUenVuZy1CaSBTaGloIHdyb3RlOg0K
+PiBPbiBXZWQsIEp1biA5LCAyMDIxIGF0IDEwOjQ0IEFNIEtld2VpIFh1IDxrZXdlaS54dUBtZWRp
+YXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gVHVlLCAyMDIxLTA2LTA4IGF0IDE2OjAxICsw
+MjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0KPiA+ID4gSXMgdGhpcyBvZmZzZXQgb25seSBm
+b3IgbXQ4MTkyIG9yIGFsc28gZm9yIG10ODE4Mz8NCj4gPiA+IEluIGFueSBjYXNlIHRoYXQgc2hv
+dWxkIGdvIGluIGFzIGFub3RoZXIgcGF0Y2guIEVpdGhlciBhIGZpeCBvciBhIG5ldw0KPiA+ID4g
+bXRfaTJjX3JlZ3NfdjNbXQ0KPiA+DQo+ID4gVGhpcyBvZmZzZXQgdmFsdWUgaXMgc3VpdGFibGUg
+Zm9yIHRoZSBJQyBvZiBtdF9pMmNfcmVnc192MiBoYXJkd2FyZQ0KPiA+IGRlc2lnbiBzaW1pbGFy
+IHRvIG10ODE5Mi84MTk1LCBub3QgZm9yIDgxODMuDQo+ID4NCj4gPiBUaGUgcmVhc29uIGZvciB0
+aGUgbW9kaWZpY2F0aW9uIGhlcmUgaXMgdGhhdCB0aGUgcHJldmlvdXMNCj4gPiBvZmZzZXQgaW5m
+b3JtYXRpb24gaXMgaW5jb3JyZWN0LCBPRkZTRVRfREVCVUdTVEFUID0gMFhFNCBpcw0KPiA+IHRo
+ZSBjb3JyZWN0IHZhbHVlLg0KPiANCj4gUGxlYXNlIHN1Ym1pdCBhbm90aGVyIHBhdGNoIGZvciBm
+aXhpbmcgdGhlIGluY29ycmVjdCB2YWx1ZS4NCg0KT2theSwgSSB3aWxsIHJlc3VibWl0IGEgcGF0
+Y2ggdG8gZml4aW5nIHRoZSBpbmNvcnJlY3QgdmFsdWUsVGhhbmtzLg0KDQo=
 
