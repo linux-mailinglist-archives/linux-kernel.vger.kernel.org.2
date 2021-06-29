@@ -2,248 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BFF3B7A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 00:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEB13B7A92
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbhF2XAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 19:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235506AbhF2XAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:00:13 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD5CC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:57:44 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m18so1099688wrv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1GwQpra/KQPWoCRAlFJjNi7iu4asJcHcBwiuJivAnGg=;
-        b=eybKy6mFLIkvxYvPi3HSPRLHk8vvbO3rJF8/y+e3qIj8eqA4TOoGdARSmk4UUeXubi
-         +5geT31XcpCN6AYcy8zCjo6A8nIxbeRym/2Dat7lpZ1KYcwnFF31qlyd22WX/okciPk/
-         eCFZX5P97jM5tnCQvBB4Vy9N+KlwdYDeV04pSdDKuqj+wvySmky02g2kDCXP6ZYqb3c7
-         yVAbePkZLZUhCtJSO3smJe/ETf3esXY17/iCJiIVPItyGv3TM8eR+EsE2pVEn9iL0pH0
-         2e+CnwU2QR7JWImhnMp1MuIfMZs3/KljJYaFSzOQIqlYQ3PHObNTU/v4pjXtZem66nWK
-         qlEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1GwQpra/KQPWoCRAlFJjNi7iu4asJcHcBwiuJivAnGg=;
-        b=MH3QILMsStdcRfs3IBfWNlf3jO7cPSz0qBYPwe5kSW/g0/u6LigUPMa6QKwnnlgPL4
-         5sK0rfZJQFdozLBO7MSVKeSCVxV4cnm19FCGYWgGzWy5vcJlTbNTfBP0BzaGLc+VJckL
-         HN9YC4A9kSqeXSl6XES00kSab6THwXtWN/HE5oxSacgTh2srzO1g0RyrOqjUaZfAXqSq
-         k3KLbaeqJ6J7HWnZTfhHfF2Kbsv/fRkuHXx8YUbsSbgORU12aJdeCq/oMpg4Ba8aLVNu
-         1G3lio7LCi6HkGBosQrNohSlwAnX4s9syTXyISdsB5UnxzVakHLhIxPfJPwRRG0yNGQf
-         YJtg==
-X-Gm-Message-State: AOAM530xeQRsYZ6HXhL7395OUzvmRsNzQCjX6OoaYdK69TtF4xMLiIZg
-        ZM8sENboru9tQtq7QssGfHdjAfYMVa8Z4+eUXKLMmA==
-X-Google-Smtp-Source: ABdhPJzcStTNFn7PT9mdM/fs5L78Ch+MJXH77W9tD6W0B/zz8w+bfFdJPTKdUblctuomZhn/o6934pltS/EiokPbr9Q=
-X-Received: by 2002:a5d:4103:: with SMTP id l3mr18118189wrp.102.1625007463255;
- Tue, 29 Jun 2021 15:57:43 -0700 (PDT)
+        id S234244AbhF2XIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:08:45 -0400
+Received: from mail-bn1nam07on2086.outbound.protection.outlook.com ([40.107.212.86]:26436
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231952AbhF2XIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 19:08:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GJN6+xqn922qBKO4fhzbAaLgV+wT2U+OiaWuL1b+CkbFC/u370+M2FnUbnEgV86FXH3H1bHhtnpCuyBRzGQBTSZwj0GX6Lyw7zGWRjkvagTWMiXot6wL3sncGcMrInTcPzsXyAsFKODBwByPzsPTaRoQIZXWIIyf0OG00cXzwR7zlYXy3pgIx4qKwbQaTK2YM3Ttm6L7NaVaHh1JgpUdCsF1NWu4nY8NxnxaA+MmbA50qiptmK5G4KWa0hPU4N4tXK+dKSbSVsYIc8gzERCqvpX1rKCMILgNT7VpoJrkDk7ng5kxjOtksDR0AdK9AKn8m5f6IoH7nmbyfwITI6Q17A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=quzThdpSv08KSJxQ8KCvou6GZCPL3dHl3oYbzT3Gnec=;
+ b=KGNYJq0/Q9fzREtcH5gsRcnBSaHOqty/4S09hhFtCX50TsdmNOvbZw2tvvb51a4x7Nj/1/aOeMHLQB7NxLEDYehiZXQQldpEmW0XBB1WfNRAIONRrfk7pXpgtU8lQQIRjb1I0aJGjWXTwiftIMjeNMCeMD9hIO0zMl/6OQ9dZ7+iev3LmkzJUlmRbxs1Fdgi+JxFbZCOFvUNU0YHGp2Jdi24uvFrw0M24JAY+llajxJBJMOt3ID1FniDhN7DqjCJd6hToFgnH+3oMANIZ7GCRUMrhbkYWRNI9dhsN4AWvnBnLscvP2gzJBtcE8FOLt02QrhdbuIB/pACcrOY3LOgsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=quzThdpSv08KSJxQ8KCvou6GZCPL3dHl3oYbzT3Gnec=;
+ b=J0eVoctUfJtI9dCRrunIDsogRdAK1YHCjfeRzlz9yflUWwvEd+l8uCg1/NsClWx7NUpxTIKLpV4gbDhbi7zPJIyIVb+modluBCnr+4kokqDzu9zsQum/L7ju/CC9wX3CWc7vC+WAJtEuTorO8HkXU+lESsao0QKcQMLdXrd9RWk6kiETDVyE1GL0iJTNtgIgy89awGyFYf7q7WVQlMUrwCdm86mQ3KtL3c441zWi9Jp0Lsj5uiUtXMp7Meb8wMmGitzd+Vr1uMUKGT3TeC0zpbIiVtKb1CXxVSEQy3BpPx93DsFBHtVf35yuxEsNnZS5SblqiI3N9AXxxapxHqGMPQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5208.namprd12.prod.outlook.com (2603:10b6:208:311::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 29 Jun
+ 2021 23:06:12 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.027; Tue, 29 Jun 2021
+ 23:06:12 +0000
+Date:   Tue, 29 Jun 2021 20:06:11 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH rdma-rc v3] RDMA/core: Always release restrack object
+Message-ID: <20210629230611.GA278274@nvidia.com>
+References: <073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAP220CA0019.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::24) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <20210629223541.1512296-1-rmoar@google.com>
-In-Reply-To: <20210629223541.1512296-1-rmoar@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 30 Jun 2021 06:57:31 +0800
-Message-ID: <CABVgOSn3T1qYkDkzOYEOyZ3StPU0nprKrSwOynBF4=JScsN1pg@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: Fix error messages for cases of no tests and
- wrong TAP header
-To:     Rae Moar <rmoar@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAP220CA0019.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Tue, 29 Jun 2021 23:06:12 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lyMnz-001AOo-Al; Tue, 29 Jun 2021 20:06:11 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8bbdb54-62a3-44b2-e134-08d93b527d0f
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5208:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5208641BD100A293A539B96CC2029@BL1PR12MB5208.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:83;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /TH5SkfWyxfhc6Rk3DW6a9NMMAjHU/cEaTqo9yu8Smr23tEmZUZDIp/H+/EnnkigE5cIUroohBYOPJEcZC9uovA7gUYqWnVkmpLqxJ9ZzDBuzZyjCW21z23N5kSZnhevEWlg//EqcGrnPrSNF95jvNgqDsN3A6Z/bpyNOXSv2SEF0xv71kcRYcxrEw58vbXQDogtIw88CGjzfRwHieInLz0uJ9PNjIRS2aCozEli1/tWweTgvGKxvuwinous60TuS7XMxmHhBtG+rsiJdg1gASMYxxiKSANdvbyxQiQ8RxWlALJA0Tnc+DWPPY4+1NfD6rQ4g1Oo9niV2V/+kofwsZTsCpaU4p4/de4Aq6UyeAb75ANx9METf4cMXavIU9JpauXpa6wuzHbSZQyKtPHjV6sdH3wvMZVT/rEkos3oVE9HMFUsHJeeuI/ePu2Ss/Kxs8SJK2CphZ88pZ8nQ5y8oNCBvFUehO6irbveXikjZ3Zy0NbqMXRlQhR6artCXdFF7iA/9DAohkFb9DNCbK24/vVlmzw7racwcGh8WiX/orTToMcULpV/m51QU+iOw7S6+jJEV5HcNHhN0Nv+Dhfwg19RuLwJsm6Qo3QwQA+ZxN4djMjifPX2eNVqAQS7A4ETXRzMehvykXgJaVFY8Zce3HQjfDwDFjJoznzOBEakIWRjlbwwijC6ZlckEjqnQ2C8qu+FNf/E0Ecu8QO4TIdg7JtSySuN9a49AhAI0zBr/HZj+sD+45fJEZbkQFyuiM/8PhgX7uYinKkRb7sCtPka268xKKTMVzIrMc2bNQEvSqLKV5lYGwIopoNWlFIc+57/KmaVKaPc6No+ypRS5DPFW2iSpKeV3E0aLdOeSCrsRQ4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(36756003)(2616005)(1076003)(38100700002)(316002)(426003)(86362001)(9746002)(9786002)(8676002)(26005)(6916009)(83380400001)(5660300002)(107886003)(4326008)(186003)(966005)(66476007)(66556008)(66946007)(2906002)(8936002)(478600001)(54906003)(33656002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R1rIKUpnf91OdliumwGzUhO8O1P/kqSerDNThocpgtxTVM3nv2n4vkb+y2mU?=
+ =?us-ascii?Q?UT0vhu3VWpT3SCuvj/vnuac5+h6LnNxgf66NZ9ncLnTwfRwvSrVTTMXYfqxd?=
+ =?us-ascii?Q?d06S/5s4WkTuCtqRoqlotKsPAik5fpjgaG7ssX+UDQ5O90xHLWkL4F+QSRjs?=
+ =?us-ascii?Q?wKdSIJJDHEQfA0/4BThbsLt5Wt0Jl6qk7LibC2LzyKpcP6VRV0b6S9JNC7mQ?=
+ =?us-ascii?Q?HUwDooSQOFj0vZwFK3JEp8pzpUUXmKolOHnw5oc9bkIA+hvVJ6JsHLY4Q2DZ?=
+ =?us-ascii?Q?vOT/LZoibIu7kfK2BsVgeJ5qRST/fKz2YL6oBNqr8eZyYiXQJQNOR6O7DIJ0?=
+ =?us-ascii?Q?eCPYjEamphqkjAWgMDRIURq9wonfRjcfjy97GwaYYUmZYE+e+4gSuQ0BZm0Y?=
+ =?us-ascii?Q?Z6vq3+srd6jlaZR3mf8ZkR+KRyw16v4jnrPLMIjpklMjMjz0erRngU53GikR?=
+ =?us-ascii?Q?n+zMLqlGVfLJ+4gakVHHDqmh2M2S8eEfB8Y8pD1LV/GL2OnZPG5yP5kMOKkI?=
+ =?us-ascii?Q?Kv3AfP972Nfr+c3r7PqTyA7mDIv+w8G++Tf//jIhaHqGFuHszYvYwVMUZopt?=
+ =?us-ascii?Q?hqhSPJKC2TL43uxqF3oK2ZQqTefk4+3IgF+fpolx8Xpqhy1wqHXAuqjHtPpd?=
+ =?us-ascii?Q?Y/14wzz0AbG6TT1OCTxzPtFx+rbnWweQ10snXE83gX/Hn1OOoDPv206i8ztV?=
+ =?us-ascii?Q?mJcsEkz+HJUq3tkq6YLgtJ1qChjdnHa3QguBPsNxvbcHI/gX0KL1DLAtS2yg?=
+ =?us-ascii?Q?npoPgGUn4kc17T75h7++TeeX2N2ibCE4qs26hUAGom4SfCuM8B02Pm5ZrIOX?=
+ =?us-ascii?Q?bylIuzvYmOVe3sIGeq76WQd3ptqqyURFRqgMuOMmReQ1fIvE+0EAOq9hkgys?=
+ =?us-ascii?Q?jLk9drYLtKgSdlkhsv85uBDbVzFBAiJzNARypaS7gFk9rDYt9vL9bopSk2+M?=
+ =?us-ascii?Q?gRG9tZv5hXBozQQGMhJ25ieDwr6SzaUzVTUEo1VAliOzgKsJ3usgRSKjG/jM?=
+ =?us-ascii?Q?k1xaQ/sm7JU+E/tH6/xCqsTiGqQIx5mbjglZMFhhb33YOM8NTGKlgD2Q2oHg?=
+ =?us-ascii?Q?TDEODBUajCUo9LA9qfOIHj1Acqass+8P2uebmCv1IrO5tS17J9z50fcW6l9J?=
+ =?us-ascii?Q?CiylygoNaFYEE7M77wWLGIDMlfXUFIrFmUesDHDDyJv5lFSqJrfZoAOF31hS?=
+ =?us-ascii?Q?4tMWhwFlI3A/opP3uKPbk4COcGhMjPaNOF4In2tzMmbSlvEeX/LWD2etFSUQ?=
+ =?us-ascii?Q?Fn5wmwN6NV7E9XFIzefM6GGUUDrruiKlS+zCFGzBXufOWnYkbKs6OMKAShuG?=
+ =?us-ascii?Q?ONGgWSbcsv1vEhA2H4LQV1xa?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8bbdb54-62a3-44b2-e134-08d93b527d0f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 23:06:12.3057
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: habQdsbTmB6whXm/hd9JMyyof1bHITdUBPFo2WTZ8hf1S/PiYHnEEd2Z1k4LltnF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 6:36 AM Rae Moar <rmoar@google.com> wrote:
->
-> In the case of the TAP output having an incorrect header format, the
-> parser used to output an error message of 'no tests run!'. Additionally,
-> in the case of TAP output with the correct header but no tests, the
-> parser used to output an error message of 'could not parse test
-> results!'.  This patch corrects the error messages for these two cases
-> by switching the original outputted error messages and correcting the
-> tests in kunit_toot_test.py.
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
+On Tue, Jun 29, 2021 at 09:49:33AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Change location of rdma_restrack_del() to fix the bug where
+> task_struct was acquired but not released, causing to resource leak.
+> 
+>   ucma_create_id() {
+>     ucma_alloc_ctx();
+>     rdma_create_user_id() {
+>       rdma_restrack_new();
+>       rdma_restrack_set_name() {
+>         rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
+>       }
+>     }
+>     ucma_destroy_private_ctx() {
+>       ucma_put_ctx();
+>       rdma_destroy_id() {
+>         _destroy_id()                       <--- id_priv was freed
+>       }
+>     }
+>   }
+> 
+> Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
+> Reported-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
+> ---
+> Changelog:
+> v3:
+>  * Dropped controversial hunks and updated commit message respectively
+> v2: https://lore.kernel.org/lkml/e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com
+>  * Added bug report analysis
+> v1: https://lore.kernel.org/linux-rdma/f72e27d5c82cd9beec7670141afa62786836c569.1622956637.git.leonro@nvidia.com/T/#u
+> ---
+>  drivers/infiniband/core/cma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-These error messages make a lot more sense, thank you!
+Applied to for-next, thanks
 
-With this patch, we can close
-https://bugzilla.kernel.org/show_bug.cgi?id=207923
-
-This is
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
-
->  tools/testing/kunit/kunit_parser.py           |  6 +-
->  tools/testing/kunit/kunit_tool_test.py        | 16 +++-
->  ...is_test_passed-no_tests_run_no_header.log} |  0
->  ...s_test_passed-no_tests_run_with_header.log | 77 +++++++++++++++++++
->  4 files changed, 94 insertions(+), 5 deletions(-)
->  rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
->  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
->
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index c3c524b79db8..b88db3f51dc5 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
->  def parse_test_result(lines: LineStream) -> TestResult:
->         consume_non_diagnostic(lines)
->         if not lines or not parse_tap_header(lines):
-> -               return TestResult(TestStatus.NO_TESTS, [], lines)
-> +               return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
->         expected_test_suite_num = parse_test_plan(lines)
-> -       if not expected_test_suite_num:
-> +       if expected_test_suite_num == 0:
-> +               return TestResult(TestStatus.NO_TESTS, [], lines)
-> +       elif expected_test_suite_num is None:
->                 return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
->         test_suites = []
->         for i in range(1, expected_test_suite_num + 1):
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index bdae0e5f6197..75045aa0f8a1 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
->                         kunit_parser.TestStatus.FAILURE,
->                         result.status)
->
-> +       def test_no_header(self):
-> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
-> +               with open(empty_log) as file:
-> +                       result = kunit_parser.parse_run_tests(
-> +                               kunit_parser.extract_tap_lines(file.readlines()))
-> +               self.assertEqual(0, len(result.suites))
-> +               self.assertEqual(
-> +                       kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
-> +                       result.status)
-> +
->         def test_no_tests(self):
-> -               empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
-> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
->                 with open(empty_log) as file:
->                         result = kunit_parser.parse_run_tests(
->                                 kunit_parser.extract_tap_lines(file.readlines()))
-> @@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
->                 with open(crash_log) as file:
->                         result = kunit_parser.parse_run_tests(
->                                 kunit_parser.extract_tap_lines(file.readlines()))
-> -               print_mock.assert_any_call(StrContains('no tests run!'))
-> +               print_mock.assert_any_call(StrContains('could not parse test results!'))
->                 print_mock.stop()
->                 file.close()
->
-> @@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
->                         result["sub_groups"][1]["test_cases"][0])
->
->         def test_no_tests_json(self):
-> -               result = self._json_for('test_is_test_passed-no_tests_run.log')
-> +               result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
->                 self.assertEqual(0, len(result['sub_groups']))
->
->  class StrContains(str):
-> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-> similarity index 100%
-> rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
-> rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-> new file mode 100644
-> index 000000000000..18215b236783
-> --- /dev/null
-> +++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-> @@ -0,0 +1,77 @@
-> +Core dump limits :
-> +       soft - 0
-> +       hard - NONE
-> +Checking environment variables for a tempdir...none found
-> +Checking if /dev/shm is on tmpfs...OK
-> +Checking PROT_EXEC mmap in /dev/shm...OK
-> +Adding 24743936 bytes to physical memory to account for exec-shield gap
-> +Linux version 4.12.0-rc3-00010-g7319eb35f493-dirty (brendanhiggins@mactruck.svl.corp.google.com) (gcc version 7.3.0 (Debian 7.3.0-5) ) #29 Thu Mar 15 14:57:19 PDT 2018
-> +Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 14038
-> +Kernel command line: root=98:0
-> +PID hash table entries: 256 (order: -1, 2048 bytes)
-> +Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
-> +Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
-> +Memory: 27868K/56932K available (1681K kernel code, 480K rwdata, 400K rodata, 89K init, 205K bss, 29064K reserved, 0K cma-reserved)
-> +SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-> +NR_IRQS:15
-> +clocksource: timer: mask: 0xffffffffffffffff max_cycles: 0x1cd42e205, max_idle_ns: 881590404426 ns
-> +Calibrating delay loop... 7384.26 BogoMIPS (lpj=36921344)
-> +pid_max: default: 32768 minimum: 301
-> +Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-> +Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes)
-> +Checking that host ptys support output SIGIO...Yes
-> +Checking that host ptys support SIGIO on close...No, enabling workaround
-> +Using 2.6 host AIO
-> +clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-> +futex hash table entries: 256 (order: 0, 6144 bytes)
-> +clocksource: Switched to clocksource timer
-> +console [stderr0] disabled
-> +mconsole (version 2) initialized on /usr/local/google/home/brendanhiggins/.uml/6Ijecl/mconsole
-> +Checking host MADV_REMOVE support...OK
-> +workingset: timestamp_bits=62 max_order=13 bucket_order=0
-> +Block layer SCSI generic (bsg) driver version 0.4 loaded (major 254)
-> +io scheduler noop registered
-> +io scheduler deadline registered
-> +io scheduler cfq registered (default)
-> +io scheduler mq-deadline registered
-> +io scheduler kyber registered
-> +Initialized stdio console driver
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 1 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 2 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 3 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 4 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 5 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 6 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 7 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 8 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 9 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 10 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 11 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 12 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 13 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 14 : Configuration failed
-> +Using a channel type which is configured out of UML
-> +setup_one_line failed for device 15 : Configuration failed
-> +Console initialized on /dev/tty0
-> +console [tty0] enabled
-> +console [mc-1] enabled
-> +TAP version 14
-> +1..0
-> +List of all partitions:
-> +No filesystem could mount root, tried:
-> +
-> +Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(98,0)
-> --
-> 2.32.0.93.g670b81a890-goog
->
+Jason
