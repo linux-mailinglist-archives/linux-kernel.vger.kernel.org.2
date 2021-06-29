@@ -2,260 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1912C3B6C89
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAB03B6C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhF2CiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:38:06 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:9315 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhF2CiF (ORCPT
+        id S231880AbhF2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhF2Ci1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:38:05 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GDT4X4GWcz734G;
-        Tue, 29 Jun 2021 10:31:24 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 10:35:37 +0800
-Received: from huawei.com (10.67.174.169) by dggpemm500001.china.huawei.com
- (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 29 Jun
- 2021 10:35:36 +0800
-From:   Chen Lifu <chenlifu@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <guoren@linux.alibaba.com>,
-        <chenlifu@huawei.com>, <penberg@kernel.org>, <mhiramat@kernel.org>,
-        <me@packi.ch>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next 2/2] riscv: implemented branch simulate instructions
-Date:   Tue, 29 Jun 2021 10:34:55 +0800
-Message-ID: <20210629023455.280998-2-chenlifu@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210629023455.280998-1-chenlifu@huawei.com>
-References: <20210629023455.280998-1-chenlifu@huawei.com>
+        Mon, 28 Jun 2021 22:38:27 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA115C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gd24-20020a17090b0fd8b02901702bcb0d90so884467pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UyYne+kQlvBcMgHYpgAvm2fSPT35KfuDzyzvtjgZuk8=;
+        b=CXxrtg6cMeWqyqJ54Vy77Wa/C/fUxwulT6VNUy/DghCOEPNudSp3EwxXfsucjaphl8
+         h7b8oDwlARAxSmPZsDZJNpwwFw9TIGc03lzaGSa47+Hh6IMyIrWytvRUMe+z7KiQD8K+
+         2w2vlwmo785g0bvD8RUmcjF1iCgbHyCVEdAYK69hmGhOr55eKlHebAhaq5/HeBknckYD
+         fmbvqdoGcptHmQLQkB7a1TQ3u38TNd1zVlLhVwkrUcRZXLvstONRWA48x1Oj0zWvuxqO
+         t7a0RdkxyDUVbl9ajYMGTN296aktKucyK4g99Th1wwy1zYIDM0PixCSzvGzgCkCsbVo0
+         Ecrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UyYne+kQlvBcMgHYpgAvm2fSPT35KfuDzyzvtjgZuk8=;
+        b=Q4jZPFyNf3VHFBmgk0PpgPPV4NvmDFrXd9F41iT2DxQell9LYf3cNLwxb1ZhpswIHu
+         UOzeJ/7j+cndjkijwj3vCqXJ45VVDkIm3pmD40nrHveq34bwTBHxggb89FoRG29bAjQd
+         TVul5epbzGZRfyPXPpHsxp62LJ7lefgoL/F2h3NJ8tvU9N7OMhlH07UlSPxlL03qujqO
+         mt0QZXeYFm9UOR2lCO1wlSXTY9cb828JBEhbApb8Xyes+Ta5e85utHvEH5t7xmgkdhN2
+         rQQD8+C8xoqVIjnsYCLzZHzLP/1fiFTzrvWVM204itKZYoPdPsILuQ73S2hKzzsOsib8
+         wmkQ==
+X-Gm-Message-State: AOAM533g0uWYLKKZMy/NwiXsnfA06QSAacUuvBjOAITKY6lxQefo0x2/
+        WNcpDj9wqZVd0wFzoDHvMmNsV5bpdCTB0Q==
+X-Google-Smtp-Source: ABdhPJxFUGku1o/uY4QNMWQpOdU6952+p2RBUnZTs6bCOm6duDSu05RImz4hRzzNKsRZ6m2zSI1W6w==
+X-Received: by 2002:a17:90a:e7c7:: with SMTP id kb7mr26070368pjb.96.1624934160204;
+        Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id e1sm15994946pfd.16.2021.06.28.19.35.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 19:35:59 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 08:05:56 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [Patch v2 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
+ support
+Message-ID: <20210629023556.v3u4hdye5ojolubq@vireshk-i7>
+References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
+ <20210624115813.3613290-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.169]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624115813.3613290-4-thara.gopinath@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To test the kprobe-based event tracing, we prepare
-a kernel module 'kprobe_test.ko' to add the probes.
-The assembly codes (partially) of the module are as follows:
-...
-0000000000000000 <kprobe_test_branch>:
-...
+On 24-06-21, 07:58, Thara Gopinath wrote:
+> Add interrupt support to notify the kernel of h/w initiated frequency
+> throttling by LMh. Convey this to scheduler via thermal presssure
+> interface.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+> 
+> v1->v2:
+> 	- Introduced qcom_cpufreq_hw_lmh_init to consolidate LMh related initializations
+> 	  as per Viresh's review comment.
+> 	- Moved the piece of code restarting polling/re-enabling LMh interrupt to
+> 	  qcom_lmh_dcvs_notify therby simplifying isr and timer callback as per Viresh's
+> 	  suggestion.
+> 	- Droped cpus from qcom_cpufreq_data and instead using cpus from cpufreq_policy in
+> 	  qcom_lmh_dcvs_notify as per Viresh's review comment.
+> 	- Dropped dt property qcom,support-lmh as per Bjorn's suggestion.
+> 	- Other minor/cosmetic fixes
+> 
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 103 ++++++++++++++++++++++++++++++
+>  1 file changed, 103 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index f86859bf76f1..241f6f2b441f 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/pm_opp.h>
+>  #include <linux/slab.h>
+> +#include <linux/interrupt.h>
 
-0000000000000080 <.L7>:
-  80:	414986bb          	subw	a3,s3,s4
-  84:	4785                	li	a5,1
-  86:	00d7c363          	blt	a5,a3,8c <.L8>
-  8a:	2485                	addiw	s1,s1,1
+Please don't break the alphabetical order here.
 
-000000000000008c <.L8>:
-  8c:	012987bb          	addw	a5,s3,s2
-  90:	4711                	li	a4,4
-  92:	00f75363          	bge	a4,a5,98 <.L9>
-  96:	2485                	addiw	s1,s1,1
-...
+>  #define LUT_MAX_ENTRIES			40U
+>  #define LUT_SRC				GENMASK(31, 30)
+> @@ -22,10 +23,13 @@
+>  #define CLK_HW_DIV			2
+>  #define LUT_TURBO_IND			1
+>  
+> +#define HZ_PER_KHZ			1000
+>
+>  struct qcom_cpufreq_soc_data {
+>  	u32 reg_enable;
+>  	u32 reg_freq_lut;
+>  	u32 reg_volt_lut;
+> +	u32 reg_current_vote;
+>  	u32 reg_perf_state;
+>  	u8 lut_row_size;
+>  };
+> @@ -33,7 +37,10 @@ struct qcom_cpufreq_soc_data {
+>  struct qcom_cpufreq_data {
+>  	void __iomem *base;
+>  	struct resource *res;
+> +	struct delayed_work lmh_dcvs_poll_work;
+>  	const struct qcom_cpufreq_soc_data *soc_data;
+> +	struct cpufreq_policy *policy;
+> +	int lmh_dcvs_irq;
+>  };
+>  
+>  static unsigned long cpu_hw_rate, xo_rate;
+> @@ -251,10 +258,79 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
+>  	}
+>  }
+>  
+> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
+> +{
+> +	return (val & 0x3FF) * 19200;
+> +}
+> +
+> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+> +{
+> +	struct cpufreq_policy *policy = data->policy;
+> +	struct dev_pm_opp *opp;
+> +	struct device *dev;
+> +	unsigned long max_capacity, capacity, freq_hz, throttled_freq;
+> +	unsigned int val, freq;
+> +
+> +	/*
+> +	 * Get the h/w throttled frequency, normalize it using the
+> +	 * registered opp table and use it to calculate thermal pressure.
+> +	 */
+> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
+> +	freq = qcom_lmh_vote_to_freq(val);
+> +	freq_hz = freq * HZ_PER_KHZ;
+> +
+> +	dev = get_cpu_device(cpumask_first(policy->cpus));
+> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
+> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
+> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
+> +
+> +	throttled_freq = freq_hz / HZ_PER_KHZ;
+> +
+> +	/* Update thermal pressure */
+> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(policy->cpus));
+> +	capacity = throttled_freq * max_capacity;
+> +	capacity /= policy->cpuinfo.max_freq;
+> +	/* Don't pass boost capacity to scheduler */
+> +	if (capacity > max_capacity)
+> +		capacity = max_capacity;
 
-00000000000000aa <.L11>:
-  aa:	01299363          	bne	s3,s2,b0 <.L12>
-  ae:	2485                	addiw	s1,s1,1
+I wonder why this check isn't present for cpufreq_cooling.c .
 
-00000000000000b0 <.L12>:
-  b0:	012a0363          	beq	s4,s2,b6 <.L13>
-  b4:	2485                	addiw	s1,s1,1
-...
+> +	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
+> +	/*
 
-00000000000000c2 <.L14>:
-  c2:	0009861b          	sext.w	a2,s3
-  c6:	013a7363          	bgeu	s4,s3,cc <.L15>
-  ca:	2485                	addiw	s1,s1,1
-...
+Whenever you mix code and comments, please separate them with a blank
+line, else it becomes a bit messy and harder to read.
 
-00000000000000d2 <.L16>:
-  d2:	00e7e363          	bltu	a5,a4,d8 <.L17>
-  d6:	2485                	addiw	s1,s1,1
-...
+> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
+> +	 * polling and switch back to interrupt mechanism
+> +	 */
+> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
+> +		/* Clear the existing interrupts and enable it back */
+> +		enable_irq(data->lmh_dcvs_irq);
+> +	else
+> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
+> +				 msecs_to_jiffies(10));
+> +}
+> +
+> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
+> +{
+> +	struct qcom_cpufreq_data *data;
+> +
+> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
+> +
+> +	qcom_lmh_dcvs_notify(data);
+> +}
+> +
+> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
+> +{
+> +	struct qcom_cpufreq_data *c_data = data;
+> +
+> +	/* Disable interrupt and enable polling */
+> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
+> +	qcom_lmh_dcvs_notify(c_data);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+>  	.reg_enable = 0x0,
+>  	.reg_freq_lut = 0x110,
+>  	.reg_volt_lut = 0x114,
+> +	.reg_current_vote = 0x704,
+>  	.reg_perf_state = 0x920,
+>  	.lut_row_size = 32,
+>  };
+> @@ -274,6 +350,23 @@ static const struct of_device_id qcom_cpufreq_hw_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+>  
+> +static void qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy)
+> +{
+> +	struct qcom_cpufreq_data *data = policy->driver_data;
+> +	struct platform_device *pdev = cpufreq_get_driver_data();
+> +	struct device *dev = &pdev->dev;
+> +	int ret;
+> +
+> +	ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
+> +			       0, "dcvsh-irq", data);
+> +	if (ret) {
+> +		dev_err(dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
+> +		return;
+> +	}
+> +	data->policy = policy;
+> +	INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
+> +}
+> +
+>  static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  {
+>  	struct platform_device *pdev = cpufreq_get_driver_data();
+> @@ -370,6 +463,16 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
+>  	}
+>  
+> +	/* Look for LMh interrupt. If no interrupt line is specified /
+> +	 * if there is an error, allow cpufreq to be enabled as usual.
+> +	 */
 
-Test the kprobe-based event tracing in qemu-system-riscv64:
-First, install the kprobe test module:
-insmod /root/kprobe_test.ko
+Proper comment style please..
 
-Then, add probes as new events at the branch instructions,
-i.e. blt, bge, bne, beq, bgeu and bltu.
-The following errors occur due to the instructions not allowed to probe yet:
-echo "p:blt kprobe_test:kprobe_test_branch+0x86 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
-echo "p:bge kprobe_test:kprobe_test_branch+0x92 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
-echo "p:bne kprobe_test:kprobe_test_branch+0xaa epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
-echo "p:beq kprobe_test:kprobe_test_branch+0xb0 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
-echo "p:bgeu kprobe_test:kprobe_test_branch+0xc6 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
-echo "p:bltu kprobe_test:kprobe_test_branch+0xd2 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-sh: write error: Invalid argument
+> +	data->lmh_dcvs_irq = platform_get_irq(pdev, index);
+> +	if (data->lmh_dcvs_irq > 0) {
+> +		qcom_cpufreq_hw_lmh_init(policy);
+> +	} else if (data->lmh_dcvs_irq != -ENXIO) {
+> +		ret = data->lmh_dcvs_irq;
+> +		goto error;
+> +	}
 
-This patch implemented the branch simulate instructions and allowed to probe them.
-Merge this patch and perform the test again, the test results are as follows:
-First, add probes at the branch instructions:
-echo "p:blt kprobe_test:kprobe_test_branch+0x86 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo "p:bge kprobe_test:kprobe_test_branch+0x92 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo "p:bne kprobe_test:kprobe_test_branch+0xaa epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo "p:beq kprobe_test:kprobe_test_branch+0xb0 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo "p:bgeu kprobe_test:kprobe_test_branch+0xc6 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo "p:bltu kprobe_test:kprobe_test_branch+0xd2 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/blt/enable
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/bge/enable
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/bne/enable
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/beq/enable
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/bgeu/enable
-echo 1 > /sys/kernel/debug/tracing/events/kprobes/bltu/enable
+Move all of this to qcom_cpufreq_hw_lmh_init().
 
-Then, do something to run to the probes.
-After that, see the traced information:
-cat /sys/kernel/debug/tracing/trace
-sysctl-63      [001] d...  2505.263969: blt: (kprobe_test_branch+0x86/0x10e [kprobe_test]) epc=0xffffffff016122f8 opcode=0x100073
-sysctl-63      [001] d...  2505.263991: bge: (kprobe_test_branch+0x92/0x10e [kprobe_test]) epc=0xffffffff01612304 opcode=0x100073
-sysctl-63      [001] d...  2505.264001: bne: (kprobe_test_branch+0xaa/0x10e [kprobe_test]) epc=0xffffffff0161231c opcode=0x100073
-sysctl-63      [001] d...  2505.264011: beq: (kprobe_test_branch+0xb0/0x10e [kprobe_test]) epc=0xffffffff01612322 opcode=0x100073
-sysctl-63      [001] d...  2505.264019: bgeu: (kprobe_test_branch+0xc6/0x10e [kprobe_test]) epc=0xffffffff01612338 opcode=0x100073
-sysctl-63      [001] d...  2505.264027: bltu: (kprobe_test_branch+0xd2/0x10e [kprobe_test]) epc=0xffffffff01612344 opcode=0x100073
+And I don't see any cleanup for this stuff. There is no guarantee that
+the irq won't fire and queue up a work right after cpufreq driver is
+unregistered and before the devm_ stuff gets released.
 
-Now we can see the traced information.
-The actual address of the symbol 'kprobe_test_branch' is as follows:
-cat /proc/kallsyms | grep kprobe_test_branch
-ffffffff01612272 t kprobe_test_branch   [kprobe_test]
+>  	return 0;
+>  error:
+>  	kfree(data);
+> -- 
+> 2.25.1
 
-Based on the traced information and the actual address of the symbol
-'kprobe_test_branch', we can also see that the branch instructions
-have been replaced by 'ebreak(0x100073)' instructions.
-
-The pesudoinstructions of the branch instructions,
-i.e. bnez, beqz, blez, bgez, bltz, bgtz, bleu, bgtu and ble
-are allowed to probe as well.
-
---------
-
-Signed-off-by: Chen Lifu <chenlifu@huawei.com>
----
- arch/riscv/kernel/probes/decode-insn.c   |  3 +-
- arch/riscv/kernel/probes/simulate-insn.c | 78 ++++++++++++++++++++++++
- 2 files changed, 79 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
-index 5eb03fb61450..64f6183b4717 100644
---- a/arch/riscv/kernel/probes/decode-insn.c
-+++ b/arch/riscv/kernel/probes/decode-insn.c
-@@ -38,11 +38,10 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
- 	RISCV_INSN_REJECTED(c_ebreak,		insn);
- #endif
- 
--	RISCV_INSN_REJECTED(branch,		insn);
--
- 	RISCV_INSN_SET_SIMULATE(jal,		insn);
- 	RISCV_INSN_SET_SIMULATE(jalr,		insn);
- 	RISCV_INSN_SET_SIMULATE(auipc,		insn);
-+	RISCV_INSN_SET_SIMULATE(branch,		insn);
- 
- 	return INSN_GOOD;
- }
-diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
-index b81719522d5c..efc989b28859 100644
---- a/arch/riscv/kernel/probes/simulate-insn.c
-+++ b/arch/riscv/kernel/probes/simulate-insn.c
-@@ -117,3 +117,81 @@ bool __kprobes simulate_auipc(u32 opcode, unsigned long addr, struct pt_regs *re
- 
- 	return true;
- }
-+
-+#define branch_rs1_idx(opcode) \
-+	(((opcode) >> 15) & 0x1f)
-+
-+#define branch_rs2_idx(opcode) \
-+	(((opcode) >> 20) & 0x1f)
-+
-+#define branch_funct3(opcode) \
-+	(((opcode) >> 12) & 0x7)
-+
-+#define branch_imm(opcode) \
-+	(((((opcode) >> 8 ) & 0xf ) << 1 ) | \
-+	 ((((opcode) >> 25) & 0x3f) << 5 ) | \
-+	 ((((opcode) >> 7 ) & 0x1 ) << 11) | \
-+	 ((((opcode) >> 31) & 0x1 ) << 12))
-+
-+#define branch_offset(opcode) \
-+	sign_extend32((branch_imm(opcode)), 12)
-+
-+#define BRANCH_BEQ	0x0
-+#define BRANCH_BNE	0x1
-+#define BRANCH_BLT	0x4
-+#define BRANCH_BGE	0x5
-+#define BRANCH_BLTU	0x6
-+#define BRANCH_BGEU	0x7
-+
-+bool __kprobes simulate_branch(u32 opcode, unsigned long addr, struct pt_regs *regs)
-+{
-+	/*
-+	 * branch instructions:
-+	 *      31    30       25 24 20 19 15 14    12 11       8    7      6      0
-+	 * | imm[12] | imm[10:5] | rs2 | rs1 | funct3 | imm[4:1] | imm[11] | opcode |
-+	 *     1           6        5     5      3         4         1         7
-+	 *     imm[12|10:5]        rs2   rs1    000       imm[4:1|11]       1100011  BEQ
-+	 *     imm[12|10:5]        rs2   rs1    001       imm[4:1|11]       1100011  BNE
-+	 *     imm[12|10:5]        rs2   rs1    100       imm[4:1|11]       1100011  BLT
-+	 *     imm[12|10:5]        rs2   rs1    101       imm[4:1|11]       1100011  BGE
-+	 *     imm[12|10:5]        rs2   rs1    110       imm[4:1|11]       1100011  BLTU
-+	 *     imm[12|10:5]        rs2   rs1    111       imm[4:1|11]       1100011  BGEU
-+	 */
-+
-+	s32 offset;
-+	s32 offset_tmp;
-+	unsigned long rs1_val;
-+	unsigned long rs2_val;
-+
-+	if (!rv_insn_reg_get_val(regs, branch_rs1_idx(opcode), &rs1_val) ||
-+	    !rv_insn_reg_get_val(regs, branch_rs2_idx(opcode), &rs2_val))
-+		return false;
-+
-+	offset_tmp = branch_offset(opcode);
-+	switch (branch_funct3(opcode)) {
-+	case BRANCH_BEQ:
-+		offset = (rs1_val == rs2_val) ? offset_tmp : 4;
-+		break;
-+	case BRANCH_BNE:
-+		offset = (rs1_val != rs2_val) ? offset_tmp : 4;
-+		break;
-+	case BRANCH_BLT:
-+		offset = ((long)rs1_val < (long)rs2_val) ? offset_tmp : 4;
-+		break;
-+	case BRANCH_BGE:
-+		offset = ((long)rs1_val >= (long)rs2_val) ? offset_tmp : 4;
-+		break;
-+	case BRANCH_BLTU:
-+		offset = (rs1_val < rs2_val) ? offset_tmp : 4;
-+		break;
-+	case BRANCH_BGEU:
-+		offset = (rs1_val >= rs2_val) ? offset_tmp : 4;
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	instruction_pointer_set(regs, addr + offset);
-+
-+	return true;
-+}
 -- 
-2.32.0
-
+viresh
