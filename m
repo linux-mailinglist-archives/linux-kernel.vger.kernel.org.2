@@ -2,190 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A353D3B710A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAAD3B710C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhF2K6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:58:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:38899 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233081AbhF2K6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:58:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="207944448"
-X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="207944448"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 03:56:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="625587766"
-Received: from peileeli.png.intel.com ([172.30.240.12])
-  by orsmga005.jf.intel.com with ESMTP; 29 Jun 2021 03:56:10 -0700
-From:   Ling Pei Lee <pei.lee.ling@intel.com>
-To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Marek Behun <marek.behun@nic.cz>, weifeng.voon@intel.com,
-        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com,
-        pei.lee.ling@intel.com
-Subject: [PATCH net-next V2] net: phy: marvell10g: enable WoL for mv2110
-Date:   Tue, 29 Jun 2021 18:55:54 +0800
-Message-Id: <20210629105554.1443676-1-pei.lee.ling@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233357AbhF2K7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233081AbhF2K7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:59:19 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC63C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id 21so16870786pfp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Jc3NxCk+KDZnIQDnHNRavHi5mkTsU8gdZSOVUuYmb/Q=;
+        b=QS9szzKZkwbuUl6cKd5ztj/xB9uMz9A1jTb+bhp/iKdt6UXXCDtfbkgpYSl9Ld+viw
+         6wm5vnieXa0uuthxGAsd2dKH5l1eiA5nEb/Q01RIm+4sRZOun/GGl0IoKejxx6PU/Cxi
+         KwW+NE7q5y9MFmWzZwJ/lOLR6FezFPiwFKp36Ggo57oNbkpfTdkz/yl0ZVaty0BvAd0Q
+         tkint4nL99vAdnuiwBtQONS1EyfJelM8ZYkTwrROgl/HDIykl+FUEmL3aXcw5DRa/mvE
+         VkMMefHA41nC0ZWHpWASXk0mnM1R+U1S1zX3LjB0QOklwhgqe/MbW7AabHCf9G6KZz9/
+         kW2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Jc3NxCk+KDZnIQDnHNRavHi5mkTsU8gdZSOVUuYmb/Q=;
+        b=lJ5VxFyquS2QMWZeqrrNRnKFuASKvmNicQtx3Jos0NfxfIwNTIro/2btHwMB7yYJ9v
+         OLOu0mYMkrsJQj9C47dCeQlxV1nmkCIkpADpusZb8GT6HEqH9A/sHW5si168YYrIoqbb
+         bkZ5EWA9d8OooUhJxRUXNWT2KPzeuW3QXhpcR5tHCml7SaHv33UepLY8xrHiW+8E3J86
+         PlItxWAgzTMGhX8cLujwz29BfvtrjFmeag7CszaeUeRfJLbKFqWtLlnMbEmfELMqI6QI
+         7JBuaTHNA/hbo+Rm/WAS+Zi+6R7935ufpLE1LwjdT0mhRARmBukvIOP5Y+n2u0YQ29zD
+         8c+w==
+X-Gm-Message-State: AOAM530GU9YUlmq4vhF1DSKDStEaPdZi2tYAjerP2bS7V/aQYFJaMGqR
+        pjOFFqmsWpHZaJ/uO9hbuS1YQA==
+X-Google-Smtp-Source: ABdhPJztQOYmtid8VFswfwsuX0Ti0CJClj3s+tJOjyJNAmsG+72+n65kqxZFjJN+ujUm53A0wuaxzw==
+X-Received: by 2002:a63:5616:: with SMTP id k22mr27766655pgb.41.1624964212463;
+        Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id w123sm17955912pff.186.2021.06.29.03.56.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 03:56:51 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 16:26:49 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210629105649.nt63mxtiy6u7de3g@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNrw4rxihFLuqLtY@ninjato>
+ <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
+ <YNr0uDx1fv+Gjd7m@ninjato>
+ <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
+ <YNr5Jf3WDTH7U5b7@ninjato>
+ <YNr5ZRhT3qn+e9/m@ninjato>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNr5ZRhT3qn+e9/m@ninjato>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
+On 29-06-21, 12:43, Wolfram Sang wrote:
+> 
+> > From the spec:
+> > 
+> > The case when ``length of \field{write_buf}''=0, and at the same time,
+> > ``length of \field{read_buf}''=0 doesn't make any sense.
+> > 
+> > I mentioned this in my first reply and to my understanding I did not get
+> > a reply that this has changed meanwhile.
+> > 
+> 
+> Also, this code as mentioned before:
+> 
+> > +             if (!msgs[i].len)
+> > +                     break;
+> 
+> I hope this can extended in the future to allow zero-length messages. If
+> this is impossible we need to set an adapter quirk instead.
 
-Basically it is just to enable to WoL interrupt and enable WoL detection.
-Then, configure the MAC address into address detection register.
+Ahh, yeah I saw these messages but I wasn't able to relate them to the
+I2C_FUNC_SMBUS_QUICK thing. My bad.
 
-Change Log:
- V2:
- (1) Reviewer Marek request to rorganize code to readable way.
- (2) Reviewer Rusell request to put phy_clear_bits_mmd() outside of if(){}else{}
-     and modify return ret to return phy_clear_bits_mmd().
- (3) Reviewer Rusell request to add return on phy_read_mmd() in set_wol().
- (4) Reorganize register layout to be put before MV_V2_TEMP_CTRL.
- (5) Add the .{get|set}_wol for 88E3110 too as per feedback from Russell.
+Looked at Spec, Linux driver and my backends, I don't there is
+anything that breaks if we allow this. So the best thing (looking
+ahead) is if Jie sends a patch for spec to be modified like this.
 
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Ling PeiLee <pei.lee.ling@intel.com>
----
- drivers/net/phy/marvell10g.c | 88 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+The case when ``length of \field{write_buf}''=0, and at the same time,
+``length of \field{read_buf}''=0 is called not-a-read-write request
+and result for such a request is I2C device specific.
 
-diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
-index bbbc6ac8fa82..5bddf4682127 100644
---- a/drivers/net/phy/marvell10g.c
-+++ b/drivers/net/phy/marvell10g.c
-@@ -28,6 +28,7 @@
- #include <linux/marvell_phy.h>
- #include <linux/phy.h>
- #include <linux/sfp.h>
-+#include <linux/netdevice.h>
- 
- #define MV_PHY_ALASKA_NBT_QUIRK_MASK	0xfffffffe
- #define MV_PHY_ALASKA_NBT_QUIRK_REV	(MARVELL_PHY_ID_88X3310 | 0xa)
-@@ -99,6 +100,17 @@ enum {
- 	MV_V2_33X0_PORT_CTRL_MACTYPE_10GBASER_NO_SGMII_AN	= 0x5,
- 	MV_V2_33X0_PORT_CTRL_MACTYPE_10GBASER_RATE_MATCH	= 0x6,
- 	MV_V2_33X0_PORT_CTRL_MACTYPE_USXGMII			= 0x7,
-+	MV_V2_MAGIC_PKT_WORD0	= 0xf06b,
-+	MV_V2_MAGIC_PKT_WORD1	= 0xf06c,
-+	MV_V2_MAGIC_PKT_WORD2	= 0xf06d,
-+	/* Wake on LAN registers */
-+	MV_V2_WOL_CTRL		= 0xf06e,
-+	MV_V2_WOL_STS		= 0xf06f,
-+	MV_V2_WOL_CLEAR_STS	= BIT(15),
-+	MV_V2_WOL_MAGIC_PKT_EN	= BIT(0),
-+	MV_V2_PORT_INTR_STS	= 0xf040,
-+	MV_V2_PORT_INTR_MASK	= 0xf043,
-+	MV_V2_WOL_INTR_EN	= BIT(8),
- 	/* Temperature control/read registers (88X3310 only) */
- 	MV_V2_TEMP_CTRL		= 0xf08a,
- 	MV_V2_TEMP_CTRL_MASK	= 0xc000,
-@@ -991,6 +1003,78 @@ static int mv2111_match_phy_device(struct phy_device *phydev)
- 	return mv211x_match_phy_device(phydev, false);
- }
- 
-+static void mv2110_get_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
-+{
-+	int ret;
-+
-+	wol->supported = WAKE_MAGIC;
-+	wol->wolopts = 0;
-+
-+	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, MV_V2_WOL_CTRL);
-+	if (ret < 0)
-+		return;
-+
-+	if (ret & MV_V2_WOL_MAGIC_PKT_EN)
-+		wol->wolopts |= WAKE_MAGIC;
-+}
-+
-+static int mv2110_set_wol(struct phy_device *phydev, struct ethtool_wolinfo *wol)
-+{
-+	int ret;
-+
-+	if (wol->wolopts & WAKE_MAGIC) {
-+		/* Enable the WOL interrupt */
-+		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND2,
-+				       MV_V2_PORT_INTR_MASK,
-+				       MV_V2_WOL_INTR_EN);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* Store the device address for the magic packet */
-+		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
-+				    MV_V2_MAGIC_PKT_WORD2,
-+				    ((phydev->attached_dev->dev_addr[5] << 8) |
-+				    phydev->attached_dev->dev_addr[4]));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
-+				    MV_V2_MAGIC_PKT_WORD1,
-+				    ((phydev->attached_dev->dev_addr[3] << 8) |
-+				    phydev->attached_dev->dev_addr[2]));
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
-+				    MV_V2_MAGIC_PKT_WORD0,
-+				    ((phydev->attached_dev->dev_addr[1] << 8) |
-+				    phydev->attached_dev->dev_addr[0]));
-+		if (ret < 0)
-+			return ret;
-+
-+		/* Clear WOL status and enable magic packet matching */
-+		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND2,
-+				       MV_V2_WOL_CTRL,
-+				       MV_V2_WOL_MAGIC_PKT_EN |
-+				       MV_V2_WOL_CLEAR_STS);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		/* Disable magic packet matching & reset WOL status bit */
-+		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2,
-+				     MV_V2_WOL_CTRL,
-+				     MV_V2_WOL_MAGIC_PKT_EN,
-+				     MV_V2_WOL_CLEAR_STS);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Reset the clear WOL status bit as it does not self-clear */
-+	return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
-+					MV_V2_WOL_CTRL,
-+					MV_V2_WOL_CLEAR_STS);
-+}
-+
- static struct phy_driver mv3310_drivers[] = {
- 	{
- 		.phy_id		= MARVELL_PHY_ID_88X3310,
-@@ -1009,6 +1093,8 @@ static struct phy_driver mv3310_drivers[] = {
- 		.set_tunable	= mv3310_set_tunable,
- 		.remove		= mv3310_remove,
- 		.set_loopback	= genphy_c45_loopback,
-+		.get_wol	= mv2110_get_wol,
-+		.set_wol	= mv2110_set_wol,
- 	},
- 	{
- 		.phy_id		= MARVELL_PHY_ID_88X3340,
-@@ -1045,6 +1131,8 @@ static struct phy_driver mv3310_drivers[] = {
- 		.set_tunable	= mv3310_set_tunable,
- 		.remove		= mv3310_remove,
- 		.set_loopback	= genphy_c45_loopback,
-+		.get_wol	= mv2110_get_wol,
-+		.set_wol	= mv2110_set_wol,
- 	},
- 	{
- 		.phy_id		= MARVELL_PHY_ID_88E2110,
 -- 
-2.25.1
-
+viresh
