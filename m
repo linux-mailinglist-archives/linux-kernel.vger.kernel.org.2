@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2723B7100
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897D13B7103
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhF2KzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:55:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:48506 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhF2KzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:55:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FAF131B;
-        Tue, 29 Jun 2021 03:52:52 -0700 (PDT)
-Received: from [10.57.46.146] (unknown [10.57.46.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F4993F694;
-        Tue, 29 Jun 2021 03:52:49 -0700 (PDT)
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-References: <20210629003829.GA3978248@bjorn-Precision-5520>
- <2317a4bc-bd4d-53a7-7fa6-87728d5393cd@redhat.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3d5a983f-bfdd-d79b-4ec9-357ea26dd2c8@arm.com>
-Date:   Tue, 29 Jun 2021 11:52:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233320AbhF2K42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:56:28 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35922 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhF2K4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:56:24 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 75C98203CD;
+        Tue, 29 Jun 2021 10:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624964036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+G78bmJVjyhNZchwcJDgnrc6DlJX9RZKMOhgUqWpNw=;
+        b=R/Ao6fB9u2OtiA0Tmqg/hn/Ypywah0/JBDeLcTFCgCGLdLoLHOgtTEu9e3x4LF7x1hLbIY
+        T7v3g7Qb/OWYv+Y38rkjmgtA3dOfKJ8AsZjQFFzK0QjAxAiRqqXTjnuYRZG3YaozL8NPV4
+        /5KYY22m+zHaiILsTe7JHD18A9vDhx4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624964036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+G78bmJVjyhNZchwcJDgnrc6DlJX9RZKMOhgUqWpNw=;
+        b=F4hceaoXgEhnKs/7yNe9BAPeWg4l/kVg8Wgwe2AW/mSNqkvyH647d5OAoovDen9TfcDgOp
+        JDvAlwasqexv/vDQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 14F6211906;
+        Tue, 29 Jun 2021 10:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624964036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+G78bmJVjyhNZchwcJDgnrc6DlJX9RZKMOhgUqWpNw=;
+        b=R/Ao6fB9u2OtiA0Tmqg/hn/Ypywah0/JBDeLcTFCgCGLdLoLHOgtTEu9e3x4LF7x1hLbIY
+        T7v3g7Qb/OWYv+Y38rkjmgtA3dOfKJ8AsZjQFFzK0QjAxAiRqqXTjnuYRZG3YaozL8NPV4
+        /5KYY22m+zHaiILsTe7JHD18A9vDhx4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624964036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+G78bmJVjyhNZchwcJDgnrc6DlJX9RZKMOhgUqWpNw=;
+        b=F4hceaoXgEhnKs/7yNe9BAPeWg4l/kVg8Wgwe2AW/mSNqkvyH647d5OAoovDen9TfcDgOp
+        JDvAlwasqexv/vDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id tJxXAcT72mASFAAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Tue, 29 Jun 2021 10:53:56 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id dc7036a9;
+        Tue, 29 Jun 2021 10:53:55 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 11:53:55 +0100
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 1/2] ceph: allow schedule_delayed() callers to set
+ delay for workqueue
+Message-ID: <YNr7w3rFH23Ip80b@suse.de>
+References: <20210629094749.25253-1-lhenriques@suse.de>
+ <20210629094749.25253-2-lhenriques@suse.de>
+ <CAOi1vP8_x7gEGaKvKMKdGSCzs2OSJNeXPZ_KVLqdg051wpZfYA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2317a4bc-bd4d-53a7-7fa6-87728d5393cd@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOi1vP8_x7gEGaKvKMKdGSCzs2OSJNeXPZ_KVLqdg051wpZfYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-29 07:17, Javier Martinez Canillas wrote:
-> On 6/29/21 2:38 AM, Bjorn Helgaas wrote:
->> On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
+On Tue, Jun 29, 2021 at 12:14:37PM +0200, Ilya Dryomov wrote:
+> On Tue, Jun 29, 2021 at 11:47 AM Luis Henriques <lhenriques@suse.de> wrote:
+> >
+> > Allow schedule_delayed() callers to explicitly set the delay value instead
+> > of defaulting to a 5 secs value.
+> >
+> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > ---
+> >  fs/ceph/mds_client.c | 19 ++++++++++++-------
+> >  1 file changed, 12 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > index e5af591d3bd4..08c76bf57fb1 100644
+> > --- a/fs/ceph/mds_client.c
+> > +++ b/fs/ceph/mds_client.c
+> > @@ -4502,13 +4502,18 @@ void inc_session_sequence(struct ceph_mds_session *s)
+> >  }
+> >
+> >  /*
+> > - * delayed work -- periodically trim expired leases, renew caps with mds
+> > + * delayed work -- periodically trim expired leases, renew caps with mds.  If
+> > + * the @delay parameter is set to 0 or if it's more than 5 secs, the default
+> > + * workqueue delay value of 5 secs will be used.
+> >   */
+> > -static void schedule_delayed(struct ceph_mds_client *mdsc)
+> > +static void schedule_delayed(struct ceph_mds_client *mdsc, unsigned long delay)
+> >  {
+> > -       int delay = 5;
+> > -       unsigned hz = round_jiffies_relative(HZ * delay);
+> > -       schedule_delayed_work(&mdsc->delayed_work, hz);
+> > +       unsigned long max_delay = round_jiffies_relative(HZ * 5);
+> > +
+> > +       /* 5 secs default delay */
+> > +       if (!delay || (delay > max_delay))
+> > +               delay = max_delay;
+> > +       schedule_delayed_work(&mdsc->delayed_work, delay);
 > 
-> [snip]
+> Hi Luis,
 > 
->>>>
->>>> So let's just move all the IRQ init before the pci_host_probe() call, that
->>>> will prevent issues like this and seems to be the correct thing to do too.
->>>
->>> Previously we registered rockchip_pcie_subsys_irq_handler() and
->>> rockchip_pcie_client_irq_handler() before the PCIe clocks were
->>> enabled.  That's a problem because they depend on those clocks being
->>> enabled, and your patch fixes that.
->>>
->>> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
->>> which isn't initialized until rockchip_pcie_init_irq_domain().
->>> Previously we registered rockchip_pcie_legacy_int_handler() as the
->>> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
->>>
->>> I think your patch *also* fixes that problem, right?
->>
->> The lack of consistency in how we use
->> irq_set_chained_handler_and_data() really bugs me.
->>
->> Your patch fixes the ordering issue where we installed
->> rockchip_pcie_legacy_int_handler() before initializing data
->> (rockchip->irq_domain) that it depends on.
->>
->> But AFAICT, rockchip still has the problem that we don't *unregister*
->> rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
->> removed.  Doesn't this mean that if we unload the module, then receive
->> an interrupt from the device, we'll try to call a function that is no
->> longer present?
->>
-> 
-> Good question, I don't to be honest. I'll have to dig deeper on this but
-> my experience is that the module removal (and device unbind) is not that
-> well tested on ARM device drivers in general.
+> Is there a reason to not round the non-default delay?  Does it need to
+> be precise?
 
-Well, it does use devm_request_irq() so the handler should be 
-unregistered by devres *after* ->remove has finished, however that does 
-still leave a potential race window in which a pending IRQ could be 
-taken during the later part of rockchip_pcie_remove() after it has 
-started turning off critical things. Unless the clocks and regulators 
-can also be delegated to devres, it might be more robust to explicitly 
-manage the IRQs as well. Mixing the two schemes can be problematic when 
-the exact order of both setup and teardown matters.
+Ah, right.  No, there's not reason for not rounding it too.  So, I could
+have something like this instead:
 
-Robin.
+	unsigned long max_delay = HZ * 5;
+
+	/* 5 secs default delay */
+	if (!delay || (delay > max_delay))
+		delay = max_delay;
+	schedule_delayed_work(&mdsc->delayed_work, round_jiffies_relative(delay));
+
+I'll make sure v3 will include this change.  Thanks Ilya.
+
+Cheers,
+--
+Luís
