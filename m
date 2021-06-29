@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281BB3B76F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5AB3B76FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbhF2RPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:15:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20417 "EHLO
+        id S233925AbhF2RPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 13:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33350 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232222AbhF2RPL (ORCPT
+        by vger.kernel.org with ESMTP id S233859AbhF2RPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:15:11 -0400
+        Tue, 29 Jun 2021 13:15:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624986762;
+        s=mimecast20190719; t=1624986768;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5q1DT4Lc9AeI8CEQj+XRuoybor7mlo7JZTn1v1UDLfY=;
-        b=OjFiMpmkxC3G5vEy44fgn2fjnU5Bok9coMGMGXQeWH29fcpUaKzf7ccA+R6wII94DTZaBT
-        R51LZKSVjYHt2uDsrIHoPOlDWxLDKFpzTyA1nf8JZ16Ep+xMxz2chJBmZng0voEwrE6r8r
-        TMveT51XeSgPqsgqJaLvecyKPXJInKo=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-oWo22q-_N1y-yB6cEWIn-A-1; Tue, 29 Jun 2021 13:12:28 -0400
-X-MC-Unique: oWo22q-_N1y-yB6cEWIn-A-1
-Received: by mail-pj1-f70.google.com with SMTP id d1-20020a17090ae281b0290170ba1f9948so2001753pjz.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 10:12:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5q1DT4Lc9AeI8CEQj+XRuoybor7mlo7JZTn1v1UDLfY=;
-        b=aj7xAKHmm2L9Afa1bI6Y5B/iWh5wq/m1IVEgCXMUg3/C/tR0X4G6e5+Ms7puBPa9MR
-         AkoSyuf71jqhi5OOrc/UrPzDNRMcc9Q3Q3BJA9ZbaWQN6D8X9wJTDKIKbMOyooBCtb3E
-         deESPAaM/yjj9NhXRqBTYuGEUr7Y1qp10Afn12Ouxxwu7aIDCnJJR29LcquVvsTi8OXE
-         5UExDXwc0HvkRV7baq3RbcqVgNiRnYU8CJqqfYioMWPjX8o6et2LrRCB89Sb9e/cyF9Z
-         tZoVb3VCPFkL/d52w9Qk/JEufto1V3Ik+Q5UOT2pYsDAAyRXa4AVRSm6hRvXx5oVvkZD
-         lWiQ==
-X-Gm-Message-State: AOAM530QJuVtyo5etKDVA0qNe79M+X0P7z1tzFTzg48zLZXj/PDs/eXB
-        WXsyr5/hRyBlpvus/fiIMOvYBhqTWQkKo8vOZMGXoRoc//f9qCSLLtlSAP14cGASprMKq++O8cQ
-        U/HQ1Dg0Okg4NBqfrYYQZl7CW
-X-Received: by 2002:a17:90b:2281:: with SMTP id kx1mr34980357pjb.217.1624986747856;
-        Tue, 29 Jun 2021 10:12:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBwodc1vWNld+VUwsbbZiZx7LB1EOuyHMJHdio2zfI6WoBZOd86Zqj/hth97l504LYT0DuJQ==
-X-Received: by 2002:a17:90b:2281:: with SMTP id kx1mr34980336pjb.217.1624986747586;
-        Tue, 29 Jun 2021 10:12:27 -0700 (PDT)
-Received: from treble ([2600:380:8772:6cac:dfb6:1d6c:e068:2f39])
-        by smtp.gmail.com with ESMTPSA id x20sm8156748pge.41.2021.06.29.10.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 10:12:27 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 12:12:24 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Michael Forney <mforney@mforney.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] objtool: Check for gelf_update_rel[a] failures
-Message-ID: <20210629171224.jhlqyyb3lus323o3@treble>
-References: <20210509000103.11008-1-mforney@mforney.org>
- <CAGw6cBv2NBCDrZb7ZnmAhZOJ_EwgW6tR-8AfY2v=T9OkD=6O8g@mail.gmail.com>
- <YNmHRi+00RAAUmEt@hirez.programming.kicks-ass.net>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BsAjgggCdH28RjAi0ap8LRQEBtEJ6LK2b8ZtZ5ZSN28=;
+        b=PRoTKNSJ62hGiYxfQ8XFb10jq+nDRSmuxocVfOoORkGiViiC/Xb6wixu4gshRFYwT//1ki
+        fXOeB6MwRXhHU5r6i7ESwYbITVQOimcs5FDQ+9mgj2KHm7pa1ENzLIPcTM2PnRyZ+VZwuM
+        T37XdfDl9LK/Wbjcj2d5x6maSP6YUE4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-wibo1R02Ok2PKHOTbbdn0Q-1; Tue, 29 Jun 2021 13:12:47 -0400
+X-MC-Unique: wibo1R02Ok2PKHOTbbdn0Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8F2F10A36EC;
+        Tue, 29 Jun 2021 17:12:45 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-140.ams2.redhat.com [10.36.112.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A9ED5C1D0;
+        Tue, 29 Jun 2021 17:12:44 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>, Chen-Yu Tsai <wens@csie.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Clamshell <clamfly@163.com>
+Subject: [PATCH v2] mfd: axp20x: Update AXP288 volatile ranges
+Date:   Tue, 29 Jun 2021 19:12:39 +0200
+Message-Id: <20210629171239.6618-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YNmHRi+00RAAUmEt@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 10:24:38AM +0200, Peter Zijlstra wrote:
-> On Mon, Jun 28, 2021 at 12:52:07AM -0700, Michael Forney wrote:
-> > On 2021-05-08, Michael Forney <mforney@mforney.org> wrote:
-> > > Otherwise, if these fail we end up with garbage data in the
-> > > .rela.orc_unwind_ip section, leading to errors like
-> > >
-> > >   ld: fs/squashfs/namei.o: bad reloc symbol index (0x7f16 >= 0x12) for
-> > > offset 0x7f16d5c82cc8 in section `.orc_unwind_ip'
-> > >
-> > > Signed-off-by: Michael Forney <mforney@mforney.org>
-> > 
-> > Ping on these patches.
-> 
-> Josh, I forever forget which libelf versions we're supposed to support,
-> 
-> But these patches do look reasonable to me, wdyt?
+On Cherry Trail devices with an AXP288 PMIC the external SD-card slot
+used the AXP's DLDO2 as card-voltage and either DLDO3 or GPIO1LDO
+(GPIO1 pin in low noise LDO mode) as signal-voltage.
 
-Looks ok to me.  Let me run them through some testing.
+These regulators are turned on/off and in case of the signal-voltage
+also have their output-voltage changed by the _PS0 and _PS3 power-
+management ACPI methods on the MMC-controllers ACPI fwnode as well as
+by the _DSM ACPI method for changing the signal voltage.
 
+The AML code implementing these methods is directly accessing the
+PMIC through ACPI I2C OpRegion accesses, instead of using the special
+PMIC OpRegion handled by drivers/acpi/pmic/intel_pmic_xpower.c .
+
+This means that the contents of the involved PMIC registers can change
+without the change being made through the regmap interface, so regmap
+should not cache the contents of these registers.
+
+Mark the regulator power on/off, the regulator voltage control and the
+GPIO1 control registers as volatile, to avoid regmap caching them.
+
+Specifically this fixes an issue on some models where the i915 driver
+toggles another LDO using the same on/off register on/off through
+MIPI sequences (through intel_soc_pmic_exec_mipi_pmic_seq_element())
+which then writes back a cached on/off register-value where the
+card-voltage is off causing the external sdcard slot to stop working
+when the screen goes blank, or comes back on again.
+
+The regulator register-range now marked volatile also includes the
+buck regulator control registers. This is done on purpose these are
+normally not touched by the AML code, but they are updated directly
+by the SoC's PUNIT which means that they may also change without going
+through regmap.
+
+Note the AXP288 PMIC is only used on Bay- and Cherry-Trail platforms,
+so even though this is an ACPI specific problem there is no need to
+make the new volatile ranges conditional since these platforms always
+use ACPI.
+
+Fixes: dc91c3b6fe66 ("mfd: axp20x: Mark AXP20X_VBUS_IPSOUT_MGMT as volatile")
+Fixes: cd53216625a0 ("mfd: axp20x: Fix axp288 volatile ranges")
+Reported-and-tested-by: Clamshell <clamfly@163.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v2:
+- Add second Fixes tag
+- Add comment to commit msg about the regulator register-range also
+  including the buck-regulator control registers
+---
+ drivers/mfd/axp20x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
+index 3eae04e24ac8..db6a21465594 100644
+--- a/drivers/mfd/axp20x.c
++++ b/drivers/mfd/axp20x.c
+@@ -125,12 +125,13 @@ static const struct regmap_range axp288_writeable_ranges[] = {
+ 
+ static const struct regmap_range axp288_volatile_ranges[] = {
+ 	regmap_reg_range(AXP20X_PWR_INPUT_STATUS, AXP288_POWER_REASON),
++	regmap_reg_range(AXP22X_PWR_OUT_CTRL1, AXP22X_ALDO3_V_OUT),
+ 	regmap_reg_range(AXP288_BC_GLOBAL, AXP288_BC_GLOBAL),
+ 	regmap_reg_range(AXP288_BC_DET_STAT, AXP20X_VBUS_IPSOUT_MGMT),
+ 	regmap_reg_range(AXP20X_CHRG_BAK_CTRL, AXP20X_CHRG_BAK_CTRL),
+ 	regmap_reg_range(AXP20X_IRQ1_EN, AXP20X_IPSOUT_V_HIGH_L),
+ 	regmap_reg_range(AXP20X_TIMER_CTRL, AXP20X_TIMER_CTRL),
+-	regmap_reg_range(AXP22X_GPIO_STATE, AXP22X_GPIO_STATE),
++	regmap_reg_range(AXP20X_GPIO1_CTRL, AXP22X_GPIO_STATE),
+ 	regmap_reg_range(AXP288_RT_BATT_V_H, AXP288_RT_BATT_V_L),
+ 	regmap_reg_range(AXP20X_FG_RES, AXP288_FG_CC_CAP_REG),
+ };
 -- 
-Josh
+2.31.1
 
