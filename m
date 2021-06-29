@@ -2,184 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFAE3B77CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08793B77D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbhF2Sat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:30:49 -0400
-Received: from smtprelay0096.hostedemail.com ([216.40.44.96]:54880 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234140AbhF2Sar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:30:47 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 61EF818224D99;
-        Tue, 29 Jun 2021 18:28:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 4A2BD1124F9;
-        Tue, 29 Jun 2021 18:28:18 +0000 (UTC)
-Message-ID: <5d28704b131e375347f266b10fc54891ba2a4fc4.camel@perches.com>
-Subject: Re: [PATCH 1/3] checkpatch: skip spacing tests on linker scripts
-From:   Joe Perches <joe@perches.com>
-To:     jim.cromie@gmail.com
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 29 Jun 2021 11:28:16 -0700
-In-Reply-To: <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
-References: <20210626034016.170306-1-jim.cromie@gmail.com>
-         <20210626034016.170306-2-jim.cromie@gmail.com>
-         <075e07c40b99f93123051ef8833612bc88a55120.camel@perches.com>
-         <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
-         <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S235101AbhF2SbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:31:11 -0400
+Received: from mail-mw2nam10on2117.outbound.protection.outlook.com ([40.107.94.117]:31489
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233843AbhF2SbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 14:31:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KaEAFzrud/cHFL3sQ7wbOCN7pj8oQ4w4YioPu25PLiwkzQwBib8kZJmN1yUZPidCw3xRjKeAMm6MCcPSmyDGcySWhz09u9bJdJkTrJJCVAgh08vY+bvPpzA5j4cgcqiVOLLmKzmQvL/fCRazu9pcXDVLjKgnHeB6FLimsLsOTsGbkwqqlCiIDGHowPM/GvkPSewobZq1X9h4ujlFreEWENU+y8f7dQ1/tPpCYgnzaqaIEyWKNtrorRAnwlcd7T/sZiNxOJ/xquCJg3sJkkWdYOiu9Zo9mExjwPyAL2eIgWENJRdmvOesOL/hfnTE0/9io2vDs629ZThzSmQr3N54ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=muGTbG7JcUJT89+9X3/JEwKbgufp+VDRvLj2kq0sw2M=;
+ b=CURYN6/fMKXebzied3BmIEVz6tUXXs5Hq1FucUTOhxDMMfekAsillJuhe3akfyp94FymmHjiJ4cfrx6Dveg5K3PdP8UAxko2Uu+tSCMGfcS7fko55TalsRdEY2rHxkkVxbzCME9wzdXmvVjIPas+KMZVyU4Lg2N8gkiRCVSwNu4/3OUpC1jtGkl5wtHOV+pPBDOJy2gzgWFBXd2n3RWbkXOrl5BEspa6ikevo4A2V9waHrhPD2pJhof6MHH5/ALnsN4cEb8lGHDtrSJ66nLXB1Bcw2pRyPJe35eLMSrSf4D62kpEaQGbdiC8WBit5zItajRo7FpqGGgApypOzzU89A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=muGTbG7JcUJT89+9X3/JEwKbgufp+VDRvLj2kq0sw2M=;
+ b=SYrUYzGYshSlA3z7matAJQ0KDQr7ppAnIHQEuJG1Lg9UeUbrSp0UkOmZ3TBPtYqj4J0j7BsVtQc6WCR9QpH3GbGmEe1kr9hdObY5AqOYJ5TvO+7oBVDnBC08ZZnDvx8KgMETKyYWnQnvYrvDlcX8apYcsVj+pwtdjolQ50uqum3CzCB6x2FaMT4YSzqM0A4b7sKLTNwP+oLrqRiFXvQPyyZMuyzGxtZ2vUUhwWjYpgkjDImEwPiTPQcBPOpA6w8IwjtDuIRT/1z3DEnq+ss7xhZvdiCrIGBlyJiMDGne3zaW/attRQnLa5O2DE6G1DM3o6IX54W42JBU2r+mdrxRSA==
+Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
+ CH2PR01MB5960.prod.exchangelabs.com (2603:10b6:610:43::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4264.18; Tue, 29 Jun 2021 18:28:39 +0000
+Received: from CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::81f3:3a8:e00f:92ec]) by CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::81f3:3a8:e00f:92ec%9]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
+ 18:28:38 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Hillman, Richie" <Richie.Hillman@cornelisnetworks.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
+Subject: NFS trace new to 5.13.0 (GA)
+Thread-Topic: NFS trace new to 5.13.0 (GA)
+Thread-Index: AddtE3KnceyIXtJFQ4q1p77amM2J2Q==
+Date:   Tue, 29 Jun 2021 18:28:38 +0000
+Message-ID: <CH0PR01MB71539295AEF1947518073D0FF2029@CH0PR01MB7153.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+x-originating-ip: [70.15.25.19]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5f147a7d-c126-4135-73bd-08d93b2bb6e9
+x-ms-traffictypediagnostic: CH2PR01MB5960:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH2PR01MB59605550F4B0F094D544308FF2029@CH2PR01MB5960.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: niILPTTeT1jdpb79XFarYvP2Oo8k+DJUFjEexl1hhtu/tMB6QcVup9nfY3sCSZExp0wxcKuLQ2zTkSqC/PyNIqv/PPfaEvV5/4pS8m1brguKYIELsuC/mjCShwCsZOuo1VX10qaDYIIQms7AOsnW07MgmLsQUnPOJVC4HIRvSFSCqmRHvEwFoO4gRnRXkDsq6ouf5C1X78IaFe58VActD1knEdzTuwnIWVhZtnjCcoW5cj4UBcn15bIUwqQfQfdnx2DChRHejN19J1GXmb0H2kGCbKHzqPe23XuSsd9fg/7Zn7dGtbgz93fhclUiA5Yh9UL+WtJ1JFVpzgC4jB8yuOXFDJfsjbdIP7V8upeAuZanpstr6gTmTBco7W49YJGRG2gJMqHGJoQbseLUqk/NQbRIU6GDukSqdT+KcmIbHGx9f/4xx8UTUtdD4+v4eVFCHzvPjTythHrrNuk9ml8x267R3coGyupnL3G5Pb3FROHeWDBwzLMpoyAZT9GLIjmBTZ/wCF0pNEciHaqyLsaAevzhEPPTRsNkFDTLaji/7sW437LFHadeIg0Z+IaDuh4aS7CitRF0La5T+ewvMhzaRztbdYbTwJS3aCLkKDN8unl5BryQQrfBhXZ5UIOTXQn0eyBxjMQKqjqckAnbGJiXtQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(346002)(136003)(366004)(396003)(8676002)(8936002)(83380400001)(33656002)(478600001)(71200400001)(66946007)(2906002)(26005)(186003)(122000001)(6506007)(7696005)(38100700002)(6916009)(9686003)(316002)(66476007)(64756008)(54906003)(86362001)(76116006)(4326008)(66556008)(66446008)(5660300002)(55016002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IziGOlzbZHheKn6D5HzpLPw648Z51aBXI53ANYDglVrNpb9TjKv5mAiGOM09?=
+ =?us-ascii?Q?FwcI9HAMLLIzjG8nwAsz5UVXjBbKrM5kBjFPwpjOfKpa1HmN+Z93+nRSIWpq?=
+ =?us-ascii?Q?X9uUgeBrL5kIJ8NJ9uuuX4M+aynTLqkc7EoHy0v+tMgM3cUzm6pJA5fKT/Zi?=
+ =?us-ascii?Q?3VfmWZfqOdjr+PoM7g5XPjICLepz1yK/d3Giv6r0gmeKZuBQ7jLsXlvddMFM?=
+ =?us-ascii?Q?jsUnjCEutO5zKdLaAa17ckXc+fD7jjhb7E7W9Q8dEh1GLnkLz96lRCl9Ahoi?=
+ =?us-ascii?Q?UP5JQ3cQoQ3L1QEJ7WfWZhx3Nf/tLy+nI67Wk3SYj75189b0/KVQX/Vrmt9b?=
+ =?us-ascii?Q?C3kAiuJk/1ekEMPaVcl0Esk0nIbqgSOUIgA6VuegKCVJ8eCP27tI9NZnOacx?=
+ =?us-ascii?Q?J2BHEh1arP3rcQtotOsdBoKeEg9CvShLkbzILMGmiopQPjN6s/GWM/VbgcC/?=
+ =?us-ascii?Q?Ktlj65HvYAmtenark25KNTT7UDWGZo8qv1n5O5Gk/cQeZ/manV08cqOVQkLt?=
+ =?us-ascii?Q?qYJofsgJyE5bfNBmmpjNsd+ctpwwlJaXah/NBRc2Z2HEsW3GjW+nHlatGQ9o?=
+ =?us-ascii?Q?mxhN0AWz/aNiad3Cn+LjlCHBT5KOAArwsqG3hsBsn/EWweMuBVBAirZ0RhXL?=
+ =?us-ascii?Q?1mNCe+LhwMlGafAU4EvcF3D+yEfQm9KUs7hGYmQpcAvj5u4lorQ1If4bHS9K?=
+ =?us-ascii?Q?0VwK/mKfQrjs0BibcO757I6sNeVNPl7t7B6br7KLARuMlua2gIyovuLdxHhQ?=
+ =?us-ascii?Q?JVdyhOmkaTNvDwYGON6Wr08vCV6OiHQraJ67cKphKK4yjOjpbF1tOvG2nVUz?=
+ =?us-ascii?Q?E9Dn2xwENMwBHD30AVMntJo+O1LtehxgkhXr7jM0BFaX/FdlBId9t8f5XT9N?=
+ =?us-ascii?Q?YCQJK9aBIH73b63CfeL8ff5H4hn4zvwkQ2dG1Q5IK1RQQxXw9kJ9Jr32/Hub?=
+ =?us-ascii?Q?XQ8ntpFTuJhxBist2E2c3/SyKuy36zJZydEsJIeTNzToR5qUUQTECggaB5B0?=
+ =?us-ascii?Q?9cmI9nnXz1Cgcdq2dyQiakDg8kWC82AcCAoNl6ob3QyDgRsKRYYdWJscjJ3x?=
+ =?us-ascii?Q?xgZCpYQcjrsaLwnxJm66/lyYggcjcvK5Cm/tzS+iLOpJi38H12uf22RoVs0H?=
+ =?us-ascii?Q?Iqe6INL5Ys90ByDDo7uR8TpPJk5OWNPiirPQKzcuX7xP1WukDBxRSx7CRNot?=
+ =?us-ascii?Q?0bPAH+ALzcQDPg4ZStJoaoAKHQ0CaTq2idNdtlflXNuP0UpSKFzO1bqq9cFe?=
+ =?us-ascii?Q?2EVLQAAwLyMrdo7Royodz/5n/ojFw/Al9iWHZHrO1ndMh6XHExqAccxs4Yh2?=
+ =?us-ascii?Q?JC0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: k457dckdzaqjyfqu6t5a34aagc7ut1ue
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 4A2BD1124F9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18Tc4uxIqS2Y5tOlLXlQ7XG3hNh11y9RSE=
-X-HE-Tag: 1624991298-758213
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f147a7d-c126-4135-73bd-08d93b2bb6e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 18:28:38.6258
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yjnBzYWe5W4OziABXIROxVHmCntNfjnZHcbCDhiJNCrK/ZXq4GGCOx3h8I7d+DY1dgQwGv0nIeOrkh3B4aK5p1aXo7/XFVSPgejwlSFbdZ5qgLVorm0+pK3y2dnqGv/7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB5960
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-29 at 10:48 -0600, jim.cromie@gmail.com wrote:
-> hi Joe,
+During our continuous integration testing on 5.13.0 kernel our testing trip=
+s on NFS testing with the following trace on the client:
 
-hey Jim.
+[32936.156848] INFO: task kworker/9:1:519 blocked for more than 122 seconds=
+.
+[32936.165201]       Tainted: G S                5.13.0 #1
+[32936.171562] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables =
+this message.
+[32936.180773] task:kworker/9:1     state:D stack:    0 pid:  519 ppid:    =
+ 2 flags:0x00004000
+[32936.190565] Workqueue: events xprt_destroy_cb [sunrpc]
+[32936.196854] Call Trace:
+[32936.200107]  __schedule+0x38e/0x8b0
+[32936.204482]  schedule+0x3c/0xa0
+[32936.208464]  schedule_timeout+0x215/0x2b0
+[32936.213401]  ? check_preempt_curr+0x3f/0x70
+[32936.218518]  ? ttwu_do_wakeup+0x17/0x140
+[32936.223336]  wait_for_completion+0x98/0xf0
+[32936.228396]  __flush_work+0x128/0x1e0
+[32936.232942]  ? worker_attach_to_pool+0xb0/0xb0
+[32936.238351]  ? work_busy+0x80/0x80
+[32936.242555]  __cancel_work_timer+0x110/0x1a0
+[32936.247726]  ? xprt_rdma_bc_destroy+0xc6/0xe0 [rpcrdma]
+[32936.254034]  xprt_rdma_destroy+0x15/0x50 [rpcrdma]
+[32936.259873]  process_one_work+0x1cb/0x360
+[32936.264788]  ? process_one_work+0x360/0x360
+[32936.269915]  worker_thread+0x30/0x370
+[32936.274436]  ? process_one_work+0x360/0x360
+[32936.279526]  kthread+0x116/0x130
+[32936.283534]  ? __kthread_cancel_work+0x40/0x40
+[32936.288924]  ret_from_fork+0x22/0x30
 
-> > > This .lds.h test is also used in one other place.
-> > > 
-> > > It might be better to avoid all tests in .lds.h files by using a
-> > > "next if" much earlier.
-> 
-> checkpatch: subtle decrufting
-> 
-> sub process() uses a next-if statement to end a block of tests early,
-> because following tests pertain only to certain types of source files.
-> That statement has some history:
-> 
->  $ grep -P 'sub process|next if \(\$realfile' blame-check
->  0a920b5b666d0 (Andy Whitcroft      2007-06-01 00:46:48 -0700 2558) sub process {
->  d6430f71805aa (Joe Perches         2016-12-12 16:46:28 -0800 3621) next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
->  de4c924c26504 (Geert Uytterhoeven  2014-10-13 15:51:46 -0700 3712) next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
+The same tests and same servers see no such issue from rc4 to rc7, so the f=
+ailure seems new.
 
-Looks like I should have also removed the |pl from this block
-when I removed it from commit d6430f71805aa. 
+Any thoughts?
 
-Oh well, no real harm done...
+I'm currently rerunning rc7 just to be sure.
 
->  b9ea10d691ecb (Andy Whitcroft      2008-10-15 22:02:24 -0700 3973) next if ($realfile !~ /\.(h|c)$/);
-> 
-> Commit:b9ea adds the early-block-termination line, then 2 subsequent
-> commits (de4c, d643) copy that line up/earlier in sub process (with
-> different filetype selection), largely masking the purposes of the
-> older/later lines (block-early-terminate to skip file-type specific
-> tests).
-
-Not really.
-
-The first in file order next-if commit d6430f71805aa was a
-modification of the earlier commits listed below:
-
-5368df20fb364e
-00df344fd06fd6
-0a920b5b666d0b
-
-All of these were just additions of various file types to the test.
-
-> This code is hurting my brain.
-
-Perhaps Advil or another leaded or unleaded beverage might help.
-They help me...
-
-> changing d643 to allow *.pl to fall thru for further testing
-> is probably the best small move.
-
-Definitely not as it's there specifically to avoid long line tests in perl.
-
-> FWIW, one version of a 1-line fix for *.lds.h files.
-> this one adds the new line after the 1st of the 3 blame-lines.
-> Maybe it should be added after the SPDX check (which would complain)
-
-Maybe a slight reworking of all the "next if" tests would work.
-
-I moved the incorrect spdx line number test up, but didn't test
-whether or not it's appropriate here as I don't know of a case
-of the top of my head.  I also don't know if the linker .lds.h
-files should be tested for long lines or not.
-
-It looks like these files are mostly < 80 columns
-
-$ git ls-files -- '*.lds.h'| xargs cat | awk '{print length($0), $0;}' | sort -rn | head
-106 #define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$L*
-94 #if defined(CONFIG_GCOV_KERNEL) || defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN) || \
-79 /* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
-78  * [__init_begin, __init_end] is the init section that may be freed after init
-78 #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_CLANG)
-77  * .init section and thus will be preserved for later use in the decompressed
-77 #define RESERVEDMEM_OF_TABLES()	OF_TABLE(CONFIG_OF_RESERVED_MEM, reservedmem)
-77  * <asm/module.lds.h> can specify arch-specific sections for linking modules.
-76 #define CPUIDLE_METHOD_OF_TABLES() OF_TABLE(CONFIG_CPU_IDLE, cpuidle_method)
-76  * .boot.data variables are kept in separate .boot.data.<var name> sections,
-
----
- scripts/checkpatch.pl | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 461d4221e4a4a..ea198499e16df 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3617,9 +3617,6 @@ sub process {
- 			     "It's generally not useful to have the filename in the file\n" . $herecurr);
- 		}
- 
--# check we are in a valid source file if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
--
- # check for using SPDX-License-Identifier on the wrong line number
- 		if ($realline != $checklicenseline &&
- 		    $rawline =~ /\bSPDX-License-Identifier:/ &&
-@@ -3628,6 +3625,9 @@ sub process {
- 			     "Misplaced SPDX-License-Identifier tag - use line $checklicenseline instead\n" . $herecurr);
- 		}
- 
-+# check we are in a valid source file if not then ignore this hunk
-+		next if ($realfile !~ /\.(?:h|c|s|S|sh|dtsi|dts)$/);
-+
- # line length limit (with some exclusions)
- #
- # There are a few types of lines that may extend beyond $max_line_length:
-@@ -3708,8 +3708,8 @@ sub process {
- 			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
- 		}
- 
--# check we are in a valid source file C or perl if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
-+# check we are in a valid source C or .dts? file, if not then ignore this hunk
-+		next if ($realfile !~ /\.(?:h|c|dtsi|dts)$/);
- 
- # at the beginning of a line any tabs must come first and anything
- # more than $tabsize must use tabs.
-@@ -3737,6 +3737,9 @@ sub process {
- 			}
- 		}
- 
-+# skip all following test for linker files.
-+		next if ($realfile =~ /\.lds\.h$/);
-+
- # check for assignments on the start of a line
- 		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
- 			my $operator = $1;
-@@ -3970,7 +3973,7 @@ sub process {
- 		}
- 
- # check we are in a valid C source file if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c)$/);
-+		next if ($realfile !~ /\.(?:h|c)$/);
- 
- # check for unusual line ending [ or (
- 		if ($line =~ /^\+.*([\[\(])\s*$/) {
-
+Mike
+External recipient
