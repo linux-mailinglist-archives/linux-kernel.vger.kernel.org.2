@@ -2,286 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAE63B71B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89263B71B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhF2MDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:03:47 -0400
-Received: from phobos.denx.de ([85.214.62.61]:35362 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232788AbhF2MDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:03:40 -0400
-Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D5C4982859;
-        Tue, 29 Jun 2021 14:01:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1624968071;
-        bh=NwGgCXJE1oeL3k+EimvcQDc0fBhsm5rumG+mnsU1V2Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jAI7ToYgELz5x8rmLQ2660ifkdJVg0GTeVNrQgHEjRtaG4E5KvqVOD6mFp/9Ik8P8
-         uw2/kruCg3QJrfX13p4vy5k1/GJ21zyrRhtTXMZIeux9FzMX3s6V2mBVEmVBgZVWBc
-         Jw2Bc5nL2dooh9EQPfY5wAaLrWyo+PEr3+HBEKUEODZrz8rsz7ZoQ70Jy3UbghySwK
-         EPNeLKZsbIC/+Xt1HYvFPOL2xw7MQeenw55GshU+CV/ESPHPUVs5lZ7eI4GiAjibRf
-         YFY+VEX1LBqaJIBB2rJ+cAjw46vnScbO+r+aJ7/piCkG5BKJjKo93+PCAvZB9gLBSb
-         R3LWaUah5NXOQ==
-Date:   Tue, 29 Jun 2021 14:01:04 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Mark Einon <mark.einon@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/3] net: Provide switchdev driver for NXP's More Than IP
- L2 switch
-Message-ID: <20210629140104.70a3da1a@ktm>
-In-Reply-To: <20210629093055.x5pvcebk4y4f6nem@skbuf>
-References: <YNSJyf5vN4YuTUGb@lunn.ch>
-        <20210624163542.5b6d87ee@ktm>
-        <YNSuvJsD0HSSshOJ@lunn.ch>
-        <20210625115935.132922ff@ktm>
-        <YNXq1bp7XH8jRyx0@lunn.ch>
-        <20210628140526.7417fbf2@ktm>
-        <20210628124835.zbuija3hwsnh2zmd@skbuf>
-        <20210628161314.37223141@ktm>
-        <20210628142329.2y7gmykoy7uh44gd@skbuf>
-        <20210629100937.10ce871d@ktm>
-        <20210629093055.x5pvcebk4y4f6nem@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S232855AbhF2MGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:06:51 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:62494 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232493AbhF2MGq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:06:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1624968259; x=1656504259;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4VTqRt/doBhcHug+DYEpXm+V0vDuSlC/ctdi9x/3mQY=;
+  b=SaDfVkv2Tt48PjDiFVFJRvuLGygL5RCpOtrvTZhUgVP9y1sSHvfWtwch
+   hjoUtgJ6tjEXCtdHtly5S9W7CDBw//4oHn1wzYp0/kWhd178vAEmeQ/Pr
+   ovExh0xsHz8/svWH4xapjge35TkSr59TE5UCEzBLMUjg76/WnxuG2UmXK
+   8=;
+X-IronPort-AV: E=Sophos;i="5.83,308,1616457600"; 
+   d="scan'208";a="119057987"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 29 Jun 2021 12:04:10 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id F07C8A1FD3;
+        Tue, 29 Jun 2021 12:04:08 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 29 Jun 2021 12:04:08 +0000
+Received: from [192.168.9.117] (10.43.161.153) by EX13D20UWC001.ant.amazon.com
+ (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 29 Jun
+ 2021 12:04:05 +0000
+Message-ID: <50d48c57-b6f4-aad9-2471-ea3d3066563d@amazon.com>
+Date:   Tue, 29 Jun 2021 14:04:03 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/kfEcMgA6CAnN6.ZB_n3QJia"; protocol="application/pgp-signature"
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:90.0)
+ Gecko/20100101 Thunderbird/90.0
+Subject: Re: [PATCH v4 1/3] iommu: io-pgtable: add DART pagetable format
+Content-Language: en-US
+To:     Sven Peter <sven@svenpeter.dev>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+CC:     Arnd Bergmann <arnd@kernel.org>, <devicetree@vger.kernel.org>,
+        "Hector Martin" <marcan@marcan.st>, <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        Petr Mladek via iommu <iommu@lists.linux-foundation.org>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Rouven Czerwinski" <r.czerwinski@pengutronix.de>
+References: <20210627143405.77298-1-sven@svenpeter.dev>
+ <20210627143405.77298-2-sven@svenpeter.dev>
+ <3a43b2de-6a71-2373-8695-5e96657c8fc2@amazon.com>
+ <fedb8d5a-a0f1-4216-bb46-1af31b716309@www.fastmail.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <fedb8d5a-a0f1-4216-bb46-1af31b716309@www.fastmail.com>
+X-Originating-IP: [10.43.161.153]
+X-ClientProxiedBy: EX13D21UWA004.ant.amazon.com (10.43.160.252) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/kfEcMgA6CAnN6.ZB_n3QJia
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+CgpPbiAyOS4wNi4yMSAwOTozNywgU3ZlbiBQZXRlciB3cm90ZToKPiAKPiBPbiBNb24sIEp1biAy
+OCwgMjAyMSwgYXQgMTI6NTQsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+Pgo+Pgo+PiBPbiAyNy4w
+Ni4yMSAxNjozNCwgU3ZlbiBQZXRlciB3cm90ZToKPj4+Cj4+PiBBcHBsZSdzIERBUlQgaW9tbXUg
+dXNlcyBhIHBhZ2V0YWJsZSBmb3JtYXQgdGhhdCBzaGFyZXMgc29tZQo+Pj4gc2ltaWxhcml0aWVz
+IHdpdGggdGhlIG9uZXMgYWxyZWFkeSBpbXBsZW1lbnRlZCBieSBpby1wZ3RhYmxlLmMuCj4+PiBB
+ZGQgYSBuZXcgZm9ybWF0IHZhcmlhbnQgdG8gc3VwcG9ydCB0aGUgcmVxdWlyZWQgZGlmZmVyZW5j
+ZXMKPj4+IHNvIHRoYXQgd2UgZG9uJ3QgaGF2ZSB0byBkdXBsaWNhdGUgdGhlIHBhZ2V0YWJsZSBo
+YW5kbGluZyBjb2RlLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFN2ZW4gUGV0ZXIgPHN2ZW5Ac3Zl
+bnBldGVyLmRldj4KPj4+IC0tLQo+Pj4gICAgZHJpdmVycy9pb21tdS9pby1wZ3RhYmxlLWFybS5j
+IHwgNjIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+Pj4gICAgZHJpdmVycy9p
+b21tdS9pby1wZ3RhYmxlLmMgICAgIHwgIDEgKwo+Pj4gICAgaW5jbHVkZS9saW51eC9pby1wZ3Rh
+YmxlLmggICAgIHwgIDcgKysrKwo+Pj4gICAgMyBmaWxlcyBjaGFuZ2VkLCA3MCBpbnNlcnRpb25z
+KCspCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUvaW8tcGd0YWJsZS1hcm0uYyBi
+L2RyaXZlcnMvaW9tbXUvaW8tcGd0YWJsZS1hcm0uYwo+Pj4gaW5kZXggODdkZWY1OGU3OWI1Li4x
+ZGQ1YzQ1YjRiNWIgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL2lvbW11L2lvLXBndGFibGUtYXJt
+LmMKPj4+ICsrKyBiL2RyaXZlcnMvaW9tbXUvaW8tcGd0YWJsZS1hcm0uYwo+Pj4gQEAgLTEyNyw2
+ICsxMjcsOSBAQAo+Pj4gICAgI2RlZmluZSBBUk1fTUFMSV9MUEFFX01FTUFUVFJfSU1QX0RFRiAg
+MHg4OFVMTAo+Pj4gICAgI2RlZmluZSBBUk1fTUFMSV9MUEFFX01FTUFUVFJfV1JJVEVfQUxMT0Mg
+MHg4RFVMTAo+Pj4KPj4+ICsjZGVmaW5lIEFQUExFX0RBUlRfUFRFX1BST1RfTk9fV1JJVEUgKDE8
+PDcpCj4+PiArI2RlZmluZSBBUFBMRV9EQVJUX1BURV9QUk9UX05PX1JFQUQgKDE8PDgpCj4+PiAr
+Cj4+PiAgICAvKiBJT1BURSBhY2Nlc3NvcnMgKi8KPj4+ICAgICNkZWZpbmUgaW9wdGVfZGVyZWYo
+cHRlLGQpIF9fdmEoaW9wdGVfdG9fcGFkZHIocHRlLCBkKSkKPj4+Cj4+PiBAQCAtMzgxLDYgKzM4
+NCwxNSBAQCBzdGF0aWMgYXJtX2xwYWVfaW9wdGUgYXJtX2xwYWVfcHJvdF90b19wdGUoc3RydWN0
+IGFybV9scGFlX2lvX3BndGFibGUgKmRhdGEsCj4+PiAgICB7Cj4+PiAgICAgICAgICAgYXJtX2xw
+YWVfaW9wdGUgcHRlOwo+Pj4KPj4+ICsgICAgICAgaWYgKGRhdGEtPmlvcC5mbXQgPT0gQVJNX0FQ
+UExFX0RBUlQpIHsKPj4+ICsgICAgICAgICAgICAgICBwdGUgPSAwOwo+Pj4gKyAgICAgICAgICAg
+ICAgIGlmICghKHByb3QgJiBJT01NVV9XUklURSkpCj4+PiArICAgICAgICAgICAgICAgICAgICAg
+ICBwdGUgfD0gQVBQTEVfREFSVF9QVEVfUFJPVF9OT19XUklURTsKPj4+ICsgICAgICAgICAgICAg
+ICBpZiAoIShwcm90ICYgSU9NTVVfUkVBRCkpCj4+PiArICAgICAgICAgICAgICAgICAgICAgICBw
+dGUgfD0gQVBQTEVfREFSVF9QVEVfUFJPVF9OT19SRUFEOwo+Pj4gKyAgICAgICAgICAgICAgIHJl
+dHVybiBwdGU7Cj4+Cj4+IFdoYXQgYWJvdXQgdGhlIG90aGVyIGJpdHMsIHN1Y2ggYXMgc2hhcmFi
+aWxpdHksIFhOLCBldGM/IERvIHRoZXkgbm90Cj4+IGV4aXN0IG9uIERBUlQ/IE9yIGhhdmUgdGhl
+eSBub3QgYmVlbiByZXZlcnNlIGVuZ2luZWVyZWQgYW5kIDBzIGhhcHBlbiB0bwo+PiAianVzdCB3
+b3JrIj8KPiAKPiBJJ20gZmFpcmx5IGNlcnRhaW4gdGhleSBkb24ndCBleGlzdCAob3IgYXJlIGF0
+IGxlYXN0IG5vdCB1c2VkIGJ5IFhOVSkuCj4gCj4gVGhlIGNvLXByb2Nlc3NvcnMgdGhhdCBjYW4g
+cnVuIGNvZGUgYWxzbyBlaXRoZXIgdXNlIGFuIGVudGlyZSBzZXBhcmF0ZSBpb21tdQo+IChlLmcu
+IHRoZSBHUFUpIG9yIG9ubHkgdXNlIERBUlQgYXMgYSAic2Vjb25kIHN0YWdlIiBhbmQgaGF2ZSB0
+aGVpciBvd24KPiBNTVUgd2hpY2ggZS5nLiBoYW5kbGVzIFhOIChlLmcuIHRoZSBTRVAgb3IgQU9Q
+KS4KCk9rIDopLgoKPiAKPj4KPj4+ICsgICAgICAgfQo+Pj4gKwo+Pj4gICAgICAgICAgIGlmIChk
+YXRhLT5pb3AuZm10ID09IEFSTV82NF9MUEFFX1MxIHx8Cj4+PiAgICAgICAgICAgICAgIGRhdGEt
+PmlvcC5mbXQgPT0gQVJNXzMyX0xQQUVfUzEpIHsKPj4+ICAgICAgICAgICAgICAgICAgIHB0ZSA9
+IEFSTV9MUEFFX1BURV9uRzsKPj4+IEBAIC0xMDQzLDYgKzEwNTUsNTEgQEAgYXJtX21hbGlfbHBh
+ZV9hbGxvY19wZ3RhYmxlKHN0cnVjdCBpb19wZ3RhYmxlX2NmZyAqY2ZnLCB2b2lkICpjb29raWUp
+Cj4+PiAgICAgICAgICAgcmV0dXJuIE5VTEw7Cj4+PiAgICB9Cj4+Pgo+Pj4gK3N0YXRpYyBzdHJ1
+Y3QgaW9fcGd0YWJsZSAqCj4+PiArYXBwbGVfZGFydF9hbGxvY19wZ3RhYmxlKHN0cnVjdCBpb19w
+Z3RhYmxlX2NmZyAqY2ZnLCB2b2lkICpjb29raWUpCj4+PiArewo+Pj4gKyAgICAgICBzdHJ1Y3Qg
+YXJtX2xwYWVfaW9fcGd0YWJsZSAqZGF0YTsKPj4+ICsgICAgICAgaW50IGk7Cj4+PiArCj4+PiAr
+ICAgICAgIGlmIChjZmctPm9hcyA+IDM2KQo+Pj4gKyAgICAgICAgICAgICAgIHJldHVybiBOVUxM
+Owo+Pj4gKwo+Pj4gKyAgICAgICBkYXRhID0gYXJtX2xwYWVfYWxsb2NfcGd0YWJsZShjZmcpOwo+
+Pj4gKyAgICAgICBpZiAoIWRhdGEpCj4+PiArICAgICAgICAgICAgICAgcmV0dXJuIE5VTEw7Cj4+
+PiArCj4+PiArICAgICAgIC8qCj4+PiArICAgICAgICAqIEFwcGxlJ3MgREFSVCBhbHdheXMgcmVx
+dWlyZXMgdGhyZWUgbGV2ZWxzIHdpdGggdGhlIGZpcnN0IGxldmVsIGJlaW5nCj4+PiArICAgICAg
+ICAqIHN0b3JlZCBpbiBmb3VyIE1NSU8gcmVnaXN0ZXJzLiBXZSBhbHdheXMgY29uY2F0ZW5hdGUg
+dGhlIGZpcnN0IGFuZAo+Pj4gKyAgICAgICAgKiBzZWNvbmQgbGV2ZWwgc28gdGhhdCB3ZSBvbmx5
+IGhhdmUgdG8gc2V0dXAgdGhlIE1NSU8gcmVnaXN0ZXJzIG9uY2UuCj4+PiArICAgICAgICAqIFRo
+aXMgcmVzdWx0cyBpbiBhbiBlZmZlY3RpdmUgdHdvIGxldmVsIHBhZ2V0YWJsZS4KPj4+ICsgICAg
+ICAgICovCj4+PiArICAgICAgIGlmIChkYXRhLT5zdGFydF9sZXZlbCA8IDEpCj4+PiArICAgICAg
+ICAgICAgICAgcmV0dXJuIE5VTEw7Cj4+PiArICAgICAgIGlmIChkYXRhLT5zdGFydF9sZXZlbCA9
+PSAxICYmIGRhdGEtPnBnZF9iaXRzID4gMikKPj4+ICsgICAgICAgICAgICAgICByZXR1cm4gTlVM
+TDsKPj4+ICsgICAgICAgaWYgKGRhdGEtPnN0YXJ0X2xldmVsID4gMSkKPj4+ICsgICAgICAgICAg
+ICAgICBkYXRhLT5wZ2RfYml0cyA9IDA7Cj4+PiArICAgICAgIGRhdGEtPnN0YXJ0X2xldmVsID0g
+MjsKPj4+ICsgICAgICAgY2ZnLT5hcHBsZV9kYXJ0X2NmZy5uX3R0YnJzID0gMSA8PCBkYXRhLT5w
+Z2RfYml0czsKPj4KPj4gTWF5YmUgYWRkIGEgQlVHX09OIGlmIG5fdHRicnMgPiBBUlJBWV9TSVpF
+KHR0YnIpPyBPciBhbHRlcm5hdGl2ZWx5LCBkbyBhCj4+IG5vcm1hbCBydW50aW1lIGNoZWNrIGFu
+ZCBiYWlsIG91dCB0aGVuLgo+IAo+IG5fdHRicnMgY2FuJ3QgYWN0dWFsbHkgYmUgbGFyZ2VyIHRo
+YW4gNCBhdCB0aGlzIHBvaW50IGFscmVhZHkgZHVlIHRvIHRoZQo+IHByZXZpb3VzIGNoZWNrcy4K
+PiBJIGNhbiBhZGQgYSBCVUdfT04gdGhvdWdoIGp1c3QgdG8gbWFrZSBpdCBleHBsaWNpdCBhbmQg
+YmUgc2FmZSBpbiBjYXNlIHRob3NlCj4gY2hlY2tzIG9yIHRoZSBhcnJheSBzaXplIGV2ZXIgY2hh
+bmdlLgoKQWgsIG5vdyBJIHNlZSBpdCB0b28uIE5vIHdvcnJpZXMgdGhlbiAtIEkgYWdyZWUgdGhh
+dCB5b3UgaGF2ZSBhbGwgY2FzZXMgCmNvdmVyZWQuCgpSZXZpZXdlZC1ieTogQWxleGFuZGVyIEdy
+YWYgPGdyYWZAYW1hem9uLmNvbT4KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIg
+R2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1
+bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFt
+dHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4K
+VXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
 
-Hi Vladimir,
-
-> On Tue, Jun 29, 2021 at 10:09:37AM +0200, Lukasz Majewski wrote:
-> > Hi Vladimir,
-> > =20
-> > > On Mon, Jun 28, 2021 at 04:13:14PM +0200, Lukasz Majewski wrote: =20
-> > > > > > > So before considering merging your changes, i would like
-> > > > > > > to see a usable binding.
-> > > > > > >
-> > > > > > > I also don't remember seeing support for STP. Without
-> > > > > > > that, your network has broadcast storm problems when
-> > > > > > > there are loops. So i would like to see the code needed
-> > > > > > > to put ports into blocking, listening, learning, and
-> > > > > > > forwarding states.
-> > > > > > >
-> > > > > > > 	  Andrew =20
-> > > > >
-> > > > > I cannot stress enough how important it is for us to see STP
-> > > > > support and consequently the ndo_start_xmit procedure for
-> > > > > switch ports. =20
-> > > >
-> > > > Ok.
-> > > > =20
-> > > > > Let me see if I understand correctly. When the switch is
-> > > > > enabled, eth0 sends packets towards both physical switch
-> > > > > ports, and eth1 sends packets towards none, but eth0 handles
-> > > > > the link state of switch port 0, and eth1 handles the link
-> > > > > state of switch port 1? =20
-> > > >
-> > > > Exactly, this is how FEC driver is utilized for this switch. =20
-> > >
-> > > This is a much bigger problem than anything which has to do with
-> > > code organization. Linux does not have any sort of support for
-> > > unmanaged switches. =20
-> >
-> > My impression is similar. This switch cannot easily fit into DSA
-> > (lack of appending tags) =20
->=20
-> No, this is not why the switch does not fit the DSA model.
-> DSA assumes that the master interface and the switch are two
-> completely separate devices which manage themselves independently.
-> Their boundary is typically at the level of a MAC-to-MAC connection,
-> although vendors have sometimes blurred this line a bit in the case
-> of integrated switches. But the key point is that if there are 2
-> external ports going to the switch, these should be managed by the
-> switch driver. But when the switch is sandwiched between the Ethernet
-> controller of the "DSA master" (the DMA engine of fec0) and the DSA
-> master's MAC (still owned by fec), the separation isn't quite what
-> DSA expects, is it? Remember that in the case of the MTIP switch, the
-> fec driver needs to put the MACs going to the switch in promiscuous
-> mode such that the switch behaves as a switch and actually forwards
-> packets by MAC DA instead of dropping them. So the system is much
-> more tightly coupled.
->=20
->  +-----------------------------------------------------------------------=
-----+
->  |
->        | | +--------------+        +--------------------+--------+
->   +------------+ | |              |        | MTIP switch        |
->    |      |            | | |   fec 1 DMA  |---x    |
->   | Port 2 |------| fec 1 MAC  | | |              |        |
->   \  /    |        |      |            | | +--------------+        |
->            \/     +--------+      +------------+ |
->      |             /\              |                   | |
-> +--------------+        +--------+   /  \    +--------+
-> +------------+ | |              |        |        |           |
->  |      |            | | |   fec 0 DMA  |--------| Port 0 |
-> | Port 1 |------| fec 0 MAC  | | |              |        |        |
->         |        |      |            | | +--------------+
-> +--------+-----------+--------+      +------------+ |
->                                                           |
-> +------------------------------------------------------------------------=
----+
->=20
-> Is this DSA? I don't really think so, but you could still try to argue
-> otherwise.
->=20
-> The opposite is also true. DSA supports switches that don't append
-> tags to packets (see sja1105). This doesn't make them "less DSA",
-> just more of a pain to work with.
->=20
-> > nor to switchdev.
-> >
-> > The latter is caused by two modes of operation:
-> >
-> > - Bypass mode (no switch) -> DMA1 and DMA0 are used
-> > - Switch mode -> only DMA0 is used
-> >
-> >
-> > Moreover, from my understanding of the CPSW - looks like it uses
-> > always just a single DMA, and the switching seems to be the default
-> > operation for two ethernet ports.
-> >
-> > The "bypass mode" from NXP's L2 switch seems to be achieved inside
-> > the CPSW switch, by configuring it to not pass packets between
-> > those ports. =20
->=20
-> I don't exactly see the point you're trying to make here. At the end
-> of the day, the only thing that matters is what you expose to the
-> user. With no way (when the switch is enabled) for a socket opened on
-> eth0 to send/receive packets coming only from the first port, and a
-> socket opened on eth1 to send/receive packets coming only from the
-> second port, I think this driver attempt is a pretty far cry from
-> what a switch driver in Linux is expected to offer, be it modeled as
-> switchdev or DSA.
->=20
-> > > Please try to find out if your switch is supposed to be able
-> > > to be managed (run control protocols on the CPU). =20
-> >
-> > It can support all the "normal" set of L2 switch features:
-> >
-> > - VLANs, lookup table (with learning), filtering and forwarding
-> >   (Multicast, Broadcast, Unicast), priority queues, IP snooping,
-> > etc.
-> >
-> > Frames for BPDU are recognized by the switch and can be used to
-> > implement support for RSTP. However, this switch has a separate
-> > address space (not covered and accessed by FEC address).
-> > =20
-> > > If not, well, I
-> > > don't know what to suggest. =20
-> >
-> > For me it looks like the NXP's L2 switch shall be treated _just_ as
-> > offloading IP block to accelerate switching (NXP already support
-> > dpaa[2] for example).
-> >
-> > The idea with having it configured on demand, when:
-> > ip link add name br0 type bridge; ip link set br0 up;
-> > ip link set eth0 master br0;
-> > ip link set eth1 master br0;
-> >
-> > Seems to be a reasonable one. In the above scenario it would work
-> > hand by hand with FEC drivers (as those would handle PHY
-> > communication setup and link up/down events). =20
->=20
-> You seem to imply that we are suggesting something different.
->=20
-> > It would be welcome if the community could come up with some rough
-> > idea how to proceed with this IP block support =20
->=20
-> Ok, so what I would do if I really cared that much about mainline
-> support is I would refactor the FEC driver to offer its core
-> functionality to a new multi-port driver that is able to handle the
-> FEC DMA interfaces, the MACs and the switch. EXPORT_SYMBOL_GPL is your
-> friend.
->=20
-> This driver would probe on a device tree binding with 3 "reg" values:
-> 1 for the fec@800f0000, 1 for the fec@800f4000 and 1 for the
-> switch@800f8000. No puppet master driver which coordinates other
-> drivers, just a single driver that, depending on the operating state,
-> manages all the SoC resources in a way that will offer a sane and
-> consistent view of the Ethernet ports.
->=20
-> So it will have a different .ndo_start_xmit implementation depending
-> on whether the switch is bypassed or not (if you need to send a
-> packet on eth1 and the switch is bypassed, you send it through the
-> DMA interface of eth1, otherwise you send it through the DMA
-> interface of eth0 in a way in which the switch will actually route it
-> to the eth1 physical port).
->=20
-> Then I would implement support for BPDU RX/TX (I haven't looked at the
-> documentation, but I expect that what this switch offers for control
-> traffic doesn't scale at high speeds (if it does, great, then send and
-> receive all your packets as control packets, to have precise port
-> identification). If it doesn't, you'll need a way to treat your data
-> plane packets differently from the control plane packets. For the data
-> plane, you can perhaps borrow some ideas from net/dsa/tag_8021q.c, or
-> even from Tobias Waldekranz's proposal to just let data plane packets
-> coming from the bridge slide into the switch with no precise control
-> of the destination port at all, just let the switch perform FDB
-> lookups for those packets because the switch hardware FDB is supposed
-> to be more or less in sync with the bridge software FDB:
-> https://patchwork.kernel.org/project/netdevbpf/cover/20210426170411.17891=
-86-1-tobias@waldekranz.com/
->=20
-
-Thanks for sketching and sharing such detailed plan.=20
-
-> > (especially that for example imx287 is used in many embedded devices
-> > and is going to be in active production for next 10+ years). =20
->=20
-> Well, I guess you have a plan then. There are still 10+ years left to
-> enjoy the benefits of a proper driver design...
-
-:-)
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/kfEcMgA6CAnN6.ZB_n3QJia
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDbC4AACgkQAR8vZIA0
-zr1wGwgAqaycwPhYj9dU716qF/vndzUI6j4akH9VpCHuI/HD8ADXc3VLblvJpV91
-+lE0arn/1iGxzsnsy8wxLStlM0vFLAXiBqJWGPgQom9ELdKNUjeHx41BrSqVLkVW
-RwaK+ZeDFAvekB51fwELw25KcHjixtMpWwZoARgkFahS5Kc4F4qCbXLfg4Pol9Pa
-qP1W6gjsecPORCmTpteKITpYACeV5eCcepXpuuvKsa4Y3fJAEogSmfqysd9z2pG3
-A/dvUSKh6LwIRnJGFq/xkW/2VGI+Itm42dIFPX8RCnSQYbR8qPfI2HBmlQZeRU4I
-pvrOkhXujbfUKB48UXp88gi5CLU5/A==
-=uxrj
------END PGP SIGNATURE-----
-
---Sig_/kfEcMgA6CAnN6.ZB_n3QJia--
