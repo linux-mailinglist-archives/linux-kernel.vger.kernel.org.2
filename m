@@ -2,124 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDE83B79AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F483B79B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235658AbhF2VIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 17:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
+        id S235670AbhF2VI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 17:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235642AbhF2VIE (ORCPT
+        with ESMTP id S233238AbhF2VIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 17:08:04 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1D4C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:36 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id a133so325395oib.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:36 -0700 (PDT)
+        Tue, 29 Jun 2021 17:08:22 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C396BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id a18so752034lfs.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 14:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P+qm+5rKSIxSb2pA2xlIn0/txUGCpUQJ4ebyGwBBltc=;
-        b=go2pqgdjoBHcGVFwtYdsPAVRkF29K2h0MJWiVHvpabrFlE3jVS20PCrvUEGUoThwyy
-         VXYYx8cZvsS7IpMm/Ho1MmEuGXIYOXRxK2oFbEIHkgHzjOHXT/BYTKRhJs//9gjwK14U
-         rMsicuDZ8rwEnLh+bPLpJBogqm1ESw1vVVAYRk0Dka/3iutN1hJ/9H67asO61ln7IqXu
-         Ll08pzP2x44ijAKWszqC9HjBEFT5AFgfNRrsUYx5QZ7yLlcDQgmiqjIHMJ8uRAnu4WLL
-         paRXe1Eotvz7BTSKeutk2fi+EB5O+CyaFZV9EsfIr5u2QWdepIAztsKIik47FqW8PP1N
-         S7Cg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=at0ZjCEHdnjAbauppHO6g8ow1KqhQCXYe0Z+hJPVLYA=;
+        b=AZ/qR6zwYLsWzcqtsPkz97l2LxlMlRiYeyeHths2LQs4XpqgJKhvlGo5NmHKYeMSyh
+         p/TLMuZb7L3ptpeUeWhly//DSTtHdYoGyCKRB/4DChOs8FjYg2FrVE9ULy8fPv9WOmq8
+         fhlPI6M+h5fsD0DGhuOuealtNn9WKWY1l06OmfO1MMNp+BD3I3jQ6YNshOaU4GNfJxtS
+         2LF/uik/PnDPv1yTp5gmBun1yHVDhsAoZzxcUQMA1inVgVRqjLAbTeDXUdbR9o1qAx+n
+         NV21rwFkLBwMbLgfv/wC4b02ljLpXQnLkddBaPGIWf6xvNTwCskS5uw3loLvzFjY0xP+
+         6YlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P+qm+5rKSIxSb2pA2xlIn0/txUGCpUQJ4ebyGwBBltc=;
-        b=KTxPJyV3NRT+yFvwfHZqKDV7KeZPcaCkkVmpsBFgRFyrgLbIcX7sQOyAyZL4B8S3xR
-         Xisb6fZ2UmNaOO/RHlg6N35CfkXFgiXwue9eZ9qWnBVYCghIYo3V14qjQ2acyCsEAwEj
-         MEoHnCcQh8BNkJmY+w2fxjDu+4d01LAHEynqsZKwBScWFhNHVqKUg3s40+wwIXG24OLS
-         ZdUG61hTw7v9q+HwFA/nUSHV98IHl201ukh3UfwXqJzDIrHR5t1gHsrcJG7/aYcRAk3U
-         t9gC+Od7pcghJhpX+W4GpGWRtHLqITMTDsNHh0D2ZeUnWwRM6jW5tP92rU1FalrgES2b
-         kDlA==
-X-Gm-Message-State: AOAM530yfyigLaT3Gy5poy19IfnQ8H+9zw+gQlgAh132HbaMQZzCsKdU
-        WLKBms2XTcvzwx6QMdgLYQWnrg==
-X-Google-Smtp-Source: ABdhPJwU0+6rFdHYA2wBJuyHlCFAl+6T7M+7GmvpDmTLHExf/AmbdNW7nfg6Xg2F7jN+Q5Sb1y8fHQ==
-X-Received: by 2002:aca:d60a:: with SMTP id n10mr11617275oig.20.1625000735886;
-        Tue, 29 Jun 2021 14:05:35 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s12sm4036129otd.73.2021.06.29.14.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 14:05:35 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 16:05:33 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        dmitry.baryshkov@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] clk: qcom: gdsc: Ensure regulator init state matches
- GDSC state
-Message-ID: <YNuLHWkUwyml26Uk@yoga>
-References: <20210625225414.1318338-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=at0ZjCEHdnjAbauppHO6g8ow1KqhQCXYe0Z+hJPVLYA=;
+        b=BuuWBu2MAWVwtYTY1D+yc8IMoUqjrBxDyjZdKemVOU3ukL7jBVnNOpEuDbAHeCLnEi
+         u4SmHeS5YiVgk3WmPka/c6hl1FRs314qbQBdtlj7rCSCmDk40GPjm17UdLwT+nUhZVzJ
+         aO+el8E6H82pPUQnVPWH6v5B+LbOHjosfC20xtrz+swgPixkGBHDvRfEYYrxpXHrRcyK
+         oqa5pAFgPucX5fMAXg0mKMAPZopqsfL3QP3fkCbuBAvH4ftZSTah36y2xkrRsXJZ301O
+         t1tt73VR+yznEmY9mcgBdnTVhtNzKBLdfEZLKBkTTm/w5TbDcTJbYpngEYUIW+1BWnpA
+         xvYw==
+X-Gm-Message-State: AOAM5331JqqHvCplRIUKv03i5WF+s6GxnKsYpQJtg4Cwuu57IVgx8/W2
+        Moih2Ntk9YVyu5h4J4XASzKoINtpgzXdzG/jRZLDyA==
+X-Google-Smtp-Source: ABdhPJyaqWBv+mHfIg72by8ziWDMj9w+UGooEB4CHNjmJo68dboCxiw8mPPalM1oKZD3TefdariUBuRewLrZHdVebfc=
+X-Received: by 2002:a05:6512:3e24:: with SMTP id i36mr23461870lfv.368.1625000751708;
+ Tue, 29 Jun 2021 14:05:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625225414.1318338-1-bjorn.andersson@linaro.org>
+References: <202106281231.E99B92BB13@keescook> <20210629131400.GA24514@C02TD0UTHF1T.local>
+In-Reply-To: <20210629131400.GA24514@C02TD0UTHF1T.local>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 29 Jun 2021 14:05:40 -0700
+Message-ID: <CAKwvOd=BRD8Yrq6QvLiZq-_GL-JdDPvx6ghO4ROCo+AtisTJvw@mail.gmail.com>
+Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 25 Jun 17:54 CDT 2021, Bjorn Andersson wrote:
+On Tue, Jun 29, 2021 at 6:14 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Hi Kees,
+>
+> I thought the PGO stuff was on hold given Peter had open concerns, e.g.
+>
+> https://lore.kernel.org/r/20210614154639.GB68749@worktop.programming.kicks-ass.net
+>
+> ... and there didn't seem to be a strong conclusion to the contrary.
 
-> As GDSCs are registered and found to be already enabled
-> gdsc_toggle_logic() will be invoked for votable GDSCs and ensure that
-> the vote is matching the hardware state. Part of this the related
-> regulator will be enabled.
-> 
-> But for non-votable GDSCs the regulator and GDSC status will be out of
-> sync and as the GDSC is later disabled regulator_disable() will face an
-> unbalanced enable-count, or something might turn off the supply under
-> the feet of the GDSC.
-> 
-> So ensure that the regulator is enabled even for non-votable GDSCs.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/clk/qcom/gdsc.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index 51ed640e527b..f7e7759cdb90 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -359,10 +359,17 @@ static int gdsc_init(struct gdsc *sc)
->  
->  	/*
->  	 * Votable GDSCs can be ON due to Vote from other masters.
-> -	 * If a Votable GDSC is ON, make sure we have a Vote.
-> +	 * If a Votable GDSC is ON, make sure we have a Vote. If
-> +	 * non-votable, ensure that the supply is kept enabled (as
-> +	 * is done by gdsc_enable).
->  	 */
-> -	if ((sc->flags & VOTABLE) && on)
-> +	if ((sc->flags & VOTABLE) && on) {
->  		gdsc_enable(&sc->pd);
-> +	} else if (on) {
+Hi Mark,
+If I could rephrase Peter's concerns in my own words to see if I
+understood the intent correctly, I'd summarize the concerns as:
+1. How does instrumentation act in regards to noinstr?
 
-I somehow lost the check for sc->rsupply != NULL while trying to make
-this readable. In other words, this is broken.
+https://lore.kernel.org/linux-doc/20210614153545.GA68749@worktop.programming.kicks-ass.net/
+https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
 
-Regards,
-Bjorn
+2. How much of this code can be reused with GCC?
 
-> +		ret = regulator_enable(sc->rsupply);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
->  
->  	/*
->  	 * Make sure the retain bit is set if the GDSC is already on, otherwise
-> -- 
-> 2.29.2
-> 
+https://lore.kernel.org/linux-doc/20210614154639.GB68749@worktop.programming.kicks-ass.net/
+
+3. Can we avoid proliferation of compiler specific code in the kernel?
+
+https://lore.kernel.org/linux-doc/YMca2aa+t+3VrpN9@hirez.programming.kicks-ass.net/
+
+---
+
+Regarding point 1, I believe that was addressed by this series, which
+Peter Ack'ed, and is based on work I did in LLVM based on Peter's
+feedback, while collaborating with GCC developers on the semantics in
+regards to inlining.  I notice you weren't explicitly cc'ed on that
+thread, that's my fault and I apologize.  It wasn't intentional; once
+a cc list as recommended by get_maintainer.pl gets too long, I start
+to forget who was on previous threads and might be interested in
+updates.
+
+https://lore.kernel.org/lkml/YNGQV09E9xAvvppO@hirez.programming.kicks-ass.net/
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+
+---
+
+Regarding point 2, I believe I addressed that in my response.  Similar
+to GCOV, we need the runtime hooks which are compiler specific in
+order to capture the profiling data. Exporting such data to userspace
+via sysfs can be easily shared though, as is done currently for GCOV.
+
+https://lore.kernel.org/linux-doc/CAKwvOd=aAo72j-iE2PNE5Os8BPc0y-Zs7ZoMzd21ck+QNeboBA@mail.gmail.com/
+
+---
+
+Regarding point 3, I agree. There's currently 2 big places in the
+kernel where we have very compiler specific code, IMO:
+1. frame pointer based unwinding on 32b ARM (especially but not
+limited to THUMB).
+2. GCOV
+This series does ask to add a third.
+
+At the same time, there are differences between compilers that are
+unlikely to converge without great need.  Compiler IR is generally not
+interchangeable between compilers; the compiler runtimes (ie. symbols
+typically provided by libgcc_s or compiler-rt) are (generally) tightly
+coupled to their respective compilers.  Since PGO relies on the
+respective compiler runtimes, we wind up with compiler specific
+runtime support for this feature.  For a semi-freestanding environment
+like the Linux kernel, that means duplicating the ABI for these
+compiler runtime libraries, with additional code for kernel specific
+synchronization, memory management, and data retrieval (sysfs).
+
+Further, asking compiler vendors to break their existing ABIs with
+their compiler runtimes to support a shared interface for profiling
+data is also a hard sell. That's a major issue regarding frame pointer
+based unwinding on 32b ARM as well; existing unwinders must change to
+support the latest spec, yet not all code will be recompiled to match
+it as the same time the unwinder support is added or updated.  Unless
+the compiler runtime was statically linked, then upgrading that shared
+object might break binaries when they are run next.  I'm not saying
+it's impossible, but is it worth it? Do the compiler vendors agree?
+-- 
+Thanks,
+~Nick Desaulniers
