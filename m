@@ -2,261 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37C63B6CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BDF3B6CAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhF2Cwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:52:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21624 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231680AbhF2Cwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:52:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624935027; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Efi5O9a9zama6IARAOsMmnTjTuKRRY3Zblari0Envps=; b=PcFXIwOJpZKn14M4n+b+QxlbxrFnsPh7tdKczgZPJvlE3S9aJMGHJVGhyXQQgbcdfoEKEWug
- V8WcTM7tcaT3Y2fsQSmlWQPVAZvwhGwyHCeOpepIKhGSw7LjiymDx23TTKBUy1ZH1o7EDO0A
- ZLlwudRU+WhZRoMCk2ZX8ZexkEo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60da8a6ead0600eede84cf06 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Jun 2021 02:50:22
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 89D5EC433F1; Tue, 29 Jun 2021 02:50:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.103] (unknown [49.204.182.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0D4EC433F1;
-        Tue, 29 Jun 2021 02:50:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E0D4EC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [Patch v2 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-To:     Thara Gopinath <thara.gopinath@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        rjw@rjwysocki.net, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
- <20210624115813.3613290-4-thara.gopinath@linaro.org>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <34542481-09b0-ae3b-25f1-77565bf47755@codeaurora.org>
-Date:   Tue, 29 Jun 2021 08:20:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231743AbhF2Czh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231398AbhF2Czg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 22:55:36 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B59C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:53:08 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id h15so36525858lfv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DajkdBeCCFmMhMvtFbnjwTvzKMnsz2v7ADpzRrerOtM=;
+        b=ndstumrC5KGEt7B0fAJrPB1fe6lOayRoOqQGOTkwZWPghPGs1HW2kouAeJ582FGjF9
+         4Ls10gfp33aJe54qjVsU0lyLb0E5jqWN8Yr/ua/ZEZeIij2COjKsEch/Etm8ajCwod/L
+         ikL1oqzl9C1fvwr6H6kc1JvISov1h0jYmp5q52lmKw5kb35jLwO8T3voydJSDWXDTinQ
+         FH95yw8pm4pOxChdf1XXEi3atw0zmKd4LMTKcy3YrIcKTnC5QLEDwp/X7xlDUCxdFpeP
+         GQTWAyRZEK+50vFoyJRjtSB5Lo4scf+/ZS+R7JFf21tZLVsEgxPDmnUDx+89Y2sZ3oC6
+         USSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DajkdBeCCFmMhMvtFbnjwTvzKMnsz2v7ADpzRrerOtM=;
+        b=AzqYLL8Rh1M8xgkFwX92FoeZupja0NFjRCGl2OizhJ+lE6cDL4v1vQmAveydKPTI9D
+         FZaw/ZzCZHFvO3IEVWrsIeDpaNsL1hSpRk0zNdkcrFmMYszPHBjwiWsD3EuuhyNfxlLj
+         5isuBcJ0Ttuil1IyuCm31/X/DXmJblS/x5uV8UX8rusM/6eMr8iBR0a7boD4N45Kqgp0
+         j3UZ8g9v01C6q8CRjc4iHaoSP+QXrCEFCY0JO8NaaynztW1LK+xCTnJjSpfgSj7NCnG8
+         rrGv2y8RLQTP8fmE+HojmaLukId1XXQMjbQkWPwGPq6lZ70ItyH5JIBe6DspMuywRYKS
+         ImLw==
+X-Gm-Message-State: AOAM53048sD54nkMWPgXsXJk0JJ7y6GDKwHUXGdR4/T+8RMsgZoAsnag
+        RbLAaJ57NiGgEJtzTHJBhm7nn5oL6zsWmFKHovw=
+X-Google-Smtp-Source: ABdhPJxooq6oGPf00tQulv2fBnXXtV0ipZ2QmX6Ga65Qk7Cic71KJyVxaG5OT30fdSmQngIKJE8x47yZwUGHbAD6q3Y=
+X-Received: by 2002:a05:6512:1683:: with SMTP id bu3mr22348002lfb.520.1624935187230;
+ Mon, 28 Jun 2021 19:53:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210624115813.3613290-4-thara.gopinath@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210628151708.138524-1-sxwjean@me.com> <8fc00823-9d42-2178-784a-af33cc34b168@redhat.com>
+In-Reply-To: <8fc00823-9d42-2178-784a-af33cc34b168@redhat.com>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Tue, 29 Jun 2021 10:52:41 +0800
+Message-ID: <CAEVVKH-rJCutaHJ3WzssSBPmd_TDk5kECWXWtKpSZqXe0UM-iQ@mail.gmail.com>
+Subject: Re: [PATCH v2] locking/lockdep: Fix meaningless usages output of lock classes
+To:     Waiman Long <llong@redhat.com>
+Cc:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 29, 2021 at 5:17 AM Waiman Long <llong@redhat.com> wrote:
+>
+> On 6/28/21 11:17 AM, Xiongwei Song wrote:
+> > From: Xiongwei Song <sxwjean@gmail.com>
+> >
+> > When enabling CONFIG_LOCK_STAT, then CONFIG_LOCKDEP is forcedly enabled.
+> > We can get output from /proc/lockdep, which currently includes usages of
+> > lock classes. But the usages are meaningless, see the output below:
+> >
+> > / # cat /proc/lockdep
+> > all lock classes:
+> > ffffffff9af63350 ....: cgroup_mutex
+> >
+> > ffffffff9af54eb8 ....: (console_sem).lock
+> >
+> > ffffffff9af54e60 ....: console_lock
+> >
+> > ffffffff9ae74c38 ....: console_owner_lock
+> >
+> > ffffffff9ae74c80 ....: console_owner
+> >
+> > ffffffff9ae66e60 ....: cpu_hotplug_lock
+> >
+> > Only one usage context for each lock, this is because each usage is only
+> > changed in mark_lock() that is in CONFIG_PROVE_LOCKING defined section,
+> > however in the test situation, it's not.
+> >
+> > The fix is to move the usages reading and seq_print from
+> > CONFIG_PROVE_LOCKING undefined setcion to its defined section. Also,
+> > locks_after list of lock_class is empty when CONFIG_PROVE_LOCKING
+> > undefined, so do the same thing as what have done for usages of lock
+> > classes.
+> With this patch, CONFIG_LOCKDEP without CONFIG_PROVE_LOCKING will make
+> /proc/lockdep displays just the list of lock classes with their
+> associated lock keys. I think it is worth explicitly saying that in the
+> commit log.
 
+Make sense. Will update.
 
-On 6/24/2021 5:28 PM, Thara Gopinath wrote:
-> Add interrupt support to notify the kernel of h/w initiated frequency
-> throttling by LMh. Convey this to scheduler via thermal presssure
-> interface.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
-> 
-> v1->v2:
-> 	- Introduced qcom_cpufreq_hw_lmh_init to consolidate LMh related initializations
-> 	  as per Viresh's review comment.
-> 	- Moved the piece of code restarting polling/re-enabling LMh interrupt to
-> 	  qcom_lmh_dcvs_notify therby simplifying isr and timer callback as per Viresh's
-> 	  suggestion.
-> 	- Droped cpus from qcom_cpufreq_data and instead using cpus from cpufreq_policy in
-> 	  qcom_lmh_dcvs_notify as per Viresh's review comment.
-> 	- Dropped dt property qcom,support-lmh as per Bjorn's suggestion.
-> 	- Other minor/cosmetic fixes
-> 
->   drivers/cpufreq/qcom-cpufreq-hw.c | 103 ++++++++++++++++++++++++++++++
->   1 file changed, 103 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index f86859bf76f1..241f6f2b441f 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -13,6 +13,7 @@
->   #include <linux/of_platform.h>
->   #include <linux/pm_opp.h>
->   #include <linux/slab.h>
-> +#include <linux/interrupt.h>
->   
->   #define LUT_MAX_ENTRIES			40U
->   #define LUT_SRC				GENMASK(31, 30)
-> @@ -22,10 +23,13 @@
->   #define CLK_HW_DIV			2
->   #define LUT_TURBO_IND			1
->   
-> +#define HZ_PER_KHZ			1000
-> +
->   struct qcom_cpufreq_soc_data {
->   	u32 reg_enable;
->   	u32 reg_freq_lut;
->   	u32 reg_volt_lut;
-> +	u32 reg_current_vote;
->   	u32 reg_perf_state;
->   	u8 lut_row_size;
->   };
-> @@ -33,7 +37,10 @@ struct qcom_cpufreq_soc_data {
->   struct qcom_cpufreq_data {
->   	void __iomem *base;
->   	struct resource *res;
-> +	struct delayed_work lmh_dcvs_poll_work;
->   	const struct qcom_cpufreq_soc_data *soc_data;
-> +	struct cpufreq_policy *policy;
-> +	int lmh_dcvs_irq;
->   };
->   
->   static unsigned long cpu_hw_rate, xo_rate;
-> @@ -251,10 +258,79 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->   	}
->   }
->   
-> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
-> +{
-> +	return (val & 0x3FF) * 19200;
-> +}
-> +
-> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
-> +{
-> +	struct cpufreq_policy *policy = data->policy;
-> +	struct dev_pm_opp *opp;
-> +	struct device *dev;
-> +	unsigned long max_capacity, capacity, freq_hz, throttled_freq;
-> +	unsigned int val, freq;
-> +
-> +	/*
-> +	 * Get the h/w throttled frequency, normalize it using the
-> +	 * registered opp table and use it to calculate thermal pressure.
-> +	 */
-> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
-> +	freq = qcom_lmh_vote_to_freq(val);
-> +	freq_hz = freq * HZ_PER_KHZ;
-> +
-> +	dev = get_cpu_device(cpumask_first(policy->cpus));
-> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
-> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
-> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
-> +
-> +	throttled_freq = freq_hz / HZ_PER_KHZ;
-> +
-> +	/* Update thermal pressure */
-> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(policy->cpus));
-> +	capacity = throttled_freq * max_capacity;
-> +	capacity /= policy->cpuinfo.max_freq;
-> +	/* Don't pass boost capacity to scheduler */
-> +	if (capacity > max_capacity)
-> +		capacity = max_capacity;
-> +	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
-> +	/*
-> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
-> +	 * polling and switch back to interrupt mechanism
-> +	 */
-> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
-> +		/* Clear the existing interrupts and enable it back */
-> +		enable_irq(data->lmh_dcvs_irq);
-> +	else
-> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
-> +				 msecs_to_jiffies(10));
-> +}
-> +
-> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
-> +{
-> +	struct qcom_cpufreq_data *data;
-> +
-> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
-> +
-> +	qcom_lmh_dcvs_notify(data);
-> +}
-> +
-> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
-> +{
-> +	struct qcom_cpufreq_data *c_data = data;
-> +
-> +	/* Disable interrupt and enable polling */
-> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
-> +	qcom_lmh_dcvs_notify(c_data);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->   	.reg_enable = 0x0,
->   	.reg_freq_lut = 0x110,
->   	.reg_volt_lut = 0x114,
-> +	.reg_current_vote = 0x704,
->   	.reg_perf_state = 0x920,
->   	.lut_row_size = 32,
->   };
-> @@ -274,6 +350,23 @@ static const struct of_device_id qcom_cpufreq_hw_match[] = {
->   };
->   MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
->   
-> +static void qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy)
-> +{
-> +	struct qcom_cpufreq_data *data = policy->driver_data;
-> +	struct platform_device *pdev = cpufreq_get_driver_data();
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
-> +			       0, "dcvsh-irq", data);
+> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> > ---
+> >   kernel/locking/lockdep_proc.c | 24 +++++++++++++-----------
+> >   1 file changed, 13 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+> > index 806978314496..a1ec2652d492 100644
+> > --- a/kernel/locking/lockdep_proc.c
+> > +++ b/kernel/locking/lockdep_proc.c
+> > @@ -70,23 +70,25 @@ static int l_show(struct seq_file *m, void *v)
+> >   #ifdef CONFIG_DEBUG_LOCKDEP
+> >       seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
+> >   #endif
+> > -#ifdef CONFIG_PROVE_LOCKING
+> > -     seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+> > -     seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+> > -#endif
+> > +     if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+> > +             seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+> > +             seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+> >
+> > -     get_usage_chars(class, usage);
+> > -     seq_printf(m, " %s", usage);
+> > +             get_usage_chars(class, usage);
+> > +             seq_printf(m, " %s", usage);
+> > +     }
+> >
+> >       seq_printf(m, ": ");
+> >       print_name(m, class);
+> >       seq_puts(m, "\n");
+> >
+> > -     list_for_each_entry(entry, &class->locks_after, entry) {
+> > -             if (entry->distance == 1) {
+> > -                     seq_printf(m, " -> [%p] ", entry->class->key);
+> > -                     print_name(m, entry->class);
+> > -                     seq_puts(m, "\n");
+> > +     if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+> > +             list_for_each_entry(entry, &class->locks_after, entry) {
+> > +                     if (entry->distance == 1) {
+> > +                             seq_printf(m, " -> [%p] ", entry->class->key);
+> > +                             print_name(m, entry->class);
+> > +                             seq_puts(m, "\n");
+> > +                     }
+> >               }
+> >       }
+> >       seq_puts(m, "\n");
+>
+> Maybe you can remove the blank lines in this case by moving the last
+> seq_puts() inside the if loop. The blank lines are not really needed
+> without the associated locks_after information.
 
+Yeah, I agree. Thank you.
 
-It is better if you tag the CPU id while registering the IRQ.
-"dcvsh-irq-x" (0/4/7)
+Regards,
+Xiongwei
 
-> +	if (ret) {
-> +		dev_err(dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
-> +		return;
-> +	}
-> +	data->policy = policy;
-> +	INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
-> +}
-> +
->   static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->   {
->   	struct platform_device *pdev = cpufreq_get_driver_data();
-> @@ -370,6 +463,16 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->   			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
->   	}
->   
-> +	/* Look for LMh interrupt. If no interrupt line is specified /
-> +	 * if there is an error, allow cpufreq to be enabled as usual.
-> +	 */
-> +	data->lmh_dcvs_irq = platform_get_irq(pdev, index);
-> +	if (data->lmh_dcvs_irq > 0) {
-> +		qcom_cpufreq_hw_lmh_init(policy);
-> +	} else if (data->lmh_dcvs_irq != -ENXIO) {
-> +		ret = data->lmh_dcvs_irq;
-> +		goto error;
-> +	}
->   	return 0;
->   error:
->   	kfree(data);
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+> Cheers,
+> Longman
+>
