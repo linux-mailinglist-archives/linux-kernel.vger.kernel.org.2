@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307383B796A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E463B796F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbhF2Ug2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S235513AbhF2Uip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbhF2Ug1 (ORCPT
+        with ESMTP id S234054AbhF2Uio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:36:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A12C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:33:58 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id n14so613869lfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fhJdI23bnQTsJQkSv7/yJhByjF9cS8kb5VpeCaNIpgY=;
-        b=EPJAHNutQ9iqxU3YC3gGirOdY6LcOSsoptGbcsa3ezTIi/byqkNjxmeo7mQf9v7aml
-         gFoXNIXI4TVJUQnPhtOPQEiBWEyU4c0yEbh0cO7fouErX6C0a7lJ+uzQJhA54Er7WR/R
-         NVf94tbIri27NQIuLHPMB7ppxiMo5jePufcuk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fhJdI23bnQTsJQkSv7/yJhByjF9cS8kb5VpeCaNIpgY=;
-        b=SwoaUKz/pDftEhar6CyHnUUzo6U+CobCqG9eBFzCTn0PqnRHMSjMcGQ4WLq9Toz9E/
-         0xzFmy5nEe9Dg1yEevRXEbJrBXOsRyEfN69ASIxU2mrFi6UCCPRQcWsfO8ioOx3zIBcr
-         Y7VhOsi7CoKhqM6t4WSu3BQkLHoH83bmwhQelRLN5m3Y3ad4Jqle7CmQaxqEMxxpseXy
-         07iH11L8w7ZlgjR5FtHS0ANT81d0aKvI8cPdrHk3wwf1arkwwwf7k9oQ1z2XxX0MAsfR
-         8AS9bnpupMNMug6hYtRq78Hw5DAy8xf3LhXZTl3IajlGFv8Zbg2EUcJi6LF7Kgv/26pW
-         l5QQ==
-X-Gm-Message-State: AOAM530w+1YB3ilVR5pcgQG8FWVU1d2ppzp0XwMHMh7ZxE0NaSHxlcOq
-        4JD7mYrFI4Y4UlGTjHl6kFgKM8pD/PizSFfvlZo=
-X-Google-Smtp-Source: ABdhPJwHSYuZRPYxhD54zkRdiLRdKnvuqs3UGWxUjL9Ylc6qZCkFDSJepncOqOXcPEVB89KzLjcqlA==
-X-Received: by 2002:a05:6512:3a2:: with SMTP id v2mr23955834lfp.651.1624998836322;
-        Tue, 29 Jun 2021 13:33:56 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id u8sm2147261lje.99.2021.06.29.13.33.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 13:33:55 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id q16so650178lfr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:33:55 -0700 (PDT)
-X-Received: by 2002:ac2:42d6:: with SMTP id n22mr24286252lfl.41.1624998835628;
- Tue, 29 Jun 2021 13:33:55 -0700 (PDT)
+        Tue, 29 Jun 2021 16:38:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204B9C061760;
+        Tue, 29 Jun 2021 13:36:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LVxbuLMLcRpyjQRz1kncVZYfUbiUuDqHXsL23IYKsAY=; b=Kp5YrV6NDDHSjE90/fqu4gF+1L
+        EX6fRw/AgoFU14R9swh3NPg1FeGggmsk/CWWtLVQ7XIPZ1Ndd3lDcok/Ps00f/48iAxQ1XfzROkob
+        U5K/7U1o+5mpcRTGMZZ4YE2uZocZED5W6nlhtTs81cm6KVGzkRadLWUqvPf8lLq3ZUYGWEdNV/5Xg
+        KokSW396SlHuQ+ESiF9Qxm2UgzJT09DEizVi4nPDcJKP166rO00MXwUu3HUBNQrq0jZNrHh4qXbkV
+        HTIn5iOZcuQa0oU8AxcXFNohLBUoNkqctZC+Tj8ycp5HuzNT1+16P8Co+5g+8t8J6gKmAmXx01ud4
+        QHvx9oEw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyKSH-004VrN-JG; Tue, 29 Jun 2021 20:35:42 +0000
+Date:   Tue, 29 Jun 2021 21:35:37 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, masahiroy@kernel.org, michal.lkml@markovi.net,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [tip: objtool/core] jump_label, x86: Allow short NOPs
+Message-ID: <YNuEGUrjTvOrZkj5@casper.infradead.org>
+References: <20210506194158.216763632@infradead.org>
+ <162082558708.29796.10992563428983424866.tip-bot2@tip-bot2>
+ <20210518195004.GD21560@worktop.programming.kicks-ass.net>
+ <20210518202443.GA48949@worktop.programming.kicks-ass.net>
+ <20210519004411.xpx4i6qcnfpyyrbj@treble>
+ <YKS2oX/PCfp4NQ8V@hirez.programming.kicks-ass.net>
+ <YNt7+fRNOnorLsYW@casper.infradead.org>
 MIME-Version: 1.0
-References: <87fsx1vcr9.fsf@disp2133> <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
- <20210629171757.shyr222zjpm6ev5t@example.org> <CAHk-=wgcpK3XdFKJ98b_YucXbQMJMgJssAk=sQ-XUo-tyiMjVg@mail.gmail.com>
- <20210629202028.gduluywejae75icj@example.org>
-In-Reply-To: <20210629202028.gduluywejae75icj@example.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 29 Jun 2021 13:33:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
-Message-ID: <CAHk-=wjQks3o_3=WewaXw++h+a318B3LTLSFER9Ee4n1pLCZLw@mail.gmail.com>
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNt7+fRNOnorLsYW@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 1:20 PM Alexey Gladkov <legion@kernel.org> wrote:
->
-> Waaaait. task_ucounts() is a different thing. This function only gets a
-> field from the task structure without any reference counting. But the
-> get_ucounts() is more like get_user_ns() or get_uid(), but does not ignore
-> counter overflow.
+On Tue, Jun 29, 2021 at 09:01:25PM +0100, Matthew Wilcox wrote:
+> So this got merged without the corresponding Kbuild update being merged,
+> and my kernel failed to boot.  Bisect got as far as
+> 
+> $ git bisect good
+> Bisecting: 4 revisions left to test after this (roughly 2 steps)
+> [ab3257042c26d0cd44793c741e2f89bf38b21fe8] jump_label, x86: Allow short NOPs
+> 
+> before my sluggish memory remembered this thread from six weeks ago.
+> 
+> So if anybody else hits this, do a make clean.
 
-Alexey, that code cannot be right.
+Actually, this is a different bug with the same symptom.
 
-Look here:
+Applying the patch from Peter, and running it:
 
-        rcu_read_lock();
-        ucounts = task_ucounts(t);
-        sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-        if (sigpending == 1)
-                ucounts = get_ucounts(ucounts);
-        rcu_read_unlock();
+$ ./.build_test_kernel-x86_64/tools/objtool/objtool check -abdJsuld .build_test_kernel-x86_64/vmlinux.o
+nr_sections: 15446
+section_bits: 13
+nr_symbols: 116448
+symbol_bits: 16
+max_reloc: 8031700
+tot_reloc: 12477754
+reloc_bits: 19
+nr_insns: 2523443
+.build_test_kernel-x86_64/vmlinux.o: warning: objtool: want_init_on_free()+0x0: jump-label unpatched
 
-so now we've done that inc_rlimit_ucounts() unconditionally on that
-task_ucounts() thing.
-
-And then if the allocation fails (or the limit is hit) the code does
-
-        if (ucounts && dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
-                put_ucounts(ucounts);
-
-ie now it does the dec_rlimit_ucounts _conditionally_.
-
-See what I'm complaining about? This is not logical, AND IT CANNOT
-POSSIBLY BE RIGHT.
-
-My argument is that
-
- (a) the dec_rlimit_ucounts() has to pair up with
-inc_rlimit_ucounts(), or you're leaking counts
-
- (b) get_ucounts() has to pair up with put_ucounts().
-
-Note that (a) has to be REGARDLESS of whether get_ucounts() was
-successful or not.
-
-> Earlier I tried to use refcount_t which never returns errors [1]. We
-> talked and you said that ignoring counter overflow errors is bad
-> design for this case.
-
-You can't ignore counter overflow errors, no. But that's exactly what
-that code is doing.
-
-If get_ucount() fails due to overflow, you don't return an error. You
-just miscount the end result!
-
-So yeah, its' "testing" the overflow condition, but that's not an
-argument, when it then DOES EXPLICITLY THE WRONG THING.
-
-At that point, the test is actively harmful and wrong. See?
-
-             Linus
+This is against a freshly built kernel -- i removed the build directory,
+copied in a .config file and built a fresh kernel.
