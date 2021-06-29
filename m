@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AFF3B77CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2081C3B77CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbhF2S2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S235007AbhF2S2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbhF2S2W (ORCPT
+        with ESMTP id S233843AbhF2S2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:28:22 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEE0C061760;
-        Tue, 29 Jun 2021 11:25:54 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id cx9-20020a17090afd89b0290170a3e085edso3064731pjb.0;
-        Tue, 29 Jun 2021 11:25:54 -0700 (PDT)
+        Tue, 29 Jun 2021 14:28:53 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBAFC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:26:24 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id k10so41089902lfv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=u/6UWA7ctrHsSbnwm4aIjgzhxXKmYH8AmE03qul2tjE=;
-        b=Kc3AmH7ISBDlp2uBDPoPEEe6ErlktdvQCxficV34qOTKQI0je687lG98Yyx2gBEeXO
-         OWIFrpdkV2et2dvANGCIQVTHapU3GbWcoPDQqMqOeKVdICo//PSCgiVj+QySfs1PlzhJ
-         Ezl8/FGF4DhAnNI+Sj4JvQ2V80+81u6NnH2fD9xO71L0Y1GDq2FTbnpOy4plfJk1VPFp
-         CB3kkxbJc8jIHGW7wwALeWs+orB/7hCu4Gn2F5LCpN10zY17vWJmxxJ4xqEqc6ngLMwT
-         Lf3kk5FYkXyuVwN42kNY0fQqJo/YuZgVeDldSH/CyQg1voEhPWa6spIzUkxdxzt3biNE
-         oIBg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pceICAVc3FRjs3oaqr7b2P22W2Ms3JeVrkpDbjmXB3k=;
+        b=KMQ8kAPF661x96HUOtTE8PNF8G0M49wR+crECtib50YcD9kxNLel9cEeR41EpoL9PO
+         LnAkUJx/XPiwxyVGWG/6crkpBkiisLz52NaES8uF7LevUtjodQq+oHiP/AG1pKPxGyrn
+         NQ5y4T90guKFRx9Sr1UaUwgb51Rb7PQUHK9IQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=u/6UWA7ctrHsSbnwm4aIjgzhxXKmYH8AmE03qul2tjE=;
-        b=bYvOD/KzEZrFn4wesngCzILMX4KzQhsWWVjWU5ZWvCezAG9e96kXBZvk4ZOLHO1dOL
-         ZRiungd6F99564+/vRN60eAyZDLxS8lzIc3IY5ulf1Eq0ryQco0qudi4uz/yhRnCBS2Z
-         HUIL3vmsvWCTMlLqz2xarftOVAUe4PAC2ff3Dlwl9BhbSowohTvjze88bapSJoCBvESw
-         NlO88ZYk8WPmBz/aKsQp+d7Nm9choZNB0jUQvM2ycrhClBCqvLUlaOkKLIiO8wXQRaj2
-         Kp+3s+TEGc7SSatPxsAeCuyuiY9ZB+T6qyUfIGcpk4Sh1R9FZwBOGeNe9qiE7Z8t6mat
-         aiHw==
-X-Gm-Message-State: AOAM533+RK7SAIPjTZrLBPRUv38SFqcJ+inXCyI6+nH9oMWZz5VlQ5H5
-        y1C8ZNX5FwCbKhCWCV+KQCo=
-X-Google-Smtp-Source: ABdhPJwuzmxm4aF1jiWRpiCNBTPwZkmU4cBHZ3VlUv3GXwn6QSSfZ8eiGeSbkZynzEcstDzMB15sxQ==
-X-Received: by 2002:a17:90b:3612:: with SMTP id ml18mr159229pjb.209.1624991153535;
-        Tue, 29 Jun 2021 11:25:53 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a179:bab4:eeba:e548])
-        by smtp.gmail.com with ESMTPSA id b10sm17245359pfi.122.2021.06.29.11.25.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 11:25:52 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 11:25:50 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Kenneth Albanowski <kenalba@google.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: input: do not report stylus battery state as "full"
-Message-ID: <YNtlrrKZVQY4byVa@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pceICAVc3FRjs3oaqr7b2P22W2Ms3JeVrkpDbjmXB3k=;
+        b=Ks1T5MrKFhk8aQCNhJh0aMRD7o8u+OA/nObLi8/RWfpPHb5/NbGX8ndK6ep3CMrKBP
+         5ojT/Hc6VyTGxAbrW2LE0HL2XYxg8MbzgrdX6oxZ1h6J60sohcjOrmJuVfGv0tmvOWei
+         xxYUjeN2Fm4o34hV90C2XsBFiG/p1/dac69fAQMVumBq4RErRceqm/N+czDZJFnjxpGo
+         ZiYnOtjX5spHRKQIqZxZkDJsW3GiJ4d4zVMqjaxCvcAJNoE+kTLaVt0m1REybCoSeegQ
+         zXZLKzhu596F7E7iTTFEyhNtw6xV5dTrfUcKOBXm116YIsVcWiqb2qiZhAyVr8m+KEm9
+         Brvg==
+X-Gm-Message-State: AOAM532wrvQ8TR95DVc32MkE9azK03tgALXm3x8Z53VCrfjHq2KmrZIy
+        mctLi+I6hmuwF65hnFBs3dn6KlnKZLAlxzA0fWw=
+X-Google-Smtp-Source: ABdhPJzL5V7SPI6y/1u1G9MfDzpkzxhO5GQ8E4d2yJ25EabJkSJ0Yy8JJE1CneiT/r+K4pNwfWzaVA==
+X-Received: by 2002:a19:7dc2:: with SMTP id y185mr23516196lfc.249.1624991182744;
+        Tue, 29 Jun 2021 11:26:22 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id q5sm1700838lfb.277.2021.06.29.11.26.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 11:26:22 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id n14so8769lfu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:26:22 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr23551808lfc.201.1624991182126;
+ Tue, 29 Jun 2021 11:26:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+In-Reply-To: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 29 Jun 2021 11:26:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
+Message-ID: <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.14-rc1
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The power supply states of discharging, charging, full, etc, represent
-state of charging, not the capacity level of the battery (for which
-we have a separate property). Current HID usage tables to not allow
-for expressing charging state of the batteries found in generic
-styli, so we should simply assume that the battery is discharging
-even if current capacity is at 100% when battery strength reporting
-is done via HID interface. In fact, we were doing just that before
-commit 581c4484769e.
+On Tue, Jun 29, 2021 at 7:30 AM Michal Simek <monstr@monstr.eu> wrote:
+>
+>   git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
 
-This change helps UIs to not mis-represent fully charged batteries in
-styli as being charging/topping-off.
+I think git.monstr.eu is having some issues, I'm not getting any
+response from it..
 
-Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
-Reported-by: Kenneth Albanowski <kenalba@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/hid/hid-input.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index e982d8173c9c..e85a1a34ff39 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -417,8 +417,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
- 
- 		if (dev->battery_status == HID_BATTERY_UNKNOWN)
- 			val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
--		else if (dev->battery_capacity == 100)
--			val->intval = POWER_SUPPLY_STATUS_FULL;
- 		else
- 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
- 		break;
--- 
-2.32.0.93.g670b81a890-goog
-
--- 
-Dmitry
+            Linus
