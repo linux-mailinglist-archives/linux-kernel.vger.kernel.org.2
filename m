@@ -2,52 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2DF3B7460
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A15B3B7464
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhF2OfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:35:22 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:34777 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234285AbhF2OfT (ORCPT
+        id S234464AbhF2OgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:36:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57310 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234285AbhF2OgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:35:19 -0400
-Received: (qmail 699680 invoked by uid 1000); 29 Jun 2021 10:32:51 -0400
-Date:   Tue, 29 Jun 2021 10:32:51 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Linyu Yuan <linyyuan@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH v2] usb: dwc3: avoid NULL access of usb_gadget_driver
-Message-ID: <20210629143251.GA699290@rowland.harvard.edu>
-References: <20210629015118.7944-1-linyyuan@codeaurora.org>
+        Tue, 29 Jun 2021 10:36:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 81DA9226CB;
+        Tue, 29 Jun 2021 14:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624977233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=l27yWpUOt7K6JE8GkAbI88JtQoiyZZfThwFoqr+iDA4=;
+        b=U4QMH2o29Jz5J6WBl+WVh97CQszudPV29Q6xctPTJ7Ttob9J3hjuprMtUCwAf7h6nDuz/g
+        jhdMxb4IJVR/NFmJmMnDCDHOakR/5FQ0Hmkg1B+tZ01pPj9sgGwVxDoq+W8f3rUCSYVBZG
+        UqwI21drNzvRTP/YvoHtE+zzQK2CBIM=
+Received: from alley.suse.cz (unknown [10.100.216.66])
+        by relay2.suse.de (Postfix) with ESMTP id 2A645A3B85;
+        Tue, 29 Jun 2021 14:33:53 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] printk/console: Check consistent sequence number when handling race in console_unlock()
+Date:   Tue, 29 Jun 2021 16:33:41 +0200
+Message-Id: <20210629143341.19284-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210629015118.7944-1-linyyuan@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 09:51:18AM +0800, Linyu Yuan wrote:
-> we found crash in dwc3_disconnect_gadget(),
-> it is because dwc->gadget_driver become NULL before async access.
-> 7dc0c55e9f30 ('USB: UDC core: Add udc_async_callbacks gadget op')
-> suggest a common way to avoid such kind of issue.
-> 
-> this change implment the callback in dwc3 and
-> change related functions which have callback to usb gadget driver.
-> 
-> Signed-off-by: Linyu Yuan <linyyuan@codeaurora.org>
-> ---
-> 
-> v2: add missing check in dwc3_reset_gadget(), found by Alan Stern.
+The standard printk() tries to flush the message to the console
+immediately. It tries to take the console lock. If the lock is
+already taken then the current owner is responsible for flushing
+even the new message.
 
-This is better.
+There is a small race window between checking whether a new message is
+available and releasing the console lock. It is solved by re-checking
+the state after releasing the console lock. If the check is positive
+then console_unlock() tries to take the lock again and process the new
+message as well.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+The commit 996e966640ddea7b535c ("printk: remove logbuf_lock") causes that
+console_seq is not longer read atomically. As a result, the re-check might
+be done with an inconsistent 64-bit index.
+
+Solve it by using the last sequence number that has been checked under
+the console lock. In the worst case, it will take the lock again only
+to realized that the new message has already been proceed. But it
+was possible even before.
+
+Fixes: commit 996e966640ddea7b535c ("printk: remove logbuf_lock")
+Cc: stable@vger.kernel.org # 5.13
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 142a58d124d9..87411084075e 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2545,6 +2545,7 @@ void console_unlock(void)
+ 	bool do_cond_resched, retry;
+ 	struct printk_info info;
+ 	struct printk_record r;
++	u64 next_seq;
+ 
+ 	if (console_suspended) {
+ 		up_console_sem();
+@@ -2654,8 +2655,10 @@ void console_unlock(void)
+ 			cond_resched();
+ 	}
+ 
+-	console_locked = 0;
++	/* Get consistent value of the next-to-be-used sequence number. */
++	next_seq = console_seq;
+ 
++	console_locked = 0;
+ 	up_console_sem();
+ 
+ 	/*
+@@ -2664,7 +2667,7 @@ void console_unlock(void)
+ 	 * there's a new owner and the console_unlock() from them will do the
+ 	 * flush, no worries.
+ 	 */
+-	retry = prb_read_valid(prb, console_seq, NULL);
++	retry = prb_read_valid(prb, next_seq, NULL);
+ 	printk_safe_exit_irqrestore(flags);
+ 
+ 	if (retry && console_trylock())
+-- 
+2.26.2
 
