@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1053B7896
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F010E3B789B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhF2T32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 15:29:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63786 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhF2T31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 15:29:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208168663"
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="208168663"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 12:26:58 -0700
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="643830001"
-Received: from bzhang2-mobl1.amr.corp.intel.com (HELO [10.255.231.86]) ([10.255.231.86])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 12:26:57 -0700
-Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
- dynamic user state
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     "Lutomirski, Andy" <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-15-chang.seok.bae@intel.com>
- <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
- <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
- <36D0486A-D955-4C32-941A-A2A4985A450C@intel.com>
- <48e86785-838d-f5d4-c93c-3232b8ffd915@intel.com>
- <3AB6DECB-2A53-4EC2-84A6-0CACE44CFC1C@intel.com>
- <6754330a-bbbb-aa29-7800-f2d16216ad8c@intel.com>
- <406DB587-F598-484F-A128-990E2DB6EC78@intel.com>
- <842d8e8a-44c6-a8c5-c580-a77fc52d267f@intel.com>
- <D147640C-0248-4934-8F11-69706E0EE5CB@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0f88a88b-421f-756e-40dd-ac052b317b15@intel.com>
-Date:   Tue, 29 Jun 2021 12:26:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233778AbhF2TbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:31:06 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:43958 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhF2TbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 15:31:06 -0400
+Received: by mail-lj1-f170.google.com with SMTP id f13so32557375ljp.10;
+        Tue, 29 Jun 2021 12:28:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dEfLuSPH6KhZZ1U4CdzxbvJWglpkxvIUaVZ0D5a3+xQ=;
+        b=EGBvOWrK9VuJ+dX74B03ovdvGyMc/PJcAaDVy8QFCANonbV5C/rd1w3AEPj3qess8X
+         YnDhi2ZKrFfip0a4OWD+Wy6uhbtnAcU3Ol7ZGLpOZzh9GA3MBZqN0cF6ahFgmR1WBTCi
+         0AJNbNszTBPn99hAa5bIQSHVRIRSW8tphulYLhZuXh8Y4LKLPy+ea1FqS7UiuExmFPqU
+         hPpCxlTbEu5bbqvWw9bf7+WfPWx/rw+TX/5nofvDLqkCFO2XtcUVk83YdhpsHnEn8c72
+         bmQmrdvGrWOLd5d/bdzSL68VkBAyQLE+ys50dR9TnGH5492RFmLYU0dJLwJgYRbYcNsR
+         /vKg==
+X-Gm-Message-State: AOAM532J9kO03kSXfoSbfcbn9OrW+0Bbxlmg0X/6Sl9jvYpHB0RX0aDZ
+        jmjeWIRigwHLo/u5qtJlCgvUHSjESbifLfw/stk=
+X-Google-Smtp-Source: ABdhPJxO8/lwQBrngQA/tD/uTLOeOsWYFkQCn6JXhBP22pExYb9JXZ8EoUyiWYEW5hevznDYoDDsSapJ7OuzwXOXbHE=
+X-Received: by 2002:a2e:5c03:: with SMTP id q3mr4886886ljb.233.1624994916195;
+ Tue, 29 Jun 2021 12:28:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <D147640C-0248-4934-8F11-69706E0EE5CB@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210627131818.810-1-adrian.hunter@intel.com>
+In-Reply-To: <20210627131818.810-1-adrian.hunter@intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 29 Jun 2021 12:28:24 -0700
+Message-ID: <CAM9d7cgoJQgTK8t+9oLPrEUg=7-zkzFefRO=XnPmLcTDdJfHKQ@mail.gmail.com>
+Subject: Re: [PATCH V2 00/10] perf script: Add API for filtering via
+ dynamically loaded shared object
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 12:13 PM, Bae, Chang Seok wrote:
->>
->> Is it actually important to make sure that they are dynamic features?
->> Is there *any* case where a feature (dynamic or not) can have XFD armed
->> and be out of its init state?
-> In this AMX series, XFD is only used for the xstate buffer management. The
-> code is made in a such way that XFD and dynamic states are a bit coupled.
-> 
-> But I think XFD can be extended for other usages in the future. Then, yes.
-> (This warning is also for future code changes.)
-> 
-> So, reading the MSR is just simple and clean here, but it consumes cycles. Or,
-> a task may have a field for XFD value per se unless this conversion is
-> acceptable.
+Hi Adrian,
 
-I'm not following.
+On Sun, Jun 27, 2021 at 6:18 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> Hi
+>
+> In some cases, users want to filter very large amounts of data (e.g. from
+> AUX area tracing like Intel PT) looking for something specific. While
+> scripting such as Python can be used, Python is 10 to 20 times slower than
+> C. So define a C API so that custom filters can be written and loaded.
 
-All that I see here is that you made what could be a very generic check:
+Thanks for your work!  I guess we can use this for perf report (and others)
+to have a custom filter too.
 
-	Thou shalt never XSAVE a xfeature which is XFD-armed
+Thanks,
+Namhyung
 
-and made it more specific:
-
-	Thou shalt never XSAVE a *dynamic* xfeature which is XFD-armed
-
-I'm just saying that I don't see the value in a less-broad check.  Let's
-make the sanity check as broad as possible.  That actually makes the
-code simpler.
-
+>
+> This is V2.
+>
+> The main patch is patch 1.
+>
+> The other patches add more functionality, except for patch 5 which installs
+> the C API header file.
+>
+>
+> Changes in V2:
+>     perf script: Move filter_cpu() earlier
+>     perf script: Move filtering before scripting
+>     perf script: Share addr_al between functions
+>         Dropped because they have now been applied.
+>
+>     perf script: Add API for filtering via dynamically loaded shared object
+>         Move 2 members of struct perf_dlfilter_sample
+>         Add 'ctx' as an argument to 'start' and 'stop'
+>         Find dlfilter .so files in current directory or exec-path/dlfilters
+>
+>     perf script: Add option to list dlfilters
+>         New patch
+>
+>     perf script: Add option to pass arguments to dlfilters
+>         New patch
+>
+>
+> Adrian Hunter (10):
+>       perf script: Add API for filtering via dynamically loaded shared object
+>       perf script: Add dlfilter__filter_event_early()
+>       perf script: Add option to list dlfilters
+>       perf script: Add option to pass arguments to dlfilters
+>       perf build: Install perf_dlfilter.h
+>       perf dlfilter: Add resolve_address() to perf_dlfilter_fns
+>       perf dlfilter: Add insn() to perf_dlfilter_fns
+>       perf dlfilter: Add srcline() to perf_dlfilter_fns
+>       perf dlfilter: Add attr() to perf_dlfilter_fns
+>       perf dlfilter: Add object_code() to perf_dlfilter_fns
+>
+>  tools/perf/Documentation/perf-dlfilter.txt | 251 ++++++++++++
+>  tools/perf/Documentation/perf-script.txt   |  15 +-
+>  tools/perf/Makefile.config                 |   3 +
+>  tools/perf/Makefile.perf                   |   4 +-
+>  tools/perf/builtin-script.c                |  86 +++-
+>  tools/perf/util/Build                      |   1 +
+>  tools/perf/util/dlfilter.c                 | 615 +++++++++++++++++++++++++++++
+>  tools/perf/util/dlfilter.h                 |  97 +++++
+>  tools/perf/util/perf_dlfilter.h            | 150 +++++++
+>  9 files changed, 1211 insertions(+), 11 deletions(-)
+>  create mode 100644 tools/perf/Documentation/perf-dlfilter.txt
+>  create mode 100644 tools/perf/util/dlfilter.c
+>  create mode 100644 tools/perf/util/dlfilter.h
+>  create mode 100644 tools/perf/util/perf_dlfilter.h
+>
+>
+> Regards
+> Adrian
