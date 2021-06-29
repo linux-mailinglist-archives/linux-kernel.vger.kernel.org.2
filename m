@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CAB3B7033
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BD93B703A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 11:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhF2Jn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 05:43:27 -0400
-Received: from mail-dm6nam12on2048.outbound.protection.outlook.com ([40.107.243.48]:1377
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S232939AbhF2JoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 05:44:03 -0400
+Received: from mail-mw2nam12on2057.outbound.protection.outlook.com ([40.107.244.57]:55841
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232850AbhF2JnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:43:25 -0400
+        id S232929AbhF2Jn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 05:43:59 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dc4I0McUfZQf0sZw/PEXSlgDLmnqfAZxTt5gdXDAx8bZt0qUZEbY+C3a1jRO78KlY3c7k9PUiYZ2KLesBHnOO+vGDIdqe5dHVxtOdH4uh8OyIhoJ3kcFCoza7WH7LCg99UGqM6jHHSol2A7pYqL97rkcCrMD5TVcc7BLhRmovVw2Z7IGu8ujirjaD2gcf/8WxWMLe0jqKdV/5N6WFfu/AqL7GQpP9kvi3okLcEF3KRtYptl45BCaQSo3qYVcFUIazcbEMNp45jdTwQ0fy3sI+SbQ6LLdVB1ePFoF2D9LJjqz624M37Diubql7ufIJT/XVACLdFLicsE63w+btKRLxg==
+ b=bUKhz2lulfoTI2XLX01Cm49RRg6TT6o76Vy5bvGui8pNIOpz1SCp8hNYVlIZewxFGOQlANjEPzfjG1kHfxi98L9aCrKHca90AMBGODEfRpq3YemywckfccTJDXqHa/j3/8VeHVfeRPmZBRL5/EbasxsiJSrMlTecdb56Ef6zujE75sRkhvYb1aA6Qcxn6KsJGjanzy4peXSXNFCVX8uJquZBuup78yh8Lj0mFr3f1II3ZPz18275sW+v1vWAtnP0Xzz7JqWR2pUlZBZDTUXwDImqOwpIsxsFzuVY8sHpLECla9uXa5tCCBVKRgyj2LpLAOi/jHmEiFkxgdAlR3+R8A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VOJ1Nae0Hw6OPZYBOL9GhDHSWJdaDT4XlMEi4oWciU=;
- b=nfYd6K3bGh9OBvNF1nSD9fuLSl4eJ/gbKn5Zc5fKFHUcueaqev7ejXRzPNqmJZ5A85oeVi0+wvpl4wUm3D82r5nBUlqCKIkXhpCboSNujX2OgwO2RBMh/7zOBWmM5mcVWAdqhMm0T2mqAhxy8NJzrFEVob8LSOzB8RNg26SU//EBysZXRO4c82BAn8+rhRx50zG8Db9qbWRT0qvi6RrV/g52m4S7DXOPwiSAvVIQcjhMnq3lZb3E56BO67qYpnLXne46v6riR15uy/HDBH5RV1FufuOi4bH38BXptPX99vXzqNjphH7wvgH6bIQzGTVKF0o4zqzS6UnAKdkNKVNuvQ==
+ bh=0Bg/QQ+pvABWS91zzxrOezwGTu2ohzYofB07oOyazQc=;
+ b=bXtlvmbnPoteqUZ0iLSToDqLtby0fcaHyv2W4l7WvwbxLPZZ0zSIV0sNJxORkawLeNeEJVO+5DqSmMtBQbQVNas7xiqTJVfsF/15/+sdXZ4Db53pc/Swyo0ml++yGse6ZNyfhmuxwutCJvPjtXVROQI1rB+uyWtZrUpaZMsBJNOvhFcU7BDKjpnHKY1w96C7Z5NK3bjZDxy88ne1c0cTF8nZnbQ516fD9iSR6NQNUs0sSZrOa9+T7zp+GDMyu0seJ+B03vjbcfOcIexUj94cN6u80KRphS9y0eoo/yIkytMzeBSMx2n8BMB++fQVWpPAXnHYQqaYQuQUgL7YgsgEOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -26,35 +26,35 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2VOJ1Nae0Hw6OPZYBOL9GhDHSWJdaDT4XlMEi4oWciU=;
- b=MVHdib4n70KkGlRBe+pBSKcl9zjZ/FrPKap7u605WZFg8nwy+QbbasrDTzlC0Osa8eyF9lGnZNpYKATe4a/BUvuwD/U/oadg3TfWAWnLxqOMxCDhCTheCMMdE4FwnDzOA2Rw+25jE2fcWyiux7eP8AdqHmnSutRDIp3poRXfnPQ=
-Received: from SA0PR12CA0004.namprd12.prod.outlook.com (2603:10b6:806:6f::9)
- by PH0PR02MB7414.namprd02.prod.outlook.com (2603:10b6:510:1f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Tue, 29 Jun
- 2021 09:40:56 +0000
-Received: from SN1NAM02FT0037.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:6f:cafe::4f) by SA0PR12CA0004.outlook.office365.com
- (2603:10b6:806:6f::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend
- Transport; Tue, 29 Jun 2021 09:40:56 +0000
+ bh=0Bg/QQ+pvABWS91zzxrOezwGTu2ohzYofB07oOyazQc=;
+ b=sj8VVx62IOQd/qlE4cWuGvQhJHswofifG+E2EMNYYwcc5U7C3kDYX9/g8elA1vlfUMu8Hbzb8pRgYY4MC8o/CzaC9e6mnw7i+QFOQCm7q5RQIsEv/fokczKnRHOhAhVSi6jLy5hG24AuwdvcdlghqQ50UoB5LYtF5PXGDnFPqyk=
+Received: from SN4PR0801CA0017.namprd08.prod.outlook.com
+ (2603:10b6:803:29::27) by SN6PR02MB5295.namprd02.prod.outlook.com
+ (2603:10b6:805:67::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.23; Tue, 29 Jun
+ 2021 09:41:08 +0000
+Received: from SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:29:cafe::dd) by SN4PR0801CA0017.outlook.office365.com
+ (2603:10b6:803:29::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend
+ Transport; Tue, 29 Jun 2021 09:41:08 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
 Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0037.mail.protection.outlook.com (10.97.4.243) with Microsoft SMTP
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0011.mail.protection.outlook.com (10.97.5.171) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 09:40:56 +0000
+ 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 09:41:08 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 02:40:52 -0700
+ 15.1.2176.2; Tue, 29 Jun 2021 02:40:55 -0700
 Received: from smtp.xilinx.com (172.19.127.96) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 29 Jun 2021 02:40:52 -0700
+ 15.1.2176.2 via Frontend Transport; Tue, 29 Jun 2021 02:40:55 -0700
 Envelope-to: robh+dt@kernel.org,
  andrew@lunn.ch,
  hkallweit1@gmail.com,
@@ -72,7 +72,7 @@ Envelope-to: robh+dt@kernel.org,
 Received: from [10.140.6.13] (port=43732 helo=xhdharinik40.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <harini.katakam@xilinx.com>)
-        id 1lyAEV-0005yU-8L; Tue, 29 Jun 2021 02:40:43 -0700
+        id 1lyAEZ-0005yU-Mp; Tue, 29 Jun 2021 02:40:48 -0700
 From:   Harini Katakam <harini.katakam@xilinx.com>
 To:     <robh+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
         <linux@armlinux.org.uk>, <davem@davemloft.net>, <kuba@kernel.org>,
@@ -83,52 +83,66 @@ CC:     <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <harinikatakamlinux@gmail.com>,
         <michal.simek@xilinx.com>, <radhey.shyam.pandey@xilinx.com>
-Subject: [PATCH 0/3] Add support for VSC8531_02 PHY and DT RGMII tuning
-Date:   Tue, 29 Jun 2021 15:10:35 +0530
-Message-ID: <20210629094038.18610-1-harini.katakam@xilinx.com>
+Subject: [PATCH 1/3] include: dt-bindings: Add mscc-vsc8531 RGMII clock delay definitions
+Date:   Tue, 29 Jun 2021 15:10:36 +0530
+Message-ID: <20210629094038.18610-2-harini.katakam@xilinx.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210629094038.18610-1-harini.katakam@xilinx.com>
+References: <20210629094038.18610-1-harini.katakam@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0dc995f-295c-4437-4bf6-08d93ae1fec6
-X-MS-TrafficTypeDiagnostic: PH0PR02MB7414:
-X-Microsoft-Antispam-PRVS: <PH0PR02MB74145AEA84E643A8A5122AFFC9029@PH0PR02MB7414.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: ba11c726-31a9-45cc-2022-08d93ae205e1
+X-MS-TrafficTypeDiagnostic: SN6PR02MB5295:
+X-Microsoft-Antispam-PRVS: <SN6PR02MB529598BAC00B497985BB0190C9029@SN6PR02MB5295.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Oob-TLC-OOBClassifiers: OLM:269;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g0T290Pcffz3Lm3xU+0/02rBhsMElSphhTDX4KsqbxFI8kLgimkql3rvZ6iRl3otnG/jeep46zmIUYbw8K4YoYRJOITT/ITBDy7/+iBCdjZOQLRGH+SJVIcTEs5lKXZ0pvnWNbwPEhnIX+7mHr0O8tgyBCC53DvFeRmVi6RXqIkJrYofaLFmEFcm1A5egFJl5LV52/apZeXycVnVoEaR+J5i2b3tuqsfgKSvKBQ6N3/6MDw44lwV92bR+O0V2jwuHVsQi0LKYBJ3IDbP6Cl11Ev2fmAzJGB65r8tNYXHylk9dkaaVOgafkf581O1t5ZdFiWMzEsmEt5bFOgYADwj/M/zrNvDM0E4XTN1UlFT+a4B+I44FSQGyTqnDqRH9UwO4fJNQgN9b7+ajpPOKi2RmSozkksW0weVn4UGzJvhYSXjnivDQ22G6Pv4SJ8zDa85bJG4t0wM1CN57VPVrkPJVaO/dVHIaBfkmlwNUA625kZ0bJXhqlZe5SzbsesWy6NjIKoJB+RtZUfgGyG5Ds05Q8XQ6W7vnAs8nUWqWvE1fzNeRJuxvvazAmADnGyiFZcOO+3vK5084s/YnYQz0SuEs4dNNu9FoOvVuJBuKB69YbHVUBABXgjjhFpujheJR1GMS9tdFUMfE4BClsqg61OhBPVRYscuP3LbikdSz5iZlZJStwvoabrPeqNqoMu7GZhzQ8rO5jzNfb47vnNVoqwJTfH5QUBvXXWaHPgwLpZ36cPLX1jLZiOm+QHGCH3fgzNT
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(36840700001)(46966006)(82310400003)(82740400003)(7696005)(7049001)(8936002)(9786002)(316002)(36906005)(110136005)(356005)(26005)(36860700001)(107886003)(7636003)(186003)(4744005)(54906003)(83380400001)(4326008)(336012)(8676002)(426003)(70586007)(47076005)(1076003)(7416002)(5660300002)(2906002)(70206006)(2616005)(478600001)(6666004)(44832011)(36756003)(921005)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: GaAMIEIM3Wk2hsQ2Zy/oLCTtaXigTiPQ+pC5nfgOJqRcWn4pyJ2YLqSN55ACNSpB+rXPqffm2n7pw3/LXs+jZ8ouwBH6TWF8Ca0MMcqLPde6kcMhJ77AgQQyy0bPaPQ2I409CMc/2MTYXfX4uYcRlm2dzd+aP8T6VEWTvSZoSUBhq2FRGPt89Tg4vtC8EsIlLkvm7GehGm3IBcCd1HA4MyD+zIbGRp9qiCh116Q+IOPsfjojWlgJgN/E/Bxej4Zl2+SyzGHP1kAsSfhTqlJEfDSClIuvnPA5LaVtWdfIy+PPmRm7Yfbek/3SSLIan9UUQbjPMtAhMZFgLw7BFZS3QqLfsocZ5lRnhuLrdZfbJBZFKgTBXSeXIUck1DSWdYTchMszooeFJwbcloMMkHtvj9VKTclSaATUV7nwRWd31qIA6KKvpBkx9moTEv7YvzddT1vzaRB0tz8gwWtJOVnGAGrUCheLoT1nbaHG2Jck2PeBi0AAFDWFQBv2dRcDVstAd2C7DXtlcyjbLidvGO3KuXtlFP6pNzVli/0MDJsmQFCVqpAWKdR5u8MYHbgc95LLJda2e5edP2TeJkWfZzRam9VnFLUt5EsfYQTwLfybBMdNzzu7EbpGksWUeDjzxKgnNHtG8qG9JuFfOKJKgOC68qcRIMxABk/R1kNl/vIIN1gGUo9+Cy/pKdTcDnaB4xrp101eeaDhuVq17Lu/P61qEISOzLW9WWmd7CTmT3CHkclnemOUNPQ7X/0+dsQ0cPa8
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(136003)(376002)(36840700001)(46966006)(70586007)(47076005)(7696005)(5660300002)(110136005)(8676002)(44832011)(83380400001)(70206006)(4326008)(8936002)(478600001)(82310400003)(336012)(36860700001)(186003)(54906003)(82740400003)(2616005)(7636003)(36756003)(36906005)(6666004)(9786002)(426003)(7416002)(316002)(7049001)(921005)(356005)(107886003)(1076003)(2906002)(26005)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 09:40:56.4537
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 09:41:08.4485
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0dc995f-295c-4437-4bf6-08d93ae1fec6
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba11c726-31a9-45cc-2022-08d93ae205e1
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0037.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7414
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5295
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for VSC8531_02 PHY ID.
-Also provide an option to tune RGMII delay value via devicetree.
-The default delays are retained in the driver.
+Add RGMII clock delay definitions in mscc-phy-vsc8531 header.
 
-Harini Katakam (3):
-  include: dt-bindings: Add mscc-vsc8531 RGMII clock delay definitions
-  dt-bindings: mscc: Add RGMII RX and TX delay tuning
-  phy: mscc: Add support for VSC8531_02 with RGMII tuning
+Signed-off-by: Harini Katakam <harini.katakam@xilinx.com>
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+ include/dt-bindings/net/mscc-phy-vsc8531.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
- .../bindings/net/mscc-phy-vsc8531.txt         |  9 +++-
- drivers/net/phy/mscc/mscc.h                   |  3 ++
- drivers/net/phy/mscc/mscc_main.c              | 41 ++++++++++++++++++-
- include/dt-bindings/net/mscc-phy-vsc8531.h    |  9 ++++
- 4 files changed, 59 insertions(+), 3 deletions(-)
-
+diff --git a/include/dt-bindings/net/mscc-phy-vsc8531.h b/include/dt-bindings/net/mscc-phy-vsc8531.h
+index 9eb2ec2b2ea9..242eb4c7ede9 100644
+--- a/include/dt-bindings/net/mscc-phy-vsc8531.h
++++ b/include/dt-bindings/net/mscc-phy-vsc8531.h
+@@ -28,4 +28,13 @@
+ #define VSC8531_FORCE_LED_OFF           14
+ #define VSC8531_FORCE_LED_ON            15
+ 
++#define VSC8531_RGMII_CLK_DELAY_0_2_NS	0
++#define VSC8531_RGMII_CLK_DELAY_0_8_NS	1
++#define VSC8531_RGMII_CLK_DELAY_1_1_NS	2
++#define VSC8531_RGMII_CLK_DELAY_1_7_NS	3
++#define VSC8531_RGMII_CLK_DELAY_2_0_NS	4
++#define VSC8531_RGMII_CLK_DELAY_2_3_NS	5
++#define VSC8531_RGMII_CLK_DELAY_2_6_NS	6
++#define VSC8531_RGMII_CLK_DELAY_3_4_NS	7
++
+ #endif
 -- 
 2.17.1
 
