@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DB63B7ABA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545953B7ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhF2XnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 19:43:07 -0400
-Received: from sonic317-39.consmr.mail.ne1.yahoo.com ([66.163.184.50]:33499
-        "EHLO sonic317-39.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235295AbhF2XnF (ORCPT
+        id S235469AbhF2XpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235295AbhF2Xo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:43:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1625010037; bh=Mihjij8ca8eP5+a9IlMhvoDKDC4NO522L0EdK2dSkJM=; h=To:Cc:From:Subject:Date:References:From:Subject:Reply-To; b=GNUjXUp4aIEQEyK6wwURtF6ySxGl9yAjd1wUjfcls/GU8ylnFa/IbceSXnnLFlql0Vm0sn933trln4q9MqK2Hukv6hyMw3VK7VNW/JKCfPIJqWYfC265KuoqvD+ek6lKs5R9sJHAyIMtewiGUOXJMn3x1d55cgGuw1gRpzTPrhlnDVOaqPAD1BMC/UX7IReLswvdc4dyqMUAjQWPm27tyuhLloxqB+dC49/htjfwW6hi4tF09CF7E1ynnDajwia8YggxGpsvhv/40jNqt3nJdmDwWh7n7bDoKwlIwpi4jizpm7HUx75vc4JT7codp0lTGtHihDDfep42zS9x8Wtu7Q==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1625010037; bh=m8c2emsDO3Brdvi/zXaC6CmU8FkGbyb10kbuLicJeS1=; h=X-Sonic-MF:To:From:Subject:Date:From:Subject; b=aEM+sRYcl3tE1dYua5GhY+4rOrTcJV9RMeuhNT0526qKgZx8OZxxW6C1ZWMLhIIzEhiNuMHGsu/iiUx15Qy7oEYiEg6zgXvcd+IVWOip0pDdXVyEZjm3+3xHnKKpYJMJTBtHP4Yfbx+ZSkXChRgvyVZigLtRYcn1Jij9d8L1SF+ogSWrg3gzyZ/2GMg1aXPFtVcEWrKYZK+Xd9K2vzmNfCZxcB1Fqu3Rxi52NALRUunywGYs1ycdi8Cy4slhwKbb4TXP/ZpwGiGBkJ96qDNZZ+eTw/jpewjQiykMo3J94DHUmUHISDBYi7adykGl6Bivc6C1JJEYD15BYcbmRK8f7w==
-X-YMail-OSG: JaTxXxwVM1mPkduuW8A9mxpAKBebh0rfmfoGxY55yC3NY2qxCM1JtDxrkM0SH3f
- a_7.5a2EwcIZj8sVwCou0w_27hGy84e6Lw5.k0ffIKzsmvjeE.c60N6VrSNlkZwLr3A3erKfTsqY
- Ov6dTjS_w5NhYPY._9PTNBOUHg_3I9THlcmCZ8Jm3k1AZq71GWq7gA7vKSAVPJ47envOMSOY1jMn
- LXoGZ0V7cSdbnLsrVfEzS.uS6YCGizivBS6CFF7BLJni9JwkSnyEYLJPk7EXcRGHP79V8TKYu4mn
- Y359ui_3F_FYFh.VWb3_UyyCHNuikoWM947eOzNKycaSslZodhO92QSaRGJtzAk6s4NgS_ihzV_O
- 5rZFcrqwWF8859zkxbnYXm.u32BaTZudMaXZ2Q6BRt5x0cG6ZSkHpw.AO1YJSOyQ13JdzgU60EIo
- oTKP12B1T2DVsq3VvUfrftA0ETpEbH2IRwOF3A3tGAf3kFknTuZpDNs4XldLYxImQrzTwfIph8dI
- m4jfBdv9SqSSXKzXXxwYB6mswR0PtFwqZdVryfEGssv0MlsIMobCW4dBoNvqQLDY4MF5OjQPVoUl
- VfZ4z1oCp2JHVHcUNKMZDcCnBcTBJAevvfwIdktPQd2yufpmtOcLvASSY2UUFyJF6bwLgoxucawq
- oTEdvmrn3FWJZcKiN5ssrdyf71J9ybprAisU65_ICZvzxvE3I3knqVLWmXpjySvC_VDz3y2bT1rT
- H5SHXQTq99tbOf.Fw2ULHwJOy2jN6cyHzyMD_5cT69EWDhB4Itm6G_9oUa9SEe0tN1_Jf_sdQ37l
- ekDFTftjnn73q6i7jXi_PC6BMyihehopLcp72_LeEXLF2odeEbc7MmJniOz.rNBZWNqLfx3k6XjD
- i5AZHiW0Xk3Ev8bhJ2LBRgr84oNYLngxdyqdKDezQq2OECh1OXV7seGuK13s_i4P3VYgwn_im8d5
- aS2ZHsqi8ft.sZaLNHAirqF0RWvFq29IwYluyKIuVGcFDQDmcDGWHQX09LvUV3RbakwiQI_Cbg9p
- 71ZlPPsXVEq2.VlYKtjOxDONB2mR1s2_6DJ2GqMPx2CCqYMpgiN51ky0BrqaMdH0MbmJ_WyXrA8z
- Dt46XYzY0IkFNsCkGpjKo1ngx2AbSI7u0uxSrHifewGSfzneMubbcvYj6boMmNhjwQWxFH_CeOGP
- vkg5whV1Uut30XoSCFceBeuvg8Z7Rl.r4bV7FgR8_0AJrYcXaVsvqMK5.L53jbqtD1ijDl4vd9EK
- VXyvErmD3RlOnmwpychH26nEcSVN8x0yPhXeAPNgPCts5L7uClIqCITaseGeEPj6NAR.99CMXcId
- FPIbQgF.tGWm0y_VzNYWLUWwpKrTIrbpK4OsifPPFrZys7SkxEadbhIys7PDJadKa2MwYDazkVAT
- JHqqwV2PeoWAL7mfaw8HTB3ztigj4FyVrzGkAtoMYuCPWs0mVQ_mk.dUF_oLkgSXaqkAni28D2Lt
- RSJrqdei5soQ3qUWqABiqEVg8BASzlT8t1p9KUDMvmyWwxLA_ETRE6qz2jIaneVhhZozLBmZ64De
- ouDIpsc3Ho.3iLdItqU1ieF7um.bXvYv.XPlbY.fBwt52UayUTumPpBXrTnRBpxUMEelAGqOY.gv
- lhwNbbNHZSmJrkd5yLVvD7cadQXmwBfCQRFYojrG5ymM3_nN7wQY6KRpGWFicn5WbMb7O5sT91w_
- aga.3GbFk4Nssz1gfcMrJ9TqWhBCeZhVBJjRPTScAeUILczhGCUlOyY1kvYLY2jxO5LiXGxU9P_1
- F_tz41GNG6XLaIAn5W7CPEpOLEUBUwS6zJkQt9CB5jNDNTJJmchVW72puX6JvIDYrXJYFTZWqmER
- ikz2i9O_av7SdpV2U82QtbAdewnt0uzEygjUSsJw6k5.vnPBs40zFmZ3IX7QC8VwFaAy4Dj7zPnf
- yGrGgKIKd4W_.GJ.FIM.9wKxRb8u0z8N0h1LtlI.kcu9pxezChd4HZxNKJ5X8FjXDSb4vcpMEpiu
- QT5vxsbucTzQB79ZM986V_a15N0tF7oRNUZtyXGelAKzymT_M8WSEExu7qGUTFMZT7rIOTm622jj
- .2_sKcjHSz_7wzQtH5DRY3ciNFSY3vqXfnUj9P5oI7Yk6GfG93kG.P763jU24kyx1yh4OHaj1MEo
- TJ.CpD0f1X3fJxKekXgfZm3QqxeV8J5G2SYXTVcMobIkNoRJBf90yfBntrOKc0uSv0zLrNwzjaPY
- p2nG5evJUzzc5oPBl4JNExJM2Gx8oLt.y9FX9pfkaYdCQ0y5bUIxU9VC5pSS7wtMdi7BY_DKM857
- AtAczHnkt5NoudOMgbS7.puKQo_TqIGCCnNuoc8RyUEAC8F65zN_MlezWZr0EcIvLNxjeTcV5GnO
- 63bs_ql5WWrQOKlyw7lZBDdG0Zmalht.rceZc_VgFnXkwVte4iMgt2SIw4AuX3r_yyq6KU0TwITH
- nQkmGtSt.u3u4BVexXAbXxSrV2K0amMFV.qYxR_JX8RAnTbW7R27jbHcRJH1Lnd8D5H0At1n548j
- zUPztawEzf_53vIEbDaWV1FS4R2Xnq4H7GjoIck_uUSNf.D3o16HQNBH5G2QuRWhAaCs6VGqxMUe
- f6Xww8OwAI9bqeKTc2PsIO4M19V3moevTuKg5oWor.jtEcqCagHFmSsLTgVSdOkDdgcj2jURTjot
- gNx6BL6UazGM4TE_uKHkpq6DImHwXYDBfkP56a.8HNNGxDDczL.CKSElwBjIMmga6Xjyfv6_9Ccq
- dxAoXIfzDH8L9tpCu8HHWeqexqKTVNv1c.sQomHMzi1L67MYFvsqHzvgIw0wrQXCVrmwtZGtme2Q
- ra8oej.SBcoSWVkwv3xCbVRBEFbU0HzAomchl6xTvfLpJN5WG6fL8V788NphGLE9biCno9iySeUx
- cm9dV5VLd9Ic2aX4uFmG8osiVL7JDb9xjZJWZxi0izPdWkl.DWs1FZ0E4.HbanOm1sQPgS0BSwSO
- b1FRr9Mj3lQkOSyKjVMpmJV0fOB6l2EfQ8eQCw9AjK.GQoHQ6rN1UXyIe6AQ6ZGxGrE1rPTQtrYv
- UOBiB4xflNtVd.2R.fEZcLSsfd2l_sIAUaFhIatVhyhmlxgVlvM2e1pMPMK0f2UasQZozyJScNH2
- pvmer
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Tue, 29 Jun 2021 23:40:37 +0000
-Received: by kubenode570.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID ecbbacafa30c1b718c277372371391eb;
-          Tue, 29 Jun 2021 23:40:32 +0000 (UTC)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        ChenXiaoSong <chenxiaosong2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Xiong Zhenwu <xiong.zhenwu@zte.com.cn>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack patches for v5.14
-Message-ID: <ababec69-d997-c647-4ac2-2e79dfb3aa40@schaufler-ca.com>
-Date:   Tue, 29 Jun 2021 16:40:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Tue, 29 Jun 2021 19:44:59 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14854C061760;
+        Tue, 29 Jun 2021 16:42:31 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id o13-20020a9d404d0000b0290466630039caso674378oti.6;
+        Tue, 29 Jun 2021 16:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H2clRbWtY3gLXXS069v0xLGV3qZ8FrOI0O151/krroE=;
+        b=qJGxAHfDhtBJ08euBA240m4naufDhTOmca2EzSIN42aZ8m7gq6gEqR/UOg+G2hxVE/
+         DfhbhLWfRLP8go7SJlhgkfNbnmkXPQbVKSOsNcd60ZhtF4yRStvBnDw4Q8dWt2F7DCub
+         2Kjk4SMrNH5LYv5F5zvisuw25ex1p5HTrJBL9n+gnVs5vM+SNAEzJ8njL+LwxyWEOPKE
+         YygfAY27JmtK4eMyNECI05ii2Fy5Co4oV+ntNbXDcKWjnOuHIiZwsDnjsEdrvH9danPS
+         ZYh2zfiP+CkwiTbnDLjr+f9wm1zh0exDeIfNnaFjBkyaOmv91S1F4E0paPgnorNH4YU/
+         76mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H2clRbWtY3gLXXS069v0xLGV3qZ8FrOI0O151/krroE=;
+        b=L9NGJ+XLMc13uH4UvHaF5YKiDR9Pt4ow4e4iHjt2pLW82PnkWrhb90f/5zAU93qmhn
+         QPbrP0EMWFdYcc2MBvu5VjDbkXav6RzwgTizfWFZmCpZ1yhtEaSnzAcdYDXNBXsZTIwi
+         7COURVCf+Ck6H7nvs5/f0Ct+IASXRHShMh7xgXCgmYJOyLe/XZ4CfaL5oq4hGHY3l6iN
+         sOUn6adABA0G1qL/YrEbx+eLB8e8sE+KJChL3WsDd106mN6yjpqysUTfQPc4ebc5SBRF
+         vyms3MOHvv1P/XCbNQf1tS8SMB+l6JGBkkEIQRYgDJyeP060ksMYwRtYJNhoN2Hj2VfB
+         Ol8A==
+X-Gm-Message-State: AOAM530CxrSEapp0vFdPnPLQg1eLXyElA3BeIU5uYRtk6jPbNxGsEwnY
+        APSPlfHAcG7OYuBQNrnNOn+f8Hys1C4=
+X-Google-Smtp-Source: ABdhPJy4IYjT1pzqrGhJjDT8/AZ4TJ08JJPGOUAqkqFK78bWYxYkuRkKdLKbEe3PnxB8gWcnrY0tzw==
+X-Received: by 2002:a05:6830:40b1:: with SMTP id x49mr6497774ott.64.1625010150444;
+        Tue, 29 Jun 2021 16:42:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a76sm2166800oii.26.2021.06.29.16.42.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 16:42:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org
+References: <20210628144256.34524-1-sashal@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <d9f7920c-912f-b3a4-c504-f79209ae006f@roeck-us.net>
+Date:   Tue, 29 Jun 2021 16:42:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-References: <ababec69-d997-c647-4ac2-2e79dfb3aa40.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.18588 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
-
-Here is the Smack pull request for v5.14.
-
-There is nothing more significant than an improvement to
-a byte count check in smackfs. All changes have been in next
-for weeks.=20
-
-Thank you.
-
---
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627=
-b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/cschaufler/smack-next tags/Smack-for-5.14
-
-for you to fetch changes up to fe6bde732be8c4711a878b11491d9a2749b03909:
-
-  Smack: fix doc warning (2021-06-08 10:23:08 -0700)
-
-----------------------------------------------------------------
-Minor fixes for v5.14
-
-----------------------------------------------------------------
-ChenXiaoSong (1):
-      Smack: fix doc warning
-
-Jens Axboe (1):
-      Revert "Smack: Handle io_uring kernel thread privileges"
-
-Tetsuo Handa (1):
-      smackfs: restrict bytes count in smk_set_cipso()
-
-Xiong Zhenwu (1):
-      security/smack/: fix misspellings using codespell tool
-
- security/smack/smack_access.c | 10 ++++++----
- security/smack/smackfs.c      |  4 +++-
- 2 files changed, 9 insertions(+), 5 deletions(-)
+On 6/28/21 7:41 AM, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.4.274 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
+> Anything received after that time might be too late.
+> 
 
 
+For v4.4.273-56-gc1d107b:
+
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 326 pass: 326 fail: 0
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
