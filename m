@@ -2,104 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A5E3B7A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 00:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BFF3B7A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 00:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235543AbhF2W64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 18:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        id S235559AbhF2XAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235506AbhF2W6z (ORCPT
+        with ESMTP id S235506AbhF2XAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 18:58:55 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57974C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:56:26 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id m9so1624616ybp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:56:26 -0700 (PDT)
+        Tue, 29 Jun 2021 19:00:13 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD5CC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:57:44 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m18so1099688wrv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 15:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XCtwoOT/gDcMzaHNoMO9WyHOwg6yfJH1zJcW1hYKrHY=;
-        b=I1saaJtdLgSOlHpzEgzntpt8NBggCFBbOpKnGTQ2TP41LkoltDKckTr8Kzz7VLNYKi
-         llXELWkSWMjC1DBe0jj8zIxjwk8bE9r5M+6oc7WPlqnW/UI8Ww0TSqKJEWcKQz09oipR
-         zKRNJjNNFp0Zl7dbjT5hw7pril0Y1uasrZeaM=
+        bh=1GwQpra/KQPWoCRAlFJjNi7iu4asJcHcBwiuJivAnGg=;
+        b=eybKy6mFLIkvxYvPi3HSPRLHk8vvbO3rJF8/y+e3qIj8eqA4TOoGdARSmk4UUeXubi
+         +5geT31XcpCN6AYcy8zCjo6A8nIxbeRym/2Dat7lpZ1KYcwnFF31qlyd22WX/okciPk/
+         eCFZX5P97jM5tnCQvBB4Vy9N+KlwdYDeV04pSdDKuqj+wvySmky02g2kDCXP6ZYqb3c7
+         yVAbePkZLZUhCtJSO3smJe/ETf3esXY17/iCJiIVPItyGv3TM8eR+EsE2pVEn9iL0pH0
+         2e+CnwU2QR7JWImhnMp1MuIfMZs3/KljJYaFSzOQIqlYQ3PHObNTU/v4pjXtZem66nWK
+         qlEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XCtwoOT/gDcMzaHNoMO9WyHOwg6yfJH1zJcW1hYKrHY=;
-        b=tuzUwN9IpvuLGXNRazurirGnxL7TmtH7QX3ErfIg2wwZy4f72giNM1nS6MoxZHYsZG
-         dMXmfJqHAGDihJ4/3UN3Tq3edRhkChHqAbx/HGNC96XFdHSeBxXRHuzH6pRVjy7WnkAB
-         4GMq8OQf6kMNjcfzHgkjjkOHUAk9TbTbRyg1O2/12rE4Cmn/RuEiS+Ama+ZKaZL72zjw
-         CCocs8lqO+rTj/bSqUgYRR+XL88ZOHTwf/3lunAjqX/+ZgIGi2efJmiKNkXPa3+IWezB
-         iw1NKYiYnMLKrF7CltPO2EMfUeAPkRZ3YrvX+JK4vAThB5kHQ8jjepMnAkG5EFxPohQu
-         POpQ==
-X-Gm-Message-State: AOAM531GOYtuY1GBHfvvwuTO1AphKAQBR6u05abC+L4fwnohsDRHVpHH
-        OAsF7N3s+TZN3yViQdE0J1O5rxKT8+FkMe7HPln6
-X-Google-Smtp-Source: ABdhPJxvpbX85dvBFDwzDQylCz6CI54+dCjhGMQg01ThMLjX1IQs9fM49Hgtyr4s0oCv6IU15TnnrZ6bJAY+UWbI9zs=
-X-Received: by 2002:a25:d015:: with SMTP id h21mr6968289ybg.202.1625007385657;
- Tue, 29 Jun 2021 15:56:25 -0700 (PDT)
+        bh=1GwQpra/KQPWoCRAlFJjNi7iu4asJcHcBwiuJivAnGg=;
+        b=MH3QILMsStdcRfs3IBfWNlf3jO7cPSz0qBYPwe5kSW/g0/u6LigUPMa6QKwnnlgPL4
+         5sK0rfZJQFdozLBO7MSVKeSCVxV4cnm19FCGYWgGzWy5vcJlTbNTfBP0BzaGLc+VJckL
+         HN9YC4A9kSqeXSl6XES00kSab6THwXtWN/HE5oxSacgTh2srzO1g0RyrOqjUaZfAXqSq
+         k3KLbaeqJ6J7HWnZTfhHfF2Kbsv/fRkuHXx8YUbsSbgORU12aJdeCq/oMpg4Ba8aLVNu
+         1G3lio7LCi6HkGBosQrNohSlwAnX4s9syTXyISdsB5UnxzVakHLhIxPfJPwRRG0yNGQf
+         YJtg==
+X-Gm-Message-State: AOAM530xeQRsYZ6HXhL7395OUzvmRsNzQCjX6OoaYdK69TtF4xMLiIZg
+        ZM8sENboru9tQtq7QssGfHdjAfYMVa8Z4+eUXKLMmA==
+X-Google-Smtp-Source: ABdhPJzcStTNFn7PT9mdM/fs5L78Ch+MJXH77W9tD6W0B/zz8w+bfFdJPTKdUblctuomZhn/o6934pltS/EiokPbr9Q=
+X-Received: by 2002:a5d:4103:: with SMTP id l3mr18118189wrp.102.1625007463255;
+ Tue, 29 Jun 2021 15:57:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210629134018.62859-1-xypron.glpk@gmx.de>
-In-Reply-To: <20210629134018.62859-1-xypron.glpk@gmx.de>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 29 Jun 2021 15:56:14 -0700
-Message-ID: <CAOnJCUKuHGUZi-13PpnZGHKkXxhj3asVJgaNMTv3=830eVwi=g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RISC-V: load initrd wherever it fits into memory
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210629223541.1512296-1-rmoar@google.com>
+In-Reply-To: <20210629223541.1512296-1-rmoar@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 30 Jun 2021 06:57:31 +0800
+Message-ID: <CABVgOSn3T1qYkDkzOYEOyZ3StPU0nprKrSwOynBF4=JScsN1pg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: Fix error messages for cases of no tests and
+ wrong TAP header
+To:     Rae Moar <rmoar@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 6:40 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+On Wed, Jun 30, 2021 at 6:36 AM Rae Moar <rmoar@google.com> wrote:
 >
-> Requiring that initrd is loaded below RAM start + 256 MiB led to failure
-> to boot SUSE Linux with GRUB on QEMU, cf.
-> https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
+> In the case of the TAP output having an incorrect header format, the
+> parser used to output an error message of 'no tests run!'. Additionally,
+> in the case of TAP output with the correct header but no tests, the
+> parser used to output an error message of 'could not parse test
+> results!'.  This patch corrects the error messages for these two cases
+> by switching the original outputted error messages and correcting the
+> tests in kunit_toot_test.py.
 >
-> Remove the constraint.
->
-> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
->  arch/riscv/include/asm/efi.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+
+These error messages make a lot more sense, thank you!
+
+With this patch, we can close
+https://bugzilla.kernel.org/show_bug.cgi?id=207923
+
+This is
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
+>  tools/testing/kunit/kunit_parser.py           |  6 +-
+>  tools/testing/kunit/kunit_tool_test.py        | 16 +++-
+>  ...is_test_passed-no_tests_run_no_header.log} |  0
+>  ...s_test_passed-no_tests_run_with_header.log | 77 +++++++++++++++++++
+>  4 files changed, 94 insertions(+), 5 deletions(-)
+>  rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
+>  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
 >
-> diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
-> index 7542282f1141..649ab513dc99 100644
-> --- a/arch/riscv/include/asm/efi.h
-> +++ b/arch/riscv/include/asm/efi.h
-> @@ -33,10 +33,10 @@ static inline unsigned long efi_get_max_fdt_addr(unsigned long image_addr)
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index c3c524b79db8..b88db3f51dc5 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
+>  def parse_test_result(lines: LineStream) -> TestResult:
+>         consume_non_diagnostic(lines)
+>         if not lines or not parse_tap_header(lines):
+> -               return TestResult(TestStatus.NO_TESTS, [], lines)
+> +               return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+>         expected_test_suite_num = parse_test_plan(lines)
+> -       if not expected_test_suite_num:
+> +       if expected_test_suite_num == 0:
+> +               return TestResult(TestStatus.NO_TESTS, [], lines)
+> +       elif expected_test_suite_num is None:
+>                 return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+>         test_suites = []
+>         for i in range(1, expected_test_suite_num + 1):
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index bdae0e5f6197..75045aa0f8a1 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
+>                         kunit_parser.TestStatus.FAILURE,
+>                         result.status)
 >
->  #define ARCH_EFI_IRQ_FLAGS_MASK (SR_IE | SR_SPIE)
+> +       def test_no_header(self):
+> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
+> +               with open(empty_log) as file:
+> +                       result = kunit_parser.parse_run_tests(
+> +                               kunit_parser.extract_tap_lines(file.readlines()))
+> +               self.assertEqual(0, len(result.suites))
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
+> +                       result.status)
+> +
+>         def test_no_tests(self):
+> -               empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
+> +               empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
+>                 with open(empty_log) as file:
+>                         result = kunit_parser.parse_run_tests(
+>                                 kunit_parser.extract_tap_lines(file.readlines()))
+> @@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
+>                 with open(crash_log) as file:
+>                         result = kunit_parser.parse_run_tests(
+>                                 kunit_parser.extract_tap_lines(file.readlines()))
+> -               print_mock.assert_any_call(StrContains('no tests run!'))
+> +               print_mock.assert_any_call(StrContains('could not parse test results!'))
+>                 print_mock.stop()
+>                 file.close()
 >
-> -/* Load initrd at enough distance from DRAM start */
-> +/* Load initrd anywhere in system RAM */
->  static inline unsigned long efi_get_max_initrd_addr(unsigned long image_addr)
->  {
-> -       return image_addr + SZ_256M;
-> +       return ULONG_MAX;
->  }
+> @@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
+>                         result["sub_groups"][1]["test_cases"][0])
 >
->  #define alloc_screen_info(x...)                (&screen_info)
+>         def test_no_tests_json(self):
+> -               result = self._json_for('test_is_test_passed-no_tests_run.log')
+> +               result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+>                 self.assertEqual(0, len(result['sub_groups']))
+>
+>  class StrContains(str):
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+> similarity index 100%
+> rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
+> rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+> new file mode 100644
+> index 000000000000..18215b236783
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+> @@ -0,0 +1,77 @@
+> +Core dump limits :
+> +       soft - 0
+> +       hard - NONE
+> +Checking environment variables for a tempdir...none found
+> +Checking if /dev/shm is on tmpfs...OK
+> +Checking PROT_EXEC mmap in /dev/shm...OK
+> +Adding 24743936 bytes to physical memory to account for exec-shield gap
+> +Linux version 4.12.0-rc3-00010-g7319eb35f493-dirty (brendanhiggins@mactruck.svl.corp.google.com) (gcc version 7.3.0 (Debian 7.3.0-5) ) #29 Thu Mar 15 14:57:19 PDT 2018
+> +Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 14038
+> +Kernel command line: root=98:0
+> +PID hash table entries: 256 (order: -1, 2048 bytes)
+> +Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
+> +Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
+> +Memory: 27868K/56932K available (1681K kernel code, 480K rwdata, 400K rodata, 89K init, 205K bss, 29064K reserved, 0K cma-reserved)
+> +SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+> +NR_IRQS:15
+> +clocksource: timer: mask: 0xffffffffffffffff max_cycles: 0x1cd42e205, max_idle_ns: 881590404426 ns
+> +Calibrating delay loop... 7384.26 BogoMIPS (lpj=36921344)
+> +pid_max: default: 32768 minimum: 301
+> +Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+> +Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes)
+> +Checking that host ptys support output SIGIO...Yes
+> +Checking that host ptys support SIGIO on close...No, enabling workaround
+> +Using 2.6 host AIO
+> +clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+> +futex hash table entries: 256 (order: 0, 6144 bytes)
+> +clocksource: Switched to clocksource timer
+> +console [stderr0] disabled
+> +mconsole (version 2) initialized on /usr/local/google/home/brendanhiggins/.uml/6Ijecl/mconsole
+> +Checking host MADV_REMOVE support...OK
+> +workingset: timestamp_bits=62 max_order=13 bucket_order=0
+> +Block layer SCSI generic (bsg) driver version 0.4 loaded (major 254)
+> +io scheduler noop registered
+> +io scheduler deadline registered
+> +io scheduler cfq registered (default)
+> +io scheduler mq-deadline registered
+> +io scheduler kyber registered
+> +Initialized stdio console driver
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 1 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 2 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 3 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 4 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 5 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 6 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 7 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 8 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 9 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 10 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 11 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 12 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 13 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 14 : Configuration failed
+> +Using a channel type which is configured out of UML
+> +setup_one_line failed for device 15 : Configuration failed
+> +Console initialized on /dev/tty0
+> +console [tty0] enabled
+> +console [mc-1] enabled
+> +TAP version 14
+> +1..0
+> +List of all partitions:
+> +No filesystem could mount root, tried:
+> +
+> +Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(98,0)
 > --
-> 2.30.2
+> 2.32.0.93.g670b81a890-goog
 >
-
-LGTM
-
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-
---
-Regards,
-Atish
