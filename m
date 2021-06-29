@@ -2,92 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353933B74B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B38C3B74B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbhF2Oy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:54:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41340 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhF2Oyv (ORCPT
+        id S234577AbhF2OzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234507AbhF2OzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:54:51 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 64F521FD84;
-        Tue, 29 Jun 2021 14:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624978343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R6X/pQ7cKEtlsMwepYqULQ7e+u1sBHuvidfx8sln21w=;
-        b=E4LG94XuwCv7baeSyslniUB/7fW7SZbECqHbWoD2UDiPXRgODLn54FymdoYPTrai4Zmjzh
-        oxgf5tkCHLHZBcue8VPxNBGqqKbcp/ptZ2i2TnQI1FhgN/96x9+Z9MjKPHydwru57Ud9o2
-        +gwD7C+WXn5Gn65kGEVJAP4nwgfUgCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624978343;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R6X/pQ7cKEtlsMwepYqULQ7e+u1sBHuvidfx8sln21w=;
-        b=wPfu5FGWWN5hKwbY9JYRvwjK9UOU6iJrgw+11x1r2pMahHxulqJnuE1HRg4oT4K9FXAp+h
-        mwRyGk5QikLQjWAQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 2C07E11906;
-        Tue, 29 Jun 2021 14:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624978343; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R6X/pQ7cKEtlsMwepYqULQ7e+u1sBHuvidfx8sln21w=;
-        b=E4LG94XuwCv7baeSyslniUB/7fW7SZbECqHbWoD2UDiPXRgODLn54FymdoYPTrai4Zmjzh
-        oxgf5tkCHLHZBcue8VPxNBGqqKbcp/ptZ2i2TnQI1FhgN/96x9+Z9MjKPHydwru57Ud9o2
-        +gwD7C+WXn5Gn65kGEVJAP4nwgfUgCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624978343;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R6X/pQ7cKEtlsMwepYqULQ7e+u1sBHuvidfx8sln21w=;
-        b=wPfu5FGWWN5hKwbY9JYRvwjK9UOU6iJrgw+11x1r2pMahHxulqJnuE1HRg4oT4K9FXAp+h
-        mwRyGk5QikLQjWAQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id /INbCacz22APFAAALh3uQQ
-        (envelope-from <ykaukab@suse.de>); Tue, 29 Jun 2021 14:52:23 +0000
-Date:   Tue, 29 Jun 2021 16:52:21 +0200
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, biwen.li@nxp.com,
-        Bruno Thomsen <bth@kamstrup.com>
-Subject: Re: [PATCH v5] rtc: pcf2127: handle timestamp interrupts
-Message-ID: <20210629145221.GF81946@suse.de>
-References: <20210624152241.4476-1-ykaukab@suse.de>
- <CAH+2xPBSozyY8np=KSZrDn6nwf0__J1yRtkY_O0-SsBMLxb74g@mail.gmail.com>
- <CAH+2xPA+0pej3WrUmyDnCyrWy1TjN3fHrk+L4GW+JAwyEbF5XA@mail.gmail.com>
+        Tue, 29 Jun 2021 10:55:06 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1BFC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:52:38 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id t3so10142339edt.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:52:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DPU9Q6gwrzv94ZsGwUmEvxsph9n8pWTojpUV5jCNo9g=;
+        b=A8iBjZPbzMenjyuebF6rSpOt8ubLUNgXGEzjEu14nxKlq6jdBbEG7EVv5iP4suBuBE
+         iNAxPQKC2TL+KufioLj0P2w+Y/uObzskg+M+/VNfnRvCJBBhPpbeeoGP+Y5D6rRlYfe/
+         A/aHn/5McNMSCYAJcMYg3V5imX0HvHH/P6lpOZIuumXvfepa2xGKs6afznR0vTjhubNj
+         eDgJPbDFLL0Z6W9+wOqpP5w53gl2cLyPiojFLAdqK/J7YInJaqT3G9Rs0LzQNrUxYSu7
+         hffvXdMKlshQCnKjYARsCrNW9io2A6dJfzPiawxiyemLTpLPHBpvDKw4Uy9c+dDq9Z8W
+         xqWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DPU9Q6gwrzv94ZsGwUmEvxsph9n8pWTojpUV5jCNo9g=;
+        b=jY/i9602HEZAacgf+Hh8EseGdDQfR5PdA0ucH+kovk4RYX/uMrwl8LVjnjezT9mabX
+         XYU+FCgkivhKy0lVGZ9Hz+DMfSxeL7dPqMhIugu59DbrN6D79qt11btRcBPIs7KsAMGx
+         tUep/abmNlTVvgIA5/x2pQNIRRQaCDV1boXZZbUjHkJCpNziwsQGGPKqmEnGMPOYsEHL
+         7nZjydqIqLHpgR54MDgUCrvb2YRxVrtqLT9UAVcV5zjrJnwwbWqW5peIdEOJl56d8FQj
+         bJv+u7Bx7O1afPoS41CTM+pWLJL9nWH8uswPPDaediJPoDMiUuxJYwV8juwo9N/Gnalh
+         BxPw==
+X-Gm-Message-State: AOAM532JIPvg2/d5OL8WdD2JNwK2tsFkri6e/UkYuZ/0Io45u+35aQvf
+        Schc1J4RcBlvnBWMM8NpbXx7SE88SZosTyxmhRZHXQ==
+X-Google-Smtp-Source: ABdhPJwejZhCljL+LLqakBbwrTGTXpTO+OdismZ3LiT50zPXGdwTZH4aHAqnVF9FiNjqqYZRmChpMn/+9IW7gsqcQ4w=
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr40196473edu.221.1624978357112;
+ Tue, 29 Jun 2021 07:52:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAH+2xPA+0pej3WrUmyDnCyrWy1TjN3fHrk+L4GW+JAwyEbF5XA@mail.gmail.com>
+References: <20210628144256.34524-1-sashal@kernel.org>
+In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Jun 2021 20:22:25 +0530
+Message-ID: <CA+G9fYs1ExQAXQ8KfHAQ2HFTyjij0JV8H_yqnyjmBTY5BMYEbg@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:42:03AM +0200, Bruno Thomsen wrote:
-> Hi again,
-> 
-> Forgot another important comment. After you moved code to
-> pcf2127_rtc_ts_read() it seems to lookup pcf2127 struct wrong.
-> 
-> struct pcf2127 *pcf2127 = dev_get_drvdata(dev->parent);
-Good catch! I will fix it by calling pcf2127_rtc_ts_read(dev->parent).
-dev_get_drvdata(dev) is correct from the irq path.
-> 
-> /Bruno
-> 
-BR,
-Yousaf
+On Mon, 28 Jun 2021 at 20:16, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 4.4.274 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-4.4.y&id2=3Dv4.4.273
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
+
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.4.274-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.4.y
+* git commit: 5429409d4e80dda1d9007a0212f7bc9686802783
+* git describe: v4.4.273-57-g5429409d4e80
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+73-57-g5429409d4e80
+
+## No regressions (compared to v4.4.273-45-g39f2381bafbb)
+
+## No fixes (compared to v4.4.273-45-g39f2381bafbb)
+
+## Test result summary
+ total: 23394, pass: 18219, fail: 152, skip: 4281, xfail: 742,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
