@@ -2,138 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CB73B6FBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A803B6FBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhF2Iyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbhF2Iyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:54:44 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EAEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:52:16 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e20so17915708pgg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VRDj6e+Lqnmeo3ZhydynJ+H5q+l8CnwAokRbOJM0nwc=;
-        b=yVj+8Vh6JwKM1tH895sPcIlFKTgBt2qxInbHnxNMFWHV4he+OcXXLT/d2niuW/CEmt
-         g9LYtuNyCBURRSH+gir2EOQsBc8Ms36tLjuJT6K3xh6IRdMyFSb/vFjLOmVfb+R1YLAR
-         QlMG1UZ5m5WdsAhU4IQSZqywzzDbpO5q2umuw49EBwIfpxKkE7DFiYuzw1Y2Er+mWb8m
-         uBtbkndiJ5HLBNFuecdEr6zQjvDbpCIzp9zK1jA91S0u2/HB63MQ9nqK9+RzGrxrXtem
-         r+8542jeuxhdX+4v6UJSi0UBXrv6FsGVqiWxulZBWrrF/rPR6NkSMZGIlzG4PaEhALZR
-         V28A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VRDj6e+Lqnmeo3ZhydynJ+H5q+l8CnwAokRbOJM0nwc=;
-        b=F+3J/A7XcyI6rMDtifuQ5cLodmdsdVw66TpmK+CPPb6nF6fgdjvx8wa4sum9YiXJZn
-         lw0oTTy0KmFbk8586i0YS+SeuKlRG5WUCXbB+aXnKaxh/dmNqCnRNf384Jie/rjHR/jA
-         bvXu/FON2lrobXG5qUkG+d7tZzZIo951AbGHgOX7fxlMWqAdYpINCragKn/GOsFGNYb6
-         HmYNIszC7JOdyXINxkSxVrersz1EMxWLGPYzcWmPOMBKFAZ5cD9oT2D/QXx++FHsLsnz
-         8qgSwMIL8YrRvKTor3ykrgghzfZL3u89mIUh3Y1TfCHH97cZa586Xi0K5SqbGv7BxWhM
-         IZlg==
-X-Gm-Message-State: AOAM531PJaTIeYjcW3x3OWI8T/IImiIqHXaLEPuCm0QZ5iNVYIEHBTKC
-        MgvCJMW30egsMwRyw+f67Rel8A==
-X-Google-Smtp-Source: ABdhPJxw2YQgANmJKSXb0azrt7CyxbCAGSM9vVRfeCOACPl0w7wdr4dlRe4f8Q2/+LafbzEvYR8owQ==
-X-Received: by 2002:a05:6a00:d0:b029:30a:4c82:181 with SMTP id e16-20020a056a0000d0b029030a4c820181mr16562171pfj.27.1624956735846;
-        Tue, 29 Jun 2021 01:52:15 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id t8sm17547212pjs.12.2021.06.29.01.52.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 01:52:15 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 14:22:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629085213.7a7eqcgkmtk5y7nh@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
- <20210629041017.dsvzldikvsaade37@vireshk-i7>
- <YNrZVho/98qgJS9N@kunai>
+        id S232654AbhF2IzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:55:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:46496 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232621AbhF2Iy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 04:54:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6049DD6E;
+        Tue, 29 Jun 2021 01:52:32 -0700 (PDT)
+Received: from [10.57.14.107] (unknown [10.57.14.107])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB6EF3F694;
+        Tue, 29 Jun 2021 01:52:29 -0700 (PDT)
+Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     acme@kernel.org, coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210624164303.28632-1-james.clark@arm.com>
+ <20210624164303.28632-3-james.clark@arm.com>
+ <20210628012744.GA158794@leoy-ThinkPad-X240s>
+ <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
+ <20210628120802.GC200044@leoy-ThinkPad-X240s> <20210628200132.GB1200359@p14s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <b9a3ae95-987b-d1de-a242-141e7444aa83@arm.com>
+Date:   Tue, 29 Jun 2021 09:52:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNrZVho/98qgJS9N@kunai>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210628200132.GB1200359@p14s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-21, 10:27, Wolfram Sang wrote:
-> > While we are at it, this has been replaced by a Rust counterpart [1]
-> > (as that makes it hypervisor agnostic, which is the goal of my work
-> > here) and I need someone with I2C knowledge to help review it. It
-> > should be okay even if you don't understand Rust a lot, just review
-> > this file[2] which is where most of i2c specific stuff lies.
+
+
+On 28/06/2021 21:01, Mathieu Poirier wrote:
+> On Mon, Jun 28, 2021 at 08:08:02PM +0800, Leo Yan wrote:
+>> On Mon, Jun 28, 2021 at 11:38:34AM +0100, James Clark wrote:
+>>
+>> [...]
+>>
+>>>>>  static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>>>>>  					  union perf_event *event,
+>>>>>  					  struct perf_tool *tool __maybe_unused)
+>>>>> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
+>>>>>  				cs_etm__dump_event(etm, buffer);
+>>>>>  				auxtrace_buffer__put_data(buffer);
+>>>>>  			}
+>>>>> -	}
+>>>>> +	} else if (dump_trace)
+>>>>> +		dump_queued_data(etm, &event->auxtrace);
+>>>>
+>>>> IIUC, in the function cs_etm__process_auxtrace_event(), since
+>>>> "etm->data_queued" is always true, below flow will never run:
+>>>>
+>>>>     if (!etm->data_queued) {
+>>>>         ......
+>>>>
+>>>>         if (dump_trace)
+>>>>             if (auxtrace_buffer__get_data(buffer, fd)) {
+>>>>                     cs_etm__dump_event(etm, buffer);
+>>>>                     auxtrace_buffer__put_data(buffer);
+>>>>             }
+>>>>     }
+>>>>
+>>>> If so, it's better to use a new patch to polish the code.
+>>>>
+>>>
+>>> Hi Leo,
+>>>
+>>> I think this is not true in piped mode because there is no auxtrace index.
+>>> In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
+>>> is called for each buffer.
+>>>
+>>> You can reproduce this with something like this:
+>>>
+>>>      ./perf record -o - ls > stdio.data
+>>>      cat stdio.data | ./perf report -i -
+>>
+>> You are right!  I tried these two commands with cs_etm event, just as
+>> you said, in this case, the AUX trace data is not queued; so the flow
+>> for "if (!etm->data_queued)" should be kept.  If so, I am very fine
+>> for current change.  Thanks for sharing the knowledge.
+>>
+>>> There are some other Coresight features that don't work as expected in this mode, like
+>>> sorting timestamps between CPUs. The aux split patchset won't work either because random
+>>> access isn't possible. And the TRBE patch that I'm working on now won't work, because it
+>>> also requires the random access to lookup the flags on the AUX record to configure the 
+>>> decoder for unformatted trace.
+>>
 > 
-> Can't promise I can do this before my holidays, but I will try.
+> There is a lot of things happening in this area.  Based on the above should I
+> still plan to review this set or should I wait for another revision?
 
-Thanks.
+From my point of view, this one is final. It looks like both Leo and I have tested
+it with and without his snapshot changes and it's working as expected in both cases.
 
-> > I am not sure why you say I2C_RDWR isn't supported. The spec and Linux
+Thanks
+James
+
 > 
-> This is how I interpreted Arnd's response. I said mulitple times that I
-> might be missing something so I double check.
+> Thanks,
+> Mathieu
 > 
-> > SMBUS. To clarify on an earlier point, every virtio transfer may
-> > contain one or more struct i2c_msg instances, all processed together
-> > (as expected).
-> 
-> That was the information missing for me so far becasue...
-> 
-> > If you see virtio_i2c_send_reqs() in this patch, you will see that it
-> > converts a stream of i2c_req messages to their virtio counterparts and
-> > send them together, consider it a single transaction.
-> 
-> ... when I checked virtio_i2c_send_reqs(), I also saw
-> virtqueue_add_sgs() but I had no idea if this will end up as REP_START
-> on the physical bus or not. But it definately should.
-
-Just think of virtqueue_add_sgs() as something that setups the
-structures for transfer. The actual stuff at the other end (host)
-happens only after virtqueue_kick() is called at the guest (this
-notifies the host that data is present now), in response the backend
-running at host will re-create the struct i2c_msg and issue:
-
-    struct i2c_rdwr_ioctl_data data;
-    data.nmsgs = count;
-    data.msgs = msgs;
-
-    return ioctl(adapter->fd, I2C_RDWR, &data);
-
-So we will end up recreating the exact situation as when
-virtio_i2c_xfer() is called.
-
--- 
-viresh
+>> Cool, looking forward for the patches :)
+>>
+>> Leo
