@@ -2,103 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA453B7918
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928D73B7922
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbhF2UL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:11:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60169 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232636AbhF2ULx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:11:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624997366; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Dhc0W9vUgT2dL4RFtAFw6gqKf7r7LCHzbli6TwXb/Gc=; b=BtEhHC4GC8cYA9veENdtzNIVXHbX30lxyQTsFUnmcL+kgjCpeABSKStLOs1H9zVZlA7DTp0I
- e6TiwwjejhZ16b3PlSSJHTmUZnNWEMYDp5yzsTPd5oV4vY+UB4UUox6KtvW0SbhTX+xm9NS5
- YMZSNjYY8ma5RQRvo2/duN0wEPs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60db7de7ec0b18a745bfd4ec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Jun 2021 20:09:11
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0534C4360C; Tue, 29 Jun 2021 20:09:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S235033AbhF2UOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:14:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234853AbhF2UOl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 16:14:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624997533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=4UTtGrNsrdZvwFyy7cNQy5nuzdIX59uOhbFVCkxu6q8=;
+        b=ICy+3yuxcaV8oQ6PQ94jwZbjPtxoAycQhX8slAIRNMYYt4xK+scR/2pIGoVNuoUXGPomwW
+        BNi8N/1rIkI8anO6MYFSY1CPVl0r0Kxh+lugxi7lpLPakObC004pj7jTueNxWKZtzdvWH6
+        tpzV/6cjPQtG/WYQvE8poz1fvRckdlk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-6qCz2CitNTOpN9wyuRZ5-Q-1; Tue, 29 Jun 2021 16:12:12 -0400
+X-MC-Unique: 6qCz2CitNTOpN9wyuRZ5-Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8D04C433F1;
-        Tue, 29 Jun 2021 20:09:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8D04C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, rsubbia@codeaurora.org,
-        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
-        airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/dp_mst: Fix return code on sideband message failure
-Date:   Tue, 29 Jun 2021 13:08:56 -0700
-Message-Id: <1624997336-2245-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00B281835AC3;
+        Tue, 29 Jun 2021 20:12:11 +0000 (UTC)
+Received: from llong.com (ovpn-118-17.rdu2.redhat.com [10.10.118.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B416A60843;
+        Tue, 29 Jun 2021 20:12:06 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Xu, Yanfei" <yanfei.xu@windriver.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on unlocked mutex
+Date:   Tue, 29 Jun 2021 16:11:38 -0400
+Message-Id: <20210629201138.31507-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajkumar Subbiah <rsubbia@codeaurora.org>
+The current mutex code may set the HANDOFF bit right after wakeup
+without checking if the mutex is unlocked.  The chance of setting the
+HANDOFF bit on an unlocked mutex can be relatively high. In this case,
+it doesn't really block other waiters from acquiring the lock thus
+wasting an unnecessary atomic operation.
 
-The commit 2f015ec6eab69301fdcf54d397810d72362d7223 added some debug
-code for sideband message tracing. But it seems to have unintentionally
-changed the behavior on sideband message failure. It catches and returns
-failure only if DRM_UT_DP is enabled. Otherwise it ignores the error code
-and returns success. So on an MST unplug, the caller is unaware that the
-clear payload message failed and ends up waiting for 4 seconds for the
-response.
+To reduce the chance, do a trylock first before setting the HANDOFF bit.
+In addition, optimistic spinning on the mutex will only be done if the
+HANDOFF bit is set on a locked mutex to guarantee that no one else can
+steal it.
 
-This change fixes the issue by returning the proper error code.
-
-Change-Id: I2887b7ca21355fe84a7968f7619d5e8199cbb0c6
-Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
+Reported-by: Xu, Yanfei <yanfei.xu@windriver.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ kernel/locking/mutex.c | 42 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 1590144..8d97430 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct drm_dp_mst_topology_mgr *mgr,
- 	idx += tosend + 1;
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index d2df5e68b503..472ab21b5b8e 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -118,9 +118,9 @@ static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
+ 		}
  
- 	ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
--	if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
--		struct drm_printer p = drm_debug_printer(DBG_PREFIX);
-+	if (unlikely(ret)) {
-+		if (drm_debug_enabled(DRM_UT_DP)) {
-+			struct drm_printer p = drm_debug_printer(DBG_PREFIX);
+ 		/*
+-		 * We set the HANDOFF bit, we must make sure it doesn't live
+-		 * past the point where we acquire it. This would be possible
+-		 * if we (accidentally) set the bit on an unlocked mutex.
++		 * Always clear the HANDOFF bit before acquiring the lock.
++		 * Note that if the bit is accidentally set on an unlocked
++		 * mutex, anyone can acquire it.
+ 		 */
+ 		flags &= ~MUTEX_FLAG_HANDOFF;
  
--		drm_printf(&p, "sideband msg failed to send\n");
--		drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
-+			drm_printf(&p, "sideband msg failed to send\n");
-+			drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
-+		}
- 		return ret;
- 	}
+@@ -180,6 +180,11 @@ static inline void __mutex_set_flag(struct mutex *lock, unsigned long flag)
+ 	atomic_long_or(flag, &lock->owner);
+ }
  
++static inline long __mutex_fetch_set_flag(struct mutex *lock, unsigned long flag)
++{
++	return atomic_long_fetch_or_relaxed(flag, &lock->owner);
++}
++
+ static inline void __mutex_clear_flag(struct mutex *lock, unsigned long flag)
+ {
+ 	atomic_long_andnot(flag, &lock->owner);
+@@ -1007,6 +1012,8 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 
+ 	set_current_state(state);
+ 	for (;;) {
++		long owner = 0L;
++
+ 		/*
+ 		 * Once we hold wait_lock, we're serialized against
+ 		 * mutex_unlock() handing the lock off to us, do a trylock
+@@ -1035,24 +1042,33 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		spin_unlock(&lock->wait_lock);
+ 		schedule_preempt_disabled();
+ 
++		/*
++		 * Here we order against unlock; we must either see it change
++		 * state back to RUNNING and fall through the next schedule(),
++		 * or we must see its unlock and acquire.
++		 */
++		if (__mutex_trylock(lock))
++			break;
++
++		set_current_state(state);
++
+ 		/*
+ 		 * ww_mutex needs to always recheck its position since its waiter
+ 		 * list is not FIFO ordered.
+ 		 */
+-		if (ww_ctx || !first) {
++		if (ww_ctx || !first)
+ 			first = __mutex_waiter_is_first(lock, &waiter);
+-			if (first)
+-				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
+-		}
+ 
+-		set_current_state(state);
++		if (first)
++			owner = __mutex_fetch_set_flag(lock, MUTEX_FLAG_HANDOFF);
++
+ 		/*
+-		 * Here we order against unlock; we must either see it change
+-		 * state back to RUNNING and fall through the next schedule(),
+-		 * or we must see its unlock and acquire.
++		 * If a lock holder is present with HANDOFF bit set, it will
++		 * guarantee that no one else can steal the lock. We may spin
++		 * on the lock to acquire it earlier.
+ 		 */
+-		if (__mutex_trylock(lock) ||
+-		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
++		if ((owner & ~MUTEX_FLAGS) &&
++		     mutex_optimistic_spin(lock, ww_ctx, &waiter))
+ 			break;
+ 
+ 		spin_lock(&lock->wait_lock);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.18.1
 
