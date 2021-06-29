@@ -2,77 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212A43B7397
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFA23B73A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbhF2OBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:01:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33264 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233329AbhF2OBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:01:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=GE7y013gv+UJQ2wwu8UtEPjl7ZCtbs5UT/PDFigCAxs=; b=4gilTUTJK1UASaINjjFSWPJ23w
-        WX+1ETjlJyIlT6bFeHKNzSMK/69EPcZWgSK4XQMC0q3OjknIqq3OBz4TM81sumIo78jQV6xzBgDYO
-        hqUfxsMcK/FjmwBvk1Cv7cGObdvr9UfMH+lq+A95S+wrzNOhq/27GYf21uhn9uBzmLo4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lyEFr-00BXyW-Jn; Tue, 29 Jun 2021 15:58:23 +0200
-Date:   Tue, 29 Jun 2021 15:58:23 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Harini Katakam <harini.katakam@xilinx.com>
-Cc:     robh+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, steen.hegelund@microchip.com,
-        bjarni.jonasson@microchip.com, ioana.ciornei@nxp.com,
-        likaige@loongson.cn, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        harinikatakamlinux@gmail.com, michal.simek@xilinx.com,
-        radhey.shyam.pandey@xilinx.com
-Subject: Re: [PATCH 1/3] include: dt-bindings: Add mscc-vsc8531 RGMII clock
- delay definitions
-Message-ID: <YNsm/0dmpBgO8mqr@lunn.ch>
-References: <20210629094038.18610-1-harini.katakam@xilinx.com>
- <20210629094038.18610-2-harini.katakam@xilinx.com>
+        id S234242AbhF2OCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:02:01 -0400
+Received: from pv50p00im-tydg10011801.me.com ([17.58.6.52]:51581 "EHLO
+        pv50p00im-tydg10011801.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233478AbhF2OB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 10:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1624975170; bh=U8jC3Z4NOxymfl0o3wyubDPnPgL2VYYqJT5yEYjtwkc=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=qdme7DUMDA1fziS5X2m0XVyDx3vCy0QJ6qaR4I2Xu/g9mb7rQMN5gMaCfK57Lyy+J
+         NwliffLl/veLsYy6t6ka4Uqy5D4H3H57iry6UoHft7YLPMELnxeJ5dlHceXCXQ2+Kl
+         YMolxuO63Y0TweJYAAOMdAF0URpLVRQ1BQlslYEckQY157NoAQwzKkRj33dW3GSjhI
+         W50bhDT40LF7wR1nXOEbnFBxMowPvFy/4iNcN/T3NQpl3CKUR3hdMQgP26iSqX69u6
+         HoOrouQTCHuCfvHlyqID3wZPEOjiQfihAsXtLn3DaBxY0juzvq5KCTcT46Ndj9sxes
+         6W5zEUMBP4ObA==
+Received: from xiongwei.. (unknown [120.245.2.115])
+        by pv50p00im-tydg10011801.me.com (Postfix) with ESMTPSA id 56254660161;
+        Tue, 29 Jun 2021 13:59:27 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH v3] locking/lockdep: Fix meaningless usages output of lock classes
+Date:   Tue, 29 Jun 2021 21:59:16 +0800
+Message-Id: <20210629135916.308210-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210629094038.18610-2-harini.katakam@xilinx.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2106290095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 03:10:36PM +0530, Harini Katakam wrote:
-> Add RGMII clock delay definitions in mscc-phy-vsc8531 header.
-> 
-> Signed-off-by: Harini Katakam <harini.katakam@xilinx.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
->  include/dt-bindings/net/mscc-phy-vsc8531.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/include/dt-bindings/net/mscc-phy-vsc8531.h b/include/dt-bindings/net/mscc-phy-vsc8531.h
-> index 9eb2ec2b2ea9..242eb4c7ede9 100644
-> --- a/include/dt-bindings/net/mscc-phy-vsc8531.h
-> +++ b/include/dt-bindings/net/mscc-phy-vsc8531.h
-> @@ -28,4 +28,13 @@
->  #define VSC8531_FORCE_LED_OFF           14
->  #define VSC8531_FORCE_LED_ON            15
->  
-> +#define VSC8531_RGMII_CLK_DELAY_0_2_NS	0
-> +#define VSC8531_RGMII_CLK_DELAY_0_8_NS	1
-> +#define VSC8531_RGMII_CLK_DELAY_1_1_NS	2
-> +#define VSC8531_RGMII_CLK_DELAY_1_7_NS	3
-> +#define VSC8531_RGMII_CLK_DELAY_2_0_NS	4
-> +#define VSC8531_RGMII_CLK_DELAY_2_3_NS	5
-> +#define VSC8531_RGMII_CLK_DELAY_2_6_NS	6
-> +#define VSC8531_RGMII_CLK_DELAY_3_4_NS	7
+From: Xiongwei Song <sxwjean@gmail.com>
 
-Using defines like this is no longer used. Please specify the delay in
-pS and convert to a register value within the driver.
+When enabling CONFIG_LOCK_STAT, then CONFIG_LOCKDEP is forcedly enabled.
+We can get output from /proc/lockdep, which currently includes usages of
+lock classes. But the usages are meaningless, see the output below:
 
-   Andrew
+/ # cat /proc/lockdep
+all lock classes:
+ffffffff9af63350 ....: cgroup_mutex
+
+ffffffff9af54eb8 ....: (console_sem).lock
+
+ffffffff9af54e60 ....: console_lock
+
+ffffffff9ae74c38 ....: console_owner_lock
+
+ffffffff9ae74c80 ....: console_owner
+
+ffffffff9ae66e60 ....: cpu_hotplug_lock
+
+Only one usage context for each lock, this is because each usage is only
+changed in mark_lock() that is in CONFIG_PROVE_LOCKING defined section,
+however in the test situation, it's not.
+
+The fix is to move the usages reading and seq_print from
+CONFIG_PROVE_LOCKING undefined setcion to its defined section. Also,
+locks_after list of lock_class is empty when CONFIG_PROVE_LOCKING
+undefined, so do the same thing as what have done for usages of lock
+classes.
+
+With this patch with CONFIG_PROVE_LOCKING undefined, we can get the
+results below:
+
+/ # cat /proc/lockdep
+all lock classes:
+ffffffff85163290: cgroup_mutex
+ffffffff85154dd8: (console_sem).lock
+ffffffff85154d80: console_lock
+ffffffff85074b58: console_owner_lock
+ffffffff85074ba0: console_owner
+ffffffff85066d60: cpu_hotplug_lock
+
+a class key and the relevant class name each line.
+
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+---
+
+v3: Improve commit log. Thank Longman very much for the comments.
+v2: https://lkml.org/lkml/2021/6/28/1549
+
+---
+ kernel/locking/lockdep_proc.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+index 806978314496..b8d9a050c337 100644
+--- a/kernel/locking/lockdep_proc.c
++++ b/kernel/locking/lockdep_proc.c
+@@ -70,26 +70,28 @@ static int l_show(struct seq_file *m, void *v)
+ #ifdef CONFIG_DEBUG_LOCKDEP
+ 	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
+ #endif
+-#ifdef CONFIG_PROVE_LOCKING
+-	seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
+-	seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+-#endif
++	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
++		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
++		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+ 
+-	get_usage_chars(class, usage);
+-	seq_printf(m, " %s", usage);
++		get_usage_chars(class, usage);
++		seq_printf(m, " %s", usage);
++	}
+ 
+ 	seq_printf(m, ": ");
+ 	print_name(m, class);
+ 	seq_puts(m, "\n");
+ 
+-	list_for_each_entry(entry, &class->locks_after, entry) {
+-		if (entry->distance == 1) {
+-			seq_printf(m, " -> [%p] ", entry->class->key);
+-			print_name(m, entry->class);
+-			seq_puts(m, "\n");
++	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
++		list_for_each_entry(entry, &class->locks_after, entry) {
++			if (entry->distance == 1) {
++				seq_printf(m, " -> [%p] ", entry->class->key);
++				print_name(m, entry->class);
++				seq_puts(m, "\n");
++			}
+ 		}
++		seq_puts(m, "\n");
+ 	}
+-	seq_puts(m, "\n");
+ 
+ 	return 0;
+ }
+-- 
+2.30.2
+
