@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510183B6E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632B73B6E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhF2Gph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:45:37 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45364 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231881AbhF2Gpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:45:36 -0400
-X-UUID: 60b45a9c5ce24780a13c88c11ba77ba2-20210629
-X-UUID: 60b45a9c5ce24780a13c88c11ba77ba2-20210629
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 69736824; Tue, 29 Jun 2021 14:43:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Jun 2021 14:43:02 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Jun 2021 14:43:02 +0800
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>
-CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: [PATCH] clk: mediatek: make COMMON_CLK_MT8167* depend on COMMON_CLK_MT8167
-Date:   Tue, 29 Jun 2021 14:43:01 +0800
-Message-ID: <20210629064301.1406-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S232146AbhF2GwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231881AbhF2GwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C1561D05;
+        Tue, 29 Jun 2021 06:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624949379;
+        bh=geUkSje1bwQGUcGQakAxM6zh1cxYS7g/E3AbxwqPG0g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YF/lXZANbzZNcsA5eQJ5ZTFRzIec5NmcL5eb3oiosqexuqAyAb6CSE80Joy/Ca/bS
+         ACCcEDK+SdeNkjRgE0PH9FyzrtZhsD1O0kkBlCxt7UOteVgpcJhwp1ucrX+hSZOFUx
+         TiV+z8wvCjxJ9E8d66e1CeHnkoSGhXxQHka0V2Ff5VtTAAXEad/V5yXMNxsdiuJSHF
+         5QlBbfwaDKvy1EADImq269QtmsD6L1qb+Au+6y2IfBKXuFh6uq68z4XdgZotC4dDlB
+         ZIg3EUU5L3LaGDlkOpstI9bfEso4g2xn1GcCrDO48GyYIR2UIyAae6sQ3TI517KQf1
+         DkmfPh6Me2WcQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: [PATCH rdma-rc v3] RDMA/core: Always release restrack object
+Date:   Tue, 29 Jun 2021 09:49:33 +0300
+Message-Id: <073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found that COMMON_CLK_MT8167* do not depend on COMMON_CLK_MT8167,
-so it is possible to config:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-CONFIG_COMMON_CLK_MT8167=n
-CONFIG_COMMON_CLK_MT8167_*=y
+Change location of rdma_restrack_del() to fix the bug where
+task_struct was acquired but not released, causing to resource leak.
 
-Although it does not cause build breaks with such configuration,
-I think it is more clear to make COMMON_CLK_MT8167* depend on
-COMMON_CLK_MT8167.
+  ucma_create_id() {
+    ucma_alloc_ctx();
+    rdma_create_user_id() {
+      rdma_restrack_new();
+      rdma_restrack_set_name() {
+        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
+      }
+    }
+    ucma_destroy_private_ctx() {
+      ucma_put_ctx();
+      rdma_destroy_id() {
+        _destroy_id()                       <--- id_priv was freed
+      }
+    }
+  }
 
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
+Reported-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/clk/mediatek/Kconfig | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+---
+Changelog:
+v3:
+ * Dropped controversial hunks and updated commit message respectively
+v2: https://lore.kernel.org/lkml/e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com
+ * Added bug report analysis
+v1: https://lore.kernel.org/linux-rdma/f72e27d5c82cd9beec7670141afa62786836c569.1622956637.git.leonro@nvidia.com/T/#u
+---
+ drivers/infiniband/core/cma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 886e2d9fced5..ce6d59e4ca82 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -362,41 +362,36 @@ config COMMON_CLK_MT8167
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index ab148a696c0c..6d103c42bbec 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1852,6 +1852,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ {
+ 	cma_cancel_operation(id_priv, state);
  
- config COMMON_CLK_MT8167_AUDSYS
- 	bool "Clock driver for MediaTek MT8167 audsys"
--	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
--	select COMMON_CLK_MEDIATEK
--	default ARCH_MEDIATEK
-+	depends on COMMON_CLK_MT8167
-+	default COMMON_CLK_MT8167
- 	help
- 	  This driver supports MediaTek MT8167 audsys clocks.
- 
- config COMMON_CLK_MT8167_IMGSYS
- 	bool "Clock driver for MediaTek MT8167 imgsys"
--	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
--	select COMMON_CLK_MEDIATEK
--	default ARCH_MEDIATEK
-+	depends on COMMON_CLK_MT8167
-+	default COMMON_CLK_MT8167
- 	help
- 	  This driver supports MediaTek MT8167 imgsys clocks.
- 
- config COMMON_CLK_MT8167_MFGCFG
- 	bool "Clock driver for MediaTek MT8167 mfgcfg"
--	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
--	select COMMON_CLK_MEDIATEK
--	default ARCH_MEDIATEK
-+	depends on COMMON_CLK_MT8167
-+	default COMMON_CLK_MT8167
- 	help
- 	  This driver supports MediaTek MT8167 mfgcfg clocks.
- 
- config COMMON_CLK_MT8167_MMSYS
- 	bool "Clock driver for MediaTek MT8167 mmsys"
--	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
--	select COMMON_CLK_MEDIATEK
--	default ARCH_MEDIATEK
-+	depends on COMMON_CLK_MT8167
-+	default COMMON_CLK_MT8167
- 	help
- 	  This driver supports MediaTek MT8167 mmsys clocks.
- 
- config COMMON_CLK_MT8167_VDECSYS
- 	bool "Clock driver for MediaTek MT8167 vdecsys"
--	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
--	select COMMON_CLK_MEDIATEK
--	default ARCH_MEDIATEK
-+	depends on COMMON_CLK_MT8167
-+	default COMMON_CLK_MT8167
- 	help
- 	  This driver supports MediaTek MT8167 vdecsys clocks.
++	rdma_restrack_del(&id_priv->res);
+ 	if (id_priv->cma_dev) {
+ 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
+ 			if (id_priv->cm_id.ib)
+@@ -1861,7 +1862,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ 				iw_destroy_cm_id(id_priv->cm_id.iw);
+ 		}
+ 		cma_leave_mc_groups(id_priv);
+-		rdma_restrack_del(&id_priv->res);
+ 		cma_release_dev(id_priv);
+ 	}
  
 -- 
-2.18.0
+2.31.1
 
