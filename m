@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3140B3B6C16
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBC73B6C1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhF2BmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:42:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29682 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231947AbhF2BmO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:42:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624930787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nmC6ZFHpVYRnCzG7FJlyXZBzfKH6rggjduLG+czT85I=;
-        b=QoQoX+9Br4y+Z9ismWJtmGml9vdNakJp7F9l9H1AnWE11y3mY8nK68dJGIRNzz5AzTqFr7
-        qywQClgf9/UUt0RAjeysDPjO9SX5TCAOXLtv6CtBQ/dxvFfttl6y0PeYZ5Mm+jmjIuIpON
-        20x99yVFkveMgJkSH2T01BlQD8jAjXg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-Av_utp_hNxmyHvGGDqGEUw-1; Mon, 28 Jun 2021 21:39:45 -0400
-X-MC-Unique: Av_utp_hNxmyHvGGDqGEUw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91F28106B7E4;
-        Tue, 29 Jun 2021 01:39:44 +0000 (UTC)
-Received: from T590 (ovpn-12-115.pek2.redhat.com [10.72.12.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7DC955C1D0;
-        Tue, 29 Jun 2021 01:39:35 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 09:39:30 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH 2/2] nvme-fc: Wait with a timeout for queue to freeze
-Message-ID: <YNp50pmlzN6M0kNX@T590>
-References: <20210625101649.49296-1-dwagner@suse.de>
- <20210625101649.49296-3-dwagner@suse.de>
+        id S230146AbhF2Brr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:47:47 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18888 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229933AbhF2Brq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 21:47:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="205059164"
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="205059164"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 18:45:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="456583567"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jun 2021 18:45:17 -0700
+Date:   Tue, 29 Jun 2021 09:39:58 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mfd: intel-m10-bmc: add n5010 variant
+Message-ID: <20210629013958.GA85916@yilunxu-OptiPlex-7050>
+References: <20210625074213.654274-1-martin@geanix.com>
+ <20210625074213.654274-5-martin@geanix.com>
+ <YNYkXVgS4YBgahjw@epycbox.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210625101649.49296-3-dwagner@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNYkXVgS4YBgahjw@epycbox.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:16:49PM +0200, Daniel Wagner wrote:
-> Do not wait indifinitly for all queues to freeze. Instead use a
-> timeout and abort the operation if we get stuck.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->  drivers/nvme/host/fc.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index a9645cd89eca..d8db85aa5417 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -2955,7 +2955,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
->  		dev_info(ctrl->ctrl.device,
->  			"reconnect: revising io queue count from %d to %d\n",
->  			prior_ioq_cnt, nr_io_queues);
-> -		nvme_wait_freeze(&ctrl->ctrl);
-> +		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
-> +			/*
-> +			 * If we timed out waiting for freeze we are likely to
-> +			 * be stuck.  Fail the controller initialization just
-> +			 * to be safe.
-> +			 */
-> +			return -ENODEV;
-> +		}
->  		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
->  		nvme_unfreeze(&ctrl->ctrl);
-
-Can you investigate a bit on why there is the hang? FC shouldn't use
-managed IRQ, so the interrupt won't be shutdown.
-
-blk-mq debugfs may help to dump the requests after the hang is triggered,
-or you still can add debug code in nvme_wait_freeze_timeout() to dump
-all requests if blk-mq debugfs doesn't work.
-
+On Fri, Jun 25, 2021 at 11:45:49AM -0700, Moritz Fischer wrote:
+> On Fri, Jun 25, 2021 at 09:42:12AM +0200, Martin Hundebøll wrote:
+> > From: Martin Hundebøll <mhu@silicom.dk>
+> > 
+> >  The m10-bmc is used on the Silicom N5010 PAC too, so add it to list of
+> >  m10bmc types.
+> > 
+> > Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Acked-by: Moritz Fischer <mdf@kernel.org>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
 
 Thanks,
-Ming
+Yilun
 
+> > ---
+> > 
+> > Changes since v1:
+> >  * Patch split out to separate mfd changes
+> > 
+> >  drivers/mfd/intel-m10-bmc.c | 12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+> > index 1a9bfb7f48cd..8db3bcf5fccc 100644
+> > --- a/drivers/mfd/intel-m10-bmc.c
+> > +++ b/drivers/mfd/intel-m10-bmc.c
+> > @@ -15,7 +15,8 @@
+> >  
+> >  enum m10bmc_type {
+> >  	M10_N3000,
+> > -	M10_D5005
+> > +	M10_D5005,
+> > +	M10_N5010,
+> >  };
+> >  
+> >  static struct mfd_cell m10bmc_d5005_subdevs[] = {
+> > @@ -28,6 +29,10 @@ static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
+> >  	{ .name = "n3000bmc-secure" },
+> >  };
+> >  
+> > +static struct mfd_cell m10bmc_n5010_subdevs[] = {
+> > +	{ .name = "n5010bmc-hwmon" },
+> > +};
+> > +
+> >  static const struct regmap_range m10bmc_regmap_range[] = {
+> >  	regmap_reg_range(M10BMC_LEGACY_BUILD_VER, M10BMC_LEGACY_BUILD_VER),
+> >  	regmap_reg_range(M10BMC_SYS_BASE, M10BMC_SYS_END),
+> > @@ -192,6 +197,10 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
+> >  		cells = m10bmc_d5005_subdevs;
+> >  		n_cell = ARRAY_SIZE(m10bmc_d5005_subdevs);
+> >  		break;
+> > +	case M10_N5010:
+> > +		cells = m10bmc_n5010_subdevs;
+> > +		n_cell = ARRAY_SIZE(m10bmc_n5010_subdevs);
+> > +		break;
+> >  	default:
+> >  		return -ENODEV;
+> >  	}
+> > @@ -207,6 +216,7 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
+> >  static const struct spi_device_id m10bmc_spi_id[] = {
+> >  	{ "m10-n3000", M10_N3000 },
+> >  	{ "m10-d5005", M10_D5005 },
+> > +	{ "m10-n5010", M10_N5010 },
+> >  	{ }
+> >  };
+> >  MODULE_DEVICE_TABLE(spi, m10bmc_spi_id);
+> > -- 
+> > 2.31.0
+> > 
