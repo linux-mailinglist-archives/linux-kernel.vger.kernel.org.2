@@ -2,157 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487203B6D70
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932BB3B6D9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhF2E0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 00:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
+        id S230373AbhF2E2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 00:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhF2E0x (ORCPT
+        with ESMTP id S229480AbhF2E2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 00:26:53 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E941C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:24:25 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id a6so25104137ioe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:24:25 -0700 (PDT)
+        Tue, 29 Jun 2021 00:28:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CBBC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:26:03 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id kt19so3688603pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:26:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=kKbP+sOfgvq19eFYRoX1RtO0fgrWzOmMfOhtqpOowIY=;
-        b=lt8sjWYuluCGan+ZKPd6Qa9KXu6WY2pBPnRWd2MUDnRoMasrh9u6egz/fW8NUVY9H5
-         RhB7NDq41BsBx2bBhrdU/q029fz2ra0UvRnJfuQuq6XJFpSF+h0S5XMSIsbGlyqJYjP5
-         YMoU3DfO5ltu9U01T6nbL+7i/aG3HI8rMN/S/h0Akzvl7GmMpB/fbHb7uqKHNbD7kNE/
-         yxj2lTb+PdFlPSjMUVKe2O/qlIvtVuUluJVnG+1IXjj/MJne5uUObXMBCWnpeUML9egd
-         8HAyIOqn+6imVpkhjv4lmzTr4amr7TXqgJ/MO+B8+dpTTauavqFHrvU1R2Y/Gb4Qlepe
-         mDug==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9Mv1hXNnZzD23y7DKDXFCUL2Q/g72yLCDWXSEXlIRgc=;
+        b=Esp829CCH1PuwpOymHn7E7OTRNjAZHod05d0GEqXe863S7ReRl2zFVtBoPfr2EzYGu
+         51Sqi1hoA/OEPCCyNsRxhQ2WcElHLzjbwPJgyu8ycT4w4rvbgoLIyy5BoJSLvl86rv9g
+         Fvz/bx14EFJvNkUAVb74kBkPKDddHQzImmzUdMNrC2o1faYniyQLsL31t8Y5pBmT1hr2
+         UufSy+Vil0tOhNbZmOc04vOrKD8C7EtGSGSmoS05ECfH15JwP1cbfRZi3ab/UlBwLxTe
+         Dpq32HtuxiTXkBtBul/t2LnIYW3Kd77t8M4TMk15cIrTgNHqCHdLY3zGvj35VbEfC/QD
+         7Sdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=kKbP+sOfgvq19eFYRoX1RtO0fgrWzOmMfOhtqpOowIY=;
-        b=AMc9UK9DPgB80sQoaK8AWCPPzyGK556Kzokx9eUUwObDcOpdPVchZeJzXlYWP/ypik
-         i3/6h2Ero/DZn0uoqqXak5JgP2Ibkndxy++cxY54sBQeUikvC4nicZgEkpLDyWC7DLt2
-         bb5vRQ6FATcyqklywObW3Q5SvYYz0iq5vuUHHTvSLzqqkjQbG71gmUbohzYX3rklQQP2
-         vjq7DIYFQZrfI6fJAINLVUvmvUi0g0UlUZjSx19/urxZhAZ5t4U3752SnLtIjonW9k3/
-         lSXMQ6AwcujyRqUZMxbHfViesa7qeNOn8mdAQAiOvZ7+o2ogXKGcd9BXBr++Fj2a3hNB
-         IsVQ==
-X-Gm-Message-State: AOAM530KLKpbV1XljgM/Pp1NQl8uBDnDeV9BB3oLSM9+qYWnIpaCnyOb
-        cffNu8+VHpMcHReQdGEz1LD2OfgwXkuc2pU2L74=
-X-Google-Smtp-Source: ABdhPJx4utrnf5GfyUegqhBSX/FrcaldmB50B1cYwzjg1SLGMkMzbqJKmYzr4BpNqYPxkUDwU2h/Tj2f7AIt1QIx6r8=
-X-Received: by 2002:a05:6638:2143:: with SMTP id z3mr2537862jaj.103.1624940664874;
- Mon, 28 Jun 2021 21:24:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9Mv1hXNnZzD23y7DKDXFCUL2Q/g72yLCDWXSEXlIRgc=;
+        b=Wv2XbbzRUnOZrhFgnvhRri8+CPElZCa5XS7EYmn1hdMhzWtKST+1u82JPZJcHQrGjs
+         YMe4oc/0FlQg0tgsCN8HP6HJCS4ZmURkJ9666UdNj+Yxcv08AQ6wTGX4KVaolFUgJDpQ
+         jrNV/XOfnfKJo/kJ0+CirlUp3Uk0uG3TjR57Sy2Z51niyrecn5HlyjKUza3+8K2y/A4V
+         vDR3tpR4y2Ww8lZw0ixhU8Y3dYfDPBXDi73zv3/mflVxawcGRgN2T5axcT8KH7tOHNZF
+         AI8hDuOUHOnUrqD70GPjTeB2rPr7EL+UOjZsbMnAQDPz2Y1S/2gVJbILB7UrqHoYOedz
+         pnIw==
+X-Gm-Message-State: AOAM5319ziwi8ReT4cTnb+GjBFSAxawMyJkknw8n2QNWm1MbYK2tEfdi
+        eFCKEWjj/aKczTV0VQA2zh4O
+X-Google-Smtp-Source: ABdhPJwk6bQ+0eUyJC0EO3pZiT41ajJqG7DFEtayr7QChFiJLZJPlVPRzjvoNsJGY4/56R1ygHEx6Q==
+X-Received: by 2002:a17:90a:5406:: with SMTP id z6mr41126480pjh.61.1624940762599;
+        Mon, 28 Jun 2021 21:26:02 -0700 (PDT)
+Received: from workstation ([120.138.12.32])
+        by smtp.gmail.com with ESMTPSA id u13sm3341334pfi.54.2021.06.28.21.26.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Jun 2021 21:26:02 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 09:55:58 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thara.gopinath@linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
+ cooling_devs
+Message-ID: <20210629042558.GA3580@workstation>
+References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
+ <YNpVMvhEfrz9EqyO@google.com>
 MIME-Version: 1.0
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 28 Jun 2021 23:24:14 -0500
-Message-ID: <CABb+yY23+V0zG1_G+_rLi4SsnrqXFZe7onv=JTedgAgWim_nYQ@mail.gmail.com>
-Subject: [GIT PULL] Mailbox changes for v5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNpVMvhEfrz9EqyO@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Jun 28, 2021 at 04:03:14PM -0700, Matthias Kaehlcke wrote:
 
-The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
+[...]
 
-  Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
+> 
+> 
+> A few more previous lines of code for context:
+> 
+>   int count = QMP_NUM_COOLING_RESOURCES;
+> 
+>   qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
+>                                    sizeof(*qmp->cooling_devs),
+>                                    GFP_KERNEL);
+> 
+> I would suggest to initialize 'count' to 0 from the start and pass
+> QMP_NUM_COOLING_RESOURCES to devm_kcalloc() rather than 'count',
+> instead of resetting 'count' afterwards.
 
-are available in the Git repository at:
+Yeah, I thought about it but the actual bug in the code is not resetting
+the count value to 0. So fixing this way seems a better option.
 
-  git://git.linaro.org/landing-teams/working/fujitsu/integration.git
-tags/mailbox-v5.14
-
-for you to fetch changes up to 4f197188da668180d5ea7d808ae6221ce66cfe33:
-
-  MAINTAINERS: add entry for polarfire soc mailbox (2021-06-26 12:07:03 -0500)
-
-----------------------------------------------------------------
-- imx: add support for i.MX8ULP
-- mtk: code change around callback struct
-- qcom: add sm6125, MSM8939 fix for channel exhaustion
-- microchip: add support for polarfire controller
-- misc: cosmetic changes to bcm-2835,flexrm,pdc, arm-mhu and hisilicon
-
-----------------------------------------------------------------
-Bjorn Andersson (1):
-      MAINTAINERS: Add dt-bindings to mailbox entry
-
-Chun-Kuang Hu (3):
-      mailbox: mtk-cmdq: Remove cmdq_cb_status
-      mailbox: mtk-cmdq: Use mailbox rx_callback
-      mailbox: mtk-cmdq: Add struct cmdq_pkt in struct cmdq_cb_data
-
-Conor Dooley (4):
-      dt-bindings: add bindings for polarfire soc mailbox
-      mbox: add polarfire soc system controller mailbox
-      dt-bindings: add bindings for polarfire soc system controller
-      MAINTAINERS: add entry for polarfire soc mailbox
-
-Dan Carpenter (1):
-      mailbox: mtk-cmdq: Fix uninitialized variable in cmdq_mbox_flush()
-
-Hao Fang (1):
-      mailbox: hisilicon: Use the correct HiSilicon copyright
-
-Martin Botka (2):
-      dt-bindings: mailbox: Add binding for sm6125
-      mailbox: qcom-apcs: Add SM6125 compatible
-
-Nathan Chancellor (1):
-      mailbox: imx: Avoid using val uninitialized in imx_mu_isr()
-
-Peng Fan (4):
-      dt-bindings: mailbox: imx-mu: add i.MX8ULP MU support
-      mailbox: imx: replace the xTR/xRR array with single register
-      mailbox: imx: add xSR/xCR register array
-      mailbox: imx-mailbox: support i.MX8ULP MU
-
-Shawn Guo (3):
-      dt-bindings: mailbox: qcom: Add MSM8939 APCS compatible
-      mailbox: qcom: Use PLATFORM_DEVID_AUTO to register platform device
-      mailbox: qcom: Add MSM8939 APCS support
-
-Sibi Sankar (1):
-      mailbox: qcom-ipcc: Fix IPCC mbox channel exhaustion
-
-Zhen Lei (3):
-      mailbox: arm_mhu: Remove redundant error printing in mhu_probe()
-      mailbox: bcm-pdc: Remove redundant error printing in pdc_probe()
-      mailbox: mediatek: Remove redundant error printing in cmdq_probe()
-
-Zhihao Cheng (2):
-      mailbox: bcm2835: Remove redundant dev_err call in bcm2835_mbox_probe()
-      mailbox: bcm-flexrm-mailbox: Remove redundant dev_err call in
-flexrm_mbox_probe()
-
- .../devicetree/bindings/mailbox/fsl,mu.yaml        |   1 +
- .../mailbox/microchip,polarfire-soc-mailbox.yaml   |  47 ++++
- .../bindings/mailbox/qcom,apcs-kpss-global.yaml    |   3 +
- .../microchip,polarfire-soc-sys-controller.yaml    |  35 +++
- MAINTAINERS                                        |   9 +
- drivers/mailbox/Kconfig                            |  12 +
- drivers/mailbox/Makefile                           |   2 +
- drivers/mailbox/arm_mhu.c                          |   4 +-
- drivers/mailbox/bcm-flexrm-mailbox.c               |   1 -
- drivers/mailbox/bcm-pdc-mailbox.c                  |   1 -
- drivers/mailbox/bcm2835-mailbox.c                  |   1 -
- drivers/mailbox/hi3660-mailbox.c                   |   2 +-
- drivers/mailbox/hi6220-mailbox.c                   |   2 +-
- drivers/mailbox/imx-mailbox.c                      | 200 ++++++++++------
- drivers/mailbox/mailbox-mpfs.c                     | 251 +++++++++++++++++++++
- drivers/mailbox/mtk-cmdq-mailbox.c                 |  28 ++-
- drivers/mailbox/qcom-apcs-ipc-mailbox.c            |   8 +-
- drivers/mailbox/qcom-ipcc.c                        |   6 +
- include/linux/mailbox/mtk-cmdq-mailbox.h           |   8 +-
- include/soc/microchip/mpfs.h                       |  43 ++++
- 20 files changed, 562 insertions(+), 102 deletions(-)
- create mode 100644
-Documentation/devicetree/bindings/mailbox/microchip,polarfire-soc-mailbox.yaml
- create mode 100644
-Documentation/devicetree/bindings/soc/microchip/microchip,polarfire-soc-sys-controller.yaml
- create mode 100644 drivers/mailbox/mailbox-mpfs.c
- create mode 100644 include/soc/microchip/mpfs.h
+Thanks,
+Mani
