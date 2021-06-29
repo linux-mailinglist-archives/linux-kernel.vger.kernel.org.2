@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6957C3B6CD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DB03B6CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhF2DNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhF2DNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:13:49 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14916C061574;
-        Mon, 28 Jun 2021 20:11:23 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id b1so3608109pls.5;
-        Mon, 28 Jun 2021 20:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CrRfjlffFTsErYpyxRU8qsAnfz33rhUg5wGpylT7ibU=;
-        b=Px3WCVFBTtBJ58YYng2zaDvLYyFK8jNjPzLmPztobD/ogV6koyfjdzqWonDUQXrg+V
-         H87SNvbz6iCahm8x+izb2bKXKGQrH2HHabUfLE+t9h6sGL91L/uVBdlt3NbSeHcEe3Hm
-         6fBpk0HmN6jK3PXvGgeQscHOgOB0/sUI8OJFbG/WKGyDa1rJjohbkHgsbnrmekfBurKP
-         jDlOmNc2fHGlHibewQPQleRonn4rJR6bAQmT8ssqJnXXIvvd4Gktb59wqGQl7mF44itv
-         WkZ5S+m4o/cH1FR8BS+bRdzejGukCuSidsh8sxixFcWP3URo3csUKKqWfPbRaDMZ7LRO
-         E8Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CrRfjlffFTsErYpyxRU8qsAnfz33rhUg5wGpylT7ibU=;
-        b=XiMAuRZ4usRu3B45d+OdG2tFjjfw40OD35lhSUn8Q8as0GYgPWgMk3ln6tgtL20P1g
-         66+/0l4FRnlXNLP0bKlBpJqY3OAHw9CdCj2oaY7gBguNxrzyNlD7h+6oHENzMo5Umbrv
-         zpIhWy2Z2z9U7jkiIin1QK7myPMEXynwsGf9+vNSg3Y5BGxBM4jTlmOKIqiqXmPgeV7U
-         UOpVmPeoam+K8lwQpyxAUelUUfpDUNC/vaPHPp9EV3QB4GeC0L/oK2EQSZUbmI9P45Xt
-         XGiwHKVbA8bbPnxEhTjsnEsiBbEPhd6UmbHqvb8ImJ7ooGUaBzQfBBr7TlnnIs87UyuV
-         NhoA==
-X-Gm-Message-State: AOAM530Spdh6xP3/YRdDW/1LSj/7STbtlkeK9HeBqwGDX8khrv7CETTy
-        77ksiKcddhlgVwetofpY7JahYOxgVyc=
-X-Google-Smtp-Source: ABdhPJyMfjaNe7KKQQx2C/XWHqq8R9M5Cx3D2fMYaRDOJSzPCH4mP40rEGAgYsIMlugTXaCldZTN0g==
-X-Received: by 2002:a17:90a:10c8:: with SMTP id b8mr40953510pje.147.1624936282502;
-        Mon, 28 Jun 2021 20:11:22 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id pj4sm964048pjb.18.2021.06.28.20.11.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Jun 2021 20:11:22 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH] KVM: X86: Also reload the debug registers before kvm_x86->run() when the host is using them
-Date:   Tue, 29 Jun 2021 01:26:32 +0800
-Message-Id: <20210628172632.81029-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        id S231806AbhF2DGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:06:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:50692 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231332AbhF2DGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 23:06:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="187761273"
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="187761273"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 20:03:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="456601083"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jun 2021 20:03:43 -0700
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+To:     Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNmK0MP5ffQpiipt@ninjato>
+ <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <cdadf700-921b-7c61-210d-7aad355a3871@intel.com>
+Date:   Tue, 29 Jun 2021 11:03:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 2021/6/28 17:01, Arnd Bergmann wrote:
 
-When the host is using debug registers but the guest is not using them
-nor is the guest in guest-debug state, the kvm code does not reset
-the host debug registers before kvm_x86->run().  Rather, it relies on
-the hardware vmentry instruction to automatically reset the dr7 registers
-which ensures that the host breakpoints do not affect the guest.
+> On Mon, Jun 28, 2021 at 10:39 AM Wolfram Sang <wsa@kernel.org> wrote:
+>> sorry for the long delay. I am not familiar with VFIO, so I had to dive
+>> into the topic a little first. I am still not seeing through it
+>> completely, so I have very high-level questions first.
+> You probably know this already, but just in case for clarification
+> these are two different things:
+>
+> VFIO: kernel feature to make raw (usually PCI) devices available
+>             to user space drivers and virtual machines from a kernel
+>             running on bare metal.
+>
+> virtio: transport protocol for implementing arbitrary paravirtualized
+>            drivers in (usually) a virtual machine guest without giving the
+>            guest access to hardware registers.
+>
+Thanks Arnd for clarification.
 
-But there are still problems:
-	o The addresses of the host breakpoints can leak into the guest
-	  and the guest may use these information to attack the host.
+Let me add some more:
 
-	o It violates the non-instrumentable nature around VM entry and
-	  exit.  For example, when a host breakpoint is set on
-	  vcpu->arch.cr2, #DB will hit aftr kvm_guest_enter_irqoff().
 
-Beside the problems, the logic is not consistent either. When the guest
-debug registers are active, the host breakpoints are reset before
-kvm_x86->run(). But when the guest debug registers are inactive, the
-host breakpoints are delayed to be disabled.  The host tracing tools may
-see different results depending on there is any guest running or not.
+The native model is as follows: a specific native I2C driver operates a 
+specific hardware.
 
-To fix the problems, we also reload the debug registers before
-kvm_x86->run() when the host is using them whenever the guest is using
-them or not.
+A specific native I2C driver  <--> A specific hardware
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/x86.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b594275d49b5..cce316655d3c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9320,7 +9320,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		switch_fpu_return();
- 
--	if (unlikely(vcpu->arch.switch_db_regs)) {
-+	if (unlikely(vcpu->arch.switch_db_regs || hw_breakpoint_active())) {
- 		set_debugreg(0, 7);
- 		set_debugreg(vcpu->arch.eff_db[0], 0);
- 		set_debugreg(vcpu->arch.eff_db[1], 1);
--- 
-2.19.1.6.gb485710b
+The virtio paravirtualized model is something like:
+
+virtio-i2c <--> virtio I2C interfaces <--> virtio-backend <--> Real hardware
+
+virtio-i2c: is this driver, the frontend driver.
+
+virtio I2C interfaces: which are described in the specification.
+
+https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex.
+
+     I had tried to mirror Linux I2C interfaces (like "i2c_msg") into 
+virtio I2C interface directly. But
+
+     when I was doing upstream for this specification, I understood the 
+virtio TC had the design philosophy
+
+     "VIRTIO devices are not specific to Linux so the specs design 
+should avoid the limitations of the
+
+     current Linux driver behavior." So we redefined a minimum virtio 
+I2C interfaces to make a working POC.
+
+     and we may extend it in the future according to the need.
+
+virtio-backend: the backend driver communicate with virtio-i2c by 
+following virtio I2C interfaces specs.
+
+      The are already two backend drivers developed by Viresh, one in 
+QEMU, another in rust-vmm.
+
+      1. vhost-user: 
+https://lore.kernel.org/qemu-devel/cover.1617278395.git.viresh.kumar@linaro.org/t/#m3b5044bad9769b170f505e63bd081eb27cef8db2
+
+      2. rust-vmm I2C backend: 
+https://github.com/rust-vmm/vhost-device/pull/1
+
+
+Regards,
+
+Jie
+
+
+
+
+
+
 
