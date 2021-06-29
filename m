@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28C43B7699
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8853B76A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbhF2Qoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:44:37 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:33016 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbhF2Qog (ORCPT
+        id S234154AbhF2QuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234120AbhF2QuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:44:36 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyGoK-007Oh9-AZ; Tue, 29 Jun 2021 10:42:08 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:60056 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lyGoI-002Txf-FL; Tue, 29 Jun 2021 10:42:07 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>
-References: <87fsx1vcr9.fsf@disp2133>
-        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
-        <87czs4u0rm.fsf@disp2133>
-        <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
-Date:   Tue, 29 Jun 2021 11:42:00 -0500
-In-Reply-To: <CAHk-=wgs5+3MLjG_hsQcKdamOcTsJLsk47tV12FfD_0f2h47Rg@mail.gmail.com>
-        (Linus Torvalds's message of "Tue, 29 Jun 2021 09:34:17 -0700")
-Message-ID: <87mtr8sjvr.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 29 Jun 2021 12:50:02 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC71BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:47:32 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id a5-20020a05683012c5b029046700014863so6508943otq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MGTK4lyAMdeYSqK3dGA2v+GiJW5Wa7AmD5LZbDWF2LE=;
+        b=Q5uzHCoi5dQJkGW36AFCtkNIiGQDKyQ8V5uKpN0wkzykiKyCVjL8Bfj6Be6Gd9x4of
+         elyv0+DB7ZnuKpJ+B5GOZu/YGBUsJsEffcKOjJY9IPYVBeWoZpbgRZ3rKMzfneoyV1ma
+         BwOXaIDLbQuoNjQCwvCjApiNxxLRZvfiBr8c51Ol5b0JYeyybQ51qJToFtDeqpW+WbEE
+         BoGKH9snFUYSVFfqgeZtgLk5FU4N5trf8f+i3XDs0CpAnecKCLNObvinSLf7M2DNwDLz
+         kMRnQLwMlGql1OlJu74MmrEra5Z9zp3Jp6xJoxEJielk5DM+vGenWf03inbdnQ2Afuvt
+         tdgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MGTK4lyAMdeYSqK3dGA2v+GiJW5Wa7AmD5LZbDWF2LE=;
+        b=o13mdozmVXX7CHdroH2RuqK/h+2+iT5Km78o9mwmoVxHsnRZL+R3MtFpea3lCDQHMH
+         KAn+KC3VaDRiByZWp6j7Y4lwAiPzMyDxW2qw3VI6ZRXnmTx3/7U11qVdtPvN12/J4Vgu
+         N6h/lxRv0Qpv71D4qkyLAdrB2pIGCtDuJpV1Uba+Q9gnYrdlKKrFtdNRM2h+CgDDaz0b
+         nowqtw+imjJSSpXrmtD1IXgJ4UwjGI67SxNz3x6ey210tm+e/4H2lTizODznL+omCHL3
+         EBjd2RwTE0OSxOXLE3kxoYBw1nNrPDZZ22FoXphF4bAgrdrwCNKQe4zIQy8aT/Sm4G+0
+         4Dzg==
+X-Gm-Message-State: AOAM530PtyalD3QmESg/en2mw1N/DFvjn+Iy+D6fZRESeDEeDdSa2ljk
+        L3IgWrAipUR1caHY43Dgp5yIwgTGTOc8lI4IPxw=
+X-Google-Smtp-Source: ABdhPJwAtOPJLy7khY9BGMqPmkZQ3pEn+TYCMaJD8d1zpiZNz/ojO0rlC+Y7kq60yh5KEFZlyHLCiNDcEjkqteqw1/8=
+X-Received: by 2002:a05:6830:33ef:: with SMTP id i15mr5256611otu.311.1624985252222;
+ Tue, 29 Jun 2021 09:47:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lyGoI-002Txf-FL;;;mid=<87mtr8sjvr.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+RhPiZBQsPCPrf7dkJU9N3BdG6qpff208=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4573]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1304 ms - load_scoreonly_sql: 0.13 (0.0%),
-        signal_user_changed: 13 (1.0%), b_tie_ro: 11 (0.8%), parse: 1.10
-        (0.1%), extract_message_metadata: 17 (1.3%), get_uri_detail_list: 1.28
-        (0.1%), tests_pri_-1000: 25 (1.9%), tests_pri_-950: 1.38 (0.1%),
-        tests_pri_-900: 1.12 (0.1%), tests_pri_-90: 67 (5.2%), check_bayes: 66
-        (5.0%), b_tokenize: 5 (0.4%), b_tok_get_all: 5 (0.4%), b_comp_prob:
-        1.79 (0.1%), b_tok_touch_all: 49 (3.8%), b_finish: 0.99 (0.1%),
-        tests_pri_0: 1165 (89.4%), check_dkim_signature: 0.60 (0.0%),
-        check_dkim_adsp: 2.8 (0.2%), poll_dns_idle: 0.95 (0.1%), tests_pri_10:
-        2.2 (0.2%), tests_pri_500: 7 (0.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20210629112647.1.I7813d8e7298aa1a1c6bee84e6fd44a82ca24805c@changeid>
+ <9e21a922-38d2-3d03-4524-c122965f7db3@amd.com>
+In-Reply-To: <9e21a922-38d2-3d03-4524-c122965f7db3@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 29 Jun 2021 12:47:21 -0400
+Message-ID: <CADnq5_PXwDe03e8zJ7O6Y0FXKsp0FngyRVQvaM=hN9UWE6TmTw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Respect CONFIG_FRAME_WARN=0 in dml Makefile
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Reka Norman <rekanorman@chromium.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Reka Norman <rekanorman@google.com>,
+        Will Deacon <will@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Kolesa <daniel@octaforge.org>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, Huang Rui <ray.huang@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+Applied.  Thanks!
 
-> On Tue, Jun 29, 2021 at 8:52 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Linus Torvalds <torvalds@linux-foundation.org> writes:
->>
->> > Why the "sigpending < LONG_MAX" test in that
->> >
->> >         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
->> > task_rlimit(t, RLIMIT_SIGPENDING))) {
->> > thing?
->>
->> On second look that sigpending < LONG_MAX check is necessary.  When
->> inc_rlimit_ucounts detects a problem it returns LONG_MAX.
+Alex
+
+On Tue, Jun 29, 2021 at 11:10 AM Harry Wentland <harry.wentland@amd.com> wrote:
 >
-> I saw that, but _without_ that test you'd be left with just that
+> On 2021-06-28 9:27 p.m., Reka Norman wrote:
+> > Setting CONFIG_FRAME_WARN=0 should disable 'stack frame larger than'
+> > warnings. This is useful for example in KASAN builds. Make the dml
+> > Makefile respect this config.
+> >
+> > Fixes the following build warnings with CONFIG_KASAN=y and
+> > CONFIG_FRAME_WARN=0:
+> >
+> > drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3642:6:
+> > warning: stack frame size of 2216 bytes in function
+> > 'dml30_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
+> > drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_mode_vba_31.c:3957:6:
+> > warning: stack frame size of 2568 bytes in function
+> > 'dml31_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
+> >
+> > Signed-off-by: Reka Norman <rekanorman@google.com>
 >
->     sigpending <= task_rlimit(t, RLIMIT_SIGPENDING)
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 >
-> and if task_rlimit() is LONG_MAX, then that means "no limits", so it is all ok.
-
-It means no limits locally.  The creator of your user namespace might
-have had a limit which you are also bound by.
-
-The other possibility is that inc_rlimits_ucounts caused a sigpending
-counter to overflow.  In which case we need to fail and run
-dec_rlimit_ucounts to keep the counter from staying overflowed.
-
-So I don't see a clever way to avoid the sigpending < LONG_MAX  test.
-
-Eric
+> Harry
+>
+> > ---
+> >
+> >  drivers/gpu/drm/amd/display/dc/dml/Makefile | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> > index d34024fd798a..45862167e6ce 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> > +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> > @@ -50,6 +50,10 @@ dml_ccflags += -msse2
+> >  endif
+> >  endif
+> >
+> > +ifneq ($(CONFIG_FRAME_WARN),0)
+> > +frame_warn_flag := -Wframe-larger-than=2048
+> > +endif
+> > +
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
+> >
+> >  ifdef CONFIG_DRM_AMD_DC_DCN
+> > @@ -60,9 +64,9 @@ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
+> > -CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) -Wframe-larger-than=2048
+> > +CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
+> > -CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) -Wframe-larger-than=2048
+> > +CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) $(frame_warn_flag)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_rq_dlg_calc_31.o := $(dml_ccflags)
+> >  CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
+> >  CFLAGS_REMOVE_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_rcflags)
+> >
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
