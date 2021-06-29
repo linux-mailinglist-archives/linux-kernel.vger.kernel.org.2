@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6699D3B7887
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CE53B7889
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhF2TYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 15:24:55 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:18093 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233375AbhF2TYx (ORCPT
+        id S235031AbhF2TZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhF2TZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 15:24:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624994545; x=1656530545;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=011jMQzbysLea9YNOltRP7IGOoLMvt8FHdPjNFU4fE0=;
-  b=necM85yp3rmGOTd8H9XWSZQlhlnhZ4ipQMmb3LckBqBxBoFIr1wY3sIg
-   ETAYIKb4HoNGOkDbd8W8QamfVPysr8+4+pa1/gkVsjudDg46Xg4YOWBwS
-   OX57VBe8SigqL0F5Og0YIFUxTtUdywFG3+4fgH0mbKZK0Nd612m0d8ic9
-   x6LBCBYiKpY+X1EQN6MMPHwAac6kJqt7mJ+cJzxHWdhA8IFYCMf7yD0UT
-   gvrPjXEkXWFxcWgzSL8qRJwFznfAw9WGT+/RH2B6Y5xf/OtKh3MMmAxMO
-   DHe7K0vWkXINjTcDsDgS+ZMOjNth3V70HjvCJREi/UhKjIdIX/+UaMIAl
-   g==;
-IronPort-SDR: DBOpz7FXL6edMGxWnX9XPIlSA9yx5+/DHh0kcAZIAHgUW2vl9Z4Uh/gArsTQn3sV/iiFIhCvEF
- fIWiElgi/o9WDLusI+OJI6IHr6nYtj8C4zXfHh8iLunuSc8Jhzq5+HPjnyuT4MElGdpJVKllz/
- tXZKmcVDfo6Ea/21d3bP9zSIXfYo9G1HyMo5TuhztsGmGeHWTDaZmTCJGByyIyoOWh80QkQOqa
- A8TNgjsfzCT0P+sx8H/lmI6dT4JdJiEMPm2GQSoQQX8z1B4kWuD2d1w8Ur1xbVQyr81BjzrQR3
- Ors=
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="133971297"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Jun 2021 12:22:24 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 12:22:24 -0700
-Received: from dan-linux.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 29 Jun 2021 12:22:24 -0700
-From:   Dan Sneddon <dan.sneddon@microchip.com>
-To:     Dan Sneddon <dan.sneddon@microchip.com>,
-        Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [PATCH v2] spi: atmel: Fix CS and initialization bug
-Date:   Tue, 29 Jun 2021 12:22:18 -0700
-Message-ID: <20210629192218.32125-1-dan.sneddon@microchip.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 29 Jun 2021 15:25:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE40C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=Dmb2cO7FzDMV4E3bia4R7SHr/d7o5SoYNbqy/P9f/Go=; b=lYVAD5aSSoQFaqfNtuSDa3heon
+        gNI/XvT7CL7vzDBYMFc21hpqwlThwO4HtJzFTOwEXtRewfERlMbDCyJhZlFzf9yt2Rjoh+TOan0Tc
+        RH1jBqV5LC3y9+jRL8RV9nLjDu/njcEAP9oXpNQceFY3gmD66OmbR/0VFSWNmTHe4zUy392w2UjPR
+        5jFq1eWFHI9x5EbSnRFsP/Ji/k7GNWTO3Qyqdg8au1VowJv+LVUmPcdEn5vXAR2ZOX57CCSQ9X9cd
+        lbdWiA4GLKtW4WKJ0YNQVOOt0ABhJP9rpEJZfQrwFU2vYlmyrqDJEi7se7SrKNLmy5eS2WEvttDP1
+        4fki1jJA==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyJKC-00BvuN-MS; Tue, 29 Jun 2021 19:23:12 +0000
+Subject: Re: 2.6.0-test3-mm1 and rootflags
+To:     Greg Depoire--Ferrer <greg.depoire@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <200308131944.h7DJiMpS001539@turing-police.cc.vt.edu>
+ <20210629172053.1709-1-greg.depoire@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bacecf9e-b47e-4a8b-0e36-1004a9711cc3@infradead.org>
+Date:   Tue, 29 Jun 2021 12:23:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210629172053.1709-1-greg.depoire@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5fa5e6dec762 ("spi: atmel: Switch to transfer_one transfer
-method") switched to using transfer_one and set_cs.  The
-core doesn't call set_cs when the chip select lines are gpios.  Add the
-SPI_MASTER_GPIO_SS flag to the driver to ensure the calls to set_cs
-happen since the driver programs configuration registers there.
+On 6/29/21 10:20 AM, Greg Depoire--Ferrer wrote:
+> Hello.
+> 
+> I configure my kernel to boot without an initrd, with "rw root=PARTUUID=...
+> rootflags=...". I would like the kernel to mount my root partition with
+> MS_NOATIME but it is currently not possible without using an initrd that
+> remounts the root partition with the new flags, as was described in this
+> thread.
+> 
+> Because the kernel already supports setting filesystem dependent flags, I think
+> it would make sense for it to also support setting filesystem independent flags.
+> Also, there is the issue of flags that can't be reset later by initrd (see the
+> previous messages).
+> 
+> In reply to this message, there is a patch that implements what was suggested,
+> adding a 'rootopts=' parameter that takes a bitmap value for the mount flags.
+> 
+> It's my first time using a mailing list. I'm not sure if you're supposed to
+> reply to very old messages like this one or create a new thread instead. Sorry
+> if I did something wrong.
 
-Fixes: 5fa5e6dec762 ("spi: atmel: Switch to transfer_one transfer method")
+Hi,
 
-Signed-off-by: Dan Sneddon <dan.sneddon@microchip.com>
----
+It would be better to start a new email thread and include a link to
+the previous discussion. E.g.:
 
-Changes in v2:
-- Updated commit message
-- Dropped unnecessary change to enable variable in set_cs
+Reference: or Link: https://lore.kernel.org/lkml/200308121855.h7CIt6St002437@turing-police.cc.vt.edu/
 
- drivers/spi/spi-atmel.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+and also Cc: any interested parties.
 
-diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
-index 2ef74885ffa2..788dcdf25f00 100644
---- a/drivers/spi/spi-atmel.c
-+++ b/drivers/spi/spi-atmel.c
-@@ -352,8 +352,6 @@ static void cs_activate(struct atmel_spi *as, struct spi_device *spi)
- 		}
- 
- 		mr = spi_readl(as, MR);
--		if (spi->cs_gpiod)
--			gpiod_set_value(spi->cs_gpiod, 1);
- 	} else {
- 		u32 cpol = (spi->mode & SPI_CPOL) ? SPI_BIT(CPOL) : 0;
- 		int i;
-@@ -369,8 +367,6 @@ static void cs_activate(struct atmel_spi *as, struct spi_device *spi)
- 
- 		mr = spi_readl(as, MR);
- 		mr = SPI_BFINS(PCS, ~(1 << chip_select), mr);
--		if (spi->cs_gpiod)
--			gpiod_set_value(spi->cs_gpiod, 1);
- 		spi_writel(as, MR, mr);
- 	}
- 
-@@ -400,8 +396,6 @@ static void cs_deactivate(struct atmel_spi *as, struct spi_device *spi)
- 
- 	if (!spi->cs_gpiod)
- 		spi_writel(as, CR, SPI_BIT(LASTXFER));
--	else
--		gpiod_set_value(spi->cs_gpiod, 0);
- }
- 
- static void atmel_spi_lock(struct atmel_spi *as) __acquires(&as->lock)
-@@ -1483,7 +1477,8 @@ static int atmel_spi_probe(struct platform_device *pdev)
- 	master->bus_num = pdev->id;
- 	master->num_chipselect = 4;
- 	master->setup = atmel_spi_setup;
--	master->flags = (SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX);
-+	master->flags = (SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX |
-+			SPI_MASTER_GPIO_SS);
- 	master->transfer_one = atmel_spi_one_transfer;
- 	master->set_cs = atmel_spi_set_cs;
- 	master->cleanup = atmel_spi_cleanup;
+
+thanks.
 -- 
-2.17.1
+~Randy
 
