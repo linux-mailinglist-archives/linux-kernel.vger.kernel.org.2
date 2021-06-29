@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE1C3B74E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7C73B74E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhF2PML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
+        id S234756AbhF2PMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234693AbhF2PMH (ORCPT
+        with ESMTP id S234714AbhF2PMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:12:07 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953CAC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:09:40 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id x37so4037957uac.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:09:40 -0700 (PDT)
+        Tue, 29 Jun 2021 11:12:10 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20F0C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:09:42 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id u10so12288485vsu.12
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LuyBMZGhtBgcRJwd1A74SaR7qMVubxg4OKYSD7bf0Rg=;
-        b=TGHWWV8kcyBivyZX88cWdYDh6ISxpSSnB+a3I2IZObT877GfF5myGHJDavSsywsD/+
-         HRNudBk1MUSh5BxtRJ1ScnfRqOaOuhXBHdXG62OzrMB44GRE6P1JiknjAtVrJ4pZdj/i
-         U5pXLro/rLS+ZY7yTlGCYle3qxXqCC9tPc4MXrPuipukj2QsFk68V37sCwZSf2hn+0J1
-         aKCbqF+sjF004LTaqivSO4eR3lo+h9VcydpASTFhp0b+bOVi84Wsx33m1aSAIudIK1xx
-         2rBMCcA0SsSfBjmlNB2BC67QUKQpheGAtnghLDKEJdOOrsg/Qq9BeURftGLO1HzvYeTT
-         eBJw==
+        bh=qXuvrGXYUxXy9/lulPSWcn0bolQxzyqDcFS2NkcYzFQ=;
+        b=PsqWuA3MgKXFdeJpydSSaUX4iRJscYde4FYY9FC1Vp6SUApy3VS9jFIq44dWJDWy+G
+         /qRAlYLPWN4IH0azuguGEt4XAk1Wm0m0ahPqsMgU5JAJ9iyIsQqMIAt8EUaZtj4d1uR+
+         ltgPVmU9qCMuYOPPSRxOcoGExwXAPOs0l8Uw69bmGsXN9q1TDpIr7K8YG5QGOk0RINrl
+         1DUnnuQt3zG5Cezr6xyHeqB4buf9bNPtLav292wBKOv27WB3wsdYrANPZT242GVfrqmZ
+         Kk/ZBuyNfLr+/ZsGx1KoxlhjlY2SAEIVCeOWmctiBGGfKP+2KI2+n1iWEUZo8wdL7gD2
+         A63w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LuyBMZGhtBgcRJwd1A74SaR7qMVubxg4OKYSD7bf0Rg=;
-        b=KtXZ7HmTLiYVZUD0McsCFT2s3kCFrIbUd/7ZnT0AheSkjW7ddTgKLTc107DBbW/jQt
-         J+Qde9LatWGv6vvVF3M/WydRe51ZMG95VRNNpC3jWoO+O8fTObeukGb0qHfhwyQtA/au
-         niGslI6v4DNe7OEY0iXOPCH31dH8p3L9zj34EkIlLP1Bcij1hhrWjoUNBFlrNafW6wxG
-         H4TWJxxmeLW7J/x5hblZDPWV6X1DZK0mh/bv8JK8kF1iGDeKLaJLjyf4fSXPdOH7RO5e
-         qRx69jaZh0rqQPJ5KWguafiNqf/qj6Om57NzzMb55VHOYxRmAtewAr2pZM82BjUPCH51
-         nMeA==
-X-Gm-Message-State: AOAM533TQWaKN2yV0pYEcpsMxUm/Za4N7wFgwb2x+zwwuytc4ZzUH1pa
-        D0sQMaT7+jPqoAX65CshfxRNYGVEWrL6JD/U4tRJEg==
-X-Google-Smtp-Source: ABdhPJzVIVyqLzXURZxn0TF1D1Ma0QIbM2IQTwNlaEsIhbBauCsjME4JZOq/bDRZJCt6zyyzOdYNbQVJX7NZ4PfyH7M=
-X-Received: by 2002:ab0:484b:: with SMTP id c11mr27684290uad.100.1624979377958;
- Tue, 29 Jun 2021 08:09:37 -0700 (PDT)
+        bh=qXuvrGXYUxXy9/lulPSWcn0bolQxzyqDcFS2NkcYzFQ=;
+        b=ZfzGCkog73NTLaNPxu1LyUuPvT+3nQ9C5l/d+f/fSo+qEwydGjEw9xen83nU5dkI0z
+         oF0vqTpoPWWxcRAXjVSvcv+/5z+k1pCVin8Z8dCAMHZnZ8H/5gpyRMx+jfiaZdrU5B7t
+         PLMB/GqzC8cyJ3dDRX/YRTt1iYM4KkKYruVTCVp451Moh1yQZmlaceXLbGZtw6su8lTg
+         t5NbYqglYmkD2jyaPV8XDw5N8aRT7FPS7ETLsQn+o6NxW3kcHHSGBwwd4UM/LR+fVCEO
+         VZIw/fkO6D/FWVTZmbHxgI5/loTKaLOGrMKyVwD3pY9wc9P4Z7UmTZPoMHF0cfiVnEDS
+         ANRQ==
+X-Gm-Message-State: AOAM533sVllQqfDpHHNWRhXOc7FuI99HoXE3mn+Kdz161gG1I8dQoN20
+        kNSfkg92hIT6K7fw85oiowltGt/zNeMnC0Ps+a+j7A==
+X-Google-Smtp-Source: ABdhPJw48x0xfIskx4l4Q7ieI3D1o6BYbLmZddG/rGW9xdUFWc1H4M7geSWAqhbbUc6zsmZx3Mwo/GcI2qN+jiraJWY=
+X-Received: by 2002:a67:8783:: with SMTP id j125mr1851017vsd.42.1624979381926;
+ Tue, 29 Jun 2021 08:09:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <1623726033-16073-1-git-send-email-wenbin.mei@mediatek.com> <1623726033-16073-2-git-send-email-wenbin.mei@mediatek.com>
-In-Reply-To: <1623726033-16073-2-git-send-email-wenbin.mei@mediatek.com>
+References: <1623753837-21035-1-git-send-email-manish.narani@xilinx.com>
+In-Reply-To: <1623753837-21035-1-git-send-email-manish.narani@xilinx.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 29 Jun 2021 17:09:01 +0200
-Message-ID: <CAPDyKFrqeYbxDyrcicS=DQLntF8PfNm9E4tZf7KgvzRJmciLog@mail.gmail.com>
-Subject: Re: [PATCH v1] dt-bindings: mmc: change compatiable string for MT8195
- mmc host IP
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
+Date:   Tue, 29 Jun 2021 17:09:04 +0200
+Message-ID: <CAPDyKFqd13OZ75G98a2KjAc_KJpGu3b1Bw+Y0OiuUhB6gVBSGg@mail.gmail.com>
+Subject: Re: [PATCH 0/7] sdhci-of-arasan driver updates for ZynqMP platform
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 05:01, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+On Tue, 15 Jun 2021 at 12:44, Manish Narani <manish.narani@xilinx.com> wrote:
 >
-> MT8195 mmc host IP is compatible with MT8183, and currently it shows:
-> properties:
->   compatible:
->     oneOf:
-> ...
->       - items:
->          - const: mediatek,mt8192-mmc
->          - const: mediatek,mt8195-mmc
->          - const: mediatek,mt8183-mmc
-> which means the compatible string in the device tree would be:
->         compatible = "mediatek,mt8192-mmc", "mediatek,mt8195-mmc",
->                      "mediatek,mt8183-mmc";
-> The bindings is wrong and that isn't the result we want.
-> instead we want:
-> properties:
->   compatible:
->     oneOf:
-> ...
->       - items:
->          - const: mediatek,mt8192-mmc
->          - const: mediatek,mt8183-mmc
->       - items:
->          - const: mediatek,mt8195-mmc
->          - const: mediatek,mt8183-mmc
-> which would give us:
->         compatible = "mediatek,mt8192-mmc", "mediatek,mt8183-mmc";
-> and
->         compatible = "mediatek,mt8195-mmc", "mediatek,mt8183-mmc";
+> This patch series has some bug fixes for sdhci-of-arasan driver with
+> respect to ZynqMP platform. This series also has some code style changes
+> in the driver.
 >
-> Fixes: eb9cb7227e5c (dt-bindings: mmc: Add compatible for Mediatek MT8195)
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Manish Narani (6):
+>   mmc: sdhci-of-arasan: Modified SD default speed to 19MHz for ZynqMP
+>   mmc: sdhci-of-arasan: Add "SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12" quirk.
+>   mmc: sdhci-of-arasan: Skip Auto tuning for DDR50 mode in ZynqMP
+>     platform
+>   mmc: host: sdhci-of-arasan: Check return value of non-void funtions
+>   mmc: host: sdhci-of-arasan: Use appropriate type of division macro
+>   mmc: host: sdhci-of-arasan: Modify data type of the clk_phase array
+>
+> Sai Krishna Potthuri (1):
+>   mmc: arasan: Fix the issue in reading tap values from DT
+>
+>  drivers/mmc/host/sdhci-of-arasan.c | 51 ++++++++++++++++++++++++++++++++------
+>  1 file changed, 44 insertions(+), 7 deletions(-)
+>
+> --
+> 2.1.1
+>
 
-Applied for fixes, thanks!
+Queued up for v5.15 (temporary on the devel branch) and by amending
+the prefixes, thanks!
 
 Kind regards
 Uffe
-
-
-> ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> index 8648d48..adaba90 100644
-> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> @@ -31,6 +31,8 @@ properties:
->            - const: mediatek,mt2701-mmc
->        - items:
->            - const: mediatek,mt8192-mmc
-> +          - const: mediatek,mt8183-mmc
-> +      - items:
->            - const: mediatek,mt8195-mmc
->            - const: mediatek,mt8183-mmc
->
-> --
-> 1.9.1
->
