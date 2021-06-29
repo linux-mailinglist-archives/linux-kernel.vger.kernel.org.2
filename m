@@ -2,170 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0403B3B7998
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D593B79CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 23:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbhF2U7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235651AbhF2U7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:59:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18FE161CF6;
-        Tue, 29 Jun 2021 20:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625000201;
-        bh=yBfh3Dr6ayoNKO8uOCbZQ8sDl3yzNQCa0IUNmAuTwj0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Spnc9wxG8XbesBC/Gt6Idn3ylKzwYeAJGaqYHjdMuFFb23hoTNiDAJHAbB3+p2C1k
-         W4KctGavE0/yrSTvoFE0tcMbD/gUzxgGDDbr9tTStNebxraHw7NQgCPe3czGkm/xlR
-         hu1POPRiO2nWBqeZ6LMrlqujhbaKRUskgxg71u6rERODkoNb7uUudD/wTNurZ6oA6a
-         t6W/utt+V697FIRJ+2PAgLCAJcGabBjmg0Raz4CYX1sH6mSAl+v0znhsnx1lT17D7s
-         VWWpdiz4/OGLROrstEcV5mlK1AKLDHyZCdDHoz54zrw79NeuKh9QNza68WRN2QZt83
-         p+CIODzcqPALA==
-Date:   Tue, 29 Jun 2021 23:56:39 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, zohar@linux.ibm.com, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v7 2/2] certs: Add support for using elliptic curve keys
- for signing modules
-Message-ID: <20210629205639.dghpegknwgdqamxp@kernel.org>
-References: <20210628214304.4165769-1-stefanb@linux.vnet.ibm.com>
- <20210628214304.4165769-3-stefanb@linux.vnet.ibm.com>
+        id S235944AbhF2VS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 17:18:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53362 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235926AbhF2VS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 17:18:27 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TKj6Fv105225;
+        Tue, 29 Jun 2021 17:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : references
+ : subject : from : to : cc : date : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=q1r/tdpeJ8+Oi1UCLHn475mZIn7824r2oaC4tHRUtFQ=;
+ b=Gxf3QV4NNzjqXgcqC60rWh4PvqcrETVlThHUnDl9XesDSh2vNN65VL5vE9Sd+xrkOU/k
+ 9cT5pFREtMGw4hxSdpsAQCfp8Pa5vrfwLt/hU0dTg5D4UNh6+BgYNKfmPx/BuIaKEPOl
+ cO/CeIYIUCfRvyYTLCZyCBJtr1MFfGrDKk7UzAyFnskrc8d1ARxxgaCu8Dc/6Tm1cjeO
+ dsMjTWwhKy9u5v526kIEcBKI0sKD0yfgQKe/nY9Z7kOcZmHZLXQ3BFaVssuyXTDBrgl3
+ zkfQuxIHKyHc7/e+5ttkq4P4sx0GoGwui5RLkQsDWKa0BGTOFXKxfOc1hWArnUdr5uer ZQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39gatu8qeb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 17:15:58 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TL7wW8018983;
+        Tue, 29 Jun 2021 21:15:57 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 39duv8hf7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 21:15:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TLFsVJ34275670
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 21:15:54 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AB4DA4040;
+        Tue, 29 Jun 2021 21:15:54 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52EF0A404D;
+        Tue, 29 Jun 2021 21:15:54 +0000 (GMT)
+Received: from PGAAMSML35001.SL.BLUECLOUD.IBM.COM (unknown [9.209.254.249])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 29 Jun 2021 21:15:54 +0000 (GMT)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+In-Reply-To: <20210624174814.2822896-1-ira.weiny@intel.com>
+References: <20210624174814.2822896-1-ira.weiny@intel.com>,
+        <20210623221543.2799198-1-ira.weiny@intel.com>
+Subject: Re: [PATCH V4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+From:   Bernard Metzler <BMT@zurich.ibm.com>
+To:     "ira.weiny" <ira.weiny@intel.com>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Mike Marciniszyn" <mike.marciniszyn@cornelisnetworks.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "Faisal Latif" <faisal.latif@intel.com>,
+        "Shiraz Saleem" <shiraz.saleem@intel.com>,
+        "Kamal Heib" <kheib@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 29 Jun 2021 14:11:04 +0000
+Message-ID: <OF8390CEF8.B4919E81-ON00258703.004DEB09-00258703.004DEB36@ch.ibm.com>
+X-Mailer: Lotus Domino Web Server Release 11.0.1FP2HF95   June 28, 2021
+X-MIMETrack: Serialize by http on MWW0302/03/M/IBM at 06/29/2021 14:11:04,
+        Serialize complete at 06/29/2021 14:11:04,
+        Serialize by Router on D06ML350/06/M/IBM(Release 11.0.1FP2|October 20, 2020) at
+ 29/06/2021 23:24:45
+X-KeepSent: 8390CEF8:B4919E81-00258703:004DEB09;
+ type=4; name=$KeepSent
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: eDQLHnyzdBHwMrZVVPojWLO4Qz-pjauS
+X-Proofpoint-GUID: eDQLHnyzdBHwMrZVVPojWLO4Qz-pjauS
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628214304.4165769-3-stefanb@linux.vnet.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_14:2021-06-29,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ clxscore=1015 malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 05:43:04PM -0400, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Add support for using elliptic curve keys for signing modules. It uses
-> a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
-> and will have ECDSA support built into the kernel.
-> 
-> Note: A developer choosing an ECDSA key for signing modules should still
-> delete the signing key (rm certs/signing_key.*) when building an older
-> version of a kernel that only supports RSA keys. Unless kbuild automati-
-> cally detects and generates a new kernel module key, ECDSA-signed kernel
-> modules will fail signature verification.
-> 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
+-----ira.weiny@intel.com wrote: -----
 
-When you change the patches, you should remove all reviewed-by etc.
-tags. Also, move Cc-tags before your sob.
+>To: "Jason Gunthorpe" <jgg@ziepe.ca>
+>From: ira.weiny@intel.com
+>Date: 06/24/2021 07:48PM
+>Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
+><mike.marciniszyn@cornelisnetworks.com>, "Dennis Dalessandro"
+><dennis.dalessandro@cornelisnetworks.com>, "Doug Ledford"
+><dledford@redhat.com>, "Faisal Latif" <faisal.latif@intel.com>,
+>"Shiraz Saleem" <shiraz.saleem@intel.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, "Kamal Heib" <kheib@redhat.com>,
+>linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH V4] RDMA/siw: Convert siw_tx_hdt() to
+>kmap_local_page()
+>
+>From: Ira Weiny <ira.weiny@intel.com>
+>
+>kmap() is being deprecated and will break uses of device dax after
+>PKS
+>protection is introduced.[1]
+>
+>The use of kmap() in siw_tx_hdt() is all thread local therefore
+>kmap_local_page() is a sufficient replacement and will work with
+>pgmap
+>protected pages when those are implemented.
+>
+>siw_tx_hdt() tracks pages used in a page_array.  It uses that array
+>to
+>unmap pages which were mapped on function exit.  Not all entries in
+>the
+>array are mapped and this is tracked in kmap_mask.
+>
+>kunmap_local() takes a mapped address rather than a page.  Alter
+>siw_unmap_pages() to take the iov array to reuse the iov_base address
+>of
+>each mapping.  Use PAGE_MASK to get the proper address for
+>kunmap_local().
+>
+>kmap_local_page() mappings are tracked in a stack and must be
+>unmapped
+>in the opposite order they were mapped in.  Because segments are
+>mapped
+>into the page array in increasing index order, modify
+>siw_unmap_pages()
+>to unmap pages in decreasing order.
+>
+>Use kmap_local_page() instead of kmap() to map pages in the
+>page_array.
+>
+>[1]
+>INVALID URI REMOVED
+>lkml_20201009195033.3208459-2D59-2Dira.weiny-40intel.com_&d=3DDwIDAg&c=3D
+>jf_iaSHvJObTbx-siA1ZOg&r=3D2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&
+>m=3D01QnZvj05j7vvgDChewVpHJlDytiIFuttai7VRUdJMs&s=3DzS4nDlvF_3MDi9wu7GaL6
+>qooDhiboqP5ii5ozBeDpLE&e=3D=20
+>
+>Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+>
+>---
+>Changes for V4:
+>	From Bernard
+>		Further optimize siw_unmap_pages() by eliminating the
+>		CRC page from the iov array.
+>
+>Changes for V3:
+>	From Bernard
+>		Use 'p' in kmap_local_page()
+>		Use seg as length to siw_unmap_pages()
+>
+>Changes for V2:
+>	From Bernard
+>		Reuse iov[].iov_base rather than declaring another array
+>		of pointers and preserve the use of kmap_mask to know
+>		which iov's were kmapped.
+>---
+> drivers/infiniband/sw/siw/siw_qp_tx.c | 30
+>+++++++++++++++++----------
+> 1 file changed, 19 insertions(+), 11 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>index db68a10d12cd..1f4e60257700 100644
+>--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s,
+>struct page **page,
+>=20
+> #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+>=20
+>-static void siw_unmap_pages(struct page **pp, unsigned long
+>kmap_mask)
+>+static void siw_unmap_pages(struct kvec *iov, unsigned long
+>kmap_mask, int len)
+> {
+>-	while (kmap_mask) {
+>-		if (kmap_mask & BIT(0))
+>-			kunmap(*pp);
+>-		pp++;
+>-		kmap_mask >>=3D 1;
+>+	int i;
+>+
+>+	/*
+>+	 * Work backwards through the array to honor the kmap_local_page()
+>+	 * ordering requirements.
+>+	 */
+>+	for (i =3D (len-1); i >=3D 0; i--) {
+>+		if (kmap_mask & BIT(i)) {
+>+			unsigned long addr =3D (unsigned long)iov[i].iov_base;
+>+
+>+			kunmap_local((void *)(addr & PAGE_MASK));
+>+		}
+> 	}
+> }
+>=20
+>@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+> 					p =3D siw_get_upage(mem->umem,
+> 							  sge->laddr + sge_off);
+> 				if (unlikely(!p)) {
+>-					siw_unmap_pages(page_array, kmap_mask);
+>+					siw_unmap_pages(iov, kmap_mask, seg);
+> 					wqe->processed -=3D c_tx->bytes_unsent;
+> 					rv =3D -EFAULT;
+> 					goto done_crc;
+>@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx
+>*c_tx, struct socket *s)
+> 				page_array[seg] =3D p;
+>=20
+> 				if (!c_tx->use_sendpage) {
+>-					iov[seg].iov_base =3D kmap(p) + fp_off;
+>-					iov[seg].iov_len =3D plen;
+>+					void *kaddr =3D kmap_local_page(p);
+>=20
+> 					/* Remember for later kunmap() */
+> 					kmap_mask |=3D BIT(seg);
+>+					iov[seg].iov_base =3D kaddr + fp_off;
+>+					iov[seg].iov_len =3D plen;
+>=20
+> 					if (do_crc)
+> 						crypto_shash_update(
+>@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+>=20
+> 			if (++seg > (int)MAX_ARRAY) {
+> 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+>-				siw_unmap_pages(page_array, kmap_mask);
+>+				siw_unmap_pages(iov, kmap_mask, seg-1);
+> 				wqe->processed -=3D c_tx->bytes_unsent;
+> 				rv =3D -EMSGSIZE;
+> 				goto done_crc;
+>@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+> 	} else {
+> 		rv =3D kernel_sendmsg(s, &msg, iov, seg + 1,
+> 				    hdr_len + data_len + trl_len);
+>-		siw_unmap_pages(page_array, kmap_mask);
+>+		siw_unmap_pages(iov, kmap_mask, seg);
+> 	}
+> 	if (rv < (int)hdr_len) {
+> 		/* Not even complete hdr pushed or negative rv */
+>--=20
+>2.28.0.rc0.12.gb6a658bd00c9
+>
+>
+Sry my misconfigured email attached some HTML crap. So I did not
+reach the list.
 
-/Jarkko
+Tested V4 which works as intended. Thanks, Ira!
 
->  certs/Kconfig                         | 26 ++++++++++++++++++++++++++
->  certs/Makefile                        | 13 +++++++++++++
->  crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
->  3 files changed, 47 insertions(+)
-> 
-> diff --git a/certs/Kconfig b/certs/Kconfig
-> index f4e61116f94e..916cbb1af928 100644
-> --- a/certs/Kconfig
-> +++ b/certs/Kconfig
-> @@ -15,6 +15,32 @@ config MODULE_SIG_KEY
->           then the kernel will automatically generate the private key and
->           certificate as described in Documentation/admin-guide/module-signing.rst
->  
-> +choice
-> +	prompt "Type of module signing key to be generated"
-> +	default MODULE_SIG_KEY_TYPE_RSA
-> +	help
-> +	 The type of module signing key type to generate. This option
-> +	 does not apply if a #PKCS11 URI is used.
-> +
-> +config MODULE_SIG_KEY_TYPE_RSA
-> +	bool "RSA"
-> +	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
-> +	help
-> +	 Use an RSA key for module signing.
-> +
-> +config MODULE_SIG_KEY_TYPE_ECDSA
-> +	bool "ECDSA"
-> +	select CRYPTO_ECDSA
-> +	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
-> +	help
-> +	 Use an elliptic curve key (NIST P384) for module signing. Consider
-> +	 using a strong hash like sha256 or sha384 for hashing modules.
-> +
-> +	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
-> +	 when falling back to building Linux 5.11 and older kernels.
-> +
-> +endchoice
-> +
->  config SYSTEM_TRUSTED_KEYRING
->  	bool "Provide system-wide ring of trusted keys"
->  	depends on KEYS
-> diff --git a/certs/Makefile b/certs/Makefile
-> index f9344e52ecda..279433783b10 100644
-> --- a/certs/Makefile
-> +++ b/certs/Makefile
-> @@ -66,9 +66,21 @@ ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
->  
->  ifeq ($(openssl_available),yes)
->  X509TEXT=$(shell openssl x509 -in "certs/signing_key.pem" -text 2>/dev/null)
-> +endif
->  
-> +# Support user changing key type
-> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-> +keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-> +ifeq ($(openssl_available),yes)
-> +$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
-> +endif
-> +endif # CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-> +
-> +ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
-> +ifeq ($(openssl_available),yes)
->  $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
->  endif
-> +endif # CONFIG_MODULE_SIG_KEY_TYPE_RSA
->  
->  $(obj)/signing_key.pem: $(obj)/x509.genkey
->  	@$(kecho) "###"
-> @@ -83,6 +95,7 @@ $(obj)/signing_key.pem: $(obj)/x509.genkey
->  		-batch -x509 -config $(obj)/x509.genkey \
->  		-outform PEM -out $(obj)/signing_key.pem \
->  		-keyout $(obj)/signing_key.pem \
-> +		$(keytype_openssl) \
->  		$($(quiet)redirect_openssl)
->  	@$(kecho) "###"
->  	@$(kecho) "### Key pair generated."
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..6592279d839a 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -269,6 +269,14 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->  		ctx->sinfo->sig->pkey_algo = "rsa";
->  		ctx->sinfo->sig->encoding = "pkcs1";
->  		break;
-> +	case OID_id_ecdsa_with_sha1:
-> +	case OID_id_ecdsa_with_sha224:
-> +	case OID_id_ecdsa_with_sha256:
-> +	case OID_id_ecdsa_with_sha384:
-> +	case OID_id_ecdsa_with_sha512:
-> +		ctx->sinfo->sig->pkey_algo = "ecdsa";
-> +		ctx->sinfo->sig->encoding = "x962";
-> +		break;
->  	default:
->  		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->  		return -ENOPKG;
-> -- 
-> 2.31.1
-> 
-> 
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
