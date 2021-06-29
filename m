@@ -2,96 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CD23B744D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2DF3B7460
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhF2OaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:30:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6023 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233941AbhF2O3x (ORCPT
+        id S234440AbhF2OfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:35:22 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:34777 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234285AbhF2OfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:29:53 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GDmrY1gLvzXmVb;
-        Tue, 29 Jun 2021 22:22:05 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
- (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 29
- Jun 2021 22:27:23 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jack@suse.cz>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH 2/2] ext4: Fix potential uas-after-free about sbi->s_mmp_tsk when kmmpd kthread exit before set sbi->s_mmp_tsk
-Date:   Tue, 29 Jun 2021 22:36:03 +0800
-Message-ID: <20210629143603.2166962-3-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210629143603.2166962-1-yebin10@huawei.com>
-References: <20210629143603.2166962-1-yebin10@huawei.com>
+        Tue, 29 Jun 2021 10:35:19 -0400
+Received: (qmail 699680 invoked by uid 1000); 29 Jun 2021 10:32:51 -0400
+Date:   Tue, 29 Jun 2021 10:32:51 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Linyu Yuan <linyyuan@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>
+Subject: Re: [PATCH v2] usb: dwc3: avoid NULL access of usb_gadget_driver
+Message-ID: <20210629143251.GA699290@rowland.harvard.edu>
+References: <20210629015118.7944-1-linyyuan@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629015118.7944-1-linyyuan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now sbi->s_mmp_tsk is created with kthread_run, then kmmpd maybe
-already running and even exit as exception. Even though we set
-sbi->s_mmp_tsk with NULL before kmmpd kthread exit, but
-"sbi->s_mmp_tsk=kthread_run(XX)" may set after set with NULL.
-   mount                     kmmpd
-     |                         |
-     |-call kthread_run        |
-     |                         |-kmmpd runing
-     |                         |-kmmpd exit sbi->s_mmp_tsk=NULL
-     |                         |
-     |-kthread_run return      |
-     | and set sbi->s_mmp_tsk  |
-     |                         |
-     |-then we get wild ptr"sbi->s_mmp_tsk" and later trigger UAF
+On Tue, Jun 29, 2021 at 09:51:18AM +0800, Linyu Yuan wrote:
+> we found crash in dwc3_disconnect_gadget(),
+> it is because dwc->gadget_driver become NULL before async access.
+> 7dc0c55e9f30 ('USB: UDC core: Add udc_async_callbacks gadget op')
+> suggest a common way to avoid such kind of issue.
+> 
+> this change implment the callback in dwc3 and
+> change related functions which have callback to usb gadget driver.
+> 
+> Signed-off-by: Linyu Yuan <linyyuan@codeaurora.org>
+> ---
+> 
+> v2: add missing check in dwc3_reset_gadget(), found by Alan Stern.
 
-This patch is base on previous "ext4: Fix use-after-free about sbi->s_mmp_tsk".
-Previous patch ensure kmmpd kthread exit by itself will set sbi->s_mmp_tsk with
-NULL. We can create kthread first, and then wakeup kmmpd kthread later.
+This is better.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/ext4/mmp.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index fc18a8c205c7..6ec1ea182cc0 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -394,16 +394,18 @@ int ext4_multi_mount_protect(struct super_block *sb,
- 	/*
- 	 * Start a kernel thread to update the MMP block periodically.
- 	 */
--	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, sb, "kmmpd-%.*s",
--					     (int)sizeof(mmp->mmp_bdevname),
--					     bdevname(bh->b_bdev,
--						      mmp->mmp_bdevname));
-+	EXT4_SB(sb)->s_mmp_tsk = kthread_create(kmmpd, sb, "kmmpd-%.*s",
-+						(int)sizeof(mmp->mmp_bdevname),
-+						bdevname(bh->b_bdev,
-+							 mmp->mmp_bdevname));
-+
- 	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
- 		EXT4_SB(sb)->s_mmp_tsk = NULL;
- 		ext4_warning(sb, "Unable to create kmmpd thread for %s.",
- 			     sb->s_id);
- 		goto failed;
- 	}
-+	wake_up_process(EXT4_SB(sb)->s_mmp_tsk);
- 
- 	return 0;
- 
--- 
-2.31.1
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
