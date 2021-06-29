@@ -2,172 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50493B6E46
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152853B6E4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhF2G3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhF2G3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:29:42 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97262C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:27:15 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso1350770pjx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HmWe9Vq21X/jj7YIMqM+Ctm/Lrcx68BGlGSe9RyB0yA=;
-        b=XQzjX7G8XcUa1PnQduhgk9ecZYXbeD6UMiCM2ToFSNyNgUmZJH8eksfL1TIlf62zcX
-         NfMJPjmrKVYJNeg/7Yhuu/BDz8YN8oBglqN0MHY4yOMr2sfYh0+LGbWh+q9VubeffoHF
-         lYoEkYLbXHaE/jmGRH9drn0INiuonzvqrndJABwZpsUuctr5YtadyJ+Fg5/jAFp30mN9
-         dCjuaIXZQohOcf78pIlW8HwJyUF/udVzdWg2sJRSpoo1Gd5bMDYWdSvgnKJw4QjTHX3a
-         tuGosY89PCEgJnoIWwRqdPvtUbpmd9DGmavsL/VSsrkYDZgoA8EgBYXsDtD5gEbThTIJ
-         BS7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HmWe9Vq21X/jj7YIMqM+Ctm/Lrcx68BGlGSe9RyB0yA=;
-        b=nqFbYrz7JnscTqWcVZ5G5m1bNCPAhqn6rnCr8G2foZIO3ORlITROoj83OK8P/WBrvW
-         kaoW11k4hwcrVu2vaNozwgJoueuyl6J8O9cfO1DfPMls+eBR0pm6c5I7nucVWtFYkX6v
-         /Zwf6oUInzf33Tzpioevkoiis2H1egqQh2OLGDcjDzDbgRxmDllpw8edgW9piwdsamLd
-         n6dJ9DIJ5lmfKElBpi6Toq/A1cO+7rMpgGwVjIwnHs2EiFhuF0yMtPDDe6pT8tug9edX
-         AE/J+z4KlUS3y7g6Dvq5RhtXpJXzntFv4ES2F1a+BNa6j2PG3O2REmd3aBHfjq8EpFG6
-         bHgg==
-X-Gm-Message-State: AOAM532L8c8/IaH1LPGVifjVDIgKRvl7clBLPT2xQTDh13xsam/eTDtc
-        +mgaiDocuxqTvoabK6kaVkz0LA==
-X-Google-Smtp-Source: ABdhPJwK0qWXw7nqwnRcNOLb9GEJ378RLcnYx9rnA9zS/ylvAg3eAOvgPB7/5cgFqkZGrrH92hsA7Q==
-X-Received: by 2002:a17:903:1243:b029:ed:8298:7628 with SMTP id u3-20020a1709031243b02900ed82987628mr25923101plh.11.1624948035163;
-        Mon, 28 Jun 2021 23:27:15 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id b126sm16705885pfg.176.2021.06.28.23.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 23:27:14 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        TungChen Shih <tung-chen.shih@mediatek.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] cpufreq: Remove ->resolve_freq()
-Date:   Tue, 29 Jun 2021 11:57:08 +0530
-Message-Id: <759b9ad35a011e36f3b203fb01ac3d505269befa.1624946983.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <b5ac439050ab3c5b92621e20490fe7f46d631ef6.1624946983.git.viresh.kumar@linaro.org>
-References: <b5ac439050ab3c5b92621e20490fe7f46d631ef6.1624946983.git.viresh.kumar@linaro.org>
+        id S232145AbhF2GhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:37:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231881AbhF2GhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:37:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 121CE61D6C;
+        Tue, 29 Jun 2021 06:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624948494;
+        bh=1wm++hlHTVukb+VtFq7EOvTZHLGCKQZBOWjLY6ItRcc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=M20bEs6wMM/pZeO435Hna09xr8H1RtIw+lLR9t5YVrvKtAjKbWd1WZjGP5gq5wuBZ
+         bbhhSJquwXSd03d6n80E7O71mSdDwcG7TCT5QAFBWZSKLRMQDUX44Sj2Rud5nWD4PS
+         8QtPeWmR3hdj8WoPKNWwqUReBatfBfqqr4Wrcyq2J2aVcXv5UmkVXRcAcFgNMchide
+         pAN1Yjpq6+T1p9F6D+uhosqThNcdsUS4SrfR3Aq9RRBMaGGCazeHN4aa1sq0YFyA5M
+         qQBY54W2PEQaPo1l1y9fn53qBJdJOOqTfuSDSt97QsbmhJwjt3Ek6LAp8pURBOeR6W
+         1N7M7buK9aLEA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210625225414.1318338-1-bjorn.andersson@linaro.org>
+References: <20210625225414.1318338-1-bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] clk: qcom: gdsc: Ensure regulator init state matches GDSC state
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmitry.baryshkov@linaro.org
+Date:   Mon, 28 Jun 2021 23:34:52 -0700
+Message-ID: <162494849279.2516444.9302337933628102536@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit e3c062360870 ("cpufreq: add cpufreq_driver_resolve_freq()")
-introduced this callback, back in 2016, for drivers that provide the
-->target() callback.
+Quoting Bjorn Andersson (2021-06-25 15:54:14)
+> As GDSCs are registered and found to be already enabled
+> gdsc_toggle_logic() will be invoked for votable GDSCs and ensure that
+> the vote is matching the hardware state. Part of this the related
+> regulator will be enabled.
+>=20
+> But for non-votable GDSCs the regulator and GDSC status will be out of
+> sync and as the GDSC is later disabled regulator_disable() will face an
+> unbalanced enable-count, or something might turn off the supply under
+> the feet of the GDSC.
+>=20
+> So ensure that the regulator is enabled even for non-votable GDSCs.
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/clk/qcom/gdsc.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index 51ed640e527b..f7e7759cdb90 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -359,10 +359,17 @@ static int gdsc_init(struct gdsc *sc)
+> =20
+>         /*
+>          * Votable GDSCs can be ON due to Vote from other masters.
+> -        * If a Votable GDSC is ON, make sure we have a Vote.
+> +        * If a Votable GDSC is ON, make sure we have a Vote. If
+> +        * non-votable, ensure that the supply is kept enabled (as
+> +        * is done by gdsc_enable).
+>          */
+> -       if ((sc->flags & VOTABLE) && on)
+> +       if ((sc->flags & VOTABLE) && on) {
+>                 gdsc_enable(&sc->pd);
+> +       } else if (on) {
+> +               ret =3D regulator_enable(sc->rsupply);
+> +               if (ret < 0)
+> +                       return ret;
 
-The kernel haven't seen a single user of the same in the past 5 years
-and there is little hope that it will be used anytime soon.
+Looking at this makes me think we've messed something up with
+gdsc_enable() being called or cherry-picking the regulator enable (and
+other stuff in this gdsc_init()) out of the enable path. Maybe we should
+have a followup patch that replaces the gdsc_enable() with
+gdsc_toggle_logic(sc, GDSC_ON) so that we know it isn't doing anything
+else during init like asserting a reset when presumably all we want to
+do is toggle the enable bit to assert our vote.
 
-Lets remove it for now.
+And I notice that we already call gdsc_toggle_logic() in gdsc_init(), so
+then we'll have a double regulator_enable() in the case of PWRSTS_ON?
+And then if the flag is ALWAYS_ON we'll call regulator_enable() yet
+again, but luckily only if it isn't on initially, phew! This code is
+quite twisted.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- Documentation/cpu-freq/cpu-drivers.rst        |  3 ---
- .../zh_CN/cpu-freq/cpu-drivers.rst            |  2 --
- drivers/cpufreq/cpufreq.c                     | 21 +++++++------------
- include/linux/cpufreq.h                       |  9 --------
- 4 files changed, 8 insertions(+), 27 deletions(-)
+It would be super nice to make it more like
 
-diff --git a/Documentation/cpu-freq/cpu-drivers.rst b/Documentation/cpu-freq/cpu-drivers.rst
-index a697278ce190..5ee49820d48a 100644
---- a/Documentation/cpu-freq/cpu-drivers.rst
-+++ b/Documentation/cpu-freq/cpu-drivers.rst
-@@ -58,9 +58,6 @@ And optionally
- 
-  .driver_data - cpufreq driver specific data.
- 
-- .resolve_freq - Returns the most appropriate frequency for a target
-- frequency. Doesn't change the frequency though.
--
-  .get_intermediate and target_intermediate - Used to switch to stable
-  frequency while changing CPU frequency.
- 
-diff --git a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-index 0ca2cb646666..f906a4e5a3ac 100644
---- a/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-+++ b/Documentation/translations/zh_CN/cpu-freq/cpu-drivers.rst
-@@ -64,8 +64,6 @@ 并且可选择
- 
-  .driver_data - cpufreq驱动程序的特定数据。
- 
-- .resolve_freq - 返回最适合目标频率的频率。不过并不能改变频率。
--
-  .get_intermediate 和 target_intermediate - 用于在改变CPU频率时切换到稳定
-  的频率。
- 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index d691c6c97c79..b106191d84b1 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -527,22 +527,17 @@ EXPORT_SYMBOL_GPL(cpufreq_disable_fast_switch);
- static unsigned int __resolve_freq(struct cpufreq_policy *policy,
- 		unsigned int target_freq, unsigned int relation)
- {
--	target_freq = clamp_val(target_freq, policy->min, policy->max);
--	policy->cached_target_freq = target_freq;
-+	unsigned int idx;
- 
--	if (cpufreq_driver->target_index) {
--		unsigned int idx;
--
--		idx = cpufreq_frequency_table_target(policy, target_freq,
--						     relation);
--		policy->cached_resolved_idx = idx;
--		return policy->freq_table[idx].frequency;
--	}
-+	target_freq = clamp_val(target_freq, policy->min, policy->max);
- 
--	if (cpufreq_driver->resolve_freq)
--		return cpufreq_driver->resolve_freq(policy, target_freq);
-+	if (!cpufreq_driver->target_index)
-+		return target_freq;
- 
--	return target_freq;
-+	idx = cpufreq_frequency_table_target(policy, target_freq, relation);
-+	policy->cached_resolved_idx = idx;
-+	policy->cached_target_freq = target_freq;
-+	return policy->freq_table[idx].frequency;
- }
- 
- /**
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 353969c7acd3..18f0ddf7347a 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -330,15 +330,6 @@ struct cpufreq_driver {
- 				       unsigned long target_perf,
- 				       unsigned long capacity);
- 
--	/*
--	 * Caches and returns the lowest driver-supported frequency greater than
--	 * or equal to the target frequency, subject to any driver limitations.
--	 * Does not set the frequency. Only to be implemented for drivers with
--	 * target().
--	 */
--	unsigned int	(*resolve_freq)(struct cpufreq_policy *policy,
--					unsigned int target_freq);
--
- 	/*
- 	 * Only for drivers with target_index() and CPUFREQ_ASYNC_NOTIFICATION
- 	 * unset.
--- 
-2.31.1.272.g89b43f80a514
+	if (on) {
+		/* It was on in hardware, sync kernel state */
+		regulator_enable();
 
+		if (votable)
+			write bit, why do any wait?
+
+		if (retain ff)
+			write bit
+	} else if (always_on) {
+		/* Force on */
+		gdsc_enable();
+		on =3D true;
+	}
+
+	if (on || ...)
+
+> +       }
+> =20
+>         /*
+>          * Make sure the retain bit is set if the GDSC is already on, oth=
+erwise
