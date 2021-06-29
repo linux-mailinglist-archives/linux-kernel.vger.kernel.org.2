@@ -2,149 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8113B7063
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE95E3B7065
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhF2KKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:10:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232420AbhF2KKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FD2261DC6;
-        Tue, 29 Jun 2021 10:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624961253;
-        bh=hBu3TVaxzr1OtOhEnLxnl/WDurfyVHcGEvbTE8Q+8sU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EQ6BA91R2vkfMyzmH75oYpQiRJ6xssmL9TEr7h/QoD44bLDhEGwcpL2hUh/OixVPr
-         LCKQupp86LtLLFrX/gTfY8bLKZFK9HWk6ntodrCUJPRoefq2w4TfrvP/DdBu3cQ7Vk
-         UT8fb4GH2k5p1P8v/8ApyuWcstSsUFfwKLyhUdCb4Dfmg5BnCdkpoVPr8G9aUPRa+m
-         jggs1h0FVCERNDPMnt611/zv/v8JAPI1qZ73z+lP3AncLhQySd4hwu3e1e4hI2T4Io
-         MaqmjhXr3paNd0HOA2RqpO6oWsWZ5A2BOQzxjxA8ZU3P80a1Cth2namVh9GxXRRFrX
-         6umqxi8ikU1IA==
-Date:   Tue, 29 Jun 2021 12:07:30 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNrw4rxihFLuqLtY@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
-        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
-        loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, pbonzini@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+        id S232880AbhF2KKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhF2KKu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:10:50 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B55CC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:08:22 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id i5so30569203eds.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FaIByOHQ52+r83TxLiYLLnRJs52hLl+dcK/lBJRgiDE=;
+        b=z01Lse4ZcXHwNayHq/Wfv48YJPVYu4jXMsvDfcwTyaPBUFNolKWWBP9h7HYsH/pWlD
+         ANNYFkoQAizE3xm1FtFrw4fEYGB0CfTg63xuROrZkp+vbrtPWdzDQDmipYvEE/BiRuex
+         +a6byXnS4wAj7WQlq8nb9+00I4su8jsbitQdr/mj7R3jrzvaj1jL55GpYwG8vRCVE125
+         yHC9T4JF7Hwyqt3/hkCbnfzRnl1HkZd9jIfmH8vOcB8LWGuZ3eQqpyzN9qh0uCyOQD3b
+         2jZ06eGaSBPNkU1ln+e5DEyWqrqSFVQ8VjJdEhkyxvBzqVywewBIWQIc9jSdKpsDJQsZ
+         S2aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FaIByOHQ52+r83TxLiYLLnRJs52hLl+dcK/lBJRgiDE=;
+        b=K7JERNnrKjQLwv1toGoFrF2BI+ei4mp3DavPOjdxScIWQMofYs0wND6gWHuRDeKYtO
+         QgnWlWlsdVztFOR+28L9AR3LoWmBVIpy0LMbuhv6SMqWwOEsrjMd+zVsZqyhYN162TcC
+         j7UUlUpERqSkk4l4SirQMHae1DULtj6arzXJ/J6hEGVXoGCHyU4vJ/kZ5UKttOPgCcGB
+         kfqteMNBm/MqFmC7dvF/grNQg5hucX+Bb4ucvd90uf/uQNufgIf9TuPgo8CmRjMUm0ee
+         FviuDkOGZ1o70V8yBRkZe9DA7SlmmcChkibtAL+kq4wi9SPV5CtRBC1BBErgwF8DC7pj
+         hzKA==
+X-Gm-Message-State: AOAM531IvX0CYYCS4qKHMPY3uLIBhBzEq7vDoWxFhDq+5YuP6ej4/m7i
+        HLsAfw8HQJbyLbCqttQDTLhkLW64J4XJVuHsIEqHyA==
+X-Google-Smtp-Source: ABdhPJygqi3Cj+nj3NxKv5tVBA7U6oLmY9ewNuj3zQLMPRF4p72XUpxArD13Z7XEGUUL6IsXnW+O8Vp5sorfQuFSrnM=
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr38692362edu.221.1624961300775;
+ Tue, 29 Jun 2021 03:08:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="A4hLuA+K1dh/nKMu"
-Content-Disposition: inline
-In-Reply-To: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+References: <20210628143305.32978-1-sashal@kernel.org>
+In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Jun 2021 15:38:09 +0530
+Message-ID: <CA+G9fYs7US2Ho4+4t9QVXRZdz9NH8siycjDGftaaqBa1hpH4jw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/109] 4.19.196-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Jun 2021 at 20:05, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 4.19.196 release.
+> There are 109 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 30 Jun 2021 02:32:48 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-4.19.y&id2=3Dv4.19.195
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
---A4hLuA+K1dh/nKMu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Hi,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-so some minor comments left:
+## Build
+* kernel: 4.19.196-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 7064c50476914a248e42de8f0d3fa614be5f1b8f
+* git describe: v4.19.195-109-g7064c5047691
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.195-109-g7064c5047691
 
-> +		if (!msgs[i].len)
-> +			break;
+## No regressions (compared to v4.19.195-89-gf34b5acd3d54)
 
-I hope this can extended in the future to allow zero-length messages. If
-this is impossible we need to set an adapter quirk instead.
-
-> +		err = virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL);
-> +		if (err < 0) {
-> +			pr_err("failed to add msg[%d] to virtqueue.\n", i);
-
-Is it really helpful for the user to know that msg5 failed? We don't
-even say which transfer.
-
-> +static u32 virtio_i2c_func(struct i2c_adapter *adap)
-> +{
-> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
-
-You are not emulating I2C_FUNC_SMBUS_QUICK, so you need to mask it out.
-
-> +	snprintf(vi->adap.name, sizeof(vi->adap.name), "Virtio I2C Adapter");
-
-Is there something to add so you can distinguish multiple instances?
-Most people want that.
-
-> +	vi->adap.class = I2C_CLASS_DEPRECATED;
-> +	vi->adap.algo = &virtio_algorithm;
-> +	vi->adap.dev.parent = &vdev->dev;
-> +	vi->adap.timeout = HZ / 10;
-
-Why so short? HZ is the kinda default value.
-
-> +	i2c_set_adapdata(&vi->adap, vi);
-> +
-> +	/* Setup ACPI node for controlled devices which will be probed through ACPI */
-> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
-> +
-> +	ret = i2c_add_adapter(&vi->adap);
-> +	if (ret) {
-> +		virtio_i2c_del_vqs(vdev);
-> +		dev_err(&vdev->dev, "failed to add virtio-i2c adapter.\n");
-
-Won't the driver core print that for us?
-
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-
-> +/* The bit 0 of the @virtio_i2c_out_hdr.@flags, used to group the requests */
-> +#define VIRTIO_I2C_FLAGS_FAIL_NEXT	0x00000001
-
-BIT(0)?
-
-Happy hacking,
-
-   Wolfram
+## No fixes (compared to v4.19.195-89-gf34b5acd3d54)
 
 
---A4hLuA+K1dh/nKMu
-Content-Type: application/pgp-signature; name="signature.asc"
+## Test result summary
+ total: 71432, pass: 55166, fail: 2504, skip: 12400, xfail: 1362,
 
------BEGIN PGP SIGNATURE-----
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 25 total, 25 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 15 passed, 0 failed
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa8N0ACgkQFA3kzBSg
-KbbPvhAAk6mml6Q2KA+40wjOlgNPqkMUfubuHQg71AwGqTWjPvqGe2UEUrcCptxl
-6AASCDXIOrbWpeYVxhCVBgMCM7T1mqqO9Q3jzc8bwiJFw4m3m6uMPyjdrYe9STX0
-p2ksFX3jD9lBddRBwL7oM0bZSayceBuDnxQ8xvJPTI3PyVsnPVirqTv5rIAiDmuV
-X2H+k5uAuDThsUM8fTioKZoYeAmO+3RccULlbjey1ML1+vBNT7LmWOhprJLL3S4W
-JpGaqPKS2kCGEt2LFls3GYeG6QcXyj4l9qwoJxgWrVVY71Ky+7cbwc+nVb28EpAc
-d1Mo0ObhN1NuLzRTrpCrCO0k+Pi5SGhDZTwv5LQOmEY0KFaowaKCw9gevi3j0p/t
-Tf0FetbAIk7N8k4GOzk8HhXVEOV20y3zLUp4OLytn9ueQcrCOqkvnUPWpRxxsHid
-/1ZRcC1l87rPtQqTX1tGFSGJvHvj3uOHwLo6Wjp/2pxYmjvEgUdajdQGSfBNEtXP
-JwuUpybOFBqZ5tDv91zGKnQeYZ+MD6/i5hQFeig/TSugL10hGiDtsUmpG0ennXND
-okhQjIpN35kWXWzEGAGWYzHL6SAT0fXoXvk4wYQTQYbvvW/wi7S5a1ob9HEzJV5X
-r7sfPKN86zwtRjMZ24A9nXNQ6iebZhEK3/QFRC2rdjFv76Kj+XI=
-=Fg/m
------END PGP SIGNATURE-----
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
---A4hLuA+K1dh/nKMu--
+--
+Linaro LKFT
+https://lkft.linaro.org
