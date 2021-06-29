@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30273B7622
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F25E3B763C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhF2QGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S232413AbhF2QKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbhF2QE5 (ORCPT
+        with ESMTP id S234303AbhF2QGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:04:57 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EF2C061766;
-        Tue, 29 Jun 2021 09:01:25 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id b2so5908281ejg.8;
-        Tue, 29 Jun 2021 09:01:25 -0700 (PDT)
+        Tue, 29 Jun 2021 12:06:17 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C389EC061787
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:03:48 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id o6so12204963oic.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CIUGtD1bEi8eoUbDB+wA/CgJYYMPlq0BzUAT42Y9V0k=;
-        b=KY1ebxS45Not5cYkWjeUO9g0K+pOkWHpuYWwvigvSekrUgQf8B9aMyjZyvOvSIPohe
-         MRDIhzcLMFUwkry7MIo+mXyWpmBOqz8524RarDKeljUscfem6vSbkYrkQn8eLVaVHTEe
-         l+hyuHhMg7NikvRQBAIMmiFrVlrkFOcg57pksunjR65ClaCLLE2Ywk7dx1ATmCmTHbtw
-         Dzf7yJ5mblmvsPF7e8O1tPk/wf0vpx2ItEzuLiNngc0IszwpxIAEjQVit7tT8sehjuXW
-         J9Wyw+/YruoHjUJ4+/CdA7BZQE/A5nCizXlwLNMjIN1OjkX5vy1Q1cVrkYKtI50kM85e
-         TM1w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=22YCX1gTuHxij8jBkd6zakC86sS35hKmpf8kUxvjUtA=;
+        b=uNeO5HQ/ALYrv8nofxfYkzdeDAGS1Xx9YbfqiTXo82HWDllL+J+AvuQpCzIVUM8K+a
+         SKl340JpBbSYnEzjVYXgxousi3t27+S5sloXkIBnbywCuwwUDmadKGIVmFozaPq1S2zo
+         /CQnqX/w48kCBJ4oUo15C37Nx1sSYhDwWr1YcAf0lKMLGuOwwsleJ0t15S65WSS570QZ
+         AtgV6/DxttbW5g7DSxr/F8Mbu7uylHJ9wV0w5LtaeAHRU32gQRnHzz3uB52Ux6cXBsnq
+         RJrfqVVqO5cRx1P2B0dT28h6QzLckbINiLl1dsuoPFfYrYS+Fm8vGnvJ3exh8T6U2qc5
+         ZUaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CIUGtD1bEi8eoUbDB+wA/CgJYYMPlq0BzUAT42Y9V0k=;
-        b=IRzCS66JFsTGzljjf9KMry2cYoyF5rNYtLd0Hbm+CWlkmV/3jpPeTqvP/VEXfydy3w
-         mSKXBza4cuoFMQCtwUckMM/QkQCWrGeKaknxWBP8kDXOqAQu0cJUT4wgBq8889lH5eaZ
-         pwXu2qNiKv6ldsX+Nm53fbhExMc/zreSUg2nu8SpiGsTWTb2XysVSlEd4+QCJAwXRuD7
-         p70sypcGUdYVfufmejjJtSUjTg4hu51Y1LV3kWusyVe22lFng18yXSX1IzRgxg2C0ztj
-         IjzIjWpQ1SCXrkS3iYKmWWQDX6aHxo+Q8GKw6MEQ3JKrt0KAP6aP+IdMpY8xurF1PvEs
-         kYCw==
-X-Gm-Message-State: AOAM531PtoLW7hAUK4oJ6/rMLG5imN/rAHP4cQ3O9okBR1aMZ6ISASjZ
-        yDdSWnQSKNkOE/A1ukbtbJpSAbutkxgvagFdyOw=
-X-Google-Smtp-Source: ABdhPJwL0a8Z0qyHuDQ5nOn433fUQTT/9Adpa/RgGpa+Uk5hfcT9+hMbCvwns9mpypZMUeAd/h3HXLvSZLd9XFGOANo=
-X-Received: by 2002:a17:907:2d86:: with SMTP id gt6mr611612ejc.428.1624982484212;
- Tue, 29 Jun 2021 09:01:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=22YCX1gTuHxij8jBkd6zakC86sS35hKmpf8kUxvjUtA=;
+        b=nqI9odEVueOc93PmzO7Tp2a0mXYYgV+M+yG4Ge+kqau4fOgZb4C2ZRTmicawhb64uw
+         yyKql1NHKAuXrPBpQ7biKJeXQmQPPX/6JeKMjv/1d6hY5KgTfc9vvElzjGlAttBqkN7m
+         6p62o3ielJmEhupDasNMOGnwm9jihA2+L0s+Cnu35oKmFXmxjDidAXUaZrSblNGf6HPZ
+         NuusSOZOgfPWU8JTJ3S8BYOvLohWaynzHEjE+S9t0RjKYJL5rFUaOTqtPE2zXu/gQf05
+         Gqek3UEjCT+oDYoDAtnXL+AsUMWsIxP4d0mqkIi/s2npRRaZosdK1sop0uBQzXMVg4k0
+         XrrA==
+X-Gm-Message-State: AOAM533AjcErIB0MDQwEoqpJ9f9o+NCfxgTWIjv00A6vxEIO9/zvlCAj
+        RdfzDU8PtPNZFlyb7CI+S4c0cg==
+X-Google-Smtp-Source: ABdhPJx4ReJpcx5aMpggn8YB+452U+YvCzJu2XF3zGPSA+kp4p1LMkT+7egjWO81/LUgvGGbBcRaNQ==
+X-Received: by 2002:aca:3285:: with SMTP id y127mr22031113oiy.115.1624982628172;
+        Tue, 29 Jun 2021 09:03:48 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y18sm3941779oiv.46.2021.06.29.09.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 09:03:47 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 11:03:45 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Phil Chang <phil.chang@mediatek.com>
+Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
+        mathieu.poirier@linaro.org, matthias.bgg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        mark-pk.tsai@mediatek.com, weiting.tsai@mediatek.com
+Subject: Re: [PATCH] remoteproc: export rproc re/unregister to virtio device
+ APIs
+Message-ID: <YNtEYUuW/OKSQlfp@yoga>
+References: <20210629150002.8050-1-phil.chang@mediatek.com>
 MIME-Version: 1.0
-References: <20210629121459.6341-1-linux.amoon@gmail.com>
-In-Reply-To: <20210629121459.6341-1-linux.amoon@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 29 Jun 2021 18:01:13 +0200
-Message-ID: <CAFBinCA=COnsN4Cp-z0HAPgs4kqPdiKtkZkr_LDkGz68s7B7hA@mail.gmail.com>
-Subject: Re: [PATCHv1] arm: dts: meson: Fix the pwm regulator supply property
- in node
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629150002.8050-1-phil.chang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Tue 29 Jun 10:00 CDT 2021, Phil Chang wrote:
 
-On Tue, Jun 29, 2021 at 2:15 PM Anand Moon <linux.amoon@gmail.com> wrote:
->
-> On enable CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
-I (as non-native english speaker) suggest rewording this to:
-After enabling CONFIG_REGULATOR_DEBUG=y we observe below debug logs.
+> In some case, the remote processor already boot up on previous state,
+> but still need register to virtio device, so that exported those APIs.
+> 
+> Signed-off-by: Phil Chang <phil.chang@mediatek.com>
+> Signed-off-by: YJ chiang <yj.chiang@mediatek.com>
+> ---
+> Hi
+> 
+> In our case, the remote processor is already boot up in u-boot,
+> we don't want to boot again or load fw in driver but register to virtio
+> device for rpmsg. so that needs those API exported.
+> Furthermore, the rproc_vq_interrupt is exported, so those functions
+> should be exported also.
+> 
 
-> Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
-> instead of dummy regulator.
->
-> [    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
-> [    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
-> [    7.117184] VCCK: supplied by regulator-dummy
-> [    7.117194] regulator-dummy: could not add device link regulator.8: -ENOENT
-> [    7.117266] VCCK: 860 <--> 1140 mV at 986 mV, enabled
-> [    7.118498] VDDEE: will resolve supply early: pwm
-> [    7.118515] pwm-regulator regulator-vddee: Looking up pwm-supply from device tree
-> [    7.118526] pwm-regulator regulator-vddee: Looking up pwm-supply property in node /regulator-vddee failed
-> [    7.118553] VDDEE: supplied by regulator-dummy
-> [    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
-excellent catch, thanks for sending a patch!
-
-> Fixes: 524d96083b66 ("ARM: dts: meson8b: odroidc1: add the CPU voltage regulator")
-> Fixes: 8bdf38be712d ("ARM: dts: meson8b: odroidc1: add the VDDEE regulator")
->
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-For the subject:
-- patches for 32-bit ARM should start with upper-case ARM
-- personally I also include the board name so the git history is easier to read
-
-My suggestion for the subject line is:
-ARM: dts: meson8b: odroidc1: Fix the pwm regulator supply properties
-
-Are you also planning to send patches for the following 32-bit SoC boards?
-- arch/arm/boot/dts/meson8b-mxq.dts
-- arch/arm/boot/dts/meson8b-ec100.dts
+Would the recently introduces support in remoteproc for "attaching" to
+an already running remote processor be useful to you?
 
 
-Best regards,
-Martin
+If you don't need a remoteproc driver, but rather just want e.g. a
+platform_driver that spawns the appropriate virtio devices, wouldn't
+virtio_mmio work?
+
+Regards,
+Bjorn
+
+> thanks
+> 
+>  drivers/remoteproc/remoteproc_virtio.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index 0cc617f76068..e23658a76f5e 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -425,6 +425,7 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
+>  out:
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(rproc_add_virtio_dev);
+>  
+>  /**
+>   * rproc_remove_virtio_dev() - remove an rproc-induced virtio device
+> @@ -440,3 +441,4 @@ int rproc_remove_virtio_dev(struct device *dev, void *data)
+>  	unregister_virtio_device(vdev);
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(rproc_remove_virtio_dev);
+> -- 
+> 2.18.0
+> 
