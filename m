@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059F33B6C70
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763413B6C77
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhF2CWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:22:15 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:40516 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhF2CWO (ORCPT
+        id S231742AbhF2C3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231350AbhF2C3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:22:14 -0400
-Received: by mail-lj1-f178.google.com with SMTP id d25so28768555lji.7;
-        Mon, 28 Jun 2021 19:19:46 -0700 (PDT)
+        Mon, 28 Jun 2021 22:29:19 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C04C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:26:52 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id nd37so33557494ejc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=436iowW5G+3AhfaQeY6hf4XjL/XjrpmKBydXgJfyA5c=;
+        b=ZgaNzCWSgvDCp3W0+7M7fWukxNa4zA3fTXV1kaarlE9zTzD1fKf8iVqwLsF89vugIC
+         9dcjxKh/qW9PROxd2BblzqndRgBWoyP5PWT7Ca0ICMXU2kOiD9nPC5NZCH7Nma3nK2os
+         2K/GV+jZyxe0vUCCbu/qFMoo7E6Bazc+6seVNiXIzEemn9BPky8X1/7asxp/mTgIzD1W
+         CT63JHVJQej9lyEXcyVFIWegTp3xYHaOiWsZmD4lzu37ZCa2EQox0aV1EIgVm7S2D+fg
+         fPQiuXCDISqeRNxnowY3Ocd+N0XVi3/L5afCqOsq3fxqaVRCugUmPevg2EzrnSIm+lMT
+         GKVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=FjE6J2J6ZECJGymv84c7w28BaRkO7xub+I+LeYwtvpk=;
-        b=F4tYccvbHPdRWyGm7q4eFKr7DaUXM6ziBhOFYLucXm7Ci6k5p4BVTwsqqxEn2xod71
-         8eY6ETMtKeSrQBkxtRHKtHMw6/LhaunePhEBpKqF1WBPuvkh2pQvAUXtQ/a8xEQyCtus
-         6OKITvN1OvoDVADpUQG0EyxY/CJnSzeAJLS+/bUPsT8K9G19trg9cvryXVwOWH5eOtxa
-         gCwjkZguGRFHOBmZ//PRVo1W230axT5uRUBU3IftACkkThuzliLrkRAz41pSiUW7COW0
-         tk+v6DcVVAConTVJ6zXqGBDftLEpt7bSn1hgRpJggHvVkp1vjKyvJsjeghIpRn3lHRr2
-         9TbQ==
-X-Gm-Message-State: AOAM5330JS7rl2i+NxX3KAQ9migeoFxH5+JvuB37OD34QcM9dXRwweOo
-        FcdSgVepa+Jic/SdHPBFoLMMKp7qJf02bw==
-X-Google-Smtp-Source: ABdhPJw0K/xDspMwtYm+EUZgpoKmWk/wggb6xFJDKGfk5Y7Ffl+mwW43BC9/IGVxUWTPjicfJEOAIg==
-X-Received: by 2002:a2e:5714:: with SMTP id l20mr1932609ljb.259.1624933185691;
-        Mon, 28 Jun 2021 19:19:45 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id l21sm542954lji.64.2021.06.28.19.19.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 19:19:45 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id r16so28696715ljk.9;
-        Mon, 28 Jun 2021 19:19:44 -0700 (PDT)
-X-Received: by 2002:a2e:81d8:: with SMTP id s24mr1933289ljg.78.1624933184787;
- Mon, 28 Jun 2021 19:19:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=436iowW5G+3AhfaQeY6hf4XjL/XjrpmKBydXgJfyA5c=;
+        b=ebwRKG27bSVxv6sdlroLHwrO6JTtbVxaSgbiOoxPCkEx6FSPfsIBnZ1gN3aGRtIrjY
+         cI9GpxPvfOFhAz9cSRhhwu4SwcG60W9nN2XmihUdFw3Y124DAt2YigelmhS8WFB6Y2Jk
+         BO2NFNEsOfrzirQgCbuknAaJiVJf4MYL9t9Amiocns6uc5TDySI8yeNnLEMnUDHzO5gJ
+         RADicAnZJFKoEC5vT1b9IQKnHxRr31WqQAQ/qS5bnUoLCT2EBdF1zGC6fW9vdEoWhHuQ
+         525Um36nCVx+WBFrUvnXoEpP66tHc1a/gb0fD9J/zc5/olzbHrMVZav/k5jirMoSeKAx
+         ZZpA==
+X-Gm-Message-State: AOAM531WBicSfADrbaESqkvevESyIyf8DfxkSAxf3xsfdVIM0WJFShwG
+        PqmSzd7fzTSAdnlJp2aQractr2O2GgbFPmaJtRq0
+X-Google-Smtp-Source: ABdhPJxZ3odiQnt9cl8KrT87lSdpmglQti+N9ZByUxEwzMT+zjXAVbmRXZy8vuZGeYWwod7YWLY2hOoSJaOTu2UwbQo=
+X-Received: by 2002:a17:906:a28e:: with SMTP id i14mr26931454ejz.395.1624933611032;
+ Mon, 28 Jun 2021 19:26:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210626132732.40063-1-hdegoede@redhat.com>
-In-Reply-To: <20210626132732.40063-1-hdegoede@redhat.com>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 29 Jun 2021 10:19:32 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64O3w6AGH4V-r6D_Zni-pCW2g7BTTceb4CoeAdowR2KNw@mail.gmail.com>
-Message-ID: <CAGb2v64O3w6AGH4V-r6D_Zni-pCW2g7BTTceb4CoeAdowR2KNw@mail.gmail.com>
-Subject: Re: [PATCH] mfd: axp20x: Update AXP288 volatile ranges
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-acpi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Clamshell <clamfly@163.com>
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-10-xieyongji@bytedance.com>
+ <adfb2be9-9ed9-ca37-ac37-4cd00bdff349@redhat.com> <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
+ <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com> <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
+ <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com> <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
+ <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com> <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
+ <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com> <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
+ <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com> <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
+ <b10b3916-74d4-3171-db92-be0afb479a1c@redhat.com> <CACycT3vpMFbc9Fzuo9oksMaA-pVb1dEVTEgjNoft16voryPSWQ@mail.gmail.com>
+ <d7e42109-0ba6-3e1a-c42a-898b6f33c089@redhat.com>
+In-Reply-To: <d7e42109-0ba6-3e1a-c42a-898b6f33c089@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Tue, 29 Jun 2021 10:26:40 +0800
+Message-ID: <CACycT3u9-id2DxPpuVLtyg4tzrUF9xCAGr7nBm=21HfUJJasaQ@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jun 28, 2021 at 12:40 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/6/25 =E4=B8=8B=E5=8D=8812:19, Yongji Xie =E5=86=99=E9=81=
+=93:
+> >> 2b) for set_status(): simply relay the message to userspace, reply is =
+no
+> >> needed. Userspace will use a command to update the status when the
+> >> datapath is stop. The the status could be fetched via get_stats().
+> >>
+> >> 2b looks more spec complaint.
+> >>
+> > Looks good to me. And I think we can use the reply of the message to
+> > update the status instead of introducing a new command.
+> >
+>
+> Just notice this part in virtio_finalize_features():
+>
+>          virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
+>          status =3D dev->config->get_status(dev);
+>          if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
+>
+> So we no reply doesn't work for FEATURES_OK.
+>
+> So my understanding is:
+>
+> 1) We must not use noreply for set_status()
+> 2) We can use noreply for get_status(), but it requires a new ioctl to
+> update the status.
+>
+> So it looks to me we need synchronize for both get_status() and
+> set_status().
+>
 
-On Sat, Jun 26, 2021 at 9:29 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> On Cherry Trail devices with an AXP288 PMIC the external SD-card slot
-> used the AXP's DLDO2 as card-voltage and either DLDO3 or GPIO1LDO
-> (GPIO1 pin in low noise LDO mode) as signal-voltage.
->
-> These regulators are turned on/off and in case of the signal-voltage
-> also have their output-voltage changed by the _PS0 and _PS3 power-
-> management ACPI methods on the MMC-controllers ACPI fwnode as well as
-> by the _DSM ACPI method for changing the signal voltage.
->
-> The AML code implementing these methods is directly accessing the
-> PMIC through ACPI I2C OpRegion accesses, instead of using the special
-> PMIC OpRegion handled by drivers/acpi/pmic/intel_pmic_xpower.c .
->
-> This means that the contents of the involved PMIC registers can change
-> without the change being made through the regmap interface, so regmap
-> should not cache the contents of these registers.
->
-> Mark the LDO power on/off, the LDO voltage control and the GPIO1 control
-> register as volatile, to avoid regmap caching their contents.
->
-> Specifically this fixes an issue on some models where the i915 driver
-> toggles another LDO using the same on/off register on/off through
-> MIPI sequences (through intel_soc_pmic_exec_mipi_pmic_seq_element())
-> which then writes back a cached on/off register-value where the
-> card-voltage is off causing the external sdcard slot to stop working
-> when the screen goes blank, or comes back on again.
->
-> Note the AXP288 PMIC is only used on Bay- and Cherry-Trail platforms,
-> so even though this is an ACPI specific problem there is no need to
-> make the new volatile ranges conditional since these platforms always
-> use ACPI.
->
-> Fixes: dc91c3b6fe66 ("mfd: axp20x: Mark AXP20X_VBUS_IPSOUT_MGMT as volatile")
+We should not send messages to userspace in the FEATURES_OK case. So
+the synchronization is not necessary.
 
-Maybe you want
-
-Fixes: cd53216625a0 ("mfd: axp20x: Fix axp288 volatile ranges")
-
-and then list the other one as a prerequisite? Or just list both tags.
-
-Should we CC stable on this? I don't know the exact use case for these
-devices. Are people running distro LTS kernels on them?
-
-> Reported-and-tested-by: Clamshell <clamfly@163.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/mfd/axp20x.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-> index 3eae04e24ac8..db6a21465594 100644
-> --- a/drivers/mfd/axp20x.c
-> +++ b/drivers/mfd/axp20x.c
-> @@ -125,12 +125,13 @@ static const struct regmap_range axp288_writeable_ranges[] = {
->
->  static const struct regmap_range axp288_volatile_ranges[] = {
->         regmap_reg_range(AXP20X_PWR_INPUT_STATUS, AXP288_POWER_REASON),
-> +       regmap_reg_range(AXP22X_PWR_OUT_CTRL1, AXP22X_ALDO3_V_OUT),
-
-This region also covers the voltage and on/off controls for the buck
-regulators. Maybe include that in your commit message if that was the
-intent, or skip over them if not?
-
-
-Thanks
-ChenYu
-
->         regmap_reg_range(AXP288_BC_GLOBAL, AXP288_BC_GLOBAL),
->         regmap_reg_range(AXP288_BC_DET_STAT, AXP20X_VBUS_IPSOUT_MGMT),
->         regmap_reg_range(AXP20X_CHRG_BAK_CTRL, AXP20X_CHRG_BAK_CTRL),
->         regmap_reg_range(AXP20X_IRQ1_EN, AXP20X_IPSOUT_V_HIGH_L),
->         regmap_reg_range(AXP20X_TIMER_CTRL, AXP20X_TIMER_CTRL),
-> -       regmap_reg_range(AXP22X_GPIO_STATE, AXP22X_GPIO_STATE),
-> +       regmap_reg_range(AXP20X_GPIO1_CTRL, AXP22X_GPIO_STATE),
->         regmap_reg_range(AXP288_RT_BATT_V_H, AXP288_RT_BATT_V_L),
->         regmap_reg_range(AXP20X_FG_RES, AXP288_FG_CC_CAP_REG),
->  };
-> --
-> 2.31.1
->
+Thanks,
+Yongji
