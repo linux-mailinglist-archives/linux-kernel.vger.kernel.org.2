@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAAD3B710C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947323B7111
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhF2K7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbhF2K7T (ORCPT
+        id S233318AbhF2LE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:04:26 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:53871 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233225AbhF2LEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:59:19 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC63C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 21so16870786pfp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Jc3NxCk+KDZnIQDnHNRavHi5mkTsU8gdZSOVUuYmb/Q=;
-        b=QS9szzKZkwbuUl6cKd5ztj/xB9uMz9A1jTb+bhp/iKdt6UXXCDtfbkgpYSl9Ld+viw
-         6wm5vnieXa0uuthxGAsd2dKH5l1eiA5nEb/Q01RIm+4sRZOun/GGl0IoKejxx6PU/Cxi
-         KwW+NE7q5y9MFmWzZwJ/lOLR6FezFPiwFKp36Ggo57oNbkpfTdkz/yl0ZVaty0BvAd0Q
-         tkint4nL99vAdnuiwBtQONS1EyfJelM8ZYkTwrROgl/HDIykl+FUEmL3aXcw5DRa/mvE
-         VkMMefHA41nC0ZWHpWASXk0mnM1R+U1S1zX3LjB0QOklwhgqe/MbW7AabHCf9G6KZz9/
-         kW2Q==
+        Tue, 29 Jun 2021 07:04:24 -0400
+Received: by mail-wm1-f53.google.com with SMTP id w13so13545572wmc.3;
+        Tue, 29 Jun 2021 04:01:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Jc3NxCk+KDZnIQDnHNRavHi5mkTsU8gdZSOVUuYmb/Q=;
-        b=lJ5VxFyquS2QMWZeqrrNRnKFuASKvmNicQtx3Jos0NfxfIwNTIro/2btHwMB7yYJ9v
-         OLOu0mYMkrsJQj9C47dCeQlxV1nmkCIkpADpusZb8GT6HEqH9A/sHW5si168YYrIoqbb
-         bkZ5EWA9d8OooUhJxRUXNWT2KPzeuW3QXhpcR5tHCml7SaHv33UepLY8xrHiW+8E3J86
-         PlItxWAgzTMGhX8cLujwz29BfvtrjFmeag7CszaeUeRfJLbKFqWtLlnMbEmfELMqI6QI
-         7JBuaTHNA/hbo+Rm/WAS+Zi+6R7935ufpLE1LwjdT0mhRARmBukvIOP5Y+n2u0YQ29zD
-         8c+w==
-X-Gm-Message-State: AOAM530GU9YUlmq4vhF1DSKDStEaPdZi2tYAjerP2bS7V/aQYFJaMGqR
-        pjOFFqmsWpHZaJ/uO9hbuS1YQA==
-X-Google-Smtp-Source: ABdhPJztQOYmtid8VFswfwsuX0Ti0CJClj3s+tJOjyJNAmsG+72+n65kqxZFjJN+ujUm53A0wuaxzw==
-X-Received: by 2002:a63:5616:: with SMTP id k22mr27766655pgb.41.1624964212463;
-        Tue, 29 Jun 2021 03:56:52 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id w123sm17955912pff.186.2021.06.29.03.56.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=UxbYdjRBdJm5/fTVehzUZ/ohEPLj6Stc/4/xbrS9z3s=;
+        b=PDCbCtUDgim4NBXGWnoyNqtELgSpFNPDCwCXNUKgDpVBV/a8F85YgMqehtdnYdTP+C
+         QP9b1wgmMWCL/kDbCVtvPHkogzz/hW6dORa6evoQ+PSwrmK8rvJfn0Tv/KHGTpamzQVR
+         ySIfhtKJ/0WC7jpdYMKIjzMTWkklTf3gLxswhRpqrxuytz0UbO/8z0daADyFOPJMbAS+
+         TdOUVUqnMjvG53ufaOcQQKVX/ISWshzJgTfpxv7My2oTqJ00rooBjQCWh6R7PIEmPETo
+         XZxy5Tn5IL9Ot5804JEyUtQMPjcmnzH/KHjuqoyzNcAbBU+b9cCPFompDeC/wc1jpKmE
+         7W2w==
+X-Gm-Message-State: AOAM533oukckfk0RwTE6pww1FnVqxQ/mQbbiJW79iJDT1Co+M6l+9PO2
+        uMy91YqOX4yUAiBTIRdinEU=
+X-Google-Smtp-Source: ABdhPJzfycVhMQwwXApDKWDgCAK3OwMR2lbsi++KFT1QOTNDWHRKC7mmpuNn4lmvCkCJYGXpnbVdzA==
+X-Received: by 2002:a05:600c:4f53:: with SMTP id m19mr32065101wmq.36.1624964516674;
+        Tue, 29 Jun 2021 04:01:56 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u10sm16609971wmm.21.2021.06.29.04.01.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 03:56:51 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 16:26:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629105649.nt63mxtiy6u7de3g@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
- <YNr0uDx1fv+Gjd7m@ninjato>
- <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
- <YNr5Jf3WDTH7U5b7@ninjato>
- <YNr5ZRhT3qn+e9/m@ninjato>
+        Tue, 29 Jun 2021 04:01:56 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 11:01:54 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
+Subject: [GIT PULL] Hyper-V commits for 5.14
+Message-ID: <20210629110154.y7hegtxwjbo55kue@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNr5ZRhT3qn+e9/m@ninjato>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-21, 12:43, Wolfram Sang wrote:
-> 
-> > From the spec:
-> > 
-> > The case when ``length of \field{write_buf}''=0, and at the same time,
-> > ``length of \field{read_buf}''=0 doesn't make any sense.
-> > 
-> > I mentioned this in my first reply and to my understanding I did not get
-> > a reply that this has changed meanwhile.
-> > 
-> 
-> Also, this code as mentioned before:
-> 
-> > +             if (!msgs[i].len)
-> > +                     break;
-> 
-> I hope this can extended in the future to allow zero-length messages. If
-> this is impossible we need to set an adapter quirk instead.
+Hi Linus,
 
-Ahh, yeah I saw these messages but I wasn't able to relate them to the
-I2C_FUNC_SMBUS_QUICK thing. My bad.
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Looked at Spec, Linux driver and my backends, I don't there is
-anything that breaks if we allow this. So the best thing (looking
-ahead) is if Jie sends a patch for spec to be modified like this.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-The case when ``length of \field{write_buf}''=0, and at the same time,
-``length of \field{read_buf}''=0 is called not-a-read-write request
-and result for such a request is I2C device specific.
+are available in the Git repository at:
 
--- 
-viresh
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20210629
+
+for you to fetch changes up to 7d815f4afa87f2032b650ae1bba7534b550a6b8b:
+
+  PCI: hv: Add check for hyperv_initialized in init_hv_pci_drv() (2021-06-20 23:08:56 +0000)
+
+Note that there may be a merge conflict with x86 tip tree due to a
+comment movement. The correct resolution patch can be found at:
+
+  https://lore.kernel.org/linux-next/20210621200125.46d66127@canb.auug.org.au/
+
+Wei.
+
+----------------------------------------------------------------
+hyperv-next for 5.14
+ - Just a few minor enhancement patches and bug fixes.
+----------------------------------------------------------------
+Andrea Parri (Microsoft) (1):
+      scsi: storvsc: Use blk_mq_unique_tag() to generate requestIDs
+
+Andres Beltran (1):
+      Drivers: hv: vmbus: Copy packets sent by Hyper-V out of the ring buffer
+
+Haiyang Zhang (1):
+      PCI: hv: Add check for hyperv_initialized in init_hv_pci_drv()
+
+Jiapeng Chong (2):
+      hv_balloon: Remove redundant assignment to region_start
+      drivers: hv: Fix missing error code in vmbus_connect()
+
+Michael Kelley (1):
+      Drivers: hv: Move Hyper-V extended capability check to arch neutral code
+
+Praveen Kumar (1):
+      x86/hyperv: fix logical processor creation
+
+YueHaibing (1):
+      hv_utils: Fix passing zero to 'PTR_ERR' warning
+
+ arch/x86/hyperv/hv_init.c           |  47 ----------------
+ arch/x86/kernel/cpu/mshyperv.c      |   2 +-
+ drivers/Makefile                    |   2 +-
+ drivers/hv/Makefile                 |   3 ++
+ drivers/hv/channel.c                |  23 ++++----
+ drivers/hv/connection.c             |   4 +-
+ drivers/hv/hv_balloon.c             |   1 -
+ drivers/hv/hv_common.c              |  66 +++++++++++++++++++++++
+ drivers/hv/hv_fcopy.c               |   1 +
+ drivers/hv/hv_kvp.c                 |   1 +
+ drivers/hv/hv_util.c                |   4 +-
+ drivers/hv/hyperv_vmbus.h           |   2 +-
+ drivers/hv/ring_buffer.c            |  95 ++++++++++++++++++++++++++------
+ drivers/net/hyperv/hyperv_net.h     |   7 +++
+ drivers/net/hyperv/netvsc.c         |  10 ++--
+ drivers/net/hyperv/rndis_filter.c   |   4 ++
+ drivers/pci/controller/pci-hyperv.c |   3 ++
+ drivers/scsi/storvsc_drv.c          | 104 +++++++++++++++++++++++++-----------
+ include/linux/hyperv.h              |  61 +++++++++++++++++----
+ net/vmw_vsock/hyperv_transport.c    |   4 +-
+ 20 files changed, 317 insertions(+), 127 deletions(-)
+ create mode 100644 drivers/hv/hv_common.c
