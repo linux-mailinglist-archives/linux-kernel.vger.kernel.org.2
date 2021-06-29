@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1D63B7594
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BACF3B759C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbhF2Pkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:40:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234549AbhF2Pkd (ORCPT
+        id S234868AbhF2Pk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:40:59 -0400
+Received: from out28-52.mail.aliyun.com ([115.124.28.52]:39772 "EHLO
+        out28-52.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234549AbhF2Pk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:40:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624981085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ZvEt7bEKf4QUzdzCkar8PX3Yay1pkkOVyVE1rkXd+nc=;
-        b=b/+UAyogg27ci7hq0MSiFmergOQe8gCuTS+jijuOj4UI0CwA77nStYHwnAuY/BBXWr+MKU
-        ZtL64luwprGF3QTT2/GT2LOiecNmBXBgMnkq36kxRrJ8hTAKIUV6Djjm01bH8a/GX29jQB
-        MYi9Z0jVklZGoFkNzvUT5x0+6tnbhMQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-Xuf1EWhaOwSFsoLwgIYS9g-1; Tue, 29 Jun 2021 11:38:03 -0400
-X-MC-Unique: Xuf1EWhaOwSFsoLwgIYS9g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A52401835ACD;
-        Tue, 29 Jun 2021 15:38:02 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 667935C1D0;
-        Tue, 29 Jun 2021 15:38:02 +0000 (UTC)
-Date:   Tue, 29 Jun 2021 10:38:00 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.14
-Message-ID: <20210629153800.GA7428@redhat.com>
+        Tue, 29 Jun 2021 11:40:59 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09404528|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0158635-0.000755938-0.983381;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.KZtCVfJ_1624981102;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KZtCVfJ_1624981102)
+          by smtp.aliyun-inc.com(10.147.44.118);
+          Tue, 29 Jun 2021 23:38:28 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: [PATCH v6 00/11] Add new clocks and fix bugs for Ingenic SoCs.
+Date:   Tue, 29 Jun 2021 23:38:11 +0800
+Message-Id: <1624981102-26248-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+v4->v5:
+1.modify the CGU PLL correlation code to make it compatible with I2S PLL.
+2.Change X1000's I2S clock to CGU_CLK_PLL as Paul Cercueil's suggestion.
+3.Add documentation for JZ4775 and X2000 bindings.
+4.Add JZ4775 and X2000 clock bindings.
+5.Add CGU driver for JZ4775 and X2000.
 
-Please pull dlm updates from tag:
+v5->v6:
+Change the type of stable_bit from u8 to s8, because a negative value will
+appear when the stable_bit bit does not exist.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.14
+周琰杰 (Zhou Yanjie) (11):
+  clk: JZ4780: Add function for disable the second core.
+  clk: Ingenic: Adjust cgu code to make it compatible with I2S PLL.
+  dt-bindings: clock: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Fix problem of MAC clock in Ingenic X1000 and X1830.
+  clk: Ingenic: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Clean up and reformat the code.
+  dt-bindings: clock: Add documentation for JZ4775 and X2000 bindings.
+  dt-bindings: clock: Add JZ4775 clock bindings.
+  dt-bindings: clock: Add X2000 clock bindings.
+  clk: Ingenic: Add CGU driver for JZ4775.
+  clk: Ingenic: Add CGU driver for X2000.
 
-This is a major dlm networking enhancement that adds message
-retransmission so that the dlm can reliably continue operating
-when network connections fail and nodes reconnect.  Previously,
-this would result in lost messages which could only be handled
-as a node failure.
+ .../devicetree/bindings/clock/ingenic,cgu.yaml     |   4 +
+ drivers/clk/ingenic/Kconfig                        |  20 +
+ drivers/clk/ingenic/Makefile                       |   2 +
+ drivers/clk/ingenic/cgu.c                          | 118 +++-
+ drivers/clk/ingenic/cgu.h                          |  10 +-
+ drivers/clk/ingenic/jz4725b-cgu.c                  |  49 +-
+ drivers/clk/ingenic/jz4740-cgu.c                   |  49 +-
+ drivers/clk/ingenic/jz4760-cgu.c                   | 106 ++-
+ drivers/clk/ingenic/jz4770-cgu.c                   |  83 +--
+ drivers/clk/ingenic/jz4775-cgu.c                   | 572 +++++++++++++++
+ drivers/clk/ingenic/jz4780-cgu.c                   | 149 ++--
+ drivers/clk/ingenic/x1000-cgu.c                    | 210 ++++--
+ drivers/clk/ingenic/x1830-cgu.c                    | 210 ++++--
+ drivers/clk/ingenic/x2000-cgu.c                    | 784 +++++++++++++++++++++
+ include/dt-bindings/clock/jz4775-cgu.h             |  59 ++
+ include/dt-bindings/clock/x1000-cgu.h              |   5 +
+ include/dt-bindings/clock/x1830-cgu.h              |   5 +
+ include/dt-bindings/clock/x2000-cgu.h              |  88 +++
+ 18 files changed, 2203 insertions(+), 320 deletions(-)
+ create mode 100644 drivers/clk/ingenic/jz4775-cgu.c
+ create mode 100644 drivers/clk/ingenic/x2000-cgu.c
+ create mode 100644 include/dt-bindings/clock/jz4775-cgu.h
+ create mode 100644 include/dt-bindings/clock/x2000-cgu.h
 
-Thanks,
-Dave
-
-Alexander Aring (24):
-      fs: dlm: always run complete for possible waiters
-      fs: dlm: add dlm macros for ratelimit log
-      fs: dlm: fix srcu read lock usage
-      fs: dlm: set is othercon flag
-      fs: dlm: reconnect if socket error report occurs
-      fs: dlm: cancel work sync othercon
-      fs: dlm: fix connection tcp EOF handling
-      fs: dlm: public header in out utility
-      fs: dlm: add more midcomms hooks
-      fs: dlm: make buffer handling per msg
-      fs: dlm: add functionality to re-transmit a message
-      fs: dlm: move out some hash functionality
-      fs: dlm: add union in dlm header for lockspace id
-      fs: dlm: add reliable connection if reconnect
-      fs: dlm: add midcomms debugfs functionality
-      fs: dlm: don't allow half transmitted messages
-      fs: dlm: fix lowcomms_start error case
-      fs: dlm: fix memory leak when fenced
-      fs: dlm: use alloc_ordered_workqueue
-      fs: dlm: move dlm allow conn
-      fs: dlm: introduce proto values
-      fs: dlm: rename socket and app buffer defines
-      fs: dlm: fix race in mhandle deletion
-      fs: dlm: invalid buffer access in lookup error
-
-Colin Ian King (2):
-      fs: dlm: Fix memory leak of object mh
-      fs: dlm: Fix spelling mistake "stucked" -> "stuck"
-
- fs/dlm/config.c       |   18 +-
- fs/dlm/config.h       |    5 +-
- fs/dlm/debug_fs.c     |   54 ++
- fs/dlm/dlm_internal.h |   42 +-
- fs/dlm/lock.c         |   16 +-
- fs/dlm/lockspace.c    |   14 +-
- fs/dlm/lowcomms.c     |  411 +++++++++++----
- fs/dlm/lowcomms.h     |   25 +-
- fs/dlm/member.c       |   37 +-
- fs/dlm/midcomms.c     | 1343 +++++++++++++++++++++++++++++++++++++++++++++++--
- fs/dlm/midcomms.h     |   15 +
- fs/dlm/rcom.c         |  123 +++--
- fs/dlm/util.c         |   10 +-
- fs/dlm/util.h         |    2 +
- 14 files changed, 1924 insertions(+), 191 deletions(-)
+-- 
+2.7.4
 
