@@ -2,274 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAB03B6C8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E003B6C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhF2Ci2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhF2Ci1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:38:27 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA115C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id gd24-20020a17090b0fd8b02901702bcb0d90so884467pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UyYne+kQlvBcMgHYpgAvm2fSPT35KfuDzyzvtjgZuk8=;
-        b=CXxrtg6cMeWqyqJ54Vy77Wa/C/fUxwulT6VNUy/DghCOEPNudSp3EwxXfsucjaphl8
-         h7b8oDwlARAxSmPZsDZJNpwwFw9TIGc03lzaGSa47+Hh6IMyIrWytvRUMe+z7KiQD8K+
-         2w2vlwmo785g0bvD8RUmcjF1iCgbHyCVEdAYK69hmGhOr55eKlHebAhaq5/HeBknckYD
-         fmbvqdoGcptHmQLQkB7a1TQ3u38TNd1zVlLhVwkrUcRZXLvstONRWA48x1Oj0zWvuxqO
-         t7a0RdkxyDUVbl9ajYMGTN296aktKucyK4g99Th1wwy1zYIDM0PixCSzvGzgCkCsbVo0
-         Ecrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UyYne+kQlvBcMgHYpgAvm2fSPT35KfuDzyzvtjgZuk8=;
-        b=Q4jZPFyNf3VHFBmgk0PpgPPV4NvmDFrXd9F41iT2DxQell9LYf3cNLwxb1ZhpswIHu
-         UOzeJ/7j+cndjkijwj3vCqXJ45VVDkIm3pmD40nrHveq34bwTBHxggb89FoRG29bAjQd
-         TVul5epbzGZRfyPXPpHsxp62LJ7lefgoL/F2h3NJ8tvU9N7OMhlH07UlSPxlL03qujqO
-         mt0QZXeYFm9UOR2lCO1wlSXTY9cb828JBEhbApb8Xyes+Ta5e85utHvEH5t7xmgkdhN2
-         rQQD8+C8xoqVIjnsYCLzZHzLP/1fiFTzrvWVM204itKZYoPdPsILuQ73S2hKzzsOsib8
-         wmkQ==
-X-Gm-Message-State: AOAM533g0uWYLKKZMy/NwiXsnfA06QSAacUuvBjOAITKY6lxQefo0x2/
-        WNcpDj9wqZVd0wFzoDHvMmNsV5bpdCTB0Q==
-X-Google-Smtp-Source: ABdhPJxFUGku1o/uY4QNMWQpOdU6952+p2RBUnZTs6bCOm6duDSu05RImz4hRzzNKsRZ6m2zSI1W6w==
-X-Received: by 2002:a17:90a:e7c7:: with SMTP id kb7mr26070368pjb.96.1624934160204;
-        Mon, 28 Jun 2021 19:36:00 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id e1sm15994946pfd.16.2021.06.28.19.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 19:35:59 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 08:05:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v2 3/5] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-Message-ID: <20210629023556.v3u4hdye5ojolubq@vireshk-i7>
-References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
- <20210624115813.3613290-4-thara.gopinath@linaro.org>
+        id S231854AbhF2CmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:42:01 -0400
+Received: from mail-vi1eur05on2067.outbound.protection.outlook.com ([40.107.21.67]:25089
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231682AbhF2Cl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 22:41:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UyZ4xXYXIXksNzoKt9hbUbEgeh2MkuaFft5LzVqiwSFItBZzMux+a4bRmI0BzeXfGbLWdO8eCjbLhP4yOnaG9mY5iystEKqbDjqe5BMh6l7aTWCqp4ZGTyVevkE6EYsJbNNntoWmQBiUoDPGQjdRRsLa0gPDtFtka1ONuzi1DyGW4rPH9U+/4s55Pd6xmMnI8tKyON5HErY1qgWETMoAwt+EqAvG2LjM/1JPVHuQZ8gdvOh9SAbavdSF2494WinQHcAdqKGq3xPMgPyr6Y/eRX9URKLmVrkLmUH/jJmpkmTes+73RCxHNGNHAmJu771M3JUItR40l8la1nofF1Snyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dR+DZY0I1PgKRr95p1HkR14vPc3ZSIT+5m5oGnlks4=;
+ b=QN6YBPnsMKPyXGEBZul84xeim1mf4pLflRyEEm2XLM4wk48IycH1sbPuj4+tTuRrbLiAepqwRZWwqYjEW8eQDk1AG7gZZb5TeLCIpRdRn8XuX8s8hjuUHVwF9RhTdHF1arFmRXQx6dVfyy5gyUg3BWVCHLVhliH3U3qyQz9VlDeCkBY+h+w2ngOk/BmUX/1V2rXSKkuorfBWZDqhWM9oLhYjXi2buzpgQ96MnSBknG/t0uc4/5T0uxtImEn6ro/qf9SJ+7C556JYTzHTHUOiJoxLG83Ash4rPdeXcF+wqvbDbexn61pbNzAhp0XFVCbAMgxZuc+Ihdz9PyMtfWXnbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dR+DZY0I1PgKRr95p1HkR14vPc3ZSIT+5m5oGnlks4=;
+ b=ch4oCqhhqTfhXa4JhKIYUsQHDHRiSIZpSOcFr9q1v0NJB3XlA2TyFujtyrVayiNZcafCkGkytyXwAK8PIGeJMKRfewsIrQ206piXGLnglXerGL/NtzaC0GTfi0h3qfeoOJVoZDXr2ETftFLz/0gUAOTv/ucjYYnBlonr1Aiqo7c=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB5658.eurprd04.prod.outlook.com (2603:10a6:10:b2::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Tue, 29 Jun
+ 2021 02:39:30 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
+ 02:39:29 +0000
+Subject: Re: [EXT] regression due to soc_device_match not handling defer (Was:
+ [PATCH v4 4/4] soc: imx8m: change to use platform driver)
+To:     Lucas Stach <l.stach@pengutronix.de>, Peng Fan <peng.fan@nxp.com>,
+        Dominique MARTINET <dominique.martinet@atmark-techno.com>,
+        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201120101112.31819-4-alice.guo@nxp.com>
+ <YGGZJjAxA1IO+/VU@atmark-techno.com>
+ <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
+ <YHeWnuDQo76rYoz5@atmark-techno.com>
+ <DB6PR0402MB27607D28703D8C3E614E2F2A884D9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ <b8ce9abd075a65272bdbe6142c9cd877fa25c701.camel@pengutronix.de>
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Message-ID: <3f6cffc5-7600-25c9-d5f0-5891355c402e@oss.nxp.com>
+Date:   Tue, 29 Jun 2021 10:39:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+In-Reply-To: <b8ce9abd075a65272bdbe6142c9cd877fa25c701.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR0601CA0004.apcprd06.prod.outlook.com (2603:1096:3::14)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624115813.3613290-4-thara.gopinath@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.193.102.59] (119.31.174.71) by SG2PR0601CA0004.apcprd06.prod.outlook.com (2603:1096:3::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 02:39:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd93e85e-88e4-4d98-641c-08d93aa71e9e
+X-MS-TrafficTypeDiagnostic: DB8PR04MB5658:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB56589F7A289DF3F82CEB4DEFC9029@DB8PR04MB5658.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZhRy9Jd89CjGv4rBNxQHxWS+7xgIbbdDtuXw1vzR6BDjW4T+VAY1W9PVuxvihO9KM9Ge3e83JaQCmp0f5oOsCcluBXAgyymLz+HPgHbB0dynw888X4ismhBWq+qdCNTjIrUuRLKPmtE1i0bUwIVCFR3Rz1T8j5O4iqdJKIPGmPnM3QRuabpG/v/A2rbNApgrF8QyNoZu60mHDQV9E7EgtGPvPzXYGcMEY5fk5UxMiKKl9KbtLv2IwhKAREP575KwDasYxvYBK1TMsbAvxwD7NJqYlAZhaXMk7N+BRZVRY6G+Pfrh+QVeRy4QqPc2FJjS8JphbWd15MXdXPMFwNcze1P4rpAQiOszXCgEHwAkg8R5fUdMKtyhjUK8Y/928imZutxMp7OFsw5CGDB6qmU0q7Q9gtpr4/rO/kW7Ek2bCDj/wevUc0/RSWse7vEi9t+qoZ5/3kjqiErU4XtWiKHcbbyrF3U97fIx34MUlthaymFqnw3LUYhc8edq0YW7dL+C2jXUefR06uO/B/iStAAsTo+murGUxGI90/E8KFHFM9TgOMIu1Pjj8s4wJqVnq19gj52aiQgGZzsXI31EnHqIwcn3QuCmGxsOAU6Gn64l5FVBv74lz15QRVA0izPvskAd40z9RcpP+zgghjZ83qiR/Ts8vvt68+zQvR09fAOTHcpoSzvDD3e94LbyioA4D+poIAEmo3nzAJQZh94w/IcpaplJPKOlmv/Z4R1KsmCqMasIaRESOXdGpMkaaX68YBz/K5y/lyvLaE+9SuvSP0hbFwNG3LvVucWafS4w//GiyfU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(376002)(396003)(346002)(478600001)(66476007)(31686004)(31696002)(66556008)(4326008)(5660300002)(6636002)(66946007)(86362001)(2616005)(316002)(16576012)(2906002)(38100700002)(38350700002)(110136005)(54906003)(8936002)(53546011)(8676002)(186003)(16526019)(52116002)(6486002)(6666004)(26005)(956004)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VFI5d2M0MzNGamxOcXJaY2hhbjlDa3hqNHlITFgrZG1HazNTbUtIK1l5dHB6?=
+ =?utf-8?B?TjR6c2xkUkx2MytwM1FVQmVuM0FkQlNVY0ZteUJ5NERQSWMzaUhHMVJHd0hN?=
+ =?utf-8?B?TTFvTWRmbXdjWEY3ZmJxSjBkdFpCVE4yMG1JUjhmOVRzRzRIN01ZbGdleUJy?=
+ =?utf-8?B?a0h5QzdPUGZIRDBIZzNwWVJEb2FQZGNXVkUvSC9BbVE4Ky9DZUR6NTVMM3BP?=
+ =?utf-8?B?NFNOM1lRMjNmTmJ4K3N4cWJ2dXNoVThzdlFQcWRKUjRGWS9tT0tCanpETllZ?=
+ =?utf-8?B?ZHN3dWNHWnh1V3JRRHZxTzBtYWRpSU8yVzl3aXRlRHg3U1hINXlRUEMxcmg3?=
+ =?utf-8?B?d0lRQkVLamlCZGRJdzJxSWFVcVFHTlh2RTBsTUQ0ZDdUN2w0TngxQUNuaWZB?=
+ =?utf-8?B?KzVYNWxwaXpMaHV6K2dxdEFrNm5pcWpyUGNsZGt2LzhwT2xPYkhOU3hSVUM5?=
+ =?utf-8?B?Nktkc0NnNnlERkpWdkN3RU5LOVdnNkQvdU5nR3lNOVI4a29kY0Jpd0ZlcTha?=
+ =?utf-8?B?L2J6cjdoQnk3Wk9CUW1uM3hySnlTU3dIOWUyYXkyNDFhdWttS0NNMXdNMWJq?=
+ =?utf-8?B?ajYrR3NCbjVjeDB1cEpOZnV3cmJYNE4zb0wrczRpYjFYTjV6dWtmTGdrdERz?=
+ =?utf-8?B?QjNCZlRwY1lQdGFsTkRzM3hjazFjeUtZVFNBQ2RzNjR6U0pGT2ZQdTVxRDBw?=
+ =?utf-8?B?N0V5dHdoOUhrTWtzM1FYcEZWMlBTZFBZNXIzTnpVR3BzTUlqdTdqNWd1VlJw?=
+ =?utf-8?B?NUtxVHA0ZkZZTzd1ZmEyZTlqalN5dmJaWTlLY09PUUpZVExYbWplOGh0dG5V?=
+ =?utf-8?B?RlZwb0hVdzJLTm5xOCs5WGJJQ1pZbk9rNzVpU0d3a2JVK3JBVWNjSkp1Y1pR?=
+ =?utf-8?B?VXBTZGdFOERmenNoWXgrajNSNUJHODJ5cU8rbFZQNGR0QkZTOUovUCt6ZFdM?=
+ =?utf-8?B?d0VNQVZlbWd3SXNBMGFka25BOUlETFFRTVp3VDh3bXNpbC9yS1FTOHpNMy9a?=
+ =?utf-8?B?ZmdONWdFTlNUQjE3UU44anVXZzhUOUpJakdkT2lSRnNldGxCeUJmdjZrakY3?=
+ =?utf-8?B?clVpMjhsRjVISmx1c2V2WExvanJlSzNiQWxCREVOK2hiTk5CaWlJQkN2THRH?=
+ =?utf-8?B?U3I2NXA3bXFVRDltN2ZOVVk4cSswWEZaVVBUYVU0bTlsejVKUm42R0E4THdO?=
+ =?utf-8?B?UzByWHJuVUUyQXJsQWZUcmFTeWZoREZWaHJKUEplTWhneDVTeEFyME1CTEtu?=
+ =?utf-8?B?d2J6QnhVMzdISFhKbi90dHNVTEQzcml3dk1qZGVYY1l6T1VRZkNKK0YrM3Fy?=
+ =?utf-8?B?aE02UzZzbUFqSTlueDBMMDE3QUxid2RZcCtRMlJHL0dhMVZWMnRwaDFLcGdJ?=
+ =?utf-8?B?WW9qekZYdkM4WS91dFVSWjZ6Y0RiNlg2bkNlWlptT1BZNXpIVkZVMGNuRjZH?=
+ =?utf-8?B?MGs3YTlQTXBSQTZlWUIrTEFqTkVVbis2eFlGOVU1c0hCay9SbnI2ZFd5dUtQ?=
+ =?utf-8?B?anhpdHorbGx1NmVLaHlib0dRcE53YWkxK3l1ZC92Zy9mbGpGYzNyNnYvVURk?=
+ =?utf-8?B?MnNSSVU0VVI0RFdrYjZZTTdyTXNkV3lNa05HV0xIcEZGd0VobUUveFhralRH?=
+ =?utf-8?B?RmR5b1lsTzRCaXl0WWZVc2pmSVRTRlN0allERUNNSkZzYUxzSE5VTXVRMnUw?=
+ =?utf-8?B?U0diS0FQVk0xckloS2tad0QrWllUNGNGalUwaWZVbGhGU0FOTyt0clZGUG9W?=
+ =?utf-8?Q?PV5iQTrpam+gbwdxB/v+yshD0LwEVCJvyIseazh?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd93e85e-88e4-4d98-641c-08d93aa71e9e
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 02:39:29.8751
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UqZFT8l/menmGO1mm3qxegrwCtbamnCAl5oXgZht3wXNAQByRsIu3LC4DrWOBEpyqohFrqqQSg5axqEwhYRb0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5658
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-06-21, 07:58, Thara Gopinath wrote:
-> Add interrupt support to notify the kernel of h/w initiated frequency
-> throttling by LMh. Convey this to scheduler via thermal presssure
-> interface.
+Hi Lucas,
+
+On 2021/6/24 18:36, Lucas Stach wrote:
+> Hi all,
 > 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
+> Am Donnerstag, dem 15.04.2021 um 01:33 +0000 schrieb Peng Fan:
+>>> (Was: [PATCH v4 4/4] soc: imx8m: change to use platform driver)
+>>>
+>>> Alice Guo (OSS) wrote on Tue, Mar 30, 2021 at 02:41:23AM +0000:
+>>>> Thanks for reporting this issue, I'll check and add a fix to handle defer probe.
+>>>
+>>> I haven't seen any follow up on this, have you had a chance to take a look?
+>>
+>> We are trying to find a proper solution for this.
+>>
+>> The proper method might be make soc_device_match return probe defer,
+>> and take early soc attr into consideration, but I am not sure this would win
+>> maintainer's vote.
+>>
+>>> If this won't make it for 5.12 (in a couple of week probably?) would it make
+>>> sense to revert 7d981405d0fd ("soc: imx8m: change to use platform
+>>> driver") for now?
+>>
+>> Please no. We are targeting android GKI, make driver as modules.
+>> And reverting to original method will also break kexec.
+>>
+>> I am on IRC #linux-imx, we could take more if you would like to.
 > 
-> v1->v2:
-> 	- Introduced qcom_cpufreq_hw_lmh_init to consolidate LMh related initializations
-> 	  as per Viresh's review comment.
-> 	- Moved the piece of code restarting polling/re-enabling LMh interrupt to
-> 	  qcom_lmh_dcvs_notify therby simplifying isr and timer callback as per Viresh's
-> 	  suggestion.
-> 	- Droped cpus from qcom_cpufreq_data and instead using cpus from cpufreq_policy in
-> 	  qcom_lmh_dcvs_notify as per Viresh's review comment.
-> 	- Dropped dt property qcom,support-lmh as per Bjorn's suggestion.
-> 	- Other minor/cosmetic fixes
+> It seems this stalled. This regression totally breaks the kernel boot
+> on all i.MX8M devices including the CAAM. 5.13 is about to be released,
+> as the second upstream kernel release after 5.12 without a fix for this
+> issue. What's the plan here?
 > 
->  drivers/cpufreq/qcom-cpufreq-hw.c | 103 ++++++++++++++++++++++++++++++
->  1 file changed, 103 insertions(+)
+> If there is no good solution small enough to be ported to the stable
+> kernels in sight, I think the only sensible option here is to revert
+> this change.
+
+I not have time to touch this, maybe you could submit a revert for this.
+
+Thanks,
+Peng.
+
 > 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index f86859bf76f1..241f6f2b441f 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -13,6 +13,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/pm_opp.h>
->  #include <linux/slab.h>
-> +#include <linux/interrupt.h>
-
-Please don't break the alphabetical order here.
-
->  #define LUT_MAX_ENTRIES			40U
->  #define LUT_SRC				GENMASK(31, 30)
-> @@ -22,10 +23,13 @@
->  #define CLK_HW_DIV			2
->  #define LUT_TURBO_IND			1
->  
-> +#define HZ_PER_KHZ			1000
->
->  struct qcom_cpufreq_soc_data {
->  	u32 reg_enable;
->  	u32 reg_freq_lut;
->  	u32 reg_volt_lut;
-> +	u32 reg_current_vote;
->  	u32 reg_perf_state;
->  	u8 lut_row_size;
->  };
-> @@ -33,7 +37,10 @@ struct qcom_cpufreq_soc_data {
->  struct qcom_cpufreq_data {
->  	void __iomem *base;
->  	struct resource *res;
-> +	struct delayed_work lmh_dcvs_poll_work;
->  	const struct qcom_cpufreq_soc_data *soc_data;
-> +	struct cpufreq_policy *policy;
-> +	int lmh_dcvs_irq;
->  };
->  
->  static unsigned long cpu_hw_rate, xo_rate;
-> @@ -251,10 +258,79 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->  	}
->  }
->  
-> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
-> +{
-> +	return (val & 0x3FF) * 19200;
-> +}
-> +
-> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
-> +{
-> +	struct cpufreq_policy *policy = data->policy;
-> +	struct dev_pm_opp *opp;
-> +	struct device *dev;
-> +	unsigned long max_capacity, capacity, freq_hz, throttled_freq;
-> +	unsigned int val, freq;
-> +
-> +	/*
-> +	 * Get the h/w throttled frequency, normalize it using the
-> +	 * registered opp table and use it to calculate thermal pressure.
-> +	 */
-> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
-> +	freq = qcom_lmh_vote_to_freq(val);
-> +	freq_hz = freq * HZ_PER_KHZ;
-> +
-> +	dev = get_cpu_device(cpumask_first(policy->cpus));
-> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
-> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
-> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
-> +
-> +	throttled_freq = freq_hz / HZ_PER_KHZ;
-> +
-> +	/* Update thermal pressure */
-> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(policy->cpus));
-> +	capacity = throttled_freq * max_capacity;
-> +	capacity /= policy->cpuinfo.max_freq;
-> +	/* Don't pass boost capacity to scheduler */
-> +	if (capacity > max_capacity)
-> +		capacity = max_capacity;
-
-I wonder why this check isn't present for cpufreq_cooling.c .
-
-> +	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
-> +	/*
-
-Whenever you mix code and comments, please separate them with a blank
-line, else it becomes a bit messy and harder to read.
-
-> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
-> +	 * polling and switch back to interrupt mechanism
-> +	 */
-> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
-> +		/* Clear the existing interrupts and enable it back */
-> +		enable_irq(data->lmh_dcvs_irq);
-> +	else
-> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
-> +				 msecs_to_jiffies(10));
-> +}
-> +
-> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
-> +{
-> +	struct qcom_cpufreq_data *data;
-> +
-> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
-> +
-> +	qcom_lmh_dcvs_notify(data);
-> +}
-> +
-> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
-> +{
-> +	struct qcom_cpufreq_data *c_data = data;
-> +
-> +	/* Disable interrupt and enable polling */
-> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
-> +	qcom_lmh_dcvs_notify(c_data);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->  	.reg_enable = 0x0,
->  	.reg_freq_lut = 0x110,
->  	.reg_volt_lut = 0x114,
-> +	.reg_current_vote = 0x704,
->  	.reg_perf_state = 0x920,
->  	.lut_row_size = 32,
->  };
-> @@ -274,6 +350,23 @@ static const struct of_device_id qcom_cpufreq_hw_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
->  
-> +static void qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy)
-> +{
-> +	struct qcom_cpufreq_data *data = policy->driver_data;
-> +	struct platform_device *pdev = cpufreq_get_driver_data();
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	ret = devm_request_irq(dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
-> +			       0, "dcvsh-irq", data);
-> +	if (ret) {
-> +		dev_err(dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
-> +		return;
-> +	}
-> +	data->policy = policy;
-> +	INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
-> +}
-> +
->  static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  {
->  	struct platform_device *pdev = cpufreq_get_driver_data();
-> @@ -370,6 +463,16 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
->  	}
->  
-> +	/* Look for LMh interrupt. If no interrupt line is specified /
-> +	 * if there is an error, allow cpufreq to be enabled as usual.
-> +	 */
-
-Proper comment style please..
-
-> +	data->lmh_dcvs_irq = platform_get_irq(pdev, index);
-> +	if (data->lmh_dcvs_irq > 0) {
-> +		qcom_cpufreq_hw_lmh_init(policy);
-> +	} else if (data->lmh_dcvs_irq != -ENXIO) {
-> +		ret = data->lmh_dcvs_irq;
-> +		goto error;
-> +	}
-
-Move all of this to qcom_cpufreq_hw_lmh_init().
-
-And I don't see any cleanup for this stuff. There is no guarantee that
-the irq won't fire and queue up a work right after cpufreq driver is
-unregistered and before the devm_ stuff gets released.
-
->  	return 0;
->  error:
->  	kfree(data);
-> -- 
-> 2.25.1
-
--- 
-viresh
+> Regards,
+> Lucas
+> 
