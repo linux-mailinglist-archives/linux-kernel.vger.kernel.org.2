@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537523B737C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AB83B737F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhF2Nw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:52:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:51666 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233050AbhF2Nwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:52:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 435CF106F;
-        Tue, 29 Jun 2021 06:50:28 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9432C3F718;
-        Tue, 29 Jun 2021 06:50:26 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com
-Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        zhang.lyra@gmail.com
-Subject: Re: [PATCH] sched/uclamp: Fix getting unreasonable ucalmp_max when rq is idle
-In-Reply-To: <20210618072349.503-1-xuewen.yan94@gmail.com>
-References: <20210618072349.503-1-xuewen.yan94@gmail.com>
-Date:   Tue, 29 Jun 2021 14:50:21 +0100
-Message-ID: <87fsx093vm.mognet@arm.com>
+        id S234196AbhF2NxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhF2NxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:53:22 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA2FC061760;
+        Tue, 29 Jun 2021 06:50:55 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e33so18559784pgm.3;
+        Tue, 29 Jun 2021 06:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=NVE/yWmG13Srx+k1GcLPqraZFRtg51oSQRZanYNNkUA=;
+        b=VIFvQyHPYh23zuWVsCyyFUcNrJ/3dFcxDbFMj2Fn0Om7lzOlVqk4qQ/dSZAW8Xm0Hq
+         Oee5pq6NoIX0+OsyydHRUqfsy4SFZ33hCg/+eyx3Ja9A0Zl9LYQ/poqLnfqpt1JVhBt+
+         /8ZZ1+LvFHv94StQNO6Y1vO8CmTsb58RL2r9MNwmSm8ho7m6yx6LDXhX1nrrsC4jtX1/
+         5iw/tC5NHYWGMRAMf4V8a6p2mnTht23DoAeDWTVabp5Bm+9LCeo7zrwfVd4FMw0dD1/D
+         r8LEXFtCZ+8DATirZy4A9YgJcePV+rfwVIfVAT8u6ni71Dgyub6Ad85T1JewkCXUsR8C
+         dQjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=NVE/yWmG13Srx+k1GcLPqraZFRtg51oSQRZanYNNkUA=;
+        b=R3HNJt3BQ6Q33WS4tTBVM0RyUF9rWdYE0Ow9Kh7WhnISr76bsTMnfzs3DbHDQFphzV
+         Gb9JecTe9BkOKMvS50PlkJylc0yMY/fEnojO8tUiL6hAWfDMXIh6Mpg5DRZUKh4VBtmV
+         rJZ8z3PkYesmm5AE3tWJTqgs6FU8u0S/XeCTTUq+D9qd40uhZ2C0dlJuQi/o7GU5EFb7
+         8AgHermbhDaO+dAMJC72V2919ppPsW7q91Nxpyg4rr5bxRhuS2AfjdzOBPbz77r0DLVY
+         wYoTc0KXuBAcDtIx20gmucPrrHmwxys8y6w/clP3SauCKN8t7XLLciZp0nmd28E9MdzM
+         AuHg==
+X-Gm-Message-State: AOAM5308Dp4NTDojWW36kH4S5FQRoofAvzFaoBbXuZrmG0zWNh4bQXUc
+        0yBqH87b/DKvC/gpvKlmkI0=
+X-Google-Smtp-Source: ABdhPJwspCAT3P99G3AiRVnyDOfH56x5L7uz7zqufnDraLp7J8M5RmBzZn7hn0awoFBJ6zhjBnJHcw==
+X-Received: by 2002:aa7:900f:0:b029:306:24ca:108f with SMTP id m15-20020aa7900f0000b029030624ca108fmr30110894pfo.77.1624974655153;
+        Tue, 29 Jun 2021 06:50:55 -0700 (PDT)
+Received: from raspberrypi ([125.141.84.155])
+        by smtp.gmail.com with ESMTPSA id b9sm16774593pfm.124.2021.06.29.06.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 06:50:54 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:50:50 +0100
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, austin.kim@lge.com,
+        austindh.kim@gmail.com
+Subject: [PATCH] IMA: remove -Wmissing-prototypes warning
+Message-ID: <20210629135050.GA1373@raspberrypi>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Austin Kim <austin.kim@lge.com>
 
-+Cc Patrick's current address
+With W=1 build, the compiler throws warning message as below:
 
-On 18/06/21 15:23, Xuewen Yan wrote:
-> From: Xuewen Yan <xuewen.yan@unisoc.com>
->
-> Now in uclamp_rq_util_with(), when the task != NULL, the uclamp_max as following:
-> uc_rq_max = rq->uclamp[UCLAMP_MAX].value;
-> uc_eff_max = uclamp_eff_value(p, UCLAMP_MAX);
-> uclamp_max = max{uc_rq_max, uc_eff_max};
->
-> Consider the following scenario:
-> (1)the rq is idle, the uc_rq_max is last task's UCLAMP_MAX;
-> (2)the p's uc_eff_max < uc_rq_max.
->
-> The result is the uclamp_max = uc_rq_max instead of uc_eff_max, it is unreasonable.
->
-> The scenario often happens in find_energy_efficient_cpu(), when the task has smaller UCLAMP_MAX.
->
-> Inserts whether the rq is idle in the uclamp_rq_util_with().
->
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
->  kernel/sched/sched.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index a189bec13729..0feef6af89f2 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2550,7 +2550,10 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
->
->       if (p) {
->               min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
-> -		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
-> +		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> +			max_util = uclamp_eff_value(p, UCLAMP_MAX);
-> +		else
-> +			max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
+   security/integrity/ima/ima_mok.c:24:12: warning:
+   no previous prototype for ‘ima_mok_init’ [-Wmissing-prototypes]
+       __init int ima_mok_init(void)
 
-That makes sense to me - enqueuing the task will lift UCLAMP_FLAG_IDLE and
-set the rq clamp as the task's via uclamp_idle_reset().
+Silence the warning by adding static keyword to ima_mok_init().
 
-Does this want a
-
-  Fixes: 9d20ad7dfc9a ("sched/uclamp: Add uclamp_util_with()")
-
-?
-
-Also, when we have UCLAMP_FLAG_IDLE, we don't even need to read the rq max
-- and I'm pretty sure the same applies to the rq min. What about something like:
-
+Signed-off-by: Austin Kim <austin.kim@lge.com>
 ---
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 6510f0a46789..a2c6f6ae6392 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2833,23 +2833,27 @@ static __always_inline
- unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
- 				  struct task_struct *p)
+ security/integrity/ima/ima_mok.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
+index 1e5c01916173..95cc31525c57 100644
+--- a/security/integrity/ima/ima_mok.c
++++ b/security/integrity/ima/ima_mok.c
+@@ -21,7 +21,7 @@ struct key *ima_blacklist_keyring;
+ /*
+  * Allocate the IMA blacklist keyring
+  */
+-__init int ima_mok_init(void)
++static __init int ima_mok_init(void)
  {
--	unsigned long min_util;
--	unsigned long max_util;
-+	unsigned long min_util = 0;
-+	unsigned long max_util = 0;
+ 	struct key_restriction *restriction;
  
- 	if (!static_branch_likely(&sched_uclamp_used))
- 		return util;
- 
--	min_util = READ_ONCE(rq->uclamp[UCLAMP_MIN].value);
--	max_util = READ_ONCE(rq->uclamp[UCLAMP_MAX].value);
--
- 	if (p) {
--		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
-+		min_util = uclamp_eff_value(p, UCLAMP_MIN);
-+		max_util = uclamp_eff_value(p, UCLAMP_MAX);
-+
-+		/*
-+		 * Ignore last runnable task's max clamp, as this task will
-+		 * reset it. Similarly, no need to read the rq's min clamp.
-+		 */
- 		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
--			max_util = uclamp_eff_value(p, UCLAMP_MAX);
--		else
--			max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
-+			goto out;
- 	}
- 
-+	min_util = max_t(unsigned long, min_util, READ_ONCE(rq->uclamp[UCLAMP_MIN].value));
-+	max_util = max_t(unsigned long, max_util, READ_ONCE(rq->uclamp[UCLAMP_MAX].value));
-+out:
- 	/*
- 	 * Since CPU's {min,max}_util clamps are MAX aggregated considering
- 	 * RUNNABLE tasks with _different_ clamps, we can end up with an
+-- 
+2.20.1
+
