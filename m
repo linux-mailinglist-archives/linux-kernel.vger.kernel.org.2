@@ -2,181 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5FE3B74F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499903B74F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234696AbhF2PMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:12:40 -0400
-Received: from mail-co1nam11on2041.outbound.protection.outlook.com ([40.107.220.41]:15840
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234690AbhF2PMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:12:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JmUyhpNQWLjVHSTpJuhZniho52UzKMDPbYNy2BrniLGHaj8H9hMHyQ0v0NOuYejT/OeObDjEVpcRrN+GIyruZ+FubSpyf0CwVOk74AZb1T+OfBydqiz5ti0JV7HjmXBROYbd+thnxu9mr9f7v2Wfm+9XuR9dwkhEhjSVyWb7459syNJ6rIotOevQ4yrfH3oOxorXAxoyD/vfhdSkLSVYUeSP9R/yXPPdnYOBw3Ww+rXU9UBc9Unja9qedVWBJIFxBxiAJ2X7CS6qtu9YnIWZANVJg6suRIf2F5fcWItXt1czJZyAhrA2ukvET/Pwf2WcWYP/htV/fPMNG1bhjnQ5tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xb4qnCXMRkAtwTPAG0K71dqY6nzHVjaS4tCH3xBZGX0=;
- b=jJvYSmxky226woxRjQw/xHdH6xPNwhXD3D2s/s40MInsRpqK4J4aD+Ihe1/s4TE+xR8DGHsFUfCboj++xzdSWhxxrm1ch7DzIHNlicDGJnGVnDeBPy5sFywO3KSta4FwXffxheGwGQkKK7Gf5mVBCjxbikHCtwKz3YVIFcGy8H9y/ByWdx9SBYQoTpXIM7m7vd0mChvMogieuUQZf+Ui3A/owT6zg7fG94B+Ntl3m95yTUNUTLApdIMFlL6+sol4ll7n9ltQy3Q57z0RNgzHaY61k7nsa7t+UJpbeXneBiOJ2iM2yUIjUFbb2WtqACmPTFZjnZaXuUQ0kpmPH2+o/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xb4qnCXMRkAtwTPAG0K71dqY6nzHVjaS4tCH3xBZGX0=;
- b=HDK2HZ3sKOBuYCOAAHfFCZkBmy3mPOlxsLayuEvYmiphlmHig0hnVfI21U639PDO4XL0/KDFJUTQlsLPigEDMsd9LqtbonQ9Z0Rmha934O6HQc36PD52VXq5LMeUIVJTxVhuR1cq0cg8BgySwHGA+2XoT5QDwC7eMt2iwO8OVN0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by CO6PR12MB5396.namprd12.prod.outlook.com (2603:10b6:303:139::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Tue, 29 Jun
- 2021 15:10:03 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::401d:c7a2:6495:650b]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::401d:c7a2:6495:650b%3]) with mapi id 15.20.4264.019; Tue, 29 Jun 2021
- 15:10:03 +0000
-Subject: Re: [PATCH] drm/amd/display: Respect CONFIG_FRAME_WARN=0 in dml
- Makefile
-To:     Reka Norman <rekanorman@chromium.org>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Reka Norman <rekanorman@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Huang Rui <ray.huang@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Will Deacon <will@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210629112647.1.I7813d8e7298aa1a1c6bee84e6fd44a82ca24805c@changeid>
-From:   Harry Wentland <harry.wentland@amd.com>
-Message-ID: <9e21a922-38d2-3d03-4524-c122965f7db3@amd.com>
-Date:   Tue, 29 Jun 2021 11:09:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210629112647.1.I7813d8e7298aa1a1c6bee84e6fd44a82ca24805c@changeid>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [198.200.67.154]
-X-ClientProxiedBy: YQBPR01CA0128.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:1::28) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        id S234744AbhF2POF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:14:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234613AbhF2PN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 11:13:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EED1061D5E;
+        Tue, 29 Jun 2021 15:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624979489;
+        bh=IA+oZ5ip9u2qXhn0bknb8s4FMiQeh1admHHae8tV4hU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gnda8MieoA+S6RMhAezYCmSZqS7Dwga+uXQ5LFs4ZpxKANs7BzP+iMNsUIumocg3J
+         Y/j3nBhK84TbcKeXGbH3XMwBDncOpPdxmZlrlptfoyicFjRPk86uq5Rod0V4I1azU/
+         TUDhtIdLWulVJLJHb7wFlwi6WM9Qvn3Eei7cxw8aooPBfMuzJoahEwytVKmgEM3sYz
+         pmMBZLdKphkfFGKUSmsl6JRVayJS5VeIJ/O9l7vZF/NR3dxkvGHLDQA4BofuhJx3HK
+         2da7U9r/jjMRBsS9rAq3XT6brc9ux+PrqQrFwIbNA+BdbuQRbBN/FyH61r928x72PS
+         E5JvjC6oWkjwg==
+Date:   Tue, 29 Jun 2021 16:11:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Axel Lin <axel.lin@ingics.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v10 2/5] regulator: hi6421v600-regulator: fix platform
+ drvdata
+Message-ID: <20210629151101.GB4613@sirena.org.uk>
+References: <cover.1624962269.git.mchehab+huawei@kernel.org>
+ <eed34e8897c79a2ab13573d3da12c86569bca0f6.1624962269.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.50.3] (198.200.67.154) by YQBPR01CA0128.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:1::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Tue, 29 Jun 2021 15:10:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d357c19a-1853-4ba2-89fe-08d93b0ff8cd
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5396:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR12MB5396C80B7E98D467E0B1FABC8C029@CO6PR12MB5396.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SJa0GSrxoaO3l9Cykdl05Euvr5AqjIgWnDv8tdMzLsnBWf/NtVVmM16osTTWmEwWlsZJ3b76ajRuywm9Ap8A3tIfTUtf/AUAVuh7CBATS3BNRdKseVpJI2r8ohU8qe5Ii3Jd8tpTjc/pNNF946taX6loojqarw4iPJuslvYyK1FyV9ndSJ0+h8wM8imUCWucc/J0tvZZ/qVKG+yn098FLYoHuSlDxZNZyoOzwouPAx96bZxdcUenwBT1CboDqFci89INXK9FsqS1kMbuQeJgpVHJIapdrG+m8ch+Uy3rt5HjqGYZj+S2gr/mqT6y32aEvKcRE2qaAZQE2OzHQjfMSN+nIt+2wiYgnzeTVQ2KkpuBN3ZZA8fkJa2aQS2SgiPQWQzHsn/hOvadQLhWt0rtGesTZgW3iH353/bLXBsyDbBYKJqj0l/z/Kf/xSiHxKvHokdeZhNreuPhD5CvMfV5Ousk3+1Oqqz/f4aJVVXRa2G1/qp3IrcNFOklPdwjwmvOse14DYAmxt0OPM79wM78JOgoxyLfyllOo6T+yplZxLYXRoYklEnsrjHxcTqsR3CheA4mOL1uef7XVIDlOFU/cSgf9WKdPGt+Jx1SQNBMFqEoh3k96NQSvdWROecQE/Wbp5XH4C1qH6qf9il/1c1H1pm7UjzKAvnS9SEQrgfGE8XbU6nuV09Z/QpQdnd1vnOm7nmXrsGgm00qvzE7vS6HBtIcyZy8lYq84LHAkiGfVK0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(396003)(39860400002)(136003)(2906002)(31686004)(316002)(16576012)(44832011)(53546011)(4326008)(8676002)(36756003)(66946007)(54906003)(8936002)(83380400001)(66556008)(66476007)(16526019)(86362001)(2616005)(38100700002)(186003)(956004)(6486002)(31696002)(5660300002)(26005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXFwZHlTWXdFV3BKQm0vamtidUVtcmFMU3prQWJKdHp1Y0VxMVZrdDBDVTIx?=
- =?utf-8?B?YUxCU1JDUGFyeUVaS2IvTWVoTEFjeVRod3kvU25zS3RsVDU2NGx0NkhHYVpZ?=
- =?utf-8?B?UE9MSlBuQm51cW1ZMnVwenhqQ0lZRzl3NjVmOUJiT0hEbHNGUWxXdWp4aTVk?=
- =?utf-8?B?cDRUK3gzT2IvMk1vYytWdktYeUMvOUw1d3lVbUJETFBDeWduUU5vdEluY0hY?=
- =?utf-8?B?dlVQTkFwa3pFYS80djFZcXFwVWcwQU05SGhXaFlOQVAyZVZod0J4R3p0V1NK?=
- =?utf-8?B?cUF2eWFMNDNLaHk3aDZTa0xGb1k5b1J4dFpCTjE5WXM1STdwRjgwVmxmajg2?=
- =?utf-8?B?S2V4OFNtcEx3TTBaWVpUdk40UGlNMjVVYUlvaTd2Y0VrZitHdzRSMWVMVHFl?=
- =?utf-8?B?MHNIb3VPT0E3WXNST2pGV1JXZGpnMFZWSkRuNm54SmdoWEJwYUc2OFhqVEFZ?=
- =?utf-8?B?THFWYnJwZWMyS1JqaUJRdm14MVF0VGQ1RUxTYVNNSmYybE9mT2M4R2FuRkor?=
- =?utf-8?B?L3piSlU4QzMzWEIzOUlwUW9pbExvaUZLUlkyNS9xaWRXU3lTL3BhaUM5M0Uy?=
- =?utf-8?B?VnNlemttL3R6V1VOTmxJeUwrN1ZQb3h5b2RwVmIrcWp5UlJCbDJjYkU0bE5E?=
- =?utf-8?B?VEQ1TFpwWkRJOFoyZTBNdzlVQnVZejFNa1J6ZGg0dFROUDI1Nk13dEluTk43?=
- =?utf-8?B?TCtlUzRuRlkyQVNlMTdaMDg1aU5tM012bzVwSUlmREYrWnpTOEZNRUg4SEdp?=
- =?utf-8?B?MFFMeEw2RzVic1RwenVTY0l0VjNxZEpvWGJCRVlyQUQ4RXhXNmZQaDk3RFln?=
- =?utf-8?B?OW9QVHlwOWd4emZDZmNpdlpDUkdGN2k4MVMzSGV2Mjc5akxEZm1mMDFnT3BK?=
- =?utf-8?B?cXVQK3VlcnVlNVpkeWpEVjIya0ROUDIyazJGaHZZSjJMOTc3M3hxeFhua1pz?=
- =?utf-8?B?dW5USVhJbDlZS1czZ1ZCS2VUUDBjNUZ6NzVjTmlCWW9uMm9tTk41T2Z4Z01w?=
- =?utf-8?B?ditPSUZ2TzhuV05OVmNFR1NjOGdHOVBZUVdaMVVwUGRXTVBNYll4MUxHczNB?=
- =?utf-8?B?blRYOUZQYzUwSTQ2ZmxOZFNjWHhKRURsMGYyb01ta0ZBU3NDK2NOeElISXhy?=
- =?utf-8?B?Wkh2VkpYaFJ6TzFGY2FGRUhqMnVUd3pLWmh1cC9JZ3JRZXY4cy9OaDZiUDN0?=
- =?utf-8?B?NE1wZjExMGQ0cG85UFhnMllwdnJmaTg1VG83WkN4SEk5NGZPZGdHeUVpZDFl?=
- =?utf-8?B?amtEbWd3a2hjMFZqSVY0M1JHVGV3bFZhSDRHSDZwc1loT0k4d3N3SXdVTXdW?=
- =?utf-8?B?OWJrZm5lMGlSSlhhdFJhNFpwRlVKNTU5bnY1cGw5ZDU2N3JkektGOHl1UHVh?=
- =?utf-8?B?eHNERVZHOW1QZzJudWJTckVFd3FpZFBFWjJUMUdveUpqQytucGhic3B2N1JW?=
- =?utf-8?B?S3lYZFR0Ky8rK3FEYUZPYTViV2lYNjFGZ1J1bkNUbTZ0UjdRdWtNMWV4WUg5?=
- =?utf-8?B?cHpIcmpVVUJQVzJMRHNyQi9pL0lnc3FISFpmbElHTmp2eWJnWHRtL0dwZVkw?=
- =?utf-8?B?UXNqMDhPa09ucHhUVU0valJzZWNzcElzWk9tSUNzWjlnY05HVENCbjFkeTMr?=
- =?utf-8?B?dkNFenkvNGhlTFBoc2k0Y0hDeEowZHpTYnJDOHo5Ni9uSjBXNFI0VmcyaFpZ?=
- =?utf-8?B?cmowUG9XUTZwV0ZKT25VdXlQd0FzVjlSMWNEcUJjd2VSVTJIVjFMRXBwQlhP?=
- =?utf-8?Q?LdBFr4G0eU1Gmo0Le7AVAgOEu4Ujjilf1d2Iqqr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d357c19a-1853-4ba2-89fe-08d93b0ff8cd
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 15:10:03.6305
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jt/j8ugsK5w1jTvvOD55CEj6d8l9vKTL8H2sVSE+uywaDX14oOGcPlfs/dPhKIU8gRmG7aVGN5941nsHNJD3gg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5396
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
+Content-Disposition: inline
+In-Reply-To: <eed34e8897c79a2ab13573d3da12c86569bca0f6.1624962269.git.mchehab+huawei@kernel.org>
+X-Cookie: Use extra care when cleaning on stairs.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-28 9:27 p.m., Reka Norman wrote:
-> Setting CONFIG_FRAME_WARN=0 should disable 'stack frame larger than'
-> warnings. This is useful for example in KASAN builds. Make the dml
-> Makefile respect this config.
-> 
-> Fixes the following build warnings with CONFIG_KASAN=y and
-> CONFIG_FRAME_WARN=0:
-> 
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3642:6:
-> warning: stack frame size of 2216 bytes in function
-> 'dml30_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_mode_vba_31.c:3957:6:
-> warning: stack frame size of 2568 bytes in function
-> 'dml31_ModeSupportAndSystemConfigurationFull' [-Wframe-larger-than=]
-> 
-> Signed-off-by: Reka Norman <rekanorman@google.com>
 
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+--bCsyhTFzCvuiizWE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Harry
+On Tue, Jun 29, 2021 at 12:31:28PM +0200, Mauro Carvalho Chehab wrote:
 
-> ---
-> 
->  drivers/gpu/drm/amd/display/dc/dml/Makefile | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> index d34024fd798a..45862167e6ce 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> @@ -50,6 +50,10 @@ dml_ccflags += -msse2
->  endif
->  endif
->  
-> +ifneq ($(CONFIG_FRAME_WARN),0)
-> +frame_warn_flag := -Wframe-larger-than=2048
-> +endif
-> +
->  CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
->  
->  ifdef CONFIG_DRM_AMD_DC_DCN
-> @@ -60,9 +64,9 @@ CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_mode_vba_20v2.o := $(dml_ccflags)
->  CFLAGS_$(AMDDALPATH)/dc/dml/dcn20/display_rq_dlg_calc_20v2.o := $(dml_ccflags)
->  CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_mode_vba_21.o := $(dml_ccflags)
->  CFLAGS_$(AMDDALPATH)/dc/dml/dcn21/display_rq_dlg_calc_21.o := $(dml_ccflags)
-> -CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) -Wframe-larger-than=2048
-> +CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_mode_vba_30.o := $(dml_ccflags) $(frame_warn_flag)
->  CFLAGS_$(AMDDALPATH)/dc/dml/dcn30/display_rq_dlg_calc_30.o := $(dml_ccflags)
-> -CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) -Wframe-larger-than=2048
-> +CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_mode_vba_31.o := $(dml_ccflags) $(frame_warn_flag)
->  CFLAGS_$(AMDDALPATH)/dc/dml/dcn31/display_rq_dlg_calc_31.o := $(dml_ccflags)
->  CFLAGS_$(AMDDALPATH)/dc/dml/display_mode_lib.o := $(dml_ccflags)
->  CFLAGS_REMOVE_$(AMDDALPATH)/dc/dml/display_mode_vba.o := $(dml_rcflags)
-> 
+> platform drvdata can't be used inside the regulator driver,
+> as this is already used by the MFD and SPMI drivers.
 
+Can you clarify what exactly is using which platform drvdata already?
+This all feels very confused and I can't tell what the problem that's
+being fixed is, if it's a real issue or how this fixes it.
+
+>  drivers/misc/hi6421v600-irq.c               |  9 ++--
+>  drivers/regulator/hi6421v600-regulator.c    | 49 +++++++++++----------
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 18 +++-----
+>  include/linux/mfd/hi6421-spmi-pmic.h        | 25 -----------
+
+I'm especially nervous about the core driver still being in staging
+perhaps meaning there's some issue with it doing odd and confusing
+things.
+
+--bCsyhTFzCvuiizWE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDbOAQACgkQJNaLcl1U
+h9DAlwf/Xk/1GHAewsVo2OnlmvHfyZaTMpC/v9OxRXYKvzdLpnnrSfPKRPhSb8vE
+Bzx2cl0Ii8/DQFux0Mw+f3HawsIT9hD2NEM0IWwEJuvNm3c3x22fQgv2KoMaKOpx
+GCC0xOL3gM73xGAA7zcYAqcmTnLyfI/+vZzSQISJX5LX0A4nHs3yWl1Wsf/oBfaW
+ZmetZNAcqZcUFLAX51xAV4OG7XJZHH3bdjGl97rUngohEhqJaabboU6F8HTnMR4P
+tzVqDsk9TqWYOmE+xr47/hV3XDih9mrAXikqmG66e+hvLdYTXD54qHeGVVDUzzOn
+ZIELYdxaUl9DMR45NrfyqHE5Th7rlg==
+=GCra
+-----END PGP SIGNATURE-----
+
+--bCsyhTFzCvuiizWE--
