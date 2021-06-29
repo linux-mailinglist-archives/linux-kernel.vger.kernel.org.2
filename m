@@ -2,238 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3801B3B6EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0863B3B6EC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 09:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhF2HcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 03:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbhF2HcC (ORCPT
+        id S232292AbhF2HgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 03:36:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232233AbhF2HgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 03:32:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4E2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:29:35 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id hz1so34610910ejc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 00:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=03PV4K48V6c5/R86L70XCFhcKvRTMy+AXQxfxuAmtVE=;
-        b=L7KJevzhmo86xhp86Z6zI9rdQnlmfbzYjTFcsW7ijmWlCiKdt1qwKek4x8Phd7cBq8
-         vA4JSMGA8kDeKz2Aur4Tr2la+iQS9pgt9LwpoSSPoZgs2XcJq3PJt1aB3JUkAJ5AL9yz
-         XwLAZXCSwVL0+XOqtGb8W32rhUxH8KLkJy9uwGxVWMoi9bArHJssX+04Dkf/uGjKzcIL
-         F+qoaG927E5Q2tlNcpjXc3MMbwcLYiAqr33ajjzUcmKL3eLqenOf000Fd/4x8oyNdHeJ
-         v2/Y+OdgHuk09vY6vetsU+/0gKYgCcbIfKHJXVfnQQA2KkivKZZAbMb2rJwpYU2aougb
-         6zoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=03PV4K48V6c5/R86L70XCFhcKvRTMy+AXQxfxuAmtVE=;
-        b=lfcpCURJgTi4Mj2v7OAG7f2VhkG6ICu2z8qRwG0/Nd7ka9FbdSk+wcWqLTD3jgBU1B
-         nw8XBLJdFc+Pa+KXKBcgCYwQMLzxDI0u1sgFlltO+guKkutUSEVt7ZtUNbdQHSKwEMwf
-         f18Zuyfl5FlcL8yHER6MdWHHGKLWYx+fjP00QI4KZXXiPmSsCXjFUWpz/JT0os3YFp21
-         yxm0NmJ/xFKfxmpM1IrONtM61bNdXZKfMIXTDa/1hPpvHvC6JGW5+27nO59b4odmH2VM
-         GuBxbSBKwpOaVLmlW5qh07evFcXTMMK8kxKRyrx5P4y6ODaqrxvvGOTGCThY2SwGejbG
-         +z/Q==
-X-Gm-Message-State: AOAM531t/HrwP41PRYx9IS7xlys3NnRgm96skHE4x0bNzBCD1p6Ol1Ka
-        KYsGR+mDTcUMxwji9vjqrHwqJHFDKaFnLhrSo69e6w==
-X-Google-Smtp-Source: ABdhPJx13l3BNeNDnbsxjk6VQ2Yn4sEnRVmUSxU/d4gNvrl3CB2QGvLbfV9KGmcEKC1EgyqpkmEhbk6SjxccEe82sl0=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr27747079ejb.170.1624951773414;
- Tue, 29 Jun 2021 00:29:33 -0700 (PDT)
+        Tue, 29 Jun 2021 03:36:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 997AA2260E;
+        Tue, 29 Jun 2021 07:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624952023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=geQ8X9AXOnUE02C9Qq1it11DiCym9pX59BDvz1OzC7k=;
+        b=P+tiQH5rW0/Dloy//w95TmLcNMu6BCsUHKys9M41li+NI8D8wXbiar2U1j2u5U0n0lEZFn
+        u7k9rjUSbQ6384+6ASh8ezwuBUq+T1Ru2HxAjHYFwR9HLX0GQu3qQ0GfEth+yDNjgUABse
+        z8bxmXM/5iE4VkgL4s3CxT2u8unwIPg=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 478CEA3B8F;
+        Tue, 29 Jun 2021 07:33:43 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 09:33:42 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tanner Love <tannerlove.kernel@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Tanner Love <tannerlove@google.com>
+Subject: Re: [PATCH net-next v3 1/2] once: implement DO_ONCE_LITE for
+ non-fast-path "do once" functionality
+Message-ID: <YNrM1neBRdjkRf02@alley>
+References: <20210628135007.1358909-1-tannerlove.kernel@gmail.com>
+ <20210628135007.1358909-2-tannerlove.kernel@gmail.com>
+ <20210628111446.357b2418@oasis.local.home>
 MIME-Version: 1.0
-References: <20210628142607.32218-1-sashal@kernel.org>
-In-Reply-To: <20210628142607.32218-1-sashal@kernel.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Jun 2021 12:59:22 +0530
-Message-ID: <CA+G9fYuVhXzNGuk+Gp+PSGdRyqbXCJG2d98inqF2wqH3jNHprg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/101] 5.10.47-rc1 review
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628111446.357b2418@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Jun 2021 at 19:56, Sasha Levin <sashal@kernel.org> wrote:
->
->
-> This is the start of the stable review cycle for the 5.10.47 release.
-> There are 101 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed 30 Jun 2021 02:25:36 PM UTC.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git/patch/?id=3Dlinux-5.10.y&id2=3Dv5.10.46
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+On Mon 2021-06-28 11:14:46, Steven Rostedt wrote:
+> On Mon, 28 Jun 2021 09:50:06 -0400
+> Tanner Love <tannerlove.kernel@gmail.com> wrote:
+> 
+> > Certain uses of "do once" functionality reside outside of fast path,
+> > and so do not require jump label patching via static keys, making
+> > existing DO_ONCE undesirable in such cases.
+> > 
+> > Replace uses of __section(".data.once") with DO_ONCE_LITE(_IF)?
+> 
+> I hate the name "_LITE" but can't come up with something better.
+> 
+> Maybe: DO_ONCE_SLOW() ??
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Or rename the original DO_ONCE() to DO_ONCE_FAST() because it is
+more tricky to be fast. And call the "normal" implementation DO_ONCE().
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Anyway, besides my bike-shedding comment above...
 
-## Build
-* kernel: 5.10.47-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: a41d5119dc1eec2f0ffaa0a1777b0218a76b9f0e
-* git describe: v5.10.46-101-ga41d5119dc1e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.46-101-ga41d5119dc1e
+Same here :-)
 
-## No regressions (compared to v5.10.46-13-g88b257611f2a)
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-
-## No fixes (compared to v5.10.46-13-g88b257611f2a)
-
-
-## Test result summary
- total: 80209, pass: 65767, fail: 2329, skip: 11358, xfail: 755,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Best Regards,
+Petr
