@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761633B7363
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318DE3B7367
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbhF2NoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S234130AbhF2NpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhF2NoS (ORCPT
+        with ESMTP id S233957AbhF2NpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:44:18 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26A1C061767;
-        Tue, 29 Jun 2021 06:41:49 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id z4so1613791plg.8;
-        Tue, 29 Jun 2021 06:41:49 -0700 (PDT)
+        Tue, 29 Jun 2021 09:45:12 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03563C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:42:44 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id c8so24525598ybq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ecjztdsCL8Idb2y9jlcEGJ5wyQnjg16C2snI3Rv+1Vk=;
-        b=J29cMXnef+QyTdsvQH6LJXpDoflmXHlZYU9hM+xHk8/sCc4AcL2n/goZMtNLlI31Nb
-         vgkvEINjInTr7Y7NKwqT/mb3ZuXQxiu378nTJ38UPOs6tO2iCXCNfMZkDcxsseHy4rlb
-         +Xg5K/hl4b0zjCs2UFfU4JSf/JztwH/zIk+tRJx5/sAjn8aCu/oZHcgDHeuk5LjnTv7i
-         8EhdYIaQL/Fd63gQpUGNuxS8TcXh1N0hE3ykPuusPjCzofX9XPjbe4d6My0eTmlk95l1
-         uS8d/sjiIPWVcnL11k1q6eyQnVo6UQPdz+lxdawwMQukRG/BvUMN1i2AvH/quIGoE7NJ
-         2p6g==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VOzNSXRNHMc5MOS4B5K3kOYpzZOVF7ZsgyKSu3O9LlA=;
+        b=mfeiTDguJHLCToAE0jujhc/udo+V++SvBMWyVOh1DC+JTPl1k1JnRXMlP3zh7q4mMn
+         KJiha+EU0G69kCPAIi9fFCtuQBO5WtMFgX/V9yMkhrus7dvvnoZmmmE225Z280vfPV74
+         AZZxC1akfsVbNBcMoP0HOMK7DeMPL/Rr4RMP+qTxGmEwCY+Ume5Xs1LifD8BERnUjTRC
+         dIT7EeOL12+WPfUl/FwHj/E20/DT4JZx0LHpPS1vhMeMtC53Ue/iLtwADhmITphjV0XJ
+         AIMuIevC/ZAz/cYRyIXT9EII6Zv7FQycxdQQhfULdKX8vBjizsoK7j9Q+Sj1vr/bWtPq
+         F1Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ecjztdsCL8Idb2y9jlcEGJ5wyQnjg16C2snI3Rv+1Vk=;
-        b=VqDXMrSQzlrqZNPci10S4jfOaFr1mwawhmt0Kh2TNMv7H3uKmxXB0jckoh7XuFytrs
-         QRwEIaoZgOuklWucXSk5hUdUTMDqZxavMgHH/TpRWbgSh6tx+WEr7JxlT5aKTd35pHuq
-         n8R5iO8Rv7Bj9jLJg00x7GalyJfGQzra/gJMps0wfkcfdK2/fdxmXMb2AycsH6Y22x9e
-         A7lDXMw/OU2Dk/4/IJHzJTX0couUZ7zTWfq0I87EpA+61P39Bs6XUKTqJX8xjwyjLu3r
-         PzkzNvApIebEHjOeknt/i4WBJjEyVN2pm3CBGnvaCBCnEafYqILxNTDVcd0lp6Dylv9W
-         8Pfw==
-X-Gm-Message-State: AOAM532UzKBc0wcm0tcA6BzY66SzChx0eVQfDss0XeQeMhmzblPwi7nS
-        WyMkslbXOBKp9vWLYY25Sxs=
-X-Google-Smtp-Source: ABdhPJxch+337l3DMWR6X1WBiZfMTvf02kfOP2I/M+loIyKaYKq7kgcBtWGpwd5hjD9GoJvRMusfDw==
-X-Received: by 2002:a17:90b:3912:: with SMTP id ob18mr44526657pjb.178.1624974109497;
-        Tue, 29 Jun 2021 06:41:49 -0700 (PDT)
-Received: from raspberrypi ([125.141.84.155])
-        by smtp.gmail.com with ESMTPSA id y5sm3676469pjy.2.2021.06.29.06.41.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 06:41:49 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 14:41:44 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        austindh.kim@gmail.com
-Subject: [PATCH] smack: mark 'smack_enabled' global variable as __initdata
-Message-ID: <20210629134144.GA1168@raspberrypi>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VOzNSXRNHMc5MOS4B5K3kOYpzZOVF7ZsgyKSu3O9LlA=;
+        b=JhfudVrRl3/go9S9ZCGkD8jN7Xt3Nbn3cFdRljc+KvEiBFesAblr36ReecuO+V6i2a
+         /kKY/SdfsIEEGGVG2ItKi+QjIc5H8zX8owK6tB6uFb6g8i7Dglu94gfCF8svG7FmdR+K
+         k2LskECrdmCrreqB6GvdnRIh3xNwuP99EuYIpO4DeSLgNhBWicr6Epz1gZU7F82xlI39
+         D1mvfJparo2FkYZ4ZcXl2jWsTs0uY/tsvK54fVODdh2qU8i8ub9n1xAQhztJzTDpKDtR
+         sDTvYkXwpKS1BVJ3xveqQldteCqRz2e5YKgMPOeTP5G4XD5x45gUH5ldsI0sfIyHcutC
+         ahYQ==
+X-Gm-Message-State: AOAM533jMWW9QvPH0zNtoUPxrwFW4VE7PDWRMceFR3KBB1d1yw+yJqW0
+        Sbvj/uEVf1VHwboUNkpmoWZdD+M7AbTi/8Zb/9g=
+X-Google-Smtp-Source: ABdhPJz2fX4t1nsJJO+itNuMhKY5a7v0DvwjHmBc1iOTl/HB2nHswGoMwGTTrTOFkridDyfcfzECqKzhm+NCtquKmAs=
+X-Received: by 2002:a25:e08a:: with SMTP id x132mr18400012ybg.511.1624974163266;
+ Tue, 29 Jun 2021 06:42:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:7010:7242:b029:be:68eb:5bcc with HTTP; Tue, 29 Jun 2021
+ 06:42:43 -0700 (PDT)
+Reply-To: drrhamabenson335@gmail.com
+From:   " Dr Rhama David Benson," <drsulemusa41@gmail.com>
+Date:   Tue, 29 Jun 2021 06:42:43 -0700
+Message-ID: <CADKD+VxSxOX_Q+hTK6xpbzwe+rGSStqh-t9Pm4XHfCg_3yJm_g@mail.gmail.com>
+Subject: TRUST AND CONFIDENCE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+From: Dr Rhama David Benson,
 
-Mark 'smack_enabled' as __initdata
-since it is only used during initialization code.
+Please read carefully,
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- security/smack/smack.h     | 2 +-
- security/smack/smack_lsm.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+This message might meet you in utmost surprise. However, it's just my
+urgent need for foreign partner that made me to contact you for this
+transaction. I got your contact from yahoo tourist search while I was
+searching for a foreign partner. I am assured of your capability and
+reliability to champion this business opportunity when I prayed about
+you.
 
-diff --git a/security/smack/smack.h b/security/smack/smack.h
-index c3cfbdf4944a..99c3422596ab 100644
---- a/security/smack/smack.h
-+++ b/security/smack/smack.h
-@@ -302,7 +302,7 @@ int smack_populate_secattr(struct smack_known *skp);
- /*
-  * Shared data.
-  */
--extern int smack_enabled;
-+extern int smack_enabled __initdata;
- extern int smack_cipso_direct;
- extern int smack_cipso_mapped;
- extern struct smack_known *smack_net_ambient;
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 223a6da0e6dc..cacbe7518519 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -54,7 +54,7 @@
- static DEFINE_MUTEX(smack_ipv6_lock);
- static LIST_HEAD(smk_ipv6_port_list);
- struct kmem_cache *smack_rule_cache;
--int smack_enabled;
-+int smack_enabled __initdata;
- 
- #define A(s) {"smack"#s, sizeof("smack"#s) - 1, Opt_##s}
- static struct {
--- 
-2.20.1
+I am a banker by profession in Burkina-Faso, West Africa and currently
+holding the post of manager in account and auditing department in our
+bank. I have the opportunity of transferring the left over funds ($5.5
+Million Dollars) belonging to our deceased customer who died along
+with his entire family in a plane crash Hence; I am inviting you for a
+business deal where this money can be shared between us in the ratio
+of 60/40 if you agree to my business proposal.
 
+Further details of the transfer will be forwarded to you as
+soon as I receive your return mail as soon as you receive this letter.
+
+Please indicate your willingness by sending the below information for
+more clarification and easy communication.
+For more details, Contact me for more details.
+
+(1) YOUR FULL NAME...............................
+(2) YOUR AGE AND SEX............................
+(3) YOUR CONTACT ADDRESS..................
+(4) YOUR PRIVATE PHONE N0..........
+(5) FAX NUMBER..............
+(6) YOUR COUNTRY OF ORIGIN..................
+(7) YOUR OCCUPATION.........................
+
+Trusting to hear from you immediately.
+
+Thanks & Best Regards,
+Dr Rhama David Benson.
