@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBCE3B6BCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA7A3B6BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhF2Ame (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 20:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        id S232251AbhF2Alq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 20:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhF2Amc (ORCPT
+        with ESMTP id S230086AbhF2Alo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 20:42:32 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019FFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:40:05 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so20893754ota.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
+        Mon, 28 Jun 2021 20:41:44 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC4DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:39:17 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so18636868ybp.17
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+6u2RG+sSlQSg+vc0Yj3ZZoGIOveJe7hDDIdJuTdPGM=;
-        b=V7kB/DTMK3LIspUUD1BmuRSiNMAFWbl/cBxbK8vYtvWpknYr2jZxiezDpkU72ZqF5k
-         O1Ecv5duSmcx8T4oheVkiSi8ooNi05+LnksmjSpCHyeIto8ZLMa9DMdGce/6/FuVU8y7
-         mEJIHhOLgSpkJWf8M6qgELcafcQUnrPK/nzSLlq4LN5D/Sb9ivmP6B8+ZKrXqJ01QP12
-         4ZLPo+Xbbw/bdcd99VLGQuWL/PpHXc8aMa7Jg4gqB+FP9YfT8kquduBkSsFGnTuNwC8z
-         erocY2F9DV9i3QnpXfCC5aCtVc3ZdhlLw8xCCUxahG4grVseNIjApmrsnWysZzUNJaEL
-         C7Ew==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ErXbW4kB5vis3JG9x6sbxAOmYtyXBZy8W86kw16tbmI=;
+        b=WgX7wxhJwSBDTQCu8F9t7asAkjuBaVwiPI/jD8di+K0yMvaaDWERtQT5L1HmRyKtBc
+         2BffaNKaGsLLDeFPPIHVosSOuKtkPWmBwjwF7OfvkTgTx/k59VXsrocZMfPVSRl4ZvhU
+         w462kyqNSYAGlkOasKgJwp7IHLG+YgACgys7aQQfElBEkZeIrni7ToVmgVxR/VjlO0NU
+         CJYGHIL3E+yLSG/MiH7BMDjEsERKlzHKaVCLJjzYC741muqyTrxq6++kluHP640hlxAs
+         t/926NdnqaBQ2rfxgYf11+J7q4aneBilbasuxhj70QlqwcAij19PeiFRSwRe+J0HsC+C
+         6rEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+6u2RG+sSlQSg+vc0Yj3ZZoGIOveJe7hDDIdJuTdPGM=;
-        b=VF2jMjiWvcpyn2oWaufRLUu4MI/Z7BeTTR0jKG1EdoP+vJT5ZmATvxOMvYqzON/MWe
-         u0nSwGjplVDeZRxHsZ3A9M8iMxpStlChrShWrA390wuBIC/a120YonpPfiz89eGjI8DV
-         S2pVn7xA2VDHXOrGQ82h/Q8+0tGGLrSZ95n7itC4hzHtTuvLM+TBjpIZktrp7VBEi6Fd
-         fBcXCuTK+dHwpVkfqfR0p9ROqeLQE2eCoK6TRrwN3dZjZda/Oi1lc/mI/JUucKyYnki/
-         oY5hprQ2PsDfxO+5r2Dbao25Pe8Ihp5tm2NHiy3TAZJox0Ewyk6ST6r8rkw3C5GKyPY9
-         7vAA==
-X-Gm-Message-State: AOAM531jCGcOcXU8MDan4+htBYU4simgGF7CIVNyvztvPC25cZmA3AWQ
-        A0Q3q9tMVKXGMTyjCujV85XDyw==
-X-Google-Smtp-Source: ABdhPJxspl+N2dD5PBNJ3IIY9QGvG1iX57PP0YC/Ke4tIoOF5jmqOC0AlSIrVBSZ5i/lB7SrqYu6uw==
-X-Received: by 2002:a9d:68d1:: with SMTP id i17mr1990775oto.227.1624927204360;
-        Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a7sm1860832oia.42.2021.06.28.17.40.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: qcom: spmi-gpio: Add pmc8180 & pmc8180c
-Date:   Mon, 28 Jun 2021 17:38:51 -0700
-Message-Id: <20210629003851.1787673-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ErXbW4kB5vis3JG9x6sbxAOmYtyXBZy8W86kw16tbmI=;
+        b=ungBC8Smmhr1pIO2bcMjUgPeb1RmgJiGOVHljHomqGSuZHWvKhkIv9xUZqZ7QGoEpi
+         xtmP4JTTzGnswC4iNhuEHCjCnEsypvnppLY2GPGdCujpFqqiYFTyuRZT/JtUnQiN0x5K
+         mbbUv/8HvOECaPWIM5lzjE7SxVfqcT4TQ+DJUHCDWUDDkMAYMOVHft0oxnXQRY9usm1/
+         rLlG3B6a6g2EgKB/hQu32h5MrjdjteU6Q7hl3FJ3bxybdkZK0LsOMIYkqFCKFKiX6P8d
+         RHT51zPQ0YniqQdRlyZSeUflz/fzr2Hmdpkk1Fv5u+Evekoe4YwGjdwqZp9XFyvAKhAP
+         JMGA==
+X-Gm-Message-State: AOAM531px1pJ2OsBptj+JgsCoDeQgtlUsG8roMYo6/MTIKqQJT0sCzfP
+        SEteQ/i9Z+2bT4MmkwGfs8/jZ/ikvtJG7A==
+X-Google-Smtp-Source: ABdhPJxr2X2R0XQhfO9qiqp9FUNGr7U3VdSeJ1hPG6jj4F+OJ+ZqAG168XWd7aeb2P78V1lW+8CcLSDcc3d0vQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a805:ee32:b96e:716e])
+ (user=dlatypov job=sendgmr) by 2002:a25:1455:: with SMTP id
+ 82mr34670239ybu.403.1624927156815; Mon, 28 Jun 2021 17:39:16 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 17:39:08 -0700
+Message-Id: <20210629003908.1848782-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2] kunit: tool: remove unnecessary "annotations" import
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SC8180x platform comes with PMC8180 and PMC8180c, add support for
-the GPIO controller in these PMICs.
+The import was working around the fact "tuple[T]" was used instead of
+typing.Tuple[T].
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Convert it to use typing.Tuple to be consistent with how the rest of the
+code is annotated.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 4 ++++
- drivers/pinctrl/qcom/pinctrl-spmi-gpio.c                     | 2 ++
- 2 files changed, 6 insertions(+)
+v1 -> v2: fix typos in commit message.
+---
+ tools/testing/kunit/kunit_kernel.py | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-index 161216daf463..412613c80e9e 100644
---- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-@@ -30,6 +30,8 @@ PMIC's from Qualcomm.
- 		    "qcom,pm8350-gpio"
- 		    "qcom,pm8350b-gpio"
- 		    "qcom,pm8350c-gpio"
-+		    "qcom,pmc8180-gpio"
-+		    "qcom,pmc8180c-gpio"
- 		    "qcom,pmk8350-gpio"
- 		    "qcom,pm7325-gpio"
- 		    "qcom,pmr735a-gpio"
-@@ -120,6 +122,8 @@ to specify in a pin configuration subnode:
- 		    gpio1-gpio10 for pm8350
- 		    gpio1-gpio8 for pm8350b
- 		    gpio1-gpio9 for pm8350c
-+		    gpio1-gpio10 for pmc8180
-+		    gpio1-gpio12 for pmc8180c
- 		    gpio1-gpio4 for pmk8350
- 		    gpio1-gpio10 for pm7325
- 		    gpio1-gpio4 for pmr735a
-diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-index a89d24a040af..9251fb5153e7 100644
---- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-+++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-@@ -1123,10 +1123,12 @@ static const struct of_device_id pmic_gpio_of_match[] = {
- 	{ .compatible = "qcom,pm660l-gpio", .data = (void *) 12 },
- 	/* pm8150 has 10 GPIOs with holes on 2, 5, 7 and 8 */
- 	{ .compatible = "qcom,pm8150-gpio", .data = (void *) 10 },
-+	{ .compatible = "qcom,pmc8180-gpio", .data = (void *) 10 },
- 	/* pm8150b has 12 GPIOs with holes on 3, r and 7 */
- 	{ .compatible = "qcom,pm8150b-gpio", .data = (void *) 12 },
- 	/* pm8150l has 12 GPIOs with holes on 7 */
- 	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
-+	{ .compatible = "qcom,pmc8180c-gpio", .data = (void *) 12 },
- 	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
- 	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
- 	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 90bc007f1f93..2c6f916ccbaf 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -6,15 +6,13 @@
+ # Author: Felix Guo <felixguoxiuping@gmail.com>
+ # Author: Brendan Higgins <brendanhiggins@google.com>
+ 
+-from __future__ import annotations
+ import importlib.util
+ import logging
+ import subprocess
+ import os
+ import shutil
+ import signal
+-from typing import Iterator
+-from typing import Optional
++from typing import Iterator, Optional, Tuple
+ 
+ from contextlib import ExitStack
+ 
+@@ -208,7 +206,7 @@ def get_source_tree_ops(arch: str, cross_compile: Optional[str]) -> LinuxSourceT
+ 		raise ConfigError(arch + ' is not a valid arch')
+ 
+ def get_source_tree_ops_from_qemu_config(config_path: str,
+-					 cross_compile: Optional[str]) -> tuple[
++					 cross_compile: Optional[str]) -> Tuple[
+ 							 str, LinuxSourceTreeOperations]:
+ 	# The module name/path has very little to do with where the actual file
+ 	# exists (I learned this through experimentation and could not find it
+
+base-commit: 1d71307a6f94df3750f8f884545a769e227172fe
 -- 
-2.29.2
+2.32.0.93.g670b81a890-goog
 
