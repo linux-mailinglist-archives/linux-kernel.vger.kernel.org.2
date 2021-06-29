@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FCE3B7713
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A59D3B7714
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhF2RWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S233688AbhF2RXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 13:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhF2RWj (ORCPT
+        with ESMTP id S232284AbhF2RXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:22:39 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F6BC061760;
-        Tue, 29 Jun 2021 10:20:10 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id h6so15826420ljl.8;
-        Tue, 29 Jun 2021 10:20:10 -0700 (PDT)
+        Tue, 29 Jun 2021 13:23:10 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C20FC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 10:20:43 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id j13so4564637qka.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 10:20:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LK5PQkS14wpetJcASWpCkEN2Wd6IM2V31FOvQQneP2w=;
-        b=f99Fj/YrcvxKZIpbq+97B3RhPbybF/gF5J7neDsWNfSdqlwdL7quuIGbsdgHzN0lNZ
-         JSnG9RSWcGiQJjY2ui5XK7zoYD816pqFmqP1gArn1pewGhz2dcr4b0V6IiClnQPena5I
-         8AU6qfqXa6+Svfq/h9fWYV4QCzO6/ZaUDRvSeSfKZea92XQ1j2m2GS52+AY9rmYzzBoA
-         zxBZ64ryFJMN61s/DVBiFqygIfsJRqNGRCoHVFZwY2lzFbNIsTQJ4idflxQb/CxVm5CO
-         2Oxr2JLEy9XJvtFTG4395GnAoKJ38ZnohoqaDYAUzSHN+8t4sj+b9uvcEJuCCovVo2uI
-         ItGA==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/g9C8vLCxpxetYHMmmvMHDZ4rkR3+uVlFuhnglVYRGo=;
+        b=N+8FEgPL4LPJUkZytSvzXk/NQU+4fS/ebf+uSYnSGtsPwtD8ih41fxs9n77SFtBGLP
+         7VHnDtzlurQ1uYpD7vYrN2tolMHqra0tJHyh08buGKbteTNjvBI9HQ0LMlXbzeT6r2tT
+         Bi9ZVHSjJZv+IJoNbx0FkZKHyYIvROvfe3PXBHM9id4jYzEU3VtdCf4gw4CTSaMsQs0N
+         UueeXQcOBcuEoHfF02D1oQ4DMwcIvkUuHcXfBf4lkSopQ+T/zhmxKRgtS1xY5bTWpzaH
+         7CrV7goIoYP3cDDeu2o0lDqU1O2Y8BD8ybqETuUi5SjmEbvjVGHl9TTPdAxpDmC7vsVR
+         wvqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=LK5PQkS14wpetJcASWpCkEN2Wd6IM2V31FOvQQneP2w=;
-        b=Yy6ak+/Wc/plIGH91mpep3WHgnsO2KKvLPZmooM+6IraPWn5XR/0UmfqWvf5PI6OMp
-         SH+M5Ngi/k6ZiLiNOoOljdmGb9gL42ocnRI2KqkJzR649Ni6ojHPqzUqB/jIDHV+Q8Y3
-         9i1Xx01cNVo5+G1H61jCyzE5CoMT3Apehu/JPa7FaGDoXkdDjybU2zN2UDBE2Rqhwv/F
-         vZAPBu7c0IM31v1OHCA8ZDgQbMYCghXCTJmaxACxAcJ4QfGAAYzd5VJSN+ZCFweQdlvA
-         67OFhauT+g/3Nw54DDSk/+wpvEMQnyi6d/YZxwfTV81fjc4s6rjdnMew66fLxhMAqbNu
-         nt+A==
-X-Gm-Message-State: AOAM530nFy5XJEkkBMIqeiRY2chZVfdzHPuG0lA7QJaJcGM4ojtB/WHU
-        VWA8KMjKY3xcynIcTRzz1P47svhNh5k=
-X-Google-Smtp-Source: ABdhPJxW1kviTBnANF8eECQin5QSCZVDG6gyzsn+HPScc1Q5dP9+/YCLCng490d7rW5uubzuLvhAQQ==
-X-Received: by 2002:a2e:9a52:: with SMTP id k18mr4688098ljj.315.1624987208867;
-        Tue, 29 Jun 2021 10:20:08 -0700 (PDT)
-Received: from [192.168.1.102] ([178.176.72.235])
-        by smtp.gmail.com with ESMTPSA id t14sm1675527lfd.14.2021.06.29.10.20.07
+        bh=/g9C8vLCxpxetYHMmmvMHDZ4rkR3+uVlFuhnglVYRGo=;
+        b=RLJFnfy50VAGt5gpGSYjhANE6dOxhTjamy1o6Yf7qWYFDuVuSCcN5XImAfrMMUWfAr
+         YVjl+OsM5VE8TX4MSxd2X4dBMOENrDIjYcj6JyYffKIlMwYyKl1yL+eiZ+RPmXKEwGEL
+         GtTxen4HxKPRSYodWlk4b2ZZKHNHa/CV1qMYJevXEYGg6+Zy+bNLmOBByG4tsOq01JNs
+         6xZ7T23nkhKXKQ9o7xxtd1XL4tWzv+hqD1eJcJZV8UdurvpFKh5FcQHmYoP/mBmPdHaN
+         gxhsdKn9S6Pbob1xKqPVhY04eqxJLevPFkZhE2lMKjRadpzFdZ3OHxIUThpd5HemQNtl
+         QYuw==
+X-Gm-Message-State: AOAM532RackwmBKFIlnpZceIf6zFfBM7DmRywzXhLIjnTM7Lvi3SPqna
+        +vaWX06eIOYi2vFhQq/LtMyWmA==
+X-Google-Smtp-Source: ABdhPJykOZcrDnmOCKaUJRp9PsIrPnZo/Uuby9MJ0DopNbFrV0OF9l8f9Gld8423jiQ3X6pEPQZHgQ==
+X-Received: by 2002:a05:620a:248b:: with SMTP id i11mr7745403qkn.153.1624987242047;
+        Tue, 29 Jun 2021 10:20:42 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id d129sm12430058qkf.136.2021.06.29.10.20.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 10:20:08 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] MIPS: Loongson64: Add pm block node for
- Loongson-2K1000
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210629011913.18611-1-zhangqing@loongson.cn>
- <20210629011913.18611-2-zhangqing@loongson.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <7caf171a-7d7d-4f2a-a065-58fadace690d@gmail.com>
-Date:   Tue, 29 Jun 2021 20:20:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 29 Jun 2021 10:20:41 -0700 (PDT)
+Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
+        "ltp@lists.linux.it" <ltp@lists.linux.it>,
+        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
+References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
+Date:   Tue, 29 Jun 2021 13:20:40 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210629011913.18611-2-zhangqing@loongson.cn>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 4:19 AM, Qing Zhang wrote:
-
-> The module is now supported, enable it.
+On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
+> Dear BTRFS folks,
 > 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> ---
+> I am hitting a potential regression of btrfs, visible only with
+> fallocate05 test from LTP (Linux Test Project) only on 32+ core Azure
+> instances (x86_64).
 > 
-> v4-v5:
-> add missing spaces
+> Tested:
+> v5.8 (Ubuntu with our stable patches): PASS
+> v5.11 (Ubuntu with our stable patches): FAIL
+> v5.13 mainline: FAIL
 > 
->  arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> PASS means test passes on all instances
+> FAIL means test passes on other instance types (e.g. 4 or 16 core) but
+> fails on 32 and 64 core instances (did not test higher),
+> e.g.: Standard_F32s_v2, Standard_F64s_v2, Standard_D32s_v3,
+> Standard_E32s_v3
 > 
-> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> index 569e814def83..38bf14f00694 100644
-> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> @@ -101,6 +101,16 @@ uart0: serial@1fe00000 {
->  			no-loopback-test;
->  		};
->  
-> +		pm: power-controller {
-> +			device_type = "power management";
-> +			compatible = "loongson, reset-controller";
-                                               ^
-   When I said te space aren't allowed, I meant this place. :-)
+> Reproduction steps:
+> git clone https://github.com/linux-test-project/ltp.git
+> cd ltp
+> ./build.sh && make install -j8
+> cd ../ltp-install
+> sudo ./runltp -f syscalls -s fallocate05
+> 
 
-> +
-> +			reg = <0 0x1fe0700c 0 0x8>,
-> +			      <0 0x1fe07014 0 0x8>,
-> +			      <0 0x1fe07030 0 0x8>;
+This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
 
-   TY! :-)
-
-[...]
-
-MBR, Sergei
+Josef
