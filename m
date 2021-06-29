@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA223B7696
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7673B7698
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhF2Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhF2Qn0 (ORCPT
+        id S234010AbhF2QoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:44:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25102 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232441AbhF2Qn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:43:26 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B6FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:40:48 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id s10-20020a4aeaca0000b029024c2acf6eecso4592516ooh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uELLVvexdDVZ7QoY/jcBV+gQtVgk5q8UpdZvDzEAtEY=;
-        b=qVLx61deuLJ7bywIsa+tF05uKf/2+b8CeHj0rPEfLWxdLgu89IBSDgt3YkH7vGacMz
-         nyCK9I57XTPgV0vRTioFcpOSilac9+BbCi5wsbe4bm8lYLVU/Sc8/8wSXbRu5cPQdjaC
-         0vofil/WaPZIPbw6olol4kTB0ZI80Uj436XmmLqwyVcChB9dZIzyJZ296Jj9FUZutGU4
-         rcNQztRL5FCRQQMVAlPidpfneYrvhUK6sgePq7j2h8OpKgt5Hy6JAqKkB+rZdyOnibu1
-         kFXJejSoHzMus5qDag0ZkQRBL0bB2BL75ikXCj6nydZtygxeVb3/XsogU093pfqmozl8
-         Y+DQ==
+        Tue, 29 Jun 2021 12:43:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624984890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R6lsvhzrygbJh4AwNqvmWZ2sHvNWKnTHpejWGaVE6/Q=;
+        b=Vek6keY6+sKxtieEM3dL0/7DcPZ7jsjSpYGCDSqDCOJ+NEIoL720u7/vi5me3dY9g+i+Ze
+        TEfcoM99ZQ7WJnBICkG3tZ9xpTZ2TA3jwXTopgdQW8zta79yzzjCUOqPuwVH9rFoqUg4Bx
+        NFPcKosd9Rq95zxyZuciUV4zfHtp9NQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-f715RpGQP3qNIbLFL9-G8w-1; Tue, 29 Jun 2021 12:41:27 -0400
+X-MC-Unique: f715RpGQP3qNIbLFL9-G8w-1
+Received: by mail-wm1-f70.google.com with SMTP id j6-20020a05600c1906b029019e9c982271so1539182wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:41:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uELLVvexdDVZ7QoY/jcBV+gQtVgk5q8UpdZvDzEAtEY=;
-        b=hhwQ/0clhp/gFbOpz/QhwvmAkvVbQwdsXvzCVKIWhfORqoHkwX1gyPbqSIZJhfdZ+C
-         u72UlmRKkofHdWzeGOF5MehFRT7GLhF7CFrDrZ956JYil7prJdxVbHwMZqdYYGQzirhQ
-         qMDAU7vcQ5xVqVNom1auO1vBeFojiNKNwWsRav67GbFD6A7lKIPd5HRvp8JnJxOvwBDf
-         tQunTX7OPOM7nblw4LrbURwsodxv6F+kKK/I8IliDqoOS0Kj+t4witD5gk1rjhc3HHph
-         TAo9mfRo/ZlQYeIo8Pz9CT2ltgZSDL2X1YgSX69/doGryCuDkqKYML4T7AWIEzNvX/5D
-         hbYQ==
-X-Gm-Message-State: AOAM532ZjdOgQSx3i44swtobLA61gXD2QA5IGsrcMrNzYDp5lzJ/EYMR
-        OVQrH6PbauJwIW3JNFEI3mhip8ZjiuqrVqsk3J1Bww==
-X-Google-Smtp-Source: ABdhPJyfUcuxxTGNuv67eCqzzb2eh7tthiLbron1HVfPakPvQeEyKynR8racWmed8vyHpxzlYhl5tHUQC2/fv76TRms=
-X-Received: by 2002:a4a:9406:: with SMTP id h6mr4789265ooi.36.1624984847148;
- Tue, 29 Jun 2021 09:40:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R6lsvhzrygbJh4AwNqvmWZ2sHvNWKnTHpejWGaVE6/Q=;
+        b=ARCjaUpi3VjsCd10hEqtp7r9itkQGSoxmltCNXqERphYHxuoOoZZPeAJKjJWYn8NJe
+         /amOHvkKNWpHrgp0xx/HMSc++VK/+H48mMB66yBlXCKpmcV4auuGHowS05BcPZO85G3t
+         Ni5SzwI0jJMBdIA0Qwrdhrno3N0OptsWP/TWzAszyLr9BwcMrATN7frgSjneMG5UFY14
+         5MsHsuEdDf8o/CWz6ga39eyIswrc8wvSWviLnU28W7UBZILAZ0FSEF8kO/vkvBpBgU28
+         iCaalbR72pgh3l/zbPsou8H+ahIEqKFOt9NWa3nf0ysANNPVqubn27wEq57e7hnL5x11
+         v8Sw==
+X-Gm-Message-State: AOAM53245un581goEPjLiFkdJm+0WxDcNKUwhBYdxTRAxlHkkJKSKGt1
+        Wyv/4iZzo+OEBnhj+PyouMIUu8VTcJVu7c8UXt+pCSJcFYQO+MBUTDJTOWxaenY4pXgCGl4d8lx
+        wjoYw6MQg5cfSl+1Uk9/i2obU
+X-Received: by 2002:a05:600c:33a6:: with SMTP id o38mr18188279wmp.126.1624984884908;
+        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtkavlaXf3Z3/wVm1xSHl973s+nq+E8K48zkjSONEaCMRvgep32bNqxaRm0rT1LRFZcUt0CA==
+X-Received: by 2002:a05:600c:33a6:: with SMTP id o38mr18188269wmp.126.1624984884791;
+        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
+Received: from krava ([109.53.3.246])
+        by smtp.gmail.com with ESMTPSA id h10sm3339837wmb.40.2021.06.29.09.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 09:41:24 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 18:41:21 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+Message-ID: <YNtNMSSZh3LTp2we@krava>
+References: <20210202135002.4024825-1-jackmanb@google.com>
+ <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava>
+ <YNtEcjYvSvk8uknO@krava>
+ <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210629161738.936790-1-glider@google.com>
-In-Reply-To: <20210629161738.936790-1-glider@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 29 Jun 2021 18:40:34 +0200
-Message-ID: <CANpmjNM-gZyGivnJY-qzcn-pVmGon+Mfy8gNxsEvdUwOvPaqNA@mail.gmail.com>
-Subject: Re: [PATCH v2] kfence: skip DMA allocations
-To:     Alexander Potapenko <glider@google.com>
-Cc:     akpm@linux-foundation.org, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 at 18:17, Alexander Potapenko <glider@google.com> wrote:
-> Allocation requests with __GFP_DMA/__GFP_DMA32 or
-> SLAB_CACHE_DMA/SLAB_CACHE_DMA32 cannot be fulfilled by KFENCE, because
-> they must reside in low memory, whereas KFENCE memory pool is located in
-> high memory.
->
-> Skip such allocations to avoid crashes where DMAable memory is expected.
->
-> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: stable@vger.kernel.org # 5.12+
-> Signed-off-by: Alexander Potapenko <glider@google.com>
+On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+> > > > On Sun, 27 Jun 2021 at 17:34, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > >
+> > > > > On Tue, Feb 02, 2021 at 01:50:02PM +0000, Brendan Jackman wrote:
+> [snip]
+> > > > Hmm, is the test prog from atomic_bounds.c getting JITed there (my
+> > > > dumb guess at what '0xc0000000119efb30 (unreliable)' means)? That
+> > > > shouldn't happen - should get 'eBPF filter atomic op code %02x (@%d)
+> > > > unsupported\n' in dmesg instead. I wonder if I missed something in
+> > > > commit 91c960b0056 (bpf: Rename BPF_XADD and prepare to encode other
+> >
+> > I see that for all the other atomics tests:
+> >
+> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 21
+> > #21/p BPF_ATOMIC_AND without fetch FAIL
+> > Failed to load prog 'Unknown error 524'!
+> > verification time 32 usec
+> > stack depth 8
+> > processed 10 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > Summary: 0 PASSED, 0 SKIPPED, 2 FAILED
+> 
+> Hm that's also not good - failure to JIT shouldn't mean failure to
+> load. Are there other test_verifier failures or is it just the atomics
+> ones?
 
-Reviewed-by: Marco Elver <elver@google.com>
+I have CONFIG_BPF_JIT_ALWAYS_ON=y so I think that's fine
 
-Thanks!
+> 
+> > console:
+> >
+> >         [   51.850952] eBPF filter atomic op code db (@2) unsupported
+> >         [   51.851134] eBPF filter atomic op code db (@2) unsupported
+> >
+> >
+> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 22
+> > #22/u BPF_ATOMIC_AND with fetch FAIL
+> > Failed to load prog 'Unknown error 524'!
+> > verification time 38 usec
+> > stack depth 8
+> > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > #22/p BPF_ATOMIC_AND with fetch FAIL
+> > Failed to load prog 'Unknown error 524'!
+> > verification time 26 usec
+> > stack depth 8
+> > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> >
+> > console:
+> >         [  223.231420] eBPF filter atomic op code db (@3) unsupported
+> >         [  223.231596] eBPF filter atomic op code db (@3) unsupported
+> >
+> > ...
+> >
+> >
+> > but no such console output for:
+> >
+> > [root@ibm-p9z-07-lp1 bpf]# ./test_verifier 24
+> > #24/u BPF_ATOMIC bounds propagation, mem->reg OK
+> >
+> >
+> > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > >
+> > >
+> > > hum, I guess not.. will check
+> >
+> > nope, it locks up the same:
+> 
+> Do you mean it locks up at commit 91c960b0056 too?
+> 
 
+I tried this one:
+  37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
 
-> ---
->
-> v2:
->  - added parentheses around the GFP clause, as requested by Marco
-> ---
->  mm/kfence/core.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 4d21ac44d5d35..f7ce3d876bc9e 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -760,6 +760,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->         if (size > PAGE_SIZE)
->                 return NULL;
->
-> +       /*
-> +        * Skip DMA allocations. These must reside in the low memory, which we
-> +        * cannot guarantee.
-> +        */
-> +       if ((flags & (__GFP_DMA | __GFP_DMA32)) ||
-> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
-> +               return NULL;
-> +
->         return kfence_guarded_alloc(s, size, flags);
->  }
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
+I will check also 91c960b0056, but I think it's the new test issue
+
+jirka
+
