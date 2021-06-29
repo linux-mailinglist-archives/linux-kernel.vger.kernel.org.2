@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01633B70E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725323B70E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhF2Kox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:44:53 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:51069 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhF2Kor (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:44:47 -0400
-Received: from [192.168.1.155] ([95.114.16.105]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1McY4R-1lO11G3vW1-00cvib; Tue, 29 Jun 2021 12:41:52 +0200
-Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        longli@linuxonhyperv.com
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Long Li <longli@microsoft.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
-References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
- <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
- <YNq8p1320VkH2T/c@kroah.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <0391b223-5f8e-42c0-35f2-a7ec337c55ac@metux.net>
-Date:   Tue, 29 Jun 2021 12:41:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233248AbhF2KpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232410AbhF2KpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 06:45:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2DB461DA7;
+        Tue, 29 Jun 2021 10:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624963369;
+        bh=EQm+Q52P0Wib5HyIx8dMio6/6MEpfVira6/FYxYQ8XI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WtNns79ChU4Da7j/PvkcL7etBt3neAE+XqChZbgOURuRqaodlCXENtzQKSFwpUSjW
+         aqR7/qVcZMRY0KXMT4V/ST54fVfSRcCPvLh81RebDZ8TEeuLSQkgOXcYZp8N5G6hWK
+         FFSf+hUzoZsk8Am4Zl9FL5hjIpEFqfzqVF+OFABjjtCQYJq1wQcnQFtuSl75ff/Q64
+         yQ56lJHb+uyrAfh1YchKYFGdnhsMhUPY3zV/hK3MzVryK/rPbLRcthwabtdw+Xdpv5
+         jSHRdd+huW/IUXKl87iSKsfwHaILZSdZT9kVHgYF9ETKnouPhFWzu8lyrgR2qBge8t
+         /TrPsQw8Ughuw==
+Date:   Tue, 29 Jun 2021 12:42:45 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YNr5Jf3WDTH7U5b7@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
+        Sergey.Semin@baikalelectronics.ru, rppt@kernel.org,
+        loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNrw4rxihFLuqLtY@ninjato>
+ <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
+ <YNr0uDx1fv+Gjd7m@ninjato>
+ <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <YNq8p1320VkH2T/c@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:OSO02HYPMM+5Jqyg47RIhNF3Zn3nmEOfvvMXGJA3mWbUTDMKie8
- cc7U9UfweWNq0MHlXks+LPpmkk5Lf0xVzdcbxuM3WgjPWRljYNow1TvEOKp1WOpw8kCefWM
- hkas3XnsjcgVsqIaa/VxyFAopsMKFA6cTU3K3iLViyFYdghlU326FpzPYRwCeZWCDA8cbfN
- bUinZ1aMa3Yoe4ijsVCpQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xpO6/AKkyxs=:fGpAGXbAKUYd6WDlpMOSS0
- uT3+xR6ozpDuhMGPEe1KNXqxiLMzJmHFLPLHcXFMQ9NFyyXuKk83nfGH4GzHQDXsxmaM4G5qb
- nDZIaC6MF/tvkmNJETh2zrSGbMiwH5MZQnjo9kVArIk71mdXigWLgXf5MXWgSxX+WJ09h4f2W
- Q7mZJHTKibesVyihMoEKLuIWg+bMGEExjMBr3GIhHiRh9Qy0Q8Izb2Y/j/6CEj0M2UYpSbfhK
- Y9Jj+Uv9UotFFS0wfCbBsrV0qOH8TUQdiOkJJN9Vt+Xiss1lcduJgk5fe+9sMDCTShUX6D6bf
- KVgTEbgtpkYtmosn8p+lGDQTshjtrlaFFBXbbrKLsK+bbOIEYNazmbt2ikngqu/V7iSn8HsXe
- 7tEh/ao6DmU9412pVRZN0F5sK9GToSi/m7bXWMEwrpcmy3S5tXBP7dUbgzCYu5q83t7M4letS
- 0eqim23FJW9lXZ858PXzG5eBmLJ21uKXrUO6We5aCqqs1pX+QaFyGpPmbYrOW8W6GaYuIt34z
- gHPcfkm0epjbbY3jd4A4c0=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DWc7wYBxX5qn7vxi"
+Content-Disposition: inline
+In-Reply-To: <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.06.21 08:24, Greg Kroah-Hartman wrote:
 
-Hi folks,
-
-> Again, no.
-> 
-> Just use dev_dbg(), dev_warn(), and dev_err() and there is no need for
-> anything "special".  This is just one tiny driver, do not rewrite logic
-> like this for no reason.
-
-Maybe worth mentioning that we have the pr_fmt macro that can be
-defined if some wants to do things like adding some prefix.
-
-> No need to ever check any debugfs calls, please just make them and move
-> on.
-
-In this case a failed attempt to create debugfs files/dirs should not be
-treated as some actual error, but a normal situation, therefore there
-shouldn't be an error message.  (see debugfs.h)
+--DWc7wYBxX5qn7vxi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
---mtx
+> Okay. But what is missing in the driver because of which it should
+> mask out I2C_FUNC_SMBUS_QUICK.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+=46rom the spec:
+
+The case when ``length of \field{write_buf}''=3D0, and at the same time,
+``length of \field{read_buf}''=3D0 doesn't make any sense.
+
+I mentioned this in my first reply and to my understanding I did not get
+a reply that this has changed meanwhile.
+
+
+--DWc7wYBxX5qn7vxi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDa+SEACgkQFA3kzBSg
+Kbbh+xAAjjok+PzUt6yYXID3QRxMwhD2lcKTY+vJms8hdTwxH5FHfhwWGvvZNJ8E
+hnxH9VWGlxbg4HMbfsSP968+MJ4xq+6nOWsXy/5zcbM95g7Mo4TDGNWyo31y9Gk6
+Hlyfz+EKHh5sRi57jjKFXJMDCGmFGapXm1qWFo6NHwpuDFfwtMf94XhxpsnYCnlM
+8NzORMTW5G/P8K7h3UE/vrN+w7BYXWYHBlkS5cIy/B5S3dLEvb2CqIMzYKxnQ3TP
+IgHJa8xmvfTN9EmB5THNMzsXt28gnL3pL2jdTL3ZglSNZvljFUfVcK8EApGqGY+3
+tlMqRtSbiqEaQNHJg/2kzlrrgK+0DPSe/4ojmxBWN8icepf6dOwW8/4LZMygyPX/
+V0SxX00bG1N5WcFhSxy20vfXXBSOK9FHmH12Gn6wWc4F5t64Co5/pYUMGD73GfpN
+9rMpALB2zIc7RGnJeca0+iJZpm0lIvVyyR6qAegCgYY0HCYchW46pPS1QQh8wZy8
+EK7ffqg3md0N7StDTNILJvojv01RHVq6F2vfbZXo8JWqhiodvPTAfxxW4GFXRCvD
+/1l4sPKq6b9k4uY3Sy7JY0+vdPANItUaNlJjj8QZZwTsU3XCna+SRLCYsUiGrSQ/
+1FKSgpB3I3p4usxwC3Dy7RjvoUAss4niXG5UCwp2SKKP4EJXigg=
+=IwgD
+-----END PGP SIGNATURE-----
+
+--DWc7wYBxX5qn7vxi--
