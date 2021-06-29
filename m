@@ -2,147 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4673B7686
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7B03B768C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhF2Qhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:37:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20912 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233144AbhF2Qhf (ORCPT
+        id S233800AbhF2Qi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:38:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44425 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhF2Qi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:37:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624984507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qFtEvrlVui7BaqyBqVH/Nri0P4QA4rILRLxREoawxLs=;
-        b=SUqCXcnf3yM/a/mbLSFp3BXFhzyLFK2KdH95qxI+soC/V1bb5Xs7Il4il4oZ24d8OhkmG1
-        GcytxTTKTk0dLN+7Y71rykxpmWBd3k7B5jZXFKsjQfb74tsAFEY9zRF92r41g7Eq0HPQpM
-        mVvL2ggXwjTLMJtR3nHrzV+ob3GRCxM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-RsSEAIRSOtiLoRWq_kGeTg-1; Tue, 29 Jun 2021 12:35:06 -0400
-X-MC-Unique: RsSEAIRSOtiLoRWq_kGeTg-1
-Received: by mail-wr1-f72.google.com with SMTP id u16-20020a5d51500000b029011a6a17cf62so6091447wrt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:35:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qFtEvrlVui7BaqyBqVH/Nri0P4QA4rILRLxREoawxLs=;
-        b=XfaA2xkSFbF9zqGl6bYH0i2hg37i95SwA17FV+DxdCJ7CvfHO1sDunCvdM1UGlqAQZ
-         EMVoqYEkYMhmE5GrsuMjLkCn4YT3zAg8fVyqsg38eMvPD3suFwHri37RmOj1NPivjbdu
-         PLLCWWd+a7fXiKHKqT0lYRClaXGlKNTLvpGaITLBgdIZ084YVKqecKHTw4vS/7fBnKWC
-         5HUtz3AWMuE/DC3IgtOTyRVaQSccWswidvG2gdm+TFCpjdrbUY0BDY2A7i1BU+q2QbVa
-         a+hDqaA8TuSzyvjvkHQgaH40rG921U2do/es/3m2L86sOaCxlJo3cM0PNzw6TYRuj4ZM
-         890A==
-X-Gm-Message-State: AOAM530Yr4d8+li2BjzZ+der7gIZlnP1Nr91bOEreMeYNUxgXjLRPuvm
-        rsi+vGsofQbBaRIqGgS7wEnvC/l7N61Htyn4ay34oK/tRQEt4FaNcOtgY9NoSVzogKBMkISEydE
-        Ig/Nxj5VcaFZ9+KVhEmGmHf97
-X-Received: by 2002:a05:600c:214b:: with SMTP id v11mr6664211wml.46.1624984505139;
-        Tue, 29 Jun 2021 09:35:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbXpe6YhaxmyBREWJcgIymhFJ1te792D2kTWPT4Yam7vgoBla33uYBYbd6hpfHa5vYENMtew==
-X-Received: by 2002:a05:600c:214b:: with SMTP id v11mr6664187wml.46.1624984504942;
-        Tue, 29 Jun 2021 09:35:04 -0700 (PDT)
-Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
-        by smtp.gmail.com with ESMTPSA id f2sm9166880wrd.64.2021.06.29.09.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 09:35:04 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 17:35:02 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, dwalsh@redhat.com,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <YNtLtkkDMWye485A@work-vm>
-References: <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
- <20210628131708.GA1803896@redhat.com>
- <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
- <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
- <YNn4p+Zn444Sc4V+@work-vm>
- <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
- <YNrhQ9XfcHTtM6QA@work-vm>
- <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
- <20210629152007.GC5231@redhat.com>
- <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
+        Tue, 29 Jun 2021 12:38:56 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lyGim-00008b-SB; Tue, 29 Jun 2021 16:36:24 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: r8188eu: Fix while-loop that iterates only once
+Date:   Tue, 29 Jun 2021 17:36:24 +0100
+Message-Id: <20210629163624.41543-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Casey Schaufler (casey@schaufler-ca.com) wrote:
-> On 6/29/2021 8:20 AM, Vivek Goyal wrote:
-> > On Tue, Jun 29, 2021 at 07:38:15AM -0700, Casey Schaufler wrote:
-> >
-> > [..]
-> >>>>>> User xattrs are less protected than security xattrs. You are exposing the
-> >>>>>> security xattrs on the guest to the possible whims of a malicious, unprivileged
-> >>>>>> actor on the host. All it needs is the right UID.
-> >>>>> Yep, we realise that; but when you're mainly interested in making sure
-> >>>>> the guest can't attack the host, that's less worrying.
-> >>>> That's uncomfortable.
-> >>> Why exactly?
-> >> If a mechanism is designed with a known vulnerability you
-> >> fail your validation/evaluation efforts.
-> > We are working with the constraint that shared directory should not be
-> > accessible to unpriviliged users on host. And with that constraint, what
-> > you are referring to is not a vulnerability.
-> 
-> Sure, that's quite reasonable for your use case. It doesn't mean
-> that the vulnerability doesn't exist, it means you've mitigated it. 
-> 
-> 
-> >> Your mechanism is
-> >> less general because other potential use cases may not be
-> >> as cavalier about the vulnerability.
-> > Prefixing xattrs with "user.virtiofsd" is just one of the options.
-> > virtiofsd has the capability to prefix "trusted.virtiofsd" as well.
-> > We have not chosen that because we don't want to give it CAP_SYS_ADMIN.
-> >
-> > So other use cases which don't like prefixing "user.virtiofsd", can
-> > give CAP_SYS_ADMIN and work with it.
-> >
-> >> I think that you can
-> >> approach this differently, get a solution that does everything
-> >> you want, and avoid the known problem.
-> > What's the solution? Are you referring to using "trusted.*" instead? But
-> > that has its own problem of giving CAP_SYS_ADMIN to virtiofsd.
-> 
-> I'm coming to the conclusion that xattr namespaces, analogous
-> to user namespaces, are the correct solution. They generalize
-> for multiple filesystem and LSM use cases. The use of namespaces
-> is well understood, especially in the container community. It
-> looks to me as if it would address your use case swimmingly.
+From: Colin Ian King <colin.king@canonical.com>
 
-Yeh; although the details of getting the semantics right is tricky;
-in particular, the stuff which clears capabilitiies/setuid/etc on writes
-- should it clear xattrs that represent capabilities?  If the host
-  performs a write, should it clear mapped xattrs capabilities?  If the
-namespace performs a write should it clear just the mapped ones or the
-host ones as well?  Our virtiofsd code performs acrobatics to make
-sure they get cleared on write that are painful.
+The while-loop only iterates once becase the post increment test of count
+being non-zero is false on the first iteration because count is zero. Fix
+this by incrementing count using pre-increment. Static analysis found the
+issue on the count > POLLING_LLT_THRESHOLD check always being false since
+the loop currently just iterates once.
 
-Dave
+Addresses-Coverity: ("Logically dead code")
+Fixes: 615a4d12e556 ("staging: r8188eu: Add files for new driver - part 14")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >
-> > Thanks
-> > Vivek
-> >
-> 
+diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+index d1086699f952..db57f04e7e56 100644
+--- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
++++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+@@ -185,7 +185,7 @@ static s32 _LLTWrite(struct adapter *padapter, u32 address, u32 data)
+ 			break;
+ 		}
+ 		udelay(5);
+-	} while (count++);
++	} while (++count);
+ 
+ 	return status;
+ }
 -- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+2.31.1
 
