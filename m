@@ -2,123 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B159E3B78B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067793B78B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbhF2Teb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 15:34:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233670AbhF2Te3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 15:34:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB5F861DE7;
-        Tue, 29 Jun 2021 19:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624995122;
-        bh=7qlnV8Wl2x3Qvv6mjcrc1tpRP72lSFEAs94lptLsNag=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OtoOXB+ZI2h/+SJgHhKPPbLYyNLu+3r1mZ0jlff2s5A9AoMdTxn6fPhhWbOZ0rPp0
-         2dKDi3WiNCr6Pe+7sD7CS+x/IKX48v4o+ceYEd9ONlxoUvyawzS5YwelmiRgqHB3y2
-         7VQ5LrQkfVsUji2I7nDdwL0xyngSsUeAhp0DnttnMvKPo9NGGFu/zlA4g/SU5DljFV
-         5ZYt9sz/wVIGnx6mCmlDwdJ/xso5eExSp2xc613M2T2VxEmBpOUDJlxVecHCmEsJ5g
-         EyF3BMnAlTr9WZiUntFPqZxaDUTj9KyuxtJ5S6LigcoB1S2qCjApxGw06nK+UUZZMH
-         E4zkSGIxq4jxg==
-Date:   Tue, 29 Jun 2021 21:31:56 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Axel Lin <axel.lin@ingics.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH v10 2/5] regulator: hi6421v600-regulator: fix platform
- drvdata
-Message-ID: <20210629213156.56e6f126@coco.lan>
-In-Reply-To: <20210629151101.GB4613@sirena.org.uk>
-References: <cover.1624962269.git.mchehab+huawei@kernel.org>
-        <eed34e8897c79a2ab13573d3da12c86569bca0f6.1624962269.git.mchehab+huawei@kernel.org>
-        <20210629151101.GB4613@sirena.org.uk>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235222AbhF2Tei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235231AbhF2Ted (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 15:34:33 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11A0C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:32:05 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id s10-20020a4aeaca0000b029024c2acf6eecso4732797ooh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 12:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NnGqF5i8LvWI4EhF9coOqefPqY2kcPhPYW+PqMZT3MI=;
+        b=AkbnlocjnC9D/sMNkHUTlQe2l961wltIILRlW75VEZby9nkNErd0f3GilLrcB4o+Xk
+         NBA8dsUIamjOMhh6JLoGP5/zQij1UUSqR5lFQeV2ICN6dPG2Bxm3k57/sHOwePkibIO3
+         /9rwK3EHtYDgS7hmGQPnBHCqXOKlHAmNTF9yQEo7WmlbVpx9woJZWT/P6fAJmrpWfo5b
+         Ha4kXdOtZQiI3Ypk4oiT1ZIT1/iFKA4FUoJjY9AgehKKSr++Ek5AE1DySFmlB6RBxW1k
+         nk5xBbj0eqMZMWcMAXpPWxmkHJn8TSgfMRvirHiSPigg58hqE1Wsu86A8Mo9AmURbS+L
+         QYyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NnGqF5i8LvWI4EhF9coOqefPqY2kcPhPYW+PqMZT3MI=;
+        b=dS2mdWoewhrs2OqOBqz3YRAo88j9UwfKoDGzcl/kU0Wec1yjD4X0mxrc/f77+fCEd1
+         WFADC10cS9fa+aVvYCnOWDi/toyX7vcdl0xDoGIltuES6F8JCBxdI13s0F1ySrT80lr9
+         HwhrGZRaK15V+KW61ghmbzAH/2NEZ3DuKI10Sf5BSZVl6xuIEA+/hgeaG1PSwjdv0BId
+         UEkUpk3WyInO5R87LBTmPYZi7Z+FydSJYr+BGQ8NcTJsA9LT8at/LOSst3+tFEXyCfdr
+         mOVnfvMwVHDDojL/uEKg/MxVhCfSUY42LNdMo026CrRk68aMjBvBfeGwG30YXIjg2GlS
+         sYQg==
+X-Gm-Message-State: AOAM5324EILitqZVUUcir4gul5mS40IVs+q3bw3O2VmSoOggzfrriojt
+        F3dhxcgsMgHL055CpkDK+qWttA==
+X-Google-Smtp-Source: ABdhPJzMAoJNlT4cn96farSb/2+ZZVyAAujQ8xgfMZFGEYPL43QFmc07ld1kFpq0GFHajFV/ZsdXyA==
+X-Received: by 2002:a4a:956f:: with SMTP id n44mr5400466ooi.54.1624995124003;
+        Tue, 29 Jun 2021 12:32:04 -0700 (PDT)
+Received: from smtpclient.apple ([2600:1700:42f0:6600:f8e3:a853:8646:6bc8])
+        by smtp.gmail.com with ESMTPSA id k14sm2522483oon.5.2021.06.29.12.32.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Jun 2021 12:32:03 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH 2/3] hfs: fix high memory mapping in hfs_bnode_read
+From:   Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <20210629144803.62541-3-desmondcheongzx@gmail.com>
+Date:   Tue, 29 Jun 2021 12:31:58 -0700
+Cc:     gustavoars@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4E2B2BE9-3C0F-4D99-A099-601A780E0CED@dubeyko.com>
+References: <20210629144803.62541-1-desmondcheongzx@gmail.com>
+ <20210629144803.62541-3-desmondcheongzx@gmail.com>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 29 Jun 2021 16:11:01 +0100
-Mark Brown <broonie@kernel.org> escreveu:
 
-> On Tue, Jun 29, 2021 at 12:31:28PM +0200, Mauro Carvalho Chehab wrote:
-> 
-> > platform drvdata can't be used inside the regulator driver,
-> > as this is already used by the MFD and SPMI drivers.  
-> 
-> Can you clarify what exactly is using which platform drvdata already?
-> This all feels very confused and I can't tell what the problem that's
-> being fixed is, if it's a real issue or how this fixes it.
 
-I don't remember the dirty details anymore... It has been almost a year
-since when I started doing that. The SPMI controller driver left staging
-8 months ago.
+> On Jun 29, 2021, at 7:48 AM, Desmond Cheong Zhi Xi =
+<desmondcheongzx@gmail.com> wrote:
+>=20
+> Pages that we read in hfs_bnode_read need to be kmapped into kernel
+> address space. However, currently only the 0th page is kmapped. If the
+> given offset + length exceeds this 0th page, then we have an invalid
+> memory access.
+>=20
+> To fix this, we use the same logic used  in hfsplus' version of
+> hfs_bnode_read to kmap each page of relevant data that we copy.
+>=20
+> An example of invalid memory access occurring without this fix can be
+> seen in the following crash report:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: use-after-free in memcpy =
+include/linux/fortify-string.h:191 [inline]
+> BUG: KASAN: use-after-free in hfs_bnode_read+0xc4/0xe0 =
+fs/hfs/bnode.c:26
+> Read of size 2 at addr ffff888125fdcffe by task syz-executor5/4634
+>=20
+> CPU: 0 PID: 4634 Comm: syz-executor5 Not tainted 5.13.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, =
+BIOS Google 01/01/2011
+> Call Trace:
+> __dump_stack lib/dump_stack.c:79 [inline]
+> dump_stack+0x195/0x1f8 lib/dump_stack.c:120
+> print_address_description.constprop.0+0x1d/0x110 mm/kasan/report.c:233
+> __kasan_report mm/kasan/report.c:419 [inline]
+> kasan_report.cold+0x7b/0xd4 mm/kasan/report.c:436
+> check_region_inline mm/kasan/generic.c:180 [inline]
+> kasan_check_range+0x154/0x1b0 mm/kasan/generic.c:186
+> memcpy+0x24/0x60 mm/kasan/shadow.c:65
+> memcpy include/linux/fortify-string.h:191 [inline]
+> hfs_bnode_read+0xc4/0xe0 fs/hfs/bnode.c:26
+> hfs_bnode_read_u16 fs/hfs/bnode.c:34 [inline]
+> hfs_bnode_find+0x880/0xcc0 fs/hfs/bnode.c:365
+> hfs_brec_find+0x2d8/0x540 fs/hfs/bfind.c:126
+> hfs_brec_read+0x27/0x120 fs/hfs/bfind.c:165
+> hfs_cat_find_brec+0x19a/0x3b0 fs/hfs/catalog.c:194
+> hfs_fill_super+0xc13/0x1460 fs/hfs/super.c:419
+> mount_bdev+0x331/0x3f0 fs/super.c:1368
+> hfs_mount+0x35/0x40 fs/hfs/super.c:457
+> legacy_get_tree+0x10c/0x220 fs/fs_context.c:592
+> vfs_get_tree+0x93/0x300 fs/super.c:1498
+> do_new_mount fs/namespace.c:2905 [inline]
+> path_mount+0x13f5/0x20e0 fs/namespace.c:3235
+> do_mount fs/namespace.c:3248 [inline]
+> __do_sys_mount fs/namespace.c:3456 [inline]
+> __se_sys_mount fs/namespace.c:3433 [inline]
+> __x64_sys_mount+0x2b8/0x340 fs/namespace.c:3433
+> do_syscall_64+0x37/0xc0 arch/x86/entry/common.c:47
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x45e63a
+> Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 88 =
+04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d =
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f9404d410d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 0000000020000248 RCX: 000000000045e63a
+> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f9404d41120
+> RBP: 00007f9404d41120 R08: 00000000200002c0 R09: 0000000020000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+> R13: 0000000000000003 R14: 00000000004ad5d8 R15: 0000000000000000
+>=20
+> The buggy address belongs to the page:
+> page:00000000dadbcf3e refcount:0 mapcount:0 mapping:0000000000000000 =
+index:0x1 pfn:0x125fdc
+> flags: 0x2fffc0000000000(node=3D0|zone=3D2|lastcpupid=3D0x3fff)
+> raw: 02fffc0000000000 ffffea000497f748 ffffea000497f6c8 =
+0000000000000000
+> raw: 0000000000000001 0000000000000000 00000000ffffffff =
+0000000000000000
+> page dumped because: kasan: bad access detected
+>=20
+> Memory state around the buggy address:
+> ffff888125fdce80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ffff888125fdcf00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>> ffff888125fdcf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>                                                                ^
+> ffff888125fdd000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ffff888125fdd080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> ---
+> fs/hfs/bnode.c | 18 ++++++++++++++----
+> 1 file changed, 14 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/fs/hfs/bnode.c b/fs/hfs/bnode.c
+> index b63a4df7327b..936cfa763224 100644
+> --- a/fs/hfs/bnode.c
+> +++ b/fs/hfs/bnode.c
+> @@ -18,13 +18,23 @@
+> void hfs_bnode_read(struct hfs_bnode *node, void *buf,
+> 		int off, int len)
+> {
+> -	struct page *page;
+> +	struct page **pagep;
+> +	int l;
+>=20
+> 	off +=3D node->page_offset;
+> -	page =3D node->page[0];
+> +	pagep =3D node->page + (off >> PAGE_SHIFT);
 
-I guess it is related with passing the parent's device to
-devm_regulator_register() at the hi6421v600-regulator driver:
+I would like to have a check here that we are not out of the page array. =
+Could you add this check?
 
-	struct regulator_config config = { };
-...
-	config.dev = pdev->dev.parent;
-...
-	rdev = devm_regulator_register(dev, &info->desc, &config);
+Also, maybe, node->page[index] could look much safer here. What do you =
+think?
 
-This is needed by SPMI bus and the SPMI controller in order to use the 
-right platform data when talking to the hardware.
+> +	off &=3D ~PAGE_MASK;
+>=20
+> -	memcpy(buf, kmap(page) + off, len);
+> -	kunmap(page);
+> +	l =3D min_t(int, len, PAGE_SIZE - off);
 
-> >  drivers/misc/hi6421v600-irq.c               |  9 ++--
-> >  drivers/regulator/hi6421v600-regulator.c    | 49 +++++++++++----------
-> >  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 18 +++-----
-> >  include/linux/mfd/hi6421-spmi-pmic.h        | 25 -----------  
-> 
-> I'm especially nervous about the core driver still being in staging
-> perhaps meaning there's some issue with it doing odd and confusing
-> things.
+Maybe, it makes sense to use more informative name of the variable =
+instead of =E2=80=9Cl=E2=80=9D?
 
-The only missing part in staging is the MFD driver. At the current way,
-it is very simple (71 lines in total): it just declares a regmap, and has 
-a single function on it:
+> +	memcpy(buf, kmap(*pagep) + off, l);
 
-	static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
-	{
-		struct device *dev = &pdev->dev;
-		int ret;
-		struct hi6421_spmi_pmic *ddata;
-		ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
-		if (!ddata)
-			return -ENOMEM;
-	
-		ddata->regmap = devm_regmap_init_spmi_ext(pdev, &regmap_config);
-		if (IS_ERR(ddata->regmap))
-			return PTR_ERR(ddata->regmap);
-	
-		ddata->dev = dev;
-	
-		dev_set_drvdata(&pdev->dev, ddata);
+I suppose that it could be good to have a check that we do not overflow =
+the buffer. How do you feel about it?
 
-		ret = devm_mfd_add_devices(&pdev->dev, PLATFORM_DEVID_NONE,
-					   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-					   NULL, 0, NULL);
-		if (ret < 0)
-			dev_err(dev, "Failed to add child devices: %d\n", ret);
+> +	kunmap(*pagep);
 
-		return ret;
-	}
-
-You can see the full driver's code at:
-	https://lore.kernel.org/lkml/8d871e2ccc544d11959c16d8312dbf03dd01b1c8.1624962269.git.mchehab+huawei@kernel.org/#Z30drivers:mfd:hi6421-spmi-pmic.c
-
-I'm not aware of anything left preventing it to leave staging.
+What=E2=80=99s about kmap_atomic/kunmap_atomic in this function?
 
 Thanks,
-Mauro
+Slava.
+
+> +
+> +	while ((len -=3D l) !=3D 0) {
+> +		buf +=3D l;
+> +		l =3D min_t(int, len, PAGE_SIZE);
+> +		memcpy(buf, kmap(*++pagep), l);
+> +		kunmap(*pagep);
+> +	}
+> }
+>=20
+> u16 hfs_bnode_read_u16(struct hfs_bnode *node, int off)
+> --=20
+> 2.25.1
+>=20
+
