@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685233B6D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5A23B6D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbhF2Dtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S231945AbhF2DuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbhF2Dte (ORCPT
+        with ESMTP id S231598AbhF2Dt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:49:34 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB51FC061574;
-        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id e20so17319185pgg.0;
-        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
+        Mon, 28 Jun 2021 23:49:57 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7DEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:47:30 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t17so36867198lfq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hZzqtbvkB7GBRgetqJbBkcO8TSNI10ddi6eSpYQhmjk=;
-        b=u9wduzDmN6NnfbfcHJ6Z+ZIf6NZApRuPIqHspA8SfbBh44cMhfCkLtrmvuSzR/Xwm3
-         fBnpUaot1FuwKG4xF4umBk3biBH/iWmOmSR+2+wsE4WKI4IN6eoXRaRXbzTFnHww3Kv3
-         tfVTMMwBqoAdXFHD0jIi2OkTZ8opsWfIb+T5Qhz8QjewANwp6IDySHQMi5XXfxJy1qz6
-         zqsSV3g3mBMRKeUa8eXrj+kmeWQHSOGSrmbMTHnSL/mWY4wXSYLuSJ1EcmrrFGDRx3PC
-         u0dwJYmv8icWioAO5t9W1OoGYTudl61L+SJAccGz8C9NS83YoPB7KJXzDXGn/+ENPvW5
-         uGdw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SAkvrvf9vGodn3/SdXI/Z/HezeeoY0M2aYPCWRA/0sw=;
+        b=FmHwzUVnPSfz54gaaoFrV1I0m/OZYcDkto7MvfD87BMJlg2wfd6ksfLDQbgEpoWnMe
+         GAzSOezqUJyyT5jjyC+szrJQMOrt+WSEMBY7k37vOZp5Td1xrgjvF0meno42vsEqDRBl
+         FOMVPDRn63bn/bCTzLCUFsYJJWTGc/rswSo/w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hZzqtbvkB7GBRgetqJbBkcO8TSNI10ddi6eSpYQhmjk=;
-        b=luX4s3fQvpmkcID5hiPteQFKzlHHVd1E6fSPmAbLUfEsd1W4NkPXdioT7TvAZ3J4Pe
-         AYQRW/MEfapsM0f8Xtww/ELnRWD5phC5kbh1MY+47U+lqBfvJe72Vxgd6jDZKfyIVpCq
-         G2ziFve6jGUNjdxdSy/F193VUX2flPU5uYvJSv93xiO6H1gNOo8g4/NyMVndeT0Wz955
-         Ca51vvrShvCiLB7XzM0FQrlCmDwDRE2XwA+eNUjWvhmpXS4LUKE/sIOHAF/TNFkkL1UA
-         JemW+kiEsK/gXih7u9kWU929uPHTKFNlYPkCbVje+/39PNOPaSfMmpYA3ySQJLIH+uiK
-         j3QQ==
-X-Gm-Message-State: AOAM530QLN7QFxB2rht29vvFW1U4DBIFRcoRNJcBltBEMbLrMSVklpB2
-        di0ddLPgH+Hwzgi4KUa/xCQng6dhV0Q=
-X-Google-Smtp-Source: ABdhPJzr517gUfci9KTm5fRHv38JUMaAO8LsYEEvRWR63qVQgiEE0MWdkUoZkzyGDsqiWHeaFmFtyg==
-X-Received: by 2002:a63:d909:: with SMTP id r9mr26771453pgg.285.1624938427052;
-        Mon, 28 Jun 2021 20:47:07 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id z15sm9134313pgc.13.2021.06.28.20.47.05
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SAkvrvf9vGodn3/SdXI/Z/HezeeoY0M2aYPCWRA/0sw=;
+        b=kqmlZ5PEkhgnm920Z2bcW1tkteoW7L4rPenCkmbJlzLNYtE/2AVVIt/HpZ+RX+5s3P
+         VDeGu+AKVpYZEF/GUJ3HFtYvkd9pdBgbrCc6rbHohjNvbzKTAmOKMiLx29uMxuN6zG9T
+         0M40mcbzxdLMCzXahdCtJPCg7Cdla2PIdEbdp9AC/1vihCbME86mnjOg9J1P+NkUFAqE
+         nWO4ibokUrrEu1CIjJvfj8vRsEjDJKhRBSDh/kVMBRRwi9HgfE+6Mr/R9w6pyIVoX7EF
+         737TuJKnadAzMIXUmlOoJi5zRCIIKM9CBPkfRYkRSCu4bWvehlX1K0UTq7K2RZq3RRHr
+         IkxA==
+X-Gm-Message-State: AOAM530nTzvROFGc/bc6jdRL6Ewpv0J0L7cEjyPLrAl/NNyglSjIE4zH
+        ueZNZjvAJHtHa0JxVE93eYEG38u0VCIOaPnVVPI=
+X-Google-Smtp-Source: ABdhPJz/QNKO7goDyu0v+1cf0G7sOQM9O0rqxbBiC2hEYzumzWrq1qO9k0dlT+99hmrWGhJRTfnJWA==
+X-Received: by 2002:ac2:545b:: with SMTP id d27mr22202688lfn.320.1624938448507;
+        Mon, 28 Jun 2021 20:47:28 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id h5sm1338749lfk.164.2021.06.28.20.47.28
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 20:47:06 -0700 (PDT)
-Subject: Re: [PATCH net] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     Doug Berger <opendmb@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210625215732.209588-1-opendmb@gmail.com>
- <79839c8f-4c4d-a70d-178c-1d7674e2b429@gmail.com>
-Message-ID: <8076667b-59e7-5289-362d-5cc55bfb56f5@gmail.com>
-Date:   Mon, 28 Jun 2021 20:47:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 28 Jun 2021 20:47:28 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id c11so29022477ljd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:47:28 -0700 (PDT)
+X-Received: by 2002:a2e:b553:: with SMTP id a19mr2124829ljn.507.1624938447840;
+ Mon, 28 Jun 2021 20:47:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <79839c8f-4c4d-a70d-178c-1d7674e2b429@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87fsx1vcr9.fsf@disp2133>
+In-Reply-To: <87fsx1vcr9.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Jun 2021 20:47:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+Message-ID: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 3:35 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> This is the work mainly by Alexey Gladkov to limit rlimits to the
+> rlimits of the user that created a user namespace, and to allow users to
+> have stricter limits on the resources created within a user namespace.
 
+I guess all the performance issues got sorted, since I haven't seen
+any reports from the test robots.
 
-On 6/25/2021 3:03 PM, Florian Fainelli wrote:
-> On 6/25/21 2:57 PM, Doug Berger wrote:
->> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
->> logic of the internal PHY to prevent the system from sleeping. Some
->> internal PHYs will report that energy is detected when the network
->> interface is closed which can prevent the system from going to sleep
->> if WoL is enabled when the interface is brought down.
->>
->> Since the driver does not support waking the system on this logic,
->> this commit clears the bit whenever the internal PHY is powered up
->> and the other logic for manipulating the bit is removed since it
->> serves no useful function.
->>
->> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
->> Signed-off-by: Doug Berger <opendmb@gmail.com>
-> 
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
+I do end up with two questions, mainly because of looking at the
+result of the conflict resolution.
 
-Doug, it looks like this patch introduces an unused "reg" variable 
-warning at lines 3296 and 4137 which is why the patch was marked as 
-"Changes Requested":
+In particular, in __sigqueue_alloc(), two oddities..
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20210625215732.209588-1-opendmb@gmail.com/
-https://patchwork.hopto.org/static/nipa//507371/12345957/build_32bit
+Why the "sigpending < LONG_MAX" test in that
 
+        if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
+task_rlimit(t, RLIMIT_SIGPENDING))) {
 
--- 
-Florian
+thing?
+
+And why test for "ucounts" being non-NULL in
+
+                if (ucounts && dec_rlimit_ucounts(ucounts,
+UCOUNT_RLIMIT_SIGPENDING, 1))
+                        put_ucounts(ucounts);
+
+when afaik both of those should be happy with a NULL 'ucounts' pointer
+(if it was NULL, we certainly already used it for the reverse
+operations for get_ucounts() and inc_rlimit_ucounts()..)
+
+Hmm?
+
+And somebody should verify that I didn't screw anything up in my merge
+resolution. It all looked very straightforward, but mistakes happen..
+
+                   Linus
