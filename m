@@ -2,152 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E07A3B6CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2B63B6CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbhF2DJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhF2DJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:09:16 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F38C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:06:49 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so953216pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LDErPNTHeqAsnL4tn8YCrZnI3XrNMmZNrANksxZDwvQ=;
-        b=ZIqb2ZZZTUFurFu4691iz5Ngf0kUICuOc8bjbHPTf+JEnONt8e6UboHwC8bfH7qOdi
-         Xeol6nlo0CCEsy8YSYxrCScYIscTyIqviA62dp6T3xHnczCKUNDgIJCVLbWznaQ10Qr/
-         277H2OOtSDyc/Ui/d/wdowOSrZSztbwMlHuCythTWaL7+ZIOQ0oxshAS6Jhl70284IVO
-         mAVx0jpKt/fGLN5yn0yV30CyJX0OeN+F46brDgxqfuiRGTx+H/oqNkj1xoaZrTT4bK7e
-         nMj7J7cFQDHbAT7cuMcTK7LCxnC9dGea/8cySFdN4tVnomzJl1Y90SbBfNcTnGXR05OR
-         bgcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LDErPNTHeqAsnL4tn8YCrZnI3XrNMmZNrANksxZDwvQ=;
-        b=NDR2sMbNS8FBMcbi5FcVA9gtaTN6rUTIsRhLnayHchNMbIVtvlYeojKaYLMY7e16jx
-         DJYbS/sLBHQ9xs537qXc3zImySfZxHnmjcaO43s19pPBURwpRM8boYrHvn2wqKFYyr9Z
-         DeAMh2NmcoWUyhVYPDYhz97TQyGUdFeySYYx8l9ifQIYYW30m8IZaAx9NQjg+2Fl2ok9
-         5q3xNFlRIsz8lnQCaSlY8APk68CQEsIBXRfX+ft7KICRidfazOKRLWc2BcaCTWchVofY
-         VEdY7bukSFQX2aPhxfpZ4Id0/ScYBsxCaWtRoLcBuvv4VVtlyQ/d9JkpzGj53AFjvNfi
-         ZlWw==
-X-Gm-Message-State: AOAM530fdbkEVe/06ZJTfqCZ+e0X4NeyevLWwBu1HS6IfD4Q7SPCOMcs
-        ZaP5abBYwQp43HlX+cD+SCTz9DmeiWUwy46bffPzdg==
-X-Google-Smtp-Source: ABdhPJzcqOKzhEJFQaQ4CzTFveIdQfXJ3YjRzdswQWJsJWDGHo1cgxl+JlkQuVhlyzYnsAXE3RSINrhxwHn0eNO4A7Q=
-X-Received: by 2002:a17:90a:14a4:: with SMTP id k33mr29255817pja.13.1624936008065;
- Mon, 28 Jun 2021 20:06:48 -0700 (PDT)
+        id S231877AbhF2DMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:12:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40075 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231398AbhF2DMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 23:12:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="188454181"
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="188454181"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 20:10:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
+   d="scan'208";a="558597289"
+Received: from peileeli.png.intel.com ([172.30.240.12])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jun 2021 20:10:21 -0700
+From:   Ling Pei Lee <pei.lee.ling@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, weifeng.voon@intel.com,
+        boon.leong.ong@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com, tee.min.tan@intel.com,
+        michael.wei.hong.sit@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     pei.lee.ling@intel.com
+Subject: [PATCH net-next V2 0/3] Add option to enable PHY WOL with PMT enabled
+Date:   Tue, 29 Jun 2021 11:08:56 +0800
+Message-Id: <20210629030859.1273157-1-pei.lee.ling@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210402091145.80635-1-songmuchun@bytedance.com>
- <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com> <20210628163249.GC17026@quack2.suse.cz>
-In-Reply-To: <20210628163249.GC17026@quack2.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 29 Jun 2021 11:06:10 +0800
-Message-ID: <CAMZfGtXh=F8jsq4AU_0aT2RUUcjxHshsO1eshST-VArOMncGtQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3] writeback: fix obtain a reference to a
- freeing memcg css
-To:     Jan Kara <jack@suse.cz>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, axboe@fb.com,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 12:32 AM Jan Kara <jack@suse.cz> wrote:
->
-> Hi!
->
-> On Thu 20-05-21 11:45:23, Muchun Song wrote:
-> > It seems like this patch has not been added to the linux-next
-> > tree. Can anyone help with this? Thanks.
->
-Hi,
+This patchset main objective is to provide an option to enable PHY WoL even the PMT is enabled by default in the HW features.
 
-> Muchun, did someone pickup this patch? I don't see it merged so unless
+The current stmmac driver WOL implementation will enable MAC WOL if MAC HW PMT feature is on. Else, the driver will check for PHY WOL support.
+Intel EHL mgbe are designed to wake up through PHY WOL although the HW PMT is enabled.Hence, introduced use_phy_wol platform data to provide this PHY WOL option. Set use_phy_wol will disable the plat->pmt which currently used to determine the system to wake up by MAC WOL or PHY WOL.
 
-No, not yet.
+This WOL patchset includes of setting the device power state to D3hot.
+This is because the EHL PSE will need to PSE mgbe to be in D3 state in order for the PSE to goes into suspend mode.
 
-> somebody yells, I'll pick it up to my tree and send it to Linus for rc2.
+Change Log:
+ V2: Drop Patch #3 net: stmmac: Reconfigure the PHY WOL settings in stmmac_resume().
 
-I'll be happy if you do that. Thanks.
+Ling Pei Lee (2):
+  net: stmmac: option to enable PHY WOL with PMT enabled
+  stmmac: intel: Enable PHY WOL option in EHL
 
->
->                                                                 Honza
->
-> >
-> > On Fri, Apr 2, 2021 at 5:13 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > The caller of wb_get_create() should pin the memcg, because
-> > > wb_get_create() relies on this guarantee. The rcu read lock
-> > > only can guarantee that the memcg css returned by css_from_id()
-> > > cannot be released, but the reference of the memcg can be zero.
-> > >
-> > >   rcu_read_lock()
-> > >   memcg_css = css_from_id()
-> > >   wb_get_create(memcg_css)
-> > >       cgwb_create(memcg_css)
-> > >           // css_get can change the ref counter from 0 back to 1
-> > >           css_get(memcg_css)
-> > >   rcu_read_unlock()
-> > >
-> > > Fix it by holding a reference to the css before calling
-> > > wb_get_create(). This is not a problem I encountered in the
-> > > real world. Just the result of a code review.
-> > >
-> > > Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > Acked-by: Michal Hocko <mhocko@suse.com>
-> > > ---
-> > > Changelog in v3:
-> > >  1. Do not change GFP_ATOMIC.
-> > >  2. Update commit log.
-> > >
-> > >  Thanks for Michal's review and suggestions.
-> > >
-> > > Changelog in v2:
-> > >  1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
-> > >
-> > >
-> > >  fs/fs-writeback.c | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > > index 3ac002561327..dedde99da40d 100644
-> > > --- a/fs/fs-writeback.c
-> > > +++ b/fs/fs-writeback.c
-> > > @@ -506,9 +506,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> > >         /* find and pin the new wb */
-> > >         rcu_read_lock();
-> > >         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
-> > > -       if (memcg_css)
-> > > -               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-> > > +       if (memcg_css && !css_tryget(memcg_css))
-> > > +               memcg_css = NULL;
-> > >         rcu_read_unlock();
-> > > +       if (!memcg_css)
-> > > +               goto out_free;
-> > > +
-> > > +       isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
-> > > +       css_put(memcg_css);
-> > >         if (!isw->new_wb)
-> > >                 goto out_free;
-> > >
-> > > --
-> > > 2.11.0
-> > >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Voon Weifeng (1):
+  stmmac: intel: set PCI_D3hot in suspend
+
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 2 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 ++-
+ include/linux/stmmac.h                            | 1 +
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
