@@ -2,395 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A323B6F99
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4777D3B6F9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhF2Ipg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:45:36 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:35674 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhF2Ipf (ORCPT
+        id S232533AbhF2IsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232401AbhF2IsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:45:35 -0400
-Received: by mail-ed1-f48.google.com with SMTP id df12so30204705edb.2;
-        Tue, 29 Jun 2021 01:43:06 -0700 (PDT)
+        Tue, 29 Jun 2021 04:48:02 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B0FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:45:35 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id f13so30036282ljp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lVomD5CDSzti+kcx9erz3179RCoXuLxodIbdBfuqC7Y=;
+        b=eA2IXxgbmvglmGogH7AQXjkdXiemY2anQRa1JPpPkWllxjzb41GnayaTE8m89ZHEZr
+         nMt427rkS6e7Y9IMpx/UWMdeh2B93rBA5C8mSU9Yc1yvW9RUmCjWVzmvqau2eEDTKzWZ
+         EuRURuvbZM2jl6hn6btJPb4UMdZ57dqhjTqJ96UvsMftE2q/LCKVhuvtnkV9OBubvKai
+         NJPs5HTjVHUot3RkZbxocO99PlwHk1cD2xZnvbBAFXI/s2/3f6D0CV3B1XegnsyPJfOY
+         JZBSqs6w2JLoUTSu9SBIIVbOMN4TJUQL5aALAaurfQnimJqHsJcHt4iok801qj0gQ1NY
+         /MWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vr9wv3OGfZSryviafokTMo7ZyJHMYGFWE5upUcJfT6g=;
-        b=Uz4CMLbxX6eoqXBOqtxElSJkTOrgh6V0tphBTvlAuHRFV88vah7RxXRcpi7amg7tOq
-         jOy2WIp9/NTTJzq+VT6z44pMrghqmwh5aFuHoyZUQ8ai7EaWQjLam/JB/LyWXlRUdDNn
-         Xer9SXUeX+C+2ikVuwOwZ1v5TFVyFkth0WH9JCCpjJakKmRDhaOR/gZ2T8BsrFn0VU0k
-         RYmXytxyTcWd55gUw3iQv8SE1709/Z33pP8Xqma8b4dxOuoNU8mPVNRcjXq/a106y1gn
-         GfF0vyR4C0OMQA77UedqnqLfVXIggyirFXJ7bOCtNbL+/B6ca0XE4jOl6vKR430s6dfE
-         FXbg==
-X-Gm-Message-State: AOAM5330GqqGkgIs77iqfT9/57s7a0/i6M7ktDV0I/q3pLgkMsNvJHIC
-        lW7Dq0abJzrcj36/2qgzMgKHjBBswpO6Nw==
-X-Google-Smtp-Source: ABdhPJzLc2HwWhEsTCwtnIcTW1x53+fUQkhioghQMxKM6EYv525La+1RWENlgbXjHHFqo8Dk65LMpQ==
-X-Received: by 2002:aa7:c54b:: with SMTP id s11mr29079920edr.373.1624956185789;
-        Tue, 29 Jun 2021 01:43:05 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id c23sm10917610eds.57.2021.06.29.01.43.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 01:43:05 -0700 (PDT)
-Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
-To:     longli@linuxonhyperv.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>, Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
-References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
- <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <f5155516-4054-459a-c23c-a787fa429e5e@kernel.org>
-Date:   Tue, 29 Jun 2021 10:43:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lVomD5CDSzti+kcx9erz3179RCoXuLxodIbdBfuqC7Y=;
+        b=BtFjh5GIigNC4z4bX4b93U7VOLelGu9cgAa493J85xVUvC858Kuy8jRHcZk17D43zb
+         pa26cEAQZfNJ2S3dQZyy9jk5qxQGE+0016kMKRYsVzteA75pfmsvQGzQdOx2spOo1afX
+         Gfc3MeyAWBzZmzwqE4miCxbgVs0gYTP2T7ln8wjHXUmOXYaHOmYTvYrNk7Byw59QYnXU
+         XkLKQULuNk/dGrnWsZNGSlAUhvPCl9cAX4mc5qN0cS2o7fLMXvdB35v5K0Rz84y4177+
+         8758bEFXo6PkA+o6YuBO5BgkWLd9aw7PID6CaUh9a6nJPSPejfJeKj0yjRbW5Sp5dP9M
+         REqg==
+X-Gm-Message-State: AOAM530QPRMmsHb9HczCRptQaZgqyRh2IzHSKArX5ZoPodXzssqsg+fu
+        u8EOcqi6FMXkHHtfryihnX1qhY9ENVMEapyAhBCvzg==
+X-Google-Smtp-Source: ABdhPJzahPwNth63hBm7bfM3ezTdrLmxxfJSIcFPGmKIkdTq7lJJCdti55q9ZN7prwKILocgGrUAD+dPcQtnl2kufsg=
+X-Received: by 2002:a2e:9a8a:: with SMTP id p10mr3105876lji.221.1624956333911;
+ Tue, 29 Jun 2021 01:45:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1624266901.git.viresh.kumar@linaro.org> <20210628115452.GA28797@arm.com>
+ <CAKfTPtAtE1WHA19=BrWyekHgFYVn0+LdTLROJzYRdshp-EYOWA@mail.gmail.com>
+ <20210628130813.GA18112@arm.com> <20210628213739.GA8222@arm.com>
+In-Reply-To: <20210628213739.GA8222@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 29 Jun 2021 10:45:22 +0200
+Message-ID: <CAKfTPtAyJFgDejbx3eJRTGhcx_Yr325L49nNXsrNpmYEdzHxMA@mail.gmail.com>
+Subject: Re: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency invariance
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 06. 21, 8:30, longli@linuxonhyperv.com wrote:
-> Azure Blob storage provides scalable and durable data storage for Azure.
-> (https://azure.microsoft.com/en-us/services/storage/blobs/)
-> 
-> This driver adds support for accelerated access to Azure Blob storage. As an
-> alternative to REST APIs, it provides a fast data path that uses host native
-> network stack and secure direct data link for storage server access.
-> 
-...
-> Cc: Jiri Slaby <jirislaby@kernel.org>
+On Mon, 28 Jun 2021 at 23:37, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+>
+> On Monday 28 Jun 2021 at 14:08:13 (+0100), Ionela Voinescu wrote:
+> > On Monday 28 Jun 2021 at 14:14:14 (+0200), Vincent Guittot wrote:
+> > > On Mon, 28 Jun 2021 at 13:54, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> > > >
+> > > > Hi guys,
+> > > >
+> > > > On Monday 21 Jun 2021 at 14:49:33 (+0530), Viresh Kumar wrote:
+> > > > > Hello,
+> > > > >
+> > > > > Changes since V2:
+> > > > >
+> > > > > - We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
+> > > > >   work using policy ->init() and exit() alone.
+> > > > >
+> > > > > - Two new cleanup patches 1/4 and 2/4.
+> > > > >
+> > > > > - Improved commit log of 3/4.
+> > > > >
+> > > > > - Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
+> > > > >   overlap (seen with Vincent's setup).
+> > > > >
+> > > >
+> > > > If you happen to have the data around, I would like to know more about
+> > > > your observations on ThunderX2.
+> > > >
+> > > >
+> > > > I tried ThunderX2 as well, with the following observations:
+> > > >
+> > > > Booting with userspace governor and all CPUs online, the CPPC frequency
+> > > > scale factor was all over the place (even much larger than 1024).
+> > > >
+> > > > My initial assumptions:
+> > > >  - Counters do not behave properly in light of SMT
+> > > >  - Firmware does not do a good job to keep the reference and core
+> > > >    counters monotonic: save and restore at core off.
+> > > >
+> > > > So I offlined all CPUs with the exception of 0, 32, 64, 96 - threads of
+> > > > a single core (part of policy0). With this all works very well:
+> > > >
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1056000 > scaling_setspeed
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > > > [ 1863.095370] CPU96: cppc scale: 697.
+> > > > [ 1863.175370] CPU0: cppc scale: 492.
+> > > > [ 1863.215367] CPU64: cppc scale: 492.
+> > > > [ 1863.235366] CPU96: cppc scale: 492.
+> > > > [ 1863.485368] CPU32: cppc scale: 492.
+> > > >
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 1936000 > scaling_setspeed
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > > > [ 1891.395363] CPU96: cppc scale: 558.
+> > > > [ 1891.415362] CPU0: cppc scale: 595.
+> > > > [ 1891.435362] CPU32: cppc scale: 615.
+> > > > [ 1891.465363] CPU96: cppc scale: 635.
+> > > > [ 1891.495361] CPU0: cppc scale: 673.
+> > > > [ 1891.515360] CPU32: cppc scale: 703.
+> > > > [ 1891.545360] CPU96: cppc scale: 738.
+> > > > [ 1891.575360] CPU0: cppc scale: 779.
+> > > > [ 1891.605360] CPU96: cppc scale: 829.
+> > > > [ 1891.635360] CPU0: cppc scale: 879.
+> > > >
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0# echo 2200000 > scaling_setspeed
+> > > > root@target:/sys/devices/system/cpu/cpufreq/policy0#
+> > > > [ 1896.585363] CPU32: cppc scale: 1004.
+> > > > [ 1896.675359] CPU64: cppc scale: 973.
+> > > > [ 1896.715359] CPU0: cppc scale: 1024.
+> > > >
+> > > > I'm doing a rate limited printk only for increase/decrease values over
+> > > > 64 in the scale factor value.
+> > > >
+> > > > This showed me that SMT is handled properly.
+> > > >
+> > > > Then, as soon as I start onlining CPUs 1, 33, 65, 97, the scale factor
+> > > > stops being even close to correct, for example:
+> > > >
+> > > > [238394.770328] CPU96: cppc scale: 22328.
+> > > > [238395.628846] CPU96: cppc scale: 245.
+> > > > [238516.087115] CPU96: cppc scale: 930.
+> > > > [238523.385009] CPU96: cppc scale: 245.
+> > > > [238538.767473] CPU96: cppc scale: 936.
+> > > > [238538.867546] CPU96: cppc scale: 245.
+> > > > [238599.367932] CPU97: cppc scale: 2728.
+> > > > [238599.859865] CPU97: cppc scale: 452.
+> > > > [238647.786284] CPU96: cppc scale: 1438.
+> > > > [238669.604684] CPU96: cppc scale: 27306.
+> > > > [238676.805049] CPU96: cppc scale: 245.
+> > > > [238737.642902] CPU97: cppc scale: 2035.
+> > > > [238737.664995] CPU97: cppc scale: 452.
+> > > > [238788.066193] CPU96: cppc scale: 2749.
+> > > > [238788.110192] CPU96: cppc scale: 245.
+> > > > [238817.231659] CPU96: cppc scale: 2698.
+> > > > [238818.083687] CPU96: cppc scale: 245.
+> > > > [238845.466850] CPU97: cppc scale: 2990.
+> > > > [238847.477805] CPU97: cppc scale: 452.
+> > > > [238936.984107] CPU97: cppc scale: 1590.
+> > > > [238937.029079] CPU97: cppc scale: 452.
+> > > > [238979.052464] CPU97: cppc scale: 911.
+> > > > [238980.900668] CPU97: cppc scale: 452.
+> > > > [239149.587889] CPU96: cppc scale: 803.
+> > > > [239151.085516] CPU96: cppc scale: 245.
+> > > > [239303.871373] CPU64: cppc scale: 956.
+> > > > [239303.906837] CPU64: cppc scale: 245.
+> > > > [239308.666786] CPU96: cppc scale: 821.
+> > > > [239319.440634] CPU96: cppc scale: 245.
+> > > > [239389.978395] CPU97: cppc scale: 4229.
+> > > > [239391.969562] CPU97: cppc scale: 452.
+> > > > [239415.894738] CPU96: cppc scale: 630.
+> > > > [239417.875326] CPU96: cppc scale: 245.
+> > > >
+> > >
+> > > With the counter being 32bits and the freq scaling being update at
+> > > tick, you can easily get a overflow on it in idle system. I can easily
+> > > imagine that when you unplug CPUs there is enough activity on the CPU
+> > > to update it regularly whereas with all CPUs, the idle time is longer
+> > > that the counter overflow
+>
+> For sane counters, how long the CPU is idle should not matter (please
+> see below my definition of sane counters).
+>
+> > >
+> >
+> > Thanks! Yes, given the high wraparound time I thought they were 64 bit.
+> > All variables in software are 64 bit, but looking at bit width in the
+> > _CPC entries, the platform counters are 32 bit counters.
+> >
+>
+> I've looked a bit more over the code, and considering this particular
+> system (32 bit counters, maximum frequency of CPUs = 2.2GHz), I believe
+> the wraparound is considered, and this should not cause these strange
+> values in the scale factor.
+>
+> I consider the counters sane if both stop during idle - either they stop
+> when CPU is clock gated, or some firmware does save/restore at core off.
+> Therefore, in all idle cases they seem to have stopped, from the point of
+> view of the OS. The ACPI spec mentions that both count "any time the
+> processor is active".
+>
+> After the cores return from idle, the counters will wraparound at a
+> minimum of 1.95s. So with a tick every 4ms at most 1 wraparound would
+> have happened which allows the getDelta() function in cppc_cpufreq
+> driver to get the proper difference in values.
+>
+> Let me know what you think.
 
-I am just curious, why am I CCed? Anyway, some comments below:
+This is not what I can see on my THX2. Counter are always increasing
+at the same pace even if the system is idle (nothing running except
+background activity)
 
-> --- /dev/null
-> +++ b/drivers/hv/azure_blob.c
-> @@ -0,0 +1,655 @@
-...
-> +static void az_blob_on_channel_callback(void *context)
-> +{
-> +	struct vmbus_channel *channel = (struct vmbus_channel *)context;
+As long as you read counter often enough, the results is coherent with
+the freq that has been set by the governor
 
-Have you fed this patch through checkpatch?
-
-> +	const struct vmpacket_descriptor *desc;
-> +
-> +	az_blob_dbg("entering interrupt from vmbus\n");
-> +	foreach_vmbus_pkt(desc, channel) {
-> +		struct az_blob_vsp_request_ctx *request_ctx;
-> +		struct az_blob_vsp_response *response;
-> +		u64 cmd_rqst = vmbus_request_addr(&channel->requestor,
-> +					desc->trans_id);
-> +		if (cmd_rqst == VMBUS_RQST_ERROR) {
-> +			az_blob_err("incorrect transaction id %llu\n",
-> +				desc->trans_id);
-> +			continue;
-> +		}
-> +		request_ctx = (struct az_blob_vsp_request_ctx *) cmd_rqst;
-> +		response = hv_pkt_data(desc);
-> +
-> +		az_blob_dbg("got response for request %pUb status %u "
-> +			"response_len %u\n",
-> +			&request_ctx->request->guid, response->error,
-> +			response->response_len);
-> +		request_ctx->request->response.status = response->error;
-> +		request_ctx->request->response.response_len =
-> +			response->response_len;
-> +		complete(&request_ctx->wait_vsp);
-> +	}
-> +
-> +}
-...
-> +static long az_blob_ioctl_user_request(struct file *filp, unsigned long arg)
-> +{
-> +	struct az_blob_device *dev = &az_blob_dev;
-> +	struct az_blob_file_ctx *file_ctx = filp->private_data;
-> +	char __user *argp = (char __user *) arg;
-> +	struct az_blob_request_sync request;
-> +	struct az_blob_vsp_request_ctx request_ctx;
-> +	unsigned long flags;
-> +	int ret;
-> +	size_t request_start, request_num_pages = 0;
-> +	size_t response_start, response_num_pages = 0;
-> +	size_t data_start, data_num_pages = 0, total_num_pages;
-> +	struct page **request_pages = NULL, **response_pages = NULL;
-> +	struct page **data_pages = NULL;
-> +	struct vmbus_packet_mpb_array *desc;
-> +	u64 *pfn_array;
-> +	int desc_size;
-> +	int page_idx;
-> +	struct az_blob_vsp_request *vsp_request;
-
-Ugh, see further.
-
-> +
-> +	/* Fast fail if device is being removed */
-> +	if (dev->removing)
-> +		return -ENODEV;
-> +
-> +	if (!az_blob_safe_file_access(filp)) {
-> +		az_blob_dbg("process %d(%s) changed security contexts after"
-> +			" opening file descriptor\n",
-> +			task_tgid_vnr(current), current->comm);
-> +		return -EACCES;
-> +	}
-> +
-> +	if (copy_from_user(&request, argp, sizeof(request))) {
-> +		az_blob_dbg("don't have permission to user provided buffer\n");
-> +		return -EFAULT;
-> +	}
-> +
-> +	az_blob_dbg("az_blob ioctl request guid %pUb timeout %u request_len %u"
-> +		" response_len %u data_len %u request_buffer %llx "
-> +		"response_buffer %llx data_buffer %llx\n",
-> +		&request.guid, request.timeout, request.request_len,
-> +		request.response_len, request.data_len, request.request_buffer,
-> +		request.response_buffer, request.data_buffer);
-> +
-> +	if (!request.request_len || !request.response_len)
-> +		return -EINVAL;
-> +
-> +	if (request.data_len && request.data_len < request.data_valid)
-> +		return -EINVAL;
-> +
-> +	init_completion(&request_ctx.wait_vsp);
-> +	request_ctx.request = &request;
-> +
-> +	/*
-> +	 * Need to set rw to READ to have page table set up for passing to VSP.
-> +	 * Setting it to WRITE will cause the page table entry not allocated
-> +	 * as it's waiting on Copy-On-Write on next page fault. This doesn't
-> +	 * work in this scenario because VSP wants all the pages to be present.
-> +	 */
-> +	ret = get_buffer_pages(READ, (void __user *) request.request_buffer,
-
-Does this need __force for sparse not to complain?
-
-> +		request.request_len, &request_pages, &request_start,
-> +		&request_num_pages);
-> +	if (ret)
-> +		goto get_user_page_failed;
-> +
-> +	ret = get_buffer_pages(READ, (void __user *) request.response_buffer,
-> +		request.response_len, &response_pages, &response_start,
-> +		&response_num_pages);
-> +	if (ret)
-> +		goto get_user_page_failed;
-> +
-> +	if (request.data_len) {
-> +		ret = get_buffer_pages(READ,
-> +			(void __user *) request.data_buffer, request.data_len,
-> +			&data_pages, &data_start, &data_num_pages);
-> +		if (ret)
-> +			goto get_user_page_failed;
-> +	}
-> +
-> +	total_num_pages = request_num_pages + response_num_pages +
-> +				data_num_pages;
-> +	if (total_num_pages > AZ_BLOB_MAX_PAGES) {
-> +		az_blob_dbg("number of DMA pages %lu buffer exceeding %u\n",
-> +			total_num_pages, AZ_BLOB_MAX_PAGES);
-> +		ret = -EINVAL;
-> +		goto get_user_page_failed;
-> +	}
-> +
-> +	/* Construct a VMBUS packet and send it over to VSP */
-> +	desc_size = sizeof(struct vmbus_packet_mpb_array) +
-> +			sizeof(u64) * total_num_pages;
-> +	desc = kzalloc(desc_size, GFP_KERNEL);
-
-Smells like a call for struct_size().
-
-> +	vsp_request = kzalloc(sizeof(*vsp_request), GFP_KERNEL);
-> +	if (!desc || !vsp_request) {
-> +		kfree(desc);
-> +		kfree(vsp_request);
-> +		ret = -ENOMEM;
-> +		goto get_user_page_failed;
-> +	}
-> +
-> +	desc->range.offset = 0;
-> +	desc->range.len = total_num_pages * PAGE_SIZE;
-> +	pfn_array = desc->range.pfn_array;
-> +	page_idx = 0;
-> +
-> +	if (request.data_len) {
-> +		fill_in_page_buffer(pfn_array, &page_idx, data_pages,
-> +			data_num_pages);
-> +		vsp_request->data_buffer_offset = data_start;
-> +		vsp_request->data_buffer_length = request.data_len;
-> +		vsp_request->data_buffer_valid = request.data_valid;
-> +	}
-> +
-> +	fill_in_page_buffer(pfn_array, &page_idx, request_pages,
-> +		request_num_pages);
-> +	vsp_request->request_buffer_offset = request_start +
-> +						data_num_pages * PAGE_SIZE;
-> +	vsp_request->request_buffer_length = request.request_len;
-> +
-> +	fill_in_page_buffer(pfn_array, &page_idx, response_pages,
-> +		response_num_pages);
-> +	vsp_request->response_buffer_offset = response_start +
-> +		(data_num_pages + request_num_pages) * PAGE_SIZE;
-> +	vsp_request->response_buffer_length = request.response_len;
-> +
-> +	vsp_request->version = 0;
-> +	vsp_request->timeout_ms = request.timeout;
-> +	vsp_request->operation_type = AZ_BLOB_DRIVER_USER_REQUEST;
-> +	guid_copy(&vsp_request->transaction_id, &request.guid);
-> +
-> +	spin_lock_irqsave(&file_ctx->vsp_pending_lock, flags);
-> +	list_add_tail(&request_ctx.list, &file_ctx->vsp_pending_requests);
-> +	spin_unlock_irqrestore(&file_ctx->vsp_pending_lock, flags);
-> +
-> +	az_blob_dbg("sending request to VSP\n");
-> +	az_blob_dbg("desc_size %u desc->range.len %u desc->range.offset %u\n",
-> +		desc_size, desc->range.len, desc->range.offset);
-> +	az_blob_dbg("vsp_request data_buffer_offset %u data_buffer_length %u "
-> +		"data_buffer_valid %u request_buffer_offset %u "
-> +		"request_buffer_length %u response_buffer_offset %u "
-> +		"response_buffer_length %u\n",
-> +		vsp_request->data_buffer_offset,
-> +		vsp_request->data_buffer_length,
-> +		vsp_request->data_buffer_valid,
-> +		vsp_request->request_buffer_offset,
-> +		vsp_request->request_buffer_length,
-> +		vsp_request->response_buffer_offset,
-> +		vsp_request->response_buffer_length);
-> +
-> +	ret = vmbus_sendpacket_mpb_desc(dev->device->channel, desc, desc_size,
-> +		vsp_request, sizeof(*vsp_request), (u64) &request_ctx);
-> +
-> +	kfree(desc);
-> +	kfree(vsp_request);
-> +	if (ret)
-> +		goto vmbus_send_failed;
-> +
-> +	wait_for_completion(&request_ctx.wait_vsp);
-
-Provided this is ioctl, this should likely be interruptible. You don't 
-want to account to I/O load. The same likely for az_blob_fop_release.
-
-> +
-> +	/*
-> +	 * At this point, the response is already written to request
-> +	 * by VMBUS completion handler, copy them to user-mode buffers
-> +	 * and return to user-mode
-> +	 */
-> +	if (copy_to_user(argp +
-> +			offsetof(struct az_blob_request_sync,
-> +				response.status),
-> +			&request.response.status,
-
-This is ugly, why don't you make argp the appropriate pointer instead of 
-char *? You'd need not do copy_to_user twice then, right?
-
-> +			sizeof(request.response.status))) {
-> +		ret = -EFAULT;
-> +		goto vmbus_send_failed;
-> +	}
-> +
-> +	if (copy_to_user(argp +
-> +			offsetof(struct az_blob_request_sync,
-> +				response.response_len),
-
-The same here.
-
-> +			&request.response.response_len,
-> +			sizeof(request.response.response_len)))
-> +		ret = -EFAULT;
-> +
-> +vmbus_send_failed:
-> +	spin_lock_irqsave(&file_ctx->vsp_pending_lock, flags);
-> +	list_del(&request_ctx.list);
-> +	if (list_empty(&file_ctx->vsp_pending_requests))
-> +		wake_up(&file_ctx->wait_vsp_pending);
-> +	spin_unlock_irqrestore(&file_ctx->vsp_pending_lock, flags);
-> +
-> +get_user_page_failed:
-> +	free_buffer_pages(request_num_pages, request_pages);
-> +	free_buffer_pages(response_num_pages, response_pages);
-> +	free_buffer_pages(data_num_pages, data_pages);
-> +
-> +	return ret;
-> +}
-
-This function is overly long. Care to split it (e.g. moving away the 
-initialization of the structs and the debug stuff)?
-
-> +
-> +static long az_blob_fop_ioctl(struct file *filp, unsigned int cmd,
-> +	unsigned long arg)
-> +{
-> +	long ret = -EIO;
-
-EINVAL would be more appropriate.
-
-> +
-> +	switch (cmd) {
-> +	case IOCTL_AZ_BLOB_DRIVER_USER_REQUEST:
-> +		if (_IOC_SIZE(cmd) != sizeof(struct az_blob_request_sync))
-> +			return -EINVAL;
-
-How can that happen, provided the switch (cmd) and case?
-
-> +		ret = az_blob_ioctl_user_request(filp, arg);
-> +		break;
-
-Simply:
-return az_blob_ioctl_user_request(filp, arg);
-
-> +
-> +	default:
-> +		az_blob_dbg("unrecognized IOCTL code %u\n", cmd);
-> +	}
-> +
-> +	return ret;
-
-So return -EINVAL here directly now.
-
-> +}
-...
-> +static int az_blob_connect_to_vsp(struct hv_device *device, u32 ring_size)
-> +{
-> +	int ret;
-...
-> +	int rc;
-
-
-Sometimes ret, sometimes rc, could you unify the two?
-
-> +static int __init az_blob_drv_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = vmbus_driver_register(&az_blob_drv);
-> +	return ret;
-
-Simply:
-return vmbus_driver_register(&az_blob_drv);
-
-regards,
--- 
--- 
-js
-suse labs
+>
+> Thanks,
+> Ionela.
+>
+> > > There are 32bits and the overflow need to be handled by cppc_cpufreq
+> > > driver
+> >
+> > I'm wondering if this would be best handled in the function that reads
+> > the counters or in the cppc_cpufreq driver that uses them. Probably the
+> > latter, as you say, as the read function should only return the raw
+> > values, but it does complicate things.
+> >
+> > Thanks,
+> > Ionela.
+> >
+> >
+> >
+> > > > The counter values shown by feedback_ctrs do not seem monotonic even
+> > > > when only core 0 threads are online.
+> > > >
+> > > > ref:2812420736 del:166051103
+> > > > ref:3683620736 del:641578595
+> > > > ref:1049653440 del:1548202980
+> > > > ref:2099053440 del:2120997459
+> > > > ref:3185853440 del:2714205997
+> > > > ref:712486144  del:3708490753
+> > > > ref:3658438336 del:3401357212
+> > > > ref:1570998080 del:2279728438
+> > > >
+> > > > For now I was just wondering if you have seen the same and whether you
+> > > > have an opinion on this.
+> > > >
+> > > > > This is tested on my Hikey platform (without the actual read/write to
+> > > > > performance counters), with this script for over an hour:
+> > > > >
+> > > > > while true; do
+> > > > >     for i in `seq 1 7`;
+> > > > >     do
+> > > > >         echo 0 > /sys/devices/system/cpu/cpu$i/online;
+> > > > >     done;
+> > > > >
+> > > > >     for i in `seq 1 7`;
+> > > > >     do
+> > > > >         echo 1 > /sys/devices/system/cpu/cpu$i/online;
+> > > > >     done;
+> > > > > done
+> > > > >
+> > > > >
+> > > > > The same is done by Vincent on ThunderX2 and no issues were seen.
+> > > >
+> > > > Hotplug worked fine for me as well on both platforms I tested (Juno R2
+> > > > and ThunderX2).
+> > > >
+> > > > Thanks,
+> > > > Ionela.
