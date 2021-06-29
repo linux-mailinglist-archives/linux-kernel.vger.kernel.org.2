@@ -2,91 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665BA3B6CC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E07A3B6CC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhF2DGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:06:47 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14776 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhF2DGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:06:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="208112885"
-X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
-   d="scan'208";a="208112885"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 20:04:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,307,1616482800"; 
-   d="scan'208";a="456601201"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Jun 2021 20:04:11 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <4c7f0989-305b-fe4c-63d1-966043c5d2f2@intel.com>
-Date:   Tue, 29 Jun 2021 11:04:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S231682AbhF2DJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhF2DJQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 23:09:16 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F38C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:06:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so953216pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LDErPNTHeqAsnL4tn8YCrZnI3XrNMmZNrANksxZDwvQ=;
+        b=ZIqb2ZZZTUFurFu4691iz5Ngf0kUICuOc8bjbHPTf+JEnONt8e6UboHwC8bfH7qOdi
+         Xeol6nlo0CCEsy8YSYxrCScYIscTyIqviA62dp6T3xHnczCKUNDgIJCVLbWznaQ10Qr/
+         277H2OOtSDyc/Ui/d/wdowOSrZSztbwMlHuCythTWaL7+ZIOQ0oxshAS6Jhl70284IVO
+         mAVx0jpKt/fGLN5yn0yV30CyJX0OeN+F46brDgxqfuiRGTx+H/oqNkj1xoaZrTT4bK7e
+         nMj7J7cFQDHbAT7cuMcTK7LCxnC9dGea/8cySFdN4tVnomzJl1Y90SbBfNcTnGXR05OR
+         bgcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LDErPNTHeqAsnL4tn8YCrZnI3XrNMmZNrANksxZDwvQ=;
+        b=NDR2sMbNS8FBMcbi5FcVA9gtaTN6rUTIsRhLnayHchNMbIVtvlYeojKaYLMY7e16jx
+         DJYbS/sLBHQ9xs537qXc3zImySfZxHnmjcaO43s19pPBURwpRM8boYrHvn2wqKFYyr9Z
+         DeAMh2NmcoWUyhVYPDYhz97TQyGUdFeySYYx8l9ifQIYYW30m8IZaAx9NQjg+2Fl2ok9
+         5q3xNFlRIsz8lnQCaSlY8APk68CQEsIBXRfX+ft7KICRidfazOKRLWc2BcaCTWchVofY
+         VEdY7bukSFQX2aPhxfpZ4Id0/ScYBsxCaWtRoLcBuvv4VVtlyQ/d9JkpzGj53AFjvNfi
+         ZlWw==
+X-Gm-Message-State: AOAM530fdbkEVe/06ZJTfqCZ+e0X4NeyevLWwBu1HS6IfD4Q7SPCOMcs
+        ZaP5abBYwQp43HlX+cD+SCTz9DmeiWUwy46bffPzdg==
+X-Google-Smtp-Source: ABdhPJzcqOKzhEJFQaQ4CzTFveIdQfXJ3YjRzdswQWJsJWDGHo1cgxl+JlkQuVhlyzYnsAXE3RSINrhxwHn0eNO4A7Q=
+X-Received: by 2002:a17:90a:14a4:: with SMTP id k33mr29255817pja.13.1624936008065;
+ Mon, 28 Jun 2021 20:06:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YNnjh3xxyaZZSo9N@ninjato>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210402091145.80635-1-songmuchun@bytedance.com>
+ <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com> <20210628163249.GC17026@quack2.suse.cz>
+In-Reply-To: <20210628163249.GC17026@quack2.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 29 Jun 2021 11:06:10 +0800
+Message-ID: <CAMZfGtXh=F8jsq4AU_0aT2RUUcjxHshsO1eshST-VArOMncGtQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3] writeback: fix obtain a reference to a
+ freeing memcg css
+To:     Jan Kara <jack@suse.cz>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, axboe@fb.com,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/28 22:58, Wolfram Sang wrote:
-> If adding support incrementally works for such an interface, this makes
-> sense as well.
+On Tue, Jun 29, 2021 at 12:32 AM Jan Kara <jack@suse.cz> wrote:
 >
-> So, where are we? As I understand, this v10 does not support I2C
-> transactions (or I2C_RDWR as you said). But you want to support all
-> clients. So, this doesn't match, or?
+> Hi!
+>
+> On Thu 20-05-21 11:45:23, Muchun Song wrote:
+> > It seems like this patch has not been added to the linux-next
+> > tree. Can anyone help with this? Thanks.
+>
+Hi,
 
-I hope we can have a minimum working driver get merged first so that we 
-can have a base.
+> Muchun, did someone pickup this patch? I don't see it merged so unless
 
-The v10 has three remaining problems:
+No, not yet.
 
-     1. To remove vi->adap.class = I2C_CLASS_DEPRECATED; (already 
-confirmed by Wolfram)
+> somebody yells, I'll pick it up to my tree and send it to Linus for rc2.
 
-     2. Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused" 
-(already confirmed by Arnd)
+I'll be happy if you do that. Thanks.
 
-     3. It seems the I2C core takes care of locking already, so is it 
-safy to remove "struct mutex lock in struct virtio_i2c"?
-
-         (Raised by Viresh, still need Wolfram's confirmation)
-
-Regards,
-
-Jie
-
+>
+>                                                                 Honza
+>
+> >
+> > On Fri, Apr 2, 2021 at 5:13 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > The caller of wb_get_create() should pin the memcg, because
+> > > wb_get_create() relies on this guarantee. The rcu read lock
+> > > only can guarantee that the memcg css returned by css_from_id()
+> > > cannot be released, but the reference of the memcg can be zero.
+> > >
+> > >   rcu_read_lock()
+> > >   memcg_css = css_from_id()
+> > >   wb_get_create(memcg_css)
+> > >       cgwb_create(memcg_css)
+> > >           // css_get can change the ref counter from 0 back to 1
+> > >           css_get(memcg_css)
+> > >   rcu_read_unlock()
+> > >
+> > > Fix it by holding a reference to the css before calling
+> > > wb_get_create(). This is not a problem I encountered in the
+> > > real world. Just the result of a code review.
+> > >
+> > > Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > Acked-by: Michal Hocko <mhocko@suse.com>
+> > > ---
+> > > Changelog in v3:
+> > >  1. Do not change GFP_ATOMIC.
+> > >  2. Update commit log.
+> > >
+> > >  Thanks for Michal's review and suggestions.
+> > >
+> > > Changelog in v2:
+> > >  1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
+> > >
+> > >
+> > >  fs/fs-writeback.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > > index 3ac002561327..dedde99da40d 100644
+> > > --- a/fs/fs-writeback.c
+> > > +++ b/fs/fs-writeback.c
+> > > @@ -506,9 +506,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+> > >         /* find and pin the new wb */
+> > >         rcu_read_lock();
+> > >         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+> > > -       if (memcg_css)
+> > > -               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> > > +       if (memcg_css && !css_tryget(memcg_css))
+> > > +               memcg_css = NULL;
+> > >         rcu_read_unlock();
+> > > +       if (!memcg_css)
+> > > +               goto out_free;
+> > > +
+> > > +       isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> > > +       css_put(memcg_css);
+> > >         if (!isw->new_wb)
+> > >                 goto out_free;
+> > >
+> > > --
+> > > 2.11.0
+> > >
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
