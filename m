@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFBF3B74A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFF93B74A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhF2OvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234256AbhF2OvS (ORCPT
+        id S234575AbhF2Ouk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:50:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54792 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234345AbhF2Oua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:51:18 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2A1C061760;
-        Tue, 29 Jun 2021 07:48:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so2101202pjs.2;
-        Tue, 29 Jun 2021 07:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=koZtRUNjw4bYNAZV6JWLxfBDPL3I14Zph7TjpLy0UpA=;
-        b=TooWxCAcuEemzgn3EAdG7nTJRrAJ8QghigYKwSlw5aodIB+yRqTVWNb/aydNu/NtXX
-         tu5CsEXgtXvvZV1mTv5tLDhZhzxxBYkrIfWauY9PlVKerJkwfNJLGYVmbJ1BMoA4QwPj
-         x5OoXpSGahS4Wmyn9czcbO4JsI99DKFlIulK5f+SOhjBVwj8FWw7BfUUen6rtI5JjTXK
-         ECQKFrDI9SmThzfvtmkTzBZOLUpo5FCnqjGlzeAl7yCMGmf3shsYVkjBbzT27M+ZSTPg
-         IZvieyGuaM4YLphD+xmvrd4UMjO5QoyGLGyBezfQqdJQoqEtu73vnv+Z3LMuBYgzknBy
-         qX0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=koZtRUNjw4bYNAZV6JWLxfBDPL3I14Zph7TjpLy0UpA=;
-        b=BdavNIyqzexV+rZvlRRLjaL5aoKJH5KV2Z0nl+7rVrx6f0OSMp+Z0IrNlwTmyaPAbr
-         2AJEMDK3zQgDALuV3aj0490MZ2aFc7iHCtimOpa0zDRgpt8aNpH7lzQx7TWL/Ge6vMDD
-         q5wLm8i5pcvORmjiFa9tuC4cqVuKxxntUpD0Hgu0zZ54dDjQKAmpt5wjm7GDOjTcd5ch
-         VkefcTMgcGoRr4zKIWE/grZmkHSojVXv3MTGAluKLWPIBYopBYkl4NqipJUi/TE/kByN
-         tPLWOOG7jCXWj/3eTHtq8Z5vuSJd6xvwDfofItXVD7j3Un985vZ1k7jXs2F57EZF/ZHE
-         0cbw==
-X-Gm-Message-State: AOAM53360lDwOjV6ShttQtFuu57/VaZCBHvv3FBcSWyub3/n9R/QbN+Z
-        sHN54EbXKLiujqQMH5H33Gk=
-X-Google-Smtp-Source: ABdhPJzDOltMmEszV+HSvCrb8aMX9wydlrmi1DRwuaxNyG5WZixOQVcnzzn9OUmGR98tanV2a4V+uQ==
-X-Received: by 2002:a17:902:bc4a:b029:129:ef:3c35 with SMTP id t10-20020a170902bc4ab029012900ef3c35mr2788828plz.46.1624978130555;
-        Tue, 29 Jun 2021 07:48:50 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id i2sm3417262pjj.25.2021.06.29.07.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:48:50 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     gustavoars@kernel.org, viro@zeniv.linux.org.uk
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH 0/3] hfs: fix various errors
-Date:   Tue, 29 Jun 2021 22:48:00 +0800
-Message-Id: <20210629144803.62541-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Jun 2021 10:50:30 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624978081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=USzGTUL2HeEbXU0u2M46HyI55LygDcxnaLDv/8lEJbQ=;
+        b=MzmSFdxGpZaatMM+wjev7sq7KGKFSqFBr7YN6whWeUQTY38DpsCo/5H0leT8hkxfjqk9Ia
+        3kWHxs9odymNxJic9sCJlhqV6ZEz6TLymQ/65Eu5dqdVpnLQ9X0P5H8B7HZmzOSDsnm6Te
+        uB/clxtADI3GOq06FvomJvaECSht/t7P/XnpwlMjba7/RClFI4gQfO8/1meF9rOp6iwbHl
+        eq2m2DcvWnESDjYDPoiTWlTPyC3UBWcQl/ndyVQmP8YzlMOipzx/wzXg9dzNB6k4Qs0zQ1
+        FIXu7ipKyXLO8i/jrpAEjP8a3SLB1HvMou+LNH2C2s4h3ciVXCQennTJ6XL+nQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624978081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=USzGTUL2HeEbXU0u2M46HyI55LygDcxnaLDv/8lEJbQ=;
+        b=JrQLzDxVj3cb7OxWkgq2qqoQP++4PqWJzfc8YnMKVHmaXp1pnjeKlCwC72PLqTf6FqADRq
+        PJEahVfQt6/FeQDQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] printk/console: Check consistent sequence number when handling race in console_unlock()
+In-Reply-To: <20210629143341.19284-1-pmladek@suse.com>
+References: <20210629143341.19284-1-pmladek@suse.com>
+Date:   Tue, 29 Jun 2021 16:54:01 +0206
+Message-ID: <87zgv84ti6.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2021-06-29, Petr Mladek <pmladek@suse.com> wrote:
+> The standard printk() tries to flush the message to the console
+> immediately. It tries to take the console lock. If the lock is
+> already taken then the current owner is responsible for flushing
+> even the new message.
+>
+> There is a small race window between checking whether a new message is
+> available and releasing the console lock. It is solved by re-checking
+> the state after releasing the console lock. If the check is positive
+> then console_unlock() tries to take the lock again and process the new
+> message as well.
+>
+> The commit 996e966640ddea7b535c ("printk: remove logbuf_lock") causes that
+> console_seq is not longer read atomically. As a result, the re-check might
+> be done with an inconsistent 64-bit index.
+>
+> Solve it by using the last sequence number that has been checked under
+> the console lock. In the worst case, it will take the lock again only
+> to realized that the new message has already been proceed. But it
+> was possible even before.
+>
+> Fixes: commit 996e966640ddea7b535c ("printk: remove logbuf_lock")
+> Cc: stable@vger.kernel.org # 5.13
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-This series ultimately aims to address a lockdep warning in hfs_find_init reported by Syzbot:
-https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
-The work done for this led to the discovery of another bug, and the Syzkaller repro test also reveals an invalid memory access error after clearing the lockdep warning. Hence, this series is broken up into three patches:
+Good catch.
 
-1. Add a missing call to hfs_find_exit an error path in hfs_fill_super
+John
 
-2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
-
-3. Add lock nesting notation to tell lockdep that the observed locking hierarchy is safe
-
-Desmond Cheong Zhi Xi (3):
-  hfs: add missing clean-up in hfs_fill_super
-  hfs: fix high memory mapping in hfs_bnode_read
-  hfs: add lock nesting notation to hfs_find_init
-
- fs/hfs/bfind.c | 14 +++++++++++++-
- fs/hfs/bnode.c | 18 ++++++++++++++----
- fs/hfs/btree.h |  7 +++++++
- fs/hfs/super.c |  1 +
- 4 files changed, 35 insertions(+), 5 deletions(-)
-
--- 
-2.25.1
-
+> ---
+>  kernel/printk/printk.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 142a58d124d9..87411084075e 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2545,6 +2545,7 @@ void console_unlock(void)
+>  	bool do_cond_resched, retry;
+>  	struct printk_info info;
+>  	struct printk_record r;
+> +	u64 next_seq;
+>  
+>  	if (console_suspended) {
+>  		up_console_sem();
+> @@ -2654,8 +2655,10 @@ void console_unlock(void)
+>  			cond_resched();
+>  	}
+>  
+> -	console_locked = 0;
+> +	/* Get consistent value of the next-to-be-used sequence number. */
+> +	next_seq = console_seq;
+>  
+> +	console_locked = 0;
+>  	up_console_sem();
+>  
+>  	/*
+> @@ -2664,7 +2667,7 @@ void console_unlock(void)
+>  	 * there's a new owner and the console_unlock() from them will do the
+>  	 * flush, no worries.
+>  	 */
+> -	retry = prb_read_valid(prb, console_seq, NULL);
+> +	retry = prb_read_valid(prb, next_seq, NULL);
+>  	printk_safe_exit_irqrestore(flags);
+>  
+>  	if (retry && console_trylock())
+> -- 
+> 2.26.2
