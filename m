@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBB23B6C2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3F93B6C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhF2BuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:50:24 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:43825 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230292AbhF2BuW (ORCPT
+        id S231567AbhF2Buz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhF2Buu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:50:22 -0400
-X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
-X-UUID: a8a0207b94024167a4c1ea857ae0f16b-20210629
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 665135059; Tue, 29 Jun 2021 09:47:53 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 29 Jun 2021 09:47:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 29 Jun 2021 09:47:52 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <bicycle.tsai@mediatek.com>, <jiaxin.yu@mediatek.com>,
-        <cychiang@google.com>, <aaronyu@google.com>
-Subject: [PATCH v2 8/8] dt-bindings: mediatek: mt8195: add mt8195-mt6359-rt1019-rt5682 document
-Date:   Tue, 29 Jun 2021 09:47:36 +0800
-Message-ID: <20210629014736.31153-9-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210629014736.31153-1-trevor.wu@mediatek.com>
-References: <20210629014736.31153-1-trevor.wu@mediatek.com>
+        Mon, 28 Jun 2021 21:50:50 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C29C061760;
+        Mon, 28 Jun 2021 18:48:22 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id h18so2333186qve.1;
+        Mon, 28 Jun 2021 18:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zwISlu4t3dplgWD20RF908rV5PcoQEWx07KHDpdjYT8=;
+        b=oAfx9elvsqm/3Q6uACk/S/oJi2vyR7eJQOLDBtuFTBImyroQPtRQhxAeIjgiHCrkTb
+         sx8GyMHGnUjAazJJ2OPAF7P6p7H86t4lpJ3WJW2WXehAngMztSeDmbi7rkriKqvSDFWq
+         0bW65X8zsIqJbvr3BDFLAQjyrcnAup5qI5SaHiqPy8B2pcNJ5zK5SyzTCWJndftCWSWf
+         h87AQ+F2edC0MeUUxcsYTwqh4jieGoAknDI5acQOmsT1HS5I4/+LwzldPUGdDJROucgD
+         q4iSGAkMcFKiAaJ75+Vf6R3wsvRXF7ut8bejPlqgLdwLXiE4fbHMeFJTDwhYT8l9te83
+         NA7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zwISlu4t3dplgWD20RF908rV5PcoQEWx07KHDpdjYT8=;
+        b=EnNya0I/g4koJe39wmxOknwXFujYzG7sBjb/kBqOFlkj6d5EJAN6KKLVW2fODHHs/5
+         sGmH3tlipmTThdsmENEAjNN2d/GUCOeaDeO1lRNxc9AevvImU5irRdS2DQkC6QVANEVE
+         d7dLAU/aIKiMZKgSEYhK4cAZ55zk2KnbT+wdwHEUmACy5bSmACU9ocqr2M1PLgEGGf1g
+         LV//1AOMpeWB7HU7cVpUvS66JpsaRhuEQck41cFexWBW293iuOzZuKF2EhAXTixWNMT1
+         TkD1ougugkJX4D3xpH21JNiOYDF3lhOOHBN8ro0d73aB71FoAFmbTwvSkOIafR7n//jL
+         VTFA==
+X-Gm-Message-State: AOAM533/P56/31qlOBtAIllFRaJRuLXks1kP2E1oaJnBSvKvJjxmfkT9
+        wdsW/ubixY9969tqBGVAw2CZOMxyDsc=
+X-Google-Smtp-Source: ABdhPJyCNkPgTNy9l7vkOxhw0EStOdNQTIlQr9+wz2mDIdXu4xaL6F951FXY9LPEPEZs802msOuX1w==
+X-Received: by 2002:a05:6214:13ac:: with SMTP id h12mr8220005qvz.48.1624931301428;
+        Mon, 28 Jun 2021 18:48:21 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id t187sm11089487qkc.56.2021.06.28.18.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 18:48:21 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 18:48:20 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 0/8] all: use find_next_*_bit() instead of
+ find_first_*_bit() where possible
+Message-ID: <YNp75K4n9KQD5Cw3@yury-ThinkPad>
+References: <20210612123639.329047-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210612123639.329047-1-yury.norov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds document for mt8195 board with mt6359, rt1019 and rt5682
+On Sat, Jun 12, 2021 at 05:36:31AM -0700, Yury Norov wrote:
+> find_first_*_bit() is simpler and faster than 'next' version [1], and they
+> work identically if start == 0. But in many cases kernel code uses the
+> 'next' version where 'first' can be used. This series addresses this issue.
+> 
+> Patches 1-3 move find.h under include/linux as it simplifies development.
+> Patches 4-8 switch the kernel and tools to find_first_*_bit() implementation
+> where appropriate. 
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../sound/mt8195-mt6359-rt1019-rt5682.yaml    | 39 +++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
+Guys, do we have any blocker for this series? If not, I'd like to have it
+merged in this window.
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-new file mode 100644
-index 000000000000..246c0875e64e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359-rt1019-rt5682.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mt8195-mt6359-rt1019-rt5682.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Mediatek MT8195 with MT6359, RT1019 and RT5682 ASoC sound card driver
-+
-+maintainers:
-+  - Trevor Wu <trevor.wu@mediatek.com>
-+
-+description:
-+  This binding describes the MT8195 sound card.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8195_mt6359_rt1019_rt5682
-+
-+  mediatek,platform:
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+    description: The phandle of MT8195 ASoC platform.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - mediatek,platform
-+
-+examples:
-+  - |
-+
-+    sound: mt8195-sound {
-+        compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
-+        mediatek,platform = <&afe>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&aud_pins_default>;
-+    };
-+
-+...
--- 
-2.18.0
-
+And this too: https://lore.kernel.org/lkml/YNirnaYw1GSxg1jK@yury-ThinkPad/T/
