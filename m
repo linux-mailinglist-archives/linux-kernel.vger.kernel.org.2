@@ -2,114 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74693B6DCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1056C3B6DCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhF2FAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 01:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhF2FAV (ORCPT
+        id S231809AbhF2FCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 01:02:07 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:59387 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhF2FCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 01:00:21 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BC6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:57:54 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id c8so22445106ybq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YQl18TLUkr2nRKyC1vSxbS/UF4p2F5gHfYaFUi3T+n0=;
-        b=oa+RMAZJc9GfX0EhzdE4o3cLkjNhncy1FDkP9Jufvd9x5CqaKqV++FNnako5tDhYdi
-         0/2Nlyquzq/xT+qvJsGAfkxwz9hFCa07GV7PsqePF3w4qwgMYLzPfPjjZSVhd2HKJOE+
-         fAvHdbRoBLUVCtvGicKOyoEYhHYFHPfGYu2cchyM4sInBGBjZByB8DtKuvr1sjAxqz6Q
-         WCJnmmvjCZb4zg8I8Eh/+f6/AwxO3VBAtD7ERiV9SR4edRPgQ4dN/FFfBFHVsWBSKo4j
-         vTJ8I1ziM67ADXMJc+fOCzB+UYttQL4K90NFjD2VhfVjksbxLM8PotwVxrN567r+o31b
-         Lasg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YQl18TLUkr2nRKyC1vSxbS/UF4p2F5gHfYaFUi3T+n0=;
-        b=gbMqC1ngEF7vojUKmJ+9lQm4dEDkhAzio17vRWMUXZIVWuPjcZzOX1hpHAWvoSdXLM
-         6b7FARSiITySCaJkcFBfF7W97A2MlcqgkQhSDqjxL+oEc2dm/WWeyoiS3VQVRCt3UZpC
-         YtgiXIK9Yz41RHvs7RXkJ+2pJtZcXn+3Osl/Gfo7pizbLfk0x8Twd6o3hmxkzP4lhmvz
-         3IsfvrBd1PAAt1IRbBCDqu+PyIib1EZ+aDIG+wREqYFbgHhpM7n2AIwRM/ZQUPt5ieke
-         LJhKe4ZGJVkhLKTrhglSyN5U4zmb6rOEFnU+Z+lPxsRsyn3vFaEjCb9tPc6CNPSVcd+N
-         Chjg==
-X-Gm-Message-State: AOAM533GFdBR0nISP2oS9Nu1GE2BzIqumLHxzXzft22ntt8hRdCbO5Lp
-        8/QuU3fFRhvtDSZ635upxZUe/dc/Ye9QFM1DHBhraA==
-X-Google-Smtp-Source: ABdhPJz/VwtV/M6UVVx0zhZJBKuBd80vzBt37+/nIC7cK2jztcvIpxJ0grp0Ws9MxGsZQN0V/ryHpL49vA2HBqE9Tzk=
-X-Received: by 2002:a5b:7c4:: with SMTP id t4mr25331717ybq.368.1624942673533;
- Mon, 28 Jun 2021 21:57:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210608231132.32012-1-joshdon@google.com> <YMobzbLecaFYuLtq@slm.duckdns.org>
- <CABk29NtcRUwskBjrvLKkEKQ0hpNPSrdzrGAGZy+bHSfnznOUSg@mail.gmail.com> <YNb6CL6Q9CJnbB2R@mtj.duckdns.org>
-In-Reply-To: <YNb6CL6Q9CJnbB2R@mtj.duckdns.org>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 28 Jun 2021 21:57:42 -0700
-Message-ID: <CABk29NtqZH8nJ1NGuBVisGDBJxAK0948vRau7RhYA4O_bvJ-ww@mail.gmail.com>
-Subject: Re: [PATCH] sched: cgroup SCHED_IDLE support
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 29 Jun 2021 01:02:05 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210629045937epoutp021d3308a1340608fd95039b121d598b4a~M9NjVYOBN1318613186epoutp02Z
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:59:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210629045937epoutp021d3308a1340608fd95039b121d598b4a~M9NjVYOBN1318613186epoutp02Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624942777;
+        bh=UX43tcH2z+3n+dP0BpvC3+c3dnAFQKA3bu75v05l9u0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=enTTBJxllFAswiUOZYAoImfnpcpEJb8mTsO8Ew+0cUBF/mZe0n7QzR79RscwfiqQo
+         i31yn4qXa1mr3fvBpSCIgQiV95pxe12D9LBAQl0aTDc9TKlbF3iRlEAD4D7ebb2QhV
+         ypiaGfytHgIHadvgYmtqetyq/RLzY7wGYkjLeErA=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210629045936epcas5p37b188f16e8888b772ff59585619a1de4~M9Ninuli91692516925epcas5p3E;
+        Tue, 29 Jun 2021 04:59:36 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7D.BE.09476.8B8AAD06; Tue, 29 Jun 2021 13:59:36 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210629045610epcas5p4fa9d2a217b351a950899073d6b7d3dfd~M9Kh59m5f2705527055epcas5p4W;
+        Tue, 29 Jun 2021 04:56:10 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210629045609epsmtrp2e52909c09997cbec79137debd5ba2b80~M9Kh5HWrq2463924639epsmtrp26;
+        Tue, 29 Jun 2021 04:56:09 +0000 (GMT)
+X-AuditID: b6c32a49-6b7ff70000002504-9d-60daa8b8ac13
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C1.6D.08289.9E7AAD06; Tue, 29 Jun 2021 13:56:09 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210629045608epsmtip29684896a250cbe31b5205e20741962d2~M9KgK5JYs0530005300epsmtip2D;
+        Tue, 29 Jun 2021 04:56:08 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     krzysztof.kozlowski@canonical.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        ajaykumar.rs@samsung.com, robin.murphy@arm.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH v5] serial: samsung: use dma_ops of DMA if attached
+Date:   Tue, 29 Jun 2021 10:29:02 +0530
+Message-Id: <20210629045902.48912-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCIsWRmVeSWpSXmKPExsWy7bCmpu6OFbcSDN4vM7U48P4gi8WDedvY
+        LJoXr2ezeDdXxmLj2x9MFpseX2O1uLxrDpvFjPP7mCzOLO5lt7jbupjd4uCHJ6wO3B5r5q1h
+        9JjV0MvmsWlVJ5vH/rlr2D02L6n36NuyitHj8ya5APYoLpuU1JzMstQifbsEroyWbR9YC07q
+        V3S2bGJqYPyn3sXIySEhYCKxc/oBti5GLg4hgd2MEg+v9TNCOJ8YJW42bYNyPjNKLNv5hBGm
+        5eu2XSwQiV1AiTOTmCGcFiaJ9a8eMXUxcnCwCWhKHD/PDdIgIhAp8WHPJrAaZoHfjBJvW8+y
+        gCSEBZwlnn47yQZiswioSjxb/IcJxOYVsJC4ffsyK8Q2eYnVGw6ANUsI3GKXaNt3iBFkgYSA
+        i8Sz2TUQNcISr45vYYewpSQ+v9vLBmHnS8yft4oZwq6QWHnhDZRtL3HgyhwWkDHMQHeu36UP
+        EZaVmHpqHdgJzAJ8Er2/nzBBxHkldsyDsRUl/u/uh1olLvFuxRSoMz0kHvS/AosLCcRKzN10
+        k20Co+wshA0LGBlXMUqmFhTnpqcWmxYY5qWW6xUn5haX5qXrJefnbmIEJwwtzx2Mdx980DvE
+        yMTBeIhRgoNZSYT3bd6tBCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8S9kPJQgJpCeWpGanphak
+        FsFkmTg4pRqYtD5wZ71bcOKrY8N5y4Juf/Yl37seCDdO6e3acYuPfwGj5Fa2WgOdRSdDAjY4
+        /9Xuj/66Qu29/4HgWeUrL8z8ych5zKpqTudHjlcPDJ9Xyiy0KuHzzF9osrGOnXHFx8bQOzIt
+        ueeS3ksfnJU3S+W2dd3GVzOq5D+suXnvLJObbsrcTzOlYti+zsvnWlN635xtdeDPPXKHT+5P
+        31xtrNS7avFqS3uNdk/OaM3K7VoBdzQOCG34uCOnY0611be/ZcYiiQUfFtaUKEkWCOatcxa8
+        8Xb13ruzytzv2dzLZ9p2JDYi5OiH91yMgumyFU3Lj/57vWT7J85XHNuzkqZuTFQ0mVK3Qm+y
+        V+qhtUtWKu1MVmIpzkg01GIuKk4EAIxuJWqHAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNLMWRmVeSWpSXmKPExsWy7bCSvO7L5bcSDH5/NLM48P4gi8WDedvY
+        LJoXr2ezeDdXxmLj2x9MFpseX2O1uLxrDpvFjPP7mCzOLO5lt7jbupjd4uCHJ6wO3B5r5q1h
+        9JjV0MvmsWlVJ5vH/rlr2D02L6n36NuyitHj8ya5APYoLpuU1JzMstQifbsEroyWbR9YC07q
+        V3S2bGJqYPyn3sXIySEhYCLxddsuli5GLg4hgR2MEucufWSDSIhLTPu1nxHCFpZY+e85O0RR
+        E5PE35Y1TF2MHBxsApoSx89zg9SICERLLN58iBGkhlmgmUli1tlusGZhAWeJp99Ogg1lEVCV
+        eLb4DxOIzStgIXH79mVWiAXyEqs3HGCewMizgJFhFaNkakFxbnpusWGBUV5quV5xYm5xaV66
+        XnJ+7iZGcPhpae1g3LPqg94hRiYOxkOMEhzMSiK8b/NuJQjxpiRWVqUW5ccXleakFh9ilOZg
+        URLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXApDbFyyBKuXaZ7cPKbzZrTzySqzyflMDtdepE
+        bNqHjEwTSeF1fieCViyfen5B7P1T9qyySe8uzrQrfdcR6yPL9klh7tGP339qrVz8nDMvPGPp
+        pIq/XXYSmttZWwL/bnzz0Fux6cDcV2WbYncus5gTz7Bc6NyvFQ9rZm9syFq8okGmbeYlvdAL
+        S9v4eeMMer9/0rh50SPvtHjssom5C720vG73BrldvHrl3/qjvRe2mUyTevDgYnI/11/bS2l7
+        edqYK9P29y/RaZg5UXw/C+u8pkjzx9bGl/Zzh16ZdqVOoViounrGg5d3FzaUTl+gvHn/ST2X
+        Vvb8itjyY5nPBA1e/GBPfdT2YnNwfsCjxQdds5VYijMSDbWYi4oTAWWgBCGuAgAA
+X-CMS-MailID: 20210629045610epcas5p4fa9d2a217b351a950899073d6b7d3dfd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210629045610epcas5p4fa9d2a217b351a950899073d6b7d3dfd
+References: <CGME20210629045610epcas5p4fa9d2a217b351a950899073d6b7d3dfd@epcas5p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 2:57 AM Tejun Heo <tj@kernel.org> wrote:
-[snip]
->
-> Would you care to share some concrete use cases?
->
-> Thank you.
->
-> --
-> tejun
+When DMA is used for TX and RX by serial driver, it should
+pass the DMA device pointer to DMA API instead of UART device
+pointer. DMA device should be used for DMA API because only
+the DMA device is aware of how the device connects to the memory.
+There might be an extra level of address translation due to a
+SMMU attached to the DMA device. When serial device is used for
+DMA API, the DMA API will have no clue of the SMMU attached to
+the DMA device.
 
-Sure thing, there are two use cases we've found compelling:
+This patch is necessary to fix the SMMU page faults
+which is observed when a DMA(with SMMU enabled) is attached
+to UART for transfer.
 
-1. On a machine, different users are given their own top-level cgroup
-(configured with an appropriate number of shares). Each user is free
-to spawn any threads and create any additional cgroups within their
-top-level group.
-Some users would like to run high priority, latency-sensitive work
-(for example, responding to an RPC) as well as some batch tasks (ie.
-background work such as data manipulation, transcoding, etc.) within
-their cgroup. The batch tasks should interfere minimally with the high
-priority work. However, it is still desired that this batch work be
-considered the same as the high priority work vs the jobs of some
-other user on the machine.
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
+---
+Changes since v1:
+1. Rebased the patch on "tty-next" branch of TTY driver tree
 
-To achieve this, the user sets up two sub-cgroups, one of which is
-marked as idle. The idle cgroup will always be preempted on wakeup of
-a task in the other sub-cgroup (but not a wakeup of another user's
-task). This is not possible with the per-task SCHED_IDLE setting.
-Cgroup shares/weight alone is also not as strong as SCHED_IDLE.
+Changes since v2:
+1. Updated the commit message.
+2. Changed the comment description
 
-2. We can create a top-level idle cgroup in which we place users who
-want to run some best-effort work (ie. some long running
-computations). Since it is the top-level cgroup that is marked idle,
-any other task on the machine will always preempt something running
-within the top-level idle cgroup. We can also easily maintain the
-relative weights between different users within the idle group.
+Changes since v3:
+1. Removed the null pointer check for "dma", "dma->tx_chan" and
+"dma->rx_chan" and instead sending DMA device pointer while calling
+DMA API.
 
-This top-level idle group allows for soaking otherwise unused cycles,
-and offers cheap machine quota for users who have latency-tolerant
-jobs.
+Changes since v4:
+1. Fixed the alignments of arguments.
+
+ drivers/tty/serial/samsung_tty.c | 46 +++++++++++++++++---------------
+ 1 file changed, 25 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 9fbc61151c2e..0cf4dfe77c32 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -305,8 +305,9 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
+ 		dmaengine_pause(dma->tx_chan);
+ 		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
+ 		dmaengine_terminate_all(dma->tx_chan);
+-		dma_sync_single_for_cpu(ourport->port.dev,
+-			dma->tx_transfer_addr, dma->tx_size, DMA_TO_DEVICE);
++		dma_sync_single_for_cpu(dma->tx_chan->device->dev,
++					dma->tx_transfer_addr, dma->tx_size,
++					DMA_TO_DEVICE);
+ 		async_tx_ack(dma->tx_desc);
+ 		count = dma->tx_bytes_requested - state.residue;
+ 		xmit->tail = (xmit->tail + count) & (UART_XMIT_SIZE - 1);
+@@ -338,8 +339,9 @@ static void s3c24xx_serial_tx_dma_complete(void *args)
+ 	count = dma->tx_bytes_requested - state.residue;
+ 	async_tx_ack(dma->tx_desc);
+ 
+-	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
+-				dma->tx_size, DMA_TO_DEVICE);
++	dma_sync_single_for_cpu(dma->tx_chan->device->dev,
++				dma->tx_transfer_addr, dma->tx_size,
++				DMA_TO_DEVICE);
+ 
+ 	spin_lock_irqsave(&port->lock, flags);
+ 
+@@ -443,8 +445,9 @@ static int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
+ 	dma->tx_size = count & ~(dma_get_cache_alignment() - 1);
+ 	dma->tx_transfer_addr = dma->tx_addr + xmit->tail;
+ 
+-	dma_sync_single_for_device(ourport->port.dev, dma->tx_transfer_addr,
+-				dma->tx_size, DMA_TO_DEVICE);
++	dma_sync_single_for_device(dma->tx_chan->device->dev,
++				   dma->tx_transfer_addr, dma->tx_size,
++				   DMA_TO_DEVICE);
+ 
+ 	dma->tx_desc = dmaengine_prep_slave_single(dma->tx_chan,
+ 				dma->tx_transfer_addr, dma->tx_size,
+@@ -515,7 +518,7 @@ static void s3c24xx_uart_copy_rx_to_tty(struct s3c24xx_uart_port *ourport,
+ 	if (!count)
+ 		return;
+ 
+-	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
++	dma_sync_single_for_cpu(dma->rx_chan->device->dev, dma->rx_addr,
+ 				dma->rx_size, DMA_FROM_DEVICE);
+ 
+ 	ourport->port.icount.rx += count;
+@@ -636,8 +639,8 @@ static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port *ourport)
+ {
+ 	struct s3c24xx_uart_dma *dma = ourport->dma;
+ 
+-	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
+-				dma->rx_size, DMA_FROM_DEVICE);
++	dma_sync_single_for_device(dma->rx_chan->device->dev, dma->rx_addr,
++				   dma->rx_size, DMA_FROM_DEVICE);
+ 
+ 	dma->rx_desc = dmaengine_prep_slave_single(dma->rx_chan,
+ 				dma->rx_addr, dma->rx_size, DMA_DEV_TO_MEM,
+@@ -1102,18 +1105,19 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+ 		goto err_release_tx;
+ 	}
+ 
+-	dma->rx_addr = dma_map_single(p->port.dev, dma->rx_buf,
+-				dma->rx_size, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(p->port.dev, dma->rx_addr)) {
++	dma->rx_addr = dma_map_single(dma->rx_chan->device->dev, dma->rx_buf,
++				      dma->rx_size, DMA_FROM_DEVICE);
++	if (dma_mapping_error(dma->rx_chan->device->dev, dma->rx_addr)) {
+ 		reason = "DMA mapping error for RX buffer";
+ 		ret = -EIO;
+ 		goto err_free_rx;
+ 	}
+ 
+ 	/* TX buffer */
+-	dma->tx_addr = dma_map_single(p->port.dev, p->port.state->xmit.buf,
+-				UART_XMIT_SIZE, DMA_TO_DEVICE);
+-	if (dma_mapping_error(p->port.dev, dma->tx_addr)) {
++	dma->tx_addr = dma_map_single(dma->tx_chan->device->dev,
++				      p->port.state->xmit.buf, UART_XMIT_SIZE,
++				      DMA_TO_DEVICE);
++	if (dma_mapping_error(dma->tx_chan->device->dev, dma->tx_addr)) {
+ 		reason = "DMA mapping error for TX buffer";
+ 		ret = -EIO;
+ 		goto err_unmap_rx;
+@@ -1122,8 +1126,8 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+ 	return 0;
+ 
+ err_unmap_rx:
+-	dma_unmap_single(p->port.dev, dma->rx_addr, dma->rx_size,
+-			 DMA_FROM_DEVICE);
++	dma_unmap_single(dma->rx_chan->device->dev, dma->rx_addr,
++			 dma->rx_size, DMA_FROM_DEVICE);
+ err_free_rx:
+ 	kfree(dma->rx_buf);
+ err_release_tx:
+@@ -1142,8 +1146,8 @@ static void s3c24xx_serial_release_dma(struct s3c24xx_uart_port *p)
+ 
+ 	if (dma->rx_chan) {
+ 		dmaengine_terminate_all(dma->rx_chan);
+-		dma_unmap_single(p->port.dev, dma->rx_addr,
+-				dma->rx_size, DMA_FROM_DEVICE);
++		dma_unmap_single(dma->rx_chan->device->dev, dma->rx_addr,
++				 dma->rx_size, DMA_FROM_DEVICE);
+ 		kfree(dma->rx_buf);
+ 		dma_release_channel(dma->rx_chan);
+ 		dma->rx_chan = NULL;
+@@ -1151,8 +1155,8 @@ static void s3c24xx_serial_release_dma(struct s3c24xx_uart_port *p)
+ 
+ 	if (dma->tx_chan) {
+ 		dmaengine_terminate_all(dma->tx_chan);
+-		dma_unmap_single(p->port.dev, dma->tx_addr,
+-				UART_XMIT_SIZE, DMA_TO_DEVICE);
++		dma_unmap_single(dma->tx_chan->device->dev, dma->tx_addr,
++				 UART_XMIT_SIZE, DMA_TO_DEVICE);
+ 		dma_release_channel(dma->tx_chan);
+ 		dma->tx_chan = NULL;
+ 	}
+-- 
+2.17.1
+
