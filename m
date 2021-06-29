@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FED3B6E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414CE3B6E1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhF2GMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:12:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
+        id S232131AbhF2GNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhF2GMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:12:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4667461D92;
-        Tue, 29 Jun 2021 06:10:22 +0000 (UTC)
+        id S231881AbhF2GNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:13:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D3C61DC5;
+        Tue, 29 Jun 2021 06:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624947022;
-        bh=IWwBWM5EpNg3cZ6/cK+Cf5OhG2I9lG+DMt5REFSvWDI=;
+        s=k20201202; t=1624947035;
+        bh=erYjZM3znz/8Dd47OzSopVWIyIGBBPSiIH5Ekwq9QII=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=dUGB0Lwn7U4A4aG0mGUfwNYw8REFlWwcffRRtS2wBqe9WFL9dFmboHPE1eFIEGtuc
-         Yp0CPjqzUqNtArcMzecrgscepvaOA651iLX4I23JyFVP9ncaieXA1KFbfUkmQvmN6f
-         5ibMcOBBS3niid5CpytDqIYQq2z4ACDHhghJglg/+howNHbROJB/9q76GToiSLOhdT
-         r2Mfv2sJUijA6oN8MPxvrISXp55znRNuzJaFphDzd4w15j4iTxIg5tLI52+aQ/bCYr
-         +j8MLN4aSC6E3ztQ+9I+jYvhuBIjZ3G/fLg9+RiUNwlJ84/ZrzpyirNLZIPic3ekXF
-         eUqtpVw/IVI+Q==
+        b=A5MqbJCADNlwHQGPLdJivV1bRq6gEFCw4cEOiCo1Z4MgZTJQAnRyek3OhKkvdLt2I
+         p2OxmnzzZsIOnTyG3qScwFPpYBC39hDKNlPI9jDo4lIuFWCpGD2DGIOjkz55S/EZkG
+         g4ShpSbLriPSTjrULb34DZBpPKINMOQn5J5O7L5qEf1SIl/kfWhVDLmQ6DafMdrsPa
+         Iq3YI+rhVtcflffrcyMN2Qx8cRe/xRnfGHRj1Jj9bJT3T0Qwn9xwxERVVv2V4xBZMR
+         SAmwMUhvs6Nq8gw/pS7mXtSwAGusOoDMJ2YiRFurwjWpgTKGJ3wpqS6Pn3kXaWWkiF
+         F8Nsf98aSPnvg==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -35,36 +35,21 @@ Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 To:     Rajan Vaja <rajan.vaja@xilinx.com>, kristo@kernel.org,
         lee.jones@linaro.org, michal.simek@xilinx.com,
         mturquette@baylibre.com, quanyang.wang@windriver.com
-Date:   Mon, 28 Jun 2021 23:10:21 -0700
-Message-ID: <162494702112.2516444.13836179455930623514@swboyd.mtv.corp.google.com>
+Date:   Mon, 28 Jun 2021 23:10:33 -0700
+Message-ID: <162494703384.2516444.13293216331096267775@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Quoting Rajan Vaja (2021-06-28 00:01:19)
-> diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zyn=
-qmp.h
-> index 5beeb41b29fa..aa013a59c7cc 100644
-> --- a/drivers/clk/zynqmp/clk-zynqmp.h
-> +++ b/drivers/clk/zynqmp/clk-zynqmp.h
-> @@ -10,6 +10,20 @@
-> =20
->  #include <linux/firmware/xlnx-zynqmp.h>
-> =20
-> +/* Common Flags */
-> +/* must be gated across rate change */
-> +#define ZYNQMP_CLK_SET_RATE_GATE       BIT(0)
-> +/* must be gated across re-parent */
-> +#define ZYNQMP_CLK_SET_PARENT_GATE     BIT(1)
-> +/* propagate rate change up one level */
-> +#define ZYNQMP_CLK_SET_RATE_PARENT     BIT(2)
-> +/* do not gate even if unused */
-> +#define ZYNQMP_CLK_IGNORE_UNUSED       BIT(3)
-> +/* don't re-parent on rate change */
-> +#define ZYNQMP_CLK_SET_RATE_NO_REPARENT        BIT(7)
-> +/* do not gate, ever */
-> +#define ZYNQMP_CLK_IS_CRITICAL         BIT(11)
+> Currently firmware passes CCF specific flags to ZynqMP clock driver.
+> So firmware needs to be updated if CCF flags are changed. The firmware
+> should have its own 'flag number space' that is distinct from the
+> common clk framework's 'flag number space'. So define and use ZynqMP
+> specific common clock flags instead of using CCF flags.
+>=20
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> ---
 
-Ok I was hoping the firmware didn't use the CRITICAL and IGNORE_UNUSED
-flags but I guess we've lost that battle.
+Applied to clk-next
