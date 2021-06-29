@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C010F3B6BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349B23B6BC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhF2Aec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 20:34:32 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:44004 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhF2Aea (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 20:34:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624926723; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XXeaGfryzqs7lXB7YGEwtxfK7Ym2WqEHAXJXur+jmUE=;
- b=DKVQWDzQzMtV/55PIMHlDJ6Q7H371S3XxOlqbgdgpTMZcJkPC0TGzAfsApzIYcuQWAwcIBIo
- L2S7oQs0NaOBDBW6KthqHTBoW8BsCnkjHCxjEl6Az4djSOghQ1nKY7JpLuqpFXBEdD+qTv4d
- 7778tKgDwGpAQmEmLrJR9yTe6OE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60da69ecc4cc543602a4a3d2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 29 Jun 2021 00:31:40
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D45EC4323A; Tue, 29 Jun 2021 00:31:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B30DC433F1;
-        Tue, 29 Jun 2021 00:31:39 +0000 (UTC)
+        id S232240AbhF2Ak6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 20:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230086AbhF2Ak5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 20:40:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DE9061CDC;
+        Tue, 29 Jun 2021 00:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624927110;
+        bh=WZivHehj0fn2zKFGoJRQXv8BLeKMtv+80LunaiEbIWE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=J1YEvvYJz8zqaFhsLjQqpLSF32fSg8EVWaPWDmNeDM59GEdo2i/8BDcz9EpIFVSCo
+         3yvEZc1PA3yJF+uTYog0vVSprT51/Q07l2wkuhnh3WaFGQoR1nHd980Jz+O7EYZPwq
+         QeurrrGQPohqwS8DaCgRZT6R+g8O/slmEq4popLssCB3q/VGC9B1C6lQLyXIY1IayC
+         4MSXCiS2RRAV/kW4sr2eJXv+IycAui1dukFIBfTh9HbJ0WnlioejbQNfIU/iiwFZpD
+         fnWoD7SLZ4z/gyfw3PH4wTebBOJmXO1q9gsWqNMBiI0FySzwSMpOv4+ZFr8ULcs65z
+         S9ujiOiO3McFA==
+Date:   Mon, 28 Jun 2021 19:38:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210629003829.GA3978248@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Jun 2021 17:31:39 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: Make it possible to enable the test pattern
-In-Reply-To: <20210629002234.1787149-1-bjorn.andersson@linaro.org>
-References: <20210629002234.1787149-1-bjorn.andersson@linaro.org>
-Message-ID: <b3456d3e4376ae1e9776f03e14513a35@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624224040.GA3567297@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn
-
-On 2021-06-28 17:22, Bjorn Andersson wrote:
-> The debugfs interface contains the knobs to make the DisplayPort
-> controller output a test pattern, unfortunately there's nothing
-> currently that actually enables the defined test pattern.
+On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
+> [+cc Michal, Ley Foon, Jingoo, Thierry, Jonathan]
 > 
-> Fixes: de3ee25473ba ("drm/msm/dp: add debugfs nodes for video pattern 
-> tests")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-This is not how this debugfs node works. This is meant to be used while 
-running
-DP compliance video pattern test.
-
-https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c
-
-While the compliance test is being run with this msm_dp_compliance app 
-running,
-it will draw the test pattern when it gets the "test_active" from the 
-driver.
-
-The test pattern which this app draws is as per the requirements of the 
-compliance test
-as the test equipment will match the CRC of the pattern which is drawn.
-
-The API dp_panel_tpg_config() which you are trying to call here draws 
-the DP test pattern
-from the DP controller hardware but not the pattern which the compliance 
-test expects.
-
-Its just a debug API to call when required during bringup/debug 
-purposes.
-
-Hence this is not the place to call it as it will end up breaking CTS.
-
-Thanks
-
-Abhinav
-
-> ---
->  drivers/gpu/drm/msm/dp/dp_debug.c | 2 ++
->  1 file changed, 2 insertions(+)
+> On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
+> > IRQ handlers that are registered for shared interrupts can be called at
+> > any time after have been registered using the request_irq() function.
+> > 
+> > It's up to drivers to ensure that's always safe for these to be called.
+> > 
+> > Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
+> > their handlers are registered very early in the probe function, an error
+> > later can lead to these handlers being executed before all the required
+> > resources have been properly setup.
+> > 
+> > For example, the rockchip_pcie_read() function used by these IRQ handlers
+> > expects that some PCIe clocks will already be enabled, otherwise trying
+> > to access the PCIe registers causes the read to hang and never return.
+> > 
+> > The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
+> > shared interrupt handlers being called, by generating a spurious interrupt
+> > just before a shared interrupt handler is unregistered.
+> > 
+> > But this means that if the option is enabled, any error in the probe path
+> > of this driver could lead to one of the IRQ handlers to be executed.
 > 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
-> b/drivers/gpu/drm/msm/dp/dp_debug.c
-> index 2f6247e80e9d..82911af44905 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-> @@ -305,6 +305,8 @@ static ssize_t dp_test_active_write(struct file 
-> *file,
->  				debug->panel->video_test = true;
->  			else
->  				debug->panel->video_test = false;
-> +
-> +			dp_panel_tpg_config(debug->panel, debug->panel->video_test);
->  		}
->  	}
->  	drm_connector_list_iter_end(&conn_iter);
+> I'm not an IRQ expert, but I think this is an issue regardless of
+> CONFIG_DEBUG_SHIRQ, isn't it?  Anything used by an IRQ handler should
+> be initialized before the handler is registered.  CONFIG_DEBUG_SHIRQ
+> is just a way to help find latent problems.
+> 
+> > In a rockpro64 board, the following sequence of events happens:
+> > 
+> >   1) "pcie-sys" IRQ is requested and its handler registered.
+> >   2) "pcie-client" IRQ is requested and its handler registered.
+> >   3) probe later fails due readl_poll_timeout() returning a timeout.
+> >   4) the "pcie-sys" IRQ is unregistered.
+> >   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
+> >   6) "pcie-client" IRQ handler is called for this spurious interrupt.
+> >   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
+> >   8) the machine hangs because rockchip_pcie_read() call never returns.
+> > 
+> > To avoid cases like this, the handlers don't have to be registered until
+> > very late in the probe function, once all the resources have been setup.
+> > 
+> > So let's just move all the IRQ init before the pci_host_probe() call, that
+> > will prevent issues like this and seems to be the correct thing to do too.
+> 
+> Previously we registered rockchip_pcie_subsys_irq_handler() and
+> rockchip_pcie_client_irq_handler() before the PCIe clocks were
+> enabled.  That's a problem because they depend on those clocks being
+> enabled, and your patch fixes that.
+> 
+> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
+> which isn't initialized until rockchip_pcie_init_irq_domain().
+> Previously we registered rockchip_pcie_legacy_int_handler() as the
+> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
+> 
+> I think your patch *also* fixes that problem, right?
+
+The lack of consistency in how we use
+irq_set_chained_handler_and_data() really bugs me.
+
+Your patch fixes the ordering issue where we installed
+rockchip_pcie_legacy_int_handler() before initializing data
+(rockchip->irq_domain) that it depends on.
+
+But AFAICT, rockchip still has the problem that we don't *unregister*
+rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
+removed.  Doesn't this mean that if we unload the module, then receive 
+an interrupt from the device, we'll try to call a function that is no
+longer present?
+
+> > diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+> > index f1d08a1b159..78d04ac29cd 100644
+> > --- a/drivers/pci/controller/pcie-rockchip-host.c
+> > +++ b/drivers/pci/controller/pcie-rockchip-host.c
+> > @@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+> >  	if (err)
+> >  		return err;
+> >  
+> > -	err = rockchip_pcie_setup_irq(rockchip);
+> > -	if (err)
+> > -		return err;
+> > -
+> >  	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
+> >  	if (IS_ERR(rockchip->vpcie12v)) {
+> >  		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
+> > @@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+> >  	if (err)
+> >  		goto err_vpcie;
+> >  
+> > -	rockchip_pcie_enable_interrupts(rockchip);
+> > -
+> >  	err = rockchip_pcie_init_irq_domain(rockchip);
+> >  	if (err < 0)
+> >  		goto err_deinit_port;
+> > @@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+> >  	bridge->sysdata = rockchip;
+> >  	bridge->ops = &rockchip_pcie_ops;
+> >  
+> > +	err = rockchip_pcie_setup_irq(rockchip);
+> > +	if (err)
+> > +		goto err_remove_irq_domain;
+> > +
+> > +	rockchip_pcie_enable_interrupts(rockchip);
+> > +
+> >  	err = pci_host_probe(bridge);
+> >  	if (err < 0)
+> >  		goto err_remove_irq_domain;
+> > -- 
+> > 2.31.1
+> > 
