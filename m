@@ -2,186 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1933B776D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FAA3B7774
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 19:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbhF2RxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 13:53:21 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:12983 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbhF2RxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:53:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624989049; x=1656525049;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=g0PiKqGVBSqaTZ7WZ77Xvi3q4EcmCR5NqaRydf8WHFQ=;
-  b=c9kA6VB8l3LRwCqzy8IkFuvxOeuSQuqjgfU+s86hsfZZiusLuRR1KNh2
-   2sXMG9xvWyYG4m1HWlwfhN3DYP6Es+LWtKrFK8D3D3HZQDMakJyHWFOF1
-   O7/6V60GTvYwxDr52jatW/epDcw1bIvhyg78VboDGKW5e1c5lG2UC4lY4
-   /2MmtzgBbQXrhcY+78xB5SSA6GaJAKtMR+1WWEkFDQArQfXiYedOr1rHF
-   DwFreevH+CQAPG1ccF9Yc52BrE7XfErJIsDxugrprp+51Ryc1KGF9S6mn
-   ikk+Bh9whaM+wv242CNC2WC7ELhpLoCnd4hPcuNfqcV7Cys/g9cLalZ0n
-   Q==;
-IronPort-SDR: J3M+42+h4DRfAU0RnTqA72xHPX318OpcaNxRHFgkdpfg0piLfHjVyXsHgUttBXlKdPOEWpkXrg
- CMiyULzAVdp/OMoTSYuV8GAsVhNaT9pJUW1AN3ZK/2Z6xOl01xLYhgNLaqKgApaEoqk2DhZlQm
- A8NvYmPkq+KspJIZqjNpiQFP5aqlF2RW4f1SAVk+7eKHhI+YOaFczgDytfECQrWZ+vTRkeOPUW
- D41Xoxh31uBamRR2Z9KkqJRMlB3Pggg46aBwDzmMq67sSAEsqhTk4EW+zS7eDSPLY8KiuV1X7s
- AyY=
+        id S233908AbhF2R4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 13:56:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43913 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231856AbhF2R4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 13:56:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195355832"
 X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="120430740"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Jun 2021 10:50:48 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 29 Jun 2021 10:50:48 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Tue, 29 Jun 2021 10:50:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C0tVsCbfyjVcO+5N5NvaVKINVQEsRLxWrwZD4k6TrZmFaUUzrWY6Mg+7SVosXwIu6MbAInW9FRY64oSzKFF6CTd6QF7NgOSPf12LvvNIOtNNLnUPdtLnv2WZjNT+5NpFAfYM6LFMIu8PEeIgiRJidCkTTV83Ntx/MZCyV7RAZRB5QQ/dBE7HsNzBIZ8vQF/pj/jRrjhCsXit/GFt83F4qy/n0RzqFFmSUQlwI42WOwZKBONC11ddBNWsLekaWTMmwn0pNkJiWrqsjbBJ+R+Pf/Z7mftYwxSwWiJ+fAa/rgk1VU3y9V3qn4KebBFOGd61FsLnt3k0/tAHXXvEV+RXjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JohjZLgkhaNvqMvbI6HYoyVHFoJ4jeQO/az0nefwraM=;
- b=UFGQ4CUFqIZHELG3Bc0+D4R0npXC+VY/wcjgM4aeeVSVZs5l3UdS4GAZ6+sxJaacJhxTANia3pJWDZwXW9uqvNfYS97NJsOOezp/mWXXnar2EDysCon9CO5kIFoFMoY99P1yvmajqV6FsArFbvrczo+nBBtVm0/jAMpP6AllbY00t/RXm+RwiyiMaTVi3jfBoce4m3cBdOHY+/y8Pk3L5G308+CT3lUl8iun0SXsdecTreYOrcHS1PQ3FjuE+iYzkxfA2SrYTGWSp12iZs3POLRwsK0pHH3TwcYnxot1llBDQ3mcxJWZJwG8TkTfFYG8vyXbp73yNgjQAAMFEg61GQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JohjZLgkhaNvqMvbI6HYoyVHFoJ4jeQO/az0nefwraM=;
- b=ANegW3VXRjKcSKn2xdOp0u219hsyGIVQ9HY7vuQ/E6vBq+pFlzdVsPmGXuCQF2+z0QOQOwS+DSrLZR97oHTtA1DaesmATlpcNL7K9TpMCn/g6FbF1Ot4cwYVxgNTLAZBjdVfGZ+o74pO2+7rji0tY7LNLPtUWaOqBHn92b9dBdY=
-Received: from BN6PR11MB4003.namprd11.prod.outlook.com (2603:10b6:405:7b::17)
- by BN6PR1101MB2097.namprd11.prod.outlook.com (2603:10b6:405:50::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.23; Tue, 29 Jun
- 2021 17:50:45 +0000
-Received: from BN6PR11MB4003.namprd11.prod.outlook.com
- ([fe80::69e7:2972:2e57:3b8c]) by BN6PR11MB4003.namprd11.prod.outlook.com
- ([fe80::69e7:2972:2e57:3b8c%4]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
- 17:50:45 +0000
-From:   <Dan.Sneddon@microchip.com>
-To:     <broonie@kernel.org>, <Dan.Sneddon@microchip.com>
-CC:     <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Tudor.Ambarus@microchip.com>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>
-Subject: Re: Re: [PATCH] spi: atmel: Fix CS and initialization bug
-Thread-Topic: Re: [PATCH] spi: atmel: Fix CS and initialization bug
-Thread-Index: AQHXbQPwgV1WliYrJ0mjjxrwZijXiasrMuKAgAAEBACAAAGcgIAADAcA
-Date:   Tue, 29 Jun 2021 17:50:45 +0000
-Message-ID: <cb709000-7816-3817-b734-e03735788723@microchip.com>
-References: <20210629162914.23286-1-dan.sneddon@microchip.com>
- <20210629164733.GE4613@sirena.org.uk>
- <c849eb7a-d019-b88e-583a-78e1eba7624c@microchip.com>
- <20210629170741.GF4613@sirena.org.uk>
-In-Reply-To: <20210629170741.GF4613@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+   d="scan'208";a="195355832"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:54:10 -0700
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="643805469"
+Received: from bzhang2-mobl1.amr.corp.intel.com (HELO [10.255.231.86]) ([10.255.231.86])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 10:54:09 -0700
+Subject: Re: [PATCH v5 14/28] x86/fpu/xstate: Prevent unauthorised use of
+ dynamic user state
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     "Lutomirski, Andy" <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-15-chang.seok.bae@intel.com>
+ <af093744-6f68-ff51-f40b-4db234b363d8@intel.com>
+ <872cb0a2-3659-2e6c-52a8-33f1a2f0a2cd@kernel.org>
+ <36D0486A-D955-4C32-941A-A2A4985A450C@intel.com>
+ <48e86785-838d-f5d4-c93c-3232b8ffd915@intel.com>
+ <3AB6DECB-2A53-4EC2-84A6-0CACE44CFC1C@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <6754330a-bbbb-aa29-7800-f2d16216ad8c@intel.com>
+Date:   Tue, 29 Jun 2021 10:54:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [198.175.253.81]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5cdef14f-ff62-4611-6529-08d93b266be8
-x-ms-traffictypediagnostic: BN6PR1101MB2097:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR1101MB2097A7D21CB8A06E625CE54AE1029@BN6PR1101MB2097.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:800;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DMfCWMlAE1rmA3X+Z7a01R0n3FvpmdzCWmleen7pfR3Dwlw7eNJ3L2jgDFAMdFgZtP3gWAQvMYc+GPtjvyjPfTgIlEYqYBWSw78MZNlNQItc5T/cwUuRuFKLWA+JYXCjtn6i7ZcrPEer2KNXi1TLpt6Zhg+iASKlw8voSR94WNCsj+rZh1+bDZM1v5LeUPiVthSF9Jbn8Ml48izLEMdwTyrNjz8rFSpdiCC9Ccz5JFszXuovl5TGk/zK7diOH/qNxRUdZaN8dKn3MnQoXsum81iN9YB0u9kBaFAUDwKIyoUhsWzmcPOJ57Kughue5wSgF2vapBqOjT401yndqSDiQBBFQrdOVnVqlEFXmzJtTP7vdSqmjfkFMW5zUjw0P+undScXs8KEpMLJu7NLUTKWBGOoEEk9l+hny/utv3Ka71cqV9P72rQKaKySEbb3AD/A+j91emmCvESoFBFSc+9aboXV4YTFEz1F/SjvTMZb0aayOsCaOtaZsWg9eOOno1Ewkgg9KM3hCYkHj1eKvQX/twNZufdcS61UE/bhfGSRElcZ5uUifhVFdmM6B4MJaSQARMmBPpA39hb207J5Tbzwx558CT9fzhc+aYja0g02fOVRWzYJqCb5/94/mb+Tr2X+ZYCNy4au2i0E6KN2GjsrQynbRjdJ6eCCtErsdZ2+xGRXnwh6v0FVwxNDGFjpTyZVxBTBxlRQgYlEiJBuGPFxcZmBRZ+pMoxNRVmswCWN+Gd6e6+/yc+43q9P1d82vik/MWnbNi7SjMlQ3uAzBbggOA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB4003.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(396003)(366004)(136003)(346002)(2906002)(38100700002)(86362001)(36756003)(122000001)(53546011)(5660300002)(186003)(26005)(6506007)(83380400001)(6486002)(478600001)(6512007)(2616005)(31696002)(107886003)(66556008)(64756008)(110136005)(66446008)(8676002)(31686004)(71200400001)(8936002)(4326008)(54906003)(66946007)(66476007)(76116006)(316002)(91956017)(43740500002)(45980500001)(299355004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?v8ivgaPYJoanHvGV7WwzYPMJ58TFRJXZAY2QxERwK+J9PQf5XwUsh4Zg?=
- =?Windows-1252?Q?503j4tk/7iIjBTXJyV1WZ31M8RJyCtFmn9RtvurkRumJKPYeHvyZI0bi?=
- =?Windows-1252?Q?dW/bOL29LufQRUMYy+aBEuupVFHk45YI0Je6PXrhLTOLULHVRN5cF12R?=
- =?Windows-1252?Q?pCdAR7wq5N1fcRfiVgijSQHr1+wq/wEUzj9tIVe/aHGwdK98a7H+1ZS5?=
- =?Windows-1252?Q?EKNthdjLordOLivMzzeqvYozd6jBEpuupomksWXXKZakSf4LDCQNeFMG?=
- =?Windows-1252?Q?CPTMd9j/JtHx7z+fbWOQxM9fGT77iM9GRHMdg/fticu4X2Vai9rFmXoz?=
- =?Windows-1252?Q?ipHlRnx+Ym7RBq6cb3EFrTYj+v08jTva9kfCCnbrYPgAWmoYl0NBYtVg?=
- =?Windows-1252?Q?8DyK9DDpyS6Ds3u2PstrPfdZyQJoUx0Fh4Bhd3QM3De8nGLvcjApF7dT?=
- =?Windows-1252?Q?mH6SPwuKDpt3nKYClw9NgJyV/wwIPnq8jxxxpaCiePBRVakCOMxbfOxs?=
- =?Windows-1252?Q?wETELtCVyf0GjTpDMXvrKs3Z5+hZkv0zlYyuG0pCjEjAVDrPC0B1lEzo?=
- =?Windows-1252?Q?CvergDw/EWR+H0eLnk7+Z2WM+QIB20iJPCIEkvmyJObrzwM1nolhhCfb?=
- =?Windows-1252?Q?PlT/In0bcaOwit9s8zyrYVONcVcyEdZq23pY22UR6X7qs6pcPghmEhiN?=
- =?Windows-1252?Q?wmYALnsSPlyCpjGsAXE66pIMW1O9senskV6K8+syQfxC8fpn5VZrOP0A?=
- =?Windows-1252?Q?IE2daC0n/Vk/T3rzWmvWCnpTqsEq5VwDnyyCMnNfQMCQtF6yOA1Kgdo/?=
- =?Windows-1252?Q?t5EfVB1megEbhCAQSABRNr4Ia0LrHWAHOQ3e6/yDRCKMy9XE+26N9hi5?=
- =?Windows-1252?Q?vajNVKcGRsU51YPSQrnA8JhhMjWmcaUX3zRbrkgN3OkRvEIYxImF8yW5?=
- =?Windows-1252?Q?7DugsaT/D93m1pHvWz/1g81ACpHDsCLABl1LUi/kjROlXTCOUltko85Q?=
- =?Windows-1252?Q?4uyPngAGadtmzkY/vd/4lizT0d4slumgpE1mGytvED4KODGyJ0bjal9z?=
- =?Windows-1252?Q?rtWRdGLB3cUI753dY8OCxACLVKWnrEcYmxYhpogxIm2dcvj6lRyj9q3I?=
- =?Windows-1252?Q?s4YH+bFXLKvTaV8/ao/3vgFFksPnODi3McGZWcItZoYoUFmx12dnjNsb?=
- =?Windows-1252?Q?m4VO/1KuTXzK6dIemNwC/B6VL4xuS5k066pzu8SEvH2paUiE+pasYyvk?=
- =?Windows-1252?Q?JpzX96W7MCKRKFHvLP1JZ9XfGSd874C2tCeY8q4K8QBJE2vVPw4+/Jf3?=
- =?Windows-1252?Q?5YSazeg1apMubJmA4QSK4y99M6pJR3U51LyiFS2+Tctv8xGOcexN/XV9?=
- =?Windows-1252?Q?EQZqiyrETUMw6ZI2LCzRMXrExr1p8Yx7OcaWNCs26eDcVbH8Jqr8BKq3?=
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <5C08E4F664CA7E409CB16FA78A8382E2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4003.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cdef14f-ff62-4611-6529-08d93b266be8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 17:50:45.3225
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TUQy2bPlItfAySGz7xHmpK60FUtJN15cViVJyLDvJkOkeuH9Zw9WbUE06ZrxJ0psPxVBfeuvgySsTyQcN81cJfi0nBsNlpWEiR3+0iwbJnc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2097
+In-Reply-To: <3AB6DECB-2A53-4EC2-84A6-0CACE44CFC1C@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 10:07 AM, Mark Brown wrote:
-> On Tue, Jun 29, 2021 at 05:01:57PM +0000, Dan.Sneddon@microchip.com wrote=
-:
->> On 6/29/21 9:47 AM, Mark Brown wrote:
->=20
->>   >In what way does it do that?  I can't tell what the patch is supposed=
- >to
->>   >do.
->=20
->> The SPI_MASTER_GPIO_SS flag has to be set so that the set_cs function
->> gets called even when using gpio cs pins.
->=20
-> This all needs to be clear in the changelog.
+On 6/29/21 10:43 AM, Bae, Chang Seok wrote:
+> On Jun 16, 2021, at 12:01, Dave Hansen <dave.hansen@intel.com> wrote:
+>> On 6/16/21 11:47 AM, Bae, Chang Seok wrote:
+>>> Reading XINUSE via XGETBV is cheap but not free. I don't know spending a
+>>> hundred cycles for this WARN is big deal but this is one of the most
+>>> performance-critical paths.
+>> Is XGETBV(1) really a hundred cycles?  That seems absurdly high for a
+>> non-serializing register read.
+> My apologies -- I neglect not to check the log immediately. XGETBV(1) took
+> about 26 cycles on my test.
 
-I'll update the commit message.
-
->=20
->>   >> -	enable =3D3D (!!(spi->mode & SPI_CS_HIGH) =3D3D=3D3D enable);
->>   >> =3D20
->>   >> -	if (enable) {
->>   >> +	if ((enable && (spi->mode & SPI_CS_HIGH))
->>   >> +			|| (!enable && !(spi->mode & SPI_CS_HIGH))) {
->=20
->>   >This looks especially suspicious.
->=20
->> It's due to the fact that the spi core tells set_cs if the cs should be
->> high or low, not active or disabled.  This logic is to convert from
->> high/low to active/disabled.
->=20
-> spi_set_cs() handles SPI_CS_HIGH...  this looks like a separate existing
-> driver bug, it should just be ignoring SPI_CS_HIGH if it's providing a
-> set_cs() operation and letting the core implement SPI_CS_HIGH for it.  I
-> only checked breifly but it looks like spi-atmel is trying to use the
-> core support for chipselect handling here.
->=20
-
-
-
+How about we pay this 26-cycle cost, but only when XFD is in use?  We
+could either look at the shadowed value of the XFD MSR, or flip a global
+variable the first time XFD gets used.
