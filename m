@@ -2,273 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763FA3B7683
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941A63B7684
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 18:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbhF2QhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 12:37:05 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39762 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhF2QhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 12:37:04 -0400
-Received: from zn.tnic (p200300ec2f0ee800492cc8b1ab6a6624.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:e800:492c:c8b1:ab6a:6624])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C4581EC0258;
-        Tue, 29 Jun 2021 18:34:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624984475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ryI1VQaeDhrh8AajILjboFGKNOP9c8l5eGMxltp64Rw=;
-        b=Lcu0U4yj75ROyJqF+WM6dUlpOJudkFW4ZGSrmsLrb1GOudREPBLZhxywqYZkUByLX3pNGe
-        SN1+AvHhqzl31P1/tOuLcPJ+jgRzjdkm9gS44ZjvjxsFvf4iFi+RxdS3miYYSV+BlZItGz
-        BSRja63CR+3Aeu8ghAIUFFVbMVhmBPA=
-Date:   Tue, 29 Jun 2021 18:34:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Marcos Del Sol Vives <marcos@orca.pet>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] x86: add NOPL and CMOV emulation
-Message-ID: <YNtLlcYasFR84rp5@zn.tnic>
-References: <YNWAwVfzSdML/WhO@hirez.programming.kicks-ass.net>
- <20210626130313.1283485-1-marcos@orca.pet>
+        id S233096AbhF2Qhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233106AbhF2Qh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 12:37:29 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA8BC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:35:00 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id x20so25120366ljc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 09:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0RAkNkerXEmzlFVzCLXRKNQWPmSGUClmchfehH2Qwf8=;
+        b=ZQdv9iMHsfhu7BLrViq+LT1d3TBULTHMcww9GgnFysVQAL6Gld4xRJHQ6XHbH9fVQF
+         ibDHYpqyPW+s9jQhEzSPr6nn12q8LgIn5Ja7gmQ+eSi9vwfmdwAt/6zGwGYy4sEVDHLV
+         Mv9Mqv+RxQVcCucAVP2M1AaxAQB8Y0M4JW1kYgVBweXJvtfUn/dSFsy4+hZ6Z+jI3LY9
+         jbfZAYr+NNrUdwUDAFHl9Lx6NyVpOVpeYXJckH0v9aQQ1dIt6nBrPB4kc/zBqlcecJQ1
+         vNTmNQ7Gg1BEb+gfsz5zIP/pbeJQ5vOoM5+nRuVK83uX8FYMTNdhnhj/I3uDBLWlbicf
+         aFJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0RAkNkerXEmzlFVzCLXRKNQWPmSGUClmchfehH2Qwf8=;
+        b=fodYDH7EVsBthcTnOztTQeTMQywz/Qn243PvbTexVq6H5PyxstxXGDq7ddHWBp6Yli
+         BbfX3VA0E80k9tZ1bOYLPJwrR104GH+TZI5hczE5G/K+nXQLci3q3FqeVu9cDMXBfpf2
+         LulILfmNrP5wSX3V3nardKT5YmddCuJaef5UIFDze3zf6lXXVoKKZu8LKRc4IZgTbe2x
+         0RS0BarTTos12pWUjRtfFuHDnsklOhrzOI+uta21Nmdm77O5HMgVtSUaccipQvjKHWoD
+         Mar0Tc+4s787KNI9uUgCmnWKK4oyynNOlW87tiu1ordbqhHUVibwl6Vu0pJDq7i2oq1T
+         splQ==
+X-Gm-Message-State: AOAM532AMZm0Z6H6BdI1vcpnM8hkTVJ+5wr+lfj1txPoV+EHUflargY8
+        8rzG6VkTAnZQOg3JAkVv+Mi1Pcj4N4UDv5fY8+g=
+X-Google-Smtp-Source: ABdhPJzu905HhZWnNXiNK8FOZGknSHJ8sVWu2HSnEkMcdWruU+6c2cq3l69RsxEQSHz+ArT0D1qWu/SJROF1OkHciuA=
+X-Received: by 2002:a05:651c:a07:: with SMTP id k7mr4747416ljq.477.1624984498710;
+ Tue, 29 Jun 2021 09:34:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210626130313.1283485-1-marcos@orca.pet>
+Received: by 2002:a05:6520:4f0:b029:fa:1445:b8b1 with HTTP; Tue, 29 Jun 2021
+ 09:34:57 -0700 (PDT)
+Reply-To: nnoelie64@gmail.com
+From:   Noelie Nikiema <goulif18@gmail.com>
+Date:   Tue, 29 Jun 2021 09:34:57 -0700
+Message-ID: <CAJoSKNA2RhwD2JZSTMgepqGXGC3yk=5wwuZaQ_dx+0L-aAZxow@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 03:03:14PM +0200, Marcos Del Sol Vives wrote:
-> +config X86_INSN_EMU
-> +	bool "Instruction emulation"
-> +	help
-> +	  Linux can be compiled to emulate some instructions transparently to
-> +	  an application, allowing older processors to run modern software
-> +	  without recompilation, albeit with a significant performance hit.
-> +
-> +	  Currently supported instructions are:
-> +	   - CMOVxx (conditional moves).
-> +	   - NOPL (long NOPs).
-> +
-> +	  Emulating these two instructions allow i686 binaries to run
-> +	  unmodified on devices that only support i586 (Intel Pentium 1,
-> +	  AMD Geode GX1, Cyrix III, Vortex86SX/MX/DX, WinChips), or are i686
-> +	  but miss some of the instructions (Transmeta Crusoe/Efficeon,
-> +	  AMD Geode LX)
-> +
-> +	  This emulation is only used if the processor is unable execute said
-
-"... unable to execute... "
-
-> +	  instructions, and will not be used if supported natively.
-
-And this is making me wonder whether this needs to be a Kconfig option
-at all or not simply enabled by default. Or is there a reason not to
-emulate instructions?
-
-We could do a
-
-	pr_info_once("Emulating x86 instructions... ");
-
-or so to let people know that we're not running natively in unexpected
-configurations. For example
-
-	if (cpu_feature_enabled(X86_FEATURE_CMOV))
-		pr_warn_once("Emulating x86 CMOV even if CPU claims it supports it!");
-
-and other sanity-checks like that.
-
-Which would allow us to support any mode - not only protected but also
-long mode, in case we need that emulation there too for whatever reason.
-
-And I'm trying to think of some sort of a test case for this because
-we'd need something like that but the only thing I can think of is
-something like:
-
-	UD2
-	CMOV...
-
-in userspace and then in the #UD handler - since we will have a
-soft86_execute() call there - you could advance the rIP by 2 bytes (UD2
-is 0f 0b), i.e., do regs->ip += 2 and then land rIP at the CMOV and then
-try to emulate it.
-
-And have that testing controllable by a cmdline param or so so that it
-is not enabled by default.
-
-And then stick the test program in tools/testing/selftests/x86/
-
-Something like that, at least.
-
-> +static bool cmov_check_condition(struct insn *insn, struct pt_regs *regs)
-> +{
-> +	bool result, invert;
-> +	int condition, flags;
-> +
-> +	/*
-> +	 * Bits 3-1 of the second opcode byte specify the condition.
-> +	 *
-> +	 * Bit 0 of the second opcode byte is a flag - if set, the result must
-> +	 * be inverted.
-> +	 */
-
-This comment goes over the function. Along with documenting what that
-function returns.
-
-> +static bool cmov_do_move(struct insn *insn, struct pt_regs *regs)
-
-So this function could use some explanation what it is doing -
-basically, shuffling data between pt_regs members to simulate the
-register moves.
-
-Along with an explicit
-
-"CMOV: Conditionally moves from first operand (mem/reg) into second
-operand (reg)."
-
-to explain the direction of the movement so that people don't have to
-decipher this function each time.
-
-> +{
-> +	int reg_off, rm_off;
-> +	void __user *src;
-> +	unsigned char *reg_bytes;
-> +
-> +	reg_bytes = (unsigned char *)regs;
-> +
-> +	/* Destination, from the REG part of the ModRM */
-> +	reg_off = insn_get_modrm_reg_off(insn, regs);
-> +	if (reg_off < 0)
-> +		return false;
-> +
-> +	/* Register to register move */
-> +	if (X86_MODRM_MOD(insn->modrm.value) == 3) {
-> +		rm_off = insn_get_modrm_rm_off(insn, regs);
-> +		if (rm_off < 0)
-> +			return false;
-> +
-> +		memcpy(reg_bytes + reg_off, reg_bytes + rm_off,
-> +		       insn->addr_bytes);
-> +	} else {
-> +		/* Source from the RM part of the ModRM */
-> +		src = insn_get_addr_ref(insn, regs);
-> +		if (src == (void __user *)-1L)
-> +			return false;
-> +
-> +		if (copy_from_user(reg_bytes + reg_off, src,
-> +				   insn->addr_bytes) != 0)
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +static bool cmov_execute(struct insn *insn, struct pt_regs *regs)
-> +{
-> +	/* CMOV is only supported for 16 and 32-bit registers */
-
-I don't understand this one: addr_bytes are either 4 or 8 AFAICT.
-
-> +	if (insn->addr_bytes != 2 && insn->addr_bytes != 4)
-> +		return false;
-> +
-> +	/* If condition is met, execute the move */
-> +	if (cmov_check_condition(insn, regs)) {
-
-Just like with the rest of the flow, do the same here:
-
-	if (!cmov_check_condition(insn, regs))
-		return false;
-
-	if (!cmov_do_move...
-
-> +		/* Return false if the operands were invalid */
-> +		if (!cmov_do_move(insn, regs))
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +bool soft86_execute(struct pt_regs *regs)
-> +{
-> +	int nr_copied;
-> +	unsigned char buf[MAX_INSN_SIZE];
-> +	struct insn insn;
-> +	bool ret;
-
-The tip-tree preferred ordering of variable declarations at the
-beginning of a function is reverse fir tree order::
-
-	struct long_struct_name *descriptive_name;
-	unsigned long foo, bar;
-	unsigned int tmp;
-	int ret;
-
-The above is faster to parse than the reverse ordering::
-
-	int ret;
-	unsigned int tmp;
-	unsigned long foo, bar;
-	struct long_struct_name *descriptive_name;
-
-And even more so than random ordering::
-
-	unsigned long foo, bar;
-	int ret;
-	struct long_struct_name *descriptive_name;
-	unsigned int tmp;
-
-Please fix all your functions.
-
-> +	/* Read from userspace */
-> +	nr_copied = insn_fetch_from_user(regs, buf);
-> +	if (!nr_copied)
-> +		return false;
-> +
-> +	/* Attempt to decode it */
-> +	if (!insn_decode_from_regs(&insn, regs, buf, nr_copied))
-> +		return false;
-> +
-> +	/* 0x0F is the two byte opcode escape */
-> +	if (insn.opcode.bytes[0] != 0x0F)
-> +		return false;
-
-That function is a generic one but you start looking at bytes. What you
-should do instead is something like:
-
-	ret = emulate_nopl(insn);
-	if (!ret)
-		goto done;
-
-	ret = emulate_cmov(insn);
-	if (!ret)
-		goto done;
-
-	...
-
-done:
-	regs->ip += insn.length;
-
-and move all the opcode checking in the respective functions. This way
-each function does one thing and one thing only and is self-contained.
-
-Also, the logic should be flipped: the functions should return 0 on
-success and !0 on failure so the first function which returned 0, would
-mean it has detected and emulated the insn properly.
-
-If none of them manage to succeed, you return false at the end.
-
-All in all, fun stuff!
-
-Thx.
-
 -- 
-Regards/Gruss,
-    Boris.
+Dear Beneficiary
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I am a foreign delegate from the United Nations fund recovery
+committee office/ compensation directive office , your name and
+address  are among the listed and approved people for this payments as
+one of the scammed victim, i wait your swift response for the
+immediate payments of your US$2,550.000.00 compensations funds.
 
+On this faith full recommendations, I want you to know that during the
+last UN meetings held at Africa ,it was alarmed so much by the rest of
+the world in the meetings on the lost of funds by various foreigners
+to the scams artists operating in syndicates all over the world today,
+in other to retain the good image of the country, the president UN is
+now paying 50 victims of this operators US$2,550.000.00 each, Due to
+the corrupt and inefficient banking systems in Africa, the payments
+are to be wired via direct transfer, online banking transfer or ATM
+visa card,
+
+According to the number of applicants at hand,12 beneficiaries has
+been paid ,half of the victims are from the United States and Asia, we
+still have more  left to be paid
+Waiting for your swift response in other to advice you on the next
+step how to process your payment.
+
+Thanks
+Dr. Noelie Nikiema
