@@ -2,212 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9B03B7440
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A233B7433
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbhF2O2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:28:10 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:18430 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234292AbhF2O2C (ORCPT
+        id S234352AbhF2O0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:26:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27034 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234300AbhF2O0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:28:02 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TEJ5JO025194;
-        Tue, 29 Jun 2021 10:25:34 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 39fp4btsrn-1
+        Tue, 29 Jun 2021 10:26:36 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TE4JhQ078971;
+        Tue, 29 Jun 2021 10:24:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=9H/pQ04FCs/tQ0avegBXhMmlE+E+8CGDVZnid+F/UX0=;
+ b=EyYgyu1u3lSzNqjxXV7HPXd/IlxdktxE3sFp6FNwl8ku1B2FfAKFQM8CawEmdTlAOpR2
+ YPWdx6FRrizyYy2Pc0kTuWbXNNuWgT9zrvS55KclB8XnzYlfQipYUnZoZMzV9VCNEZrj
+ fcBCEJXsE0st1l7QoxwrpN3QuPO01h7Yd8raOZ6B8mTGLydj4KmE4Dhgh9gOjmQHMXGj
+ X9Rw0E01smzOdIrzbafPEXY9w5NxOjzvzx/oBjna7ccvQAh47ebbzs+bqULEJg+4/MyH
+ zzhlpGSB0kczvoOtkJHbZuBn2U9ynVhY0BmNetWZ5j05Dhbz6+2gpy1s24u4iaOmM2/L Cg== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39g4e3spa4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 10:25:34 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 15TEPX5F030073
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 29 Jun 2021 10:25:33 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Tue, 29 Jun 2021
- 10:25:32 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Tue, 29 Jun 2021 10:25:32 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.128])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 15TEPRhJ027422;
-        Tue, 29 Jun 2021 10:25:30 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH 2/2] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Tue, 29 Jun 2021 17:23:08 +0300
-Message-ID: <20210629142308.25868-3-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210629142308.25868-1-antoniu.miclaus@analog.com>
-References: <20210629142308.25868-1-antoniu.miclaus@analog.com>
+        Tue, 29 Jun 2021 10:24:07 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TEF5or000800;
+        Tue, 29 Jun 2021 14:24:05 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 39duv8gpqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 14:24:04 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TEO1dv22020582
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 14:24:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA8A2A4D76;
+        Tue, 29 Jun 2021 14:24:01 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AB46A4D67;
+        Tue, 29 Jun 2021 14:24:01 +0000 (GMT)
+Received: from osiris (unknown [9.145.27.87])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 29 Jun 2021 14:24:01 +0000 (GMT)
+Date:   Tue, 29 Jun 2021 16:24:00 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] s390/dasd: Avoid field over-reading memcpy()
+Message-ID: <YNstANuJWSprSefl@osiris>
+References: <20210616201917.1246079-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: 20LX94TUeiaw5ui62SV7vv1f44f2M-mf
-X-Proofpoint-ORIG-GUID: 20LX94TUeiaw5ui62SV7vv1f44f2M-mf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616201917.1246079-1-keescook@chromium.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tsp18nn4WU_Zg5zCKmyk3cC-XCkPbsY2
+X-Proofpoint-ORIG-GUID: tsp18nn4WU_Zg5zCKmyk3cC-XCkPbsY2
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- malwarescore=0 clxscore=1015 adultscore=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106290096
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 spamscore=0 adultscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=735 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the ADRF6780 Upconverter.
+On Wed, Jun 16, 2021 at 01:19:17PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field array bounds checking for memcpy(), memmove(), and memset(),
+> avoid intentionally reading across neighboring array fields.
+> 
+> Add a wrapping structure to serve as the memcpy() source, so the compiler
+> can do appropriate bounds checking, avoiding this future warning:
+> 
+> In function '__fortify_memcpy',
+>     inlined from 'create_uid' at drivers/s390/block/dasd_eckd.c:749:2:
+> ./include/linux/fortify-string.h:246:4: error: call to '__read_overflow2_field' declared with attribute error: detected read beyond size of field (2nd parameter)
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/s390/block/dasd_eckd.c | 2 +-
+>  drivers/s390/block/dasd_eckd.h | 6 ++++--
+>  2 files changed, 5 insertions(+), 3 deletions(-)
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- .../bindings/iio/frequency/adi,adrf6780.yaml  | 133 ++++++++++++++++++
- 1 file changed, 133 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-
-diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-new file mode 100644
-index 000000000000..008f76095a63
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-@@ -0,0 +1,133 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/frequency/adi,adrf6780.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ADRF6780 Microwave Upconverter
-+
-+maintainers:
-+- Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   wideband, microwave upconverter optimized for point to point microwave
-+   radio designs operating in the 5.9 GHz to 23.6 GHz frequency range.
-+   https://www.analog.com/en/products/adrf6780.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adrf6780
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+  clocks:
-+    description:
-+      Definition of the external clock (see clock/clock-bindings.txt)
-+    minItems: 1
-+
-+  clock-names:
-+    description:
-+      Must be "lo_in"
-+    maxItems: 1
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  adi,parity-en:
-+    description:
-+      Enable Parity for Write execution.
-+    type: boolean
-+
-+  adi,vga-buff-en:
-+    description:
-+      VGA Buffer Enable.
-+    type: boolean
-+
-+  adi,det-en:
-+    description:
-+      Detector Enable.
-+    type: boolean
-+
-+  adi,lo-buff-en:
-+    description:
-+      LO Buffer Enable.
-+    type: boolean
-+
-+  adi,if-mode-en:
-+    description:
-+      IF Mode Enable.
-+    type: boolean
-+
-+  adi,iq-mode-en:
-+    description:
-+      IQ Mode Enable.
-+    type: boolean
-+
-+  adi,lo-x2-en:
-+    description:
-+      LO x2 Enable.
-+    type: boolean
-+
-+  adi,lo-ppf-en:
-+    description:
-+      LO x1 Enable.
-+    type: boolean
-+
-+  adi,lo-en:
-+    description:
-+      LO Enable.
-+    type: boolean
-+
-+  adi,uc-bias-en:
-+    description:
-+      UC Bias Enable.
-+    type: boolean
-+
-+  adi,lo-sideband:
-+    description:
-+      Switch to the Other LO Sideband.
-+    type: boolean
-+
-+  adi,vdet-out-en:
-+    description:
-+      VDET Output Select Enable.
-+    type: boolean
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  '#clock-cells':
-+    const: 0
-+
-+required:
-+- compatible
-+- reg
-+- clocks
-+- clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+- |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      adrf6780@0{
-+        compatible = "adi,adrf6780";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        clocks = <&adrf6780_lo>;
-+        clock-names = "lo_in";
-+        adi,parity-en;
-+      };
-+    };
-+...
-+
--- 
-2.32.0
-
+I'll leave it up to Stefan Haberland and Jan Hoeppner to handle this one.
