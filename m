@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0AD3B7056
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9A73B7055
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhF2KCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:02:52 -0400
-Received: from mga18.intel.com ([134.134.136.126]:24477 "EHLO mga18.intel.com"
+        id S232988AbhF2KCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:02:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:64487 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232690AbhF2KCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232661AbhF2KCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 29 Jun 2021 06:02:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195412090"
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="229745413"
 X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="195412090"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 03:00:14 -0700
+   d="scan'208";a="229745413"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 03:00:14 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
-   d="scan'208";a="408111782"
+   d="scan'208";a="456713479"
 Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 29 Jun 2021 03:00:12 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 29 Jun 2021 03:00:12 -0700
 Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lyAXM-00094I-8j; Tue, 29 Jun 2021 10:00:12 +0000
-Date:   Tue, 29 Jun 2021 17:59:56 +0800
+        id 1lyAXM-00094G-7r; Tue, 29 Jun 2021 10:00:12 +0000
+Date:   Tue, 29 Jun 2021 17:59:59 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- d2343cb8d154fe20c4499711bb3a9af2095b2b4b
-Message-ID: <60daef1c.gE7RbReckddbHuQ5%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ 272ceea2f06c92bcd3bb8e00c3030c85e380243e
+Message-ID: <60daef1f.RCxVmbpYl49Yt5gP%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
-branch HEAD: d2343cb8d154fe20c4499711bb3a9af2095b2b4b  sched/core: Disable CONFIG_SCHED_CORE by default
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 272ceea2f06c92bcd3bb8e00c3030c85e380243e  Merge branch 'sched/urgent'
 
-elapsed time: 721m
+i386-tinyconfig vmlinux size:
 
-configs tested: 136
-configs skipped: 2
++-------+-----------------------------------+------------------------------------------+
+| DELTA |              SYMBOL               |                  COMMIT                  |
++-------+-----------------------------------+------------------------------------------+
+|  +592 | TOTAL                             | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +447 | TEXT                              | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +169 | DATA                              | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   -64 | BSS                               | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +879 | __fpu_restore_sig()               | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +555 | copy_xstate_to_uabi_buf()         | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +470 | init.text                         | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +330 | copy_uabi_to_xstate()             | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +265 | __convert_from_fxsr()             | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +252 | altinstructions                   | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +193 | clocksource_watchdog()            | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +180 | altinstr_aux                      | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +150 | perf_clear_dirty_counters()       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +113 | sld_setup()                       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +111 | fpu__clear_user_states()          | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  +105 | fpu_clone()                       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +91 | validate_xsaves_xrstors()         | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +80 | fpu_flush_thread()                | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +76 | save_fpregs_to_fpstate()          | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +68 | clocksource_verify_percpu()       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +66 | __clocksource_update_freq_scale() | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   +64 | intel_spr_extra_regs              | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   -64 | xstate_supervisor_only_offsets    | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   -65 | xstateregs_get()                  | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   -82 | copy_fpregs_to_fpstate()          | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|   -94 | sanitize_restored_user_xstate()   | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -103 | fpu__clear()                      | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -125 | fpu__copy()                       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -179 | copy_supervisor_to_kernel()       | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -201 | copy_kernel_to_xstate()           | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -259 | copy_user_to_xstate()             | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -261 | fpstate_sanitize_xstate()         | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -273 | convert_from_fxsr()               | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -372 | copy_xstate_to_kernel()           | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
+|  -914 | __fpu__restore_sig()              | 62fb9874f5da..272ceea2f06c (ALL COMMITS) |
++-------+-----------------------------------+------------------------------------------+
+
+elapsed time: 722m
+
+configs tested: 119
+configs skipped: 3
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -60,12 +102,6 @@ arm                    vt8500_v6_v7_defconfig
 sh                          rsk7269_defconfig
 powerpc                       holly_defconfig
 arm                          iop32x_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                     mpc5200_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                      ep88xc_defconfig
-mips                            ar7_defconfig
-powerpc                       ppc64_defconfig
 arm                          gemini_defconfig
 s390                             allmodconfig
 sh                           se7343_defconfig
@@ -77,6 +113,9 @@ sh                          r7780mp_defconfig
 m68k                            mac_defconfig
 mips                           ci20_defconfig
 arm                           sunxi_defconfig
+sh                          urquell_defconfig
+m68k                       m5249evb_defconfig
+sh                           se7780_defconfig
 arc                          axs101_defconfig
 powerpc                 mpc832x_rdb_defconfig
 powerpc                 mpc8560_ads_defconfig
@@ -85,12 +124,9 @@ powerpc                      bamboo_defconfig
 x86_64                           alldefconfig
 arc                     nsimosci_hs_defconfig
 arm                         nhk8815_defconfig
-mips                           ip27_defconfig
-mips                           jazz_defconfig
-arm                          pcm027_defconfig
-mips                     loongson1c_defconfig
-arm                       netwinder_defconfig
-arm                        oxnas_v6_defconfig
+powerpc                    socrates_defconfig
+powerpc                       ppc64_defconfig
+arm                          pxa910_defconfig
 sparc                            allyesconfig
 arc                 nsimosci_hs_smp_defconfig
 riscv                    nommu_virt_defconfig
@@ -106,11 +142,6 @@ mips                  maltasmvp_eva_defconfig
 powerpc                     sequoia_defconfig
 mips                          ath79_defconfig
 powerpc                     skiroot_defconfig
-arm                         socfpga_defconfig
-arm                           h3600_defconfig
-s390                             alldefconfig
-arm                  colibri_pxa270_defconfig
-arm                          lpd270_defconfig
 x86_64                            allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
@@ -183,12 +214,6 @@ x86_64               randconfig-a001-20210628
 x86_64               randconfig-a003-20210628
 x86_64               randconfig-a004-20210628
 x86_64               randconfig-a006-20210628
-x86_64               randconfig-a012-20210629
-x86_64               randconfig-a016-20210629
-x86_64               randconfig-a015-20210629
-x86_64               randconfig-a013-20210629
-x86_64               randconfig-a014-20210629
-x86_64               randconfig-a011-20210629
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
