@@ -2,129 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2772E3B758E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1D63B7594
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhF2Pfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbhF2Pf1 (ORCPT
+        id S234773AbhF2Pkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:40:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234549AbhF2Pkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:35:27 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5A3C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 80so3084263pgg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8u9/LGHCVwZ4midNSAwp0N6rAWr4KVJQJiuvperVNgM=;
-        b=cEDzvMJSf0V/qxS792iiW7NtANHon/YY/N4MPAq+K+5xEQgpqY43aNa4uy2J0526WD
-         hKc9tjpd+YRD003F0FPzxwcuHPW78q0epDHUcvNjH2zTxlS2g0FeyBw4KOAH9r7OdGq4
-         qqrH+2IryC/LKBTWoqL1wZuInSfMVch5La0d9zI42Cd50cbjEl8RKXXJi3UT/0E6ycXW
-         +UTJfkkEeIupxO1T7jbux79yHmLNf1TE9TnsF/m60f5uNw9j5sue8Mf3BldZvWqqwQOj
-         NrLjzX99DqL3KhV7gLshphXaaUJIBWv95KGy8fAJtSFChaxKXdKYXfOb7amtp78XBP5Y
-         OUcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8u9/LGHCVwZ4midNSAwp0N6rAWr4KVJQJiuvperVNgM=;
-        b=n0MNL6d9ofOih2z4vZpiagtNfbNk1eZUH9GmIU9HHGsbztSt1DbZ4BuyBD1v9AZkbt
-         6kcPKjJX5PIVHaebzfcIbOndrse0+4rYAm9udKRz/N8kBD/dmhnc8d4SKlPKShHZSeez
-         +JHh2Jk5f3ncHHfNYQ0rE4VnD7xOK2C+KkHS2NgNIc0uLi8yVSEmBIk/Eg+qDrrIhpnZ
-         +5Gwbb7A1t60/hIraqjrfqcKMbcKU09ZUwB1D9w9MDTk8RVRhCVuNq+xYEhiSmf+336G
-         7DbbZKuqz5bmWoYV6VeXJx+BWhmZp1VWhV9NDk3qGugPpvsbrTuzJR1uPx+HQwRXifez
-         fQ/g==
-X-Gm-Message-State: AOAM532E+NaV0Bm7ytOxZWSstcqrKrU01ks1icated4coRHIlHkTeDse
-        5rUQNssAyAddVy0E0lB22LtE
-X-Google-Smtp-Source: ABdhPJysVqI66UwzRIgh1c12A4alGfEK+kITLiKGfsqSVoSssWy+HtYu9/kKugkTBFW7BHGO2SSX7Q==
-X-Received: by 2002:a63:4a53:: with SMTP id j19mr28440176pgl.144.1624980779312;
-        Tue, 29 Jun 2021 08:32:59 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.12.32])
-        by smtp.gmail.com with ESMTPSA id s79sm11444492pfc.87.2021.06.29.08.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 08:32:58 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thara.gopinath@linaro.org, mka@chromium.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] soc: qcom: aoss: Fix the out of bound usage of cooling_devs
-Date:   Tue, 29 Jun 2021 21:02:49 +0530
-Message-Id: <20210629153249.73428-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Jun 2021 11:40:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624981085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZvEt7bEKf4QUzdzCkar8PX3Yay1pkkOVyVE1rkXd+nc=;
+        b=b/+UAyogg27ci7hq0MSiFmergOQe8gCuTS+jijuOj4UI0CwA77nStYHwnAuY/BBXWr+MKU
+        ZtL64luwprGF3QTT2/GT2LOiecNmBXBgMnkq36kxRrJ8hTAKIUV6Djjm01bH8a/GX29jQB
+        MYi9Z0jVklZGoFkNzvUT5x0+6tnbhMQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-Xuf1EWhaOwSFsoLwgIYS9g-1; Tue, 29 Jun 2021 11:38:03 -0400
+X-MC-Unique: Xuf1EWhaOwSFsoLwgIYS9g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A52401835ACD;
+        Tue, 29 Jun 2021 15:38:02 +0000 (UTC)
+Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 667935C1D0;
+        Tue, 29 Jun 2021 15:38:02 +0000 (UTC)
+Date:   Tue, 29 Jun 2021 10:38:00 -0500
+From:   David Teigland <teigland@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] dlm updates for 5.14
+Message-ID: <20210629153800.GA7428@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.8.3 (2017-05-23)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In "qmp_cooling_devices_register", the count value is initially
-QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
-the memory for cooling_devs is allocated. Then while calling the
-"qmp_cooling_device_add" function, count value is post-incremented for
-each child node.
+Hi Linus,
 
-This makes the out of bound access to the cooling_dev array. Fix it by
-passing the QMP_NUM_COOLING_RESOURCES definition to devm_kzalloc() and
-initializing the count to 0.
+Please pull dlm updates from tag:
 
-While at it, let's also free the memory allocated to cooling_dev if no
-cooling device is found in DT and during unroll phase.
+git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.14
 
-Cc: stable@vger.kernel.org # 5.4
-Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake up the SoC.")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+This is a major dlm networking enhancement that adds message
+retransmission so that the dlm can reliably continue operating
+when network connections fail and nodes reconnect.  Previously,
+this would result in lost messages which could only be handled
+as a node failure.
 
-Changes in v2:
+Thanks,
+Dave
 
-* Used QMP_NUM_COOLING_RESOURCES directly and initialized count to 0
+Alexander Aring (24):
+      fs: dlm: always run complete for possible waiters
+      fs: dlm: add dlm macros for ratelimit log
+      fs: dlm: fix srcu read lock usage
+      fs: dlm: set is othercon flag
+      fs: dlm: reconnect if socket error report occurs
+      fs: dlm: cancel work sync othercon
+      fs: dlm: fix connection tcp EOF handling
+      fs: dlm: public header in out utility
+      fs: dlm: add more midcomms hooks
+      fs: dlm: make buffer handling per msg
+      fs: dlm: add functionality to re-transmit a message
+      fs: dlm: move out some hash functionality
+      fs: dlm: add union in dlm header for lockspace id
+      fs: dlm: add reliable connection if reconnect
+      fs: dlm: add midcomms debugfs functionality
+      fs: dlm: don't allow half transmitted messages
+      fs: dlm: fix lowcomms_start error case
+      fs: dlm: fix memory leak when fenced
+      fs: dlm: use alloc_ordered_workqueue
+      fs: dlm: move dlm allow conn
+      fs: dlm: introduce proto values
+      fs: dlm: rename socket and app buffer defines
+      fs: dlm: fix race in mhandle deletion
+      fs: dlm: invalid buffer access in lookup error
 
- drivers/soc/qcom/qcom_aoss.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Colin Ian King (2):
+      fs: dlm: Fix memory leak of object mh
+      fs: dlm: Fix spelling mistake "stucked" -> "stuck"
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 934fcc4d2b05..7b6b94332510 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -476,12 +476,12 @@ static int qmp_cooling_device_add(struct qmp *qmp,
- static int qmp_cooling_devices_register(struct qmp *qmp)
- {
- 	struct device_node *np, *child;
--	int count = QMP_NUM_COOLING_RESOURCES;
-+	int count = 0;
- 	int ret;
- 
- 	np = qmp->dev->of_node;
- 
--	qmp->cooling_devs = devm_kcalloc(qmp->dev, count,
-+	qmp->cooling_devs = devm_kcalloc(qmp->dev, QMP_NUM_COOLING_RESOURCES,
- 					 sizeof(*qmp->cooling_devs),
- 					 GFP_KERNEL);
- 
-@@ -497,12 +497,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
- 			goto unroll;
- 	}
- 
-+	if (!count)
-+		devm_kfree(qmp->dev, qmp->cooling_devs);
-+
- 	return 0;
- 
- unroll:
- 	while (--count >= 0)
- 		thermal_cooling_device_unregister
- 			(qmp->cooling_devs[count].cdev);
-+	devm_kfree(qmp->dev, qmp->cooling_devs);
- 
- 	return ret;
- }
--- 
-2.25.1
+ fs/dlm/config.c       |   18 +-
+ fs/dlm/config.h       |    5 +-
+ fs/dlm/debug_fs.c     |   54 ++
+ fs/dlm/dlm_internal.h |   42 +-
+ fs/dlm/lock.c         |   16 +-
+ fs/dlm/lockspace.c    |   14 +-
+ fs/dlm/lowcomms.c     |  411 +++++++++++----
+ fs/dlm/lowcomms.h     |   25 +-
+ fs/dlm/member.c       |   37 +-
+ fs/dlm/midcomms.c     | 1343 +++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/dlm/midcomms.h     |   15 +
+ fs/dlm/rcom.c         |  123 +++--
+ fs/dlm/util.c         |   10 +-
+ fs/dlm/util.h         |    2 +
+ 14 files changed, 1924 insertions(+), 191 deletions(-)
 
