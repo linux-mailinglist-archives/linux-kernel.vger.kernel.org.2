@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9ED3B73FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA0E3B741C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbhF2ON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:13:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13042 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhF2ON4 (ORCPT
+        id S234351AbhF2OTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:19:38 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:34053 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234387AbhF2OTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:13:56 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GDmXh45XjzZlDp;
-        Tue, 29 Jun 2021 22:08:20 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 29 Jun 2021 22:11:25 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Paul Burton <paulburton@kernel.org>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>
-Subject: [PATCH RESEND] MIPS: Fix PKMAP with 32-bit MIPS huge page support
-Date:   Tue, 29 Jun 2021 22:14:20 +0800
-Message-ID: <20210629141420.1790569-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 29 Jun 2021 10:19:23 -0400
+Received: (Authenticated sender: cengiz@kernel.wtf)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 64B52E0005;
+        Tue, 29 Jun 2021 14:16:51 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cengiz Can <cengiz@kernel.wtf>
+Subject: [PATCH] Documentation: sysrq: convert to third person
+Date:   Tue, 29 Jun 2021 17:15:09 +0300
+Message-Id: <20210629141508.52229-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When 32-bit MIPS huge page support is enabled, we halve the number of
-pointers a PTE page holds, making its last half go to waste.
-Correspondingly, we should halve the number of kmap entries, as we just
-initialized only a single pte table for that in pagetable_init().
+Two parts of the sysrq documentation have sentences written from a first
+person's point of view.
 
-Fixes: 35476311e529 ("MIPS: Add partial 32-bit huge page support")
-Signed-off-by: Wei Li <liwei391@huawei.com>
+Documentation is generally written from a third person's view in a
+formal way.
+
+Convert those senteces to be less personal and generic.
+
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
 ---
- arch/mips/include/asm/highmem.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/sysrq.rst | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/highmem.h b/arch/mips/include/asm/highmem.h
-index 292d0425717f..92a380210017 100644
---- a/arch/mips/include/asm/highmem.h
-+++ b/arch/mips/include/asm/highmem.h
-@@ -36,7 +36,7 @@ extern pte_t *pkmap_page_table;
-  * easily, subsequent pte tables have to be allocated in one physical
-  * chunk of RAM.
-  */
--#ifdef CONFIG_PHYS_ADDR_T_64BIT
-+#if defined(CONFIG_PHYS_ADDR_T_64BIT) || defined(CONFIG_MIPS_HUGE_TLB_SUPPORT)
- #define LAST_PKMAP 512
- #else
- #define LAST_PKMAP 1024
+diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
+index 60ce5f5ebab6..0a178ef0111d 100644
+--- a/Documentation/admin-guide/sysrq.rst
++++ b/Documentation/admin-guide/sysrq.rst
+@@ -72,7 +72,7 @@ On PowerPC
+ 
+ On other
+ 	If you know of the key combos for other architectures, please
+-        let me know so I can add them to this section.
++	submit a patch to be included in this section.
+ 
+ On all
+ 	Write a character to /proc/sysrq-trigger.  e.g.::
+@@ -205,10 +205,12 @@ frozen (probably root) filesystem via the FIFREEZE ioctl.
+ Sometimes SysRq seems to get 'stuck' after using it, what can I do?
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-That happens to me, also. I've found that tapping shift, alt, and control
+-on both sides of the keyboard, and hitting an invalid sysrq sequence again
+-will fix the problem. (i.e., something like :kbd:`alt-sysrq-z`). Switching to
+-another virtual console (:kbd:`ALT+Fn`) and then back again should also help.
++When this happens, try tapping shift, alt and control on both sides of the
++keyboard, and hitting an invalid sysrq sequence again. (i.e., something like
++:kbd:`alt-sysrq-z`).
++
++Switching to another virtual console (:kbd:`ALT+Fn`) and then back again
++should also help.
+ 
+ I hit SysRq, but nothing seems to happen, what's wrong?
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- 
-2.25.1
+2.32.0
 
