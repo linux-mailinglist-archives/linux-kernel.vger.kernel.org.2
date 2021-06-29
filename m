@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A495F3B7514
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313493B751B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhF2PWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:22:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234741AbhF2PWk (ORCPT
+        id S234671AbhF2P1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:27:01 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:19604 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234549AbhF2P07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:22:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624980012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Fkq8ISJodPGui8B5jJOFqU9Bg1udkwvRSG9eU74aiM=;
-        b=gJjGzjTK/xwdSPEG6EC3Urqe+gr47WF02rdd/H1xnZ7fzUKYJjNWM0wasJt+2YHvH0/XJr
-        0qkf82wpB7vkDiA1RjGfwHX9SMHcOc6bU69JUq+645zT6MfH8asEUoQPB4J3WdBXvsr25/
-        YYP+B2JUx+OmhqEVsYdJCGVPzplqKUA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-4agmsaUJMm22gB7tekRyFA-1; Tue, 29 Jun 2021 11:20:11 -0400
-X-MC-Unique: 4agmsaUJMm22gB7tekRyFA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6B1A100CA88;
-        Tue, 29 Jun 2021 15:20:09 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-194.rdu2.redhat.com [10.10.116.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 71B4D5D6A1;
-        Tue, 29 Jun 2021 15:20:08 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 0C3BD22054F; Tue, 29 Jun 2021 11:20:08 -0400 (EDT)
-Date:   Tue, 29 Jun 2021 11:20:07 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>, dwalsh@redhat.com,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <20210629152007.GC5231@redhat.com>
-References: <20210625191229.1752531-1-vgoyal@redhat.com>
- <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
- <20210628131708.GA1803896@redhat.com>
- <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
- <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
- <YNn4p+Zn444Sc4V+@work-vm>
- <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
- <YNrhQ9XfcHTtM6QA@work-vm>
- <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+        Tue, 29 Jun 2021 11:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624980251;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=vENqgZHTYh1cWUzL4NPUtQtHOHGI2z731aBN2EtzdX0=;
+    b=K8NW2i0mZaQs4CZnC/l2+LiRfXPfVb65sq67hnzm8yveXIjc5NQlamP1KSlyLZdKXX
+    kdrUck5exlhm4wRQKCz5wvw0Fo1rESUlU+oVUuGc2gKv1jyG4bklIyUxOXlcBHQSSr4k
+    i1rDN1iZvKOqdOG5YN03jzguR2pbsJj5v1Q5Ib/w29GSd/bJ+ZLHV+mJfW7ybCMSF82C
+    IwW8MhiRCYmzCMZe2CvUk41hwrgvepCYTmSDVQwiW5DN2V77csuTiMedPSU4qnpCFT6S
+    PdmMSdvVC9R5BhyWMkUqeah8mUG4l0xP5z1wVccUwBO9huWL7TPLUy7BcRhSq6dG0jaA
+    gWMQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH5HIJJh5o="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.27.5 DYNA|AUTH)
+    with ESMTPSA id f0359ax5TFOBOYX
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 29 Jun 2021 17:24:11 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH] regulator: palmas: set supply_name after registering the regulator
+Date:   Tue, 29 Jun 2021 17:24:03 +0200
+Message-Id: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 07:38:15AM -0700, Casey Schaufler wrote:
+Commit 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
 
-[..]
-> >>>> User xattrs are less protected than security xattrs. You are exposing the
-> >>>> security xattrs on the guest to the possible whims of a malicious, unprivileged
-> >>>> actor on the host. All it needs is the right UID.
-> >>> Yep, we realise that; but when you're mainly interested in making sure
-> >>> the guest can't attack the host, that's less worrying.
-> >> That's uncomfortable.
-> > Why exactly?
-> 
-> If a mechanism is designed with a known vulnerability you
-> fail your validation/evaluation efforts.
+introduced a new rule which makes Palmas regulator registration fail:
 
-We are working with the constraint that shared directory should not be
-accessible to unpriviliged users on host. And with that constraint, what
-you are referring to is not a vulnerability.
+[    5.407712] ldo1: supplied by vsys_cobra
+[    5.412748] ldo2: supplied by vsys_cobra
+[    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to register 48070000.i2c:palmas@48:palmas_pmic regulator
 
-> Your mechanism is
-> less general because other potential use cases may not be
-> as cavalier about the vulnerability.
+This seems to block additions initializations and finally the
+Pyra-Handheld hangs when trying to access MMC because there is
+no mmc-supply available.
 
-Prefixing xattrs with "user.virtiofsd" is just one of the options.
-virtiofsd has the capability to prefix "trusted.virtiofsd" as well.
-We have not chosen that because we don't want to give it CAP_SYS_ADMIN.
+Fixes: 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-on regulators")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/regulator/palmas-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So other use cases which don't like prefixing "user.virtiofsd", can
-give CAP_SYS_ADMIN and work with it.
-
-> I think that you can
-> approach this differently, get a solution that does everything
-> you want, and avoid the known problem.
-
-What's the solution? Are you referring to using "trusted.*" instead? But
-that has its own problem of giving CAP_SYS_ADMIN to virtiofsd.
-
-Thanks
-Vivek
+diff --git a/drivers/regulator/palmas-regulator.c b/drivers/regulator/palmas-regulator.c
+index 337dd614695e..b49cc05f847f 100644
+--- a/drivers/regulator/palmas-regulator.c
++++ b/drivers/regulator/palmas-regulator.c
+@@ -975,7 +975,6 @@ static int palmas_ldo_registration(struct palmas_pmic *pmic,
+ 		else
+ 			config.init_data = NULL;
+ 
+-		desc->supply_name = rinfo->sname;
+ 		config.of_node = ddata->palmas_matches[id].of_node;
+ 
+ 		rdev = devm_regulator_register(pmic->dev, desc, &config);
+@@ -986,6 +985,7 @@ static int palmas_ldo_registration(struct palmas_pmic *pmic,
+ 			return PTR_ERR(rdev);
+ 		}
+ 
++		desc->supply_name = rinfo->sname;
+ 		/* Initialise sleep/init values from platform data */
+ 		if (pdata) {
+ 			reg_init = pdata->reg_init[id];
+-- 
+2.31.1
 
