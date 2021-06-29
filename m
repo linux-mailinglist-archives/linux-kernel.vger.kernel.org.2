@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A933B72B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAEF3B72C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhF2M5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:57:51 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:33505 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbhF2M5t (ORCPT
+        id S233027AbhF2NAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:00:11 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50209 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232870AbhF2NAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:57:49 -0400
-Received: by mail-wr1-f42.google.com with SMTP id i8so3472721wrc.0;
-        Tue, 29 Jun 2021 05:55:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c09axMTOtUdFn084x7QGWCEjh23Bflph50dJnZAUCI0=;
-        b=slEgNLX32Gtn0HQJRsK2VF1t3q8blkraSpk+awmESrCN9xUQ1DxLn71QewjGTB1ekr
-         N3fGLOwpZX8cu2zujCDcLni2+yhxVjq/5At/3TKoHxwPUTYl19D2L6kv6zian2ZIbfAA
-         lHAMSaUDouC9bXKOutFoKsePdwdaikPDw3Rz/RdULqG28jQZbhQXdN5+ZRILboiBYQRf
-         MO2Qh6qZhGOisYhr2ihmSDXB6vx8Pfi3SQTnJXRgCQb7Yekg1ScxAxwavADMmLOWQT60
-         pGJscRNOYY3I8Gf71yE+7C4ywLTF+qoF542RIzUu9UKZu+m2V6cp7I/ZdD1zkDI9oIOj
-         Wepg==
-X-Gm-Message-State: AOAM531G3aO0KlV1SwtylTMDs2k4CUWxD69sxtFAClc5yDk8sDiwOdJV
-        iSKqx+k+5DsnKLtIw4J/FHw=
-X-Google-Smtp-Source: ABdhPJzD2fejCDcNpbmTVteUssbrr9xIm3aUyCk/lGB8HRuvUkpYOk0RzgOFN0nhOZt8HQ/3m78Z+A==
-X-Received: by 2002:a5d:6a8b:: with SMTP id s11mr33418683wru.88.1624971321866;
-        Tue, 29 Jun 2021 05:55:21 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id p5sm19411722wrd.25.2021.06.29.05.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:55:21 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 12:55:19 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 06/17] mshv: SynIC port and connection hypercalls
-Message-ID: <20210629125519.27vv3afwhjoobekf@liuwe-devbox-debian-v2>
-References: <cover.1622654100.git.viremana@linux.microsoft.com>
- <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
- <87v96lykrz.fsf@vitty.brq.redhat.com>
+        Tue, 29 Jun 2021 09:00:08 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4CF6558042D;
+        Tue, 29 Jun 2021 08:57:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 29 Jun 2021 08:57:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm3; bh=ImpdMfm6rY8i7IauUUBmjht3SN
+        FjYJewqKyRyx5rljc=; b=ikvRPDe+ErZPg9bHLBrJwdOtmZfM/5bXV1j1I4nDT2
+        Gaece65IN0fN4kcBuqgRl9qKXj+qTx84aMhwFJmV2F/65yJu4xau+dMA7bPPEgYB
+        lQ2ZCF9TfdBLVawVQoGWM65k/1QLpWyWT3srhzTpzZA83e/HDFN/wq3e9uBgAqvB
+        qirtHyIpLZlh1zoHEpNQ6vpOyKolFtkp9RSm1IqvyiHwMDe2TOQOf6flQYm3Yymy
+        WFTUSJ9r4m7kDbY7O8AKhxrw5KPCqmqOjI2h0aRvxALDJdjzjIt0+yOIReV5Xw+q
+        XbzEKVZAu9iI44x8hu4a4Ceo//3etcVMBNFlp8R4Ag4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ImpdMf
+        m6rY8i7IauUUBmjht3SNFjYJewqKyRyx5rljc=; b=f1TqrvFTK7YAPaCpRBeOLE
+        CGp723eZkkH1dki4pGC5NUrJjwcfynXNIql94nuWIsBXvjti9BQV2WiO3dFxuG0i
+        baKYDG7yOasaPGyRM/JhMyxcIeA+MV9QI3jk7XW0znWWfW/ONePyWUwYiEaeD63B
+        EqGYQwh2TWChd4cqCIbw1jBzIQaWSWT+ABiWUz24CD53KVzMn8znix95bbQd93LV
+        eXrXHYtL1oS3FMmnTjAvYIwfQB5AS/3eGVFPDkqubcP/HaAUbPZ4rFaLh66H0sQE
+        f9XbEcaJqKAAMSx6pwHeAiZl6x2sZaGY03/zs7UmOz22JmT9uIQg46KHSc3COv7A
+        ==
+X-ME-Sender: <xms:wxjbYF0H9Nk8yngRH3DCb9dduf0PdS6kwoo-AfQ-7KJNxBX9N9dkvQ>
+    <xme:wxjbYMHMNsPLEdJeOsG33Jb7AQ2Xb-rVh9kXGV1Z2Rik3_1TUdcyIV3wRU8I6OiXi
+    lyxtCXKwfGQUFVKqzE>
+X-ME-Received: <xmr:wxjbYF7slnF-f56UcNNNTi-ydDQHdCRuUmifaujBHBaKv5CpLvn1zneJcue-5m_WnpzJCPphqXVWn-aatZmZkWjk36Y2rxQwQtRR>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeitddgvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:wxjbYC2EKqWW6yf7IUbmvgImBUBXpCHCam338-7u6N1HPaYw9Lq3wQ>
+    <xmx:wxjbYIF5mqHltSKZzvOsbSG0rPCGjG561KtlhNxUqtDBDCUlilPOgw>
+    <xmx:wxjbYD8-wvk0yRalLKJrqGSAFTLChoMyt4Bq3PzmTNmdrGx5bIEvXQ>
+    <xmx:xRjbYGV5oi9e1X88EJkfoUfRKRbfTQTkpkVEJEEz5DfYF30wz12_-A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 29 Jun 2021 08:57:38 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Emma Anholt <emma@anholt.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org
+Subject: [PATCH 0/4] drm/vc4: hdmi: Fix CEC access while disabled
+Date:   Tue, 29 Jun 2021 14:57:32 +0200
+Message-Id: <20210629125736.414467-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v96lykrz.fsf@vitty.brq.redhat.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 02:19:28PM +0200, Vitaly Kuznetsov wrote:
-> Vineeth Pillai <viremana@linux.microsoft.com> writes:
-> 
-> > Hyper-V enables inter-partition communication through the port and
-> > connection constructs. More details about ports and connections in
-> > TLFS chapter 11.
-> >
-> > Implement hypercalls related to ports and connections for enabling
-> > inter-partiion communication.
-> >
-> > Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-> > ---
-> >  drivers/hv/hv_call.c                   | 161 +++++++++++++++++++++++++
-> >  drivers/hv/mshv.h                      |  12 ++
-> >  include/asm-generic/hyperv-tlfs.h      |  55 +++++++++
-> >  include/linux/hyperv.h                 |   9 --
-> >  include/uapi/asm-generic/hyperv-tlfs.h |  76 ++++++++++++
-> >  5 files changed, 304 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/hv/hv_call.c b/drivers/hv/hv_call.c
-> > index 025d4e2b892f..57db3a8ac94a 100644
-> > --- a/drivers/hv/hv_call.c
-> > +++ b/drivers/hv/hv_call.c
-> > @@ -742,3 +742,164 @@ int hv_call_translate_virtual_address(
-> >  	return hv_status_to_errno(status);
-> >  }
-> >  
-> > +
-> > +int
-> > +hv_call_create_port(u64 port_partition_id, union hv_port_id port_id,
-> > +		    u64 connection_partition_id,
-> > +		    struct hv_port_info *port_info,
-> > +		    u8 port_vtl, u8 min_connection_vtl, int node)
-> > +{
-> > +	struct hv_create_port *input;
-> > +	unsigned long flags;
-> > +	int ret = 0;
-> > +	int status;
-> > +
-> > +	do {
-> > +		local_irq_save(flags);
-> > +		input = (struct hv_create_port *)(*this_cpu_ptr(
-> > +				hyperv_pcpu_input_arg));
-> > +		memset(input, 0, sizeof(*input));
-> > +
-> > +		input->port_partition_id = port_partition_id;
-> > +		input->port_id = port_id;
-> > +		input->connection_partition_id = connection_partition_id;
-> > +		input->port_info = *port_info;
-> > +		input->port_vtl = port_vtl;
-> > +		input->min_connection_vtl = min_connection_vtl;
-> > +		input->proximity_domain_info =
-> > +			numa_node_to_proximity_domain_info(node);
-> > +		status = hv_do_hypercall(HVCALL_CREATE_PORT, input,
-> > +					NULL) & HV_HYPERCALL_RESULT_MASK;
-> > +		local_irq_restore(flags);
-> > +		if (status == HV_STATUS_SUCCESS)
-> > +			break;
-> > +
-> > +		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
-> > +			pr_err("%s: %s\n",
-> > +			       __func__, hv_status_to_string(status));
-> > +			ret = -hv_status_to_errno(status);
-> 
-> In Nuno's "x86/hyperv: convert hyperv statuses to linux error codes"
-> patch, hv_status_to_errno() already returns negatives:
-
-Yes, this needs to be fixed otherwise one of the following patch has the
-error handling check reversed.
-
-Wei.
+Hi,=0D
+=0D
+This series aims at fixing a complete and silent hang when one tries to use=
+ CEC=0D
+while the display output is off.=0D
+=0D
+This can be tested with:=0D
+=0D
+echo off > /sys/class/drm/card0-HDMI-A-1/status=0D
+cec-ctl --tuner -p 1.0.0.0=0D
+cec-compliance=0D
+=0D
+This series addresses it by making sure the HDMI controller is powered up a=
+s=0D
+soon as the CEC device is opened by the userspace.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+Maxime Ripard (4):=0D
+  drm/vc4: hdmi: Mark the device as active if running=0D
+  drm/vc4: hdmi: Put the device on error in pre_crtc_configure=0D
+  drm/vc4: hdmi: Split the CEC disable / enable functions in two=0D
+  drm/vc4: hdmi: Make sure the device is powered with CEC=0D
+=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 85 ++++++++++++++++++++++------------=0D
+ 1 file changed, 55 insertions(+), 30 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
