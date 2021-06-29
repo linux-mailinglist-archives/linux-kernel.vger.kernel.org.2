@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4053B6CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C33F3B6CE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhF2DRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhF2DRt (ORCPT
+        id S231981AbhF2DTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:19:02 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37975 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231680AbhF2DTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:17:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CB1C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:15:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id bg14so33647872ejb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KSP9MnxtnkwaBaqFffC1/G5CwF9yGzg9W9Q6U/eCMio=;
-        b=trz9EZjpzzDlN+qvVOvq7umsssDF2IXsOdePgArPhNfrFD+HeoNYw9g9xzyAhb8MKk
-         mmpCQPnoQeSyx8U2dU/uHBBXJuxYujR+dpmYpf3Zajl9fTas6kctAJkBbjgRzfivg2OB
-         yj1qDXf69FF6HUXTycchd0vTemH3qRAeHyMtHGpVClkd54HdkzVoehXk+f8vp1TZ2hPu
-         9dQqlEUIafRa41+2OmLox/HCo9ezTTkzCk0hQDZRSKY6n10tM+7jdPeJBHXWWcYvV132
-         Wwywql7RSG4MI6Ib23cSV71szhrFJRImsg2bQDJXmui0IrqcBxD8391lxzBVfzYZTccD
-         E6Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KSP9MnxtnkwaBaqFffC1/G5CwF9yGzg9W9Q6U/eCMio=;
-        b=H6zW+JbhMU7ysPQv9VZx4HBC707y67OtdTuazpfk0VOf+o+x/ySFAPp5rSvrQUqFZd
-         TvyirnKPVQGI97wPBql9iKdym6JlzU0fthoQOrq/OKlz2E7RADpo2MuhdSv30eF1dacW
-         6e/FIuoL5kPtOkuaqeXajmLq0Q+yXZKuavOKUFNs5sDyiwTzOoE3uaKCRc6AszChpRn5
-         8K2X5xqiXXcYs0Cwbr9Ohfmj6pveLHyiRdHfQkCarhTLQa/Hup48knelEi0NeeMXUyRs
-         Z9R485hgUq6Q8bCbmdnizeAbZ3plw1DgnIEt5KR8ROb84JEm4rX9AeSvpMwYW6u5ofLd
-         GXYg==
-X-Gm-Message-State: AOAM533mdsGntZ8xNIbf4dbRq8lisxidelCb5RqeepgzVeU94xGjX4XL
-        VncSVgCQNtKbmIZ10NOx3o0rVFcxN6oz9s+ESjiU
-X-Google-Smtp-Source: ABdhPJygNTq8Wi5J8lQUEA69a0KDIXQbdUPLuUv1X7DgdTJUivR6hqFwxAoue0nTaAaGcU1j++UWvcm4NWY1mqaUomU=
-X-Received: by 2002:a17:906:3c4a:: with SMTP id i10mr26893189ejg.372.1624936520374;
- Mon, 28 Jun 2021 20:15:20 -0700 (PDT)
+        Mon, 28 Jun 2021 23:19:01 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id EBB67320055E;
+        Mon, 28 Jun 2021 23:16:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 28 Jun 2021 23:16:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=Z
+        fgomsCwSdXKWwwi7g0uGoQSdn0Bmm4UCRHcNvw8Zno=; b=i0pogZ+rupFDeYeJ2
+        6KW9JrFMeSmfDtz7iGBoOJVJVKL53bzqlnbuoSOuuSio43fC3NEA8jQlB4ZJowdv
+        rSbe0Wm1CQjZo0kM11Kr4xx4IMDNwVOfQTjSPCHoXTxmUFc/1bB0CaP76dQZIiz8
+        scDj3+EKEGsnRsaaTl8FEJa6F/gPdsV06l0Mb5+HL8MorRdML8bwrDUT2n/weFaB
+        GaJFWVMfuVEXjAL/BCVWLZaWj4ihEW9ynDVzP9ZDXILa6Yj9kDVdjklprirNTLb9
+        OF5MGnb2PPsT4oIVTHf6CxTo11dHgQGabOyhzDspudVjE4t8uTJ80cR2UQoziBTl
+        ZiI1g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=ZfgomsCwSdXKWwwi7g0uGoQSdn0Bmm4UCRHcNvw8Z
+        no=; b=XcrJ+sHvOlwjW02cLhkKDDyyOMuLGMn44c87Gpt+ViILgqRwgasqaGn8v
+        FzKGNUdVLHoyt97VNvywG22WZgT5SVzF/62WcK2JSzqFDEds811NcaEvpGER02bq
+        o1igNs4w5730qHiIOqfTTkJBb4V+c2qE0+ybjk+Wf2HaUq8WMAwLzPm/l5ZcuwOC
+        D34bArkMW8DV9fLJzzOd1sBoJEnLzEfAqqQoTWYCdSNKj+tpT+7mpDQGIcv3t4qm
+        6CoP4mjCGzWQnTKQiu6jz4pE2WVku2eGeUZIyQFD3nfeTKJ3EX/iBkTFQs4azU/q
+        wXVmrE5kUn4lZ/gqtjg37MOsHZ0OQ==
+X-ME-Sender: <xms:kJDaYMQznc_xThJ8Qbi51SW8bCaYvlEkdACmmOBYhiI_Bsz-smMfVQ>
+    <xme:kJDaYJw-F5sT6a0WK12ULMwpLu1g7SKftZ0HMVQT0kMmhnOC7GhTLp3JxAmTA0tpr
+    wkD9iR4gGVNTYbiE2U>
+X-ME-Received: <xmr:kJDaYJ0oVuJbwVYsii8tqlCDW4OxQClHd9IbIt7u5AnQKfi80uFQlUzG75HW>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehhedgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:kJDaYADFy6JNgKy5uZasxgFRcPMemqL3EbdgYjaClmsvDF4qpkdCRg>
+    <xmx:kJDaYFilBDzlkHmzOEa9399BJLgDBtTc_-hHWJUz60EMx5nhq3_YbQ>
+    <xmx:kJDaYMoSjvhRWsQEbOA4FwtpS5k-4_DSPWLJoe8KuKtUdyEBG3SG7A>
+    <xmx:kZDaYDYmqMpNWFCDfyi8RYiE29CRAe7w9sjoHGlivgHkS0EjrSfYKQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Jun 2021 23:16:29 -0400 (EDT)
+Subject: Re: [PATCH v5 2/2] MIPS: Loongson64: Add pm block node for
+ Loongson-2K1000
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210629011913.18611-1-zhangqing@loongson.cn>
+ <20210629011913.18611-2-zhangqing@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <df075ce1-0b85-e032-24d5-b028447b64ea@flygoat.com>
+Date:   Tue, 29 Jun 2021 11:16:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <YNSgyTHpNjxdKLLR@stefanha-x1.localdomain>
-In-Reply-To: <YNSgyTHpNjxdKLLR@stefanha-x1.localdomain>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 29 Jun 2021 11:15:09 +0800
-Message-ID: <CACycT3tDpK+eHatDKRkvt1qyA5cO6g4qGN+0nfm3EhFA1OwPww@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210629011913.18611-2-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 9:02 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
->
-> On Tue, Jun 15, 2021 at 10:13:21PM +0800, Xie Yongji wrote:
-> > This series introduces a framework that makes it possible to implement
-> > software-emulated vDPA devices in userspace. And to make it simple, the
-> > emulated vDPA device's control path is handled in the kernel and only the
-> > data path is implemented in the userspace.
->
-> This looks interesting. Unfortunately I don't have enough time to do a
-> full review, but I looked at the documentation and uapi header file to
-> give feedback on the userspace ABI.
->
 
-OK. Thanks for your comments. It's helpful!
 
-Thanks,
-Yongji
+ÔÚ 2021/6/29 ÉÏÎç9:19, Qing Zhang Ð´µÀ:
+> The module is now supported, enable it.
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>
+> v4-v5:
+> add missing spaces
+>
+>   arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+>
+> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> index 569e814def83..38bf14f00694 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> @@ -101,6 +101,16 @@ uart0: serial@1fe00000 {
+>   			no-loopback-test;
+>   		};
+>   
+> +		pm: power-controller {
+^ power-management@1fe0700c
+> +			device_type = "power management";
+^ Why do you need to specify device type?
+> +			compatible = "loongson, reset-controller";
+^ why space?
+I guess it should be loongson,ls2k-pm...
+
+- Jiaxun
+> +
+> +			reg = <0 0x1fe0700c 0 0x8>,
+> +			      <0 0x1fe07014 0 0x8>,
+> +			      <0 0x1fe07030 0 0x8>;
+> +			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
+^ I guess there is no need to specify three reg names, you can simply 
+tell driver 0x1fe07000
+base address and calculate them on your own.
+
+Thanks.
+
+- Jiaxun
+> +		};
+> +
+>   		pci@1a000000 {
+>   			compatible = "loongson,ls2k-pci";
+>   			device_type = "pci";
+
