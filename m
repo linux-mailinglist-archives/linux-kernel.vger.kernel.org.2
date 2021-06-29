@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2AC3B74AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178053B74B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbhF2Ovn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhF2Ovj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:51:39 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FCBC061760;
-        Tue, 29 Jun 2021 07:49:11 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id h4so18712098pgp.5;
-        Tue, 29 Jun 2021 07:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sgedI6+6qKlLTRATOo8xiBdzNyb6QgjMf9+CiWSlKJg=;
-        b=MrFm2QVZyIhOXx5Nl3OtAQV0OVWh5YFA/aNRmurlT+tEMLsAdfPgmix1dFQO5gkVlj
-         SAMovFD1tS0GuqGaKMElv5SQmcgSYdKY7ZcrANkl4e+4ceVNe2/NcIz5JZSUwsYxRaNZ
-         jqOt3GPtOv0IGOgn5PQ+m5ipHQATdEFYwzgHBuJZ+yfMWIoV7QFPGFda2t8A8+dbJUCs
-         5IdRgpo2W2/VMNoiv3QExRd31uwZ64hFKQTiNvlSATStFt8E/U/FqfT001RhGC3C9T5z
-         3kqDB0MOoOieFkDiayEJZliKHp6LFBdFv5gyrQIix79FDL8MefMDcYhGMXgyBVyNeyXp
-         KR9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sgedI6+6qKlLTRATOo8xiBdzNyb6QgjMf9+CiWSlKJg=;
-        b=Ol2yeVG1zMRR1nO77FQgSdGk6YowkfzkqJzOui3L4n4LLuNzeW5jAr54yRu7waGdmT
-         sM8e7Qjhaez46VlIlismlpxvJSwItX3fV7g0AP2/wTZTmkNxJklBjBxnIVQg+qGkRl7O
-         6+4bBzPBOh2t8riISj0b4j/yjdZr1v3qBmQIcoO5MtwIIBlD67HJVVMyY5FFFg4vuLX7
-         yPLs2cCgwKw7/dyImeNDNxu+QWgTngnsqhwF7QpDmCmlIZBeKNdK8+apqvs2BW6ILWdF
-         7Qzd7MvqC5qTiNfXNL08Zi1WzTNe1cSdsvZk2FYAJfOXXwmBus0D7I7WZly0DAfYTp/V
-         51Kg==
-X-Gm-Message-State: AOAM531+K90YMSaQ6gwELCvqPGOzUwk4OgmHpFtwi5xmdNHSZohBas94
-        4GPAK9hy6RHvPMq0KfpDd44=
-X-Google-Smtp-Source: ABdhPJy6/Mf+TY9SUQHW36mJKwtu1pw9KHDcq/inYizQaE1PUDI16xDfzeYl9jbuRSqnKU00XaEzIQ==
-X-Received: by 2002:a63:b54:: with SMTP id a20mr29013565pgl.407.1624978151551;
-        Tue, 29 Jun 2021 07:49:11 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id i2sm3417262pjj.25.2021.06.29.07.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:49:11 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     gustavoars@kernel.org, viro@zeniv.linux.org.uk
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+b718ec84a87b7e73ade4@syzkaller.appspotmail.com
-Subject: [PATCH 3/3] hfs: add lock nesting notation to hfs_find_init
-Date:   Tue, 29 Jun 2021 22:48:03 +0800
-Message-Id: <20210629144803.62541-4-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210629144803.62541-1-desmondcheongzx@gmail.com>
-References: <20210629144803.62541-1-desmondcheongzx@gmail.com>
+        id S234596AbhF2OwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:52:21 -0400
+Received: from mga11.intel.com ([192.55.52.93]:63149 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234413AbhF2OwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 10:52:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="205152367"
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="205152367"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 07:49:24 -0700
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="447065340"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.169.66]) ([10.185.169.66])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 07:49:22 -0700
+Subject: Re: [Intel-wired-lan] [PATCH] driver core: fix e1000e ltr bug
+To:     YeeLi <seven.yi.lee@gmail.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>
+References: <20210629082128.255988-1-seven.yi.lee@gmail.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <02ff77ef-e802-8e13-d169-1ab2c250405a@intel.com>
+Date:   Tue, 29 Jun 2021 17:49:15 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210629082128.255988-1-seven.yi.lee@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reports a possible recursive lock:
-https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db
+On 6/29/2021 11:21, YeeLi wrote:
+Yeeli,
+> In e1000e driver, a PCIe-like device, the max snoop/no-snoop latency
+> is the upper limit.So, directly compare the size of lat_enc and
+> max_ltr_enc is incorrect.
+> 
+why?
+>      In 1000Mbps, 0x8b9 < 0x1003, 189440 ns < 3145728 ns, correct.
+> 
+>      In 100Mbps, 0xc3a < 0x1003, 1900544 ns < 3145728 ns, correct.
+> 
+>      In 10Mbps, 0xe40 < 0x1003, 18874368 > 3145728, incorrect.
+> 
+Platform LTR encoded is 0x1003 - right. It is meant 1048576ns x 3 = 
+3145738ns.
+Now,
+for 1000M: 0x08b9 => 185ns x 1024 = 189440ns (you are correct)
+for 100M: 0x0c3a => 58ns x 32768 = 1900544ns (correct)
+for 10M: 0x0e41 => 577ns x 32768 = 18907136ns (ok?)
+18907136ns > 3145738ns, (latency encoded is great than maximum LTR 
+encoded by platform) - so, there is no point to wait more than platform 
+required, and lat_enc=max_ltr_enc. It is expected and we sent right 
+value to the power management controller.
+What is the problem you try solve?
 
-This happens due to missing lock nesting information. From the logs,
-we see that a call to hfs_fill_super is made to mount the hfs
-filesystem. While searching for the root inode, the lock on the
-catalog btree is grabbed. Then, when the parent of the root isn't
-found, a call to __hfs_bnode_create is made to create the parent of
-the root. This eventually leads to a call to hfs_ext_read_extent which
-grabs a lock on the extents btree.
-
-Since the order of locking is catalog btree -> extents btree, this
-lock hierarchy does not lead to a deadlock.
-
-To tell lockdep that this locking is safe, we add nesting notation to
-distinguish between catalog btrees, extents btrees, and attributes
-btrees (for HFS+). This has already been done in hfsplus.
-
-Reported-and-tested-by: syzbot+b718ec84a87b7e73ade4@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
----
- fs/hfs/bfind.c | 14 +++++++++++++-
- fs/hfs/btree.h |  7 +++++++
- 2 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
-index 4af318fbda77..ef9498a6e88a 100644
---- a/fs/hfs/bfind.c
-+++ b/fs/hfs/bfind.c
-@@ -25,7 +25,19 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- 	fd->key = ptr + tree->max_key_len + 2;
- 	hfs_dbg(BNODE_REFS, "find_init: %d (%p)\n",
- 		tree->cnid, __builtin_return_address(0));
--	mutex_lock(&tree->tree_lock);
-+	switch (tree->cnid) {
-+	case HFS_CAT_CNID:
-+		mutex_lock_nested(&tree->tree_lock, CATALOG_BTREE_MUTEX);
-+		break;
-+	case HFS_EXT_CNID:
-+		mutex_lock_nested(&tree->tree_lock, EXTENTS_BTREE_MUTEX);
-+		break;
-+	case HFS_ATTR_CNID:
-+		mutex_lock_nested(&tree->tree_lock, ATTR_BTREE_MUTEX);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 	return 0;
- }
- 
-diff --git a/fs/hfs/btree.h b/fs/hfs/btree.h
-index 4ba45caf5939..0e6baee93245 100644
---- a/fs/hfs/btree.h
-+++ b/fs/hfs/btree.h
-@@ -13,6 +13,13 @@ typedef int (*btree_keycmp)(const btree_key *, const btree_key *);
- 
- #define NODE_HASH_SIZE  256
- 
-+/* B-tree mutex nested subclasses */
-+enum hfs_btree_mutex_classes {
-+	CATALOG_BTREE_MUTEX,
-+	EXTENTS_BTREE_MUTEX,
-+	ATTR_BTREE_MUTEX,
-+};
-+
- /* A HFS BTree held in memory */
- struct hfs_btree {
- 	struct super_block *sb;
--- 
-2.25.1
-
+> Decoded the lat_enc and max_ltr_enc before compare them is necessary.
+> 
+> Signed-off-by: YeeLi <seven.yi.lee@gmail.com>
+> ---
+>   drivers/net/ethernet/intel/e1000e/ich8lan.c | 23 ++++++++++++++++++++-
+>   1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> index 590ad110d383..3bff1b570b76 100644
+> --- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> +++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+> @@ -986,6 +986,27 @@ static s32 e1000_k1_workaround_lpt_lp(struct e1000_hw *hw, bool link)
+>   	return ret_val;
+>   }
+>   
+> +static u32 convert_e1000e_ltr_scale(u32 val)
+> +{
+> +	if (val > 5)
+> +		return 0;
+> +
+> +	return 1U << (5 * val);
+> +}
+> +
+> +static u64 decoded_ltr(u32 val)
+> +{
+> +	u64 decoded_latency;
+> +	u32 value;
+> +	u32 scale;
+> +
+> +	value = val & 0x03FF;
+> +	scale = (val & 0x1C00) >> 10;
+> +	decoded_latency = value * convert_e1000e_ltr_scale(scale);
+> +
+> +	return decoded_latency;
+> +}
+> +
+>   /**
+>    *  e1000_platform_pm_pch_lpt - Set platform power management values
+>    *  @hw: pointer to the HW structure
+> @@ -1059,7 +1080,7 @@ static s32 e1000_platform_pm_pch_lpt(struct e1000_hw *hw, bool link)
+>   				     E1000_PCI_LTR_CAP_LPT + 2, &max_nosnoop);
+>   		max_ltr_enc = max_t(u16, max_snoop, max_nosnoop);
+>   
+> -		if (lat_enc > max_ltr_enc)
+> +		if (decoded_ltr(lat_enc) > decoded_ltr(max_ltr_enc))
+>   			lat_enc = max_ltr_enc;
+>   	}
+>   
+> 
+sasha
