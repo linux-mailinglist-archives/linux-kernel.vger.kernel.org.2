@@ -2,152 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C093B7510
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A495F3B7514
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhF2PW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:22:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58198 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234627AbhF2PW0 (ORCPT
+        id S234743AbhF2PWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:22:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46101 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234741AbhF2PWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:22:26 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TFGU8u127585;
-        Tue, 29 Jun 2021 11:19:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=nt6UfoynStPcV8jN7cA0MSyEzY53XaQqnWLlG2qopuw=;
- b=WRgOMlavSr8JvIfcDyO2r70u4REXwqZCL1H8d/Pavt2x1cSi5vaDaOvtyiwJcH2UQnsP
- Lq9OyvDpisIEwX+pGmgCX7AVDceyx8tYNbZvNGOHpPpXFlPsxkN/uLYihx7qNeR7ZwCX
- IyKXTRZScZJosHJIqZkG3JnL6u6doCQGZ86kSahAYVs9GPaxIDE6PEGvlmK79+xzYSOJ
- fT5OgV9P+ZLJExnkxCZPpxZiHJxHplspNPp6Zxpil48v9P9/9fdZxx9CG9fIWr6odl3o
- 3ZsJOcX+Q+mmCtdQ9srDkZLC8TwNflnP8yPL0a8GX1NaHbEQKbne4xVK/q3LYkHjQ4J4 3g== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39g59usne7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 11:19:55 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TFHt1R015237;
-        Tue, 29 Jun 2021 15:19:54 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 39fv59r4w3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 15:19:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TFJoAR34406670
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Jun 2021 15:19:50 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A83594D2E5;
-        Tue, 29 Jun 2021 15:19:50 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40BAE4D357;
-        Tue, 29 Jun 2021 15:19:50 +0000 (GMT)
-Received: from [9.171.42.4] (unknown [9.171.42.4])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 29 Jun 2021 15:19:50 +0000 (GMT)
-Subject: Re: [PATCH] s390: iucv: Avoid field over-reading memcpy()
-To:     Kees Cook <keescook@chromium.org>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210616201942.1246211-1-keescook@chromium.org>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-Message-ID: <614191b7-6b5f-75f3-7490-62505970ceb5@linux.ibm.com>
-Date:   Tue, 29 Jun 2021 17:19:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 11:22:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624980012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Fkq8ISJodPGui8B5jJOFqU9Bg1udkwvRSG9eU74aiM=;
+        b=gJjGzjTK/xwdSPEG6EC3Urqe+gr47WF02rdd/H1xnZ7fzUKYJjNWM0wasJt+2YHvH0/XJr
+        0qkf82wpB7vkDiA1RjGfwHX9SMHcOc6bU69JUq+645zT6MfH8asEUoQPB4J3WdBXvsr25/
+        YYP+B2JUx+OmhqEVsYdJCGVPzplqKUA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-4agmsaUJMm22gB7tekRyFA-1; Tue, 29 Jun 2021 11:20:11 -0400
+X-MC-Unique: 4agmsaUJMm22gB7tekRyFA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6B1A100CA88;
+        Tue, 29 Jun 2021 15:20:09 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-194.rdu2.redhat.com [10.10.116.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 71B4D5D6A1;
+        Tue, 29 Jun 2021 15:20:08 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 0C3BD22054F; Tue, 29 Jun 2021 11:20:08 -0400 (EDT)
+Date:   Tue, 29 Jun 2021 11:20:07 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>, dwalsh@redhat.com,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <20210629152007.GC5231@redhat.com>
+References: <20210625191229.1752531-1-vgoyal@redhat.com>
+ <BN0PR11MB57275823CE05DED7BC755460FD069@BN0PR11MB5727.namprd11.prod.outlook.com>
+ <20210628131708.GA1803896@redhat.com>
+ <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
+ <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
+ <YNn4p+Zn444Sc4V+@work-vm>
+ <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
+ <YNrhQ9XfcHTtM6QA@work-vm>
+ <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616201942.1246211-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: W3SLJvF0rvehUukSmZQlB4n5y5wA6zcF
-X-Proofpoint-ORIG-GUID: W3SLJvF0rvehUukSmZQlB4n5y5wA6zcF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-29_07:2021-06-29,2021-06-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=968
- priorityscore=1501 phishscore=0 malwarescore=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 impostorscore=0 suspectscore=0 adultscore=0
- mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106290098
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2021 22:19, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally reading across neighboring array fields.
-> 
-> Add a wrapping struct to serve as the memcpy() source so the compiler
-> can perform appropriate bounds checking, avoiding this future warning:
-> 
-> In function '__fortify_memcpy',
->     inlined from 'iucv_message_pending' at net/iucv/iucv.c:1663:4:
-> ./include/linux/fortify-string.h:246:4: error: call to '__read_overflow2_field' declared with attribute error: detected read beyond size of field (2nd parameter)
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Tue, Jun 29, 2021 at 07:38:15AM -0700, Casey Schaufler wrote:
 
-Looks good, thanks for taking care of that change.
-
-Acked-by: Karsten Graul <kgraul@linux.ibm.com>
-
-> ---
->  net/iucv/iucv.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+[..]
+> >>>> User xattrs are less protected than security xattrs. You are exposing the
+> >>>> security xattrs on the guest to the possible whims of a malicious, unprivileged
+> >>>> actor on the host. All it needs is the right UID.
+> >>> Yep, we realise that; but when you're mainly interested in making sure
+> >>> the guest can't attack the host, that's less worrying.
+> >> That's uncomfortable.
+> > Why exactly?
 > 
-> diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
-> index 349c6ac3313f..e6795d5a546a 100644
-> --- a/net/iucv/iucv.c
-> +++ b/net/iucv/iucv.c
-> @@ -1635,14 +1635,16 @@ struct iucv_message_pending {
->  	u8  iptype;
->  	u32 ipmsgid;
->  	u32 iptrgcls;
-> -	union {
-> -		u32 iprmmsg1_u32;
-> -		u8  iprmmsg1[4];
-> -	} ln1msg1;
-> -	union {
-> -		u32 ipbfln1f;
-> -		u8  iprmmsg2[4];
-> -	} ln1msg2;
-> +	struct {
-> +		union {
-> +			u32 iprmmsg1_u32;
-> +			u8  iprmmsg1[4];
-> +		} ln1msg1;
-> +		union {
-> +			u32 ipbfln1f;
-> +			u8  iprmmsg2[4];
-> +		} ln1msg2;
-> +	} rmmsg;
->  	u32 res1[3];
->  	u32 ipbfln2f;
->  	u8  ippollfg;
-> @@ -1660,10 +1662,10 @@ static void iucv_message_pending(struct iucv_irq_data *data)
->  		msg.id = imp->ipmsgid;
->  		msg.class = imp->iptrgcls;
->  		if (imp->ipflags1 & IUCV_IPRMDATA) {
-> -			memcpy(msg.rmmsg, imp->ln1msg1.iprmmsg1, 8);
-> +			memcpy(msg.rmmsg, &imp->rmmsg, 8);
->  			msg.length = 8;
->  		} else
-> -			msg.length = imp->ln1msg2.ipbfln1f;
-> +			msg.length = imp->rmmsg.ln1msg2.ipbfln1f;
->  		msg.reply_size = imp->ipbfln2f;
->  		path->handler->message_pending(path, &msg);
->  	}
-> 
+> If a mechanism is designed with a known vulnerability you
+> fail your validation/evaluation efforts.
 
--- 
-Karsten
+We are working with the constraint that shared directory should not be
+accessible to unpriviliged users on host. And with that constraint, what
+you are referring to is not a vulnerability.
 
-(I'm a dude)
+> Your mechanism is
+> less general because other potential use cases may not be
+> as cavalier about the vulnerability.
+
+Prefixing xattrs with "user.virtiofsd" is just one of the options.
+virtiofsd has the capability to prefix "trusted.virtiofsd" as well.
+We have not chosen that because we don't want to give it CAP_SYS_ADMIN.
+
+So other use cases which don't like prefixing "user.virtiofsd", can
+give CAP_SYS_ADMIN and work with it.
+
+> I think that you can
+> approach this differently, get a solution that does everything
+> you want, and avoid the known problem.
+
+What's the solution? Are you referring to using "trusted.*" instead? But
+that has its own problem of giving CAP_SYS_ADMIN to virtiofsd.
+
+Thanks
+Vivek
+
