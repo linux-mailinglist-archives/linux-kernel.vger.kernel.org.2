@@ -2,203 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10193B7797
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AAA3B779D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234816AbhF2SIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:08:41 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40295 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231856AbhF2SIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:08:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="272060875"
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="272060875"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 11:06:07 -0700
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="419694967"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 11:06:06 -0700
-Date:   Tue, 29 Jun 2021 11:04:22 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     =?ISO-8859-15?Q?Martin_Hundeb=F8ll?= <martin@geanix.com>
-cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        =?ISO-8859-15?Q?Martin_Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] fpga: dfl: expose feature revision from struct
- dfl_device
-In-Reply-To: <20210629121214.988036-2-martin@geanix.com>
-Message-ID: <alpine.DEB.2.22.394.2106291103430.1279832@rhweight-WRK1>
-References: <20210629121214.988036-1-martin@geanix.com> <20210629121214.988036-2-martin@geanix.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S234884AbhF2SJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:09:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46157 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234894AbhF2SJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 14:09:01 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lyI80-0005oa-Sf
+        for linux-kernel@vger.kernel.org; Tue, 29 Jun 2021 18:06:32 +0000
+Received: by mail-ed1-f69.google.com with SMTP id ee28-20020a056402291cb0290394a9a0bfaeso11838349edb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 11:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1sVQNHAiS/W2i5o2hr99eStOUpYVcSh7ZDin7Mpc0cU=;
+        b=YISjwQy2w8+DkavlwfDKEOVPxKVdbbABFRZ/AeT0TuJCZGOWY1mK6PSpgjsLCJnSi2
+         fi5r4JPaQt3zKSWCwk8fu+MOwT7dHACPJSevT9koaTnHz/VMo0xftbmknbhNdeFWSFqZ
+         AfVLqqdRg0cplfmm3Gy1WaZa4Bpy8bPtJz/LiyizhHq4hT8ahpBZv7GLLJTHlYIL8npY
+         Xa0PYZNU9l6KnSDWoeDz1wSemx74dMnHxHJaSlNqYivVD5OrHfqm5THCg07+yk9sFufZ
+         GgOBqaEAg8G6fiMVaE4wDzzhduR9hKkNjo1GC7gR4jwx5yG5ABRIC/W0udwgDyKkMfnK
+         utCw==
+X-Gm-Message-State: AOAM530fQeqSD+O4TvlM7kFxMR1KCEWS2Lz+9PfV7TrERoRo/sh7J6qM
+        cURUFOKkGh8vTeauNxr5LnBi/4Qqf+NtMmwkSe2WBCUMsyQucz/YBFuyqXqfo+4FdFAgXT4a0QQ
+        m1+aaMYwip2kdwlkXNEHaOLlFbnYBs1o6lYvPJxCreA==
+X-Received: by 2002:a50:935a:: with SMTP id n26mr42276814eda.8.1624989991235;
+        Tue, 29 Jun 2021 11:06:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTuOakoVILBoO7OTyCnoSp6AApNCYVL4pAvYGfXG5VRBZx+0rJbjTvqZHj1Uvtttw8JTlYRw==
+X-Received: by 2002:a50:935a:: with SMTP id n26mr42276796eda.8.1624989991101;
+        Tue, 29 Jun 2021 11:06:31 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id e13sm6969604ejl.98.2021.06.29.11.06.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 11:06:30 -0700 (PDT)
+Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
+To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
+        "ltp@lists.linux.it" <ltp@lists.linux.it>,
+        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
+References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+ <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
+ <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
+ <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
+Date:   Tue, 29 Jun 2021 20:06:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-431308998-1624990064=:1279832"
+In-Reply-To: <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 29/06/2021 19:28, Josef Bacik wrote:
+> On 6/29/21 1:26 PM, Krzysztof Kozlowski wrote:
+>> On 29/06/2021 19:24, Josef Bacik wrote:
+>>> On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
+>>>> Dear BTRFS folks,
+>>>>
+>>>> I am hitting a potential regression of btrfs, visible only with
+>>>> fallocate05 test from LTP (Linux Test Project) only on 32+ core Azure
+>>>> instances (x86_64).
+>>>>
+>>>> Tested:
+>>>> v5.8 (Ubuntu with our stable patches): PASS
+>>>> v5.11 (Ubuntu with our stable patches): FAIL
+>>>> v5.13 mainline: FAIL
+>>>>
+>>>> PASS means test passes on all instances
+>>>> FAIL means test passes on other instance types (e.g. 4 or 16 core) but
+>>>> fails on 32 and 64 core instances (did not test higher),
+>>>> e.g.: Standard_F32s_v2, Standard_F64s_v2, Standard_D32s_v3,
+>>>> Standard_E32s_v3
+>>>>
+>>>> Reproduction steps:
+>>>> git clone https://github.com/linux-test-project/ltp.git
+>>>> cd ltp
+>>>> ./build.sh && make install -j8
+>>>> cd ../ltp-install
+>>>> sudo ./runltp -f syscalls -s fallocate05
+>>>>
+>>>> Failure output:
+>>>> tst_test.c:1379: TINFO: Testing on btrfs
+>>>> tst_test.c:888: TINFO: Formatting /dev/loop4 with btrfs opts='' extra opts=''
+>>>> tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file7 size 76896492
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file8 size 72228649
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file9 size 36207821
+>>>> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file10 size 81483962
+>>>> tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
+>>>> fallocate05.c:81: TPASS: write() wrote 65536 bytes
+>>>> fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS
+>>>> fallocate05.c:114: TPASS: fallocate() on full FS
+>>>> fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
+>>>> fallocate05.c:134: TFAIL: write(): ENOSPC (28)
+>>>>
+>>>> Test code:
+>>>> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fallocate/fallocate05.c#L134
+>>>>
+>>>> See also: https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1933112
+>>>>
+>>>> Other FS tests succeed on that machines/kernels. Other file systems
+>>>> also pass - only btrfs fails. The issue was not bisected. Full test
+>>>> log attached.
+>>>>
+>>>
+>>> Also it looks like you're using a loop device, the instructions you gave me
+>>> aren't complete enough for me to reproduce.  What is the actual setup you are
+>>> using?  How big is your loop device?  Is it a backing device?  I had to do -b
+>>> <device> to get the test to even start to run, but I've got a 2tib ssd, am I
+>>> supposed to be using something else?  Thanks,
+>>
+>> The test takes care about loop device, nothing is needed from your side.
+>> Just run the test and wait till you see:
+>> "tst_test.c:1379: TINFO: Testing on btrfs"
+>>
+>> That's where the interesting part starts :)
+>>
+> 
+> *cough*
+> # CONFIG_BLK_DEV_LOOP is not set
+> *cough*
+> 
+> I think I found the problem, my bad,
+> 
 
---8323328-431308998-1624990064=:1279832
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
+and 64 cores) fail similarly. I'll try later also QEMU machines with
+different amount of CPUs.
 
-
-
-On Tue, 29 Jun 2021, Martin Hundebøll wrote:
-
-> From: Martin Hundebøll <mhu@silicom.dk>
->
-> DFL device drivers have a common need for checking feature revision
-> information from the DFL header, as well as other common DFL information
-> like the already exposed feature id and type.
->
-> This patch exposes the feature revision information directly via the DFL
-> device data structure.
->
-> Since the DFL core code has already read the DFL header, this this patch
-> saves additional mmio reads from DFL device drivers too.
->
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
-Acked-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
->
-> Changes since v2:
-> * Reworded commit message as per Hao's suggestion
->
-> Changes since v1:
-> * This patch replaces the previous patch 2 and exposes the feature
->   revision through struct dfl_device instead of a helper reading from
->   io-mem
->
-> drivers/fpga/dfl.c  | 27 +++++++++++++++++----------
-> drivers/fpga/dfl.h  |  1 +
-> include/linux/dfl.h |  1 +
-> 3 files changed, 19 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index 511b20ff35a3..9381c579d1cd 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -381,6 +381,7 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
->
-> 	ddev->type = feature_dev_id_type(pdev);
-> 	ddev->feature_id = feature->id;
-> +	ddev->revision = feature->revision;
-> 	ddev->cdev = pdata->dfl_cdev;
->
-> 	/* add mmio resource */
-> @@ -717,6 +718,7 @@ struct build_feature_devs_info {
->  */
-> struct dfl_feature_info {
-> 	u16 fid;
-> +	u8 rev;
-> 	struct resource mmio_res;
-> 	void __iomem *ioaddr;
-> 	struct list_head node;
-> @@ -796,6 +798,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
-> 		/* save resource information for each feature */
-> 		feature->dev = fdev;
-> 		feature->id = finfo->fid;
-> +		feature->revision = finfo->rev;
->
-> 		/*
-> 		 * the FIU header feature has some fundamental functions (sriov
-> @@ -910,19 +913,17 @@ static void build_info_free(struct build_feature_devs_info *binfo)
-> 	devm_kfree(binfo->dev, binfo);
-> }
->
-> -static inline u32 feature_size(void __iomem *start)
-> +static inline u32 feature_size(u64 value)
-> {
-> -	u64 v = readq(start + DFH);
-> -	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, v);
-> +	u32 ofst = FIELD_GET(DFH_NEXT_HDR_OFST, value);
-> 	/* workaround for private features with invalid size, use 4K instead */
-> 	return ofst ? ofst : 4096;
-> }
->
-> -static u16 feature_id(void __iomem *start)
-> +static u16 feature_id(u64 value)
-> {
-> -	u64 v = readq(start + DFH);
-> -	u16 id = FIELD_GET(DFH_ID, v);
-> -	u8 type = FIELD_GET(DFH_TYPE, v);
-> +	u16 id = FIELD_GET(DFH_ID, value);
-> +	u8 type = FIELD_GET(DFH_TYPE, value);
->
-> 	if (type == DFH_TYPE_FIU)
-> 		return FEATURE_ID_FIU_HEADER;
-> @@ -1021,10 +1022,15 @@ create_feature_instance(struct build_feature_devs_info *binfo,
-> 	unsigned int irq_base, nr_irqs;
-> 	struct dfl_feature_info *finfo;
-> 	int ret;
-> +	u8 rev;
-> +	u64 v;
-> +
-> +	v = readq(binfo->ioaddr + ofst);
-> +	rev = FIELD_GET(DFH_REVISION, v);
->
-> 	/* read feature size and id if inputs are invalid */
-> -	size = size ? size : feature_size(binfo->ioaddr + ofst);
-> -	fid = fid ? fid : feature_id(binfo->ioaddr + ofst);
-> +	size = size ? size : feature_size(v);
-> +	fid = fid ? fid : feature_id(v);
->
-> 	if (binfo->len - ofst < size)
-> 		return -EINVAL;
-> @@ -1038,6 +1044,7 @@ create_feature_instance(struct build_feature_devs_info *binfo,
-> 		return -ENOMEM;
->
-> 	finfo->fid = fid;
-> +	finfo->rev = rev;
-> 	finfo->mmio_res.start = binfo->start + ofst;
-> 	finfo->mmio_res.end = finfo->mmio_res.start + size - 1;
-> 	finfo->mmio_res.flags = IORESOURCE_MEM;
-> @@ -1166,7 +1173,7 @@ static int parse_feature_private(struct build_feature_devs_info *binfo,
-> {
-> 	if (!is_feature_dev_detected(binfo)) {
-> 		dev_err(binfo->dev, "the private feature 0x%x does not belong to any AFU.\n",
-> -			feature_id(binfo->ioaddr + ofst));
-> +			feature_id(readq(binfo->ioaddr + ofst)));
-> 		return -EINVAL;
-> 	}
->
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2b82c96ba56c..422157cfd742 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -243,6 +243,7 @@ struct dfl_feature_irq_ctx {
-> struct dfl_feature {
-> 	struct platform_device *dev;
-> 	u16 id;
-> +	u8 revision;
-> 	int resource_index;
-> 	void __iomem *ioaddr;
-> 	struct dfl_feature_irq_ctx *irq_ctx;
-> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> index 6cc10982351a..431636a0dc78 100644
-> --- a/include/linux/dfl.h
-> +++ b/include/linux/dfl.h
-> @@ -38,6 +38,7 @@ struct dfl_device {
-> 	int id;
-> 	u16 type;
-> 	u16 feature_id;
-> +	u8 revision;
-> 	struct resource mmio_res;
-> 	int *irqs;
-> 	unsigned int num_irqs;
-> -- 
-> 2.31.0
->
->
---8323328-431308998-1624990064=:1279832--
+Best regards,
+Krzysztof
