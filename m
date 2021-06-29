@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676003B7459
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97343B745C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbhF2Oc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhF2Oc0 (ORCPT
+        id S234454AbhF2OdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:33:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6540 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234285AbhF2OdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:32:26 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34DAC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:29:58 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t3so31581375edc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=wB4FiBGvprIuCCVuYdV/lm3OI2xK185EMQiNBS5+SnY=;
-        b=wL3H5lyRBK5V/gXc3JaN7+WlnvM+aSSUjtlISo9Vc3LeZ+PpWz0DrnfrsBnlWeqKes
-         NwuxAaxJNLC4QQz5voli9f9L89eVz01LM+4ZHLDFkvAuhueSdpJzgHxf+P3cC9F+GBnk
-         eGMMtHb/kLRepfvZJeNScS/WhZ0Re4kSyV/NiPD0FB8u3w7kFTlsnmWr7d0fyR6VKLsA
-         ILHxyqOVKj402ILaNBi3cIJLrLSVQqxCy5ui9hWvVfVdNohDdnqPdGFgblpFWAKTK5sm
-         8DVUC0h3NbMXg5x9dTs19fWFhD5jM2Hg7odtl3xpaWAs0qJnizUO83LLoLokEYpj7UU2
-         hGDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=wB4FiBGvprIuCCVuYdV/lm3OI2xK185EMQiNBS5+SnY=;
-        b=HzkNfHYnrZ8Z7ffbV9rm5RO5v2UewSU8eCj4g6U8xY+xCl07Ind1ZM3sQfAbbPmMTY
-         5tnEMWKKDh78dzixNc6jS/24hP1yNjTbTG2mlOuB6rU5LzphzIXLLjQfFPaCz7WutCtP
-         HdFcoAVA3iiviLBF35v1SG4LRgXp9ghRCCilYrH+y528gR4NKWPW4jVosRZ92m/F32kB
-         eGS9vrB4WLdrAP1gI04TFjy0Z5qT4qB1KnPIHJ9EQMl2i35COfJRJo+dcioWVmZgH1Fa
-         3Mkbkl8EFC3Pr1126wJMbfWcHsYJueXbHoR79hPAnyoYqSQCCRArqwH1LwEX2zVjwWZx
-         rXfg==
-X-Gm-Message-State: AOAM531891eH9NZwZuzYdg2DXPj28lqiCnpY3qVXbL26kjEQBlYyBiFT
-        Zm6JC3NoMtvgKnU5VfB2V5Quvzpolx1CUcS/
-X-Google-Smtp-Source: ABdhPJzX8pEoV6y7HDTaLESYook89iZ7Y3XovaBU4OK3j3L6NuKrsK62ykIEUzhs0sqL0MYI/4QWtQ==
-X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr34953919edb.130.1624976997305;
-        Tue, 29 Jun 2021 07:29:57 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
-        by smtp.gmail.com with ESMTPSA id hy5sm8492982ejc.72.2021.06.29.07.29.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 07:29:56 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Michal Simek <monstr@monstr.eu>
-Subject: [GIT PULL] arch/microblaze patches for 5.14-rc1
-Message-ID: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
-Date:   Tue, 29 Jun 2021 16:29:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 29 Jun 2021 10:33:02 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TE3p2k051986;
+        Tue, 29 Jun 2021 10:30:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=8nHEd+heVjgNDMISNu6kEs8agcHs9+hSuqstlJ6JRO0=;
+ b=G52GVhgLiU1JuKXKo4X91yq82gDpqqgA3FgITLOnlZdNnyrlk7RSuXLuvShAF82xX/Ug
+ H8zlXblkKvzYIvaJc4b+tOcsqZFkDl6mToo4Ki6WsZSNh6Vztl+i30da8XWbrFWx/U/g
+ mmnCJPM71SFH2HUBvsu8TYO9LwHWjeqkdOUKBTaD86O1sZLMn6hVFbyWGHJh0a1tqmho
+ SwejBtXLE1AZNHIqKlQsnpsvpDPtvMBgGCsG29X7628h0hf6MGo1AXvsJx3RFRDfuSm/
+ y09UYFJ6H+JcTJXtMzddv+rideuzfcrEomVsklZjkiRuyxbSvCydDnbOHS/i7jjZswgT MA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39g4v1gy2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 10:30:29 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15TE5IOv063910;
+        Tue, 29 Jun 2021 10:30:28 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39g4v1gy1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 10:30:28 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15TEPDnT024205;
+        Tue, 29 Jun 2021 14:30:25 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 39dughhbg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 14:30:25 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15TESnuJ30671160
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 14:28:49 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D96084207C;
+        Tue, 29 Jun 2021 14:30:22 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E192A420A0;
+        Tue, 29 Jun 2021 14:30:20 +0000 (GMT)
+Received: from sig-9-65-193-149.ibm.com (unknown [9.65.193.149])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Jun 2021 14:30:20 +0000 (GMT)
+Message-ID: <fe6c853842425e675024731525e0f244da368e8e.camel@linux.ibm.com>
+Subject: Re: [PATCH] IMA: remove -Wmissing-prototypes warning
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Austin Kim <austindh.kim@gmail.com>, dmitry.kasatkin@gmail.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, austin.kim@lge.com,
+        Petko Manolov <petkan@mip-labs.com>
+Date:   Tue, 29 Jun 2021 10:30:20 -0400
+In-Reply-To: <20210629135050.GA1373@raspberrypi>
+References: <20210629135050.GA1373@raspberrypi>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cqNRqupwFie-nSLx9WuTAUc7dwbrRhjb
+X-Proofpoint-GUID: wQrpsWgRP5VglZKz47mpfDj5TWxCrHQB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_06:2021-06-28,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1011 suspectscore=0 mlxlogscore=999 spamscore=0
+ phishscore=0 adultscore=0 impostorscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+[Cc: Petko Manolov <petkan@mip-labs.com>]
 
-please pull these two small patches to your tree.
+Hi Austin,
 
-Thanks,
-Michal
+On Tue, 2021-06-29 at 14:50 +0100, Austin Kim wrote:
+> From: Austin Kim <austin.kim@lge.com>
+> 
+> With W=1 build, the compiler throws warning message as below:
+> 
+>    security/integrity/ima/ima_mok.c:24:12: warning:
+>    no previous prototype for ‘ima_mok_init’ [-Wmissing-prototypes]
+>        __init int ima_mok_init(void)
+> 
+> Silence the warning by adding static keyword to ima_mok_init().
+> 
+> Signed-off-by: Austin Kim <austin.kim@lge.com>
+> ---
+>  security/integrity/ima/ima_mok.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
+> index 1e5c01916173..95cc31525c57 100644
+> --- a/security/integrity/ima/ima_mok.c
+> +++ b/security/integrity/ima/ima_mok.c
+> @@ -21,7 +21,7 @@ struct key *ima_blacklist_keyring;
+>  /*
+>   * Allocate the IMA blacklist keyring
+>   */
+> -__init int ima_mok_init(void)
+> +static __init int ima_mok_init(void)
+>  {
+>  	struct key_restriction *restriction;
+>  
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Thank you for the patch, which does fix the warning.   The .ima_mok
+keyring was removed a while ago.  With all the recent work on the
+system blacklist, I'm wondering if anyone is still using the IMA
+blacklist keyring or whether it should be removed as well.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+thanks,
 
-are available in the Git repository at:
-
-  git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
-
-for you to fetch changes up to 14a832498c23cf480243222189066a8006182b9d:
-
-  arch: microblaze: Fix spelling mistake "vesion" -> "version"
-(2021-06-02 09:50:36 +0200)
-
-----------------------------------------------------------------
-Microblaze patches for 5.14-rc1
-
-- Remove unused PAGE_UP/DOWN macros
-- Fix trivial spelling mistake
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      arch: microblaze: Fix spelling mistake "vesion" -> "version"
-
-Guo Ren (1):
-      microblaze: Cleanup unused functions
-
- arch/microblaze/Makefile           | 2 +-
- arch/microblaze/include/asm/page.h | 3 ---
- 2 files changed, 1 insertion(+), 4 deletions(-)
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+Mimi
 
