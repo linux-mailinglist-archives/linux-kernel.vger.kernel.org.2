@@ -2,154 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9743B6CFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45E83B6D2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 05:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhF2DcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 23:32:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231856AbhF2DcI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 23:32:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624937381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Pa1pOlVAvZjnb70QATIYkocaWNNRWiFDRdCDmMIsd8=;
-        b=gDqfj9rX8rqZCojYY0oHCfBhS/e0zviI0vG5ixXtKXz9pa09e3jgiY93XCagKHEM9BwBvh
-        LbJ+bSCFYjIsDMqIBjGafHHTTklf+NHwX4DKd4K9pdoePlVZeEqSngYs31FekOusBPMmV+
-        rYqOLxQs0cHhMLR5XvXT3HssUYfLrmY=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-242-YHaZ-TnkOcmJozMFdTBo3A-1; Mon, 28 Jun 2021 23:29:39 -0400
-X-MC-Unique: YHaZ-TnkOcmJozMFdTBo3A-1
-Received: by mail-pj1-f71.google.com with SMTP id cp14-20020a17090afb8eb029017094b4d856so1311773pjb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 20:29:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2Pa1pOlVAvZjnb70QATIYkocaWNNRWiFDRdCDmMIsd8=;
-        b=IFh2KN07jA/Nn+39Ua6q8PbevPBvo/QSLPo1XRWcTy9GP1D/uqZAi9pVEYXQDJauRt
-         uZ+cceJM5Kvyy/js0pAlj2JAyinOnErbVF4x+qy+8vviVs487A2DXIuJIzanYcwUpMNJ
-         yo7IiFoq0WiUtozU5J93/OVuft48uBaVqjXBr6VUAD6RhlQjFVU7yHf1qrP0NfVXakcC
-         3RD4EFax6/dOZ3vNoV7qdojN/zL8HJXlHfEq+b1J+Gd+d6sX2YkI8kL3OXNDSBhBj2kS
-         gqgguxwFa63R3fZAuleiONEY7PUh1AKZgMfEqFysDMbtlya5fqSzsR9IB4NQCQci/NJ5
-         L5nA==
-X-Gm-Message-State: AOAM532GDFFegMt7ta+O5T4URq561pS8ir1votrdCgmxIgK9QLQtqtnO
-        Dd6+UzMnQS0lW7vFMa/BXYML/lK64bP7cE9DCsNZXXpLMY3aQh6fbdQKG9aJ4dLCFzr6AIfERSf
-        aQuepT0ZIs3c3GdjDiXUcaVUNL6lXQhejmfXLtI1jkGroUEDfcXJJkoJJJURbwptz4PtFpbrETd
-        RD
-X-Received: by 2002:a05:6a00:1742:b029:308:add4:e844 with SMTP id j2-20020a056a001742b0290308add4e844mr24162945pfc.18.1624937378638;
-        Mon, 28 Jun 2021 20:29:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwry9N+QCFjvNGydIUFQnfZliYwOwU3q6M/FQals9i/JHLqA6RP5KnmC4UjhvxUQDox0iXaLQ==
-X-Received: by 2002:a05:6a00:1742:b029:308:add4:e844 with SMTP id j2-20020a056a001742b0290308add4e844mr24162907pfc.18.1624937378357;
-        Mon, 28 Jun 2021 20:29:38 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w21sm1920153pge.30.2021.06.28.20.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 20:29:37 -0700 (PDT)
-Subject: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in
- Userspace
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <CACycT3tAON+-qZev+9EqyL2XbgH5HDspOqNt3ohQLQ8GqVK=EA@mail.gmail.com>
- <1bba439f-ffc8-c20e-e8a4-ac73e890c592@redhat.com>
- <CACycT3uzMJS7vw6MVMOgY4rb=SPfT2srV+8DPdwUVeELEiJgbA@mail.gmail.com>
- <0aeb7cb7-58e5-1a95-d830-68edd7e8ec2e@redhat.com>
- <CACycT3uuooKLNnpPHewGZ=q46Fap2P4XCFirdxxn=FxK+X1ECg@mail.gmail.com>
- <e4cdee72-b6b4-d055-9aac-3beae0e5e3e1@redhat.com>
- <CACycT3u8=_D3hCtJR+d5BgeUQMce6S7c_6P3CVfvWfYhCQeXFA@mail.gmail.com>
- <d2334f66-907c-2e9c-ea4f-f912008e9be8@redhat.com>
- <CACycT3uCSLUDVpQHdrmuxSuoBDg-4n22t+N-Jm2GoNNp9JYB2w@mail.gmail.com>
- <48cab125-093b-2299-ff9c-3de8c7c5ed3d@redhat.com>
- <CACycT3tS=10kcUCNGYm=dUZsK+vrHzDvB3FSwAzuJCu3t+QuUQ@mail.gmail.com>
- <b10b3916-74d4-3171-db92-be0afb479a1c@redhat.com>
- <CACycT3vpMFbc9Fzuo9oksMaA-pVb1dEVTEgjNoft16voryPSWQ@mail.gmail.com>
- <d7e42109-0ba6-3e1a-c42a-898b6f33c089@redhat.com>
- <CACycT3u9-id2DxPpuVLtyg4tzrUF9xCAGr7nBm=21HfUJJasaQ@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e82766ff-dc6b-2cbb-3504-0ef618d538e2@redhat.com>
-Date:   Tue, 29 Jun 2021 11:29:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S231987AbhF2DzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 23:55:13 -0400
+Received: from m12-12.163.com ([220.181.12.12]:32958 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232216AbhF2DzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 23:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=LEcOO
+        o8UmHfm+F/eGji1QXgO4RztVAoesqyYgwPJIlg=; b=qAXYRA/Im9mILCesVpwEk
+        f1XioXUVDKYUpEocYpQU6HnlQgOMJffU5fM84tabnEx+zPqPKJrBfzjQz6yCNrK4
+        xfFhxDOlTPmIWm86IY/XfW07u5KSXRBkTzRaz04dQSdsBfBsCnfl2Yj5aoC9gM7A
+        V3Ni/8MqdPN2sJb3jhCDl0=
+Received: from localhost (unknown [218.17.89.111])
+        by smtp8 (Coremail) with SMTP id DMCowABXsyjVjdpg23xNMQ--.12831S2;
+        Tue, 29 Jun 2021 11:04:54 +0800 (CST)
+Date:   Tue, 29 Jun 2021 11:04:53 +0800
+From:   Chunyou Tang <tangchunyou@163.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alyssa.rosenzweig@collabora.com,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+Subject: Re: [PATCH v2] drm/panfrost:report the full raw fault information
+ instead
+Message-ID: <20210629110453.00007ace@163.com>
+In-Reply-To: <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+References: <20210617062054.1864-1-tangchunyou@163.com>
+        <2dcbb36a-b550-4c9d-cff8-73ca4b5abb11@arm.com>
+        <20210619111852.00003e52@163.com>
+        <23f675e9-698d-840d-104f-33aa594dcb96@arm.com>
+        <20210622094000.00004f7e@163.com>
+        <04bc1306-f8a3-2e3c-b55d-030d1448fad2@arm.com>
+        <20210625174937.0000183f@163.com>
+        <14b2a3c8-4bc2-c8f9-627b-9ac5840cad11@arm.com>
+Organization: icube
+X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
 MIME-Version: 1.0
-In-Reply-To: <CACycT3u9-id2DxPpuVLtyg4tzrUF9xCAGr7nBm=21HfUJJasaQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=GB18030
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-CM-TRANSID: DMCowABXsyjVjdpg23xNMQ--.12831S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxKFW8Jw45WF18WrWxtF4kXrb_yoWfXF1xpr
+        yUJa1jkr4ktryjqw1jvw1Dur15tw4UJry8WF1DGr15tFnFv3WUJr48tF1UCa48Xr1jkayY
+        yr4Ut393Z3WUZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNa9-UUUUU=
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiThfAUVUDKbrHlwAAsd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steve,
+	thinks for your reply.
+	I set the pte in arm_lpae_prot_to_pte(),
+***********************************************************************
+	/*
+	 * Also Mali has its own notions of shareability wherein its
+Inner
+	 * domain covers the cores within the GPU, and its Outer domain
+is
+	 * "outside the GPU" (i.e. either the Inner or System domain in
+CPU
+	 * terms, depending on coherency).
+	 */
+	if (prot & IOMMU_CACHE && data->iop.fmt != ARM_MALI_LPAE)
+		pte |= ARM_LPAE_PTE_SH_IS;
+	else
+		pte |= ARM_LPAE_PTE_SH_OS;
+***********************************************************************
+I set pte |= ARM_LPAE_PTE_SH_NS.
 
-åœ¨ 2021/6/29 ä¸Šåˆ10:26, Yongji Xie å†™é“:
-> On Mon, Jun 28, 2021 at 12:40 PM Jason Wang <jasowang@redhat.com> wrote:
->>
->> åœ¨ 2021/6/25 ä¸‹åˆ12:19, Yongji Xie å†™é“:
->>>> 2b) for set_status(): simply relay the message to userspace, reply is no
->>>> needed. Userspace will use a command to update the status when the
->>>> datapath is stop. The the status could be fetched via get_stats().
->>>>
->>>> 2b looks more spec complaint.
->>>>
->>> Looks good to me. And I think we can use the reply of the message to
->>> update the status instead of introducing a new command.
->>>
->> Just notice this part in virtio_finalize_features():
->>
->>           virtio_add_status(dev, VIRTIO_CONFIG_S_FEATURES_OK);
->>           status = dev->config->get_status(dev);
->>           if (!(status & VIRTIO_CONFIG_S_FEATURES_OK)) {
->>
->> So we no reply doesn't work for FEATURES_OK.
->>
->> So my understanding is:
->>
->> 1) We must not use noreply for set_status()
->> 2) We can use noreply for get_status(), but it requires a new ioctl to
->> update the status.
->>
->> So it looks to me we need synchronize for both get_status() and
->> set_status().
->>
-> We should not send messages to userspace in the FEATURES_OK case. So
-> the synchronization is not necessary.
+	If I set pte to ARM_LPAE_PTE_SH_OS or
+	ARM_LPAE_PTE_SH_IS,whether I use singel core GPU or multi core
+	GPU,it will occur GPU Fault.
+	if I set pte to ARM_LPAE_PTE_SH_NS,whether I use singel core
+	GPU or multi core GPU,it will not occur GPU Fault.
 
+Thinks
 
-As discussed previously, there could be a device that mandates some 
-features (VIRTIO_F_RING_PACKED). So it can choose to not accept 
-FEATURES_OK is packed virtqueue is not negotiated.
+Chunyou
 
-In this case we need to relay the message to userspace.
+ÓÚ Mon, 28 Jun 2021 11:48:59 +0100
+Steven Price <steven.price@arm.com> Ð´µÀ:
 
-Thanks
+> On 25/06/2021 10:49, Chunyou Tang wrote:
+> > Hi Steve,
+> > 	Thinks for your reply.
+> > 	When I only set the pte |= ARM_LPAE_PTE_SH_NS;there have no
+> > "GPU Fault",When I set the pte |= ARM_LPAE_PTE_SH_IS(or
+> > ARM_LPAE_PTE_SH_OS);there have "GPU Fault".I don't know how the pte
+> > effect this issue?
+> > 	Can you give me some suggestions again?
+> > 
+> > Thinks.
+> > 
+> > Chunyou
+> 
+> Hi Chunyou,
+> 
+> You haven't given me much context so I'm not entirely sure which PTE
+> you are talking about (GPU or CPU), or indeed where you are changing
+> the PTE values.
+> 
+> The PTEs control whether a page is shareable or not, the GPU requires
+> that accesses are consistent (i.e. either all accesses to a page are
+> shareable or all are non-shareable) and will race a fault if it
+> detects this isn't the case. Mali also has a quirk for its version of
+> 'LPAE' where inner shareable actually means only within the GPU and
+> outer shareable means outside the GPU (which I think usually means
+> Inner Shareable on the external bus).
+> 
+> Steve
+> 
+> > ÓÚ Thu, 24 Jun 2021 14:22:04 +0100
+> > Steven Price <steven.price@arm.com> Ð´µÀ:
+> > 
+> >> On 22/06/2021 02:40, Chunyou Tang wrote:
+> >>> Hi Steve,
+> >>> 	I will send a new patch with suitable subject/commit
+> >>> message. But I send a V3 or a new patch?
+> >>
+> >> Send a V3 - it is a new version of this patch.
+> >>
+> >>> 	I met a bug about the GPU,I have no idea about how to fix
+> >>> it, If you can give me some suggestion,it is perfect.
+> >>>
+> >>> You can see such kernel log:
+> >>>
+> >>> Jun 20 10:20:13 icube kernel: [  774.566760] mvp_gpu 0000:05:00.0:
+> >>> GPU Fault 0x00000088 (SHAREABILITY_FAULT) at 0x000000000310fd00
+> >>> Jun 20 10:20:13 icube kernel: [  774.566764] mvp_gpu 0000:05:00.0:
+> >>> There were multiple GPU faults - some have not been reported Jun
+> >>> 20 10:20:13 icube kernel: [  774.667542] mvp_gpu 0000:05:00.0:
+> >>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  774.767900]
+> >>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:13 icube
+> >>> kernel: [  774.868546] mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck
+> >>> Jun 20 10:20:13 icube kernel: [  774.968910] mvp_gpu 0000:05:00.0:
+> >>> AS_ACTIVE bit stuck Jun 20 10:20:13 icube kernel: [  775.069251]
+> >>> mvp_gpu 0000:05:00.0: AS_ACTIVE bit stuck Jun 20 10:20:22 icube
+> >>> kernel: [  783.693971] mvp_gpu 0000:05:00.0: gpu sched timeout,
+> >>> js=1, config=0x7300, status=0x8, head=0x362c900, tail=0x362c100,
+> >>> sched_job=000000003252fb84
+> >>>
+> >>> In
+> >>> https://lore.kernel.org/dri-devel/20200510165538.19720-1-peron.clem@gmail.com/
+> >>> there had a same bug like mine,and I found you at the mail list,I
+> >>> don't know how it fixed?
+> >>
+> >> The GPU_SHAREABILITY_FAULT error means that a cache line has been
+> >> accessed both as shareable and non-shareable and therefore
+> >> coherency cannot be guaranteed. Although the "multiple GPU faults"
+> >> means that this may not be the underlying cause.
+> >>
+> >> The fact that your dmesg log has PCI style identifiers
+> >> ("0000:05:00.0") suggests this is an unusual platform - I've not
+> >> previously been aware of a Mali device behind PCI. Is this device
+> >> working with the kbase/DDK proprietary driver? It would be worth
+> >> looking at the kbase kernel code for the platform to see if there
+> >> is anything special done for the platform.
+> >>
+> >> From the dmesg logs all I can really tell is that the GPU seems
+> >> unhappy about the memory system.
+> >>
+> >> Steve
+> >>
+> >>> I need your help!
+> >>>
+> >>> thinks very much!
+> >>>
+> >>> Chunyou
+> >>>
+> >>> ÓÚ Mon, 21 Jun 2021 11:45:20 +0100
+> >>> Steven Price <steven.price@arm.com> Ð´µÀ:
+> >>>
+> >>>> On 19/06/2021 04:18, Chunyou Tang wrote:
+> >>>>> Hi Steve,
+> >>>>> 	1,Now I know how to write the subject
+> >>>>> 	2,the low 8 bits is the exception type in spec.
+> >>>>>
+> >>>>> and you can see prnfrost_exception_name()
+> >>>>>
+> >>>>> switch (exception_code) {
+> >>>>>                 /* Non-Fault Status code */
+> >>>>> case 0x00: return "NOT_STARTED/IDLE/OK";
+> >>>>> case 0x01: return "DONE";
+> >>>>> case 0x02: return "INTERRUPTED";
+> >>>>> case 0x03: return "STOPPED";
+> >>>>> case 0x04: return "TERMINATED";
+> >>>>> case 0x08: return "ACTIVE";
+> >>>>> ........
+> >>>>> ........
+> >>>>> case 0xD8: return "ACCESS_FLAG";
+> >>>>> case 0xD9 ... 0xDF: return "ACCESS_FLAG";
+> >>>>> case 0xE0 ... 0xE7: return "ADDRESS_SIZE_FAULT";
+> >>>>> case 0xE8 ... 0xEF: return "MEMORY_ATTRIBUTES_FAULT";
+> >>>>> }
+> >>>>> return "UNKNOWN";
+> >>>>> }
+> >>>>>
+> >>>>> the exception_code in case is only 8 bits,so if fault_status
+> >>>>> in panfrost_gpu_irq_handler() don't & 0xFF,it can't get correct
+> >>>>> exception reason,it will be always UNKNOWN.
+> >>>>
+> >>>> Yes, I'm happy with the change - I just need a patch that I can
+> >>>> apply. At the moment this patch only changes the first '0x%08x'
+> >>>> output rather than the call to panfrost_exception_name() as well.
+> >>>> So we just need a patch which does:
+> >>>>
+> >>>> - fault_status & 0xFF, panfrost_exception_name(pfdev,
+> >>>> fault_status),
+> >>>> + fault_status, panfrost_exception_name(pfdev, fault_status &
+> >>>> 0xFF),
+> >>>>
+> >>>> along with a suitable subject/commit message describing the
+> >>>> change. If you can send me that I can apply it.
+> >>>>
+> >>>> Thanks,
+> >>>>
+> >>>> Steve
+> >>>>
+> >>>> PS. Sorry for going round in circles here - I'm trying to help
+> >>>> you get setup so you'll be able to contribute patches easily in
+> >>>> future. An important part of that is ensuring you can send a
+> >>>> properly formatted patch to the list.
+> >>>>
+> >>>> PPS. I'm still not receiving your emails directly. I don't think
+> >>>> it's a problem at my end because I'm receiving other emails, but
+> >>>> if you can somehow fix the problem you're likely to receive a
+> >>>> faster response.
+> >>>>
+> >>>>> ÓÚ Fri, 18 Jun 2021 13:43:24 +0100
+> >>>>> Steven Price <steven.price@arm.com> Ð´µÀ:
+> >>>>>
+> >>>>>> On 17/06/2021 07:20, ChunyouTang wrote:
+> >>>>>>> From: ChunyouTang <tangchunyou@icubecorp.cn>
+> >>>>>>>
+> >>>>>>> of the low 8 bits.
+> >>>>>>
+> >>>>>> Please don't split the subject like this. The first line of the
+> >>>>>> commit should be a (very short) summary of the patch. Then a
+> >>>>>> blank line and then a longer description of what the purpose of
+> >>>>>> the patch is and why it's needed.
+> >>>>>>
+> >>>>>> Also you previously had this as part of a series (the first
+> >>>>>> part adding the "& 0xFF" in the panfrost_exception_name()
+> >>>>>> call). I'm not sure we need two patches for the single line,
+> >>>>>> but as it stands this patch doesn't apply.
+> >>>>>>
+> >>>>>> Also I'm still not receiving any emails from you directly (only
+> >>>>>> via the list), so it's possible I might have missed something
+> >>>>>> you sent.
+> >>>>>>
+> >>>>>> Steve
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+> >>>>>>> ---
+> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+> >>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> >>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c index
+> >>>>>>> 1fffb6a0b24f..d2d287bbf4e7 100644 ---
+> >>>>>>> a/drivers/gpu/drm/panfrost/panfrost_gpu.c +++
+> >>>>>>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c @@ -33,7 +33,7 @@
+> >>>>>>> static irqreturn_t panfrost_gpu_irq_handler(int irq, void
+> >>>>>>> *data) address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO); 
+> >>>>>>>  		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s)
+> >>>>>>> at 0x%016llx\n",
+> >>>>>>> -			 fault_status & 0xFF,
+> >>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF),
+> >>>>>>> +			 fault_status,
+> >>>>>>> panfrost_exception_name(pfdev, fault_status & 0xFF), address);
+> >>>>>>>  
+> >>>>>>>  		if (state & GPU_IRQ_MULTIPLE_FAULT)
+> >>>>>>>
+> >>>>>
+> >>>>>
+> >>>
+> >>>
+> > 
+> > 
 
-
->
-> Thanks,
-> Yongji
->
 
