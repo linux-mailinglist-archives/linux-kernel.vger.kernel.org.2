@@ -2,232 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75B63B781F
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FD13B782A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhF2TBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 15:01:12 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:38865 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbhF2TBK (ORCPT
+        id S235359AbhF2TDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234343AbhF2TC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 15:01:10 -0400
-Received: by mail-ot1-f52.google.com with SMTP id a5-20020a05683012c5b029046700014863so6933889otq.5;
-        Tue, 29 Jun 2021 11:58:42 -0700 (PDT)
+        Tue, 29 Jun 2021 15:02:56 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C8EC061760;
+        Tue, 29 Jun 2021 12:00:27 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i24so32677441edx.4;
+        Tue, 29 Jun 2021 12:00:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T2w95C+qM8k4odXnWTg+Qy+O6s4VgV9B2PzrgUQXnKg=;
+        b=BSv5xS6GlW9bzmWJDOWNhjaCgHH2uVlFFzpO6OOCFWUGAayOsUbIpHR2I9n64dwUeT
+         0BFcKHQzFU4g+ygEfNZTqJBSYWcwOjYIo5pH+T8xkrTZmYvHfTrvF69lRCqSf8UsfEVa
+         0M65hf3m4blUhYbiFgulaMPx9HmmEWZ8Ha0DqOI9fvSd5dFVOakp+txRPhqW48bX2gVH
+         4IZ5LSZIA4Vn6UKS6Zq9qIqiW6TSVlTBPcEYZAfsVNB+/J8Iy6h3LRQPnf9J5471L2/X
+         NNKmdMbhYRKoPoVV4B3wuywafJ5cFpfHAwhh1nSe91rC41vH9rHThILaSW1z4oCStJfu
+         yyww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=0CoFhyprg0SMvOyQS94tuYmUx7xloDVzGT6KX0wc08w=;
-        b=byEHm/U6ypI7SPTj6INCiyWw5iddS8j4ihe5qa5UhXYGWhiqypPV+Oe46Q7B8M3D7w
-         /3hZxvTfZyeFDJs+dg6dtQa8fya61PpMGtE1T6dkVGTeHAaqgt2vBhuUJCFAN+E5FTUC
-         QlpjBdCUQXpmlW84l4sWhain1GVd+eF2FPB2tQa/GeYBuipsvGZEUm89AePNDlpYjykj
-         kFTWUtskKMDmTkk0AnMefgRJKD3HPQTZD2TT7qLyDL5z1a1TpBE742x285oRv91EOn44
-         iz5klP24eLiINyab4urFERusCgVp/tZWXimt6ZPN/B2FwF/wvJ8wP4EC2q3kYoHGlPg9
-         M3DA==
-X-Gm-Message-State: AOAM532uaO+aKg9mZd8xrNNqLYS2KKUkChULwf3yJc6zmtg9vl3hijmP
-        K533XetfYNZRZp3tHBhFR0W6uzevkOMC1fsS+Ash9H6AJ0Q=
-X-Google-Smtp-Source: ABdhPJxkb1twkcvyJ3PCBO5pKtjfkffDGUbto1NL5Fae9XwuLs03F8xkc3984XiTVrQ58KLUhdkqoQvITanx9836Das=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr6081928otb.206.1624993121973;
- Tue, 29 Jun 2021 11:58:41 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T2w95C+qM8k4odXnWTg+Qy+O6s4VgV9B2PzrgUQXnKg=;
+        b=NPSZ4Mq0w8LtklvVLNb2lZEg09kaUqVXOsci2wB3gW7FY1da/B8fWU4D7MThQXRY3h
+         KOndGlyye9jfIsny0F9vWRASfFt4FYrZ+A6vwqQXArh+vgECIxE9szZ7zR26SUOPkf5j
+         BIQX46qfvxc2s3lhaAK/wnspOMy5gPrOROEYYSSYJWY+6wqMku7C3u09EbyyjJhAJfzE
+         UJ668nMkIwBd9QONJB4uTPxV/OCh5E2Tb+FwjpzQfCZ+YWDjlgqYFktpYLX/0CBJ+Dkj
+         knCMl/5lAzZd4l9w6uEG9k3Y2dzBjOIOe8K4TTrCLxo+jwKtVP+n6NpuvAFsV/Iw6gog
+         dDsQ==
+X-Gm-Message-State: AOAM532Fmutsuj4C0l125ABSjrJrESSU2cJ6p/fl1lywXPLPOTo/5MQX
+        obULRViNLeq4RQCcrvNaewTgSs6LyBrAGMNTAt0=
+X-Google-Smtp-Source: ABdhPJzrCyLePOZbwU/YpHBQ4dDhsP2MEebHmIWdFgk1MHa6jvvw6Bo0yP64kVLq5ru5+iYeULC4Bf9NSf6Uk3j1hlM=
+X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr36314741edb.130.1624993225914;
+ Tue, 29 Jun 2021 12:00:25 -0700 (PDT)
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 29 Jun 2021 20:58:30 +0200
-Message-ID: <CAJZ5v0i+RhTN4LYqG0X5oUg8e2gs1AbwHP__PSvCRoFT48P7Ug@mail.gmail.com>
-Subject: [GIT PULL] Power management updates for v5.14-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210629121459.6341-1-linux.amoon@gmail.com> <CAFBinCA=COnsN4Cp-z0HAPgs4kqPdiKtkZkr_LDkGz68s7B7hA@mail.gmail.com>
+In-Reply-To: <CAFBinCA=COnsN4Cp-z0HAPgs4kqPdiKtkZkr_LDkGz68s7B7hA@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Wed, 30 Jun 2021 00:30:14 +0530
+Message-ID: <CANAwSgRD9_B7f5UjPrxeL+x-eMMc2MAG3tXLQw36x0ho+ba_Uw@mail.gmail.com>
+Subject: Re: [PATCHv1] arm: dts: meson: Fix the pwm regulator supply property
+ in node
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        devicetree <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Martin,
 
-Please pull from the tag
+Thanks for your review comments.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.14-rc1
+On Tue, 29 Jun 2021 at 21:31, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Tue, Jun 29, 2021 at 2:15 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> >
+> > On enable CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
+> I (as non-native english speaker) suggest rewording this to:
+> After enabling CONFIG_REGULATOR_DEBUG=y we observe below debug logs.
+>
+Opps: I will fix this in the next version.
 
-with top-most commit 22b65d31ad9d10cdd726239966b6d6f67db8f251
+> > Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
+> > instead of dummy regulator.
+> >
+> > [    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
+> > [    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
+> > [    7.117184] VCCK: supplied by regulator-dummy
+> > [    7.117194] regulator-dummy: could not add device link regulator.8: -ENOENT
+> > [    7.117266] VCCK: 860 <--> 1140 mV at 986 mV, enabled
+> > [    7.118498] VDDEE: will resolve supply early: pwm
+> > [    7.118515] pwm-regulator regulator-vddee: Looking up pwm-supply from device tree
+> > [    7.118526] pwm-regulator regulator-vddee: Looking up pwm-supply property in node /regulator-vddee failed
+> > [    7.118553] VDDEE: supplied by regulator-dummy
+> > [    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
+> excellent catch, thanks for sending a patch!
+>
+> > Fixes: 524d96083b66 ("ARM: dts: meson8b: odroidc1: add the CPU voltage regulator")
+> > Fixes: 8bdf38be712d ("ARM: dts: meson8b: odroidc1: add the VDDEE regulator")
+> >
+> > Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>
+Thanks
 
- Merge branches 'pm-domains' and 'pm-devfreq'
+> For the subject:
+> - patches for 32-bit ARM should start with upper-case ARM
+> - personally I also include the board name so the git history is easier to read
+>
+> My suggestion for the subject line is:
+> ARM: dts: meson8b: odroidc1: Fix the pwm regulator supply properties
+>
+Ok I will try to incorporate your suggestion in the next version.
 
-on top of commit 4d6035f9bf4ea12776322746a216e856dfe46698
+> Are you also planning to send patches for the following 32-bit SoC boards?
+> - arch/arm/boot/dts/meson8b-mxq.dts
+> - arch/arm/boot/dts/meson8b-ec100.dts
+>
+Ok I will try to send all updates in the next series.
 
- Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
-
-to receive power management updates for 5.14-rc1.
-
-These add hybrid processors support to the intel_pstate driver
-and make it work with more processor models when HWP is disabled,
-make the intel_idle driver use special C6 idle state paremeters
-when package C-states are disabled, add cooling support to the
-tegra30 devfreq driver, rework the TEO (timer events oriented)
-cpuidle governor, extend the OPP (operating performance points)
-framework to use the required-opps DT property in more cases, fix
-some issues and clean up a number of assorted pieces of code.
-
-Specifics:
-
- - Make intel_pstate support hybrid processors using abstract
-   performance units in the HWP interface (Rafael Wysocki).
-
- - Add Icelake servers and Cometlake support in no-HWP mode to
-   intel_pstate (Giovanni Gherdovich).
-
- - Make cpufreq_online() error path be consistent with the CPU
-   device removal path in cpufreq (Rafael Wysocki).
-
- - Clean up 3 cpufreq drivers and the statistics code (Hailong Liu,
-   Randy Dunlap, Shaokun Zhang).
-
- - Make intel_idle use special idle state parameters for C6 when
-   package C-states are disabled (Chen Yu).
-
- - Rework the TEO (timer events oriented) cpuidle governor to address
-   some theoretical shortcomings in it (Rafael Wysocki).
-
- - Drop unneeded semicolon from the TEO governor (Wan Jiabing).
-
- - Modify the runtime PM framework to accept unassigned suspend
-   and resume callback pointers (Ulf Hansson).
-
- - Improve pm_runtime_get_sync() documentation (Krzysztof Kozlowski).
-
- - Improve device performance states support in the generic power
-   domains (genpd) framework (Ulf Hansson).
-
- - Fix some documentation issues in genpd (Yang Yingliang).
-
- - Make the operating performance points (OPP) framework use the
-   required-opps DT property in use cases that are not related to
-   genpd (Hsin-Yi Wang).
-
- - Make lazy_link_required_opp_table() use list_del_init instead of
-   list_del/INIT_LIST_HEAD (Yang Yingliang).
-
- - Simplify wake IRQs handling in the core system-wide sleep support
-   code and clean up some coding style inconsistencies in it (Tian
-   Tao, Zhen Lei).
-
- - Add cooling support to the tegra30 devfreq driver and improve its
-   DT bindings (Dmitry Osipenko).
-
- - Fix some assorted issues in the devfreq core and drivers (Chanwoo
-   Choi, Dong Aisheng, YueHaibing).
-
-Thanks!
-
-
----------------
-
-Chanwoo Choi (1):
-      PM / devfreq: passive: Fix get_target_freq when not using required-opp
-
-Chen Yu (1):
-      intel_idle: Adjust the SKX C6 parameters if PC6 is disabled
-
-Dmitry Osipenko (3):
-      PM / devfreq: tegra30: Support thermal cooling
-      dt-bindings: devfreq: tegra30-actmon: Convert to schema
-      dt-bindings: devfreq: tegra30-actmon: Add cooling-cells
-
-Dong Aisheng (2):
-      PM / devfreq: imx-bus: Remove imx_bus_get_dev_status
-      PM / devfreq: imx8m-ddrc: Remove DEVFREQ_GOV_SIMPLE_ONDEMAND dependency
-
-Giovanni Gherdovich (2):
-      cpufreq: intel_pstate: Add Icelake servers support in no-HWP mode
-      cpufreq: intel_pstate: Add Cometlake support in no-HWP mode
-
-Hailong Liu (2):
-      cpufreq: sh: Remove unused linux/sched.h headers
-      cpufreq: loongson2: Remove unused linux/sched.h headers
-
-Hsin-Yi Wang (1):
-      opp: Allow required-opps to be used for non genpd use cases
-
-Krzysztof Kozlowski (1):
-      PM: runtime: document common mistake with pm_runtime_get_sync()
-
-Rafael J. Wysocki (9):
-      cpufreq: intel_pstate: hybrid: Avoid exposing two global attributes
-      cpufreq: intel_pstate: hybrid: CPU-specific scaling factor
-      cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI unset
-      cpuidle: teo: Cosmetic modifications of teo_update()
-      cpuidle: teo: Cosmetic modification of teo_select()
-      cpuidle: teo: Change the main idle state selection logic
-      cpuidle: teo: Rework most recent idle duration values treatment
-      cpuidle: teo: Use kerneldoc documentation in admin-guide
-      cpufreq: Make cpufreq_online() call driver->offline() on errors
-
-Randy Dunlap (1):
-      cpufreq: sc520_freq: add 'fallthrough' to one case
-
-Shaokun Zhang (1):
-      cpufreq: stats: Clean up local variable in cpufreq_stats_create_table()
-
-Tian Tao (1):
-      PM: wakeirq: Set IRQF_NO_AUTOEN when requesting the IRQ
-
-Ulf Hansson (6):
-      PM: domains: Split code in dev_pm_genpd_set_performance_state()
-      PM: domains: Return early if perf state is already set for the device
-      PM: domains: Drop/restore performance state votes for devices at
-runtime PM
-      PM: runtime: Improve path in rpm_idle() when no callback
-      PM: runtime: Allow unassigned ->runtime_suspend|resume callbacks
-      PM: runtime: Clarify documentation when callbacks are unassigned
-
-Wan Jiabing (1):
-      cpuidle: teo: remove unneeded semicolon in teo_select()
-
-Yang Yingliang (2):
-      opp: use list_del_init instead of list_del/INIT_LIST_HEAD
-      PM: domains: fix some kernel-doc issues
-
-YueHaibing (2):
-      PM / devfreq: Add missing error code in devfreq_add_device()
-      PM / devfreq: userspace: Use DEVICE_ATTR_RW macro
-
-Zhen Lei (3):
-      PM: hibernate: fix spelling mistakes
-      PM: sleep: remove trailing spaces and tabs
-      PM: hibernate: remove leading spaces before tabs
-
----------------
-
- Documentation/admin-guide/pm/cpuidle.rst           |  77 +---
- Documentation/admin-guide/pm/intel_pstate.rst      |   6 +
- .../bindings/arm/tegra/nvidia,tegra30-actmon.txt   |  57 ---
- .../bindings/devfreq/nvidia,tegra30-actmon.yaml    | 126 ++++++
- Documentation/power/runtime_pm.rst                 |  15 +-
- drivers/base/power/domain.c                        |  64 ++-
- drivers/base/power/domain_governor.c               |   1 +
- drivers/base/power/runtime.c                       |  18 +-
- drivers/base/power/wakeirq.c                       |   4 +-
- drivers/cpufreq/cpufreq.c                          |  11 +-
- drivers/cpufreq/cpufreq_stats.c                    |   5 +-
- drivers/cpufreq/intel_pstate.c                     | 263 ++++++++++--
- drivers/cpufreq/loongson2_cpufreq.c                |   1 -
- drivers/cpufreq/sc520_freq.c                       |   1 +
- drivers/cpufreq/sh-cpufreq.c                       |   1 -
- drivers/cpuidle/governors/teo.c                    | 476 +++++++++++----------
- drivers/devfreq/Kconfig                            |   1 -
- drivers/devfreq/devfreq.c                          |   1 +
- drivers/devfreq/governor_passive.c                 |   3 +-
- drivers/devfreq/governor_userspace.c               |  10 +-
- drivers/devfreq/imx-bus.c                          |  14 -
- drivers/devfreq/tegra30-devfreq.c                  |   1 +
- drivers/idle/intel_idle.c                          |  33 ++
- drivers/opp/core.c                                 |  10 +
- drivers/opp/of.c                                   |  27 +-
- include/linux/pm_domain.h                          |   1 +
- include/linux/pm_runtime.h                         |   3 +
- kernel/power/Kconfig                               |  12 +-
- kernel/power/process.c                             |   2 +-
- kernel/power/snapshot.c                            |  10 +-
- kernel/power/swap.c                                |   2 +-
- 31 files changed, 775 insertions(+), 481 deletions(-)
+>
+> Best regards,
+> Martin
