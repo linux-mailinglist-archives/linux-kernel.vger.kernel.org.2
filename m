@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349B23B6BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBCE3B6BCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 02:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhF2Ak6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 20:40:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhF2Ak5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 20:40:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DE9061CDC;
-        Tue, 29 Jun 2021 00:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624927110;
-        bh=WZivHehj0fn2zKFGoJRQXv8BLeKMtv+80LunaiEbIWE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=J1YEvvYJz8zqaFhsLjQqpLSF32fSg8EVWaPWDmNeDM59GEdo2i/8BDcz9EpIFVSCo
-         3yvEZc1PA3yJF+uTYog0vVSprT51/Q07l2wkuhnh3WaFGQoR1nHd980Jz+O7EYZPwq
-         QeurrrGQPohqwS8DaCgRZT6R+g8O/slmEq4popLssCB3q/VGC9B1C6lQLyXIY1IayC
-         4MSXCiS2RRAV/kW4sr2eJXv+IycAui1dukFIBfTh9HbJ0WnlioejbQNfIU/iiwFZpD
-         fnWoD7SLZ4z/gyfw3PH4wTebBOJmXO1q9gsWqNMBiI0FySzwSMpOv4+ZFr8ULcs65z
-         S9ujiOiO3McFA==
-Date:   Mon, 28 Jun 2021 19:38:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-Message-ID: <20210629003829.GA3978248@bjorn-Precision-5520>
+        id S232058AbhF2Ame (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 20:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhF2Amc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Jun 2021 20:42:32 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019FFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:40:05 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so20893754ota.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+6u2RG+sSlQSg+vc0Yj3ZZoGIOveJe7hDDIdJuTdPGM=;
+        b=V7kB/DTMK3LIspUUD1BmuRSiNMAFWbl/cBxbK8vYtvWpknYr2jZxiezDpkU72ZqF5k
+         O1Ecv5duSmcx8T4oheVkiSi8ooNi05+LnksmjSpCHyeIto8ZLMa9DMdGce/6/FuVU8y7
+         mEJIHhOLgSpkJWf8M6qgELcafcQUnrPK/nzSLlq4LN5D/Sb9ivmP6B8+ZKrXqJ01QP12
+         4ZLPo+Xbbw/bdcd99VLGQuWL/PpHXc8aMa7Jg4gqB+FP9YfT8kquduBkSsFGnTuNwC8z
+         erocY2F9DV9i3QnpXfCC5aCtVc3ZdhlLw8xCCUxahG4grVseNIjApmrsnWysZzUNJaEL
+         C7Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+6u2RG+sSlQSg+vc0Yj3ZZoGIOveJe7hDDIdJuTdPGM=;
+        b=VF2jMjiWvcpyn2oWaufRLUu4MI/Z7BeTTR0jKG1EdoP+vJT5ZmATvxOMvYqzON/MWe
+         u0nSwGjplVDeZRxHsZ3A9M8iMxpStlChrShWrA390wuBIC/a120YonpPfiz89eGjI8DV
+         S2pVn7xA2VDHXOrGQ82h/Q8+0tGGLrSZ95n7itC4hzHtTuvLM+TBjpIZktrp7VBEi6Fd
+         fBcXCuTK+dHwpVkfqfR0p9ROqeLQE2eCoK6TRrwN3dZjZda/Oi1lc/mI/JUucKyYnki/
+         oY5hprQ2PsDfxO+5r2Dbao25Pe8Ihp5tm2NHiy3TAZJox0Ewyk6ST6r8rkw3C5GKyPY9
+         7vAA==
+X-Gm-Message-State: AOAM531jCGcOcXU8MDan4+htBYU4simgGF7CIVNyvztvPC25cZmA3AWQ
+        A0Q3q9tMVKXGMTyjCujV85XDyw==
+X-Google-Smtp-Source: ABdhPJxspl+N2dD5PBNJ3IIY9QGvG1iX57PP0YC/Ke4tIoOF5jmqOC0AlSIrVBSZ5i/lB7SrqYu6uw==
+X-Received: by 2002:a9d:68d1:: with SMTP id i17mr1990775oto.227.1624927204360;
+        Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a7sm1860832oia.42.2021.06.28.17.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 17:40:04 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom: spmi-gpio: Add pmc8180 & pmc8180c
+Date:   Mon, 28 Jun 2021 17:38:51 -0700
+Message-Id: <20210629003851.1787673-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624224040.GA3567297@bjorn-Precision-5520>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
-> [+cc Michal, Ley Foon, Jingoo, Thierry, Jonathan]
-> 
-> On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
-> > IRQ handlers that are registered for shared interrupts can be called at
-> > any time after have been registered using the request_irq() function.
-> > 
-> > It's up to drivers to ensure that's always safe for these to be called.
-> > 
-> > Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
-> > their handlers are registered very early in the probe function, an error
-> > later can lead to these handlers being executed before all the required
-> > resources have been properly setup.
-> > 
-> > For example, the rockchip_pcie_read() function used by these IRQ handlers
-> > expects that some PCIe clocks will already be enabled, otherwise trying
-> > to access the PCIe registers causes the read to hang and never return.
-> > 
-> > The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
-> > shared interrupt handlers being called, by generating a spurious interrupt
-> > just before a shared interrupt handler is unregistered.
-> > 
-> > But this means that if the option is enabled, any error in the probe path
-> > of this driver could lead to one of the IRQ handlers to be executed.
-> 
-> I'm not an IRQ expert, but I think this is an issue regardless of
-> CONFIG_DEBUG_SHIRQ, isn't it?  Anything used by an IRQ handler should
-> be initialized before the handler is registered.  CONFIG_DEBUG_SHIRQ
-> is just a way to help find latent problems.
-> 
-> > In a rockpro64 board, the following sequence of events happens:
-> > 
-> >   1) "pcie-sys" IRQ is requested and its handler registered.
-> >   2) "pcie-client" IRQ is requested and its handler registered.
-> >   3) probe later fails due readl_poll_timeout() returning a timeout.
-> >   4) the "pcie-sys" IRQ is unregistered.
-> >   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
-> >   6) "pcie-client" IRQ handler is called for this spurious interrupt.
-> >   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
-> >   8) the machine hangs because rockchip_pcie_read() call never returns.
-> > 
-> > To avoid cases like this, the handlers don't have to be registered until
-> > very late in the probe function, once all the resources have been setup.
-> > 
-> > So let's just move all the IRQ init before the pci_host_probe() call, that
-> > will prevent issues like this and seems to be the correct thing to do too.
-> 
-> Previously we registered rockchip_pcie_subsys_irq_handler() and
-> rockchip_pcie_client_irq_handler() before the PCIe clocks were
-> enabled.  That's a problem because they depend on those clocks being
-> enabled, and your patch fixes that.
-> 
-> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
-> which isn't initialized until rockchip_pcie_init_irq_domain().
-> Previously we registered rockchip_pcie_legacy_int_handler() as the
-> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
-> 
-> I think your patch *also* fixes that problem, right?
+The SC8180x platform comes with PMC8180 and PMC8180c, add support for
+the GPIO controller in these PMICs.
 
-The lack of consistency in how we use
-irq_set_chained_handler_and_data() really bugs me.
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 4 ++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c                     | 2 ++
+ 2 files changed, 6 insertions(+)
 
-Your patch fixes the ordering issue where we installed
-rockchip_pcie_legacy_int_handler() before initializing data
-(rockchip->irq_domain) that it depends on.
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+index 161216daf463..412613c80e9e 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+@@ -30,6 +30,8 @@ PMIC's from Qualcomm.
+ 		    "qcom,pm8350-gpio"
+ 		    "qcom,pm8350b-gpio"
+ 		    "qcom,pm8350c-gpio"
++		    "qcom,pmc8180-gpio"
++		    "qcom,pmc8180c-gpio"
+ 		    "qcom,pmk8350-gpio"
+ 		    "qcom,pm7325-gpio"
+ 		    "qcom,pmr735a-gpio"
+@@ -120,6 +122,8 @@ to specify in a pin configuration subnode:
+ 		    gpio1-gpio10 for pm8350
+ 		    gpio1-gpio8 for pm8350b
+ 		    gpio1-gpio9 for pm8350c
++		    gpio1-gpio10 for pmc8180
++		    gpio1-gpio12 for pmc8180c
+ 		    gpio1-gpio4 for pmk8350
+ 		    gpio1-gpio10 for pm7325
+ 		    gpio1-gpio4 for pmr735a
+diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+index a89d24a040af..9251fb5153e7 100644
+--- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
++++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+@@ -1123,10 +1123,12 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+ 	{ .compatible = "qcom,pm660l-gpio", .data = (void *) 12 },
+ 	/* pm8150 has 10 GPIOs with holes on 2, 5, 7 and 8 */
+ 	{ .compatible = "qcom,pm8150-gpio", .data = (void *) 10 },
++	{ .compatible = "qcom,pmc8180-gpio", .data = (void *) 10 },
+ 	/* pm8150b has 12 GPIOs with holes on 3, r and 7 */
+ 	{ .compatible = "qcom,pm8150b-gpio", .data = (void *) 12 },
+ 	/* pm8150l has 12 GPIOs with holes on 7 */
+ 	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
++	{ .compatible = "qcom,pmc8180c-gpio", .data = (void *) 12 },
+ 	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+ 	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+ 	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+-- 
+2.29.2
 
-But AFAICT, rockchip still has the problem that we don't *unregister*
-rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
-removed.  Doesn't this mean that if we unload the module, then receive 
-an interrupt from the device, we'll try to call a function that is no
-longer present?
-
-> > diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
-> > index f1d08a1b159..78d04ac29cd 100644
-> > --- a/drivers/pci/controller/pcie-rockchip-host.c
-> > +++ b/drivers/pci/controller/pcie-rockchip-host.c
-> > @@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
-> >  	if (err)
-> >  		return err;
-> >  
-> > -	err = rockchip_pcie_setup_irq(rockchip);
-> > -	if (err)
-> > -		return err;
-> > -
-> >  	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
-> >  	if (IS_ERR(rockchip->vpcie12v)) {
-> >  		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
-> > @@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
-> >  	if (err)
-> >  		goto err_vpcie;
-> >  
-> > -	rockchip_pcie_enable_interrupts(rockchip);
-> > -
-> >  	err = rockchip_pcie_init_irq_domain(rockchip);
-> >  	if (err < 0)
-> >  		goto err_deinit_port;
-> > @@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
-> >  	bridge->sysdata = rockchip;
-> >  	bridge->ops = &rockchip_pcie_ops;
-> >  
-> > +	err = rockchip_pcie_setup_irq(rockchip);
-> > +	if (err)
-> > +		goto err_remove_irq_domain;
-> > +
-> > +	rockchip_pcie_enable_interrupts(rockchip);
-> > +
-> >  	err = pci_host_probe(bridge);
-> >  	if (err < 0)
-> >  		goto err_remove_irq_domain;
-> > -- 
-> > 2.31.1
-> > 
