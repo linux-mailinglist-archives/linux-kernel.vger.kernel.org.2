@@ -2,147 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4685D3B781A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75B63B781F
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhF2S7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233442AbhF2S7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D459F61D88;
-        Tue, 29 Jun 2021 18:57:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624993026;
-        bh=YKPMrz8p6USeylnOi301yNp22irRAZI4DHFiTuYtmxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NW4b0SYZpQGkloKcXNL7KdRv4iTODkVZXYL99OWvgyoYJ+zOL/yN9r/0oZh8U1rM4
-         +5I9IJDpzg6eF71hS1DXLC9lzAvUPtULGQNSiZZbpAULDlbxuam0Xf4SxykYqVqFIF
-         CD3kXPLSWL3P+Jel2gu9tBezAjKk4xni9wNuq2pJtZM5+T1YFuslcJvJ79O2D80xUE
-         ITLV9eGk6QUEw+b8V0VRGMMEAukAXrreNNKaT32R2U9o82hEXeFKSaQkL5w529Sdgr
-         C667kSsyX81lxXftRBG2DOkQU/Pis3KlwTdiU/841XhtkoEevTFLUAQljag/KIdqkX
-         jmw0b/z81BOLQ==
-Date:   Tue, 29 Jun 2021 19:56:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
- regulator
-Message-ID: <20210629185638.GG4613@sirena.org.uk>
-Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        kernel@pyra-handheld.com, Peter Ujfalusi <peter.ujfalusi@gmail.com>
-References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
- <20210629155922.GD4613@sirena.org.uk>
- <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
+        id S235325AbhF2TBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 15:01:12 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:38865 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232416AbhF2TBK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 15:01:10 -0400
+Received: by mail-ot1-f52.google.com with SMTP id a5-20020a05683012c5b029046700014863so6933889otq.5;
+        Tue, 29 Jun 2021 11:58:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=0CoFhyprg0SMvOyQS94tuYmUx7xloDVzGT6KX0wc08w=;
+        b=byEHm/U6ypI7SPTj6INCiyWw5iddS8j4ihe5qa5UhXYGWhiqypPV+Oe46Q7B8M3D7w
+         /3hZxvTfZyeFDJs+dg6dtQa8fya61PpMGtE1T6dkVGTeHAaqgt2vBhuUJCFAN+E5FTUC
+         QlpjBdCUQXpmlW84l4sWhain1GVd+eF2FPB2tQa/GeYBuipsvGZEUm89AePNDlpYjykj
+         kFTWUtskKMDmTkk0AnMefgRJKD3HPQTZD2TT7qLyDL5z1a1TpBE742x285oRv91EOn44
+         iz5klP24eLiINyab4urFERusCgVp/tZWXimt6ZPN/B2FwF/wvJ8wP4EC2q3kYoHGlPg9
+         M3DA==
+X-Gm-Message-State: AOAM532uaO+aKg9mZd8xrNNqLYS2KKUkChULwf3yJc6zmtg9vl3hijmP
+        K533XetfYNZRZp3tHBhFR0W6uzevkOMC1fsS+Ash9H6AJ0Q=
+X-Google-Smtp-Source: ABdhPJxkb1twkcvyJ3PCBO5pKtjfkffDGUbto1NL5Fae9XwuLs03F8xkc3984XiTVrQ58KLUhdkqoQvITanx9836Das=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr6081928otb.206.1624993121973;
+ Tue, 29 Jun 2021 11:58:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FwyhczKCDPOVeYh6"
-Content-Disposition: inline
-In-Reply-To: <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
-X-Cookie: Use extra care when cleaning on stairs.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 29 Jun 2021 20:58:30 +0200
+Message-ID: <CAJZ5v0i+RhTN4LYqG0X5oUg8e2gs1AbwHP__PSvCRoFT48P7Ug@mail.gmail.com>
+Subject: [GIT PULL] Power management updates for v5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---FwyhczKCDPOVeYh6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please pull from the tag
 
-On Tue, Jun 29, 2021 at 08:34:55PM +0200, H. Nikolaus Schaller wrote:
-> > Am 29.06.2021 um 17:59 schrieb Mark Brown <broonie@kernel.org>:
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.14-rc1
 
-> > What is that rule and how is this patch intended to ensure that Palmas
-> > meets it?
-> >  As covered in submitting-patches.rst your changelog should
-> > explain this so that in review we can verify that this is a good fix.
+with top-most commit 22b65d31ad9d10cdd726239966b6d6f67db8f251
 
-> I am very sorry, but I simply believed that it is not necessary to copy&p=
-aste or
-> describe this because it appears not to be difficult to retrieve.
+ Merge branches 'pm-domains' and 'pm-devfreq'
 
-So, I did actually look at the commit but I couldn't figure out what the
-change was supposed to do about it.
+on top of commit 4d6035f9bf4ea12776322746a216e856dfe46698
 
-> This rule (rdev->supply_name && !rdev->supply) did not exist before 98e48=
-cd9283d
-> and it seems to return early with EPROBE_DEFER if there is a desc->supply=
-_name defined,
-> but no supply resolved.
+ Revert "PCI: PM: Do not read power state in pci_enable_device_flags()"
 
-> The Palmas driver is setting desc->supply_name to some string constant (i=
-=2Ee. not NULL)
-> and is then calling devm_regulator_register().
+to receive power management updates for 5.14-rc1.
 
-Right, this is how a regualtor driver should specify the name of its
-supply.
+These add hybrid processors support to the intel_pstate driver
+and make it work with more processor models when HWP is disabled,
+make the intel_idle driver use special C6 idle state paremeters
+when package C-states are disabled, add cooling support to the
+tegra30 devfreq driver, rework the TEO (timer events oriented)
+cpuidle governor, extend the OPP (operating performance points)
+framework to use the required-opps DT property in more cases, fix
+some issues and clean up a number of assorted pieces of code.
 
-> So it was working fine without having the supplying regulator resolved. A=
-FAIK they
-> just serve as fixed regulators in the device tree and have no physical eq=
-uivalent.
+Specifics:
 
-No, not at all - it's representing whatever provides input power to the
-regulator.  There may be no physical control of it at runtime on your
-system but that may not be true on other systems.  It's quite common for
-there to be a chain of regulators (eg, DCDCs supplying LDOs) and then
-they all need to get get power managed appropriately and you don't end
-up thinking a regulator is enabled when the input regulator is disabled. =
-=20
+ - Make intel_pstate support hybrid processors using abstract
+   performance units in the HWP interface (Rafael Wysocki).
 
-> My proposal just moves setting the supply_name behind devm_regulator_regi=
-ster() and
-> by that restores the old behaviour.
+ - Add Icelake servers and Cometlake support in no-HWP mode to
+   intel_pstate (Giovanni Gherdovich).
 
-This means that we won't actually map the supply and any system that
-relies on software handling the supply regulator will be broken.
+ - Make cpufreq_online() error path be consistent with the CPU
+   device removal path in cpufreq (Rafael Wysocki).
 
-> Well, unless...
+ - Clean up 3 cpufreq drivers and the statistics code (Hailong Liu,
+   Randy Dunlap, Shaokun Zhang).
 
-> ... devm_regulator_register() does something differently if desc->supply_=
-name
-> is not set before and changed afterwards. It may miss that change.
+ - Make intel_idle use special idle state parameters for C6 when
+   package C-states are disabled (Chen Yu).
 
-We resolve supplies during regulator registration, this would
-effectively just skip mapping of the supply.
+ - Rework the TEO (timer events oriented) cpuidle governor to address
+   some theoretical shortcomings in it (Rafael Wysocki).
 
-> So I hope for guidance if my approach is good or needs a different soluti=
-on.
+ - Drop unneeded semicolon from the TEO governor (Wan Jiabing).
 
-What I would expect to happen here would be that once vsys_cobra is
-registered the regulators supplied by it can register and then all their
-consumers would in turn be able to register.  You should look into why
-that supply regulator isn't appearing and resolve that, or if a consumer
-isn't handling deferral then that would need to be addressed.
+ - Modify the runtime PM framework to accept unassigned suspend
+   and resume callback pointers (Ulf Hansson).
 
---FwyhczKCDPOVeYh6
-Content-Type: application/pgp-signature; name="signature.asc"
+ - Improve pm_runtime_get_sync() documentation (Krzysztof Kozlowski).
 
------BEGIN PGP SIGNATURE-----
+ - Improve device performance states support in the generic power
+   domains (genpd) framework (Ulf Hansson).
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDbbOUACgkQJNaLcl1U
-h9CIWAf9E4Bei/0k3rpQf3FzxtGt6MF+K/BdH10fr68RNNk8EORb289fVbxbLkDe
-7aXMwq6c/zZ5w7ulUbe5nMlwOgJvY6/n1wizYCOTfa2NlZVgQmaHAXk4PDif+Rui
-EVsY5bM4Y3gIrEHA9M7Sa5VY9g0D8EHhPUDD0xZCXQPyCba7kPzFc+G7O4GM0XUl
-xFJ9xhGBklF6Jus09YNcZCPrHzRseTlRjUOAaRqNd7xFEOZENfdbd8fKgSp9xIIM
-RRguU01SBzokl6wVcd/7hUUqBOvZUhc5kYnHeYpca7iW4dlKebeRq73UISbBNnxa
-vsl7g1WsQkAI4Jw0bA2VRigON5nG5w==
-=oX/V
------END PGP SIGNATURE-----
+ - Fix some documentation issues in genpd (Yang Yingliang).
 
---FwyhczKCDPOVeYh6--
+ - Make the operating performance points (OPP) framework use the
+   required-opps DT property in use cases that are not related to
+   genpd (Hsin-Yi Wang).
+
+ - Make lazy_link_required_opp_table() use list_del_init instead of
+   list_del/INIT_LIST_HEAD (Yang Yingliang).
+
+ - Simplify wake IRQs handling in the core system-wide sleep support
+   code and clean up some coding style inconsistencies in it (Tian
+   Tao, Zhen Lei).
+
+ - Add cooling support to the tegra30 devfreq driver and improve its
+   DT bindings (Dmitry Osipenko).
+
+ - Fix some assorted issues in the devfreq core and drivers (Chanwoo
+   Choi, Dong Aisheng, YueHaibing).
+
+Thanks!
+
+
+---------------
+
+Chanwoo Choi (1):
+      PM / devfreq: passive: Fix get_target_freq when not using required-opp
+
+Chen Yu (1):
+      intel_idle: Adjust the SKX C6 parameters if PC6 is disabled
+
+Dmitry Osipenko (3):
+      PM / devfreq: tegra30: Support thermal cooling
+      dt-bindings: devfreq: tegra30-actmon: Convert to schema
+      dt-bindings: devfreq: tegra30-actmon: Add cooling-cells
+
+Dong Aisheng (2):
+      PM / devfreq: imx-bus: Remove imx_bus_get_dev_status
+      PM / devfreq: imx8m-ddrc: Remove DEVFREQ_GOV_SIMPLE_ONDEMAND dependency
+
+Giovanni Gherdovich (2):
+      cpufreq: intel_pstate: Add Icelake servers support in no-HWP mode
+      cpufreq: intel_pstate: Add Cometlake support in no-HWP mode
+
+Hailong Liu (2):
+      cpufreq: sh: Remove unused linux/sched.h headers
+      cpufreq: loongson2: Remove unused linux/sched.h headers
+
+Hsin-Yi Wang (1):
+      opp: Allow required-opps to be used for non genpd use cases
+
+Krzysztof Kozlowski (1):
+      PM: runtime: document common mistake with pm_runtime_get_sync()
+
+Rafael J. Wysocki (9):
+      cpufreq: intel_pstate: hybrid: Avoid exposing two global attributes
+      cpufreq: intel_pstate: hybrid: CPU-specific scaling factor
+      cpufreq: intel_pstate: hybrid: Fix build with CONFIG_ACPI unset
+      cpuidle: teo: Cosmetic modifications of teo_update()
+      cpuidle: teo: Cosmetic modification of teo_select()
+      cpuidle: teo: Change the main idle state selection logic
+      cpuidle: teo: Rework most recent idle duration values treatment
+      cpuidle: teo: Use kerneldoc documentation in admin-guide
+      cpufreq: Make cpufreq_online() call driver->offline() on errors
+
+Randy Dunlap (1):
+      cpufreq: sc520_freq: add 'fallthrough' to one case
+
+Shaokun Zhang (1):
+      cpufreq: stats: Clean up local variable in cpufreq_stats_create_table()
+
+Tian Tao (1):
+      PM: wakeirq: Set IRQF_NO_AUTOEN when requesting the IRQ
+
+Ulf Hansson (6):
+      PM: domains: Split code in dev_pm_genpd_set_performance_state()
+      PM: domains: Return early if perf state is already set for the device
+      PM: domains: Drop/restore performance state votes for devices at
+runtime PM
+      PM: runtime: Improve path in rpm_idle() when no callback
+      PM: runtime: Allow unassigned ->runtime_suspend|resume callbacks
+      PM: runtime: Clarify documentation when callbacks are unassigned
+
+Wan Jiabing (1):
+      cpuidle: teo: remove unneeded semicolon in teo_select()
+
+Yang Yingliang (2):
+      opp: use list_del_init instead of list_del/INIT_LIST_HEAD
+      PM: domains: fix some kernel-doc issues
+
+YueHaibing (2):
+      PM / devfreq: Add missing error code in devfreq_add_device()
+      PM / devfreq: userspace: Use DEVICE_ATTR_RW macro
+
+Zhen Lei (3):
+      PM: hibernate: fix spelling mistakes
+      PM: sleep: remove trailing spaces and tabs
+      PM: hibernate: remove leading spaces before tabs
+
+---------------
+
+ Documentation/admin-guide/pm/cpuidle.rst           |  77 +---
+ Documentation/admin-guide/pm/intel_pstate.rst      |   6 +
+ .../bindings/arm/tegra/nvidia,tegra30-actmon.txt   |  57 ---
+ .../bindings/devfreq/nvidia,tegra30-actmon.yaml    | 126 ++++++
+ Documentation/power/runtime_pm.rst                 |  15 +-
+ drivers/base/power/domain.c                        |  64 ++-
+ drivers/base/power/domain_governor.c               |   1 +
+ drivers/base/power/runtime.c                       |  18 +-
+ drivers/base/power/wakeirq.c                       |   4 +-
+ drivers/cpufreq/cpufreq.c                          |  11 +-
+ drivers/cpufreq/cpufreq_stats.c                    |   5 +-
+ drivers/cpufreq/intel_pstate.c                     | 263 ++++++++++--
+ drivers/cpufreq/loongson2_cpufreq.c                |   1 -
+ drivers/cpufreq/sc520_freq.c                       |   1 +
+ drivers/cpufreq/sh-cpufreq.c                       |   1 -
+ drivers/cpuidle/governors/teo.c                    | 476 +++++++++++----------
+ drivers/devfreq/Kconfig                            |   1 -
+ drivers/devfreq/devfreq.c                          |   1 +
+ drivers/devfreq/governor_passive.c                 |   3 +-
+ drivers/devfreq/governor_userspace.c               |  10 +-
+ drivers/devfreq/imx-bus.c                          |  14 -
+ drivers/devfreq/tegra30-devfreq.c                  |   1 +
+ drivers/idle/intel_idle.c                          |  33 ++
+ drivers/opp/core.c                                 |  10 +
+ drivers/opp/of.c                                   |  27 +-
+ include/linux/pm_domain.h                          |   1 +
+ include/linux/pm_runtime.h                         |   3 +
+ kernel/power/Kconfig                               |  12 +-
+ kernel/power/process.c                             |   2 +-
+ kernel/power/snapshot.c                            |  10 +-
+ kernel/power/swap.c                                |   2 +-
+ 31 files changed, 775 insertions(+), 481 deletions(-)
