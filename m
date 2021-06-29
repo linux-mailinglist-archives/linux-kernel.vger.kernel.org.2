@@ -2,552 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111383B7494
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C608B3B749D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbhF2Oqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:46:44 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:39225 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234315AbhF2Oql (ORCPT
+        id S234552AbhF2Osg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232790AbhF2Ose (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:46:41 -0400
-Received: from orion.localdomain ([95.114.16.105]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MXGzQ-1ljQKd3L9K-00YkZa; Tue, 29 Jun 2021 16:44:01 +0200
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, info@metux.net, keescook@chromium.org,
-        anton@enomsg.org, ccross@android.com, tony.luck@intel.com,
-        linux-fsdevel@vger.kernel.org
-Subject: [RFC PATCH 2/2] fs: srvfs: new pseudo-fs for publishing opened fd's in the filesystem
-Date:   Tue, 29 Jun 2021 16:43:41 +0200
-Message-Id: <20210629144341.14313-3-info@metux.net>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210629144341.14313-1-info@metux.net>
-References: <20210629144341.14313-1-info@metux.net>
+        Tue, 29 Jun 2021 10:48:34 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0F1C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:46:07 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id bc18-20020a0568201692b029024c6dbc2073so2663700oob.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W2Ntt0LT4z/1elLySVWMmlMXipsIpCl6r1V3lH3DwEE=;
+        b=EGeSkS7JW6EtUMDXLA6LoUTd4e7U32ADZX6Y27+Hrm66f0S58vWf/N1ztWMSPRRS3H
+         33jFMo7nq5GUQoz0kojUxM6JtTngYeG+Ni9DY5IcWIX0F0jwvfZJiWkNvbY1CZR/Ncpf
+         Xy179mvbppePNBKx4BUPycvQaaewZ/nOO+VF+/492iI4rdTtAxknFKCOJnjpDnIezAsX
+         zolRBUqdfOSy2nQJm+lqFHFabChODfct7fYoAucnkm42vDGaOGtEODELZ8TZv/d7cmlA
+         6DPqzVLPQO+KUMh2ZrvTxVBAFLFhQ5/y87GbvebTLrt62/GhZu3iE2OT0NMM/sNGjvOg
+         fhsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W2Ntt0LT4z/1elLySVWMmlMXipsIpCl6r1V3lH3DwEE=;
+        b=KLsaZRP3QFk671UXQE/xRCB3eH21XPYeCj9SqPA2eAAmkkNB4RatY6qFud6rUMnEgk
+         4bZZMmwfILt8azXYHMzZIP3qQaL5OQVLdquO1d96312a2ihEodfTJdJddf+O6A1lor3r
+         Uw8NRtoZPBtDbTVHNjNOaPSbtqx4oEKsMxXULyhc9cqbYz7RnuaxJrMaA4zoI1o9FewB
+         n6m+dC17kqSuQcRx5X0AOxRfc1zpf4Q/ZTjehFoIgUx9kN0S5HCEi2lRY2e5g3EZd0Nv
+         QSfftnuZWLUwdKl3bcmq0yK/0WL4DFGLPAwSn8+m14xBGq25b5H/HYQv6q2gTBhakDij
+         HJ+Q==
+X-Gm-Message-State: AOAM532Z+mmnq2bwHxSnOywomK+ul9RUgxG4dAxLqsxGmE07r9XxYV2x
+        oGTSWmG1zX4Q/0XMwhH35vwgmg==
+X-Google-Smtp-Source: ABdhPJwuPka4W9yOMDvrX6GUrWsbedu8EBEiJblO9SsbN8jZivaLELaiLeHMRVIpdlT/EvGXh8p5kw==
+X-Received: by 2002:a4a:ae8c:: with SMTP id u12mr4341303oon.3.1624977966886;
+        Tue, 29 Jun 2021 07:46:06 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c4sm904642ots.15.2021.06.29.07.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 07:46:06 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 09:46:04 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     abhinavk@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: Make it possible to enable the test pattern
+Message-ID: <YNsyLNeSvQlEQLcw@yoga>
+References: <20210629002234.1787149-1-bjorn.andersson@linaro.org>
+ <b3456d3e4376ae1e9776f03e14513a35@codeaurora.org>
+ <YNpvf8rpWoMFTcBt@yoga>
+ <2d922441927d1c2a757b5b197f496906@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:WbMEo5tidgVQRH4J+/76wzK+iKUUMzA8yypyIPDBH3YpQjXfNlq
- b6/l86PnhXJghnbxPWvCS9CWfjrrZC+9+jcN8eMcP9wMBOTyLA6NaRCC2M5QqRaNbMCSjxJ
- Z3iRltGHNzdIsybQQfaJLepwUo9T6/aPfZl7EM+MqaA8mPXMUaFOlQ55vQvxWyFZ1t0EWO0
- sbm/ROWmSfAqvrs/92XSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eSX4puk+m5g=:6dq/KR9rmqjnyurMNYaGTE
- whMFKBQectERK2/2qGgqHIf+LeGMmRjBtZa4TB9FpIwaJLPXQQjmHbuccuJuZmXoWrafuysru
- fMxZvtGibksRJWw2zgDyBbDA6P+Cuuq4nuAkZlqUIVaNgAmNmGewWcg4MljCN5oMheDAODKv/
- Mhfb7dHkKmgv3t9vOVHB7KQrWDEwAeChcBG+pDEabH8Eqf6nY++1WaBgBf7LX/QyEcc/OjtTC
- 6omvoMPsBp5urZy/8bTO6S0wIUhBuAS7S5uCy7ZrlpIx3PYJZ0OjC/SYUakfQ48+zLthL5DZ5
- +jTEdXgwMr35cumW3ifBq7WDG0bV82c7p1qPYn7thLZVXr5vg+L42pCYn5XFWGExp+1V+3h8R
- Jpoc3aOKAs3nK60SWVTAoMSIL+1OPEjEJgnrbKZXG23UWFZMFPhLnbHQygj7WUSjOrC5A3lTM
- 3CtfEhrn4Y+0oGuVOGgiR4eSVx0L2cxkOT+Zxi0bcgVx9Qu/GyDBDvcc9hzO4fQthCsn/KzkZ
- 7uvEPhWAVYA6/XcfS7+BTk=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d922441927d1c2a757b5b197f496906@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an implementation of Plan9's /srv filesystem, which offers storing
-already opened file descriptors into the fs: a process can store a open fd
-by just creating an empty file and writing its fdnum into it. The associated
-file struct will then be stored and next time that file is opened, the caller
-gets back exactly that opened file, quite like it was dup()ed or passed via
-some unix socket.
+On Mon 28 Jun 20:07 CDT 2021, abhinavk@codeaurora.org wrote:
 
-The rationale behind this: programs can prepare file descriptors (e.g. dial
-network connections, set up devices, etc) and leave them for other programs
-to pick up. This also works when opening or preparing the file needs special
-privileges that the consumer does not have.
+> On 2021-06-28 17:55, Bjorn Andersson wrote:
+> > On Mon 28 Jun 19:31 CDT 2021, abhinavk@codeaurora.org wrote:
+> > 
+> > > Hi Bjorn
+> > > 
+> > > On 2021-06-28 17:22, Bjorn Andersson wrote:
+> > > > The debugfs interface contains the knobs to make the DisplayPort
+> > > > controller output a test pattern, unfortunately there's nothing
+> > > > currently that actually enables the defined test pattern.
+> > > >
+> > > > Fixes: de3ee25473ba ("drm/msm/dp: add debugfs nodes for video pattern
+> > > > tests")
+> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > 
+> > > This is not how this debugfs node works. This is meant to be used
+> > > while
+> > > running
+> > > DP compliance video pattern test.
+> > > 
+> > > https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c
+> > > 
+> > > While the compliance test is being run with this msm_dp_compliance app
+> > > running,
+> > > it will draw the test pattern when it gets the "test_active" from the
+> > > driver.
+> > > 
+> > > The test pattern which this app draws is as per the requirements of
+> > > the
+> > > compliance test
+> > > as the test equipment will match the CRC of the pattern which is
+> > > drawn.
+> > > 
+> > > The API dp_panel_tpg_config() which you are trying to call here
+> > > draws the DP
+> > > test pattern
+> > > from the DP controller hardware but not the pattern which the
+> > > compliance
+> > > test expects.
+> > > 
+> > 
+> > So clearly not an oversight, but rather me not understanding how to use
+> > the test pattern.
+> > 
+> > You say that I should run msm_dp_compliance while the test is running,
+> > so how do I run the test?
+> 
+> There are two test patterns with different purposes. The one which the
+> msm_dp_compliance
+> draws is strictly for the DP compliance test and it needs even the DPU to
+> draw the frame because
+> it sets up the display pipeline and just draws the buffer.
+> 
+> That is not what you are looking for here.
+> 
+> So rather than trying to run msm_dp_compliance on your setup, just try
+> calling dp_panel_tpg_config().
+> We typically just call this API, right after the link training is done.
+> But if you really need a debugfs node for this, you can write up a separate
+> debugfs for it
+> Something like:
+> 
+> echo 1 > dp/tpg/en
+> 
 
-Another interesting use case is long running servers that want to temporarily
-store their open files for a restart (possibly starting even restarting with
-a different binary, e.g. after upgrade).
+Having the ability to turn on the test pattern was very useful to me and
+I would use this next time I'm adding DP support on a new platform. So
+adding some way of invoking that API without a lot of extra effort seems
+useful.
 
-The semantics of this file system are quite simple:
+> Lets not disturb this one.
+> 
 
-* creating files produces empty entries that can be assigned to an active
-  file descriptor (struct file) by writing the numerical fd value into it.
-  (the corresponding file will be looked up in the writing process' fdtable)
-* before that, no other operations (except unlink) are supported
-* once an entry is assigned with file descriptor, subsequent open() calls
-  will retrieve exactly the assigned file descriptor (but most likely some
-  other numerical fd value) - additional O_* flags have no effect on that
-  file descriptor
-* the underlying file remains open, until references, including the srvfs
-  entry are removed.
-* the srvfs entry can be removed via unlink()
-* multiple mounts of the file system are separated, they do not share entries
----
- MAINTAINERS        |   5 ++
- fs/Kconfig         |   1 +
- fs/Makefile        |   1 +
- fs/srvfs/Kconfig   |   9 ++++
- fs/srvfs/Makefile  |   7 +++
- fs/srvfs/file.c    | 115 ++++++++++++++++++++++++++++++++++++++++++
- fs/srvfs/fileref.c |  50 ++++++++++++++++++
- fs/srvfs/root.c    |  30 +++++++++++
- fs/srvfs/srvfs.h   |  39 ++++++++++++++
- fs/srvfs/super.c   | 123 +++++++++++++++++++++++++++++++++++++++++++++
- 10 files changed, 380 insertions(+)
- create mode 100644 fs/srvfs/Kconfig
- create mode 100644 fs/srvfs/Makefile
- create mode 100644 fs/srvfs/file.c
- create mode 100644 fs/srvfs/fileref.c
- create mode 100644 fs/srvfs/root.c
- create mode 100644 fs/srvfs/srvfs.h
- create mode 100644 fs/srvfs/super.c
+Agreed.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8ae6ea3b99fc..d563f989b742 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -239,6 +239,11 @@ F:	include/trace/events/9p.h
- F:	include/uapi/linux/virtio_9p.h
- F:	net/9p/
- 
-+SRV FILE SYSTEM:
-+M:	Enrico Weigelt, metux IT consult <info@metux.net>
-+S:	Maintained
-+F:	fs/srvfs
-+
- A8293 MEDIA DRIVER
- M:	Antti Palosaari <crope@iki.fi>
- L:	linux-media@vger.kernel.org
-diff --git a/fs/Kconfig b/fs/Kconfig
-index b8b7a77b656c..319da752d888 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -248,6 +248,7 @@ config ARCH_HAS_GIGANTIC_PAGE
- 
- source "fs/configfs/Kconfig"
- source "fs/efivarfs/Kconfig"
-+source "fs/srvfs/Kconfig"
- 
- endmenu
- 
-diff --git a/fs/Makefile b/fs/Makefile
-index 9c708e1fbe8f..bfc783c120dc 100644
---- a/fs/Makefile
-+++ b/fs/Makefile
-@@ -136,3 +136,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
- obj-$(CONFIG_EROFS_FS)		+= erofs/
- obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
- obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
-+obj-$(CONFIG_SRV_FS)		+= srvfs/
-diff --git a/fs/srvfs/Kconfig b/fs/srvfs/Kconfig
-new file mode 100644
-index 000000000000..c399215cbbee
---- /dev/null
-+++ b/fs/srvfs/Kconfig
-@@ -0,0 +1,9 @@
-+config SRV_FS
-+	tristate "Plan9-like /srv filesystem"
-+	select FS_BOXED_FILE
-+	help
-+	  If you don't know what this is about, say N.
-+
-+	  To compile this as a module, choose M here: the module will be called
-+	  srv-fs.  Note that the file system of your root partition (the one
-+	  containing the directory /) cannot be compiled as a module.
-diff --git a/fs/srvfs/Makefile b/fs/srvfs/Makefile
-new file mode 100644
-index 000000000000..d5e0520efe6c
---- /dev/null
-+++ b/fs/srvfs/Makefile
-@@ -0,0 +1,7 @@
-+obj-$(CONFIG_SRV_FS) := srvfs.o
-+
-+srvfs-objs := \
-+	file.o \
-+	super.o \
-+	root.o \
-+	fileref.o
-diff --git a/fs/srvfs/file.c b/fs/srvfs/file.c
-new file mode 100644
-index 000000000000..f8de9f84c085
---- /dev/null
-+++ b/fs/srvfs/file.c
-@@ -0,0 +1,115 @@
-+
-+#include "srvfs.h"
-+
-+#include <asm/atomic.h>
-+#include <linux/file.h>
-+#include <linux/fs.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+static int srvfs_file_open(struct inode *inode, struct file *file)
-+{
-+	struct srvfs_fileref *fileref = inode->i_private;
-+	file->private_data = srvfs_fileref_get(fileref);
-+
-+	if (fileref->file) {
-+		get_file_rcu(fileref->file);
-+		file->boxed_file = fileref->file;
-+	}
-+
-+	return 0;
-+}
-+
-+static int srvfs_file_release(struct inode *inode, struct file *file)
-+{
-+	struct srvfs_fileref *fileref = file->private_data;
-+	srvfs_fileref_put(fileref);
-+	return 0;
-+}
-+
-+static int do_switch(struct file *file, long fd)
-+{
-+	struct srvfs_fileref *fileref= file->private_data;
-+	struct file *newfile = fget(fd);
-+
-+	if (!newfile)
-+		goto setref;
-+
-+	if (newfile->f_inode == file->f_inode)
-+		goto loop;
-+
-+	if (newfile->f_inode->i_sb == file->f_inode->i_sb)
-+		goto loop;
-+
-+setref:
-+	srvfs_fileref_set(fileref, newfile);
-+	return 0;
-+
-+loop:
-+	fput(newfile);
-+	return -ELOOP;
-+}
-+
-+static ssize_t srvfs_file_write(struct file *file, const char *buf,
-+				size_t count, loff_t *offset)
-+{
-+	char tmp[20];
-+	long fd;
-+	int ret;
-+
-+	if ((*offset != 0) || (count >= sizeof(tmp)))
-+		return -EINVAL;
-+
-+	memset(tmp, 0, sizeof(tmp));
-+	if (copy_from_user(tmp, buf, count))
-+		return -EFAULT;
-+
-+	fd = simple_strtol(tmp, NULL, 10);
-+	ret = do_switch(file, fd);
-+
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+struct file_operations srvfs_file_ops = {
-+	.owner		= THIS_MODULE,
-+	.open		= srvfs_file_open,
-+	.write		= srvfs_file_write,
-+	.release	= srvfs_file_release,
-+};
-+
-+int srvfs_insert_file(struct super_block *sb, struct dentry *dentry)
-+{
-+	struct inode *inode;
-+	struct srvfs_fileref *fileref;
-+	int mode = S_IFREG | S_IWUSR | S_IRUGO;
-+
-+	fileref = srvfs_fileref_new();
-+	if (!fileref)
-+		goto nomem;
-+
-+	inode = new_inode(sb);
-+	if (!inode)
-+		goto err_inode;
-+
-+	atomic_set(&fileref->counter, 0);
-+
-+	inode_init_owner(&init_user_ns, inode, sb->s_root->d_inode, mode);
-+
-+	inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-+	inode->i_fop = &srvfs_file_ops;
-+	inode->i_ino = srvfs_inode_id(inode->i_sb);
-+	inode->i_private = fileref;
-+
-+	d_drop(dentry);
-+	d_add(dentry, inode);
-+	return 0;
-+
-+err_inode:
-+	srvfs_fileref_put(fileref);
-+
-+nomem:
-+	return -ENOMEM;
-+}
-diff --git a/fs/srvfs/fileref.c b/fs/srvfs/fileref.c
-new file mode 100644
-index 000000000000..cbe523927fb8
---- /dev/null
-+++ b/fs/srvfs/fileref.c
-@@ -0,0 +1,50 @@
-+
-+#include "srvfs.h"
-+
-+#include <linux/file.h>
-+#include <linux/slab.h>
-+
-+struct srvfs_fileref *srvfs_fileref_new(void)
-+{
-+	struct srvfs_fileref *fileref;
-+
-+	fileref = kzalloc(sizeof(struct srvfs_fileref), GFP_KERNEL);
-+	if (!fileref)
-+		return NULL;
-+
-+	kref_init(&fileref->refcount);
-+	return fileref;
-+}
-+
-+struct srvfs_fileref *srvfs_fileref_get(struct srvfs_fileref *fileref)
-+{
-+	kref_get(&fileref->refcount);
-+	return fileref;
-+}
-+
-+void srvfs_fileref_destroy(struct kref *ref)
-+{
-+	struct srvfs_fileref *fileref =
-+	    container_of(ref, struct srvfs_fileref, refcount);
-+	if (fileref->file)
-+		fput(fileref->file);
-+	kfree(fileref);
-+}
-+
-+void srvfs_fileref_put(struct srvfs_fileref *fileref)
-+{
-+	if (!fileref)
-+		return;
-+	kref_put(&fileref->refcount, srvfs_fileref_destroy);
-+}
-+
-+void srvfs_fileref_set(struct srvfs_fileref *fileref, struct file *newfile)
-+{
-+	struct file *oldfile;
-+
-+	oldfile = fileref->file;
-+	fileref->file = newfile;
-+
-+	if (oldfile)
-+		fput(oldfile);
-+}
-diff --git a/fs/srvfs/root.c b/fs/srvfs/root.c
-new file mode 100644
-index 000000000000..b7be89b535a3
---- /dev/null
-+++ b/fs/srvfs/root.c
-@@ -0,0 +1,30 @@
-+
-+#include "srvfs.h"
-+
-+#include <linux/fs.h>
-+
-+static int srvfs_dir_unlink(struct inode *inode, struct dentry *dentry)
-+{
-+	struct srvfs_fileref *fileref = dentry->d_inode->i_private;
-+
-+	if (fileref == NULL)
-+		return -EFAULT;
-+
-+	d_delete(dentry);
-+	dput(dentry);
-+
-+	return 0;
-+}
-+
-+static int srvfs_dir_create(struct user_namespace *mnt_userns,
-+			    struct inode *inode, struct dentry *dentry,
-+			    umode_t mode, bool excl)
-+{
-+	return srvfs_insert_file(inode->i_sb, dget(dentry));
-+}
-+
-+const struct inode_operations srvfs_rootdir_inode_operations = {
-+	.lookup		= simple_lookup,
-+	.unlink		= srvfs_dir_unlink,
-+	.create		= srvfs_dir_create,
-+};
-diff --git a/fs/srvfs/srvfs.h b/fs/srvfs/srvfs.h
-new file mode 100644
-index 000000000000..688933f12444
---- /dev/null
-+++ b/fs/srvfs/srvfs.h
-@@ -0,0 +1,39 @@
-+#ifndef __LINUX_FS_SRVFS_H
-+#define __LINUX_FS_SRVFS_H
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <asm/atomic.h>
-+#include <linux/fs.h>
-+#include <linux/kref.h>
-+
-+#define SRVFS_MAGIC 0x29980123
-+
-+struct srvfs_fileref {
-+	atomic_t counter;
-+	int mode;
-+	struct file *file;
-+	struct kref refcount;
-+	struct file_operations f_ops;
-+};
-+
-+struct srvfs_sb {
-+	atomic_t inode_counter;
-+};
-+
-+/* root.c */
-+extern const struct inode_operations srvfs_rootdir_inode_operations;
-+
-+/* fileref.c */
-+struct srvfs_fileref *srvfs_fileref_new(void);
-+struct srvfs_fileref *srvfs_fileref_get(struct srvfs_fileref* fileref);
-+void srvfs_fileref_put(struct srvfs_fileref* fileref);
-+void srvfs_fileref_set(struct srvfs_fileref* fileref, struct file* newfile);
-+
-+/* super.c */
-+int srvfs_inode_id (struct super_block *sb);
-+
-+/* file.c */
-+int srvfs_insert_file (struct super_block *sb, struct dentry *dentry);
-+
-+#endif /* __LINUX_FS_SRVFS_H */
-diff --git a/fs/srvfs/super.c b/fs/srvfs/super.c
-new file mode 100644
-index 000000000000..bcb55f85cb51
---- /dev/null
-+++ b/fs/srvfs/super.c
-@@ -0,0 +1,123 @@
-+
-+#include "srvfs.h"
-+
-+#include <asm/atomic.h>
-+#include <linux/file.h>
-+#include <linux/fs.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+
-+static void srvfs_sb_evict_inode(struct inode *inode)
-+{
-+	struct srvfs_fileref *fileref = inode->i_private;
-+
-+	pr_info("srvfs_evict_inode(): %ld\n", inode->i_ino);
-+	clear_inode(inode);
-+	if (fileref)
-+		srvfs_fileref_put(fileref);
-+	else
-+		pr_info("evicting root/dir inode\n");
-+}
-+
-+static void srvfs_sb_put_super(struct super_block *sb)
-+{
-+	pr_info("srvfs: freeing superblock");
-+	if (sb->s_fs_info) {
-+		kfree(sb->s_fs_info);
-+		sb->s_fs_info = NULL;
-+	}
-+}
-+
-+static const struct super_operations srvfs_super_operations = {
-+	.statfs		= simple_statfs,
-+	.evict_inode	= srvfs_sb_evict_inode,
-+	.put_super	= srvfs_sb_put_super,
-+};
-+
-+int srvfs_inode_id (struct super_block *sb)
-+{
-+	struct srvfs_sb *priv = sb->s_fs_info;
-+	return atomic_inc_return(&priv->inode_counter);
-+}
-+
-+static int srvfs_fill_super (struct super_block *sb, void *data, int silent)
-+{
-+	struct inode *inode;
-+	struct dentry *root;
-+	struct srvfs_sb* sbpriv;
-+
-+	sbpriv = kmalloc(sizeof(struct srvfs_sb), GFP_KERNEL);
-+	if (sbpriv == NULL)
-+		goto err_sbpriv;
-+
-+	atomic_set(&sbpriv->inode_counter, 1);
-+
-+	sb->s_blocksize = PAGE_SIZE;
-+	sb->s_blocksize_bits = PAGE_SHIFT;
-+	sb->s_magic = SRVFS_MAGIC;
-+	sb->s_op = &srvfs_super_operations;
-+	sb->s_time_gran = 1;
-+	sb->s_fs_info = sbpriv;
-+
-+	inode = new_inode(sb);
-+	if (!inode)
-+		goto err_inode;
-+
-+	/*
-+	 * because the root inode is 1, the files array must not contain an
-+	 * entry at index 1
-+	 */
-+	inode->i_ino = srvfs_inode_id(sb);
-+	inode->i_mode = S_IFDIR | 0755;
-+	inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-+	inode->i_op = &srvfs_rootdir_inode_operations;
-+	inode->i_fop = &simple_dir_operations;
-+	set_nlink(inode, 2);
-+	root = d_make_root(inode);
-+	if (!root)
-+		goto err_root;
-+
-+	sb->s_root = root;
-+
-+	return 0;
-+
-+err_root:
-+	iput(inode);
-+
-+err_inode:
-+	kfree(sbpriv);
-+
-+err_sbpriv:
-+	return -ENOMEM;
-+}
-+
-+struct dentry *srvfs_mount(struct file_system_type *fs_type,
-+			   int flags, const char *dev_name, void *data)
-+{
-+	return mount_nodev(fs_type, flags, data, srvfs_fill_super);
-+}
-+
-+static struct file_system_type srvfs_type = {
-+	.owner		= THIS_MODULE,
-+	.name		= "srvfs",
-+	.mount		= srvfs_mount,
-+	.kill_sb	= kill_litter_super,
-+};
-+
-+static int __init srvfs_init(void)
-+{
-+	return register_filesystem(&srvfs_type);
-+}
-+
-+static void __exit srvfs_exit(void)
-+{
-+	unregister_filesystem(&srvfs_type);
-+}
-+
-+module_init(srvfs_init);
-+module_exit(srvfs_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Enrico Weigelt, metux IT consult <info@metux.net>");
--- 
-2.20.1
+Thanks,
+Bjorn
 
+> > 
+> > > Its just a debug API to call when required during bringup/debug
+> > > purposes.
+> > > 
+> > 
+> > Yes, I was trying to isolate the DP code from some misconfiguration in
+> > the DPU during bringup and with this fix the debugfs interface became
+> > useful.
+> 
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > Hence this is not the place to call it as it will end up breaking CTS.
+> > > 
+> > > Thanks
+> > > 
+> > > Abhinav
+> > > 
+> > > > ---
+> > > >  drivers/gpu/drm/msm/dp/dp_debug.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > b/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > index 2f6247e80e9d..82911af44905 100644
+> > > > --- a/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > @@ -305,6 +305,8 @@ static ssize_t dp_test_active_write(struct file
+> > > > *file,
+> > > >  				debug->panel->video_test = true;
+> > > >  			else
+> > > >  				debug->panel->video_test = false;
+> > > > +
+> > > > +			dp_panel_tpg_config(debug->panel, debug->panel->video_test);
+> > > >  		}
+> > > >  	}
+> > > >  	drm_connector_list_iter_end(&conn_iter);
