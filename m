@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903453B73F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520A33B73F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhF2ONj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        id S233478AbhF2OMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:12:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhF2ONi (ORCPT
+        with ESMTP id S232297AbhF2OMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:13:38 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E76C061760;
-        Tue, 29 Jun 2021 07:11:10 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id bu12so36720070ejb.0;
-        Tue, 29 Jun 2021 07:11:10 -0700 (PDT)
+        Tue, 29 Jun 2021 10:12:16 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C903C061760;
+        Tue, 29 Jun 2021 07:09:48 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id h9so26414883oih.4;
+        Tue, 29 Jun 2021 07:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9U6uGs3YmCXyn4Y7G+MQpzXdsUDWV4pSJZDyFwqAipI=;
-        b=LVUtcnKHfwvA0mIo3dybEaUfhMQxSO47CigyvLVBtW/TCHM1JXgPL/CftOfbtLBxyy
-         xkNZKELqP8dc8LlcIHWMYTTcv0BAq6yNn1SOQxtewSStxdxw6HUknpF3wUqPHf6x40Zo
-         XkXQMeveY4450U4OOaDTmKHh6sBOEDfWo4Tdev0P5uO8MZTp2G9hl0btVJijrmQeZdb+
-         cNbCJyUHHvVTFGFBTH5weFEoG1PVC6VGaOmob8IK26Ad8JB0Y0XH2API/vYA1KHoZ2zI
-         661zSvlAwtrH4k3WC7vChNWyK+1p/ZT9V6a8YhqTXRWduI14f1t4reXVKEs0XHSpyVIc
-         ttQQ==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/pfAfSG1WAT03M9in9IB99n5vlozDcqHU/A8hrRJslE=;
+        b=Sks2icFMsPkjTv3NhFgOCzYfEmtriMo91Ye4Ja/mz4bmpaAwFyZ4iXJfIDNPDrc+FT
+         wu8cOQO6MEeTtGQoiWv7d8Hph1xjhd4bruygzQ5dhKfwNQUrhWTcVM8aJbxOWgojLqkZ
+         ycMSNXBAc86unVUAVAZXHGrZVcTpkvHfVkaJqAUH72fVjdnj72P/EIgAlgvvKQ2o1Q4d
+         EcE+62R2aE5TrH9iX9A04vfYZAfolhb+XUr5KJKjw/MwKJE5HBZwRSJv/w2AOdAAUb2Y
+         XmV1zdsCV+kIhHW6iLUp0KdSv2QzHNkKYLV8dDdGTko61yVcW8019E1GIIxpha4b4nO3
+         yauA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9U6uGs3YmCXyn4Y7G+MQpzXdsUDWV4pSJZDyFwqAipI=;
-        b=mMRXSuOU3YG4+wZNyvDxS89U7iRZDU6HM9TnC/xFsP30NdnUpMbf6QpijyiBClVZ1N
-         ZvBYaNm5zMKr8TgnbjWoao7cCxN4C0I/BEM/FETDufidDZzFTKO8PRI7UyS3bFZOr4/v
-         3bmiIC4v9nyTlaWczbuF+wfxoKv4TLnNrUojwpgLQ+EOeava76vQXMrw0LVcjM2bh7IR
-         lk2EQED6XVd4FJD/mLiQ6mRiTWqqgtJsWdZEUyv6NhUXNFeELhLmwOPVQsM1xEXhZWBT
-         y/Vt2x6QInxnw5h7ddQ4je4AwLEgUx2Zd9TDTZMUJrYa1TVChEm1BkYct7gT85RgMcfd
-         22GA==
-X-Gm-Message-State: AOAM530CYbK9lYPfYhs7Xc+T+nQDiXc/Pg21PN48BaiYzWxpvBAOARPL
-        HYGK4gtcBPQA8NGf7Oa01VI=
-X-Google-Smtp-Source: ABdhPJx40775Fe+/nbIEdf8NQ8oyL2K702Zku8wA4tEagAzwvKDHDFkMEdMu+mbAIRJw8dV8ICenlw==
-X-Received: by 2002:a17:906:7004:: with SMTP id n4mr22897161ejj.524.1624975869020;
-        Tue, 29 Jun 2021 07:11:09 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id v28sm8542587ejk.84.2021.06.29.07.11.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:11:08 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Subject: [PATCH] drivers: ata: Replace DPRINTK with pr_debug and add __func__ in pr_debug
-Date:   Tue, 29 Jun 2021 16:08:28 +0200
-Message-Id: <20210629140828.237848-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
+        bh=/pfAfSG1WAT03M9in9IB99n5vlozDcqHU/A8hrRJslE=;
+        b=NSPrr0H82S9zYibTPrstGn4GAmsWBjf+OGSJXvv7KXIxP/Oo2l1teocpKMIMLVDg84
+         hWpLEgRk6p3nqve5jqQHu+PLhAMpRR/bRDkd9ENoRe1OvYUr6/hfNxR0qDaJS8Obpoo2
+         biTC0HCRvPN+8i2h7p/TJaCWB9GbdyjbDnO8cDctx9InpUgGa1114v1g2mc/x5S3T+N2
+         35DerTJaBDJNdrBK+v5TBRPa9AvrmAskR4ayaD09iLRAfHhp1etaxastbOQGhSM9Ogth
+         7S+7vPsLpLfto1MMKS/FAi3XdhgDvlM1OWjjH7fLUoD8Lt2hctyfii18i6vwEhSdfMiB
+         3jBA==
+X-Gm-Message-State: AOAM531HIIltysyMjvqHRrBICCsIJVfowaRAEA/MbVYic6vIgnkMPMM/
+        orbdTcZyGRQh15Pl8btx2KE=
+X-Google-Smtp-Source: ABdhPJyUORqMbHID+b4PNh9oIJP1FzeF0v52dkRjuEliNUFe/yxwnCdv8FjVG04ECwgcmz2ju+lN6A==
+X-Received: by 2002:aca:afd2:: with SMTP id y201mr7655978oie.54.1624975787816;
+        Tue, 29 Jun 2021 07:09:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x3sm497635oie.24.2021.06.29.07.09.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 07:09:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org
+References: <20210628144256.34524-1-sashal@kernel.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <f396d8d7-e78a-7a8a-f509-e546fe1d2bfd@roeck-us.net>
+Date:   Tue, 29 Jun 2021 07:09:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaced DPRINTK with pr_debug and made it print the name of the function
-by using __func__ macro.
+On 6/28/21 7:41 AM, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.4.274 release.
+> There are 57 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
+Build reference: v4.4.273-57-g5429409d4e80
+gcc version: arc-elf-gcc (GCC) 10.3.0
+
+
+Building arc:tb10x_defconfig ... failed
+--------------
+Error log:
+In file included from include/asm-generic/signal.h:10,
+                  from arch/arc/include/uapi/asm/signal.h:25,
+                  from include/uapi/linux/signal.h:4,
+                  from include/linux/signal.h:6,
+                  from include/linux/sched.h:37,
+                  from arch/arc/kernel/asm-offsets.c:9:
+arch/arc/include/uapi/asm/sigcontext.h:20:25: error: field 'v2abi' has incomplete type
+    20 |  struct user_regs_arcv2 v2abi;
+
 ---
- drivers/ata/ahci.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 186cbf90c8ea..61b3e5b3dee0 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -702,7 +702,7 @@ static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
- 	bool online;
- 	int rc;
- 
--	DPRINTK("ENTER\n");
-+	pr_debug("ENTER %s();\n", __func__);
- 
- 	hpriv->stop_engine(ap);
- 
-@@ -711,7 +711,7 @@ static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
- 
- 	hpriv->start_engine(ap);
- 
--	DPRINTK("EXIT, rc=%d, class=%u\n", rc, *class);
-+	pr_debug("EXIT %s();, rc=%d, class=%u\n", __func__, rc, *class);
- 
- 	/* vt8251 doesn't clear BSY on signature FIS reception,
- 	 * request follow-up softreset.
-@@ -792,7 +792,7 @@ static int ahci_avn_hardreset(struct ata_link *link, unsigned int *class,
- 	bool online;
- 	int rc, i;
- 
--	DPRINTK("ENTER\n");
-+	pr_debug("ENTER %s();\n", __func__);
- 
- 	hpriv->stop_engine(ap);
- 
-@@ -831,7 +831,7 @@ static int ahci_avn_hardreset(struct ata_link *link, unsigned int *class,
- 	if (online)
- 		*class = ahci_dev_classify(ap);
- 
--	DPRINTK("EXIT, rc=%d, class=%u\n", rc, *class);
-+	pr_debug("EXIT %s();, rc=%d, class=%u\n", __func__, rc, *class);
- 	return rc;
- }
- 
--- 
-2.29.0.rc1.dirty
+Building arcv2:defconfig ... failed
+--------------
+Error log:
+In file included from include/asm-generic/signal.h:10,
+                  from arch/arc/include/uapi/asm/signal.h:25,
+                  from include/uapi/linux/signal.h:4,
+                  from include/linux/signal.h:6,
+                  from include/linux/sched.h:37,
+                  from arch/arc/kernel/asm-offsets.c:9:
+arch/arc/include/uapi/asm/sigcontext.h:20:25: error: field 'v2abi' has incomplete type
 
