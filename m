@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545953B7ABE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F663B7AC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 01:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbhF2XpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 19:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbhF2Xo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:44:59 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14854C061760;
-        Tue, 29 Jun 2021 16:42:31 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id o13-20020a9d404d0000b0290466630039caso674378oti.6;
-        Tue, 29 Jun 2021 16:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H2clRbWtY3gLXXS069v0xLGV3qZ8FrOI0O151/krroE=;
-        b=qJGxAHfDhtBJ08euBA240m4naufDhTOmca2EzSIN42aZ8m7gq6gEqR/UOg+G2hxVE/
-         DfhbhLWfRLP8go7SJlhgkfNbnmkXPQbVKSOsNcd60ZhtF4yRStvBnDw4Q8dWt2F7DCub
-         2Kjk4SMrNH5LYv5F5zvisuw25ex1p5HTrJBL9n+gnVs5vM+SNAEzJ8njL+LwxyWEOPKE
-         YygfAY27JmtK4eMyNECI05ii2Fy5Co4oV+ntNbXDcKWjnOuHIiZwsDnjsEdrvH9danPS
-         ZYh2zfiP+CkwiTbnDLjr+f9wm1zh0exDeIfNnaFjBkyaOmv91S1F4E0paPgnorNH4YU/
-         76mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H2clRbWtY3gLXXS069v0xLGV3qZ8FrOI0O151/krroE=;
-        b=L9NGJ+XLMc13uH4UvHaF5YKiDR9Pt4ow4e4iHjt2pLW82PnkWrhb90f/5zAU93qmhn
-         QPbrP0EMWFdYcc2MBvu5VjDbkXav6RzwgTizfWFZmCpZ1yhtEaSnzAcdYDXNBXsZTIwi
-         7COURVCf+Ck6H7nvs5/f0Ct+IASXRHShMh7xgXCgmYJOyLe/XZ4CfaL5oq4hGHY3l6iN
-         sOUn6adABA0G1qL/YrEbx+eLB8e8sE+KJChL3WsDd106mN6yjpqysUTfQPc4ebc5SBRF
-         vyms3MOHvv1P/XCbNQf1tS8SMB+l6JGBkkEIQRYgDJyeP060ksMYwRtYJNhoN2Hj2VfB
-         Ol8A==
-X-Gm-Message-State: AOAM530CxrSEapp0vFdPnPLQg1eLXyElA3BeIU5uYRtk6jPbNxGsEwnY
-        APSPlfHAcG7OYuBQNrnNOn+f8Hys1C4=
-X-Google-Smtp-Source: ABdhPJy4IYjT1pzqrGhJjDT8/AZ4TJ08JJPGOUAqkqFK78bWYxYkuRkKdLKbEe3PnxB8gWcnrY0tzw==
-X-Received: by 2002:a05:6830:40b1:: with SMTP id x49mr6497774ott.64.1625010150444;
-        Tue, 29 Jun 2021 16:42:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a76sm2166800oii.26.2021.06.29.16.42.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 16:42:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 4.4 00/57] 4.4.274-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org
-References: <20210628144256.34524-1-sashal@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <d9f7920c-912f-b3a4-c504-f79209ae006f@roeck-us.net>
-Date:   Tue, 29 Jun 2021 16:42:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235509AbhF2Xp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 19:45:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18675 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235295AbhF2XpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 19:45:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208208662"
+X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
+   d="scan'208";a="208208662"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 16:42:56 -0700
+X-IronPort-AV: E=Sophos;i="5.83,310,1616482800"; 
+   d="scan'208";a="625815383"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 16:42:56 -0700
+Date:   Tue, 29 Jun 2021 16:42:55 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     torvalds@agluck-desk2.amr.corp.intel.com
+Cc:     Arnd Bergmann <arnd@arndb.de>, Bixuan Cui <cuibixuan@huawei.com>,
+        Borislav Petkov <bp@suse.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ras/edac changes for v5.14
+Message-ID: <20210629234255.GA1239879@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628144256.34524-1-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 7:41 AM, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 4.4.274 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 30 Jun 2021 02:42:54 PM UTC.
-> Anything received after that time might be too late.
-> 
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-For v4.4.273-56-gc1d107b:
+are available in the Git repository at:
 
-Build results:
-	total: 160 pass: 160 fail: 0
-Qemu test results:
-	total: 326 pass: 326 fail: 0
+  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.14
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+for you to fetch changes up to 0a9ece9ba154dd6205709108180952c55e630833:
 
-Guenter
+  EDAC/igen6: fix core dependency (2021-06-20 14:04:48 -0700)
+
+----------------------------------------------------------------
+Various fixes and support for new CPUS
+- Clean up error messages from thunderx_edac
+- Add MODULE_DEVICE_TABLE to ti_edac so it will autoload
+- Use %pR to print resources in aspeed_edac
+- Add Yazen Ghannam as MAINTAINER for AMD edac drivers
+- Fix Ice Lake and Sapphire Rapids drivers to report correct
+  "near" or "far" device for errors in 2LM configurations
+- Add support of on package high bandwidth memory in Sapphire Rapids
+- New CPU support for three CPUs supporting in-band ECC (IOT SKUs for
+  ICL-NNPI, Tiger Lake and Alder Lake)
+- Don't even try to load Intel EDAC drivers when running as a guest
+- Fix Kconfig dependency on X86_MCE_INTEL for EDAC_IGEN6
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      EDAC/aspeed: Use proper format string for printing resource
+
+Bixuan Cui (1):
+      EDAC/ti: Add missing MODULE_DEVICE_TABLE
+
+Christophe JAILLET (1):
+      EDAC/thunderx: Remove irrelevant variable from error messages
+
+Qiuxu Zhuo (6):
+      EDAC/skx_common: Add new ADXL components for 2-level memory
+      EDAC/i10nm: Add detection of memory levels for ICX/SPR servers
+      EDAC/i10nm: Add support for high bandwidth memory
+      EDAC/igen6: Add Intel ICL-NNPI SoC support
+      EDAC/igen6: Add Intel Tiger Lake SoC support
+      EDAC/igen6: Add Intel Alder Lake SoC support
+
+Randy Dunlap (1):
+      EDAC/igen6: fix core dependency
+
+Tony Luck (1):
+      EDAC/Intel: Do not load EDAC driver when running as a guest
+
+Yazen Ghannam (1):
+      MAINTAINERS: Make Yazen Ghannam maintainer for EDAC-AMD64
+
+ MAINTAINERS                  |   5 +-
+ drivers/edac/Kconfig         |   3 +-
+ drivers/edac/aspeed_edac.c   |   4 +-
+ drivers/edac/i10nm_base.c    | 174 ++++++++++++++++++--
+ drivers/edac/igen6_edac.c    | 374 ++++++++++++++++++++++++++++++++++++++++---
+ drivers/edac/pnd2_edac.c     |   3 +
+ drivers/edac/sb_edac.c       |   3 +
+ drivers/edac/skx_base.c      |   3 +
+ drivers/edac/skx_common.c    |  82 ++++++++--
+ drivers/edac/skx_common.h    |  34 +++-
+ drivers/edac/thunderx_edac.c |   4 +-
+ drivers/edac/ti_edac.c       |   1 +
+ 12 files changed, 628 insertions(+), 62 deletions(-)
