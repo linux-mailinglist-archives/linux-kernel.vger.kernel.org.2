@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A803B6FBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CF33B6FBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhF2IzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:55:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:46496 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232621AbhF2Iy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:54:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6049DD6E;
-        Tue, 29 Jun 2021 01:52:32 -0700 (PDT)
-Received: from [10.57.14.107] (unknown [10.57.14.107])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB6EF3F694;
-        Tue, 29 Jun 2021 01:52:29 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     acme@kernel.org, coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210624164303.28632-1-james.clark@arm.com>
- <20210624164303.28632-3-james.clark@arm.com>
- <20210628012744.GA158794@leoy-ThinkPad-X240s>
- <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
- <20210628120802.GC200044@leoy-ThinkPad-X240s> <20210628200132.GB1200359@p14s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <b9a3ae95-987b-d1de-a242-141e7444aa83@arm.com>
-Date:   Tue, 29 Jun 2021 09:52:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232666AbhF2Izq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhF2Izo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 04:55:44 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55843C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:53:15 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso1545653pjx.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Y/8aWcR8pQLRr1AneyecLvILPcZP/SywuwqtFiKRs6o=;
+        b=UERVdQrpA6QxI7RQYA+eUhOfbgXgeUFYb4pvURcjwQKvNlRQqHAOYqkWee5zs+Xjb0
+         Ah3t28sJQF+zhkVQHRqUV46YTiZXGBh15MtEwUIevK9C7jHP7Fn7YYpts7mxMjBYXvfV
+         47iOj3Tl6L2SOmEYsEKhu1xRsUleykMhGR2fkj71nvNEvo29dZejYi93pRIysLFg/Jyj
+         JIwu/CkRn40298AVPZw0CFNk+2U+cYskRpjwI/yVZ8wTDOqXyUmLMtHYRw69DrGY1b7o
+         BrSUColfv2WDuJLrTcLbkUPwpk6iOu0/QE8q5I/rcsxj598vsuZMvfGGMrfhnqAJGbzj
+         noXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Y/8aWcR8pQLRr1AneyecLvILPcZP/SywuwqtFiKRs6o=;
+        b=H93aH+HO6wGmrNjYT13qrPP2f3SHKcy7lER0bBAQBP5B6fdvgFMen8jOl1899vTBUf
+         TOhAoZnfGOkgntA8bgekKaI8nCyARR7GOSyFS1PgR7YG/GiMr9S6kTchkaT9BoCwhltN
+         GGRA/DL1preqXxGAfJHupbbkF3ruTcoIxkQtM55XHmhj9T9kGyBObzvD5ebOmACjWsuf
+         +1/wb72URTcmYWQuuhLXcWgWeEEhIeRwtkWDuvVFVG03wwzpGbZuVFHPFPVfjm+Y04Jl
+         m6PJphEQf7/04Ft+KUOiW8wJ0LDmffIz4DS9HCdVTCy3rbBvk7xeeOHlBLucWtc6aePx
+         2JLQ==
+X-Gm-Message-State: AOAM533FLRR8ISYwrl5G/4bQW9fzkGKqmER3NRGIAZxuMcb2GU6kBLcg
+        ZmPeyhFTs/3Ycwi46MHsVNmlvA==
+X-Google-Smtp-Source: ABdhPJwo1gpUzWaxumdXxHpJ6qsqw7SXNoTKDhbjUPtSfTPJXEB307kK2Bp7DWMmed5a8furb5U99g==
+X-Received: by 2002:a17:90a:5907:: with SMTP id k7mr33269795pji.196.1624956794956;
+        Tue, 29 Jun 2021 01:53:14 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id i188sm6191585pfe.30.2021.06.29.01.53.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 01:53:14 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:23:12 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 4/4] cpufreq: CPPC: Add support for frequency
+ invariance
+Message-ID: <20210629085312.j6f4e4b6vuezsqvm@vireshk-i7>
+References: <cover.1624266901.git.viresh.kumar@linaro.org>
+ <f963d09e57115969dae32827ade5558b0467d3a0.1624266901.git.viresh.kumar@linaro.org>
+ <20210624094812.GA6095@arm.com>
+ <20210624130418.poiy4ph66mbv3y67@vireshk-i7>
+ <20210625085454.GA15540@arm.com>
+ <20210625165418.shi3gkebumqllxma@vireshk-i7>
+ <20210628104929.GA29595@arm.com>
+ <20210629043244.xkjat5dqqjaixkii@vireshk-i7>
+ <20210629084737.GB2425@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628200132.GB1200359@p14s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629084737.GB2425@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/06/2021 21:01, Mathieu Poirier wrote:
-> On Mon, Jun 28, 2021 at 08:08:02PM +0800, Leo Yan wrote:
->> On Mon, Jun 28, 2021 at 11:38:34AM +0100, James Clark wrote:
->>
->> [...]
->>
->>>>>  static int cs_etm__process_auxtrace_event(struct perf_session *session,
->>>>>  					  union perf_event *event,
->>>>>  					  struct perf_tool *tool __maybe_unused)
->>>>> @@ -2462,7 +2478,8 @@ static int cs_etm__process_auxtrace_event(struct perf_session *session,
->>>>>  				cs_etm__dump_event(etm, buffer);
->>>>>  				auxtrace_buffer__put_data(buffer);
->>>>>  			}
->>>>> -	}
->>>>> +	} else if (dump_trace)
->>>>> +		dump_queued_data(etm, &event->auxtrace);
->>>>
->>>> IIUC, in the function cs_etm__process_auxtrace_event(), since
->>>> "etm->data_queued" is always true, below flow will never run:
->>>>
->>>>     if (!etm->data_queued) {
->>>>         ......
->>>>
->>>>         if (dump_trace)
->>>>             if (auxtrace_buffer__get_data(buffer, fd)) {
->>>>                     cs_etm__dump_event(etm, buffer);
->>>>                     auxtrace_buffer__put_data(buffer);
->>>>             }
->>>>     }
->>>>
->>>> If so, it's better to use a new patch to polish the code.
->>>>
->>>
->>> Hi Leo,
->>>
->>> I think this is not true in piped mode because there is no auxtrace index.
->>> In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
->>> is called for each buffer.
->>>
->>> You can reproduce this with something like this:
->>>
->>>      ./perf record -o - ls > stdio.data
->>>      cat stdio.data | ./perf report -i -
->>
->> You are right!  I tried these two commands with cs_etm event, just as
->> you said, in this case, the AUX trace data is not queued; so the flow
->> for "if (!etm->data_queued)" should be kept.  If so, I am very fine
->> for current change.  Thanks for sharing the knowledge.
->>
->>> There are some other Coresight features that don't work as expected in this mode, like
->>> sorting timestamps between CPUs. The aux split patchset won't work either because random
->>> access isn't possible. And the TRBE patch that I'm working on now won't work, because it
->>> also requires the random access to lookup the flags on the AUX record to configure the 
->>> decoder for unformatted trace.
->>
+On 29-06-21, 09:47, Ionela Voinescu wrote:
+> Okay, makes sense. I have not seen this code actually do anything wrong
+> so far, and the issues I see on ThunderX2 point more to misbehaving
+> counters for this purpose. This being said, I would have probably
+> preferred for this feature to be disabled by default, until we've tested
+> more, but that won't give the chance to anyone else to test.
 > 
-> There is a lot of things happening in this area.  Based on the above should I
-> still plan to review this set or should I wait for another revision?
-
-From my point of view, this one is final. It looks like both Leo and I have tested
-it with and without his snapshot changes and it's working as expected in both cases.
-
-Thanks
-James
-
+> Thanks!
 > 
-> Thanks,
-> Mathieu
-> 
->> Cool, looking forward for the patches :)
->>
->> Leo
+> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+
+Thanks for understanding Ionela.
+
+-- 
+viresh
