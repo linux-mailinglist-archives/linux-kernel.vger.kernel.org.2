@@ -2,117 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AD3B7070
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BB53B70B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhF2KNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:13:00 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47740 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232772AbhF2KM5 (ORCPT
+        id S233094AbhF2KbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:31:11 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:57078 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233037AbhF2Ka7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:12:57 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15TA8fVL002052;
-        Tue, 29 Jun 2021 12:10:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=HNidlLSuT/EgI/UAGSiAl/SFbXn1XzYYaTDoJm1qbVM=;
- b=lju3M3oT6ER1kv/CRLNLECPkaPJ2Yzbhd4dNgmo4L/jYElyS11KrnWxUlbWDPgE2u0JS
- QE7G+q4nn6EiyVYrU1An44rJqtLomNXTmscp/zJKulVrXYtxf36I+Jh9VLk0HtCmUj56
- eZbc+3QLzz4DydAd1HDD86C9VcoatBkNvjrShVQCnl98UHpVXVbxlr5xDvYwSf3O4EzQ
- dTyyzpP9LRM4/SkoTQnvgwsTzD/Tq81B3j2xvsNrBU+QCsRTDTu3oE+dk+cb/CWIX/bq
- Tso87Z4TvnNZRQqi7vCnDUJz64zCAOUsU7SKSzW1mItotHeQVTaI+BQcz+Cn9jsZYffx UQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39fxbnhest-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 29 Jun 2021 12:10:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8EC3810002A;
-        Tue, 29 Jun 2021 12:10:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7DBEA21ED4D;
-        Tue, 29 Jun 2021 12:10:27 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 29 Jun
- 2021 12:10:27 +0200
-Subject: Re: remoteproc DMA API abuse status
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Christoph Hellwig <hch@lst.de>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210623134307.GA29505@lst.de> <20210624193514.GA1090275@p14s>
- <011dac94-cfe0-d276-980a-b8ffe1447521@foss.st.com>
- <20210628201419.GC1200359@p14s>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <3f0a2e44-c439-46ea-1100-881d19c9005d@foss.st.com>
-Date:   Tue, 29 Jun 2021 12:10:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 06:30:59 -0400
+X-UUID: adbf36f0a30f46abbb8005e04b6c183d-20210629
+X-UUID: adbf36f0a30f46abbb8005e04b6c183d-20210629
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 707843883; Tue, 29 Jun 2021 18:28:26 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 29 Jun 2021 18:28:25 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 29 Jun 2021 18:28:24 +0800
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <leilk.liu@mediatek.com>,
+        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH 2/2] spi: mediatek: update spi master bingdings for MT6893 SOC
+Date:   Tue, 29 Jun 2021 18:13:11 +0800
+Message-ID: <20210629101310.21045-1-mason.zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210628201419.GC1200359@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-29_05:2021-06-28,2021-06-29 signatures=0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
+From: Mason Zhang <Mason.Zhang@mediatek.com>
 
-On 6/28/21 10:14 PM, Mathieu Poirier wrote:
-> I thought your current work on refactoring the rpmsg_char driver was part of the
-> early steps on the way to splitting that patchset up...
+this patch update spi master bingdings for MT6893 SOC.
 
-No it is de-correlated. Here the point is the vdev0buffer memory region declared
-in rproc that we associate to the rproc_virtio device to be able to use is for
-RPMsg.
+Change-Id: Iaa2840f7e89db83f9505302b50b449f8885a14c1
+Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
+---
+ Documentation/devicetree/bindings/spi/spi-mt65xx.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-When I have a look this here is the approach we had trying to fix it (this
-correspond to my patchset):
+diff --git a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
+index 4d0e4c15c4ea..2a24969159cc 100644
+--- a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
++++ b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
+@@ -11,6 +11,7 @@ Required properties:
+     - mediatek,mt8135-spi: for mt8135 platforms
+     - mediatek,mt8173-spi: for mt8173 platforms
+     - mediatek,mt8183-spi: for mt8183 platforms
++    - mediatek,mt6893-spi: for mt6893 platforms
+     - "mediatek,mt8192-spi", "mediatek,mt6765-spi": for mt8192 platforms
+     - "mediatek,mt8195-spi", "mediatek,mt6765-spi": for mt8195 platforms
+     - "mediatek,mt8516-spi", "mediatek,mt2712-spi": for mt8516 platforms
+-- 
+2.18.0
 
-The objective is to suppress the dma_declare_coherent_memory usage.
-
-=> In this case the "vdev0buffer" virtio buffer memory pool has do be associated
-to the a virtio device by a declaration in device tree. Probably as a subnode of
-the remoteproc device node.
-
-
-&rproc {
-	#address-cells = <1>;
-	#size-cells = <0>;
-
-+	vdev@0 {
-+		memory-region = <&vdev0vring0>,	<&vdev0vring1>, <&vdev0buffer>;
-+		compatible = "rproc-virtio";
-+		reg = <0>;
-+		status = "okay";
-+	};
- };
-
-
-=> a reproc virtio platform driver compatible should be created (based on
-remoteproc core and remote_virtio restructuring). The memory region will be in
-this case associated in a clean way to the remoteproc virtio device.
-
-=> As consequence we would have 2 module devices the remoteproc and remoteproc
-virtio. Both as to be synchronized to ensure that all is ready  before starting
-the remote processor => reuse of the proc->subdev mechanism + (component
-bind/unbind similar to DRM?)
-
-The last but not the least we probably have to maintain the legacy a while to
-let time to move on this new device tree architecture.
-
-Now the question are:
-- Is this the good approach or could a simpler patch can fix the issue.
-- how to address models with one big memory pool used (TI implementation)
-
-
-Regards,
-Arnaud
