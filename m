@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A733B797E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10BF3B7982
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 22:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbhF2Uo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 16:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        id S235555AbhF2UrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 16:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbhF2UoW (ORCPT
+        with ESMTP id S234054AbhF2UrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 16:44:22 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045D0C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:41:54 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so172821oti.2
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:41:54 -0700 (PDT)
+        Tue, 29 Jun 2021 16:47:20 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E452C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:44:53 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id in17-20020a17090b4391b0290170ba0ec7fcso2465433pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 13:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=G+rJt0C2Slb8d0ZfNqjQGxxap0txWSw7TQID7jmhkhA=;
-        b=mVRdapNlPo1HO1UIHjT7z8yyfjnNO/EX3RIshPo2eOjrZ2A663ejNox8Ye0VcVg4JN
-         XvC6WBo/o828ePCTyS7LXPjbqnTFmQwrYruwV1dCRHCsd9+LcK7hC3+YstZuiG3ruTAa
-         TpOrW/4SPyteSuXHPz5ZbvGPPEu2/qz55Ha6I=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QTbTjV7KRsVKAu1VwHOJKbrx5NoERdSq3JOZOY+nE0I=;
+        b=K534EASLNAKHoCsYl9cpXX+MSdYH4heYejdUuL86PE769cXiLKPgGNkGiebudspzr4
+         KxE92HY7gkDh3L9aLFfbNceBdNsmn9nCm4k7mu6L3h2rF+UczfL+owjodfAriknhnXbh
+         XBh8S3UIThCqGAFLqYRsAHU/WM6+cmPazKDt0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=G+rJt0C2Slb8d0ZfNqjQGxxap0txWSw7TQID7jmhkhA=;
-        b=Lsi2KlbeWpCy4zWJuVg91dxiovzBQuvP3bOkeBo/hFXxJ7VYrCKiao7x2zkir22qr6
-         A07J3QneEUc+N5qwmyTo4RhI1VUOax6lsKHQe1iK9wvdjDYIWdf62f57hEzhYynvxhFU
-         KjybPDPRBDW0iduxL1jmFHblomxcrTNy2QcgFMyaaU5EbkHwZM+AEDW2+a/2tmGAYTq9
-         AgvVXvCUbOAfvxv2n+O1Pnygd3gdND+NgD+p4WqNC8t9RJIiZQBue+5iejAOvldYEfb/
-         EpQEgwFUnYAJ9QUzXyLT0MJ92ko2+m6o8HSAZupl4W3gFffN8KwwLN/45anaJu2zGLo0
-         AWrA==
-X-Gm-Message-State: AOAM531VVLFQ0zRFrD1khpi9jaMdhYH5bx/YGZw8j8sNB2JpjqnavlaU
-        xb++Y8cUH7H+Xb1056RdB+OCZgg7HT4P1xvUv+nf+A==
-X-Google-Smtp-Source: ABdhPJx1TFgBKD9DcRhcjUnyrBLH010Bm78M/wrrOZ+J+cCVRwJkR63kAnvPTLiNwVCDc2nMUTp58bOkpkUx6NEVUQY=
-X-Received: by 2002:a9d:2781:: with SMTP id c1mr6020558otb.34.1624999314141;
- Tue, 29 Jun 2021 13:41:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 29 Jun 2021 13:41:53 -0700
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QTbTjV7KRsVKAu1VwHOJKbrx5NoERdSq3JOZOY+nE0I=;
+        b=jltckxaF3a4H4SzdJ4vW9oLajICpXzEySBwjYNbaV427JqTq10uh5kHV6aAsFf1jBV
+         IU0xEFkSgGOSGlhOqHM+1soEVESCRP6pcG853riZj6zOzGgKxyKcILE7YpcMNjGWbTEJ
+         j0X7FanBVRLEPIBnE3YUfzK2Gby6PlR+cPGcW2DYHFnu4bUu+uqRLDN3+zKmORUREb03
+         L83keoT37gQCDOd8iT73wgUp1TZUIV7PQTP8Z7ZGm/nfvvFUAqk7vZi7ZbjCK/DnpiQM
+         G6irjgI72iHhJeDbTYkye15KBMuB+g2P6PjuFh8byHHTEtHDgVi3pHw7gqp2pfa5OIc6
+         PtlQ==
+X-Gm-Message-State: AOAM531kVqfAfk3idaXfyYE3M3GEA7eJdRv/o8OxWsGDDGgRZNno6rn0
+        7OwFQa/n/mU+yx/28FTlRtIbBg==
+X-Google-Smtp-Source: ABdhPJw1wnIIAGvekomCdtc0VpUjsFMssIiRDvsldABWkLn5zyXCXoNBW9WdJxZXtrMhBHxrtHLc6A==
+X-Received: by 2002:a17:902:6ac5:b029:128:ad84:c7b0 with SMTP id i5-20020a1709026ac5b0290128ad84c7b0mr19874994plt.19.1624999492442;
+        Tue, 29 Jun 2021 13:44:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w14sm19755138pjb.3.2021.06.29.13.44.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 13:44:51 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 13:44:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Bill Wendling <wcw@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [GIT PULL] Clang feature updates for v5.14-rc1
+Message-ID: <202106291311.20AB10D04@keescook>
+References: <202106281231.E99B92BB13@keescook>
+ <CAHk-=whqCT0BeqBQhW8D-YoLLgp_eFY=8Y=9ieREM5xx0ef08w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1624997336-2245-1-git-send-email-khsieh@codeaurora.org>
-References: <1624997336-2245-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 29 Jun 2021 13:41:53 -0700
-Message-ID: <CAE-0n50onDrop=67VvMWL2sbSJedxhKEX13PsiZNaokucSgLew@mail.gmail.com>
-Subject: Re: [PATCH] drm/dp_mst: Fix return code on sideband message failure
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run, Lyude Paul <lyude@redhat.com>
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        rsubbia@codeaurora.org, rnayak@codeaurora.org,
-        freedreno@lists.freedesktop.org, airlied@linux.ie, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whqCT0BeqBQhW8D-YoLLgp_eFY=8Y=9ieREM5xx0ef08w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Lyude, author of fixed commit. Please add relevant folks in the future.
+On Mon, Jun 28, 2021 at 07:49:04PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 28, 2021 at 12:32 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The big addition for this merge window is the core support for Clang's
+> > Profile Guided Optimization, which lets Clang build the kernel for
+> > improved performance when running specific kernel workloads. This
+> > currently covers only vmlinux, but module support is under active
+> > development. (Sami Tolvanen, Bill Wendling, Kees Cook, Jarmo Tiitto,
+> > Lukas Bulwahn)
+> 
+> Am I misreading this?
+> 
+> The PGO data seems to be done by using clang instrumentation, instead
+> of done sanely using sample data from a regular "perf" run?
 
-Quoting Kuogee Hsieh (2021-06-29 13:08:56)
-> From: Rajkumar Subbiah <rsubbia@codeaurora.org>
->
-> The commit 2f015ec6eab69301fdcf54d397810d72362d7223 added some debug
+Right, yes. My understanding is that PGO is measurably better than
+sample-based profiling. Additionally, it's arch-agnostic (not that that's
+meaningful here with only x86 finished), and can gain other analysis
+features that aren't possible with perf. I'll let Nick, Fangrui, Bill,
+or Sami answer this more directly.
 
-Please write
+In the meantime I will split the pull request into "PGO" and "everything
+else".
 
-Commit 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
-selftests") added some debug
+> That odd decision seems to not be documented anywhere, and it seems
+> odd and counter-productive, and causes all that odd special buffer
+> handling and that vmlinux.profraw file etc.
+> 
+> And it causes the kernel to be bigger and run slower.
 
-> code for sideband message tracing. But it seems to have unintentionally
-> changed the behavior on sideband message failure. It catches and returns
-> failure only if DRM_UT_DP is enabled. Otherwise it ignores the error code
-> and returns success. So on an MST unplug, the caller is unaware that the
-> clear payload message failed and ends up waiting for 4 seconds for the
-> response.
->
-> This change fixes the issue by returning the proper error code.
+Right -- that's expected. It's not designed to be the final kernel
+someone uses. :)
 
-$ git grep "This patch" -- Documentation/process
+-Kees
 
->
-> Change-Id: I2887b7ca21355fe84a7968f7619d5e8199cbb0c6
-
-Please replace with
-
-Fixes: 2f015ec6eab6 ("drm/dp_mst: Add sideband down request tracing +
-selftests")
-
-> Signed-off-by: Rajkumar Subbiah <rsubbia@codeaurora.org>
-
-Should be a Signed-off-by from Kuogee Hsieh here.
-
-> ---
->  drivers/gpu/drm/drm_dp_mst_topology.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-> index 1590144..8d97430 100644
-> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> @@ -2887,11 +2887,13 @@ static int process_single_tx_qlock(struct drm_dp_mst_topology_mgr *mgr,
->         idx += tosend + 1;
->
->         ret = drm_dp_send_sideband_msg(mgr, up, chunk, idx);
-> -       if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
-> -               struct drm_printer p = drm_debug_printer(DBG_PREFIX);
-> +       if (unlikely(ret)) {
-> +               if (drm_debug_enabled(DRM_UT_DP)) {
-> +                       struct drm_printer p = drm_debug_printer(DBG_PREFIX);
->
-> -               drm_printf(&p, "sideband msg failed to send\n");
-> -               drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
-> +                       drm_printf(&p, "sideband msg failed to send\n");
-> +                       drm_dp_mst_dump_sideband_msg_tx(&p, txmsg);
-> +               }
->                 return ret;
->         }
->
-
-With the above fixed up
-
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+-- 
+Kees Cook
