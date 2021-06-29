@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EB43B73BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DCA3B73C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbhF2OGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhF2OGD (ORCPT
+        id S232579AbhF2OHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:07:47 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:48972 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhF2OHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:06:03 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A30C061760;
-        Tue, 29 Jun 2021 07:03:36 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id y29so29567524qky.12;
-        Tue, 29 Jun 2021 07:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=epo3zKiTfhS1s7uCWxNYZiOm+vo3zbXKhTVM1Kqzmbg=;
-        b=BvAsn6V+lEebL9543XNZN8ZgjQb+osEKHPTuXHALEL19Dqb6/zJ1xRDLLweEL6wFZe
-         nCCZ9qgxxMvqfBg0PIRP27jmbc8ViBnRr2O1g5R9fD2B8DKZbSkVH6hdzgMoPIUWzHeV
-         u9B76ZOBRd9zRYeaOAP24ARezCGz/5LgXUOcEzlvE1OffxKOhgMBdA+uNkK66LNl3be2
-         4qSEXMtzyF67GlNoC0wg7jZ+nuozmqOqplCuU3fIEYFxurWmsax7mrIOp7Vt3dLHEqxZ
-         NEM5Qmqlf4GdsA+ghm9u58I4sopLY1RF+S0SNXXwMWYDVwaevKsyyuATbPEouicRln0n
-         JZow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=epo3zKiTfhS1s7uCWxNYZiOm+vo3zbXKhTVM1Kqzmbg=;
-        b=k8ghkFCGTFs7p+XjM5WuTay9icRHM6gOMBgdeWskAA1aIISS+ZRrn6EeSKN6vHoalH
-         1KVzeyVFSYzhXLvuyTOvnihKg2vOb6BNWXlSxEe0h7EBr9w/ehL6a+SY25AEUgFeapKn
-         lbbQZgLdoXiwMc5eTEXGGc2Omv0gfDRHQVg4murpNL7tEGR4NId8suJajuEUHn2chMfB
-         yh2Jy3euOSLvIbM4LJLJeRikwwWQxHR5aHbW4d/stzW3IiG1b31ykWcgBkawrsD2SWia
-         fXmcULAJNQMMvYTxWRL5O4J79dQ/oh0S8PEx50f3MYzWdbc5TUr7c9RuRYrccLf2Z0AS
-         VeYw==
-X-Gm-Message-State: AOAM5310FsEF8Qs2UnH4DVM1SZxNYfFaFRQjgaOxDB8CQ4BcxrwFRhmq
-        bU4ks4MyM5/6lJvYr8uY4MubYd5wYw7B1g==
-X-Google-Smtp-Source: ABdhPJwF1jHHpUGYvGSGqrM20Y/wdjXItsUPDnGvL02uIcUIMmbhuYPgIoI1h5EDhETkH9lFL4LviA==
-X-Received: by 2002:a37:9b4b:: with SMTP id d72mr16414129qke.10.1624975415813;
-        Tue, 29 Jun 2021 07:03:35 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:85ab])
-        by smtp.gmail.com with ESMTPSA id n128sm845772qkd.93.2021.06.29.07.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:03:35 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 10:03:33 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
- <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
- <YNr1TYfBwR/tEpEJ@blackbook>
+        Tue, 29 Jun 2021 10:07:44 -0400
+Date:   Tue, 29 Jun 2021 14:04:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1624975484;
+        bh=dhxJvVB5vGNzlqPV/Vc3Rg4M/zVZQZH9g1DDMaRrUrA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=XlecZXxI6Xfp+NGBpyfOcyE8lxYK3caHy5ZTXxrL0ZhsnJpmBb4JGOmP/laKSzayw
+         1yZ2+W1n6SA5scwQPvUzMI1e5m/mShEOUCH18JUYaHh7FUmOMrYnQsjc3HugiJohUS
+         a8u7tFPZDRCzbXf5OldIMaGdSWcFF0D+CgeF4awELG0C8KWj3A8p5f/qCfIxWFQ3TA
+         xzCrRIIa0iPx0ldIFrghx64F8MscvcSAhh3Of+5U0JcQj6QOckQ7ubi/gPBfRh6gxs
+         8B9IurABu/mQ9oUcyugWJlASsoELeDM8CjcW4gF0Fpq7YBr4Z3cE4C+D/AJcdVX8jt
+         OId6IAe+6YRJw==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH] staging: rtl8723bs: remove custom endian conversion macros
+Message-ID: <20210629135824.47749-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNr1TYfBwR/tEpEJ@blackbook>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Non-inlining in the loop module doesn't seem like a big trouble. OTOH,
-> other callers may be more sensitive and would need to rely on inlining.
+The rtw_cpu_to_leXX() and rtw_leXX_to_cpu() family of macros are
+unnecessary and should be removed.
 
-Yes, this is my concern as well.
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_io.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-> I can't currently think of a nice way to have both the exported and the
-> exlicitly inlined variant at once. It seems it's either API or perf
-> craft in the end but both are uncertain, so I guess the current approach
-> is fine in the end.
-> 
-> > Yes it is intentional. All requests (not just aio) go through the loop
-> > worker which grabs the blkcg reference in loop_queue_work() on
-> > construction. So I believe grabbing a reference per request is
-> > unnecessary.
-> 
-> Isn't there a window without the reference between loop_queue_rq and
-> loop_queue_work?
+diff --git a/drivers/staging/rtl8723bs/core/rtw_io.c b/drivers/staging/rtl8=
+723bs/core/rtw_io.c
+index 856e23398c03..4d3c30ec93b5 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_io.c
++++ b/drivers/staging/rtl8723bs/core/rtw_io.c
+@@ -28,11 +28,6 @@ jackson@realtek.com.tw
+ #include <drv_types.h>
+ #include <rtw_debug.h>
 
-Hmm, perhaps I'm not understanding how the reference counting works,
-but my understanding is that we enter loop_queue_rq with presumably
-some code earlier holding a reference to the blkcg, we only need to
-acquire a reference sometime before returning from loop_queue_rq. The
-"window" between loop_queue_rq and loop_queue_work is all
-straight-line code so there's no possibility for the earlier code to
-get control back and drop the reference.
+-#define rtw_le16_to_cpu(val)=09=09val
+-#define rtw_le32_to_cpu(val)=09=09val
+-#define rtw_cpu_to_le16(val)=09=09val
+-#define rtw_cpu_to_le32(val)=09=09val
+-
+ u8 rtw_read8(struct adapter *adapter, u32 addr)
+ {
+ =09/* struct=09io_queue=09*pio_queue =3D (struct io_queue *)adapter->pio_q=
+ueue; */
+@@ -47,7 +42,6 @@ u8 rtw_read8(struct adapter *adapter, u32 addr)
 
-> I don't know, you seem to know better, so I'd suggest
-> dropping a comment line into the code explaining this.
+ u16 rtw_read16(struct adapter *adapter, u32 addr)
+ {
+-=09u16 r_val;
+ =09/* struct=09io_queue=09*pio_queue =3D (struct io_queue *)adapter->pio_q=
+ueue; */
+ =09struct io_priv *pio_priv =3D &adapter->iopriv;
+ =09struct=09intf_hdl=09=09*pintfhdl =3D &(pio_priv->intf);
+@@ -55,13 +49,11 @@ u16 rtw_read16(struct adapter *adapter, u32 addr)
 
-I wouldn't be so sure that I know any better here :D - I'm fairly
-inexperienced in this domain.
+ =09_read16 =3D pintfhdl->io_ops._read16;
 
-Where would you suggest putting such a comment? The change in question
-removed a particular case where we explicitly grab a reference to the
-blkcg because now we do it uniformly in one place. Would you like a
-comment explaining why we acquire a reference for all loop workers or
-one explaining specifically why we don't need to acquire one for aio?
+-=09r_val =3D _read16(pintfhdl, addr);
+-=09return rtw_le16_to_cpu(r_val);
++=09return _read16(pintfhdl, addr);
+ }
+
+ u32 rtw_read32(struct adapter *adapter, u32 addr)
+ {
+-=09u32 r_val;
+ =09/* struct=09io_queue=09*pio_queue =3D (struct io_queue *)adapter->pio_q=
+ueue; */
+ =09struct io_priv *pio_priv =3D &adapter->iopriv;
+ =09struct=09intf_hdl=09=09*pintfhdl =3D &(pio_priv->intf);
+@@ -69,8 +61,7 @@ u32 rtw_read32(struct adapter *adapter, u32 addr)
+
+ =09_read32 =3D pintfhdl->io_ops._read32;
+
+-=09r_val =3D _read32(pintfhdl, addr);
+-=09return rtw_le32_to_cpu(r_val);
++=09return _read32(pintfhdl, addr);
+
+ }
+
+--
+2.27.0
+
+
