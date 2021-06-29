@@ -2,148 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A943B6D45
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BBC3B6D6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 06:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhF2EMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 00:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhF2EMr (ORCPT
+        id S229733AbhF2EVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 00:21:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229480AbhF2EVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 00:12:47 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A20C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:10:20 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 80so1574582pgg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HbCIMJbXR00eV4jPyvQKtQotReipOTL/gg7Z8DJ8llQ=;
-        b=KevEF2v/WbbhBrvu98MkRX2tgsJuIqO1/X0aBDBYmv8nqgbtIXE/gSpKRIi16iOJuf
-         SOIak/iEwfohjS2dbJc932HfBoabsNbUOByEpKmvS4q3pznuX1/v43kcZ/dCWeccQH5l
-         cXC+GHjt0NZflDe1/EU02kA/laewf6bVJF6ty7mwv6rTa5YRUKDDnv3qLCVUIg9Ysu3Y
-         RD/xmgFsTwE+04voR7i+0aiZGct5b7daYDZC/x5qSVrsCOtplbOGBhLcNJcwdn04JHe6
-         xkjPCY04gld9AMc7SGJpO0iwZUpUl1pm+0ptTRGPldkg5cirW2lP+Gyhkrp0ZpUo+59q
-         hPoA==
+        Tue, 29 Jun 2021 00:21:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624940321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=artctqxsXOBji6dZlUYYfDDilnt3HH/T60QvobzscDY=;
+        b=PAb0HPXzD5k01hNjGDFk4ZjYjkEnKVZ9PwA/HI4Rhm5aNgJxeNiiLCuBrmfYUlDM4Xyv6f
+        RDV7i+gvduud6t4wAn6omvf9+zcR2ckMhtjhOW0T0M+czRxXh9dmIIJuqnUG/qGcRyI5+d
+        NFamugOjjL+vD0ktDi5NJepUtxIUGEA=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254-YizQmZB6OcO4hLTv7e9VGw-1; Tue, 29 Jun 2021 00:18:39 -0400
+X-MC-Unique: YizQmZB6OcO4hLTv7e9VGw-1
+Received: by mail-pl1-f200.google.com with SMTP id 4-20020a170902c204b0290121d3ad80ecso6697347pll.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 21:18:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HbCIMJbXR00eV4jPyvQKtQotReipOTL/gg7Z8DJ8llQ=;
-        b=KBy4xrMyDXdPimoOgZo1r1g4f5QAEWWdzLJjAVOGpaS01wGEZ/vYXmXuoh7sJuFb2K
-         VmXoUHJO/261sUOZ33T6fwJwSxYKZ/qjte8sPPbRMifmcwJyTls1dWGeN+VbcYpyZMGI
-         NJb3Wl7HRpddkDHGdRsRGjTWxdy+z3rjFtCRq97oo5GSRz1c0/Xs4zTsUcNy0rrVnatv
-         bYouXJcs+oV1ioKxKDG4C0ZJf7e8JFGGduJr7R7cIhjTBI2z5PEgQ3amTqMFqocpIqvS
-         y8q3ju8CN6e0qgUnqdMUhGyaHYldDY3CW1rZY8bDDX7GH1HEDj3jqDWaqmeEmMTjiyg3
-         Y0CQ==
-X-Gm-Message-State: AOAM533PH3sJacBRAbFQHsusUyDZMvjwPaLlAEQymMq1l3u0aES2j0FN
-        92HhsncF3EDYHcg4jxSbQM9wjw==
-X-Google-Smtp-Source: ABdhPJx3CFYgS7XBI0CTsMRECG2jABxyuESu9uV4cFATrGVq+dZFzWsPOGAEWkZup9hNd5IWwipNPA==
-X-Received: by 2002:a63:d811:: with SMTP id b17mr4522914pgh.286.1624939819758;
-        Mon, 28 Jun 2021 21:10:19 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id y3sm16469487pga.72.2021.06.28.21.10.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 21:10:19 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 09:40:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629041017.dsvzldikvsaade37@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=artctqxsXOBji6dZlUYYfDDilnt3HH/T60QvobzscDY=;
+        b=KwZ6b3LfCmK0j+VyMLoas++0MhcQmAi/XpXT0bFdSYUKYOQK4D4UQQhcVaxxM+hA6l
+         +xurqGxbUO+6Km1ScbQIS+W4tImj7PI3zb1lpbMVvn3slh3trl4ls2Tq1uH9YYst/zXl
+         5UqizjLiHZfqb1ZVZUTdUbcEIWJGefKTA2jCh6Il15XaSYBqJCtnfSZVy1Gun3gMIKrw
+         mEz9MFCTmv/NN4oasBIsGNZA3T9QVEydXW6DlRxIKFd1OmRBj7/5ZjfWR9PpGyghgCUR
+         lQnNZj1bsAq0FXcWVzKtttyEOHvpeSvc8zy8oOMsoLo/vBqxxsYviC/5O7o5tC0qSbQr
+         8Y3A==
+X-Gm-Message-State: AOAM533XBEEjFrgtIrcu7gQlsOUqBH6OwS9Wj8zdL8YfN06eecAzjex/
+        ZwXZDQiXzhLBnjDB4yQbHHN2g6Bq0WSb9iZbNFvS+KAFt9w4fq5WZNkjwlVoq9bq+7XV7WvYDFH
+        /H2R+AAh0QtLpvh3VRXMJn4/cNXlLmRgIF22z06lgeVgHnLiBC5zzSsozjd4Z235e/R0LIjjN0B
+        md
+X-Received: by 2002:a62:b616:0:b029:303:aa7b:b2e0 with SMTP id j22-20020a62b6160000b0290303aa7bb2e0mr28469466pff.21.1624939864960;
+        Mon, 28 Jun 2021 21:11:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEtTsRWTzX+1HKlyYauA7LaEp1VCLZNHRfy5MStjoYEhho4d0zuZ1s0SoSqwSCB7kvsITcEw==
+X-Received: by 2002:a62:b616:0:b029:303:aa7b:b2e0 with SMTP id j22-20020a62b6160000b0290303aa7bb2e0mr28469429pff.21.1624939864605;
+        Mon, 28 Jun 2021 21:11:04 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id cs1sm1085868pjb.56.2021.06.28.21.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 21:11:04 -0700 (PDT)
+Subject: Re: [PATCH v8 00/10] Introduce VDUSE - vDPA Device in Userspace
+To:     "Liu, Xiaodong" <xiaodong.liu@intel.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "sgarzare@redhat.com" <sgarzare@redhat.com>,
+        "parav@nvidia.com" <parav@nvidia.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "christian.brauner@canonical.com" <christian.brauner@canonical.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "bcrl@kvack.org" <bcrl@kvack.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mika.penttila@nextfour.com" <mika.penttila@nextfour.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210615141331.407-1-xieyongji@bytedance.com>
+ <20210628103309.GA205554@storage2.sh.intel.com>
+ <bdbe3a79-e5ce-c3a5-4c68-c11c65857377@redhat.com>
+ <BYAPR11MB2662FFF6140A4C634648BB2E8C039@BYAPR11MB2662.namprd11.prod.outlook.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <41cc419e-48b5-6755-0cb0-9033bd1310e4@redhat.com>
+Date:   Tue, 29 Jun 2021 12:10:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNnjh3xxyaZZSo9N@ninjato>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <BYAPR11MB2662FFF6140A4C634648BB2E8C039@BYAPR11MB2662.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will be replying here instead of replying to each and every msg :)
 
-On 28-06-21, 16:58, Wolfram Sang wrote:
-> 
-> > You can fine Viresh's vhost-user implementation at
-> > https://lore.kernel.org/qemu-devel/cover.1617278395.git.viresh.kumar@linaro.org/t/#m3b5044bad9769b170f505e63bd081eb27cef8db2
-> 
-> It looks OK so far; yet, it is not complete. But it might be bearable
-> in the end.
+在 2021/6/28 下午1:54, Liu, Xiaodong 写道:
+>> Several issues:
+>>
+>> - VDUSE needs to limit the total size of the bounce buffers (64M if I was not
+>> wrong). Does it work for SPDK?
+> Yes, Jason. It is enough and works for SPDK.
+> Since it's a kind of bounce buffer mainly for in-flight IO, so limited size like
+> 64MB is enough.
 
-While we are at it, this has been replaced by a Rust counterpart [1]
-(as that makes it hypervisor agnostic, which is the goal of my work
-here) and I need someone with I2C knowledge to help review it. It
-should be okay even if you don't understand Rust a lot, just review
-this file[2] which is where most of i2c specific stuff lies.
 
-> > As you say, it does get a bit clumsy, but I think there is also a good argument
-> > to be made that the clumsiness is based on the host Linux user interface
-> > more than the on the requirements of the physical interface,
-> > and that should not have to be reflected in the virtio specification.
-> 
-> Makes sense to me.
-> 
-> > Right, this one has come up before as well: the preliminary result
-> > was to assume that this probably won't be needed, but would be easy
-> > enough to add later if necessary.
-> 
-> If adding support incrementally works for such an interface, this makes
-> sense as well.
+Ok.
 
-Yes, we don't support few of SMBUS transaction (the block ones) as you
-specified.
 
-> So, where are we?
+>
+>> - VDUSE can use hugepages but I'm not sure we can mandate hugepages (or we
+>> need introduce new flags for supporting this)
+> Same with your worry, I'm afraid too that it is a hard for a kernel module
+> to directly preallocate hugepage internal.
+> What I tried is that:
+> 1. A simple agent daemon (represents for one device)  `preallocates` and maps
+>      dozens of 2MB hugepages (like 64MB) for one device.
+> 2. The daemon passes its mapping addr&len and hugepage fd to kernel
+>      module through created IOCTL.
+> 3. Kernel module remaps the hugepages inside kernel.
 
-The virtio specification is already merged and here is the latest
-version [3].
 
-> As I understand, this v10 does not support I2C transactions (or
-> I2C_RDWR as you said).
+Such model should work, but the main "issue" is that it introduce  
+overheads in the case of vhost-vDPA.
 
-I am not sure why you say I2C_RDWR isn't supported. The spec and Linux
-driver (+ my Rust/qemu backend), they all support I2C_RDWR as well as
-SMBUS. To clarify on an earlier point, every virtio transfer may
-contain one or more struct i2c_msg instances, all processed together
-(as expected).
+Note that in the case of vhost-vDPA, we don't use bounce buffer, the  
+userspace pages were shared directly.
 
-If you see virtio_i2c_send_reqs() in this patch, you will see that it
-converts a stream of i2c_req messages to their virtio counterparts and
-send them together, consider it a single transaction.
+And since DMA is not done per page, it prevents us from using tricks  
+like vm_insert_page() in those cases.
 
-> But you want to support all clients. So, this doesn't match, or?
 
--- 
-viresh
+> 4. Vhost user target gets and maps hugepage fd from kernel module
+>      in vhost-user msg through Unix Domain Socket cmsg.
+> Then kernel module and target map on the same hugepage based
+> bounce buffer for in-flight IO.
+>
+> If there is one option in VDUSE to map userspace preallocated memory, then
+> VDUSE should be able to mandate it even it is hugepage based.
+>
 
-[1] https://github.com/rust-vmm/vhost-device/pull/1
-[2] https://github.com/rust-vmm/vhost-device/blob/5aa22c92faac84ab07b6b15a214513556e8b1d01/src/i2c/src/i2c.rs
-[3] https://github.com/oasis-tcs/virtio-spec/blob/master/virtio-i2c.tex
+As above, this requires some kind of re-design since VDUSE depends on  
+the model of mmap(MAP_SHARED) instead of umem registering.
+
+Thanks
+
