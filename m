@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D785D3B6C80
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952543B6C88
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 04:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhF2CdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 22:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhF2Cc7 (ORCPT
+        id S231846AbhF2Chv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 22:37:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6021 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhF2Chs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 22:32:59 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F1EC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:30:31 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id o3so4961380plg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 19:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=PGw82epzk6iSPnchds6h6A2TxOtpwKsb733CwTt40/8=;
-        b=JY2U0Vu2UIfTd34jGxmHb1oET48immRTchOyMGpeS2UJI6jxqeUS5zWWUuxFyTXq9T
-         U3MXT2zbN+Fofuo1uW5oApsE+u7zBPi9SkECLNUt4IMA+tHK14k1WpdNwXkXKDs8AQXn
-         xOMe/Vynd+71N76pL7bNh7bL40S/j85/ZTNfTIRC2kCJ5Yt9MiGoT51m5Mc7LCc22dKd
-         6k2J5x7OTAD15j6I8CkD6RtDb1Sq/8truZJwqNaCD6+o99OMrj+fZzbb27oTMZXvslhW
-         Ddtzpp2Of+1lrzAaBZPnUjPxsL3z2nW/1eY6V3ydgxQlxJ4Ztbeqv7bxUL+CgGUKAmoE
-         I1wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PGw82epzk6iSPnchds6h6A2TxOtpwKsb733CwTt40/8=;
-        b=Io2kjmh2kgxHi2pOnSLVhdBEOO3hifQIaDzfA2QH1/ad4EMlzMF3u3GGeiUpHaRlch
-         a+cbluGcx0ogujdGXw00YcCkDbkvZteWFOuY+K0klwdZcAKu7JzUdIVME0f+ja1t9h8k
-         aqMwGAiQAKGjx8JnsDBPZU4AAUH+OoXBH+xi3Q/O+CHSed7mHx3JmdBCRMyyoUB+pMJD
-         G3eSaF/FRv9Va0ZTrBwTHbAeZA0Kw7QzeSmoJzUkU/OYIB6Or7hBRu36YvoPmHHlVNxS
-         OaE8KIsUZKa7ytnQptBaAdtKstHtJjBPtdJ/SuT5TgZ8KJ7RzVlzXyapOO0IuD0jF6ug
-         KEXg==
-X-Gm-Message-State: AOAM530dQ3trRoZHGvfX0evEAUp3kiZK0AuJbDBMztd1DqcR9NyJ8dRS
-        RKljkwqR/xPIZg/3nm1oM5qu/w==
-X-Google-Smtp-Source: ABdhPJwQEr5P4K0ooyHKsDKfvju7BRWTsVcUOJEympAC2jzZeoqSeyptwYERNOTZn2laKSjhduBbFQ==
-X-Received: by 2002:a17:90a:400f:: with SMTP id u15mr42067759pjc.86.1624933830957;
-        Mon, 28 Jun 2021 19:30:30 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id v69sm17397130pfc.18.2021.06.28.19.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jun 2021 19:30:30 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] Input: atmel_mxt_ts - add config_crc sysfs entry
-Date:   Tue, 29 Jun 2021 10:30:23 +0800
-Message-Id: <20210629023023.32017-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Mon, 28 Jun 2021 22:37:48 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GDT2y1Qs2zXljJ;
+        Tue, 29 Jun 2021 10:30:02 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 29 Jun 2021 10:35:20 +0800
+Received: from huawei.com (10.67.174.169) by dggpemm500001.china.huawei.com
+ (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 29 Jun
+ 2021 10:35:19 +0800
+From:   Chen Lifu <chenlifu@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <guoren@linux.alibaba.com>,
+        <chenlifu@huawei.com>, <penberg@kernel.org>, <mhiramat@kernel.org>,
+        <me@packi.ch>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next 1/2] riscv: implemented auipc simulate instruction
+Date:   Tue, 29 Jun 2021 10:34:54 +0800
+Message-ID: <20210629023455.280998-1-chenlifu@huawei.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.169]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's useful for checking the config version that is currently installed
-on the device.
+To test the kprobe-based event tracing, we prepare
+a kernel module 'kprobe_test.ko' to add the probes.
+The assembly codes (partially) of the module are as follows:
+...
+0000000000000000 <kprobe_test_branch>:
+...
+0000000000000038 <.LVL1>:
+  38:	00000597          	auipc	a1,0x0
+  3c:	00058593          	mv	a1,a1
+...
 
-The code is taken from downstream maXTouch_linux tree.
+Test the kprobe-based event tracing in qemu-system-riscv64:
+First, install the kprobe test module:
+insmod /root/kprobe_test.ko
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Then, add a probe as a new event at an 'auipc' instruction,
+the following error occurs due to the instruction not allowed to probe yet:
+echo "p:auipc kprobe_test:kprobe_test_branch+0x38 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
+sh: write error: Invalid argument
+
+This patch implemented the 'auipc' simulate instruction and allowed to probe it.
+Merge this patch and perform the test again, the test results are as follows:
+First, add a probe at the 'auipc' instruction:
+echo "p:auipc kprobe_test:kprobe_test_branch+0x38 epc=%epc opcode=+0(%epc):x32" >> /sys/kernel/debug/tracing/kprobe_events
+echo 1 > /sys/kernel/debug/tracing/events/kprobes/auipc/enable
+
+Then, do something to run to the probe.
+After that, see the traced information:
+cat /sys/kernel/debug/tracing/trace
+sysctl-58      [001] d...   179.126350: auipc: (kprobe_test_branch+0x38/0x10e [kprobe_test]) epc=0xffffffff016122aa opcode=0x100073
+
+Now we can see the traced information.
+The actual address of the symbol 'kprobe_test_branch' is as follows:
+cat /proc/kallsyms | grep kprobe_test_branch
+ffffffff01612272 t kprobe_test_branch   [kprobe_test]
+
+Based on the traced information and the actual address of the symbol
+'kprobe_test_branch', we can also see that the 'auipc' instruction
+has been replaced by 'ebreak(0x100073)' instruction.
+
+--------
+
+Signed-off-by: Chen Lifu <chenlifu@huawei.com>
 ---
- drivers/input/touchscreen/atmel_mxt_ts.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/riscv/kernel/probes/decode-insn.c   |  2 +-
+ arch/riscv/kernel/probes/simulate-insn.c | 34 ++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index 05de92c0293b..41a3d4df3ebd 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -3002,16 +3002,27 @@ static ssize_t mxt_update_fw_store(struct device *dev,
- 	return count;
+diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
+index 0ed043acc882..5eb03fb61450 100644
+--- a/arch/riscv/kernel/probes/decode-insn.c
++++ b/arch/riscv/kernel/probes/decode-insn.c
+@@ -38,11 +38,11 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
+ 	RISCV_INSN_REJECTED(c_ebreak,		insn);
+ #endif
+ 
+-	RISCV_INSN_REJECTED(auipc,		insn);
+ 	RISCV_INSN_REJECTED(branch,		insn);
+ 
+ 	RISCV_INSN_SET_SIMULATE(jal,		insn);
+ 	RISCV_INSN_SET_SIMULATE(jalr,		insn);
++	RISCV_INSN_SET_SIMULATE(auipc,		insn);
+ 
+ 	return INSN_GOOD;
  }
+diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
+index 2519ce26377d..b81719522d5c 100644
+--- a/arch/riscv/kernel/probes/simulate-insn.c
++++ b/arch/riscv/kernel/probes/simulate-insn.c
+@@ -83,3 +83,37 @@ bool __kprobes simulate_jalr(u32 opcode, unsigned long addr, struct pt_regs *reg
  
-+/* Configuration crc check sum is returned as hex xxxxxx */
-+static ssize_t mxt_config_crc_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
+ 	return ret;
+ }
++
++#define auipc_rd_idx(opcode) \
++	((opcode >> 7) & 0x1f)
++
++#define auipc_imm(opcode) \
++	((((opcode) >> 12) & 0xfffff) << 12)
++
++#if __riscv_xlen == 64
++#define auipc_offset(opcode)	sign_extend64(auipc_imm(opcode), 31)
++#elif __riscv_xlen == 32
++#define auipc_offset(opcode)	auipc_imm(opcode)
++#else
++#error "Unexpected __riscv_xlen"
++#endif
++
++bool __kprobes simulate_auipc(u32 opcode, unsigned long addr, struct pt_regs *regs)
 +{
-+	struct mxt_data *data = dev_get_drvdata(dev);
++	/*
++	 * auipc instruction:
++	 *  31        12 11 7 6      0
++	 * | imm[31:12] | rd | opcode |
++	 *        20       5     7
++	 */
 +
-+	return scnprintf(buf, PAGE_SIZE, "%06x\n", data->config_crc);
++	u32 rd_idx = auipc_rd_idx(opcode);
++	unsigned long rd_val = addr + auipc_offset(opcode);
++
++	if (!rv_insn_reg_set_val(regs, rd_idx, rd_val))
++		return false;
++
++	instruction_pointer_set(regs, addr + 4);
++
++	return true;
 +}
-+
- static DEVICE_ATTR(fw_version, S_IRUGO, mxt_fw_version_show, NULL);
- static DEVICE_ATTR(hw_version, S_IRUGO, mxt_hw_version_show, NULL);
- static DEVICE_ATTR(object, S_IRUGO, mxt_object_show, NULL);
- static DEVICE_ATTR(update_fw, S_IWUSR, NULL, mxt_update_fw_store);
-+static DEVICE_ATTR(config_crc, S_IRUGO, mxt_config_crc_show, NULL);
- 
- static struct attribute *mxt_attrs[] = {
- 	&dev_attr_fw_version.attr,
- 	&dev_attr_hw_version.attr,
- 	&dev_attr_object.attr,
- 	&dev_attr_update_fw.attr,
-+	&dev_attr_config_crc.attr,
- 	NULL
- };
- 
 -- 
-2.17.1
+2.32.0
 
