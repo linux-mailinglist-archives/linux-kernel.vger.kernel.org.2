@@ -2,128 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BE63B72EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C00C3B72F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 15:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbhF2NHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbhF2NHs (ORCPT
+        id S233947AbhF2NJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:09:27 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:36588 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234038AbhF2NJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:07:48 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE7C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:05:19 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g21so15430655pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 06:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nrWs2dcQQbgOae2afCRNt5dMIBQMgs08LTHn8M2WFwg=;
-        b=W/VJ9uwFGEFVmSckJPfKA46s+bbC+0CKNOIKrivOK33+cZviPX5bIEZzmgxz68zruP
-         cEwvcKZs0Fx7bYKhc0HvaPZdVq2TpgFkgJhoQPg1pZ7jksgBl/4RerDmi+aWgYmP7Fy9
-         q09cUx8sASxsTj100nus9BYQSpuhUoAQ+aDQdTlt5rJUMmE5HX6hnbzIWQZHzN/+v0HP
-         N/cwf0qpNuN57gS4xvWR8zbkhanYUVjZopaLS3qTeSNgVygxWPjH5xVzb5WsEzW38t8q
-         e1bTB3wSZ4gEd7mAnMX99N8m33LuL3t/3qwOdM5ktH43YGD8+T56qn+MQDaGC+JviEZw
-         KlJg==
+        Tue, 29 Jun 2021 09:09:23 -0400
+Received: by mail-wr1-f54.google.com with SMTP id v5so79894wrt.3;
+        Tue, 29 Jun 2021 06:06:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nrWs2dcQQbgOae2afCRNt5dMIBQMgs08LTHn8M2WFwg=;
-        b=iW4HVfc4o9g5b8aYY7AAiroEH/6wjlzUal53Hce7xLMI/fuiZLRRhzogGsE+E+hQ/6
-         6IS4rs9GFsRy3DcKpme/8CfJaQlPQKcjclUb2oLNnMuPeWvWXpDy/5VPBHZJcK4yDWGk
-         Xa+Vy0bIQmntJcoi2HF9UmGfC5IG3xG3EOJbOafq8m4YQWKwrLnzFsRCw2QzyZLQXVg/
-         wXiOTfJGNbpfTdpevz6Jr2A+RM1vuFYrG8mAgWUaraXF1lOX9HsjIt7uAY7ncamiJViN
-         vC39QAhPKthZ2L0xoHvw7uAzymrqvKbSOm8suOPLhQsMWwakWn017NedM8JfuIuQk6sN
-         YeHw==
-X-Gm-Message-State: AOAM5300pna8M4DXQ5+10I1wXLT/9+HR3j7UoAMgHjdh/RHsbuvFUQfV
-        CbmXZCxflZWuOZNSLMvi0FSTDg==
-X-Google-Smtp-Source: ABdhPJxeKX8hi/esqw5TO9vNZ9dpHw2w/oMYdY2ij0Il3pTsGjSzBttJgQ/8/xirZghrbI8oB5AvBg==
-X-Received: by 2002:aa7:8254:0:b029:2ed:b41:fefc with SMTP id e20-20020aa782540000b02902ed0b41fefcmr30374718pfn.42.1624971918745;
-        Tue, 29 Jun 2021 06:05:18 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id u13sm18766769pga.64.2021.06.29.06.05.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0fbcOFNv/fEL1LfPvVYhvBfReGmmVneZTwjkE/yWKPk=;
+        b=Z9ptE7BRiz6naFjQ1Jz7qURGUau+CPHaQKeOMDkKqlqKT/RCCkGvOoLR61hQysKpOq
+         4nxyDJhFNREC9JGo83udjRQ18Ehcq1Rk1h3z8LJbFjW6zzOiDKVWvx3STaKfMTSkNnw7
+         ZAWiLfUjrVtg/ZpjhvAr6G/qTdT17kwMEAuO97HzhQxqG0qDa6bvtRHbDzWS2huNF3jN
+         ogUG0CttadVgbTwjQThg3ykSTpAOUkHAfvwJAnyqW9iyTO20L/jEtCsMCXyn8OkKl1Zo
+         n3VLKHQNdTIUQBYWiDcgfOL2jKuSL1JpmkbE3aMq1arpgX4F0gt+jtZnme3JyMmr07TH
+         99kQ==
+X-Gm-Message-State: AOAM5330yYMNW8goJ8Ue25OQ54isEMRAPI17k7Of/ebmyggGRfUXLMxW
+        lXa8LVrt15nWpnE4l3M7Atw=
+X-Google-Smtp-Source: ABdhPJw+psSY+vnhRGp9ggD8WHxGcdbWQm+iba+bXos+lgbx39Lm8t49GQCAD7yxjw38Ax4o+q76Tw==
+X-Received: by 2002:a5d:410f:: with SMTP id l15mr33771817wrp.82.1624972014754;
+        Tue, 29 Jun 2021 06:06:54 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n8sm18228054wrt.95.2021.06.29.06.06.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 06:05:18 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Henry Chen <henryc.chen@mediatek.com>,
-        Flora Fu <flora.fu@mediatek.com>, Wen Su <wen.su@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 3/3] regulator: mt6397: Remove modeset_shift from struct mt6397_regulator_info
-Date:   Tue, 29 Jun 2021 21:05:03 +0800
-Message-Id: <20210629130503.2183574-3-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210629130503.2183574-1-axel.lin@ingics.com>
-References: <20210629130503.2183574-1-axel.lin@ingics.com>
+        Tue, 29 Jun 2021 06:06:54 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 13:06:52 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 06/17] mshv: SynIC port and connection hypercalls
+Message-ID: <20210629130652.lzydiyqgwd47lhue@liuwe-devbox-debian-v2>
+References: <cover.1622654100.git.viremana@linux.microsoft.com>
+ <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The shift setting can be calculated via the corresponding mask field,
-so remove modeset_shift.
+On Wed, Jun 02, 2021 at 05:20:51PM +0000, Vineeth Pillai wrote:
+> Hyper-V enables inter-partition communication through the port and
+> connection constructs. More details about ports and connections in
+> TLFS chapter 11.
+> 
+> Implement hypercalls related to ports and connections for enabling
+> inter-partiion communication.
+> 
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Vineeth, feel free to squash the following patch.
+
+---8<---
+From afb9ab422895364216acb4261399f6f5154eea17 Mon Sep 17 00:00:00 2001
+From: Wei Liu <wei.liu@kernel.org>
+Date: Tue, 29 Jun 2021 12:58:47 +0000
+Subject: [PATCH] fixup! mshv: SynIC port and connection hypercalls
+
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 ---
- drivers/regulator/mt6397-regulator.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/hv/hv_call.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/regulator/mt6397-regulator.c b/drivers/regulator/mt6397-regulator.c
-index 0a30df5e414f..b9bf7ade1f8a 100644
---- a/drivers/regulator/mt6397-regulator.c
-+++ b/drivers/regulator/mt6397-regulator.c
-@@ -32,7 +32,6 @@ struct mt6397_regulator_info {
- 	u32 vselctrl_mask;
- 	u32 modeset_reg;
- 	u32 modeset_mask;
--	u32 modeset_shift;
- };
+diff --git a/drivers/hv/hv_call.c b/drivers/hv/hv_call.c
+index d5cdbe4e93da..30aefcbdda85 100644
+--- a/drivers/hv/hv_call.c
++++ b/drivers/hv/hv_call.c
+@@ -797,7 +797,7 @@ hv_call_create_port(u64 port_partition_id, union hv_port_id port_id,
+ 		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
+ 			pr_err("%s: %s\n",
+ 			       __func__, hv_status_to_string(status));
+-			ret = -hv_status_to_errno(status);
++			ret = hv_status_to_errno(status);
+ 			break;
+ 		}
+ 		ret = hv_call_deposit_pages(NUMA_NO_NODE,
+@@ -826,7 +826,7 @@ hv_call_delete_port(u64 port_partition_id, union hv_port_id port_id)
  
- #define MT6397_BUCK(match, vreg, min, max, step, volt_ranges, enreg,	\
-@@ -61,7 +60,6 @@ struct mt6397_regulator_info {
- 	.vselctrl_mask = BIT(1),					\
- 	.modeset_reg = _modeset_reg,					\
- 	.modeset_mask = BIT(_modeset_shift),				\
--	.modeset_shift = _modeset_shift					\
- }
- 
- #define MT6397_LDO(match, vreg, ldo_volt_table, enreg, enbit, vosel,	\
-@@ -175,11 +173,11 @@ static int mt6397_regulator_set_mode(struct regulator_dev *rdev,
- 		goto err_mode;
+ 	if (status != HV_STATUS_SUCCESS) {
+ 		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
+-		return -hv_status_to_errno(status);
++		return hv_status_to_errno(status);
  	}
  
--	dev_dbg(&rdev->dev, "mt6397 buck set_mode %#x, %#x, %#x, %#x\n",
--		info->modeset_reg, info->modeset_mask,
--		info->modeset_shift, val);
-+	dev_dbg(&rdev->dev, "mt6397 buck set_mode %#x, %#x, %#x\n",
-+		info->modeset_reg, info->modeset_mask, val);
-+
-+	val <<= ffs(info->modeset_mask) - 1;
+ 	return 0;
+@@ -866,7 +866,7 @@ hv_call_connect_port(u64 port_partition_id, union hv_port_id port_id,
+ 		if (status != HV_STATUS_INSUFFICIENT_MEMORY) {
+ 			pr_err("%s: %s\n",
+ 			       __func__, hv_status_to_string(status));
+-			ret = -hv_status_to_errno(status);
++			ret = hv_status_to_errno(status);
+ 			break;
+ 		}
+ 		ret = hv_call_deposit_pages(NUMA_NO_NODE,
+@@ -896,7 +896,7 @@ hv_call_disconnect_port(u64 connection_partition_id,
  
--	val <<= info->modeset_shift;
- 	ret = regmap_update_bits(rdev->regmap, info->modeset_reg,
- 				 info->modeset_mask, val);
- err_mode:
-@@ -204,7 +202,10 @@ static unsigned int mt6397_regulator_get_mode(struct regulator_dev *rdev)
- 		return ret;
+ 	if (status != HV_STATUS_SUCCESS) {
+ 		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
+-		return -hv_status_to_errno(status);
++		return hv_status_to_errno(status);
  	}
  
--	switch ((regval & info->modeset_mask) >> info->modeset_shift) {
-+	regval &= info->modeset_mask;
-+	regval >>= ffs(info->modeset_mask) - 1;
-+
-+	switch (regval) {
- 	case MT6397_BUCK_MODE_AUTO:
- 		return REGULATOR_MODE_NORMAL;
- 	case MT6397_BUCK_MODE_FORCE_PWM:
+ 	return 0;
+@@ -918,7 +918,7 @@ hv_call_notify_port_ring_empty(u32 sint_index)
+ 
+ 	if (status != HV_STATUS_SUCCESS) {
+ 		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
+-		return -hv_status_to_errno(status);
++		return hv_status_to_errno(status);
+ 	}
+ 
+ 	return 0;
 -- 
-2.25.1
+2.30.2
 
