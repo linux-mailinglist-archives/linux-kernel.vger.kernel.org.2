@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BB63B722B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA8B3B722E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhF2MhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 08:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbhF2MhO (ORCPT
+        id S233770AbhF2Mhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 08:37:53 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37374 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233626AbhF2Mhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 08:37:14 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7C6C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:34:46 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id x22so10808932pll.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yoxmMGMX6APkhsw6SVYeGJ+YIxw2LxE4cfQgI08dndw=;
-        b=S+RqgRpL6UqG8/NOfPsFmX1mn34qTwzQW1mQaf884NbfIdMcM6kIJAeNUtdya1pko5
-         zRMzE5qg4EC9PpW5iiZMMJDrroILu+tTRuWjRvvKvNkDQ2mxHow/N6ZMvr28pI674nUA
-         o8vnNFSHpq3nP9qJQGNK90ivAbwdRTF+2EkhO+KbXQWboaiuV3pCDCT4vccqXbtbzEws
-         AFtnyMiEEVYzESmoII1uxecSQAhdikSggVQe5YM1FYlTjlrXg3dEeVRFj7E89GJWAEw0
-         UXuQH3uT6SZrTFT72FpUsw9nsaFmRfaaKG7q+LRnkosFBcp9yliWfvllFr2tB85zhShM
-         kzcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yoxmMGMX6APkhsw6SVYeGJ+YIxw2LxE4cfQgI08dndw=;
-        b=XF+nCpvf5Xv7GpCbR0MRuVht2tdKrnqk+CGmTpyWGaXMXR4gTUftJKnw5eIGAlo+Z0
-         1jex9zLaaN9fC5k14Cflc4waUFOu1LX8pMw0wPKUi1nMkJh7K7JW9NdbeB4TbQPixd4I
-         WIdEhxwsvIudgxaZgK4FMNCKBAks+XiAp8BBzWqNv8ufLzoB5rCpd7fFF/j1Fan2cbnt
-         IryFjCc5AqotWbe98vgtRzwWQc50AVbEVNyEDviLacYMgMCyRuzFKrPK4ZbhNBNeoMqq
-         YR0lHhpc+z/FaBqVLrR3Y24Dl4NLEc7Qq1M53KDCWuZY4WtF5/HSvfQ7EH/ZPwCUmxx1
-         VpDg==
-X-Gm-Message-State: AOAM533YQrm1P7iPytAmbLUnL1geY/wAYO5IIEKZccHWJXKm+TVtRI1w
-        oiqNqy6iyXc8J/RJS00CIJtw0g==
-X-Google-Smtp-Source: ABdhPJxN5b9kWRb8alrTMFBu8a6+hr0xMyi0Dj3xF7L/aB035UbGVfm7naiLBxg0UJCvumqkvoG8hQ==
-X-Received: by 2002:a17:902:446:b029:120:1fd:adbf with SMTP id 64-20020a1709020446b029012001fdadbfmr27976253ple.52.1624970086450;
-        Tue, 29 Jun 2021 05:34:46 -0700 (PDT)
-Received: from localhost.name ([182.69.252.226])
-        by smtp.gmail.com with ESMTPSA id 143sm16176692pfx.46.2021.06.29.05.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:34:46 -0700 (PDT)
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v4 4/4] pinctrl: qcom/pinctrl-spmi-gpio: Add compatible for pmic-gpio on SA8155p-adp
-Date:   Tue, 29 Jun 2021 18:04:07 +0530
-Message-Id: <20210629123407.82561-5-bhupesh.sharma@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
-References: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
+        Tue, 29 Jun 2021 08:37:47 -0400
+Received: from ip5f5bf01b.dynamic.kabel-deutschland.de ([95.91.240.27] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lyCxR-0008Ad-S6; Tue, 29 Jun 2021 12:35:17 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mount_setattr updates
+Date:   Tue, 29 Jun 2021 14:35:11 +0200
+Message-Id: <20210629123511.1191153-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SA8155p-adp PMIC (PMM8155AU) exposes 10 GPIOs.
+Hi Linus,
 
-Add support for the same in the pinctrl driver.
+/* Summary */
+A few releases ago the old mount API gained support for a mount options which
+prevents following symlinks on a given mount. This adds support for it in the
+new mount api through the MOUNT_ATTR_NOSYMFOLLOW flag via mount_setattr() and
+fsmount(). With mount_setattr() that flag can even be applied recursively.
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
----
- drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
- 1 file changed, 1 insertion(+)
+There's an additional ack from Ross Zwisler who originally authored the
+nosymfollow patch. As I've already had the patches in my for-next I didn't add
+his ack explicitly.
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-index 5246ea09c295..bbea3499178e 100644
---- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-+++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-@@ -1133,6 +1133,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
- 	{ .compatible = "qcom,pmi8994-gpio", .data = (void *) 10 },
- 	{ .compatible = "qcom,pmi8998-gpio", .data = (void *) 14 },
- 	{ .compatible = "qcom,pmk8350-gpio", .data = (void *) 4 },
-+	{ .compatible = "qcom,pmm8155au-gpio", .data = (void *) 10 },
- 	{ .compatible = "qcom,pmr735a-gpio", .data = (void *) 4 },
- 	{ .compatible = "qcom,pmr735b-gpio", .data = (void *) 4 },
- 	/* pms405 has 12 GPIOs with holes on 1, 9, and 10 */
--- 
-2.31.1
+/* Testing */
+All patches are based on v5.13-rc4 and have been sitting in linux-next. No
+build failures or warnings were observed. All old and new tests are passing.
 
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflicts showed up doing a test-merge with current
+mainline.
+
+The following changes since commit 8124c8a6b35386f73523d27eacb71b5364a68c4c:
+
+  Linux 5.13-rc4 (2021-05-30 11:58:25 -1000)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/fs.mount_setattr.nosymfollow.v5.14
+
+for you to fetch changes up to 5990b5d770cbfe2b4254d870240e9863aca421e3:
+
+  tests: test MOUNT_ATTR_NOSYMFOLLOW with mount_setattr() (2021-06-01 15:06:51 +0200)
+
+Please consider pulling these changes from the signed fs.mount_setattr.nosymfollow.v5.14 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+fs.mount_setattr.nosymfollow.v5.14
+
+----------------------------------------------------------------
+Christian Brauner (2):
+      mount: Support "nosymfollow" in new mount api
+      tests: test MOUNT_ATTR_NOSYMFOLLOW with mount_setattr()
+
+ fs/namespace.c                                     |  9 ++-
+ include/uapi/linux/mount.h                         |  1 +
+ .../selftests/mount_setattr/mount_setattr_test.c   | 88 +++++++++++++++++++++-
+ 3 files changed, 92 insertions(+), 6 deletions(-)
