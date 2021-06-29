@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A754F3B6E15
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBF23B6E17
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbhF2GKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 02:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231920AbhF2GKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:10:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEAD61DC5;
-        Tue, 29 Jun 2021 06:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624946872;
-        bh=+bhgKYRLGT/NQ0NVPsujgyGtEr+RrAm/gg93HpgQ1c8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IBRGkF8djaTtF97DhbMZj8HPGQtcxzhl84/3hY5uTaBkkztgjwyhLYVPk9ZmIe21n
-         jT1X2R7bUCcIppQ9fsvRU0Y0juKBewa6eN28IFtjMB0Hm1n0ZmoJNmnyQMwEyQaeBB
-         RpouqKFApjhOEH9JrjwgSXK7MripsZX7tVwM1NIxmgclXxgfwMtvMrBkr6phWcl4wW
-         Zq7y8JiN4wJ+ZW7G7A46e0Cz74ORd4m3hiUDC7o1/gNWFo2tizPRydRgdUA10i8JeG
-         Yh/g6BIbM6Ls7aTYtv2ptjuJI3MsuGk5eCnLOgLPPAg52yZJmXev2cZY5bii8N5llS
-         aXh0SwhauccZg==
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Liam Beguin <lvb@xiphos.com>
-Subject: [PATCH 2/2] clk: lmk04832: Use of match table
-Date:   Mon, 28 Jun 2021 23:07:51 -0700
-Message-Id: <20210629060751.3119453-2-sboyd@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-In-Reply-To: <20210629060751.3119453-1-sboyd@kernel.org>
-References: <20210629060751.3119453-1-sboyd@kernel.org>
+        id S232099AbhF2GMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232040AbhF2GL7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:11:59 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0790FC061766
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:09:32 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id d12so17529001pgd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 23:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yv7EEUQoiKqhop6AB04pLVKMYLWu1sR4zDrGtQgBw+g=;
+        b=aoLs43qrv+77ukkA/Df5zJJwPwO210bGQSahFnhXMqpDL05rKg9TB8NzI1q81snkYP
+         HUsP/n3DeX/hoNBS4hY4b3Ce6gUpSfPbCdjg2+pldPGtVGazXWzY6wN4H0ZFMisLB2/e
+         p4J+LHIJG2MjJZJCFRKSRwFyKHG3qk0Q0U/fXcO8KhZWbt44D1Q/IieeqnTL+ohkTkyi
+         VvCUdWqFDPYAQvRCCYjSWQZ30twGT6lxaSg+yzdxZRRs8pZFM0lNnBJg+m7S4UdxxL8F
+         NqCoAKnIBNFvNME/lnHXvj/TpM3JPoyULNJ8aRora0S9VQPCggXKwUXE4ZyXfThBohzp
+         AUNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yv7EEUQoiKqhop6AB04pLVKMYLWu1sR4zDrGtQgBw+g=;
+        b=oHYMRkd1n1vI7dfLH4r5L2xw/fLtH5+KtYCW1itskPJEKuERbcYDO9W08PvvsUJtij
+         snKUS+GrS8KonG6y9pSQvNp+rf4A92mwlA7GSZJedMXiTVYBdwl1NRNROg3dQ34N+NUq
+         7sSE5nvIxYXE0/QE8/hF6oV8WTf8xPyU6MBqESkYX4vGVV/laobBGAS2ho8sS/eoWofX
+         xYFUY741fnkxt/z5cup+jx5IG20AUm/PR7jIGyYU7wVSnG37MnokaoPVel0hhX1aQCJq
+         CgE5X8qO2527KXbIP9SBFPAzIeymSfKNvVlqG8B5ntO5cL0/LoKt0GN/8pw7S00sez0d
+         5EXQ==
+X-Gm-Message-State: AOAM531e0T9h0LoaH/Rw3WhialwhoeA7KMvOczgqb/JWkjUKi1x9XoL+
+        Mi4CrOYoWri5DJer3Y4dE5GmEA==
+X-Google-Smtp-Source: ABdhPJzsx5q2/A7x8D0k31KuFdMYdLJxqIBjhNKJPqPdRLhItpNrKvUm4MwgWGiy8caPvSMtXQ5Olg==
+X-Received: by 2002:aa7:9252:0:b029:2ae:bde3:621f with SMTP id 18-20020aa792520000b02902aebde3621fmr28464344pfp.18.1624946971463;
+        Mon, 28 Jun 2021 23:09:31 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([103.207.71.35])
+        by smtp.gmail.com with ESMTPSA id 69sm16753945pfz.110.2021.06.28.23.09.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 23:09:30 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 14:09:24 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     James Clark <james.clark@arm.com>, acme@kernel.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] perf cs-etm: Split --dump-raw-trace by AUX records
+Message-ID: <20210629060924.GD163942@leoy-ThinkPad-X240s>
+References: <20210624164303.28632-1-james.clark@arm.com>
+ <20210624164303.28632-3-james.clark@arm.com>
+ <20210628012744.GA158794@leoy-ThinkPad-X240s>
+ <c7906b72-e547-da37-c387-23de65831ac4@arm.com>
+ <20210628120802.GC200044@leoy-ThinkPad-X240s>
+ <20210628200132.GB1200359@p14s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628200132.GB1200359@p14s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presumably we want to use this match table so add a module device table
-and set the driver match pointer appropriately.
+Hi Mathieu,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Liam Beguin <lvb@xiphos.com>
-Fixes: 3bc61cfd6f4a ("clk: add support for the lmk04832")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/clk-lmk04832.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On Mon, Jun 28, 2021 at 02:01:32PM -0600, Mathieu Poirier wrote:
 
-diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
-index 0cd76e626c3d..c1095e733220 100644
---- a/drivers/clk/clk-lmk04832.c
-+++ b/drivers/clk/clk-lmk04832.c
-@@ -1573,18 +1573,20 @@ static int lmk04832_remove(struct spi_device *spi)
- }
- static const struct spi_device_id lmk04832_id[] = {
- 	{ "lmk04832", LMK04832 },
--	{},
-+	{}
- };
- MODULE_DEVICE_TABLE(spi, lmk04832_id);
- 
- static const struct of_device_id lmk04832_of_id[] = {
- 	{ .compatible = "ti,lmk04832" },
--	{},
-+	{}
- };
-+MODULE_DEVICE_TABLE(of, lmk04832_of_id);
- 
- static struct spi_driver lmk04832_driver = {
- 	.driver = {
- 		.name	= "lmk04832",
-+		.of_match_table = lmk04832_of_id,
- 	},
- 	.probe		= lmk04832_probe,
- 	.remove		= lmk04832_remove,
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+[...]
 
+> > > Hi Leo,
+> > > 
+> > > I think this is not true in piped mode because there is no auxtrace index.
+> > > In that mode, events are processed only in file order and cs_etm__process_auxtrace_event()
+> > > is called for each buffer.
+> > > 
+> > > You can reproduce this with something like this:
+> > > 
+> > >      ./perf record -o - ls > stdio.data
+> > >      cat stdio.data | ./perf report -i -
+> > 
+> > You are right!  I tried these two commands with cs_etm event, just as
+> > you said, in this case, the AUX trace data is not queued; so the flow
+> > for "if (!etm->data_queued)" should be kept.  If so, I am very fine
+> > for current change.  Thanks for sharing the knowledge.
+> > 
+> > > There are some other Coresight features that don't work as expected in this mode, like
+> > > sorting timestamps between CPUs. The aux split patchset won't work either because random
+> > > access isn't possible. And the TRBE patch that I'm working on now won't work, because it
+> > > also requires the random access to lookup the flags on the AUX record to configure the 
+> > > decoder for unformatted trace.
+> >
+> 
+> There is a lot of things happening in this area.  Based on the above should I
+> still plan to review this set or should I wait for another revision?
+
+I think you could continue to review this patch set for AUX data splitting.
+
+Since we have concern for the AUX data splitting with snapshot mode,
+James and me both have verified the AUX data splitting (this patch
+set) with snapshot mode, and the testing result shows this patch set
+is reliable.
+
+Regard another patch set for fixing snapshot mode [1], I will send a new
+version (drop patch 1/3 and refine for patch 3/3), so you could hold
+on for that patch set.
+
+Thanks,
+Leo
+
+[1] https://lore.kernel.org/patchwork/cover/1437696/
