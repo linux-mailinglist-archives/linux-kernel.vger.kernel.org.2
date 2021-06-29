@@ -2,151 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08793B77D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399583B7805
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhF2SbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 14:31:11 -0400
-Received: from mail-mw2nam10on2117.outbound.protection.outlook.com ([40.107.94.117]:31489
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233843AbhF2SbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 14:31:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KaEAFzrud/cHFL3sQ7wbOCN7pj8oQ4w4YioPu25PLiwkzQwBib8kZJmN1yUZPidCw3xRjKeAMm6MCcPSmyDGcySWhz09u9bJdJkTrJJCVAgh08vY+bvPpzA5j4cgcqiVOLLmKzmQvL/fCRazu9pcXDVLjKgnHeB6FLimsLsOTsGbkwqqlCiIDGHowPM/GvkPSewobZq1X9h4ujlFreEWENU+y8f7dQ1/tPpCYgnzaqaIEyWKNtrorRAnwlcd7T/sZiNxOJ/xquCJg3sJkkWdYOiu9Zo9mExjwPyAL2eIgWENJRdmvOesOL/hfnTE0/9io2vDs629ZThzSmQr3N54ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=muGTbG7JcUJT89+9X3/JEwKbgufp+VDRvLj2kq0sw2M=;
- b=CURYN6/fMKXebzied3BmIEVz6tUXXs5Hq1FucUTOhxDMMfekAsillJuhe3akfyp94FymmHjiJ4cfrx6Dveg5K3PdP8UAxko2Uu+tSCMGfcS7fko55TalsRdEY2rHxkkVxbzCME9wzdXmvVjIPas+KMZVyU4Lg2N8gkiRCVSwNu4/3OUpC1jtGkl5wtHOV+pPBDOJy2gzgWFBXd2n3RWbkXOrl5BEspa6ikevo4A2V9waHrhPD2pJhof6MHH5/ALnsN4cEb8lGHDtrSJ66nLXB1Bcw2pRyPJe35eLMSrSf4D62kpEaQGbdiC8WBit5zItajRo7FpqGGgApypOzzU89A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=muGTbG7JcUJT89+9X3/JEwKbgufp+VDRvLj2kq0sw2M=;
- b=SYrUYzGYshSlA3z7matAJQ0KDQr7ppAnIHQEuJG1Lg9UeUbrSp0UkOmZ3TBPtYqj4J0j7BsVtQc6WCR9QpH3GbGmEe1kr9hdObY5AqOYJ5TvO+7oBVDnBC08ZZnDvx8KgMETKyYWnQnvYrvDlcX8apYcsVj+pwtdjolQ50uqum3CzCB6x2FaMT4YSzqM0A4b7sKLTNwP+oLrqRiFXvQPyyZMuyzGxtZ2vUUhwWjYpgkjDImEwPiTPQcBPOpA6w8IwjtDuIRT/1z3DEnq+ss7xhZvdiCrIGBlyJiMDGne3zaW/attRQnLa5O2DE6G1DM3o6IX54W42JBU2r+mdrxRSA==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB5960.prod.exchangelabs.com (2603:10b6:610:43::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4264.18; Tue, 29 Jun 2021 18:28:39 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::81f3:3a8:e00f:92ec]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::81f3:3a8:e00f:92ec%9]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
- 18:28:38 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Chuck Lever <chuck.lever@oracle.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Hillman, Richie" <Richie.Hillman@cornelisnetworks.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: NFS trace new to 5.13.0 (GA)
-Thread-Topic: NFS trace new to 5.13.0 (GA)
-Thread-Index: AddtE3KnceyIXtJFQ4q1p77amM2J2Q==
-Date:   Tue, 29 Jun 2021 18:28:38 +0000
-Message-ID: <CH0PR01MB71539295AEF1947518073D0FF2029@CH0PR01MB7153.prod.exchangelabs.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-originating-ip: [70.15.25.19]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5f147a7d-c126-4135-73bd-08d93b2bb6e9
-x-ms-traffictypediagnostic: CH2PR01MB5960:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR01MB59605550F4B0F094D544308FF2029@CH2PR01MB5960.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: niILPTTeT1jdpb79XFarYvP2Oo8k+DJUFjEexl1hhtu/tMB6QcVup9nfY3sCSZExp0wxcKuLQ2zTkSqC/PyNIqv/PPfaEvV5/4pS8m1brguKYIELsuC/mjCShwCsZOuo1VX10qaDYIIQms7AOsnW07MgmLsQUnPOJVC4HIRvSFSCqmRHvEwFoO4gRnRXkDsq6ouf5C1X78IaFe58VActD1knEdzTuwnIWVhZtnjCcoW5cj4UBcn15bIUwqQfQfdnx2DChRHejN19J1GXmb0H2kGCbKHzqPe23XuSsd9fg/7Zn7dGtbgz93fhclUiA5Yh9UL+WtJ1JFVpzgC4jB8yuOXFDJfsjbdIP7V8upeAuZanpstr6gTmTBco7W49YJGRG2gJMqHGJoQbseLUqk/NQbRIU6GDukSqdT+KcmIbHGx9f/4xx8UTUtdD4+v4eVFCHzvPjTythHrrNuk9ml8x267R3coGyupnL3G5Pb3FROHeWDBwzLMpoyAZT9GLIjmBTZ/wCF0pNEciHaqyLsaAevzhEPPTRsNkFDTLaji/7sW437LFHadeIg0Z+IaDuh4aS7CitRF0La5T+ewvMhzaRztbdYbTwJS3aCLkKDN8unl5BryQQrfBhXZ5UIOTXQn0eyBxjMQKqjqckAnbGJiXtQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(346002)(136003)(366004)(396003)(8676002)(8936002)(83380400001)(33656002)(478600001)(71200400001)(66946007)(2906002)(26005)(186003)(122000001)(6506007)(7696005)(38100700002)(6916009)(9686003)(316002)(66476007)(64756008)(54906003)(86362001)(76116006)(4326008)(66556008)(66446008)(5660300002)(55016002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IziGOlzbZHheKn6D5HzpLPw648Z51aBXI53ANYDglVrNpb9TjKv5mAiGOM09?=
- =?us-ascii?Q?FwcI9HAMLLIzjG8nwAsz5UVXjBbKrM5kBjFPwpjOfKpa1HmN+Z93+nRSIWpq?=
- =?us-ascii?Q?X9uUgeBrL5kIJ8NJ9uuuX4M+aynTLqkc7EoHy0v+tMgM3cUzm6pJA5fKT/Zi?=
- =?us-ascii?Q?3VfmWZfqOdjr+PoM7g5XPjICLepz1yK/d3Giv6r0gmeKZuBQ7jLsXlvddMFM?=
- =?us-ascii?Q?jsUnjCEutO5zKdLaAa17ckXc+fD7jjhb7E7W9Q8dEh1GLnkLz96lRCl9Ahoi?=
- =?us-ascii?Q?UP5JQ3cQoQ3L1QEJ7WfWZhx3Nf/tLy+nI67Wk3SYj75189b0/KVQX/Vrmt9b?=
- =?us-ascii?Q?C3kAiuJk/1ekEMPaVcl0Esk0nIbqgSOUIgA6VuegKCVJ8eCP27tI9NZnOacx?=
- =?us-ascii?Q?J2BHEh1arP3rcQtotOsdBoKeEg9CvShLkbzILMGmiopQPjN6s/GWM/VbgcC/?=
- =?us-ascii?Q?Ktlj65HvYAmtenark25KNTT7UDWGZo8qv1n5O5Gk/cQeZ/manV08cqOVQkLt?=
- =?us-ascii?Q?qYJofsgJyE5bfNBmmpjNsd+ctpwwlJaXah/NBRc2Z2HEsW3GjW+nHlatGQ9o?=
- =?us-ascii?Q?mxhN0AWz/aNiad3Cn+LjlCHBT5KOAArwsqG3hsBsn/EWweMuBVBAirZ0RhXL?=
- =?us-ascii?Q?1mNCe+LhwMlGafAU4EvcF3D+yEfQm9KUs7hGYmQpcAvj5u4lorQ1If4bHS9K?=
- =?us-ascii?Q?0VwK/mKfQrjs0BibcO757I6sNeVNPl7t7B6br7KLARuMlua2gIyovuLdxHhQ?=
- =?us-ascii?Q?JVdyhOmkaTNvDwYGON6Wr08vCV6OiHQraJ67cKphKK4yjOjpbF1tOvG2nVUz?=
- =?us-ascii?Q?E9Dn2xwENMwBHD30AVMntJo+O1LtehxgkhXr7jM0BFaX/FdlBId9t8f5XT9N?=
- =?us-ascii?Q?YCQJK9aBIH73b63CfeL8ff5H4hn4zvwkQ2dG1Q5IK1RQQxXw9kJ9Jr32/Hub?=
- =?us-ascii?Q?XQ8ntpFTuJhxBist2E2c3/SyKuy36zJZydEsJIeTNzToR5qUUQTECggaB5B0?=
- =?us-ascii?Q?9cmI9nnXz1Cgcdq2dyQiakDg8kWC82AcCAoNl6ob3QyDgRsKRYYdWJscjJ3x?=
- =?us-ascii?Q?xgZCpYQcjrsaLwnxJm66/lyYggcjcvK5Cm/tzS+iLOpJi38H12uf22RoVs0H?=
- =?us-ascii?Q?Iqe6INL5Ys90ByDDo7uR8TpPJk5OWNPiirPQKzcuX7xP1WukDBxRSx7CRNot?=
- =?us-ascii?Q?0bPAH+ALzcQDPg4ZStJoaoAKHQ0CaTq2idNdtlflXNuP0UpSKFzO1bqq9cFe?=
- =?us-ascii?Q?2EVLQAAwLyMrdo7Royodz/5n/ojFw/Al9iWHZHrO1ndMh6XHExqAccxs4Yh2?=
- =?us-ascii?Q?JC0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235281AbhF2SoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 14:44:25 -0400
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:48646 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234700AbhF2SoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 14:44:23 -0400
+X-Greylist: delayed 722 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Jun 2021 14:44:23 EDT
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 15TINx5x025025;
+        Tue, 29 Jun 2021 14:29:52 -0400
+Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
+        by pbmsgap01.intersil.com with ESMTP id 39dys3s7xw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 14:29:52 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2242.4; Tue, 29 Jun 2021 14:29:50 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Tue, 29 Jun 2021 14:29:50 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net v2 2/2] ptp: idt82p33: implement double dco time correction
+Date:   Tue, 29 Jun 2021 14:29:19 -0400
+Message-ID: <1624991359-15158-2-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624991359-15158-1-git-send-email-min.li.xe@renesas.com>
+References: <1624991359-15158-1-git-send-email-min.li.xe@renesas.com>
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f147a7d-c126-4135-73bd-08d93b2bb6e9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 18:28:38.6258
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yjnBzYWe5W4OziABXIROxVHmCntNfjnZHcbCDhiJNCrK/ZXq4GGCOx3h8I7d+DY1dgQwGv0nIeOrkh3B4aK5p1aXo7/XFVSPgejwlSFbdZ5qgLVorm0+pK3y2dnqGv/7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB5960
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 1F37uyjspiFaHE4jmHmYbDkxc1xIXhga
+X-Proofpoint-GUID: 1F37uyjspiFaHE4jmHmYbDkxc1xIXhga
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_11:2021-06-29,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 adultscore=0 suspectscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290115
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During our continuous integration testing on 5.13.0 kernel our testing trip=
-s on NFS testing with the following trace on the client:
+From: Min Li <min.li.xe@renesas.com>
 
-[32936.156848] INFO: task kworker/9:1:519 blocked for more than 122 seconds=
-.
-[32936.165201]       Tainted: G S                5.13.0 #1
-[32936.171562] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables =
-this message.
-[32936.180773] task:kworker/9:1     state:D stack:    0 pid:  519 ppid:    =
- 2 flags:0x00004000
-[32936.190565] Workqueue: events xprt_destroy_cb [sunrpc]
-[32936.196854] Call Trace:
-[32936.200107]  __schedule+0x38e/0x8b0
-[32936.204482]  schedule+0x3c/0xa0
-[32936.208464]  schedule_timeout+0x215/0x2b0
-[32936.213401]  ? check_preempt_curr+0x3f/0x70
-[32936.218518]  ? ttwu_do_wakeup+0x17/0x140
-[32936.223336]  wait_for_completion+0x98/0xf0
-[32936.228396]  __flush_work+0x128/0x1e0
-[32936.232942]  ? worker_attach_to_pool+0xb0/0xb0
-[32936.238351]  ? work_busy+0x80/0x80
-[32936.242555]  __cancel_work_timer+0x110/0x1a0
-[32936.247726]  ? xprt_rdma_bc_destroy+0xc6/0xe0 [rpcrdma]
-[32936.254034]  xprt_rdma_destroy+0x15/0x50 [rpcrdma]
-[32936.259873]  process_one_work+0x1cb/0x360
-[32936.264788]  ? process_one_work+0x360/0x360
-[32936.269915]  worker_thread+0x30/0x370
-[32936.274436]  ? process_one_work+0x360/0x360
-[32936.279526]  kthread+0x116/0x130
-[32936.283534]  ? __kthread_cancel_work+0x40/0x40
-[32936.288924]  ret_from_fork+0x22/0x30
+Current adjtime is not accurate when delta is smaller than 10000ns. So
+for small time correction, we will switch to DCO mode to pull phase
+more precisely in one second duration.
 
-The same tests and same servers see no such issue from rc4 to rc7, so the f=
-ailure seems new.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+Change log
+-create delayed_accurate_adjtime parameter to choose the optimized adjtime suggested by Richard
 
-Any thoughts?
+ drivers/ptp/ptp_idt82p33.c | 170 +++++++++++++++++++++++++++++++++------------
+ drivers/ptp/ptp_idt82p33.h |   6 +-
+ 2 files changed, 131 insertions(+), 45 deletions(-)
 
-I'm currently rerunning rc7 just to be sure.
+diff --git a/drivers/ptp/ptp_idt82p33.c b/drivers/ptp/ptp_idt82p33.c
+index abe628c..245dd86 100644
+--- a/drivers/ptp/ptp_idt82p33.c
++++ b/drivers/ptp/ptp_idt82p33.c
+@@ -29,6 +29,14 @@ module_param(phase_snap_threshold, uint, 0);
+ MODULE_PARM_DESC(phase_snap_threshold,
+ "threshold (1000ns by default) below which adjtime would ignore");
+ 
++static bool delayed_accurate_adjtime = false;
++module_param(delayed_accurate_adjtime, bool, false);
++MODULE_PARM_DESC(delayed_accurate_adjtime,
++"set to true to use more accurate adjtime that is delayed to next 1PPS signal");
++
++static char *firmware;
++module_param(firmware, charp, 0);
++
+ static void idt82p33_byte_array_to_timespec(struct timespec64 *ts,
+ 					    u8 buf[TOD_BYTE_COUNT])
+ {
+@@ -389,25 +397,22 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
+ 	int err, i;
+ 	s64 fcw;
+ 
+-	if (scaled_ppm == channel->current_freq_ppb)
+-		return 0;
+-
+ 	/*
+-	 * Frequency Control Word unit is: 1.68 * 10^-10 ppm
++	 * Frequency Control Word unit is: 1.6861512 * 10^-10 ppm
+ 	 *
+ 	 * adjfreq:
+-	 *       ppb * 10^9
+-	 * FCW = ----------
+-	 *          168
++	 *       ppb * 10^14
++	 * FCW = -----------
++	 *         16861512
+ 	 *
+ 	 * adjfine:
+-	 *       scaled_ppm * 5^12
+-	 * FCW = -------------
+-	 *         168 * 2^4
++	 *       scaled_ppm * 5^12 * 10^5
++	 * FCW = ------------------------
++	 *            16861512 * 2^4
+ 	 */
+ 
+-	fcw = scaled_ppm * 244140625ULL;
+-	fcw = div_s64(fcw, 2688);
++	fcw = scaled_ppm * 762939453125ULL;
++	fcw = div_s64(fcw, 8430756LL);
+ 
+ 	for (i = 0; i < 5; i++) {
+ 		buf[i] = fcw & 0xff;
+@@ -422,26 +427,77 @@ static int _idt82p33_adjfine(struct idt82p33_channel *channel, long scaled_ppm)
+ 	err = idt82p33_write(idt82p33, channel->dpll_freq_cnfg,
+ 			     buf, sizeof(buf));
+ 
+-	if (err == 0)
+-		channel->current_freq_ppb = scaled_ppm;
+-
+ 	return err;
+ }
+ 
++/* ppb = scaled_ppm * 125 / 2^13 */
++static s32 idt82p33_ddco_scaled_ppm(long current_ppm, s32 ddco_ppb)
++{
++	s64 scaled_ppm = (ddco_ppb << 13) / 125;
++	s64 max_scaled_ppm = (DCO_MAX_PPB << 13) / 125;
++
++	current_ppm += scaled_ppm;
++
++	if (current_ppm > max_scaled_ppm)
++		current_ppm = max_scaled_ppm;
++	else if (current_ppm < -max_scaled_ppm)
++		current_ppm = -max_scaled_ppm;
++
++	return (s32)current_ppm;
++}
++
++static int idt82p33_stop_ddco(struct idt82p33_channel *channel)
++{
++	channel->ddco = false;
++	return _idt82p33_adjfine(channel, channel->current_freq);
++}
++
++static int idt82p33_start_ddco(struct idt82p33_channel *channel, s32 delta_ns)
++{
++	s32 current_ppm = channel->current_freq;
++	u32 duration_ms = MSEC_PER_SEC;
++	s32 ppb;
++	int err;
++
++	/* If the ToD correction is less than 5 nanoseconds, then skip it.
++	 * The error introduced by the ToD adjustment procedure would be bigger
++	 * than the required ToD correction
++	 */
++	if (abs(delta_ns) < DDCO_THRESHOLD_NS)
++		return 0;
++
++	/* For most cases, keep ddco duration 1 second */
++	ppb = delta_ns;
++	while (abs(ppb) > DCO_MAX_PPB) {
++		duration_ms *= 2;
++		ppb /= 2;
++	}
++
++	err = _idt82p33_adjfine(channel,
++				idt82p33_ddco_scaled_ppm(current_ppm, ppb));
++	if (err)
++		return err;
++
++	/* schedule the worker to cancel ddco */
++	ptp_schedule_worker(channel->ptp_clock,
++			    msecs_to_jiffies(duration_ms) - 1);
++	channel->ddco = true;
++
++	return 0;
++}
++
+ static int idt82p33_measure_one_byte_write_overhead(
+ 		struct idt82p33_channel *channel, s64 *overhead_ns)
+ {
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	ktime_t start, stop;
++	u8 trigger = 0;
+ 	s64 total_ns;
+-	u8 trigger;
+ 	int err;
+ 	u8 i;
+ 
+ 	total_ns = 0;
+ 	*overhead_ns = 0;
+-	trigger = TOD_TRIGGER(HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+-			      HW_TOD_RD_TRIG_SEL_LSB_TOD_STS);
+ 
+ 	for (i = 0; i < MAX_MEASURMENT_COUNT; i++) {
+ 
+@@ -658,6 +714,20 @@ static int idt82p33_sync_tod(struct idt82p33_channel *channel, bool enable)
+ 			      &sync_cnfg, sizeof(sync_cnfg));
+ }
+ 
++static long idt82p33_work_handler(struct ptp_clock_info *ptp)
++{
++	struct idt82p33_channel *channel =
++			container_of(ptp, struct idt82p33_channel, caps);
++	struct idt82p33 *idt82p33 = channel->idt82p33;
++
++	mutex_lock(&idt82p33->reg_lock);
++	(void)idt82p33_stop_ddco(channel);
++	mutex_unlock(&idt82p33->reg_lock);
++
++	/* Return a negative value here to not reschedule */
++	return -1;
++}
++
+ static int idt82p33_output_enable(struct idt82p33_channel *channel,
+ 				  bool enable, unsigned int outn)
+ {
+@@ -743,23 +813,20 @@ static void idt82p33_ptp_clock_unregister_all(struct idt82p33 *idt82p33)
+ 
+ 	for (i = 0; i < MAX_PHC_PLL; i++) {
+ 		channel = &idt82p33->channel[i];
+-
+ 		if (channel->ptp_clock) {
+-			channel = &idt82p33->channel[i];
++			cancel_delayed_work_sync(&channel->adjtime_work);
+ 			ptp_clock_unregister(channel->ptp_clock);
+ 		}
+ 	}
+ }
+ 
+ static int idt82p33_enable(struct ptp_clock_info *ptp,
+-			 struct ptp_clock_request *rq, int on)
++			   struct ptp_clock_request *rq, int on)
+ {
+ 	struct idt82p33_channel *channel =
+ 			container_of(ptp, struct idt82p33_channel, caps);
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+-	int err;
+-
+-	err = -EOPNOTSUPP;
++	int err = -EOPNOTSUPP;
+ 
+ 	mutex_lock(&idt82p33->reg_lock);
+ 
+@@ -769,15 +836,18 @@ static int idt82p33_enable(struct ptp_clock_info *ptp,
+ 						     &rq->perout);
+ 		/* Only accept a 1-PPS aligned to the second. */
+ 		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
+-		    rq->perout.period.nsec) {
++			 rq->perout.period.nsec)
+ 			err = -ERANGE;
+-		} else
++		else
+ 			err = idt82p33_perout_enable(channel, true,
+ 						     &rq->perout);
+ 	}
+ 
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
++	if (err)
++		dev_err(&idt82p33->client->dev,
++			"Failed in %s with err %d!\n", __func__, err);
+ 	return err;
+ }
+ 
+@@ -830,14 +900,18 @@ static int idt82p33_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	int err;
+ 
++	if (channel->ddco == true || scaled_ppm == channel->current_freq)
++		return 0;
++
+ 	mutex_lock(&idt82p33->reg_lock);
+ 	err = _idt82p33_adjfine(channel, scaled_ppm);
++	if (err == 0)
++		channel->current_freq = scaled_ppm;
+ 	mutex_unlock(&idt82p33->reg_lock);
+ 
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"Failed in %s with err %d!\n", __func__, err);
+-
+ 	return err;
+ }
+ 
+@@ -848,20 +922,29 @@ static int idt82p33_adjtime(struct ptp_clock_info *ptp, s64 delta_ns)
+ 	struct idt82p33 *idt82p33 = channel->idt82p33;
+ 	int err;
+ 
++	if (delayed_accurate_adjtime == false) {
++		if (abs(delta_ns) < IMMEDIATE_SNAP_THRESHOLD_NS)
++			return 0;
++		mutex_lock(&idt82p33->reg_lock);
++		err = _idt82p33_adjtime_immediate(channel, delta_ns);
++		mutex_unlock(&idt82p33->reg_lock);
++		goto exit;
++	}
++
++	if (channel->ddco == true)
++		return 0;
++
+ 	mutex_lock(&idt82p33->reg_lock);
+ 
+ 	if (abs(delta_ns) < phase_snap_threshold) {
++		err = idt82p33_start_ddco(channel, delta_ns);
+ 		mutex_unlock(&idt82p33->reg_lock);
+-		return 0;
++		return err;
+ 	}
+ 
+-	/* Use more accurate internal 1pps triggered write first */
+ 	err = _idt82p33_adjtime_internal_triggered(channel, delta_ns);
+-	if (err && delta_ns > IMMEDIATE_SNAP_THRESHOLD_NS)
+-		err = _idt82p33_adjtime_immediate(channel, delta_ns);
+-
+ 	mutex_unlock(&idt82p33->reg_lock);
+-
++exit:
+ 	if (err)
+ 		dev_err(&idt82p33->client->dev,
+ 			"Adjtime failed in %s with err %d!\n", __func__, err);
+@@ -932,7 +1015,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
+ 		return -EINVAL;
+ 	}
+ 
+-	channel->current_freq_ppb = 0;
++	channel->current_freq = 0;
+ 
+ 	return 0;
+ }
+@@ -940,7 +1023,7 @@ static int idt82p33_channel_init(struct idt82p33_channel *channel, int index)
+ static void idt82p33_caps_init(struct ptp_clock_info *caps)
+ {
+ 	caps->owner = THIS_MODULE;
+-	caps->max_adj = 92000;
++	caps->max_adj = DCO_MAX_PPB;
+ 	caps->n_per_out = 11;
+ 	caps->adjphase = idt82p33_adjwritephase;
+ 	caps->adjfine = idt82p33_adjfine;
+@@ -948,6 +1031,7 @@ static void idt82p33_caps_init(struct ptp_clock_info *caps)
+ 	caps->gettime64 = idt82p33_gettime;
+ 	caps->settime64 = idt82p33_settime;
+ 	caps->enable = idt82p33_enable;
++	caps->do_aux_work = idt82p33_work_handler;
+ }
+ 
+ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+@@ -1011,16 +1095,19 @@ static int idt82p33_enable_channel(struct idt82p33 *idt82p33, u32 index)
+ 
+ static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
+ {
++	char fname[128] = FW_FILENAME;
+ 	const struct firmware *fw;
+ 	struct idt82p33_fwrc *rec;
+ 	u8 loaddr, page, val;
+ 	int err;
+ 	s32 len;
+ 
+-	dev_dbg(&idt82p33->client->dev,
+-		"requesting firmware '%s'\n", FW_FILENAME);
++	if (firmware) /* module parameter */
++		snprintf(fname, sizeof(fname), "%s", firmware);
++
++	dev_dbg(&idt82p33->client->dev, "requesting firmware '%s'\n", fname);
+ 
+-	err = request_firmware(&fw, FW_FILENAME, &idt82p33->client->dev);
++	err = request_firmware(&fw, fname, &idt82p33->client->dev);
+ 
+ 	if (err) {
+ 		dev_err(&idt82p33->client->dev,
+@@ -1050,13 +1137,8 @@ static int idt82p33_load_firmware(struct idt82p33 *idt82p33)
+ 		}
+ 
+ 		if (err == 0) {
+-			/* maximum 8 pages  */
+-			if (page >= PAGE_NUM)
+-				continue;
+-
+ 			/* Page size 128, last 4 bytes of page skipped */
+-			if (((loaddr > 0x7b) && (loaddr <= 0x7f))
+-			     || loaddr > 0xfb)
++			if (loaddr > 0x7b)
+ 				continue;
+ 
+ 			err = idt82p33_write(idt82p33, _ADDR(page, loaddr),
+diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
+index a8b0923..6564f1c 100644
+--- a/drivers/ptp/ptp_idt82p33.h
++++ b/drivers/ptp/ptp_idt82p33.h
+@@ -92,9 +92,11 @@ enum hw_tod_trig_sel {
+ #define FW_FILENAME			"idt82p33xxx.bin"
+ #define MAX_PHC_PLL			(2)
+ #define TOD_BYTE_COUNT			(10)
++#define DCO_MAX_PPB			(92000)
+ #define MAX_MEASURMENT_COUNT		(5)
+ #define SNAP_THRESHOLD_NS		(10000)
+ #define IMMEDIATE_SNAP_THRESHOLD_NS	(50000)
++#define DDCO_THRESHOLD_NS		(5)
+ #define IDT82P33_MAX_WRITE_COUNT	(512)
+ 
+ #define PLLMASK_ADDR_HI	0xFF
+@@ -129,7 +131,9 @@ struct idt82p33_channel {
+ 	struct idt82p33		*idt82p33;
+ 	enum pll_mode		pll_mode;
+ 	struct delayed_work	adjtime_work;
+-	s32			current_freq_ppb;
++	s32			current_freq;
++	/* double dco mode */
++	bool			ddco;
+ 	u8			output_mask;
+ 	u16			dpll_tod_cnfg;
+ 	u16			dpll_tod_trigger;
+-- 
+2.7.4
 
-Mike
-External recipient
