@@ -2,314 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E316E3B741B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9533B7423
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhF2OTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbhF2OTS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:19:18 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02932C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:16:50 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id o13-20020a9d404d0000b0290466630039caso7593189oti.6
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iyzsdZq6nUU09p8DxfvtdEDEX30fQzTkBQEz+UIdUbA=;
-        b=qQIXR3q/a9aDC/VCe2WeuCtIGTnOZKQf1um1hYlsS7JhqraqGN8CaDNLKVGoNxzDkA
-         EwRZlHh6c2gzVRazE/OlCCrgIQLe9sUZTlEnVm/W4o4acz2trVC6+omodrzNkxUmlDNN
-         XF11zinsCXS/Tmgyn8jRVXWLcZ9jjCqUxWEtRCAhRlM6jPVftNPSkSaY9dSVCeUYMuUe
-         Tqyrw6gokXDmWusj8lK9HWTNAwMd7nHzorQ0sPZSH4EJivYE3QhR48sHN7May21/Q9oW
-         9JWLRyCr7NNetB21UOhpbpTtaFJn7h9OHKq3aeewFyP7+RfzlWE9gsnRdnnrh+jJH1h/
-         aycw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iyzsdZq6nUU09p8DxfvtdEDEX30fQzTkBQEz+UIdUbA=;
-        b=C8bR+LZ6DTUUpXh5Jl/1ufK8UzCWd4lwhGN06l1HpYDg5+4R0wIFtT0k9vhGHtIPHT
-         EAI3FmwXHOusiQcsSOG6lDogf7VwXhAjONDOmIWHWUO1hjmj+dYPyH6D7rblEVPQnzhy
-         lUMTmHCcWngOo5v1iMechTPn8q9EeQq1o6p9uMWSAy27CjXEibV/9SP1VsLeEUOgvH/b
-         X6xgVIuJxSqD6VZLIN7StbTMfnvBiuEsuoLzKSb2nmbdg3Ah3Ro/Cl3OyJCait0CuXMi
-         qsZjVagI1dUrQqXjuc2wMOuwAKoA4yXj9E9r7RrFtYgjNrifgaA2MRQfcLmVJ++PovJx
-         NbcQ==
-X-Gm-Message-State: AOAM532A634yE0ujPALnMtoRXlq+Z6kg18yhvgOK54kgnXZDc0kts9jx
-        f4p+3UF/OiMwa+4W8BpJ+DFr68u8O4w=
-X-Google-Smtp-Source: ABdhPJzyW61aMuMCyxsUXmZSgoTiwd41M8PKpJVpYqcgKiWv8W5Kt5FdXIQtYn8UVaGrtuP2YCP0pg==
-X-Received: by 2002:a9d:6d0e:: with SMTP id o14mr4716636otp.90.1624976209394;
-        Tue, 29 Jun 2021 07:16:49 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-aaa9-75eb-6e0f-9f85.res6.spectrum.com. [2603:8081:140c:1a00:aaa9:75eb:6e0f:9f85])
-        by smtp.gmail.com with ESMTPSA id o20sm3610709ook.40.2021.06.29.07.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:16:49 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-kernel@vger.kernel.org,
-        leon@kernel.org, galpress@amazon.com
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH resending 2/2] Providers/rxe: Replace AV by AH for UD sends
-Date:   Tue, 29 Jun 2021 09:16:43 -0500
-Message-Id: <20210629141643.14763-3-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210629141643.14763-1-rpearsonhpe@gmail.com>
-References: <20210629141643.14763-1-rpearsonhpe@gmail.com>
+        id S234357AbhF2OTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:19:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22937 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234244AbhF2OTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 10:19:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="195306255"
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="195306255"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 07:17:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="643727305"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Jun 2021 07:17:23 -0700
+Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Tue, 29 Jun 2021 07:17:22 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Tue, 29 Jun 2021 07:17:22 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Tue, 29 Jun 2021 07:17:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=neHVX1DH5BavyqcQUyiye7tqP6x0EmTbcgzuOl0kltMa90vk4Uic5pwnLYqqz9PepmmnreIdR//su73vNvfByVqXayi82mZDx90h7rUpAygeMkAHo7ouI7n2yBqfK8rO6m1Lts3f0rc8EN+4exq42V9H0pfMe9ALDH1u2QSV1B6zsLLdYR/x7OL7BvL/F2xGjenhtie6qb7C2UclkacP0TkpX7oS4zUuZC4vv3Fk0CA1U4VhqUHL+fYWcM2UnN4pXA9eUJSFt0XzS+secHPMOVKiqT1vHAIPzI3JbEOzA6i2TEjBcRsqP4j9U5NySGiOYtpHUf8jbgW3yFWSxNhX0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qONOdbdHCfJqTKOc0jq4ZQCF888yxLhwwbIYflbY74Y=;
+ b=Q4Vu/e/4gjKhlvhl2e46Dp27/5Mlu72KAHPlz9uyxVaqfWY8bIwvhX1KYlV16gcfKIirHmruY4RjIwYN5ex5IoaC5xG3Rw1AzOTi3/XZHrVC/vnFm9jfj/VvkRcwRx53zWw1yhFbwbXDXplqLY38F0/P3CE+YEiUW1jEYzvcQaBqnPy6Xm6Tvs07IPwGhoE5BkplSk6Ijst6rU6PS0iZ/r0kMjLv2QfQF6eRV1M9TXPlUgUyy/a46wW0DRJOK9V0RGPxukN0iy9bdUjh70C4+B3AH/GLgrV+iw/L39sQeGhwRUWynEkrD9q9wstGD9C8LjmLup7V8wJ7w5SsKZDE+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qONOdbdHCfJqTKOc0jq4ZQCF888yxLhwwbIYflbY74Y=;
+ b=oXJkplbCAuZLCtMe0JKdJPSx8tb5r5DBzJwMcNW+BxXZaXdDxioweHImOBY7LD8XbiCY5oWhHcuRD+daJBunjGTHRAl5PKQobvADyoN1B9DFcvnC1wR6sYWoIJyLJ+2f12nDuHBUFg5ySawzxFInDE+w+8OiAQywK4ACVdRaxrY=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM5PR11MB1915.namprd11.prod.outlook.com (2603:10b6:3:110::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Tue, 29 Jun
+ 2021 14:17:14 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::3dc3:868b:cec3:513b%6]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
+ 14:17:14 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <martin@geanix.com>,
+        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        "Xu, Yilun" <yilun.xu@intel.com>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+CC:     =?utf-8?B?TWFydGluIEh1bmRlYsO4bGw=?= <mhu@silicom.dk>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Subject: RE: [PATCH v3 1/4] fpga: dfl: expose feature revision from struct
+ dfl_device
+Thread-Topic: [PATCH v3 1/4] fpga: dfl: expose feature revision from struct
+ dfl_device
+Thread-Index: AQHXbOASPfAqvcx7E0OGOIQ1tDM82asrCHCg
+Date:   Tue, 29 Jun 2021 14:17:14 +0000
+Message-ID: <DM6PR11MB3819322771BAD3F7556012DB85029@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20210629121214.988036-1-martin@geanix.com>
+ <20210629121214.988036-2-martin@geanix.com>
+In-Reply-To: <20210629121214.988036-2-martin@geanix.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: geanix.com; dkim=none (message not signed)
+ header.d=none;geanix.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [124.64.84.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 497af9e1-e21a-41c4-c83a-08d93b0897f9
+x-ms-traffictypediagnostic: DM5PR11MB1915:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR11MB191596F8C24C811C9A5E366885029@DM5PR11MB1915.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:400;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dg6TDGD9xqmrd3x4kSvezC4EFtAAGxeUfohGlfI/g2g3qz8oUGjlbDpmHfYVm8aaSN+B/rJEfYfNesVXahPRfpMUO5Nlr9tKftn3X/WiLnQoyfiIREQnQcMdCwAjCX5QpYo/6QFhsfv43Puxf8riaBU4agCUrzoB1QGSBS6aWd28NpTOsr9h6e7PGZ+gQ3gbRU97ijnz0al8cpSY7Sr5oyfLPRPkKpEFd3zGi0Y6DI5FB6zQHwFPgMZoEQTN550yt/uE7oCU6h17aQOi1FkVB2PVah/1UakDBB/Ct6Duz1Mvzlnql5kIZGXXPFPJIoxxEBvV/Ide+3QBESmKZ5gZd19pSVoNFnnN4fYK5dXjJIOHRqFFaMABnvAAbBDrGfCHudvRmx25IWvoRVeUu5imvcAN04Zp7pTJvFYF/EQRhFn/J4poUbk19yX3cFyG5x4TDfqJ0J10Z4dB9vWbpOolyAtYXMij3kzErkPhBLaU98UsWEgSZDPa9FbfEgkL+XJM4sd1k91dExRR6ptwCpwBs5SGa2Qx5xfdFA1w6LSLYsz/EoslXlXMAbIz4ZOhjtMA9PohuglSawWXMyPFFT0fKjIrh8JlMM+PktGvnd5jRP+6Nh1TW/aIg+/qB1UEpSqQkDY/wsH/NE+hXAppuOwWYg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(396003)(346002)(6506007)(26005)(186003)(7696005)(86362001)(83380400001)(7416002)(4326008)(71200400001)(66556008)(38100700002)(122000001)(76116006)(66476007)(66946007)(64756008)(66446008)(54906003)(110136005)(5660300002)(52536014)(316002)(55016002)(9686003)(478600001)(8676002)(8936002)(2906002)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZFcvdmpsMnZZVDFSZEdaOXdwM3VOMCttanNqRkxxQWFucXl4TU52M1JzWC9C?=
+ =?utf-8?B?SGxXL1VIRCtUWE9rMkRFREQ5bm45SWIyVGxNTDIyMGhpT09ZY1lmejNOV1Mz?=
+ =?utf-8?B?S2F4dG1yNXl4SHV2M1NiRDJ0akw0eFVtWXhFSlJUYlkyWkpZSnA4d01uanFt?=
+ =?utf-8?B?RW5ORGE3eE0ySitCK05GeCt4aTNQcHFpUEJ3MWM2Q2xiUW05RExwVGxBaFda?=
+ =?utf-8?B?T25TK2dpQlROb2tvRGdFczVtYjQ0c2ErVDI2VEFabGtnT1EyeVA3Um9FS1Z4?=
+ =?utf-8?B?WXcvMzEzWWNGYUs0ejM4TjRrTktLTXVSTklJaTUwQkQ3TGtJWEh1c29tMGJT?=
+ =?utf-8?B?UVE1QlRSMXE1ckhDK0RxK1o4Nnh1SUFYSFVIL0ZOSkpuV25vN1YwMWxKTFFK?=
+ =?utf-8?B?WWFIZVEyNTdhd01iN2FtRkxUSTVaT0wxYmpNN0FYbzlVUklyQ0daczlSUEhQ?=
+ =?utf-8?B?RTgrN3g0MHFIRWE4SzdZbkFXNmk4TWErbmxrWHU1dk1kVnVLV2NjeFpLSko0?=
+ =?utf-8?B?QWc2MEQ1OXR4bSt2VTFEOTdLYnM4d1BjTC9sa2ZIVERVOFNjZzVLQnFJc3d1?=
+ =?utf-8?B?OG56WnJzMnlFanZwbk9yVnVsS1gvdllRVHk0M1QwT3F5ZkljVE9wYTVNRElR?=
+ =?utf-8?B?OWFnb1hrSFBOTUdxVmlHdUJwd2hxT1k0NVhjL2dOa0x3bDd1SGhlL1E2NEs4?=
+ =?utf-8?B?TVdtSXBOT3lVbWoxSW1jQnhoOWhMRmZacVVjOVdVVXFjK1VoUThsdnpxNnYw?=
+ =?utf-8?B?Y2c4VDRveDJjSjZRdkFJdzlWTTg2R2pkWEg5blZ2V0U1RDJBQXFUclJBNFRD?=
+ =?utf-8?B?dWs3R1RnTUJmMkMxRUs2MWhGZWlCcFhqZkdpU3VqYjRlL3FrUkhPcmpiSmhw?=
+ =?utf-8?B?V2hKZFBHNG9rYlJkSEZaYVM4SzBieFF4NEZrTk5WV01qUHhUZmVLOE9tT1U1?=
+ =?utf-8?B?amUwcjNhekE0UU05aWRpL0QrMTIxSXFQL05Yb0JGSDFWRmcxejdQZ1ZLTWpy?=
+ =?utf-8?B?dUhBZmhYd3haNW1DZEdHSDdUZVFXU0lPVkcvV0tValNnMElhKzZmQ0R5NWg3?=
+ =?utf-8?B?dHkvd1lKVzRHYnBteGE2QVo4UzEvczdpOCtwRXpHM3htZ2RQb1ZTbG9nNTM1?=
+ =?utf-8?B?Mnh1M0VtTHBxaWhkcGtiSjhYY2VIRmRNSW1IZHlzdFQrR0YvbFVFeEZpS0Rn?=
+ =?utf-8?B?K0NpTFZrTDVWVCsyalpEVjFtZjI1cjQ4STROSnlaNDRjeElYMDJ6aUF0TmFG?=
+ =?utf-8?B?bkdjdzJ3RUp0WEIvVURUUjlJZmRoSGlCNUsrMnJjN0N3bzcrTVZNRG1BSFRx?=
+ =?utf-8?B?Qks2NW9TOThnQXdUUXhXN3BHM1pDd0hGWWt5dXAvUXBxd1hjdW9kOSs0dW02?=
+ =?utf-8?B?eTJyUFByVlViZTM0ZXhOMzVxakpYUVFwWmhsRXk0M1k3K1FwdURSR3hGN0Q1?=
+ =?utf-8?B?TmZrdC95OUp6UGpJbmxXOVhLMmdNOUJKVStkSlpTbGhvTWtScytrTzZDdUVt?=
+ =?utf-8?B?SWZSaSt5ZVliNGplMmdSVWF2Q0pIMElhZHdMdnJNRTRSa0k3c05QeEpQOHRP?=
+ =?utf-8?B?Y2JlU0ZHYkhUQXdCQW5KbTlKaUVMR2Q3ZzZiVTBaY202TlNkMmJiMlNQNkRM?=
+ =?utf-8?B?MUIybTN5QUt3Q0c0bVJVZTdWdFZObDVGVE54cG5ScTlOeUZTVk5sbUFlTmpo?=
+ =?utf-8?B?N1d1K2pqWUpQa0UyR0x0ckl5ZS9kWnBROGNDOVBibDRLSGFraFVLU3dKSzN4?=
+ =?utf-8?Q?tns2L59OjtWux2P5DRw5KvZEjVcLOmeJLkXGXoo?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 497af9e1-e21a-41c4-c83a-08d93b0897f9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 14:17:14.3193
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xMpVEb8ZC5opHjfYLUFIk3bybQAKNGjRojInMHkiXSnlqrrUdxBtut7t+bdcQuzRa5ucxfoGrMZEpaW4tIjogQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1915
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the rxe provider computes an AV for each AH created. These
-are then passed to the kernel in each UD send WQE. This rxe provider
-patch matches a set of kernel patches that creates an index for the
-pool of AHs which are passed back to the rxe provider which in turn
-returns them in the UD send WQEs instead of AVs. This falls back to
-the older AV based WQE if either the rxe provider or the kernel does
-not have these patches applied.
-
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- providers/rxe/rxe-abi.h |   2 +
- providers/rxe/rxe.c     | 117 ++++++++++++++++++++++++++--------------
- providers/rxe/rxe.h     |   8 ++-
- 3 files changed, 85 insertions(+), 42 deletions(-)
-
-diff --git a/providers/rxe/rxe-abi.h b/providers/rxe/rxe-abi.h
-index 0689c3f4..020201a9 100644
---- a/providers/rxe/rxe-abi.h
-+++ b/providers/rxe/rxe-abi.h
-@@ -39,6 +39,8 @@
- #include <rdma/rdma_user_rxe.h>
- #include <kernel-abi/rdma_user_rxe.h>
- 
-+DECLARE_DRV_CMD(urxe_create_ah, IB_USER_VERBS_CMD_CREATE_AH,
-+		empty, rxe_create_ah_resp);
- DECLARE_DRV_CMD(urxe_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
- 		empty, rxe_create_cq_resp);
- DECLARE_DRV_CMD(urxe_create_cq_ex, IB_USER_VERBS_EX_CMD_CREATE_CQ,
-diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-index 3c3ea8bb..12ffe779 100644
---- a/providers/rxe/rxe.c
-+++ b/providers/rxe/rxe.c
-@@ -975,16 +975,20 @@ static void wr_set_ud_addr(struct ibv_qp_ex *ibqp, struct ibv_ah *ibah,
- 			   uint32_t remote_qpn, uint32_t remote_qkey)
- {
- 	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
--	struct rxe_ah *ah = container_of(ibah, struct rxe_ah, ibv_ah);
-+	struct rxe_ah *ah = to_rah(ibah);
- 	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
- 						   qp->cur_index - 1);
- 
- 	if (qp->err)
- 		return;
- 
--	memcpy(&wqe->av, &ah->av, sizeof(ah->av));
- 	wqe->wr.wr.ud.remote_qpn = remote_qpn;
- 	wqe->wr.wr.ud.remote_qkey = remote_qkey;
-+	wqe->wr.wr.ud.ah_num = ah->ah_num;
-+
-+	if (!ah->ah_num)
-+		/* old kernels only */
-+		memcpy(&wqe->av, &ah->av, sizeof(ah->av));
- }
- 
- static void wr_set_inline_data(struct ibv_qp_ex *ibqp, void *addr,
-@@ -1404,7 +1408,8 @@ static int validate_send_wr(struct rxe_qp *qp, struct ibv_send_wr *ibwr,
- 	return 0;
- }
- 
--static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
-+static void convert_send_wr(struct rxe_qp *qp, struct rxe_send_wr *kwr,
-+					struct ibv_send_wr *uwr)
- {
- 	struct ibv_mw *ibmw;
- 	struct ibv_mr *ibmr;
-@@ -1427,8 +1432,13 @@ static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
- 
- 	case IBV_WR_SEND:
- 	case IBV_WR_SEND_WITH_IMM:
--		kwr->wr.ud.remote_qpn		= uwr->wr.ud.remote_qpn;
--		kwr->wr.ud.remote_qkey		= uwr->wr.ud.remote_qkey;
-+		if (qp_type(qp) == IBV_QPT_UD) {
-+			struct rxe_ah *ah = to_rah(uwr->wr.ud.ah);
-+
-+			kwr->wr.ud.remote_qpn	= uwr->wr.ud.remote_qpn;
-+			kwr->wr.ud.remote_qkey	= uwr->wr.ud.remote_qkey;
-+			kwr->wr.ud.ah_num	= ah->ah_num;
-+		}
- 		break;
- 
- 	case IBV_WR_ATOMIC_CMP_AND_SWP:
-@@ -1464,11 +1474,15 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
- 	int i;
- 	unsigned int opcode = ibwr->opcode;
- 
--	convert_send_wr(&wqe->wr, ibwr);
-+	convert_send_wr(qp, &wqe->wr, ibwr);
- 
--	if (qp_type(qp) == IBV_QPT_UD)
--		memcpy(&wqe->av, &to_rah(ibwr->wr.ud.ah)->av,
--		       sizeof(struct rxe_av));
-+	if (qp_type(qp) == IBV_QPT_UD) {
-+		struct rxe_ah *ah = to_rah(ibwr->wr.ud.ah);
-+
-+		if (!ah->ah_num)
-+			/* old kernels only */
-+			memcpy(&wqe->av, &ah->av, sizeof(struct rxe_av));
-+	}
- 
- 	if (ibwr->send_flags & IBV_SEND_INLINE) {
- 		uint8_t *inline_data = wqe->dma.inline_data;
-@@ -1645,59 +1659,82 @@ static inline int rdma_gid2ip(sockaddr_union_t *out, union ibv_gid *gid)
- 	return 0;
- }
- 
--static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd, struct ibv_ah_attr *attr)
-+static int rxe_create_av(struct rxe_ah *ah, struct ibv_pd *pd,
-+					struct ibv_ah_attr *attr)
- {
--	int err;
--	struct rxe_ah *ah;
--	struct rxe_av *av;
-+	struct rxe_av *av = &ah->av;
- 	union ibv_gid sgid;
--	struct ib_uverbs_create_ah_resp resp;
--
--	err = ibv_query_gid(pd->context, attr->port_num, attr->grh.sgid_index,
--			    &sgid);
--	if (err) {
--		fprintf(stderr, "rxe: Failed to query sgid.\n");
--		return NULL;
--	}
-+	int ret;
- 
--	ah = malloc(sizeof(*ah));
--	if (ah == NULL)
--		return NULL;
-+	ret = ibv_query_gid(pd->context, attr->port_num,
-+			attr->grh.sgid_index, &sgid);
-+	if (ret)
-+		return ret;
- 
--	av = &ah->av;
- 	av->port_num = attr->port_num;
- 	memcpy(&av->grh, &attr->grh, sizeof(attr->grh));
--	av->network_type =
--		ipv6_addr_v4mapped((struct in6_addr *)attr->grh.dgid.raw) ?
--		RXE_NETWORK_TYPE_IPV4 : RXE_NETWORK_TYPE_IPV6;
-+
-+	ret = ipv6_addr_v4mapped((struct in6_addr *)attr->grh.dgid.raw);
-+	av->network_type = ret ? RXE_NETWORK_TYPE_IPV4 :
-+				 RXE_NETWORK_TYPE_IPV6;
- 
- 	rdma_gid2ip(&av->sgid_addr, &sgid);
- 	rdma_gid2ip(&av->dgid_addr, &attr->grh.dgid);
--	if (ibv_resolve_eth_l2_from_gid(pd->context, attr, av->dmac, NULL)) {
--		free(ah);
--		return NULL;
--	}
- 
--	memset(&resp, 0, sizeof(resp));
--	if (ibv_cmd_create_ah(pd, &ah->ibv_ah, attr, &resp, sizeof(resp))) {
--		free(ah);
-+	ret = ibv_resolve_eth_l2_from_gid(pd->context, attr,
-+			av->dmac, NULL);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Newer kernels will return a non-zero AH index in resp.ah_num
-+ * which can be returned in UD send WQEs.
-+ * Older kernels will leave ah_num == 0. For these create an AV and use
-+ * in UD send WQEs.
-+ */
-+static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd,
-+					struct ibv_ah_attr *attr)
-+{
-+	struct rxe_ah *ah;
-+	struct urxe_create_ah_resp resp = {};
-+	int ret;
-+
-+	ah = calloc(1, sizeof(*ah));
-+	if (!ah)
- 		return NULL;
-+
-+	ret = ibv_cmd_create_ah(pd, &ah->ibv_ah, attr,
-+					&resp.ibv_resp, sizeof(resp));
-+	if (ret)
-+		goto err_free;
-+
-+	ah->ah_num = resp.ah_num;
-+
-+	if (!ah->ah_num) {
-+		/* old kernels only */
-+		ret = rxe_create_av(ah, pd, attr);
-+		if (ret)
-+			goto err_free;
- 	}
- 
- 	return &ah->ibv_ah;
-+
-+err_free:
-+	free(ah);
-+	return NULL;
- }
- 
- static int rxe_destroy_ah(struct ibv_ah *ibah)
- {
--	int ret;
- 	struct rxe_ah *ah = to_rah(ibah);
-+	int ret;
- 
- 	ret = ibv_cmd_destroy_ah(&ah->ibv_ah);
--	if (ret)
--		return ret;
-+	if (!ret)
-+		free(ah);
- 
--	free(ah);
--	return 0;
-+	return ret;
- }
- 
- static const struct verbs_context_ops rxe_ctx_ops = {
-diff --git a/providers/rxe/rxe.h b/providers/rxe/rxe.h
-index ddb8fe89..6882d9c7 100644
---- a/providers/rxe/rxe.h
-+++ b/providers/rxe/rxe.h
-@@ -67,6 +67,7 @@ struct rxe_cq {
- struct rxe_ah {
- 	struct ibv_ah		ibv_ah;
- 	struct rxe_av		av;
-+	int			ah_num;
- };
- 
- struct rxe_wq {
-@@ -89,8 +90,6 @@ struct rxe_qp {
- 	int			err;
- };
- 
--#define qp_type(qp)		((qp)->vqp.qp.qp_type)
--
- struct rxe_srq {
- 	struct ibv_srq		ibv_srq;
- 	struct mminfo		mmap_info;
-@@ -130,4 +129,9 @@ static inline struct rxe_ah *to_rah(struct ibv_ah *ibah)
- 	return to_rxxx(ah, ah);
- }
- 
-+static inline enum ibv_qp_type qp_type(struct rxe_qp *qp)
-+{
-+	return qp->vqp.qp.qp_type;
-+}
-+
- #endif /* RXE_H */
--- 
-2.30.2
-
+PiBTdWJqZWN0OiBbUEFUQ0ggdjMgMS80XSBmcGdhOiBkZmw6IGV4cG9zZSBmZWF0dXJlIHJldmlz
+aW9uIGZyb20gc3RydWN0IGRmbF9kZXZpY2UNCj4gDQo+IEZyb206IE1hcnRpbiBIdW5kZWLDuGxs
+IDxtaHVAc2lsaWNvbS5kaz4NCj4gDQo+IERGTCBkZXZpY2UgZHJpdmVycyBoYXZlIGEgY29tbW9u
+IG5lZWQgZm9yIGNoZWNraW5nIGZlYXR1cmUgcmV2aXNpb24NCj4gaW5mb3JtYXRpb24gZnJvbSB0
+aGUgREZMIGhlYWRlciwgYXMgd2VsbCBhcyBvdGhlciBjb21tb24gREZMIGluZm9ybWF0aW9uDQo+
+IGxpa2UgdGhlIGFscmVhZHkgZXhwb3NlZCBmZWF0dXJlIGlkIGFuZCB0eXBlLg0KPiANCj4gVGhp
+cyBwYXRjaCBleHBvc2VzIHRoZSBmZWF0dXJlIHJldmlzaW9uIGluZm9ybWF0aW9uIGRpcmVjdGx5
+IHZpYSB0aGUgREZMDQo+IGRldmljZSBkYXRhIHN0cnVjdHVyZS4NCj4gDQo+IFNpbmNlIHRoZSBE
+RkwgY29yZSBjb2RlIGhhcyBhbHJlYWR5IHJlYWQgdGhlIERGTCBoZWFkZXIsIHRoaXMgdGhpcyBw
+YXRjaA0KPiBzYXZlcyBhZGRpdGlvbmFsIG1taW8gcmVhZHMgZnJvbSBERkwgZGV2aWNlIGRyaXZl
+cnMgdG9vLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWFydGluIEh1bmRlYsO4bGwgPG1odUBzaWxp
+Y29tLmRrPg0KQWNrZWQtYnk6IFd1IEhhbyA8aGFvLnd1QGludGVsLmNvbT4NCg0KVGhhbmtzIQ0K
+SGFvDQoNCj4gLS0tDQo+IA0KPiBDaGFuZ2VzIHNpbmNlIHYyOg0KPiAgKiBSZXdvcmRlZCBjb21t
+aXQgbWVzc2FnZSBhcyBwZXIgSGFvJ3Mgc3VnZ2VzdGlvbg0KPiANCj4gQ2hhbmdlcyBzaW5jZSB2
+MToNCj4gICogVGhpcyBwYXRjaCByZXBsYWNlcyB0aGUgcHJldmlvdXMgcGF0Y2ggMiBhbmQgZXhw
+b3NlcyB0aGUgZmVhdHVyZQ0KPiAgICByZXZpc2lvbiB0aHJvdWdoIHN0cnVjdCBkZmxfZGV2aWNl
+IGluc3RlYWQgb2YgYSBoZWxwZXIgcmVhZGluZyBmcm9tDQo+ICAgIGlvLW1lbQ0KPiANCj4gIGRy
+aXZlcnMvZnBnYS9kZmwuYyAgfCAyNyArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0NCj4gIGRy
+aXZlcnMvZnBnYS9kZmwuaCAgfCAgMSArDQo+ICBpbmNsdWRlL2xpbnV4L2RmbC5oIHwgIDEgKw0K
+PiAgMyBmaWxlcyBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2ZwZ2EvZGZsLmMgYi9kcml2ZXJzL2ZwZ2EvZGZsLmMN
+Cj4gaW5kZXggNTExYjIwZmYzNWEzLi45MzgxYzU3OWQxY2QgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
+cnMvZnBnYS9kZmwuYw0KPiArKysgYi9kcml2ZXJzL2ZwZ2EvZGZsLmMNCj4gQEAgLTM4MSw2ICsz
+ODEsNyBAQCBkZmxfZGV2X2FkZChzdHJ1Y3QgZGZsX2ZlYXR1cmVfcGxhdGZvcm1fZGF0YSAqcGRh
+dGEsDQo+IA0KPiAgCWRkZXYtPnR5cGUgPSBmZWF0dXJlX2Rldl9pZF90eXBlKHBkZXYpOw0KPiAg
+CWRkZXYtPmZlYXR1cmVfaWQgPSBmZWF0dXJlLT5pZDsNCj4gKwlkZGV2LT5yZXZpc2lvbiA9IGZl
+YXR1cmUtPnJldmlzaW9uOw0KPiAgCWRkZXYtPmNkZXYgPSBwZGF0YS0+ZGZsX2NkZXY7DQo+IA0K
+PiAgCS8qIGFkZCBtbWlvIHJlc291cmNlICovDQo+IEBAIC03MTcsNiArNzE4LDcgQEAgc3RydWN0
+IGJ1aWxkX2ZlYXR1cmVfZGV2c19pbmZvIHsNCj4gICAqLw0KPiAgc3RydWN0IGRmbF9mZWF0dXJl
+X2luZm8gew0KPiAgCXUxNiBmaWQ7DQo+ICsJdTggcmV2Ow0KPiAgCXN0cnVjdCByZXNvdXJjZSBt
+bWlvX3JlczsNCj4gIAl2b2lkIF9faW9tZW0gKmlvYWRkcjsNCj4gIAlzdHJ1Y3QgbGlzdF9oZWFk
+IG5vZGU7DQo+IEBAIC03OTYsNiArNzk4LDcgQEAgc3RhdGljIGludCBidWlsZF9pbmZvX2NvbW1p
+dF9kZXYoc3RydWN0DQo+IGJ1aWxkX2ZlYXR1cmVfZGV2c19pbmZvICpiaW5mbykNCj4gIAkJLyog
+c2F2ZSByZXNvdXJjZSBpbmZvcm1hdGlvbiBmb3IgZWFjaCBmZWF0dXJlICovDQo+ICAJCWZlYXR1
+cmUtPmRldiA9IGZkZXY7DQo+ICAJCWZlYXR1cmUtPmlkID0gZmluZm8tPmZpZDsNCj4gKwkJZmVh
+dHVyZS0+cmV2aXNpb24gPSBmaW5mby0+cmV2Ow0KPiANCj4gIAkJLyoNCj4gIAkJICogdGhlIEZJ
+VSBoZWFkZXIgZmVhdHVyZSBoYXMgc29tZSBmdW5kYW1lbnRhbCBmdW5jdGlvbnMNCj4gKHNyaW92
+DQo+IEBAIC05MTAsMTkgKzkxMywxNyBAQCBzdGF0aWMgdm9pZCBidWlsZF9pbmZvX2ZyZWUoc3Ry
+dWN0DQo+IGJ1aWxkX2ZlYXR1cmVfZGV2c19pbmZvICpiaW5mbykNCj4gIAlkZXZtX2tmcmVlKGJp
+bmZvLT5kZXYsIGJpbmZvKTsNCj4gIH0NCj4gDQo+IC1zdGF0aWMgaW5saW5lIHUzMiBmZWF0dXJl
+X3NpemUodm9pZCBfX2lvbWVtICpzdGFydCkNCj4gK3N0YXRpYyBpbmxpbmUgdTMyIGZlYXR1cmVf
+c2l6ZSh1NjQgdmFsdWUpDQo+ICB7DQo+IC0JdTY0IHYgPSByZWFkcShzdGFydCArIERGSCk7DQo+
+IC0JdTMyIG9mc3QgPSBGSUVMRF9HRVQoREZIX05FWFRfSERSX09GU1QsIHYpOw0KPiArCXUzMiBv
+ZnN0ID0gRklFTERfR0VUKERGSF9ORVhUX0hEUl9PRlNULCB2YWx1ZSk7DQo+ICAJLyogd29ya2Fy
+b3VuZCBmb3IgcHJpdmF0ZSBmZWF0dXJlcyB3aXRoIGludmFsaWQgc2l6ZSwgdXNlIDRLIGluc3Rl
+YWQgKi8NCj4gIAlyZXR1cm4gb2ZzdCA/IG9mc3QgOiA0MDk2Ow0KPiAgfQ0KPiANCj4gLXN0YXRp
+YyB1MTYgZmVhdHVyZV9pZCh2b2lkIF9faW9tZW0gKnN0YXJ0KQ0KPiArc3RhdGljIHUxNiBmZWF0
+dXJlX2lkKHU2NCB2YWx1ZSkNCj4gIHsNCj4gLQl1NjQgdiA9IHJlYWRxKHN0YXJ0ICsgREZIKTsN
+Cj4gLQl1MTYgaWQgPSBGSUVMRF9HRVQoREZIX0lELCB2KTsNCj4gLQl1OCB0eXBlID0gRklFTERf
+R0VUKERGSF9UWVBFLCB2KTsNCj4gKwl1MTYgaWQgPSBGSUVMRF9HRVQoREZIX0lELCB2YWx1ZSk7
+DQo+ICsJdTggdHlwZSA9IEZJRUxEX0dFVChERkhfVFlQRSwgdmFsdWUpOw0KPiANCj4gIAlpZiAo
+dHlwZSA9PSBERkhfVFlQRV9GSVUpDQo+ICAJCXJldHVybiBGRUFUVVJFX0lEX0ZJVV9IRUFERVI7
+DQo+IEBAIC0xMDIxLDEwICsxMDIyLDE1IEBAIGNyZWF0ZV9mZWF0dXJlX2luc3RhbmNlKHN0cnVj
+dA0KPiBidWlsZF9mZWF0dXJlX2RldnNfaW5mbyAqYmluZm8sDQo+ICAJdW5zaWduZWQgaW50IGly
+cV9iYXNlLCBucl9pcnFzOw0KPiAgCXN0cnVjdCBkZmxfZmVhdHVyZV9pbmZvICpmaW5mbzsNCj4g
+IAlpbnQgcmV0Ow0KPiArCXU4IHJldjsNCj4gKwl1NjQgdjsNCj4gKw0KPiArCXYgPSByZWFkcShi
+aW5mby0+aW9hZGRyICsgb2ZzdCk7DQo+ICsJcmV2ID0gRklFTERfR0VUKERGSF9SRVZJU0lPTiwg
+dik7DQo+IA0KPiAgCS8qIHJlYWQgZmVhdHVyZSBzaXplIGFuZCBpZCBpZiBpbnB1dHMgYXJlIGlu
+dmFsaWQgKi8NCj4gLQlzaXplID0gc2l6ZSA/IHNpemUgOiBmZWF0dXJlX3NpemUoYmluZm8tPmlv
+YWRkciArIG9mc3QpOw0KPiAtCWZpZCA9IGZpZCA/IGZpZCA6IGZlYXR1cmVfaWQoYmluZm8tPmlv
+YWRkciArIG9mc3QpOw0KPiArCXNpemUgPSBzaXplID8gc2l6ZSA6IGZlYXR1cmVfc2l6ZSh2KTsN
+Cj4gKwlmaWQgPSBmaWQgPyBmaWQgOiBmZWF0dXJlX2lkKHYpOw0KPiANCj4gIAlpZiAoYmluZm8t
+PmxlbiAtIG9mc3QgPCBzaXplKQ0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gQEAgLTEwMzgsNiAr
+MTA0NCw3IEBAIGNyZWF0ZV9mZWF0dXJlX2luc3RhbmNlKHN0cnVjdA0KPiBidWlsZF9mZWF0dXJl
+X2RldnNfaW5mbyAqYmluZm8sDQo+ICAJCXJldHVybiAtRU5PTUVNOw0KPiANCj4gIAlmaW5mby0+
+ZmlkID0gZmlkOw0KPiArCWZpbmZvLT5yZXYgPSByZXY7DQo+ICAJZmluZm8tPm1taW9fcmVzLnN0
+YXJ0ID0gYmluZm8tPnN0YXJ0ICsgb2ZzdDsNCj4gIAlmaW5mby0+bW1pb19yZXMuZW5kID0gZmlu
+Zm8tPm1taW9fcmVzLnN0YXJ0ICsgc2l6ZSAtIDE7DQo+ICAJZmluZm8tPm1taW9fcmVzLmZsYWdz
+ID0gSU9SRVNPVVJDRV9NRU07DQo+IEBAIC0xMTY2LDcgKzExNzMsNyBAQCBzdGF0aWMgaW50IHBh
+cnNlX2ZlYXR1cmVfcHJpdmF0ZShzdHJ1Y3QNCj4gYnVpbGRfZmVhdHVyZV9kZXZzX2luZm8gKmJp
+bmZvLA0KPiAgew0KPiAgCWlmICghaXNfZmVhdHVyZV9kZXZfZGV0ZWN0ZWQoYmluZm8pKSB7DQo+
+ICAJCWRldl9lcnIoYmluZm8tPmRldiwgInRoZSBwcml2YXRlIGZlYXR1cmUgMHgleCBkb2VzIG5v
+dCBiZWxvbmcNCj4gdG8gYW55IEFGVS5cbiIsDQo+IC0JCQlmZWF0dXJlX2lkKGJpbmZvLT5pb2Fk
+ZHIgKyBvZnN0KSk7DQo+ICsJCQlmZWF0dXJlX2lkKHJlYWRxKGJpbmZvLT5pb2FkZHIgKyBvZnN0
+KSkpOw0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gIAl9DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9mcGdhL2RmbC5oIGIvZHJpdmVycy9mcGdhL2RmbC5oDQo+IGluZGV4IDJiODJjOTZiYTU2
+Yy4uNDIyMTU3Y2ZkNzQyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2ZwZ2EvZGZsLmgNCj4gKysr
+IGIvZHJpdmVycy9mcGdhL2RmbC5oDQo+IEBAIC0yNDMsNiArMjQzLDcgQEAgc3RydWN0IGRmbF9m
+ZWF0dXJlX2lycV9jdHggew0KPiAgc3RydWN0IGRmbF9mZWF0dXJlIHsNCj4gIAlzdHJ1Y3QgcGxh
+dGZvcm1fZGV2aWNlICpkZXY7DQo+ICAJdTE2IGlkOw0KPiArCXU4IHJldmlzaW9uOw0KPiAgCWlu
+dCByZXNvdXJjZV9pbmRleDsNCj4gIAl2b2lkIF9faW9tZW0gKmlvYWRkcjsNCj4gIAlzdHJ1Y3Qg
+ZGZsX2ZlYXR1cmVfaXJxX2N0eCAqaXJxX2N0eDsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlu
+dXgvZGZsLmggYi9pbmNsdWRlL2xpbnV4L2RmbC5oDQo+IGluZGV4IDZjYzEwOTgyMzUxYS4uNDMx
+NjM2YTBkYzc4IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2RmbC5oDQo+ICsrKyBiL2lu
+Y2x1ZGUvbGludXgvZGZsLmgNCj4gQEAgLTM4LDYgKzM4LDcgQEAgc3RydWN0IGRmbF9kZXZpY2Ug
+ew0KPiAgCWludCBpZDsNCj4gIAl1MTYgdHlwZTsNCj4gIAl1MTYgZmVhdHVyZV9pZDsNCj4gKwl1
+OCByZXZpc2lvbjsNCj4gIAlzdHJ1Y3QgcmVzb3VyY2UgbW1pb19yZXM7DQo+ICAJaW50ICppcnFz
+Ow0KPiAgCXVuc2lnbmVkIGludCBudW1faXJxczsNCj4gLS0NCj4gMi4zMS4wDQoNCg==
