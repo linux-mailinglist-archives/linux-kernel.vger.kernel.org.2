@@ -2,398 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8283B6E01
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 07:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643833B6E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 08:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhF2Fpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 01:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhF2Fpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 01:45:51 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7ABC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 22:43:23 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id c17so8282720ejk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Jun 2021 22:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xrRIpRDMYCUuT0N0nNIsJAiVOtwEfWYTgjznAQmmJS4=;
-        b=zt+lQ72MfdZKLD/3wmTWnyWnfinGHARJvCXzW/1j5X5loBw/AZilf2bArM91E1pEc6
-         nu02CLwJ2Bgicv9Js08Q+qJwrx6Lnb57MVpml4D03kMn1p8Gus9nawMWipqIAWChe6Cb
-         shCLxFQH6FZzK8Ue9dD3o/tqFGT0M0akJdImfYEmKefhQUwDm3gonC0mhAAhBqekvdJC
-         vsi7qD3kA/DBKAPwtMSkBcr07EtFTVsNPpofmP+LoRSUL9q7kq5geQ6NC5iN+OA8QFjQ
-         t6IA0nyY7nP6z8J8yEg/30Q3BGkEQ47rvi2Y61UTiDLAlxNQj+5RwsipSh2DVkHeRk2R
-         h+Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xrRIpRDMYCUuT0N0nNIsJAiVOtwEfWYTgjznAQmmJS4=;
-        b=tuTa26ngy4GSIYuDeWcBWIkAyIuDhiwCN9xXK/J2RA72eLXGy4nr/euFnHEPOsvO8J
-         hL5XZIhcRhPQMUKhy9K2T5mjpRroRg26jZXzO6hKhuoX9LAel7JdK05VPvAJ9O3Va1//
-         pV8ogcYFGsgXgKkQGuDkuK2JgjdHfNI3BQkRLQPxvSU91N+LRbbqEMmTvTRnkstPm9Pv
-         G9TMU1E/KxU5yLKtgwFAUWJqca8p6DGwIX/EGjGpSu7nb4DbY7PX6RFhAymqKVyIg+yq
-         1CpCE90gCCW6KoAHqzcoMvvbXl5jRKixXxwDA/kjDWjNWxSx2sGfIZ4xlun89QdY769t
-         FvmQ==
-X-Gm-Message-State: AOAM530zlnj6SF8miyUElAQrorACnsVaBOzVixcpDS5+WmMmmCavuA2q
-        4bLdCuvpWVTgNuno+UuyI2j8vwKBZejVsHL0dH6y
-X-Google-Smtp-Source: ABdhPJznY7JybRnyMOh3MFPA6NLlIedQGO9ql6pXFq4VoDrTgHJmjFcBCVMzahKj2en5XHaS1+eg82lK0YHgoHdqdic=
-X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr28378543ejc.1.1624945402507;
- Mon, 28 Jun 2021 22:43:22 -0700 (PDT)
+        id S231974AbhF2GCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 02:02:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:47496 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231881AbhF2GCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:02:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="188468361"
+X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
+   d="scan'208";a="188468361"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 23:00:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,308,1616482800"; 
+   d="scan'208";a="419443868"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Jun 2021 23:00:12 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 28 Jun 2021 22:59:53 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Mon, 28 Jun 2021 22:59:53 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Mon, 28 Jun 2021 22:59:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N0ckXV87wsdyo1mWwSNO2k5JW9ZagDczn7LXQtIZxH9PlzBrPaPjGexb8iOpQU7HZ4eTJjLUmG3YUSnGRo3B5QPLxECwkIvt2guijJHD+CeLcxcp8LCFEYbDMDXTN9DzEwifd97RsgLRRj31uclTouIRij/sML9Afw/CAxLIacmnEsB9grcZ4Pk2mgcK7nZ/jqiphduAqHsZPsIM1FCrzv5BNEZ02Kb5rvrn0rLhQt2epybqWJHwF20NY2bUU3QDxYBbV85LugNnb5rOgyyHgzdH7W4FEE5KWt9OL7YwUPboH/E/94ucmvmCRUj13NaeUpATWq0IX1S6JydWUWFXOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LalhRS8y19TgRj6NgFzQwgGHmohTmh+9n8rhk5CgM1o=;
+ b=kVBaDDDkOrL6e5Ylgx/0cpzv9M6/6onai1LuuAQxsCet6B1Dj2D5xk3yb3K7MlWuWg7O3aQZU1s55OH1XW8k+rLk0yFXO8QOpWQ8vY+PNwkHgkv0lMR6V6yO6TjiZO7KwOBRlbbM6jadIcIvAQ2cMUdzktHn3X4q+S7HH0EZgbRJVX96Gc2HeqA/K4a0UZnOMKoVCHKamCcFtefCZujviD/GAPe6DyHeUFDyJlLep87Sz9dfMALye+TxruyyiY+0o+suhOTosomaKgdEBr4IJYbY8yUrM/DIjIBAmheMMX87NDsoqP6Ui/QkkVEIDt0FfTiW1xNkzRPlafUPz072ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LalhRS8y19TgRj6NgFzQwgGHmohTmh+9n8rhk5CgM1o=;
+ b=fb4x8d71o5NtXV6T9pLqRS6snDpXcs1QYCeBqFBJx8Jykjylji8p84kgmOosqakEaTpr5yuN7pVyUlBI7G7tvUrVAali6+6dT/4Wi/ZPllr6zgr3ZpffPPwBLcfDcEICKLEzH1+Fo1vGmjBfB7GkaGY7pohSxm0dmadGoQV3NeA=
+Received: from SJ0PR11MB5598.namprd11.prod.outlook.com (2603:10b6:a03:304::12)
+ by SJ0PR11MB5615.namprd11.prod.outlook.com (2603:10b6:a03:305::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 29 Jun
+ 2021 05:59:46 +0000
+Received: from SJ0PR11MB5598.namprd11.prod.outlook.com
+ ([fe80::e50f:8709:f404:8b4b]) by SJ0PR11MB5598.namprd11.prod.outlook.com
+ ([fe80::e50f:8709:f404:8b4b%4]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
+ 05:59:46 +0000
+From:   "Liu, Yujie" <yujie.liu@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: RE: [LKP] Re: [jump_label, x86]  e7bf1ba97a:
+ BUG:unable_to_handle_page_fault_for_address
+Thread-Topic: [LKP] Re: [jump_label, x86]  e7bf1ba97a:
+ BUG:unable_to_handle_page_fault_for_address
+Thread-Index: AQHXaAiH7ZAQDH07J0+GlvPgeMbkGasitFqwgAZ5xQCAAAzdAIAAGISAgAEzpVA=
+Date:   Tue, 29 Jun 2021 05:59:46 +0000
+Message-ID: <SJ0PR11MB559827267F45AF7F344E1937FB029@SJ0PR11MB5598.namprd11.prod.outlook.com>
+References: <20210623022826.GA20282@xsang-OptiPlex-9020>
+ <YNLtSKUtqxqPxmGP@hirez.programming.kicks-ass.net>
+ <SJ0PR11MB5598608507B7EB38983113BCFB079@SJ0PR11MB5598.namprd11.prod.outlook.com>
+ <YNmUzDjX6sECp37P@hirez.programming.kicks-ass.net>
+ <YNmflj/WpFG5Ivmb@hirez.programming.kicks-ass.net>
+ <YNm0J6etioinNhJH@hirez.programming.kicks-ass.net>
+In-Reply-To: <YNm0J6etioinNhJH@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.142.21]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 826db21c-c945-4a90-6d0e-08d93ac31952
+x-ms-traffictypediagnostic: SJ0PR11MB5615:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB561523AA7ECFB2158ADB131FFB029@SJ0PR11MB5615.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Zdx9w+5X5CP+C3HzT1GPHDDAK5Kpm/7+qH8jiImwV6DbkW0bsEOmAa96bG6qcgQ3FNz/aMyfZRySe7jjZixRE+VP2MYFcTjU36GqFmJKTQk5bCwiv+D+cVsSOrM7CnMuB1MmKeR/MEw2zQ20QyDdLtyIuYfjAGc6AvhaxUS1E/59u/lRXyPTB8JKRwhR63V/DW8/bczqRWg9qLvPj2efAHh4j7qo6Ux1xwyw+TjAhkpi+j+1uuMpE/7kSUJRAgAvu1CFwHDbv7vyV8XTApKbT+xlpbSQns0LyZN2yt1yL56k+bp/0MFhCTMy9ArGqOyecAqEgyr+ZX0p3bbEQrB3O3ddjOYhAkJfTyiYq6EvBRh8SMZjv4yDeqCPqAW0V2/ZdZeN+iyGjCS84PvlgIcYI0D5+sZS9IzcfSiTo/1XyJ2K0Pa85fucFb7keYsBBYoHgjzXDdbBxten3/9WbWjvpSn93I0f+oKkcu227MSegs5t+nJu+CTGJzA6x9SLjHO6s6ZHMHWjJzHAm7GGNqdan0H6CmhVV/qMUmS9I4sWNuacTf3uiL6G402XVCYfW/iS2ZKEwTZEWp9sIzLLm0/e26HBJFvaJNCiK9p54C1qWta1kDPx0iGm4QS1/TPwvUx2lLVC5oGasyw9tn2E0zqMwvkYC1awxoGnSL6jL1uMIP81BMDd/OYKzZlvtKCuTfeztIa5D8b7/QEfYSQ6329VswjgIEgOU4gmLRmx92meJJHF0d1ugxgSe1O1axjhv6/v6eNPwNzrkdWQvjjSBD3JbQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5598.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39860400002)(366004)(346002)(186003)(8676002)(8936002)(6916009)(38100700002)(26005)(122000001)(71200400001)(316002)(54906003)(5660300002)(558084003)(86362001)(966005)(33656002)(6506007)(66556008)(66446008)(64756008)(478600001)(7696005)(66946007)(76116006)(52536014)(2906002)(55016002)(66476007)(9686003)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?l+NYmJJVL/WqRORJw8fe558DqJYuVs7iJ+duiwkdYoI/OgYwMAOeMbeZV7yM?=
+ =?us-ascii?Q?G1NcEe93U3+ReKibnG00bIMfHE33iSJVbM9P1ZG7D7JQvzdywCTb2XeW3CC3?=
+ =?us-ascii?Q?6KJaUf2xIJdTNAF+nao9nUsyyNseNgh5OSmnuTRLaYZM9dF4ElGnbbfvpCQM?=
+ =?us-ascii?Q?xMOb273ZofQvU2ncGyaaBfT+EQhD1UqUCYBpuOMFunIU2psQkwsaaYVLWmQl?=
+ =?us-ascii?Q?y4EozYN3yv9q5KoSHZjqyPVU1LmBrMBpuYKrQ5zrvBEqfN4rTK1AfPHjaPHQ?=
+ =?us-ascii?Q?56FRl1qzO6wImDR46E0qmvyVMOdh8elNbIKhWjL9XjyfT5Xe3sUatsMVmXxa?=
+ =?us-ascii?Q?ffB5M6AZ7DYXKIgm73ap1/oDvXGMK1rmPgq6BW5TIAIvPwkcUY2zmqt6bFGx?=
+ =?us-ascii?Q?DgnTQyknU9sTK9wfQzHh3R4wLo7fHfy1E5MYhWxdARV6EuacJm2QiHHikwXH?=
+ =?us-ascii?Q?ws+ILDtV6cWJoHfVoljPX6TKh9m6Ync/D0Ve9vjOltrVTIkgoUT13oojuf+e?=
+ =?us-ascii?Q?lX2m1t/HdqOQ0g0s2WIVDJaxY3iwN/1EhiXfoz8EYrBvmIJjjTxpLHWiBW99?=
+ =?us-ascii?Q?a1Et0Sjwt0NB4Jc5y1jcBxw6hIDjCPclL0yN1DLDG6gfVvPuY1qd4X7naZMI?=
+ =?us-ascii?Q?JOhQQR/aynD4G5o5V0PGDPtLz33JMIZj0ZeVgcMqk7Y738kY5nS1q+RguLrV?=
+ =?us-ascii?Q?RwzyT751+sNvPtJg+gioMCxYQeTk6Z9d1rzugsQKj1ayS6bqrZdrsHyqotx4?=
+ =?us-ascii?Q?5U3nfoWVbSVyIu1f/RKJFPLGUd0yvVnmjYYNM0u89z3n2ay58hgM9GtwjHcn?=
+ =?us-ascii?Q?zkUQBxoGdCkTLQFV/dcoRXRfy+P4qtt+gZ/FQRxQqqaV2wOq0xD5rUjyx3dJ?=
+ =?us-ascii?Q?/pqPfMpKtoBPVq6yLpp9+VHMmvJNFoJiuDt9oAVrMHrkAyfh26XIx3BtYO2q?=
+ =?us-ascii?Q?1UwmJvRdGMPANkdZiAfvKTopXnc0H07z2TFmFvchrRx5uDHwxKMvkApj1o2R?=
+ =?us-ascii?Q?KsfpcM3x8AMXMwlpuNzdrFbsJAFHdxFVkH7MjoDoGSYocQqwX18tZNUn1soh?=
+ =?us-ascii?Q?Y9jM5xGY9cVcWCfBWvZ9BqPL05wfVjxqe5BOb6Ft0stwMxjnYwZCSChif1FQ?=
+ =?us-ascii?Q?qRdH6GzehuCF206iboDNxJLPAJNNW/EF9AB+wwG4hRpaL/Wpson84emRRzl9?=
+ =?us-ascii?Q?MfH8ckhz0QCk5KHuut4qRouamD7W1K1VTb6NejuRsdq8x+tR0zCNSDG/C40i?=
+ =?us-ascii?Q?ZFzVLvzDGMyb/dJE4kXDPoJNYkfHq+P0uNjzpjMbvZqjHsu+V6+mqiX/fqJP?=
+ =?us-ascii?Q?Dc/8vo/gWqRL45sL2NHuJ6+l?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-11-xieyongji@bytedance.com>
- <YNSCH6l31zwPxBjL@stefanha-x1.localdomain>
-In-Reply-To: <YNSCH6l31zwPxBjL@stefanha-x1.localdomain>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Tue, 29 Jun 2021 13:43:11 +0800
-Message-ID: <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
-Subject: Re: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5598.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 826db21c-c945-4a90-6d0e-08d93ac31952
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 05:59:46.6217
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vhbdRQH4XzuYU/xcUfkk/THt8ZhOYWijfYcKAmNIbc9AKIxj29WGEDByh/RbTe56P6mzZhUcCif6/HEgJjdZZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5615
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 9:02 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
->
-> On Tue, Jun 15, 2021 at 10:13:31PM +0800, Xie Yongji wrote:
-> > VDUSE (vDPA Device in Userspace) is a framework to support
-> > implementing software-emulated vDPA devices in userspace. This
-> > document is intended to clarify the VDUSE design and usage.
-> >
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > ---
-> >  Documentation/userspace-api/index.rst |   1 +
-> >  Documentation/userspace-api/vduse.rst | 222 ++++++++++++++++++++++++++++++++++
-> >  2 files changed, 223 insertions(+)
-> >  create mode 100644 Documentation/userspace-api/vduse.rst
-> >
-> > diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-> > index 0b5eefed027e..c432be070f67 100644
-> > --- a/Documentation/userspace-api/index.rst
-> > +++ b/Documentation/userspace-api/index.rst
-> > @@ -27,6 +27,7 @@ place where this information is gathered.
-> >     iommu
-> >     media/index
-> >     sysfs-platform_profile
-> > +   vduse
-> >
-> >  .. only::  subproject and html
-> >
-> > diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-> > new file mode 100644
-> > index 000000000000..2f9cd1a4e530
-> > --- /dev/null
-> > +++ b/Documentation/userspace-api/vduse.rst
-> > @@ -0,0 +1,222 @@
-> > +==================================
-> > +VDUSE - "vDPA Device in Userspace"
-> > +==================================
-> > +
-> > +vDPA (virtio data path acceleration) device is a device that uses a
-> > +datapath which complies with the virtio specifications with vendor
-> > +specific control path. vDPA devices can be both physically located on
-> > +the hardware or emulated by software. VDUSE is a framework that makes it
-> > +possible to implement software-emulated vDPA devices in userspace. And
-> > +to make it simple, the emulated vDPA device's control path is handled in
-> > +the kernel and only the data path is implemented in the userspace.
-> > +
-> > +Note that only virtio block device is supported by VDUSE framework now,
-> > +which can reduce security risks when the userspace process that implements
-> > +the data path is run by an unprivileged user. The Support for other device
-> > +types can be added after the security issue is clarified or fixed in the future.
-> > +
-> > +Start/Stop VDUSE devices
-> > +------------------------
-> > +
-> > +VDUSE devices are started as follows:
-> > +
-> > +1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-> > +   /dev/vduse/control.
-> > +
-> > +2. Begin processing VDUSE messages from /dev/vduse/$NAME. The first
-> > +   messages will arrive while attaching the VDUSE instance to vDPA bus.
-> > +
-> > +3. Send the VDPA_CMD_DEV_NEW netlink message to attach the VDUSE
-> > +   instance to vDPA bus.
-> > +
-> > +VDUSE devices are stopped as follows:
-> > +
-> > +1. Send the VDPA_CMD_DEV_DEL netlink message to detach the VDUSE
-> > +   instance from vDPA bus.
-> > +
-> > +2. Close the file descriptor referring to /dev/vduse/$NAME
-> > +
-> > +3. Destroy the VDUSE instance with ioctl(VDUSE_DESTROY_DEV) on
-> > +   /dev/vduse/control
-> > +
-> > +The netlink messages metioned above can be sent via vdpa tool in iproute2
-> > +or use the below sample codes:
-> > +
-> > +.. code-block:: c
-> > +
-> > +     static int netlink_add_vduse(const char *name, enum vdpa_command cmd)
-> > +     {
-> > +             struct nl_sock *nlsock;
-> > +             struct nl_msg *msg;
-> > +             int famid;
-> > +
-> > +             nlsock = nl_socket_alloc();
-> > +             if (!nlsock)
-> > +                     return -ENOMEM;
-> > +
-> > +             if (genl_connect(nlsock))
-> > +                     goto free_sock;
-> > +
-> > +             famid = genl_ctrl_resolve(nlsock, VDPA_GENL_NAME);
-> > +             if (famid < 0)
-> > +                     goto close_sock;
-> > +
-> > +             msg = nlmsg_alloc();
-> > +             if (!msg)
-> > +                     goto close_sock;
-> > +
-> > +             if (!genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, famid, 0, 0, cmd, 0))
-> > +                     goto nla_put_failure;
-> > +
-> > +             NLA_PUT_STRING(msg, VDPA_ATTR_DEV_NAME, name);
-> > +             if (cmd == VDPA_CMD_DEV_NEW)
-> > +                     NLA_PUT_STRING(msg, VDPA_ATTR_MGMTDEV_DEV_NAME, "vduse");
-> > +
-> > +             if (nl_send_sync(nlsock, msg))
-> > +                     goto close_sock;
-> > +
-> > +             nl_close(nlsock);
-> > +             nl_socket_free(nlsock);
-> > +
-> > +             return 0;
-> > +     nla_put_failure:
-> > +             nlmsg_free(msg);
-> > +     close_sock:
-> > +             nl_close(nlsock);
-> > +     free_sock:
-> > +             nl_socket_free(nlsock);
-> > +             return -1;
-> > +     }
-> > +
-> > +How VDUSE works
-> > +---------------
-> > +
-> > +Since the emuldated vDPA device's control path is handled in the kernel,
->
-> s/emuldated/emulated/
->
+>=20
+> On Mon, Jun 28, 2021 at 12:08:22PM +0200, Peter Zijlstra wrote:
+> > Let me go write up a proper patch and do the same for static_call.
+>=20
+> https://lkml.kernel.org/r/20210628112409.233121975@infradead.org
 
-Will fix it.
+We have tested the patch set provided in above link, and it can fix the bug=
+.
 
-> > +a message-based communication protocol and few types of control messages
-> > +are introduced by VDUSE framework to make userspace be aware of the data
-> > +path related changes:
-> > +
-> > +- VDUSE_GET_VQ_STATE: Get the state for virtqueue from userspace
-> > +
-> > +- VDUSE_START_DATAPLANE: Notify userspace to start the dataplane
-> > +
-> > +- VDUSE_STOP_DATAPLANE: Notify userspace to stop the dataplane
-> > +
-> > +- VDUSE_UPDATE_IOTLB: Notify userspace to update the memory mapping in device IOTLB
-> > +
-> > +Userspace needs to read()/write() on /dev/vduse/$NAME to receive/reply
-> > +those control messages from/to VDUSE kernel module as follows:
-> > +
-> > +.. code-block:: c
-> > +
-> > +     static int vduse_message_handler(int dev_fd)
-> > +     {
-> > +             int len;
-> > +             struct vduse_dev_request req;
-> > +             struct vduse_dev_response resp;
-> > +
-> > +             len = read(dev_fd, &req, sizeof(req));
-> > +             if (len != sizeof(req))
-> > +                     return -1;
-> > +
-> > +             resp.request_id = req.request_id;
-> > +
-> > +             switch (req.type) {
-> > +
-> > +             /* handle different types of message */
-> > +
-> > +             }
-> > +
-> > +             if (req.flags & VDUSE_REQ_FLAGS_NO_REPLY)
-> > +                     return 0;
-> > +
-> > +             len = write(dev_fd, &resp, sizeof(resp));
-> > +             if (len != sizeof(resp))
-> > +                     return -1;
-> > +
-> > +             return 0;
-> > +     }
-> > +
-> > +After VDUSE_START_DATAPLANE messages is received, userspace should start the
-> > +dataplane processing with the help of some ioctls on /dev/vduse/$NAME:
-> > +
-> > +- VDUSE_IOTLB_GET_FD: get the file descriptor to the first overlapped iova region.
-> > +  Userspace can access this iova region by passing fd and corresponding size, offset,
-> > +  perm to mmap(). For example:
-> > +
-> > +.. code-block:: c
-> > +
-> > +     static int perm_to_prot(uint8_t perm)
-> > +     {
-> > +             int prot = 0;
-> > +
-> > +             switch (perm) {
-> > +             case VDUSE_ACCESS_WO:
-> > +                     prot |= PROT_WRITE;
-> > +                     break;
-> > +             case VDUSE_ACCESS_RO:
-> > +                     prot |= PROT_READ;
-> > +                     break;
-> > +             case VDUSE_ACCESS_RW:
-> > +                     prot |= PROT_READ | PROT_WRITE;
-> > +                     break;
-> > +             }
-> > +
-> > +             return prot;
-> > +     }
-> > +
-> > +     static void *iova_to_va(int dev_fd, uint64_t iova, uint64_t *len)
-> > +     {
-> > +             int fd;
-> > +             void *addr;
-> > +             size_t size;
-> > +             struct vduse_iotlb_entry entry;
-> > +
-> > +             entry.start = iova;
-> > +             entry.last = iova + 1;
->
-> Why +1?
->
-> I expected the request to include *len so that VDUSE can create a bounce
-> buffer for the full iova range, if necessary.
->
-
-The function is used to translate iova to va. And the *len is not
-specified by the caller. Instead, it's used to tell the caller the
-length of the contiguous iova region from the specified iova. And the
-ioctl VDUSE_IOTLB_GET_FD will get the file descriptor to the first
-overlapped iova region. So using iova + 1 should be enough here.
-
-> > +             fd = ioctl(dev_fd, VDUSE_IOTLB_GET_FD, &entry);
-> > +             if (fd < 0)
-> > +                     return NULL;
-> > +
-> > +             size = entry.last - entry.start + 1;
-> > +             *len = entry.last - iova + 1;
-> > +             addr = mmap(0, size, perm_to_prot(entry.perm), MAP_SHARED,
-> > +                         fd, entry.offset);
-> > +             close(fd);
-> > +             if (addr == MAP_FAILED)
-> > +                     return NULL;
-> > +
-> > +             /* do something to cache this iova region */
->
-> How is userspace expected to manage iotlb mmaps? When should munmap(2)
-> be called?
->
-
-The simple way is using a list to store the iotlb mappings. And we
-should call the munmap(2) for the old mappings when VDUSE_UPDATE_IOTLB
-or VDUSE_STOP_DATAPLANE message is received.
-
-> Should userspace expect VDUSE_IOTLB_GET_FD to return a full chunk of
-> guest RAM (e.g. multiple gigabytes) that can be cached permanently or
-> will it return just enough pages to cover [start, last)?
->
-
-It should return one iotlb mapping that covers [start, last). In
-vhost-vdpa cases, it might be a full chunk of guest RAM. In
-virtio-vdpa cases, it might be the whole bounce buffer or one coherent
-mapping (produced by dma_alloc_coherent()).
-
-> > +
-> > +             return addr + iova - entry.start;
-> > +     }
-> > +
-> > +- VDUSE_DEV_GET_FEATURES: Get the negotiated features
->
-> Are these VIRTIO feature bits? Please explain how feature negotiation
-> works. There must be a way for userspace to report the device's
-> supported feature bits to the kernel.
->
-
-Yes, these are VIRTIO feature bits. Userspace will specify the
-device's supported feature bits when creating a new VDUSE device with
-ioctl(VDUSE_CREATE_DEV).
-
-> > +- VDUSE_DEV_UPDATE_CONFIG: Update the configuration space and inject a config interrupt
->
-> Does this mean the contents of the configuration space are cached by
-> VDUSE?
-
-Yes, but the kernel will also store the same contents.
-
-> The downside is that the userspace code cannot generate the
-> contents on demand. Most devices doin't need to generate the contents
-> on demand, so I think this is okay but I had expected a different
-> interface:
->
-> kernel->userspace VDUSE_DEV_GET_CONFIG
-> userspace->kernel VDUSE_DEV_INJECT_CONFIG_IRQ
->
-
-The problem is how to handle the failure of VDUSE_DEV_GET_CONFIG. We
-will need lots of modification of virtio codes to support that. So to
-make it simple, we choose this way:
-
-userspace -> kernel VDUSE_DEV_SET_CONFIG
-userspace -> kernel VDUSE_DEV_INJECT_CONFIG_IRQ
-
-> I think you can leave it the way it is, but I wanted to mention this in
-> case someone thinks it's important to support generating the contents of
-> the configuration space on demand.
->
-
-Sorry, I didn't get you here. Can't VDUSE_DEV_SET_CONFIG and
-VDUSE_DEV_INJECT_CONFIG_IRQ achieve that?
-
-> > +- VDUSE_VQ_GET_INFO: Get the specified virtqueue's metadata
-> > +
-> > +- VDUSE_VQ_SETUP_KICKFD: set the kickfd for virtqueue, this eventfd is used
-> > +  by VDUSE kernel module to notify userspace to consume the vring.
-> > +
-> > +- VDUSE_INJECT_VQ_IRQ: inject an interrupt for specific virtqueue
->
-> This information is useful but it's not enough to be able to implement a
-> userspace device. Please provide more developer documentation or at
-> least refer to uapi header files, published documents, etc that contain
-> the details.
-
-OK, I will try to add more details.
-
-Thanks,
-Yongji
+Thanks.
