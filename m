@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215433B6C0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017463B6C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 03:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhF2Bbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Jun 2021 21:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        id S232102AbhF2BcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Jun 2021 21:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbhF2Bby (ORCPT
+        with ESMTP id S231947AbhF2BcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Jun 2021 21:31:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196BDC061574;
-        Mon, 28 Jun 2021 18:29:27 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so771178pjb.5;
-        Mon, 28 Jun 2021 18:29:27 -0700 (PDT)
+        Mon, 28 Jun 2021 21:32:00 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924AAC061574;
+        Mon, 28 Jun 2021 18:29:33 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id j184so29562673qkd.6;
+        Mon, 28 Jun 2021 18:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JRlGj/MQ8RE/ZATYAF6lewLI2xCcGnw8emgVF67u0j4=;
-        b=COr3/rdPwWZrvA57IqpNwQKkAkOdlgw9G3zxEDMklJgKvsOHPYj0u7v4JmWsSVTyxs
-         doewSEpIm/nJq3/nDL+gWgjXlNMod6G8Lkkg9lWK2KTgcSSXVaf0tS6bHLONuymmcWwV
-         BUeuQiipACrk6f4ypekuWX76xRXJJ9xbbI6gtpP0NlY0plOVn8ckYzpGVoAySpInIzer
-         4SdLUBqnv+FYnoiTGmTADxFAN3Fw1jKxi4PjEiQ3yKJz5GuTyyycqpTwulLBTGKDVXFA
-         /l36zxcs1wp+shDW1rUqUcYwczveCW/z7+4XrmGCesmYVpd1ga5kBxmaHBgaaeKMLejG
-         1r7w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YKTZeqsgZVd/xQQ0ZZ3e73fmxZPktDpaewy2pS7/C+8=;
+        b=KW91ldLhmC4ClF1+sS8W9j06oMAkDW8v5QmirYo2T4OdNHvAOyQWIi6CIV1sSY6F2/
+         BOIZYJTrJc058x5eP5T00udnX9cP37ySRmvC9+3AFP3GPEHDmWFZims0eLQDhHH6d7HJ
+         IQKwslMoftASJY6rMAFmCGs4ublBmRZG6Eyr1uIyQLXGbbLt3vj94DAH5xjkM336BSXo
+         FfuDIFzgGUwv2xHTd0mj25Vvp7F9IpKsTr9DSUAQ6qfHtyIPjL4FMlIOLjK+xyQMLQNv
+         BGgLdaZK/MwuV8J8XKenSrTqx5W3WGjLchT4b+3SdmYpzZQ8W+mFDSRhl8wtv716WrvV
+         yEMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JRlGj/MQ8RE/ZATYAF6lewLI2xCcGnw8emgVF67u0j4=;
-        b=a9LlgtYCksG1LznUagm0XrvkeHOzdYAwomvZuDQ9XIcfTcrmIZzJIQMYXI3l9t41AW
-         FHnHJiIiCw7geeI0dUaCYLARMDZXM43UZH3WCSTcyqlJuVYjoXtXZ1qxznlsTmuhvnUO
-         FS6W3jJ/Sd+XXFod/ZXfiHJfet6ob8RBaAfBpd6nRZhzX6bhYAvOGfd6fIiPfeU32e4Z
-         TxlCe+sa9hNCvYxLr0fMKfcv8UgDIEsgmaX56ZKuxGRR6ZsQa0bUbgyTWN3N6NqTmcQ6
-         VAXQVHwYBGOLOnGIc0PbwRD3rSrDgg5mb108b7YUCvm31fFlue1WqFv3OVDRN72ZJcZQ
-         HjFg==
-X-Gm-Message-State: AOAM532Kx/+RE/jAi4Dr8WkUZFFnLYN0Enpj9vZD+h06DdVcZL3K6HNt
-        zeNURAIKzg6iPxgpgRyEqfJNRtp3/xAc9J5cRTA=
-X-Google-Smtp-Source: ABdhPJxfXGa28G4Gw9FxA/WuMOhFcXUJo8D2KmdLkusLDi27M4jCX3Bez4Ajbp4UB3i5EXvhG86joA==
-X-Received: by 2002:a17:90a:b284:: with SMTP id c4mr31418084pjr.213.1624930166649;
-        Mon, 28 Jun 2021 18:29:26 -0700 (PDT)
-Received: from localhost.localdomain ([150.109.127.35])
-        by smtp.gmail.com with ESMTPSA id k13sm15183933pfu.57.2021.06.28.18.29.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Jun 2021 18:29:26 -0700 (PDT)
-From:   Bing Fan <hptsfb@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm pl011 serial: support multi-irq request
-Date:   Tue, 29 Jun 2021 09:29:24 +0800
-Message-Id: <1624930164-18411-1-git-send-email-hptsfb@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YKTZeqsgZVd/xQQ0ZZ3e73fmxZPktDpaewy2pS7/C+8=;
+        b=tHh1rH8FswP1uCcJocEyClOrEQ/mK0CPn8tn4EV4WXnpf3XkxhxQqUU0L72eAIcTZa
+         9fFw7qYutYKfxKmk9ZpkWJmqyHHLimQEUp3lmfDw3Dw2Zgy21gxanTekIeQ7R1Z+MiWv
+         t3x1JR2+twwTul2zXEqPvhzK5TxhXTDfOrKHsDb0fEiJrSfaWWFU5nqL6z2Rh3TsbXYn
+         XqZhpKhII48feNDYFfXumZpFlDCGjy7WY5jsjLGZ4yRtZa7nOsLaOT1qdIa2dZtL8JmQ
+         TZTTAvXkVs+4FXIUQGczXHEpzd/pwoBbZI4ttG5oAyoFEro8PiParqF1JIWt2l8gaQ2z
+         3VJg==
+X-Gm-Message-State: AOAM532W9NHVR+gTMvNQ4xFIFehAHzCvIUzL0ZLKLTQf0AFBD+bZsnok
+        rR0Y6/A040ukrqA0NI/vhoM=
+X-Google-Smtp-Source: ABdhPJwO8Vmgt1NAhu6hvjO2GodeuT35umtzmdqDUWPq31B85IDG1lO+iDbpoVT6frUSvOuQ1oX6eg==
+X-Received: by 2002:a37:6149:: with SMTP id v70mr15760545qkb.76.1624930172596;
+        Mon, 28 Jun 2021 18:29:32 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id i19sm2472552qkl.19.2021.06.28.18.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 18:29:32 -0700 (PDT)
+Date:   Mon, 28 Jun 2021 18:29:31 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Hildenbrand <david@redhat.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/8] bitops: protect find_first_{,zero}_bit properly
+Message-ID: <YNp3extAkTY8Aocd@yury-ThinkPad>
+References: <20210612123639.329047-1-yury.norov@gmail.com>
+ <20210612123639.329047-2-yury.norov@gmail.com>
+ <CAHp75VcfX4X5w7yeheostadvfTjhnnzgsTyhMM-9wgS9Lgfn1g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcfX4X5w7yeheostadvfTjhnnzgsTyhMM-9wgS9Lgfn1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bing Fan <tombinfan@tencent.com>
+On Sun, Jun 13, 2021 at 12:38:52AM +0300, Andy Shevchenko wrote:
+> On Sat, Jun 12, 2021 at 3:38 PM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > find_first_bit() and find_first_zero_bit() are not protected with
+> > ifdefs as other functions in find.h. It causes build errors on some
+> > platforms if CONFIG_GENERIC_FIND_FIRST_BIT is enabled.
+> 
+> Fixes?
 
-In order to make pl011 work better, multiple interrupts are
-required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-at the same time, pl011 to GIC does not merge the interrupt
-lines(each serial-interrupt corresponding to different GIC hardware
-interrupt), so need to enable and request multiple gic interrupt
-numbers in the driver.
+Fixes: 2cc7b6a44ac2 ("lib: add fast path for find_first_*_bit() and find_last_bit()")
 
-Signed-off-by: Bing Fan <tombinfan@tencent.com>
----
- drivers/tty/serial/amba-pl011.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 78682c12156a..b63164e89903 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1703,9 +1703,30 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
- 
- static int pl011_allocate_irq(struct uart_amba_port *uap)
- {
-+	int ret = -1;
-+	int i = 0;
-+	unsigned int virq = 0;
-+	struct amba_device *amba_dev = (struct amba_device *)uap->port.dev;
-+
-+	if (!amba_dev)
-+		return -1;
-+
- 	pl011_write(uap->im, uap, REG_IMSC);
- 
--	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-+	for (i = 0; i < AMBA_NR_IRQS; i++) {
-+		virq = amba_dev->irq[i];
-+		if (virq == 0)
-+			break;
-+
-+		ret = request_irq(virq, pl011_int, IRQF_SHARED, "uart-pl011-*", uap);
-+		if (ret < 0) {
-+			dev_info(uap->port.dev, "%s %d request %u interrupt failed\n",
-+					__func__, __LINE__, virq);
-+			break;
-+		}
-+	}
-+
-+	return ret;
- }
- 
- /*
--- 
-2.17.1
-
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
