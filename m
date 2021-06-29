@@ -2,88 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE9E3B7079
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134693B707E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 12:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbhF2KTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 06:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S233042AbhF2KWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 06:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhF2KS6 (ORCPT
+        with ESMTP id S232694AbhF2KWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:18:58 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD7BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:16:30 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id cs1-20020a17090af501b0290170856e1a8aso1565069pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 03:16:30 -0700 (PDT)
+        Tue, 29 Jun 2021 06:22:05 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A0DC061574;
+        Tue, 29 Jun 2021 03:19:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id q91so867988pjk.3;
+        Tue, 29 Jun 2021 03:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fHJGPCNIIZX7zHvjAz1sYFrEy/nZsnBPgV4WCrzHZoY=;
-        b=Z98RsBJ2tMkTUKUXLl5Z86dDA+gDkUzfeRB2iqkEAFOn8W9kU5xnIsZ24Mi2XLNOF0
-         wLYpHpBObb7m0JF/BoIRzigVvDYWyxdeUcYiFI5SHXNrriLH9LHd4N1F5bR4+j59cYev
-         ddhr0+b3wwtxl4cKcgAEjM5c3rT4ljRAE/ptecca3hwkFvqQvztGcA5Fsuar4AaLcURV
-         khUnJ7jrXaTAOQWs32074IgP9tVrU19TS63wSh+JRJ6BkxgoZZ0fjOY8w5CPqacleKmM
-         Z3OsH/ev2NhpiGg9tRp9OUv6SrhGJEnuZ7OGS6YCrAPDr6gyZ98FImrkj2n1hshYeGtM
-         F8Zw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3OkRkHizt0pIFF2nae2zayetiAfJYLbN66gAHLaoVdw=;
+        b=CRhtikpflpdTCCVEeZytUhGjT4As9u4HQCmFlcgJ/n2QLXGKu5HweIWAY/s5hAXuyR
+         7tfPnuPf4R0g8WpImwM5yYPBP7P9kxbjO7T9XYuelDmpITMhmW2KjDoGovkSd2HOlBxq
+         3lWtsmwyYqUxjuc9pG3An7e10pn7MsDwdxV/19GediA+SklJ81CmkxUs+HtXiv1TLXee
+         /jTdcaHWuF8jGoZrkagRjUT6YBrWq92OqsnzyZJcXLa6ccmzh1MZJLIOBIiLLxUPT0vi
+         s1MV3xDwEkZBm3dRPFAVbeDlSYzn5pTvGxqJCFxFTUCR+mC0pN+5o/fX8Md8XdbK9aEU
+         Zydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fHJGPCNIIZX7zHvjAz1sYFrEy/nZsnBPgV4WCrzHZoY=;
-        b=iekw+GbEZswa4KjzuCcm14MARJbXLZ6R57xy5bhXEIpZo2nIskPVitsrRA35NVi+vr
-         ub6QZNZT8xMc23bREHR7g8A2UGyEnM8IbQv7/nEmmE4NgE6iUI3fQ0e4pSIwbYMs5wR2
-         flj4NhXmCpU83xJWybXYdgfW43e3zKlAYbK6gWUVqYxSGEHoKRChMFVnmBYFkZEqx5cV
-         Lh4/yvJm89tN3vT6akAZsO677T3H31xG91M2CPbzVof5Azl/W2MFglyHN8iq4Rk1cHZO
-         bHWroEkIimtg7XgeghLHV4RpMlqRBdZRjDcCwKdGAwxMcDpaXqiusTQAkTeod6Cg1zJ+
-         BMKQ==
-X-Gm-Message-State: AOAM533lYqDiAw2jC6a7/lrwNBvZwYUFct3Q85Z5FFweD5DX1xxXKvbX
-        vsvwK7I0MyE5GSWk9uP+fSpg+w==
-X-Google-Smtp-Source: ABdhPJy6ELC1Uskp0Zc2w7psvkk4b23wKkXSPLPrQWne41oU8aWbeHNf1IoQruutBgVH7W34Ck67cQ==
-X-Received: by 2002:a17:90a:ea8a:: with SMTP id h10mr6312319pjz.61.1624961790404;
-        Tue, 29 Jun 2021 03:16:30 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id c18sm16989726pfo.143.2021.06.29.03.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 03:16:29 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 15:46:27 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3OkRkHizt0pIFF2nae2zayetiAfJYLbN66gAHLaoVdw=;
+        b=Yc7vDnQTLwbUfOMDRwxTsMzP1XR1l1Idng8Wfz9pEf4nOgQNRum8/nA1ytMIsEcXWQ
+         D1UytHqvOljH6lk5Vc5wsTm9bS/Va9zgMVblixILa8zlQpsRuG9DTw7IcL5GP9jT2JCX
+         xoPvHutiM/2YnrSFCOnnK8VSQlFXkq8ht0waX0ooYacjwYilQauCLSKxGIqmGb+HyW7d
+         SDGWX5Hma8srVUqhTpwZVAR9564XEw08u1TrIgpBpaSX6/1w9pqn7sqvtyx5r6sW9oiD
+         hVKa4R6zMoAcGJeXmeJLfNLUD6ET8YoQLe4lRuxB4MahGQTUW2WYDdyIVyPwvTZtXX3D
+         K5rQ==
+X-Gm-Message-State: AOAM533gUNXy4NTOjvngBDrK+eFEAZYcQm0RlTaQ5vwN+dnUTTAULW+J
+        rtxwZj8X1S9FiGLqvNJ8BkqGgtLLVp6pTTEEX6o=
+X-Google-Smtp-Source: ABdhPJxjxFoz08Ja5OaBGu6Tobx6MuahznJRKwGzUZreziP7AT2VU6jjhB0LxW58wN/wCXQFJSon5co6gQuXVp9Tdis=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr43469772pjq.129.1624961976519;
+ Tue, 29 Jun 2021 03:19:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNrw4rxihFLuqLtY@ninjato>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <CAF78GY0jB_oeKgfZc4SHWBVusGnNfxKk5jTC4UBDsteSEVEzTw@mail.gmail.com>
+ <CAHp75VeZwUiK2v8HZ=MLGSkK8wLudDEJFhBSm--Wu9gzABhmSg@mail.gmail.com>
+ <CAHp75Vd6M6D9baiGi8fU8a=pfXnSKtEgQ4+eMiwPh6P9cg1ojA@mail.gmail.com> <CAF78GY1PO3YwYHgQkEhYF1_FRQ=HVOOWFtECcHen9PFCR1=JOA@mail.gmail.com>
+In-Reply-To: <CAF78GY1PO3YwYHgQkEhYF1_FRQ=HVOOWFtECcHen9PFCR1=JOA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 29 Jun 2021 13:19:00 +0300
+Message-ID: <CAHp75Vcp9ujZMRwUU30__4jv18A_dzdHNHahVMyygrbfRHR_=A@mail.gmail.com>
+Subject: Re: gpiochip_lock_as_irq on pins without FLAG_REQUESTED: bug or
+ feature ?
+To:     Vincent Pelletier <plr.vincent@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-06-21, 12:07, Wolfram Sang wrote:
-> > +static u32 virtio_i2c_func(struct i2c_adapter *adap)
-> > +{
-> > +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
-> 
-> You are not emulating I2C_FUNC_SMBUS_QUICK, so you need to mask it out.
+On Tue, Jun 29, 2021 at 1:52 AM Vincent Pelletier <plr.vincent@gmail.com> wrote:
+>
+> On Mon, Jun 28, 2021 at 10:42 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > And one important note: do NOT use sysfs GPIO interface. Use a GPIO
+> > character device instead.
+>
+> I am indeed aware of this. My IRQ issue is unrelated to the gpios
+> being claimed by anything, and I was doing it while trying to get
+> more information about the current state of the gpio driver.
+>
+> For more background, the context of my IRQ issue is:
+>   PMIC (da9063) /irq -> GPIO pin 1 -> PLIC irq 24
+> The PMIC has several internal interrupt sources, like the power
+> button being pressed or the ADC conversion completion signal.
 
-What is it that we need to have to emulate it ? I did use it in my
-qemu and rust backends, not sure if this was ever sent by device I
-used for testing SMBUS though.
+This is the usual case with PMIC. We have similar on x86 machines
+(PMIC is represented by an MFD driver with regmap IRQ being involved).
+
+> The first time after a boot that I press the power button, I do
+> get an interrupt and the da9063-onkey driver produces a keypress
+> input event.
+> But any further button press does not produce an IRQ. So something
+> is going wrong in the IRQ acknowledgement.
+> AFAIK the PLIC (platform-level interrupt controller) works: it is
+> used for PCIe interrupts, and those work.
+> The PMIC driver exists since 2013, so I assume any bug would have
+> been identified long ago.
+> But I believe the GPIO level has not handled any interrupt until I
+> enabled the power button event source, and this one is a lot more
+> recent: gpio-sifive.c from late 2019. So this is where I turned my
+> attention. Discovering that the pin is somehow only half-claimed
+> made me wonder if there was some important initialisation step
+> missing, which could maybe be related to these IRQ issues.
+>
+> While on this topic, there is a bullet point in
+> Documentation/driver-api/gpio/driver.rst which I fail to understand:
+>
+> | - Nominally set all handlers to handle_bad_irq() in the setup call and pass
+> |   handle_bad_irq() as flow handler parameter in
+> gpiochip_irqchip_add() if it is
+> |   expected for GPIO driver that irqchip .set_type() callback will be called
+> |   before using/enabling each GPIO IRQ. Then set the handler to
+> |   handle_level_irq() and/or handle_edge_irq() in the irqchip .set_type()
+> |   callback depending on what your controller supports and what is requested
+> |   by the consumer.
+>
+> - why the plural in "set all handlers to handle_bad_irq()" ? Isn't
+>   there only a single handler in struct gpio_irq_chip ?
+
+Each GPIO line may have its own handler (usually level or edge). I
+guess it's written from the GPIO point of view.
+
+> - I do not find a function named gpiochip_irqchip_add(), only
+>   gpiochip_irqchip_add_domain()
+
+Missed during update I suppose.
+https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git/commit/?h=gpio/for-next&id=f1f37abbe6fc2b1242f78157db76e48dbf9518ee
+Feel free to submit a patch!
+
+> - "Then set the handler to [...] in the irqchip .set_type() callback"
+>   Isn't set_type per-pin, and isn't the interrupt handler chip-level ?
+
+The idea behind that initially the chip-level IRQ handler is set to
+BAD. It means any (spurious) IRQ will be served by it. Now, when one
+requests IRQ the framework will call ->irq_set_type() of corresponding
+IRQ chip and change the handler for the certain pin (pin-level). So,
+the main handler is basically for spurious interrupts only.
 
 -- 
-viresh
+With Best Regards,
+Andy Shevchenko
