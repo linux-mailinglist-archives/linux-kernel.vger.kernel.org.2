@@ -2,131 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715573B72C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440713B72CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 14:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbhF2NAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 09:00:22 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35133 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233507AbhF2NAS (ORCPT
+        id S232908AbhF2NA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 09:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232870AbhF2NA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:00:18 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CDF8B58042D;
-        Tue, 29 Jun 2021 08:57:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 29 Jun 2021 08:57:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=kE8924Za3XqWj
-        QqgJmu8PPfgfrwJSECXGlRlMUkMS4k=; b=Ma1PDSaei+rc8o2W6epu/2rSs246m
-        y7KHR2VnY4tEp34mg+x2Fmdhha+YOJYacTFqPAtydC37yV5J/lWSxFkU9T0i4v3b
-        9Zoxqo5e6yhf3tXJs4YObNxDjQDUq8B+0+opP+xRiJ3igh7XMOEplakJfZ4FijQp
-        U/u/rRwvtV+uMpnmSuFimEuHMJbqV2R8DOKXoSZ23MoVjNHYyCugka3QPF84Wbuq
-        VgpbCF/+VUx4IUFjQ4pt2CpyiVFE5QXm1xHtov5fYFTVKt7jdLzkIbxeY7rh1bbl
-        eJyW80jZy6LckeVtvSat7Ue8BmYAwsYRMclbPZwIQph9o0ZZOP2yJm07Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=kE8924Za3XqWjQqgJmu8PPfgfrwJSECXGlRlMUkMS4k=; b=RHjLbJVr
-        9Ij5sJaealZgB9910taRr/h5yc3vwQ/YhKxQHkaFk8MZUb89BA7KQTPE3BKV5X9q
-        XglR8ha+t4h+xM4JxGtmEZWXxzzj7moERciVrCRaaWOjt7ZK3Y+NXS0yl8fwpMPn
-        vYp2r3eabS57cJA6GNtHbFRJpm08P5uikgl2jFnvpWamgm8K2V/gtJpUg9RR7lw7
-        AhqkHcfw8UmlSg64jcwHpWinjR5T12f1oA0Ln52+XqfhaQTXra/ck2uYPavSQBbZ
-        GnfVBIwLJxvtKcHgDUsGV18mvqk+RbxOeIolquAHgqnczhuSDLEEtH794+Ip+fPl
-        jhspSC/6p40k5Q==
-X-ME-Sender: <xms:zhjbYC4mt7UdFDFE8q0uMYVT5qTZBf14FVjFv-qCldJQwMwmztF_UQ>
-    <xme:zhjbYL6xpklbEdARV_IbgqMRRa2g5QC-ZeWSm-XtvWYSyjeVdSe8mXRNUk6n1oK4v
-    KNW5yCq-yn_KNSlvE0>
-X-ME-Received: <xmr:zhjbYBe6MraC9hKvEAmVEixsD619bKGPXA2Sp5iAYBJMKCNwZ6eGcYDTMLtTM9pY592d3fmy7njnEptW6cQXWAqo4xzPJB5ks2pj>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeitddgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:zhjbYPJR4eo4a_WQW0z481cfV9zBDIIkA0LCv8gXT40_butJeRINHA>
-    <xmx:zhjbYGIU6xTcY8PFsHlpce5TeXrDOMqYGOBS5YjQ_hJM6U0L4OuXWg>
-    <xmx:zhjbYAxWpmOCpu4KSZYudqRHNlvjdg91UuyZpaMPlrXvM00urkAk5g>
-    <xmx:zhjbYH6NgcTubeNFnBWfV4cHl8X7C382jDnltrIH6Z_vfPNcO0inrg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 29 Jun 2021 08:57:50 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Emma Anholt <emma@anholt.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org
-Subject: [PATCH 4/4] drm/vc4: hdmi: Make sure the device is powered with CEC
-Date:   Tue, 29 Jun 2021 14:57:36 +0200
-Message-Id: <20210629125736.414467-5-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210629125736.414467-1-maxime@cerno.tech>
-References: <20210629125736.414467-1-maxime@cerno.tech>
+        Tue, 29 Jun 2021 09:00:56 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34C3C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id m9so24243120ybp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
+        b=Wicg5j6Czkzx0aBfwLjleCGbinRhL8+0w31l9FEZowcaMUpWvwBFPkRpcYqAIq9Uhn
+         E/eMTTWZeI+EKOhf4H++Inrj3nLMtGcbPRthOpIWvPU9ZmoRh54CInF1TPBq8qaOcML3
+         tv+eMU6hdKk3RSimSdiuYz3fuVFIXc5LrHNGoNn0v5la4fA5NQIzcBmQhbFzSBmoQfcw
+         Srg8l463/0H/NQh/0SnvrHEwFqijLF0lSv6Mgh99EyZCG2ATAywcksdxC5avjcBuwa/M
+         9ALnQkHDCcsr7Z8AZJsCIMqeB1MArs/LWT6uP+QARJjnyjCjwGkbEXFii77kkOS3lXtT
+         h19A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
+        b=rXXu0p0dMnK2Cw3BHJbZM5hHOHeKo0DrHdvUNbwsyhLkFTfIZpAIXL3fJiyBenV54t
+         xKWVye7UDF2yAxpMoB8LPDeXsvvIUvkXOZxYyDzoP4oJb82uA2f82poGgsI1SdjxD+No
+         s4h7jztAygKta6AW3vrNWIitk0One8W/LxER/p4BKgU2lTei2Mf3bZVE8wyH4B4haFFP
+         WD0cRQRRG/XK7x1y22Yn8C0M8Jn5RPFttT438ocpt1yGwZLqHZ5lsvehZHPDTyALi7pK
+         Pf9vH+aGvIMbT5b75ZcYWm6rsAu/ZgzdmXUuEe6qmXqVvWZlIUfe/dIqVkYcfU3XjIxz
+         UbnA==
+X-Gm-Message-State: AOAM532AQ4NweCmI8z7A6joiCNUE6U6T3aERaPCyF9V8XAstnTfMXGrS
+        xeuc8NPJ7cMqZsdp3RgkoMcoAcRr/5Dq+GfPLVkSow==
+X-Google-Smtp-Source: ABdhPJzzoslHpNOjPtnVYKAzjGWGsIH245MtaS0SvFM7raV9Sntz6KxmD/giFXDhp6Zk1NFGv/oaa+Fhm006+0DYpUI=
+X-Received: by 2002:a05:6902:544:: with SMTP id z4mr39530633ybs.452.1624971507741;
+ Tue, 29 Jun 2021 05:58:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+ <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+ <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
+ <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
+In-Reply-To: <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 29 Jun 2021 14:58:16 +0200
+Message-ID: <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     Neal Cardwell <ncardwell@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to what we encountered with the detect hook with DRM, nothing
-actually prevents any of the CEC callback from being run while the HDMI
-output is disabled.
+On Tue, Jun 29, 2021 at 2:28 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
+>
+> On June 29, 2021 4:21:59 PM GMT+08:00, Eric Dumazet <edumazet@google.com> wrote:
+> >On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com>
+> >wrote:
+> >>
+> >> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell
+> ><ncardwell@google.com> wrote:
+> >> >)
+> >> >
+> >> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com>
+> >wrote:
+> >> >>
+> >> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
+> >> >>
+> >> >> > Thanks.
+> >> >> >
+> >> >> > Can you also please provide a summary of the event sequence that
+> >> >> > triggers the bug? Based on your Reported-by tag, I guess this is
+> >> >based
+> >> >> > on the syzbot reproducer:
+> >> >> >
+> >> >> >
+> >>
+> >>https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
+> >> >> >
+> >> >> > but perhaps you can give a summary of the event sequence that
+> >> >causes
+> >> >> > the bug? Is it that the call:
+> >> >> >
+> >> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+> >> >> > &(0x7f0000000000)='cdg\x00', 0x4)
+> >> >> >
+> >> >> > initializes the CC and happens before the connection is
+> >> >established,
+> >> >> > and then when the connection is established, the line that sets:
+> >> >> >    icsk->icsk_ca_initialized = 0;
+> >> >> > is incorrect, causing the CC to be initialized again without
+> >first
+> >> >> > calling the cleanup code that deallocates the CDG-allocated
+> >memory?
+> >> >> >
+> >> >> > thanks,
+> >> >> > neal
+> >> >> >
+> >> >>
+> >> >> Hi Neal,
+> >> >>
+> >> >> The gdb stack trace that lead to init_transfer_input() is as
+> >bellow,
+> >> >the
+> >> >> current sock state is TCP_SYN_RECV.
+> >> >
+> >> >Thanks. That makes sense as a snapshot of time for
+> >> >tcp_init_transfer(), but I think what would be more useful would be
+> >a
+> >> >description of the sequence of events, including when the CC was
+> >> >initialized previous to that point (as noted above, was it that the
+> >> >setsockopt(TCP_CONGESTION) completed before that point?).
+> >> >
+> >> >thanks,
+> >> >neal
+> >>
+> >> I resend my message because I accidently used html format in last
+> >one. I am very sorry for the inconvenience caused.
+> >> ---
+> >> Yes, the CC had been initialized by the setsockopt, after that, it
+> >was initialized again in function tcp_init_transfer() because of
+> >setting isck_ca_initialized to 0.
+> >
+> >"the setsockopt" is rather vague, sorry.
+> >
+> >
+> >The hard part is that all scenarios have to be considered.
+> >
+> >TCP flows can either be passive and active.
+> >
+> >CC can be set :
+> >
+> >1) Before the connect() or accept()
+> >2) After the connect() or accept()
+> >3) after the connect() but before 3WHS is completed.
+> >
+> >So we need to make sure all cases will still work with any combination
+> >of CDG CC (before/after) in the picture.
+> >
+> >Note that a memory leak for a restricted CC (CDG can only be used by
+> >CAP_NET_ADMIN privileged user)
+> > is a small problem compared to more serious bug that could be added
+> >by an incomplete fix.
+> >
+> >I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
+> >tcp_cdg would no longer need a dynamic memory allocation.
+> >
+> >Thank you.
+>
+> Hi,
+> I will try to see whether I am able to get the full sequence. I am also affraid of making a change that could affect big part of the kernel.
+> About CDG, how we can get rid of dynamic allocation by increasing icsk_priv_data to 120? because I see that the window size is a module parameter, so I guess it is not a fixed value.
 
-However, this is an issue since any register access to the controller
-when it's powered down will result in a silent hang.
+Given this module parameter is constant, I doubt anyone really uses a
+bigger window.
+If researchers want to experiment bigger window, they could adjust a
+macro and recompile (#define TCP_CDG_WINDOW 8 -> X)
 
-Let's make sure we run the runtime_pm hooks when the CEC adapter is
-opened and closed by the userspace to avoid that issue.
+> Because the problem only happens with CDG, is adding check in its tcp_cdg_init() function Ok? And about  icsk_ca_initialized, Could I expect it to be 0 in CC's init functions?
 
-Fixes: 15b4511a4af6 ("drm/vc4: add HDMI CEC support")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_hdmi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I think icsk_ca_initialized  lost its strong meaning when CDG was
+introduced (since this is the only CC allocating memory)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 3f244027eb58..20cb6e62f7a4 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1741,6 +1741,11 @@ static int vc4_hdmi_cec_enable(struct cec_adapter *adap)
- 	/* clock period in microseconds */
- 	const u32 usecs = 1000000 / CEC_CLOCK_FREQ;
- 	u32 val = HDMI_READ(HDMI_CEC_CNTRL_5);
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev);
-+	if (ret)
-+		return ret;
- 
- 	val &= ~(VC4_HDMI_CEC_TX_SW_RESET | VC4_HDMI_CEC_RX_SW_RESET |
- 		 VC4_HDMI_CEC_CNT_TO_4700_US_MASK |
-@@ -1784,6 +1789,8 @@ static int vc4_hdmi_cec_disable(struct cec_adapter *adap)
- 	HDMI_WRITE(HDMI_CEC_CNTRL_5, HDMI_READ(HDMI_CEC_CNTRL_5) |
- 		   VC4_HDMI_CEC_TX_SW_RESET | VC4_HDMI_CEC_RX_SW_RESET);
- 
-+	pm_runtime_put(&vc4_hdmi->pdev->dev);
-+
- 	return 0;
- }
- 
--- 
-2.31.1
+The bug really is that before clearing icsk_ca_initialized we should
+call cc->release()
 
+Maybe we missed this cleanup in commit
+8919a9b31eb4fb4c0a93e5fb350a626924302aa6 ("tcp: Only init congestion
+control if not initialized already")
+
+Although I am not sure what happens at accept() time when the listener
+socket is cloned.
+
+If we make any hypothesis, we need to check all CC modules to make
+sure they respect it.
+
+>
+> Thank you.
