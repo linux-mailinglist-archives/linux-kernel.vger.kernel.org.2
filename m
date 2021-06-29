@@ -2,152 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019AD3B717A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF35D3B717C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 13:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhF2Lo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 07:44:56 -0400
-Received: from mail-co1nam11on2089.outbound.protection.outlook.com ([40.107.220.89]:11584
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233317AbhF2Low (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 07:44:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YArEC3mzqRkUYVU1n26RFRRAIosRONcDEf6qGuX2yauqNTkq+vOVnnP+qYIfuNCqOWrcz9ICwPy+CDzhYs+jV2v8nYZNtg2AENc/ZPApszuTy39DRBjDyLwYSmrqUGRJ7jiS9KkmGhg13n8qXx4hoapRZOYnfMNrwGMjdypMEZBcsAJ28ykcmBz+l85wWpPNPhiL4vyVfP2bGE+K+AzwYoCqeiWCbMeKuf0rZvoRWCuRdzyQFj+yk6NppKmqcrj8puA/tTIuHQoAH1c+rloN6pp0UQ87VChMFew2ixYjuHXOqoMIUn30KaSgO2OPhx1MxkmbwK2HGSdOXKZwTxkvIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BqgZSA0Jrn+SPQHyzn9GggvqSFHRmT+drsX5H12djBM=;
- b=QwB1Rpi+2gUWCRB4s7LPST/CM62+J77BqSARxFQdKKm+YFPBkDMz3QuOs2Y2PzwssXuM9HEPWBwfPZuA6qsETzDYBS072++ciiSU+uAWQyOhCeIE54SbGGaoqzoMMxfFUORgtFfIGMOqDAgrAykCoJyCKUVIiljzfHhib+l1BFR4A1WOBQaLTcurew4WBe9kWCNwdKnS2Di5Gk1zN/617XNjURQNP56GElXEP22OYdFIeBOJOw0N0zXx+G0q2wRq33ORbrfOP1gtgRiALrEtJA2dLT2byAtsR/m2dat7H5a9yHf/ryftBVNsLfWmq9JqG2SetDVPEmqqhkifH9bgDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BqgZSA0Jrn+SPQHyzn9GggvqSFHRmT+drsX5H12djBM=;
- b=a4boC5y6IGRIOdDcaz0qZs7hGmWcUwqJi0eCz2KQLgxvG6UFZwx2mEOX7BuMdx139eAXthmdQt/G5bdLe5RYUlSGOUxnYk3Ny1NnVFdmcs37b0pDhpMAb2cxZh8o3KMgVq4eR5MB3N/3AFAb2lUG3g5Nn4V5gTFLKk5hROYuExM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB3774.namprd12.prod.outlook.com (2603:10b6:208:16a::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 29 Jun
- 2021 11:42:24 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
- 11:42:24 +0000
-Subject: Re: [PATCH -next] drm/radeon: Add the missed drm_gem_object_put() in
- radeon_user_framebuffer_create()
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        alexander.deucher@amd.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210629114455.12963-1-jingxiangfeng@huawei.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <5ff91e15-6014-bc72-40ca-3fa8b834f692@amd.com>
-Date:   Tue, 29 Jun 2021 13:42:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210629114455.12963-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:acb7:5516:6a55:2bf5]
-X-ClientProxiedBy: PR0P264CA0142.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1a::34) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S233526AbhF2Lpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 07:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233446AbhF2Lpk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 07:45:40 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36EBC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:43:11 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id o11so22683677ejd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 04:43:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xrJg3Y7e9QSJnkC946QU97dRLdKVVbiRKeoHJ9hNFS0=;
+        b=OISl+5Nh8s0enJCyj/+V3ArIRUr1B/VS3gV/4j1h1l3R1RvOp40PEZqV66T3S75IYK
+         1RtkwUTKhzrIaQtiYUxyH2HVjaiwXHyZ68ZcoT+3o0bx2ypoNzTWn954rrsFVI2Tsuur
+         8t9Rp52C+qFRzUVJO8YQkMtCTHkNJyxwdw0iGrbXwNnlLvDMVkEbWK7Kas0qQMi8Z43o
+         k44aIhtyPvkTg22wV1DayIDxMS0k7nqAXJe9gPvUTCDu1CdN4EDPWJXEkPFw6jia48KK
+         telHbj15sZXAgROxIS2W9/z/sW9xRmBZgZQWnxR5YpB80Nyz9RdZqaO3Mw1sYETAFmsv
+         JZvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xrJg3Y7e9QSJnkC946QU97dRLdKVVbiRKeoHJ9hNFS0=;
+        b=MqX+6O/EJVYzts+b+59FzYg/Qy3d6T+SnbZyRfhw4nZGdJXTZnTZ5ndrI4VH3mgOng
+         E7mlNM/X5bU7pULWXsTgOua28bkiVZce4WgjqBWVKLEc9fDH0kHxjQjTMV88mAtl015k
+         LIQtrN9nRFbI6q9uIJr3N2dR4NQG/Xt30e+a+AFZw3dehjES5egnUdSlGP2AGoxajnDd
+         4ZumIVDGApOnyrOewYUvucEOvix8jGQKvkYXuNya5aq2GKXGrtuikwvuL00pt6YSqCkL
+         j3+nM3E6KzLex7w8CpnRD1RI4ihMuaIZHiZzOw/6/Cm2StDG8ygQUfRuhE4XJAgtw+FF
+         bnDw==
+X-Gm-Message-State: AOAM531e5zC6TZ+65m5G3q1DcjxSJDTMUfRmOLGLeEaWJ50WETDseVW8
+        QACR6fAp2TZ0FsHhBhLBHTC/DPx29Twxoda5U3lNtQ==
+X-Google-Smtp-Source: ABdhPJwl2oBYmPKwWrgu6B1iq3Tld44qP/7HnosEGChOrq+Ys3vfb3EESpUmoBI4kQahXEMq2eII4tWuP7Q9S3VZ6HU=
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr28729775ejb.170.1624966990403;
+ Tue, 29 Jun 2021 04:43:10 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:acb7:5516:6a55:2bf5] (2a02:908:1252:fb60:acb7:5516:6a55:2bf5) by PR0P264CA0142.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Tue, 29 Jun 2021 11:42:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc92c463-8598-4194-cbd2-08d93af2f64e
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3774:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB377482601007A1CA8F42B76B83029@MN2PR12MB3774.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T05zHbcNcoIFGNvwW0y9z6qxupxVDFXNnRi5/aS1QHAcNcOpENvx8f59I1SjggPrYqk7LRMQv/aPHkSebPwh6PYhKgbj0YKdD3KgeS6ljSmsQXjalwYUnuwSLC+ilHEho6jEDcZt/sO7jNpUArt+eX4iybAKvvfnLgUyTwCAVdtyUDa6L6TLlLgkIjXDf3XgTN4Eqt2Nn7DEcS1Prys/aYAmUPNt+ZqfPA/c0ZnkDzKBqXGXJDIhH+skw8902tiDMTIzU26dLLTuSVeDqLvNIJYIquUPPpEPpk17rh7IAygZLu3n+IrkrhdjHce9d8qrBhQf8sJdhj5suoarGjha4sX7ty1OmpfkmM5VpTHjUSWDW9YdkO3Vv4Zd3+Tm5YsYC0XBJipCE37ToxM26r7UKxk+dwXnX3TvA9KYaImnrWOCr6lWyHDXWbOXYakQPj/Fg2XQG10SMz9uXMkYprdvTxwansxDYF6xNq8dIhHiiWQaiaglPgUfiPldnaJv2CWbUVjNkw6T6c2HeAu3TXgvlWTeGL4rodRSBbF7jw44e1/oVGCCbwguNgARgasAVKHgsXqxpaEfXWjAtFr/mn9drKYefTDXiY9AZBC4C6M0IJxRoZrN+XqtxoC/EymEyZU8H/OWaOEAzTJSZCo8SJJN5EeFuSf39sDbPbXAihEpcT4X4DezWvw+BEWhh5c5A30q6z0ru5it6qFrkCCYfScexa/K2U5LBeHGQE4czoZphcSHzs9GZg2MZA6cx4ev8OjC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(366004)(376002)(136003)(4326008)(6486002)(38100700002)(8676002)(316002)(36756003)(8936002)(31696002)(478600001)(31686004)(2616005)(66946007)(66476007)(6666004)(186003)(16526019)(66556008)(86362001)(2906002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q1FDc2FHbWFybUNoRnErSDBrY24vYUlBRHkydlUwNDBja0pXd2NUQ2tXdmR0?=
- =?utf-8?B?enlWVHFkby8zMXlxWXJtOG1wZFE5RE16djd2T3lHdWc3VUZZcUFxMmxHSGYr?=
- =?utf-8?B?S3FlakcwKzFiSTVNb1BkSlhtRFd5eEUzYWlubW9waEJIK1I1K0MvOENOVDFV?=
- =?utf-8?B?a1IvQ20wdGlBVlIzVmlMQWxnVlk2WWM3Vm9JMi93VHlrNmtaM1pwajZIQ3pF?=
- =?utf-8?B?SWcrbGJkQjgwelB6NkQ0ZTVtL0szQXdzSjF4OFU0eWJKa2Jsd1pxZE1MSGI5?=
- =?utf-8?B?Mm5WL1BvN2R2OUtGMkMrVmNsSnYvbm9uOVplcU9lV0hmTmpvWklLOVQrK250?=
- =?utf-8?B?UmNFZ0VQWHIzcE50SWFJWTdUWm11NlJSMnNKT0xUWUVGZG5PZDFIQXp1d1VM?=
- =?utf-8?B?MFY2ZFAyNi9jQkoxVHNLMUZEZDVaR1Qyb0NPejVNeGx1aHZiK3BVd0d1aHZ4?=
- =?utf-8?B?Y2kybjZJdmRkS1FKOG5LV1RvQ3BFY2tCd0hTSlBUSHIrUVdOUUpuaHp1a3lR?=
- =?utf-8?B?VUhSb0pRV1lpbzI5TDhPNzZSZkNSekNrS2NLeWozdEw5VXliMW13SGtDQjIv?=
- =?utf-8?B?dmVOWkEveW8xeEVFNFAzeFpFOE1CeVZJU1N5dXpybGJFUkVuM0hBRTAzU3l2?=
- =?utf-8?B?MllMMlV5S1JsMEFNRER6eWFsUDYwRVJ1eW1aQ2NkcFR0UlRTbjhHM0xpNUR0?=
- =?utf-8?B?K1h1TzdVMUI4SlNId3lPL0doR2ZHYkszdlVFVi9tRUVhRWRGZjRrMCtML2Vo?=
- =?utf-8?B?VCtMdkxYTG00UkJENWFxbWlMaHdYdnJCcG9PVk5sd2duUW1HbktnRmJkN1hB?=
- =?utf-8?B?dnRBS2h4UnBxeUpMV3lvMFJ0a1YwVjN1V2lFUTFhdTVEZUdhSlVJT2NPSkxm?=
- =?utf-8?B?MXI1MU84cmh3RWhqUDA5SlhqRzdhQmxvNXBPeWpobGxLenkyblUyc2thTlBa?=
- =?utf-8?B?NmJETUVTNlA5dk9VWE5nWTQwUGFXSlFXeFZwMGJKYjAzZ2NsWGN0RFlqdmVp?=
- =?utf-8?B?NEFKUnpNRzY0VTRhajd5d1dZdXozOGg5bUc3NmMvNGw3emdYZStDMFR2Qnow?=
- =?utf-8?B?VG1OL1BPbS9BTE81cGRTMWkyTlJUVDlSWURPSEh6MGc2YlhuOUtkWk9wMUdn?=
- =?utf-8?B?emJPcHdVUDdJZmxJS0dHWTB5VHExSkN0aVpNd2o1S1FhMWtCZWZtc0FvYWw4?=
- =?utf-8?B?MTVTZVY3Z1pjb2NrTjhiTktYNTF0bzcyTVJTRTdOMm5kM1FOTUpOL3VvMjdu?=
- =?utf-8?B?QlFPWmFPVnRtSnhjQjA2MXErUTlTQlllRThnclJDT0QwZFozMDY1b2EyODFR?=
- =?utf-8?B?Z05lcENSTEpDRnpZRkFYR3pkWk5QTng5NDhuZnJHT1VXdmpTK210Qm50QXNW?=
- =?utf-8?B?dWtONmdFRm9ydW9iQlFaQk4zTktYM2R0RmVGOENaMEFHNjlIU3NibUM5ZVRo?=
- =?utf-8?B?UzRyRnFrK3J5eEZqVW9TSDBWSHJjVDIvaW00d0hKSWptUS9aM2FpUWNOUWNE?=
- =?utf-8?B?SmNsdld1ejM1RndJamE3VmF3UHNMWXRUZGZRdlo5LzV3b1lwenVJYUhteVVs?=
- =?utf-8?B?cTdRUVlNTUZ0MzFURmJpM2NnU0FVbmRFVTR0eTRmeFl4UUUwelIveGdwVDNj?=
- =?utf-8?B?UzUrd2hycU5PeVl4dlpyWmxRZlIzOGpjeElOYWVyS1ZzdUhBb3dXUGp5ZWV6?=
- =?utf-8?B?dXl1RDg1KzdoWk8vNmQvSlJDdzBwaGJROEd4L05jdCtUM1hhK2hVSi80b0ZL?=
- =?utf-8?B?TEY5T3VtaFZaak5BbFhaRHVSaWpWcXRsYzEzRTJYaUpPQXE2Si8zbTQrZVVE?=
- =?utf-8?B?Qkx5MjY3anZlcm10cDJUOU9FRWl1TzFhLzJsTiszOWpOSUhoaE9Wd24rZWNj?=
- =?utf-8?Q?l1WnkFwuSKkwy?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc92c463-8598-4194-cbd2-08d93af2f64e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 11:42:24.0590
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tVX7S/t3ew0+oJEUmo3QLk0QyQ762zVqF7dGhu84tb+pfWVTDMwSUzegpgSa+knI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3774
+References: <20210628143628.33342-1-sashal@kernel.org>
+In-Reply-To: <20210628143628.33342-1-sashal@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 29 Jun 2021 17:12:59 +0530
+Message-ID: <CA+G9fYsDg=3t4_1Ut_n8OP+mLxtQqR322fmmw_QgSY5uNDNH3g@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/88] 4.14.238-rc1 review
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 29.06.21 um 13:44 schrieb Jing Xiangfeng:
-> radeon_user_framebuffer_create() misses to call drm_gem_object_put() in
-> an error path. Add the missed function call to fix it.
+On Mon, 28 Jun 2021 at 20:06, Sasha Levin <sashal@kernel.org> wrote:
 >
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-
-I'm pretty sure that I already reviewed the same patch a few weeks ago, 
-but it looks like it never went upstream.
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-
-Maybe add CC: stable as well?
-
-Regards,
-Christian.
-
-> ---
->   drivers/gpu/drm/radeon/radeon_display.c | 1 +
->   1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-> index 652af7a134bd..1d03ec763604 100644
-> --- a/drivers/gpu/drm/radeon/radeon_display.c
-> +++ b/drivers/gpu/drm/radeon/radeon_display.c
-> @@ -1325,6 +1325,7 @@ radeon_user_framebuffer_create(struct drm_device *dev,
->   	/* Handle is imported dma-buf, so cannot be migrated to VRAM for scanout */
->   	if (obj->import_attach) {
->   		DRM_DEBUG_KMS("Cannot create framebuffer from imported dma_buf\n");
-> +		drm_gem_object_put(obj);
->   		return ERR_PTR(-EINVAL);
->   	}
->   
+> This is the start of the stable review cycle for the 4.14.238 release.
+> There are 88 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed 30 Jun 2021 02:36:04 PM UTC.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-4.14.y&id2=3Dv4.14.237
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.14.238-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: f8f0323505c56f13af223c8b9ad54f2fad125756
+* git describe: v4.14.237-88-gf8f0323505c5
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.237-88-gf8f0323505c5
+
+## No regressions (compared to v4.14.237-71-g66c6950a943b)
+
+## No fixes (compared to v4.14.237-71-g66c6950a943b)
+
+## Test result summary
+ total: 62567, pass: 49721, fail: 1298, skip: 10514, xfail: 1034,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
