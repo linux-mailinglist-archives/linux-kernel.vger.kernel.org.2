@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EBE3B7603
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B686D3B7613
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhF2P6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:58:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7434 "EHLO mga03.intel.com"
+        id S234066AbhF2QCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 12:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233754AbhF2P6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:58:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208213869"
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="208213869"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 08:55:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
-   d="scan'208";a="489297301"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga001.jf.intel.com with SMTP; 29 Jun 2021 08:55:28 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 29 Jun 2021 18:55:27 +0300
-Date:   Tue, 29 Jun 2021 18:55:27 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     linux-kernel@vger.kernel.org, Sean Paul <sean@poorly.run>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Imre Deak <imre.deak@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Karthik B S <karthik.b.s@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/i915/display: replace boilerplate code with
- helper macros
-Message-ID: <YNtCbxjgIrwT1/gH@intel.com>
-References: <20210626073230.41803-1-someguy@effective-light.com>
+        id S232698AbhF2QCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 12:02:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2A4F61DC8;
+        Tue, 29 Jun 2021 15:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624982390;
+        bh=3fNptDKllSl4MIh2U5gB1Zigz6crx2HTk7AGZpvD4B4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OxeiSFn/ewRCxthRx++vD4qDdFjdbLZ0cHjl3vGyCmWOVE9Sx48oT6u2JhRl6c7Cz
+         YFV+HA7vix3oTQVVc+XTJy2RGFLrVRp4WxVkEJG5cdqY8d+LXC0HiO1ffLrW8CkpBJ
+         T8CBfowY4cRs7mdsmchsQzc2ljZhssVwE/VL6TOPzXuOB7zx9XTxYAqbhr9mrdIvvG
+         EYJL7SCMbtvj5z1xwRgugzIyE/wCNb7fbjrvHqatdqBrO13Z26a7+fpNYYe/QHZG6v
+         Sk009fu8h51cMjVKQPKAttiiNHHr7PznJNuYy8wJr8yX9mRPkTkzut36wirG8otOOI
+         v9wDeHBQpZpmA==
+Date:   Tue, 29 Jun 2021 16:59:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
+ regulator
+Message-ID: <20210629155922.GD4613@sirena.org.uk>
+Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ylS2wUBXLOxYXZFQ"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210626073230.41803-1-someguy@effective-light.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
+X-Cookie: Use extra care when cleaning on stairs.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 03:32:27AM -0400, Hamza Mahfooz wrote:
-> As per commit 22be87401289 ("drm: TODO: Add DRM_MODESET_LOCK_ALL*
-> conversion to todo.rst"),
-> drm_modeset_lock_all()/drm_modeset_unlock_all() and boilerplate code
-> surrounding instances of drm_modeset_lock_all_ctx() with a local acquire
-> context should be replaced with the relevant helper macros.
-> 
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_display.c | 20 +++++++-------------
->  1 file changed, 7 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-> index 64e9107d70f7..e8cb2881d2b4 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display.c
-> +++ b/drivers/gpu/drm/i915/display/intel_display.c
-> @@ -40,6 +40,7 @@
->  #include <drm/drm_dp_helper.h>
->  #include <drm/drm_edid.h>
->  #include <drm/drm_fourcc.h>
-> +#include "drm/drm_modeset_lock.h"
->  #include <drm/drm_plane_helper.h>
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_rect.h>
-> @@ -11836,6 +11837,7 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
->  	struct drm_device *dev = &i915->drm;
->  	enum pipe pipe;
->  	struct intel_crtc *crtc;
-> +	struct drm_modeset_acquire_ctx ctx;
->  	int ret;
->  
->  	intel_init_pm(i915);
-> @@ -11884,9 +11886,9 @@ int intel_modeset_init_nogem(struct drm_i915_private *i915)
->  	intel_vga_disable(i915);
->  	intel_setup_outputs(i915);
->  
-> -	drm_modeset_lock_all(dev);
-> +	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
->  	intel_modeset_setup_hw_state(dev, dev->mode_config.acquire_ctx);
-> -	drm_modeset_unlock_all(dev);
-> +	DRM_MODESET_LOCK_ALL_END(dev, ctx, ret);
 
-That looks wrong. You're using a private ctx here, but still
-passing dev->mode_config.acquire_ctx to the lower level stuff.
+--ylS2wUBXLOxYXZFQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also DRM_MODESET_LOCK_ALL_{BEGIN,END}() do not seem to be
-equivalent to drm_modeset_{lock,unlock}_all() when it comes to 
-mode_config.mutex. So would need a proper review whether we
-actually need that lock or not.
+On Tue, Jun 29, 2021 at 05:24:03PM +0200, H. Nikolaus Schaller wrote:
+> Commit 98e48cd9283d ("regulator: core: resolve supply for boot-on/always-=
+on regulators")
+>=20
+> introduced a new rule which makes Palmas regulator registration fail:
+>=20
+> [    5.407712] ldo1: supplied by vsys_cobra
+> [    5.412748] ldo2: supplied by vsys_cobra
+> [    5.417603] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to =
+register 48070000.i2c:palmas@48:palmas_pmic regulator
+>=20
+> This seems to block additions initializations and finally the
+> Pyra-Handheld hangs when trying to access MMC because there is
+> no mmc-supply available.
 
--- 
-Ville Syrjälä
-Intel
+What is that rule and how is this patch intended to ensure that Palmas
+meets it?  As covered in submitting-patches.rst your changelog should
+explain this so that in review we can verify that this is a good fix.
+The change itself looks worrying like it just shuts the error up and
+could cause problems for other systems.
+
+--ylS2wUBXLOxYXZFQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDbQ1kACgkQJNaLcl1U
+h9DIiwf/QNeehFinHTeQZWdzbtPraUFsYgyN9gaoYDvjaR+eqK9gbtmkwq/eR0n7
+pWgGtnaKcUEyJiiBi3Ir6j/jpWRXXLaFCcN6JYpt2DUNcgNs20i8sZI0MHmvZDrO
+DeawckIPkgmoszz9PoTG9RBT3ak2nNlOhUuwD9UQNDcMXOOxwqF3wBeho5BsJpB9
+50uKoqJ0pAoqTaQGC2kTa272TqED5ZP4Y6dzzG8mmMpWEYILUqVPb3W5Gqq1nxZE
+pFbmCoL49cRvB3v7mCMhj4DP8ZoAZJ+uaYjTFjY9mqH+BOxIOGhsUu8iR/kqR/ZV
+fH8VtIeHeipDUgat0kmvspdgwI6Ogw==
+=SWW9
+-----END PGP SIGNATURE-----
+
+--ylS2wUBXLOxYXZFQ--
