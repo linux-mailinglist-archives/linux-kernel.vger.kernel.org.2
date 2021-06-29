@@ -2,153 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300A23B75F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F266B3B75FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhF2P5Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Jun 2021 11:57:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:42328 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232698AbhF2P5W (ORCPT
+        id S233946AbhF2P5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232698AbhF2P5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:57:22 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-220-mzX9PE73Nm-qclt7qrCrOA-1; Tue, 29 Jun 2021 16:54:52 +0100
-X-MC-Unique: mzX9PE73Nm-qclt7qrCrOA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 29 Jun
- 2021 16:54:51 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 29 Jun 2021 16:54:51 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bjorn Andersson' <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
- cooling_devs
-Thread-Topic: [PATCH] soc: qcom: aoss: Fix the out of bound usage of
- cooling_devs
-Thread-Index: AQHXbP2JqXYxU5tlYEOLPsfLv/20yqsrIr2A
-Date:   Tue, 29 Jun 2021 15:54:51 +0000
-Message-ID: <4a0f56e3cb02435b911e8d35f6a83529@AcuMS.aculab.com>
-References: <20210628172741.16894-1-manivannan.sadhasivam@linaro.org>
- <YNs/o7VVh+JnbxK9@yoga>
-In-Reply-To: <YNs/o7VVh+JnbxK9@yoga>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 29 Jun 2021 11:57:48 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7546AC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:55:19 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a13so26407364wrf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=WEojPjsV3ykyxbi9z7NRgZv6sToKhUFLAsfPvjr4z+E=;
+        b=kav40qXis5AYEd1L7EDM6xxJivVvxbNSKSq+CBd5s+18VHu75OqZrXoI+sY+3/1k6t
+         +00O8pauIDVVjBILhvdBPu4wUErbUhmbZermGLoCv9sB5xLLeUgW9PhBNqBhLLlJd4R0
+         eXT70pVBcNa+evB30t/7wTKlxa/kXzLRBdMu0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=WEojPjsV3ykyxbi9z7NRgZv6sToKhUFLAsfPvjr4z+E=;
+        b=XvL3FcOqpVfrmnpdJzuz7c4d8tCZOTlepfwRdk1+xN4utkE1tEz1S4mcl5UceyhwyD
+         yboHwhp1nlbDT5PXrOEieXfgUv7Rz7udxWU2cQqgzT8Wed2sQNFciPopARdD5MeK5inQ
+         Too9HCOBhVQmC0cZc1S/5vxCkBLPYcU5ZaIxIL0K2SB8fFb9FIZieaugjRO2ngPVxOKE
+         Wb29bYUvW7VBfX9mgqoCJXlwBMfi51BE41jxe5Y9l1z0RX6fhvEh32mRxl71ww/0RmwK
+         Une8iwib11/VYoPcuGJBCe11vLfW6bGdTtwZ7BNA/XCU0W0gN1v0IjnuTXMZTrckEON+
+         SlFQ==
+X-Gm-Message-State: AOAM531dq0AUQXuSb2VYQtS6WlLqOXPskBtbxevQd5wbLTXy39RVhnPp
+        U+ddqXY8I8uSZ44enkc3BrSfvg==
+X-Google-Smtp-Source: ABdhPJwy//RfOpOtuDUFzUPw0qGyBWCU1xYg2FxNtD+pBORPuM1k7hT2WqXFwV1cl1tJjWezk3iDOA==
+X-Received: by 2002:adf:f246:: with SMTP id b6mr8264853wrp.331.1624982118145;
+        Tue, 29 Jun 2021 08:55:18 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t16sm4438422wrx.89.2021.06.29.08.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 08:55:17 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 17:55:15 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH -next] <linux/dma-resv.h>: correct a function name in
+ kernel-doc
+Message-ID: <YNtCYyHXOrObRUDK@phenom.ffwll.local>
+Mail-Followup-To: Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org
+References: <20210628004012.6792-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628004012.6792-1-rdunlap@infradead.org>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson
-> Sent: 29 June 2021 16:44
+On Sun, Jun 27, 2021 at 05:40:12PM -0700, Randy Dunlap wrote:
+> Fix kernel-doc function name warning:
 > 
-> On Mon 28 Jun 12:27 CDT 2021, Manivannan Sadhasivam wrote:
+> ../include/linux/dma-resv.h:227: warning: expecting prototype for dma_resv_exclusive(). Prototype was for dma_resv_excl_fence() instead
 > 
-> > In "qmp_cooling_devices_register", the count value is initially
-> > QMP_NUM_COOLING_RESOURCES, which is 2. Based on the initial count value,
-> > the memory for cooling_devs is allocated. Then while calling the
-> > "qmp_cooling_device_add" function, count value is post-incremented for
-> > each child node.
-> >
-> > This makes the out of bound access to the cooling_dev array. Fix it by
-> > resetting the count value to zero before adding cooling devices.
-> >
-> > While at it, let's also free the memory allocated to cooling_dev if no
-> > cooling device is found in DT and during unroll phase.
-> >
-> > Cc: stable@vger.kernel.org # 5.4
-> > Fixes: 05589b30b21a ("soc: qcom: Extend AOSS QMP driver to support resources that are used to wake
-> up the SoC.")
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >
-> > Bjorn: I've just compile tested this patch.
-> >
-> >  drivers/soc/qcom/qcom_aoss.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> > index 934fcc4d2b05..98c665411768 100644
-> > --- a/drivers/soc/qcom/qcom_aoss.c
-> > +++ b/drivers/soc/qcom/qcom_aoss.c
-> > @@ -488,6 +488,7 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
-> >  	if (!qmp->cooling_devs)
-> >  		return -ENOMEM;
-> >
-> > +	count = 0;
+> Fixes: 6edbd6abb783d ("ma-buf: rename and cleanup dma_resv_get_excl v3")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Christian König <christian.koenig@amd.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linaro-mm-sig@lists.linaro.org
+
+Queued up, thanks for your patch (and the handy -next signifier in the
+patch tag). I think Christian had the fix for this already, but queued up
+in the next branch (for the 5.15 merge window, we're already prepping
+stuff there to avoid late feature additions for 5.14), so applied yours
+once more to the right tree.
+
+Cheers, Daniel
+
+> ---
+>  include/linux/dma-resv.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> This will address the immediate problem, which is that we assign
-> cooling_devs[2..] in this loop. But, like Matthias I don't think we
-> should use "count" as a constant in the first hunk and then reset it
-> and use it as a counter in the second hunk.
-> 
-> Frankly, I don't see why cooling_devs is dynamically allocated (without
-> being conditional on there being any children).
+> --- linux-next-20210625.orig/include/linux/dma-resv.h
+> +++ linux-next-20210625/include/linux/dma-resv.h
+> @@ -212,7 +212,7 @@ static inline void dma_resv_unlock(struc
+>  }
+>  
+>  /**
+> - * dma_resv_exclusive - return the object's exclusive fence
+> + * dma_resv_excl_fence - return the object's exclusive fence
+>   * @obj: the reservation object
+>   *
+>   * Returns the exclusive fence (if any). Caller must either hold the objects
 
-Not to mention what happens if there are 3 matching nodes.
-Given that qmp_cooling_device is only 4 pointers why bother
-allocating a pointer to it at all.
-Just instantiate 2 of them in the outer structure.
-No is going to notice 56 bytes - it is probably hidden in the
-padding when the outer structure is allocated.
-
-
-> So, could you please make the cooling_devs an array of size
-> QMP_NUM_COOLING_RESOURCES, remove the dynamic allocation here, just
-> initialize count to 0 and add a check in the loop to generate an error
-> if count == QMP_NUM_COOLING_RESOURCES?
-> 
-
-You should set count to 0 just before this loop - not at the top
-of the function.
-
-> >  	for_each_available_child_of_node(np, child) {
-> >  		if (!of_find_property(child, "#cooling-cells", NULL))
-> >  			continue;
-> > @@ -497,12 +498,16 @@ static int qmp_cooling_devices_register(struct qmp *qmp)
-> >  			goto unroll;
-> >  	}
-> >
-> > +	if (!count)
-> > +		devm_kfree(qmp->dev, qmp->cooling_devs);
-> 
-> I presume this is just an optimization, to get some memory back when
-> there's no cooling devices specified in DT.  I don't think this is
-> necessary and this made me want the static sizing of the array..
-> 
-> > +
-> >  	return 0;
-> >
-> >  unroll:
-> >  	while (--count >= 0)
-> >  		thermal_cooling_device_unregister
-> >  			(qmp->cooling_devs[count].cdev);
-> > +	devm_kfree(qmp->dev, qmp->cooling_devs);
-> 
-> I don't remember why we don't fail probe() when this happens, seems like
-> the DT properties should be optional but the errors adding them should
-> be fatal. But that's a separate issue.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
