@@ -2,189 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C608B3B749D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E033B74A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 16:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhF2Osg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 10:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbhF2Ose (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 10:48:34 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0F1C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:46:07 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id bc18-20020a0568201692b029024c6dbc2073so2663700oob.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 07:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W2Ntt0LT4z/1elLySVWMmlMXipsIpCl6r1V3lH3DwEE=;
-        b=EGeSkS7JW6EtUMDXLA6LoUTd4e7U32ADZX6Y27+Hrm66f0S58vWf/N1ztWMSPRRS3H
-         33jFMo7nq5GUQoz0kojUxM6JtTngYeG+Ni9DY5IcWIX0F0jwvfZJiWkNvbY1CZR/Ncpf
-         Xy179mvbppePNBKx4BUPycvQaaewZ/nOO+VF+/492iI4rdTtAxknFKCOJnjpDnIezAsX
-         zolRBUqdfOSy2nQJm+lqFHFabChODfct7fYoAucnkm42vDGaOGtEODELZ8TZv/d7cmlA
-         6DPqzVLPQO+KUMh2ZrvTxVBAFLFhQ5/y87GbvebTLrt62/GhZu3iE2OT0NMM/sNGjvOg
-         fhsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W2Ntt0LT4z/1elLySVWMmlMXipsIpCl6r1V3lH3DwEE=;
-        b=KLsaZRP3QFk671UXQE/xRCB3eH21XPYeCj9SqPA2eAAmkkNB4RatY6qFud6rUMnEgk
-         4bZZMmwfILt8azXYHMzZIP3qQaL5OQVLdquO1d96312a2ihEodfTJdJddf+O6A1lor3r
-         Uw8NRtoZPBtDbTVHNjNOaPSbtqx4oEKsMxXULyhc9cqbYz7RnuaxJrMaA4zoI1o9FewB
-         n6m+dC17kqSuQcRx5X0AOxRfc1zpf4Q/ZTjehFoIgUx9kN0S5HCEi2lRY2e5g3EZd0Nv
-         QSfftnuZWLUwdKl3bcmq0yK/0WL4DFGLPAwSn8+m14xBGq25b5H/HYQv6q2gTBhakDij
-         HJ+Q==
-X-Gm-Message-State: AOAM532Z+mmnq2bwHxSnOywomK+ul9RUgxG4dAxLqsxGmE07r9XxYV2x
-        oGTSWmG1zX4Q/0XMwhH35vwgmg==
-X-Google-Smtp-Source: ABdhPJwuPka4W9yOMDvrX6GUrWsbedu8EBEiJblO9SsbN8jZivaLELaiLeHMRVIpdlT/EvGXh8p5kw==
-X-Received: by 2002:a4a:ae8c:: with SMTP id u12mr4341303oon.3.1624977966886;
-        Tue, 29 Jun 2021 07:46:06 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c4sm904642ots.15.2021.06.29.07.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:46:06 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 09:46:04 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: Make it possible to enable the test pattern
-Message-ID: <YNsyLNeSvQlEQLcw@yoga>
-References: <20210629002234.1787149-1-bjorn.andersson@linaro.org>
- <b3456d3e4376ae1e9776f03e14513a35@codeaurora.org>
- <YNpvf8rpWoMFTcBt@yoga>
- <2d922441927d1c2a757b5b197f496906@codeaurora.org>
+        id S234569AbhF2OtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 10:49:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57681 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232790AbhF2Os5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 10:48:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="207979693"
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="207979693"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 07:46:29 -0700
+X-IronPort-AV: E=Sophos;i="5.83,309,1616482800"; 
+   d="scan'208";a="643736591"
+Received: from bzhang2-mobl1.amr.corp.intel.com (HELO [10.255.231.86]) ([10.255.231.86])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 07:46:28 -0700
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ __fdget_pos
+To:     syzbot <syzbot+5d1bad8042a8f0e8117a@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, jpa@git.mail.kapsi.fi,
+        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+References: <000000000000f3e94a05c5d8686f@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <b7f0725f-2731-24af-f15d-1054d6398749@intel.com>
+Date:   Tue, 29 Jun 2021 07:46:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d922441927d1c2a757b5b197f496906@codeaurora.org>
+In-Reply-To: <000000000000f3e94a05c5d8686f@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28 Jun 20:07 CDT 2021, abhinavk@codeaurora.org wrote:
+... adding Ard who was recently modifying some of the
+kernel_fpu_begin/end() sites in the AESNI crypto code.
 
-> On 2021-06-28 17:55, Bjorn Andersson wrote:
-> > On Mon 28 Jun 19:31 CDT 2021, abhinavk@codeaurora.org wrote:
-> > 
-> > > Hi Bjorn
-> > > 
-> > > On 2021-06-28 17:22, Bjorn Andersson wrote:
-> > > > The debugfs interface contains the knobs to make the DisplayPort
-> > > > controller output a test pattern, unfortunately there's nothing
-> > > > currently that actually enables the defined test pattern.
-> > > >
-> > > > Fixes: de3ee25473ba ("drm/msm/dp: add debugfs nodes for video pattern
-> > > > tests")
-> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > 
-> > > This is not how this debugfs node works. This is meant to be used
-> > > while
-> > > running
-> > > DP compliance video pattern test.
-> > > 
-> > > https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c
-> > > 
-> > > While the compliance test is being run with this msm_dp_compliance app
-> > > running,
-> > > it will draw the test pattern when it gets the "test_active" from the
-> > > driver.
-> > > 
-> > > The test pattern which this app draws is as per the requirements of
-> > > the
-> > > compliance test
-> > > as the test equipment will match the CRC of the pattern which is
-> > > drawn.
-> > > 
-> > > The API dp_panel_tpg_config() which you are trying to call here
-> > > draws the DP
-> > > test pattern
-> > > from the DP controller hardware but not the pattern which the
-> > > compliance
-> > > test expects.
-> > > 
-> > 
-> > So clearly not an oversight, but rather me not understanding how to use
-> > the test pattern.
-> > 
-> > You say that I should run msm_dp_compliance while the test is running,
-> > so how do I run the test?
+On 6/28/21 12:22 PM, syzbot wrote:
+> console output: https://syzkaller.appspot.com/x/log.txt?x=170e6c94300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5d1bad8042a8f0e8117a
 > 
-> There are two test patterns with different purposes. The one which the
-> msm_dp_compliance
-> draws is strictly for the DP compliance test and it needs even the DPU to
-> draw the frame because
-> it sets up the display pipeline and just draws the buffer.
-> 
-> That is not what you are looking for here.
-> 
-> So rather than trying to run msm_dp_compliance on your setup, just try
-> calling dp_panel_tpg_config().
-> We typically just call this API, right after the link training is done.
-> But if you really need a debugfs node for this, you can write up a separate
-> debugfs for it
-> Something like:
-> 
-> echo 1 > dp/tpg/en
-> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+...
+> BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 29652, name: syz-executor.0
+> no locks held by syz-executor.0/29652.
+> Preemption disabled at:
+> [<ffffffff812aa454>] kernel_fpu_begin_mask+0x64/0x260 arch/x86/kernel/fpu/core.c:126
+> CPU: 0 PID: 29652 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
 
-Having the ability to turn on the test pattern was very useful to me and
-I would use this next time I'm adding DP support on a new platform. So
-adding some way of invoking that API without a lot of extra effort seems
-useful.
+There's a better backtrace in the log before the rather useless
+backtrace from lockdep:
 
-> Lets not disturb this one.
+> [ 1341.360547][T29635] FAULT_INJECTION: forcing a failure.
+> [ 1341.360547][T29635] name failslab, interval 1, probability 0, space 0, times 0
+> [ 1341.374439][T29635] CPU: 1 PID: 29635 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
+> [ 1341.374712][T29630] FAT-fs (loop2): bogus number of reserved sectors
+> [ 1341.383571][T29635] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> [ 1341.383591][T29635] Call Trace:
+> [ 1341.383603][T29635]  dump_stack+0x141/0x1d7
+> [ 1341.383630][T29635]  should_fail.cold+0x5/0xa
+> [ 1341.383651][T29635]  ? skcipher_walk_next+0x6e2/0x1680
+> [ 1341.383673][T29635]  should_failslab+0x5/0x10
+> [ 1341.383691][T29635]  __kmalloc+0x72/0x330
+> [ 1341.383720][T29635]  skcipher_walk_next+0x6e2/0x1680
+> [ 1341.383744][T29635]  ? kfree+0xe5/0x7f0
+> [ 1341.383776][T29635]  skcipher_walk_first+0xf8/0x3c0
+> [ 1341.383805][T29635]  skcipher_walk_virt+0x523/0x760
+> [ 1341.445438][T29635]  xts_crypt+0x137/0x7f0
+> [ 1341.449689][T29635]  ? aesni_encrypt+0x80/0x80
+
+There's one suspect-looking site in xts_crypt():
+
+>	kernel_fpu_begin();
 > 
-
-Agreed.
-
-Thanks,
-Bjorn
-
-> > 
-> > > Its just a debug API to call when required during bringup/debug
-> > > purposes.
-> > > 
-> > 
-> > Yes, I was trying to isolate the DP code from some misconfiguration in
-> > the DPU during bringup and with this fix the debugfs interface became
-> > useful.
+>	/* calculate first value of T */
+>	aesni_enc(aes_ctx(ctx->raw_tweak_ctx), walk.iv, walk.iv);
 > 
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > Hence this is not the place to call it as it will end up breaking CTS.
-> > > 
-> > > Thanks
-> > > 
-> > > Abhinav
-> > > 
-> > > > ---
-> > > >  drivers/gpu/drm/msm/dp/dp_debug.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
-> > > > b/drivers/gpu/drm/msm/dp/dp_debug.c
-> > > > index 2f6247e80e9d..82911af44905 100644
-> > > > --- a/drivers/gpu/drm/msm/dp/dp_debug.c
-> > > > +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-> > > > @@ -305,6 +305,8 @@ static ssize_t dp_test_active_write(struct file
-> > > > *file,
-> > > >  				debug->panel->video_test = true;
-> > > >  			else
-> > > >  				debug->panel->video_test = false;
-> > > > +
-> > > > +			dp_panel_tpg_config(debug->panel, debug->panel->video_test);
-> > > >  		}
-> > > >  	}
-> > > >  	drm_connector_list_iter_end(&conn_iter);
+>	while (walk.nbytes > 0) {
+>		int nbytes = walk.nbytes;
+> 	
+> 		...
+> 
+>		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
+> 
+>		kernel_fpu_end();
+> 
+>               if (walk.nbytes > 0)
+>			kernel_fpu_begin();
+>	}
+
+I wonder if a slab allocation failure could leave us with walk.nbytes==0.
