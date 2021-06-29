@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A5B3B75E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4373B75E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 17:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhF2Pxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 11:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233946AbhF2Pxq (ORCPT
+        id S234152AbhF2Pyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 11:54:35 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:46354 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232929AbhF2Pyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 11:53:46 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72206C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:51:19 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id p10-20020a05600c430ab02901df57d735f7so2150731wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 08:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YTv8Tc7EKr0PzcUpaPHiI9onaP3uWQq/Vd6rHddjRjA=;
-        b=RpQi7APS9B63UyQUVEGrgotj4uE3OjXtjczk1Upg5oxT7JKfJMno+mHnV+MalqI3Qo
-         GYXTFCyoIrrMFemKL9Of3cMnUD7vSoS/jOxxzgrzHUZ9wNRvC2KpPk8r8LUJHNyXiXJ2
-         S3uws8//rDJ37Pq84hbZUQGdJyBuTZ0SPU/z4lyzyhsYk3Sb7JWQH0+uhFxoBLNkbbTf
-         NqDfBYnDxCNQGLJ8BqcY77lEzJesKtF5Pkxb4ZlqgABxuv++R0KEDgAz5/4wplsAS8Yr
-         AvDzpqUs+L/XdEDHDWnCJvp13ygyv3+czc6Vn4T7r1ogehNgQJDBSY1grOFw5aaT3BpW
-         H/Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YTv8Tc7EKr0PzcUpaPHiI9onaP3uWQq/Vd6rHddjRjA=;
-        b=e5dRkODjnvPZVQxj0Y6KnRhFsSB1vw4lSf6UyqX/7b2avKxCHERircJ2vChjQwjxzs
-         7F8LHFRF67s2OX0NkdanZRf27f5HDHt2cIgTAVdYb2x0KH4GgbDKn0WQleYNSF/mkzoR
-         QLhedm4D6Isih/RQqsxel060x66fe4NAwwRhf/AsRMLDaTOghztqs8CktuvcRULnufw7
-         4iXhBblNicwGvUwe1L9y0WjKEHpm0EKieVA+LDDeRLZwxlsXRYA+gCd+x9YLkHnR4o41
-         9Gzmr/QzluHYT6qAyQHsDjgzchcJJlBwXFXV0Md2MfAPqo7v+TP6EsYWQbuCxCh7Orda
-         CrwA==
-X-Gm-Message-State: AOAM5336hnrbzEuvUiw0+XjJ8iq5tzr2uBoo+rtWnE9c0TDfdFZ/hyfB
-        ENHct+xuYSVplABbM6s52TehRTYvdxmlIHq4OUTecw==
-X-Google-Smtp-Source: ABdhPJw8XUZzoWPvrqaUFAXIvzoEdZQ2ZXFbuXzyHrBdIsWVcJzLAxRh2/KSxO31vl7wC9wtAPJ+xkBsZZU06Qmeww4=
-X-Received: by 2002:a05:600c:a01:: with SMTP id z1mr33659683wmp.77.1624981877946;
- Tue, 29 Jun 2021 08:51:17 -0700 (PDT)
+        Tue, 29 Jun 2021 11:54:33 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyG1t-007HkF-AW; Tue, 29 Jun 2021 09:52:05 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:59472 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyG1s-001hct-9Q; Tue, 29 Jun 2021 09:52:04 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+References: <87fsx1vcr9.fsf@disp2133>
+        <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+Date:   Tue, 29 Jun 2021 10:51:57 -0500
+In-Reply-To: <CAHk-=wj1z-NKxedgZvSS37iH=EKE47PkL=+BYccAUtsuB1sySQ@mail.gmail.com>
+        (Linus Torvalds's message of "Mon, 28 Jun 2021 20:47:12 -0700")
+Message-ID: <87czs4u0rm.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-3-namhyung@kernel.org>
-In-Reply-To: <20210625071826.608504-3-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 29 Jun 2021 08:51:05 -0700
-Message-ID: <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] perf tools: Add cgroup_is_v2() helper
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lyG1s-001hct-9Q;;;mid=<87czs4u0rm.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/CH09AIniFLWzy282KwTH+6uGeoCx45RM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XMSubMetaSxObfu_03,
+        XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3735]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 282 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.7 (1.3%), b_tie_ro: 2.6 (0.9%), parse: 0.62
+        (0.2%), extract_message_metadata: 8 (2.7%), get_uri_detail_list: 0.43
+        (0.2%), tests_pri_-1000: 3.9 (1.4%), tests_pri_-950: 0.98 (0.3%),
+        tests_pri_-900: 0.81 (0.3%), tests_pri_-90: 135 (47.8%), check_bayes:
+        127 (45.0%), b_tokenize: 3.2 (1.1%), b_tok_get_all: 3.4 (1.2%),
+        b_comp_prob: 0.95 (0.3%), b_tok_touch_all: 117 (41.5%), b_finish: 0.62
+        (0.2%), tests_pri_0: 118 (41.6%), check_dkim_signature: 0.35 (0.1%),
+        check_dkim_adsp: 2.2 (0.8%), poll_dns_idle: 0.48 (0.2%), tests_pri_10:
+        2.3 (0.8%), tests_pri_500: 7 (2.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] ucounts: Count rlimits in each user namespace
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> The cgroup_is_v2() is to check if the given subsystem is mounted on
-> cgroup v2 or not.  It'll be used by BPF cgroup code later.
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/cgroup.c | 19 +++++++++++++++++++
->  tools/perf/util/cgroup.h |  2 ++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> index ef18c988c681..e819a4f30fc2 100644
-> --- a/tools/perf/util/cgroup.c
-> +++ b/tools/perf/util/cgroup.c
-> @@ -9,6 +9,7 @@
->  #include <linux/zalloc.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> +#include <sys/statfs.h>
->  #include <fcntl.h>
->  #include <stdlib.h>
->  #include <string.h>
-> @@ -70,6 +71,24 @@ int read_cgroup_id(struct cgroup *cgrp)
->  }
->  #endif  /* HAVE_FILE_HANDLE */
->
-> +#ifndef CGROUP2_SUPER_MAGIC
-> +#define CGROUP2_SUPER_MAGIC  0x63677270
-> +#endif
-> +
-> +int cgroup_is_v2(const char *subsys)
-> +{
-> +       char mnt[PATH_MAX + 1];
-> +       struct statfs stbuf;
-> +
-> +       if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, subsys))
-> +               return -1;
-> +
-> +       if (statfs(mnt, &stbuf) < 0)
-> +               return -1;
-> +
-> +       return (stbuf.f_type == CGROUP2_SUPER_MAGIC);
-> +}
-> +
->  static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str)
->  {
->         struct evsel *counter;
-> diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-> index 707adbe25123..1549ec2fd348 100644
-> --- a/tools/perf/util/cgroup.h
-> +++ b/tools/perf/util/cgroup.h
-> @@ -47,4 +47,6 @@ int read_cgroup_id(struct cgroup *cgrp)
->  }
->  #endif  /* HAVE_FILE_HANDLE */
->
-> +int cgroup_is_v2(const char *subsys);
-> +
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-I think this is okay. It may make sense to have this in
-tools/lib/api/fs/fs.h, for example fs__valid_mount is already checking
-magic numbers. Perhaps we can avoid a statfs call, but it'd need some
-reorganization of the fs.h code.
-
-Acked-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-Ian
-
->  #endif /* __CGROUP_H__ */
-> --
-> 2.32.0.93.g670b81a890-goog
+> Why the "sigpending < LONG_MAX" test in that
 >
+>         if (override_rlimit || (sigpending < LONG_MAX && sigpending <=
+> task_rlimit(t, RLIMIT_SIGPENDING))) {
+> thing?
+
+On second look that sigpending < LONG_MAX check is necessary.  When
+inc_rlimit_ucounts detects a problem it returns LONG_MAX.
+
+So the check for LONG_MAX is the condensed check to see if there is a
+problem in any other levels of the ucount hierarchy.
+
+Eric
