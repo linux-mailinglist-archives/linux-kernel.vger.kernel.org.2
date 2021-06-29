@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECBE3B6F1E
+	by mail.lfdr.de (Postfix) with ESMTP id D83943B6F1F
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Jun 2021 10:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhF2IOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 04:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232408AbhF2IN6 (ORCPT
+        id S232369AbhF2IP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 04:15:27 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:33115 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232308AbhF2IP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:13:58 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482EBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:11:32 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g24-20020a17090ace98b029017225d0c013so95988pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 01:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DZ7Eych3eQIlfh+/2Dgt3JxjlYh8mhidB3EhZ1LJg5c=;
-        b=iFPEbA8zgUYfgyJoITZ74CL2TVC6IEoPhXSOY36VdqsimRVnR28PiSeFaghcurm+vA
-         c6D7TG3UumCGZURl8jL1rLNGqN3+zI0JtDcOTiLbOR7pPIfN8jtNV0GPjeiKoKP0+mN+
-         pVFfIVa8qShaj51VryS1rVOhwdgOOchqhuNpA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DZ7Eych3eQIlfh+/2Dgt3JxjlYh8mhidB3EhZ1LJg5c=;
-        b=MJW/8e2b7jZe3K3r0VnZv54VrvhhCLP1tCHa87kcVKYiQlHmZJx30Rw7IqrbfbHdHb
-         CN9YlC9Q3KdUSU2+sTRfDDUGy/2N/nd2mCsb+Sz+snmnI5IiS7IRzN1qEeNqvXrJmt2e
-         Iz70WXVeh42HAPQnNwVVSAFEoYMR9U5+gWft5f0ZHOx7vZsn41Cq1fVTi7qUHYAGnX22
-         1zE6PhkpDFou+TEU3cJhWkYjV7iSpdI9wgnZ3My0dbhvFL9DhpxiYMOEl0PVM/54MGSX
-         MmMZGfq5O9qrxRAvjmeVkecagQO8c1VG6kgt8BgU3eNNhUs6grdpokGgdn6z7xWYez2b
-         F8Mg==
-X-Gm-Message-State: AOAM5335TDHlp4EJCGDfFTkyWQZ1vWTLUy/Oq57FHUJbXmiBeVsodR60
-        qh7YELyxvjLYHrp5N+0tIi0Qkg==
-X-Google-Smtp-Source: ABdhPJw1FVWlWOx5X6EYkjASANlLpC8tRNRt7cR/woChlKwIfBoBkiDo1jmCzD+pRBe1ktNKZS0LAA==
-X-Received: by 2002:a17:902:ea12:b029:128:977b:fa78 with SMTP id s18-20020a170902ea12b0290128977bfa78mr20661461plg.15.1624954291887;
-        Tue, 29 Jun 2021 01:11:31 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:3adb:8783:d6da:e6ca])
-        by smtp.gmail.com with UTF8SMTPSA id m21sm1992037pjz.57.2021.06.29.01.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 01:11:31 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Claire Chang <tientzu@chromium.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] swiotlb: fix implicit debugfs_create_dir declaration
-Date:   Tue, 29 Jun 2021 16:11:24 +0800
-Message-Id: <20210629081124.3585539-1-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Tue, 29 Jun 2021 04:15:26 -0400
+Date:   Tue, 29 Jun 2021 08:12:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1624954376;
+        bh=Wt1VzxpUKhVa3HzTLpE5SfzFn/YP4YxfPtnwrLRl/ko=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=kT+JW4ZQ/XLWZcl11bQR37x0+KSRaeQZh+kE4omXiV6BfWIXtXDd9WyZtDYY/JY9Q
+         1zd79RntcYijrdG1waxiPh2nou/ZvBfvcZypHdKrnM3PwLNucQr0OzCcTVrq4rh8Ni
+         m00QGUE0GcaCzer16iFx8ghVLePzrSLxcbmBR4jKdOIvbVxdAc9OX7/52DB/6bp8/J
+         0WoLL0L4vGQIbORx3tk9vDc6XpknNlwi+5ZDIdukmY8s898XGiSCv8U8BfB9vVj2WN
+         cqt8zTHmvFnErL8LXt3H3nz10WMmR/gSmecxKqQLAOoPnTlcU59248/yhsU0VgsSln
+         j3LySWnSFt73Q==
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Werner Sembach <wse@tuxedocomputers.com>,
+        amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie, rodrigo.vivi@intel.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm property as setting for userspace
+Message-ID: <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
+In-Reply-To: <20210622101516.6a53831c@eldfell>
+References: <20210618091116.14428-1-wse@tuxedocomputers.com> <20210618091116.14428-13-wse@tuxedocomputers.com> <20210622101516.6a53831c@eldfell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __maybe_unused instead of ifdef to fix implicit function declaration
-for other pools.
+On Tuesday, June 22nd, 2021 at 09:15, Pekka Paalanen <ppaalanen@gmail.com> =
+wrote:
 
-Fixes: 1d9f94400a7a ("swiotlb: Refactor swiotlb_create_debugfs")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- kernel/dma/swiotlb.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+> yes, I think this makes sense, even if it is a property that one can't
+> tell for sure what it does before hand.
+>
+> Using a pair of properties, preference and active, to ask for something
+> and then check what actually worked is good for reducing the
+> combinatorial explosion caused by needing to "atomic TEST_ONLY commit"
+> test different KMS configurations. Userspace has a better chance of
+> finding a configuration that is possible.
+>
+> OTOH, this has the problem than in UI one cannot tell the user in
+> advance which options are truly possible. Given that KMS properties are
+> rarely completely independent, and in this case known to depend on
+> several other KMS properties, I think it is good enough to know after
+> the fact.
+>
+> If a driver does not use what userspace prefers, there is no way to
+> understand why, or what else to change to make it happen. That problem
+> exists anyway, because TEST_ONLY commits do not give useful feedback
+> but only a yes/no.
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 0ffbaae9fba2..508b678f6448 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -36,9 +36,7 @@
- #include <linux/scatterlist.h>
- #include <linux/mem_encrypt.h>
- #include <linux/set_memory.h>
--#ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
--#endif
- #ifdef CONFIG_DMA_RESTRICTED_POOL
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -686,10 +684,9 @@ bool is_swiotlb_active(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(is_swiotlb_active);
- 
--#ifdef CONFIG_DEBUG_FS
--static struct dentry *debugfs_dir;
-+__maybe_unused static struct dentry *debugfs_dir;
- 
--static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
-+__maybe_unused static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
- {
- 	debugfs_create_ulong("io_tlb_nslabs", 0400, mem->debugfs, &mem->nslabs);
- 	debugfs_create_ulong("io_tlb_used", 0400, mem->debugfs, &mem->used);
-@@ -709,8 +706,6 @@ static int __init swiotlb_create_default_debugfs(void)
- 
- late_initcall(swiotlb_create_default_debugfs);
- 
--#endif
--
- #ifdef CONFIG_DMA_RESTRICTED_POOL
- struct page *swiotlb_alloc(struct device *dev, size_t size)
- {
--- 
-2.32.0.93.g670b81a890-goog
+By submitting incremental atomic reqs with TEST_ONLY (i.e. only changing on=
+e
+property at a time), user-space can discover which property makes the atomi=
+c
+commit fail.
 
+I'm not a fan of this "preference" property approach. The only way to find =
+out
+whether it's possible to change the color format is to perform a user-visib=
+le
+change (with a regular atomic commit) and check whether it worked
+after-the-fact. This is unlike all other existing KMS properties.
+
+I'd much rather see a more general approach to fix this combinatorial explo=
+sion
+than to add special-cases like this.
