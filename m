@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F60A3B7EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679623B7ED5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhF3ISC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:18:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:58159 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232954AbhF3ISB (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:18:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="188688613"
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="188688613"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 01:15:31 -0700
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="457127719"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 01:15:28 -0700
-Subject: Re: [PATCH v1] perf tools: Fix pattern matching for same substring
- used in different pmu type
-To:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210609045738.1051-1-yao.jin@linux.intel.com>
- <982714a5-8a5d-8f8a-4e30-bd9a497ffa40@linux.intel.com>
- <4787334d-cf28-5b25-8d11-c767c52288f1@linux.intel.com>
- <YNWr7zsEaNPCn4CR@krava>
- <14a70048-ddd0-3297-9ae9-6b76dd0f1000@linux.intel.com>
- <YNuNW/Afd/X25fNe@krava>
- <844625a7-5903-519e-9ef4-ca6684661aef@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <aa963629-f52f-d42b-de30-298f5755eb49@linux.intel.com>
-Date:   Wed, 30 Jun 2021 16:15:26 +0800
+        id S233260AbhF3IXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:23:00 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51567 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232954AbhF3IW6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:22:58 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id E320B32008FD;
+        Wed, 30 Jun 2021 04:20:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 30 Jun 2021 04:20:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=D
+        rng5vQ9xEhy/55sVheiFX6YMfwmRBkRiTkkgCUzn8U=; b=Che3GtGF7eRc2l+6V
+        ncGzCc3hO2sSS0G1q8OAh85sd68wB/HG78x62a7b0PYmNskiEfCXjtMEXC7dNYRX
+        wJONVHLzX9LQr6I+rWSNRva6g63waNkf7zcf99CZdGfo5lnv2Yf06RAaetJOeoZZ
+        ViPSZfnUlazMknnMVpLNaGz+lFSmGbKWGbg17NefGWeL1hi5OoDcw8ipxF/cERbf
+        Ecjw8/m+4E177k6qmAxKLMc7DQbC//5AZpvEB04dqe8tK5CFRvMS2uoDu5sw2V5v
+        TWmIJhBKJ7v8UarsHCQlduCoJ9DwCkXCQwEflwA3M908tmYVXOufd/cxxjDn1+uJ
+        vZiDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=Drng5vQ9xEhy/55sVheiFX6YMfwmRBkRiTkkgCUzn
+        8U=; b=OlcCJDLjIWiScaPtav06jT7GMaJ2rNd6CD0XfwSCqSC2GaWmYs9TaWQX9
+        luerQjBEMLssja1v39ibtpl329vFteEjg2KqgG4FWoxlJ6gopHtQd9BDjvum0NX7
+        T53oGRT39XKrWrotoanMJGuJAl5uKaZW1u10VpD2/oGAVGUeOCjfb6uknHEKEAvZ
+        nPNhJdR+q1V/5Bmrrmum05dHEWo5ZKNXc56aNjxuDzXE4XATHEfs/CuPqxDx0tbV
+        O8HWxM0QdY/8yomesydHldDcFzCUtnanLJEibvY/epdn0LLRoOqYWBb+b2kSpRrn
+        UTRdkHffzqP0M4987CSJHQ+ndFqcw==
+X-ME-Sender: <xms:SSncYCEUh_RJI4Arm3cmnIA5X_3p_qIVjT4-z58AlOXzGuWHqYJ5KQ>
+    <xme:SSncYDVU--35g_dj1JgDybjz7oq3DAD-LD3X7jiz3wlZBSbun4Zd6s5P182asit_n
+    2nuD2aSPbzOP3wy22Y>
+X-ME-Received: <xmr:SSncYMLQ5q8SmtBPjzQAJzZ7WWbQy7XnGhSx1b8G6RlI-vzDj6QbyZ0jn6w3LNV87_0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeivddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:SSncYMGakDguxokZLmaT1ew85TJlqWuQ9tYyDQrVVpb2QdCB_bKcOA>
+    <xmx:SSncYIUOy0REUQmsWlDI_gdfhGBoRoo7BBOTwhPdaNhsUrmp-4ie2A>
+    <xmx:SSncYPNIA_MrWD37TxyjjR4h67cBrXvRLFv3rQPCzNiBpsJO_wjREw>
+    <xmx:SincYGwEPic1n3-JvPTiEhmPH3bsqOizGU2JawgZmTk4kC4RpY_p3A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Jun 2021 04:20:23 -0400 (EDT)
+Subject: Re: [PATCH v6 2/2] MIPS: Loongson64: DTS: Add pm block node for
+ Loongson-2K1000
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210630065103.23665-1-zhangqing@loongson.cn>
+ <20210630065103.23665-2-zhangqing@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <a69323fd-c770-89e2-d3a7-a0807ad831af@flygoat.com>
+Date:   Wed, 30 Jun 2021 16:20:19 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <844625a7-5903-519e-9ef4-ca6684661aef@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210630065103.23665-2-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri, Hi Kan,
 
-On 6/30/2021 5:47 AM, Liang, Kan wrote:
-> 
-> 
-> On 6/29/2021 5:15 PM, Jiri Olsa wrote:
->> On Mon, Jun 28, 2021 at 09:52:42AM +0800, Jin, Yao wrote:
->>
->> SNIP
->>
->>>>>>> +    /*
->>>>>>> +     * The pmu_name has substring tok. If the format of
->>>>>>> +     * pmu_name is <tok> or <tok>_<digit>, return true.
->>>>>>> +     */
->>>>>>> +    p = pmu_name + strlen(tok);
->>>>>>> +    if (*p == 0)
->>>>>>> +        return true;
->>>>>>> +
->>>>>>> +    if (*p != '_')
->>>>>>> +        return false;
->>>>>>> +
->>>>>>> +    ++p;
->>>>>>> +    if (*p == 0 || !isdigit(*p))
->>>>>>> +        return false;
->>>>>>> +
->>>>>>> +    return true;
->>>>>>> +}
->>>>
->>>> hum, so we have pattern serch and then another function checking
->>>> if that search was ok..
->>>
->>> Yes, that's what this patch does.
->>>
->>> I understand that's convenient, because
->>>> it's on 2 different places
->>>
->>> Yes, on pmu_uncore_alias_match() and on parse-events.y.
->>>
->>> but could we have some generic solution,
->>>> line one function/search that returns/search for valid pmu name?
->>>>
->>>
->>> Sorry, I don't understand this idea well. Would you like to further explain?
->>>
->>> Or can you accept the regex approach?
->>
->> I don't really have any suggestion, just would be great to have
->> this encapsulated in one function.. 
-> 
-> Yes, I agree. One function is better.
-> 
-> We just changed the design for the uncore PMU on SPR. There will be two PMU names for each uncore 
-> unit, a real name and an alias. The perf tool should handle both names. So we have to compare both 
-> names here.
-> I think one generic function can facilitate the code rebase.
-> 
-> https://lore.kernel.org/lkml/1624990443-168533-7-git-send-email-kan.liang@linux.intel.com/
-> 
-> Thanks,
-> Kan
-> 
+�� 2021/6/30 14:51, Qing Zhang д��:
+> The module is now supported, enable it.
 
-Thanks for the comments!
+Oh, you forgot binding document.
 
-I'm now preparing v2. In v2 version, I will provide a new function 'perf_pmu__pattern_match which 
-wraps the matching and checking. Something like:
+Thanks.
 
-while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-	if (!perf_pmu__pattern_match(pmu, pattern, $1)) {
-		...
-	}
-}
+- Jiaxun
 
-I will post v2 soon.
-
-Thanks
-Jin Yao
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>   arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> index 569e814def83..8f469b623740 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> @@ -52,6 +52,11 @@ package0: bus@10000000 {
+>   			0 0x40000000 0 0x40000000 0 0x40000000
+>   			0xfe 0x00000000 0xfe 0x00000000 0 0x40000000>;
+>   
+> +		pm: power-controller@1fe07000 {
+> +			compatible = "loongson,ls2k-pm";
+> +			reg = <0 0x1fe07000 0 0x422>;
+> +		};
+> +
+>   		liointc0: interrupt-controller@1fe11400 {
+>   			compatible = "loongson,liointc-2.0";
+>   			reg = <0 0x1fe11400 0 0x40>,
