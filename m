@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706CD3B85D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAF93B85E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhF3PNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:13:10 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:45394 "EHLO srv6.fidu.org"
+        id S236049AbhF3PNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:13:20 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:45514 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235791AbhF3PM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:12:58 -0400
+        id S235828AbhF3PND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 11:13:03 -0400
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id B2FBCC8009D;
-        Wed, 30 Jun 2021 17:10:27 +0200 (CEST)
+        by srv6.fidu.org (Postfix) with ESMTP id 00F2DC80099;
+        Wed, 30 Jun 2021 17:10:28 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
 Received: from srv6.fidu.org ([127.0.0.1])
         by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id V-nAkNhfYLtR; Wed, 30 Jun 2021 17:10:27 +0200 (CEST)
+        with LMTP id EfFYUROWEVhO; Wed, 30 Jun 2021 17:10:27 +0200 (CEST)
 Received: from wsembach-tuxedo.fritz.box (p200300e37F394900095779a208783f8e.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:957:79a2:878:3f8e])
         (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id D3294C80091;
-        Wed, 30 Jun 2021 17:10:25 +0200 (CEST)
+        by srv6.fidu.org (Postfix) with ESMTPA id 13A57C8008D;
+        Wed, 30 Jun 2021 17:10:26 +0200 (CEST)
 From:   Werner Sembach <wse@tuxedocomputers.com>
 To:     harry.wentland@amd.com, sunpeng.li@amd.com,
         alexander.deucher@amd.com, christian.koenig@amd.com,
@@ -33,9 +33,9 @@ To:     harry.wentland@amd.com, sunpeng.li@amd.com,
         linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
         emil.l.velikov@gmail.com
 Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH v5 09/17] drm/uAPI: Add "active color range" drm property as feedback for userspace
-Date:   Wed, 30 Jun 2021 17:10:10 +0200
-Message-Id: <20210630151018.330354-10-wse@tuxedocomputers.com>
+Subject: [PATCH v5 10/17] drm/amd/display: Add handling for new "active color range" property
+Date:   Wed, 30 Jun 2021 17:10:11 +0200
+Message-Id: <20210630151018.330354-11-wse@tuxedocomputers.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210630151018.330354-1-wse@tuxedocomputers.com>
 References: <20210630151018.330354-1-wse@tuxedocomputers.com>
@@ -45,161 +45,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new general drm property "active color range" which can be used by
-graphic drivers to report the used color range back to userspace.
-
-There was no way to check which color range got actually used on a given
-monitor. To surely predict this, one must know the exact capabilities of
-the monitor and what the default behaviour of the used driver is. This
-property helps eliminating the guessing at this point.
-
-In the future, automatic color calibration for screens might also depend on
-this information being available.
+This commit implements the "active color range" drm property for the AMD
+GPU driver.
 
 Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- drivers/gpu/drm/drm_connector.c | 61 +++++++++++++++++++++++++++++++++
- include/drm/drm_connector.h     | 27 +++++++++++++++
- 2 files changed, 88 insertions(+)
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 33 +++++++++++++++++++
+ .../display/amdgpu_dm/amdgpu_dm_mst_types.c   |  4 +++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-index 075bdc08d5c3..ebfdd17a7f59 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -897,6 +897,12 @@ static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
- 	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
- };
- 
-+static const struct drm_prop_enum_list drm_active_color_range_enum_list[] = {
-+	{ DRM_MODE_COLOR_RANGE_UNSET, "Not Applicable" },
-+	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
-+	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },
-+};
-+
- DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
- 		 drm_dp_subconnector_enum_list)
- 
-@@ -1223,6 +1229,15 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
-  *	property. Possible values are "not applicable", "rgb", "ycbcr444",
-  *	"ycbcr422", and "ycbcr420".
-  *
-+ * active color range:
-+ *	This read-only property tells userspace the color range actually used by
-+ *	the hardware display engine "on the cable" on a connector. The chosen
-+ *	value depends on hardware capabilities of the monitor and the used color
-+ *	format. Drivers shall use
-+ *	drm_connector_attach_active_color_range_property() to install this
-+ *	property. Possible values are "Not Applicable", "Full", and "Limited
-+ *	16:235".
-+ *
-  * Connectors also have one standardized atomic property:
-  *
-  * CRTC_ID:
-@@ -2268,6 +2283,52 @@ void drm_connector_set_active_color_format_property(struct drm_connector *connec
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 098f3d53e681..b4acedac1ac9 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6728,6 +6728,33 @@ static int convert_dc_pixel_encoding_into_drm_color_format(
+ 	return 0;
  }
- EXPORT_SYMBOL(drm_connector_set_active_color_format_property);
  
-+/**
-+ * drm_connector_attach_active_color_range_property - attach "active color range" property
-+ * @connector: connector to attach active color range property on.
-+ *
-+ * This is used to check the applied color range on a connector.
-+ *
-+ * Returns:
-+ * Zero on success, negative errno on failure.
-+ */
-+int drm_connector_attach_active_color_range_property(struct drm_connector *connector)
++static int convert_dc_color_space_into_drm_mode_color_range(enum dc_color_space color_space)
 +{
-+	struct drm_device *dev = connector->dev;
-+	struct drm_property *prop;
-+
-+	if (!connector->active_color_range_property) {
-+		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE, "active color range",
-+						drm_active_color_range_enum_list,
-+						ARRAY_SIZE(drm_active_color_range_enum_list));
-+		if (!prop)
-+			return -ENOMEM;
-+
-+		connector->active_color_range_property = prop;
-+	}
-+
-+	drm_object_attach_property(&connector->base, prop, DRM_MODE_COLOR_RANGE_UNSET);
-+
-+	return 0;
++	if (color_space == COLOR_SPACE_SRGB ||
++	    color_space == COLOR_SPACE_XR_RGB ||
++	    color_space == COLOR_SPACE_MSREF_SCRGB ||
++	    color_space == COLOR_SPACE_2020_RGB_FULLRANGE ||
++	    color_space == COLOR_SPACE_ADOBERGB ||
++	    color_space == COLOR_SPACE_DCIP3 ||
++	    color_space == COLOR_SPACE_DOLBYVISION ||
++	    color_space == COLOR_SPACE_YCBCR601 ||
++	    color_space == COLOR_SPACE_XV_YCC_601 ||
++	    color_space == COLOR_SPACE_YCBCR709 ||
++	    color_space == COLOR_SPACE_XV_YCC_709 ||
++	    color_space == COLOR_SPACE_2020_YCBCR ||
++	    color_space == COLOR_SPACE_YCBCR709_BLACK ||
++	    color_space == COLOR_SPACE_DISPLAYNATIVE ||
++	    color_space == COLOR_SPACE_APPCTRL ||
++	    color_space == COLOR_SPACE_CUSTOMPOINTS)
++		return DRM_MODE_COLOR_RANGE_FULL;
++	if (color_space == COLOR_SPACE_SRGB_LIMITED ||
++	    color_space == COLOR_SPACE_2020_RGB_LIMITEDRANGE ||
++	    color_space == COLOR_SPACE_YCBCR601_LIMITED ||
++	    color_space == COLOR_SPACE_YCBCR709_LIMITED)
++		return DRM_MODE_COLOR_RANGE_LIMITED_16_235;
++	return DRM_MODE_COLOR_RANGE_UNSET;
 +}
-+EXPORT_SYMBOL(drm_connector_attach_active_color_range_property);
 +
-+/**
-+ * drm_connector_set_active_color_range_property - sets the active color range property for a
-+ * connector
-+ * @connector: drm connector
-+ * @active_color_range: color range for the connector currently active "on the cable"
-+ *
-+ * Should be used by atomic drivers to update the active color range over a connector.
-+ */
-+void drm_connector_set_active_color_range_property(struct drm_connector *connector,
-+						   enum drm_mode_color_range active_color_range)
-+{
-+	drm_object_property_set_value(&connector->base, connector->active_color_range_property,
-+				      active_color_range);
-+}
-+EXPORT_SYMBOL(drm_connector_set_active_color_range_property);
-+
- /**
-  * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
-  * @connector: connector to attach the property on.
-diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-index 8a5197f14e87..5ef4bb270f71 100644
---- a/include/drm/drm_connector.h
-+++ b/include/drm/drm_connector.h
-@@ -648,6 +648,24 @@ struct drm_tv_connector_state {
- 	unsigned int hue;
- };
+ static int dm_encoder_helper_atomic_check(struct drm_encoder *encoder,
+ 					  struct drm_crtc_state *crtc_state,
+ 					  struct drm_connector_state *conn_state)
+@@ -7730,6 +7757,7 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
+ 		drm_connector_attach_max_bpc_property(&aconnector->base, 8, 16);
+ 		drm_connector_attach_active_bpc_property(&aconnector->base, 8, 16);
+ 		drm_connector_attach_active_color_format_property(&aconnector->base);
++		drm_connector_attach_active_color_range_property(&aconnector->base);
+ 	}
  
-+/**
-+ * enum drm_mode_color_range - color_range info for &drm_connector
-+ *
-+ * This enum is used to represent full or limited color range on the display
-+ * connector signal.
-+ *
-+ * @DRM_MODE_COLOR_RANGE_UNSET:		 Color range is unspecified/default.
-+ * @DRM_MODE_COLOR_RANGE_FULL:		 Color range is full range, 0-255 for
-+ *					 8-Bit color depth.
-+ * @DRM_MODE_COLOR_RANGE_LIMITED_16_235: Color range is limited range, 16-235
-+ *					 for 8-Bit color depth.
-+ */
-+enum drm_mode_color_range {
-+	DRM_MODE_COLOR_RANGE_UNSET,
-+	DRM_MODE_COLOR_RANGE_FULL,
-+	DRM_MODE_COLOR_RANGE_LIMITED_16_235,
-+};
-+
- /**
-  * struct drm_connector_state - mutable connector state
-  */
-@@ -1392,6 +1410,12 @@ struct drm_connector {
- 	 */
- 	struct drm_property *active_color_format_property;
+ 	/* This defaults to the max in the range, but we want 8bpc for non-edp. */
+@@ -9118,10 +9146,15 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+ 				drm_connector_set_active_color_format_property(connector,
+ 					convert_dc_pixel_encoding_into_drm_color_format(
+ 						dm_new_crtc_state->stream->timing.pixel_encoding));
++				drm_connector_set_active_color_range_property(connector,
++					convert_dc_color_space_into_drm_mode_color_range(
++						dm_new_crtc_state->stream->output_color_space));
+ 			}
+ 		} else {
+ 			drm_connector_set_active_bpc_property(connector, 0);
+ 			drm_connector_set_active_color_format_property(connector, 0);
++			drm_connector_set_active_color_range_property(connector,
++								      DRM_MODE_COLOR_RANGE_UNSET);
+ 		}
+ 	}
  
-+	/**
-+	 * @active_color_range_property: Default connector property for the
-+	 * active color range to be driven out of the connector.
-+	 */
-+	struct drm_property *active_color_range_property;
-+
- #define DRM_CONNECTOR_POLL_HPD (1 << 0)
- #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
- #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
-@@ -1719,6 +1743,9 @@ void drm_connector_set_active_bpc_property(struct drm_connector *connector, int
- int drm_connector_attach_active_color_format_property(struct drm_connector *connector);
- void drm_connector_set_active_color_format_property(struct drm_connector *connector,
- 						    u32 active_color_format);
-+int drm_connector_attach_active_color_range_property(struct drm_connector *connector);
-+void drm_connector_set_active_color_range_property(struct drm_connector *connector,
-+						   enum drm_mode_color_range active_color_range);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+index 13151d13aa73..b5d57bbbdd20 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+@@ -417,6 +417,10 @@ dm_dp_add_mst_connector(struct drm_dp_mst_topology_mgr *mgr,
+ 	if (connector->active_color_format_property)
+ 		drm_connector_attach_active_color_format_property(&aconnector->base);
  
- /**
-  * struct drm_tile_group - Tile group metadata
++	connector->active_color_range_property = master->base.active_color_range_property;
++	if (connector->active_color_range_property)
++		drm_connector_attach_active_color_range_property(&aconnector->base);
++
+ 	connector->vrr_capable_property = master->base.vrr_capable_property;
+ 	if (connector->vrr_capable_property)
+ 		drm_connector_attach_vrr_capable_property(connector);
 -- 
 2.25.1
 
