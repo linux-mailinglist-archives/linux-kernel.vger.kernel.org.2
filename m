@@ -2,177 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8203B8A29
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916B33B8A2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhF3VqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 17:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhF3VqW (ORCPT
+        id S232441AbhF3VrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 17:47:25 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:46890 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhF3VrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 17:46:22 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1FDC061756;
-        Wed, 30 Jun 2021 14:43:52 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id o35-20020a05600c5123b02901e6a7a3266cso2648917wms.1;
-        Wed, 30 Jun 2021 14:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tathPutVfQKcoiCFXb2rQuhW+brQlwkKxBaNJj1Iod0=;
-        b=L59yqG9EQpd4QPOTkkH8dNMy56xQXEd0mZGpGaTexbG8EIZiRdnmJbFEq3Bus67en7
-         n3/vx4afpRYIu9J6KXshERpUUzCUvbDRc5cKCh6ZW+Rh6/GRq/B1A2C5dXiHDFNnn1T5
-         u6QzU72zf3QpvTRIA/pVMSvGBbL12A4rjim4RDqR7PvIfffl2MgyAL39k/Y61/+MJYGP
-         UZ2aSohGDwJGSoIi5EHz9MPVvKEykrLS5jo2vtfSyFwUs/NfXrbSuw/vYvXfbviBNNnf
-         ndWvcI5kLu5h8PTzO94XLB1ekejTkbtf8mAu0aWDoh+w+qPBpsqlc7HyGlhyYTl+XxOp
-         4M1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tathPutVfQKcoiCFXb2rQuhW+brQlwkKxBaNJj1Iod0=;
-        b=DPoANHjc46zQBXVp3a5c6wq4qQoNrNRISufK2Z9qPFys17QfTYG4UjCVZz6Zv8OWV3
-         sJGaejeW+CKCshmR89L3NlFWI193nrOXgDFSRQVaqTm3ASmXDfKuwM33VC9VYvQTtsqu
-         ip7dAprVbRqpwO+Q5cQDdW4WtISQ+ukOvOOTCkPZWTdPcims25/WKdClR58LTXzW+rlg
-         pVvUzA9wiSjjaQmRVNArB6azs/V1voQs1w/C7msxGfcz2ILs8Iq/ek2q2CZEEdUeHCvT
-         oILksI+YLMsBas2SJL6pyeduBQ/2Ip4VbR4MVKEcJkYw+0sta9uF4XBtSLEpyWKKuZsu
-         QSfw==
-X-Gm-Message-State: AOAM5316I1Kkc65FTo+/xHgiceSPpN96/AGLJpH7c//G5PJgbwv0xqjT
-        1OgR01zzA4K7CyqIqP3ul6KXehlfCyao/Q==
-X-Google-Smtp-Source: ABdhPJzxKo7tnWCFSI1BoI/0COduHAGFzDvjXWfEePvlL5EgVJbnCbsALiWzCMOmcYskO/fuCicqEw==
-X-Received: by 2002:a05:600c:4f56:: with SMTP id m22mr6979973wmq.16.1625089430817;
-        Wed, 30 Jun 2021 14:43:50 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id o2sm23557738wrp.53.2021.06.30.14.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 14:43:50 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Subject: [PATCH] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Wed, 30 Jun 2021 23:42:33 +0200
-Message-Id: <20210630214233.235942-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
+        Wed, 30 Jun 2021 17:47:23 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyi0o-00C7rX-Pk; Wed, 30 Jun 2021 15:44:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45966 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lyi0n-007gGb-GG; Wed, 30 Jun 2021 15:44:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
+        gofmanp@gmail.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, willy@infradead.org, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, x86@kernel.org,
+        kernel@collabora.com
+References: <20201127193238.821364-1-krisman@collabora.com>
+        <20201127193238.821364-4-krisman@collabora.com>
+Date:   Wed, 30 Jun 2021 16:44:41 -0500
+In-Reply-To: <20201127193238.821364-4-krisman@collabora.com> (Gabriel Krisman
+        Bertazi's message of "Fri, 27 Nov 2020 14:32:34 -0500")
+Message-ID: <8735szowmu.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lyi0n-007gGb-GG;;;mid=<8735szowmu.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19aQL09HEdJngXqT3ixbdywo5veaWkBBOQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4916]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Gabriel Krisman Bertazi <krisman@collabora.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 510 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (2.0%), b_tie_ro: 9 (1.7%), parse: 0.85 (0.2%),
+         extract_message_metadata: 11 (2.2%), get_uri_detail_list: 1.23 (0.2%),
+         tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.22 (0.2%),
+        tests_pri_-900: 1.03 (0.2%), tests_pri_-90: 54 (10.6%), check_bayes:
+        52 (10.3%), b_tokenize: 6 (1.3%), b_tok_get_all: 6 (1.2%),
+        b_comp_prob: 1.85 (0.4%), b_tok_touch_all: 35 (6.8%), b_finish: 0.72
+        (0.1%), tests_pri_0: 414 (81.1%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 0.52 (0.1%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 8 (1.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v8 3/7] kernel: Implement selective syscall userspace redirection
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have compiled the kernel with a cross compiler "hppa-linux-gnu-" v9.3.0
-on x86-64 host machine. I got the following warning:
 
-block/genhd.c: In function ‘diskstats_show’:
-block/genhd.c:1227:1: warning: the frame size of 1688 bytes is larger
-than 1280 bytes [-Wframe-larger-than=]
- 1227  |  }
+Why does do_syscal_user_dispatch call do_exit(SIGSEGV) and
+do_exit(SIGSYS) instead of force_sig(SIGSEGV) and force_sig(SIGSYS)?
 
-The problem was calling seq_printf function with too long argumnets list.
-Therefore, I cut it into two halves. For the second half I have defined
-a function called "print_disk_stats" to print the states of the disk.
+Looking at the code these cases are not expected to happen, so I would
+be surprised if userspace depends on any particular behaviour on the
+failure path so I think we can change this.
 
-Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
----
- block/genhd.c | 74 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 40 insertions(+), 34 deletions(-)
+Is using do_exit in this way something you copied from seccomp?
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..64846aec76c0 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1151,6 +1151,43 @@ const struct device_type disk_type = {
- };
- 
- #ifdef CONFIG_PROC_FS
-+static void print_disk_stats(struct seq_file *seqf,
-+			     unsigned int inflight, struct disk_stats *stat)
-+{
-+	seq_printf(seqf, "%lu %lu %lu %u "
-+		   "%lu %lu %lu %u "
-+		   "%u %u %u "
-+		   "%lu %lu %lu %u "
-+		   "%lu %u"
-+		   "\n",
-+		   stat->ios[STAT_READ],
-+		   stat->merges[STAT_READ],
-+		   stat->sectors[STAT_READ],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_READ],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_WRITE],
-+		   stat->merges[STAT_WRITE],
-+		   stat->sectors[STAT_WRITE],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_WRITE],
-+					 NSEC_PER_MSEC),
-+		   inflight,
-+		   jiffies_to_msecs(stat->io_ticks),
-+		   (unsigned int)div_u64(stat->nsecs[STAT_READ] +
-+					 stat->nsecs[STAT_WRITE] +
-+					 stat->nsecs[STAT_DISCARD] +
-+					 stat->nsecs[STAT_FLUSH],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_DISCARD],
-+		   stat->merges[STAT_DISCARD],
-+		   stat->sectors[STAT_DISCARD],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_DISCARD],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_FLUSH],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_FLUSH],
-+					 NSEC_PER_MSEC)
-+		);
-+}
-+
- /*
-  * aggregate disk stat collector.  Uses the same stats that the sysfs
-  * entries do, above, but makes them available through one seq_file.
-@@ -1185,41 +1222,10 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- 		else
- 			inflight = part_in_flight(hd);
- 
--		seq_printf(seqf, "%4d %7d %s "
--			   "%lu %lu %lu %u "
--			   "%lu %lu %lu %u "
--			   "%u %u %u "
--			   "%lu %lu %lu %u "
--			   "%lu %u"
--			   "\n",
-+		seq_printf(seqf, "%4d %7d %s ",
- 			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev),
--			   disk_name(gp, hd->bd_partno, buf),
--			   stat.ios[STAT_READ],
--			   stat.merges[STAT_READ],
--			   stat.sectors[STAT_READ],
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ],
--							NSEC_PER_MSEC),
--			   stat.ios[STAT_WRITE],
--			   stat.merges[STAT_WRITE],
--			   stat.sectors[STAT_WRITE],
--			   (unsigned int)div_u64(stat.nsecs[STAT_WRITE],
--							NSEC_PER_MSEC),
--			   inflight,
--			   jiffies_to_msecs(stat.io_ticks),
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ] +
--						 stat.nsecs[STAT_WRITE] +
--						 stat.nsecs[STAT_DISCARD] +
--						 stat.nsecs[STAT_FLUSH],
--							NSEC_PER_MSEC),
--			   stat.ios[STAT_DISCARD],
--			   stat.merges[STAT_DISCARD],
--			   stat.sectors[STAT_DISCARD],
--			   (unsigned int)div_u64(stat.nsecs[STAT_DISCARD],
--						 NSEC_PER_MSEC),
--			   stat.ios[STAT_FLUSH],
--			   (unsigned int)div_u64(stat.nsecs[STAT_FLUSH],
--						 NSEC_PER_MSEC)
--			);
-+			   disk_name(gp, hd->bd_partno, buf));
-+		print_disk_stats(seqf, inflight, &stat);
- 	}
- 	rcu_read_unlock();
- 
--- 
-2.29.0.rc1.dirty
+The reason I am asking is that by using do_exit you deprive userspace
+of the change to catch the signal handler and try and fix things.
 
+Also by using do_exit only a single thread of a multi-thread application
+is terminated which seems wrong.
+
+I am asking because I am going through the callers of do_exit so I can
+refactor things and clean things up and this use just looks wrong.
+
+Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+
+<snip>
+
+> +bool do_syscall_user_dispatch(struct pt_regs *regs)
+> +{
+> +	struct syscall_user_dispatch *sd = &current->syscall_dispatch;
+> +	char state;
+> +
+> +	if (likely(instruction_pointer(regs) - sd->offset < sd->len))
+> +		return false;
+> +
+> +	if (unlikely(arch_syscall_is_vdso_sigreturn(regs)))
+> +		return false;
+> +
+> +	if (likely(sd->selector)) {
+> +		/*
+> +		 * access_ok() is performed once, at prctl time, when
+> +		 * the selector is loaded by userspace.
+> +		 */
+> +		if (unlikely(__get_user(state, sd->selector)))
+> +			do_exit(SIGSEGV);
+                        ^^^^^^^^^^^^^^^^
+
+I think it makes more sense if the code does:
+
+		if (unlikely(__get_user(state, sd->selector))) {
+                	force_sig(SIGSEGV);
+                        return true;
+                }
+
+> +
+> +		if (likely(state == PR_SYS_DISPATCH_OFF))
+> +			return false;
+> +
+> +		if (state != PR_SYS_DISPATCH_ON)
+> +			do_exit(SIGSYS);
+                        ^^^^^^^^^^^^^^^
+> +	}
+> +
+> +	sd->on_dispatch = true;
+> +	syscall_rollback(current, regs);
+> +	trigger_sigsys(regs);
+> +
+> +	return true;
+> +}
+
+Eric
