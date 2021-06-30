@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8DB3B86DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9788A3B86E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhF3QNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S231959AbhF3QNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:13:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhF3QNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231698AbhF3QNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 12:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34FD261580;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD926147E;
         Wed, 30 Jun 2021 16:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1625069464;
-        bh=hRk1k2vA8J8z5bDFLDZg/vA+rKnE+U45Ab3oTqM80Ys=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vde7rzAahYduG5+0Eqq6aX0taJMht9FNIeQCHYAqmgsQYyHmi9voiPgmx3pcYu2UI
-         DABHn7isAoeMX/S9Haa9/CnuMRXMUPOu/pSITrFzBQMN4mb9HilfgaW1HUJ2atBCCK
-         xv3HAwWfQF3uahpmQHXDlLgxlvUlYyQW4X6sCOeiK8Q57ErpX2nAlirHka4OO6qelC
-         rZ3Ow7j57oEZlYaxdMyS4bFJ0uNKLCE0Pun4T8qZoqjsf+0OWI6ws4JOw8JkhcMIBQ
-         o9oi8d68ykgUHERtNOQNLaA17831LmfIy51WLkx44SPrY9qI9FzsRqTfCtSY/AlYzo
-         CqZGeEhXHY0Fw==
+        bh=M8ldAZIlZPdkE4DDxEruz+BeSbuNAZmJGY4VXeQhPbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kIjuafd9ucIniC22otKPC7dmUd41/MK9JTkA5XhaP2hGAPC8vMIPbB/Iu1OSSc2dk
+         DxfvR+O3ck+BZSti2bbWuzQrwEvWclOyEQKty9sFsjxFBs62NQgBRmu6gcwAMcIpEm
+         mvajycTioH9jrZ/J9T1KeSnToXafODz5fWYHIW8ZalubsHD0Izbws22VHEhEFfBrWF
+         Iz9RHbV4c/1RNTeK7ppH+8PpS1DtpefTIshaALX4o1ThUlajT7qcVQy/nRccFwVEBq
+         tijIGsoeqDQa29G9WhnITxk2L8aEzcoly2Cj1/zbnFkQaMtVDPkRBAn0Td4vfEMQa0
+         l+wAGTzJlqLjg==
+Date:   Wed, 30 Jun 2021 17:10:36 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH RFT] regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
-Date:   Wed, 30 Jun 2021 17:10:31 +0100
-Message-Id: <162506887371.43733.11140131215302795434.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210630074246.2305166-1-axel.lin@ingics.com>
-References: <20210630074246.2305166-1-axel.lin@ingics.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
+        Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
+ deref in LTP
+Message-ID: <20210630161036.GA43693@sirena.org.uk>
+References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
+ <YMoXdljfOFjoVO93@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Disposition: inline
+In-Reply-To: <YMoXdljfOFjoVO93@slm.duckdns.org>
+X-Cookie: I demand IMPUNITY!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 15:42:46 +0800, Axel Lin wrote:
-> Since config.dev = pdev->dev.parent in current code, so
-> dev_get_drvdata(rdev->dev.parent) actually returns the drvdata of the mfd
-> device rather than the regulator. Fix it.
 
-Applied to
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+On Wed, Jun 16, 2021 at 11:23:34AM -0400, Tejun Heo wrote:
+> On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
 
-Thanks!
+> > A fix would be to not leave the stale reference in fc->root as follows:
 
-[1/1] regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
-      commit: 5db5dd5be70eaf808d9fd90174b957fc5c2912cb
+> >    --------------
+> >   =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0dput(fc->root);
+> >   +               fc->root =3D NULL;
+> >   =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0deactivate_locked_sup=
+er(sb);
+> >    --------------
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> > ...but then we are just open-coding a duplicate of fc_drop_locked() so =
+we
+> > simply use that instead.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> As this is unlikely to be a real-world problem both in probability and
+> circumstances, I'm applying this to cgroup/for-5.14 instead of
+> cgroup/for-5.13-fixes.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+FWIW at Arm we've started seeing what appears to be this issue blow up
+very frequently in some of our internal LTP CI runs against -next, seems
+to be mostly on lower end platforms.  We seem to have started finding it
+at roughly the same time that the Yocto people did, I guess some other
+change made it more likely to trigger.  Not exactly real world usage
+obviously but it's creating quite a bit of noise in testing which is
+disruptive so it'd be good to get it into -next as a fix.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--9jxsPFA5p3P2qPhR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcl3sACgkQJNaLcl1U
+h9DHcgf/cG+zirVPNAyg/RyU6eO8RRZ/Fsde5H0M1tr3tybVB/GuciKOhNSBdU8p
+MEnEvuPHRVsq8o5KTMvo+lxmNdBy/OHVK/LnU6CyqkDaU9l5a9+JOc+N+Ljn9JyJ
+wBzeFmiAeMdcnCzaPYCGHXzgILY8j0vs2agj/hI3sdP/GNMMQ3URQmKeTsB1YtCO
+GICcKyAPHeVy5GZwfaWDJGEJhFXOIW7d20+cuKpx335WsTg+aORft+rwPDHvfH6+
+mJF34H7wfckprBzWdA8v+fPrYINjeiLFSWJsXLdWHfy6F3BAAiDKxT0Pm9fVwZ5Q
+e0VJUxXvl2KHT//hLYrTSETDFuiMwg==
+=vGg1
+-----END PGP SIGNATURE-----
+
+--9jxsPFA5p3P2qPhR--
