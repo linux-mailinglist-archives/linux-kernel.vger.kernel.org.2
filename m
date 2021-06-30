@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0883B87A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ADF3B87AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhF3R1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:27:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhF3R07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:26:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C46F261429;
-        Wed, 30 Jun 2021 17:24:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625073870;
-        bh=AtVx8zMxugVqeuPOoEk1jrOi31ee/q40+sbSDpOdn1I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vc4i9yi86S6FdYtzHdbjyHASOeD/49AmWeR+WoyDbArJzAA2uysS41odZuHdLz97s
-         rwLaf2nTzWUUNd8akCax3oFt3YEJBnDKvTfAReDNKuWHv7FRQw6LH1C2pBbBOTSYd9
-         ujgxwSO2QLLuDNcq3R8DIFUT7RTmOQ/oYKrB4q9v1E+yy46AfzKbao83JEBf1CHR9T
-         3yNFz8l3kf1h1JFH+NCpPP6vZTQ7kZQ9YfpVc525O7JAey9Z05PyDBeq16Dl+b4Brb
-         pxB+Jhm8HtzwR9Ul4K0JRC8Ma2VLV/palYm+Jnx3ZQ6nx2R3TmHBrb1X01Ht9EbYYM
-         mPA3KRKqUzwLg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DAEFF40B1A; Wed, 30 Jun 2021 14:24:26 -0300 (-03)
-Date:   Wed, 30 Jun 2021 14:24:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v8 09/22] tools lib: Introduce bitmap_intersects()
- operation
-Message-ID: <YNyoyvXouLyCRRgt@kernel.org>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <f75aa738d8ff8f9cffd7532d671f3ef3deb97a7c.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+        id S232463AbhF3R3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhF3R3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:29:38 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50BEC061756;
+        Wed, 30 Jun 2021 10:27:08 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68EEC1EC046E;
+        Wed, 30 Jun 2021 19:27:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625074027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TznjOMhbFMgc14+LdXkaV2w6tRCRxdLm5VVhXjvmvd8=;
+        b=FveZntmeUxnrwG21EvwJtW0Zgyd6foRCbseoHhSuSVclQVtzc4kUe8FRqEaxdcf4eFxw8m
+        8NKv9oRZCQusCvUlPEQCDSth2qFskzN4v/AQWiU1jZ6ecElJAq4/SOleWjcP6GKeC+PBCW
+        fCSA0N2Gh35RlqBf6NSLQzIVc/UJdcI=
+Date:   Wed, 30 Jun 2021 19:27:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 07/31] EDAC/amd64: Define functions for DramOffset
+Message-ID: <YNypa1iphyIuogtZ@zn.tnic>
+References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
+ <20210623192002.3671647-8-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f75aa738d8ff8f9cffd7532d671f3ef3deb97a7c.1625065643.git.alexey.v.bayduraev@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210623192002.3671647-8-yazen.ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jun 30, 2021 at 06:54:48PM +0300, Alexey Bayduraev escreveu:
-> Introduce bitmap_intersects() routine that tests whether
-
-Is this _adopting_ bitmap_intersects() from the kernel sources?
-
-> bitmaps bitmap1 and bitmap2 intersects. This routine will
-> be used during thread masks initialization.
+On Wed, Jun 23, 2021 at 07:19:38PM +0000, Yazen Ghannam wrote:
+> Add helper functions to read the DramOffset register and to remove the
+> offset from the calculated address.
 > 
-> Acked-by: Andi Kleen <ak@linux.intel.com>
-> Acked-by: Namhyung Kim <namhyung@gmail.com>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> The helper functions will be expanded in future DF versions.
+> 
+> Rename the "base" variable to "map_num" to indicate that this is the
+> address map number. An address map is defined with a base and limit
+> value. The map_num variable is used to select the proper base and limit
+> registers to use for the address translation.
+> 
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
 > ---
->  tools/include/linux/bitmap.h | 11 +++++++++++
->  tools/lib/bitmap.c           | 14 ++++++++++++++
->  2 files changed, 25 insertions(+)
+> Link:
+> https://lkml.kernel.org/r/20210507190140.18854-4-Yazen.Ghannam@amd.com
 > 
-> diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
-> index 330dbf7509cc..9d959bc24859 100644
-> --- a/tools/include/linux/bitmap.h
-> +++ b/tools/include/linux/bitmap.h
-> @@ -18,6 +18,8 @@ int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
->  int __bitmap_equal(const unsigned long *bitmap1,
->  		   const unsigned long *bitmap2, unsigned int bits);
->  void bitmap_clear(unsigned long *map, unsigned int start, int len);
-> +int __bitmap_intersects(const unsigned long *bitmap1,
-> +			const unsigned long *bitmap2, unsigned int bits);
+> v1->v2:
+> * Moved from arch/x86 to EDAC.
+> * Add function to data_fabric_ops.
+> 
+>  drivers/edac/amd64_edac.c | 57 +++++++++++++++++++++++++++++----------
+>  1 file changed, 43 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+> index f769353ef7e4..389f0621e885 100644
+> --- a/drivers/edac/amd64_edac.c
+> +++ b/drivers/edac/amd64_edac.c
+> @@ -1079,16 +1079,26 @@ static struct df_reg df_regs[] = {
+>  	[SYS_FAB_ID_MASK]	=	{1, 0x208},
+>  };
 >  
->  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
->  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
-> @@ -170,4 +172,13 @@ static inline int bitmap_equal(const unsigned long *src1,
->  	return __bitmap_equal(src1, src2, nbits);
->  }
+> +/* Use "reg_" prefix for raw register values. */
+>  struct addr_ctx {
+>  	u64 ret_addr;
+> +	u32 reg_dram_offset;
+>  	u16 nid;
+>  	u8 inst_id;
+> +	u8 map_num;
+>  };
 >  
-> +static inline int bitmap_intersects(const unsigned long *src1,
-> +			const unsigned long *src2, unsigned int nbits)
+>  struct data_fabric_ops {
+> +	u64 (*get_hi_addr_offset)(struct addr_ctx *ctx);
+>  };
+>  
+> +static u64 get_hi_addr_offset_df2(struct addr_ctx *ctx)
 > +{
-> +	if (small_const_nbits(nbits))
-> +		return ((*src1 & *src2) & BITMAP_LAST_WORD_MASK(nbits)) != 0;
-> +	else
-> +		return __bitmap_intersects(src1, src2, nbits);
+> +	return (ctx->reg_dram_offset & GENMASK_ULL(31, 20)) << 8;
 > +}
 > +
->  #endif /* _PERF_BITOPS_H */
-> diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
-> index f4e914712b6f..db466ef7be9d 100644
-> --- a/tools/lib/bitmap.c
-> +++ b/tools/lib/bitmap.c
-> @@ -86,3 +86,17 @@ int __bitmap_equal(const unsigned long *bitmap1,
->  
->  	return 1;
->  }
-> +
-> +int __bitmap_intersects(const unsigned long *bitmap1,
-> +			const unsigned long *bitmap2, unsigned int bits)
-> +{
-> +	unsigned int k, lim = bits/BITS_PER_LONG;
-> +	for (k = 0; k < lim; ++k)
-> +		if (bitmap1[k] & bitmap2[k])
-> +			return 1;
-> +
-> +	if (bits % BITS_PER_LONG)
-> +		if ((bitmap1[k] & bitmap2[k]) & BITMAP_LAST_WORD_MASK(bits))
-> +			return 1;
-> +	return 0;
-> +}
-> -- 
-> 2.19.0
-> 
+>  struct data_fabric_ops df2_ops = {
+
+Those "df2" ops are for UMC v2? 
+
+> +	.get_hi_addr_offset		=	&get_hi_addr_offset_df2,
+						^
+
+No need for the "&".
+
+Also, if you define a member ->get_hi_addr_offset in df2_ops, then you
+need to define that member in *every* df_ops structure you have so that
+there's no NULL pointers.
+
+I guess that's coming...
 
 -- 
+Regards/Gruss,
+    Boris.
 
-- Arnaldo
+https://people.kernel.org/tglx/notes-about-netiquette
