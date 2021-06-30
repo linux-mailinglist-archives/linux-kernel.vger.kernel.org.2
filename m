@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C8F3B7B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 02:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967863B7B0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 02:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbhF3Ahh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 20:37:37 -0400
-Received: from phobos.denx.de ([85.214.62.61]:38454 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235641AbhF3Ahg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 20:37:36 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id DB8E08318C;
-        Wed, 30 Jun 2021 02:35:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1625013307;
-        bh=7d+hvafjNqkuLN4l9EGDgvyWp865HKjDqji5vD6RecM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=XaaIg08GyrpafgYTDYiZY3MYc4mI7Bgolmdb0ksmBVgQwLMkUIvHqf1+cUDFumHiM
-         zL2FhNG/tvaZZsgGcnTrPq/77X8kNUGN4r/n5NP53N7fqFMkzQT1GhbBXqBBaV6k24
-         KC/cQ6AyQ4kS9WQaCIP2jlmrtQXvrgwaz5qpN3WBsUPeuLbJRp1Wov1NoEWjke3tzK
-         L8DrbtszwVK+km/EA1nAhW3Q8ByETdVM02oC62H5HxYpf3bb8mk26SYp9m8pz7zSIs
-         1E7xVvdvTeXDQCrgeGgvLja05Aia6HvPpO8B+ac4wO/4l6KMIHbHec5z61x6AZnATD
-         lLsW1y3k3NdOw==
-Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
-To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-Cc:     Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
-Date:   Wed, 30 Jun 2021 02:35:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235701AbhF3AjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 20:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235617AbhF3AjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 20:39:09 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B237C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 17:36:41 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id q18so1682174lfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 17:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jtVW5NMocB6oVI0WMovmBROwRBfdKl6IUOMqibW9evQ=;
+        b=PfDwdfd658Y+9K8gvsYqLkb06cvO9vPX5vmZFKpgJfEU1JV8IJOHOPB/fT9gQgKia4
+         CkwaR7y+3Y3sRHa1Ei3aG16+gGPQ8ellOWAofRnxXTxEphjDYqv1CvVWGiY1H2QyxJlO
+         LNN65ZIV4H4+qPr/vzxELakfbfrYCNxdUuw8FlW01wdyTO9QgR55wE2WFhtmfVqmraX1
+         6dsMXQqqoSbmasHFViuFkp9x9AiAQBLFBuy8aCFxO5dfncSXXyX55TVezt+pCUhXsQ8J
+         9lI0d6qy92Ma9mvUYjuBxQjQw4ace0MWZURMPTZr0T5fK/9N6n3m5y70GsyXUxOFlmCr
+         SukQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jtVW5NMocB6oVI0WMovmBROwRBfdKl6IUOMqibW9evQ=;
+        b=HjFROJ42nVfaoVAlcwmUsk9fpfs1gzVsYyxPEJ8x86j/59L6eEsuRwCrv1G+sCCgds
+         QCp1btdRcXuQlvn6M1uBYbSWL5N4vuvSr/4A7b+cCbVKZyXMK3RKuFzQbOJXoEcq4mUF
+         4YGmOSEYVkuYtp8hSUa8omj2NwfizVtLkzboFMJvRmZspsvk3aOKXdpunMe37KpFoV6G
+         q5d4OODEy8q8cZNZ86l9HJS2EoVdIua69UZcF7EDRvdFQS+P59eEUZDFQ6WHMa7y/NGK
+         hUwbdbtoQhoTCbFEMqCV2LHzdcAZzyp3igG4kS58yDagGa5AeXRTY0+tEoRwlzVHEHnV
+         nlWw==
+X-Gm-Message-State: AOAM531EnbNMR4R77SoZ7lZmU/PYHnHgPV11+sBTRYINFhhOBdrCByJ1
+        T99JkcAhDXb+339qk0Ekme3vSTBzLlhvGikETU0Kqw==
+X-Google-Smtp-Source: ABdhPJz8oylr1QBk4wbq+S09hbJVugu5jPx8c6IPCGHmiauvztZvUu2BOO8drcRIghnbm2IY/6t/MC8MygbdQHfkED4=
+X-Received: by 2002:a05:6512:3c9f:: with SMTP id h31mr15414133lfv.465.1625013399992;
+ Tue, 29 Jun 2021 17:36:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+References: <20210629074703.v2.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+In-Reply-To: <20210629074703.v2.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 30 Jun 2021 02:36:28 +0200
+Message-ID: <CACRpkdbRjg1PMMWPc_5fW+PKG4SQGkaesK4++MHUWTw0MdMkxg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Xin Ji <xji@analogixsemi.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
+On Tue, Jun 29, 2021 at 1:47 AM Nicolas Boichat <drinkcat@chromium.org> wrote:
 
-[...]
+> Many of the DSI flags have names opposite to their actual effects,
+> e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
+> be disabled. Fix this by including _NO_ in the flag names, e.g.
+> MIPI_DSI_MODE_NO_EOT_PACKET.
+>
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 
-> +++ b/drivers/gpu/drm/stm/ltdc.c
-> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
->   {
->   	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
->   	struct drm_device *ddev = crtc->dev;
-> +	int ret;
->   
->   	DRM_DEBUG_DRIVER("\n");
->   
-> -	pm_runtime_get_sync(ddev->dev);
-> +	if (!pm_runtime_active(ddev->dev)) {
-> +		ret = pm_runtime_get_sync(ddev->dev);
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-All these if (!pm_runtime_active()) then pm_runtime_get_sync() calls 
-look like workaround for some larger issue. Shouldn't the pm_runtime do 
-some refcounting on its own , so this shouldn't be needed ?
+Yours,
+Linus Walleij
