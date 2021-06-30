@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08FE3B87B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03DE3B87B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbhF3RcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        id S232709AbhF3RdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhF3RcE (ORCPT
+        with ESMTP id S229963AbhF3RdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:32:04 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797C7C061756;
-        Wed, 30 Jun 2021 10:29:35 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1749E1EC046E;
-        Wed, 30 Jun 2021 19:29:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1625074174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=YGhnZGfwTfvy3zpIFETm0Gunr6e5gwD/LYq1Fu48WQ4=;
-        b=sUZpfB/Q+SeJQ3jfq1IfLkvy+1ILlBYyNJCbW3uX0iS1dVkVEhEHr+k/6R5JOCOlEHzFHf
-        gBBJjn8bp5jZ9i780+ihjO68WOQ5+QV7QGJslWpipG/3C7rcjXedHsWm5Y5rViMiiyBWFr
-        VXO4meDUbuWPmfvOm2Yl0pbt4/nt610=
-Date:   Wed, 30 Jun 2021 19:29:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, tony.luck@intel.com,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH v2 08/31] EDAC/amd64: Define function to read DRAM
- address map registers
-Message-ID: <YNyp/ZsGwnjFZr04@zn.tnic>
-References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
- <20210623192002.3671647-9-yazen.ghannam@amd.com>
+        Wed, 30 Jun 2021 13:33:23 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891D0C061756;
+        Wed, 30 Jun 2021 10:30:54 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id k16so4067256ios.10;
+        Wed, 30 Jun 2021 10:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZkA2kH0ir4VrYzfKw+Bnoh3SYiMrQMASYfySQrKF/+Y=;
+        b=CYOWm8fCgsuyBiZmVg9VMJvz55bY0z82J8rWYnHye6VjH/XpZePZRwsGsuioKNoAq2
+         E6T2ZuLyzVQ1R8v+yQcUF4S0/breKFE1hTzER5s/C6G6c2/YK/lC9FHGfybYKaL9zxAh
+         NckQSaj2BM+6x7hM561eoR6YpRmdC0x3QuCdVO1oSjRtjd3fWeMC1WaC4+8hYjI6ggHN
+         PSoIXhppVfuS23jYseAhBpADZtCFP0wVRgsP1wFchzmHmGx/DScmf90jJdGDn567dB5i
+         71yUvhePUFXLC3QxVU/XLcyhFj2MHkTWP6wZjTY3zEIDkraxmvbH+vNo9Wj5n1ayMGJw
+         D67w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZkA2kH0ir4VrYzfKw+Bnoh3SYiMrQMASYfySQrKF/+Y=;
+        b=BLu3FoJ3t78C8hP8lXO+Pq3H2MTvFWWQSt6bSlt63wK6CPDizDBVPumcPFK7GtOsX9
+         8AWJzUBHx3naHeDLN9Pyj0gne+/4yivn5LdstJwuFoWvD4DtMEYj0bdgADdrtouqyQhz
+         x4koBhE5cqMfDF7Fl9qIQl/Hsj9sUDuKm5JZ7BR/nRoTQWQU+7tBVNLQHGsGlhuZzFAu
+         d95iWCwyFap7QoJmW/IWVCxT3ryW3/H+fhtnhD2h9wYpUjvdn4ipLTuVU6qjmSK5WrvH
+         7EhTE7bn/BfhoHK6iN4dbgj4p/9ejw/aW2jx4cfDA9kMDJCtFnOZr/mFJegojqaJhDPd
+         eIAQ==
+X-Gm-Message-State: AOAM533m5P+bRQEGzx4EtgDbuTb+0uldecQm6n5WTHrpg4UFYrxGWTYH
+        urmygGYwi8ukh7BUO61lDapx6+Ua436UzWT/
+X-Google-Smtp-Source: ABdhPJwhoD1OmmOWjhUbVu8iYuaFapecKT63UHWQ3u7fjWy/MwrRJmDbWqTC4dW1q1igmucH+gqYlg==
+X-Received: by 2002:a6b:3c01:: with SMTP id k1mr8622401iob.24.1625074253459;
+        Wed, 30 Jun 2021 10:30:53 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan (c-73-37-219-234.hsd1.mn.comcast.net. [73.37.219.234])
+        by smtp.gmail.com with ESMTPSA id q19sm12207278ilc.70.2021.06.30.10.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 10:30:52 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-usb@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH 1/3] dt-bindings: usb: renesas,usbhs: Support external ref clock
+Date:   Wed, 30 Jun 2021 12:30:40 -0500
+Message-Id: <20210630173042.186394-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210623192002.3671647-9-yazen.ghannam@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:19:39PM +0000, Yazen Ghannam wrote:
-> @@ -1170,22 +1194,13 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  	if (remove_dram_offset(&ctx))
->  		goto out_err;
->  
-> -	reg = df_regs[DRAM_BASE_ADDR];
-> -	reg.offset += ctx.map_num * 8;
-> -	if (amd_df_indirect_read(nid, reg, umc, &tmp))
-> -		goto out_err;
-> -
-> -	/* Check if address range is valid. */
-> -	if (!(tmp & BIT(0))) {
-> -		pr_err("%s: Invalid DramBaseAddress range: 0x%x.\n",
-> -			__func__, tmp);
-> +	if (get_dram_addr_map(&ctx))
->  		goto out_err;
-> -	}
+The usbhs driver expects a fixed external reference clock, but it
+could be sourced from a programmable clock instead of a fixed clock.
+Add support for an optional 4th reference clock.
 
-Aha, I see where you're going with the context struct. Yap, ok.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
+diff --git a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+index e67223d90bb7..2372d8c42979 100644
+--- a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
++++ b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+@@ -53,11 +53,12 @@ properties:
+ 
+   clocks:
+     minItems: 1
+-    maxItems: 3
++    maxItems: 4
+     items:
+       - description: USB 2.0 host
+       - description: USB 2.0 peripheral
+       - description: USB 2.0 clock selector
++      - description: Optional external reference clock
+ 
+   interrupts:
+     maxItems: 1
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
