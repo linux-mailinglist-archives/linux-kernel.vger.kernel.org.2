@@ -2,106 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5173B8292
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA363B822C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhF3M6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:58:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57004 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234824AbhF3M6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:58:49 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        id S234642AbhF3MeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:34:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234553AbhF3MeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:34:17 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 274431FE79;
-        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
-        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
-        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625057779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
-        T81d9SHcp5uEUCAA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0F1B9118DD;
-        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
-        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
-        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625057779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
-        T81d9SHcp5uEUCAA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id bdpOAvNp3GDUYAAALh3uQQ
-        (envelope-from <chrubis@suse.cz>); Wed, 30 Jun 2021 12:56:19 +0000
-Date:   Wed, 30 Jun 2021 14:30:45 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [CFT][PATCH] exit/bdflush: Remove the deprecated bdflush system
- call
-Message-ID: <YNxj9Ydotv39vwPW@yuki>
-References: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
- <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
- <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
- <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
- <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com>
- <87sg10quue.fsf_-_@disp2133>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AE3561461;
+        Wed, 30 Jun 2021 12:31:48 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 08:31:46 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Paul Burton <paulburton@google.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
+Message-ID: <20210630083146.7514cb1f@oasis.local.home>
+In-Reply-To: <20210630003406.4013668-1-paulburton@google.com>
+References: <20210630003406.4013668-1-paulburton@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg10quue.fsf_-_@disp2133>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-I've send a similar patch [1] a while ago when I removed bdflush tests from
-LTP.
+On Tue, 29 Jun 2021 17:34:05 -0700
+Paul Burton <paulburton@google.com> wrote:
 
-[1] https://lore.kernel.org/lkml/20190528101012.11402-1-chrubis@suse.cz/
+> The tgid_map array records a mapping from pid to tgid, where the index
+> of an entry within the array is the pid & the value stored at that index
+> is the tgid.
+> 
+> The saved_tgids_next() function iterates over pointers into the tgid_map
+> array & dereferences the pointers which results in the tgid, but then it
+> passes that dereferenced value to trace_find_tgid() which treats it as a
+> pid & does a further lookup within the tgid_map array. It seems likely
+> that the intent here was to skip over entries in tgid_map for which the
+> recorded tgid is zero, but instead we end up skipping over entries for
+> which the thread group leader hasn't yet had its own tgid recorded in
+> tgid_map.
+> 
+> A minimal fix would be to remove the call to trace_find_tgid, turning:
+> 
+>   if (trace_find_tgid(*ptr))
+> 
+> into:
+> 
+>   if (*ptr)
+> 
+> ..but it seems like this logic can be much simpler if we simply let
+> seq_read() iterate over the whole tgid_map array & filter out empty
+> entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
+> approach, removing the incorrect logic here entirely.
+> 
+> Signed-off-by: Paul Burton <paulburton@google.com>
+> Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Joel Fernandes <joelaf@google.com>
+> Cc: <stable@vger.kernel.org>
+> ---
 
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
+Joel,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Can you review this please.
+
+-- Steve
