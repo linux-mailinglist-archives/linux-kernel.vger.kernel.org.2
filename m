@@ -2,178 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983FA3B7EBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ACF3B7E72
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhF3IOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbhF3IOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:14:46 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D23C061766;
-        Wed, 30 Jun 2021 01:12:14 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hc16so2710336ejc.12;
-        Wed, 30 Jun 2021 01:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zPRdx0QRo7nzdsh8ED97M0eRdszbBRIeqzvVm0DA5wI=;
-        b=Zj/QFMaYYl8hPs4a6H8kudkxgrARZRa3aHjQ9v4gBawGr1Rk44TxYOTokjotD7W+k5
-         ps6palupDfdCkxCVJL/g1XeeW+Ki2wXpumk5u+hpTw5xqrWlofhrYc8XYlk4/574tgEz
-         2eu07GWcZsYGc9BSP52qwdCZ6gnK7UihpsmPRCrLqCL5C7rVEj1TRGyc7yDmOxUnrYJU
-         qm4jqf++hcc+5Zs8aQTqT3BKNpG7aHjEQ3jNett1RV/0kIh5biHz7VnjC6URa1adbkY6
-         5tXo0z6Ds+tI9+FSQTFOQQKl1eS1/dxR8redkVrehmLcpQ1YXQQhRY9t3Z6ncJvB5TIS
-         MtSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zPRdx0QRo7nzdsh8ED97M0eRdszbBRIeqzvVm0DA5wI=;
-        b=PEQb4UDbCV1A7SXCmmtb6GJTJ/Udr7rPvmjcbNEWv35hHrJdQGZyjDx4g6gD4eAdPj
-         oMOKERwHKumt6Nz3v8vsgfzcfhahyWnAqG2YQQEeD2hnYucRgvKW5FTnEK3/4ge4uKcu
-         iJ12BDTyLtWsXpAjpiadZXG6zeSbBnLVfrBW4kzn0e7tVIsLURO8w9yBQvAIPXIlBP5R
-         6rEY53jRrAk3dFW0XrcpwIWn5yKcwjdTrOKFZbDsmQTAFuxStrMWfu6e+acQG8Q6uUd/
-         eyPIEAJXKDcJD2Bp4YX2kknYiF0AZ1mmdArEXRQheclJLkyvge+rKjFjDUWpoEVGRZpS
-         ah+g==
-X-Gm-Message-State: AOAM533Aux2lVPV9BWRc3ICPmHvISN2Z7Zg08/w7AOxsEfUNgYfa8Gvf
-        9+UKwtZFQwVDguj7mqbscaE=
-X-Google-Smtp-Source: ABdhPJzKTmHtvvcYdXvAc3Zx13bZiN3UQt8ySxYFfBKIElMmfp1fzqt5Ji6wjKmswUBxVBveb4suFA==
-X-Received: by 2002:a17:906:2985:: with SMTP id x5mr33888561eje.438.1625040733002;
-        Wed, 30 Jun 2021 01:12:13 -0700 (PDT)
-Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
-        by smtp.gmail.com with ESMTPSA id ml14sm9218318ejb.27.2021.06.30.01.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 01:12:12 -0700 (PDT)
-From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
-Subject: [PATCH] block: Removed a warning while compiling with a cross compiler for parisc
-Date:   Wed, 30 Jun 2021 10:10:28 +0200
-Message-Id: <20210630081028.161284-1-abd.masalkhi@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S233192AbhF3IDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:03:50 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:58948 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232788AbhF3IDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:03:48 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 18FBC2030A9;
+        Wed, 30 Jun 2021 10:01:19 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A3C93202677;
+        Wed, 30 Jun 2021 10:01:18 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9414D183ACCB;
+        Wed, 30 Jun 2021 16:01:16 +0800 (+08)
+From:   Yangbo Lu <yangbo.lu@nxp.com>
+To:     netdev@vger.kernel.org
+Cc:     Yangbo Lu <yangbo.lu@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
+        Sebastien Laveze <sebastien.laveze@nxp.com>
+Subject: [net-next, v5, 00/11] ptp: support virtual clocks and timestamping
+Date:   Wed, 30 Jun 2021 16:11:51 +0800
+Message-Id: <20210630081202.4423-1-yangbo.lu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have compiled the kernel with a cross compiler "hppa-linux-gnu-" on
-x86-64 host machine. I got the follwing warning:
+Current PTP driver exposes one PTP device to user which binds network
+interface/interfaces to provide timestamping. Actually we have a way
+utilizing timecounter/cyclecounter to virtualize any number of PTP
+clocks based on a same free running physical clock for using.
+The purpose of having multiple PTP virtual clocks is for user space
+to directly/easily use them for multiple domains synchronization.
 
-block/genhd.c: In function ‘diskstats_show’:
-block/genhd.c:1227:1: warning: the frame size of 1688 bytes is larger
-than 1280 bytes [-Wframe-larger-than=]
- 1227  |  }
+user
+space:     ^                                  ^
+           | SO_TIMESTAMPING new flag:        | Packets with
+           | SOF_TIMESTAMPING_BIND_PHC        | TX/RX HW timestamps
+           v                                  v
+         +--------------------------------------------+
+sock:    |     sock (new member sk_bind_phc)          |
+         +--------------------------------------------+
+           ^                                  ^
+           | ethtool_get_phc_vclocks          | Convert HW timestamps
+           |                                  | to sk_bind_phc
+           v                                  v
+         +--------------+--------------+--------------+
+vclock:  | ptp1         | ptp2         | ptpN         |
+         +--------------+--------------+--------------+
+pclock:  |             ptp0 free running              |
+         +--------------------------------------------+
 
-The problem was calling seq_printf function with too long argumnets list.
-Therefore, I cut it into two halves. For the second half I have defined
-a function called "print_disk_stats" to print the states of the disk.
+The block diagram may explain how it works. Besides the PTP virtual
+clocks, the packet HW timestamp converting to the bound PHC is also
+done in sock driver. For user space, PTP virtual clocks can be
+created via sysfs, and extended SO_TIMESTAMPING API (new flag
+SOF_TIMESTAMPING_BIND_PHC) can be used to bind one PTP virtual clock
+for timestamping.
 
-Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
----
- block/genhd.c | 75 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 41 insertions(+), 34 deletions(-)
+The test tool timestamping.c (together with linuxptp phc_ctl tool) can
+be used to verify:
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..caf5ac8b509f 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1151,6 +1151,44 @@ const struct device_type disk_type = {
- };
- 
- #ifdef CONFIG_PROC_FS
-+
-+void print_disk_stats(struct seq_file *seqf,
-+		      unsigned int inflight, struct disk_stats *stat)
-+{
-+	seq_printf(seqf, "%lu %lu %lu %u "
-+		   "%lu %lu %lu %u "
-+		   "%u %u %u "
-+		   "%lu %lu %lu %u "
-+		   "%lu %u"
-+		   "\n",
-+		   stat->ios[STAT_READ],
-+		   stat->merges[STAT_READ],
-+		   stat->sectors[STAT_READ],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_READ],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_WRITE],
-+		   stat->merges[STAT_WRITE],
-+		   stat->sectors[STAT_WRITE],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_WRITE],
-+					 NSEC_PER_MSEC),
-+		   inflight,
-+		   jiffies_to_msecs(stat->io_ticks),
-+		   (unsigned int)div_u64(stat->nsecs[STAT_READ] +
-+					 stat->nsecs[STAT_WRITE] +
-+					 stat->nsecs[STAT_DISCARD] +
-+					 stat->nsecs[STAT_FLUSH],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_DISCARD],
-+		   stat->merges[STAT_DISCARD],
-+		   stat->sectors[STAT_DISCARD],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_DISCARD],
-+					 NSEC_PER_MSEC),
-+		   stat->ios[STAT_FLUSH],
-+		   (unsigned int)div_u64(stat->nsecs[STAT_FLUSH],
-+					 NSEC_PER_MSEC)
-+		);
-+}
-+
- /*
-  * aggregate disk stat collector.  Uses the same stats that the sysfs
-  * entries do, above, but makes them available through one seq_file.
-@@ -1185,41 +1223,10 @@ static int diskstats_show(struct seq_file *seqf, void *v)
- 		else
- 			inflight = part_in_flight(hd);
- 
--		seq_printf(seqf, "%4d %7d %s "
--			   "%lu %lu %lu %u "
--			   "%lu %lu %lu %u "
--			   "%u %u %u "
--			   "%lu %lu %lu %u "
--			   "%lu %u"
--			   "\n",
-+		seq_printf(seqf, "%4d %7d %s ",
- 			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev),
--			   disk_name(gp, hd->bd_partno, buf),
--			   stat.ios[STAT_READ],
--			   stat.merges[STAT_READ],
--			   stat.sectors[STAT_READ],
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ],
--							NSEC_PER_MSEC),
--			   stat.ios[STAT_WRITE],
--			   stat.merges[STAT_WRITE],
--			   stat.sectors[STAT_WRITE],
--			   (unsigned int)div_u64(stat.nsecs[STAT_WRITE],
--							NSEC_PER_MSEC),
--			   inflight,
--			   jiffies_to_msecs(stat.io_ticks),
--			   (unsigned int)div_u64(stat.nsecs[STAT_READ] +
--						 stat.nsecs[STAT_WRITE] +
--						 stat.nsecs[STAT_DISCARD] +
--						 stat.nsecs[STAT_FLUSH],
--							NSEC_PER_MSEC),
--			   stat.ios[STAT_DISCARD],
--			   stat.merges[STAT_DISCARD],
--			   stat.sectors[STAT_DISCARD],
--			   (unsigned int)div_u64(stat.nsecs[STAT_DISCARD],
--						 NSEC_PER_MSEC),
--			   stat.ios[STAT_FLUSH],
--			   (unsigned int)div_u64(stat.nsecs[STAT_FLUSH],
--						 NSEC_PER_MSEC)
--			);
-+			   disk_name(gp, hd->bd_partno, buf));
-+		print_disk_stats(seqf, inflight, &stat);
- 	}
- 	rcu_read_unlock();
- 
+  # echo 4 > /sys/class/ptp/ptp0/n_vclocks
+  [  129.399472] ptp ptp0: new virtual clock ptp2
+  [  129.404234] ptp ptp0: new virtual clock ptp3
+  [  129.409532] ptp ptp0: new virtual clock ptp4
+  [  129.413942] ptp ptp0: new virtual clock ptp5
+  [  129.418257] ptp ptp0: guarantee physical clock free running
+  #
+  # phc_ctl /dev/ptp2 set 10000
+  # phc_ctl /dev/ptp3 set 20000
+  #
+  # timestamping eno0 2 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 2 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_TX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+  # timestamping eno0 3 SOF_TIMESTAMPING_RX_HARDWARE SOF_TIMESTAMPING_RAW_HARDWARE SOF_TIMESTAMPING_BIND_PHC
+
+Changes for v2:
+	- Converted to num_vclocks for creating virtual clocks.
+	- Guranteed physical clock free running when using virtual
+	  clocks.
+	- Fixed build warning.
+	- Updated copyright.
+Changes for v3:
+	- Supported PTP virtual clock in default in PTP driver.
+	- Protected concurrency of ptp->num_vclocks accessing.
+	- Supported PHC vclocks query via ethtool.
+	- Extended SO_TIMESTAMPING API for PHC binding.
+	- Converted HW timestamps to PHC bound, instead of previous
+	  binding domain value to PHC idea.
+	- Other minor fixes.
+Changes for v4:
+	- Used do_aux_work callback for vclock refreshing instead.
+	- Used unsigned int for vclocks number, and max_vclocks
+	  for limitiation.
+	- Fixed mutex locking.
+	- Dynamically allocated memory for vclock index storage.
+	- Removed ethtool ioctl command for vclocks getting.
+	- Updated doc for ethtool phc vclocks get.
+	- Converted to mptcp_setsockopt_sol_socket_timestamping().
+	- Passed so_timestamping for sock_set_timestamping.
+	- Fixed checkpatch/build.
+	- Other minor fixed.
+Changes for v5:
+	- Fixed checkpatch/build/bug reported by test robot.
+
+Yangbo Lu (11):
+  ptp: add ptp virtual clock driver framework
+  ptp: support ptp physical/virtual clocks conversion
+  ptp: track available ptp vclocks information
+  ptp: add kernel API ptp_get_vclocks_index()
+  ethtool: add a new command for getting PHC virtual clocks
+  ptp: add kernel API ptp_convert_timestamp()
+  mptcp: setsockopt: convert to
+    mptcp_setsockopt_sol_socket_timestamping()
+  net: sock: extend SO_TIMESTAMPING for PHC binding
+  net: socket: support hardware timestamp conversion to PHC bound
+  selftests/net: timestamping: support binding PHC
+  MAINTAINERS: add entry for PTP virtual clock driver
+
+ Documentation/ABI/testing/sysfs-ptp          |  20 ++
+ Documentation/networking/ethtool-netlink.rst |  22 ++
+ MAINTAINERS                                  |   7 +
+ drivers/ptp/Makefile                         |   2 +-
+ drivers/ptp/ptp_clock.c                      |  42 +++-
+ drivers/ptp/ptp_private.h                    |  39 ++++
+ drivers/ptp/ptp_sysfs.c                      | 160 ++++++++++++++
+ drivers/ptp/ptp_vclock.c                     | 219 +++++++++++++++++++
+ include/linux/ethtool.h                      |  10 +
+ include/linux/ptp_clock_kernel.h             |  31 ++-
+ include/net/sock.h                           |   8 +-
+ include/uapi/linux/ethtool_netlink.h         |  15 ++
+ include/uapi/linux/net_tstamp.h              |  17 +-
+ net/core/sock.c                              |  65 +++++-
+ net/ethtool/Makefile                         |   2 +-
+ net/ethtool/common.c                         |  14 ++
+ net/ethtool/netlink.c                        |  10 +
+ net/ethtool/netlink.h                        |   2 +
+ net/ethtool/phc_vclocks.c                    |  94 ++++++++
+ net/mptcp/sockopt.c                          |  68 ++++--
+ net/socket.c                                 |  19 +-
+ tools/testing/selftests/net/timestamping.c   |  55 +++--
+ 22 files changed, 867 insertions(+), 54 deletions(-)
+ create mode 100644 drivers/ptp/ptp_vclock.c
+ create mode 100644 net/ethtool/phc_vclocks.c
+
+
+base-commit: b6df00789e2831fff7a2c65aa7164b2a4dcbe599
 -- 
-2.29.0.rc1.dirty
+2.25.1
 
