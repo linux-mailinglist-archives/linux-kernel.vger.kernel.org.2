@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9FE3B7B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 03:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C38E3B7B6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 03:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhF3B61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 21:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231879AbhF3B60 (ORCPT
+        id S232138AbhF3CB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:01:57 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:9321 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbhF3CB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 21:58:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5CEC061760;
-        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id p17-20020a17090b0111b02901723ab8d11fso325777pjz.1;
-        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3XEmE3tBGvyuKAhQyT6Z2Ge4lC3BY97Gtc5iIn4CjGA=;
-        b=KkAQGChq+8NzbfFmR1tyl6K0QlHezai+O4ffrI1vf7v6lauxKfb1Fc7VUR0Hrw+m/O
-         eLkkgepe9fr73zl4t2xSr+PQGXGwOp5M8VNVyba0VYVX5BFIiS4TKzcrsv8kEG3+spRQ
-         Efns8xzIx0ljwtQhXSdOVRfJP7BdRDFWE6ZO2c3mY89xN6Qu7uV7K6kIrxUetDaRMIa5
-         C1C/xoSxwu6+d8KilP1P5JSyOy0tN0xjDziAHvrr8fx4raNHqaoXPKl6Pn/91SjI8Yxz
-         FpdD4vA3C8MfnDThfHOoe9miXKRtGuZDX02Xv1JKmlyT8OPUkFBE2pk9YbpSeNP8TzEe
-         HwYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3XEmE3tBGvyuKAhQyT6Z2Ge4lC3BY97Gtc5iIn4CjGA=;
-        b=X9g1WhOapj0KQkacZJtUw+82fZQGEoW9aKmZvrZlrJ+qNqcscsUeNLOHctRGoSFuKT
-         BbulwmEf8tzsm712+RgG9UIPIvnSjU6u9gSf7XDgPTDXIj75RfgADBzEx6Ez2zj/KV9w
-         QxeRhmrHG8vBwOvTzoDalrzGydth50kpcbD+FljqLhZ63QU3ERKmWfEPcxLd3I8C6mPi
-         HzkyabVXMLsA0CXTNhlvYnaf9SdNQDAxxOuNmuXYFIxSBq1+dNRqJ0SYjAFmdgQCbOq4
-         vCy5pnrliLPi415Rur1QWwBFi7mGTUOM8Mv1+bFaX6IYOHKEuuXLaY6yChF6ZPIBToXT
-         b0XQ==
-X-Gm-Message-State: AOAM530tZZo7uwfdzm2MkclnD46cFP5vkMFsTLLbtBlvM8qJx+/J92uy
-        fdtjI44fSKVV4hg+F2mHFWNvu9ZOFqiAK5X3
-X-Google-Smtp-Source: ABdhPJwfkhhsbKt9qHbVrR7ViYv6sCNsxDdFVpWaoQLudfM9KvIjS2M9aJyE3EK53g63l761z109KA==
-X-Received: by 2002:a17:902:b08c:b029:128:4b85:b6f7 with SMTP id p12-20020a170902b08cb02901284b85b6f7mr24966157plr.39.1625018157087;
-        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
-Received: from localhost.localdomain ([150.109.127.35])
-        by smtp.gmail.com with ESMTPSA id j12sm19412048pjw.52.2021.06.29.18.55.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Jun 2021 18:55:56 -0700 (PDT)
-From:   Bing Fan <hptsfb@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] arm pl011 serial: support multi-irq request
-Date:   Wed, 30 Jun 2021 09:55:53 +0800
-Message-Id: <1625018153-14672-1-git-send-email-hptsfb@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 29 Jun 2021 22:01:56 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GF4DJ6Rc0z73kS;
+        Wed, 30 Jun 2021 09:55:12 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 30
+ Jun 2021 09:59:24 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <gabriel.fernandez@foss.st.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] clk: stm32mp1: fix missing spin_lock_init()
+Date:   Wed, 30 Jun 2021 09:58:23 +0800
+Message-ID: <20210630015824.2555840-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bing Fan <tombinfan@tencent.com>
+The driver allocates the spinlock but not initialize it.
+Use spin_lock_init() on it to initialize it correctly.
 
-In order to make pl011 work better, multiple interrupts are
-required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-at the same time, pl011 to GIC does not merge the interrupt
-lines(each serial-interrupt corresponding to different GIC hardware
-interrupt), so need to enable and request multiple gic interrupt
-numbers in the driver.
-
-Signed-off-by: Bing Fan <tombinfan@tencent.com>
+Fixes: c392df194a2d ("clk: stm32mp1: move RCC reset controller into RCC clock driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- drivers/tty/serial/amba-pl011.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/clk/clk-stm32mp1.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 78682c12156a..8b471de0e31c 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1703,9 +1703,26 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
+diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
+index 6adc625e79c..256575bd29b 100644
+--- a/drivers/clk/clk-stm32mp1.c
++++ b/drivers/clk/clk-stm32mp1.c
+@@ -2263,6 +2263,7 @@ static int stm32_rcc_reset_init(struct device *dev, void __iomem *base,
+ 	if (!reset_data)
+ 		return -ENOMEM;
  
- static int pl011_allocate_irq(struct uart_amba_port *uap)
- {
-+	int ret = 0;
-+	int i;
-+	unsigned int virq;
-+	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-+
- 	pl011_write(uap->im, uap, REG_IMSC);
- 
--	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-+	for (i = 0; i < AMBA_NR_IRQS; i++) {
-+		virq = amba_dev->irq[i];
-+		if (virq == 0)
-+			break;
-+
-+		ret = request_irq(virq, pl011_int, IRQF_SHARED, "uart-pl011-*", uap);
-+		if (ret) {
-+			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
-+			break;
-+		}
-+	}
-+
-+	return ret;
- }
- 
- /*
++	spin_lock_init(&reset_data->lock);
+ 	reset_data->membase = base;
+ 	reset_data->rcdev.owner = THIS_MODULE;
+ 	reset_data->rcdev.ops = &stm32_reset_ops;
 -- 
 2.17.1
 
