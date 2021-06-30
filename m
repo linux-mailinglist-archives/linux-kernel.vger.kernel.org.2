@@ -2,162 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFF73B815F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578EF3B8160
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhF3Lng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S234319AbhF3LoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234239AbhF3Lne (ORCPT
+        with ESMTP id S234148AbhF3LoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:43:34 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6BAC061756;
-        Wed, 30 Jun 2021 04:41:05 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id r20so1211306qtp.3;
-        Wed, 30 Jun 2021 04:41:05 -0700 (PDT)
+        Wed, 30 Jun 2021 07:44:17 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDAFC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:41:49 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso4177961wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9WGajNiQMTDo26j5le/bSfKiJsofDJEV08hqKWpTcKY=;
-        b=lqL4REt4yP/jbdel4Hui+qpoiB/2SsINyZkvA9J/Ady4JM6toFgo+6vATEPuGACsXw
-         sn3FYCOC2yattpqp6HugxOrKxl/6PiiTw+iOrLT7QurtgW5AKr/qONX5l1LRFUZ97/fH
-         B1bWejnE27PJDjkblhyxn/vKSlevmIWHRQjMD/MjjGVZNLXlkw4fO1jDKGvaoGIdqHBN
-         1CVzVEdS53tDJokzPaWmiHDDa+nacX8LLIhN4kq9rX6rvLPGgXTsGvXigQR3KcWexB+3
-         39yXN7+Bbn7EaAprfx4OTJcy/iYWOIVpLZnrZ0iQKUh3v7q8nISB2xzAqLGSFnGH9IM2
-         efag==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/mO/w5fh3vju9pAiwWZOaOEeAHs/EQOFkGAvEAGUaW4=;
+        b=NZtBaQr5fAEobsIp3j91z1Ipd3hdk5vZ3TGuUgnchqytZyodZkUGWHieNY07bewQNM
+         qfVOfyxG17XqzkEDbLWKv1b+Z+Z6ohlEVikw1ePJci1O+CWY/w1NT53CMGoA5QvOeFqO
+         AEOVlP6rqzam5Pwba+SijgTdQhzVmKlUCWR2zn4/U+eTINmf18jfSRRe5CHIbGqbY+Rl
+         96FmQopGBifAJJc+7g36sPg8ot/CetNhfhiOkKJBqnrOOUwSr9gmPSJaY+QRvT1/D5YM
+         u4DvfkF6K4GX4hj/rTXzpWxF/CZsR8selyshpHfs9vNE++HG5CbM9pa3Grtyy+QJ6OVf
+         zDqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9WGajNiQMTDo26j5le/bSfKiJsofDJEV08hqKWpTcKY=;
-        b=Ad2kkipPjWZYNabHtALfdZsyiUvaDB3NrY6Ki/eRAaLWzM2e0erDL7NATqmjA9mtwA
-         iQgpMxGnUNe4M3tdv5EDQ8MR1vKv5xNpL+ivFmu89E6kz17jUAHOPfyZ+AAAsrAQeB6U
-         bdQ5QN+ynO/sm7uSPi0SRVqcr1efyCCFdZnCHeGp+2QxMjll3sWbnC+LsJwaT8b93Djp
-         TOLN2QHbJz8WQcdllGGB73l21XXdAKSeQwmv4kOEbpWnl/z+TQ+IyQqrEwE4HsOjEjCi
-         JzoQFgEwHo/EkfIprfDO9ZJDv24Z4pWsdaY3pS+HiDcxSbeaWiYswAgwKvnYrnOoF/AL
-         Kskg==
-X-Gm-Message-State: AOAM532QzqIlW7Y742wPr0bQrnZX17f/9+MYvW/wAKsWBNH3bcpc1jvK
-        IB4pbApSHBDwp0NinHINGNs=
-X-Google-Smtp-Source: ABdhPJylPLF/vX617JJjLPIS4fQxa8BNN509WCfyDbGHvjnIrQjA/OT5JFFzxoiC8qgmcOYgkl+0XA==
-X-Received: by 2002:ac8:5d8d:: with SMTP id d13mr30583296qtx.49.1625053264589;
-        Wed, 30 Jun 2021 04:41:04 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:6476:6b8e:397c:a7a0])
-        by smtp.gmail.com with ESMTPSA id k8sm12001773qkj.46.2021.06.30.04.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 04:41:04 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Geis <pgwipeout@gmail.com>
-Subject: [PATCH] arm64: dts: rockchip: add thermal fan control to rockpro64
-Date:   Wed, 30 Jun 2021 07:40:57 -0400
-Message-Id: <20210630114057.472121-1-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/mO/w5fh3vju9pAiwWZOaOEeAHs/EQOFkGAvEAGUaW4=;
+        b=I9f2ao8ORyODqBZ78JCV6zKgt16NZEQJ1s9xoVemoe0yG/9ieeeXQMVXcHcNXDWxBk
+         Wq0GMUaCFgpuH33SgrImMSyZ6lAmL4qNg6hipcqSRqEN0a+Z7V7eNs53WRqhRBlw72rz
+         xeS5dW4aZbTEgjfDxEZtq6ia5kJpcloGfFjC6xuTlgwhaGDaz2FwA+qPh+10S4DbbMOy
+         lPIZdszgKWlpfifPvtFRh3JBFnckwN+q7K0wWCus3H91GCBfBIxcBXITMMPI0kloHxSO
+         bwYmf/oOT6LGRgebOQrHQKrNcp+jacfYod1rh6vHRheCue3y/OerMEuD1okPV8DmV6go
+         fzsA==
+X-Gm-Message-State: AOAM532iTHBqC56aF9TOUL1KypdUGX0N94JInx+cI7/BFkfTHZ0J393x
+        mhxGm8oEoXgJMN6meUicjb8KLtDue3dMA3ChCyA=
+X-Google-Smtp-Source: ABdhPJw4eQFbJXF84/tjWHVgsU5f27hq9PgR63d4rD66B8hHCkT+LlL+x6gD4EA2KE4N5hohzR/fj7Fmp1zKBXglxsA=
+X-Received: by 2002:a1c:c208:: with SMTP id s8mr22679778wmf.37.1625053307260;
+ Wed, 30 Jun 2021 04:41:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:adf:fb8d:0:0:0:0:0 with HTTP; Wed, 30 Jun 2021 04:41:46
+ -0700 (PDT)
+Reply-To: leonare.townsend@yahoo.com
+From:   Mrs Leonare Townsend <ashleykon34@gmail.com>
+Date:   Wed, 30 Jun 2021 13:41:46 +0200
+Message-ID: <CAD=vUSO_BVtQokhrF9wYKk=+Vyg1pAae3yTkbfFyjJBH4qRHpA@mail.gmail.com>
+Subject: Mrs Leonare Townsend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rockpro64 had a fan node since
-commit 5882d65c1691 ("arm64: dts: rockchip: Add PWM fan for RockPro64")
-however it was never tied into the thermal driver for automatic control.
-
-Add the links to the thermal node to permit the kernel to handle this
-automatically.
-Borrowed from the (rk3399-khadas-edge.dtsi).
-
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
----
- .../boot/dts/rockchip/rk3399-rockpro64.dtsi   | 57 +++++++++++++++++++
- 1 file changed, 57 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index 6bff8db7d33e..687a5afa5d2c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -69,6 +69,7 @@ diy_led: led-1 {
- 
- 	fan: pwm-fan {
- 		compatible = "pwm-fan";
-+		cooling-levels = <0 150 200 255>;
- 		#cooling-cells = <2>;
- 		fan-supply = <&vcc12v_dcin>;
- 		pwms = <&pwm1 0 50000 0>;
-@@ -245,6 +246,34 @@ &cpu_b1 {
- 	cpu-supply = <&vdd_cpu_b>;
- };
- 
-+&cpu_thermal {
-+	trips {
-+		cpu_warm: cpu_warm {
-+			temperature = <55000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+
-+		cpu_hot: cpu_hot {
-+			temperature = <65000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+
-+	cooling-maps {
-+		map2 {
-+			trip = <&cpu_warm>;
-+			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-+		};
-+
-+		map3 {
-+			trip = <&cpu_hot>;
-+			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
- &emmc_phy {
- 	status = "okay";
- };
-@@ -281,6 +310,34 @@ &gpu {
- 	status = "okay";
- };
- 
-+&gpu_thermal {
-+	trips {
-+		gpu_warm: gpu_warm {
-+			temperature = <55000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+
-+		gpu_hot: gpu_hot {
-+			temperature = <65000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+
-+	cooling-maps {
-+		map1 {
-+			trip = <&gpu_warm>;
-+			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
-+		};
-+
-+		map2 {
-+			trip = <&gpu_hot>;
-+			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
- &i2c0 {
- 	clock-frequency = <400000>;
- 	i2c-scl-rising-time-ns = <168>;
--- 
-2.25.1
-
+Greeting's,
+I sent you a letter but you didn't reply, or didn't you receive the
+previous message I sent to you? if not Kindly reply so i can resend
+the letter
+Regards,
+Mrs Leonare Townsend
