@@ -2,574 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B2A3B88CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FD3B88D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhF3S5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:57:06 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25226 "EHLO mga03.intel.com"
+        id S233514AbhF3TBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:01:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhF3S5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:57:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="208450228"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="208450228"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 11:54:34 -0700
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="457365023"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.67]) ([10.249.227.67])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 11:54:29 -0700
-Subject: Re: [PATCH v8 10/22] perf record: Introduce --threads=<spec> command
- line option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <e0069b09cb53d9149ba651474ce65faf6a001303.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <YNyprxe/0EiImxpF@kernel.org>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <e2aca481-2623-10fb-850b-88ec7870d9cf@linux.intel.com>
-Date:   Wed, 30 Jun 2021 21:54:26 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232881AbhF3TBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 15:01:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8689F61435;
+        Wed, 30 Jun 2021 18:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625079520;
+        bh=W6gEMOAr2k2UB3Fh65shSZlku3WM8UiBWegNqvIZ6Rk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BSMBj2i7bybKz3mkfmukLLY4ThDQG73FCmWMcZ1WISayfld+dmOjV9V46JmMUOeFK
+         pW5vXC/41g2xOGCCEvmvAK6irxSTqXAdJ8jcsuzY4rzf0lAinl2RGMz0ZI0qePdtEH
+         zK3ReDHCW7qJTdwZgjfNdFCzUAOIuwSFxr66bK4D1/bPy1/SeWaSFEWysOSGf3zDiW
+         fVh4GND751ToS/uyYTTBYfJzFb/bM7esKhsMyE9ENNaPqm6YxE48odzQIYiaMDRh+O
+         MbNSNk0DBsu05LGZDQMpGOjRQLf5CppSiRPMMn7BoWM1cw03YLyerRdd7OQwNvCH+y
+         dwGeUiTeLqgvA==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Dongjiu Geng <gengdongjiu@huawei.com>
+Subject: [PATCH] clk: hisilicon: hi3559a: Drop __init markings everywhere
+Date:   Wed, 30 Jun 2021 11:58:39 -0700
+Message-Id: <20210630185839.3680834-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-In-Reply-To: <YNyprxe/0EiImxpF@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This driver is a platform driver. The probe function can be called after
+kernel init, and try to reference kernel memory that has been freed.
+Drop the __init markings everywhere here to avoid referencing initdata
+from non-init code. Fixes modpost warnings.
 
-On 30.06.2021 20:28, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Jun 30, 2021 at 06:54:49PM +0300, Alexey Bayduraev escreveu:
->> Provide --threads option in perf record command line interface.
->> The option can have a value in the form of masks that specify
->> cpus to be monitored with data streaming threads and its layout
->> in system topology. The masks can be filtered using cpu mask
->> provided via -C option.
-> 
-> Perhaps make this --jobs/-j to reuse what 'make' and 'ninja' uses?
-> 
-> Unfortunately:
-> 
-> [acme@quaco pahole]$ perf record -h -j
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -j, --branch-filter <branch filter mask>
->                           branch stack filter modes
-> 
-> [acme@quaco pahole]$
-> 
-> But we could reuse --jobs
-> 
-> I thought you would start with plain:
-> 
->   -j N
-> 
-> And start one thread per CPU in 'perf record' existing CPU affinity
-> mask, then go on introducing more sophisticated modes.
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Dongjiu Geng <gengdongjiu@huawei.com>
+Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/clk/hisilicon/clk-hi3559a.c | 39 ++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-As I remember the first prototype [1] and 
-[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
+index b1f19c43b558..56012a3d0219 100644
+--- a/drivers/clk/hisilicon/clk-hi3559a.c
++++ b/drivers/clk/hisilicon/clk-hi3559a.c
+@@ -107,25 +107,25 @@ static const struct hisi_fixed_rate_clock hi3559av100_fixed_rate_clks_crg[] = {
+ };
+ 
+ 
+-static const char *fmc_mux_p[] __initconst = {
++static const char *fmc_mux_p[] = {
+ 	"24m", "75m", "125m", "150m", "200m", "250m", "300m", "400m"
+ };
+ 
+-static const char *mmc_mux_p[] __initconst = {
++static const char *mmc_mux_p[] = {
+ 	"100k", "25m", "49p5m", "99m", "187p5m", "150m", "198m", "400k"
+ };
+ 
+-static const char *sysapb_mux_p[] __initconst = {
++static const char *sysapb_mux_p[] = {
+ 	"24m", "50m",
+ };
+ 
+-static const char *sysbus_mux_p[] __initconst = {
++static const char *sysbus_mux_p[] = {
+ 	"24m", "300m"
+ };
+ 
+-static const char *uart_mux_p[] __initconst = { "50m", "24m", "3m" };
++static const char *uart_mux_p[] = { "50m", "24m", "3m" };
+ 
+-static const char *a73_clksel_mux_p[] __initconst = {
++static const char *a73_clksel_mux_p[] = {
+ 	"24m", "apll", "1000m"
+ };
+ 
+@@ -136,7 +136,7 @@ static const u32 sysbus_mux_table[]	= { 0, 1 };
+ static const u32 uart_mux_table[]	= { 0, 1, 2 };
+ static const u32 a73_clksel_mux_table[] = { 0, 1, 2 };
+ 
+-static struct hisi_mux_clock hi3559av100_mux_clks_crg[] __initdata = {
++static struct hisi_mux_clock hi3559av100_mux_clks_crg[] = {
+ 	{
+ 		HI3559AV100_FMC_MUX, "fmc_mux", fmc_mux_p, ARRAY_SIZE(fmc_mux_p),
+ 		CLK_SET_RATE_PARENT, 0x170, 2, 3, 0, fmc_mux_table,
+@@ -181,7 +181,7 @@ static struct hisi_mux_clock hi3559av100_mux_clks_crg[] __initdata = {
+ 	},
+ };
+ 
+-static struct hisi_gate_clock hi3559av100_gate_clks[] __initdata = {
++static struct hisi_gate_clock hi3559av100_gate_clks[] = {
+ 	{
+ 		HI3559AV100_FMC_CLK, "clk_fmc", "fmc_mux",
+ 		CLK_SET_RATE_PARENT, 0x170, 1, 0,
+@@ -336,7 +336,7 @@ static struct hisi_gate_clock hi3559av100_gate_clks[] __initdata = {
+ 	},
+ };
+ 
+-static struct hi3559av100_pll_clock hi3559av100_pll_clks[] __initdata = {
++static struct hi3559av100_pll_clock hi3559av100_pll_clks[] = {
+ 	{
+ 		HI3559AV100_APLL_CLK, "apll", NULL, 0x0, 0, 24, 24, 3, 28, 3,
+ 		0x4, 0, 12, 12, 6
+@@ -502,7 +502,7 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
+ 	}
+ }
+ 
+-static __init struct hisi_clock_data *hi3559av100_clk_register(
++static struct hisi_clock_data *hi3559av100_clk_register(
+ 	struct platform_device *pdev)
+ {
+ 	struct hisi_clock_data *clk_data;
+@@ -549,7 +549,7 @@ static __init struct hisi_clock_data *hi3559av100_clk_register(
+ 	return ERR_PTR(ret);
+ }
+ 
+-static __init void hi3559av100_clk_unregister(struct platform_device *pdev)
++static void hi3559av100_clk_unregister(struct platform_device *pdev)
+ {
+ 	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
+ 
+@@ -568,8 +568,7 @@ static const struct hisi_crg_funcs hi3559av100_crg_funcs = {
+ 	.unregister_clks = hi3559av100_clk_unregister,
+ };
+ 
+-static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[]
+-	__initdata = {
++static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[] = {
+ 	{ HI3559AV100_SHUB_SOURCE_SOC_24M, "clk_source_24M", NULL, 0, 24000000UL, },
+ 	{ HI3559AV100_SHUB_SOURCE_SOC_200M, "clk_source_200M", NULL, 0, 200000000UL, },
+ 	{ HI3559AV100_SHUB_SOURCE_SOC_300M, "clk_source_300M", NULL, 0, 300000000UL, },
+@@ -587,16 +586,16 @@ static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[]
+ 
+ /* shub mux clk */
+ static u32 shub_source_clk_mux_table[] = {0, 1, 2, 3};
+-static const char *shub_source_clk_mux_p[] __initconst = {
++static const char *shub_source_clk_mux_p[] = {
+ 	"clk_source_24M", "clk_source_200M", "clk_source_300M", "clk_source_PLL"
+ };
+ 
+ static u32 shub_uart_source_clk_mux_table[] = {0, 1, 2, 3};
+-static const char *shub_uart_source_clk_mux_p[] __initconst = {
++static const char *shub_uart_source_clk_mux_p[] = {
+ 	"clk_uart_32K", "clk_uart_div_clk", "clk_uart_div_clk", "clk_source_24M"
+ };
+ 
+-static struct hisi_mux_clock hi3559av100_shub_mux_clks[] __initdata = {
++static struct hisi_mux_clock hi3559av100_shub_mux_clks[] = {
+ 	{
+ 		HI3559AV100_SHUB_SOURCE_CLK, "shub_clk", shub_source_clk_mux_p,
+ 		ARRAY_SIZE(shub_source_clk_mux_p),
+@@ -615,7 +614,7 @@ static struct hisi_mux_clock hi3559av100_shub_mux_clks[] __initdata = {
+ static struct clk_div_table shub_spi_clk_table[] = {{0, 8}, {1, 4}, {2, 2}};
+ static struct clk_div_table shub_uart_div_clk_table[] = {{1, 8}, {2, 4}};
+ 
+-static struct hisi_divider_clock hi3559av100_shub_div_clks[] __initdata = {
++static struct hisi_divider_clock hi3559av100_shub_div_clks[] = {
+ 	{ HI3559AV100_SHUB_SPI_SOURCE_CLK, "clk_spi_clk", "shub_clk", 0, 0x20, 24, 2,
+ 	  CLK_DIVIDER_ALLOW_ZERO, shub_spi_clk_table,
+ 	},
+@@ -625,7 +624,7 @@ static struct hisi_divider_clock hi3559av100_shub_div_clks[] __initdata = {
+ };
+ 
+ /* shub gate clk */
+-static struct hisi_gate_clock hi3559av100_shub_gate_clks[] __initdata = {
++static struct hisi_gate_clock hi3559av100_shub_gate_clks[] = {
+ 	{
+ 		HI3559AV100_SHUB_SPI0_CLK, "clk_shub_spi0", "clk_spi_clk",
+ 		0, 0x20, 1, 0,
+@@ -697,7 +696,7 @@ static int hi3559av100_shub_default_clk_set(void)
+ 	return 0;
+ }
+ 
+-static __init struct hisi_clock_data *hi3559av100_shub_clk_register(
++static struct hisi_clock_data *hi3559av100_shub_clk_register(
+ 	struct platform_device *pdev)
+ {
+ 	struct hisi_clock_data *clk_data = NULL;
+@@ -751,7 +750,7 @@ static __init struct hisi_clock_data *hi3559av100_shub_clk_register(
+ 	return ERR_PTR(ret);
+ }
+ 
+-static __init void hi3559av100_shub_clk_unregister(struct platform_device *pdev)
++static void hi3559av100_shub_clk_unregister(struct platform_device *pdev)
+ {
+ 	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
+ 
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
-introduces: 
-
---thread=mode|number_of_threads
-
-where mode defines cpu masks (cpu/numa/socket/etc)
-
-Then somewhere while discussing this patchset it was decided, for unification,
-that --thread should only define CPU/affinity masks or their aliases.
-I think Alexei or Jiri could clarify this more.
-
-> 
-> Have you done this way because its how VTune has evolved over the years
-> and now expects from 'perf record'?
-
-VTune uses only --thread=cpu or no threading.
-
-Regards,
-Alexey
-
-> 
-> - Arnaldo
->  
->> The specification value can be user defined list of masks. Masks
->> separated by colon define cpus to be monitored by one thread and
->> affinity mask of that thread is separated by slash. For example:
->> <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
->> specifies parallel threads layout that consists of two threads
->> with corresponding assigned cpus to be monitored.
->>
->> The specification value can be a string e.g. "cpu", "core" or
->> "socket" meaning creation of data streaming thread for every
->> cpu or core or socket to monitor distinct cpus or cpus grouped
->> by core or socket.
->>
->> The option provided with no or empty value defaults to per-cpu
->> parallel threads layout creating data streaming thread for every
->> cpu being monitored.
->>
->> Feature design and implementation are based on prototypes [1], [2].
->>
->> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
->> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->>
->> Suggested-by: Jiri Olsa <jolsa@kernel.org>
->> Suggested-by: Namhyung Kim <namhyung@kernel.org>
->> Acked-by: Andi Kleen <ak@linux.intel.com>
->> Acked-by: Namhyung Kim <namhyung@gmail.com>
->> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
->> ---
->>  tools/perf/builtin-record.c | 355 +++++++++++++++++++++++++++++++++++-
->>  tools/perf/util/record.h    |   1 +
->>  2 files changed, 354 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index 2ade17308467..8d452797d175 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -51,6 +51,7 @@
->>  #include "util/evlist-hybrid.h"
->>  #include "asm/bug.h"
->>  #include "perf.h"
->> +#include "cputopo.h"
->>  
->>  #include <errno.h>
->>  #include <inttypes.h>
->> @@ -122,6 +123,20 @@ static const char *thread_msg_tags[THREAD_MSG__MAX] = {
->>  	"UNDEFINED", "READY"
->>  };
->>  
->> +enum thread_spec {
->> +	THREAD_SPEC__UNDEFINED = 0,
->> +	THREAD_SPEC__CPU,
->> +	THREAD_SPEC__CORE,
->> +	THREAD_SPEC__SOCKET,
->> +	THREAD_SPEC__NUMA,
->> +	THREAD_SPEC__USER,
->> +	THREAD_SPEC__MAX,
->> +};
->> +
->> +static const char *thread_spec_tags[THREAD_SPEC__MAX] = {
->> +	"undefined", "cpu", "core", "socket", "numa", "user"
->> +};
->> +
->>  struct record {
->>  	struct perf_tool	tool;
->>  	struct record_opts	opts;
->> @@ -2723,6 +2738,70 @@ static void record__thread_mask_free(struct thread_mask *mask)
->>  	record__mmap_cpu_mask_free(&mask->affinity);
->>  }
->>  
->> +static int record__thread_mask_or(struct thread_mask *dest, struct thread_mask *src1,
->> +				   struct thread_mask *src2)
->> +{
->> +	if (src1->maps.nbits != src2->maps.nbits ||
->> +	    dest->maps.nbits != src1->maps.nbits ||
->> +	    src1->affinity.nbits != src2->affinity.nbits ||
->> +	    dest->affinity.nbits != src1->affinity.nbits)
->> +		return -EINVAL;
->> +
->> +	bitmap_or(dest->maps.bits, src1->maps.bits,
->> +		  src2->maps.bits, src1->maps.nbits);
->> +	bitmap_or(dest->affinity.bits, src1->affinity.bits,
->> +		  src2->affinity.bits, src1->affinity.nbits);
->> +
->> +	return 0;
->> +}
->> +
->> +static int record__thread_mask_intersects(struct thread_mask *mask_1, struct thread_mask *mask_2)
->> +{
->> +	int res1, res2;
->> +
->> +	if (mask_1->maps.nbits != mask_2->maps.nbits ||
->> +	    mask_1->affinity.nbits != mask_2->affinity.nbits)
->> +		return -EINVAL;
->> +
->> +	res1 = bitmap_intersects(mask_1->maps.bits, mask_2->maps.bits,
->> +				 mask_1->maps.nbits);
->> +	res2 = bitmap_intersects(mask_1->affinity.bits, mask_2->affinity.bits,
->> +				 mask_1->affinity.nbits);
->> +	if (res1 || res2)
->> +		return 1;
->> +
->> +	return 0;
->> +}
->> +
->> +static int record__parse_threads(const struct option *opt, const char *str, int unset)
->> +{
->> +	int s;
->> +	struct record_opts *opts = opt->value;
->> +
->> +	if (unset || !str || !strlen(str)) {
->> +		opts->threads_spec = THREAD_SPEC__CPU;
->> +	} else {
->> +		for (s = 1; s < THREAD_SPEC__MAX; s++) {
->> +			if (s == THREAD_SPEC__USER) {
->> +				opts->threads_user_spec = strdup(str);
->> +				opts->threads_spec = THREAD_SPEC__USER;
->> +				break;
->> +			}
->> +			if (!strncasecmp(str, thread_spec_tags[s], strlen(thread_spec_tags[s]))) {
->> +				opts->threads_spec = s;
->> +				break;
->> +			}
->> +		}
->> +	}
->> +
->> +	pr_debug("threads_spec: %s", thread_spec_tags[opts->threads_spec]);
->> +	if (opts->threads_spec == THREAD_SPEC__USER)
->> +		pr_debug("=[%s]", opts->threads_user_spec);
->> +	pr_debug("\n");
->> +
->> +	return 0;
->> +}
->> +
->>  static int parse_output_max_size(const struct option *opt,
->>  				 const char *str, int unset)
->>  {
->> @@ -3166,6 +3245,9 @@ static struct option __record_options[] = {
->>  		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
->>  		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
->>  		      parse_control_option),
->> +	OPT_CALLBACK_OPTARG(0, "threads", &record.opts, NULL, "spec",
->> +			    "write collected trace data into several data files using parallel threads",
->> +			    record__parse_threads),
->>  	OPT_END()
->>  };
->>  
->> @@ -3179,6 +3261,17 @@ static void record__mmap_cpu_mask_init(struct mmap_cpu_mask *mask, struct perf_c
->>  		set_bit(cpus->map[c], mask->bits);
->>  }
->>  
->> +static void record__mmap_cpu_mask_init_spec(struct mmap_cpu_mask *mask, char *mask_spec)
->> +{
->> +	struct perf_cpu_map *cpus;
->> +
->> +	cpus = perf_cpu_map__new(mask_spec);
->> +	if (cpus) {
->> +		record__mmap_cpu_mask_init(mask, cpus);
->> +		perf_cpu_map__put(cpus);
->> +	}
->> +}
->> +
->>  static int record__alloc_thread_masks(struct record *rec, int nr_threads, int nr_bits)
->>  {
->>  	int t, ret;
->> @@ -3198,6 +3291,235 @@ static int record__alloc_thread_masks(struct record *rec, int nr_threads, int nr
->>  
->>  	return 0;
->>  }
->> +
->> +static int record__init_thread_cpu_masks(struct record *rec, struct perf_cpu_map *cpus)
->> +{
->> +	int t, ret, nr_cpus = perf_cpu_map__nr(cpus);
->> +
->> +	ret = record__alloc_thread_masks(rec, nr_cpus, cpu__max_cpu());
->> +	if (ret)
->> +		return ret;
->> +
->> +	rec->nr_threads = nr_cpus;
->> +	pr_debug("threads: nr_threads=%d\n", rec->nr_threads);
->> +
->> +	for (t = 0; t < rec->nr_threads; t++) {
->> +		set_bit(cpus->map[t], rec->thread_masks[t].maps.bits);
->> +		pr_debug("thread_masks[%d]: maps mask [%d]\n", t, cpus->map[t]);
->> +		set_bit(cpus->map[t], rec->thread_masks[t].affinity.bits);
->> +		pr_debug("thread_masks[%d]: affinity mask [%d]\n", t, cpus->map[t]);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int record__init_thread_masks_spec(struct record *rec, struct perf_cpu_map *cpus,
->> +					  char **maps_spec, char **affinity_spec, u32 nr_spec)
->> +{
->> +	u32 s;
->> +	int ret = 0, nr_threads = 0;
->> +	struct mmap_cpu_mask cpus_mask;
->> +	struct thread_mask thread_mask, full_mask, *prev_masks;
->> +
->> +	ret = record__mmap_cpu_mask_alloc(&cpus_mask, cpu__max_cpu());
->> +	if (ret)
->> +		goto out;
->> +	record__mmap_cpu_mask_init(&cpus_mask, cpus);
->> +	ret = record__thread_mask_alloc(&thread_mask, cpu__max_cpu());
->> +	if (ret)
->> +		goto out_free_cpu_mask;
->> +	ret = record__thread_mask_alloc(&full_mask, cpu__max_cpu());
->> +	if (ret)
->> +		goto out_free_thread_mask;
->> +	record__thread_mask_clear(&full_mask);
->> +
->> +	for (s = 0; s < nr_spec; s++) {
->> +		record__thread_mask_clear(&thread_mask);
->> +
->> +		record__mmap_cpu_mask_init_spec(&thread_mask.maps, maps_spec[s]);
->> +		record__mmap_cpu_mask_init_spec(&thread_mask.affinity, affinity_spec[s]);
->> +
->> +		if (!bitmap_and(thread_mask.maps.bits, thread_mask.maps.bits,
->> +				cpus_mask.bits, thread_mask.maps.nbits) ||
->> +		    !bitmap_and(thread_mask.affinity.bits, thread_mask.affinity.bits,
->> +				cpus_mask.bits, thread_mask.affinity.nbits))
->> +			continue;
->> +
->> +		ret = record__thread_mask_intersects(&thread_mask, &full_mask);
->> +		if (ret)
->> +			goto out_free_full_mask;
->> +		record__thread_mask_or(&full_mask, &full_mask, &thread_mask);
->> +
->> +		prev_masks = rec->thread_masks;
->> +		rec->thread_masks = realloc(rec->thread_masks,
->> +					    (nr_threads + 1) * sizeof(struct thread_mask));
->> +		if (!rec->thread_masks) {
->> +			pr_err("Failed to allocate thread masks\n");
->> +			rec->thread_masks = prev_masks;
->> +			ret = -ENOMEM;
->> +			goto out_free_full_mask;
->> +		}
->> +		rec->thread_masks[nr_threads] = thread_mask;
->> +		if (verbose) {
->> +			pr_debug("thread_masks[%d]: addr=", nr_threads);
->> +			mmap_cpu_mask__scnprintf(&rec->thread_masks[nr_threads].maps, "maps");
->> +			pr_debug("thread_masks[%d]: addr=", nr_threads);
->> +			mmap_cpu_mask__scnprintf(&rec->thread_masks[nr_threads].affinity,
->> +						 "affinity");
->> +		}
->> +		nr_threads++;
->> +		ret = record__thread_mask_alloc(&thread_mask, cpu__max_cpu());
->> +		if (ret)
->> +			goto out_free_full_mask;
->> +	}
->> +
->> +	rec->nr_threads = nr_threads;
->> +	pr_debug("threads: nr_threads=%d\n", rec->nr_threads);
->> +
->> +	if (rec->nr_threads <= 0)
->> +		ret = -EINVAL;
->> +
->> +out_free_full_mask:
->> +	record__thread_mask_free(&full_mask);
->> +out_free_thread_mask:
->> +	record__thread_mask_free(&thread_mask);
->> +out_free_cpu_mask:
->> +	record__mmap_cpu_mask_free(&cpus_mask);
->> +out:
->> +	return ret;
->> +}
->> +
->> +static int record__init_thread_core_masks(struct record *rec, struct perf_cpu_map *cpus)
->> +{
->> +	int ret;
->> +	struct cpu_topology *topo;
->> +
->> +	topo = cpu_topology__new();
->> +	if (!topo)
->> +		return -EINVAL;
->> +
->> +	ret = record__init_thread_masks_spec(rec, cpus, topo->thread_siblings,
->> +					     topo->thread_siblings, topo->thread_sib);
->> +	cpu_topology__delete(topo);
->> +
->> +	return ret;
->> +}
->> +
->> +static int record__init_thread_socket_masks(struct record *rec, struct perf_cpu_map *cpus)
->> +{
->> +	int ret;
->> +	struct cpu_topology *topo;
->> +
->> +	topo = cpu_topology__new();
->> +	if (!topo)
->> +		return -EINVAL;
->> +
->> +	ret = record__init_thread_masks_spec(rec, cpus, topo->core_siblings,
->> +					     topo->core_siblings, topo->core_sib);
->> +	cpu_topology__delete(topo);
->> +
->> +	return ret;
->> +}
->> +
->> +static int record__init_thread_numa_masks(struct record *rec, struct perf_cpu_map *cpus)
->> +{
->> +	u32 s;
->> +	int ret;
->> +	char **spec;
->> +	struct numa_topology *topo;
->> +
->> +	topo = numa_topology__new();
->> +	if (!topo)
->> +		return -EINVAL;
->> +	spec = zalloc(topo->nr * sizeof(char *));
->> +	if (!spec) {
->> +		ret = -ENOMEM;
->> +		goto out_delete_topo;
->> +	}
->> +	for (s = 0; s < topo->nr; s++)
->> +		spec[s] = topo->nodes[s].cpus;
->> +
->> +	ret = record__init_thread_masks_spec(rec, cpus, spec, spec, topo->nr);
->> +
->> +	zfree(&spec);
->> +
->> +out_delete_topo:
->> +	numa_topology__delete(topo);
->> +
->> +	return ret;
->> +}
->> +
->> +static int record__init_thread_user_masks(struct record *rec, struct perf_cpu_map *cpus)
->> +{
->> +	int t, ret;
->> +	u32 s, nr_spec = 0;
->> +	char **maps_spec = NULL, **affinity_spec = NULL, **prev_spec;
->> +	char *spec, *spec_ptr, *user_spec, *mask, *mask_ptr;
->> +
->> +	for (t = 0, user_spec = (char *)rec->opts.threads_user_spec; ; t++, user_spec = NULL) {
->> +		spec = strtok_r(user_spec, ":", &spec_ptr);
->> +		if (spec == NULL)
->> +			break;
->> +		pr_debug(" spec[%d]: %s\n", t, spec);
->> +		mask = strtok_r(spec, "/", &mask_ptr);
->> +		if (mask == NULL)
->> +			break;
->> +		pr_debug("  maps mask: %s\n", mask);
->> +		prev_spec = maps_spec;
->> +		maps_spec = realloc(maps_spec, (nr_spec + 1) * sizeof(char *));
->> +		if (!maps_spec) {
->> +			pr_err("Failed to realloc maps_spec\n");
->> +			maps_spec = prev_spec;
->> +			ret = -ENOMEM;
->> +			goto out_free_all_specs;
->> +		}
->> +		maps_spec[nr_spec] = strdup(mask);
->> +		if (!maps_spec[nr_spec]) {
->> +			pr_err("Failed to alloc maps_spec[%d]\n", nr_spec);
->> +			ret = -ENOMEM;
->> +			goto out_free_all_specs;
->> +		}
->> +		mask = strtok_r(NULL, "/", &mask_ptr);
->> +		if (mask == NULL) {
->> +			free(maps_spec[nr_spec]);
->> +			ret = -EINVAL;
->> +			goto out_free_all_specs;
->> +		}
->> +		pr_debug("  affinity mask: %s\n", mask);
->> +		prev_spec = affinity_spec;
->> +		affinity_spec = realloc(affinity_spec, (nr_spec + 1) * sizeof(char *));
->> +		if (!affinity_spec) {
->> +			pr_err("Failed to realloc affinity_spec\n");
->> +			affinity_spec = prev_spec;
->> +			free(maps_spec[nr_spec]);
->> +			ret = -ENOMEM;
->> +			goto out_free_all_specs;
->> +		}
->> +		affinity_spec[nr_spec] = strdup(mask);
->> +		if (!affinity_spec[nr_spec]) {
->> +			pr_err("Failed to alloc affinity_spec[%d]\n", nr_spec);
->> +			free(maps_spec[nr_spec]);
->> +			ret = -ENOMEM;
->> +			goto out_free_all_specs;
->> +		}
->> +		nr_spec++;
->> +	}
->> +
->> +	ret = record__init_thread_masks_spec(rec, cpus, maps_spec, affinity_spec, nr_spec);
->> +
->> +out_free_all_specs:
->> +	for (s = 0; s < nr_spec; s++) {
->> +		if (maps_spec)
->> +			free(maps_spec[s]);
->> +		if (affinity_spec)
->> +			free(affinity_spec[s]);
->> +	}
->> +	free(affinity_spec);
->> +	free(maps_spec);
->> +
->> +	return ret;
->> +}
->> +
->>  static int record__init_thread_default_masks(struct record *rec, struct perf_cpu_map *cpus)
->>  {
->>  	int ret;
->> @@ -3215,9 +3537,33 @@ static int record__init_thread_default_masks(struct record *rec, struct perf_cpu
->>  
->>  static int record__init_thread_masks(struct record *rec)
->>  {
->> +	int ret = 0;
->>  	struct perf_cpu_map *cpus = rec->evlist->core.cpus;
->>  
->> -	return record__init_thread_default_masks(rec, cpus);
->> +	if (!record__threads_enabled(rec))
->> +		return record__init_thread_default_masks(rec, cpus);
->> +
->> +	switch (rec->opts.threads_spec) {
->> +	case THREAD_SPEC__CPU:
->> +		ret = record__init_thread_cpu_masks(rec, cpus);
->> +		break;
->> +	case THREAD_SPEC__CORE:
->> +		ret = record__init_thread_core_masks(rec, cpus);
->> +		break;
->> +	case THREAD_SPEC__SOCKET:
->> +		ret = record__init_thread_socket_masks(rec, cpus);
->> +		break;
->> +	case THREAD_SPEC__NUMA:
->> +		ret = record__init_thread_numa_masks(rec, cpus);
->> +		break;
->> +	case THREAD_SPEC__USER:
->> +		ret = record__init_thread_user_masks(rec, cpus);
->> +		break;
->> +	default:
->> +		break;
->> +	}
->> +
->> +	return ret;
->>  }
->>  
->>  static int record__fini_thread_masks(struct record *rec)
->> @@ -3474,7 +3820,12 @@ int cmd_record(int argc, const char **argv)
->>  
->>  	err = record__init_thread_masks(rec);
->>  	if (err) {
->> -		pr_err("record__init_thread_masks failed, error %d\n", err);
->> +		if (err > 0)
->> +			pr_err("ERROR: parallel data streaming masks (--threads) intersect\n");
->> +		else if (err == -EINVAL)
->> +			pr_err("ERROR: invalid parallel data streaming masks (--threads)\n");
->> +		else
->> +			pr_err("record__init_thread_masks failed, error %d\n", err);
->>  		goto out;
->>  	}
->>  
->> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
->> index 4d68b7e27272..3da156498f47 100644
->> --- a/tools/perf/util/record.h
->> +++ b/tools/perf/util/record.h
->> @@ -78,6 +78,7 @@ struct record_opts {
->>  	int	      ctl_fd_ack;
->>  	bool	      ctl_fd_close;
->>  	int	      threads_spec;
->> +	const char    *threads_user_spec;
->>  };
->>  
->>  extern const char * const *record_usage;
->> -- 
->> 2.19.0
->>
-> 
