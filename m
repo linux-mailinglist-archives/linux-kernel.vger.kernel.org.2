@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763323B8432
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762563B8438
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbhF3NxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S236438AbhF3Nxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235819AbhF3Nua (ORCPT
+        with ESMTP id S235844AbhF3Nud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:30 -0400
+        Wed, 30 Jun 2021 09:50:33 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F21FC0611BE;
-        Wed, 30 Jun 2021 06:47:47 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 13:47:45 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7222DC061756;
+        Wed, 30 Jun 2021 06:47:48 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 13:47:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060865;
+        s=2020; t=1625060866;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=6/XilzV6p0gMEJFeETRf5T2QNaNzjUe1w9yXU6zvEZM=;
-        b=ape68gY5EYiOgw4LhfxSjnFOSwjSGLSqHqrWqCQw8PkG3r7N6MZe51IA4ZTCpz3a5xkWcD
-        7hN1Djt7iDXrnFD+mAe1+2h+ucjN9f7S0HdSxZvbNRAk8kD56heJtwTHOYrX8hvMz+19N4
-        v+M0kD6e1pjZ+MdqP/vkc8XyP5s/SUZe0+CCPn2DK57nNoyTlwgZBq4Uq05pwurkZVkPIa
-        bUztGf//znA7jHorcS+6TlAnIBTqDXULVcUuKm/w8qDXG78AIYnSOD5KgmG47S9c9Qfxvi
-        GUndghWkZDSvVp3QpYNDJnBR1DcX7JUxIgC8FZ/0jCfY2eSAq2eW9/TtXGhZiw==
+        bh=9ZeyovyJ5IfmrY63bL6R4dx1hE1Qutd+yU2wKH9p7F4=;
+        b=Vu4Rnx59WDNoyjgImCiElUeRaPYM7OtF3GAkd2LmKnerashCqAnfImh8EXKWrP1SY6mnRE
+        qAiq9w54eTlMVXtU/EbTS8ysgaEhGsOLp2n6YRPQTZDf0/plRVe25u9bxLqKtdldGH4X8X
+        yU4+qOd0RfRTt7oR06hMGf7O1tbV4yYJpPLJZpVX47sOC8ll62wz2sEKevou8UJ1HG0wFa
+        pcUdEn+S1F+mAL+c6+92HjH45y1IuwA48ykScBsNspgVUomaP+tTKO1ZGx/XGuwUX2LKpw
+        TFJQJ3kc+ttNAm9++MAeYTMSXOHfkKtiCQYTYvOcYMdeBLUfCGuzR7IvvVq6fw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060865;
+        s=2020e; t=1625060866;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=6/XilzV6p0gMEJFeETRf5T2QNaNzjUe1w9yXU6zvEZM=;
-        b=ekZ0LoPXXHR1DddkjjByzjJpvN6oGsJ5s1nSyv7fFbC3LspZLY5VxBG2R0q+M451twzurU
-        W4LeClW8m5iOEJBA==
+        bh=9ZeyovyJ5IfmrY63bL6R4dx1hE1Qutd+yU2wKH9p7F4=;
+        b=wVJH0/8O1pioB/YhFB9YLm0sHGeMnfFfigH54a/q08zO8p+CVkLT3cNtifQ82u1ldhFFAy
+        BTFiWHEF1QnkOeDw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Make the build machine control N in "make -jN"
+Subject: [tip: core/rcu] torture: Abstract end-of-run summary
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162506086510.395.126275583220026646.tip-bot2@tip-bot2>
+Message-ID: <162506086614.395.15358870409611049988.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,41 +54,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     b09751d752fb0e8dce4062254da9f813dcb00de5
-Gitweb:        https://git.kernel.org/tip/b09751d752fb0e8dce4062254da9f813dcb00de5
+Commit-ID:     ee8fef9137e9e75a36342077a2414dbd86c703bf
+Gitweb:        https://git.kernel.org/tip/ee8fef9137e9e75a36342077a2414dbd86c703bf
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 18 Mar 2021 14:00:59 -07:00
+AuthorDate:    Wed, 17 Mar 2021 12:26:04 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 10 May 2021 16:05:06 -07:00
 
-torture:  Make the build machine control N in "make -jN"
+torture: Abstract end-of-run summary
 
-Given remote rcutorture runs, it is quite possible that the build system
-will have fewer CPUs than the system(s) running the actual test scenarios.
-In such cases, using the number of CPUs on the test systems can overload
-the build system, slowing down the build or, worse, OOMing the build
-system.  This commit therefore uses the build system's CPU count to set
-N in "make -jN", and by tradition sets "N" to double the CPU count.
+This commit abstractst the end-of-run summary from kvm-again.sh, and,
+while in the area, brings its format into line with that of kvm.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-build.sh | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-again.sh         | 11 +--
+ tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh | 40 +++++++-
+ 2 files changed, 43 insertions(+), 8 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-index 115e182..55f4fc1 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-@@ -40,8 +40,10 @@ if test $retval -gt 1
- then
- 	exit 2
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-again.sh b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+index b74bb43..d8c8483 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-again.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-again.sh
+@@ -143,6 +143,8 @@ then
+ 	usage
  fi
--ncpus=`cpus2use.sh`
--make -j$ncpus $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
-+
-+# Tell "make" to use double the number of real CPUs on the build system.
-+ncpus="`lscpu | grep '^CPU(' | awk '{ print $2 }'`"
-+make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
- retval=$?
- if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
+ rm -f "$rundir"/*/{console.log,console.log.diags,qemu_pid,qemu-retval,Warnings,kvm-test-1-run.sh.out,kvm-test-1-run-qemu.sh.out,vmlinux} "$rundir"/log
++touch "$rundir/log"
++echo $scriptname $args | tee -a "$rundir/log"
+ echo $oldrun > "$rundir/re-run"
+ if ! test -d "$rundir/../../bin"
  then
+@@ -178,12 +180,5 @@ then
+ 	echo ---- Dryrun complete, directory: $rundir | tee -a "$rundir/log"
+ else
+ 	( cd "$rundir"; sh $T/runbatches.sh )
+-	kcsan-collapse.sh "$rundir" | tee -a "$rundir/log"
+-	echo | tee -a "$rundir/log"
+-	echo ---- Results directory: $rundir | tee -a "$rundir/log"
+-	kvm-recheck.sh "$rundir" > $T/kvm-recheck.sh.out 2>&1
+-	ret=$?
+-	cat $T/kvm-recheck.sh.out | tee -a "$rundir/log"
+-	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a "$rundir/log"
+-	exit $ret
++	kvm-end-run-stats.sh "$rundir" "$starttime"
+ fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
+new file mode 100755
+index 0000000..e4a0077
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/kvm-end-run-stats.sh
+@@ -0,0 +1,40 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Check the status of the specified run.
++#
++# Usage: kvm-end-run-stats.sh /path/to/run starttime
++#
++# Copyright (C) 2021 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++# scriptname=$0
++# args="$*"
++rundir="$1"
++if ! test -d "$rundir"
++then
++	echo kvm-end-run-stats.sh: Specified run directory does not exist: $rundir
++	exit 1
++fi
++
++T=${TMPDIR-/tmp}/kvm-end-run-stats.sh.$$
++trap 'rm -rf $T' 0
++mkdir $T
++
++KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
++PATH=${KVM}/bin:$PATH; export PATH
++. functions.sh
++default_starttime="`get_starttime`"
++starttime="${2-default_starttime}"
++
++echo | tee -a "$rundir/log"
++echo | tee -a "$rundir/log"
++echo " --- `date` Test summary:" | tee -a "$rundir/log"
++echo Results directory: $rundir | tee -a "$rundir/log"
++kcsan-collapse.sh "$rundir" | tee -a "$rundir/log"
++kvm-recheck.sh "$rundir" > $T/kvm-recheck.sh.out 2>&1
++ret=$?
++cat $T/kvm-recheck.sh.out | tee -a "$rundir/log"
++echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a "$rundir/log"
++exit $ret
