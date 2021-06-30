@@ -2,117 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBF93B8555
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AD83B8557
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235767AbhF3Our (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:50:47 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48599 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235715AbhF3OuT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:50:19 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15UEld0I027764
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 10:47:40 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 8FD6615C3C8E; Wed, 30 Jun 2021 10:47:39 -0400 (EDT)
-Date:   Wed, 30 Jun 2021 10:47:39 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Daniel Walsh <dwalsh@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <YNyECw/1FzDCW3G8@mit.edu>
-References: <YNn4p+Zn444Sc4V+@work-vm>
- <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
- <YNrhQ9XfcHTtM6QA@work-vm>
- <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
- <20210629152007.GC5231@redhat.com>
- <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
- <20210629173530.GD5231@redhat.com>
- <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
- <YNvvLIv16jY8mfP8@mit.edu>
- <YNwmXOqT7LgbeVPn@work-vm>
+        id S235698AbhF3OvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:51:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:38124 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235777AbhF3Ouu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:50:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="206539565"
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="206539565"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 07:48:21 -0700
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="457264116"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.67]) ([10.249.227.67])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 07:48:17 -0700
+Subject: Re: [PATCH v7 07/20] perf record: Introduce data transferred and
+ compressed stats
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+ <138f94642ae93f526249f6320abdc41ab90b467b.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+ <565db357cfe61c4b350323968aee15bd477ef606.camel@gmail.com>
+ <b42361e7-ebe8-5f95-3e62-a31ed6b0be04@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <438e8335-c31d-5621-d066-5f03c0244499@linux.intel.com>
+Date:   Wed, 30 Jun 2021 17:48:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNwmXOqT7LgbeVPn@work-vm>
+In-Reply-To: <b42361e7-ebe8-5f95-3e62-a31ed6b0be04@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:07:56AM +0100, Dr. David Alan Gilbert wrote:
-> * Theodore Ts'o (tytso@mit.edu) wrote:
-> > On Tue, Jun 29, 2021 at 04:28:24PM -0400, Daniel Walsh wrote:
-> > > All this conversation is great, and I look forward to a better solution, but
-> > > if we go back to the patch, it was to fix an issue where the kernel is
-> > > requiring CAP_SYS_ADMIN for writing user Xattrs on link files and other
-> > > special files.
-> > > 
-> > > The documented reason for this is to prevent the users from using XATTRS to
-> > > avoid quota.
-> > 
-> > Huh?  Where is it so documented?
+
+
+On 30.06.2021 15:19, Bayduraev, Alexey V wrote:
 > 
-> man xattr(7):
->        The  file permission bits of regular files and directories are
->        interpreted differently from the file permission bits of special
->        files and symbolic links.  For regular files and directories the
->        file permission bits define access to the file's contents,
->        while for device special files they define access to the device
->        described by the special file.  The file permissions of symbolic
->        links are not used in access checks.
+> Hi,
+> 
+> On 30.06.2021 11:05, Riccardo Mancini wrote:
+>> Hi,
+>>
+>> On Tue, 2021-06-22 at 11:42 +0300, Alexey Bayduraev wrote:
+>>> Introduce bytes_transferred and bytes_compressed stats so they
+>>> would capture statistics for the related data buffer transfers.
+>>>
+>>> Acked-by: Andi Kleen <ak@linux.intel.com>
+>>> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+>>> ---
+>>>  tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
+>>>  tools/perf/util/mmap.h      |  3 ++
+>>>  2 files changed, 54 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>> index 38bb5afbb359..c9fd31211600 100644
+>>> --- a/tools/perf/builtin-record.c
+>>> +++ b/tools/perf/builtin-record.c
+>>> @@ -198,6 +198,11 @@ static int record__write(struct record *rec, struct mmap
+>>> *map __maybe_unused,
+>>>                 return -1;
+>>>         }
+>>>  
+>>> +       if (map && map->file) {
+>>> +               map->bytes_written += size;
+>>> +               return 0;
+>>> +       }
+>>> +
+>>>         rec->bytes_written += size;
+>>>  
+>>>         if (record__output_max_size_exceeded(rec) && !done) {
+>>
+>> This breaks the --max-size option in parallel trace mode.
+>> Maybe, we could change record__output_max_size_exceeded to check all
+>> thread_data->maps and sum up bytes_written. Concurrency should not be an issue
+>> since it's not required to stop at exactly the max-size (this is also the
+>> current behaviour).
+>> Otherwise, we could atomically increase an accumulator inside struct record
+>> (maybe rec->bytes_written could be reused, but I'm not sure if it's used by the
+>> main thread in the parallel mode), and check it for exceeded max size.
+> 
+> Thanks, currently threaded mode doesn't use rec->bytes_written and atomic64_t
+> framework is not available in kernel/tools.
+> I think better is to calculate sum of map->bytes_written like for threads 
+> statistics.
 
-All of this is true...
+Just a little clarification: threaded mode uses rec->bytes_written for user
+records (perf.data/data), whereas maps->bytes_written for per-cpu records
+(perf.data/data.CPU).
+Thus, the total amount of data transferred is their sum.
+ 
+Regards,
+Alexey
 
->         *** These differences would
->        allow users to consume filesystem resources in a way not
->        controllable by disk quotas for group or world writable special
->        files and directories.****
-
-Anyone with group write access to a regular file can append to the
-file, and the blocks written will be charged the owner of the file.
-So it's perfectly "controllable" by the quota system; if you have
-group write access to a file, you can charge against the user's quota.
-This is Working As Intended.
-
-And the creation of device special files take the umask into account,
-just like regular files, so if you have a umask that allows newly
-created files to be group writeable, the same issue would occur for
-regular files as device files.  Given that most users have a umask of
-0077 or 0022, this is generally Not A Problem.
-
-I think I see the issue which drove the above text, though, which is
-that Linux's syscall(2) is creating symlinks which do not take umask
-into account; that is, the permissions are always mode ST_IFLNK|0777.
-
-Hence, it might be that the right answer is to remove this fairly
-arbitrary restriction entirely, and change symlink(2) so that it
-creates files which respects the umask.  Posix and SUS doesn't specify
-what the permissions are that are used, and historically (before the
-advent of xattrs) I suspect since it didn't matter, no one cared about
-whether or not umask was applied.
-
-Some people might object to such a change arguing that with
-pre-existing file systems where there are symlinks which
-world-writeable, this might cause people to be able to charge up to
-32k (or whatever the maximum size of the xattr supported by the file
-system) for each symlink.  However, (a) very few people actually use
-quotas, and this would only be an issue for those users, and (b) the
-amount of quota "abuse" that could be carried out this way is small
-enough that I'm not sure it matters.
-
-     	    	  	      	  - Ted
+> 
+> Regards,
+> Alexey
+> 
+>>
+>> Thanks,
+>> Riccardo
+>>
+>>
+>>> @@ -215,8 +220,8 @@ static int record__write(struct record *rec, struct mmap
+>>> *map __maybe_unused,
+>>>  
+>>>  static int record__aio_enabled(struct record *rec);
+>>>  static int record__comp_enabled(struct record *rec);
+>>> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
+>>> dst_size,
+>>> -                           void *src, size_t src_size);
+>>> +static size_t zstd_compress(struct zstd_data *data,
+>>> +                           void *dst, size_t dst_size, void *src, size_t
+>>> src_size);
+>>>  
+>>>  #ifdef HAVE_AIO_SUPPORT
+>>>  static int record__aio_write(struct aiocb *cblock, int trace_fd,
+>>> @@ -350,9 +355,13 @@ static int record__aio_pushfn(struct mmap *map, void *to,
+>>> void *buf, size_t size
+>>>          */
+>>>  
+>>>         if (record__comp_enabled(aio->rec)) {
+>>> -               size = zstd_compress(aio->rec->session, aio->data + aio->size,
+>>> -                                    mmap__mmap_len(map) - aio->size,
+>>> +               struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
+>>> +
+>>> +               aio->rec->session->bytes_transferred += size;
+>>> +               size = zstd_compress(zstd_data,
+>>> +                                    aio->data + aio->size,
+>>> mmap__mmap_len(map) - aio->size,
+>>>                                      buf, size);
+>>> +               aio->rec->session->bytes_compressed += size;
+>>>         } else {
+>>>                 memcpy(aio->data + aio->size, buf, size);
+>>>         }
+>>> @@ -577,8 +586,22 @@ static int record__pushfn(struct mmap *map, void *to,
+>>> void *bf, size_t size)
+>>>         struct record *rec = to;
+>>>  
+>>>         if (record__comp_enabled(rec)) {
+>>> -               size = zstd_compress(rec->session, map->data,
+>>> mmap__mmap_len(map), bf, size);
+>>> +               struct zstd_data *zstd_data = &rec->session->zstd_data;
+>>> +
+>>> +               if (map->file) {
+>>> +                       zstd_data = &map->zstd_data;
+>>> +                       map->bytes_transferred += size;
+>>> +               } else {
+>>> +                       rec->session->bytes_transferred += size;
+>>> +               }
+>>> +
+>>> +               size = zstd_compress(zstd_data, map->data,
+>>> mmap__mmap_len(map), bf, size);
+>>>                 bf   = map->data;
+>>> +
+>>> +               if (map->file)
+>>> +                       map->bytes_compressed += size;
+>>> +               else
+>>> +                       rec->session->bytes_compressed += size;
+>>>         }
+>>>  
+>>>         thread->samples++;
+>>> @@ -1311,18 +1334,15 @@ static size_t process_comp_header(void *record, size_t
+>>> increment)
+>>>         return size;
+>>>  }
+>>>  
+>>> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
+>>> dst_size,
+>>> +static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t
+>>> dst_size,
+>>>                             void *src, size_t src_size)
+>>>  {
+>>>         size_t compressed;
+>>>         size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct
+>>> perf_record_compressed) - 1;
+>>>  
+>>> -       compressed = zstd_compress_stream_to_records(&session->zstd_data, dst,
+>>> dst_size, src, src_size,
+>>> +       compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size,
+>>> src, src_size,
+>>>                                                      max_record_size,
+>>> process_comp_header);
+>>>  
+>>> -       session->bytes_transferred += src_size;
+>>> -       session->bytes_compressed  += compressed;
+>>> -
+>>>         return compressed;
+>>>  }
+>>>  
+>>> @@ -2006,8 +2026,10 @@ static int record__start_threads(struct record *rec)
+>>>  
+>>>  static int record__stop_threads(struct record *rec, unsigned long *waking)
+>>>  {
+>>> -       int t;
+>>> +       int t, tm;
+>>> +       struct mmap *map, *overwrite_map;
+>>>         struct thread_data *thread_data = rec->thread_data;
+>>> +       u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
+>>>  
+>>>         for (t = 1; t < rec->nr_threads; t++)
+>>>                 record__terminate_thread(&thread_data[t]);
+>>> @@ -2015,9 +2037,25 @@ static int record__stop_threads(struct record *rec,
+>>> unsigned long *waking)
+>>>         for (t = 0; t < rec->nr_threads; t++) {
+>>>                 rec->samples += thread_data[t].samples;
+>>>                 *waking += thread_data[t].waking;
+>>> -               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
+>>> trasferred=%ld, compressed=%ld\n",
+>>> +               for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
+>>> +                       if (thread_data[t].maps) {
+>>> +                               map = thread_data[t].maps[tm];
+>>> +                               bytes_transferred += map->bytes_transferred;
+>>> +                               bytes_compressed += map->bytes_compressed;
+>>> +                               bytes_written += map->bytes_written;
+>>> +                       }
+>>> +                       if (thread_data[t].overwrite_maps) {
+>>> +                               overwrite_map =
+>>> thread_data[t].overwrite_maps[tm];
+>>> +                               bytes_transferred += overwrite_map-
+>>>> bytes_transferred;
+>>> +                               bytes_compressed += overwrite_map-
+>>>> bytes_compressed;
+>>> +                               bytes_written += overwrite_map->bytes_written;
+>>> +                       }
+>>> +               }
+>>> +               rec->session->bytes_transferred += bytes_transferred;
+>>> +               rec->session->bytes_compressed += bytes_compressed;
+>>> +               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
+>>> trasferred=%ld, compressed=%ld, written=%ld\n",
+>>>                          thread_data[t].tid, thread_data[t].samples,
+>>> thread_data[t].waking,
+>>> -                        rec->session->bytes_transferred, rec->session-
+>>>> bytes_compressed);
+>>> +                        bytes_transferred, bytes_compressed, bytes_written);
+>>>         }
+>>>  
+>>>         return 0;
+>>> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
+>>> index c4aed6e89549..c04ca4b5adf5 100644
+>>> --- a/tools/perf/util/mmap.h
+>>> +++ b/tools/perf/util/mmap.h
+>>> @@ -46,6 +46,9 @@ struct mmap {
+>>>         int             comp_level;
+>>>         struct perf_data_file *file;
+>>>         struct zstd_data      zstd_data;
+>>> +       u64                   bytes_transferred;
+>>> +       u64                   bytes_compressed;
+>>> +       u64                   bytes_written;
+>>>  };
+>>>  
+>>>  struct mmap_params {
+>>
+>>
