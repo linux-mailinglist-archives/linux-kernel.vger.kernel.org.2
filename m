@@ -2,169 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234553B8518
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BB93B851B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhF3Ofj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:35:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4973 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234913AbhF3Ofi (ORCPT
+        id S235297AbhF3Ogo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:36:44 -0400
+Received: from m15112.mail.126.com ([220.181.15.112]:50519 "EHLO
+        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234882AbhF3Ogm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:35:38 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UE4x3P110700;
-        Wed, 30 Jun 2021 10:33:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=shlLki/JXMN08E/puCPM+jYyshjdIkAtJt2x3bMGP5c=;
- b=jQ3PILjXwc8jc6Y6Zwbo1JrVsEQuph9DU/s1KGK8xECJ5NT2Fu8/EIejih4vXQXRQiw/
- 9C65AXELKNl8WCqWhHfy/O9nCdpGV2pNNGfLF7lc4fPUJ07blJZmzKyJCqTDncpUQsmc
- M5P0SXSZhTfJedt5+Lm74sw6g6TeID7yKasqYXjjN5FFwSimZ6x8HVvnt0lk+g6zj2BK
- sSfre02c3uAp5r3KxoYUBgUHpF+62m6Q/8Z46pAzC7FG/dFIQvSVnQWhI7DrgWH3goMl
- m7CnQWr0gG/uKlSH2wQ0wbxjPmOJMemlJ0pv7N/1gHnNznEB019WMvftvQDPELhyc2sH HA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gt2g0wc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 10:33:03 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15UE6VLf120956;
-        Wed, 30 Jun 2021 10:32:17 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gt2g0ves-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 10:32:17 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15UELFbO022910;
-        Wed, 30 Jun 2021 14:31:24 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02wdc.us.ibm.com with ESMTP id 39duvcxyfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 14:31:24 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15UEVNAf29163818
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 14:31:23 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72774B2F97;
-        Wed, 30 Jun 2021 14:31:23 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04238B2F96;
-        Wed, 30 Jun 2021 14:31:22 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.148.193])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Jun 2021 14:31:22 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: do not use open locks during
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210625220758.80365-1-akrowiak@linux.ibm.com>
- <20210628222923.21a257c8.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <25edecce-0795-3b00-a155-bfcc8499f1be@linux.ibm.com>
-Date:   Wed, 30 Jun 2021 10:31:22 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210628222923.21a257c8.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: p6aJyITZNgYWRsKEIZUESDhvQDuZ3zMz
-X-Proofpoint-ORIG-GUID: xSyDolnr2m0E-2cVJHlZZsfBlxf_H_AZ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-30_06:2021-06-29,2021-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 suspectscore=0
- impostorscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106300084
+        Wed, 30 Jun 2021 10:36:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=yYZx7OJCN/9Q00hcQp
+        F22VIKH/8bsew3VKwL0pMebUs=; b=j4HcDOFS4qudeFtIG63tbPCVso/nQ+jv0s
+        jwOr+0qsLh3PgshpNUv0ULGkbcHjZyaj8AuNAaSDVAdD/EOslPd3Vpeoe0AWof5z
+        nh/6hDDESwT6tq63/VPTEX+fBWupBySpwiQODe6ZYbvGvWC4F6/lt70+8yvjvFHf
+        y4BAoGFaU=
+Received: from 192.168.137.133 (unknown [112.10.75.196])
+        by smtp2 (Coremail) with SMTP id DMmowAAnFKLdgNxg3RjqCg--.15597S3;
+        Wed, 30 Jun 2021 22:34:07 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     damien.lemoal@wdc.com, naohiro.aota@wdc.com, jth@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH] zonefs: remove redundant null bio check
+Date:   Wed, 30 Jun 2021 10:33:36 -0400
+Message-Id: <1625063616-8467-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DMmowAAnFKLdgNxg3RjqCg--.15597S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWruF18tw4DtFW3ury7uF43Awb_yoW3Wwc_J3
+        yIqa97WrWUJrnIk3y2g3yFvryF93WY93WUWF1Fy3W3XF4Dtws5Cw1qvw1fZw15Za1SvFZ8
+        Ja10grW29r40gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0wNVDUUUUU==
+X-Originating-IP: [112.10.75.196]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5h-BpFpEBONwPgAAsr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
+bio_alloc() with __GFP_DIRECT_RECLAIM, which is included in
+GFP_NOFS, never fails, see comments in bio_alloc_bioset().
 
-On 6/28/21 4:29 PM, Halil Pasic wrote:
-> On Fri, 25 Jun 2021 18:07:58 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
-> What is a suitable base for this patch. I've tried the usual suspects,
-> but none of them worked.
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+---
+ fs/zonefs/super.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-I discovered what the problem is here. The patch is based on our
-master branch along with the two pre-requisite patches that were
-recently reviewed and are currently being merged. The two patches
-of which I speak are:
-* [PATCH v6 1/2] s390/vfio-ap: clean up mdev resources when remove 
-callback invoked
-    Message ID: <20210621155714.1198545-2-akrowiak@linux.ibm.com>
-
-* [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception handler 
-function pointer
-    <20210621155714.1198545-3-akrowiak@linux.ibm.com>
-
-I probably should have included those along with this one.
-
->
->> The fix to resolve a lockdep splat while handling the
->> VFIO_GROUP_NOTIFY_SET_KVM event introduced a kvm_busy flag indicating that
->> the vfio_ap device driver is busy setting or unsetting the KVM pointer.
->> A wait queue was employed to allow functions requiring access to the KVM
->> pointer to wait for the kvm_busy flag to be cleared. For the duration of
->> the wait period, the mdev lock was unlocked then acquired again after the
->> kvm_busy flag was cleared. This got rid of the lockdep report, but didn't
->> really resolve the problem.
-> Can you please elaborate on the last point. You mean that we can have
-> circular locking even after 0cc00c8d4050, but instead of getting stuck in
-> on a lock we will get stuck on wait_event_cmd()? If that is it, please
-> state it clearly in the description, and if you can to it in the short
-> description.
-
-This patch was in response to the following review comments made by Jason
-Gunthorpe:
-
-* Message ID: <20210525162927.GC1002214@nvidia.com>
-    "... the kvm_busy should be replaced by a proper rwsem,
-     don't try to open code locks like that - it just defeats lockdep
-     analysis".
-
-* Message ID: <20210527112433.GX1002214@nvidia.com>
-    "Usually when people start open coding locks it is often
-    because lockdep complained. Open coding a lock makes
-    lockdep stop because the lockdep code
-    is removed, but it doesn't fix anything. The kvm_busy
-    should be replaced by a proper rwsem, don't try to
-    open code locks like that - it just defeats lockdep
-    analysis."
-
-I will paraphrase and include the information from Jason's
-comments in the description.
-
->> This patch removes the the kvm_busy flag and wait queue as they are not
->> necessary to resolve the lockdep splat problem. The wait queue was
->> introduced to prevent changes to the matrix used to update the guest's
->> AP configuration. The idea was that whenever an adapter, domain or control
->> domain was being assigned to or unassigned from the matrix, the function
->> would wait until the group notifier function was no longer busy with the
->> KVM pointer.
->>
->> The thing is, the KVM pointer value (matrix_mdev->kvm) is always set and
->> cleared while holding the matrix_dev->lock mutex. The assignment and
->> unassignment interfaces also lock the matrix_dev->lock mutex prior to
->> checking whether the matrix_mdev->kvm pointer is set and if so, returns
->> the -EBUSY error from the function. Consequently, there is no chance for
->> an update to the matrix to occur while the guest's AP configuration is
->> being updated.
->>
->> Fixes: 0cc00c8d4050 ("s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+index cd145d3..d6d08da 100644
+--- a/fs/zonefs/super.c
++++ b/fs/zonefs/super.c
+@@ -705,9 +705,6 @@ static ssize_t zonefs_file_dio_append(struct kiocb *iocb, struct iov_iter *from)
+ 		return 0;
+ 
+ 	bio = bio_alloc(GFP_NOFS, nr_pages);
+-	if (!bio)
+-		return -ENOMEM;
+-
+ 	bio_set_dev(bio, bdev);
+ 	bio->bi_iter.bi_sector = zi->i_zsector;
+ 	bio->bi_write_hint = iocb->ki_hint;
+-- 
+1.8.3.1
 
