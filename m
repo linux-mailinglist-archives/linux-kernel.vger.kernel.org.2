@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A173B8470
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E20B3B8475
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbhF3N4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:56:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36743 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235497AbhF3NwT (ORCPT
+        id S236126AbhF3N41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:56:27 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59022 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236109AbhF3Nwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:52:19 -0400
-X-UUID: e7d4bf8d56984e219f26e258a12eef49-20210630
-X-UUID: e7d4bf8d56984e219f26e258a12eef49-20210630
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <yee.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1842347633; Wed, 30 Jun 2021 21:49:47 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 21:49:45 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 21:49:45 +0800
-From:   <yee.lee@mediatek.com>
-To:     <andreyknvl@gmail.com>
-CC:     <wsd_upstream@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:KASAN" <kasan-dev@googlegroups.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v3 1/1] kasan: Add memzero init for unaligned size under SLUB debug
-Date:   Wed, 30 Jun 2021 21:49:40 +0800
-Message-ID: <20210630134943.20781-2-yee.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210630134943.20781-1-yee.lee@mediatek.com>
-References: <20210630134943.20781-1-yee.lee@mediatek.com>
+        Wed, 30 Jun 2021 09:52:51 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UDfXDh020892;
+        Wed, 30 Jun 2021 13:50:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=gxvmoy9Dm0QHZAcllLD8c4qXIakvoZbI9zBILnD+bQ8=;
+ b=dnZqc6Id2cZlUwwfSn8igWkZqYpITmLpvZWecXdIueSN+yvdN5z/Jf29+Bx/LIhvz3VM
+ 13hHTJvn7+O1K48sLkYzTnm26BByhLl21fRwF7OAFt2KnWqvLSlPUNfF1e0cByAQjEWz
+ N40lZW03bOdyUQgvnsy5OlxzuL9/mylThedWF4KVE79r6saMBkwPqpIgF1Tu24lIHSJl
+ xqWAoPyGqwsxs6n2IogRcQs5gHik7wX+2vlKGsPurdngHM+BZfAAsiprcebDI0qZUniM
+ 8m8ZdFCbDpr1ze9IncrPY97NiG8+Xiy0M/tQuM6jINLrLbsD7b49TBh498r8Q/ehFBo/ rw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39gha4924c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:50:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15UDo4K8008838;
+        Wed, 30 Jun 2021 13:50:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 39ee0x9ygt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:50:13 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15UDo7Pk009175;
+        Wed, 30 Jun 2021 13:50:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 39ee0x9y42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:50:06 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 15UDnph9006288;
+        Wed, 30 Jun 2021 13:49:52 GMT
+Received: from mwanda (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Jun 2021 06:49:51 -0700
+Date:   Wed, 30 Jun 2021 16:49:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Liam Beguin <lvb@xiphos.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] clk: lmk04832: fix checks for allocation failure
+Message-ID: <YNx2dyvB6MkVlsrl@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: 7J7-hZDfLzB_7yS3cx_hlf0_RpupVvCF
+X-Proofpoint-GUID: 7J7-hZDfLzB_7yS3cx_hlf0_RpupVvCF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yee Lee <yee.lee@mediatek.com>
+The devm_kcalloc() function returns NULL on error, it never returns
+error pointers so these conditions need to be fixed.
 
-Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
-the redzone of object with unaligned size.
-
-An additional memzero_explicit() path is added to replacing init by
-hwtag instruction for those unaligned size at SLUB debug mode.
-
-The penalty is acceptable since they are only enabled in debug mode,
-not production builds. A block of comment is added for explanation.
-
-Signed-off-by: Yee Lee <yee.lee@mediatek.com>
-Suggested-by: Marco Elver <elver@google.com>
-Suggested-by: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 3bc61cfd6f4a ("clk: add support for the lmk04832")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- mm/kasan/kasan.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/clk/clk-lmk04832.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 8f450bc28045..6f698f13dbe6 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -387,6 +387,16 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
+diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
+index 0cd76e626c3d..66ad5cbe7029 100644
+--- a/drivers/clk/clk-lmk04832.c
++++ b/drivers/clk/clk-lmk04832.c
+@@ -1425,23 +1425,23 @@ static int lmk04832_probe(struct spi_device *spi)
  
- 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
- 		return;
-+	/*
-+	 * Explicitly initialize the memory with the precise object size
-+	 * to avoid overwriting the SLAB redzone. This disables initialization
-+	 * in the arch code and may thus lead to performance penalty.
-+	 * The penalty is accepted since SLAB redzones aren't enabled in production builds.
-+	 */
-+	if (IS_ENABLED(CONFIG_SLUB_DEBUG) && init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
-+		init = false;
-+		memzero_explicit((void *)addr, size);
-+	}
- 	size = round_up(size, KASAN_GRANULE_SIZE);
+ 	lmk->dclk = devm_kcalloc(lmk->dev, info->num_channels >> 1,
+ 				 sizeof(struct lmk_dclk), GFP_KERNEL);
+-	if (IS_ERR(lmk->dclk)) {
+-		ret = PTR_ERR(lmk->dclk);
++	if (!lmk->dclk) {
++		ret = -ENOMEM;
+ 		goto err_disable_oscin;
+ 	}
  
- 	hw_set_mem_tag_range((void *)addr, size, tag, init);
+ 	lmk->clkout = devm_kcalloc(lmk->dev, info->num_channels,
+ 				   sizeof(*lmk->clkout), GFP_KERNEL);
+-	if (IS_ERR(lmk->clkout)) {
+-		ret = PTR_ERR(lmk->clkout);
++	if (!lmk->clkout) {
++		ret = -ENOMEM;
+ 		goto err_disable_oscin;
+ 	}
+ 
+ 	lmk->clk_data = devm_kzalloc(lmk->dev, struct_size(lmk->clk_data, hws,
+ 							   info->num_channels),
+ 				     GFP_KERNEL);
+-	if (IS_ERR(lmk->clk_data)) {
+-		ret = PTR_ERR(lmk->clk_data);
++	if (!lmk->clk_data) {
++		ret = -ENOMEM;
+ 		goto err_disable_oscin;
+ 	}
+ 
 -- 
-2.18.0
+2.30.2
 
