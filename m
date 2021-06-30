@@ -2,176 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4286B3B86BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359B73B86C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236087AbhF3QFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:05:36 -0400
-Received: from mail-eopbgr670132.outbound.protection.outlook.com ([40.107.67.132]:8928
-        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235822AbhF3QFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:05:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oS9YRLzLx8tsQ73ajcyc0DbDDbaZ6X2aj8u7isjxi9ijj6S6FtY8CTrO1bRqSXziYvEsBTr3sNYkFq0sL6j95ZZhCekm1QYdUqrjUO3qkdSw++3WOtxK+RRKbn7dPuQdTe7k78t+OEfRJvDf23K1QGKEDXyb00nGxb12qt5F4Nw1w39VaTqfSd/W8iq/In1y/qkjtuNg4OAjtEMvTqtVpEfZeW0tyM4ksG2BTgJi+1T6j0rBS4NsFY2VmXR+kY0TYcoKJ+fKWr4BOM77QvhrhKDCdPkEh2ZGkaYHQ3EG9F9c+W9uq2JfhJWJqJLrYxOuxVzkWO1Sw+I2WFroAoBWkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tid2M+HoBue2PXAmwcldf1YDuPrKRsEdw5UScPX1dAM=;
- b=dfWzdoDBp6dJZ7cgEEcDKWLqmq71EKqO7ChJPIEFjMAObg7rUxewLrw8NHCLzynpG7oqaPAE9OSp29us1k+3EoBboNuq90ZEdYDo0pOStLicvlh11+4cKQ0ZZhuVWObmSEwpzlg+IE9YjZtLc0WtwxMi64rQ4YkmWX5Qgx1FUimega5TuaNkJUh1Tgv5P5XAo4lAyRqNAcN01ndEBzetxqLFPZgOTqri/g91NLp1huZ9WP/JaBVL8vxBiTzqQ9hdi0cnwlrgEYNEi3eS/MitOJXiqIbqjDvU2bwM9eXfj5ohDkJsR/K998dDqVvSwMiyfFR/HIHs4BAcJxsz+QId1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xiphos.com; dmarc=pass action=none header.from=xiphos.com;
- dkim=pass header.d=xiphos.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xiphos.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tid2M+HoBue2PXAmwcldf1YDuPrKRsEdw5UScPX1dAM=;
- b=Kml5GfPXYPMd4PV2JNRRBJSC22VNV8nWPDldWVTxW2G22cM/jyJZhE5vwtHD1K0C4M/hlZfE/Jy8/6fXGm1DzhY0s4GW2I0deVMc00Jq/3Q1I9JobFLfHEsdCz6PTi4uHgrp6G96TAU/TmTW3hqYXb9/T0fgviW/xAe/LlSg1xE=
-Received: from YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:d::20)
- by YQXPR01MB4691.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:1e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Wed, 30 Jun
- 2021 16:03:03 +0000
-Received: from YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::74e7:26e3:2b35:6c2d]) by YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::74e7:26e3:2b35:6c2d%5]) with mapi id 15.20.4264.027; Wed, 30 Jun 2021
- 16:03:02 +0000
-From:   Liam Beguin <lvb@xiphos.com>
-To:     Wang Hai <wanghai38@huawei.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>
-CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH -next] clk: lmk04832: fix return value check in
- lmk04832_probe()
-Thread-Topic: [PATCH -next] clk: lmk04832: fix return value check in
- lmk04832_probe()
-Thread-Index: AQHXbVRCiolFjIE7Iki/bk8doP3i9asst/Vg
-Date:   Wed, 30 Jun 2021 16:03:02 +0000
-Message-ID: <YQBPR0101MB1811C2E16F1D6F2E9D474CAAD8019@YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM>
-References: <20210630020322.2555946-1-wanghai38@huawei.com>
-In-Reply-To: <20210630020322.2555946-1-wanghai38@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=xiphos.com;
-x-originating-ip: [198.48.202.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a6ca5726-8c3f-454d-2bc6-08d93be08a5d
-x-ms-traffictypediagnostic: YQXPR01MB4691:
-x-microsoft-antispam-prvs: <YQXPR01MB46912EE17AD6D1EAB54C8E01D8019@YQXPR01MB4691.CANPRD01.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lSKQzlbc6greIlru60dTG7Xsf1ThFzk7YrtEuu46MR9y0EkBnNvKQ2iJqms1UwNqB8AoEfhm8lUEiAJltWDii48DhzEjv2G5PdHjujPotIgbQVQptIYPT3di3ms/63fenzVpipWZIS87upaogaTr7elLDeicCSNgFCONkvEsTmTAEf0/iFs+/EvR/hRa4/e+ptQjADaZQX36hUS/zYPMkbTmHz/RiA0x744FxTX/mYIUZdFCVaB4FG+y/C/XQrv3xrvh8esbK5byIYjtHFNlhWldKHuDERtD0lyPspMEPIpG9enYU6J+4VV8lBe5jg1xcLbNaheTg1skB96PaHaBHDCvwPL0yCJrpz7+6n0seSykxzavvm24uKHULyVj64N2HIgYk/Xrtb8Rj8Uy8ek7rbxXl12vf2EI5YrxHHZh3cEWw1h3SKVSxIuyjis+J56SAJQ3VHUlDVFZkbok6J860HMdjHLXm51Pxp1JXl2B1CoLs7mCMd77ZURd0qC8MHhcJJ/XvEMDt05Zv6dEGU+7UXaUS3fO+gpYntJiANAeTONv6W5ewxoPeIB+neYZC392vvp1faN6kxbm4mf7UHPTqzSdyPccDnGj+d/t/B3lZPbJ9PjC07q1iX+BDzQ6nnp7dqN7+qdTSuXpAiwECaVluA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(39830400003)(136003)(396003)(64756008)(38100700002)(478600001)(316002)(66946007)(54906003)(33656002)(66446008)(66476007)(7696005)(83380400001)(66556008)(110136005)(122000001)(6506007)(53546011)(8936002)(52536014)(5660300002)(55016002)(4326008)(9686003)(2906002)(76116006)(86362001)(26005)(186003)(71200400001)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YqDpO/yYFziMOkrt8qfV032nCy2+UCgEbcYFP5Wssk5CVx3xxaihwbZfhOr5?=
- =?us-ascii?Q?gfxt/bYt9SjdNdurlganYLY6JV9D+bVGna+erO30nvmbh3wvc2iB9cPn0Bh2?=
- =?us-ascii?Q?pFBsa0Zq9GXG9pwyX3FkAwG6kRLlt1dwXwUU0YmttJe5PWagj8ZjeqBKsbIW?=
- =?us-ascii?Q?K3WBQDDFsAMOWPh+DLaHs/pPwGSYP709bc5x+9lPYRZiyp2b+7T4pJz/FCoU?=
- =?us-ascii?Q?OrzKyZCn5ZarfS6/cgcS5nq5zzEjOIcSH0hChgtXjrZkKAbwlmdboH0D/Aud?=
- =?us-ascii?Q?QwG1vPeSE/sPIJ6kyRBEgB3Ua20JmwfkHfVOZHtWGDARvl50AFWZEflvG1/A?=
- =?us-ascii?Q?545wsYd0kDIg2Tn8gNEaA5pSZPWpsRe3gUdm5N3DPfTQtH/yjJIXQPKlBpUw?=
- =?us-ascii?Q?+tqVr6bUv6XMtm9NIufsi7iiEFDdncNHo6j3EKh6EDLmZFi7MyiCtLke69u1?=
- =?us-ascii?Q?jcPb8plmLeIiiZzVHP+vpU3fKiZQpBqoPwg+ECbLcmb/KhsNh2hiPYtsV/uc?=
- =?us-ascii?Q?rW4Ri1p0jCR/BjrtM/fQqvtL1n+pSGmrBC9pkFzCSvuFtyKkeHoauqFilNyZ?=
- =?us-ascii?Q?GQ3HpCOydEOjIdZbVKvGIactU1PNmy2jAwVUfVVQO+hF7O+VqEmiO+NFjrUK?=
- =?us-ascii?Q?GvyCMfC/+AYtqUxj9F3z17jB2cZzYYksR9zaNQtwPBglmO7t4FEq+nK9GNi1?=
- =?us-ascii?Q?3m3t3vmodsnchKZvZVxEm5hizd46f0MPXzpexd5ZC8ueFL/KmqsH3xulgO92?=
- =?us-ascii?Q?lz7er2yIvyrKUm92UJrA8xFX0umj3SvLbecjTqgKPjQNhTFX+zK5Ooym5zf9?=
- =?us-ascii?Q?QRsUglpRRKdGhGUihIw+wB6VrEUVquC2hkXnlXDCBxfX2go/kE9pKoNT8ujf?=
- =?us-ascii?Q?om0g0jpbalfpw08CGYXHKrBYt6suUuG7DI6L3IRDVF+weDmz6gsH+AAT9FCa?=
- =?us-ascii?Q?nTvd2szlOnxebW0zaB27n7B4LSQ0h1FcFudTr6Wq0ZEylVw3j1J2iI/lk+QI?=
- =?us-ascii?Q?H6L6cZxcSzG6KOs7mshRx5JVQXx0c+bhFm5BBtS5d820QP9gln0YwiI2OhNq?=
- =?us-ascii?Q?yM/A7++Al/dJ/z/XhmsfKnEBxCkFmqPslZqUk0Z5oknpREHINTYqbvG/uiKf?=
- =?us-ascii?Q?HQCkMPqeaJczYARHyvVf+Rz+uto2QR8AliN2EvoJnvieZYK9phf7CyKlSoOY?=
- =?us-ascii?Q?2V47WfTLYLz3u2Jc7GPKZ5xi4U9lpNKjxbOlZ0zOijzHzDj7WeNITHVf92Q6?=
- =?us-ascii?Q?NV5KQbE/42uQ3ZV9PnvCNpceGHy9YfvnlE7Ae3wlpVgtvMOnXHoz2lQSzrNu?=
- =?us-ascii?Q?61fswl5NADyxymERK87bzTWb?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231342AbhF3QJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:09:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41580 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhF3QI6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 12:08:58 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A088B20483;
+        Wed, 30 Jun 2021 16:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625069188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+/U4JehVX0FhkBlOkfzWo0x8lCwrBaeOESsSdyk28Y=;
+        b=Rjn+2hiBLWwyjfFNPxIHwptzno1cJItH37TEtJuQ8SvCUwv/dPVYwPrLNtPJ8zH+RmmBRT
+        Hfr9wvdi+cCUR8+PUehJ30loQWlQ/tiNXO/is7shMoXM+T9V4u1KBtsSvmnynRrsAryjIH
+        HdvzUCXxB9cU/hmnz19T2cZTJ+ATZVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625069188;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+/U4JehVX0FhkBlOkfzWo0x8lCwrBaeOESsSdyk28Y=;
+        b=s6m1jYejOk8yfoCaOzESlebrkrRGXExFJI4rTp5M34pM7Y3gmd9fgSqL9E2txte6IAu9+7
+        qMlYMdhuVZ3kMIAw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1AA4D118DD;
+        Wed, 30 Jun 2021 16:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625069188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+/U4JehVX0FhkBlOkfzWo0x8lCwrBaeOESsSdyk28Y=;
+        b=Rjn+2hiBLWwyjfFNPxIHwptzno1cJItH37TEtJuQ8SvCUwv/dPVYwPrLNtPJ8zH+RmmBRT
+        Hfr9wvdi+cCUR8+PUehJ30loQWlQ/tiNXO/is7shMoXM+T9V4u1KBtsSvmnynRrsAryjIH
+        HdvzUCXxB9cU/hmnz19T2cZTJ+ATZVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625069188;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+/U4JehVX0FhkBlOkfzWo0x8lCwrBaeOESsSdyk28Y=;
+        b=s6m1jYejOk8yfoCaOzESlebrkrRGXExFJI4rTp5M34pM7Y3gmd9fgSqL9E2txte6IAu9+7
+        qMlYMdhuVZ3kMIAw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Uui7A4SW3GDZWAAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Wed, 30 Jun 2021 16:06:28 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 578c595a;
+        Wed, 30 Jun 2021 16:06:27 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 17:06:27 +0100
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [vfs] 94a4dd06a6: xfstests.generic.263.fail
+Message-ID: <YNyWgxlX4xoQ8itu@suse.de>
+References: <20210513135644.GE20142@xsang-OptiPlex-9020>
+ <877dk1zibo.fsf@suse.de>
+ <CAOQ4uxgde72YDADffihj1P-Kse_P6zkhrjBb1DhwVUC+yRJooQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: xiphos.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: YQBPR0101MB1811.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6ca5726-8c3f-454d-2bc6-08d93be08a5d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2021 16:03:02.8692
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 11c32550-fdb1-48d9-8a3d-133e5b75b54f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LS5J5n87VP2zQJ9Ow9kCbw+HN6b+g/pQAv4mCqpzcsbR5R8QPxNWOjBlEEw85ja6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQXPR01MB4691
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgde72YDADffihj1P-Kse_P6zkhrjBb1DhwVUC+yRJooQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 30, 2021 at 06:46:22PM +0300, Amir Goldstein wrote:
+> On Fri, May 14, 2021 at 2:03 PM Luis Henriques <lhenriques@suse.de> wrote:
+> >
+> > kernel test robot <oliver.sang@intel.com> writes:
+> >
+> > > Greeting,
+> > >
+> > > FYI, we noticed the following commit (built with gcc-9):
+> > >
+> > > commit: 94a4dd06a6bbf3978b0bb1dddc2d8ec4e5bcad26 ("[PATCH v9] vfs: fix copy_file_range regression in cross-fs copies")
+> > > url: https://github.com/0day-ci/linux/commits/Luis-Henriques/vfs-fix-copy_file_range-regression-in-cross-fs-copies/20210510-170804
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git for-next
+> > >
+> > > in testcase: xfstests
+> > > version: xfstests-x86_64-73c0871-1_20210401
+> > > with following parameters:
+> > >
+> > >       disk: 4HDD
+> > >       fs: xfs
+> > >       test: generic-group-13
+> > >       ucode: 0x21
+> > >
+> > > test-description: xfstests is a regression test suite for xfs and other files ystems.
+> > > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> > >
+> > >
+> > > on test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz with 8G memory
+> > >
+> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > >
+> > >
+> > >
+> > >
+> > > If you fix the issue, kindly add following tag
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > >
+> > > 2021-05-11 11:28:23 export TEST_DIR=/fs/sda1
+> > > 2021-05-11 11:28:23 export TEST_DEV=/dev/sda1
+> > > 2021-05-11 11:28:23 export FSTYP=xfs
+> > > 2021-05-11 11:28:23 export SCRATCH_MNT=/fs/scratch
+> > > 2021-05-11 11:28:23 mkdir /fs/scratch -p
+> > > 2021-05-11 11:28:23 export SCRATCH_DEV=/dev/sda4
+> > > 2021-05-11 11:28:23 export SCRATCH_LOGDEV=/dev/sda2
+> > > 2021-05-11 11:28:23 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests/generic-group-13
+> > > 2021-05-11 11:28:23 ./check generic/260 generic/261 generic/262 generic/263 generic/264 generic/265 generic/266 generic/267 generic/268 generic/269 generic/270 generic/271 generic/272 generic/273 generic/274 generic/275 generic/276 generic/277 generic/278 generic/279
+> > > FSTYP         -- xfs (debug)
+> > > PLATFORM      -- Linux/x86_64 lkp-ivb-d02 5.12.0-rc6-00061-g94a4dd06a6bb #1 SMP Tue May 11 00:58:17 CST 2021
+> > > MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda4
+> > > MOUNT_OPTIONS -- /dev/sda4 /fs/scratch
+> > >
+> > > generic/260   [not run] FITRIM not supported on /fs/scratch
+> > > generic/261   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/262   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/263   [failed, exit status 1]- output mismatch (see /lkp/benchmarks/xfstests/results//generic/263.out.bad)
+> > >     --- tests/generic/263.out 2021-04-01 03:07:08.000000000 +0000
+> > >     +++ /lkp/benchmarks/xfstests/results//generic/263.out.bad 2021-05-11 11:28:29.773460096 +0000
+> > >     @@ -1,3 +1,32 @@
+> > >      QA output created by 263
+> > >      fsx -N 10000 -o 8192 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
+> > >     -fsx -N 10000 -o 128000 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
+> > >     +Seed set to 1
+> > >     +main: filesystem does not support clone range, disabling!
+> > >     +main: filesystem does not support dedupe range, disabling!
+> > >     +skipping zero size read
+> > >     ...
+> > >     (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/263.out /lkp/benchmarks/xfstests/results//generic/263.out.bad'  to see the entire diff)
+> > > generic/264   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/265   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/266   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/267   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/268   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/269    48s
+> > > generic/270    61s
+> > > generic/271   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/272   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/273    17s
+> > > generic/274    14s
+> > > generic/275    11s
+> > > generic/276   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/277    3s
+> > > generic/278   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > generic/279   [not run] Reflink not supported by scratch filesystem type: xfs
+> > > Ran: generic/260 generic/261 generic/262 generic/263 generic/264 generic/265 generic/266 generic/267 generic/268 generic/269 generic/270 generic/271 generic/272 generic/273 generic/274 generic/275 generic/276 generic/277 generic/278 generic/279
+> > > Not run: generic/260 generic/261 generic/262 generic/264 generic/265 generic/266 generic/267 generic/268 generic/271 generic/272 generic/276 generic/278 generic/279
+> > > Failures: generic/263
+> > > Failed 1 of 20 tests
+> >
+> > OK, I see what's going on.  There are 2 issues: one with patch and another
+> > one with the test itself.
+> >
+> > The CFR syscall should have been disabled in this test but it isn't
+> > because the test tries to copy 1 byte from a zero-sized file:
+> >
+> > int
+> > test_copy_range(void)
+> > {
+> >         loff_t o1 = 0, o2 = 1;
+> >
+> >         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) == -1 &&
+> >             (errno == ENOSYS || errno == EOPNOTSUPP || errno == ENOTTY)) {
+> >                 if (!quiet)
+> >                         fprintf(stderr,
+> >                                 "main: filesystem does not support "
+> >                                 "copy range, disabling!\n");
+> >                 return 0;
+> >         }
+> >
+> >         return 1;
+> > }
+> >
+> > The syscall is doing an early '0' return because the file size is < len.
+> >
+> > Fixing the kernel should probably be as easy as removing the
+> > short-circuiting check in vfs_copy_file_range():
+> >
+> >         if (len == 0)
+> >                 return 0;
+> >
+> > This will force the filesystems code to handle '0' size copies but will
+> > also make sure -EOPNOTSUPP is returned in this case.
+> >
+> 
+> Sorry for the late reply.
+> The solution above is correct.
+> That is aligned with the behavior of vfs_clone_file_range().
+> Need to call into the filesystem method also with 0 length
+> in order to learn about CFR support of this filesystem instance.
 
+Yep, this makes sense (I've seen you're detailed explanation in the other
+thread -- thanks!).  I'll send out v11 in a sec.
 
-> -----Original Message-----
-> From: Wang Hai <wanghai38@huawei.com>
-> Sent: June 29, 2021 10:03 PM
-> To: mturquette@baylibre.com; sboyd@kernel.org; Liam Beguin
-> <lvb@xiphos.com>
-> Cc: linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH -next] clk: lmk04832: fix return value check in
-> lmk04832_probe()
->=20
-> In case of error, the function devm_kzalloc() and devm_kcalloc() return
-> NULL pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
->=20
-> Fixes: 3bc61cfd6f4a ("clk: add support for the lmk04832")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Cheers,
+--
+Luís
 
-Reviewed-by: Liam Beguin <lvb@xiphos.com>
-
-> ---
->  drivers/clk/clk-lmk04832.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
-> index 0cd76e626c3..66ad5cbe702 100644
-> --- a/drivers/clk/clk-lmk04832.c
-> +++ b/drivers/clk/clk-lmk04832.c
-> @@ -1425,23 +1425,23 @@ static int lmk04832_probe(struct spi_device
-> *spi)
->=20
->  	lmk->dclk =3D devm_kcalloc(lmk->dev, info->num_channels >> 1,
->  				 sizeof(struct lmk_dclk), GFP_KERNEL);
-> -	if (IS_ERR(lmk->dclk)) {
-> -		ret =3D PTR_ERR(lmk->dclk);
-> +	if (!lmk->dclk) {
-> +		ret =3D -ENOMEM;
->  		goto err_disable_oscin;
->  	}
->=20
->  	lmk->clkout =3D devm_kcalloc(lmk->dev, info->num_channels,
->  				   sizeof(*lmk->clkout), GFP_KERNEL);
-> -	if (IS_ERR(lmk->clkout)) {
-> -		ret =3D PTR_ERR(lmk->clkout);
-> +	if (!lmk->clkout) {
-> +		ret =3D -ENOMEM;
->  		goto err_disable_oscin;
->  	}
->=20
->  	lmk->clk_data =3D devm_kzalloc(lmk->dev, struct_size(lmk->clk_data,
-> hws,
->  							   info-
-> >num_channels),
->  				     GFP_KERNEL);
-> -	if (IS_ERR(lmk->clk_data)) {
-> -		ret =3D PTR_ERR(lmk->clk_data);
-> +	if (!lmk->clk_data) {
-> +		ret =3D -ENOMEM;
->  		goto err_disable_oscin;
->  	}
->=20
-> --
-> 2.17.1
-
+> > Alternatively, we could have something like:
+> >
+> >         if (len == 0) {
+> >                 if (file_out->f_op->copy_file_range)
+> >                         return 0;
+> >                 else
+> >                         return -EOPNOTSUPP;
+> >         }
+> >
+> 
+> This does not catch the case of a filesystem driver that has
+> CFR method but a filesystem instance does not support CFR.
+> For example, overlayfs with ext4 as upper fs.
+> 
+> > What do you guys think is the right thing to do?
+> >
+> > Additionally, the test should also be fixed with something as the patch
+> > bellow.  By making sure we have 1 byte to copy we also ensure the syscall
+> > will return -EOPNOTSUPP, even with the current version of the patch.
+> >
+> 
+> I don't think that the test should be fixed.
+> 
+> Thanks,
+> Amir.
+> 
+> > Cheers,
+> > --
+> > Luis
+> >
+> > diff --git a/ltp/fsx.c b/ltp/fsx.c
+> > index cd0bae55aeb8..97db594ae142 100644
+> > --- a/ltp/fsx.c
+> > +++ b/ltp/fsx.c
+> > @@ -1596,6 +1596,10 @@ int
+> >  test_copy_range(void)
+> >  {
+> >         loff_t o1 = 0, o2 = 1;
+> > +       int ret = 1;
+> > +
+> > +       /* Make sure we have 1 byte to copy */
+> > +       ftruncate(fd, 1);
+> >
+> >         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) == -1 &&
+> >             (errno == ENOSYS || errno == EOPNOTSUPP || errno == ENOTTY)) {
+> > @@ -1603,10 +1607,13 @@ test_copy_range(void)
+> >                         fprintf(stderr,
+> >                                 "main: filesystem does not support "
+> >                                 "copy range, disabling!\n");
+> > -               return 0;
+> > +               ret = 0;
+> >         }
+> >
+> > -       return 1;
+> > +       /* Restore file size */
+> > +       ftruncate(fd, 0);
+> > +
+> > +       return ret;
+> >  }
+> >
+> >  void
