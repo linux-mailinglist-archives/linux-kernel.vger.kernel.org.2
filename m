@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12C23B8848
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853DB3B885D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhF3SYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:24:09 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:49789 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233030AbhF3SYI (ORCPT
+        id S233507AbhF3S0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233288AbhF3S0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:24:08 -0400
-Received: (qmail 745964 invoked by uid 1000); 30 Jun 2021 14:21:38 -0400
-Date:   Wed, 30 Jun 2021 14:21:37 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Claudiu.Beznea@microchip.com
-Cc:     gregkh@linuxfoundation.org, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
-        Cristian.Birsan@microchip.com, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: host: ohci-at91: suspend/resume ports after/before
- OHCI accesses
-Message-ID: <20210630182137.GA743974@rowland.harvard.edu>
-References: <20210609230735.GA1861855@rowland.harvard.edu>
- <0621eaba-db4d-a174-1b15-535e804b52ac@microchip.com>
- <20210623135915.GB491169@rowland.harvard.edu>
- <a5c68849-a48c-5224-7ba3-1ad44e0d9874@microchip.com>
- <20210623141907.GC491169@rowland.harvard.edu>
- <8bff20a7-8eb8-276a-086e-f1729fbbdbe4@microchip.com>
- <20210623164148.GC499969@rowland.harvard.edu>
- <f03ccb09-4b5e-4db7-2cf0-375d53234099@microchip.com>
- <20210624132304.GA528247@rowland.harvard.edu>
- <856493cd-9d53-24b3-8e8b-c3c366f282bd@microchip.com>
+        Wed, 30 Jun 2021 14:26:38 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3544C061756;
+        Wed, 30 Jun 2021 11:24:08 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id h6so836391plf.11;
+        Wed, 30 Jun 2021 11:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1iFQK7L8q2hmxsjwhX/82JFmJsDjXfMWUFK5XtDFsp4=;
+        b=M5zKdYsoJKPTj4GnRB8GogwcMg6lYQlCwo3iln947/o0M3yqOlL2ft4BgpQ+h6nh3e
+         4w3ovk+R3vEE/v5/vBMTFH8psgCQ+bYWc/dsXEwmKuTgZo9mMpKH2AxzoHJFIkB5IIr/
+         v/RVOs1fg+Gs/puiRM8C0ykuwclOKLvwlNaPA2Haj1vFVnjCli+xd5BGWiu4JStwfFKI
+         1/4muXVAA/A5b9V4JNHUBfZ9iGld0Ir4ZxFD+yDEhrgyIFVgy8P1bv0R6hZj4NEvrepW
+         /ZAj8H0uruRlFvV9WJN1j/PGxAZrDsfWal/s+JHBgLmZoeCWbkycoGsnpJH3sDbDUIeT
+         L0Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1iFQK7L8q2hmxsjwhX/82JFmJsDjXfMWUFK5XtDFsp4=;
+        b=ezrNiQXa1bJ3Od6U9vqcT+zs+V0ayu0xR6XG1deEEEfy/br5DbbaDtOjtlYARvSpPN
+         cmz8Q1snxL0aJLwRJcLuz/T7DPXR57VRh+ES37BZuUs06KWsc9TAGEnklCOlIQ29aj0G
+         +706akXdlJ+W58aRzsMw2nFl51SRcynSH5yFLkU/8P1eo8ATK/3pRs7QJf4TL+EUmy+P
+         IbuHxHH/BFh8Ya7v6cXiJ+L2SrgsLVKOkPBIMIzjGh9HGbtcBcYfJOLPQEXYWBzkNFKJ
+         DSgHvAJSzcdp275xCuOCsw+1M8Mp30DGKRnCLNgN1ihD+uG3MXnSz7sycEos4DPu1TT9
+         cI+w==
+X-Gm-Message-State: AOAM531uNJDF3lfEwjdsQorEAKbT15u054zj/B1Gpf/pgPWkavvgK27/
+        7s/yB655TYr1V00aDcJqj3oMG5OIJLU/8Ah6/Ys=
+X-Google-Smtp-Source: ABdhPJw+0cW8yMy3eqCVH8XvrUKQR6KmP/EP0Z8heuZTchmBIbMMrJMmw5ImtWoTkPyfbq7Pu4sYKv/7JrQOkvzJPPE=
+X-Received: by 2002:a17:90a:af90:: with SMTP id w16mr5726843pjq.129.1625077448237;
+ Wed, 30 Jun 2021 11:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <856493cd-9d53-24b3-8e8b-c3c366f282bd@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1625075239-19120-1-git-send-email-akhilrajeev@nvidia.com> <1625077055-20363-1-git-send-email-akhilrajeev@nvidia.com>
+In-Reply-To: <1625077055-20363-1-git-send-email-akhilrajeev@nvidia.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 30 Jun 2021 21:23:30 +0300
+Message-ID: <CAHp75VfB8varyi5j=j8YaysdgofxFU1-xCKLFPrxiYz7KadGfA@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: tegra186: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Suresh Mangipudi <smangipudi@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 02:46:47PM +0000, Claudiu.Beznea@microchip.com wrote:
-> On 24.06.2021 16:23, Alan Stern wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On Thu, Jun 24, 2021 at 06:40:25AM +0000, Claudiu.Beznea@microchip.com wrote:
-> >> On 23.06.2021 19:41, Alan Stern wrote:
-> >>> Are there any systems beside the SAMA7G5 and others you tested which
-> >>> might be affected by this patch?  Do they all work pretty much the
-> >>> same way?  (I want to make sure no others will be adversely affected
-> >>> by this change.)
-> >>
-> >> I tested it on SAMA7G5, SAMA5D2 and SAM9X60. I tested the suspend/resume
-> >> to/from mem. On SAMA5D2 and SAM9X60 there is no clock provided by
-> >> transceiver A to OHCI. I encountered no issues on tested systems. These IPs
-> >> are also present on SAMA5D3 and SAMA5D4 systems which I haven't tested as I
-> >> expect to behave as SAMA5D2 (as the clocking scheme is the same with
-> >> SAMA5D2). I can also try it on a SAMA5D3 (I don't have a SAMA5D4 with me at
-> >> the moment), tough, just to be sure nothing is broken there too.
-> > 
-> > That doesn't answer my question.  I asked if there were any systems
-> > which might be affected by your patch, and you listed a bunch of
-> > systems that _aren't_ affected (that is, they continue to work
-> > properly).
-> 
-> I wrongly understood the initial question.
-> 
-> > 
-> > What systems might run into trouble with this patch?
-> 
-> These are all I haven't tested and might be affected:
-> AT91RM9200,
-> SAM9260,
-> SAM9261,
-> SAM9263,
-> SAM9N12,
-> SAM9X35,
-> SAM9G45.
-> 
-> The last two (SAM9X35 and SAM9G45) have the same clocking scheme with
-> SAMA5D2 (which I tested). For the rest of them I cannot find the clocking
-> scheme in datasheet and don't have them to test (at least at the moment).
+On Wed, Jun 30, 2021 at 9:17 PM Akhil R <akhilrajeev@nvidia.com> wrote:
+>
+> Add ACPI module ID to probe the driver from the ACPI based bootloader
+> firmware.
 
-I see.  That seems reasonable; the others are probably the same as the 
-ones you tested.
+Thanks for an update, my comments below.
+After addressing, feel free to add
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Did you ever answer the question that Nicolas raised back on June 9 in:
+> Change-Id: Id8e892f989e4ccc935b87aa0d84b10a3d1efd8f9
 
-	https://marc.info/?l=linux-usb&m=162324242003349&w=2
+This is not for upstream.
 
-Alan Stern
+> Signed-off-by: Akhil Rajeev <akhilrajeev@nvidia.com>
+
+...
+
+> +static const struct acpi_device_id  tegra186_gpio_acpi_match[] = {
+> +       { .id = "NVDA0108", .driver_data = (kernel_ulong_t)&tegra186_main_soc },
+> +       { .id = "NVDA0208", .driver_data = (kernel_ulong_t)&tegra186_aon_soc },
+> +       { .id = "NVDA0308", .driver_data = (kernel_ulong_t)&tegra194_main_soc },
+> +       { .id = "NVDA0408", .driver_data = (kernel_ulong_t)&tegra194_aon_soc },
+
+> +       {},
+
+Comma is not needed for terminator lines.
+
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tegra186_gpio_acpi_match);
+
+-- 
+With Best Regards,
+Andy Shevchenko
