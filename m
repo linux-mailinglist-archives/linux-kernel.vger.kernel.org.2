@@ -2,137 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A3C3B81DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A923B81E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbhF3MRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbhF3MRv (ORCPT
+        id S234486AbhF3MTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:19:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57877 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234376AbhF3MTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:17:51 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6644C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:15:21 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id n25so2903403edw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IaRKJLlIxfNiC/w31k4zL58KaqqFoZh3Zqjg6N3S3Nw=;
-        b=HcwNA8t0W9xPEnQyfIEilYhl9SnMv0vg6JVt5EmSdvlg4PUkVpEqYZvbT83F1wsf5C
-         hCmT1A4V7TpTupVz7LYnZnyPoTvfEmFV96VM73Z/khD84aNjR3mFsoKlKWucydHv+gRw
-         CHK8/O08F1pKayCCSfkN9+qbzq6O/S7ydL+q85Vl0718YyyMdr/ZV79QiKRY9U8/5fdZ
-         XQeXuecJwlj3uVlKL5R6D/m4qK5xV0+xwzDhje74tS8NKP3cQrCm5UYW6teA8yQA+1Yu
-         /oEOJySvrLNbbypqJWSP77hmwFjM0V/giS0eksp3X0d0XYrZc1aI+CbJDL9P/iT4EgvU
-         syPQ==
+        Wed, 30 Jun 2021 08:19:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625055426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S5U28ywwLl6OV7xmavpG2YSBQN6F4k443zEP4QDb3fA=;
+        b=IP4a7e9bTjPvR6WU7Mug5ASpSC7cwlIWdndPPRRwwkPKhDcLnex6SqryAYAYhO39dSDku6
+        LkXPBHmGMgAcQRXCWnz8tQAG7TdMgyGj+WzrYPVMANWOtd+ZWNNuMWm22m2YrL5Zs7/Ob6
+        gTwDIyUr68aREdACRxuPWwsx9KmJK0E=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-3lkCWl_RObGDksLghg8iMg-1; Wed, 30 Jun 2021 08:17:04 -0400
+X-MC-Unique: 3lkCWl_RObGDksLghg8iMg-1
+Received: by mail-ej1-f69.google.com with SMTP id f1-20020a1709064941b02903f6b5ef17bfso676419ejt.20
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:17:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IaRKJLlIxfNiC/w31k4zL58KaqqFoZh3Zqjg6N3S3Nw=;
-        b=PJtNrYQagV5mifKZbkN/k2gU+kF+dDIZRCRY1uuuTOy3APE4zJcuHAlv0cg+0UtEPn
-         vWR9P7tZisZ06ycO/TvQCBxQG6uu691T1UOT2G8cDZo5dN6ezyTazZACUoe4xlPunUzC
-         VAqELRAjtSbKopOPjq6ejTr/HlTdAzpgY6wCYJ//hU6l7XYBkvrP0ZgGXTx4Q5GHmoUp
-         Oyswf4dpTCnaQHSqiJcIJr1kCpiPLYYTP3a8guYxAz+z/5vxqElFpGn3le6TzN/uJV89
-         bVt5TYR4g37Re4VXs63ci5rqD3g4jaknNNHtBn81eFhqNG++3z1Cl9Ys+88XZToKNGbe
-         +kfQ==
-X-Gm-Message-State: AOAM530lAKWWrqPFk0Mr1KqZIQCKz77ubHfFsc56cvnu6MozWdiFawkn
-        fzGTU+IZAczDHjLnXm0jHXANNg==
-X-Google-Smtp-Source: ABdhPJwTmPKe5uvCUHDUQoFQ4VO/9iCSoq6U8UuG2NM/Jjb5rbnUtDpxhZ6AVPZHJXYEKi3/nQvP6Q==
-X-Received: by 2002:a05:6402:c91:: with SMTP id cm17mr4314239edb.123.1625055319120;
-        Wed, 30 Jun 2021 05:15:19 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id n11sm9798879ejg.43.2021.06.30.05.15.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S5U28ywwLl6OV7xmavpG2YSBQN6F4k443zEP4QDb3fA=;
+        b=Zws+qkTS4zVT/gwni/DGvdbaYRpMZWwRIYYqNCnlLTjVNDZRAyPvRE2JEYDhym6d9w
+         BYMslqylTXmCq9t/Ij1kP8WBz/EEdKmGu1Pg4/inbO5+YjIBagx3XsUBujWLIxqX919Y
+         wNmBMpocCopmIZvnRi0IvG76Gfws7zxsOzto6zMysRiLf5JJmJR85l31sKyn8lRDjxAH
+         7vwDrjqpfQeUEhAisVnYhZpmUXsvn6okP5EanaFuyhuz0p8VEK0uumtRIT7QL43obKci
+         ud9aXtfEGYOGXpItS/KBxste0W5O9lk7v1mPw/8O8uFdymyoZ/PisUhJH8/E9t+6GuPj
+         iykw==
+X-Gm-Message-State: AOAM532IkVo7j/zVimvsfc32TWcmOVwQqsZ9aDZD8M9pahYJ40ZXVNms
+        8XTOyxQRfdg6IGmhfXxcdnZF8rP0ldSky6A3omwHaJ+OFeWW5s0PXu/lwx2NyfQEpoyQKPZ7sWI
+        1Oz5SAQ8S2166nJD6Zdxgyc+u
+X-Received: by 2002:aa7:cb43:: with SMTP id w3mr47972946edt.126.1625055423545;
+        Wed, 30 Jun 2021 05:17:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzTOoXea3dw2KwL4npV9WtK8OeMjBSRZaapsXE1JRl9I0iizB5JdRpr8sX+P8Pm7+k3AQDmw==
+X-Received: by 2002:aa7:cb43:: with SMTP id w3mr47972923edt.126.1625055423383;
+        Wed, 30 Jun 2021 05:17:03 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id v24sm799726eds.39.2021.06.30.05.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 05:15:18 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: accel: dmard10: convert probe to device-managed functions
-Date:   Wed, 30 Jun 2021 15:15:09 +0300
-Message-Id: <20210630121509.653717-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 30 Jun 2021 05:17:03 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 14:17:00 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        kvm <kvm@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Krasnov Arseniy <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v1 16/16] vsock_test: SEQPACKET read to broken buffer
+Message-ID: <CAGxU2F7GswqHk_bkSHx7Q4y_tvdNLG0PRcq0Ujex+cWv+pRCJw@mail.gmail.com>
+References: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
+ <20210628100539.572000-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628100539.572000-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is another simple conversion to device-managed functions, requiring
-the use of devm_iio_device_register() and moving the disabling of the
-device on a devm_add_action_or_reset() hook.
+On Mon, Jun 28, 2021 at 01:05:36PM +0300, Arseny Krasnov wrote:
+>Add test where sender sends two message, each with own
+>data pattern. Reader tries to read first to broken buffer:
+>it has three pages size, but middle page is unmapped. Then,
+>reader tries to read second message to valid buffer. Test
+>checks, that uncopied part of first message was dropped
+>and thus not copied as part of second message.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> tools/testing/vsock/vsock_test.c | 121 +++++++++++++++++++++++++++++++
+> 1 file changed, 121 insertions(+)
 
-The i2c_set_clientdata() can be removed, as the PM functions can work with
-just the device object, to obtain the i2c_client object.
+Cool test! Thanks for doing this!
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/accel/dmard10.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+>
+>diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>index 67766bfe176f..697ba168e97f 100644
+>--- a/tools/testing/vsock/vsock_test.c
+>+++ b/tools/testing/vsock/vsock_test.c
+>@@ -16,6 +16,7 @@
+> #include <linux/kernel.h>
+> #include <sys/types.h>
+> #include <sys/socket.h>
+>+#include <sys/mman.h>
+>
+> #include "timeout.h"
+> #include "control.h"
+>@@ -385,6 +386,121 @@ static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
+>       close(fd);
+> }
+>
+>+#define BUF_PATTERN_1 'a'
+>+#define BUF_PATTERN_2 'b'
+>+
+>+static void test_seqpacket_invalid_rec_buffer_client(const struct test_opts *opts)
+>+{
+>+      int fd;
+>+      unsigned char *buf1;
+>+      unsigned char *buf2;
+>+      int buf_size = getpagesize() * 3;
+>+
+>+      fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
+>+      if (fd < 0) {
+>+              perror("connect");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      buf1 = malloc(buf_size);
+>+      if (buf1 == NULL) {
 
-diff --git a/drivers/iio/accel/dmard10.c b/drivers/iio/accel/dmard10.c
-index e84bf8db1e89..f9f173eec202 100644
---- a/drivers/iio/accel/dmard10.c
-+++ b/drivers/iio/accel/dmard10.c
-@@ -170,6 +170,11 @@ static const struct iio_info dmard10_info = {
- 	.read_raw	= dmard10_read_raw,
- };
- 
-+static void dmard10_shutdown_cleanup(void *client)
-+{
-+	dmard10_shutdown(client);
-+}
-+
- static int dmard10_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
-@@ -194,7 +199,6 @@ static int dmard10_probe(struct i2c_client *client,
- 
- 	data = iio_priv(indio_dev);
- 	data->client = client;
--	i2c_set_clientdata(client, indio_dev);
- 
- 	indio_dev->info = &dmard10_info;
- 	indio_dev->name = "dmard10";
-@@ -206,22 +210,12 @@ static int dmard10_probe(struct i2c_client *client,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = iio_device_register(indio_dev);
--	if (ret < 0) {
--		dev_err(&client->dev, "device_register failed\n");
--		dmard10_shutdown(client);
--	}
--
--	return ret;
--}
--
--static int dmard10_remove(struct i2c_client *client)
--{
--	struct iio_dev *indio_dev = i2c_get_clientdata(client);
--
--	iio_device_unregister(indio_dev);
-+	ret = devm_add_action_or_reset(&client->dev, dmard10_shutdown_cleanup,
-+				       client);
-+	if (ret)
-+		return ret;
- 
--	return dmard10_shutdown(client);
-+	return devm_iio_device_register(&client->dev, indio_dev);
- }
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -250,7 +244,6 @@ static struct i2c_driver dmard10_driver = {
- 		.pm = &dmard10_pm_ops,
- 	},
- 	.probe		= dmard10_probe,
--	.remove		= dmard10_remove,
- 	.id_table	= dmard10_i2c_id,
- };
- 
--- 
-2.31.1
+checkpatch suggests to use "if (!buf1)" ...
+
+>+              perror("'malloc()' for 'buf1'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      buf2 = malloc(buf_size);
+>+      if (buf2 == NULL) {
+
+... and "if (!buf2)" ...
+
+>+              perror("'malloc()' for 'buf2'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      memset(buf1, BUF_PATTERN_1, buf_size);
+>+      memset(buf2, BUF_PATTERN_2, buf_size);
+>+
+>+      if (send(fd, buf1, buf_size, 0) != buf_size) {
+>+              perror("send failed");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      if (send(fd, buf2, buf_size, 0) != buf_size) {
+>+              perror("send failed");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      close(fd);
+>+}
+>+
+>+static void test_seqpacket_invalid_rec_buffer_server(const struct test_opts *opts)
+>+{
+>+      int fd;
+>+      unsigned char *broken_buf;
+>+      unsigned char *valid_buf;
+>+      int page_size = getpagesize();
+>+      int buf_size = page_size * 3;
+>+      ssize_t res;
+>+      int prot = PROT_READ | PROT_WRITE;
+>+      int flags = MAP_PRIVATE | MAP_ANONYMOUS;
+>+      int i;
+>+
+>+      fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
+>+      if (fd < 0) {
+>+              perror("accept");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      /* Setup first buffer. */
+>+      broken_buf = mmap(NULL, buf_size, prot, flags, -1, 0);
+>+      if (broken_buf == MAP_FAILED) {
+>+              perror("mmap for 'broken_buf'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      /* Unmap "hole" in buffer. */
+>+      if (munmap(broken_buf + page_size, page_size)) {
+>+              perror("'broken_buf' setup");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      valid_buf = mmap(NULL, buf_size, prot, flags, -1, 0);
+>+      if (valid_buf == MAP_FAILED) {
+>+              perror("mmap for 'valid_buf'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      /* Try to fill buffer with unmapped middle. */
+>+      res = read(fd, broken_buf, buf_size);
+>+      if (res != -1) {
+>+              perror("invalid read result of 'broken_buf'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      if (errno != ENOMEM) {
+>+              perror("invalid errno of 'broken_buf'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      /* Try to fill valid buffer. */
+>+      res = read(fd, valid_buf, buf_size);
+>+      if (res != buf_size) {
+>+              perror("invalid read result of 'valid_buf'");
+>+              exit(EXIT_FAILURE);
+>+      }
+>+
+>+      for (i = 0; i < buf_size; i++) {
+>+              if (valid_buf[i] != BUF_PATTERN_2) {
+>+                      perror("invalid pattern for valid buf");
+>+                      exit(EXIT_FAILURE);
+>+              }
+>+      }
+>+
+>+
+
+... and to remove the extra blank line here :-)
+
+Thanks,
+Stefano
+
+>+      /* Unmap buffers. */
+>+      munmap(broken_buf, page_size);
+>+      munmap(broken_buf + page_size * 2, page_size);
+>+      munmap(valid_buf, buf_size);
+>+      close(fd);
+>+}
+>+
+> static struct test_case test_cases[] = {
+>       {
+>               .name = "SOCK_STREAM connection reset",
+>@@ -425,6 +541,11 @@ static struct test_case test_cases[] = {
+>               .run_client = test_seqpacket_msg_trunc_client,
+>               .run_server = test_seqpacket_msg_trunc_server,
+>       },
+>+      {
+>+              .name = "SOCK_SEQPACKET invalid receive buffer",
+>+              .run_client = test_seqpacket_invalid_rec_buffer_client,
+>+              .run_server = test_seqpacket_invalid_rec_buffer_server,
+>+      },
+>       {},
+> };
+>
+>--
+>2.25.1
+>
 
