@@ -2,204 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751FD3B88D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CE23B88DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhF3TBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 15:01:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48066 "EHLO mail.kernel.org"
+        id S233587AbhF3TBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:01:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232881AbhF3TBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:01:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8689F61435;
-        Wed, 30 Jun 2021 18:58:40 +0000 (UTC)
+        id S232851AbhF3TBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 15:01:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CFF613DF;
+        Wed, 30 Jun 2021 18:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625079520;
-        bh=W6gEMOAr2k2UB3Fh65shSZlku3WM8UiBWegNqvIZ6Rk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BSMBj2i7bybKz3mkfmukLLY4ThDQG73FCmWMcZ1WISayfld+dmOjV9V46JmMUOeFK
-         pW5vXC/41g2xOGCCEvmvAK6irxSTqXAdJ8jcsuzY4rzf0lAinl2RGMz0ZI0qePdtEH
-         zK3ReDHCW7qJTdwZgjfNdFCzUAOIuwSFxr66bK4D1/bPy1/SeWaSFEWysOSGf3zDiW
-         fVh4GND751ToS/uyYTTBYfJzFb/bM7esKhsMyE9ENNaPqm6YxE48odzQIYiaMDRh+O
-         MbNSNk0DBsu05LGZDQMpGOjRQLf5CppSiRPMMn7BoWM1cw03YLyerRdd7OQwNvCH+y
-         dwGeUiTeLqgvA==
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dongjiu Geng <gengdongjiu@huawei.com>
-Subject: [PATCH] clk: hisilicon: hi3559a: Drop __init markings everywhere
-Date:   Wed, 30 Jun 2021 11:58:39 -0700
-Message-Id: <20210630185839.3680834-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        s=k20201202; t=1625079564;
+        bh=+Qoi6zaLjN1sx/hHLl2ILKRfVIWSzyopQklvN1Izyu4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Sw9/2/1gN72JQ0kM1tTNHVuDPXymLqQ65jUUva/SL4uRF4yovOUUAzz4MwF/ljksR
+         O2Sb3P6Z4xg+KXbamWozGCqigXjTFa9QpMisIwSzyrNXyDO7o/l8TXDAlWeR3riihy
+         AYdHn29UotCsQ6qXOtYLd070CWeCYLicc8Q+1pUJdQYgZMvPyAvavzAMiHOoAObOSk
+         v3z6olvK+j2UVAzYLWfgqi3qonfnIurxMkvIDs+BrFnLPajetU8Jx91uA8kOHBpJDH
+         1SaEh73Apjs61DGAmi+b7qESo6w8fE9E/mx3pgbQBAH5geEMnxm2sET/7dWqRiQiae
+         nheBUdcbkhu8A==
+Date:   Wed, 30 Jun 2021 13:59:22 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+Message-ID: <20210630185922.GA4170992@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608080409.1729276-1-javierm@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is a platform driver. The probe function can be called after
-kernel init, and try to reference kernel memory that has been freed.
-Drop the __init markings everywhere here to avoid referencing initdata
-from non-init code. Fixes modpost warnings.
+[+cc Michal, Jingoo, Thierry, Jonathan]
 
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Dongjiu Geng <gengdongjiu@huawei.com>
-Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/hisilicon/clk-hi3559a.c | 39 ++++++++++++++---------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
+> IRQ handlers that are registered for shared interrupts can be called at
+> any time after have been registered using the request_irq() function.
+> 
+> It's up to drivers to ensure that's always safe for these to be called.
+> 
+> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
+> their handlers are registered very early in the probe function, an error
+> later can lead to these handlers being executed before all the required
+> resources have been properly setup.
+> 
+> For example, the rockchip_pcie_read() function used by these IRQ handlers
+> expects that some PCIe clocks will already be enabled, otherwise trying
+> to access the PCIe registers causes the read to hang and never return.
+> 
+> The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
+> shared interrupt handlers being called, by generating a spurious interrupt
+> just before a shared interrupt handler is unregistered.
+> 
+> But this means that if the option is enabled, any error in the probe path
+> of this driver could lead to one of the IRQ handlers to be executed.
+> 
+> In a rockpro64 board, the following sequence of events happens:
+> 
+>   1) "pcie-sys" IRQ is requested and its handler registered.
+>   2) "pcie-client" IRQ is requested and its handler registered.
+>   3) probe later fails due readl_poll_timeout() returning a timeout.
+>   4) the "pcie-sys" IRQ is unregistered.
+>   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
+>   6) "pcie-client" IRQ handler is called for this spurious interrupt.
+>   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
+>   8) the machine hangs because rockchip_pcie_read() call never returns.
+> 
+> To avoid cases like this, the handlers don't have to be registered until
+> very late in the probe function, once all the resources have been setup.
+> 
+> So let's just move all the IRQ init before the pci_host_probe() call, that
+> will prevent issues like this and seems to be the correct thing to do too.
+> 
+> Reported-by: Peter Robinson <pbrobinson@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Acked-by: Shawn Lin <shawn.lin@rock-chips.com>
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
-index b1f19c43b558..56012a3d0219 100644
---- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -107,25 +107,25 @@ static const struct hisi_fixed_rate_clock hi3559av100_fixed_rate_clks_crg[] = {
- };
- 
- 
--static const char *fmc_mux_p[] __initconst = {
-+static const char *fmc_mux_p[] = {
- 	"24m", "75m", "125m", "150m", "200m", "250m", "300m", "400m"
- };
- 
--static const char *mmc_mux_p[] __initconst = {
-+static const char *mmc_mux_p[] = {
- 	"100k", "25m", "49p5m", "99m", "187p5m", "150m", "198m", "400k"
- };
- 
--static const char *sysapb_mux_p[] __initconst = {
-+static const char *sysapb_mux_p[] = {
- 	"24m", "50m",
- };
- 
--static const char *sysbus_mux_p[] __initconst = {
-+static const char *sysbus_mux_p[] = {
- 	"24m", "300m"
- };
- 
--static const char *uart_mux_p[] __initconst = { "50m", "24m", "3m" };
-+static const char *uart_mux_p[] = { "50m", "24m", "3m" };
- 
--static const char *a73_clksel_mux_p[] __initconst = {
-+static const char *a73_clksel_mux_p[] = {
- 	"24m", "apll", "1000m"
- };
- 
-@@ -136,7 +136,7 @@ static const u32 sysbus_mux_table[]	= { 0, 1 };
- static const u32 uart_mux_table[]	= { 0, 1, 2 };
- static const u32 a73_clksel_mux_table[] = { 0, 1, 2 };
- 
--static struct hisi_mux_clock hi3559av100_mux_clks_crg[] __initdata = {
-+static struct hisi_mux_clock hi3559av100_mux_clks_crg[] = {
- 	{
- 		HI3559AV100_FMC_MUX, "fmc_mux", fmc_mux_p, ARRAY_SIZE(fmc_mux_p),
- 		CLK_SET_RATE_PARENT, 0x170, 2, 3, 0, fmc_mux_table,
-@@ -181,7 +181,7 @@ static struct hisi_mux_clock hi3559av100_mux_clks_crg[] __initdata = {
- 	},
- };
- 
--static struct hisi_gate_clock hi3559av100_gate_clks[] __initdata = {
-+static struct hisi_gate_clock hi3559av100_gate_clks[] = {
- 	{
- 		HI3559AV100_FMC_CLK, "clk_fmc", "fmc_mux",
- 		CLK_SET_RATE_PARENT, 0x170, 1, 0,
-@@ -336,7 +336,7 @@ static struct hisi_gate_clock hi3559av100_gate_clks[] __initdata = {
- 	},
- };
- 
--static struct hi3559av100_pll_clock hi3559av100_pll_clks[] __initdata = {
-+static struct hi3559av100_pll_clock hi3559av100_pll_clks[] = {
- 	{
- 		HI3559AV100_APLL_CLK, "apll", NULL, 0x0, 0, 24, 24, 3, 28, 3,
- 		0x4, 0, 12, 12, 6
-@@ -502,7 +502,7 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
- 	}
- }
- 
--static __init struct hisi_clock_data *hi3559av100_clk_register(
-+static struct hisi_clock_data *hi3559av100_clk_register(
- 	struct platform_device *pdev)
- {
- 	struct hisi_clock_data *clk_data;
-@@ -549,7 +549,7 @@ static __init struct hisi_clock_data *hi3559av100_clk_register(
- 	return ERR_PTR(ret);
- }
- 
--static __init void hi3559av100_clk_unregister(struct platform_device *pdev)
-+static void hi3559av100_clk_unregister(struct platform_device *pdev)
- {
- 	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
- 
-@@ -568,8 +568,7 @@ static const struct hisi_crg_funcs hi3559av100_crg_funcs = {
- 	.unregister_clks = hi3559av100_clk_unregister,
- };
- 
--static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[]
--	__initdata = {
-+static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[] = {
- 	{ HI3559AV100_SHUB_SOURCE_SOC_24M, "clk_source_24M", NULL, 0, 24000000UL, },
- 	{ HI3559AV100_SHUB_SOURCE_SOC_200M, "clk_source_200M", NULL, 0, 200000000UL, },
- 	{ HI3559AV100_SHUB_SOURCE_SOC_300M, "clk_source_300M", NULL, 0, 300000000UL, },
-@@ -587,16 +586,16 @@ static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[]
- 
- /* shub mux clk */
- static u32 shub_source_clk_mux_table[] = {0, 1, 2, 3};
--static const char *shub_source_clk_mux_p[] __initconst = {
-+static const char *shub_source_clk_mux_p[] = {
- 	"clk_source_24M", "clk_source_200M", "clk_source_300M", "clk_source_PLL"
- };
- 
- static u32 shub_uart_source_clk_mux_table[] = {0, 1, 2, 3};
--static const char *shub_uart_source_clk_mux_p[] __initconst = {
-+static const char *shub_uart_source_clk_mux_p[] = {
- 	"clk_uart_32K", "clk_uart_div_clk", "clk_uart_div_clk", "clk_source_24M"
- };
- 
--static struct hisi_mux_clock hi3559av100_shub_mux_clks[] __initdata = {
-+static struct hisi_mux_clock hi3559av100_shub_mux_clks[] = {
- 	{
- 		HI3559AV100_SHUB_SOURCE_CLK, "shub_clk", shub_source_clk_mux_p,
- 		ARRAY_SIZE(shub_source_clk_mux_p),
-@@ -615,7 +614,7 @@ static struct hisi_mux_clock hi3559av100_shub_mux_clks[] __initdata = {
- static struct clk_div_table shub_spi_clk_table[] = {{0, 8}, {1, 4}, {2, 2}};
- static struct clk_div_table shub_uart_div_clk_table[] = {{1, 8}, {2, 4}};
- 
--static struct hisi_divider_clock hi3559av100_shub_div_clks[] __initdata = {
-+static struct hisi_divider_clock hi3559av100_shub_div_clks[] = {
- 	{ HI3559AV100_SHUB_SPI_SOURCE_CLK, "clk_spi_clk", "shub_clk", 0, 0x20, 24, 2,
- 	  CLK_DIVIDER_ALLOW_ZERO, shub_spi_clk_table,
- 	},
-@@ -625,7 +624,7 @@ static struct hisi_divider_clock hi3559av100_shub_div_clks[] __initdata = {
- };
- 
- /* shub gate clk */
--static struct hisi_gate_clock hi3559av100_shub_gate_clks[] __initdata = {
-+static struct hisi_gate_clock hi3559av100_shub_gate_clks[] = {
- 	{
- 		HI3559AV100_SHUB_SPI0_CLK, "clk_shub_spi0", "clk_spi_clk",
- 		0, 0x20, 1, 0,
-@@ -697,7 +696,7 @@ static int hi3559av100_shub_default_clk_set(void)
- 	return 0;
- }
- 
--static __init struct hisi_clock_data *hi3559av100_shub_clk_register(
-+static struct hisi_clock_data *hi3559av100_shub_clk_register(
- 	struct platform_device *pdev)
- {
- 	struct hisi_clock_data *clk_data = NULL;
-@@ -751,7 +750,7 @@ static __init struct hisi_clock_data *hi3559av100_shub_clk_register(
- 	return ERR_PTR(ret);
- }
- 
--static __init void hi3559av100_shub_clk_unregister(struct platform_device *pdev)
-+static void hi3559av100_shub_clk_unregister(struct platform_device *pdev)
- {
- 	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
- 
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+I think the above commit log is perfectly accurate, but all the
+details might suggest that this is something specific to rockchip or
+CONFIG_DEBUG_SHIRQ, which it isn't, and they might obscure the
+fundamental problem, which is actually very simple: we registered IRQ
+handlers before we were ready for them to be called.
 
+I propose the following commit log in the hope that it would help
+other driver authors to make similar fixes:
+
+    PCI: rockchip: Register IRQ handlers after device and data are ready
+
+    An IRQ handler may be called at any time after it is registered, so
+    anything it relies on must be ready before registration.
+
+    rockchip_pcie_subsys_irq_handler() and rockchip_pcie_client_irq_handler()
+    read registers in the PCIe controller, but we registered them before
+    turning on clocks to the controller.  If either is called before the clocks
+    are turned on, the register reads fail and the machine hangs.
+
+    Similarly, rockchip_pcie_legacy_int_handler() uses rockchip->irq_domain,
+    but we installed it before initializing irq_domain.
+
+    Register IRQ handlers after their data structures are initialized and
+    clocks are enabled.
+
+If this is inaccurate or omits something important, let me know.  I
+can make any updates locally.
+
+Bjorn
+
+> ---
+> 
+> Changes in v2:
+> - Add missing word in the commit message.
+> - Include Shawn Lin's Acked-by tag.
+> 
+>  drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+> index f1d08a1b159..78d04ac29cd 100644
+> --- a/drivers/pci/controller/pcie-rockchip-host.c
+> +++ b/drivers/pci/controller/pcie-rockchip-host.c
+> @@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+>  	if (err)
+>  		return err;
+>  
+> -	err = rockchip_pcie_setup_irq(rockchip);
+> -	if (err)
+> -		return err;
+> -
+>  	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
+>  	if (IS_ERR(rockchip->vpcie12v)) {
+>  		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
+> @@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_vpcie;
+>  
+> -	rockchip_pcie_enable_interrupts(rockchip);
+> -
+>  	err = rockchip_pcie_init_irq_domain(rockchip);
+>  	if (err < 0)
+>  		goto err_deinit_port;
+> @@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+>  	bridge->sysdata = rockchip;
+>  	bridge->ops = &rockchip_pcie_ops;
+>  
+> +	err = rockchip_pcie_setup_irq(rockchip);
+> +	if (err)
+> +		goto err_remove_irq_domain;
+> +
+> +	rockchip_pcie_enable_interrupts(rockchip);
+> +
+>  	err = pci_host_probe(bridge);
+>  	if (err < 0)
+>  		goto err_remove_irq_domain;
+> -- 
+> 2.31.1
+> 
