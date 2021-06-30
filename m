@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAD33B871D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4113B8720
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhF3QfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:35:18 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:41884 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhF3QfQ (ORCPT
+        id S232009AbhF3QgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhF3QgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:35:16 -0400
-Received: by mail-ot1-f41.google.com with SMTP id m6-20020a9d1d060000b029044e2d8e855eso3303485otm.8;
-        Wed, 30 Jun 2021 09:32:47 -0700 (PDT)
+        Wed, 30 Jun 2021 12:36:05 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D93C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 09:33:36 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e33so2846970pgm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 09:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hfx5UH1QNeMIT1lwqqkYcSf9Aw2ymYStyRD2Spjzp0o=;
+        b=Fpbl77mM5zyzxMf+eqFQGz3orfQ5wo37mHkNMxfZrJF1W8yf+gdu/ESRpMAhrjxmfK
+         uN9vOb9vSvMJtmlWQ58t7u44px7s6IXM+0nL4SVmYERpkTcHAqbtkpBmCpmBUgDsGzPR
+         KZ5Rui0/WVm8YpUe+e6Xf8hZ1NDjgw2ZfIaeJ85XQIJ/YwiKoj4xIlHC58poZCEL/Sh2
+         wUHeV9U+hfs1A+jf+nL4UOAuTYDntdwVva3wTIYpsUgrgvKrqoBhT/RcQK1CJM38u+oh
+         aNiYtW+XO3Q3JA5CrnaOj4DfvdTR+e+dNpSQ0Jldw7/LLYlzH1SB75P10XWR6k1PokS5
+         BSZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xjiwcwmwYVU/Y0LKZ3Up/yPWW67ykZw9kfOwYgExw7A=;
-        b=G6qS367FD1QKC6bno/AP2nyWpY3qXcLnA3UclT+3eizEdF3wvHYjo2qYhBnPq2+ub0
-         hOUoIfLCfOXP+kLuZ82ZmG0gvablffdzbtl+2gDKnWVJNMJQoPLEJCT70CCDQrprEqcI
-         FojbpmTV12WBQGC7MM81Trw0XFKjyvDoodu3S3xlPQTJr7JkJfETJi3YWr2ZT/Q4x/1t
-         JUOI8QUcXf2iBi40scLivEhy0UGtdR2OnvtIbiDx2uqiMa7HRqyHCm7liaHrcIbltDxX
-         dH2V6WG8uGfcTEoqiaae6sA7471RuoNLKpfGXN02tjl6HIE0JjXb24c2C7uFkWdOlAeW
-         i0iw==
-X-Gm-Message-State: AOAM531CsFtbZPgsvwLNhC3MS/+5pAjqrF4JwFBfc1yuM9DC2uCrQtf3
-        sdiHxX48Pq4984W2kwWWwZOeecAfwQIM32OLQ+I=
-X-Google-Smtp-Source: ABdhPJxfrb8HvU4LnjaS0Rjd6JV80ARcJH49aa6L8I/mgHtJMzv8D4zC8Uxs6rvB5RN02anw7eODG50Q8pyJ77E6X+k=
-X-Received: by 2002:a05:6830:1d8:: with SMTP id r24mr3146657ota.206.1625070767446;
- Wed, 30 Jun 2021 09:32:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hfx5UH1QNeMIT1lwqqkYcSf9Aw2ymYStyRD2Spjzp0o=;
+        b=dZ9n8V7Hwwoc3NJwLXmbDLBJ0+mCkdCTG02e3RuRos8kcwuhvKLSPy2k6KM+fTrRjJ
+         zlfti1FfmL+ImFZL/XAagIYxONguRWwFmFFAc1kRow/BcW8JpcAHi9PZiMSzO7xWUNth
+         Ia5gKf3146dlV7Curt7ONuvoK+8HawJn82EnYgChUDkMiE33oIRlRfk23beAqS6pSd86
+         ucweRJQGwQTyLUlNC/ctIqezn3M5macvRSib6dDHc+6N/SQi8KVdLen6uHPDV+ZSyAuh
+         QfFiS723lAVg8zsP9+WBduSfoQgBnB6Bnk7sSgA33m8NBRyyh4jmOKlwFqQT/tssro7Y
+         cfdA==
+X-Gm-Message-State: AOAM530gtE75xs+xhoASc0HHQ3Toiwumenla9ltVyOxqPG72mrUTUZNA
+        aQDmCqR6tYVRFpS+kido8UX8YQ==
+X-Google-Smtp-Source: ABdhPJxFwQ6+CwhR5+qOTQIDEK8Uq/+LANX6/g6d9qF91Bo5AxNVA/EEcrCvfY9m+ALZicyc6hDxhQ==
+X-Received: by 2002:aa7:828f:0:b029:200:6e27:8c8f with SMTP id s15-20020aa7828f0000b02902006e278c8fmr36638442pfm.44.1625070815750;
+        Wed, 30 Jun 2021 09:33:35 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id d207sm16891900pfd.118.2021.06.30.09.33.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 09:33:34 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 16:33:31 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org
+Subject: Re: [PATCH 0/2] KVM: x86: Convey the exit reason to user-space on
+ emulation failure
+Message-ID: <YNyc26bXNg4bEAlG@google.com>
+References: <20210628173152.2062988-1-david.edmondson@oracle.com>
 MIME-Version: 1.0
-References: <20210626162324.8236-1-tung-chen.shih@mediatek.com> <20210629061758.wdavb2a4bpklmqi3@vireshk-i7>
-In-Reply-To: <20210629061758.wdavb2a4bpklmqi3@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 30 Jun 2021 18:32:36 +0200
-Message-ID: <CAJZ5v0g2fc7UDFajbFCZS0ctSZcV-h_JCwts6w6fe3Xy_S=gzA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] cpufreq: fix the target freq not in the range of
- policy->min & max
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        TungChen Shih <tung-chen.shih@mediatek.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628173152.2062988-1-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 8:18 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 27-06-21, 00:23, TungChen Shih wrote:
-> >     The function cpufreq_driver_resolve_freq() should return the lowest
->
-> Don't add extra spaces at the beginning of paragraphs here.
->
-> > supported freq greater than or equal to the given target_freq, subject
-> > to policy (min/max) and driver limitations. However, the index returned
-> > by cpufreq_frequency_table_target() won't subject to policy min/max in
-> > some cases.
-> >
-> >     In cpufreq_frequency_table_target(), this function will try to find
-> > an index for @target_freq in freq_table, and the frequency of selected
-> > index should be in the range [policy->min, policy->max], which means:
-> >
-> >     policy->min <= policy->freq_table[idx].frequency <= policy->max
-> >
-> >     Though "clamp_val(target_freq, policy->min, policy->max);" would
-> > have been called to check this condition, when policy->max or min is
-> > not exactly one of the frequency in the frequency table,
-> > policy->freq_table[idx].frequency may still go out of the range
-> >
-> >     For example, if our sorted freq_table is [3000, 2000, 1000], and
-> > suppose we have:
-> >
-> >     @target_freq = 2500
-> >     @policy->min = 2000
-> >     @policy->max = 2200
-> >     @relation = CPUFREQ_RELATION_L
-> >
-> > 1. After clamp_val(target_freq, policy->min, policy->max); @target_freq
-> > becomes 2200
-> > 2. Since we use CPUFREQ_REALTION_L, final selected freq will be 3000 which
-> > beyonds policy->max
->
-> Right so the problem does exist,
+On Mon, Jun 28, 2021 at 06:31:50PM +0100, David Edmondson wrote:
+> To aid in debugging failures in the field, when instruction emulation
 
-That IMO is a matter for discussion and the patch author seems to have
-decided to ignore my previous comments.
+What do you mean by a "debugging failure"?
 
-> and not only with
-> cpufreq_driver_resolve_freq(), but __cpufreq_driver_target() as well.
+> fails, report the VM exit reason to userspace in order that it can be
+> recorded.
 
-That all depends on what the policy min and max limits are expected to
-mean and so far the interpretation has been that they are applied to
-the target frequency coming from the governor.
+What is the benefit of seeing the VM-exit reason that led to an
+emulation failure?
 
-Drivers have never been expected to ensure that the final effective
-frequency will always be between the policy min and max and, indeed,
-they may not even be able to ensure that.
-
-Now, because RELATION_L is defined as "the closest frequency equal to
-or above the target", running at a frequency below the target is
-questionable even if the max limit gets in the way.  IOW, RELATION_L
-takes precedence over the policy max limit.
-
-Accordingly, I'm not going to apply this patch or anything similar to
-it until I'm given a really convincing argument otherwise.
-
-> I have a sent a patchset to update both of these to start sharing some
-> code and we need to fix this for both now.
->
-> > Signed-off-by: TungChen Shih <tung-chen.shih@mediatek.com>
-> > ---
-> >  drivers/cpufreq/cpufreq.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 802abc925b2a..8e3a17781618 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -544,8 +544,23 @@ unsigned int cpufreq_driver_resolve_freq(struct cpufreq_policy *policy,
-> >       if (cpufreq_driver->target_index) {
-> >               unsigned int idx;
-> >
-> > +             /*  to find the frequency >= target_freq */
-> >               idx = cpufreq_frequency_table_target(policy, target_freq,
-> >                                                    CPUFREQ_RELATION_L);
-> > +
-> > +             /* frequency should subject to policy (min/max) */
-> > +             if (policy->freq_table[idx].frequency > policy->max) {
-> > +                     if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
-> > +                             idx--;
-> > +                     else
-> > +                             idx++;
-> > +             } else if (policy->freq_table[idx].frequency < policy->min) {
-> > +                     if (policy->freq_table_sorted == CPUFREQ_TABLE_SORTED_ASCENDING)
-> > +                             idx++;
-> > +                     else
-> > +                             idx--;
-> > +             }
->
-> This doesn't look clean to be honest.
->
-> Rafael, does it make sense to update cpufreq_frequency_table_target()
-> (and its internal routines) to take policy bounds in consideration, or
-> something else ?
->
-> --
-> viresh
+> 
+> The changes are on top of Aaron's patches from
+> https://lore.kernel.org/r/20210510144834.658457-1-aaronlewis@google.com
+> which are in the KVM queue, but not yet upstream.
+> 
+> David Edmondson (2):
+>   KVM: x86: Add kvm_x86_ops.get_exit_reason
+>   KVM: x86: On emulation failure, convey the exit reason to userspace
+> 
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/svm/svm.c             |  6 ++++++
+>  arch/x86/kvm/vmx/vmx.c             |  6 ++++++
+>  arch/x86/kvm/x86.c                 | 23 +++++++++++++++++------
+>  include/uapi/linux/kvm.h           |  2 ++
+>  6 files changed, 33 insertions(+), 6 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
