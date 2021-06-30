@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211E03B8A91
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A045A3B8A97
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhF3Wp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 18:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhF3WpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 18:45:25 -0400
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236A7C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:42:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id D35AE2FD;
-        Thu,  1 Jul 2021 00:42:50 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id G7ISy1JTru8z; Thu,  1 Jul 2021 00:42:50 +0200 (CEST)
-Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id EFB4A60;
-        Thu,  1 Jul 2021 00:42:49 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.94.2)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1lyiuu-006wxI-OS; Thu, 01 Jul 2021 00:42:48 +0200
-Date:   Thu, 1 Jul 2021 00:42:48 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Salah Triki <salah.triki@gmail.com>,
-        w.d.hubbs@gmail.com, chris@the-brannons.com, kirk@reisers.ca,
-        speakup@linux-speakup.org
-Subject: [PATCH] speakup: replace sprintf() by scnprintf()
-Message-ID: <20210630224248.2iq6o6krecx4cz5j@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Salah Triki <salah.triki@gmail.com>, w.d.hubbs@gmail.com,
-        chris@the-brannons.com, kirk@reisers.ca, speakup@linux-speakup.org
+        id S232845AbhF3Wv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 18:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229950AbhF3WvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 18:51:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F23746144B;
+        Wed, 30 Jun 2021 22:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625093335;
+        bh=K5tqVnA5H8pJjO/PErp+ucNJUcozi2NUBIMqh7jU9cg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ff0mncC0JZQqsxNHNmEAQ391wV4s4XXHPtCqgygDCXq6MtkEmYk5aqfAGBX/WwxMh
+         wyRe44IuixO2+cwRv7idWkhfbXcdONQOV9QASQfYKUroKnwoKqGVWzcKq9/9DdKQji
+         /mv5L95v85w+DItOsSdI/oqWj4937RuBEf+UORRPp6mEEAPjc+q5xUVf1meRR3gpFB
+         QlSUxCFj9pxRZ1sjPishkDebNZmFNJ5h3de7WMa+WisBiGQK+m31yTLGilcl9xw/RZ
+         6YMerLOmKTJjP53koTfuPkjVW4eIEVrAlTa/EgV/ERV+r/HZ2axbeAAZRlRKupLRvT
+         4K+6eioQL+qqA==
+Received: by mail-ej1-f48.google.com with SMTP id hc16so6929848ejc.12;
+        Wed, 30 Jun 2021 15:48:54 -0700 (PDT)
+X-Gm-Message-State: AOAM533YzyK62KXo4tTn5cUQaaM4cWdzrZmhdtZJmoSjaKfxox6/Vcb/
+        EBCIHUvHyEBpAQ/B6CbWqTZsYmlmPctimmGeqA==
+X-Google-Smtp-Source: ABdhPJzv+vxWlKKUY48KvGgu+sCcmFtxKd8ufDpE3mMFjf3babtLW/Uip0aRn9nBtqlbe5jpH6U/4LTeK9Al6Qe1vJo=
+X-Received: by 2002:a17:906:680f:: with SMTP id k15mr36868137ejr.75.1625093333492;
+ Wed, 30 Jun 2021 15:48:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spamd-Bar: --
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Server: hera
-X-Rspamd-Queue-Id: D35AE2FD
-X-Spamd-Result: default: False [-2.50 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         HAS_ORG_HEADER(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         BAYES_HAM(-3.00)[100.00%]
+References: <20210630144646.868702-1-enric.balletbo@collabora.com> <20210630164623.3.I7bd7d9a8da5e2894711b700a1127e6902a2b2f1d@changeid>
+In-Reply-To: <20210630164623.3.I7bd7d9a8da5e2894711b700a1127e6902a2b2f1d@changeid>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 1 Jul 2021 06:48:42 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-VAvKCkBj1q4euWFcmbnNUJfXpG9rh9vua80yrok-y9w@mail.gmail.com>
+Message-ID: <CAAOTY_-VAvKCkBj1q4euWFcmbnNUJfXpG9rh9vua80yrok-y9w@mail.gmail.com>
+Subject: Re: [PATCH 3/6] arm64: dts: mt8173: Add the mmsys reset bit to reset
+ the dsi0
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace sprintf() by scnprintf() in order to avoid buffer overflows.
+HI, Enric:
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
----
- drivers/accessibility/speakup/speakup_soft.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
+=B46=E6=9C=8830=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:47=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+>
+> Reset the DSI hardware is needed to prevent different settings between
+> the bootloader and the kernel.
+>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+>
+>  arch/arm64/boot/dts/mediatek/mt8173.dtsi  | 2 ++
+>  include/dt-bindings/reset/mt8173-resets.h | 2 ++
+>  2 files changed, 4 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8173.dtsi
+> index e5596fe01a1d..36c3998eb7f1 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> @@ -1036,6 +1036,7 @@ mmsys: syscon@14000000 {
+>                         assigned-clocks =3D <&topckgen CLK_TOP_MM_SEL>;
+>                         assigned-clock-rates =3D <400000000>;
+>                         #clock-cells =3D <1>;
+> +                       #reset-cells =3D <1>;
+>                         mboxes =3D <&gce 0 CMDQ_THR_PRIO_HIGHEST>,
+>                                  <&gce 1 CMDQ_THR_PRIO_HIGHEST>;
+>                         mediatek,gce-client-reg =3D <&gce SUBSYS_1400XXXX=
+ 0 0x1000>;
+> @@ -1262,6 +1263,7 @@ dsi0: dsi@1401b000 {
+>                                  <&mmsys CLK_MM_DSI0_DIGITAL>,
+>                                  <&mipi_tx0>;
+>                         clock-names =3D "engine", "digital", "hs";
+> +                       resets =3D <&mmsys MT8173_MMSYS_SW0_RST_B_DISP_DS=
+I0>;
 
-diff --git a/drivers/accessibility/speakup/speakup_soft.c b/drivers/accessibility/speakup/speakup_soft.c
-index c3f97c572fb6..19824e7006fe 100644
---- a/drivers/accessibility/speakup/speakup_soft.c
-+++ b/drivers/accessibility/speakup/speakup_soft.c
-@@ -153,18 +153,25 @@ static char *get_initstring(void)
- 	static char buf[40];
- 	char *cp;
- 	struct var_t *var;
-+	size_t len;
-+	size_t n;
- 
- 	memset(buf, 0, sizeof(buf));
- 	cp = buf;
-+	len = sizeof(buf);
-+
- 	var = synth_soft.vars;
- 	while (var->var_id != MAXVARS) {
- 		if (var->var_id != CAPS_START && var->var_id != CAPS_STOP &&
--		    var->var_id != PAUSE && var->var_id != DIRECT)
--			cp = cp + sprintf(cp, var->u.n.synth_fmt,
--					  var->u.n.value);
-+		    var->var_id != PAUSE && var->var_id != DIRECT) {
-+			n = scnprintf(cp, len, var->u.n.synth_fmt,
-+				      var->u.n.value);
-+			cp = cp + n;
-+			len = len - n;
-+		}
- 		var++;
- 	}
--	cp = cp + sprintf(cp, "\n");
-+	cp = cp + scnprintf(cp, len, "\n");
- 	return buf;
- }
- 
--- 
-2.25.1
+Add this in binding document. It would be good if the binding document
+is in yaml format.
+
+Regards,
+Chun-Kuang.
+
+>                         phys =3D <&mipi_tx0>;
+>                         phy-names =3D "dphy";
+>                         status =3D "disabled";
+> diff --git a/include/dt-bindings/reset/mt8173-resets.h b/include/dt-bindi=
+ngs/reset/mt8173-resets.h
+> index ba8636eda5ae..6a60c7cecc4c 100644
+> --- a/include/dt-bindings/reset/mt8173-resets.h
+> +++ b/include/dt-bindings/reset/mt8173-resets.h
+> @@ -27,6 +27,8 @@
+>  #define MT8173_INFRA_GCE_FAXI_RST       40
+>  #define MT8173_INFRA_MMIOMMURST         47
+>
+> +/* MMSYS resets */
+> +#define MT8173_MMSYS_SW0_RST_B_DISP_DSI0       25
+>
+>  /*  PERICFG resets */
+>  #define MT8173_PERI_UART0_SW_RST        0
+> --
+> 2.30.2
+>
