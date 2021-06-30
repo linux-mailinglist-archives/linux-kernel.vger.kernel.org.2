@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30A53B8243
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47073B8241
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbhF3Mhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        id S234724AbhF3Mhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234618AbhF3Mho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234553AbhF3Mho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 08:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2DA61622;
-        Wed, 30 Jun 2021 12:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625056516;
-        bh=Ou0dDCgoY93+XH7Ohp1U845vXDZIJyhjcdMYSiuQTkY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C56YgfjRwydgzFN0x7mgvW0G4MUTRG/h21qRv1gFf57Z8fePi1NOU9hsbSNqfe6bp
-         n6BvGMRjpFR82y/1STdAjD46sczRg2gRbQa6cCQuKe3aOq3ts+rqJ/iRYQd7q76fA7
-         FGH/oJrHYVKUEg6KzCgtmRUt4QxmHlAuZ4R13OsrAx8BQ1TPAOm61Zn3agDgmK6AgJ
-         KdcmNOeQ3T7uDV1L+sGDe1f4pky5Cjk/0OLPRT0hiVZ6CbqemMmS0WehZzjYH5RnlF
-         hOVVLd04fomkCA1tC1GqhNWcfcAWvneCbd8lVmMj6nq1Mh8ejpXwIQMlF7aK2jXwYm
-         qkT0wLLwMY/vg==
-Date:   Wed, 30 Jun 2021 13:34:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@foss.st.com
-Subject: Re: [PATCH 3/6] Revert "spi: stm32: properly handle 0 byte transfer"
-Message-ID: <20210630123447.GD5106@sirena.org.uk>
-References: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
- <1625042723-661-4-git-send-email-alain.volmat@foss.st.com>
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE68C61584;
+        Wed, 30 Jun 2021 12:35:14 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 08:35:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Paul Burton <paulburton@google.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] tracing: Resize tgid_map to PID_MAX_LIMIT, not
+ PID_MAX_DEFAULT
+Message-ID: <20210630083513.1658a6fb@oasis.local.home>
+In-Reply-To: <20210630003406.4013668-2-paulburton@google.com>
+References: <20210630003406.4013668-1-paulburton@google.com>
+        <20210630003406.4013668-2-paulburton@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0vzXIDBeUiKkjNJl"
-Content-Disposition: inline
-In-Reply-To: <1625042723-661-4-git-send-email-alain.volmat@foss.st.com>
-X-Cookie: Use at own risk.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 29 Jun 2021 17:34:06 -0700
+Paul Burton <paulburton@google.com> wrote:
 
---0vzXIDBeUiKkjNJl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On 64 bit systems this will increase the size of tgid_map from 256KiB to
+> 16MiB. Whilst this 64x increase in memory overhead sounds significant 64
+> bit systems are presumably best placed to accommodate it, and since
+> tgid_map is only allocated when the record-tgid option is actually used
+> presumably the user would rather it spends sufficient memory to actually
+> record the tgids they expect.
 
-On Wed, Jun 30, 2021 at 10:45:20AM +0200, Alain Volmat wrote:
-> This reverts commit 2269f5a8b1a7b38651d62676b98182828f29d11a.
-> 0 byte transfer handling is now done within the core in code added
-> by commit b306320322c9 ("spi: Skip zero-length transfers in spi_transfer_one_message()")
+NAK. Please see how I fixed this for the saved_cmdlines, and implement
+it the same way.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+785e3c0a3a87 ("tracing: Map all PIDs to command lines")
 
---0vzXIDBeUiKkjNJl
-Content-Type: application/pgp-signature; name="signature.asc"
+It's a cache, it doesn't need to save everything.
 
------BEGIN PGP SIGNATURE-----
+-- Steve
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcZOcACgkQJNaLcl1U
-h9B/ogf/Vst1y720ItQmoJtAnynVuU00lwrfCgpr2gA02reYHLKL2xL3r0VmqKBe
-SCuYcM9dUn+xbGcvjgWs2vufZmXKUu7WLkSHl6F01GZWMV2oHflU9XsY7zcbYZIO
-hRV7/ZN/Q1s/jwqwnI+pd4EbJ+lpdW6GRrJVgxj4TzUgEqwv0X2LPtZDDKqbSpHH
-vtdwsYl/4JFmz/OfvHT046uAdbNeJft/Cwzn4ZZA83QxGuHbnVAOzSC1YQKiwuxR
-Zsp5Ppr2NHJqD4em8bY7PKfZpocM0MGTknqrF9ZEs9It/vUnjF6JRDkJmze7R79d
-nIdR40lj7E6pdA4xrv3U+mkfRkBY6g==
-=8ayZ
------END PGP SIGNATURE-----
 
---0vzXIDBeUiKkjNJl--
+> 
+> The size of tgid_map will also increase for CONFIG_BASE_SMALL=y
+> configurations, but these seem unlikely to be systems upon which people
+> are running ftrace with record-tgid anyway.
+
