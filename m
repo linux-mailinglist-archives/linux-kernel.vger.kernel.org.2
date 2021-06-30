@@ -2,258 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AA13B8A4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7D23B8A4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbhF3WDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 18:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S232806AbhF3WGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 18:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhF3WDH (ORCPT
+        with ESMTP id S232304AbhF3WGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 18:03:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F70C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:00:37 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id t17so7985494lfq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:00:37 -0700 (PDT)
+        Wed, 30 Jun 2021 18:06:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6959DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:04:09 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g24so2767648pji.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=rLExLdIz+idyut4neFBwQhY2RXoZ3u7nwVGRjI72EeM=;
-        b=p1RkDoamZTami3o0Jcdt/Wdlnftmy4lOr2CYQGJicjRwkXh3yLB+QZdfWPmOQy+BWa
-         xaVf54Rv3CAJgT3rZMfPqwz7yQr/2ocdIG4nIH6RajfjQxkBqgvhVFrsIyicFoRLz7td
-         6dYtsnsburISb7ZbvN+q/Ktb0lqa8ViDMyz2Do3RMWf5vRS75csFdWc9EH0N9TCd4uSY
-         vp/LeYlvGv1vVZ5rMQrrjeN5MhNQKcSO3/IhQV52lnNjvebPq1ZHabCK8p0adp3PRoKf
-         65/DK6N05rlwJDeUmoyNFUv4ND08VWLZUV01KswK9+cQz55uOQJnApSsUUtBrcXN4+3/
-         +Q1Q==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1xj3mjgl+Arki73EKAV3PgrCtaGzeKnSIXIchlBxI7Q=;
+        b=ZFbyjeWHwvRHjkoWH0VLZRj64VuV8dW50SYuFmOa8Qf0sCuKNptjXInz4yTTYxYvY6
+         0h+molYKLDQv+Y5fbYAImma6LRY5JjOW2+wn5LdYM4hKBGiW4Bxluh8gELH0CaPrkliV
+         0H+1OG7nuAPOUV56lP4jPUrHsmFQoYqdnoA2a8t8ZEPChGwzz0UoWrbDgc+SQ3diZCL/
+         6UdItCFGiKSXjoiO7xzMpQcYlE1uYQfVDOz8r3QAieMCveeGdoTm/6j60uXFWo20HvL8
+         qkmBuKjFzyJacM7aOTntm3tfT7sdjJqvg2JowrAq3MkgURnMneU6rQrT44Cjrzn1xrn9
+         SZGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=rLExLdIz+idyut4neFBwQhY2RXoZ3u7nwVGRjI72EeM=;
-        b=A9I3Mv6AfvwmFXlmRMEOFXn0lvUfuoUJGbT3e2X0B+dmEbsVZiAa9H+W504ns9gNNn
-         /9pk7f0/R9PEsutyme5+MhFSjUkia/XTOZAR/pHGCFrnT0XHQ0zUJmMmhOR5kSU6XfaB
-         FQL2slarOSJVgoIiOkMzRXajAhJkoUD0vliCGN3gR27Ruj2+gOOb7mRUcX1foiWwNE8l
-         g7Jwx9hltn2sPD5ZXkAV3n1DFqVjzdaZqxq42wI3f7S7xZh55Kx1MLPf05+X+fBD8sXi
-         9ufYv94/CvaNE/x5abOPg5RVmpOj7jcLlw7FoRbvhc5k2+wdMwUml6s3F28UkBc8Yr77
-         oM/w==
-X-Gm-Message-State: AOAM532Ak7nD/VPmzgCR/EO81XACpESa8LP4FmLg/GMN+uQ258HYAhV8
-        P5Tmi0PxR9jbiQYM7P4567A=
-X-Google-Smtp-Source: ABdhPJw8v7FZt1tjn7C0knDDy5LrvNYrZX8GiTj/q66YFQ8DT9WaKMvl7KxpV5LqJeYQkr5cPycWTg==
-X-Received: by 2002:ac2:4288:: with SMTP id m8mr10106090lfh.461.1625090435552;
-        Wed, 30 Jun 2021 15:00:35 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id r15sm2350773ljh.39.2021.06.30.15.00.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1xj3mjgl+Arki73EKAV3PgrCtaGzeKnSIXIchlBxI7Q=;
+        b=CQyRA8FoXCA0GQnAMte0oUWeremXW5ZFAu+xDqGpDTyg4zxVgJWiwWC2xf2mnPCKDn
+         b3qc8FpePlJRvtKffk34DiivfJyMdvmORojFjZhbsq/UVlgEHaQfCGy89avyZFXUUDCm
+         aBCYt4vkD5XhWx/undyCCZ0MVwW8DBENayn/WP5t+HKBuGSwn+8jdHusJYVnq64091FY
+         XosmraMZax59UCWrdtoRHwmnDy0k9JkE+AuRegaPBsrtuFpmwgToSeegoECdOO7EDK7P
+         NqdgDymqndO9z4k2zLpohSGr4Xk9GpWMoLzYd5tF9VKiIDac4sotifXjCd9869M2BnJH
+         ORxA==
+X-Gm-Message-State: AOAM531Jnv973HXLc7G4zPz+MQRY8xOkjRfltYEyrBauy1ZzKuvMmd93
+        jJSI9bD2uGL45AUW1kaW3mUwpQ==
+X-Google-Smtp-Source: ABdhPJxz1ZMyumEp4ut6puBSe5M6KJD1Ou9m6zO5s120HNE35/ac+ogH5z1hWCJkO91lDKpKS2b7BQ==
+X-Received: by 2002:a17:90a:db4e:: with SMTP id u14mr6487559pjx.120.1625090648854;
+        Wed, 30 Jun 2021 15:04:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:14ba])
+        by smtp.gmail.com with ESMTPSA id x4sm13788221pgr.40.2021.06.30.15.04.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 15:00:35 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 01:00:32 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+44e40ac2cfe68e8ce207@syzkaller.appspotmail.com>
-Cc:     alex.dewar90@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        hdanton@sina.com, jhansen@vmware.com, linux-kernel@vger.kernel.org,
-        snovitoll@gmail.com, syzkaller-bugs@googlegroups.com,
-        vdasa@vmware.com
-Subject: Re: [syzbot] possible deadlock in vmci_qp_broker_detach
-Message-ID: <20210701010032.4046a863@gmail.com>
-In-Reply-To: <00000000000017d93605c602cafd@google.com>
-References: <20210701003616.7c4c7c9c@gmail.com>
-        <00000000000017d93605c602cafd@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Wed, 30 Jun 2021 15:04:08 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 18:04:06 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, matthias.bgg@gmail.com, minchan@google.com,
+        timmurray@google.com, yt.chang@mediatek.com, wenju.xu@mediatek.com,
+        jonathan.jmchen@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel-team@android.com,
+        SH Chen <show-hong.chen@mediatek.com>
+Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work
+ rescheduling
+Message-ID: <YNzqVh9fnpYVeP6j@cmpxchg.org>
+References: <20210630205151.137001-1-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/Lh44SGh/UM9vh2l2eij6heF"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630205151.137001-1-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/Lh44SGh/UM9vh2l2eij6heF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Wed, 30 Jun 2021 14:56:06 -0700
-syzbot <syzbot+44e40ac2cfe68e8ce207@syzkaller.appspotmail.com> wrote:
-
-> Hello,
+On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
+> Psi polling mechanism is trying to minimize the number of wakeups to
+> run psi_poll_work and is currently relying on timer_pending() to detect
+> when this work is already scheduled. This provides a window of opportunity
+> for psi_group_change to schedule an immediate psi_poll_work after
+> poll_timer_fn got called but before psi_poll_work could reschedule itself.
+> Below is the depiction of this entire window:
 > 
-> syzbot has tested the proposed patch but the reproducer is still
-> triggering an issue: INFO: task hung in vmci_ctx_destroy
+> poll_timer_fn
+>   wake_up_interruptible(&group->poll_wait);
 > 
-> INFO: task syz-executor.4:4967 blocked for more than 143 seconds.
->       Tainted: G        W         5.13.0-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
-> message. task:syz-executor.4  state:D stack:29136 pid: 4967 ppid:
-> 8823 flags:0x00004004 Call Trace:
+> psi_poll_worker
+>   wait_event_interruptible(group->poll_wait, ...)
+>   psi_poll_work
+>     psi_schedule_poll_work
+>       if (timer_pending(&group->poll_timer)) return;
+>       ...
+>       mod_timer(&group->poll_timer, jiffies + delay);
+> 
+> Prior to 461daba06bdc we used to rely on poll_scheduled atomic which was
+> reset and set back inside psi_poll_work and therefore this race window
+> was much smaller.
+> The larger window causes increased number of wakeups and our partners
+> report visible power regression of ~10mA after applying 461daba06bdc.
+> Bring back the poll_scheduled atomic and make this race window even
+> narrower by resetting poll_scheduled only when we reach polling expiration
+> time. This does not completely eliminate the possibility of extra wakeups
+> caused by a race with psi_group_change however it will limit it to the
+> worst case scenario of one extra wakeup per every tracking window (0.5s
+> in the worst case).
+> By tracing the number of immediate rescheduling attempts performed by
+> psi_group_change and the number of these attempts being blocked due to
+> psi monitor being already active, we can assess the effects of this change:
+> 
+> Before the patch:
+>                                            Run#1    Run#2      Run#3
+> Immediate reschedules attempted:           684365   1385156    1261240
+> Immediate reschedules blocked:             682846   1381654    1258682
+> Immediate reschedules (delta):             1519     3502       2558
+> Immediate reschedules (% of attempted):    0.22%    0.25%      0.20%
+> 
+> After the patch:
+>                                            Run#1    Run#2      Run#3
+> Immediate reschedules attempted:           882244   770298    426218
+> Immediate reschedules blocked:             881996   769796    426074
+> Immediate reschedules (delta):             248      502       144
+> Immediate reschedules (% of attempted):    0.03%    0.07%     0.03%
+> 
+> The number of non-blocked immediate reschedules dropped from 0.22-0.25%
+> to 0.03-0.07%. The drop is attributed to the decrease in the race window
+> size and the fact that we allow this race only when psi monitors reach
+> polling window expiration time.
+> 
+> Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
+> Reported-by: Kathleen Chang <yt.chang@mediatek.com>
+> Reported-by: Wenju Xu <wenju.xu@mediatek.com>
+> Reported-by: Jonathan Chen <jonathan.jmchen@mediatek.com>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Tested-by: SH Chen <show-hong.chen@mediatek.com>
 
-Hmm, I forgot to change old vmci_ctx_put() in
-vmci_ctx_enqueue_datagram()...
-
-
-#syz test
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-
-
-With regards,
-Pavel Skripkin
-
---MP_/Lh44SGh/UM9vh2l2eij6heF
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-misc-vmv_vmci-fix-deadlock.patch
-
-From 098680ce114e3f0aabdda0b87e8a0a52c9ebb7cc Mon Sep 17 00:00:00 2001
-From: Pavel Skripkin <paskripkin@gmail.com>
-Date: Thu, 1 Jul 2021 00:30:29 +0300
-Subject: [PATCH] misc: vmv_vmci: fix deadlock
-
-Ugly patch just to test general idea...
-
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/misc/vmw_vmci/vmci_context.c | 39 +++++++++++++++++++++++++---
- drivers/misc/vmw_vmci/vmci_context.h |  4 +++
- drivers/misc/vmw_vmci/vmci_host.c    |  2 +-
- 3 files changed, 41 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index 26ff49fdf0f7..8cbb2eae01d3 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -113,6 +113,8 @@ struct vmci_ctx *vmci_ctx_create(u32 cid, u32 priv_flags,
- 
- 	kref_init(&context->kref);
- 	spin_lock_init(&context->lock);
-+	atomic_set(&context->no_destroy, 0);
-+	init_waitqueue_head(&context->destroy_wait);
- 	INIT_LIST_HEAD(&context->list_item);
- 	INIT_LIST_HEAD(&context->datagram_queue);
- 	INIT_LIST_HEAD(&context->notifier_list);
-@@ -192,6 +194,7 @@ void vmci_ctx_destroy(struct vmci_ctx *context)
- 	spin_unlock(&ctx_list.lock);
- 	synchronize_rcu();
- 
-+	wait_event(context->destroy_wait, !atomic_read(&context->no_destroy));
- 	vmci_ctx_put(context);
- }
- 
-@@ -307,7 +310,7 @@ int vmci_ctx_enqueue_datagram(u32 cid, struct vmci_datagram *dg)
- 	}
- 
- 	/* Get the target VM's VMCI context. */
--	context = vmci_ctx_get(cid);
-+	context = vmci_ctx_get_no_destroy(cid);
- 	if (!context) {
- 		pr_devel("Invalid context (ID=0x%x)\n", cid);
- 		return VMCI_ERROR_INVALID_ARGS;
-@@ -345,7 +348,7 @@ int vmci_ctx_enqueue_datagram(u32 cid, struct vmci_datagram *dg)
- 	     context->datagram_queue_size + vmci_dg_size >=
- 	     VMCI_MAX_DATAGRAM_AND_EVENT_QUEUE_SIZE)) {
- 		spin_unlock(&context->lock);
--		vmci_ctx_put(context);
-+		vmci_ctx_put_allow_destroy(context);
- 		kfree(dq_entry);
- 		pr_devel("Context (ID=0x%x) receive queue is full\n", cid);
- 		return VMCI_ERROR_NO_RESOURCES;
-@@ -357,7 +360,7 @@ int vmci_ctx_enqueue_datagram(u32 cid, struct vmci_datagram *dg)
- 	ctx_signal_notify(context);
- 	wake_up(&context->host_context.wait_queue);
- 	spin_unlock(&context->lock);
--	vmci_ctx_put(context);
-+	vmci_ctx_put_allow_destroy(context);
- 
- 	return vmci_dg_size;
- }
-@@ -416,6 +419,30 @@ struct vmci_ctx *vmci_ctx_get(u32 cid)
- 	return context;
- }
- 
-+/*
-+ * Retrieves VMCI context corresponding to the given cid.
-+ */
-+struct vmci_ctx *vmci_ctx_get_no_destroy(u32 cid)
-+{
-+	struct vmci_ctx *c, *context = NULL;
-+
-+	if (cid == VMCI_INVALID_ID)
-+		return NULL;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(c, &ctx_list.head, list_item) {
-+		if (c->cid == cid) {
-+			context = c;
-+			atomic_set(&context->no_destroy, 1);
-+			kref_get(&context->kref);
-+			break;
-+		}
-+	}
-+	rcu_read_unlock();
-+
-+	return context;
-+}
-+
- /*
-  * Deallocates all parts of a context data structure. This
-  * function doesn't lock the context, because it assumes that
-@@ -497,6 +524,12 @@ void vmci_ctx_put(struct vmci_ctx *context)
- 	kref_put(&context->kref, ctx_free_ctx);
- }
- 
-+void vmci_ctx_put_allow_destroy(struct vmci_ctx *context)
-+{
-+	kref_put(&context->kref, ctx_free_ctx);
-+	atomic_set(&context->no_destroy, 0);
-+}
-+
- /*
-  * Dequeues the next datagram and returns it to caller.
-  * The caller passes in a pointer to the max size datagram
-diff --git a/drivers/misc/vmw_vmci/vmci_context.h b/drivers/misc/vmw_vmci/vmci_context.h
-index 4db8701c9781..a3d711e11581 100644
---- a/drivers/misc/vmw_vmci/vmci_context.h
-+++ b/drivers/misc/vmw_vmci/vmci_context.h
-@@ -51,6 +51,8 @@ struct vmci_ctx {
- 	 */
- 	int user_version;
- 	spinlock_t lock;  /* Locks callQueue and handle_arrays. */
-+	atomic_t no_destroy;  /* Locks callQueue and handle_arrays. */
-+	wait_queue_head_t destroy_wait;
- 
- 	/*
- 	 * queue_pairs attached to.  The array of
-@@ -134,7 +136,9 @@ int vmci_ctx_dequeue_datagram(struct vmci_ctx *context,
- 			      size_t *max_size, struct vmci_datagram **dg);
- int vmci_ctx_pending_datagrams(u32 cid, u32 *pending);
- struct vmci_ctx *vmci_ctx_get(u32 cid);
-+struct vmci_ctx *vmci_ctx_get_no_destroy(u32 cid);
- void vmci_ctx_put(struct vmci_ctx *context);
-+void vmci_ctx_put_allow_destroy(struct vmci_ctx *context);
- bool vmci_ctx_exists(u32 cid);
- 
- int vmci_ctx_add_notification(u32 context_id, u32 remote_cid);
-diff --git a/drivers/misc/vmw_vmci/vmci_host.c b/drivers/misc/vmw_vmci/vmci_host.c
-index da1e2a773823..eedbe042a9ca 100644
---- a/drivers/misc/vmw_vmci/vmci_host.c
-+++ b/drivers/misc/vmw_vmci/vmci_host.c
-@@ -139,6 +139,7 @@ static int vmci_host_close(struct inode *inode, struct file *filp)
- {
- 	struct vmci_host_dev *vmci_host_dev = filp->private_data;
- 
-+	filp->private_data = NULL;
- 	if (vmci_host_dev->ct_type == VMCIOBJ_CONTEXT) {
- 		vmci_ctx_destroy(vmci_host_dev->context);
- 		vmci_host_dev->context = NULL;
-@@ -154,7 +155,6 @@ static int vmci_host_close(struct inode *inode, struct file *filp)
- 	vmci_host_dev->ct_type = VMCIOBJ_NOT_SET;
- 
- 	kfree(vmci_host_dev);
--	filp->private_data = NULL;
- 	return 0;
- }
- 
--- 
-2.32.0
-
-
---MP_/Lh44SGh/UM9vh2l2eij6heF--
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
