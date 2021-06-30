@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEEE3B81FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC81F3B8200
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhF3MX5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 08:23:57 -0400
-Received: from aposti.net ([89.234.176.197]:54664 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234510AbhF3MX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:23:56 -0400
-Date:   Wed, 30 Jun 2021 13:21:15 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v4 4/5] MIPS: CI20: Reduce clocksource to 750 kHz.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <FZKIVQ.1Y3JQ8K8BRMB3@crapouillou.net>
-In-Reply-To: <1624688321-69131-5-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624688321-69131-5-git-send-email-zhouyanjie@wanyeetech.com>
+        id S234715AbhF3MYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:24:14 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:60021 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234703AbhF3MYM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:24:12 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MmUcL-1lYXsV2q7l-00iVws; Wed, 30 Jun 2021 14:21:42 +0200
+Received: by mail-wr1-f51.google.com with SMTP id a13so3362430wrf.10;
+        Wed, 30 Jun 2021 05:21:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530WakbCHpA1tgG69QVBM7Pw0X7PUFrYEpnT4JUnfBIQlnUcyOVH
+        nxgT4g5+suYjbRisJcd9jXMfOo1Q1i6XWKbOWq8=
+X-Google-Smtp-Source: ABdhPJzbMwqO0UqMwf08cToMR/xIYXkh4mMK63b049cBHLY2kvkRRGsefeAfve5VBN+0PclfxL041WfPnXFS6N7HuDs=
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr1601608wrn.99.1625055702317;
+ Wed, 30 Jun 2021 05:21:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
+ <CAK8P3a1mvRTTFHtxqREmcbgJS+e94BHajCtAU_fzBhNNKjJBcg@mail.gmail.com>
+ <CAPDyKFqFTCzXFMar88CYdZKc=eMjKszsOCS1LwLmnF0uNQyPAw@mail.gmail.com>
+ <CAK8P3a2yo6eAe+jZQ7XB9ERYOYvBdCfjMKCYgm=gh-Ekd=SQ3Q@mail.gmail.com> <CAPDyKFp4BkfEW+wKwED97FNvnb4_5AWDO8KwpQvVXaHa7pSywQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFp4BkfEW+wKwED97FNvnb4_5AWDO8KwpQvVXaHa7pSywQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 30 Jun 2021 14:21:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0gMv9d9Pqm-tjPScL404DSiQx8x8oFim8cvypx2ao14A@mail.gmail.com>
+Message-ID: <CAK8P3a0gMv9d9Pqm-tjPScL404DSiQx8x8oFim8cvypx2ao14A@mail.gmail.com>
+Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>, pizza@shaftnet.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:a/U8MAMPEw2KACok6Xjsaf8/I2V/gxbsq6rUtKS5+gFDLaJF+nV
+ 7TaFLFfeh/BOoB0TybuxZll+jHHaDF9XqF4cWy7XViMr7xSD4MBxCnwkjesKWEwV5cboOjl
+ NZrBF8RQmoy4nm4QGa6RMCXNL2jSYgur10xx86pPjLzocbyudK0LbGpp4CV1ISXrexTygse
+ pYOVAyk4NqMXoreWPYlmA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+5lFCng3GbQ=:7r5+yyrDTv1YIInn8eb7JY
+ JEIVXUz0Op1LRbt2THBuNnIfJDkQZiz3u7/5lKvXMjFeRcPHnVmwP0lAfn2ExTgLBrCZ4KNXi
+ 4l/1kkv2fpuIU8yL7JX31IP1/VijimXRSkjQlfyyUoxNOJOsxu39DZqa6UQJmB6kwQhKs/+oO
+ 2FQIpjfcxdx17bWWlWQ2LYLujF+lLB+PVUH99ahNl2SoAWuJ3mUc2v+INhH4W+K3vkXcCzu6n
+ 2Fq8hvBw61araw8UggHKFOZbvC+KGSADdUzd8yz0KTgjc7NvK9yC5TQIigKl4+H1WJsVmjTJU
+ oRQXW5gCfY6uIW1TcuZ3Z++kB2g/xKD8egEB9QViOCsuq/tEx9jw6sYlcC3Lp0OBRbwpfNFHY
+ CgZQCnw6Nd+AGS/IrE4IaAPWciZN4GcDKPQB9LqvVxufrRkhtOeGDyHtxDXUowK21Ih+yFstk
+ vQgin0EH3XvjtJC8eVviXGs9zpayUVO/bT4htAXbdMDgUSVeakiWlZTzblCMIf4Ubp0yoOvZe
+ ziTXBmLoFlzI/Dnz1wkQBV2CO4Au7+0AbiZ8643b+P8jDuOPjbWYV+y74vZqw8D1V2mh8DeD+
+ CVInLFld6QyM7MGSdyVHWl0RBTa/Gsa+KQDgsfb80zHDJU36ivtJILZzNDlqaOf85p76uWbSz
+ 0YdLUqnsqTpQQpTDk7I0pTQUikx7auh0LQQI9oJlSDL/Fkt6JH9ruMwkxLTaij6wR+PLeGUBu
+ FyNvKIVZWlDCXdAx43G6OvUCNAR0XzMH3v2wksZLGb/H7vbBovzI4P21D7Xqq53Yd2I+L/NwQ
+ ZfqBwnf7YQQAhWPqOVdjBlE7m8sLHetotSBkrbNK3iRvcSqDMrB31fa8Y+5rObZfLh869BXKp
+ 1glk+uI9XConiJIiZ1zKBK1Q0zthQG1L3fCXQZVgePctJ1m4HoQGVNOWm92QacVSLqEndKLyi
+ UEQ+NyhbalDA4jMvClf7fGSnINtvPFv9ansH8Q9YjaJtpTJ4kK6wI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On Wed, Jun 30, 2021 at 2:03 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-Le sam., juin 26 2021 at 14:18:40 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> The original clock (3 MHz) is too fast for the clocksource,
-> there will be a chance that the system may get stuck.
-> 
-> Reported-by: Nikolaus Schaller <hns@goldelico.com>
-> Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
+> > index 4c229dd2b6e5..845f9ca3b200 100644
+> > --- a/drivers/mmc/core/sdio_ops.c
+> > +++ b/drivers/mmc/core/sdio_ops.c
+> > @@ -124,6 +124,7 @@ int mmc_io_rw_extended(struct mmc_card *card, int
+> > write, unsigned fn,
+> >         int err;
+> >
+> >         WARN_ON(blksz == 0);
+> > +       WARN_ON_ONCE(is_vmalloc_or_module_addr(buf) || object_is_on_stack(buf));
+>
+> Looks reasonable to me, at least we should start giving a warning.
+> Would you like to send a formal patch that we can test?
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Done.
 
-Cheers,
--Paul
-
-> ---
-> 
-> Notes:
->     v4:
->     New patch.
-> 
->  arch/mips/boot/dts/ingenic/ci20.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
-> b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 8877c62..3a4eaf1 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -525,10 +525,10 @@
-> 
->  &tcu {
->  	/*
-> -	 * 750 kHz for the system timer and 3 MHz for the clocksource,
-> +	 * 750 kHz for the system timer and clocksource,
->  	 * use channel #0 for the system timer, #1 for the clocksource.
->  	 */
->  	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
->  					  <&tcu TCU_CLK_OST>;
-> -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
-> +	assigned-clock-rates = <750000>, <750000>, <3000000>;
->  };
-> --
-> 2.7.4
-> 
-
-
+        Arnd
