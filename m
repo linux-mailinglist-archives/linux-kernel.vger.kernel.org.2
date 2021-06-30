@@ -2,111 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6F03B844C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67BE3B845E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235911AbhF3Ny1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:54:27 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:46106 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235942AbhF3Nut (ORCPT
+        id S236643AbhF3Nz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:55:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33020 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236127AbhF3NvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:49 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id BB0C1C16CA;
-        Wed, 30 Jun 2021 21:48:17 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P5175T139827884320512S1625060896405688_;
-        Wed, 30 Jun 2021 21:48:18 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d80fb7853f0d3e5eec241dab975cdec2>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v10 10/10] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
-Date:   Wed, 30 Jun 2021 21:48:14 +0800
-Message-Id: <20210630134814.7748-1-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
-References: <20210630134745.7561-1-jon.lin@rock-chips.com>
+        Wed, 30 Jun 2021 09:51:24 -0400
+Date:   Wed, 30 Jun 2021 13:48:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625060897;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=QlgFrmuXYHshiJXHDoBNufwcE3iCKBEKLkTsM2VxV0A=;
+        b=kUNbxWTnGQJv1R4jSvLTv+JW9FnLtZsqamSORJzMwxq7e4H/6JH3jiqA309B6OsjckqhtH
+        vmD0bDOeg9i+0wX8eO0xK4QPZcZMZ2/83rVsCuwsHYRq2KnMDvobmtmj5qJsrjBiq4RS8k
+        Ly9YQZA4l66AwIqmZLH+5C+8OQVl8frqdjKtFwKP0DIT/wRp40al8EuzY/e67SgH0h6VHF
+        th461+XDPOQZolgmx2B5dK2zpyXixOWgbFwTJ266oYnzYxdwhLuh5Lox+W2ryhtvZa2Dtf
+        PmEfAAssvjP5e6jN4APCmRx5DCApw/zzYpVIgBy/3ekinIQl1AX4Ky+X9JHR0w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625060897;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=QlgFrmuXYHshiJXHDoBNufwcE3iCKBEKLkTsM2VxV0A=;
+        b=4atIw9fuIvEw2a//Y6LCd2EMNguUF5tto0wJL/jUFuYDHqrR7ovJH02GvfZ57ylLtyF2JD
+        4+IMOreZe+vhbVDQ==
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] kcsan: Document "value changed" line
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <162506089664.395.11910199913057335235.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+The following commit has been merged into the locking/urgent branch of tip:
 
-This enables the Rockchip Serial Flash Controller for the Odroid Go
-Advance. Note that while the attached SPI NOR flash and the controller
-both support quad read mode, only 2 of the required 4 pins are present.
-The rx and tx bus width is set to 2 for this reason.
+Commit-ID:     b930226f3db870cfb683c2744aeb0d29deb4cddc
+Gitweb:        https://git.kernel.org/tip/b930226f3db870cfb683c2744aeb0d29deb4cddc
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Wed, 14 Apr 2021 13:28:25 +02:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Tue, 18 May 2021 10:58:15 -07:00
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+kcsan: Document "value changed" line
+
+Update the example reports based on the latest reports generated by
+kcsan_test module, which now include the "value changed" line. Add a
+brief description of the "value changed" line.
+
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
+ Documentation/dev-tools/kcsan.rst | 88 +++++++++++-------------------
+ 1 file changed, 35 insertions(+), 53 deletions(-)
 
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 49c97f76df77..f78e11dd8447 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -484,6 +484,22 @@
- 	status = "okay";
- };
+diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+index 8089466..d1efd9c 100644
+--- a/Documentation/dev-tools/kcsan.rst
++++ b/Documentation/dev-tools/kcsan.rst
+@@ -27,75 +27,57 @@ Error reports
+ A typical data race report looks like this::
  
-+&sfc {
-+	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
-+	pinctrl-names = "default";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
+     ==================================================================
+-    BUG: KCSAN: data-race in generic_permission / kernfs_refresh_inode
+-
+-    write to 0xffff8fee4c40700c of 4 bytes by task 175 on cpu 4:
+-     kernfs_refresh_inode+0x70/0x170
+-     kernfs_iop_permission+0x4f/0x90
+-     inode_permission+0x190/0x200
+-     link_path_walk.part.0+0x503/0x8e0
+-     path_lookupat.isra.0+0x69/0x4d0
+-     filename_lookup+0x136/0x280
+-     user_path_at_empty+0x47/0x60
+-     vfs_statx+0x9b/0x130
+-     __do_sys_newlstat+0x50/0xb0
+-     __x64_sys_newlstat+0x37/0x50
+-     do_syscall_64+0x85/0x260
+-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+-
+-    read to 0xffff8fee4c40700c of 4 bytes by task 166 on cpu 6:
+-     generic_permission+0x5b/0x2a0
+-     kernfs_iop_permission+0x66/0x90
+-     inode_permission+0x190/0x200
+-     link_path_walk.part.0+0x503/0x8e0
+-     path_lookupat.isra.0+0x69/0x4d0
+-     filename_lookup+0x136/0x280
+-     user_path_at_empty+0x47/0x60
+-     do_faccessat+0x11a/0x390
+-     __x64_sys_access+0x3c/0x50
+-     do_syscall_64+0x85/0x260
+-     entry_SYSCALL_64_after_hwframe+0x44/0xa9
++    BUG: KCSAN: data-race in test_kernel_read / test_kernel_write
 +
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <108000000>;
-+		spi-rx-bus-width = <2>;
-+		spi-tx-bus-width = <2>;
-+	};
-+};
++    write to 0xffffffffc009a628 of 8 bytes by task 487 on cpu 0:
++     test_kernel_write+0x1d/0x30
++     access_thread+0x89/0xd0
++     kthread+0x23e/0x260
++     ret_from_fork+0x22/0x30
 +
- &tsadc {
- 	status = "okay";
- };
--- 
-2.17.1
-
-
-
++    read to 0xffffffffc009a628 of 8 bytes by task 488 on cpu 6:
++     test_kernel_read+0x10/0x20
++     access_thread+0x89/0xd0
++     kthread+0x23e/0x260
++     ret_from_fork+0x22/0x30
++
++    value changed: 0x00000000000009a6 -> 0x00000000000009b2
+ 
+     Reported by Kernel Concurrency Sanitizer on:
+-    CPU: 6 PID: 166 Comm: systemd-journal Not tainted 5.3.0-rc7+ #1
+-    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
++    CPU: 6 PID: 488 Comm: access_thread Not tainted 5.12.0-rc2+ #1
++    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+     ==================================================================
+ 
+ The header of the report provides a short summary of the functions involved in
+ the race. It is followed by the access types and stack traces of the 2 threads
+-involved in the data race.
++involved in the data race. If KCSAN also observed a value change, the observed
++old value and new value are shown on the "value changed" line respectively.
+ 
+ The other less common type of data race report looks like this::
+ 
+     ==================================================================
+-    BUG: KCSAN: data-race in e1000_clean_rx_irq+0x551/0xb10
+-
+-    race at unknown origin, with read to 0xffff933db8a2ae6c of 1 bytes by interrupt on cpu 0:
+-     e1000_clean_rx_irq+0x551/0xb10
+-     e1000_clean+0x533/0xda0
+-     net_rx_action+0x329/0x900
+-     __do_softirq+0xdb/0x2db
+-     irq_exit+0x9b/0xa0
+-     do_IRQ+0x9c/0xf0
+-     ret_from_intr+0x0/0x18
+-     default_idle+0x3f/0x220
+-     arch_cpu_idle+0x21/0x30
+-     do_idle+0x1df/0x230
+-     cpu_startup_entry+0x14/0x20
+-     rest_init+0xc5/0xcb
+-     arch_call_rest_init+0x13/0x2b
+-     start_kernel+0x6db/0x700
++    BUG: KCSAN: data-race in test_kernel_rmw_array+0x71/0xd0
++
++    race at unknown origin, with read to 0xffffffffc009bdb0 of 8 bytes by task 515 on cpu 2:
++     test_kernel_rmw_array+0x71/0xd0
++     access_thread+0x89/0xd0
++     kthread+0x23e/0x260
++     ret_from_fork+0x22/0x30
++
++    value changed: 0x0000000000002328 -> 0x0000000000002329
+ 
+     Reported by Kernel Concurrency Sanitizer on:
+-    CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.3.0-rc7+ #2
+-    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
++    CPU: 2 PID: 515 Comm: access_thread Not tainted 5.12.0-rc2+ #1
++    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+     ==================================================================
+ 
+ This report is generated where it was not possible to determine the other
+ racing thread, but a race was inferred due to the data value of the watched
+-memory location having changed. These can occur either due to missing
+-instrumentation or e.g. DMA accesses. These reports will only be generated if
+-``CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN=y`` (selected by default).
++memory location having changed. These reports always show a "value changed"
++line. A common reason for reports of this type are missing instrumentation in
++the racing thread, but could also occur due to e.g. DMA accesses. Such reports
++are shown only if ``CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN=y``, which is
++enabled by default.
+ 
+ Selective analysis
+ ~~~~~~~~~~~~~~~~~~
