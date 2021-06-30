@@ -2,129 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A0B3B7D76
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9233B7D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhF3GiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:38:00 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:38678 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhF3Gh6 (ORCPT
+        id S232504AbhF3GkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhF3Gj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:37:58 -0400
-Received: by mail-lf1-f45.google.com with SMTP id w19so3055922lfk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:35:29 -0700 (PDT)
+        Wed, 30 Jun 2021 02:39:58 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73E6C061766;
+        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y17so1233771pgf.12;
+        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QIvNKpu6whR4KbUvMINCyHMH+hf3gIcrSC/Vwhdr3Lw=;
+        b=YNGt9ANUzqBZpiARnaJOzXbbBqylmMuYP/nI/dR8iVc9BR8fyloomrSEDAc7BHhB1t
+         3TGc7sm8bxGH/Kh9sl8FHkfQJSb9d3wZc8s8UirITisqGy/BMijpPFumavBt9BKtTU5t
+         KzteOijczl9A4g7/s10zsj2dYedhe1Fapf+4S2kq7X8GW4dWZ0TB6l4xKWnCaHJBb3yv
+         aCAHePk8renhA6LzrrWsTBRGjtv5j4O5a8Au8q3RkfIywGYHTOT0+daMkNfKzK0g8ow7
+         H32WH1O2xZUCj3wKo23i3lBi3mlxMgE9oEMsxMx30Gk6CRC9uoOiSUHvfb+/212Ng/q9
+         bXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/tLGN3hRZj0zANfVL6Q277rdmp7F9TE5YlLbVXnOt4=;
-        b=DPFPhVcoce7xQhvsFqUDq/krO2kPrlT1HogtgckyFvGEjx+NXa8KQCjnyycNLxgbvO
-         MVKmr3nS/jPc6X6MUcDxY4wIgV0BM4zNfgcBPgMA3Z5fCSz7Lk9rJJkr4XbKmIneCVdL
-         M1+FTBc039L5VjzkVVlrlmYSylDxFLzkDu/oVzQvO6NBt9yTGL5d+LBUf5oyJB9mKFc5
-         7iAuYg9vRma+yWWDB0ngu4uuZ7FMQ316vMRZg8fVut5YME1idgmAes/oKR8urRYQjIzL
-         LyRuajOzVwMKkfGDgkqtrzu5+M10hIN6/swK5MII86oA6s6klVVMWfEdHyXFRWOz8Rmp
-         xRrA==
-X-Gm-Message-State: AOAM533UBl5kNM82cEMFjxTJzQKgzTZBiGFHg4f4seHrHl0ttOcpZHz3
-        Y4ZAR+M4TBN8m3UDbJoiXaLf35StsSSltvNz4LI=
-X-Google-Smtp-Source: ABdhPJw3/8y5ByRxr2zDzj1BO0+/VKGk9doSoT+EA1HcHznuL9vKzdPVhzx5ogdAblvdfTyb435FARtrsF0VUtMWfbo=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr27126889lfa.374.1625034928338;
- Tue, 29 Jun 2021 23:35:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QIvNKpu6whR4KbUvMINCyHMH+hf3gIcrSC/Vwhdr3Lw=;
+        b=XUcM7x70yCkNmJaB+EhyAAUMXCbxnPI4RKVVjOBN7jru8x1m4I7+xLn3XsmdrMdioL
+         907WagfbuVYNvcCvJqlf5lnAba4YQIeWYoO1Vr7dFspNXj7DgwbIyBu06gsQL8/cLYXx
+         f53EsNMi44FjwjE64ubppJ/GzzD37tvUICUTklhJd5VFLSVsPeDjitvBHVV6IWHkxvoO
+         DyEaJZ6ADUfU9KGgLFZplvhcgtIYntj+9Tem4wNrbeH1/M3maT/HbTnwaNqFzClwODlN
+         2AxKc06O20KSW5N0S+oxyQBh83lQUQJEtjVrDNyNOr9hUcMhyte44egMct5azyAkMEjw
+         oABg==
+X-Gm-Message-State: AOAM531gdZZ8usUa8e2sYOLus3PqWQ3bOJDb2JA292TaDWFZgRnJIRtP
+        Qtv7yovd/sds6xztGAwP1iE=
+X-Google-Smtp-Source: ABdhPJxv35ffdyTf2HuDhIhk6MMvfhVyiCMQtPK0P585CwMD0Mvofwueer0wUTiw7OflmgcVoXCMCQ==
+X-Received: by 2002:a63:2f05:: with SMTP id v5mr32113452pgv.449.1625035049301;
+        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id h24sm20304574pjv.27.2021.06.29.23.37.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 23:37:28 -0700 (PDT)
+Subject: Re: [PATCH v5 3/3] drm: protect drm_master pointers in drm_lease.c
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20210629033706.20537-1-desmondcheongzx@gmail.com>
+ <20210629033706.20537-4-desmondcheongzx@gmail.com>
+ <CACvgo514T=PZCWwhNsYqCC504SJ+2WivcRtmHhDoKsWMSLFU4A@mail.gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <e2ca777f-f185-688a-5813-0ff2e5025f77@gmail.com>
+Date:   Wed, 30 Jun 2021 14:37:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-3-namhyung@kernel.org>
- <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
-In-Reply-To: <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 29 Jun 2021 23:35:17 -0700
-Message-ID: <CAM9d7cj5EUoDuanLXo+PGqUyaHmvFsR-AgjbtGgaj0SiWzaWew@mail.gmail.com>
-Subject: Re: [PATCH 2/4] perf tools: Add cgroup_is_v2() helper
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACvgo514T=PZCWwhNsYqCC504SJ+2WivcRtmHhDoKsWMSLFU4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On 30/6/21 8:16 am, Emil Velikov wrote:
+> Hi Desmond,
+> 
+> Couple of small suggestions, with those the series is:
+> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+> 
+> On Tue, 29 Jun 2021 at 04:38, Desmond Cheong Zhi Xi
+> <desmondcheongzx@gmail.com> wrote:
+> 
+>> @@ -128,13 +137,20 @@ bool drm_lease_held(struct drm_file *file_priv, int id)
+>>          struct drm_master *master;
+>>          bool ret;
+>>
+>> -       if (!file_priv || !file_priv->master || !file_priv->master->lessor)
+>> +       if (!file_priv)
+>>                  return true;
+>>
+>> -       master = file_priv->master;
+>> +       master = drm_file_get_master(file_priv);
+>> +       if (master == NULL)
+>> +               return true;
+>> +       if (!master->lessor) {
+>> +               drm_master_put(&master);
+>> +               return true;
+> 
+> Let's add a "ret = true; goto unlock;" here, so we can have a single
+> drm_master_put() in the function.
+> Nearly all code paths touched by this patch already follow this approach.
+> 
+>> @@ -154,10 +170,16 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
+>>          int count_in, count_out;
+>>          uint32_t crtcs_out = 0;
+>>
+>> -       if (!file_priv || !file_priv->master || !file_priv->master->lessor)
+>> +       if (!file_priv)
+>>                  return crtcs_in;
+>>
+>> -       master = file_priv->master;
+>> +       master = drm_file_get_master(file_priv);
+>> +       if (master == NULL)
+>> +               return crtcs_in;
+>> +       if (!master->lessor) {
+>> +               drm_master_put(&master);
+>> +               return crtcs_in;
+> 
+> Ditto
+> 
+> Thanks
+> Emil
+> 
 
-On Tue, Jun 29, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The cgroup_is_v2() is to check if the given subsystem is mounted on
-> > cgroup v2 or not.  It'll be used by BPF cgroup code later.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/cgroup.c | 19 +++++++++++++++++++
-> >  tools/perf/util/cgroup.h |  2 ++
-> >  2 files changed, 21 insertions(+)
-> >
-> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> > index ef18c988c681..e819a4f30fc2 100644
-> > --- a/tools/perf/util/cgroup.c
-> > +++ b/tools/perf/util/cgroup.c
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/zalloc.h>
-> >  #include <sys/types.h>
-> >  #include <sys/stat.h>
-> > +#include <sys/statfs.h>
-> >  #include <fcntl.h>
-> >  #include <stdlib.h>
-> >  #include <string.h>
-> > @@ -70,6 +71,24 @@ int read_cgroup_id(struct cgroup *cgrp)
-> >  }
-> >  #endif  /* HAVE_FILE_HANDLE */
-> >
-> > +#ifndef CGROUP2_SUPER_MAGIC
-> > +#define CGROUP2_SUPER_MAGIC  0x63677270
-> > +#endif
-> > +
-> > +int cgroup_is_v2(const char *subsys)
-> > +{
-> > +       char mnt[PATH_MAX + 1];
-> > +       struct statfs stbuf;
-> > +
-> > +       if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, subsys))
-> > +               return -1;
-> > +
-> > +       if (statfs(mnt, &stbuf) < 0)
-> > +               return -1;
-> > +
-> > +       return (stbuf.f_type == CGROUP2_SUPER_MAGIC);
-> > +}
-> > +
-> >  static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str)
-> >  {
-> >         struct evsel *counter;
-> > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-> > index 707adbe25123..1549ec2fd348 100644
-> > --- a/tools/perf/util/cgroup.h
-> > +++ b/tools/perf/util/cgroup.h
-> > @@ -47,4 +47,6 @@ int read_cgroup_id(struct cgroup *cgrp)
-> >  }
-> >  #endif  /* HAVE_FILE_HANDLE */
-> >
-> > +int cgroup_is_v2(const char *subsys);
-> > +
->
-> I think this is okay. It may make sense to have this in
-> tools/lib/api/fs/fs.h, for example fs__valid_mount is already checking
-> magic numbers. Perhaps we can avoid a statfs call, but it'd need some
-> reorganization of the fs.h code.
->
-> Acked-by: Ian Rogers <irogers@google.com>
+Sounds good to me, I'll revise these functions. Thanks for the review 
+and suggestions, Emil.
 
-Thanks for your review!
-
-Actually I'm ok with moving it to tools/lib.  Will do it in the next spin,
-if it needs one. :)
-
-Thanks,
-Namhyung
+Best wishes,
+Desmond
