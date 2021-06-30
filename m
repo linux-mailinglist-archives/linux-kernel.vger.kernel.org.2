@@ -2,209 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E2A3B88AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921483B88AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbhF3Sqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbhF3Sqg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:46:36 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DE0C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:44:06 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id k184so6575307ybf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WIoChI/UV1Z7a7XrKG/VZSLZ/TPMwf39BXQMXIxOAwA=;
-        b=btIXHyRiBkK956T8OwjWkekMNvzo/mZJOPFcrvBEKbeBejlWmlRMlznuchf2pWPWqe
-         a9Ag692CKOfxzD8GcEQEhZ/3Jr9LS22bkN+lCYbP2wrWkSf2MsmKL4vpgoFibTmfwJ7H
-         WFzEIGgzeQ191/Pt+a+5pUMDz7AToSI7RmYpEEpOhySN6UKbpUGg6FJzgKiotqZ0wfoE
-         Z2pLW/YB01A6w0jwOMzklxNWBxb+4Iv3srIzg7zlfMxeQ8dentmx7j/x5pLBCq+TEp30
-         dHGD2ns9TvW0TXws3V8QruPNTAt1lQT+kuX399Eg3WT2x5Px+0CSkxk2UwoGc4fN5w0A
-         khMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WIoChI/UV1Z7a7XrKG/VZSLZ/TPMwf39BXQMXIxOAwA=;
-        b=RJ/0o4brAiJ5uGMU81rjyO9QWgC5Q7CVratq1iyad493yUxc5X4AtY+Ckbv2kAjXX8
-         APPjmsmJNWp+BEt5Ho4qWSSTqwjkxf2jIpK3q/7lIB3HsGNfpV7DyUPAkcK+lz5H0H2x
-         Px5SWUQgIwdFHy0E14EenOhUYPDA6Wa3YIgsiusMHc9tSwMsT1nlwFvRSAwQ/aX8gUVA
-         DMOQAUGClJbLZ5S+rl537xlvXY43mZ4xNp98Pb4ltvRcujxBvymZo6hwQQln1L5Bb5s8
-         XsJCXr7njWSXrVr85cT9dgTNatW7dZ5jqYxnQsjN3LF93xKSaqANL1GS+o0yqYzApNow
-         Z5Tg==
-X-Gm-Message-State: AOAM531XOhiOZoZHcRIsFYGMGfzkjTEIxr1kZApwz2gN7s8m/9axIr+r
-        8O1QstRaIknInD1JAL7CTxmPqpKE6nkpMSyGmLZPIg==
-X-Google-Smtp-Source: ABdhPJxsqqO39vuA3mf7rpViczVY8A/5U4GcNWz8KEEHm4mV92UeEkuUnoskpseoiZc3iaG2Xq6Wb09osZVU7EYQjpI=
-X-Received: by 2002:a25:d913:: with SMTP id q19mr48066209ybg.397.1625078645669;
- Wed, 30 Jun 2021 11:44:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210623192822.3072029-1-surenb@google.com> <CALvZod7GPeB6ArrU8oBPx-1NT-ZDBQzTiJHJDojjO2kAgALkHw@mail.gmail.com>
-In-Reply-To: <CALvZod7GPeB6ArrU8oBPx-1NT-ZDBQzTiJHJDojjO2kAgALkHw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 30 Jun 2021 11:43:54 -0700
-Message-ID: <CAJuCfpG4M=ZnqR9D9MPNB88nwWgQ9qA9Z9a6dymZ5abOxNucGg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
+        id S233493AbhF3Sqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:46:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232881AbhF3Sqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 14:46:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B9B61420;
+        Wed, 30 Jun 2021 18:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625078640;
+        bh=uhn0pTph7tTzanA0zcqDt9FF7/bIWTMzvTZLuD+tYBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ta2Mi13y4LJfWZIOSCCx1YwJFczlL7SbRl0AlrXar+2yNlLKNPY0ftsikUNdNiKrj
+         IzwybM0G25WYmhFUQDkk348O78W1cbjeV4U5Yodhxscz5kWNCO3EbR+JrW2DKEYqk9
+         0S8p0ADJvlAzt4H0tSvvRFLdr2fuE/rm/9IAbXPxKeW8lvq2ZcvS2BZFNotvfTTQuE
+         tBOU/doOMe7KuctjfnLRdOuQTxt2FWh2D9stH/9wfUW0vT0t5CM2OjcRoy2KUj/v6r
+         OeQd2+B1UMc0qtLWRHZx3dyW+G/Gfhvi5W85WJlMfOl2+wgx32D+8orqmKkA3lKYuX
+         K8ERqD5OHvN8Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2496640B1A; Wed, 30 Jun 2021 15:43:58 -0300 (-03)
+Date:   Wed, 30 Jun 2021 15:43:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH 2/4] perf tools: Add cgroup_is_v2() helper
+Message-ID: <YNy7bjYMOZlvGWT4@kernel.org>
+References: <20210625071826.608504-1-namhyung@kernel.org>
+ <20210625071826.608504-3-namhyung@kernel.org>
+ <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
+ <CAM9d7cj5EUoDuanLXo+PGqUyaHmvFsR-AgjbtGgaj0SiWzaWew@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cj5EUoDuanLXo+PGqUyaHmvFsR-AgjbtGgaj0SiWzaWew@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 11:01 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> Hi Suren,
->
-> On Wed, Jun 23, 2021 at 12:28 PM Suren Baghdasaryan <surenb@google.com> wrote:
+Em Tue, Jun 29, 2021 at 11:35:17PM -0700, Namhyung Kim escreveu:
+> Hi Ian,
+> 
+> On Tue, Jun 29, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
 > >
-> > In modern systems it's not unusual to have a system component monitoring
-> > memory conditions of the system and tasked with keeping system memory
-> > pressure under control. One way to accomplish that is to kill
-> > non-essential processes to free up memory for more important ones.
-> > Examples of this are Facebook's OOM killer daemon called oomd and
-> > Android's low memory killer daemon called lmkd.
-> > For such system component it's important to be able to free memory
-> > quickly and efficiently. Unfortunately the time process takes to free
-> > up its memory after receiving a SIGKILL might vary based on the state
-> > of the process (uninterruptible sleep), size and OPP level of the core
-> > the process is running. A mechanism to free resources of the target
-> > process in a more predictable way would improve system's ability to
-> > control its memory pressure.
-> > Introduce process_reap system call that reclaims memory of a dying process
-> > from the context of the caller. This way the memory in freed in a more
-> > controllable way with CPU affinity and priority of the caller. The workload
-> > of freeing the memory will also be charged to the caller.
-> > The operation is allowed only on a dying process.
+> > On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > The cgroup_is_v2() is to check if the given subsystem is mounted on
+> > > cgroup v2 or not.  It'll be used by BPF cgroup code later.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/cgroup.c | 19 +++++++++++++++++++
+> > >  tools/perf/util/cgroup.h |  2 ++
+> > >  2 files changed, 21 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+> > > index ef18c988c681..e819a4f30fc2 100644
+> > > --- a/tools/perf/util/cgroup.c
+> > > +++ b/tools/perf/util/cgroup.c
+> > > @@ -9,6 +9,7 @@
+> > >  #include <linux/zalloc.h>
+> > >  #include <sys/types.h>
+> > >  #include <sys/stat.h>
+> > > +#include <sys/statfs.h>
+> > >  #include <fcntl.h>
+> > >  #include <stdlib.h>
+> > >  #include <string.h>
+> > > @@ -70,6 +71,24 @@ int read_cgroup_id(struct cgroup *cgrp)
+> > >  }
+> > >  #endif  /* HAVE_FILE_HANDLE */
+> > >
+> > > +#ifndef CGROUP2_SUPER_MAGIC
+> > > +#define CGROUP2_SUPER_MAGIC  0x63677270
+> > > +#endif
+> > > +
+> > > +int cgroup_is_v2(const char *subsys)
+> > > +{
+> > > +       char mnt[PATH_MAX + 1];
+> > > +       struct statfs stbuf;
+> > > +
+> > > +       if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, subsys))
+> > > +               return -1;
+> > > +
+> > > +       if (statfs(mnt, &stbuf) < 0)
+> > > +               return -1;
+> > > +
+> > > +       return (stbuf.f_type == CGROUP2_SUPER_MAGIC);
+> > > +}
+> > > +
+> > >  static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str)
+> > >  {
+> > >         struct evsel *counter;
+> > > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+> > > index 707adbe25123..1549ec2fd348 100644
+> > > --- a/tools/perf/util/cgroup.h
+> > > +++ b/tools/perf/util/cgroup.h
+> > > @@ -47,4 +47,6 @@ int read_cgroup_id(struct cgroup *cgrp)
+> > >  }
+> > >  #endif  /* HAVE_FILE_HANDLE */
+> > >
+> > > +int cgroup_is_v2(const char *subsys);
+> > > +
 > >
-> > Previously I proposed a number of alternatives to accomplish this:
-> > - https://lore.kernel.org/patchwork/patch/1060407 extending
-> > pidfd_send_signal to allow memory reaping using oom_reaper thread;
-> > - https://lore.kernel.org/patchwork/patch/1338196 extending
-> > pidfd_send_signal to reap memory of the target process synchronously from
-> > the context of the caller;
-> > - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
-> > support for process_madvise implementing synchronous memory reaping.
+> > I think this is okay. It may make sense to have this in
+> > tools/lib/api/fs/fs.h, for example fs__valid_mount is already checking
+> > magic numbers. Perhaps we can avoid a statfs call, but it'd need some
+> > reorganization of the fs.h code.
 > >
-> > The end of the last discussion culminated with suggestion to introduce a
-> > dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
-> > The reasoning was that the new variant of process_madvise
-> >   a) does not work on an address range
-> >   b) is destructive
-> >   c) doesn't share much code at all with the rest of process_madvise
-> > From the userspace point of view it was awkward and inconvenient to provide
-> > memory range for this operation that operates on the entire address space.
-> > Using special flags or address values to specify the entire address space
-> > was too hacky.
-> >
-> > The API is as follows,
-> >
-> >           int process_reap(int pidfd, unsigned int flags);
-> >
-> >         DESCRIPTION
-> >           The process_reap() system call is used to free the memory of a
-> >           dying process.
-> >
-> >           The pidfd selects the process referred to by the PID file
-> >           descriptor.
-> >           (See pidofd_open(2) for further information)
->
-> *pidfd_open
+> > Acked-by: Ian Rogers <irogers@google.com>
+> 
+> Thanks for your review!
+> 
+> Actually I'm ok with moving it to tools/lib.  Will do it in the next spin,
+> if it needs one. :)
 
-Ack
+O think I'll take v4, we can improve this in followup work.
 
->
-> >
-> >           The flags argument is reserved for future use; currently, this
-> >           argument must be specified as 0.
-> >
-> >         RETURN VALUE
-> >           On success, process_reap() returns 0. On error, -1 is returned
-> >           and errno is set to indicate the error.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> Thanks for continuously pushing this. One question I have is how do
-> you envision this syscall to be used for the cgroup based workloads.
-> Traverse the target tree, read pids from cgroup.procs files,
-> pidfd_open them, send SIGKILL and then process_reap them. Is that
-> right?
-
-Yes, at least that's how Android does that. It's a bit more involved
-but it's a technical detail. Userspace low memory killer kills a
-process (sends SIGKILL and calls process_reap) and another system
-component detects that a process died and will kill all processes
-belonging to the same cgroup (that's how we identify related
-processes).
-
->
-> Orthogonal to this patch I wonder if we should have an optimized way
-> to reap processes from a cgroup. Something similar to cgroup.kill (or
-> maybe overload cgroup.kill with reaping as well).
-
-Seems reasonable to me. We could use that in the above scenario.
-
->
-> [...]
->
-> > +
-> > +SYSCALL_DEFINE2(process_reap, int, pidfd, unsigned int, flags)
-> > +{
-> > +       struct pid *pid;
-> > +       struct task_struct *task;
-> > +       struct mm_struct *mm = NULL;
-> > +       unsigned int f_flags;
-> > +       long ret = 0;
-> > +
-> > +       if (flags != 0)
-> > +               return -EINVAL;
-> > +
-> > +       pid = pidfd_get_pid(pidfd, &f_flags);
-> > +       if (IS_ERR(pid))
-> > +               return PTR_ERR(pid);
-> > +
-> > +       task = get_pid_task(pid, PIDTYPE_PID);
-> > +       if (!task) {
-> > +               ret = -ESRCH;
-> > +               goto put_pid;
-> > +       }
-> > +
-> > +       /*
-> > +        * If the task is dying and in the process of releasing its memory
-> > +        * then get its mm.
-> > +        */
-> > +       task_lock(task);
-> > +       if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
->
-> task_will_free_mem() is fine here but I think in parallel we should
-> optimize this function. At the moment it is traversing all the
-> processes on the machine. It is very normal to have tens of thousands
-> of processes on big machines, so it would be really costly when
-> reaping a bunch of processes.
-
-Hmm. But I think we still need to make sure that the mm is not shared
-with another non-dying process. IIUC that's the point of that
-traversal. Am I mistaken?
+- Arnaldo
