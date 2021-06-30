@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CE73B8433
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763323B8432
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236223AbhF3Nx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S235795AbhF3NxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhF3Nub (ORCPT
+        with ESMTP id S235819AbhF3Nua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:31 -0400
+        Wed, 30 Jun 2021 09:50:30 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACE5C0619FE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F21FC0611BE;
         Wed, 30 Jun 2021 06:47:47 -0700 (PDT)
 Date:   Wed, 30 Jun 2021 13:47:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060866;
+        s=2020; t=1625060865;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=FjIgi9pBI2cyYl0hd1lMANmllaLE2SKJzFadm061VcE=;
-        b=diFT1/kUFL02nmdNgTsH1RrNBqRWlGT1SKPiGe91qguLSoaOml3DlpOeJxq5PmRoiEetvW
-        rk+PjsDhmc7vfoxGb9xwoTdVyDvhuKvNOcR8KyFWSTEycPUtvmMCGXn48phgOW02NYT+ED
-        shHDSFScR0A582aVundEiYPfGiwBfRw62y7cJpvO2KqVNlVAwPB8scUt6pDwSiJ9iZreFm
-        XdljAgyG0ZnSt/347jgs6J2vRkUbAooi0TRcM7qA8jezUQ0xO6IMsWUwDXm6KoV1yPvamM
-        forhexv2izGONFLFLiu1agfJ+l1ypjuEEu6PD4ZRYvI1ez9FwPPLin31Rvt0TA==
+        bh=6/XilzV6p0gMEJFeETRf5T2QNaNzjUe1w9yXU6zvEZM=;
+        b=ape68gY5EYiOgw4LhfxSjnFOSwjSGLSqHqrWqCQw8PkG3r7N6MZe51IA4ZTCpz3a5xkWcD
+        7hN1Djt7iDXrnFD+mAe1+2h+ucjN9f7S0HdSxZvbNRAk8kD56heJtwTHOYrX8hvMz+19N4
+        v+M0kD6e1pjZ+MdqP/vkc8XyP5s/SUZe0+CCPn2DK57nNoyTlwgZBq4Uq05pwurkZVkPIa
+        bUztGf//znA7jHorcS+6TlAnIBTqDXULVcUuKm/w8qDXG78AIYnSOD5KgmG47S9c9Qfxvi
+        GUndghWkZDSvVp3QpYNDJnBR1DcX7JUxIgC8FZ/0jCfY2eSAq2eW9/TtXGhZiw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060866;
+        s=2020e; t=1625060865;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=FjIgi9pBI2cyYl0hd1lMANmllaLE2SKJzFadm061VcE=;
-        b=fIcIZI2V+fndmyy4mxeVayfBYzeQfsRDCIZymq+paJpxr2ouVfhCyDNmE4MdSupYdSKfd3
-        X9ulLckl5INycvCA==
+        bh=6/XilzV6p0gMEJFeETRf5T2QNaNzjUe1w9yXU6zvEZM=;
+        b=ekZ0LoPXXHR1DddkjjByzjJpvN6oGsJ5s1nSyv7fFbC3LspZLY5VxBG2R0q+M451twzurU
+        W4LeClW8m5iOEJBA==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
+Subject: [tip: core/rcu] torture: Make the build machine control N in "make -jN"
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162506086559.395.11125773611062083881.tip-bot2@tip-bot2>
+Message-ID: <162506086510.395.126275583220026646.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,55 +54,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     f254a0b52787d108879cc8761ee4f6ce33698029
-Gitweb:        https://git.kernel.org/tip/f254a0b52787d108879cc8761ee4f6ce33698029
+Commit-ID:     b09751d752fb0e8dce4062254da9f813dcb00de5
+Gitweb:        https://git.kernel.org/tip/b09751d752fb0e8dce4062254da9f813dcb00de5
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 17 Mar 2021 13:21:41 -07:00
+AuthorDate:    Thu, 18 Mar 2021 14:00:59 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 10 May 2021 16:05:06 -07:00
 
-torture: Make kvm.sh use abstracted kvm-end-run-stats.sh
+torture:  Make the build machine control N in "make -jN"
 
-This commit reduces duplicate code by making kvm.sh use the new
-kvm-end-run-stats.sh script rather than taking its historical approach
-of open-coding it.
+Given remote rcutorture runs, it is quite possible that the build system
+will have fewer CPUs than the system(s) running the actual test scenarios.
+In such cases, using the number of CPUs on the test systems can overload
+the build system, slowing down the build or, worse, OOMing the build
+system.  This commit therefore uses the build system's CPU count to set
+N in "make -jN", and by tradition sets "N" to double the CPU count.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-build.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 3bd523a..fab3bd9 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -550,20 +550,7 @@ END {
- 	if (ncpus != 0)
- 		dump(first, i, batchnum);
- }' >> $T/script
--
--cat << '___EOF___' >> $T/script
--echo | tee -a $TORTURE_RESDIR/log
--echo | tee -a $TORTURE_RESDIR/log
--echo " --- `date` Test summary:" | tee -a $TORTURE_RESDIR/log
--___EOF___
--cat << ___EOF___ >> $T/script
--echo Results directory: $resdir/$ds | tee -a $resdir/$ds/log
--kcsan-collapse.sh $resdir/$ds | tee -a $resdir/$ds/log
--kvm-recheck.sh $resdir/$ds > $T/kvm-recheck.sh.out 2>&1
--___EOF___
--echo 'ret=$?' >> $T/script
--echo "cat $T/kvm-recheck.sh.out | tee -a $resdir/$ds/log" >> $T/script
--echo 'exit $ret' >> $T/script
-+echo kvm-end-run-stats.sh "$resdir/$ds" "$starttime" >> $T/script
- 
- # Extract the tests and their batches from the script.
- egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
-@@ -627,7 +614,6 @@ else
- 	cp $T/batches $resdir/$ds/batches
- 	cp $T/scenarios $resdir/$ds/scenarios
- 	echo '#' cpus=$cpus >> $resdir/$ds/batches
--	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a $resdir/$ds/log
- 	exit $ret
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+index 115e182..55f4fc1 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+@@ -40,8 +40,10 @@ if test $retval -gt 1
+ then
+ 	exit 2
  fi
- 
+-ncpus=`cpus2use.sh`
+-make -j$ncpus $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
++
++# Tell "make" to use double the number of real CPUs on the build system.
++ncpus="`lscpu | grep '^CPU(' | awk '{ print $2 }'`"
++make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
+ retval=$?
+ if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
+ then
