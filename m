@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12723B8205
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD193B8211
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbhF3MYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:24:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60310 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhF3MYi (ORCPT
+        id S234414AbhF3MZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:25:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:38141 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234444AbhF3MZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:24:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 89462226F9;
-        Wed, 30 Jun 2021 12:22:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625055728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jy9BUnnL9F4MU2WhkG8c4GL66SNmDqJ6jDqN3uAgDRg=;
-        b=Wvb5ZzhZYyujUgG5/ndOGyrXHa6nuv/37LimXf4fJjhnFF1SLhtKTP3v1Zp01GJzK5BJ2R
-        G8YmkcX2a9fEuckIv4jYOZvUCsCH6bSnITCJiHwJ+gymd2RTQVnkPnpJy24U5ben1NVDi4
-        qP7FxhuqHkGHj1ceUp9W5Wb3lPtIXaI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4FF10A3B8E;
-        Wed, 30 Jun 2021 12:22:08 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 14:22:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hui Su <suhui@zeku.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/vmpressure: replace vmpressure_to_css() with
- vmpressure_to_memcg()
-Message-ID: <YNxh72LydwZPE4qY@dhcp22.suse.cz>
-References: <20210630112146.455103-1-suhui@zeku.com>
+        Wed, 30 Jun 2021 08:25:56 -0400
+Received: from [192.168.1.155] ([95.114.41.241]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N32y5-1lDavc0pPJ-013NAg; Wed, 30 Jun 2021 14:22:25 +0200
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Len Brown <lenb@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Willy Tarreau <w@1wt.eu>
+References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de>
+ <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+ <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+ <87pmxk87th.fsf@oldenburg.str.redhat.com>
+ <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
+ <87wnqkzklg.fsf@oldenburg.str.redhat.com>
+ <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
+ <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net>
+ <87tulirw5y.fsf@oldenburg.str.redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net>
+Date:   Wed, 30 Jun 2021 14:22:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630112146.455103-1-suhui@zeku.com>
+In-Reply-To: <87tulirw5y.fsf@oldenburg.str.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:q2U/DcR2uXXOT58TGV2LIz3pJ8OLY9I37s4vT0/dVUwgCKhSjsf
+ KYd2aYms5Zpap97FBe6nT+tHZBX0rdHUeAmuroeYKWhpdLnPSg20ovCsEtfHxH3yvfO2akA
+ 6IEGuKsTn7vCPjiS/CaUW9rHOn5Tyc8okqBmMtYp9W3rvpI0lUK85IeHaY8bIqEL76SGxcL
+ KSyLmTNnm+cREhdsyYGwg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:onLzaRAUw2E=:yBvf4GrOjtQU3Zd1gPxOZe
+ WF18O8QhVUF99xgPW6Qi7v6Ck57Rzi3JE0RyaQ8MgL2CgYyOSsgbc+HuNmNUucVZHBE8vWa7i
+ 5HRRUrPbLYj3cyyxsKf1NqR5hp/w4VDVhlc34TGmfEv5h/Qm38Sl2vfdn9R8S163fHU/o82Mx
+ APt077WXhT2GLiqXuEi8ItLbZ+lMxQBugyKQ0G/kjEO0QPXsleeMaKsE22Z0gHiJC8PIe7ypz
+ TQXeFwJyJtiqBu3H8i3h2A4RILnZPy2PS0dhmVnQ5aC0/Hgs2pHYRI6ndP5hW9bBztR0fp2LZ
+ 4ZLtFwQ9FDPnghcE1O+AabGTyrDD2nGIJTkeX3/secev9gu8BoMhfLL2sGTHRySarXTIHT16B
+ +IWoenWGM68b9WAXs+ZBxOVJlv29Ob48ZtInD87UbLi7zQBMHOceSshrFV1gjaRyToznG4Vbq
+ 1Mqbwo3vSem/G4eQte70kt5jj0Na+uSEEsIbKcUS7dcXDhi5kDPZdHMItkvKZzIYHciRLRrOW
+ 678r35EWj9WTIbiy/PWf60fLBxeMg5p6jCJgYjkGlaaeYiWfnePkVfmoKjtfCY55NpBg+G4MF
+ mfTHOpc/9BKWm8eUMcumYIOukeR4xELptwCeSCeVawjtts6bz52MBdVf7kydjVb+me9h/cpF7
+ E8MSgM8ckm5tYE5A26iLNetZRgP9b4xsP5gZ+jMofUCOPG59sAaeaBKcocJl8nbHg7kGR6B77
+ tSjhGlngwhZMzPlPpe83863FPvhcNFAlvigX4TZ2v+GsA7OPkSODzac9yc4GCFiXzp1QIiihD
+ 4tcEBk0esoTtXFZFesGbIhwGp6xJLA4ievwBB4dMW7XG9aqV6R7hFQRuqGNj30sXCKt5QAT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30-06-21 19:21:46, Hui Su wrote:
-> We can get memcg directly form vmpr instead of vmpr->memcg->css->memcg,
-> so add a new func helper vmpressure_to_memcg().
-> And no code will use vmpressure_to_css(), so delete it.
-
-Nice cleanup.
-
-> Signed-off-by: Hui Su <suhui@zeku.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-> ---
->  include/linux/vmpressure.h | 2 +-
->  mm/memcontrol.c            | 4 ++--
->  mm/vmpressure.c            | 3 +--
->  3 files changed, 4 insertions(+), 5 deletions(-)
+On 28.06.21 14:49, Florian Weimer wrote:
+> * Enrico Weigelt:
 > 
-> diff --git a/include/linux/vmpressure.h b/include/linux/vmpressure.h
-> index 6d28bc433c1c..6a2f51ebbfd3 100644
-> --- a/include/linux/vmpressure.h
-> +++ b/include/linux/vmpressure.h
-> @@ -37,7 +37,7 @@ extern void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio);
->  extern void vmpressure_init(struct vmpressure *vmpr);
->  extern void vmpressure_cleanup(struct vmpressure *vmpr);
->  extern struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg);
-> -extern struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr);
-> +extern struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr);
->  extern int vmpressure_register_event(struct mem_cgroup *memcg,
->  				     struct eventfd_ctx *eventfd,
->  				     const char *args);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 64ada9e650a5..62163a9cee63 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -247,9 +247,9 @@ struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
->  	return &memcg->vmpressure;
->  }
->  
-> -struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
-> +struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
->  {
-> -	return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
-> +	return container_of(vmpr, struct mem_cgroup, vmpressure);
->  }
->  
->  #ifdef CONFIG_MEMCG_KMEM
-> diff --git a/mm/vmpressure.c b/mm/vmpressure.c
-> index d69019fc3789..04e81ac6d5d8 100644
-> --- a/mm/vmpressure.c
-> +++ b/mm/vmpressure.c
-> @@ -74,8 +74,7 @@ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
->  
->  static struct vmpressure *vmpressure_parent(struct vmpressure *vmpr)
->  {
-> -	struct cgroup_subsys_state *css = vmpressure_to_css(vmpr);
-> -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> +	struct mem_cgroup *memcg = vmpressure_to_memcg(vmpr);
->  
->  	memcg = parent_mem_cgroup(memcg);
->  	if (!memcg)
-> -- 
-> 2.25.1
+>> On 24.06.21 01:11, Len Brown wrote:
+>>>>     x86 CPU features detection for applications (and AMX)
+>>>>     <https://lore.kernel.org/linux-api/87tulo39ms.fsf@oldenburg.str.redhat.com/>
+>>> FWIW, I didn't receive it, because you excluded
+>>> linux-kernel@vger.kernel.org
+>>
+>> me neither :(
+>>
+>> Maybe just repost it to LKML ?
+> 
+> Isn't it sufficient to start Cc:ing the list?
+
+Well, in that case people probably missed the original mail.
+(maybe, I'm too lazy for searching the web for archives ... :P)
+
+>> You mention the interface *was* designed with cpu features remaining
+>> constant over a process' lifetime. Between the line I'm reading that
+>> this might not be the case anymore.
+>>
+>> How could that happen ? Process migration on a different CPU (or perhaps
+>> on a different host) ?
+> 
+> AMX will be shown as enabled in the hardware, but trap into the kernel
+> on first use.  The kernel developers prefer a model where it is checked
+> that the process has previously enabled the feature explicitly, instead
+> relying on lazy initialization as part of the trap (as intended by the
+> hardware design).  This means that the usual CPUID/XCR0 approach (which
+> is reflected in the glibc feature) will not work.
+
+Ah, now I'm beginning to get it:
+
+* this feature needs to be initialized first, before it can be used
+* on first use (when not initialized yet), it traps into the kernel
+* we don't want to always initialize it at boot
+
+Correct ?
+
+What I'm wondering: why shall the process explicitly ask for it and
+why isn't the initialization be done either on bootup or on first use ?
+
+>> Damn, how could the cpu designers come up with such weird concepts
+>> in the first place ? :o
+> 
+> It's not the CPU designers. The CPU behaves according to the old model.
+> (I consider the old model a success, despite all the challenges, but not
+> everyone agrees, obviosly.)
+
+I'm still claiming already this old model is a horrible misdesign and
+(most of) the extensions made over the decades are anything but well
+designed - there had been many changes to do it much, much better.
+For example there would have been ways to introduce new opcodes in a way
+that they can be easily emulated in kernel or userland, w/o going
+through a full trap.
+
+But that's gonna be a long discussion on its own, probably getting
+offtopic here.
+
+
+--mtx
 
 -- 
-Michal Hocko
-SUSE Labs
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
