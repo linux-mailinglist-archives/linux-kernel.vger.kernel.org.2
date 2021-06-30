@@ -2,391 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31783B7CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9ED3B7CFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhF3FXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 01:23:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:45095 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhF3FXr (ORCPT
+        id S231947AbhF3FZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 01:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhF3FZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 01:23:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625030479; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QxoJEqto3m4LmokVHvjxd8H1x79dz+x5nzdLcHQijew=;
- b=h7dLA/p++GofB/1uLrML8DZaNS3Y0UhXpazjlqc/VkYNK/Ntrdi5Zeeqqk4uKBPxSZbjTode
- zYfRnOyIes5Md3UBXYm/Q98zqk3NrLpfpqt37hJT8yG+MAvQH2XwFMohq+8a1z6mM8jNeIPp
- 8FeFiWboboncrrptE7XGgtF8AvQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60dbff4e5e3e57240b3e4df6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 05:21:17
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 14A09C433D3; Wed, 30 Jun 2021 05:21:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF171C43149;
-        Wed, 30 Jun 2021 05:21:14 +0000 (UTC)
+        Wed, 30 Jun 2021 01:25:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F157C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 22:23:08 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id h4so1091351pgp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 22:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OkgX/l6nyVHOkHtVICWEWlZsAs77Eh7E8vZnP+04cZU=;
+        b=Ozuu7aPncD/CMLJza+F4JwA5PsKvNqi55YrM7STSKGqVfTpUR6pNiqkih8C4Yej/UI
+         pX+laWJdYLjpLb9flbG3+U2C2Ptmg+Az4aAgDQyct0uzw/FYqXma79YGfBZ+XB5d0fJG
+         dq5rXy7x0hVB2s2mU6bck5fQekMMTukz/ufvc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OkgX/l6nyVHOkHtVICWEWlZsAs77Eh7E8vZnP+04cZU=;
+        b=mtsTgrrmjdeP8/CEwFNtOykqZYsTmagbqtIxCuGT8L7ikckKuBA8XOg5n+5wjKtnKi
+         LLN714WQX0E1zXj50JseaQS/gzLRPsjfaASS4S4VrJhVtW1p8oZ6fJS9npF8ur4Gb5sb
+         2YQ7oQ7s7TXZGelp0FObCVTW5NzKUFfefMzIw062oo2KrE4R+7uNb4Ikl4Ju/5g+J0hL
+         tCKVac0KnFBWx61NA5TQaSO7QyuBJJxW8/ILEzTETXWLTUvoIFQozFYOANoH6z2jaeJx
+         ifhQ8ltWNfndQjcNCVVaeXsVwadiReX55De5jAcKOqqrgZFIcSawu6naZ6Gc7CAxzczd
+         7DHQ==
+X-Gm-Message-State: AOAM531/ojRksqcWkg2Am/r3Ribg073jNTK7sNIfHzqQu9cNrMAQ/zAP
+        JPUGsBGAaHoa2iwoi2q5/TujAg==
+X-Google-Smtp-Source: ABdhPJwDqkm3t0Zwuy34uTWGsjAywlzfUwSe78RbVnfvHZrGSmFPSQRG5iMuesZvQ5sZ2hfjRRaV2Q==
+X-Received: by 2002:a62:380c:0:b029:2f7:4057:c3ed with SMTP id f12-20020a62380c0000b02902f74057c3edmr34233852pfa.21.1625030588089;
+        Tue, 29 Jun 2021 22:23:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q18sm20087789pfj.178.2021.06.29.22.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 22:23:07 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 22:23:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-api@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Semantics of SECCOMP_MODE_STRICT?
+Message-ID: <202106292156.9458CF22@keescook>
+References: <87r1gkp9i7.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 30 Jun 2021 10:51:14 +0530
-From:   skakit@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom
- pmic gpio bindings to YAML
-In-Reply-To: <YMLhzxMpbSRQac+P@builder.lan>
-References: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
- <YMLhzxMpbSRQac+P@builder.lan>
-Message-ID: <a4a4f7049e4c43b69124ebd5b8c2c4a1@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1gkp9i7.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Tue, Jun 29, 2021 at 05:54:24PM -0500, Eric W. Biederman wrote:
+> 
+> I am the process of cleaning up the process exit path in the kernel, and
+> as part of that I am looking at the callers of do_exit.  A very
+> interesting one is __seccure_computing_strict.
+> 
+> Looking at the code is very clear that if a system call is attempted
+> that is not in the table the thread attempting to execute that system
+> call is terminated.
+> 
+> Reading the man page for seccomp it says that the process is delivered
+> SIGKILL.
+> 
+> The practical difference is what happens for multi-threaded
+> applications.
+> 
+> What are the desired semantics for a multi-threaded application if one
+> thread attempts to use a unsupported system call?  Should the thread be
+> terminated or the entire application?
+> 
+> Do we need to fix the kernel, or do we need to fix the manpages?
 
-On 2021-06-11 09:38, Bjorn Andersson wrote:
-> On Fri 21 May 01:30 CDT 2021, satya priya wrote:
-> 
->> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
->> 
-> 
-> While the structure of the binding is a proper binding, the definition
-> of the pinctrl states doesn't properly represent what we need to be 
-> able
-> to describe with this binding; see below.
-> 
-> [..]
->> diff --git 
->> a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml 
->> b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
->> new file mode 100644
->> index 0000000..d9024eb
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
->> @@ -0,0 +1,256 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm PMIC GPIO block
->> +
->> +maintainers:
->> +  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
-> 
-> Please make that bjorn.andersson@linaro.org
-> 
+I don't know of anyone actually using SECCOMP_MODE_STRICT, but the
+original implementation was (perhaps accidentally) thread-killing. It
+turns out this is not a particularly desirable situation, and when
+SECCOMP_MODE_FILTER was created, it continued with that semantic,
+but later grew a process-killing flags, as that's what most programs
+actually wanted.
 
-Okay, will change it in next post.
+It's likely the manpage needs fixing (we had to make similar updates
+for SECCOMP_MODE_FILTER), since some of the early examples of using
+SECCOMP_MODE_STRICT were basically "fork, calculate, write result to
+fd, exit".
 
->> +
->> +description: |
-> 
-> I don't think you need this defined in literal style, so omit the '|'
-> 
+FWIW the seccomp selftests don't even check for the thread-vs-process
+SIGKILL of SECCOMP_MODE_STRICT. :)
 
-OK.
-
->> +  This binding describes the GPIO block(s) found in the 8xxx series 
->> of
->> +  PMIC's from Qualcomm.
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - enum:
->> +          - qcom,pm8005-gpio
->> +          - qcom,pm8018-gpio
->> +          - qcom,pm8038-gpio
->> +          - qcom,pm8058-gpio
->> +          - qcom,pm8916-gpio
->> +          - qcom,pm8917-gpio
->> +          - qcom,pm8921-gpio
->> +          - qcom,pm8941-gpio
->> +          - qcom,pm8950-gpio
->> +          - qcom,pm8994-gpio
->> +          - qcom,pm8998-gpio
->> +          - qcom,pma8084-gpio
->> +          - qcom,pmi8950-gpio
->> +          - qcom,pmi8994-gpio
->> +          - qcom,pmi8998-gpio
->> +          - qcom,pms405-gpio
->> +          - qcom,pm660-gpio
-> 
-> Please keep these sorted alphabetically.
-> 
-
-Okay.
-
->> +          - qcom,pm660l-gpio
->> +          - qcom,pm8150-gpio
->> +          - qcom,pm8150b-gpio
->> +          - qcom,pm8350-gpio
->> +          - qcom,pm8350b-gpio
->> +          - qcom,pm8350c-gpio
->> +          - qcom,pmk8350-gpio
->> +          - qcom,pm6150-gpio
->> +          - qcom,pm6150l-gpio
->> +          - qcom,pm7325-gpio
->> +          - qcom,pmr735a-gpio
->> +          - qcom,pmr735b-gpio
->> +          - qcom,pm8008-gpio
->> +          - qcom,pmx55-gpio
->> +
->> +      - enum:
->> +          - qcom,spmi-gpio
->> +          - qcom,ssbi-gpio
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    minItems: 1
->> +    maxItems: 44
->> +    description: |
->> +        Must contain an array of encoded interrupt specifiers for
->> +        each available GPIO
-> 
-> We no longer specify "interrupts" but it seems we forgot to update the
-> binding. So perhaps it's the right thing to keep it as part of the
-> conversion and add a second patch that removes this.
-> 
-
-Okay.
-
->> +
->> +  '#interrupt-cells':
->> +    const: 2
->> +
->> +  interrupt-controller: true
->> +
->> +  gpio-controller: true
->> +
->> +  gpio-ranges:
->> +    maxItems: 1
->> +
->> +  '#gpio-cells':
->> +    const: 2
->> +    description: |
->> +        The first cell will be used to define gpio number and the
->> +        second denotes the flags for this gpio
->> +
->> +  gpio-keys:
-> 
-> This is the name of the pinctrl state defined in the example, as 
-> defined
-> here we will only ever be able to describe the volume keys.
-> 
-> You need to describe all valid states - and you need to support the two
-> different nesting of the properties.
-> 
-> See qcom,tlmm-common.yaml and how we use that in the various bindings.
-> 
-
-Ok.
-
->> +    type: object
->> +    properties:
->> +      volume-keys:
->> +        type: object
->> +        anyOf:
->> +          - $ref: "pinmux-node.yaml"
->> +          - $ref: "pincfg-node.yaml"
->> +        properties:
->> +          pins:
->> +            description: |
->> +                List of gpio pins affected by the properties 
->> specified in
->> +                this subnode.  Valid pins are
->> +                     - gpio1-gpio4 for pm8005
->> +                     - gpio1-gpio6 for pm8018
->> +                     - gpio1-gpio12 for pm8038
->> +                     - gpio1-gpio40 for pm8058
->> +                     - gpio1-gpio4 for pm8916
->> +                     - gpio1-gpio38 for pm8917
->> +                     - gpio1-gpio44 for pm8921
->> +                     - gpio1-gpio36 for pm8941
->> +                     - gpio1-gpio8 for pm8950 (hole on gpio3)
->> +                     - gpio1-gpio22 for pm8994
->> +                     - gpio1-gpio26 for pm8998
->> +                     - gpio1-gpio22 for pma8084
->> +                     - gpio1-gpio2 for pmi8950
->> +                     - gpio1-gpio10 for pmi8994
->> +                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
->> +                                                and gpio10)
->> +                     - gpio1-gpio10 for pm8150 (holes on gpio2, 
->> gpio5,
->> +                                                gpio7 and gpio8)
->> +                     - gpio1-gpio12 for pm8150b (holes on gpio3, 
->> gpio4
->> +                                                 and gpio7)
->> +                     - gpio1-gpio12 for pm8150l (hole on gpio7)
->> +                     - gpio1-gpio10 for pm8350
->> +                     - gpio1-gpio8 for pm8350b
->> +                     - gpio1-gpio9 for pm8350c
->> +                     - gpio1-gpio4 for pmk8350
->> +                     - gpio1-gpio10 for pm6150
->> +                     - gpio1-gpio12 for pm6150l
->> +                     - gpio1-gpio10 for pm7325
->> +                     - gpio1-gpio4 for pmr735a
->> +                     - gpio1-gpio4 for pmr735b
->> +                     - gpio1-gpio2 for pm8008
->> +                     - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, 
->> gpio10
->> +                                                and gpio11)
->> +
->> +            items:
->> +              pattern: "^gpio([0-9]+)$"
->> +
->> +          function:
->> +            items:
->> +              - enum:
->> +                  - normal
->> +                  - paired
->> +                  - func1
->> +                  - func2
->> +                  - dtest1
->> +                  - dtest2
->> +                  - dtest3
->> +                  - dtest4
->> +                  - func3  # supported by LV/MV GPIO subtypes
->> +                  - func4  # supported by LV/MV GPIO subtypes
->> +
->> +          bias-disable: true
->> +
->> +          bias-pull-down: true
->> +
->> +          bias-pull-up: true
->> +
->> +          qcom,pull-up-strength:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: |
->> +                Specifies the strength to use for pull up, if 
->> selected.
->> +                Valid values are defined in
->> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->> +                If this property is omitted 30uA strength will be 
->> used
->> +                if pull up is selected
->> +
->> +          bias-high-impedance: true
->> +
->> +          input-enable: true
->> +
->> +          output-high: true
->> +
->> +          output-low: true
->> +
->> +          power-source: true
->> +
->> +          qcom,drive-strength:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: |
->> +                Selects the drive strength for the specified pins
->> +                Valid drive strength values are defined in
->> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->> +            enum: [0, 1, 2, 3]
->> +
->> +          drive-push-pull: true
->> +
->> +          drive-open-drain: true
->> +
->> +          drive-open-source: true
->> +
->> +          qcom,analog-pass:
->> +            $ref: /schemas/types.yaml#/definitions/flag
->> +            description: |
->> +                The specified pins are configured in
->> +                analog-pass-through mode.
->> +
->> +          qcom,atest:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: |
->> +                Selects ATEST rail to route to GPIO when it's
->> +                configured in analog-pass-through mode.
->> +            enum: [1, 2, 3, 4]
->> +
->> +          qcom,dtest-buffer:
->> +            $ref: /schemas/types.yaml#/definitions/uint32
->> +            description: |
->> +                Selects DTEST rail to route to GPIO when it's
->> +                configured as digital input.
->> +            enum: [1, 2, 3, 4]
->> +
->> +        required:
->> +          - pins
->> +          - function
->> +
->> +        additionalProperties: false
->> +
->> +additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
-> 
-> I think it makes sense to require gpio-controller, '#gpio-cells',
-> gpio-ranges and interrupt-controller as well.
-> 
-Ok, will add them too.
-
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->> +
->> +    pm8921_gpio: gpio@150 {
->> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
->> +      reg = <0x150 0x160>;
->> +      interrupts = <192 1>, <193 1>, <194 1>,
->> +                   <195 1>, <196 1>, <197 1>,
->> +                   <198 1>, <199 1>, <200 1>,
->> +                   <201 1>, <202 1>, <203 1>,
->> +                   <204 1>, <205 1>, <206 1>,
->> +                   <207 1>, <208 1>, <209 1>,
->> +                   <210 1>, <211 1>, <212 1>,
->> +                   <213 1>, <214 1>, <215 1>,
->> +                   <216 1>, <217 1>, <218 1>,
->> +                   <219 1>, <220 1>, <221 1>,
->> +                   <222 1>, <223 1>, <224 1>,
->> +                   <225 1>, <226 1>, <227 1>,
->> +                   <228 1>, <229 1>, <230 1>,
->> +                   <231 1>, <232 1>, <233 1>,
->> +                   <234 1>, <235 1>;
-> 
-> As noted above, this list of interrupts should be omitted from the
-> example - but better done separate from the conversion patch.
-> 
-
-Okay.
-
-> Thanks,
-> Bjorn
-> 
-
-Thanks,
-Satya Priya
+-- 
+Kees Cook
