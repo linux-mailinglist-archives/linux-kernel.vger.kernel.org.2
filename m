@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952083B8466
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43AA3B8486
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236744AbhF3Nzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:55:45 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47410 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbhF3Nvu (ORCPT
+        id S235519AbhF3OAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:00:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40411 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236049AbhF3N7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:51:50 -0400
-Received: from maud (unknown [IPv6:2600:8800:8c04:8c00::912b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EF5171F43548;
-        Wed, 30 Jun 2021 14:49:13 +0100 (BST)
-Date:   Wed, 30 Jun 2021 09:49:07 -0400
-From:   Alyssa Rosenzweig <alyssa@collabora.com>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        iommu@lists.linux-foundation.org, Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>, r.czerwinski@pengutronix.de
-Subject: Re: [PATCH v4 3/3] iommu: dart: Add DART iommu driver
-Message-ID: <YNx2U4GPoKxV3PWd@maud>
-References: <20210627143405.77298-1-sven@svenpeter.dev>
- <20210627143405.77298-4-sven@svenpeter.dev>
+        Wed, 30 Jun 2021 09:59:00 -0400
+X-UUID: e7d4bf8d56984e219f26e258a12eef49-20210630
+X-UUID: e7d4bf8d56984e219f26e258a12eef49-20210630
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1842347633; Wed, 30 Jun 2021 21:49:47 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Jun 2021 21:49:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Jun 2021 21:49:45 +0800
+From:   <yee.lee@mediatek.com>
+To:     <andreyknvl@gmail.com>
+CC:     <wsd_upstream@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v3 1/1] kasan: Add memzero init for unaligned size under SLUB debug
+Date:   Wed, 30 Jun 2021 21:49:40 +0800
+Message-ID: <20210630134943.20781-2-yee.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210630134943.20781-1-yee.lee@mediatek.com>
+References: <20210630134943.20781-1-yee.lee@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210627143405.77298-4-sven@svenpeter.dev>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks really good! Just a few minor comments. With them addressed,
+From: Yee Lee <yee.lee@mediatek.com>
 
-	Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Issue: when SLUB debug is on, hwtag kasan_unpoison() would overwrite
+the redzone of object with unaligned size.
 
-> +	  Say Y here if you are using an Apple SoC with a DART IOMMU.
+An additional memzero_explicit() path is added to replacing init by
+hwtag instruction for those unaligned size at SLUB debug mode.
 
-Nit: Do we need to spell out "with a DART IOMMU"? Don't all the apple
-socs need DART?
+The penalty is acceptable since they are only enabled in debug mode,
+not production builds. A block of comment is added for explanation.
 
-> +/*
-> + * This structure is used to identify a single stream attached to a domain.
-> + * It's used as a list inside that domain to be able to attach multiple
-> + * streams to a single domain. Since multiple devices can use a single stream
-> + * it additionally keeps track of how many devices are represented by this
-> + * stream. Once that number reaches zero it is detached from the IOMMU domain
-> + * and all translations from this stream are disabled.
-> + *
-> + * @dart: DART instance to which this stream belongs
-> + * @sid: stream id within the DART instance
-> + * @num_devices: count of devices attached to this stream
-> + * @stream_head: list head for the next stream
-> + */
-> +struct apple_dart_stream {
-> +	struct apple_dart *dart;
-> +	u32 sid;
-> +
-> +	u32 num_devices;
-> +
-> +	struct list_head stream_head;
-> +};
+Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+Suggested-by: Marco Elver <elver@google.com>
+Suggested-by: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/kasan/kasan.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-It wasn't obvious to me why we can get away without reference counting.
-Looking ahead it looks like we assert locks in each case. Maybe add
-that to the comment?
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 8f450bc28045..6f698f13dbe6 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -387,6 +387,16 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
+ 
+ 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
+ 		return;
++	/*
++	 * Explicitly initialize the memory with the precise object size
++	 * to avoid overwriting the SLAB redzone. This disables initialization
++	 * in the arch code and may thus lead to performance penalty.
++	 * The penalty is accepted since SLAB redzones aren't enabled in production builds.
++	 */
++	if (IS_ENABLED(CONFIG_SLUB_DEBUG) && init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
++		init = false;
++		memzero_explicit((void *)addr, size);
++	}
+ 	size = round_up(size, KASAN_GRANULE_SIZE);
+ 
+ 	hw_set_mem_tag_range((void *)addr, size, tag, init);
+-- 
+2.18.0
 
-```
-> +static void apple_dart_hw_set_ttbr(struct apple_dart *dart, u16 sid, u16 idx,
-> +				   phys_addr_t paddr)
-> +{
-> +	writel(DART_TTBR_VALID | (paddr >> DART_TTBR_SHIFT),
-> +	       dart->regs + DART_TTBR(sid, idx));
-> +}
-```
-
-Should we be checking alignment here? Something like
-
-    BUG_ON(paddr & ((1 << DART_TTBR_SHIFT) - 1));
