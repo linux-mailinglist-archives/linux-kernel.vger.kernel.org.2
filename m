@@ -2,98 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154C43B8993
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41A03B8994
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbhF3UOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:14:40 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:49604 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhF3UOj (ORCPT
+        id S234188AbhF3UPE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 16:15:04 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:43860 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233847AbhF3UPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:14:39 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lygZ7-00BxLo-8J; Wed, 30 Jun 2021 14:12:09 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:43832 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lygZ5-007Q6s-LZ; Wed, 30 Jun 2021 14:12:08 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     linux-api@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <87r1gkp9i7.fsf@disp2133> <202106292156.9458CF22@keescook>
-Date:   Wed, 30 Jun 2021 15:11:23 -0500
-In-Reply-To: <202106292156.9458CF22@keescook> (Kees Cook's message of "Tue, 29
-        Jun 2021 22:23:06 -0700")
-Message-ID: <87k0mbp0yc.fsf_-_@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 30 Jun 2021 16:15:00 -0400
+Received: by mail-lf1-f46.google.com with SMTP id a18so7363046lfs.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:12:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qkhtb/Z3/Lfu4wzfzMpPHgn7YGxmP6lS4b+MzhFSQB4=;
+        b=iQGDLpNRGn54Nm7lfEcs+IdP83BuElgSwzs0jF5e98iGB4ZFNNKYp0vJQiHdEVnbab
+         VAtKXIRpCBdfjsjC62hgJfIQnIn/JMKDc7YhfJBNeqVl2TxMGgZrKbyqQdInE3vSfLV1
+         DDI+GYNw3oKxazbsddhk5SH9dmeSpGmvnB4UTXyv82JsLD5RDtb2UxLVCJnMyvoQ26A3
+         XKzPl0XC7Ivv0XdfDDx8glccS7Y8c3Nuy2F2D9hNY0ZO36zmQ6C/tMHsdiY8X6SXTGOP
+         2tZ/aUMJcAowTrRjABWtp2APiXYeXvjrMyNCTEB9TX5iNdfpRQWpIHebaNjaJMZ2KTTI
+         6M6g==
+X-Gm-Message-State: AOAM5308hu45yBMnilUW2MlyNnRitSHLSkL6UcRxKVoUvrVc1kdNku9w
+        V2aKwoF4WGjt9YctLUwvmY1iPF4eboVdO+27XxI=
+X-Google-Smtp-Source: ABdhPJwueC/6wvIbtKqwBTAdjqEjnzvQEIJCQ+6yIx7qdwdWzFqln7AXvH6pxjHXt9PixgbUGy1YHyC+XcVCtjJpeWw=
+X-Received: by 2002:ac2:4314:: with SMTP id l20mr3196692lfh.509.1625083948542;
+ Wed, 30 Jun 2021 13:12:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lygZ5-007Q6s-LZ;;;mid=<87k0mbp0yc.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18aOKYeX4bVt7U5rQ+ngAg94VyPJEFtMio=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4969]
-        *  0.7 XMSubLong Long Subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Michael Kerrisk <mtk.manpages@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1015 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 10 (1.0%), b_tie_ro: 8 (0.8%), parse: 0.96 (0.1%),
-         extract_message_metadata: 12 (1.2%), get_uri_detail_list: 0.82 (0.1%),
-         tests_pri_-1000: 18 (1.7%), tests_pri_-950: 1.34 (0.1%),
-        tests_pri_-900: 1.09 (0.1%), tests_pri_-90: 86 (8.5%), check_bayes: 84
-        (8.3%), b_tokenize: 6 (0.6%), b_tok_get_all: 5 (0.5%), b_comp_prob:
-        2.4 (0.2%), b_tok_touch_all: 67 (6.6%), b_finish: 1.18 (0.1%),
-        tests_pri_0: 874 (86.0%), check_dkim_signature: 0.62 (0.1%),
-        check_dkim_adsp: 2.9 (0.3%), poll_dns_idle: 0.67 (0.1%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 8 (0.7%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH] seccomp.2:  Clarify that bad system calls kill the thread
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-5-namhyung@kernel.org>
+ <YNy85M22XZ8Sc/Gz@kernel.org>
+In-Reply-To: <YNy85M22XZ8Sc/Gz@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 30 Jun 2021 13:12:17 -0700
+Message-ID: <CAM9d7chZmydDJr-QBfGkQ-bWCTOH96sTO6fzrFLaHkgeGYVomw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] perf stat: Enable BPF counter with --for-each-cgroup
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnaldo,
 
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
- man2/seccomp.2 | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On Wed, Jun 30, 2021 at 11:50 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Fri, Jun 25, 2021 at 12:18:26AM -0700, Namhyung Kim escreveu:
+> > Recently bperf was added to use BPF to count perf events for various
+> > purposes.  This is an extension for the approach and targetting to
+> > cgroup usages.
+> >
+> > Unlike the other bperf, it doesn't share the events with other
+> > processes but it'd reduce unnecessary events (and the overhead of
+> > multiplexing) for each monitored cgroup within the perf session.
+> >
+> > When --for-each-cgroup is used with --bpf-counters, it will open
+> > cgroup-switches event per cpu internally and attach the new BPF
+> > program to read given perf_events and to aggregate the results for
+> > cgroups.  It's only called when task is switched to a task in a
+> > different cgroup.
+>
+> I'll take a stab at fixing these:
 
-diff --git a/man2/seccomp.2 b/man2/seccomp.2
-index a3421871f0f4..bde54c3e3e99 100644
---- a/man2/seccomp.2
-+++ b/man2/seccomp.2
-@@ -69,9 +69,10 @@ The only system calls that the calling thread is permitted to make are
- .BR exit_group (2)),
- and
- .BR sigreturn (2).
--Other system calls result in the delivery of a
-+Other system calls result in the termination of the calling thread,
-+or termination of the entire process with the
- .BR SIGKILL
--signal.
-+signal when there is only one thread.
- Strict secure computing mode is useful for number-crunching
- applications that may need to execute untrusted byte code, perhaps
- obtained by reading from a pipe or socket.
--- 
-2.29.2
+Oops, sorry about that.  My build environment didn't catch this..
+Will fix it in the v5.
+
+Thanks,
+Namhyung
+
+>
+> ⬢[acme@toolbox perf]$ make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 DEBUG=1 O=/tmp/build/perf -C tools/perf install-bin
+> make: Entering directory '/var/home/acme/git/perf/tools/perf'
+>   BUILD:   Doing 'make -j24' parallel build
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
+> diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/mount.h' differs from latest version at 'include/uapi/linux/mount.h'
+> diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h'
+> diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
+> diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs from latest version at 'arch/x86/include/uapi/asm/kvm.h'
+> diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs from latest version at 'arch/x86/include/uapi/asm/svm.h'
+> diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
+> Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
+> diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
+>   DESCEND plugins
+>   GEN     /tmp/build/perf/python/perf.so
+>   INSTALL trace_plugins
+>   CC      /tmp/build/perf/util/bpf_counter_cgroup.o
+>   CC      /tmp/build/perf/util/demangle-java.o
+>   CC      /tmp/build/perf/util/demangle-rust.o
+>   CC      /tmp/build/perf/util/jitdump.o
+>   CC      /tmp/build/perf/util/genelf.o
+>   CC      /tmp/build/perf/util/genelf_debug.o
+>   CC      /tmp/build/perf/util/perf-hooks.o
+>   CC      /tmp/build/perf/util/bpf-event.o
+> util/bpf_counter_cgroup.c: In function ‘bperf_load_program’:
+> util/bpf_counter_cgroup.c:96:23: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
+>    96 |         for (i = 0; i < nr_cpus; i++) {
+>       |                       ^
+> util/bpf_counter_cgroup.c:125:43: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
+>   125 |                         for (cpu = 0; cpu < nr_cpus; cpu++) {
+>       |                                           ^
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__load’:
+> util/bpf_counter_cgroup.c:178:65: error: unused parameter ‘target’ [-Werror=unused-parameter]
+>   178 | static int bperf_cgrp__load(struct evsel *evsel, struct target *target)
+>       |                                                  ~~~~~~~~~~~~~~~^~~~~~
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__install_pe’:
+> util/bpf_counter_cgroup.c:195:49: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                   ~~~~~~~~~~~~~~^~~~~
+> util/bpf_counter_cgroup.c:195:60: error: unused parameter ‘cpu’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                                        ~~~~^~~
+> util/bpf_counter_cgroup.c:195:69: error: unused parameter ‘fd’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                                                 ~~~~^~
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__enable’:
+> util/bpf_counter_cgroup.c:219:45: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
+>   219 | static int bperf_cgrp__enable(struct evsel *evsel)
+>       |                               ~~~~~~~~~~~~~~^~~~~
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter_cgroup.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> make[3]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: util] Error 2
+> make[2]: *** [Makefile.perf:655: /tmp/build/perf/perf-in.o] Error 2
+> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> make: *** [Makefile:113: install-bin] Error 2
+> make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+> ⬢[acme@toolbox perf]$
