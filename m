@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858183B7CE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C2F3B7CDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhF3FPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 01:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        id S233661AbhF3FOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 01:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbhF3FPn (ORCPT
+        with ESMTP id S233538AbhF3FOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 01:15:43 -0400
-X-Greylist: delayed 632 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Jun 2021 22:13:14 PDT
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3C4C061766;
-        Tue, 29 Jun 2021 22:13:14 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4GF8NY2xyHzQk3d;
-        Wed, 30 Jun 2021 07:02:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id 4tliV6jmTDUS; Wed, 30 Jun 2021 07:02:33 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 15:02:19 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-api@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Semantics of SECCOMP_MODE_STRICT?
-Message-ID: <20210630050219.nwixaloqs5oq5juy@senku>
-References: <87r1gkp9i7.fsf@disp2133>
+        Wed, 30 Jun 2021 01:14:06 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A0BC061766;
+        Tue, 29 Jun 2021 22:11:37 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1625029894;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xugq2Itb92GveGC9lFrpW1MMdYEHoWa1T9rN2HNUDKY=;
+        b=MHZr4odTyNS4111aBfmnfJLq5X6M+HczsTMpadbO/67kWKT4gL8lESEOm3RPx2CXT5WPnj
+        hNQXX9plwJtCyFyd4nVqTjlBdjgH6LFVpiJ2+7wMNB+op0w8pbyEIo337SAXw2rLa9GQnc
+        IPO+vgycuNwp73PpNSm0ooZ2oJM3N6w=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, andriin@fb.com,
+        atenart@kernel.org, alobakin@pm.me, ast@kernel.org,
+        edumazet@google.com, daniel@iogearbox.net, weiwan@google.com,
+        ap420073@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] net: core: Modify alloc_size in alloc_netdev_mqs()
+Date:   Wed, 30 Jun 2021 13:11:18 +0800
+Message-Id: <20210630051118.2212-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="knyuqndtsekusods"
-Content-Disposition: inline
-In-Reply-To: <87r1gkp9i7.fsf@disp2133>
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.55 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 0019D1860
-X-Rspamd-UID: f361c3
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use ALIGN for 'struct net_device', and remove the unneeded
+'NETDEV_ALIGN - 1'. This can save a few bytes. and modify
+the pr_err content when txqs < 1.
 
---knyuqndtsekusods
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/core/dev.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-On 2021-06-29, Eric W. Biederman <ebiederm@xmission.com> wrote:
->=20
-> I am the process of cleaning up the process exit path in the kernel, and
-> as part of that I am looking at the callers of do_exit.  A very
-> interesting one is __seccure_computing_strict.
->=20
-> Looking at the code is very clear that if a system call is attempted
-> that is not in the table the thread attempting to execute that system
-> call is terminated.
->=20
-> Reading the man page for seccomp it says that the process is delivered
-> SIGKILL.
->=20
-> The practical difference is what happens for multi-threaded
-> applications.
->=20
-> What are the desired semantics for a multi-threaded application if one
-> thread attempts to use a unsupported system call?  Should the thread be
-> terminated or the entire application?
->=20
-> Do we need to fix the kernel, or do we need to fix the manpages?
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c253c2aafe97..c42a682a624d 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10789,7 +10789,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+ 	BUG_ON(strlen(name) >= sizeof(dev->name));
+ 
+ 	if (txqs < 1) {
+-		pr_err("alloc_netdev: Unable to allocate device with zero queues\n");
++		pr_err("alloc_netdev: Unable to allocate device with zero TX queues\n");
+ 		return NULL;
+ 	}
+ 
+@@ -10798,14 +10798,12 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+ 		return NULL;
+ 	}
+ 
+-	alloc_size = sizeof(struct net_device);
++	/* ensure 32-byte alignment of struct net_device*/
++	alloc_size = ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
+ 	if (sizeof_priv) {
+ 		/* ensure 32-byte alignment of private area */
+-		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
+-		alloc_size += sizeof_priv;
++		alloc_size += ALIGN(sizeof_priv, NETDEV_ALIGN);
+ 	}
+-	/* ensure 32-byte alignment of whole construct */
+-	alloc_size += NETDEV_ALIGN - 1;
+ 
+ 	p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+ 	if (!p)
+-- 
+2.32.0
 
-My expectation is that the correct action should be the equivalent of
-SECCOMP_RET_KILL(_THREAD) which kills the thread and is the current
-behaviour (SECCOMP_RET_KILL_PROCESS is relatively speaking quite new).
-
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---knyuqndtsekusods
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCYNv62AAKCRCdlLljIbnQ
-EmqeAQCwE2RYKejytscSCZFsA8BmtrqPevAElfKrXqcDdvKRoQEAqAhoskdp6IIK
-QTCUu1vbkKCwS4S63ntMofnCIFFKggE=
-=5aqA
------END PGP SIGNATURE-----
-
---knyuqndtsekusods--
