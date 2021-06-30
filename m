@@ -2,177 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DC03B7D4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F29B3B7D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhF3GRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:17:25 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:37646 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhF3GRX (ORCPT
+        id S232227AbhF3GWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:22:34 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:9299 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhF3GWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:17:23 -0400
-Received: by mail-lf1-f44.google.com with SMTP id q16so2982491lfr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:14:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DT1VEhZeNr6s/86X+UE2qNX8jcV0kx4gFWwnom6ABS4=;
-        b=oDhg8dUYtTp60DJhcTrO5q8/7NBZk3yxXHda8IGFHrea1LdUqvKiwwaw1sTV097Bnh
-         RJs9GPJTY3Pr75pu1AhW4OZ3kupqTCKVRW0EXvkDpcfLc9u6x+/XwnMccbO2+KzQPgEi
-         hIQPZyFq/gbcmeVk9dqO9JD7nENlq3mgfwdZ0JJxay0yUuIpAJFNtGnjtMTg9fpUtwLv
-         7x7AX2zCucqAaPTIcQqcqCuuNxhSK2Li3KdsJwzXcP6my0yZLJfP2FuCaq94UdAKQ9fj
-         3f7D/zBGN5GtF4GLSktPCpfkhS88nnpMBVKdTbu5T2Cmwd1m9HxWoQTnYwDcN4Y9t7Ry
-         QEHg==
-X-Gm-Message-State: AOAM533aOhrx25eVQ0pIRK9FNeQuqbZdtWaatdcNAjDigIDP/2t9Zjy/
-        LSBcmV89rsfxOlBg+V1ZX3mZuxsQKs6PWhrNU9Q=
-X-Google-Smtp-Source: ABdhPJzVUm8mEQGDb5ltm4TiRDwvnTCYuBf2ChgxkI6CLtBVBm8rIKSrJ/zRybAaMLQQpnprnpeKFnFGu0adOwAPEqQ=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr27067838lfa.374.1625033694646;
- Tue, 29 Jun 2021 23:14:54 -0700 (PDT)
+        Wed, 30 Jun 2021 02:22:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GF9zg6nFBz1BRjB;
+        Wed, 30 Jun 2021 14:14:39 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 14:19:59 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 14:19:58 +0800
+Subject: Re: [PATCH 4.14 00/88] 4.14.238-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>
+References: <20210628143628.33342-1-sashal@kernel.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <c1e29a9a-7561-3aa0-8589-949dcf6d9304@huawei.com>
+Date:   Wed, 30 Jun 2021 14:19:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com> <036fbbd11ffd0d0c9338ef61a0076685ac502000.1624350588.git.alexey.v.bayduraev@linux.intel.com>
-In-Reply-To: <036fbbd11ffd0d0c9338ef61a0076685ac502000.1624350588.git.alexey.v.bayduraev@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 29 Jun 2021 23:14:43 -0700
-Message-ID: <CAM9d7cgL3zDc6F_i=95PHgVPaahuuShdBsudUaA9JnymyE2g6Q@mail.gmail.com>
-Subject: Re: [PATCH v7 20/20] perf session: Load data directory files for analysis
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210628143628.33342-1-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:43 AM Alexey Bayduraev
-<alexey.v.bayduraev@linux.intel.com> wrote:
->
-> Load data directory files and provide basic raw dump and aggregated
-> analysis support of data directories in report mode, still with no
-> memory consumption optimizations.
->
-> Design and implementation are based on the prototype [1], [2].
->
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 129 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 129 insertions(+)
->
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index fe25abf83b80..2c0eb126cdbb 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -65,6 +65,7 @@ struct reader_state {
->         u64      data_size;
->         u64      head;
->         bool     eof;
-> +       u64      size;
->  };
->
->  enum {
-> @@ -2322,6 +2323,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
->         if (skip)
->                 size += skip;
->
-> +       st->size += size;
->         st->head += size;
->         st->file_pos += size;
->
-> @@ -2421,6 +2423,130 @@ static int __perf_session__process_events(struct perf_session *session)
->         return err;
->  }
->
-> +/*
-> + * This function reads, merge and process directory data.
-> + * It assumens the version 1 of directory data, where each
-> + * data file holds per-cpu data, already sorted by kernel.
-> + */
-> +static int __perf_session__process_dir_events(struct perf_session *session)
-> +{
-> +       struct perf_data *data = session->data;
-> +       struct perf_tool *tool = session->tool;
-> +       int i, ret = 0, readers = 1;
-> +       struct ui_progress prog;
-> +       u64 total_size = perf_data__size(session->data);
-> +       struct reader *rd;
-> +
-> +       perf_tool__fill_defaults(tool);
-> +
-> +       ui_progress__init_size(&prog, total_size, "Sorting events...");
-> +
-> +       for (i = 0; i < data->dir.nr; i++) {
-> +               if (data->dir.files[i].size)
-> +                       readers++;
-> +       }
-> +
-> +       rd = session->readers = zalloc(readers * sizeof(struct reader));
-> +       if (!rd)
-> +               return -ENOMEM;
-> +       session->nr_readers = readers;
-> +       readers = 0;
-> +
-> +       rd[readers] = (struct reader) {
-> +               .fd              = perf_data__fd(session->data),
-> +               .path            = session->data->file.path,
-> +               .data_size       = session->header.data_size,
-> +               .data_offset     = session->header.data_offset,
-> +               .in_place_update = session->data->in_place_update,
-> +       };
-> +       ret = reader__init(&rd[readers], NULL);
-> +       if (ret)
-> +               goto out_err;
-> +       ret = reader__mmap(&rd[readers], session);
-> +       if (ret != READER_OK) {
-> +               if (ret == READER_EOF)
-> +                       ret = -EINVAL;
-> +               goto out_err;
-> +       }
-> +       readers++;
-> +
-> +       for (i = 0; i < data->dir.nr; i++) {
-> +               if (data->dir.files[i].size) {
-
-Just one more nitpicking. :)
-
-You can save an indent depth by having
-
-        if (!data->dir.files[i].size)
-            continue;
-
-Thanks,
-Namhyung
 
 
-> +                       rd[readers] = (struct reader) {
-> +                               .fd              = data->dir.files[i].fd,
-> +                               .path            = data->dir.files[i].path,
-> +                               .data_size       = data->dir.files[i].size,
-> +                               .data_offset     = 0,
-> +                               .in_place_update = session->data->in_place_update,
-> +                       };
-> +                       ret = reader__init(&rd[readers], NULL);
-> +                       if (ret)
-> +                               goto out_err;
-> +                       ret = reader__mmap(&rd[readers], session);
-> +                       if (ret != READER_OK) {
-> +                               if (ret == READER_EOF)
-> +                                       ret = -EINVAL;
-> +                               goto out_err;
-> +                       }
-> +                       readers++;
-> +               }
-> +       }
+On 2021/6/28 22:35, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.14.238 release.
+> There are 88 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:36:04 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.14.y&id2=v4.14.237
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
+
+Tested on x86 for 4.14.238-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.238-rc1
+Commit: f8f0323505c56f13af223c8b9ad54f2fad125756
+Compiler: gcc version 7.3.0 (GCC)
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8836
+passed: 8836
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
