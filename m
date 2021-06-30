@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304163B7E94
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3493B7EC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhF3IEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:04:35 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:37650 "EHLO inva020.nxp.com"
+        id S233325AbhF3IQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:16:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233593AbhF3IEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:04:07 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 406261A26B2;
-        Wed, 30 Jun 2021 10:01:38 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0699C1A0484;
-        Wed, 30 Jun 2021 10:01:38 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 7D71D183AC72;
-        Wed, 30 Jun 2021 16:01:35 +0800 (+08)
-From:   Yangbo Lu <yangbo.lu@nxp.com>
-To:     netdev@vger.kernel.org
-Cc:     Yangbo Lu <yangbo.lu@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, mptcp@lists.linux.dev,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
-        Sebastien Laveze <sebastien.laveze@nxp.com>
-Subject: [net-next, v5, 11/11] MAINTAINERS: add entry for PTP virtual clock driver
-Date:   Wed, 30 Jun 2021 16:12:02 +0800
-Message-Id: <20210630081202.4423-12-yangbo.lu@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210630081202.4423-1-yangbo.lu@nxp.com>
-References: <20210630081202.4423-1-yangbo.lu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S233048AbhF3IP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:15:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CA7D61C9F;
+        Wed, 30 Jun 2021 08:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625040811;
+        bh=KO4vyaUivIt0ADyQShDhV1aCw7X6viddALTw7vTzn4g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=allzi4pTPxU9HtC2mQ2IL+I/Ef0+0nuO719xRyraDLXt2ZvCbXedwNHZn+qxDl5Vd
+         2bKhVaRFNk8LHJ94UbXIBgyUa5jK/5MtIgFp81gWHpYCfxiST6dUr2d1atgQ0IxHPJ
+         W6f3X8pCYm8OSzfEYjw+laO/meyF2++Lk4r4NAh8=
+Date:   Wed, 30 Jun 2021 10:13:28 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: cleancache: fix potential race in cleancache apis
+Message-ID: <YNwnqOuFlIG6Jofy@kroah.com>
+References: <CGME20210630073310epcms1p2ad6803cfd9dbc8ab501c4c99f799f4da@epcms1p2>
+ <20210630073310epcms1p2ad6803cfd9dbc8ab501c4c99f799f4da@epcms1p2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210630073310epcms1p2ad6803cfd9dbc8ab501c4c99f799f4da@epcms1p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entry for PTP virtual clock driver.
+On Wed, Jun 30, 2021 at 04:33:10PM +0900, 권오훈 wrote:
+> Current cleancache api implementation has potential race as follows,
+> which might lead to corruption in filesystems using cleancache.
+> 
+> thread 0                thread 1                        thread 2
+> 
+>                         in put_page
+>                         get pool_id K for fs1
+> invalidate_fs on fs1
+> frees pool_id K
+>                                                         init_fs for fs2
+>                                                         allocates pool_id K
+>                         put_page puts page
+>                         which belongs to fs1
+>                         into cleancache pool for fs2
+> 
+> At this point, a file cache which originally belongs to fs1 might be
+> copied back to cleancache pool of fs2, which might be later used as if
+> it were normal cleancache of fs2, and could eventually corrupt fs2 when
+> flushed back.
+> 
+> Add rwlock in order to synchronize invalidate_fs with other cleancache
+> operations.
+> 
+> In normal situations where filesystems are not frequently mounted or
+> unmounted, there will be little performance impact since
+> read_lock/read_unlock apis are used.
+> 
+> Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
 
-Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
----
-Changes for v3:
-	- Added this patch.
-Changes for v4:
-	- None.
-Changes for v5:
-	- None.
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+What commit does this fix?  Should it go to stable kernels?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 25956727ff24..7b174dbaa81b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14848,6 +14848,13 @@ F:	drivers/net/phy/dp83640*
- F:	drivers/ptp/*
- F:	include/linux/ptp_cl*
- 
-+PTP VIRTUAL CLOCK SUPPORT
-+M:	Yangbo Lu <yangbo.lu@nxp.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/ptp/ptp_vclock.c
-+F:	net/ethtool/phc_vclocks.c
-+
- PTRACE SUPPORT
- M:	Oleg Nesterov <oleg@redhat.com>
- S:	Maintained
--- 
-2.25.1
+thanks,
 
+greg k-h
