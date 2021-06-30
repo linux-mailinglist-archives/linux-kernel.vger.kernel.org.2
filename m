@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9C53B849B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34213B84A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236284AbhF3OEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:04:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:39026 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236401AbhF3OEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:04:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05ED36D;
-        Wed, 30 Jun 2021 07:02:02 -0700 (PDT)
-Received: from [10.57.40.45] (unknown [10.57.40.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99D623F718;
-        Wed, 30 Jun 2021 07:02:00 -0700 (PDT)
-Subject: Re: [PATCH] iommu/arm: Cleanup resources in case of probe error path
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210608164559.204023-1-ameynarkhede03@gmail.com>
- <CGME20210630124816eucas1p27563f0a456c0196e20937619aa2f8d26@eucas1p2.samsung.com>
- <26f6a765-37c8-d63a-a779-384f095d5770@samsung.com>
- <20210630125940.GA8515@willie-the-truck>
- <4e3b1685-323e-2a7e-3aae-7c21b28fc65f@samsung.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <bc07bd52-ed2e-0a44-80a7-36b581018b40@arm.com>
-Date:   Wed, 30 Jun 2021 15:01:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235818AbhF3OHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235572AbhF3OGu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:06:50 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94728C06122E
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:03:09 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id g13-20020a4ac4cd0000b029024c717ed8aeso638398ooq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0F//f0x+IlSuTVhD2o09FmJBTCLPD1WCy4S2G9ePpc=;
+        b=a/z4bOFfSrZMHOKq5nfEiUadvfO9+JWMzXVisHQSDedJlx2RH1WWBTmLDfoP3mBcqk
+         9t5uMt+LafclLyJtVbIYofEIeLsPuQGK+gRNQKyq1jgdZesUWyYgfJUbr7j6j0gwqkGs
+         9LMkxjqjGFyiXtkz3b272td5PsqwfV+pwgfxudf2tQvTt2/J5+1MfWEHJfXQCJPIP7Xq
+         AuWIshMO2OFbzJwXxyAVl9XrT8q5hc2ejH7LwaZpghqKIBEpexfL1nqL9gIz4cVHw+nN
+         4XaFnYBXIrDLHFwmghFwT5h3lf8ipJiRDNdEpcABg2X4WP1mH+6MObCP1xcExYBn33p4
+         59vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0F//f0x+IlSuTVhD2o09FmJBTCLPD1WCy4S2G9ePpc=;
+        b=hJj2r1hQLqJSe7mv+f00VWV9a2TOON8dEhLRN7UaKWivYFdnmJxw4og82Jrr5NkTle
+         7yeOEM9WrKOIxbhvJe5ApQOa2OzrAvUeHfDBds0+gfqXttl1/dWUviMRH/v1yyuXpSO0
+         tAoKvbebX3HGs4iekLCkclnuvsxjaYlSVNE0ZXdS/0Yx/7bWc7nzGjxSjgX3038Nq8+k
+         dhQY4f2xckDjvByqZD0YgL/zi+OYkklBwyEsmszoiWK2DyKZFkzJRnw/tuS+0plogj7L
+         0bwqs3aTDc6z/nZ0sb7HFdWtMquIJ/QNZ5xs6NDApaOvKwMll7dDmYzW+jC34rYZ3ayK
+         bCFQ==
+X-Gm-Message-State: AOAM533EDA1FJGMBVidRNIIA4eI26NP6pxxh9B+XUDO8duJua60G1yLt
+        FxAXDhmGfr2l2C7ZihjSVZb1hOdRiptUtwZ5CE55iQ==
+X-Google-Smtp-Source: ABdhPJzhU6va1OQ+ffknnRGi+3XNwnd77TIu63SOlmaTjFu4VTxpZBUWtxk+KN60aRBNpB1K8W1vcePNsu1717j+uRY=
+X-Received: by 2002:a4a:6049:: with SMTP id t9mr8547439oof.14.1625061788645;
+ Wed, 30 Jun 2021 07:03:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4e3b1685-323e-2a7e-3aae-7c21b28fc65f@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210630135313.1072577-1-glider@google.com> <20210630135313.1072577-2-glider@google.com>
+In-Reply-To: <20210630135313.1072577-2-glider@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 30 Jun 2021 16:02:53 +0200
+Message-ID: <CANpmjNPuFY66OwXxTvGs_t8eic1et9ZMJV5RDL_mkPVNkHqHzg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] kfence: skip all GFP_ZONEMASK allocations
+To:     Alexander Potapenko <glider@google.com>
+Cc:     akpm@linux-foundation.org, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        jrdr.linux@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-30 14:48, Marek Szyprowski wrote:
-> On 30.06.2021 14:59, Will Deacon wrote:
->> On Wed, Jun 30, 2021 at 02:48:15PM +0200, Marek Szyprowski wrote:
->>> On 08.06.2021 18:45, Amey Narkhede wrote:
->>>> If device registration fails, remove sysfs attribute
->>>> and if setting bus callbacks fails, unregister the device
->>>> and cleanup the sysfs attribute.
->>>>
->>>> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
->>> This patch landed in linux-next some time ago as commit 249c9dc6aa0d
->>> ("iommu/arm: Cleanup resources in case of probe error path"). After
->>> bisecting and some manual searching I finally found that it is
->>> responsible for breaking s2idle on DragonBoard 410c. Here is the log
->>> (captured with no_console_suspend):
->>>
->>> # time rtcwake -s10 -mmem
->>> rtcwake: wakeup from "mem" using /dev/rtc0 at Thu Jan  1 00:02:13 1970
->>> PM: suspend entry (s2idle)
->>> Filesystems sync: 0.002 seconds
->>> Freezing user space processes ... (elapsed 0.006 seconds) done.
->>> OOM killer disabled.
->>> Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
->>> Unable to handle kernel NULL pointer dereference at virtual address
->>> 0000000000000070
->>> Mem abort info:
->>>      ESR = 0x96000006
->>>      EC = 0x25: DABT (current EL), IL = 32 bits
->>>      SET = 0, FnV = 0
->>>      EA = 0, S1PTW = 0
->>>      FSC = 0x06: level 2 translation fault
->>> Data abort info:
->>>      ISV = 0, ISS = 0x00000006
->>>      CM = 0, WnR = 0
->>> user pgtable: 4k pages, 48-bit VAs, pgdp=000000008ad08000
->>> [0000000000000070] pgd=0800000085c3c003, p4d=0800000085c3c003,
->>> pud=0800000088dcf003, pmd=0000000000000000
->>> Internal error: Oops: 96000006 [#1] PREEMPT SMP
->>> Modules linked in: bluetooth ecdh_generic ecc rfkill ipv6 ax88796b
->>> venus_enc venus_dec videobuf2_dma_contig asix crct10dif_ce adv7511
->>> snd_soc_msm8916_analog qcom_spmi_temp_alarm rtc_pm8xxx qcom_pon
->>> qcom_camss qcom_spmi_vadc videobuf2_dma_sg qcom_vadc_common msm
->>> venus_core v4l2_fwnode v4l2_async snd_soc_msm8916_digital
->>> videobuf2_memops snd_soc_lpass_apq8016 snd_soc_lpass_cpu v4l2_mem2mem
->>> snd_soc_lpass_platform snd_soc_apq8016_sbc videobuf2_v4l2
->>> snd_soc_qcom_common qcom_rng videobuf2_common i2c_qcom_cci qnoc_msm8916
->>> videodev mc icc_smd_rpm mdt_loader socinfo display_connector rmtfs_mem
->>> CPU: 1 PID: 1522 Comm: rtcwake Not tainted 5.13.0-next-20210629 #3592
->>> Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
->>> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
->>> pc : msm_runtime_suspend+0x1c/0x60 [msm]
->>> lr : msm_pm_suspend+0x18/0x38 [msm]
->>> ...
->>> Call trace:
->>>     msm_runtime_suspend+0x1c/0x60 [msm]
->>>     msm_pm_suspend+0x18/0x38 [msm]
->>>     dpm_run_callback+0x84/0x378
->> I wonder if we're missing a pm_runtime_disable() call on the failure path?
->> i.e. something like the diff below...
-> 
-> I've checked and it doesn't fix anything.
+On Wed, 30 Jun 2021 at 15:53, Alexander Potapenko <glider@google.com> wrote:
+> Allocation requests outside ZONE_NORMAL (MOVABLE, HIGHMEM or DNA) cannot
 
-What's happened previously? Has an IOMMU actually failed to probe, or is 
-this a fiddly "code movement unveils latent bug elsewhere" kind of 
-thing? There doesn't look to be much capable of going wrong in 
-msm_runtime_suspend() itself, so is the DRM driver also in a broken 
-half-probed state where it's left its pm_runtime_ops behind without its 
-drvdata being valid?
+s/DNA/DMA/
+... but probably no need to do v4 just for this (everyone knows we're
+not yet in the business of allocating DNA ;-)).
 
-Robin.
+> be fulfilled by KFENCE, because KFENCE memory pool is located in a
+> zone different from the requested one.
+>
+> Because callers of kmem_cache_alloc() may actually rely on the
+> allocation to reside in the requested zone (e.g. memory allocations done
+> with __GFP_DMA must be DMAable), skip all allocations done with
+> GFP_ZONEMASK and/or respective SLAB flags (SLAB_CACHE_DMA and
+> SLAB_CACHE_DMA32).
+>
+> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: stable@vger.kernel.org # 5.12+
+> Signed-off-by: Alexander Potapenko <glider@google.com>
 
-> 
->> Will
->>
->> --->8
->>
->> diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
->> index 25ed444ff94d..ce8f354755d0 100644
->> --- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
->> +++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
->> @@ -836,14 +836,14 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
->>           ret = devm_of_platform_populate(dev);
->>           if (ret) {
->>                   dev_err(dev, "Failed to populate iommu contexts\n");
->> -               return ret;
->> +               goto err_pm_disable;
->>           }
->>    
->>           ret = iommu_device_sysfs_add(&qcom_iommu->iommu, dev, NULL,
->>                                        dev_name(dev));
->>           if (ret) {
->>                   dev_err(dev, "Failed to register iommu in sysfs\n");
->> -               return ret;
->> +               goto err_pm_disable;
->>           }
->>    
->>           ret = iommu_device_register(&qcom_iommu->iommu, &qcom_iommu_ops, dev);
->> @@ -869,6 +869,9 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
->>    
->>    err_sysfs_remove:
->>           iommu_device_sysfs_remove(&qcom_iommu->iommu);
->> +
->> +err_pm_disable:
->> +       pm_runtime_disable(dev);
->>           return ret;
->>    }
->>
-> Best regards
-> 
+With the change below, you can add:
+
+  Reviewed-by: Marco Elver <elver@google.com>
+
+
+> ---
+>
+> v2:
+>  - added parentheses around the GFP clause, as requested by Marco
+> v3:
+>  - ignore GFP_ZONEMASK, which also covers __GFP_HIGHMEM and __GFP_MOVABLE
+>  - move the flag check at the beginning of the function, as requested by
+>    Souptick Joarder
+> ---
+>  mm/kfence/core.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 33bb20d91bf6a..d51f77329fd3c 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -740,6 +740,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>         if (size > PAGE_SIZE)
+>                 return NULL;
+>
+> +       /*
+> +        * Skip allocations from non-default zones, including DMA. We cannot guarantee that pages
+> +        * in the KFENCE pool will have the requested properties (e.g. reside in DMAable memory).
+
+Comments should still be 80 cols, like the rest of the file. :-/
+
+> +        */
+> +       if ((flags & GFP_ZONEMASK) ||
+> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> +               return NULL;
+> +
+>         /*
+>          * allocation_gate only needs to become non-zero, so it doesn't make
+>          * sense to continue writing to it and pay the associated contention
+> --
+> 2.32.0.93.g670b81a890-goog
+>
