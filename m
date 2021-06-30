@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29143B7DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A219D3B7E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhF3H1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232636AbhF3H1F (ORCPT
+        id S232952AbhF3H3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:29:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25147 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232785AbhF3H3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:27:05 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739C0C061766;
-        Wed, 30 Jun 2021 00:24:36 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id g4so1203772pjk.0;
-        Wed, 30 Jun 2021 00:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zr28EiN6VTW0jAQmgor6rRPBvukZW16zav6uSZ93P58=;
-        b=sEgaC4BLwiy3yFg8V7Dr/bWalMnVwBo7USwEiT8Gijwpggx3qwwlcPd8kMw8oyItuP
-         XpRr9R6h9jzg82/eF9Qi9i15Wpo8++Wdv4d4ctpVQOkq/JgW+M+yUv1u2aiwaerW5XOa
-         znqqETtPTFQGMsRWZOrvgSzsD3u/wgjat66ra6GaK/02P4HRrwZQQ8jCL38LBbDFdrXd
-         4oOYejiNrJOdk5eAV5osPa9WdRL57bIrrTKaWth6f2vabex0A9Z7uYwwufhUJkud5EoS
-         X6A/VUWPg+GbDvSpAsAYnIe5MW906XcYroqkgwK2GDyvf/N9ab0KS3cB4hWp/E1R5Lyy
-         XqFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zr28EiN6VTW0jAQmgor6rRPBvukZW16zav6uSZ93P58=;
-        b=YkYhygIzKespZU8YYfplG3G3p+SKMXnWhEmWFwwWdrIpy4GnBcXKAQ0NssXHNvxxCz
-         IduMtrTLwdny7l774Ey8ImZ9QZ74F9tXBlLG4iUotvcvIRXF4rlmmW9ynUhE5FjfEYOO
-         ycntqK8iS0NM36Y/F6FG0wIQfb+tlGrbtCJoMjCn8ebgqJ5LTFtTsgpC2RSy3DFXSAoJ
-         xqot7eDT9yYYFe30wSqzvuykR6coh6NtzpNdmuExMPuZqektTNqJMbWFHc58nv8Mroa7
-         W/7LfniZzEnnP98Hpt+v0YP3q73+cdAw0ztOKKMASlLXCWRlaTZTceq+n1TfS9GLf+zj
-         d7sw==
-X-Gm-Message-State: AOAM533F0Aijy69+wjsxU49H8rWMjduZSkuHlcBnct28LtfcRBM/swHT
-        DOK1VqI8eXkyRbPK9QwB8Lo=
-X-Google-Smtp-Source: ABdhPJytYzBb9+z1b9aEN4qsdHsyEkthrIv5PCGbcvop4yE5z+/opRU4aIS9xcKvN7RiWK8y2vrypw==
-X-Received: by 2002:a17:902:eccb:b029:127:9520:ac96 with SMTP id a11-20020a170902eccbb02901279520ac96mr30710868plh.70.1625037875840;
-        Wed, 30 Jun 2021 00:24:35 -0700 (PDT)
-Received: from [192.168.0.118] ([103.242.196.99])
-        by smtp.gmail.com with ESMTPSA id s123sm20152132pfb.78.2021.06.30.00.24.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jun 2021 00:24:35 -0700 (PDT)
-Subject: Re: [PATCH] char: tpm: vtpm_proxy: Fix race in init
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org,
-        andrianov@ispras.ru
-References: <20210623132226.140341-1-saubhik.mukherjee@gmail.com>
- <20210629172700.yxqnedbayumo5f24@kernel.org>
- <20210629210524.hze6yb23pps3flnv@kernel.org>
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-Message-ID: <2b7d8d44-791e-284a-a700-5465fbc2c100@gmail.com>
-Date:   Wed, 30 Jun 2021 12:54:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 03:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625037998;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w01xQoKIk2OT2hjqFE0H+ABHTU1Y/cIH/ehDlw87LCU=;
+        b=b3JjjRLlVhCCYYG2rduBJMcnTQ2YPA4V9nvqVnq28C+XwhImFjQfGgPeKypE+AgMU/n0Ig
+        wYDmwSV4p1Dr9M7b1nF86kqXPoTwgPC0wYpjqV7NQr1Mea7KvEyDOQ/kfOTIRQsKPmyiiK
+        yx0kQxjT6nuMiLxG9HHDe+bt6dfCXno=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-E5ZGt5ylOBKKgwIq1BVj0g-1; Wed, 30 Jun 2021 03:26:36 -0400
+X-MC-Unique: E5ZGt5ylOBKKgwIq1BVj0g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35F42804144;
+        Wed, 30 Jun 2021 07:26:35 +0000 (UTC)
+Received: from [10.64.54.132] (vpn2-54-132.bne.redhat.com [10.64.54.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9B8960854;
+        Wed, 30 Jun 2021 07:26:33 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v5] Documentation, dt, numa: Add note to empty NUMA node
+To:     Randy Dunlap <rdunlap@infradead.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, drjones@redhat.com,
+        robh+dt@kernel.org, shan.gavin@gmail.com
+References: <20210628093411.88805-1-gshan@redhat.com>
+ <89e25fd7-b323-2092-4151-faba060d4c10@infradead.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <84bdacaa-ad54-9452-122a-0fb98c805953@redhat.com>
+Date:   Wed, 30 Jun 2021 17:26:30 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210629210524.hze6yb23pps3flnv@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <89e25fd7-b323-2092-4151-faba060d4c10@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 2:35 AM, Jarkko Sakkinen wrote:
-> On Tue, Jun 29, 2021 at 08:27:00PM +0300, Jarkko Sakkinen wrote:
->> On Wed, Jun 23, 2021 at 06:52:26PM +0530, Saubhik Mukherjee wrote:
->>> vtpm_module_init calls vtpmx_init which calls misc_register. The file
->>> operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
->>> parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
->>> vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
->>> vtpm_proxy_work_start, which could read uninitialized workqueue.
->>>
->>> To avoid this, create workqueue before vtpmx init.
->>>
->>> Found by Linux Driver Verification project (linuxtesting.org).
->>>
->>> Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
->>> ---
->>>   drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
->>>   1 file changed, 9 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
->>> index 91c772e38bb5..225dfa026a8f 100644
->>> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
->>> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
->>> @@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
->>>   {
->>>   	int rc;
->>>   
->>> -	rc = vtpmx_init();
->>> -	if (rc) {
->>> -		pr_err("couldn't create vtpmx device\n");
->>> -		return rc;
->>> -	}
->>> -
->>>   	workqueue = create_workqueue("tpm-vtpm");
->>>   	if (!workqueue) {
->>>   		pr_err("couldn't create workqueue\n");
->>> -		rc = -ENOMEM;
->>> -		goto err_vtpmx_cleanup;
->>> +		return -ENOMEM;
->>> +	}
->>> +
->>> +	rc = vtpmx_init();
->>> +	if (rc) {
->>> +		pr_err("couldn't create vtpmx device\n");
->>> +		goto err_destroy_workqueue;
->>>   	}
->>>   
->>>   	return 0;
->>>   
->>> -err_vtpmx_cleanup:
->>> -	vtpmx_cleanup();
->>> +err_destroy_workqueue:
->>> +	destroy_workqueue(workqueue);
->>>   
->>>   	return rc;
->>>   }
->>> -- 
->>> 2.30.2
->>>
->>>
+On 6/29/21 2:15 AM, Randy Dunlap wrote:
+> On 6/28/21 2:34 AM, Gavin Shan wrote:
+>> The empty memory nodes, where no memory resides in, are allowed.
+>> For these empty memory nodes, the 'len' of 'reg' property is zero.
+>> The NUMA node IDs are still valid and parsed, but memory may be
+>> added to them through hotplug afterwards. I finds difficulty to
+>> get where it's properly documented.
 >>
->> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> So lets add a section for empty memory nodes in NUMA binding
+>> document. Also, the 'unit-address', equivalent to 'base-address'
+>> in the 'reg' property of these empty memory nodes is suggested to
+>> be the summation of highest memory address plus the NUMA node ID.
+>>
+>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>> ---
+>> v5: Separate section for empty memory node
+>> ---
+>>   Documentation/devicetree/bindings/numa.txt | 61 +++++++++++++++++++++-
+>>   1 file changed, 60 insertions(+), 1 deletion(-)
+>>
 > 
-> Taking reviewed-by back.
+> LGTM. Thanks.
 > 
-> You're lacking fixes tag. Please re-send with one.
-> 
-> /Jarkko
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 > 
 
-Thank you for noticing. I sent the patch containing the Fixes tag in 
-reply to your last message. (https://lkml.org/lkml/2021/6/30/104)
+Thanks, Randy. Rob, could you help to review? Thanks in advance.
+
+Thanks,
+Gavin
+
