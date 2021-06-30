@@ -2,305 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95203B8088
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CC03B8095
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234018AbhF3KGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234112AbhF3KGU (ORCPT
+        id S234179AbhF3KIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:08:53 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:48438 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234101AbhF3KIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:06:20 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AAEC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:03:51 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id o7so1345400vss.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:03:50 -0700 (PDT)
+        Wed, 30 Jun 2021 06:08:49 -0400
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UA4E1l017385;
+        Wed, 30 Jun 2021 03:06:14 -0700
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39g5a80qq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 03:06:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dputcS/IX6XsmM/clZjmuxIrnqIkDdZrLmWQpuZr+HU/N+UUhvOdXUwL9hz+bYDv4SHiNNpDPMn/MRfoyH0+uhY1b5C25p1ITDkf5ZXCz/++D6y08To11b+j+rukRf42Jloyeg9Hdf+sXyO6P76YzXSdARc1F3mDKQqXwz10zSN5fL7CwOi2F1Gcq44h/p9shJ5K8Kac1dZdGeH5Qc+HRWzazxUUH9E+kOluVNmEQZnJ+Pn62mZ3cRAsyug4vzrMLeKC3Cl6XvRHhC3qLE3guz/pVDeosECFGB2SaLphincgVt6FqbJOGjk51yuuZKLcQmE9l5xvfkq2aPV2uRW57A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1riiS8zWUd/9fMZZmOCTEpLFmG4P6XOWDWmH3WIfpY=;
+ b=dtApKAcT1uKdYyQXA2G34nQjFBx/bTZc+zss94S43kcol8OpyN1g+GMIgT55EpQKeliK3OO/fbMJjILG0OdVxj7hKDLW6rTbrk4HoMQkZBuDVTu75NELqctSPPANJ+9d0vr4NmuP3p5/ol7PXZiXodhNC6T+17fFiSiSjXgC8W+zawMfEs/XCWIEPs42OZfskVxMxHUMLzC4VibBKtl6rzeQXBXdVTRQjdEqkAVRhGHog/G/4GQMwM14WAYmZ6Oog7/LLdk9j0VObXQ9UDD3NcOw5ane50tG50BCkFvPjl+bsPFfLxJDX0z1FQmw5Y4A5H6vGc6diOellKB1mzl8Zw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EQ8w6GsN05322Cp5xiff2OqrAS1Uq1JUpp0VzCYRiqQ=;
-        b=v/st+ruvXovNFjiOUybQSZEwm8aliOS8F10G093+IRFjuDAadgNjroQHZutTjgg9Z6
-         NZrtAoT4vcgk8WT1t89hiwnMeyZGEutFmyWiJd7/DB6ouFAt+zUR7vvbkdYyV9bsH/Nn
-         sXypgcJFFTN0T1LlKNwWFVS0PBuu49nzHp7juQPd5BzJUiZ+QjlO8EdD4nwCAuN4XqNy
-         REMiMlbd8CUSzKcgXt5xiqZFfFnUc0YXCTSgKGD2ty11RXtMPMxwtlUb29QImjZJpGTe
-         GoeIdUDSC9mCz0bWtck+xnxS+YVu4aQ5SF/rVVAjiCsL4GT1za9M4y+etXF7Uhsufa32
-         cwEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EQ8w6GsN05322Cp5xiff2OqrAS1Uq1JUpp0VzCYRiqQ=;
-        b=GKnptaFZCKNfXqACBCfbsZmZEzeN6l+6LdKfKqIBvOiLHALysww7U35UrSfy1YgasK
-         jU0L8Y2uBHvJQF2RATT1AP8q/cOBe+ALUWzvZgkrlVL+lOspaVNNzTF5aIGTtBceA2j+
-         KfrxEuBvpvsFMGVTQtD4tTnUqXjphBLYsfTSGzx7Pi645tGj2u30zBYiK+Edxt1myR6A
-         brbPlyBJkbD+EzvkollaKawvMs3AOsSdi0kxC559xoc0m5L45q8YKPJ0FvXDZxGLd06P
-         sreOBWYCMFk/+MPOU0OeaPEoNXpqoZQlg4oCakvmp69hc0KAsr0Ji69OS5EiXi+x9jlT
-         OqXw==
-X-Gm-Message-State: AOAM530dJXf2caUYvrrq2yhiOFAVSTT7jtl2ukSxl9LaIzrZ5O88YqYb
-        aN9O+hZAKH3+CSgkOSmS9MB8Q8YuDPVNrfC7/mFuxQ==
-X-Google-Smtp-Source: ABdhPJy8/Kr8/BB05B2jOlxNSoq/iS7lQFd+tjs21sJnNBIgdlGOfg/KO+6ZjjYYAptdivo6nHgkcxxpshu5i2mCA1E=
-X-Received: by 2002:a05:6102:3a70:: with SMTP id bf16mr30808168vsb.48.1625047430169;
- Wed, 30 Jun 2021 03:03:50 -0700 (PDT)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J1riiS8zWUd/9fMZZmOCTEpLFmG4P6XOWDWmH3WIfpY=;
+ b=j9Qj+UTnfgydM60oKZx9594ix0RhDw18tIxnIl4iMIs+t8Fptpb5qnD5pHVdH9xutvArQ+RkXF8QKE2nAQVp2dPxGMRGTJ2o5BZOX6jO3Ro5z+juK/KxozntkX+QoUU8R0CZTw0UErm4do7hMpAzxRQglxaUPULMN7yE3KaxMWI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM6PR11MB4252.namprd11.prod.outlook.com (2603:10b6:5:201::26)
+ by DM6PR11MB4185.namprd11.prod.outlook.com (2603:10b6:5:195::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Wed, 30 Jun
+ 2021 10:06:12 +0000
+Received: from DM6PR11MB4252.namprd11.prod.outlook.com
+ ([fe80::c0f2:cf50:3404:90ac]) by DM6PR11MB4252.namprd11.prod.outlook.com
+ ([fe80::c0f2:cf50:3404:90ac%3]) with mapi id 15.20.4264.026; Wed, 30 Jun 2021
+ 10:06:12 +0000
+Subject: Re: [PATCH] locking/mutex: fix the MUTEX_FLAG_HANDOFF bit is cleared
+ unexpected
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+To:     Waiman Long <llong@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20210628155155.11623-1-yanfei.xu@windriver.com>
+ <e914d4fd-5afc-35f9-c068-7044ceda53dd@redhat.com>
+ <02691c73-6ba8-241c-6ec8-486d9d549c23@windriver.com>
+ <78f45c3c-191b-bd14-3b38-522907d0e24f@redhat.com>
+ <d48fdbae-4b79-9039-4577-d3aaa18d543d@redhat.com>
+ <8241576e-ac92-1a0b-b1ad-2372b61759ea@windriver.com>
+Message-ID: <945cc291-7057-389c-faf8-a30bde605654@windriver.com>
+Date:   Wed, 30 Jun 2021 18:06:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <8241576e-ac92-1a0b-b1ad-2372b61759ea@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: BYAPR03CA0017.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::30) To DM6PR11MB4252.namprd11.prod.outlook.com
+ (2603:10b6:5:201::26)
 MIME-Version: 1.0
-References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
-In-Reply-To: <20210622202345.795578-1-jernej.skrabec@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 30 Jun 2021 12:03:13 +0200
-Message-ID: <CAPDyKFo6AVGq5Q9bRKPjypRMxisLf0nZWLtSeARGO-3kO7=+zQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     pizza@shaftnet.org, Arnd Bergmann <arnd@arndb.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by BYAPR03CA0017.namprd03.prod.outlook.com (2603:10b6:a02:a8::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Wed, 30 Jun 2021 10:06:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a25f235e-d911-46d1-cb5e-08d93baeb04d
+X-MS-TrafficTypeDiagnostic: DM6PR11MB4185:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB418550DC6FFB703171047D49E4019@DM6PR11MB4185.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yp8SvUAOFSxgyaCwUuSdbYznjrXyKq6uEPFc7yOPG5OWwFKn+Cis4C0BBVBE0vljn0b+zhwNpBNnuLZnH/vV1tduUZnBA9ldl85rcFwPrrUYzlVAgjTtWsQjZzKMOVPS05H520d7oPiY+0AVprb7DBIjp+O3FzaKHqXldOZr9yF7MLpynMQ7HTeSzQD2KsrGfhh70DeJNy19vA19UFGcYcXbY4XzofbOX/w6HDXEIPHMvKneptdVBfqQFyXLF3y3hk+IvmGveAY6FBfF/TYOFDay2ExcvQIKHluKwe6kGS1kh7w7vO4cIuNe//bbpAtJsvZFXonRy78I5cDMv+LBcWQTRotLupd710qClJg+uGg08zoJAn7SvZFyH150+4JX6h89Ou12K39SmBmtb3JfD/FOnYtENF84DyKBLAcYexR7z2mbv9j9qgeKk8RK90n17gr+wNC6ZbQ3sbEnfz9wG2wbqxCpOcKSfrgBV7MOH9X8PURzYXKbQGJnMZGyeJLtjtQG+sd/M/Mprdzp1RkINq/i13FS4dt+8bjAUJOK31G5fMFUFXguS1dq7Mz+4r1q3Oq8n2+niMqEc+T9JuTWQVGKkph3j23uhHRaF7v1ZM9J2meevKAkZp70evaQN30+JiHhcLhS+gkqfZHms56ZgPfi2Aj/3bhPXOAcHE+hzdbD9106AGX9jgzxqyT+S/WpTv7LTa55IIakIt1g+vV2Cp+CSval4cFQrw6KgimS3q5toiMe0BKctAgJvN2uKe6wt9nne2vhhtpxKw5wUiRGKMxp4Cg0ztPznf3zG2MSba0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4252.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39840400004)(366004)(6706004)(4326008)(6486002)(956004)(2616005)(4744005)(2906002)(86362001)(8936002)(38100700002)(66476007)(53546011)(66556008)(83380400001)(8676002)(5660300002)(26005)(6666004)(16576012)(52116002)(478600001)(36756003)(31696002)(186003)(16526019)(38350700002)(66946007)(31686004)(316002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0JubzJxOElXVGE0VW5YRTFkVTZranBva3pMK1U3MUE1V2MzZ2FEV01PSEtm?=
+ =?utf-8?B?WExhcWYzWlBHT0M1eHhUMU1wQjN6MUxFdEVYQ1E4bU5qU3kyN2lRbElxRXh2?=
+ =?utf-8?B?WXRoL3dBWFp2MXNONlJWMk9memd2WHc5bmNjSE1FR0w1b1k0d3FxSEljSGlH?=
+ =?utf-8?B?dWtaK1JQS1k5aGtvNzdQazVSOXRwRURDeSsrSjl3VHJtUWlOZXJ6cFNMZEV1?=
+ =?utf-8?B?Uzd4eW5BS24wb0hjL09xa0lPeDdDbUgrSVpZajhSZ2RPT0hlVDFNVUdvc0g4?=
+ =?utf-8?B?UzE5RWlNL0diOURrS2JkWkZSK3NQMVVuUys3ZURKNW9WSEZ4dEtDQnpudGp4?=
+ =?utf-8?B?TkI0ZGhXK21VcXNJblJYbHRwVTQyckF6TWh3dHNZWndFSjFyamIzM3NFbUE2?=
+ =?utf-8?B?ZmF3TE1jTnNzTU1aanRISjFqWWRHM3FxazYrTFhITnpNQTJ5NkJwVys0ejBG?=
+ =?utf-8?B?TTdvblR1a1ZtWFRoV1d4U3ZMNEptNjFEN1VlWVZ2S1BwZ2ZuMzFXRzFubWhm?=
+ =?utf-8?B?eXNxUXpsNVB2OEsxY25mU2U0cmdUclU3bGZxcHNjVUJONEZabm5sY3pQSXRV?=
+ =?utf-8?B?TWhIek9hT25GQTQ4RWplV1YzS3h2UlcxUkE3YnBBeFVFRFdoQ1MremplSHFh?=
+ =?utf-8?B?VDFscUk0TlJhL3FaYk8ydHFTTXR4K1hUeTI5bGhyblM2YWFsK3Zld2NuZ2tR?=
+ =?utf-8?B?ZEV3VmVDa2NrYzNzaG51WWNyc1l5MlZJbmhVNzA5OFVoN28rSm1PNklGb2h0?=
+ =?utf-8?B?Zm1xRmozUVZCcGpCa1psZkFBUnRPWHI3REdMYTEvdGQwQ2haV2NyN25TNVEv?=
+ =?utf-8?B?ZUk4bWx2Q0Y2STdjUEw5aENaRnFqalFZQVZNUUdKb2dJTGRiNVhueldpT2Jj?=
+ =?utf-8?B?MEdjREsrbksxckNKRVRqNDRzUWo5dStseDNzOWVVc0tocGV0bWtDYnRnc29K?=
+ =?utf-8?B?TU5NU1FiS3VMV3BwQzd6d0NHQk40UGVTcHhMMUxuZE5ZZzBuZkhGaGhPWUpZ?=
+ =?utf-8?B?Q3VGbm1qdDF5VVhCclBQUkt6Tlo1eENMTGNHQjJJNHExNk1MaXZsdm9XVVpC?=
+ =?utf-8?B?R3RTeDJMeXF2TDEyQ3pLa0lwV2xaUkxUVndUaGdBR2wxbVBXOHVwOTYySDkw?=
+ =?utf-8?B?SEJNU3FoNEN2b0VGdVJ1UFh2Ly9qL3Vjb1JzVWVudEpNV3RoeG5zYmtEVXJW?=
+ =?utf-8?B?L3ZvSmVkMzQ4cFV0WFA3SHoxSVNmV0dqbExvck85TFFtRW1GNXFIVlgrQjhU?=
+ =?utf-8?B?NFY5NWJMeCttUE1mVk8zdy8rendYVkhzc1ZmNmNFdHEvVlFPWnZUSjVYN0tq?=
+ =?utf-8?B?QWhZUmwxM3M3Z1pEKzBnUlNvV2h0c1JCOXNwS0VnNHFzNlZyRURYT0xVOEc2?=
+ =?utf-8?B?cHhXODFtWWVOQU5OdmJUWmUyTzBnb1NUSEtSNXdkcmlwOTd4dlZoUGNsNlBv?=
+ =?utf-8?B?QzQ1S3lnM1NPOEZ0dWZLK2NsTlVHVXdGVjhIcUNxbExzeVQ4TlhMdEhuTjZB?=
+ =?utf-8?B?SGRuM3creDVKendEWE8xTEtTNmxNTEp1bUQwYitsQnZwcEl6TS9ROG9MOUMr?=
+ =?utf-8?B?ZitGcExVQ2FHQ2wvTjFiYXVHNE1xd1FNSkcwVHRDeHZVajNrTmJybnBvQ25s?=
+ =?utf-8?B?VlpCWUJyR1hCM2tOZmRFK0NnUnUxMDdNbC9Gb1RNdUpsRWpkcDE1NHRCcC9l?=
+ =?utf-8?B?bUxENlZFa1BLR1BkYVZrR2RVSk1WQTFSY0RNZ1RINk56bXZEOFc5amE1MTEw?=
+ =?utf-8?Q?S2Iut9p7jPiytZ3151DQSGKc8F/sqABX1rktDVm?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a25f235e-d911-46d1-cb5e-08d93baeb04d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4252.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 10:06:11.9141
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rTRUyIGyd16ACtBgYFDqb0qYPW8r1f5yulpwxWBRYQSCkifgkyEJjoHp6d1PZ5InyHvEiDRmuByecQQNi8F+Rw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4185
+X-Proofpoint-GUID: kE3vM2VIoo1iwVxPTrNu1UDO7nMpz6mr
+X-Proofpoint-ORIG-GUID: kE3vM2VIoo1iwVxPTrNu1UDO7nMpz6mr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-30_02:2021-06-29,2021-06-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 impostorscore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106300065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 at 22:23, Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
->
-> It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
-> memory allocated on stack, SDIO operations fail due to invalid memory
-> address conversion:
->
-> cw1200_wlan_sdio: Probe called
-> sunxi-mmc 4021000.mmc: DMA addr 0x0000800051eab954+4 overflow (mask ffffffff, bus limit 0).
-> WARNING: CPU: 2 PID: 152 at kernel/dma/direct.h:97 dma_direct_map_sg+0x26c/0x28c
-> CPU: 2 PID: 152 Comm: kworker/2:2 Not tainted 5.13.0-rc1-00026-g84114ef026b9-dirty #85
-> Hardware name: X96 Mate (DT)
-> Workqueue: events_freezable mmc_rescan
-> pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-> pc : dma_direct_map_sg+0x26c/0x28c
-> lr : dma_direct_map_sg+0x26c/0x28c
-> sp : ffff800011eab540
-> x29: ffff800011eab540 x28: ffff800011eab738 x27: 0000000000000000
-> x26: ffff000001daf010 x25: 0000000000000000 x24: 0000000000000000
-> x23: 0000000000000002 x22: fffffc0000000000 x21: ffff8000113b0ab0
-> x20: ffff80001181abb0 x19: 0000000000000001 x18: ffffffffffffffff
-> x17: 00000000fa97f83f x16: 00000000d2e01bf8 x15: ffff8000117ffb1d
-> x14: ffffffffffffffff x13: ffff8000117ffb18 x12: fffffffffffc593f
-> x11: ffff800011676ad0 x10: fffffffffffe0000 x9 : ffff800011eab540
-> x8 : 206b73616d282077 x7 : 000000000000000f x6 : 000000000000000c
-> x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000283b800
-> Call trace:
->  dma_direct_map_sg+0x26c/0x28c
->  dma_map_sg_attrs+0x2c/0x60
->  sunxi_mmc_request+0x70/0x420
->  __mmc_start_request+0x68/0x134
->  mmc_start_request+0x84/0xac
->  mmc_wait_for_req+0x70/0x100
->  mmc_io_rw_extended+0x1cc/0x2c0
->  sdio_io_rw_ext_helper+0x194/0x240
->  sdio_memcpy_fromio+0x20/0x2c
->  cw1200_sdio_memcpy_fromio+0x20/0x2c
->  __cw1200_reg_read+0x34/0x60
->  cw1200_reg_read+0x48/0x70
->  cw1200_load_firmware+0x38/0x5d0
->  cw1200_core_probe+0x794/0x970
->  cw1200_sdio_probe+0x124/0x22c
->  sdio_bus_probe+0xe8/0x1d0
->  really_probe+0xe4/0x504
->  driver_probe_device+0x64/0xcc
->  __device_attach_driver+0xd0/0x14c
->  bus_for_each_drv+0x78/0xd0
->  __device_attach+0xdc/0x184
->  device_initial_probe+0x14/0x20
->  bus_probe_device+0x9c/0xa4
->  device_add+0x350/0x83c
->  sdio_add_func+0x6c/0x90
->  mmc_attach_sdio+0x1b0/0x430
->  mmc_rescan+0x254/0x2e0
->  process_one_work+0x1d0/0x34c
->  worker_thread+0x13c/0x470
->  kthread+0x154/0x160
->  ret_from_fork+0x10/0x34
-> sunxi-mmc 4021000.mmc: dma_map_sg failed
-> sunxi-mmc 4021000.mmc: map DMA failed
-> Can't read config register.
->
-> Fix that by using kmalloc() allocated memory for read/write 16/32
-> funtions.
->
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Kind regards
-Uffe
+On 6/30/21 2:20 PM, Xu, Yanfei wrote:
+>> Oh, you are right. The current code doesn't actually prevent lock
+>> stealer from actually stealing the lock in the special case that the
+>> lock is in the unlock state when the HANDOFF bit is set. In this case,
+> 
+> How about setting the HANDOFF bit before the top-waiter first give up
+> cpu and fall asleep. Then It must can get the lock after being woken up,
+> and there is no chance happen stealing lock.  And I sent a v2 with this.
 
-> ---
->  drivers/net/wireless/st/cw1200/hwio.c | 52 +++++++++++++++++++++------
->  drivers/net/wireless/st/cw1200/hwio.h | 51 ++++++++++++++++++++------
->  2 files changed, 83 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/net/wireless/st/cw1200/hwio.c b/drivers/net/wireless/st/cw1200/hwio.c
-> index 3ba462de8e91..5521cb7f2233 100644
-> --- a/drivers/net/wireless/st/cw1200/hwio.c
-> +++ b/drivers/net/wireless/st/cw1200/hwio.c
-> @@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common *priv, u16 addr,
->  static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
->                                         u16 addr, u32 *val)
->  {
-> -       __le32 tmp;
-> -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
-> -       *val = le32_to_cpu(tmp);
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-> +       *val = le32_to_cpu(*tmp);
-> +       kfree(tmp);
->         return i;
->  }
->
->  static inline int __cw1200_reg_write_32(struct cw1200_common *priv,
->                                         u16 addr, u32 val)
->  {
-> -       __le32 tmp = cpu_to_le32(val);
-> -       return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       *tmp = cpu_to_le32(val);
-> +       i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
-> +       kfree(tmp);
-> +       return i;
->  }
->
->  static inline int __cw1200_reg_read_16(struct cw1200_common *priv,
->                                         u16 addr, u16 *val)
->  {
-> -       __le16 tmp;
-> -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
-> -       *val = le16_to_cpu(tmp);
-> +       __le16 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-> +       *val = le16_to_cpu(*tmp);
-> +       kfree(tmp);
->         return i;
->  }
->
->  static inline int __cw1200_reg_write_16(struct cw1200_common *priv,
->                                         u16 addr, u16 val)
->  {
-> -       __le16 tmp = cpu_to_le16(val);
-> -       return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
-> +       __le16 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       *tmp = cpu_to_le16(val);
-> +       i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
-> +       kfree(tmp);
-> +       return i;
->  }
->
->  int cw1200_reg_read(struct cw1200_common *priv, u16 addr, void *buf,
-> diff --git a/drivers/net/wireless/st/cw1200/hwio.h b/drivers/net/wireless/st/cw1200/hwio.h
-> index d1e629a566c2..088d2a1bacc0 100644
-> --- a/drivers/net/wireless/st/cw1200/hwio.h
-> +++ b/drivers/net/wireless/st/cw1200/hwio.h
-> @@ -166,34 +166,65 @@ int cw1200_reg_write(struct cw1200_common *priv, u16 addr,
->  static inline int cw1200_reg_read_16(struct cw1200_common *priv,
->                                      u16 addr, u16 *val)
->  {
-> -       __le32 tmp;
-> +       __le32 *tmp;
->         int i;
-> -       i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
-> -       *val = le32_to_cpu(tmp) & 0xfffff;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
-> +       *val = le32_to_cpu(*tmp) & 0xfffff;
-> +       kfree(tmp);
->         return i;
->  }
->
->  static inline int cw1200_reg_write_16(struct cw1200_common *priv,
->                                       u16 addr, u16 val)
->  {
-> -       __le32 tmp = cpu_to_le32((u32)val);
-> -       return cw1200_reg_write(priv, addr, &tmp, sizeof(tmp));
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       *tmp = cpu_to_le32((u32)val);
-> +       i = cw1200_reg_write(priv, addr, tmp, sizeof(*tmp));
-> +       kfree(tmp);
-> +       return i;
->  }
->
->  static inline int cw1200_reg_read_32(struct cw1200_common *priv,
->                                      u16 addr, u32 *val)
->  {
-> -       __le32 tmp;
-> -       int i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
-> -       *val = le32_to_cpu(tmp);
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
-> +       *val = le32_to_cpu(*tmp);
-> +       kfree(tmp);
->         return i;
->  }
->
->  static inline int cw1200_reg_write_32(struct cw1200_common *priv,
->                                       u16 addr, u32 val)
->  {
-> -       __le32 tmp = cpu_to_le32(val);
-> -       return cw1200_reg_write(priv, addr, &tmp, sizeof(val));
-> +       __le32 *tmp;
-> +       int i;
-> +
-> +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> +       if (!tmp)
-> +               return -ENOMEM;
-> +
-> +       *tmp = cpu_to_le32(val);
-> +       i = cw1200_reg_write(priv, addr, tmp, sizeof(val));
-> +       kfree(tmp);
-> +       return i;
->  }
->
->  int cw1200_indirect_read(struct cw1200_common *priv, u32 addr, void *buf,
-> --
-> 2.32.0
->
+Please ignore this, It is incorrect. Lock stealing is a performance
+optimization.
+
+Yanfei
+
+> 
+>> it is free for all and whoever gets the lock will also clear the the
+>> HANDOFF bit. The comment in __mutex_trylock_or_owner() about "We set the
+>> HANDOFF bit" isn't quite right.
