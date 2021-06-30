@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356103B8334
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E955D3B8336
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhF3Neq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234853AbhF3Ne2 (ORCPT
+        id S234919AbhF3NfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:35:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234912AbhF3NfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:34:28 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1F5C061226
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:31:59 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id n14so5110734lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OW6r9Ztak14Z94NLN85hpavnPWferFff+9qy6SUKk4g=;
-        b=iGjCMoZAsR3C08FVW2wUexAl3OiXXIgXxPdEXN/UjAHi6UBv5v28IkhVcZLQvTJw5D
-         Fw0uztQxzd6y1BNGAt9RSWW14ScCvDunMGu13h/xX/FfPr10d2MFGF4DJmrkIGYLYmQE
-         NK+Ww1lTgcApSSzEzDlWWFFDgaK5VzXulSCFGNRaOWlsJDtMFVHtoA0XnBFQnTu6o6JQ
-         UwyI+wFN7URtfpdwRFc79mLjqZV8UWH1U5r6RBHdVsVr0Pm4yCdcDvvoLxR4XGaI04iA
-         eiMo/krjTz+HFd1XLDzhPvKytiQcLlxze8UK1cVOyuPx1MfGEk4dBY4Mtcx5lNAYpzSA
-         lz/g==
+        Wed, 30 Jun 2021 09:35:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625059957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B29ak5IExuV5xQ1UDepJEEmvvBRdoZ1X4KzbA2i8hEA=;
+        b=RkYILSBCb6t5tgujBehohOGsQrD64RpXL0lJaXDHah3aGAqHFC8/Pp3TAHrCcqDkKfkWlT
+        NUf+GRz/p/mZ56phGl35bcf40vJj/u2qtRgeSW2Qcc/IGWjy52xC6//YNQ1VRp6dUlSrDQ
+        dZtmEQ+tBgJ3kzi1/A34tgV735ml+Hc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-xMiVQ7rTMeayuJ4qLGTlaA-1; Wed, 30 Jun 2021 09:32:36 -0400
+X-MC-Unique: xMiVQ7rTMeayuJ4qLGTlaA-1
+Received: by mail-ej1-f70.google.com with SMTP id gn22-20020a1709070d16b02904baf8000951so764815ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:32:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OW6r9Ztak14Z94NLN85hpavnPWferFff+9qy6SUKk4g=;
-        b=QS84GUQ9Vmu9jeE35vqkdjlVFyt1XXiYRlIVDn10rG9OunwfdJDcaUKlmWTQ7CzSMU
-         QlfekN4MGpf02WO6dOZxaZdBIuZYtEQXCDoQOTzgXTlffs/SfzT4qNOpIHsJGfs/slK5
-         sswoIn3T7b3LzDqY0zmDdH9FFdMqxJZH8h056ACmZqvuFLynAUDwOPLxCBI2iKi9H4QQ
-         K3c6776LAfPAhp3DDBJAYiJZKAkWCJPUitDLCoohmd38rO9saFdp2XQycXrxRsCNr8+q
-         wkZaVXrR2WzsRVEKgj4BMomzvxmUegXwujjppliv1I0u1LHq2mlaRW7qm/CiPz7QRR8p
-         wblw==
-X-Gm-Message-State: AOAM5322rPkyvCwBrc0shqAyXQR7b/Nlt8ZehENGrjZGxpjRslXCzSRv
-        g9/l2d+HGnduaIfa+wEg/gf1nw==
-X-Google-Smtp-Source: ABdhPJxW/WD7GUsdSYVEZlbk6fXSYFsdVdHuSWzbaLh7Nn+zKQdBdygp9o4CIo9p/woMGw9+TgfEDQ==
-X-Received: by 2002:a05:6512:7a:: with SMTP id i26mr26839723lfo.2.1625059917527;
-        Wed, 30 Jun 2021 06:31:57 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id x20sm1578098lfd.128.2021.06.30.06.31.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 06:31:57 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] clk: qcom: videocc-sm8250: stop using mmcx regulator
-Date:   Wed, 30 Jun 2021 16:31:49 +0300
-Message-Id: <20210630133149.3204290-7-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
-References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B29ak5IExuV5xQ1UDepJEEmvvBRdoZ1X4KzbA2i8hEA=;
+        b=Up38KeNU6zDZxqJZSqL0fwH5/bGebpGBRDyhCVWM5GukCyTt9aysqAmTB0hBNC6d4/
+         V9bzHptqBo2ZgHCQF9/Jv6RuFuFHS5c74wVx8N8+ZCFoCrmtCKus1pOorhMoNWPz/uMg
+         XdSv4cvgru/sITQoeVxw3GAW1oXXBM6o72Q1PqqXR4CFISlvvYx4ADw6cWAUrady4K3V
+         dR7ftgEouH8Kku/izDcNTQprMc+Ig2yBxL70/y47kzn/ONxAN3KyUQPiYX6tKF5PFf51
+         5Qe2ogSRIfkl7mLmQJZ8v/GUEn6AIupzu8jduglcYFzC6GBS7KYhhATmO2hpB30pwJTy
+         QMaQ==
+X-Gm-Message-State: AOAM532DZ2VhJM+HqIqGqZPaz3rrpDwZo9vwJfbSPMmBRn0B6J/mHTLW
+        0jYqkUAkiJ/+roTOVkbJO4UCHqzquvQMLNCo7Xb/lGQu75RfiWHfYV6G6TXhhkSowCNEzYv7oIf
+        h7FQsj1lCTyuFP+oBn2dxizo7
+X-Received: by 2002:a17:906:dbec:: with SMTP id yd12mr34810485ejb.102.1625059955163;
+        Wed, 30 Jun 2021 06:32:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQ5GhWHaEAX58lymQvyY8OwdxenbawrCEZf5DE+XckN7hrGGFvvP7XTqTStlpUqZk2fj1vcQ==
+X-Received: by 2002:a17:906:dbec:: with SMTP id yd12mr34810464ejb.102.1625059954972;
+        Wed, 30 Jun 2021 06:32:34 -0700 (PDT)
+Received: from x1.bristot.me (host-79-46-33-140.retail.telecomitalia.it. [79.46.33.140])
+        by smtp.gmail.com with ESMTPSA id q5sm9396081ejc.117.2021.06.30.06.32.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 06:32:34 -0700 (PDT)
+Subject: Re: [PATCH][next] trace: osnoise: Fix u64 less than zero comparison
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Colin King <colin.king@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210629165245.42157-1-colin.king@canonical.com>
+ <c74e711e-71c9-df9c-8406-b9e92ef12da0@redhat.com>
+ <20210630090544.13c0a4df@oasis.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <2b6cf10b-d1e1-d0a4-f27e-79625d55e6c9@redhat.com>
+Date:   Wed, 30 Jun 2021 15:32:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210630090544.13c0a4df@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now as the common qcom clock controller code has been taught about power
-domains, stop mentioning mmcx supply as a way to power up the clock
-controller's gdscs.
+On 6/30/21 3:05 PM, Steven Rostedt wrote:
+> On Tue, 29 Jun 2021 19:19:25 +0200
+> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+> 
+>>> Addresses-Coverity: ("Unsigned compared against 0")
+>>> Fixes: bce29ac9ce0b ("trace: Add osnoise tracer")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>  
+>> Steven, can we merge the flags?
+> I don't usually do that. 
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/clk/qcom/videocc-sm8250.c | 4 ----
- 1 file changed, 4 deletions(-)
+Ack!
 
-diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-index 7b435a1c2c4b..eedef85d90e5 100644
---- a/drivers/clk/qcom/videocc-sm8250.c
-+++ b/drivers/clk/qcom/videocc-sm8250.c
-@@ -276,7 +276,6 @@ static struct gdsc mvs0c_gdsc = {
- 	},
- 	.flags = 0,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs1c_gdsc = {
-@@ -286,7 +285,6 @@ static struct gdsc mvs1c_gdsc = {
- 	},
- 	.flags = 0,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs0_gdsc = {
-@@ -296,7 +294,6 @@ static struct gdsc mvs0_gdsc = {
- 	},
- 	.flags = HW_CTRL,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs1_gdsc = {
-@@ -306,7 +303,6 @@ static struct gdsc mvs1_gdsc = {
- 	},
- 	.flags = HW_CTRL,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct clk_regmap *video_cc_sm8250_clocks[] = {
--- 
-2.30.2
+-- Daniel
 
