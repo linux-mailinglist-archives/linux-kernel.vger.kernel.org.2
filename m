@@ -2,160 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C063B86BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528973B86B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhF3QFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:05:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40327 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235822AbhF3QFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:05:00 -0400
-Received: from 111-240-144-27.dynamic-ip.hinet.net ([111.240.144.27] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lycfQ-0003Ad-Cl; Wed, 30 Jun 2021 16:02:24 +0000
-From:   chris.chiu@canonical.com
-To:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     code@reto-schneider.ch, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Chiu <chris.chiu@canonical.com>
-Subject: [PATCH] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
-Date:   Thu,  1 Jul 2021 00:01:51 +0800
-Message-Id: <20210630160151.28227-1-chris.chiu@canonical.com>
-X-Mailer: git-send-email 2.20.1
+        id S235980AbhF3QEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:04:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:41706 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235822AbhF3QE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 12:04:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 899B9106F;
+        Wed, 30 Jun 2021 09:02:00 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C1083F718;
+        Wed, 30 Jun 2021 09:01:59 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 17:01:56 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v3 2/3] sched: Skip priority checks with
+ SCHED_FLAG_KEEP_PARAMS
+Message-ID: <20210630160156.wemzedjg6wuaw7zw@e107158-lin.cambridge.arm.com>
+References: <20210623123441.592348-1-qperret@google.com>
+ <20210623123441.592348-3-qperret@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210623123441.592348-3-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+On 06/23/21 12:34, Quentin Perret wrote:
+> SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+> the call must not touch scheduling parameters (nice or priority). This
+> is particularly handy for uclamp when used in conjunction with
+> SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+> impacts uclamp values.
+> 
+> However, sched_setattr always checks whether the priorities and nice
+> values passed in sched_attr are valid first, even if those never get
+> used down the line. This is useless at best since userspace can
+> trivially bypass this check to set the uclamp values by specifying low
+> priorities. However, it is cumbersome to do so as there is no single
+> expression of this that skips both RT and CFS checks at once. As such,
+> userspace needs to query the task policy first with e.g. sched_getattr
+> and then set sched_attr.sched_priority accordingly. This is racy and
+> slower than a single call.
+> 
+> As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+> is specified, simply inherit them in this case to match the policy
+> inheritance of SCHED_FLAG_KEEP_POLICY.
+> 
+> Reported-by: Wei Wang <wvw@google.com>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
 
-The TX A-MPDU aggregation is not handled in the driver since the
-ieee80211_start_tx_ba_session has never been started properly.
-Start and stop the TX BA session by tracking the TX aggregation
-status of each TID. Fix the ampdu_action and the tx descriptor
-accordingly with the given TID.
+LGTM.
 
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
----
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  |  2 ++
- .../wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 33 ++++++++++++++-----
- 2 files changed, 26 insertions(+), 9 deletions(-)
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-index d1a566cc0c9e..3f7ff84f2056 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-@@ -1383,6 +1383,8 @@ struct rtl8xxxu_priv {
- 	u8 no_pape:1;
- 	u8 int_buf[USB_INTR_CONTENT_LENGTH];
- 	u8 rssi_level;
-+	bool tx_aggr_started[IEEE80211_NUM_TIDS];
-+	DECLARE_BITMAP(tid_bitmap, IEEE80211_NUM_TIDS);
- 	/*
- 	 * Only one virtual interface permitted because only STA mode
- 	 * is supported and no iface_combinations are provided.
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 9ff09cf7eb62..03c6ed7efe06 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -4805,6 +4805,8 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 	struct ieee80211_rate *tx_rate = ieee80211_get_tx_rate(hw, tx_info);
- 	struct rtl8xxxu_priv *priv = hw->priv;
- 	struct device *dev = &priv->udev->dev;
-+	u8 *qc = ieee80211_get_qos_ctl(hdr);
-+	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 	u32 rate;
- 	u16 rate_flags = tx_info->control.rates[0].flags;
- 	u16 seq_number;
-@@ -4828,7 +4830,7 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 
- 	tx_desc->txdw3 = cpu_to_le32((u32)seq_number << TXDESC32_SEQ_SHIFT);
- 
--	if (ampdu_enable)
-+	if (ampdu_enable && test_bit(tid, priv->tid_bitmap))
- 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_ENABLE);
- 	else
- 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_BREAK);
-@@ -4876,6 +4878,8 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 	struct rtl8xxxu_priv *priv = hw->priv;
- 	struct device *dev = &priv->udev->dev;
- 	struct rtl8xxxu_txdesc40 *tx_desc40;
-+	u8 *qc = ieee80211_get_qos_ctl(hdr);
-+	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 	u32 rate;
- 	u16 rate_flags = tx_info->control.rates[0].flags;
- 	u16 seq_number;
-@@ -4902,7 +4906,7 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 
- 	tx_desc40->txdw9 = cpu_to_le32((u32)seq_number << TXDESC40_SEQ_SHIFT);
- 
--	if (ampdu_enable)
-+	if (ampdu_enable && test_bit(tid, priv->tid_bitmap))
- 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_ENABLE);
- 	else
- 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_BREAK);
-@@ -5015,12 +5019,19 @@ static void rtl8xxxu_tx(struct ieee80211_hw *hw,
- 	if (ieee80211_is_data_qos(hdr->frame_control) && sta) {
- 		if (sta->ht_cap.ht_supported) {
- 			u32 ampdu, val32;
-+			u8 *qc = ieee80211_get_qos_ctl(hdr);
-+			u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 
- 			ampdu = (u32)sta->ht_cap.ampdu_density;
- 			val32 = ampdu << TXDESC_AMPDU_DENSITY_SHIFT;
- 			tx_desc->txdw2 |= cpu_to_le32(val32);
- 
- 			ampdu_enable = true;
-+
-+			if (!priv->tx_aggr_started[tid] &&
-+				!(skb->protocol == cpu_to_be16(ETH_P_PAE)))
-+				if (!ieee80211_start_tx_ba_session(sta, tid, 0))
-+					priv->tx_aggr_started[tid] = true;
- 		}
- 	}
- 
-@@ -6089,6 +6100,7 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	struct device *dev = &priv->udev->dev;
- 	u8 ampdu_factor, ampdu_density;
- 	struct ieee80211_sta *sta = params->sta;
-+	u16 tid = params->tid;
- 	enum ieee80211_ampdu_mlme_action action = params->action;
- 
- 	switch (action) {
-@@ -6101,17 +6113,20 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		dev_dbg(dev,
- 			"Changed HT: ampdu_factor %02x, ampdu_density %02x\n",
- 			ampdu_factor, ampdu_density);
--		break;
-+		return IEEE80211_AMPDU_TX_START_IMMEDIATE;
-+	case IEEE80211_AMPDU_TX_STOP_CONT:
- 	case IEEE80211_AMPDU_TX_STOP_FLUSH:
--		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH\n", __func__);
--		rtl8xxxu_set_ampdu_factor(priv, 0);
--		rtl8xxxu_set_ampdu_min_space(priv, 0);
--		break;
- 	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
--		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH_CONT\n",
--			 __func__);
-+		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP\n", __func__);
- 		rtl8xxxu_set_ampdu_factor(priv, 0);
- 		rtl8xxxu_set_ampdu_min_space(priv, 0);
-+		priv->tx_aggr_started[tid] = false;
-+		clear_bit(tid, priv->tid_bitmap);
-+		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
-+		break;
-+	case IEEE80211_AMPDU_TX_OPERATIONAL:
-+		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_OPERATIONAL\n", __func__);
-+		set_bit(tid, priv->tid_bitmap);
- 		break;
- 	case IEEE80211_AMPDU_RX_START:
- 		dev_dbg(dev, "%s: IEEE80211_AMPDU_RX_START\n", __func__);
--- 
-2.20.1
+Cheers
 
+--
+Qais Yousef
