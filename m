@@ -2,383 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC593B822A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450CC3B8228
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbhF3MdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbhF3MdT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:33:19 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1FAC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:30:50 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id n25so2969739edw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y/NiruVedtLXXcwtmHdL7yKXuqcEb3kTC2VwZHt24F0=;
-        b=lyRAmwLNmZQr8elDlzNE/ZwhMZVeTVx3L4Y+rrM5hwdWMI7XJ8U8rbAbEVOGx3vFPx
-         JHECnhq7sz6axmuGyvPo35D3LfXqsI7qSbRAHmon/VMT03wtt/fsZacWoCqY14gexFvG
-         CBNzTQP0I5UG+FcgeIxCiF0KA19VA1vNlinRsEujWMMqK4jqiPidB+ofkBwngwUkMUlk
-         GXD8nqUrbY8tGi5QAt2szudgY9psIto5gbubGqQotaFqndHFtth7k5HCYi/4/6abpF3R
-         aNnq0WSpaaFK3OqZwYfYD3aIl3FHbbY8ZTjyT+udPOAsS4eIvtfSetKZ11KX/HUXiQf9
-         0ytA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y/NiruVedtLXXcwtmHdL7yKXuqcEb3kTC2VwZHt24F0=;
-        b=nDMOwv/ulZBdIYteYv0A3aKgxCAsTGkEejUmTQt3uFYDMaTMjkqTxTs7OMi3TYiT/i
-         ffJldY6tIBdss4WYt/l6aUURyJsaJ5KSeTlEEE+V2dOWu8E+o8j+ffCCNr5mTGxaJ6oK
-         62GADCkmtxVbCbpfxkL7/kep7hFBUkQVEMiXu/CJRk7JfAqokpm4sWVyTJ+bLloIvnLs
-         65wWb8OIdiLqqhz6Kng/q2zqhlNWR8ObtAwzS7SDjvwiyBLIWR7PB0j0SNGcffzvD3QM
-         IESI3IHi9ZafON5auLacdoHoUsSMUNScNCVVFkxW9xWTBek/Q3eGGy1iAiK++Hfjx1/p
-         3A2w==
-X-Gm-Message-State: AOAM532PTZOqTxxjSgWjUY2CxQVBlH4abeCBVBt92bBR0hH6x7M4TLE6
-        JUFNEAIq34giu23EQ9i9lJL79g==
-X-Google-Smtp-Source: ABdhPJxueKb4to0PneFmftPCn0BqxSotcbL/q0VxIKaL1Q5nKdNH4gFy7Hwx7rPfI71HMU1G86vpFA==
-X-Received: by 2002:a05:6402:40c3:: with SMTP id z3mr45126000edb.375.1625056248847;
-        Wed, 30 Jun 2021 05:30:48 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id u21sm11079046edv.20.2021.06.30.05.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 05:30:48 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, srinivas.pandruvada@linux.intel.com,
-        jikos@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: hid-sensors: bind IIO channels alloc to device object
-Date:   Wed, 30 Jun 2021 15:30:29 +0300
-Message-Id: <20210630123029.759609-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        id S234629AbhF3MdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:33:07 -0400
+Received: from relay.sw.ru ([185.231.240.75]:59178 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234481AbhF3MdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:33:02 -0400
+X-Greylist: delayed 14684 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Jun 2021 08:33:02 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=kwk7jyLXbh21vjpq/Pu++X60kzhkvJVqtiZH2jwiitw=; b=q7Di/Ms0g1hwt7cFI
+        CqZ1FxQpNKUAVVopFI5NqxSCznfizggec4qHSK5LyNPTmidtC/vfvHu+a3qpBEDIY5KdS6gxZ5GLi
+        ym/0l2i72GBP0USRmplwDDetqP50P/3pH0OvDH9cX8ztta/BlCHVczZxZ36PKEaZzWAv2s3NihZz4
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lYGPe-002P32-NO; Wed, 30 Jun 2021 15:30:31 +0300
+Subject: Re: [PATCH NETFILTER] netfilter: nfnetlink: suspicious RCU usage in
+ ctnetlink_dump_helpinfo
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Taehee Yoo <ap420073@gmail.com>, Julian Anastasov <ja@ssi.bg>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org
+References: <65205a04-f1a3-9901-f6b7-eab8f482f37f@virtuozzo.com>
+ <20210630094949.GA18022@breakpoint.cc> <20210630120947.GA12739@salvia>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <8a892a24-62f2-fb43-aad6-62ada13143e7@virtuozzo.com>
+Date:   Wed, 30 Jun 2021 15:30:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210630120947.GA12739@salvia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some HID drivers use devm_kmemdup() already to clone the template IIO
-channels information and update it.
-However, there are still some drivers that kmemdup() and kfree() the
-channels.
+On 6/30/21 3:09 PM, Pablo Neira Ayuso wrote:
+> 
+> On Wed, Jun 30, 2021 at 11:49:49AM +0200, Florian Westphal wrote:
+>> Vasily Averin <vvs@virtuozzo.com> wrote:
+>>> Two patches listed below removed ctnetlink_dump_helpinfo call from under
+>>> rcu_read_lock. Now its rcu_dereference generates following warning:
+>>> =============================
+>>> WARNING: suspicious RCU usage
+>>> 5.13.0+ #5 Not tainted
+>>> -----------------------------
+>>> net/netfilter/nf_conntrack_netlink.c:221 suspicious rcu_dereference_check() usage!
+>>
+>> Reviewed-by: Florian Westphal <fw@strlen.de>
+> 
+> I don't see this patch in netfilter's patchwork nor in
+> netfilter-devel@vger.kernel.org
+> 
+> Where did they go?
 
-This change converts them to use devm_kmemdup() and bind the life-time of
-this allocated object to the parent device object (in these drivers).
+My original letter was graylisted.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/accel/hid-sensor-accel-3d.c      | 10 ++++------
- drivers/iio/gyro/hid-sensor-gyro-3d.c        | 11 ++++-------
- drivers/iio/light/hid-sensor-als.c           | 11 ++++-------
- drivers/iio/light/hid-sensor-prox.c          | 11 ++++-------
- drivers/iio/orientation/hid-sensor-incl-3d.c | 11 ++++-------
- drivers/iio/pressure/hid-sensor-press.c      | 11 ++++-------
- 6 files changed, 24 insertions(+), 41 deletions(-)
+"
+A message that you sent could not be delivered to one or more of its
+recipients. This is a permanent error. The following address(es) failed:
 
-diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c b/drivers/iio/accel/hid-sensor-accel-3d.c
-index 55cdca818b3b..a2def6f9380a 100644
---- a/drivers/iio/accel/hid-sensor-accel-3d.c
-+++ b/drivers/iio/accel/hid-sensor-accel-3d.c
-@@ -367,7 +367,8 @@ static int hid_accel_3d_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "failed to setup common attributes\n");
- 		return ret;
- 	}
--	indio_dev->channels = kmemdup(channel_spec, channel_size, GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, channel_spec,
-+					   channel_size, GFP_KERNEL);
- 
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
-@@ -378,7 +379,7 @@ static int hid_accel_3d_probe(struct platform_device *pdev)
- 				hsdev->usage, accel_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->info = &accel_3d_info;
-@@ -391,7 +392,7 @@ static int hid_accel_3d_probe(struct platform_device *pdev)
- 					&accel_state->common_attributes);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -416,8 +417,6 @@ static int hid_accel_3d_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &accel_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -431,7 +430,6 @@ static int hid_accel_3d_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, hsdev->usage);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &accel_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
-diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-index bc63c2a34c5e..8f0ad022c7f1 100644
---- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
-+++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-@@ -303,8 +303,8 @@ static int hid_gyro_3d_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	indio_dev->channels = kmemdup(gyro_3d_channels,
--				      sizeof(gyro_3d_channels), GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, gyro_3d_channels,
-+					   sizeof(gyro_3d_channels), GFP_KERNEL);
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
- 		return -ENOMEM;
-@@ -315,7 +315,7 @@ static int hid_gyro_3d_probe(struct platform_device *pdev)
- 				   HID_USAGE_SENSOR_GYRO_3D, gyro_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->num_channels = ARRAY_SIZE(gyro_3d_channels);
-@@ -329,7 +329,7 @@ static int hid_gyro_3d_probe(struct platform_device *pdev)
- 					&gyro_state->common_attributes);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -354,8 +354,6 @@ static int hid_gyro_3d_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &gyro_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -369,7 +367,6 @@ static int hid_gyro_3d_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_GYRO_3D);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &gyro_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
-diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
-index 2ff252c75c03..5a1a625d8d16 100644
---- a/drivers/iio/light/hid-sensor-als.c
-+++ b/drivers/iio/light/hid-sensor-als.c
-@@ -294,8 +294,8 @@ static int hid_als_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	indio_dev->channels = kmemdup(als_channels,
--				      sizeof(als_channels), GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, als_channels,
-+					   sizeof(als_channels), GFP_KERNEL);
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
- 		return -ENOMEM;
-@@ -306,7 +306,7 @@ static int hid_als_probe(struct platform_device *pdev)
- 			       HID_USAGE_SENSOR_ALS, als_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->num_channels =
-@@ -321,7 +321,7 @@ static int hid_als_probe(struct platform_device *pdev)
- 				&als_state->common_attributes);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -346,8 +346,6 @@ static int hid_als_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &als_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -361,7 +359,6 @@ static int hid_als_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_ALS);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &als_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
-diff --git a/drivers/iio/light/hid-sensor-prox.c b/drivers/iio/light/hid-sensor-prox.c
-index 1621530f5f61..f10fa2abfe72 100644
---- a/drivers/iio/light/hid-sensor-prox.c
-+++ b/drivers/iio/light/hid-sensor-prox.c
-@@ -253,8 +253,8 @@ static int hid_prox_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	indio_dev->channels = kmemdup(prox_channels, sizeof(prox_channels),
--				      GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, prox_channels,
-+					   sizeof(prox_channels), GFP_KERNEL);
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
- 		return -ENOMEM;
-@@ -265,7 +265,7 @@ static int hid_prox_probe(struct platform_device *pdev)
- 				HID_USAGE_SENSOR_PROX, prox_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->num_channels = ARRAY_SIZE(prox_channels);
-@@ -279,7 +279,7 @@ static int hid_prox_probe(struct platform_device *pdev)
- 				&prox_state->common_attributes);
- 	if (ret) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -304,8 +304,6 @@ static int hid_prox_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &prox_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -319,7 +317,6 @@ static int hid_prox_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_PROX);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &prox_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
-diff --git a/drivers/iio/orientation/hid-sensor-incl-3d.c b/drivers/iio/orientation/hid-sensor-incl-3d.c
-index c0079e2c8807..ba5b581d5b25 100644
---- a/drivers/iio/orientation/hid-sensor-incl-3d.c
-+++ b/drivers/iio/orientation/hid-sensor-incl-3d.c
-@@ -326,8 +326,8 @@ static int hid_incl_3d_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	indio_dev->channels = kmemdup(incl_3d_channels,
--				      sizeof(incl_3d_channels), GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, incl_3d_channels,
-+					   sizeof(incl_3d_channels), GFP_KERNEL);
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
- 		return -ENOMEM;
-@@ -339,7 +339,7 @@ static int hid_incl_3d_probe(struct platform_device *pdev)
- 				   incl_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->num_channels = ARRAY_SIZE(incl_3d_channels);
-@@ -353,7 +353,7 @@ static int hid_incl_3d_probe(struct platform_device *pdev)
- 					&incl_state->common_attributes);
- 	if (ret) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -379,8 +379,6 @@ static int hid_incl_3d_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &incl_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -394,7 +392,6 @@ static int hid_incl_3d_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_INCLINOMETER_3D);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &incl_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
-diff --git a/drivers/iio/pressure/hid-sensor-press.c b/drivers/iio/pressure/hid-sensor-press.c
-index 10c52b8df2ba..dcd593c426b4 100644
---- a/drivers/iio/pressure/hid-sensor-press.c
-+++ b/drivers/iio/pressure/hid-sensor-press.c
-@@ -259,8 +259,8 @@ static int hid_press_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	indio_dev->channels = kmemdup(press_channels, sizeof(press_channels),
--				      GFP_KERNEL);
-+	indio_dev->channels = devm_kmemdup(&pdev->dev, press_channels,
-+					   sizeof(press_channels), GFP_KERNEL);
- 	if (!indio_dev->channels) {
- 		dev_err(&pdev->dev, "failed to duplicate channels\n");
- 		return -ENOMEM;
-@@ -271,7 +271,7 @@ static int hid_press_probe(struct platform_device *pdev)
- 				 HID_USAGE_SENSOR_PRESSURE, press_state);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to setup attributes\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	indio_dev->num_channels =
-@@ -286,7 +286,7 @@ static int hid_press_probe(struct platform_device *pdev)
- 				&press_state->common_attributes);
- 	if (ret) {
- 		dev_err(&pdev->dev, "trigger setup failed\n");
--		goto error_free_dev_mem;
-+		return ret;
- 	}
- 
- 	ret = iio_device_register(indio_dev);
-@@ -311,8 +311,6 @@ static int hid_press_probe(struct platform_device *pdev)
- 	iio_device_unregister(indio_dev);
- error_remove_trigger:
- 	hid_sensor_remove_trigger(indio_dev, &press_state->common_attributes);
--error_free_dev_mem:
--	kfree(indio_dev->channels);
- 	return ret;
- }
- 
-@@ -326,7 +324,6 @@ static int hid_press_remove(struct platform_device *pdev)
- 	sensor_hub_remove_callback(hsdev, HID_USAGE_SENSOR_PRESSURE);
- 	iio_device_unregister(indio_dev);
- 	hid_sensor_remove_trigger(indio_dev, &press_state->common_attributes);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
--- 
-2.31.1
+coreteam@netfilter.org
+host mail.netfilter.org [217.70.188.207]
+SMTP error from remote mail server after RCPT TO:<coreteam@netfilter.org>:
+450 4.2.0 <coreteam@netfilter.org>: Recipient address rejected:
+Greylisted for 60 seconds: retry timeout exceeded
+kadlec@netfilter.org
+host mail.netfilter.org [217.70.188.207]
+SMTP error from remote mail server after RCPT TO:<kadlec@netfilter.org>:
+450 4.2.0 <kadlec@netfilter.org>: Recipient address rejected:
+Greylisted for 60 seconds: retry timeout exceeded
+pablo@netfilter.org
+host mail.netfilter.org [217.70.188.207]
+SMTP error from remote mail server after RCPT TO:<pablo@netfilter.org>:
+450 4.2.0 <pablo@netfilter.org>: Recipient address rejected:
+Greylisted for 60 seconds: retry timeout exceeded
+linux-kernel@vger.kernel.org
+host vger.kernel.org [23.128.96.18]
+SMTP error from remote mail server after RCPT TO:<linux-kernel@vger.kernel.org>:
+451 4.7.1 Hello [185.231.240.75], for recipient address <linux-kernel@vger.kernel.org> the policy analysis reported:
+Greylisted, see http://postgrey.schweikert.ch/help/vger.kernel.org.html:
+retry timeout exceeded
+netfilter-devel@vger.kernel.org
+host vger.kernel.org [23.128.96.18]
+SMTP error from remote mail server after RCPT TO:<netfilter-devel@vger.kernel.org>:
+451 4.7.1 Hello [185.231.240.75], for recipient address <netfilter-devel@vger.kernel.org> the policy analysis reported:
+Greylisted, see http://postgrey.schweikert.ch/help/vger.kernel.org.html:
+retry timeout exceeded
+"
+I'm expect it will be re-send in few hours.
+othrevise I'll resend it once again via another mail server.
+
+Thank you,
+	Vasily Averin
+
 
