@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26BC3B7DE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F7C3B7DE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhF3HPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232870AbhF3HO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6071461CC0;
-        Wed, 30 Jun 2021 07:12:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625037149;
-        bh=4lZi2ByWBD8jlDCnRUevXMAgObek5/VFvTH3/bPm2EU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZBvVmkTL7uSEHD2WwVlJBNvtGcC3Nz2xDzvqmK6ZcNj5hRA6FngfMVPlL0aibIm8u
-         uEPDLDjmIIdw9FQn+/aU0YvjiLRUNocqpEEDIuwSwldZsMnTaU8lVtEUR5JvU0zEcG
-         nObX//WWjwB6evvr3tDnXVSsyH0pe5ZY2IO8HR9NCxuaHy1RYl2xrk9PaQGSfCdVxE
-         +qmmiZf0i7VDXIlUsNYq67zVblQV30eInCyDmURwF+PeAlq2IHi8y6PGm9Co7K/MtZ
-         +NREM9+ObdR7OyR+ZAPwk+7ltrC5w2qxCIRvSEpsFkG9NZ3y34h8MPqmFlUu7T+89T
-         IWQQ7Mh5z9itw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v3 4/4] arm: extend pfn_valid to take into account freed memory map alignment
-Date:   Wed, 30 Jun 2021 10:12:11 +0300
-Message-Id: <20210630071211.21011-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210630071211.21011-1-rppt@kernel.org>
-References: <20210630071211.21011-1-rppt@kernel.org>
+        id S232874AbhF3HS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232705AbhF3HS5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:18:57 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988C6C061766;
+        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e33so1371970pgm.3;
+        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xonZNlE+l6sBtKA7UNKEQ0/jPH3nyQ4s6DxRX9fs0lI=;
+        b=uW8c87PFM4174j/Wd1DNcpOQPC9Ka6CjksrqU4eo4XnXTmwYgc4rXGyYe0hMW2FSne
+         Jv7bi9UkL/K6gkSxdmpUo6PY0l/YE4OBEsT6BvGofrY2fa8ghfE7B7HBfW8pg6D5q+kP
+         s+KGRruGtH072QXvggVltyGxcIMpM7zGfFE4u1eUy09NoSkxdoEsELKwXC6dr2EiyJHv
+         yYJYA9CcLF6e6GnVFPIE6vbbCFsvkc/mX7BH7f67pkKhH2pui8DGUGEJIwJmjg3GoIFe
+         lrZF/WWWcMxowXNFdAbW8eVqipaeh2dVWa+9fauENG5Bu8L1OfmHqiHtDu65kgkHzspn
+         T8xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xonZNlE+l6sBtKA7UNKEQ0/jPH3nyQ4s6DxRX9fs0lI=;
+        b=ksXuBPu8qwYTVsbFas2fXLctcBJ0rNxlhaKfv067A9QMUmLUZOUH3OZhyEqfgQ3Eti
+         DsmXhznaIR9lHrREyOw9bXkY/gEZY6AcKWqLKeUyCKZhZXLIsXpCSpxzBn/XIho7RZY3
+         AUbq0nXMZykEjwTpf1yb4Kvqy23FSuC1Q2HbG+VbEorX4ykWm3se0OcihQMO4mfeprOs
+         U62srnoXQ6m4EwbqYsu5am/PfHA9XbVhl8ZGqIWzOI5ypoEfZdqgwCr8kVKv0enQ/s85
+         Fn1IrdKCLLerQR61aszOEJ6Z52rfpBrZnnB55t1xLmwpQhPf+h6jeVT2v4+i9ZqZz9Eb
+         +9Ug==
+X-Gm-Message-State: AOAM5329NoV4GM2Qc4Rb2UB8vztM1520YKCvYjXc0C2PiU3ExQU38FlF
+        JvrdkRZsLitKWXpF93BOrYc=
+X-Google-Smtp-Source: ABdhPJyXt5mu22Dh0CprhoQwKxErQ9vG90XQm8t6hV/p9URQU/LnBmaG3a0CXaR4CG6+w9ShnVZwxA==
+X-Received: by 2002:a63:d213:: with SMTP id a19mr32858796pgg.28.1625037388076;
+        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
+Received: from vessel.. ([103.242.196.99])
+        by smtp.gmail.com with ESMTPSA id ay3sm12288517pjb.38.2021.06.30.00.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 00:16:26 -0700 (PDT)
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org, andrianov@ispras.ru
+Subject: [PATCH] char: tpm: vtpm_proxy: Fix race in init
+Date:   Wed, 30 Jun 2021 12:44:51 +0530
+Message-Id: <20210630071451.15507-1-saubhik.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210629210524.hze6yb23pps3flnv@kernel.org>
+References: <20210629210524.hze6yb23pps3flnv@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+vtpm_module_init calls vtpmx_init which calls misc_register. The file
+operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
+parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
+vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
+vtpm_proxy_work_start, which could read uninitialized workqueue.
 
-When unused memory map is freed the preserved part of the memory map is
-extended to match pageblock boundaries because lots of core mm
-functionality relies on homogeneity of the memory map within pageblock
-boundaries.
+To avoid this, create workqueue before vtpmx init.
 
-Since pfn_valid() is used to check whether there is a valid memory map
-entry for a PFN, make it return true also for PFNs that have memory map
-entries even if there is no actual memory populated there.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
 ---
- arch/arm/mm/init.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 9d4744a632c6..6162a070a410 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -125,11 +125,22 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max_low,
- int pfn_valid(unsigned long pfn)
+diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+index 91c772e38bb5..225dfa026a8f 100644
+--- a/drivers/char/tpm/tpm_vtpm_proxy.c
++++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+@@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
  {
- 	phys_addr_t addr = __pfn_to_phys(pfn);
-+	unsigned long pageblock_size = PAGE_SIZE * pageblock_nr_pages;
+ 	int rc;
  
- 	if (__phys_to_pfn(addr) != pfn)
- 		return 0;
- 
--	return memblock_is_map_memory(addr);
-+	/*
-+	 * If address less than pageblock_size bytes away from a present
-+	 * memory chunk there still will be a memory map entry for it
-+	 * because we round freed memory map to the pageblock boundaries.
-+	 */
-+	if (memblock_overlaps_region(&memblock.memory,
-+				     ALIGN_DOWN(addr, pageblock_size),
-+				     pageblock_size))
-+		return 1;
+-	rc = vtpmx_init();
+-	if (rc) {
+-		pr_err("couldn't create vtpmx device\n");
+-		return rc;
+-	}
+-
+ 	workqueue = create_workqueue("tpm-vtpm");
+ 	if (!workqueue) {
+ 		pr_err("couldn't create workqueue\n");
+-		rc = -ENOMEM;
+-		goto err_vtpmx_cleanup;
++		return -ENOMEM;
++	}
 +
-+	return 0;
++	rc = vtpmx_init();
++	if (rc) {
++		pr_err("couldn't create vtpmx device\n");
++		goto err_destroy_workqueue;
+ 	}
+ 
+ 	return 0;
+ 
+-err_vtpmx_cleanup:
+-	vtpmx_cleanup();
++err_destroy_workqueue:
++	destroy_workqueue(workqueue);
+ 
+ 	return rc;
  }
- EXPORT_SYMBOL(pfn_valid);
- #endif
 -- 
-2.28.0
+2.30.2
 
