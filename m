@@ -2,174 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594B43B891A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59FC3B892B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbhF3TVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 15:21:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48342 "EHLO mga05.intel.com"
+        id S233761AbhF3Te1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:34:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29261 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233552AbhF3TVR (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:21:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="294051610"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="294051610"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 12:18:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="447597287"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 30 Jun 2021 12:18:17 -0700
-Received: from [10.209.45.119] (kliang2-MOBL.ccr.corp.intel.com [10.209.45.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233690AbhF3TeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 15:34:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625081516; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=0SXU6AvU5sB2MZGk7w9XTvpdFJk9l/OjBx5DRCacHS0=;
+ b=UxdKaTWwIsFjV34TF/CoGGuS3ZQhN0WS5ODZk728xUlp7zWBlQ5ObWIzk4PF923KnDMYpMZS
+ +HHa+KmCkU/VoDbeYFveoFghO1YdqnlDyMzlOSEsYc/3OZ1NeO8+DV9bZ1XTUXOrhVmVHKS5
+ 7yG86CssJXNy5eFwUDr0ioDME+8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60dcc6904ca9face34f35407 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 19:31:28
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27FC5C4360C; Wed, 30 Jun 2021 19:31:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 3AC43580279;
-        Wed, 30 Jun 2021 12:18:16 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] perf tools: Fix pattern matching for same
- substring in different pmu type
-To:     Jin Yao <yao.jin@linux.intel.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210630120912.6998-1-yao.jin@linux.intel.com>
- <20210630120912.6998-2-yao.jin@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <62c7f221-64af-f6b2-147c-09d56667ccd6@linux.intel.com>
-Date:   Wed, 30 Jun 2021 15:18:14 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1B0CC433F1;
+        Wed, 30 Jun 2021 19:31:25 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210630120912.6998-2-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 01 Jul 2021 01:01:25 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        swboyd@chromium.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
+        agross@kernel.org, ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v3 04/13] remoteproc: qcom: q6v5: Use qmp_send to update
+ co-processor load state
+In-Reply-To: <YNZGls1wHbWgsEO5@google.com>
+References: <1624560727-6870-1-git-send-email-sibis@codeaurora.org>
+ <1624560727-6870-5-git-send-email-sibis@codeaurora.org>
+ <YNZGls1wHbWgsEO5@google.com>
+Message-ID: <82de11c77b8b46dcdfec4a2d2569ac95@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Matthias,
+Thanks for taking time to review the series.
 
-
-On 6/30/2021 8:09 AM, Jin Yao wrote:
-> Some different pmu types may have same substring. For example,
-> on Icelake server, we have pmu types "uncore_imc" and
-> "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
-> But the parser would wrongly think they are the same pmu type.
+On 2021-06-26 02:41, Matthias Kaehlcke wrote:
+> On Fri, Jun 25, 2021 at 12:21:58AM +0530, Sibi Sankar wrote:
+>> The power domains exposed by the AOSS QMP driver control the load 
+>> state
+>> resources linked to modem, adsp, cdsp remoteprocs. These are used to
+>> notify the Always on Subsystem (AOSS) that a particular co-processor 
+>> is
+>> up/down. AOSS uses this information to wait for the co-processors to
+>> suspend before starting its sleep sequence.
+>> 
+>> These co-processors enter low-power modes independent to that of the
+>> application processor and the load state resources linked to them are
+>> expected to remain unaltered across system suspend/resume cycles. To
+>> achieve this behavior lets stop using the power-domains exposed by the
+>> AOSS QMP node and replace them with generic qmp_send interface 
+>> instead.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  drivers/remoteproc/qcom_q6v5.c      | 56 +++++++++++++++++++++++++-
+>>  drivers/remoteproc/qcom_q6v5.h      |  7 +++-
+>>  drivers/remoteproc/qcom_q6v5_adsp.c |  7 +++-
+>>  drivers/remoteproc/qcom_q6v5_mss.c  | 44 ++++----------------
+>>  drivers/remoteproc/qcom_q6v5_pas.c  | 80 
+>> +++++++++----------------------------
+>>  drivers/remoteproc/qcom_q6v5_wcss.c |  4 +-
+>>  6 files changed, 94 insertions(+), 104 deletions(-)
+>> 
+>> diff --git a/drivers/remoteproc/qcom_q6v5.c 
+>> b/drivers/remoteproc/qcom_q6v5.c
+>> index 9627a950928e..4a9a481c211b 100644
+>> --- a/drivers/remoteproc/qcom_q6v5.c
+>> +++ b/drivers/remoteproc/qcom_q6v5.c
+>> @@ -16,8 +16,28 @@
+>>  #include "qcom_common.h"
+>>  #include "qcom_q6v5.h"
+>> 
+>> +#define Q6V5_LOAD_STATE_MSG_LEN	64
+>>  #define Q6V5_PANIC_DELAY_MS	200
+>> 
+>> +static int q6v5_load_state_toggle(struct qcom_q6v5 *q6v5, bool 
+>> enable)
+>> +{
+>> +	char buf[Q6V5_LOAD_STATE_MSG_LEN] = {};
+>> +	int ret;
+>> +
+>> +	if (IS_ERR(q6v5->qmp))
+>> +		return 0;
+>> +
+>> +	snprintf(buf, sizeof(buf),
+>> +		 "{class: image, res: load_state, name: %s, val: %s}",
+>> +		 q6v5->load_state, enable ? "on" : "off");
+>> +
+>> +	ret = qmp_send(q6v5->qmp, buf, sizeof(buf));
+>> +	if (ret)
+>> +		dev_err(q6v5->dev, "failed to toggle load state\n");
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  /**
+>>   * qcom_q6v5_prepare() - reinitialize the qcom_q6v5 context before 
+>> start
+>>   * @q6v5:	reference to qcom_q6v5 context to be reinitialized
+>> @@ -26,6 +46,12 @@
+>>   */
+>>  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5)
+>>  {
+>> +	int ret;
+>> +
+>> +	ret = q6v5_load_state_toggle(q6v5, true);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>>  	reinit_completion(&q6v5->start_done);
+>>  	reinit_completion(&q6v5->stop_done);
+>> 
+>> @@ -47,6 +73,7 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_prepare);
+>>  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5)
+>>  {
+>>  	disable_irq(q6v5->handover_irq);
+>> +	q6v5_load_state_toggle(q6v5, false);
+>> 
+>>  	return !q6v5->handover_issued;
+>>  }
+>> @@ -196,12 +223,13 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_panic);
+>>   * @pdev:	platform_device reference for acquiring resources
+>>   * @rproc:	associated remoteproc instance
+>>   * @crash_reason: SMEM id for crash reason string, or 0 if none
+>> + * @load_state: load state resource string
+>>   * @handover:	function to be called when proxy resources should be 
+>> released
+>>   *
+>>   * Return: 0 on success, negative errno on failure
+>>   */
+>>  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device 
+>> *pdev,
+>> -		   struct rproc *rproc, int crash_reason,
+>> +		   struct rproc *rproc, int crash_reason, const char *load_state,
+>>  		   void (*handover)(struct qcom_q6v5 *q6v5))
+>>  {
+>>  	int ret;
+>> @@ -210,6 +238,7 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct 
+>> platform_device *pdev,
+>>  	q6v5->dev = &pdev->dev;
+>>  	q6v5->crash_reason = crash_reason;
+>>  	q6v5->handover = handover;
+>> +	q6v5->load_state = kstrdup_const(load_state, GFP_KERNEL);
+>> 
+>>  	init_completion(&q6v5->start_done);
+>>  	init_completion(&q6v5->stop_done);
+>> @@ -286,9 +315,34 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct 
+>> platform_device *pdev,
+>>  		return PTR_ERR(q6v5->state);
+>>  	}
+>> 
+>> +	q6v5->qmp = qmp_get(&pdev->dev);
+>> +	if (IS_ERR(q6v5->qmp)) {
+>> +		if (PTR_ERR(q6v5->qmp) != -ENODEV) {
+>> +			if (PTR_ERR(q6v5->qmp) != -EPROBE_DEFER)
+>> +				dev_err(&pdev->dev, "failed to acquire load state\n");
+>> +			return PTR_ERR(q6v5->qmp);
+>> +		}
+>> +	} else {
+>> +		if (!q6v5->load_state) {
+>> +			dev_err(&pdev->dev, "load state resource string empty\n");
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>>  	return 0;
+>>  }
+>>  EXPORT_SYMBOL_GPL(qcom_q6v5_init);
+>> 
+>> +/**
+>> + * qcom_q6v5_deinit() - deinitialize the q6v5 common struct
+>> + * @q6v5:	reference to qcom_q6v5 context to be deinitialized
+>> + * @pdev:	platform_device reference for acquiring resources
+>> + */
+>> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5, struct platform_device 
+>> *pdev)
+>> +{
 > 
-> We enable an imc event,
-> perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
+> pdev isn't used, remove it?
+
+thanks for catching this. It was an
+artefact of the recent qmp api changes.
+
 > 
-> Perf actually expands the event to:
-> uncore_imc_0/event=0xe3/
-> uncore_imc_1/event=0xe3/
-> uncore_imc_2/event=0xe3/
-> uncore_imc_3/event=0xe3/
-> uncore_imc_4/event=0xe3/
-> uncore_imc_5/event=0xe3/
-> uncore_imc_6/event=0xe3/
-> uncore_imc_7/event=0xe3/
-> uncore_imc_free_running_0/event=0xe3/
-> uncore_imc_free_running_1/event=0xe3/
-> uncore_imc_free_running_3/event=0xe3/
-> uncore_imc_free_running_4/event=0xe3/
+> 	kfree_const(q6v5->load_state);
 > 
-> That's because the "uncore_imc_free_running" matches the
-> pattern "uncore_imc*".
+>> +	qmp_put(q6v5->qmp);
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_q6v5_deinit);
+>> +
+>>  MODULE_LICENSE("GPL v2");
+>>  MODULE_DESCRIPTION("Qualcomm Peripheral Image Loader for Q6V5");
+>> diff --git a/drivers/remoteproc/qcom_q6v5.h 
+>> b/drivers/remoteproc/qcom_q6v5.h
+>> index 1c212f670cbc..3d9f525cb4ec 100644
+>> --- a/drivers/remoteproc/qcom_q6v5.h
+>> +++ b/drivers/remoteproc/qcom_q6v5.h
+>> @@ -5,6 +5,7 @@
+>> 
+>>  #include <linux/kernel.h>
+>>  #include <linux/completion.h>
+>> +#include <linux/soc/qcom/qcom_aoss.h>
+>> 
+>>  struct rproc;
+>>  struct qcom_smem_state;
+>> @@ -15,6 +16,8 @@ struct qcom_q6v5 {
+>>  	struct rproc *rproc;
+>> 
+>>  	struct qcom_smem_state *state;
+>> +	struct qmp *qmp;
+>> +
+>>  	unsigned stop_bit;
+>> 
+>>  	int wdog_irq;
+>> @@ -32,12 +35,14 @@ struct qcom_q6v5 {
+>> 
+>>  	bool running;
+>> 
+>> +	const char *load_state;
+>>  	void (*handover)(struct qcom_q6v5 *q6v5);
+>>  };
+>> 
+>>  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device 
+>> *pdev,
+>> -		   struct rproc *rproc, int crash_reason,
+>> +		   struct rproc *rproc, int crash_reason, const char *load_state,
+>>  		   void (*handover)(struct qcom_q6v5 *q6v5));
+>> +void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5, struct platform_device 
+>> *pdev);
+>> 
+>>  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5);
+>>  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5);
+>> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c 
+>> b/drivers/remoteproc/qcom_q6v5_adsp.c
+>> index 8b0d8bbacd2e..0f5e0fd216b4 100644
+>> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+>> @@ -185,7 +185,9 @@ static int adsp_start(struct rproc *rproc)
+>>  	int ret;
+>>  	unsigned int val;
+>> 
+>> -	qcom_q6v5_prepare(&adsp->q6v5);
+>> +	ret = qcom_q6v5_prepare(&adsp->q6v5);
+>> +	if (ret)
+>> +		return ret;
+>> 
+>>  	ret = clk_prepare_enable(adsp->xo);
+>>  	if (ret)
+>> @@ -465,7 +467,7 @@ static int adsp_probe(struct platform_device 
+>> *pdev)
+>>  	if (ret)
+>>  		goto disable_pm;
+>> 
+>> -	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, 
+>> desc->crash_reason_smem,
+>> +	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, 
+>> desc->crash_reason_smem, NULL,
+>>  			     qcom_adsp_pil_handover);
 > 
-> Now we check that the last characters of pmu name is
-> '_<digit>'.
+> Doesn't passing a load_state of NULL cause qcom_q6v5_init() to fail
+> with -EINVAL?
+
+qmp_get is expected to error out with
+-ENODEV since we don't mention a qmp
+node in dt. When a client needs to use
+qmp in the future we would replace NULL
+with the proper load_state string value.
+
 > 
-> For pattern "uncore_imc*", "uncore_imc_0" is parsed ok,
-> but "uncore_imc_free_running_0" is failed.
+>> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
+>> @@ -1044,8 +1044,7 @@ static int q6v5_wcss_probe(struct 
+>> platform_device *pdev)
+>>  	if (ret)
+>>  		goto free_rproc;
+>> 
+>> -	ret = qcom_q6v5_init(&wcss->q6v5, pdev, rproc, 
+>> desc->crash_reason_smem,
+>> -			     NULL);
+>> +	ret = qcom_q6v5_init(&wcss->q6v5, pdev, rproc, 
+>> desc->crash_reason_smem, NULL, NULL);
 > 
-> Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->   tools/perf/util/pmu.c | 28 +++++++++++++++++++++++++++-
->   1 file changed, 27 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 96f5ff9b5440..9ee123d77e6d 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -3,6 +3,7 @@
->   #include <linux/compiler.h>
->   #include <linux/string.h>
->   #include <linux/zalloc.h>
-> +#include <linux/ctype.h>
->   #include <subcmd/pager.h>
->   #include <sys/types.h>
->   #include <errno.h>
-> @@ -741,6 +742,28 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
->   	return perf_pmu__find_map(NULL);
->   }
->   
-> +static bool perf_pmu__valid_suffix(char *tok, char *pmu_name)
-> +{
-> +	char *p;
-> +
-> +	/*
-> +	 * The pmu_name has substring tok. If the format of
+> Same as for adsp_probe(), doesn't a load_state of NULL cause _init() to 
+> fail?
 
-The uncore PMU may have two names, e.g., uncore_cha_Y or 
-uncore_type_X_Y. User can use either name. I don't think we can assume 
-that the pmu_name has substring tok. I think we should add a check as below.
+it won't for the same reason explained
+above.
 
-
-@@ -746,6 +746,8 @@ static bool perf_pmu__valid_suffix(char *tok, char 
-*pmu_name)
-  {
-  	char *p;
-
-+	if (strncmp(pmu_name, tok, strlen(tok)))
-+		return false;
-	/*
-	 * The pmu_name has substring tok. If the format of
-  	 * pmu_name is tok or tok_digit, return true.
-
-> +	 * pmu_name is tok or tok_digit, return true.
-> +	 */
-> +	p = pmu_name + strlen(tok);
-> +	if (*p == 0)
-> +		return true;
-> +
-> +	if (*p != '_')
-> +		return false;
-> +
-> +	++p;
-> +	if (*p == 0 || !isdigit(*p))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->   bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->   {
->   	char *tmp = NULL, *tok, *str;
-> @@ -769,7 +792,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->   	 */
->   	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
->   		name = strstr(name, tok);
-> -		if (!name) {
-> +		if (!name || !perf_pmu__valid_suffix(tok, (char *)name)) {
->   			res = false;
->   			goto out;
->   		}
-> @@ -1886,5 +1909,8 @@ int perf_pmu__pattern_match(struct perf_pmu *pmu, char *pattern, char *tok)
->   	if (fnmatch(pattern, name, 0))
->   		return -1;
->   
-> +	if (!perf_pmu__valid_suffix(tok, name))
-> +		return -1;
-> +
-
-They are still two functions. I'm wondering if we can merge the two 
-functions to one function, e.g., perf_pmu_match()?
-
-So my patch just need to simply do
-  	if (!perf_pmu_match(tok, name) && !perf_pmu_match(tok, 
-pmu->alias_name)) 		return -1;
-
-Thanks,
-Kan
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
