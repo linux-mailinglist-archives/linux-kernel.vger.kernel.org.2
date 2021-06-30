@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10B03B8219
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E9E3B821A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhF3M1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbhF3M07 (ORCPT
+        id S234507AbhF3M1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:27:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:48861 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234490AbhF3M13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:26:59 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8D4C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:24:30 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bg14so3875896ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Eh0RuQARDzYtX6oU1mn3qAV9Ucz3Lp8rJN5AdD4bnhs=;
-        b=WBXCycTdBoh6XyOaRz5Q0FgDS+p+Jgx5jtTyEatbqxXji88bYAukahgX9m7BnqakDW
-         ScgcdoRm4a22be1BUHuSaUkIe/dro9uVDW84Gzz8byb3jhcDM21cjjVIswHwmAzAT2ay
-         3r1KF56s0IiNEdecxUP32P2jUjjQ9x42GuI1A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Eh0RuQARDzYtX6oU1mn3qAV9Ucz3Lp8rJN5AdD4bnhs=;
-        b=MSWNF5Ws0ZneM78BYWcNVXyXekJHib6sejLYvWcK/bsXEXJOPb9pjROdP0yI/wZR4Z
-         GMtvk1xquR/hKV550FpIgBcJPVQWAQnsS04Y7qvOS7l5BGjMdJbRayjqHTcQW0ZgX3MV
-         PIuYTNwJNzid+ieG4GAJ6nY85LvUufhDYVxgPehC6y1jyOg8gx67x0wP9AR3fWl5Y6ub
-         pel8nkK2t3gFupbpx7uVsGAXoxQB44LGiR3yr93euH2mqHEu4OJHYXnLvhEgJoQIJlwc
-         2C5uMXq6iwz0AEXsw6Posz1Cu4y9AeShzFtrOmgaYO8yjPrWwGbn9PU0c1gJzkIOkeNv
-         L4hA==
-X-Gm-Message-State: AOAM533P3lJcnoFoQuSsHcCqHg5dYGpuiF2Z6Po79BH9I9O5eajqFKQi
-        QHb5LgcuX35mbmyYErHqCb0T/yuBzVOtdfGTvFUxnA==
-X-Google-Smtp-Source: ABdhPJxwqMZaLfOn6TzLb/GLihpg4GGodAJleAoeLOXW6d+kxnZXNArRcvf9kTne5Z021JckBamQgD4y7urdQuzOzm0=
-X-Received: by 2002:a17:906:2dd5:: with SMTP id h21mr35625781eji.522.1625055869329;
- Wed, 30 Jun 2021 05:24:29 -0700 (PDT)
+        Wed, 30 Jun 2021 08:27:29 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MwQGj-1l71Je22aL-00sJRe for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021
+ 14:24:59 +0200
+Received: by mail-wr1-f43.google.com with SMTP id f14so3029817wrs.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:24:59 -0700 (PDT)
+X-Gm-Message-State: AOAM533Rq0bjHjqeIxQOo98KvfC95Qugr1nlXU3FeWFiCvr/DU0BBY+A
+        oDOEbMz+J3tEc6LTJwDWeDt48OuAWEpRjQCUEvc=
+X-Google-Smtp-Source: ABdhPJyvqh3j6mbSU1KmlUuXCp1yqw5wRXTQvgUnEwHAMGx9Ka3OvJMS9eU1Dt3llWzRAQtWzJWWQ6AaURHNtxTqlPY=
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr1616263wrn.99.1625055899168;
+ Wed, 30 Jun 2021 05:24:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210621072424.111733-1-jagan@amarulasolutions.com> <DB6PR0402MB2760C13BBF36FF98E4F4635988029@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0402MB2760C13BBF36FF98E4F4635988029@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 30 Jun 2021 17:54:18 +0530
-Message-ID: <CAMty3ZDb5h2WJNxW=ZdFty53KFoZJmzZ8aBnFYfxnhKhgrpa8A@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] arm64: imx8mm: Add MIPI DSI support
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Tomasz Figa <t.figa@samsung.com>,
-        Fancy Fang <chen.fang@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-amarula@amarulasolutions.com" 
-        <linux-amarula@amarulasolutions.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>
+References: <20210525140232.53872-1-mark.rutland@arm.com> <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+ <20210618084847.GA93984@C02TD0UTHF1T.local> <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
+ <4ec7308f-02c6-a357-eab8-63b6f2b7a5eb@infradead.org> <YNpJnzqg0yySeEE7@hirez.programming.kicks-ass.net>
+ <a38e3284-62ee-4894-0475-2668733c5903@infradead.org> <CAK8P3a2yH+dSWrS=1E0UbwcRhYJEThgrk2i9=omCQvcMMQZcww@mail.gmail.com>
+ <YNwji8yPUfQp/ErQ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YNwji8yPUfQp/ErQ@hirez.programming.kicks-ass.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 30 Jun 2021 14:24:43 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0Yi7PDwBnPBRm4ZVX7FzyU_ogi+kN15zXsBg0AorFhHQ@mail.gmail.com>
+Message-ID: <CAK8P3a0Yi7PDwBnPBRm4ZVX7FzyU_ogi+kN15zXsBg0AorFhHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to ARCH_ATOMIC
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Brian Cain <bcain@codeaurora.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:x3f8ffoy30Ku6ZSIoJuL4Zhum2LeiEmWqG0ehIUcWZsM9eI3kME
+ nCJsHtKREfDcaOFh46SMNvgi1SsF2iFSbk/lkJBeLem6OBX14Dm1H05kPWeg5IQiaXo5WdF
+ Ux3rLsaw2hcenjqn9WQ5vxXPrm7O0cRaLtMCRABcr7G8w54z6FWl4uSkhPdDuMnh+2T5ubS
+ 5+SOnHG9gxO/WIVbmD+bw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZDiS7ZHrmys=:fdUjE6WUFnz5ta3aC6p3vg
+ KSaAT0soQKQaMlo67hUbUfXmyZGghvVhvl5CHuxTAR+aaq+33a5Dn43bbZT3rDJLmOTuY4Qd+
+ vTM1j1GLaY7d7Ngbt7eXfbuntkglIcgbojufSoTzW7kyjAgn7Q8vgQOdp6orGTfgNuAyoNxGQ
+ 420M0jMQkq8OgBoVebhMN0KkqXJeEnN7XTugya5SN16v7XQAnwwj14GdriHEfumNHvXjaM0WV
+ KPGh5sOej0BDjhwjENK9lDRgYUnme8U1Y7/2eLcHVPSu11AobVkpdQV6AQavABB5bHQRC99fi
+ de/3eUKxWGkL2JsrYKB0FHMm8QhULWtA3LJ79ztSrkjYSQ2grwDc3Jlc6ptlKHUi63bPgaKBw
+ X3pWk7rX0tMS7LZBabO9eGx6ZOEHTdi7ouDh66Y8fzdiz1AvVi1qSbUT9shMoo69j8v6UlbRy
+ QtQGVWF18SzvCxSWBeGi+RDtHsVRS5tEF4l2TXy3Mg9e7rz2VAlEWjw6+5XkvPYbcwMlFdhvF
+ t876YDEdd06lERoKLcgV2RO/lO2QYEgoETlTY9+umFx5Q5gGDCUbTBtJjchxTaBjz2hA2S5I4
+ +PvRWAWjC27c9FHwy7szux+FKYgSz1HvrNirphs9Upsvs3WqLrdMXYzOCt686+Sl5eAioy1ZF
+ gjxqiknnAIXNZgJPj9HMQVQDdEAbrenFXitmnPC8EwJN12pUD4SHVPDwy/DWC1z7w4LUNvstP
+ aqfi4tTjB13jm56fKB9aVjxP8WC7TEgdMPYCKtS5EMUb/M8b0Y34Jx0ITBh6LOovQIo6LDK6t
+ iMyCxdbiYuyfTaE+aDfqIzcRirlh7yp12a6cTrWZ07F2kS6OGJpWXFUC3f2/jlcEV6l1NIu4F
+ wpEX8oPw7JmiHL7hn29dusFkYdxv/cc6yx+J3HI/7PKkthoe+xU/vBWqg5IsXsTqx4qPDIlIC
+ KbVpMcNgySas0edekFNkApahyk8aWXhZ/hUWsAfxJmlMtz3RCQpdU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+On Wed, Jun 30, 2021 at 9:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Jun 29, 2021 at 09:36:23AM +0200, Arnd Bergmann wrote:
+> > For the specific case of cmpxchg64(), I do think it would make sense to either
+> > have a Kconfig symbol that controls the few users, or to provide a spinlock
+> > based fallback for those that don't have a native implementation.
+>
+> My preference goes to a Kconfig based solution; I so detest spinlock
+> based atomics. I dream of the day we can kill the lot of 'em
+> (sparc32-smp, parisc-smp are always the ones that come to mind).
 
-On Tue, Jun 29, 2021 at 12:40 PM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> Hi Jagan,
->
-> > Subject: [RFC PATCH 0/9] arm64: imx8mm: Add MIPI DSI support
-> >
-> > This series support MIPI DSI on i.MX8MM.
-> >
-> > It worked directly with existing mxsfb driver but the SEC DSIM timings has to
-> > be validate and tested through all platforms, ie reason I'm sending it as RFC.
-> >
-> > Tested on Engicam i.Core MX8M Mini SoM.
->
-> Thanks for the work.
->
-> >
-> > patch 1: dt-bindings for SEC MIPI DSIM
-> >
-> > patch 2: SEC MIPI DSIM bridge driver
-> >
-> > patch 3: dt-bindings for SEC DSIM DPHY
-> >
-> > patch 4: SEC DSIM DPHY driver
-> >
-> > patch 5: MIPI DPHY reset enable in blk-ctl
-> >
-> > patch 6: display mix blk ctl node
-> >
-> > patch 7: eLCDIF node
-> >
-> > patch 8: MIPI DSI pipeline nodes
-> >
-> > patch 9: Enable LVDS panel on EDIMM2.2
-> >
-> > Note:
-> > - all these patches on top of Peng Fan's blk-ctl driver.
->
-> Would you please update to use V8 patchset?
->
-> And the dtb:
-> https://patchwork.kernel.org/project/linux-arm-kernel/
-> patch/20210604111005.6804-1-peng.fan@oss.nxp.com/
+Fair enough.
 
-Thanks for the details.
+> This is doubly true for the xchg/cmpxchg/cmpxchg64 family of functions
+> that are supposed to work together with READ_ONCE/WRITE_ONCE but don't
+> (when 'emulated', we'd need WRITE_ONCE to also be spinlock based in
+> that case).
 
-I will rebase to use this series and test. Will update on blk-ctl patches.
+Ah, I had not realized that this specifically was the problem, besides
+the spinlock method also being awfully slow. That means the two are
+already broken beyond repair, but presumably we no longer care because
+there are approximately zero remaining users, right?
 
-Thanks,
-Jagan.
+> That is, at least for atomic64_*() the whole API is self contained so we
+> can (and do) frob atomic64_set() to behave sanely vs atomic64_cmpxchg().
+
+I suppose it isn't possible to completely replace cmpxchg64() and xchg64()
+with their atomic64() counterparts? I see there are only a handful of users,
+but presumably those are the ones that are not easily changed to atomic64_t.
+
+         Arnd
