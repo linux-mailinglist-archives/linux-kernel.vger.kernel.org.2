@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2340F3B855D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58493B8576
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbhF3Owf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S235766AbhF3OyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbhF3Owc (ORCPT
+        with ESMTP id S235849AbhF3OyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:52:32 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055CC061756;
-        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id p7so1218037qvn.5;
-        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
-        b=gGD9BAtpYOeepZdTbE3KHgAiQMcPPfpnG9JJlnbUMfEhlC8BfSFmt8miSEvOuIEZiB
-         3rzRcjaUvadqxpFG1/UCWQxX3S4rZ592U9H9rz8afxfdqc1r2Rde8c8BEn9i7xgMhNDv
-         JPyYE28nZZUx9+NLzRiuD3VmblJGAy13TwSeiDfi41Y1wHRqNK+gLcQjTZxfG2M1YsUZ
-         0c2kCQtqWyTPbUPzKbLyuJMbmCzox2eNsaFegX5bjW/wN/jIK4/VDB9Z58im/s+xDGmz
-         cCYbg8XIqnEdiJwNjEYwVOBbY9TWqJad9qQ5AqQ/TxIfy00Mt1Ykar5zkLmd3VYYunt6
-         2M3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
-        b=PDPMaTjq1k6GTeER9af4SASAxCKlnBWzj4eWr85gENLUVdWfEPb/76p1xLSBpApgxi
-         hwnwadc+2ybQbM+RQzxyTvO8WQZyMOdEauz3cOoxH5ZejXmq2Ny4ev7oqCOLV7OXhGig
-         cc4Qq4L+QlpoJ7EWHSMtrtvP4fmKVNir/IhAcqRKdN4TNDl77jM0SEIy1Z4u3ZsqW5E9
-         ueU2sn7+XFPtW0YImxYzusV6rOZijeJ0iE1vA+Peao7tvRyYWyVtSz02jmP3XjgVKbDa
-         cLtFp1nSIF+1NjYWCfn1sWz1pez1r8RfxSqlzJqgdBjvx+5N9+CkrimHGwwUdCBSU2vW
-         F/Dg==
-X-Gm-Message-State: AOAM532pvOHYbQWWMx5EqsDRJs0NrCkb2xGUs2VPNSxWhhmkGXF65/M1
-        4VWHC2j7tVN9P+2dLJD1Nc0=
-X-Google-Smtp-Source: ABdhPJzThHMaJANHAXxziTuH+SOn3cwvDIkQnU3dUtRtaQNsiFdcVi7NPiUTXYnhp8pT1LY+NU4BrQ==
-X-Received: by 2002:a05:6214:21ab:: with SMTP id t11mr21581134qvc.26.1625064602268;
-        Wed, 30 Jun 2021 07:50:02 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:1008])
-        by smtp.gmail.com with ESMTPSA id g4sm5047069qtb.50.2021.06.30.07.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 07:50:01 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 10:49:58 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNyEltLABd17spxy@dschatzberg-fedora-PC0Y6AEN>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
- <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
- <YNr1TYfBwR/tEpEJ@blackbook>
- <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
- <YNw8kRpT6R2emuhI@blackbook>
+        Wed, 30 Jun 2021 10:54:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B427C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JgdlP3cFU+vqIL3Uh6fKL6vJvakGNcLFSQqStMEuC/4=; b=qqmHBWd7keTTspxBpDdFabaB7i
+        kSnOxGTQp1v2ABJPDbQOjNcBMe74rTXoiAGRgSo4k3Iv9BeoEQCarBLfdKx2ko185yPiZInTOZkRH
+        P1tkEoqg59o+YI3ZowyE8jUufVHk3Ps8jkLyQlydW/7HXtXFQuKiagVugpsbIcHA8iiohnxHcasNA
+        fpXSfp9+/myT8a3T2qQbhjBjDB1fBEzt87Bzof+8cmO/ldvdlw8AN0WQnq0KCWaUqBITuw75lhkrm
+        efuPQD0HDMONPj6nwuGorDPhRoJb8QFoU/QSQ1CErHlZoM90fxghGng0tLvsqsWbvg9LUrlD/Hr4Q
+        FfsUEfGg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lybXc-005SgJ-MW; Wed, 30 Jun 2021 14:50:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47E353002D3;
+        Wed, 30 Jun 2021 16:50:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2AF242C635D2C; Wed, 30 Jun 2021 16:50:15 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 16:50:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on
+ unlocked mutex
+Message-ID: <YNyEpy+IUtJbWOZS@hirez.programming.kicks-ass.net>
+References: <20210629201138.31507-1-longman@redhat.com>
+ <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
+ <dbd002b9-d266-0f69-1c55-eb4e5d4d6a57@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNw8kRpT6R2emuhI@blackbook>
+In-Reply-To: <dbd002b9-d266-0f69-1c55-eb4e5d4d6a57@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is how I understand it:
+On Wed, Jun 30, 2021 at 10:43:37PM +0800, Xu, Yanfei wrote:
+> > +static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock, bool handoff)
+> >   {
+> >          unsigned long owner, curr = (unsigned long)current;
+> > 
+> >          owner = atomic_long_read(&lock->owner);
+> >          for (;;) { /* must loop, can race against a flag */
+> > +               unsigned long flags = __owner_flags(owner);
+> >                  unsigned long task = owner & ~MUTEX_FLAGS;
+> > 
+> >                  if (task) {
+> > +                       if (flags & MUTEX_FLAG_PICKUP) {
+> > 
+> > +                               if (task != curr)
+> > +                                       break;
+> > +
+> > +                               flags &= ~MUTEX_FLAG_PICKUP;
+> > +
 > 
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -996,6 +996,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
->         rb_insert_color(&worker->rb_node, &lo->worker_tree);
->  queue_work:
->         if (worker) {
-> +               WARN_ON_ONCE(worker->blkcg_css != cmd->blkcg_css);
+> Hmm.. Should we also clear HANDOFF bit here? I don't find where it is
+> cleared.
 
-Yes, this is correct. Though the check here seems a bit obvious to me
-- it must be correct because we assign worker above:
-
-if (cur_worker->blkcg_css == cmd->blkcg_css) {
-        worker = cur_worker;
-        break;
-
-or when we construct the worker:
-
-worker->blkcg_css = cmd->blkcg_css;
-
-I think this WARN_ON_ONCE check might be more interesting in
-loop_process_work which invokes loop_handle_cmd and actually uses
-cmd->blkcg_css. In any event, your understanding is correct here.
-
->                 /*
->                  * We need to remove from the idle list here while
->                  * holding the lock so that the idle timer doesn't
-> @@ -2106,6 +2107,8 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
->         cmd->memcg_css = NULL;
->  #ifdef CONFIG_BLK_CGROUP
->         if (rq->bio && rq->bio->bi_blkg) {
-> +               /* reference to blkcg_css will be held by loop_worker (outlives
-> +                * cmd) or it is the eternal root css */
-
-Yes, this is correct. Feel free to add my Acked-by to such a patch
+Should already be gone; see __mutex_handoff().
