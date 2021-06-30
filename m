@@ -2,134 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7D23B8A4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122C43B8A51
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbhF3WGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 18:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbhF3WGj (ORCPT
+        id S232916AbhF3WIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 18:08:14 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:20887 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231984AbhF3WIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 18:06:39 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6959DC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:04:09 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g24so2767648pji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1xj3mjgl+Arki73EKAV3PgrCtaGzeKnSIXIchlBxI7Q=;
-        b=ZFbyjeWHwvRHjkoWH0VLZRj64VuV8dW50SYuFmOa8Qf0sCuKNptjXInz4yTTYxYvY6
-         0h+molYKLDQv+Y5fbYAImma6LRY5JjOW2+wn5LdYM4hKBGiW4Bxluh8gELH0CaPrkliV
-         0H+1OG7nuAPOUV56lP4jPUrHsmFQoYqdnoA2a8t8ZEPChGwzz0UoWrbDgc+SQ3diZCL/
-         6UdItCFGiKSXjoiO7xzMpQcYlE1uYQfVDOz8r3QAieMCveeGdoTm/6j60uXFWo20HvL8
-         qkmBuKjFzyJacM7aOTntm3tfT7sdjJqvg2JowrAq3MkgURnMneU6rQrT44Cjrzn1xrn9
-         SZGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1xj3mjgl+Arki73EKAV3PgrCtaGzeKnSIXIchlBxI7Q=;
-        b=CQyRA8FoXCA0GQnAMte0oUWeremXW5ZFAu+xDqGpDTyg4zxVgJWiwWC2xf2mnPCKDn
-         b3qc8FpePlJRvtKffk34DiivfJyMdvmORojFjZhbsq/UVlgEHaQfCGy89avyZFXUUDCm
-         aBCYt4vkD5XhWx/undyCCZ0MVwW8DBENayn/WP5t+HKBuGSwn+8jdHusJYVnq64091FY
-         XosmraMZax59UCWrdtoRHwmnDy0k9JkE+AuRegaPBsrtuFpmwgToSeegoECdOO7EDK7P
-         NqdgDymqndO9z4k2zLpohSGr4Xk9GpWMoLzYd5tF9VKiIDac4sotifXjCd9869M2BnJH
-         ORxA==
-X-Gm-Message-State: AOAM531Jnv973HXLc7G4zPz+MQRY8xOkjRfltYEyrBauy1ZzKuvMmd93
-        jJSI9bD2uGL45AUW1kaW3mUwpQ==
-X-Google-Smtp-Source: ABdhPJxz1ZMyumEp4ut6puBSe5M6KJD1Ou9m6zO5s120HNE35/ac+ogH5z1hWCJkO91lDKpKS2b7BQ==
-X-Received: by 2002:a17:90a:db4e:: with SMTP id u14mr6487559pjx.120.1625090648854;
-        Wed, 30 Jun 2021 15:04:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:14ba])
-        by smtp.gmail.com with ESMTPSA id x4sm13788221pgr.40.2021.06.30.15.04.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 15:04:08 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 18:04:06 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, matthias.bgg@gmail.com, minchan@google.com,
-        timmurray@google.com, yt.chang@mediatek.com, wenju.xu@mediatek.com,
-        jonathan.jmchen@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel-team@android.com,
-        SH Chen <show-hong.chen@mediatek.com>
-Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work
- rescheduling
-Message-ID: <YNzqVh9fnpYVeP6j@cmpxchg.org>
-References: <20210630205151.137001-1-surenb@google.com>
+        Wed, 30 Jun 2021 18:08:12 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210630220541epoutp048e5ca451345c41c06c06bb12e2138d14~Ne2tMgXI32346523465epoutp04G
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:05:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210630220541epoutp048e5ca451345c41c06c06bb12e2138d14~Ne2tMgXI32346523465epoutp04G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1625090741;
+        bh=BR73RmqbEaP237kkvr/LYqGx1H6FT4VALLOeKZXpSnk=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=hwFQTrz8pPrIUpPDB+puWakrkFFUD2O1WxT1r57fxe29OoQHzaFJMYGtR97rS+r80
+         kvx7RiqxOGlnLsjb2j9XagyyCnmryzPSh9eypVS3TphhHVkWzMGd5B2NxsPziMkiwd
+         bAoO7N/pLCJpvQELYZ6+1JTq4gAw3Pea4NmeO+j8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210630220541epcas1p24cba918b578bfb86078de06abb73a5f3~Ne2s6LNDi2798527985epcas1p2j;
+        Wed, 30 Jun 2021 22:05:41 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4GFb4y4WTvz4x9Pt; Wed, 30 Jun
+        2021 22:05:38 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BF.B5.09952.2BAECD06; Thu,  1 Jul 2021 07:05:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210630220537epcas1p45ba67803d51e11a32fe9808e1a06293a~Ne2p7Nd-d2543825438epcas1p4x;
+        Wed, 30 Jun 2021 22:05:37 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210630220537epsmtrp17b0f7a0b8245dc369113b910e0d29cf2~Ne2p6lTGq2776227762epsmtrp11;
+        Wed, 30 Jun 2021 22:05:37 +0000 (GMT)
+X-AuditID: b6c32a35-45dff700000026e0-ce-60dceab29674
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AE.A6.08289.1BAECD06; Thu,  1 Jul 2021 07:05:37 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210630220537epsmtip1f6b2c1376ddc9c33f0f9539eafadef99~Ne2puA3YU3060330603epsmtip1r;
+        Wed, 30 Jun 2021 22:05:37 +0000 (GMT)
+Subject: Re: [PATCH] mmc: dw_mmc: Fix hang on data CRC error
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     kernel@axis.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <81c1b56d-e1be-b3fb-6b44-fc8054f1dd8b@samsung.com>
+Date:   Thu, 1 Jul 2021 07:06:31 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630205151.137001-1-surenb@google.com>
+In-Reply-To: <20210630102232.16011-1-vincent.whitchurch@axis.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdlhTT3fTqzsJBgtny1t8alG1uLxrDpvF
+        kf/9jBbH14ZbnN/m78DqcX1dgMeda3vYPD5vkgtgjsq2yUhNTEktUkjNS85PycxLt1XyDo53
+        jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAFap6RQlphTChQKSCwuVtK3synKLy1JVcjILy6x
+        VUotSMkpsCzQK07MLS7NS9dLzs+1MjQwMDIFKkzIzug59IWxYLdQxfGm3cwNjDP4uhg5OSQE
+        TCTmPH3E3sXIxSEksINR4uSPO8wQzidGifV7DkM5nxkl9t/7zw7TMn3mI1aIxC5GiSXfdzOC
+        JIQE3jNKnLptBGILC9hIXLx3hQ3EFhGIkXjasxHMZhbwkbg65TBYPZuAjsT2b8eZQGxeATuJ
+        a3sWsIDYLAIqEi0PdoLZogKREud3Q8R5BQQlTs58AmZzCjhKTJixDWqmuMStJ/OZIGx5ie1v
+        54BdLSHwkl3i1YkZLBBXu0hM/vYI6gNhiVfHt0DZUhIv+9ug7GqJXc1noJo7GCVubWtigkgY
+        S+xfOhnI5gDaoCmxfpc+RFhRYufvuYwQi/kk3n3tYQUpkRDglehoE4IoUZG49PolE8yqu0/+
+        s0LYHhKTlsxgmcCoOAvJa7OQvDMLyTuzEBYvYGRZxSiWWlCcm55abFhgiBzbmxjBSVHLdAfj
+        xLcf9A4xMnEwHmKU4GBWEuGN2nk7QYg3JbGyKrUoP76oNCe1+BCjKTCwJzJLiSbnA9NyXkm8
+        oamRsbGxhYmhmamhoZI47062QwlCAumJJanZqakFqUUwfUwcnFINTAH/5twLVHtQ4en+N5hj
+        nglj8Y4Cg9tn74qm7b8y3fpDRVv2t9vPOaZzeylLH5vIfLX0+w4Z51myM701ZHUXidpvPBD/
+        N3drwaKaE4aymrJq6ie6ftW6S/u4vuATLKuvKJJjV7p8ufvs7Jc5hv+OHa9fKfVPzbnk+wbz
+        TPbeX4vOXNj8We0Xa9E6j6zuh9PWL1uakO1pEVA0L7jHbG/ZhngVBh8DB5n1/5dlCxuvFvR/
+        pDt9X/OlbaJ/Xmocdzg9M+TQXXl2212n/77TsMmpYn2o/X6pRYil6frju99+UrBZ2S++kq+W
+        r+B/vKXGy1n+fQsv5sif61z2y5eNUTjDNnLFAy5ZOxGGW4vezpysqMRSnJFoqMVcVJwIAIDt
+        XPITBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSnO7GV3cSDBrnaFl8alG1uLxrDpvF
+        kf/9jBbH14ZbnN/m78DqcX1dgMeda3vYPD5vkgtgjuKySUnNySxLLdK3S+DK6Dn0hbFgt1DF
+        8abdzA2MM/i6GDk5JARMJKbPfMTaxcjFISSwg1Fi34wbbBAJKYnPT6cC2RxAtrDE4cPFEDVv
+        GSX+93Szg9QIC9hIXLx3BaxeRCBGYuerZ2A2s4CPxNUphxkhGqYwSkya8pYZJMEmoCOx/dtx
+        JhCbV8BO4tqeBSwgNouAikTLg51gtqhApMTnBa9YIWoEJU7OfAIW5xRwlJgwYxvUAnWJP/Mu
+        MUPY4hK3nsxngrDlJba/ncM8gVFoFpL2WUhaZiFpmYWkZQEjyypGydSC4tz03GLDAqO81HK9
+        4sTc4tK8dL3k/NxNjOA40NLawbhn1Qe9Q4xMHIyHGCU4mJVEeKN23k4Q4k1JrKxKLcqPLyrN
+        SS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgUn06v9pLxh1Oa0jzlrrrrGcxi82
+        OdWxarLiVR2ht6wSJRPbbxSarn7malp7ztjOW0OlQPCH9ZffHsd9DvZyS1mYC2lJqhbPmsDw
+        kUHNLOzABUm1y3E2tcLtf5y2mbKeapL2X/dO4usv9adesmJztgV3vapdY+B5cm6SmmVEMOsF
+        2d+1zyau/nxbQGCNqcKuGWl8J0Q/fmk+xZtzessv9aIlPzMrNpinFDn95T5Z3hqqLvJ48dQp
+        Ow3ehX7WkHw8aenVxrnZ25+4dc4TvzPpZJbvFOacO1f+rsk4dvL9LOMfx0VDGUstduet7nob
+        9KBr9T/+J2rPmO1WT9pZu0j628v7u2e5T/I8UXhy9cmSC1JKLMUZiYZazEXFiQAFzbKS8gIA
+        AA==
+X-CMS-MailID: 20210630220537epcas1p45ba67803d51e11a32fe9808e1a06293a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210630102240epcas1p33bbdffb5eb553a49badaffab756d482c
+References: <CGME20210630102240epcas1p33bbdffb5eb553a49badaffab756d482c@epcas1p3.samsung.com>
+        <20210630102232.16011-1-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
-> Psi polling mechanism is trying to minimize the number of wakeups to
-> run psi_poll_work and is currently relying on timer_pending() to detect
-> when this work is already scheduled. This provides a window of opportunity
-> for psi_group_change to schedule an immediate psi_poll_work after
-> poll_timer_fn got called but before psi_poll_work could reschedule itself.
-> Below is the depiction of this entire window:
-> 
-> poll_timer_fn
->   wake_up_interruptible(&group->poll_wait);
-> 
-> psi_poll_worker
->   wait_event_interruptible(group->poll_wait, ...)
->   psi_poll_work
->     psi_schedule_poll_work
->       if (timer_pending(&group->poll_timer)) return;
->       ...
->       mod_timer(&group->poll_timer, jiffies + delay);
-> 
-> Prior to 461daba06bdc we used to rely on poll_scheduled atomic which was
-> reset and set back inside psi_poll_work and therefore this race window
-> was much smaller.
-> The larger window causes increased number of wakeups and our partners
-> report visible power regression of ~10mA after applying 461daba06bdc.
-> Bring back the poll_scheduled atomic and make this race window even
-> narrower by resetting poll_scheduled only when we reach polling expiration
-> time. This does not completely eliminate the possibility of extra wakeups
-> caused by a race with psi_group_change however it will limit it to the
-> worst case scenario of one extra wakeup per every tracking window (0.5s
-> in the worst case).
-> By tracing the number of immediate rescheduling attempts performed by
-> psi_group_change and the number of these attempts being blocked due to
-> psi monitor being already active, we can assess the effects of this change:
-> 
-> Before the patch:
->                                            Run#1    Run#2      Run#3
-> Immediate reschedules attempted:           684365   1385156    1261240
-> Immediate reschedules blocked:             682846   1381654    1258682
-> Immediate reschedules (delta):             1519     3502       2558
-> Immediate reschedules (% of attempted):    0.22%    0.25%      0.20%
-> 
-> After the patch:
->                                            Run#1    Run#2      Run#3
-> Immediate reschedules attempted:           882244   770298    426218
-> Immediate reschedules blocked:             881996   769796    426074
-> Immediate reschedules (delta):             248      502       144
-> Immediate reschedules (% of attempted):    0.03%    0.07%     0.03%
-> 
-> The number of non-blocked immediate reschedules dropped from 0.22-0.25%
-> to 0.03-0.07%. The drop is attributed to the decrease in the race window
-> size and the fact that we allow this race only when psi monitors reach
-> polling window expiration time.
-> 
-> Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
-> Reported-by: Kathleen Chang <yt.chang@mediatek.com>
-> Reported-by: Wenju Xu <wenju.xu@mediatek.com>
-> Reported-by: Jonathan Chen <jonathan.jmchen@mediatek.com>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Tested-by: SH Chen <show-hong.chen@mediatek.com>
+Dear Vincent,
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On 6/30/21 7:22 PM, Vincent Whitchurch wrote:
+> When a Data CRC interrupt is received, the driver disables the DMA, then
+> sends the stop/abort command and then waits for Data Transfer Over.
+> 
+> However, sometimes, when a data CRC error is received in the middle of a
+> multi-block write transfer, the Data Transfer Over interrupt is never
+> received, and the driver hangs and never completes the request.
+> 
+> The driver sets the BMOD.SWR bit (SDMMC_IDMAC_SWRESET) when stopping the
+> DMA, but according to the manual CMD.STOP_ABORT_CMD should be programmed
+> "before assertion of SWR".  Do these operations in the recommended
+> order.  With this change the Data Transfer Over is always received
+> correctly in my tests.
+
+I will check with your patch. I didn't see any CRC error on my targets before.
+
+Best Regards,
+Jaehoon Chung
+
+> 
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  drivers/mmc/host/dw_mmc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index f85271f5c4fa..845b0745ea37 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -2083,8 +2083,8 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  					continue;
+>  				}
+>  
+> -				dw_mci_stop_dma(host);
+>  				send_stop_abort(host, data);
+> +				dw_mci_stop_dma(host);
+>  				state = STATE_SENDING_STOP;
+>  				break;
+>  			}
+> @@ -2108,10 +2108,10 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  			 */
+>  			if (test_and_clear_bit(EVENT_DATA_ERROR,
+>  					       &host->pending_events)) {
+> -				dw_mci_stop_dma(host);
+>  				if (!(host->data_status & (SDMMC_INT_DRTO |
+>  							   SDMMC_INT_EBE)))
+>  					send_stop_abort(host, data);
+> +				dw_mci_stop_dma(host);
+>  				state = STATE_DATA_ERROR;
+>  				break;
+>  			}
+> @@ -2144,10 +2144,10 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  			 */
+>  			if (test_and_clear_bit(EVENT_DATA_ERROR,
+>  					       &host->pending_events)) {
+> -				dw_mci_stop_dma(host);
+>  				if (!(host->data_status & (SDMMC_INT_DRTO |
+>  							   SDMMC_INT_EBE)))
+>  					send_stop_abort(host, data);
+> +				dw_mci_stop_dma(host);
+>  				state = STATE_DATA_ERROR;
+>  				break;
+>  			}
+> 
+
