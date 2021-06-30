@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841913B81D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC003B81D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbhF3MQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234574AbhF3MQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:16:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D566361997;
-        Wed, 30 Jun 2021 12:13:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625055215;
-        bh=OyCw+ikwvw8c7rChwbi6jaEqfCROeE3MhtEECfeyTIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vEjPdFRc4feX/UKaUUeBvt8QePG+KmBsFh2aCQK0eYlgoUDnjL497sgbnkgr4EQwe
-         egD1tS/iMFEqkp/UB+FYZvqAfMFxKPJ/utN/Osc+S42fBry9SoNaNkfnIx8khiP8Ii
-         WVO4z4WPfzQWFLBiXt7l985tw9kYVjV1aQCI2bPUrX3evm9kcpVARtQGCD8Gfgn3B+
-         iq4Im8aPpYEAHEwNpe6WACDec/7yE2buDcl1OLlJ+0IIPLADIRqAcv4aHVbfm5O1L/
-         j83v2w0R13fYLQcvYLp8eeE+4Tct784yMK9PuAZdjePEesckt0TeXvp7RZUcrJKNpS
-         LgIRRVmqOBpGw==
-Date:   Wed, 30 Jun 2021 13:13:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
- regulator
-Message-ID: <20210630121307.GA5106@sirena.org.uk>
-Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        kernel@pyra-handheld.com, Peter Ujfalusi <peter.ujfalusi@gmail.com>
-References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
- <20210629155922.GD4613@sirena.org.uk>
- <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
- <20210629185638.GG4613@sirena.org.uk>
- <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
+        id S234493AbhF3MR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:17:26 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48706 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234376AbhF3MRZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:17:25 -0400
+X-UUID: 9d6fbbcc74bf4ff4af69faa03283266a-20210630
+X-UUID: 9d6fbbcc74bf4ff4af69faa03283266a-20210630
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 529085922; Wed, 30 Jun 2021 20:14:51 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Jun 2021 20:14:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Jun 2021 20:14:50 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <keescook@chromium.org>, <samitolvanen@google.com>,
+        <linux-kbuild@vger.kernel.org>
+CC:     <clang-built-linux@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <yj.chiang@mediatek.com>,
+        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Subject: [PATCH 0/2] Kbuild: lto: add make version checking
+Date:   Wed, 30 Jun 2021 20:14:34 +0800
+Message-ID: <20210630121436.19581-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
-In-Reply-To: <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
-X-Cookie: Use at own risk.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LTO with MODVERSION will fail in generating correct CRC because
+the makefile rule doesn't work for make with version 3.8X.
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Refer to [1]:
+> When building modules(CONFIG_...=m), I found some of module versions
+> are incorrect and set to 0.
+> This can be found in build log for first clean build which shows
 
-On Tue, Jun 29, 2021 at 10:21:45PM +0200, H. Nikolaus Schaller wrote:
+> WARNING: EXPORT symbol "XXXX" [drivers/XXX/XXX.ko] version generation failed,
+> symbol will not be versioned.
 
-> There seems to be a deadlock in probing:
+> But in second build(incremental build), the WARNING disappeared and the
+> module version becomes valid CRC and make someone who want to change
+> modules without updating kernel image can't insert their modules.
 
-> 	e.g. ldo3_reg depends on vdds_1v8_main supply
-> 	vdds_1v8_main depends on smps7_reg supply
-> 	smps7_reg depends on vsys_cobra supply
-> 	vsys_cobra depends on nothing
+> The problematic code is
+> + $(foreach n, $(filter-out FORCE,$^),        \
+> +   $(if $(wildcard $(n).symversions),      \
+> +     ; cat $(n).symversions >> $@.symversions))
 
-> This would normally lead to a simple chain as you described above. But
-> ldo3_reg and smps7_reg share the same driver and can probe successfully or
-> fail only in common.
+The issue fixed when make version upgrading to 4.2.
 
-I don't see any deadlock there?  Just a straightforward set of
-dependencies.  Anything circular would clearly be a driver bug.
+Thus we need to check make version during selecting on LTO Kconfig.
+The MAKE_VERSION_INT means MAKE_VERSION in canonical digits integer and
+implemnted by imitating CLANG_VERSION.
 
-> Now if ldo3_reg defers probe through the new rule, smps7_reg is never
-> probed successfully because it is the same driver. Hence vdds_1v8_main can
-> not become available. And the Palmas continues to run in boot initialization
-> until some driver (MMC) wants to switch voltages or whatever.
+[1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
 
-The driver should just register all the DCDCs before the LDOs, then
-everything will sort itself out.  It's *possible* you might see a system
-trying to link things together regulators of the same type but that's
-very unusual as it makes the system less efficient.
+Lecopzer Chen (2):
+  Kbuild: lto: add make-version macros
+  Kbuild: lto: add make version checking
 
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
+ Makefile                |  2 +-
+ arch/Kconfig            |  1 +
+ init/Kconfig            |  4 ++++
+ scripts/Kconfig.include |  3 +++
+ scripts/make-version.sh | 13 +++++++++++++
+ 5 files changed, 22 insertions(+), 1 deletion(-)
+ create mode 100755 scripts/make-version.sh
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.18.0
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcX9IACgkQJNaLcl1U
-h9COXwf/caYZXMc4O3Gw4MusQCx6GuJHZ6aEdMBbGsvxVBMUZeL6hJk3wLjJmrR0
-oYOmtcsdcrg+JkHAmqCi9FCVhW9a/0+lfXORD43C5p0fzbvWhshu0ttopy5YaJWk
-hE7PnW/UhHxnAZudCZY2aSb8hhbCxyLPmt9wv65+1ebFkiZYjN7SbgJ50HMWE+sz
-piVqtpBGqZYBYbDFQfiFPjJoylkbH3l5t/2g9LxrdHcJ9PdI0pi9OTAVMarJfiTU
-h6v7XWIDp4M7lv/EvWI+3NGX+n1YKAhg32FLeh8Z7ywp1kzEG0S4VnvgYT/xNd25
-wP9QkpT3FfR1YxcHCd4vp5TO2cZyDQ==
-=LGB7
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
