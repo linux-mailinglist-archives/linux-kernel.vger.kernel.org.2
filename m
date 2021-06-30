@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204243B89BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2703B89BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhF3UdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:33:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234268AbhF3UdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:33:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF55613D3;
-        Wed, 30 Jun 2021 20:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625085032;
-        bh=C7fRTeYDA+xvhe4oWh/Ia8vUpNmTjFr8ErXmCrxyWkU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=GiBrfa5bm9GsfYVC/nyNBmqxQfpAy4fDB2rJ6aUQ93pz9zOiVbFZV5GgxrGcHTsRA
-         /PCtkYWIgip1hkPZUXqN0u6lBnmKGDw9ID16ry82Hg7K/MMj12UBIN903+79Dug8WD
-         dBvXb0Qt/dnf1LViXZ6ijkjZ+6CpPi1YUvyGjj/+ksTR5gqnjCOKKRmcEM3XrtbXaK
-         HyBQr527P9Yy1p1T2RiXB+LDhtvop8UaDhP4ci0pbnaJA55ArMJ1ETye/2O+pM3UHX
-         GfQmrAXDo6Ej/UdrH3rPksKhBy1MPoH373Z2+mlusuKKYLsn8SQmiAsswumMIckFZ9
-         5XvLsPfWBPVzA==
-Date:   Wed, 30 Jun 2021 15:30:30 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-Message-ID: <20210630203030.GA4178852@bjorn-Precision-5520>
+        id S234391AbhF3Uf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233899AbhF3UfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 16:35:23 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DACBC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:32:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=xTIvq7JeERaP44xmsJM3Rl+J9yNC0I1vFHCkU0Gk1ls=; b=ZAk/0tshkV3bIKnweqX8zlrT5B
+        6qqMrqdo+EG92wpGBZ3aOmd0tq5oHvXAW/rirIH/pAD13jDZZ59nxGvdmcLJhmwuBW/lRqohfWlWa
+        b2JwaCb4QlvURfGocqQ4ZuE9DFC/BM90pGzhPPMITeYjg6un4Z8c1BqvY9+CedgxxDLE7EsNTahxA
+        cpEEud7AVAeOLakhN9Li2qCzJhCEHeCzPxWzWrUlF/H6GVwA/f66A4kySze/4gbBJm7h11aHzfQ10
+        1Jq1I9ODqY+OSxW+gzVRC8ALYavtYjJyJ7YL8iToAsT6V1StyPRBKIJxxIDE0jcBcxxEQObGIHc5P
+        RT4Wlv4Q==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lygtB-00FDiE-NU; Wed, 30 Jun 2021 20:32:53 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "VMware Graphics" <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
+        Dave Airlie <airlied@redhat.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH -next] drm: vmwgfx: add header file for ttm_range_manager
+Date:   Wed, 30 Jun 2021 13:32:52 -0700
+Message-Id: <20210630203252.32471-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7f3bd28-8e5e-362d-11a9-43a60ff79dd2@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:59:58PM +0200, Javier Martinez Canillas wrote:
-> On 6/30/21 8:59 PM, Bjorn Helgaas wrote:
-> > [+cc Michal, Jingoo, Thierry, Jonathan]
-> 
-> [snip]
-> 
-> > 
-> > I think the above commit log is perfectly accurate, but all the
-> > details might suggest that this is something specific to rockchip or
-> > CONFIG_DEBUG_SHIRQ, which it isn't, and they might obscure the
-> > fundamental problem, which is actually very simple: we registered IRQ
-> > handlers before we were ready for them to be called.
-> > 
-> > I propose the following commit log in the hope that it would help
-> > other driver authors to make similar fixes:
-> >
-> >     PCI: rockchip: Register IRQ handlers after device and data are ready
-> > 
-> >     An IRQ handler may be called at any time after it is registered, so
-> >     anything it relies on must be ready before registration.
-> > 
-> >     rockchip_pcie_subsys_irq_handler() and rockchip_pcie_client_irq_handler()
-> >     read registers in the PCIe controller, but we registered them before
-> >     turning on clocks to the controller.  If either is called before the clocks
-> >     are turned on, the register reads fail and the machine hangs.
-> > 
-> >     Similarly, rockchip_pcie_legacy_int_handler() uses rockchip->irq_domain,
-> >     but we installed it before initializing irq_domain.
-> > 
-> >     Register IRQ handlers after their data structures are initialized and
-> >     clocks are enabled.
-> > 
-> > If this is inaccurate or omits something important, let me know.  I
-> > can make any updates locally.
-> >
-> 
-> I think your description is accurate and agree that the commit message may
-> be misleading. As you said, this is a general problem and the fact that an
-> IRQ is shared and CONFIG_DEBUG_SHIRQ fires a spurious interrupt just make
-> the assumptions in the driver to fall apart.
-> 
-> But maybe you can also add a paragraph that mentions the CONFIG_DEBUG_SHIRQ
-> option and shared interrupts? That way, other driver authors could know that
-> by enabling this an underlying problem might be exposed for them to fix.
+Add a header file for ttm_range_manager function prototypes to
+eliminate build errors:
 
-Good idea, thanks!  I added this; is it something like what you had in
-mind?
+../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_init’:
+../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:678:8: error: implicit declaration of function ‘ttm_range_man_init’; did you mean ‘ttm_tt_mgr_init’? [-Werror=implicit-function-declaration]
+  ret = ttm_range_man_init(&dev_priv->bdev, TTM_PL_VRAM, false,
+../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_fini’:
+../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:690:2: error: implicit declaration of function ‘ttm_range_man_fini’; did you mean ‘ttm_pool_mgr_fini’? [-Werror=implicit-function-declaration]
+  ttm_range_man_fini(&dev_priv->bdev, TTM_PL_VRAM);
 
-    Found by enabling CONFIG_DEBUG_SHIRQ, which calls the IRQ handler when it
-    is being unregistered.  An error during the probe path might cause this
-    unregistration and IRQ handler execution before the device or data
-    structure init has finished.
+Fixes: 9c3006a4cc1b ("drm/ttm: remove available_caching")
+Fixes: a343160235f5 ("drm/vmwgfx/ttm: fix the non-THP cleanup path.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "VMware Graphics" <linux-graphics-maintainer@vmware.com>
+Cc: Roland Scheidegger <sroland@vmware.com>
+Cc: Zack Rusin <zackr@vmware.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Dave Airlie <airlied@redhat.com>
+Cc: Christian König <christian.koenig@amd.com>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Bjorn
+--- linux-next-20210630.orig/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
++++ linux-next-20210630/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+@@ -37,6 +37,7 @@
+ #include <drm/drm_sysfs.h>
+ #include <drm/ttm/ttm_bo_driver.h>
+ #include <drm/ttm/ttm_placement.h>
++#include <drm/ttm/ttm_range_manager.h>
+ #include <generated/utsrelease.h>
+ 
+ #include "ttm_object.h"
