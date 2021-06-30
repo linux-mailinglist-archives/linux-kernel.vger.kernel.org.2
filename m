@@ -2,177 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F289A3B7DB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1879B3B7DB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhF3G5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhF3G5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:57:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BA1261A1D;
-        Wed, 30 Jun 2021 06:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625036061;
-        bh=lkWD4eHzI3MLLHSJwOSX5kTC7sQqmCyDRrCyURVy4fU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cr3a9380ZsPM0JvQ1p9k/SmP8RqcJiKD5yGOdqNsGwWt83X27H575o1uom1E3XWbQ
-         XTNh4Uqw5duR+NfmwVf3PAu11DV5Z/0MKiMCBI6i81SUc4eQAcfqyKy1QY6aTaSmpv
-         Db14i8qnzASuiLcOH5EtT6Sq+HAKXgEPluY1H/tnkOHkZDPEcPUMo7EC4YIFUCUxkn
-         aOxZE7jcgwW6961SGZMMAXnp6bk7QdWV4lrHBjVR0DvqtDbO/lBpowCb88QI0LNSSX
-         bgy56t8HU0ajQxaJk6/ZmMg2WB47pdv20R99f2g9D/b99sbrmiHaIuFyDhPveo0pGf
-         Kzq5XwOLsMyIg==
-Date:   Wed, 30 Jun 2021 08:54:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: hi6421v600: Fix setting wrong driver_data
-Message-ID: <20210630085416.4b3d9864@coco.lan>
-In-Reply-To: <20210622043329.392072-1-axel.lin@ingics.com>
-References: <20210622043329.392072-1-axel.lin@ingics.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232665AbhF3G5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:57:31 -0400
+Received: from mail-vs1-f49.google.com ([209.85.217.49]:44915 "EHLO
+        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232605AbhF3G53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 02:57:29 -0400
+Received: by mail-vs1-f49.google.com with SMTP id y21so1067850vsm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:55:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q+6q6qdz667Cf0iKSQ/dUdaHbp2LScTUHAPwkTfCDGY=;
+        b=CchA3rsLdORWnW/NiyXWGkIwgQ/DBiYCvJp4sxN9JmUtVbdlnsWljxAu8DT3oKqvQH
+         SLg3JYcaDWsjcsYX/okzNFVB+IiAWWy+RAXkU0NWwjYlTdfZboJa6Gv2SuxpvZmGZXio
+         wkm4ObjGq1qC7JhLfGaDgtXq3TG053wm8hnH654NvDXfBants+FV48sSe05BS7ymAD2X
+         hjfOT7svgxuF9L7y9k77BheFWiYQKgW77ZSPE/MaZ0UjPoSvSD1YDOinmFDUwFTp71mp
+         TTJdF2JyPk2odp4ge9QO9LUXPutmC9/IKaH/SlqECI5w01kfVRBpfOHGvRyoPSm63hTI
+         Mw1g==
+X-Gm-Message-State: AOAM5308BsxzFv5kJ6zWtLMIm1Bw01iXvbx8PgBi9K2cxu72y1+nI1lk
+        FIjEEugmdjU+gnZHw8xCM6Teqk5KBmDz2g8nXy2cFiRttts=
+X-Google-Smtp-Source: ABdhPJxWKHAqwLWfIvAhQ3sgATgRT6fdrhFg7ubK6vw9zZ3/JkR/4I9iKK/R5EPjxfZrm8YhbsnNCvmZdyiW1T3riDQ=
+X-Received: by 2002:a67:770d:: with SMTP id s13mr16034470vsc.40.1625036100451;
+ Tue, 29 Jun 2021 23:55:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1b2fd6f2b2e87a7d483450c20f31366b7f17c997.1624972206.git.geert+renesas@glider.be>
+ <CACRpkdavxy4wmsj8XtXmbMDkmScquABynphnmD_GAARfudd1AQ@mail.gmail.com>
+In-Reply-To: <CACRpkdavxy4wmsj8XtXmbMDkmScquABynphnmD_GAARfudd1AQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 30 Jun 2021 08:54:49 +0200
+Message-ID: <CAMuHMdUm1acjWjrAz+FMnTit+ABL4tKrutQwt-6pHs64-=dyTg@mail.gmail.com>
+Subject: Re: [PATCH] arm: Typo s/PCI_IXP4XX_LEGACY/IXP4XX_PCI_LEGACY/
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 22 Jun 2021 12:33:29 +0800
-Axel Lin <axel.lin@ingics.com> escreveu:
+Hi Linus, Arnd,
 
-> Current code set "config.driver_data = sreg" but sreg only init the mutex,
-> the othere fields are just zero. Fix it by pass *info to config.driver_data
-> so each regulator can get corresponding data by rdev_get_drvdata().
-> 
-> Separate enable_mutex from struct hi6421_spmi_reg_info since only need one
-> mutex for the driver.
-> 
-> Fixes: d2dfd50a0b57 ("staging: hikey9xx: hi6421v600-regulator: move LDO config from DT")
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+On Wed, Jun 30, 2021 at 2:26 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Jun 29, 2021 at 3:12 PM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+>
+> > Kconfig symbol PCI_IXP4XX_LEGACY does not exist, but IXP4XX_PCI_LEGACY
+> > does.
+> >
+> > Fixes: d5d9f7ac58ea1041 ("ARM/ixp4xx: Make NEED_MACH_IO_H optional")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Are you sending this to ARM SoC or should I?
 
-As discussed on a separate thread, this patch is broken. See below.
+Arnd: can you pick this up? Or is it Olof time?
 
-> ---
->  drivers/regulator/hi6421v600-regulator.c | 26 ++++++++++++++----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-> index b5a19938fd3a..21153ee03a3f 100644
-> --- a/drivers/regulator/hi6421v600-regulator.c
-> +++ b/drivers/regulator/hi6421v600-regulator.c
-> @@ -16,13 +16,15 @@
->  #include <linux/regulator/driver.h>
->  #include <linux/spmi.h>
->  
-> +struct hi6421_spmi_reg_priv {
-> +	/* Serialize regulator enable logic */
-> +	struct mutex enable_mutex;
-> +};
-> +
->  struct hi6421_spmi_reg_info {
->  	struct regulator_desc	desc;
->  	u8			eco_mode_mask;
->  	u32			eco_uA;
-> -
-> -	/* Serialize regulator enable logic */
-> -	struct mutex enable_mutex;
->  };
->  
->  static const unsigned int ldo3_voltages[] = {
-> @@ -96,11 +98,12 @@ static const unsigned int ldo34_voltages[] = {
->  
->  static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
->  {
-> -	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-> +	struct hi6421_spmi_reg_priv *priv;
->  	int ret;
->  
-> +	priv = dev_get_drvdata(rdev->dev.parent);
->  	/* cannot enable more than one regulator at one time */
-> -	mutex_lock(&sreg->enable_mutex);
-> +	mutex_lock(&priv->enable_mutex);
->  
->  	ret = regmap_update_bits(rdev->regmap, rdev->desc->enable_reg,
->  				 rdev->desc->enable_mask,
-> @@ -109,7 +112,7 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
->  	/* Avoid powering up multiple devices at the same time */
->  	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 60);
->  
-> -	mutex_unlock(&sreg->enable_mutex);
-> +	mutex_unlock(&priv->enable_mutex);
->  
->  	return ret;
->  }
-> @@ -225,7 +228,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
->  {
->  	struct device *pmic_dev = pdev->dev.parent;
->  	struct regulator_config config = { };
-> -	struct hi6421_spmi_reg_info *sreg;
-> +	struct hi6421_spmi_reg_priv *priv;
->  	struct hi6421_spmi_reg_info *info;
->  	struct device *dev = &pdev->dev;
->  	struct hi6421_spmi_pmic *pmic;
-> @@ -241,17 +244,18 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
->  	if (WARN_ON(!pmic))
->  		return -ENODEV;
->  
-> -	sreg = devm_kzalloc(dev, sizeof(*sreg), GFP_KERNEL);
-> -	if (!sreg)
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
->  		return -ENOMEM;
->  
-> -	mutex_init(&sreg->enable_mutex);
-> +	mutex_init(&priv->enable_mutex);
-> +	platform_set_drvdata(pdev, priv);
->  
->  	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
->  		info = &regulator_info[i];
->  
->  		config.dev = pdev->dev.parent;
+Gr{oetje,eeting}s,
 
-This is the main problem of this patch. See, pdev->dev.parent is
-actually the device's parent (e. g. the SPMI controller's device).
+                        Geert
 
-Looking at (devm_)regulator_register() implementation, it uses it to
-store the rdev->dev.parent:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	struct regulator_dev *
-	regulator_register(const struct regulator_desc *regulator_desc,
-			   const struct regulator_config *cfg)
-	{
-...
-
-	dev = cfg->dev;
-...
-	rdev->dev.parent = dev;
-
-So, while you used platform_set_drvdata() to set the data for the
-regulator's platform driver, when the driver tries to access the
-mutex, the code does, instead:
-
-	static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
-	{
-		struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
-		struct hi6421_spmi_reg_priv *priv;
-	 	int ret;
-	 
-		priv = dev_get_drvdata(rdev->dev.parent);
-
-		mutex_lock(&priv->enable_mutex);
-
-At this point, priv will be set to the value of the SPMI controller
-dev data, instead of pointing to the area stored via
-platform_set_drvdata().
-
-As the data stored there is not the enable_mutex, a call to
-mutex_lock() makes the device to hang at boot time (or to cause some
-other random issue, as it is using a different memory than what
-it was expected).
-
-Thanks,
-Mauro
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
