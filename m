@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D46F3B7F6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1000C3B7F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbhF3I53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:57:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54795 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233442AbhF3I51 (ORCPT
+        id S233591AbhF3JAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:00:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36422 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232984AbhF3JAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:57:27 -0400
-X-UUID: 29cf1156aba845008e04bd239f3e3bfd-20210630
-X-UUID: 29cf1156aba845008e04bd239f3e3bfd-20210630
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <irui.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 628572867; Wed, 30 Jun 2021 16:52:59 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 16:52:58 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 16:52:56 +0800
-From:   Irui Wang <irui.wang@mediatek.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH 3/3] media: mtk-vcodec: Add MT8195 H264 venc driver
-Date:   Wed, 30 Jun 2021 16:52:47 +0800
-Message-ID: <20210630085247.27554-4-irui.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210630085247.27554-1-irui.wang@mediatek.com>
-References: <20210630085247.27554-1-irui.wang@mediatek.com>
+        Wed, 30 Jun 2021 05:00:16 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9C6CF2258E;
+        Wed, 30 Jun 2021 08:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625043466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3LWsPEMkW74ELhpcy2lCJwxaP1hRY80ZI874/hdG3s=;
+        b=b6dzuYNSBuTBl8Fvo8LI6O114tlulXQNfK/zd0cjKpOQXI05NtPi/w30/4i/G299bFMMge
+        nh4nI/axYpkBWRkJ7FRt8rz1nAzG5xBCX0LBSn1NWusnnOo2cul+tPC2kNs2mToBgE0KIh
+        MTvycDtAZ5WJrQknFni7xWGqjwT0gZM=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4B2E9A3B8A;
+        Wed, 30 Jun 2021 08:57:46 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 10:57:46 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] printk/console: Check consistent sequence number when
+ handling race in console_unlock()
+Message-ID: <YNwyCqtpcFVlK+FP@alley>
+References: <20210629143341.19284-1-pmladek@suse.com>
+ <202106300338.57cbEezZ-lkp@intel.com>
+ <87zgv8bdei.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zgv8bdei.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8195 venc driver's compatible and device private data.
+On Tue 2021-06-29 22:59:57, John Ogness wrote:
+> On 2021-06-30, kernel test robot <lkp@intel.com> wrote:
+> >>> kernel/printk/printk.c:2548:6: warning: variable 'next_seq' set but not used [-Wunused-but-set-variable]
+> 
+> I suppose the correct fix for this warning would be to change the NOP
+> macros. Currently they are:
+> 
+> #define prb_read_valid(rb, seq, r)      false
+> #define prb_first_valid_seq(rb)         0
+> 
+> They should probably be something like (untested):
+> 
+> #define prb_read_valid(rb, seq, r)     \
+> ({                                     \
+>         (void)(rb);                    \
+>         (void)(seq);                   \
+>         (void)(r);                     \
+>         false;                         \
+> })
 
-Signed-off-by: Irui Wang <irui.wang@mediatek.com>
----
- drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h  |  1 +
- .../media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c  | 13 +++++++++++++
- 2 files changed, 14 insertions(+)
+This did not work:
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-index c6c7672fecfb..3f83710b4fa5 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-@@ -304,6 +304,7 @@ enum mtk_chip {
- 	MTK_MT8173,
- 	MTK_MT8183,
- 	MTK_MT8192,
-+	MTK_MT8195,
- };
- 
- /**
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-index 4489a9744cd7..7b3e0ea4c410 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-@@ -428,6 +428,18 @@ static const struct mtk_vcodec_enc_pdata mt8192_pdata = {
- 	.core_id = VENC_SYS,
- };
- 
-+static const struct mtk_vcodec_enc_pdata mt8195_pdata = {
-+	.chip = MTK_MT8195,
-+	.uses_ext = true,
-+	.capture_formats = mtk_video_formats_capture_h264,
-+	.num_capture_formats = ARRAY_SIZE(mtk_video_formats_capture_h264),
-+	.output_formats = mtk_video_formats_output,
-+	.num_output_formats = ARRAY_SIZE(mtk_video_formats_output),
-+	.min_bitrate = 64,
-+	.max_bitrate = 100000000,
-+	.core_id = VENC_SYS,
-+};
-+
- static const struct of_device_id mtk_vcodec_enc_match[] = {
- 	{.compatible = "mediatek,mt8173-vcodec-enc",
- 			.data = &mt8173_avc_pdata},
-@@ -435,6 +447,7 @@ static const struct of_device_id mtk_vcodec_enc_match[] = {
- 			.data = &mt8173_vp8_pdata},
- 	{.compatible = "mediatek,mt8183-vcodec-enc", .data = &mt8183_pdata},
- 	{.compatible = "mediatek,mt8192-vcodec-enc", .data = &mt8192_pdata},
-+	{.compatible = "mediatek,mt8195-vcodec-enc", .data = &mt8195_pdata},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_vcodec_enc_match);
--- 
-2.18.0
+kernel/printk/printk.c: In function ‘console_unlock’:
+kernel/printk/printk.c:2600:23: error: ‘prb’ undeclared (first use in this function)
+   if (!prb_read_valid(prb, console_seq, &r))
+                       ^
+kernel/printk/printk.c:2230:16: note: in definition of macro ‘prb_read_valid’
+         (void)(rb);                    \
+                ^~
+kernel/printk/printk.c:2600:23: note: each undeclared identifier is reported only once for each function it appears in
+   if (!prb_read_valid(prb, console_seq, &r))
+                       ^
+kernel/printk/printk.c:2230:16: note: in definition of macro ‘prb_read_valid’
+         (void)(rb);                    \
+                ^~
 
+
+Instead, it might be solved by declaring next_seq as:
+
+	u64 __maybe_unused next_seq;
+
+Any better idea is welcome. Well, it is not worth any big complexity.
+
+Best Regards,
+Petr
