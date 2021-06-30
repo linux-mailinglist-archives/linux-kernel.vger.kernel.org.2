@@ -2,178 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430B43B89E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653563B89E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhF3Uu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhF3Uuz (ORCPT
+        id S234341AbhF3UwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:52:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42983 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229700AbhF3Uv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:50:55 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A9DC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id w15so3543899pgk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3V3OFykueXALQcb8bHaOuERxTOWs4Agns0W740chGTg=;
-        b=dXFdaB5eK79hyNZjeXXsAOEOK1YUd22gnr/ukEbvG5B/Cj0fkM+Vihe1cNwY+Aed/S
-         YiqwQ8eUD2Un/L66bOnABrG0xmvMZOydY9l9QRQ8aRB2SQqPAKQjVkWUGgcwtrGS0KZZ
-         2MjkWulYiPLphm4SQOJ/iKEm1kBZxL9LrjtiQMcLjIiW6CyLDOR0ECn9Tp0cWjwMKvij
-         BG6LAP6BNgSaq3oeK3QyaEjZQdfmi/LZ8l0DwXUFBwWm7ba2nyRY1fHs3t1oNLdHwj3d
-         FqTmnDNlRgEcK0beAB76IkESPtnILtCF+6816JOPQ6X6ijIUdgkWO73EgQolp8jyH2GJ
-         +MpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3V3OFykueXALQcb8bHaOuERxTOWs4Agns0W740chGTg=;
-        b=U0tfh2dLR/rU9UiT4vcZ4TRimebgY5kgdFAzuvsz0qCls72bjbU4WpBqG+yuggAYYh
-         N6Ul2v9N4FapQx9L2lvH/n4hxtGRcZ8anMIbOxJSSKQlu/WItNFPsizSN5fT8RPO63td
-         kRn/JajdQ5PZUs1P4KRN4BnURGu9qjxGSdNrn/KGHdQqAfkYeUY9gwuipUoq8j95S2s6
-         lZVdfKT0Q+xBpo+1Su5ELpivGgb2axO0klTasgjx3L21ElGDdx636BSYWxLRch0T7g+t
-         U0ZULGqzU/7pdMQ2vgsEvYUaIJoHqSb5Um64h+WfHiyOiqNiM9+fgE76L9MOW91P4E9v
-         9SnA==
-X-Gm-Message-State: AOAM533bOe7ZoNqvwUcbRGwC7uPyJk5lnd16teRe/7PWuH78FhvmR5/T
-        bbZST+Sn3Rq1rQ8Ag+eiIYkqmA==
-X-Google-Smtp-Source: ABdhPJyFJr3vbX3/L7gBnKcYr0blRFKn0IkndBGDGYJMRGGsjExVmR1Ip/lyLEQuCxkfAa/UE5iIWA==
-X-Received: by 2002:a63:5057:: with SMTP id q23mr35744377pgl.271.1625086106139;
-        Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id m21sm7339455pjz.57.2021.06.30.13.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 13:48:25 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 14:48:23 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH v2 3/4] rpmsg: char: Add possibility to use default
- endpoint of the rpmsg device.
-Message-ID: <20210630204823.GC1290178@p14s>
-References: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
- <20210623150504.14450-4-arnaud.pouliquen@foss.st.com>
+        Wed, 30 Jun 2021 16:51:59 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15UKnRJf032142
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 16:49:27 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2E04D15C3C8E; Wed, 30 Jun 2021 16:49:27 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 16:49:27 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 updates for v5.14
+Message-ID: <YNzY12HgR4UViC4/@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623150504.14450-4-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 05:05:03PM +0200, Arnaud Pouliquen wrote:
-> Current implementation create/destroy a new endpoint on each
-> rpmsg_eptdev_open/rpmsg_eptdev_release calls.
-> 
-> For a rpmsg device created by the NS announcement mechanism we need to
-> use a unique static endpoint that is the default rpmsg device endpoint
-> associated to the channel.
-> 
-> This patch prepares the introduction of a rpmsg channel device for the
-> char device. The rpmsg channel device will require a default endpoint to
-> communicate to the remote processor.
-> 
-> Add the static_ept field in rpmsg_eptdev structure. This boolean
-> determines the behavior on rpmsg_eptdev_open and rpmsg_eptdev_release call.
-> 
-> - If static_ept == false:
->   Use the legacy behavior by creating a new endpoint each time
->   rpmsg_eptdev_open is called and release it when rpmsg_eptdev_release
->   is called on /dev/rpmsgX device open/close.
-> 
-> - If static_ept == true:
->   use the rpmsg device default endpoint for the communication.
-> - Address the update of _rpmsg_chrdev_eptdev_create in e separate patch for readability.
-> 
-> Add protection in rpmsg_eptdev_ioctl to prevent to destroy a default endpoint.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
-> update vs V1:
-> - remove the management of the default endpoint creation from rpmsg_eptdev_open.
-> 
-> ---
->  drivers/rpmsg/rpmsg_char.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 50b7d4b00175..a75dce1e29d8 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -45,6 +45,8 @@ static DEFINE_IDA(rpmsg_minor_ida);
->   * @queue_lock:	synchronization of @queue operations
->   * @queue:	incoming message queue
->   * @readq:	wait object for incoming queue
-> + * @static_ept: specify if the endpoint has to be created at each device opening or
-> + *              if the default endpoint should be used.
->   */
->  struct rpmsg_eptdev {
->  	struct device dev;
-> @@ -59,6 +61,8 @@ struct rpmsg_eptdev {
->  	spinlock_t queue_lock;
->  	struct sk_buff_head queue;
->  	wait_queue_head_t readq;
-> +
-> +	bool static_ept;
->  };
->  
->  int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
-> @@ -116,7 +120,15 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->  
->  	get_device(dev);
->  
-> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> +	/*
-> +	 * If the static_ept is set to true, the rpmsg device default endpoint is used.
-> +	 * Else a new endpoint is created on open that will be destroyed on release.
-> +	 */
-> +	if (eptdev->static_ept)
-> +		ept = rpdev->ept;
-> +	else
-> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> +
->  	if (!ept) {
->  		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
->  		put_device(dev);
-> @@ -137,7 +149,8 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
->  	/* Close the endpoint, if it's not already destroyed by the parent */
->  	mutex_lock(&eptdev->ept_lock);
->  	if (eptdev->ept) {
-> -		rpmsg_destroy_ept(eptdev->ept);
-> +		if (!eptdev->static_ept)
-> +			rpmsg_destroy_ept(eptdev->ept);
->  		eptdev->ept = NULL;
->  	}
->  	mutex_unlock(&eptdev->ept_lock);
-> @@ -264,6 +277,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->  		return -EINVAL;
->  
-> +	/* Don't allow to destroy a default endpoint. */
-> +	if (!eptdev->rpdev || eptdev->ept == eptdev->rpdev->ept)
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
 
-Did you find a scenario where eptdev->rpdev would not be valid when this is
-called?  To me if this code is called __rpmsg_chrdev_eptdev_create() has setup
-the rpdev pointer and therefore it will be valid.
+  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
 
-If there is a scenario where it is possible that eptdev->rpdev is invalid then
-please add a comment with the details.  Otherwise simply remove the first part
-of the condition.
+are available in the Git repository at:
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-> +		return -EPERM;
-> +
->  	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
->  }
->  
-> -- 
-> 2.17.1
-> 
+for you to fetch changes up to 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13:
+
+  jbd2: export jbd2_journal_[un]register_shrinker() (2021-06-30 11:05:00 -0400)
+
+----------------------------------------------------------------
+In addition to bug fixes and cleanups, there are two new features for
+ext4 in 5.14:
+ - Allow applications to poll on changes to /sys/fs/ext4/*/errors_count
+ - Add the ioctl EXT4_IOC_CHECKPOINT which allows the journal to be
+   checkpointed, truncated and discarded or zero'ed.
+
+----------------------------------------------------------------
+Anirudh Rayabharam (1):
+      ext4: fix kernel infoleak via ext4_extent_header
+
+Eric Biggers (1):
+      ext4: fix comment for s_hash_unsigned
+
+Jan Kara (1):
+      ext4: fix overflow in ext4_iomap_alloc()
+
+Jiapeng Chong (1):
+      ext4: remove redundant assignment to error
+
+Jonathan Davies (1):
+      ext4: notify sysfs on errors_count value change
+
+Joseph Qi (1):
+      ext4: remove redundant check buffer_uptodate()
+
+Josh Triplett (2):
+      ext4: consolidate checks for resize of bigalloc into ext4_resize_begin
+      ext4: add check to prevent attempting to resize an fs with sparse_super2
+
+Leah Rumancik (3):
+      ext4: add discard/zeroout flags to journal flush
+      ext4: add ioctl EXT4_IOC_CHECKPOINT
+      ext4: update journal documentation
+
+Pan Dong (1):
+      ext4: fix avefreec in find_group_orlov
+
+Pavel Skripkin (1):
+      ext4: fix memory leak in ext4_fill_super
+
+Ritesh Harjani (2):
+      ext4: fsmap: fix the block/inode bitmap comment
+      ext4: remove duplicate definition of ext4_xattr_ibody_inline_set()
+
+Tian Tao (1):
+      ext4: remove set but rewrite variables
+
+Yang Yingliang (1):
+      ext4: return error code when ext4_fill_flex_info() fails
+
+Zhang Yi (12):
+      ext4: cleanup in-core orphan list if ext4_truncate() failed to get a transaction handle
+      ext4: remove check for zero nr_to_scan in ext4_es_scan()
+      ext4: correct the cache_nr in tracepoint ext4_es_shrink_exit
+      jbd2: remove the out label in __jbd2_journal_remove_checkpoint()
+      jbd2: ensure abort the journal if detect IO error when writing original buffer back
+      jbd2: don't abort the journal when freeing buffers
+      jbd2: remove redundant buffer io error checks
+      jbd2,ext4: add a shrinker to release checkpointed buffers
+      jbd2: simplify journal_clean_one_cp_list()
+      ext4: remove bdev_try_to_free_page() callback
+      fs: remove bdev_try_to_free_page callback
+      jbd2: export jbd2_journal_[un]register_shrinker()
+
+chenyichong (1):
+      ext4: use local variable ei instead of EXT4_I() macro
+
+yangerkun (2):
+      jbd2: clean up misleading comments for jbd2_fc_release_bufs
+      ext4: no need to verify new add extent block
+
+ Documentation/filesystems/ext4/journal.rst |  39 +++++--
+ fs/block_dev.c                             |  15 ---
+ fs/ext4/ext4.h                             |  18 ++-
+ fs/ext4/extents.c                          |   4 +
+ fs/ext4/extents_status.c                   |   4 +-
+ fs/ext4/fsmap.h                            |   4 +-
+ fs/ext4/ialloc.c                           |  11 +-
+ fs/ext4/inline.c                           |  11 +-
+ fs/ext4/inode.c                            |   8 +-
+ fs/ext4/ioctl.c                            |  80 +++++++++----
+ fs/ext4/mmp.c                              |  28 +++--
+ fs/ext4/namei.c                            |   2 +-
+ fs/ext4/resize.c                           |   9 ++
+ fs/ext4/super.c                            |  57 +++++----
+ fs/ext4/sysfs.c                            |   5 +
+ fs/ext4/xattr.c                            |  26 +----
+ fs/ext4/xattr.h                            |   6 +-
+ fs/jbd2/checkpoint.c                       | 206 ++++++++++++++++++++++++++-------
+ fs/jbd2/journal.c                          | 230 +++++++++++++++++++++++++++++++++++--
+ fs/jbd2/transaction.c                      |  17 ---
+ fs/ocfs2/alloc.c                           |   2 +-
+ fs/ocfs2/journal.c                         |   8 +-
+ include/linux/fs.h                         |   1 -
+ include/linux/jbd2.h                       |  43 ++++++-
+ include/trace/events/jbd2.h                | 101 ++++++++++++++++
+ 25 files changed, 720 insertions(+), 215 deletions(-)
