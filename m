@@ -2,86 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC81F3B8200
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FE43B8201
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbhF3MYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:24:14 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:60021 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbhF3MYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:24:12 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MmUcL-1lYXsV2q7l-00iVws; Wed, 30 Jun 2021 14:21:42 +0200
-Received: by mail-wr1-f51.google.com with SMTP id a13so3362430wrf.10;
-        Wed, 30 Jun 2021 05:21:42 -0700 (PDT)
-X-Gm-Message-State: AOAM530WakbCHpA1tgG69QVBM7Pw0X7PUFrYEpnT4JUnfBIQlnUcyOVH
-        nxgT4g5+suYjbRisJcd9jXMfOo1Q1i6XWKbOWq8=
-X-Google-Smtp-Source: ABdhPJzbMwqO0UqMwf08cToMR/xIYXkh4mMK63b049cBHLY2kvkRRGsefeAfve5VBN+0PclfxL041WfPnXFS6N7HuDs=
-X-Received: by 2002:adf:ee10:: with SMTP id y16mr1601608wrn.99.1625055702317;
- Wed, 30 Jun 2021 05:21:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
- <CAK8P3a1mvRTTFHtxqREmcbgJS+e94BHajCtAU_fzBhNNKjJBcg@mail.gmail.com>
- <CAPDyKFqFTCzXFMar88CYdZKc=eMjKszsOCS1LwLmnF0uNQyPAw@mail.gmail.com>
- <CAK8P3a2yo6eAe+jZQ7XB9ERYOYvBdCfjMKCYgm=gh-Ekd=SQ3Q@mail.gmail.com> <CAPDyKFp4BkfEW+wKwED97FNvnb4_5AWDO8KwpQvVXaHa7pSywQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFp4BkfEW+wKwED97FNvnb4_5AWDO8KwpQvVXaHa7pSywQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 30 Jun 2021 14:21:26 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0gMv9d9Pqm-tjPScL404DSiQx8x8oFim8cvypx2ao14A@mail.gmail.com>
-Message-ID: <CAK8P3a0gMv9d9Pqm-tjPScL404DSiQx8x8oFim8cvypx2ao14A@mail.gmail.com>
-Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>, pizza@shaftnet.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:a/U8MAMPEw2KACok6Xjsaf8/I2V/gxbsq6rUtKS5+gFDLaJF+nV
- 7TaFLFfeh/BOoB0TybuxZll+jHHaDF9XqF4cWy7XViMr7xSD4MBxCnwkjesKWEwV5cboOjl
- NZrBF8RQmoy4nm4QGa6RMCXNL2jSYgur10xx86pPjLzocbyudK0LbGpp4CV1ISXrexTygse
- pYOVAyk4NqMXoreWPYlmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+5lFCng3GbQ=:7r5+yyrDTv1YIInn8eb7JY
- JEIVXUz0Op1LRbt2THBuNnIfJDkQZiz3u7/5lKvXMjFeRcPHnVmwP0lAfn2ExTgLBrCZ4KNXi
- 4l/1kkv2fpuIU8yL7JX31IP1/VijimXRSkjQlfyyUoxNOJOsxu39DZqa6UQJmB6kwQhKs/+oO
- 2FQIpjfcxdx17bWWlWQ2LYLujF+lLB+PVUH99ahNl2SoAWuJ3mUc2v+INhH4W+K3vkXcCzu6n
- 2Fq8hvBw61araw8UggHKFOZbvC+KGSADdUzd8yz0KTgjc7NvK9yC5TQIigKl4+H1WJsVmjTJU
- oRQXW5gCfY6uIW1TcuZ3Z++kB2g/xKD8egEB9QViOCsuq/tEx9jw6sYlcC3Lp0OBRbwpfNFHY
- CgZQCnw6Nd+AGS/IrE4IaAPWciZN4GcDKPQB9LqvVxufrRkhtOeGDyHtxDXUowK21Ih+yFstk
- vQgin0EH3XvjtJC8eVviXGs9zpayUVO/bT4htAXbdMDgUSVeakiWlZTzblCMIf4Ubp0yoOvZe
- ziTXBmLoFlzI/Dnz1wkQBV2CO4Au7+0AbiZ8643b+P8jDuOPjbWYV+y74vZqw8D1V2mh8DeD+
- CVInLFld6QyM7MGSdyVHWl0RBTa/Gsa+KQDgsfb80zHDJU36ivtJILZzNDlqaOf85p76uWbSz
- 0YdLUqnsqTpQQpTDk7I0pTQUikx7auh0LQQI9oJlSDL/Fkt6JH9ruMwkxLTaij6wR+PLeGUBu
- FyNvKIVZWlDCXdAx43G6OvUCNAR0XzMH3v2wksZLGb/H7vbBovzI4P21D7Xqq53Yd2I+L/NwQ
- ZfqBwnf7YQQAhWPqOVdjBlE7m8sLHetotSBkrbNK3iRvcSqDMrB31fa8Y+5rObZfLh869BXKp
- 1glk+uI9XConiJIiZ1zKBK1Q0zthQG1L3fCXQZVgePctJ1m4HoQGVNOWm92QacVSLqEndKLyi
- UEQ+NyhbalDA4jMvClf7fGSnINtvPFv9ansH8Q9YjaJtpTJ4kK6wI
+        id S234742AbhF3MYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:24:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234717AbhF3MYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:24:13 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39EB6613ED;
+        Wed, 30 Jun 2021 12:21:45 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lyZDr-00AoQ1-7e; Wed, 30 Jun 2021 13:21:43 +0100
+Date:   Wed, 30 Jun 2021 13:21:42 +0100
+Message-ID: <87fswzy23t.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: arch/arm64/include/asm/cpufeature.h:273:2: warning: initialized field overwritten
+In-Reply-To: <202106302037.QmEffgZV-lkp@intel.com>
+References: <202106302037.QmEffgZV-lkp@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lkp@intel.com, kbuild-all@lists.01.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 2:03 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On Wed, 30 Jun 2021 13:08:41 +0100,
+kernel test robot <lkp@intel.com> wrote:
+> 
+> Hi Marc,
+> 
+> FYI, the error/warning still remains.
 
-> > diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
-> > index 4c229dd2b6e5..845f9ca3b200 100644
-> > --- a/drivers/mmc/core/sdio_ops.c
-> > +++ b/drivers/mmc/core/sdio_ops.c
-> > @@ -124,6 +124,7 @@ int mmc_io_rw_extended(struct mmc_card *card, int
-> > write, unsigned fn,
-> >         int err;
-> >
-> >         WARN_ON(blksz == 0);
-> > +       WARN_ON_ONCE(is_vmalloc_or_module_addr(buf) || object_is_on_stack(buf));
->
-> Looks reasonable to me, at least we should start giving a warning.
-> Would you like to send a formal patch that we can test?
+[...]
 
-Done.
+I really wish the build bot would stop moaning about this. Overriding
+a default when statically initialising a structure is not going away,
+and I have no intention to "fix" it any time soon.
 
-        Arnd
+So yes, it remains, and will remain until we get a semantic tool
+allowing us to annotate these cases.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
