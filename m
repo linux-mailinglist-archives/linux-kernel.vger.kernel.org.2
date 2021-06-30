@@ -2,248 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C35A3B836B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3393B8385
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhF3NrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:47:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39186 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhF3NrW (ORCPT
+        id S235226AbhF3Nt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:49:56 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:21038 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235039AbhF3Ntp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:47:22 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B37CD1FE9A;
-        Wed, 30 Jun 2021 13:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625060692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=jAc6dsJy0QavKCTASkeQeEWHSP7R+wEI4LiLMMUxWVU=;
-        b=HizkuVeZG6wYImK+leYyVz1RSvN5SYtKJRqbeSukhVDzgylbFJFjKXCpGKJLW7pmXPLRWJ
-        pn1k+TyTkyC2uI0Ms9Nt67vc+mR8WMoF0xHJnQZXWumAoWsCH/3JsC5acrlPYrpAfHXu46
-        G7DquvINIApHVbbT+mb81XMpFVUMBXI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625060692;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=jAc6dsJy0QavKCTASkeQeEWHSP7R+wEI4LiLMMUxWVU=;
-        b=5UnD3MIDe5HarDtEx+qJn2i4zDsMPRis9CmCNmfhGB5LMVguHO309MGCRuv95nsOlRFro/
-        D6T/mvucNgIv00CQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 238D3118DD;
-        Wed, 30 Jun 2021 13:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625060692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=jAc6dsJy0QavKCTASkeQeEWHSP7R+wEI4LiLMMUxWVU=;
-        b=HizkuVeZG6wYImK+leYyVz1RSvN5SYtKJRqbeSukhVDzgylbFJFjKXCpGKJLW7pmXPLRWJ
-        pn1k+TyTkyC2uI0Ms9Nt67vc+mR8WMoF0xHJnQZXWumAoWsCH/3JsC5acrlPYrpAfHXu46
-        G7DquvINIApHVbbT+mb81XMpFVUMBXI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625060692;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=jAc6dsJy0QavKCTASkeQeEWHSP7R+wEI4LiLMMUxWVU=;
-        b=5UnD3MIDe5HarDtEx+qJn2i4zDsMPRis9CmCNmfhGB5LMVguHO309MGCRuv95nsOlRFro/
-        D6T/mvucNgIv00CQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 9iKrBVR13GDBfQAALh3uQQ
-        (envelope-from <lhenriques@suse.de>); Wed, 30 Jun 2021 13:44:52 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 0431f0b7;
-        Wed, 30 Jun 2021 13:44:51 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Petr Vorel <pvorel@suse.cz>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v10] vfs: fix copy_file_range regression in cross-fs copies
-Date:   Wed, 30 Jun 2021 14:44:49 +0100
-Message-Id: <20210630134449.16851-1-lhenriques@suse.de>
+        Wed, 30 Jun 2021 09:49:45 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UDgnuw001791;
+        Wed, 30 Jun 2021 13:47:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=z+LDutZH0urZ87b+8AQ/NNjQzIHfjBaCRTM6UUAttgU=;
+ b=okChKBybudDzRdcGK6YQVHExedY1tyJyq7Mn/aRg445Q4pzCamhmmavmAedSWKGzqxaF
+ 9TllbC7seVM0eLIodVBQ1KIG9xdm4SNtOAZ7LsVro9jJJAy+zgECmF0LYLnOsTj0LR2c
+ CtNTNa8dOxNKVP4rSX3d9Czu8IrEpSGNtyfM+S21tkKLucPz1bToqgyVCVAaJoDXxBle
+ JzbTm2mq363zxIaw5EUfCV08OtM5zpWPJUiBneSw90jaNZ/hbpv5ui1RjBjLLTeMiStU
+ lOOJoKNdYZRH/mO77AyccHMIkGpa3lyIPysXAVEx8fo1RZS6iXweOwNGy8MBS2KuHMO/ HA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39gguq1254-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:47:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15UDe59C071080;
+        Wed, 30 Jun 2021 13:47:06 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 39dt9h4jx6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:47:06 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15UDl5Mm100976;
+        Wed, 30 Jun 2021 13:47:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 39dt9h4jwr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 13:47:05 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15UDl4Vm024783;
+        Wed, 30 Jun 2021 13:47:04 GMT
+Received: from mwanda (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Jun 2021 06:47:03 -0700
+Date:   Wed, 30 Jun 2021 16:46:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] pwm: ep93xx: Fix uninitialized variable bug in
+ ep93xx_pwm_apply()
+Message-ID: <YNx1y8PlSLehZVIY@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: jnggKSkJ1roDwESKAcPbsCmeJqVJyvbP
+X-Proofpoint-GUID: jnggKSkJ1roDwESKAcPbsCmeJqVJyvbP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A regression has been reported by Nicolas Boichat, found while using the
-copy_file_range syscall to copy a tracefs file.  Before commit
-5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-kernel would return -EXDEV to userspace when trying to copy a file across
-different filesystems.  After this commit, the syscall doesn't fail anymore
-and instead returns zero (zero bytes copied), as this file's content is
-generated on-the-fly and thus reports a size of zero.
+Smatch found a potential uninitialized variable in ep93xx_pwm_apply():
 
-This patch restores some cross-filesystem copy restrictions that existed
-prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-devices").  Filesystems are still allowed to fall-back to the VFS
-generic_copy_file_range() implementation, but that has now to be done
-explicitly.
+    drivers/pwm/pwm-ep93xx.c:147 ep93xx_pwm_apply()
+    error: uninitialized symbol 'ret'.
 
-nfsd is also modified to fall-back into generic_copy_file_range() in case
-vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+Initialize "ret" to zero at the start to solve this issue.
 
-Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Fixes: f6ef94edf0f6 ("pwm: ep93xx: Unfold legacy callbacks into ep93xx_pwm_apply()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
-Changes since v9
-- the early return from the syscall when len is zero now checks if the
-  filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
-  otherwise.  Issue reported by test robot.
-  (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
-Changes since v8
-- Simply added Amir's Reviewed-by and Olga's Tested-by
-Changes since v7
-- set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
-  error returned is always related to the 'copy' operation
-Changes since v6
-- restored i_sb checks for the clone operation
-Changes since v5
-- check if ->copy_file_range is NULL before calling it
-Changes since v4
-- nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
-  or -EXDEV.
-Changes since v3
-- dropped the COPY_FILE_SPLICE flag
-- kept the f_op's checks early in generic_copy_file_checks, implementing
-  Amir's suggestions
-- modified nfsd to use generic_copy_file_range()
-Changes since v2
-- do all the required checks earlier, in generic_copy_file_checks(),
-  adding new checks for ->remap_file_range
-- new COPY_FILE_SPLICE flag
-- don't remove filesystem's fallback to generic_copy_file_range()
-- updated commit changelog (and subject)
-Changes since v1 (after Amir review)
-- restored do_copy_file_range() helper
-- return -EOPNOTSUPP if fs doesn't implement CFR
-- updated commit description
+ drivers/pwm/pwm-ep93xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- fs/nfsd/vfs.c   |  8 +++++++-
- fs/read_write.c | 51 ++++++++++++++++++++++++-------------------------
- 2 files changed, 32 insertions(+), 27 deletions(-)
-
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 15adf1f6ab21..f54a88b3b4a2 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
- ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 			     u64 dst_pos, u64 count)
+diff --git a/drivers/pwm/pwm-ep93xx.c b/drivers/pwm/pwm-ep93xx.c
+index 70fa2957f9d3..ffa79248c1e1 100644
+--- a/drivers/pwm/pwm-ep93xx.c
++++ b/drivers/pwm/pwm-ep93xx.c
+@@ -61,7 +61,7 @@ static void ep93xx_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+ static int ep93xx_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 			    const struct pwm_state *state)
  {
-+	ssize_t ret;
+-	int ret;
++	int ret = 0;
+ 	struct ep93xx_pwm *ep93xx_pwm = to_ep93xx_pwm(chip);
+ 	bool enabled = state->enabled;
  
- 	/*
- 	 * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-@@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 	 * limit like this and pipeline multiple COPY requests.
- 	 */
- 	count = min_t(u64, count, 1 << 22);
--	return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+	ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+
-+	if (ret == -EOPNOTSUPP || ret == -EXDEV)
-+		ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
-+					      count, 0);
-+	return ret;
- }
- 
- __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 9db7adf160d2..7ad07063c551 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
- }
- EXPORT_SYMBOL(generic_copy_file_range);
- 
--static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
--				  struct file *file_out, loff_t pos_out,
--				  size_t len, unsigned int flags)
--{
--	/*
--	 * Although we now allow filesystems to handle cross sb copy, passing
--	 * a file of the wrong filesystem type to filesystem driver can result
--	 * in an attempt to dereference the wrong type of ->private_data, so
--	 * avoid doing that until we really have a good reason.  NFS defines
--	 * several different file_system_type structures, but they all end up
--	 * using the same ->copy_file_range() function pointer.
--	 */
--	if (file_out->f_op->copy_file_range &&
--	    file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
--		return file_out->f_op->copy_file_range(file_in, pos_in,
--						       file_out, pos_out,
--						       len, flags);
--
--	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				       flags);
--}
--
- /*
-  * Performs necessary checks before doing a file copy
-  *
-@@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
- 	loff_t size_in;
- 	int ret;
- 
-+	/*
-+	 * Although we now allow filesystems to handle cross sb copy, passing
-+	 * a file of the wrong filesystem type to filesystem driver can result
-+	 * in an attempt to dereference the wrong type of ->private_data, so
-+	 * avoid doing that until we really have a good reason.  NFS defines
-+	 * several different file_system_type structures, but they all end up
-+	 * using the same ->copy_file_range() function pointer.
-+	 */
-+	if (file_out->f_op->copy_file_range) {
-+		if (file_in->f_op->copy_file_range !=
-+		    file_out->f_op->copy_file_range)
-+			return -EXDEV;
-+	} else if (file_in->f_op->remap_file_range) {
-+		if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-+			return -EXDEV;
-+	} else {
-+                return -EOPNOTSUPP;
-+	}
-+
- 	ret = generic_file_rw_checks(file_in, file_out);
- 	if (ret)
- 		return ret;
-@@ -1498,10 +1495,11 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 		return ret;
- 
- 	if (len == 0)
--		return 0;
-+		return file_out->f_op->copy_file_range ? 0 : -EOPNOTSUPP;
- 
- 	file_start_write(file_out);
- 
-+	ret = -EOPNOTSUPP;
- 	/*
- 	 * Try cloning first, this is supported by more file systems, and
- 	 * more efficient if both clone and copy are supported (e.g. NFS).
-@@ -1520,9 +1518,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 		}
- 	}
- 
--	ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				flags);
--	WARN_ON_ONCE(ret == -EOPNOTSUPP);
-+	if (file_out->f_op->copy_file_range)
-+		ret = file_out->f_op->copy_file_range(file_in, pos_in,
-+						      file_out, pos_out,
-+						      len, flags);
- done:
- 	if (ret > 0) {
- 		fsnotify_access(file_in);
+-- 
+2.30.2
+
