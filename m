@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E093C3B8AEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BD53B8AED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbhF3XZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 19:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237700AbhF3XYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 19:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1AFB614A7;
-        Wed, 30 Jun 2021 23:21:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625095317;
-        bh=tHL+XCD2rEOEbdKWrPLa/uYf1Uf/oPwC9ZVcqe4TrdY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YYa33W2Vyt7lkUX04pP+nNvic6v7cT5Uo2pb8NL2unCfUn5oPA/NrwOat3zyM2oWw
-         XZOBlVwFU5f7qTuKjro6Ydm0353Yl3l4nm7E6JOCwHH7guKZGu452c1+gtBEt86+78
-         g74Ec9OJJgxr/x60pq/DSyBTZF0PrFgVfyfdyexnk4JbsqrxCGN/RFnZVxPfbMWLY5
-         mB/j4p19WV4CL2tQwj9jnRV9SFBViabowIpoDOZgLuYPZQIUBwL875vIaZ0DC3vhBO
-         vhinhbDPhM0Jg2P7VENluWFuXEQf4oNmc1QrJ1sowwO+iEUn62bWHGWbR6KDmhex23
-         lEQDuP7XWt4Qg==
-Received: by mail-ej1-f48.google.com with SMTP id bg14so7080536ejb.9;
-        Wed, 30 Jun 2021 16:21:57 -0700 (PDT)
-X-Gm-Message-State: AOAM532nBqL1SqjjLB52LDa+YwqB1VGBVhyFcy2gKvDjdkOWjP5/mdmr
-        IEPx7dyCynp5UqJYETdKVCcVIXHLh4Sd4hEY8w==
-X-Google-Smtp-Source: ABdhPJzPLyaPSWeFoM4shqoF7CpJjg3MvYR1+Z7xCorPSgqpeK6NZ7q6OI8QkU2saaQqmqcU0ei0B2umtiEAoJkXeD4=
-X-Received: by 2002:a17:907:7287:: with SMTP id dt7mr4200475ejc.127.1625095316280;
- Wed, 30 Jun 2021 16:21:56 -0700 (PDT)
+        id S236523AbhF3XZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 19:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237921AbhF3XYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 19:24:52 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E89AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:22:19 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g5so7757392ybu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lKl24N6sPsM4ASgBKdFjCfa0moU/cvzXMh2a1QKlpkU=;
+        b=j3Ym/ZsVCZfTroeAxMj1erl4bKiNUsMgMrHh41T3GRd01qodxYgb+ozGru783rarNc
+         HN9vFcEtg/j8Qyw3dSJ4JmylqQWxM+KAcz1Xk0SfKbj7uxg8feWEiuq9etNkZ7d2GkII
+         WcRMN+2LnmTX7gEvy/qjktH9P4IjSWtxLzZpo62Bf2I9CYuoBIa+GP5gPIbl2FWAhQ/5
+         cPkKgXc6c43U3hlCE2AwOX5K27BoxDgHmsnh1hINY604m9/c7nE1+w4DxvSnSZiWsjFN
+         kYdWI7aFNBy2zyLAUjodFbxYY0We2lojoBByzmGSTslViJb/mUAaPKRKqycQ89nwzjCD
+         e+UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lKl24N6sPsM4ASgBKdFjCfa0moU/cvzXMh2a1QKlpkU=;
+        b=NPIC5SG0ttnrsl5mYzh5HabeXkBd4uZSnwWmSwoOZ/M41wlAsPMH8qQu/PCMSYS9yy
+         FL243P1cZw8baIDIP/vYzNmiEB5yy06swmwWVwST1xrAGn5MzSx2EyBiVr9BK2y4YO5E
+         6lA/Ty4/qUwGvTJnHJK9VuSnSEozqm511lO/3NhGD2dxkLU9DzKE9hsaKlVLaOvOTgql
+         ruHu1NP4Het/mLMMFzJjzgtQizxYjpRCjIN2DhG2EamFNfRiSTKEehNObUZXQlj6iYhm
+         txCR/PFUZrkor0NPCVRUQNu29HUFlDZ8nQLjgi1W1iiUEabzL8KqNUce0NLa6YCeI9JE
+         BQcQ==
+X-Gm-Message-State: AOAM532J4ez+JM7cFMKeZ1zeJWD9J99jgGY7KRYr4Xu3LfReuJxVIc7i
+        gRftX/PY98C3JE65dcqI/MdvkOHxpYCoOTiwy7iMljVQN+0=
+X-Google-Smtp-Source: ABdhPJx2HpPKWhys+RUT9Mp3O3Y7o78tpme0ozncPoRZxyeqxcLvKmu4gkbgucX9dOTJ5RPdmfrwXigqFQGGV+KJ9uw=
+X-Received: by 2002:a25:508e:: with SMTP id e136mr26513578ybb.275.1625095337836;
+ Wed, 30 Jun 2021 16:22:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210630051418.14044-1-jason-jh.lin@mediatek.com> <20210630051418.14044-4-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210630051418.14044-4-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 1 Jul 2021 07:21:45 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9B1L=1=LzdC_1_czFgc4smH0hTk0B=XCquH08KAjx_nA@mail.gmail.com>
-Message-ID: <CAAOTY_9B1L=1=LzdC_1_czFgc4smH0hTk0B=XCquH08KAjx_nA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/5] arm64: dts: mt8195: add gce node
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        hsinyi@google.com, Nancy Lin <nancy.lin@mediatek.com>,
-        singo.chang@mediatek.com
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Sathyanarayanan Kuppuswamy Natarajan 
+        <sathyanarayanan.nkuppuswamy@gmail.com>
+Date:   Wed, 30 Jun 2021 16:22:06 -0700
+Message-ID: <CAC41dw-ZUkLqNovzJ1=uJsdRoKY+bOfDYAyOW+sMGDFpkLo1Og@mail.gmail.com>
+Subject: Re: [PATCH v3 00/11] Add TDX Guest Support (Initial support)
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+Hi x86 maintainers,
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=883=
-0=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=881:18=E5=AF=AB=E9=81=93=EF=
-=BC=9A
+On Fri, Jun 18, 2021 at 3:58 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
 >
-> add gce node on dts file.
+> Hi All,
 >
-> Change-Id: I805455cb7c645cb5a24ce1c87fe891a807069123
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
-> This patch is based on [1]
-> [1] Add Mediatek SoC MT8195 and evaluation board dts and Makefile
->     - https://patchwork.kernel.org/project/linux-mediatek/patch/202106010=
-75350.31515-2-seiya.wang@mediatek.com/
-> ---
->  arch/arm64/boot/dts/mediatek/mt8195.dtsi | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
+> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+> hosts and some physical attacks. This series adds the basic TDX guest
+> infrastructure support (including #VE handler support, and #VE support
+> for halt and CPUID). This is just a subset of patches in the bare minimum
+> TDX support patch list which is required for supporting minimal
+> functional TDX guest. Other basic feature features like #VE support for
+> IO, MMIO, boot optimization fixes and shared-mm support will be submitted
+> in a separate patch set. To make reviewing easier we split it into smalle=
+r
+> series. This series alone is not necessarily fully functional.
 >
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/d=
-ts/mediatek/mt8195.dtsi
-> index c146a91c6272..38054196eea4 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> @@ -6,6 +6,7 @@
+> Also, the host-side support patches, and support for advanced TD guest
+> features like attestation or debug-mode will be submitted at a later time=
+.
+> Also, at this point it is not secure with some known holes in drivers, an=
+d
+> also hasn=E2=80=99t been fully audited and fuzzed yet.
 >
->  /dts-v1/;
->  #include <dt-bindings/clock/mt8195-clk.h>
-> +#include <dt-bindings/gce/mt8195-gce.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/power/mt8195-power.h>
-> @@ -717,6 +718,26 @@
->                         #clock-cells =3D <1>;
->                 };
+> TDX has a lot of similarities to SEV. It enhances confidentiality and
+> of guest memory and state (like registers) and includes a new exception
+> (#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
+> yet), TDX limits the host's ability to effect changes in the guest
+> physical address space. With TDX the host cannot access the guest memory,
+> so various functionality that would normally be done in KVM has moved
+> into a (paravirtualized) guest. Partially this is done using the
+> Virtualization Exception (#VE) and partially with direct paravirtual hook=
+s.
 >
-> +               gce0: mdp_mailbox@10320000 {
-> +                       compatible =3D "mediatek,mt8195-gce";
-> +                       reg =3D <0 0x10320000 0 0x4000>;
-> +                       interrupts =3D <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> +                       #mbox-cells =3D <3>;
-> +                       clocks =3D <&infracfg_ao CLK_INFRA_AO_GCE>,
-> +                                <&infracfg_ao CLK_INFRA_AO_GCE2>;
-> +                       clock-names =3D "gce", "gce1";
-> +               };
-> +
-> +               gce1: disp_mailbox@10330000 {
-> +                       compatible =3D "mediatek,mt8195-gce";
-> +                       reg =3D <0 0x10330000 0 0x4000>;
-> +                       interrupts =3D <GIC_SPI 228 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> +                       #mbox-cells =3D <3>;
-> +                       clocks =3D <&infracfg_ao CLK_INFRA_AO_GCE>,
-> +                                <&infracfg_ao CLK_INFRA_AO_GCE2>;
-> +                       clock-names =3D "gce", "gce1";
+> The TDX architecture also includes a new CPU mode called
+> Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
+> mode arbitrates interactions between host and guest and implements many o=
+f
+> the guarantees of the TDX architecture.
+>
+> Some of the key differences between TD and regular VM is,
+>
+> 1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
+> 2. A new #VE exception handler is added. The TDX module injects #VE excep=
+tion
+>    to the guest TD in cases of instructions that need to be emulated, dis=
+allowed
+>    MSR accesses, etc.
+> 3. By default memory is marked as private, and TD will selectively share =
+it with
+>    VMM based on need.
+>
+> Note that the kernel will also need to be hardened against low level inpu=
+ts from
+> the now untrusted hosts. This will be done in follow on patches.
+>
+> You can find TDX related documents in the following link.
+>
+> https://software.intel.com/content/www/br/pt/develop/articles/intel-trust=
+-domain-extensions.html
+>
+> Changes since v1 (v2 is partial set submission):
+>  * Patch titled "x86/x86: Add early_is_tdx_guest() interface" is moved
+>    out of this series.
+>  * Rest of the change log is added per patch.
 
-I think each gce could be broken into two function block, the core
-function block and event processing block.
-Each block has independent clock source and "gce" is for core function
-block and "gce1" is for event processing block, is it?
-If so, the core function of gce0 and gce1 has common clock source
-(<&infracfg_ao CLK_INFRA_AO_GCE>), right?
+I have submitted the following list of TDX patch series 2-3 weeks back, and=
+ so
+far we only received feedback for a few patches in sets 1 and 4 (from Boris=
+ &
+Tom Lendacky). So, I was curious if you were planning on taking a look at
+other sets of patch series in this submission or were waiting for new
+revisions? Please let me know your comments.
 
-Regards,
-Chun-Kuang.
+sets 1-4 are core sets of patches that add TDX guest support.
+set 4+ adds extra TDX features support.
 
-> +               };
-> +
->                 uart0: serial@11001100 {
->                         compatible =3D "mediatek,mt8195-uart", "mediatek,=
-mt6577-uart";
->                         reg =3D <0 0x11001100 0 0x100>;
-> --
-> 2.18.0
->
+Add TDX Guest Support (Initial support) [set 1] (currently v3 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D505232
+
+Add TDX Guest Support (#VE handler support) [set 2] (currently v2 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D506230
+
+Add TDX Guest Support (boot fixes) [set 3] (currently v2 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D506231
+
+Add TDX Guest Support (shared-mm support) [set 4] (currently v2 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D506232
+
+Add TDX Guest Support (Debug support) [set 5] (currently v1 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D506233
+
+Add TDX Guest Support (Attestation support) [set 6] (currently v1 version)
+ - https://lore.kernel.org/patchwork/project/lkml/list/?series=3D506234
+
+
+--=20
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
