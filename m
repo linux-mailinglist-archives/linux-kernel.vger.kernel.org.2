@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8903B803A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54E93B8042
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbhF3JpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:45:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47566 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhF3JpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:45:13 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 53DDC2223B;
-        Wed, 30 Jun 2021 09:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625046163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A3MNoSLnXHqAMX3jqPxgl/njzLp8ToXYl4dULk/puSI=;
-        b=XfyYwT5Qi1Ku2shGh7rKtTc077cKu4YiKz6Hkm6eA5BM9h8Cyz80261+7bD1msJ3HqlCN7
-        9Rb8/wORqTX98zfvCfUhm0zX0bJ00n3IFJkAXKuzZOyEKD9nIrJ9VE1PILPZ0Tsy1TPzcG
-        Qz0OZjdAnNscjQTuOi71viTOLYCvnGE=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 2044311906;
-        Wed, 30 Jun 2021 09:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625046163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A3MNoSLnXHqAMX3jqPxgl/njzLp8ToXYl4dULk/puSI=;
-        b=XfyYwT5Qi1Ku2shGh7rKtTc077cKu4YiKz6Hkm6eA5BM9h8Cyz80261+7bD1msJ3HqlCN7
-        9Rb8/wORqTX98zfvCfUhm0zX0bJ00n3IFJkAXKuzZOyEKD9nIrJ9VE1PILPZ0Tsy1TPzcG
-        Qz0OZjdAnNscjQTuOi71viTOLYCvnGE=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id jC7GBpM83GD1bAAALh3uQQ
-        (envelope-from <mkoutny@suse.com>); Wed, 30 Jun 2021 09:42:43 +0000
-Date:   Wed, 30 Jun 2021 11:42:41 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNw8kRpT6R2emuhI@blackbook>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
- <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
- <YNr1TYfBwR/tEpEJ@blackbook>
- <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
+        id S234039AbhF3JrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:47:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:34676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233541AbhF3JrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:47:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40A5D1042;
+        Wed, 30 Jun 2021 02:44:53 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 500E33F718;
+        Wed, 30 Jun 2021 02:44:49 -0700 (PDT)
+Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
+ clocks gated
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        rfi@lists.rocketboards.org, Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+References: <20210629231410.GA4097899@bjorn-Precision-5520>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <fe0e75ba-6008-6dc0-e21e-4ea992bb6cdd@arm.com>
+Date:   Wed, 30 Jun 2021 10:44:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="d+pAxhfHeN1kdV+F"
-Content-Disposition: inline
-In-Reply-To: <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
+In-Reply-To: <20210629231410.GA4097899@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-06-30 00:14, Bjorn Helgaas wrote:
+> On Tue, Jun 29, 2021 at 11:52:44AM +0100, Robin Murphy wrote:
+>> On 2021-06-29 07:17, Javier Martinez Canillas wrote:
+>>> On 6/29/21 2:38 AM, Bjorn Helgaas wrote:
+>>>> On Thu, Jun 24, 2021 at 05:40:40PM -0500, Bjorn Helgaas wrote:
+>>>
+>>> [snip]
+>>>
+>>>>>>
+>>>>>> So let's just move all the IRQ init before the pci_host_probe() call, that
+>>>>>> will prevent issues like this and seems to be the correct thing to do too.
+>>>>>
+>>>>> Previously we registered rockchip_pcie_subsys_irq_handler() and
+>>>>> rockchip_pcie_client_irq_handler() before the PCIe clocks were
+>>>>> enabled.  That's a problem because they depend on those clocks being
+>>>>> enabled, and your patch fixes that.
+>>>>>
+>>>>> rockchip_pcie_legacy_int_handler() depends on rockchip->irq_domain,
+>>>>> which isn't initialized until rockchip_pcie_init_irq_domain().
+>>>>> Previously we registered rockchip_pcie_legacy_int_handler() as the
+>>>>> handler for the "legacy" IRQ before rockchip_pcie_init_irq_domain().
+>>>>>
+>>>>> I think your patch *also* fixes that problem, right?
+>>>>
+>>>> The lack of consistency in how we use
+>>>> irq_set_chained_handler_and_data() really bugs me.
+>>>>
+>>>> Your patch fixes the ordering issue where we installed
+>>>> rockchip_pcie_legacy_int_handler() before initializing data
+>>>> (rockchip->irq_domain) that it depends on.
+>>>>
+>>>> But AFAICT, rockchip still has the problem that we don't *unregister*
+>>>> rockchip_pcie_legacy_int_handler() when the rockchip-pcie module is
+>>>> removed.  Doesn't this mean that if we unload the module, then receive
+>>>> an interrupt from the device, we'll try to call a function that is no
+>>>> longer present?
+>>>
+>>> Good question, I don't to be honest. I'll have to dig deeper on this but
+>>> my experience is that the module removal (and device unbind) is not that
+>>> well tested on ARM device drivers in general.
+>>
+>> Well, it does use devm_request_irq() so the handler should be unregistered
+>> by devres *after* ->remove has finished, however that does still leave a
+>> potential race window in which a pending IRQ could be taken during the later
+>> part of rockchip_pcie_remove() after it has started turning off critical
+>> things. Unless the clocks and regulators can also be delegated to devres, it
+>> might be more robust to explicitly manage the IRQs as well. Mixing the two
+>> schemes can be problematic when the exact order of both setup and teardown
+>> matters.
+> 
+> I don't understand the devm_request_irq() connection.  I'm looking at
+> this irq_set_chained_handler_and_data() call [1]:
+> 
+>    static int rockchip_pcie_setup_irq(struct rockchip_pcie *rockchip)
+>    {
+>      ...
+>      irq = platform_get_irq_byname(pdev, "legacy");
+>      irq_set_chained_handler_and_data(irq,
+> 				     rockchip_pcie_legacy_int_handler,
+> 				     rockchip);
+> 
+>      irq = platform_get_irq_byname(pdev, "client");
+>      ...
+> 
+> We look up "irq", pass it to irq_set_chained_handler_and_data(), and
+> throw it away without saving it anywhere.  How would anything know how
+> to unregister rockchip_pcie_legacy_int_handler()?
+> 
+> I could imagine irq_set_chained_handler_and_data() saving what's
+> needed for unregistration, but I would think that would require a
+> device pointer, which we don't give it.
+> 
+> I'm IRQ-illiterate, so please educate me!
 
---d+pAxhfHeN1kdV+F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh, my mistake, I was looking at the "sys" and "client" IRQs and spoke 
+too soon; the "legacy" IRQ does appear to be completely leaked as you 
+say, so there are two degrees of issue here.
 
-On Tue, Jun 29, 2021 at 10:03:33AM -0400, Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> Hmm, perhaps I'm not understanding how the reference counting works,
-> but my understanding is that we enter loop_queue_rq with presumably
-> some code earlier holding a reference to the blkcg, we only need to
-> acquire a reference sometime before returning from loop_queue_rq. The
-> "window" between loop_queue_rq and loop_queue_work is all
-> straight-line code so there's no possibility for the earlier code to
-> get control back and drop the reference.
+Robin.
 
-I don't say the current implementation is wrong, it just looked
-suspicious to me when the css address is copied without taking the
-reference.
-The straight path is clear, I'm not sure about later invocations through
-loop_workfn where the blkcg_css is accessed via the cmd->blkcg_css.
-
-> Where would you suggest putting such a comment?
-
-This is how I understand it:
-
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -996,6 +996,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
-        rb_insert_color(&worker->rb_node, &lo->worker_tree);
- queue_work:
-        if (worker) {
-+               WARN_ON_ONCE(worker->blkcg_css != cmd->blkcg_css);
-                /*
-                 * We need to remove from the idle list here while
-                 * holding the lock so that the idle timer doesn't
-@@ -2106,6 +2107,8 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
-        cmd->memcg_css = NULL;
- #ifdef CONFIG_BLK_CGROUP
-        if (rq->bio && rq->bio->bi_blkg) {
-+               /* reference to blkcg_css will be held by loop_worker (outlives
-+                * cmd) or it is the eternal root css */
-                cmd->blkcg_css = &bio_blkcg(rq->bio)->css;
- #ifdef CONFIG_MEMCG
-                cmd->memcg_css =
-
-(On further thoughts, maybe the blkcg_css reference isn't needed even in
-the loop_worker if it can be reasoned that blkcg_css won't go away while
-there's an outstanding rq.)
-
-HTH,
-Michal
-
---d+pAxhfHeN1kdV+F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDcPI4ACgkQia1+riC5
-qShVnw//Z/ZtMKu1mO3W3DY9zAZG/2xeZlqAQuz4x1tWnQOb/vdX3yqhyX0JcIjI
-8e4a2pF5XnYaPJs8kRU+4T7uUsaX/9Xb/ZAxOfcJWVFNWOZ+lO6VtK5OJSFFldVB
-SyZLb6mHnE4s5ZFGZOHVA8T9rK7oY4buwZL4LL7PCqu9gc3hMPrS9okHNjzrb5lU
-QmXUS/SZue0mqSJayQudE54BZ3y9tqWDxoE68SZ83DsxbRomVnVQ8RKFlB/3CQLc
-FtjRJ709budI1jnZ54H1O1LOlolRMT6eY+8+gcY9LCcTCWUFs5iRXCwOGzekOPED
-e39Ts7/msQv5NeQpIYNA0IqbaNW4ooJPXCAO3NKqKCwmM8zaQk66MrVfqhzbY8+I
-W2WXep5pC9+tUD/jRvWW+cb+A1RnoLQ9qhYQ1xT6My+Uiy4M1IZDSzz3zA8O+5pD
-l9SjDIe2VCi31ERgx/5s6rANquPKRx6N5CjYoxtU/KXD4HorQFKEzxBovuGtytAs
-bPGQSHHM8/Zulgk4lENFywYX8NpqxyB9cvZr9q4tybth5fqvZSV+EY08JqXoNarV
-GmQ1qaORP+0S7xoPBo+2RQweG7lm5kWzAehl4+bQKZnIOTxqqeP2aKuvcd7oELKE
-VNVS4tpqppXaC2rLpb7LleZoPL+Qq+du+7e8Czui0RaDkO0Cw4I=
-=IVGr
------END PGP SIGNATURE-----
-
---d+pAxhfHeN1kdV+F--
+> 
+> Bjorn
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pcie-rockchip-host.c?id=v5.13#n562
+> 
