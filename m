@@ -2,91 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D103B7B90
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2E03B7B9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhF3Cgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbhF3Cgx (ORCPT
+        id S232650AbhF3CiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:38:12 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33782 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231938AbhF3CiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:36:53 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA346C061760;
-        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id w15so691484pgk.13;
-        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xyUEIZGpIb1NyoL6/ECmCTQUD6rZiw2GeCIvk55fMkc=;
-        b=JTeiLvPoNHljuJCxPgGR0yl0ONXcug3EO0DftgEoSPuMWVohtETSFQT67jZIsFMB55
-         7dAyYOK6Yy35o4RmGUCtLp4K40ZoahCcgx+HpZFrTTjNLJkrKgxV8CgZvMxMLLcmoArn
-         EX0YS9t8RTfwI6doxm4VojM6nVQwse3tmuhjhiycynjG0FsGVUeQGNeqyiiAE+tKJyw+
-         JTCbwqn4MZ87vz5XHNqE5+ZKTNsKuDpFOaiDBbZtwD4IqSX62bQb+P0V9zhszRZyHAjX
-         H7/3V5OP5PxjGzqckWlCePYwSzqGGaT+UZ9nocTC+og++dpmjrLGlkOTXH3XkWK/YcER
-         +yUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xyUEIZGpIb1NyoL6/ECmCTQUD6rZiw2GeCIvk55fMkc=;
-        b=Qi0wjLlMy61eKtF417vtyEteQCN0dl11/9NWobUbDM7qPWD8TyanboW5MaBs+TQMTq
-         K0Q/WU4v3K78QWUAEJcxaAO+9KEc2mOFKggkq6gUapwjJMuJcaO4gX+1QJgxtTu4jTTj
-         8GWzVCryAga01hjJeL4Bo4EbLENfkxPEYmbpsopattO3ca5yx4z1P0Rz/RWHD/w7ov9o
-         mbhCT5bHtpM6PD4Lw60eyXrqnX53JJGftvGUh9uLX3guA4PvNXwiZvNCKgrZRtwf1xFH
-         gppTU9CtHIuSWAAhwT2d7dZCt8z8BNG6QkGXyE2B4bJNuVi5FAp8bsut7k33QKZ5T2r0
-         jnJg==
-X-Gm-Message-State: AOAM531olu2BDIu+tB/hMKU8OeZy80AmhKuClhv5aRNc+QHcIOtPupF+
-        K/vA0WfHS27eNYf4NrNPVIkGTqYqJZo=
-X-Google-Smtp-Source: ABdhPJwfbyymmzhlGHY5wfS5TI9dKLhBfKmIkiJqamxf2F1ZSxfihIfR97wOK0VcD8yeX7PgncW7xQ==
-X-Received: by 2002:a63:ff4b:: with SMTP id s11mr31635563pgk.436.1625020462030;
-        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id w21sm5964589pge.30.2021.06.29.19.34.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 19:34:21 -0700 (PDT)
-Subject: Re: [PATCH net v2] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
-To:     Doug Berger <opendmb@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210630001419.402366-1-opendmb@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4a6b88ef-fbec-e5bc-f4d9-0abaa6ae799b@gmail.com>
-Date:   Tue, 29 Jun 2021 19:34:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 29 Jun 2021 22:38:08 -0400
+X-UUID: 5911c5eb51dc4d4887087db639e97605-20210630
+X-UUID: 5911c5eb51dc4d4887087db639e97605-20210630
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1746401114; Wed, 30 Jun 2021 10:35:36 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Jun 2021 10:35:13 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 30 Jun 2021 10:35:12 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
+Subject: [PATCH 00/24] MT8195 IOMMU SUPPORT
+Date:   Wed, 30 Jun 2021 10:34:40 +0800
+Message-ID: <20210630023504.18177-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210630001419.402366-1-opendmb@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset add mt8195 iommu supports.
 
+mt8195 have 3 IOMMU HWs. 2 IOMMU HW is for multimedia, and 1 IOMMU HW is
+for infra-master, like PCIe/USB.
 
-On 6/29/2021 5:14 PM, Doug Berger wrote:
-> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
-> logic of the internal PHY to prevent the system from sleeping. Some
-> internal PHYs will report that energy is detected when the network
-> interface is closed which can prevent the system from going to sleep
-> if WoL is enabled when the interface is brought down.
-> 
-> Since the driver does not support waking the system on this logic,
-> this commit clears the bit whenever the internal PHY is powered up
-> and the other logic for manipulating the bit is removed since it
-> serves no useful function.
-> 
-> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
+About the 2 MM IOMMU HW, something like this:
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+        IOMMU(VDO)          IOMMU(VPP)
+           |                   |
+      SMI_COMMON(VDO)      SMI_COMMON(VPP)
+      ---------------     ----------------
+      |      |   ...      |      |     ...
+    larb0 larb2  ...    larb1 larb3    ...
+
+these two MM IOMMU HW share a pgtable.
+
+About the INFRA IOMMU, it don't have larbs, the master connects the iommu
+directly. It use a dependent pgtable.
+
+Also, mt8195 IOMMU bank supports..Normally the IOMMU register size only
+is 0x1000. In this IOMMU HW, the register size is 5 * 0x1000. each 0x1000
+is a bank. the banks' register look like this:
+     ----------------------------------------
+     |bank0  | bank1 | bank2 | bank3 | bank4|
+     ----------------------------------------
+     |global |
+     |control|         null
+     |regs   |
+     -----------------------------------------
+     |bank   |bank   |bank   |bank   |bank   |
+     |regs   |regs   |regs   |regs   |regs   |
+     |       |       |       |       |       |
+     -----------------------------------------
+All the banks share some global control registers, and each bank have its
+special bank registers, like pgtable base registser, tlb operation registers,
+the fault status registers.
+ 
+In mt8195, we enable this bank feature for infra iommu, We put PCIe in bank0
+and USB in bank4. they have independent pgtable.
+
+patch[1..15]:  support mt8195 iommu. 
+patch[16..24]: support bank feature.
+
+base on v5.13-rc1.
+
+todo: there is another APU_IOMMU in mt8195, this should depend on APU patches.
+thus, we need add that feature after that.
+
+---
+Yong Wu (24):
+  dt-bindings: mediatek: mt8195: Add binding for MM IOMMU
+  dt-bindings: mediatek: mt8195: Add binding for infra IOMMU
+  iommu/mediatek: Fix 2 HW sharing pgtable issue
+  iommu/mediatek: Adapt sharing and non-sharing pgtable case
+  iommu/mediatek: Add 12G~16G support for mult domain
+  iommu/mediatek: Add a flag DCM_DISABLE
+  iommu/mediatek: Add flag NON_STD_AXI
+  iommu/mediatek: Remove for_each_m4u in tlb_sync_all
+  iommu/mediatek: Always pm_runtime_get while tlb flush
+  iommu/mediatek: Always enable output PA over 32bits
+  iommu/mediatek: Add SUB_COMMON_3BITS flag
+  iommu/mediatek: Add IOMMU_TYPE flag
+  iommu/mediatek: Add infra iommu support
+  iommu/mediatek: Add PCIe support
+  iommu/mediatek: Add mt8195 support
+  iommu/mediatek: Only adjust code about register base
+  iommu/mediatek: Just move code position in hw_init
+  iommu/mediatek: Add mtk_iommu_bank_data structure
+  iommu/mediatek: Initialise bank HW for each a bank
+  iommu/mediatek: Add bank_nr and bank_enable
+  iommu/mediatek: Change the domid to iova_region_id
+  iommu/mediatek: Get the proper bankid for multi banks
+  iommu/mediatek: Add multi bank support
+  iommu/mediatek: mt8195: Enable multi-bank for infra iommu
+
+ .../bindings/iommu/mediatek,iommu.yaml        |  21 +-
+ drivers/iommu/mtk_iommu.c                     | 760 ++++++++++++------
+ drivers/iommu/mtk_iommu.h                     |  33 +-
+ .../dt-bindings/memory/mt8195-memory-port.h   | 408 ++++++++++
+ include/dt-bindings/memory/mtk-memory-port.h  |   2 +
+ 5 files changed, 961 insertions(+), 263 deletions(-)
+ create mode 100644 include/dt-bindings/memory/mt8195-memory-port.h
+
 -- 
-Florian
+2.18.0
+
+
