@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018773B83FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612AB3B8421
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhF3Nvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:51:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33046 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbhF3NuM (ORCPT
+        id S236174AbhF3Nwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:52:31 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:44984 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235449AbhF3NuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:12 -0400
-Date:   Wed, 30 Jun 2021 13:47:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060862;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YLTeLrGXcrRR8NMRvf2HpCr944I7u62/+PnMzMSpKmQ=;
-        b=rL4Gi0wBM5XPTy1gIyyL5xRDKbwoMPOGyJ1ESW2iw7jPfKVF3NlR/q404pHwgWHrbb5Q1y
-        YwsOpZlZ4ECax8uiozmPSfrNxBqmGvsP0ocxHUD+e6LPkLIO8zRLkVvIiP5kZWokGb9gB+
-        pxlPngOpiqn8mls5Jeml/RurNjKd59HBoeCBK7vBUn7kF2ncxxhEUQx+zdR8cHoW0X913o
-        Y5tyyEFiCW2a2b1uEK6cMy/NMO0lfXbQAG9kYKbrNazGlqFcqhSR1Ctk6tYiy/DJoa5Pxx
-        0yewkEAwB9p6ZOCyfosiA8YuW8Csvok/84arDP4IT0+ySuawPwbaEXi2mCV9Iw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060862;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=YLTeLrGXcrRR8NMRvf2HpCr944I7u62/+PnMzMSpKmQ=;
-        b=rqYLj2+fwR6kfq3FV6FxSmOzQT/ZBcMFg7xL8mNZ4NpKcaSJSvL4CtixorB+jr+ukAO01e
-        vbXWhM9L7+2Xt/Dg==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Consolidate rcu_torture_boost() timing
- and statistics
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <162506086199.395.9495219438891545774.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 30 Jun 2021 09:50:21 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id AEB76C09D8;
+        Wed, 30 Jun 2021 21:47:49 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139710655624960S1625060866985686_;
+        Wed, 30 Jun 2021 21:47:50 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <e4b50b4069f645780f6a928589561673>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v10 06/10] clk: rockchip: Add support for hclk_sfc on rk3036
+Date:   Wed, 30 Jun 2021 21:47:41 +0800
+Message-Id: <20210630134745.7561-2-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+References: <20210630134702.7346-1-jon.lin@rock-chips.com>
+ <20210630134745.7561-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+Add support for the bus clock for the serial flash controller on the
+rk3036. Taken from the Rockchip BSP kernel but not tested on real
+hardware (as I lack a 3036 based SoC to test).
 
-Commit-ID:     8c7ec02e2a69807db8024635b48829dca5701c42
-Gitweb:        https://git.kernel.org/tip/8c7ec02e2a69807db8024635b48829dca5701c42
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 07 Apr 2021 20:00:00 -07:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:05:06 -07:00
-
-rcutorture: Consolidate rcu_torture_boost() timing and statistics
-
-This commit consolidates two loops in rcu_torture_boost(), one of which
-counts the number of boost-test episodes and the other of which computes
-the start time of the next episode, into one loop that does both with but
-a single acquisition of boost_mutex.  This means that the count of the
-number of boost-test episodes is incremented after an episode completes
-rather than before it starts, but it also avoids the over-counting that
-was possible previously.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- kernel/rcu/rcutorture.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 3defd0f..31338b2 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -956,15 +956,6 @@ static int rcu_torture_boost(void *arg)
- 		bool failed = false; // Test failed already in this test interval
- 		bool gp_initiated = false;
+Changes in v10: None
+Changes in v9:
+- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
+
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ drivers/clk/rockchip/clk-rk3036.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
+index 1986856d94b2..828af715d92e 100644
+--- a/drivers/clk/rockchip/clk-rk3036.c
++++ b/drivers/clk/rockchip/clk-rk3036.c
+@@ -404,7 +404,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
+ 	GATE(HCLK_OTG0, "hclk_otg0", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(5), 13, GFLAGS),
+ 	GATE(HCLK_OTG1, "hclk_otg1", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(7), 3, GFLAGS),
+ 	GATE(HCLK_I2S, "hclk_i2s", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
+-	GATE(0, "hclk_sfc", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(3), 14, GFLAGS),
++	GATE(HCLK_SFC, "hclk_sfc", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 14, GFLAGS),
+ 	GATE(HCLK_MAC, "hclk_mac", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 5, GFLAGS),
  
--		/* Increment n_rcu_torture_boosts once per boost-test */
--		while (!kthread_should_stop()) {
--			if (mutex_trylock(&boost_mutex)) {
--				n_rcu_torture_boosts++;
--				mutex_unlock(&boost_mutex);
--				break;
--			}
--			schedule_timeout_uninterruptible(1);
--		}
- 		if (kthread_should_stop())
- 			goto checkwait;
- 
-@@ -1015,7 +1006,10 @@ static int rcu_torture_boost(void *arg)
- 		 */
- 		while (oldstarttime == boost_starttime && !kthread_should_stop()) {
- 			if (mutex_trylock(&boost_mutex)) {
--				boost_starttime = jiffies + test_boost_interval * HZ;
-+				if (oldstarttime == boost_starttime) {
-+					boost_starttime = jiffies + test_boost_interval * HZ;
-+					n_rcu_torture_boosts++;
-+				}
- 				mutex_unlock(&boost_mutex);
- 				break;
- 			}
+ 	/* pclk_peri gates */
+-- 
+2.17.1
+
+
+
