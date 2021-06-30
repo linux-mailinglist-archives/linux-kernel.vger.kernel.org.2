@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2023B86D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8DB3B86DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhF3QNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35070 "EHLO mail.kernel.org"
+        id S232005AbhF3QNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:13:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhF3QNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:13:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84CE661456;
-        Wed, 30 Jun 2021 16:11:01 +0000 (UTC)
+        id S229510AbhF3QNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 12:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34FD261580;
+        Wed, 30 Jun 2021 16:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625069462;
-        bh=Mn6BvXNRp0phAqi6zTdlYuSEGtWIvr3Z3ZC/zZJaBEA=;
+        s=k20201202; t=1625069464;
+        bh=hRk1k2vA8J8z5bDFLDZg/vA+rKnE+U45Ab3oTqM80Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gLwnimKq6hyYCW3BqM/23ionIcvsfNBkyoMyHgU6iSp0WZLTbGdggsInvc8h+FuOe
-         3iGMY/PoI4WTYi38sKKhiRmbVjWM3eVIGyQXRgEiLQ1PHyh1ZuPJvdtJEVleNyPcok
-         r3dwu6rey7IERKoRrDWAn8GxR1d3P5D8JouEJ0PjtWGcIJwB74BLBbkdNg2A7vvzcg
-         +M+UzKQKvOiIhmlZReIl4DYBlfNXmRRaEgZl4MLszvikVmbj7G8ZLE2Aa34kS5Vi7v
-         XJ3VS4kHXwM/QR1MG+Ld9PCBsXc8oEaOTWtNX0LQI+4msrfaKjPekp9V19suP89V9Y
-         qRLv+zdKwPzTQ==
+        b=Vde7rzAahYduG5+0Eqq6aX0taJMht9FNIeQCHYAqmgsQYyHmi9voiPgmx3pcYu2UI
+         DABHn7isAoeMX/S9Haa9/CnuMRXMUPOu/pSITrFzBQMN4mb9HilfgaW1HUJ2atBCCK
+         xv3HAwWfQF3uahpmQHXDlLgxlvUlYyQW4X6sCOeiK8Q57ErpX2nAlirHka4OO6qelC
+         rZ3Ow7j57oEZlYaxdMyS4bFJ0uNKLCE0Pun4T8qZoqjsf+0OWI6ws4JOw8JkhcMIBQ
+         o9oi8d68ykgUHERtNOQNLaA17831LmfIy51WLkx44SPrY9qI9FzsRqTfCtSY/AlYzo
+         CqZGeEhXHY0Fw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>,
-        amelie.delaunay@foss.st.com
-Cc:     Mark Brown <broonie@kernel.org>, alexandre.torgue@foss.st.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        fabrice.gasnier@foss.st.com, mcoquelin.stm32@gmail.com,
-        linux-spi@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/6] spi: stm32: various fixes & cleanup
-Date:   Wed, 30 Jun 2021 17:10:30 +0100
-Message-Id: <162506903591.43818.15164606693002988349.b4-ty@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH RFT] regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
+Date:   Wed, 30 Jun 2021 17:10:31 +0100
+Message-Id: <162506887371.43733.11140131215302795434.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
-References: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
+In-Reply-To: <20210630074246.2305166-1-axel.lin@ingics.com>
+References: <20210630074246.2305166-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,29 +43,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 10:45:17 +0200, Alain Volmat wrote:
-> This series contains fixes & cleanup mainly regarding fifo
-> and the way end of transfer triggered, when used with or
-> without DMA.
-> An additional patch cleans up the pm_runtime calls.
-> 
-> Alain Volmat (5):
->   spi: stm32: fixes pm_runtime calls in probe/remove
->   spi: stm32h7: fix full duplex irq handler handling
->   Revert "spi: stm32: properly handle 0 byte transfer"
->   spi: stm32h7: don't wait for EOT and flush fifo on disable
->   spi: stm32: finalize message either on dma callback or EOT
-> 
-> [...]
+On Wed, 30 Jun 2021 15:42:46 +0800, Axel Lin wrote:
+> Since config.dev = pdev->dev.parent in current code, so
+> dev_get_drvdata(rdev->dev.parent) actually returns the drvdata of the mfd
+> device rather than the regulator. Fix it.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[2/6] spi: stm32h7: fix full duplex irq handler handling
-      commit: e4a5c19888a5f8a9390860ca493e643be58c8791
+[1/1] regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
+      commit: 5db5dd5be70eaf808d9fd90174b957fc5c2912cb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
