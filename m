@@ -2,51 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EAD3B81ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6603B81E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhF3MU5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 08:20:57 -0400
-Received: from aposti.net ([89.234.176.197]:54396 "EHLO aposti.net"
+        id S234539AbhF3MUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:20:42 -0400
+Received: from mga05.intel.com ([192.55.52.43]:10895 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234537AbhF3MUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:20:55 -0400
-Date:   Wed, 30 Jun 2021 13:18:14 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 6/6] clk: ingenic: Add support for the JZ4760
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        list@opendingux.net,
-        =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Message-Id: <EUKIVQ.JY7MPI8PMAKC3@crapouillou.net>
-In-Reply-To: <162484860391.2516444.9536343468022864909@swboyd.mtv.corp.google.com>
-References: <20210530164923.18134-1-paul@crapouillou.net>
-        <20210530164923.18134-7-paul@crapouillou.net>
-        <162484860391.2516444.9536343468022864909@swboyd.mtv.corp.google.com>
+        id S234376AbhF3MUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:20:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="293973467"
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="293973467"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 05:18:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="419972036"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 05:18:01 -0700
+Subject: Re: [PATCH] [RESEND] mmc: sdhci-pci-gli: Improve Random 4K Read
+ Performance of GL9763E
+To:     Renius Chen <reniuschengl@gmail.com>, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben.Chuang@genesyslogic.com.tw
+References: <20210624032543.101861-1-reniuschengl@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <916ea01b-4265-0964-9139-8f50b80ea66e@intel.com>
+Date:   Wed, 30 Jun 2021 15:18:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210624032543.101861-1-reniuschengl@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Stephen.
-
--Paul
-
-
-Le dim., juin 27 2021 at 19:50:03 -0700, Stephen Boyd 
-<sboyd@kernel.org> a écrit :
-> Quoting Paul Cercueil (2021-05-30 09:49:23)
->>  Add the CGU code and the compatible string to the TCU driver to 
->> support
->>  the JZ4760 SoC.
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
+On 24/06/21 6:25 am, Renius Chen wrote:
+> During a sequence of random 4K read operations, the performance will be
+> reduced due to spending much time on entering/exiting the low power state
+> between requests. We disable the low power state negotiation of GL9763E
+> during a sequence of random 4K read operations to improve the performance
+> and enable it again after the operations have finished.
 > 
-> Applied to clk-next
+> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
+>  1 file changed, 86 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index 302a7579a9b3..0105f728ccc4 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -88,6 +88,9 @@
+>  #define PCIE_GLI_9763E_SCR	 0x8E0
+>  #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
+>  
+> +#define PCIE_GLI_9763E_CFG       0x8A0
+> +#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
+> +
+>  #define PCIE_GLI_9763E_CFG2      0x8A4
+>  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
+>  #define   GLI_9763E_CFG2_L1DLY_MID 0x54
+> @@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
+>  	sdhci_dumpregs(mmc_priv(mmc));
+>  }
+>  
+> +static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
+> +{
+> +	struct sdhci_host *host = mmc_priv(mmc);
+> +	struct mmc_command *cmd;
+> +	struct sdhci_pci_slot *slot = sdhci_priv(host);
+> +	struct pci_dev *pdev = slot->chip->pdev;
+> +	u32 value;
+> +	static bool start_4k_r;
+> +	static int  continuous_4k_r;
 
+Please do not use static variables.  Instead define a struct for them and
+set .priv_size in sdhci_pci_fixes e.g.
+
+struct sdhci_pci_gli {
+	static bool start_4k_r;
+	static int  continuous_4k_r;
+};
+
+const struct sdhci_pci_fixes sdhci_gl9763e = {
+	.quirks		= SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC,
+	.probe_slot	= gli_probe_slot_gl9763e,
+	.ops            = &sdhci_gl9763e_ops,
+#ifdef CONFIG_PM_SLEEP
+	.resume		= sdhci_cqhci_gli_resume,
+	.suspend	= sdhci_cqhci_gli_suspend,
+#endif
+	.add_host       = gl9763e_add_host,
+	.priv_size      = sizeof(struct sdhci_pci_gli);
+};
+
+And then you can get a pointer to it:
+
+struct sdhci_pci_gli *sdhci_pci_gli = sdhci_pci_priv(slot);
+
+
+> +
+> +	cmd = (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sbc : mrq->cmd;
+
+mrq->cmd is always the main command, so why look at mrq->sbc?
+
+> +
+> +	if (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) {
+> +		if (cmd->data->blocks == 8) {
+> +			continuous_4k_r++;
+> +
+> +			if ((!start_4k_r) && (continuous_4k_r >= 3)) {
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +				value &= ~GLI_9763E_VHS_REV;
+> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
+> +				value |= GLI_9763E_CFG_LPSN_DIS;
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
+> +
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +				value &= ~GLI_9763E_VHS_REV;
+> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +				start_4k_r = true;
+> +			}
+> +		} else {
+> +			continuous_4k_r = 0;
+> +
+> +			if (start_4k_r) {
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +				value &= ~GLI_9763E_VHS_REV;
+> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
+> +				value &= ~GLI_9763E_CFG_LPSN_DIS;
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
+> +
+> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +				value &= ~GLI_9763E_VHS_REV;
+> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +				start_4k_r = false;
+> +			}
+> +		}
+> +	} else {
+> +		continuous_4k_r = 0;
+> +
+> +		if (start_4k_r)	{
+> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +			value &= ~GLI_9763E_VHS_REV;
+> +			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
+> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
+> +			value &= ~GLI_9763E_CFG_LPSN_DIS;
+> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
+> +
+> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
+> +			value &= ~GLI_9763E_VHS_REV;
+> +			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
+> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+> +
+> +			start_4k_r = false;
+> +		}
+
+The code chunk above is the same as the previous and almost
+the same as the one before that.  Please make a separate function
+
+> +	}
+> +
+> +	sdhci_request(mmc, mrq);
+> +}
+> +
+> +
+>  static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
+>  {
+>  	struct cqhci_host *cq_host = mmc->cqe_private;
+> @@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+>  	gli_pcie_enable_msi(slot);
+>  	host->mmc_host_ops.hs400_enhanced_strobe =
+>  					gl9763e_hs400_enhanced_strobe;
+> +
+> +	host->mmc_host_ops.request = gl9763e_request;
+> +
+>  	gli_set_gl9763e(slot);
+>  	sdhci_enable_v4_mode(host);
+>  
+> 
 
