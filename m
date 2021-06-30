@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DED3B7DCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457023B7DCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhF3HEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:04:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232018AbhF3HEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:04:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D3C611AF;
-        Wed, 30 Jun 2021 07:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625036535;
-        bh=fHMMVrtlxKeaKsAvLWSY7uHaUoi7yT4jN4cdWFy07Ws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FT8PQ9XsaNMtbxvhMA+KQF2M5q77vzCstbkWP1GXp251+YRgazbFXCrMHcfQ3VLbc
-         vTkMf1hd+cX88d9/o5QBCRTAkOW5QbEJMT2kf+IKvUfe2q+zf1noQGKhHCIZbr5NVO
-         rJ3lyP6PU+GB9bBhLtT7Ga/QDTwQRkNXd6MFPhNHYZGlrD5oi8XGkSeHy2mjrSUuxO
-         k2ICLfkc87ujh7YP28lK33PmwSis3XUJIyJ86DhOimN3AykgQYX3es2CwapqfrTgZp
-         S4wr68Uxhlf72wLfK+2uzl4bn15SwRRWQ/aLJmHSM4ourpFATSxOGAWH1SQjiFye4Z
-         tDeiWt1HqOT+g==
-Date:   Wed, 30 Jun 2021 10:02:11 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 1/2] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <YNwW83ZpXZSSPDfM@unreal>
-References: <cover.1624955710.git.leonro@nvidia.com>
- <dadb01a81e7498f6415233cf19cfc2a0d9b312f2.1624955710.git.leonro@nvidia.com>
- <YNwIL4OguRO/CH6K@infradead.org>
- <YNwPX7BxPl22En9U@unreal>
- <YNwQLV87aBdclTYe@infradead.org>
+        id S232776AbhF3HF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhF3HFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:05:25 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CDC061766;
+        Wed, 30 Jun 2021 00:02:56 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id c20so618764uar.12;
+        Wed, 30 Jun 2021 00:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWGJQjLPHSCbQm/Yojx5qSO/ziuBYx37jmq+GyBBQNA=;
+        b=NRSymyDmOFevXISrQD3H5aC2pmJ6AvTmWud+3xO6T5O2wvFj+vqFmQ1bd4TL9qyvRH
+         rYtv3y3KDLfgQjQ1i1t5WJsQd3qSgLQwLgQisQTKENnPkk+86N+QISP02Qhh2n4PzA1H
+         RA4FsznmVS6Lf7j9EUQypfp+Y401dXqSzp8nqNYPxHAjjbHxz2PrPxGozTyGVFtX8Ycg
+         PRF29KJaC55AAv07F58A7UR/z/hOwVH0m7dOmmDIPOXQ1VZf03hSa2K6CsnYVCtn8TTf
+         326E6AG82FdSH7WpmR0LLSXJ/KFAgHpClrWpwKcPbpRKdBexW79Uh3p/CWEKFVGRkhXR
+         qWag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWGJQjLPHSCbQm/Yojx5qSO/ziuBYx37jmq+GyBBQNA=;
+        b=k7G9UCskDvr0YBPu6yWhr4L/lMhd2jNLhztX0FD6biDT8DkjLBOEg7Fj1FyaTD893o
+         Q7QbIAp4GPEutDuByApON5807N7kZfG6LkChF56tRIhZIFWet9f4a2bk2uMGfgRSrPEr
+         J0YCh5GhLhscN5OGi/MZHPUlQA1KJbCCucSs+9x0KdDRMFvjD95lP0ufh2CsfwOb8cvi
+         i5QDQL0jMTO2mefEylscZjgL9/eK7K/HQTuw9lxnhrJCPWWLgF73g1mGMI9F1OyoswDG
+         bEW0VDUs3li1BJlP9OEI8WmY8hawPPn0pGpdmcgg/cmJTbJOnZgFcVRY+50od4oTmbKL
+         XYNA==
+X-Gm-Message-State: AOAM532PiizCYpMV8BXEYhfNwJIR9OSWtqDaEfnHxtVYx93Y4XmDXe4b
+        ILxk/XyDsVgE2Xn96X3QU3i3GA6XQFzy8ZzscXI=
+X-Google-Smtp-Source: ABdhPJwYoGKIfotZeQTeYk/Fps+YEiMMdTjYBiQq8rzg4yQdxhpX9sPXUqSrgq0gFfUdpgg66wWjoHgyfiEgZAhLJ+Q=
+X-Received: by 2002:ab0:36da:: with SMTP id v26mr14995990uau.118.1625036575349;
+ Wed, 30 Jun 2021 00:02:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNwQLV87aBdclTYe@infradead.org>
+References: <20210629161738.936790-1-glider@google.com>
+In-Reply-To: <20210629161738.936790-1-glider@google.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 30 Jun 2021 12:32:43 +0530
+Message-ID: <CAFqt6zZ8ZL8WtTg368VJ0WHjXc+YzMuA9D8OBXJ5T9j0ePctQQ@mail.gmail.com>
+Subject: Re: [PATCH v2] kfence: skip DMA allocations
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>, elver@google.com,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        stable@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 07:33:17AM +0100, Christoph Hellwig wrote:
-> On Wed, Jun 30, 2021 at 09:29:51AM +0300, Leon Romanovsky wrote:
-> > On Wed, Jun 30, 2021 at 06:59:11AM +0100, Christoph Hellwig wrote:
-> > > On Tue, Jun 29, 2021 at 11:40:01AM +0300, Leon Romanovsky wrote:
-> > > > 2. Add a new field total_nents to reflect the total number of entries
-> > > >    in the table. This is required for the release flow (sg_free_table).
-> > > >    This filed should be used internally only by scatterlist.
-> > > 
-> > > No, please don't bloat the common structure.
-> > 
-> > Somehow we need to store that total_nents value and our internal
-> > proposal was to wrap sg_table with another private structure that is
-> > visible in lib/scatterlist.c only.
-> > 
-> > Something like that:
-> > struct sg_table_private {
-> >   struct sg_table table;
-> >   unsigned int total_nents;
-> > };
-> > 
-> > But it looks awkward.
-> 
-> Well, the important point is that we only need it for the new
-> way of collapsing, appending allocations.  We should not burden
-> it on all other users.
+On Tue, Jun 29, 2021 at 9:47 PM Alexander Potapenko <glider@google.com> wrote:
+>
+> Allocation requests with __GFP_DMA/__GFP_DMA32 or
+> SLAB_CACHE_DMA/SLAB_CACHE_DMA32 cannot be fulfilled by KFENCE, because
+> they must reside in low memory, whereas KFENCE memory pool is located in
+> high memory.
+>
+> Skip such allocations to avoid crashes where DMAable memory is expected.
+>
+> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: stable@vger.kernel.org # 5.12+
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+>
+> ---
+>
+> v2:
+>  - added parentheses around the GFP clause, as requested by Marco
+> ---
+>  mm/kfence/core.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index 4d21ac44d5d35..f7ce3d876bc9e 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -760,6 +760,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+>         if (size > PAGE_SIZE)
+>                 return NULL;
+>
+> +       /*
+> +        * Skip DMA allocations. These must reside in the low memory, which we
+> +        * cannot guarantee.
+> +        */
+> +       if ((flags & (__GFP_DMA | __GFP_DMA32)) ||
+> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> +               return NULL;
+> +
 
-Another possible solution is to change __sg_alloc_table()/__sg_alloc_table_from_pages
-to return total_nents and expect from the users to store it internally and pass
-it later to the __sg_free_table().
+I prefer to move this check at the top of the function.
+Although it won't make much difference except avoiding atomic operations
+in case this condition is true.
 
-Something like that.
-
-Thanks
+>         return kfence_guarded_alloc(s, size, flags);
+>  }
+>
+> --
+> 2.32.0.93.g670b81a890-goog
+>
+>
