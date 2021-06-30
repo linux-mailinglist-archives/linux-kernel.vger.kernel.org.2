@@ -2,85 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9053B8650
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5043B865D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbhF3Pij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S235841AbhF3Pk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235466AbhF3Pii (ORCPT
+        with ESMTP id S235508AbhF3Pk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:38:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7656C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:36:09 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lycFw-0005CI-LS; Wed, 30 Jun 2021 17:36:04 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lycFu-0003fc-Gl; Wed, 30 Jun 2021 17:36:02 +0200
-Date:   Wed, 30 Jun 2021 17:36:00 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin King <colin.king@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] pwm: ep93xx: Fix uninitialized variable bug in
- ep93xx_pwm_apply()
-Message-ID: <20210630153600.327ff7vcrx76lw26@pengutronix.de>
-References: <YNx1y8PlSLehZVIY@mwanda>
+        Wed, 30 Jun 2021 11:40:57 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C256C061756;
+        Wed, 30 Jun 2021 08:38:27 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id u7so1532182ion.3;
+        Wed, 30 Jun 2021 08:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fTg6aPlYdnMZc4cZ4vz9hUNOB1Qg7xkr6gdYsrqEqcE=;
+        b=ZtwmrQxYx4oxz4UpRtnRHNlIJz/+2poRpHN1qLK/0GKefj7xX7/AOqlTG/n1sC+3H2
+         iEYbLAXMc+Ken//UPG1f1OCQ8JY7W2cHBp9D7nTV0ReQNq7qnsiDd6s5ZsutkJ9nlnBt
+         lCChYQNSWBXErSoEiaEfezxITNnonHY2qI+D9GGd2wj/KjszLcp9CUyGqlTD+/4iBMrS
+         YDhqu57LR5x/PrBW/A7G+QKlKJWMMOOx1zwkD2jse+YbC5ngcyXH+vkTHvmGVFoKnjWa
+         yOK8psQd6wyKM+FTIJMeqsGwohD3lfwmunUgenfoL/OeRZNI2AQCwudFKt+Dqt7lDdMI
+         aZJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fTg6aPlYdnMZc4cZ4vz9hUNOB1Qg7xkr6gdYsrqEqcE=;
+        b=UA40yN5l5deqQqFjo/uk6fmleZ/1wnxqbOq+Vk0704mzlRNr+6rh05WGgqjFxFR/HB
+         0j+tV13zKhzJ24t/f9rwTW2IAHkTf7NJZWMgMWU6nGJBQbTX0M0WInsEK0NSseUmoEBE
+         +eXpuBhcZQmwzf38D5NuUgXVg37pvPQZ7Su0CRf1CzS7qFIwj1jLDJWoMMtSkI9RiKdo
+         OZHyOD84oTOmHi97Mk/Mass80T7TZeECh93ErmGox1uWKiwRKRHoKBJEh1FvZaBuyj2A
+         +nE0pbKRGPtPeteOvgcjDiq9oiR6I9u2pJdnx16iejmhxI2xdnnowYVLhIF7GiL3qnhZ
+         ivDA==
+X-Gm-Message-State: AOAM530DQw2G+/RKvZewoqyFfWTO4W6228El80ZyUypLpE9oC8sSSaE6
+        L1QwJqELTnDYjS7td+NPVK8f6itidQBVzEYHtFE=
+X-Google-Smtp-Source: ABdhPJyPiSsimHoJ7OydcwrteA3FKRKE6K7bCBEsQ8jMpw0DtLhzqlalh0/EWtrUpLvUduS3Q0UvHh81asRCVECSuM4=
+X-Received: by 2002:a02:8790:: with SMTP id t16mr9329242jai.81.1625067506964;
+ Wed, 30 Jun 2021 08:38:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vphn4jk3p3wcvnpg"
-Content-Disposition: inline
-In-Reply-To: <YNx1y8PlSLehZVIY@mwanda>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210630134449.16851-1-lhenriques@suse.de> <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
+ <YNyIYNpcy2WsnUnu@suse.de>
+In-Reply-To: <YNyIYNpcy2WsnUnu@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 18:38:16 +0300
+Message-ID: <CAOQ4uxj5r86cM6KgvkjgwUrHwZ0ASVUR8OMzu5wUmCxOV9rLRw@mail.gmail.com>
+Subject: Re: [PATCH v10] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Petr Vorel <pvorel@suse.cz>,
+        kernel test robot <oliver.sang@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 30, 2021 at 6:06 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> On Wed, Jun 30, 2021 at 05:56:34PM +0300, Amir Goldstein wrote:
+> > On Wed, Jun 30, 2021 at 4:44 PM Luis Henriques <lhenriques@suse.de> wrote:
+> > >
+> > > A regression has been reported by Nicolas Boichat, found while using the
+> > > copy_file_range syscall to copy a tracefs file.  Before commit
+> > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> > > kernel would return -EXDEV to userspace when trying to copy a file across
+> > > different filesystems.  After this commit, the syscall doesn't fail anymore
+> > > and instead returns zero (zero bytes copied), as this file's content is
+> > > generated on-the-fly and thus reports a size of zero.
+> > >
+> > > This patch restores some cross-filesystem copy restrictions that existed
+> > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> > > devices").  Filesystems are still allowed to fall-back to the VFS
+> > > generic_copy_file_range() implementation, but that has now to be done
+> > > explicitly.
+> > >
+> > > nfsd is also modified to fall-back into generic_copy_file_range() in case
+> > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> > >
+> > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > > ---
+> > > Changes since v9
+> > > - the early return from the syscall when len is zero now checks if the
+> > >   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
+> > >   otherwise.  Issue reported by test robot.
+> >
+> > What issue was reported?
+>
+> Here's the link to my previous email:
+>
+> https://lore.kernel.org/linux-fsdevel/877dk1zibo.fsf@suse.de/
+>
 
---vphn4jk3p3wcvnpg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry, I missed it. I guess the subject was not aluring enough ;-)
 
-Hello,
+So your patch does not fix the root cause.
+The solution is to remove the (len == 0) short-circuit as you first suggested.
 
-this problem was found already earlier by Colin King:
+The problem is this:
+A program tries to check for CFR support by calling CFR with zero length.
+The XFS filesystem driver (in the test robot report) supports CFR via the
+remap_file_range() method in general, but not on the particular filesystem
+instance that was formatted without reflink support.
+The intention of the program was to test for CFR support on the particular
+filesystem instance, so the short-circuit response is wrong.
 
-	https://lore.kernel.org/r/20210629172253.43131-1-colin.king@canonical.com
+Note that vfs_clone_file_range() does NOT short circuit (len == 0).
+That is (allegedly) because it needs to call into the filesystem
+method to know if the filesystem instance supports clone_file_range.
 
-I'm fine with either change.
+The reason that your patch is wrong is because the same situation
+can happen with a filesystem driver that has a copy_file_range()
+method, but a particular instance does not support copy_file_range().
+For example, overlayfs has an ovl_copy_file_range() method, so it would
+short circuit zero CFR, but if in a particular overlayfs, the upper fs does
+not support CFR, then the overlayfs instance does not support CFR either.
 
-Best regards
-Uwe
+> ... which reminds me that I need to also send a patch to fix the fstest.
+> (Although the test as-is actually allowed to find this bug...)
+>
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Not sure why you'd want to fix the test.
+The test check with a zero length file seems valid to me.
 
---vphn4jk3p3wcvnpg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDcj10ACgkQwfwUeK3K
-7AmM7wf/e97AoCAkzfOVrEkGepxK6NtmYvP59bREHrSkc6WWjRtwhe2PoHG/IzdH
-aDSuq2c0fk3SAcfocPBHKg87iTOPR6sQb/f853pze5fdURgJy46DzcRT1bEjnXlf
-0iSbHWiLmtYQVfidvopKrazQz/6OPxpm+1NLH6Qsia7YxZhaO/9XHJPQuXIQphq0
-zfnr8jHnB25yuo32GCMb1lQg4poOVvLXpIY1IWME910jn8JT9/Ui8lUiN1bIkR9d
-Hkksrq+KLHFa+opJLcLg2D9V8Y+gXycS3xmm0XU3EyUJrJc11ZPFiPgfGXl3i+Xr
-ar3u5ALK5GVQG+QhxSQMC4AY/JJWIw==
-=12r2
------END PGP SIGNATURE-----
-
---vphn4jk3p3wcvnpg--
+Thanks,
+Amir.
