@@ -2,209 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3C13B80A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FC33B80A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbhF3KK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:10:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62142 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234057AbhF3KK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:10:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625047707; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=V2ANtGMjJP031vwtea0cvuT0DcS61OO8FRdPjBQ676g=;
- b=eA/YWnsYUt1CDJZbaM3vu8mKoIwVoLGmm2iGOv7Smy/RfNKRyTyJ6Cwk9wS/MpLh/KO29mbp
- fRS0p/6evUZewk8CmKVyxmiV2u6eRX8VWxtxks3upRt9ON1I3eN0jThW+TV0e/zkn1w26Pw4
- pRbjCYoofdbMxUK7/a71YfbzQDg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60dc42803a8b6d0a45791531 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 10:08:00
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0543C43143; Wed, 30 Jun 2021 10:08:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17A87C433D3;
-        Wed, 30 Jun 2021 10:07:59 +0000 (UTC)
+        id S234171AbhF3KMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233977AbhF3KMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 06:12:06 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DD0C061756;
+        Wed, 30 Jun 2021 03:09:36 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m18so2936824wrv.2;
+        Wed, 30 Jun 2021 03:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bMVLDigKGHOA70uFqGEfGiGvI3aZeUwtP1JJ7VoIC5k=;
+        b=mCO0Vjp0DY1c7AOnrZm8yEuoTIlzARgNEfrQCSTAju3qFytxHDcuTld9bRMirW0jXC
+         AvQxM6ev64yemdfaHRU3s4zU9C2yBdnpzdw9n6eqXHaKmGZO3eaoBX6mWTJfp0PLIdPL
+         ctqDfcBZJPAm/KU0jsBp7n4pvR10KxeX5I8NMTCaJSntwsU6p4DKFdsjeTbRp0t3sZj+
+         APRc20dfpLEvsZVE7semeRGllV1vAkrM7nzmOFVCmYBuXhfPGgE/yLWupnGDrGtI8HRe
+         2cieVRMOZLJZL8wfFcGrg297k4+iEJEBHp0jTEJ2AT6YOpOCRpSuCh2xAM1XPHWl/d8Z
+         9Hag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bMVLDigKGHOA70uFqGEfGiGvI3aZeUwtP1JJ7VoIC5k=;
+        b=Ob/jVp+bG/KKZM3lQK0XP368HXCAPZAlMNY4n9xTTfo5hkUiDT5+NCptfGF6OGwU5L
+         TkAvlwud7P9dmZE9C+EeXkDwokciN+f5xK/7O/Rk/uU6wBwrOcMmGVDs+XuxjW55llJL
+         KFjOT8i5kL079Ft6p8sErbKGRifxCJEepJFD6vXatL9ZMsiWzgF3naH1jkxgh2aUgfcF
+         Y6WUX5uJxbyNQijZ8P6Q97YNIJXNcQCrKwwxuXb3XPNLpI1cDojMHAq4Y0/B1KEfPJl5
+         mWrQbeljdEJBwBww/5E+HZV3FHKl7GbWASSbZgjfEOtM2XH4fHNFRlHuXpPhoWcOKsAv
+         j6kA==
+X-Gm-Message-State: AOAM532oX4jEH54xM24hAjLVKPNBklEWT97SebyE5Ap6pf2quTKDTepp
+        trQrPnPcz/uDENlsTGMS56M=
+X-Google-Smtp-Source: ABdhPJxaundJE3ee0kOumkFGhPWtGnTJFIwA8+witOHEXmhWGFd3KCysT7HkN3eWIxHazThOvAANsA==
+X-Received: by 2002:a5d:64a1:: with SMTP id m1mr37762338wrp.377.1625047775360;
+        Wed, 30 Jun 2021 03:09:35 -0700 (PDT)
+Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net. [89.212.178.211])
+        by smtp.gmail.com with ESMTPSA id f2sm11607244wrd.64.2021.06.30.03.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 03:09:34 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     pizza@shaftnet.org, Arnd Bergmann <arnd@arndb.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
+Date:   Wed, 30 Jun 2021 12:09:33 +0200
+Message-ID: <2049952.mNMznikF6L@jernej-laptop>
+In-Reply-To: <CAPDyKFo6AVGq5Q9bRKPjypRMxisLf0nZWLtSeARGO-3kO7=+zQ@mail.gmail.com>
+References: <20210622202345.795578-1-jernej.skrabec@gmail.com> <CAPDyKFo6AVGq5Q9bRKPjypRMxisLf0nZWLtSeARGO-3kO7=+zQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 30 Jun 2021 15:37:59 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
- flag
-In-Reply-To: <20210325173311.GA15504@willie-the-truck>
-References: <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210129090516.GB3998@willie-the-truck>
- <5d23fce629323bcda71594010824aad0@codeaurora.org>
- <20210201111556.GA7172@willie-the-truck>
- <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
- <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
- <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
- <20210203214612.GB19847@willie-the-truck>
- <4988e2ef35f76a0c2f1fe3f66f023a3b@codeaurora.org>
- <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
- <20210325173311.GA15504@willie-the-truck>
-Message-ID: <21239ba603d0bdc4e4c696588a905f88@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+Hi Ulf!
 
-On 2021-03-25 23:03, Will Deacon wrote:
-> On Tue, Mar 09, 2021 at 12:10:44PM +0530, Sai Prakash Ranjan wrote:
->> On 2021-02-05 17:38, Sai Prakash Ranjan wrote:
->> > On 2021-02-04 03:16, Will Deacon wrote:
->> > > On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
->> > > > On 2021-02-01 23:50, Jordan Crouse wrote:
->> > > > > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
->> > > > > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
->> > > > > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
->> > > > > > > > On 2021-01-29 14:35, Will Deacon wrote:
->> > > > > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
->> > > > > > > > > > +#define IOMMU_LLC        (1 << 6)
->> > > > > > > > >
->> > > > > > > > > On reflection, I'm a bit worried about exposing this because I think it
->> > > > > > > > > will
->> > > > > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
->> > > > > > > > > MAIR
->> > > > > > > > > set up for this memory type). Now, we also have that issue for the PTW,
->> > > > > > > > > but
->> > > > > > > > > since we always use cache maintenance (i.e. the streaming API) for
->> > > > > > > > > publishing the page-tables to a non-coheren walker, it works out.
->> > > > > > > > > However,
->> > > > > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
->> > > > > > > > > allocation, then they're potentially in for a nasty surprise due to the
->> > > > > > > > > mismatched outer-cacheability attributes.
->> > > > > > > > >
->> > > > > > > >
->> > > > > > > > Can't we add the syscached memory type similar to what is done on android?
->> > > > > > >
->> > > > > > > Maybe. How does the GPU driver map these things on the CPU side?
->> > > > > >
->> > > > > > Currently we use writecombine mappings for everything, although there
->> > > > > > are some cases that we'd like to use cached (but have not merged
->> > > > > > patches that would give userspace a way to flush/invalidate)
->> > > > > >
->> > > > >
->> > > > > LLC/system cache doesn't have a relationship with the CPU cache.  Its
->> > > > > just a
->> > > > > little accelerator that sits on the connection from the GPU to DDR and
->> > > > > caches
->> > > > > accesses. The hint that Sai is suggesting is used to mark the buffers as
->> > > > > 'no-write-allocate' to prevent GPU write operations from being cached in
->> > > > > the LLC
->> > > > > which a) isn't interesting and b) takes up cache space for read
->> > > > > operations.
->> > > > >
->> > > > > Its easiest to think of the LLC as a bonus accelerator that has no cost
->> > > > > for
->> > > > > us to use outside of the unfortunate per buffer hint.
->> > > > >
->> > > > > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
->> > > > > different hint) and in that case we have all of concerns that Will
->> > > > > identified.
->> > > > >
->> > > >
->> > > > For mismatched outer cacheability attributes which Will
->> > > > mentioned, I was
->> > > > referring to [1] in android kernel.
->> > >
->> > > I've lost track of the conversation here :/
->> > >
->> > > When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also
->> > > mapped
->> > > into the CPU and with what attributes? Rob said "writecombine for
->> > > everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
->> > >
->> >
->> > Rob answered this.
->> >
->> > > Finally, we need to be careful when we use the word "hint" as
->> > > "allocation
->> > > hint" has a specific meaning in the architecture, and if we only
->> > > mismatch on
->> > > those then we're actually ok. But I think IOMMU_LLC is more than
->> > > just a
->> > > hint, since it actually drives eviction policy (i.e. it enables
->> > > writeback).
->> > >
->> > > Sorry for the pedantry, but I just want to make sure we're all talking
->> > > about the same things!
->> > >
->> >
->> > Sorry for the confusion which probably was caused by my mentioning of
->> > android, NWA(no write allocate) is an allocation hint which we can
->> > ignore
->> > for now as it is not introduced yet in upstream.
->> >
->> 
->> Any chance of taking this forward? We do not want to miss out on small 
->> fps
->> gain when the product gets released.
+Dne sreda, 30. junij 2021 ob 12:03:13 CEST je Ulf Hansson napisal(a):
+> On Tue, 22 Jun 2021 at 22:23, Jernej Skrabec <jernej.skrabec@gmail.com> 
+wrote:
+> > It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
+> > memory allocated on stack, SDIO operations fail due to invalid memory
+> > address conversion:
+> > 
+> > cw1200_wlan_sdio: Probe called
+> > sunxi-mmc 4021000.mmc: DMA addr 0x0000800051eab954+4 overflow (mask
+> > ffffffff, bus limit 0). WARNING: CPU: 2 PID: 152 at
+> > kernel/dma/direct.h:97 dma_direct_map_sg+0x26c/0x28c CPU: 2 PID: 152
+> > Comm: kworker/2:2 Not tainted 5.13.0-rc1-00026-g84114ef026b9-dirty #85
+> > Hardware name: X96 Mate (DT)
+> > Workqueue: events_freezable mmc_rescan
+> > pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> > pc : dma_direct_map_sg+0x26c/0x28c
+> > lr : dma_direct_map_sg+0x26c/0x28c
+> > sp : ffff800011eab540
+> > x29: ffff800011eab540 x28: ffff800011eab738 x27: 0000000000000000
+> > x26: ffff000001daf010 x25: 0000000000000000 x24: 0000000000000000
+> > x23: 0000000000000002 x22: fffffc0000000000 x21: ffff8000113b0ab0
+> > x20: ffff80001181abb0 x19: 0000000000000001 x18: ffffffffffffffff
+> > x17: 00000000fa97f83f x16: 00000000d2e01bf8 x15: ffff8000117ffb1d
+> > x14: ffffffffffffffff x13: ffff8000117ffb18 x12: fffffffffffc593f
+> > x11: ffff800011676ad0 x10: fffffffffffe0000 x9 : ffff800011eab540
+> > x8 : 206b73616d282077 x7 : 000000000000000f x6 : 000000000000000c
+> > x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> > x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000283b800
+> > 
+> > Call trace:
+> >  dma_direct_map_sg+0x26c/0x28c
+> >  dma_map_sg_attrs+0x2c/0x60
+> >  sunxi_mmc_request+0x70/0x420
+> >  __mmc_start_request+0x68/0x134
+> >  mmc_start_request+0x84/0xac
+> >  mmc_wait_for_req+0x70/0x100
+> >  mmc_io_rw_extended+0x1cc/0x2c0
+> >  sdio_io_rw_ext_helper+0x194/0x240
+> >  sdio_memcpy_fromio+0x20/0x2c
+> >  cw1200_sdio_memcpy_fromio+0x20/0x2c
+> >  __cw1200_reg_read+0x34/0x60
+> >  cw1200_reg_read+0x48/0x70
+> >  cw1200_load_firmware+0x38/0x5d0
+> >  cw1200_core_probe+0x794/0x970
+> >  cw1200_sdio_probe+0x124/0x22c
+> >  sdio_bus_probe+0xe8/0x1d0
+> >  really_probe+0xe4/0x504
+> >  driver_probe_device+0x64/0xcc
+> >  __device_attach_driver+0xd0/0x14c
+> >  bus_for_each_drv+0x78/0xd0
+> >  __device_attach+0xdc/0x184
+> >  device_initial_probe+0x14/0x20
+> >  bus_probe_device+0x9c/0xa4
+> >  device_add+0x350/0x83c
+> >  sdio_add_func+0x6c/0x90
+> >  mmc_attach_sdio+0x1b0/0x430
+> >  mmc_rescan+0x254/0x2e0
+> >  process_one_work+0x1d0/0x34c
+> >  worker_thread+0x13c/0x470
+> >  kthread+0x154/0x160
+> >  ret_from_fork+0x10/0x34
+> > 
+> > sunxi-mmc 4021000.mmc: dma_map_sg failed
+> > sunxi-mmc 4021000.mmc: map DMA failed
+> > Can't read config register.
+> > 
+> > Fix that by using kmalloc() allocated memory for read/write 16/32
+> > funtions.
+> > 
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > 
-> Do we have a solution to the mismatched virtual alias?
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Thanks! But I found few more places which need this kind of fix:
+https://github.com/jernejsk/linux-1/commit/
+1cba9a7764c7d5bbdeb4ddeaa91ff20a0339f6ff
+
+I guess I can keep R-b tag?
+
+Best regards,
+Jernej
+
 > 
+> Kind regards
+> Uffe
+> 
+> > ---
+> > 
+> >  drivers/net/wireless/st/cw1200/hwio.c | 52 +++++++++++++++++++++------
+> >  drivers/net/wireless/st/cw1200/hwio.h | 51 ++++++++++++++++++++------
+> >  2 files changed, 83 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/drivers/net/wireless/st/cw1200/hwio.c
+> > b/drivers/net/wireless/st/cw1200/hwio.c index 3ba462de8e91..5521cb7f2233
+> > 100644
+> > --- a/drivers/net/wireless/st/cw1200/hwio.c
+> > +++ b/drivers/net/wireless/st/cw1200/hwio.c
+> > @@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common
+> > *priv, u16 addr,> 
+> >  static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
+> >  
+> >                                         u16 addr, u32 *val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp;
+> > -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
+> > -       *val = le32_to_cpu(tmp);
+> > +       __le32 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
+> > +       *val = le32_to_cpu(*tmp);
+> > +       kfree(tmp);
+> > 
+> >         return i;
+> >  
+> >  }
+> >  
+> >  static inline int __cw1200_reg_write_32(struct cw1200_common *priv,
+> >  
+> >                                         u16 addr, u32 val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp = cpu_to_le32(val);
+> > -       return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
+> > +       __le32 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       *tmp = cpu_to_le32(val);
+> > +       i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
+> > +       kfree(tmp);
+> > +       return i;
+> > 
+> >  }
+> >  
+> >  static inline int __cw1200_reg_read_16(struct cw1200_common *priv,
+> >  
+> >                                         u16 addr, u16 *val)
+> >  
+> >  {
+> > 
+> > -       __le16 tmp;
+> > -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
+> > -       *val = le16_to_cpu(tmp);
+> > +       __le16 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
+> > +       *val = le16_to_cpu(*tmp);
+> > +       kfree(tmp);
+> > 
+> >         return i;
+> >  
+> >  }
+> >  
+> >  static inline int __cw1200_reg_write_16(struct cw1200_common *priv,
+> >  
+> >                                         u16 addr, u16 val)
+> >  
+> >  {
+> > 
+> > -       __le16 tmp = cpu_to_le16(val);
+> > -       return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
+> > +       __le16 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       *tmp = cpu_to_le16(val);
+> > +       i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
+> > +       kfree(tmp);
+> > +       return i;
+> > 
+> >  }
+> >  
+> >  int cw1200_reg_read(struct cw1200_common *priv, u16 addr, void *buf,
+> > 
+> > diff --git a/drivers/net/wireless/st/cw1200/hwio.h
+> > b/drivers/net/wireless/st/cw1200/hwio.h index d1e629a566c2..088d2a1bacc0
+> > 100644
+> > --- a/drivers/net/wireless/st/cw1200/hwio.h
+> > +++ b/drivers/net/wireless/st/cw1200/hwio.h
+> > @@ -166,34 +166,65 @@ int cw1200_reg_write(struct cw1200_common *priv, u16
+> > addr,> 
+> >  static inline int cw1200_reg_read_16(struct cw1200_common *priv,
+> >  
+> >                                      u16 addr, u16 *val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp;
+> > +       __le32 *tmp;
+> > 
+> >         int i;
+> > 
+> > -       i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
+> > -       *val = le32_to_cpu(tmp) & 0xfffff;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
+> > +       *val = le32_to_cpu(*tmp) & 0xfffff;
+> > +       kfree(tmp);
+> > 
+> >         return i;
+> >  
+> >  }
+> >  
+> >  static inline int cw1200_reg_write_16(struct cw1200_common *priv,
+> >  
+> >                                       u16 addr, u16 val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp = cpu_to_le32((u32)val);
+> > -       return cw1200_reg_write(priv, addr, &tmp, sizeof(tmp));
+> > +       __le32 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       *tmp = cpu_to_le32((u32)val);
+> > +       i = cw1200_reg_write(priv, addr, tmp, sizeof(*tmp));
+> > +       kfree(tmp);
+> > +       return i;
+> > 
+> >  }
+> >  
+> >  static inline int cw1200_reg_read_32(struct cw1200_common *priv,
+> >  
+> >                                      u16 addr, u32 *val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp;
+> > -       int i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
+> > -       *val = le32_to_cpu(tmp);
+> > +       __le32 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
+> > +       *val = le32_to_cpu(*tmp);
+> > +       kfree(tmp);
+> > 
+> >         return i;
+> >  
+> >  }
+> >  
+> >  static inline int cw1200_reg_write_32(struct cw1200_common *priv,
+> >  
+> >                                       u16 addr, u32 val)
+> >  
+> >  {
+> > 
+> > -       __le32 tmp = cpu_to_le32(val);
+> > -       return cw1200_reg_write(priv, addr, &tmp, sizeof(val));
+> > +       __le32 *tmp;
+> > +       int i;
+> > +
+> > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
+> > +       if (!tmp)
+> > +               return -ENOMEM;
+> > +
+> > +       *tmp = cpu_to_le32(val);
+> > +       i = cw1200_reg_write(priv, addr, tmp, sizeof(val));
+> > +       kfree(tmp);
+> > +       return i;
+> > 
+> >  }
+> >  
+> >  int cw1200_indirect_read(struct cw1200_common *priv, u32 addr, void *buf,
+> > 
+> > --
+> > 2.32.0
 
-Sorry for the long delay on this thread.
 
-For mismatched virtual alias question, wasn't this already discussed in 
-stretch
-when initial support for system cache [1] (which was reverted by you) 
-was added?
 
-Excerpt from there,
 
-"As seen in downstream kernels there are few non-coherent devices which
-would not want to allocate in system cache, and therefore would want
-Inner/Outer non-cached memory. So, we may want to either override the
-attributes per-device, or as you suggested we may want to introduce
-another memory type 'sys-cached' that can be added with its separate
-infra."
-
-As for DMA API usage, we do not have any upstream users (video will be
-one if they decide to upstream that).
-
-[1] 
-https://patchwork.kernel.org/project/linux-arm-msm/patch/20180615105329.26800-1-vivek.gautam@codeaurora.org/
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
