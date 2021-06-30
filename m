@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E3B3B7DCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DED3B7DCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhF3HEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhF3HEn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232743AbhF3HEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:04:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232018AbhF3HEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 03:04:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEC9C061766;
-        Wed, 30 Jun 2021 00:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PoknwIAy8Q9q+U6w+2a12vknwq+F35xgmvor8JHbCT0=; b=lhnHlNjmjExRd4kOidxPSUtHCF
-        lThr4z+W8p4z9I5Y0rKEDt2xxMBs6nqRsTPYUcwm01rqZGiL6BhwMqG70F9eJyhIh5NUvA1BGqqng
-        JVQ4sw5ouU8XKwWoMKDDo/2UQM4xLgLIsJobhS04QOf37hoyxdpTBlTWOa/xRlMM7SvDue9WSLdzw
-        dXizTRiFfG3ZU8vVDW6II2yjz1FclnXukf/xHjRSJz4pjnPXinchMsgdHyLWM8lZv6s0EYUqr4/kq
-        Uf8NR9mabxA6Qwpt1ElKsJdmFLdqvCWzrLZdJgwPFbYpSkA1aNI8jrMOE1cb4BVyBY4MLZo3/IEZb
-        8wWXiC1Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyUDz-005199-Qi; Wed, 30 Jun 2021 07:01:38 +0000
-Date:   Wed, 30 Jun 2021 08:01:31 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Wang <jasowang@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Gibson <david@gibson.dropbear.id.au>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <YNwWy/j+diR7Y4Iv@infradead.org>
-References: <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
- <20210607175926.GJ1002214@nvidia.com>
- <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
- <20210608131547.GE1002214@nvidia.com>
- <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
- <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
- <MWHPR11MB18861A89FE6620921E7A7CAC8C369@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210609115759.GY1002214@nvidia.com>
- <086ca28f-42e5-a432-8bef-ac47a0a6df45@redhat.com>
- <20210609124742.GB1002214@nvidia.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D3C611AF;
+        Wed, 30 Jun 2021 07:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625036535;
+        bh=fHMMVrtlxKeaKsAvLWSY7uHaUoi7yT4jN4cdWFy07Ws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FT8PQ9XsaNMtbxvhMA+KQF2M5q77vzCstbkWP1GXp251+YRgazbFXCrMHcfQ3VLbc
+         vTkMf1hd+cX88d9/o5QBCRTAkOW5QbEJMT2kf+IKvUfe2q+zf1noQGKhHCIZbr5NVO
+         rJ3lyP6PU+GB9bBhLtT7Ga/QDTwQRkNXd6MFPhNHYZGlrD5oi8XGkSeHy2mjrSUuxO
+         k2ICLfkc87ujh7YP28lK33PmwSis3XUJIyJ86DhOimN3AykgQYX3es2CwapqfrTgZp
+         S4wr68Uxhlf72wLfK+2uzl4bn15SwRRWQ/aLJmHSM4ourpFATSxOGAWH1SQjiFye4Z
+         tDeiWt1HqOT+g==
+Date:   Wed, 30 Jun 2021 10:02:11 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 1/2] lib/scatterlist: Fix wrong update of
+ orig_nents
+Message-ID: <YNwW83ZpXZSSPDfM@unreal>
+References: <cover.1624955710.git.leonro@nvidia.com>
+ <dadb01a81e7498f6415233cf19cfc2a0d9b312f2.1624955710.git.leonro@nvidia.com>
+ <YNwIL4OguRO/CH6K@infradead.org>
+ <YNwPX7BxPl22En9U@unreal>
+ <YNwQLV87aBdclTYe@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210609124742.GB1002214@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YNwQLV87aBdclTYe@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:47:42AM -0300, Jason Gunthorpe wrote:
-> I can vaugely understand this rational for vfio, but not at all for
-> the platform's iommu driver, sorry.
+On Wed, Jun 30, 2021 at 07:33:17AM +0100, Christoph Hellwig wrote:
+> On Wed, Jun 30, 2021 at 09:29:51AM +0300, Leon Romanovsky wrote:
+> > On Wed, Jun 30, 2021 at 06:59:11AM +0100, Christoph Hellwig wrote:
+> > > On Tue, Jun 29, 2021 at 11:40:01AM +0300, Leon Romanovsky wrote:
+> > > > 2. Add a new field total_nents to reflect the total number of entries
+> > > >    in the table. This is required for the release flow (sg_free_table).
+> > > >    This filed should be used internally only by scatterlist.
+> > > 
+> > > No, please don't bloat the common structure.
+> > 
+> > Somehow we need to store that total_nents value and our internal
+> > proposal was to wrap sg_table with another private structure that is
+> > visible in lib/scatterlist.c only.
+> > 
+> > Something like that:
+> > struct sg_table_private {
+> >   struct sg_table table;
+> >   unsigned int total_nents;
+> > };
+> > 
+> > But it looks awkward.
+> 
+> Well, the important point is that we only need it for the new
+> way of collapsing, appending allocations.  We should not burden
+> it on all other users.
 
-Agreed.  More importantly the dependency is not for the platform iommu
-driver but just for the core iommu code, which is always built in if
-enabled.
+Another possible solution is to change __sg_alloc_table()/__sg_alloc_table_from_pages
+to return total_nents and expect from the users to store it internally and pass
+it later to the __sg_free_table().
+
+Something like that.
+
+Thanks
