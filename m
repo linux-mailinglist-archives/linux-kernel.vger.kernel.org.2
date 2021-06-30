@@ -2,148 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D643B830E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF86E3B8315
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbhF3Ndd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:33:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35275 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235142AbhF3NdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:33:18 -0400
-X-UUID: d0847f533fa1436b843c478aba8765dc-20210630
-X-UUID: d0847f533fa1436b843c478aba8765dc-20210630
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 747399582; Wed, 30 Jun 2021 21:30:46 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 21:30:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 21:30:44 +0800
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v11 17/19] clk: mediatek: Add MT8192 scp adsp clock support
-Date:   Wed, 30 Jun 2021 21:28:02 +0800
-Message-ID: <20210630132804.20436-18-chun-jie.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210630132804.20436-1-chun-jie.chen@mediatek.com>
-References: <20210630132804.20436-1-chun-jie.chen@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S235371AbhF3Ndm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:33:42 -0400
+Received: from mga03.intel.com ([134.134.136.65]:58641 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235177AbhF3Nd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 09:33:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208387844"
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="208387844"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 06:30:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="493148092"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Jun 2021 06:30:58 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, gregkh@linuxfoundation.org,
+        acme@kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
+Subject: [PATCH] perf/x86/intel/uncore: Fix invalid unit check
+Date:   Wed, 30 Jun 2021 06:15:55 -0700
+Message-Id: <1625058955-172998-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 scp adsp clock provider
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+The uncore unit with the type ID 0 and the unit ID 0 is missed.
+
+The table3 of the uncore unit maybe 0. The
+uncore_discovery_invalid_unit() mistakenly treated it as an invalid
+value.
+
+Remove the !unit.table3 check.
+
+Fixes: edae1f06c2cd ("perf/x86/intel/uncore: Parse uncore discovery tables")
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/clk/mediatek/Kconfig               |  6 +++
- drivers/clk/mediatek/Makefile              |  1 +
- drivers/clk/mediatek/clk-mt8192-scp_adsp.c | 50 ++++++++++++++++++++++
- 3 files changed, 57 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-scp_adsp.c
 
-diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 88b24f74aff2..eb4aa29d8106 100644
---- a/drivers/clk/mediatek/Kconfig
-+++ b/drivers/clk/mediatek/Kconfig
-@@ -562,6 +562,12 @@ config COMMON_CLK_MT8192_MSDC
- 	help
- 	  This driver supports MediaTek MT8192 msdc and msdc_top clocks.
+The patch was posted as a part of the "perf: Add Sapphire Rapids server
+uncore support" patch set. But it doesn't depend on the other patches in
+the patch set. The bugfix can be accepted and merged separately. 
+
+https://lore.kernel.org/lkml/cb0d2d43-102a-994c-f777-e11d61c77bf5@linux.intel.com/
+
+ arch/x86/events/intel/uncore_discovery.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
+index 1d65293..abfb1e8 100644
+--- a/arch/x86/events/intel/uncore_discovery.h
++++ b/arch/x86/events/intel/uncore_discovery.h
+@@ -30,7 +30,7 @@
  
-+config COMMON_CLK_MT8192_SCP_ADSP
-+	bool "Clock driver for MediaTek MT8192 scp_adsp"
-+	depends on COMMON_CLK_MT8192
-+	help
-+	  This driver supports MediaTek MT8192 scp_adsp clocks.
-+
- config COMMON_CLK_MT8516
- 	bool "Clock driver for MediaTek MT8516"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 8e4e343d4af4..a336fe753e9a 100644
---- a/drivers/clk/mediatek/Makefile
-+++ b/drivers/clk/mediatek/Makefile
-@@ -77,5 +77,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MDPSYS) += clk-mt8192-mdp.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MFGCFG) += clk-mt8192-mfg.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MMSYS) += clk-mt8192-mm.o
- obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-mt8192-msdc.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
- obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
- obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-scp_adsp.c b/drivers/clk/mediatek/clk-mt8192-scp_adsp.c
-new file mode 100644
-index 000000000000..58725d79dd13
---- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-scp_adsp.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2021 MediaTek Inc.
-+// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-+
-+#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+#include "clk-mtk.h"
-+#include "clk-gate.h"
-+
-+#include <dt-bindings/clock/mt8192-clk.h>
-+
-+static const struct mtk_gate_regs scp_adsp_cg_regs = {
-+	.set_ofs = 0x180,
-+	.clr_ofs = 0x180,
-+	.sta_ofs = 0x180,
-+};
-+
-+#define GATE_SCP_ADSP(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &scp_adsp_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr)
-+
-+static const struct mtk_gate scp_adsp_clks[] = {
-+	GATE_SCP_ADSP(CLK_SCP_ADSP_AUDIODSP, "scp_adsp_audiodsp", "adsp_sel", 0),
-+};
-+
-+static const struct mtk_clk_desc scp_adsp_desc = {
-+	.clks = scp_adsp_clks,
-+	.num_clks = ARRAY_SIZE(scp_adsp_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8192_scp_adsp[] = {
-+	{
-+		.compatible = "mediatek,mt8192-scp_adsp",
-+		.data = &scp_adsp_desc,
-+	}, {
-+		/* sentinel */
-+	}
-+};
-+
-+static struct platform_driver clk_mt8192_scp_adsp_drv = {
-+	.probe = mtk_clk_simple_probe,
-+	.driver = {
-+		.name = "clk-mt8192-scp_adsp",
-+		.of_match_table = of_match_clk_mt8192_scp_adsp,
-+	},
-+};
-+
-+builtin_platform_driver(clk_mt8192_scp_adsp_drv);
+ 
+ #define uncore_discovery_invalid_unit(unit)			\
+-	(!unit.table1 || !unit.ctl || !unit.table3 ||	\
++	(!unit.table1 || !unit.ctl || \
+ 	 unit.table1 == -1ULL || unit.ctl == -1ULL ||	\
+ 	 unit.table3 == -1ULL)
+ 
 -- 
-2.18.0
+2.7.4
 
