@@ -2,255 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B015C3B8629
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7783B862B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhF3PVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:21:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20348 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235466AbhF3PVC (ORCPT
+        id S235615AbhF3PXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:23:40 -0400
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:35416 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235417AbhF3PX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:21:02 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UF4leh194518;
-        Wed, 30 Jun 2021 11:18:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YB1TIFBdVx+YsDKIL1JpP6KOM9G79WBYY10k1K5hXGM=;
- b=HZffoDCVbLGcGAEWQ1ckv4HQTQ7RDiQ+YZddI7caTTsriLf4hjI1P04xd85ryr8QQM+b
- XGOe2/alRgNiAlzLjsudRVsk9mFxFnH4gchiJZGAhsCLMRW4taaHmTFQPc6H+anRN+b6
- JB7jVg6njRPIYp+5UzEPm8vui+B0g1bNzpxfYLgjweOkflOUF3pLbPONpnCsgek59ANh
- uqc3GIkWExoCXO3BGDy2Co2dgh5Cc9ZLMtHpdZzI1g6tVUrNN4XntP298ikh4LJLozeG
- BYbo50R+sGHm6poJh/QSp1Rz35AAvFTfnOp8nj23l03P3OG1DBff1kud2tCvYF50ujEz Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gtxf0fdn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 11:18:31 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15UF4k0T194440;
-        Wed, 30 Jun 2021 11:18:30 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gtxf0fd7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 11:18:30 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15UF6mgA028057;
-        Wed, 30 Jun 2021 15:18:29 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma03dal.us.ibm.com with ESMTP id 39duvdqm2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 15:18:29 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15UFIS0d39190786
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 15:18:28 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A03237E1B3;
-        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EE097E1AA;
-        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.148.193])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
-Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
- handler function pointer
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
- <20210621155714.1198545-3-akrowiak@linux.ibm.com>
-Message-ID: <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
-Date:   Wed, 30 Jun 2021 11:18:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 30 Jun 2021 11:23:28 -0400
+Received: by mail-ed1-f41.google.com with SMTP id df12so3826129edb.2;
+        Wed, 30 Jun 2021 08:20:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sz1XXHWZ7zn1WpHe2P7mcJtnwjKt4l13a3EOZTMRPAo=;
+        b=YlJwaIFd1dvboak11sCCPkFvUblbcUhH4kkHmQYGjUVWfk65TxvrBEt3cCGh+IVcVl
+         8ODa4KqRakqWmt3uZE3F49SGGVCbErtfiTt+g84X5UXmgxbZ037nVlsu+ExO/aWoBk52
+         111Zhb8jlW8C3Weq5wYA3RoodWLhah9WuX3gGk6j/L6BoGNLxduOIyGLBlQ4ICAoo9w4
+         LDjCobAYkNWcaPBgQz3uoH3gW9/fQcfjnKZrUq5EQyjbn/NFPKAfHYRS784TAzn+7WZu
+         bb9EOxCB/Rajo3LNixyGPyqQqPrhPCQhtSphEQPCTO7u4s6JG5aZcWCTDL6lHeJO2a4Q
+         hlbg==
+X-Gm-Message-State: AOAM5311U9VaUcf3hPA0gBg5cenadp1b2siKA3GG6NWZtDXnjTBx0ijw
+        264XFwIr9QdAgMp6Jq+CtYvkGv+ro8YBgbUxzmnBDMe2O/A=
+X-Google-Smtp-Source: ABdhPJxTzFTAllAFF5dh/zsKE885gd2rn3QWQvuP9AHb6vrfEx/T/lgKjt1C+F/rqfHw6PNi6YS86cztvhpC7hViPEs=
+X-Received: by 2002:a05:6402:31b4:: with SMTP id dj20mr48326007edb.186.1625066458480;
+ Wed, 30 Jun 2021 08:20:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210621155714.1198545-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -6yjKoIkkZ6ChKe1izHtl-o-72MGWyJB
-X-Proofpoint-ORIG-GUID: B3yKi1NeiqG5l_ZVs6UxQu7WwLrdSqG0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-30_06:2021-06-29,2021-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 spamscore=0
- malwarescore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106300089
+References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com> <87pmxk87th.fsf@oldenburg.str.redhat.com>
+ <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net> <87wnqkzklg.fsf@oldenburg.str.redhat.com>
+ <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
+ <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net> <87tulirw5y.fsf@oldenburg.str.redhat.com>
+ <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net> <0978e79c-33ad-c05b-3897-99334c381396@linux.intel.com>
+In-Reply-To: <0978e79c-33ad-c05b-3897-99334c381396@linux.intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Wed, 30 Jun 2021 11:20:47 -0400
+Message-ID: <CAJvTdKkwSxUzyUjTMKUUpaFRz49AoxtxTDYAPfAFPQtRmA_87w@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Arjan van de Ven <arjan@linux.intel.com>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I assumed that this patch would get queued along with the other one in 
-this series,
-but it looks like that was an erroneous assumption. Should this also be 
-queued?
+The latest proposal for kernel AMX support (updated today) is here:
 
-On 6/21/21 11:57 AM, Tony Krowiak wrote:
-> The function pointer to the interception handler for the PQAP instruction
-> can get changed during the interception process. Let's add a
-> semaphore to struct kvm_s390_crypto to control read/write access to the
-> function pointer contained therein.
->
-> The semaphore must be locked for write access by the vfio_ap device driver
-> when notified that the KVM pointer has been set or cleared. It must be
-> locked for read access by the interception framework when the PQAP
-> instruction is intercepted.
->
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: stable@vger.kernel.org
-> ---
->   arch/s390/include/asm/kvm_host.h      |  8 +++-----
->   arch/s390/kvm/kvm-s390.c              |  1 +
->   arch/s390/kvm/priv.c                  | 10 ++++++----
->   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
->   drivers/s390/crypto/vfio_ap_private.h |  2 +-
->   5 files changed, 28 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 8925f3969478..36441669ffba 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -803,14 +803,12 @@ struct kvm_s390_cpu_model {
->   	unsigned short ibc;
->   };
->   
-> -struct kvm_s390_module_hook {
-> -	int (*hook)(struct kvm_vcpu *vcpu);
-> -	struct module *owner;
-> -};
-> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
->   
->   struct kvm_s390_crypto {
->   	struct kvm_s390_crypto_cb *crycb;
-> -	struct kvm_s390_module_hook *pqap_hook;
-> +	struct rw_semaphore pqap_hook_rwsem;
-> +	crypto_hook *pqap_hook;
->   	__u32 crycbd;
->   	__u8 aes_kw;
->   	__u8 dea_kw;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 1296fc10f80c..418d910df569 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2606,6 +2606,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->   {
->   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->   	kvm_s390_set_crycb_format(kvm);
-> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->   
->   	if (!test_kvm_facility(kvm, 76))
->   		return;
-> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-> index 9928f785c677..6bed9406c1f3 100644
-> --- a/arch/s390/kvm/priv.c
-> +++ b/arch/s390/kvm/priv.c
-> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
->   static int handle_pqap(struct kvm_vcpu *vcpu)
->   {
->   	struct ap_queue_status status = {};
-> +	crypto_hook pqap_hook;
->   	unsigned long reg0;
->   	int ret;
->   	uint8_t fc;
-> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->   	 * Verify that the hook callback is registered, lock the owner
->   	 * and call the hook.
->   	 */
-> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> -			return -EOPNOTSUPP;
-> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
-> +		ret = pqap_hook(vcpu);
->   		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
->   			kvm_s390_set_psw_cc(vcpu, 3);
-> +		up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   		return ret;
->   	}
-> +	up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->   	/*
->   	 * A vfio_driver must register a hook.
->   	 * No hook means no driver to enable the SIE CRYCB and no queues.
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 122c85c22469..742277bc8d1c 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -352,8 +352,7 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
->   	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
->   	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
->   	mdev_set_drvdata(mdev, matrix_mdev);
-> -	matrix_mdev->pqap_hook.hook = handle_pqap;
-> -	matrix_mdev->pqap_hook.owner = THIS_MODULE;
-> +	matrix_mdev->pqap_hook = handle_pqap;
->   	mutex_lock(&matrix_dev->lock);
->   	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
->   	mutex_unlock(&matrix_dev->lock);
-> @@ -1115,15 +1114,20 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->   		}
->   
->   		kvm_get_kvm(kvm);
-> +		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> +
-> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
->   		kvm_arch_crypto_set_masks(kvm,
->   					  matrix_mdev->matrix.apm,
->   					  matrix_mdev->matrix.aqm,
->   					  matrix_mdev->matrix.adm);
-> +
->   		mutex_lock(&matrix_dev->lock);
-> -		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> -		matrix_mdev->kvm = kvm;
->   		matrix_mdev->kvm_busy = false;
->   		wake_up_all(&matrix_mdev->wait_for_kvm);
->   	}
-> @@ -1189,10 +1193,17 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->   	if (matrix_mdev->kvm) {
->   		matrix_mdev->kvm_busy = true;
->   		mutex_unlock(&matrix_dev->lock);
-> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +
-> +		if (matrix_mdev->kvm->arch.crypto.crycbd) {
-> +			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
-> +
-> +			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +		}
-> +
->   		mutex_lock(&matrix_dev->lock);
->   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->   		kvm_put_kvm(matrix_mdev->kvm);
->   		matrix_mdev->kvm = NULL;
->   		matrix_mdev->kvm_busy = false;
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f82a6396acae..e12218e5a629 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -86,7 +86,7 @@ struct ap_matrix_mdev {
->   	bool kvm_busy;
->   	wait_queue_head_t wait_for_kvm;
->   	struct kvm *kvm;
-> -	struct kvm_s390_module_hook pqap_hook;
-> +	crypto_hook pqap_hook;
->   	struct mdev_device *mdev;
->   };
->   
+https://lore.kernel.org/lkml/20210630060226.24652-1-chang.seok.bae@intel.com/
 
+The main challenge for AMX is not context switch performance.
+Hardware recognizes INIT state (the common case) and skips that data
+transfer when it is not needed.
+
+The main challenge for AMX is compatibility.  Specifically, user
+signal stack growth.
+The legacy ABI is that we put an uncompacted XSTATE image on the signal stack.
+In the default stack case, this isn't a problem, but when a user
+allocates an alternative signal stack,
+the 8K of XSTATE growth that AMX can exceed what the user allocated.
+The new system call tells the kernel that the application can handle it.
+(it can do this by not using altsigstack, or by using the updated
+stack size advertised
+ by glibc 2.34 and later, or some other means)
