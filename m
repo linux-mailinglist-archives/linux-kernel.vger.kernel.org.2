@@ -2,109 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22AF3B8016
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324963B801F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhF3Jhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:37:41 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51537 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233653AbhF3Jhj (ORCPT
+        id S234015AbhF3Jiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234012AbhF3Jiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:37:39 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lyWcg-001x23-39; Wed, 30 Jun 2021 11:35:10 +0200
-Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lyWcf-0013GZ-Sr; Wed, 30 Jun 2021 11:35:10 +0200
-Subject: Re: [PATCH 2/3 v2] sh: define __BIG_ENDIAN for math-emu
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <20210627220544.8757-3-rdunlap@infradead.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <7126f059-baaa-0bd6-68ea-c4a24827592e@physik.fu-berlin.de>
-Date:   Wed, 30 Jun 2021 11:35:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 05:38:51 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1760EC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:36:23 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id f6so1842638qka.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YK/zuKzkHZUw7vkPacOqzwtQxHzQHK8toR9/3Xi8XcQ=;
+        b=kJvavOsDqqkeQ4CemydJCurCo7x4tLobkVSbycu14OfBqye/Ozw9xlx49rr5CJOSH6
+         JZIUIUFdX6ezz8Spq61dKM6mFjjGW1QS1hiEiLPTzcIyxXEQSSy2HVbIj/1eGYZiltIL
+         pVADbItRVPPrhh1bvtmkk7hQasfP6kAlnl4x/bIzc/eFN59y+pP7tjzW1pBYPhfOalAA
+         ITsDlapjObokgaeeScXtEBOUN8KD5Abgdc4MELB5pKq5HFo1PjoHI8BgCJmOjdeVWpza
+         3XxDx5PXx1uTR4yMabufi1P0ammR576k4rLrO2tfzw4ZPTEKGW4NGRZ3fVWpmqehIXPT
+         /JFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YK/zuKzkHZUw7vkPacOqzwtQxHzQHK8toR9/3Xi8XcQ=;
+        b=YcpW1bS93cq5eTN6A7gjauDnNnbI1HDA59RHSewh7K2Ch3KNEduVzgy6CEkI3B89aZ
+         fBOFOb2OX/6Gqa7j8+/JSYeZ3qSvVoAO6BeJfFIaX1BtsSOi5UZlVv7NPkkSrbOkBTIW
+         V7iRYSf+d7FhWoEp0JZdlF1vJ+9iSKCsfrero+19FxKvzYFM2ciNyb1q0z/gIiQ24UcQ
+         ols8Tj62r+gg2Y/I7eWSYQauNcWW1PlX9h6Me39QXoXEmK3/Em9ZbQrHwuHD2pyzaGFY
+         9H5nTNt02JddduHzhgeaB6IQTaVTT7I/kH/sVa2utkUbklQ7oqySabANHRgF0mTEDZbm
+         fx+A==
+X-Gm-Message-State: AOAM531MqdsURJbwzaMCKMmp4c5MhgX3bgB+qs+bZkriruW0FkI8CpV9
+        NeLi/bCthnZOZC5bcTV2hZM2ybwcyI6k8kkGkVAarA==
+X-Google-Smtp-Source: ABdhPJzsA7rgIHXJqCcVDE8TQTI1dTRKBA5JolE1telOysvTzOsVavirF7XwexYMuCEosJU8X47HQONDn+NdIkeUNp0=
+X-Received: by 2002:a05:620a:805:: with SMTP id s5mr25245254qks.326.1625045782023;
+ Wed, 30 Jun 2021 02:36:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210627220544.8757-3-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.150.76
+References: <20210629161738.936790-1-glider@google.com> <CAFqt6zZ8ZL8WtTg368VJ0WHjXc+YzMuA9D8OBXJ5T9j0ePctQQ@mail.gmail.com>
+In-Reply-To: <CAFqt6zZ8ZL8WtTg368VJ0WHjXc+YzMuA9D8OBXJ5T9j0ePctQQ@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 30 Jun 2021 11:35:45 +0200
+Message-ID: <CAG_fn=XJdZiWrm1o_xqe-V2nAsT6aVBsUTWE9zphwd=LZXGCFA@mail.gmail.com>
+Subject: Re: [PATCH v2] kfence: skip DMA allocations
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, stable@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:05 AM, Randy Dunlap wrote:
-> Fix this by defining both ENDIAN macros in
-> <asm/sfp-machine.h> so that they can be utilized in
-> <math-emu/soft-fp.h> according to the latter's comment:
-> /* Allow sfp-machine to have its own byte order definitions. */
-> 
-> (This is what is done in arch/nds32/include/asm/sfp-machine.h.)
-> 
-> This placates these build warnings:
-> 
-> In file included from ../arch/sh/math-emu/math.c:23:
-> ../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
->    50 | #if __BYTE_ORDER == __BIG_ENDIAN
-> In file included from ../arch/sh/math-emu/math.c:24:
-> ../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
->    59 | #if __BYTE_ORDER == __BIG_ENDIAN
-> 
-> Fixes: 4b565680d163 ("sh: math-emu support")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: linux-sh@vger.kernel.org
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2: use same preprocessor method that nds32 does;
->     add Geert's Reviewed-by;
->     renumber patches;
->     add more Cc's;
-> 
->  arch/sh/include/asm/sfp-machine.h |    8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> --- linux-next-20210625.orig/arch/sh/include/asm/sfp-machine.h
-> +++ linux-next-20210625/arch/sh/include/asm/sfp-machine.h
-> @@ -13,6 +13,14 @@
->  #ifndef _SFP_MACHINE_H
->  #define _SFP_MACHINE_H
->  
-> +#ifdef __BIG_ENDIAN__
-> +#define __BYTE_ORDER __BIG_ENDIAN
-> +#define __LITTLE_ENDIAN 0
-> +#else
-> +#define __BYTE_ORDER __LITTLE_ENDIAN
-> +#define __BIG_ENDIAN 0
-> +#endif
-> +
->  #define _FP_W_TYPE_SIZE		32
->  #define _FP_W_TYPE		unsigned long
->  #define _FP_WS_TYPE		signed long
-> 
+On Wed, Jun 30, 2021 at 9:02 AM Souptick Joarder <jrdr.linux@gmail.com> wro=
+te:
+>
+> On Tue, Jun 29, 2021 at 9:47 PM Alexander Potapenko <glider@google.com> w=
+rote:
+> >
+> > Allocation requests with __GFP_DMA/__GFP_DMA32 or
+> > SLAB_CACHE_DMA/SLAB_CACHE_DMA32 cannot be fulfilled by KFENCE, because
+> > they must reside in low memory, whereas KFENCE memory pool is located i=
+n
+> > high memory.
+> >
+> > Skip such allocations to avoid crashes where DMAable memory is expected=
+.
+> >
+> > Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: stable@vger.kernel.org # 5.12+
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> >
+> > ---
+> >
+> > v2:
+> >  - added parentheses around the GFP clause, as requested by Marco
+> > ---
+> >  mm/kfence/core.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> > index 4d21ac44d5d35..f7ce3d876bc9e 100644
+> > --- a/mm/kfence/core.c
+> > +++ b/mm/kfence/core.c
+> > @@ -760,6 +760,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t =
+size, gfp_t flags)
+> >         if (size > PAGE_SIZE)
+> >                 return NULL;
+> >
+> > +       /*
+> > +        * Skip DMA allocations. These must reside in the low memory, w=
+hich we
+> > +        * cannot guarantee.
+> > +        */
+> > +       if ((flags & (__GFP_DMA | __GFP_DMA32)) ||
+> > +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
+> > +               return NULL;
+> > +
+>
+> I prefer to move this check at the top of the function.
+> Although it won't make much difference except avoiding atomic operations
+> in case this condition is true.
 
-Boot-tested on my SH-7785LCR without any issues.
+Agreed, we probably shouldn't be expecting a constant flow of
+allocations from these zones that will be slowed down by this check.
+On a related note, Marco suggested moving the PAGE_SIZE check to the
+top of the function as well.
 
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+It will also make sense to check for GFP_ZONEMASK instead of just GFP DMA f=
+lags.
+I couldn't see anyone passing e.g. __GFP_HIGHMEM or __GFP_MOVABLE to
+kmem_cache_alloc(), but according to mm/slab.c it is possible, so just
+to be on the safe side we'd better ignore them as well.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> >         return kfence_guarded_alloc(s, size, flags);
+> >  }
+> >
+> > --
+> > 2.32.0.93.g670b81a890-goog
+> >
+> >
+
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
