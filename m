@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E548B3B85BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE4F3B85C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235687AbhF3PIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:08:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48990 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235352AbhF3PIk (ORCPT
+        id S235569AbhF3PLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235417AbhF3PLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:08:40 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3115222770;
-        Wed, 30 Jun 2021 15:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625065570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
-        b=i8j3M07faKq9TQBenVIfdZmIALxxxTu7PENlW3xjdfHTWN0l/Eqvg23R0Lp/PyHD/zLyiZ
-        nPHsgkm6TDd+LwDXm9GNcqRNV3xG6h/ef+6SU+nZyX1k1UUA/1pjAljHDYF0EDpShdXNG6
-        SMFjl6xAYo2xvWkN47uboGENzC/42AI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625065570;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
-        b=398dourgC4zMm+NCPvIKaN3ye7FhTwm6y7xRyFthUtb//n1BCl4M6siuOUIiKm5LLjCdnT
-        8geb4pFyLXxrmyBg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A762F118DD;
-        Wed, 30 Jun 2021 15:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625065570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
-        b=i8j3M07faKq9TQBenVIfdZmIALxxxTu7PENlW3xjdfHTWN0l/Eqvg23R0Lp/PyHD/zLyiZ
-        nPHsgkm6TDd+LwDXm9GNcqRNV3xG6h/ef+6SU+nZyX1k1UUA/1pjAljHDYF0EDpShdXNG6
-        SMFjl6xAYo2xvWkN47uboGENzC/42AI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625065570;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
-        b=398dourgC4zMm+NCPvIKaN3ye7FhTwm6y7xRyFthUtb//n1BCl4M6siuOUIiKm5LLjCdnT
-        8geb4pFyLXxrmyBg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id HM16JWGI3GBINAAALh3uQQ
-        (envelope-from <lhenriques@suse.de>); Wed, 30 Jun 2021 15:06:09 +0000
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 02e01176;
-        Wed, 30 Jun 2021 15:06:08 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 16:06:08 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Petr Vorel <pvorel@suse.cz>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v10] vfs: fix copy_file_range regression in cross-fs
- copies
-Message-ID: <YNyIYNpcy2WsnUnu@suse.de>
-References: <20210630134449.16851-1-lhenriques@suse.de>
- <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
+        Wed, 30 Jun 2021 11:11:38 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC00C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4516606pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Qwm5a7S4d67APmjTQTuY/hq2xmS0TKPAGGqg/CRnPBo=;
+        b=hQH2rW5/+D+sJ/vCi4D9X8JFCi1w+1YhK43zeTPcZwmHjtigMz7Hxi58hLvpUD+8hL
+         SVROijWxos23t5Bb/r1YMi/mc8Qlw+LBTwkIUiGnwDG98PM+UoaKA+VhNbnNXA8clSry
+         3ldvy7ODk38s0v9vbtVMyVEej8y/uv7Aw61OwDGVw//0fds4QMMRcHpqOZY8wLcHVsR2
+         HE0T2XuJbZ9NOqgWdU6Qigdb4P/k4fjulqOovDJrE67zg57LT9uKxhlcwispghfWLBia
+         hEQgsgBUr6LNJfYAlwn0AIuac1fIrsccm82oCVHZqn4WRMRnsiJDSZ2tL/2WGTWXXZQR
+         DPFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Qwm5a7S4d67APmjTQTuY/hq2xmS0TKPAGGqg/CRnPBo=;
+        b=OWAHMULvH8ih1gd8VbX/uLq0zQ0sSWuaSSeTF4FXq3l59nU53gdIT7czZYmEpGpnKa
+         vut8PyYG5a8ZuR9gs8WE8Z2kvBO36lu1k76IZNi+HS0HFOF9WhhF9HASh1AsF6nxaLTA
+         qDk96c+lEtbuQSuM8PsUcxNLBbnjQ90HC+nsHFOACHBYdADEoSqeNd5SnESWqNHGWCNS
+         CNozBsSmH9Y+wWVMLIBYT5vv4TMQPBUSczBWNPVXj938gAjnFwr70GmrM+bsXBXMipJ+
+         qIqXD4CkidGGu91fZFPybWzNu8CXFDTKwBbcdJ677zd5aT54PT5RzCxPypvWXb+F3Ran
+         NW8Q==
+X-Gm-Message-State: AOAM530kBdR9oHQuqxVDlZlCBWJh4SKsYXsYJfMaVOpjqnewRtluCY1r
+        q01kuI82ZxvsIkwuoW3GGHS6fA==
+X-Google-Smtp-Source: ABdhPJym5Xp6zNUdD2feUDXohHd8CRMVwRm3dGknfSKatUpwmL5kTwmKxG7StUS5g65JI3R/thswEg==
+X-Received: by 2002:a17:90b:4f83:: with SMTP id qe3mr5005813pjb.49.1625065749166;
+        Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id f69sm3163333pfa.24.2021.06.30.08.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 08:09:08 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 20:39:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210630150901.5uzjelg4k7xgbumb@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNmK0MP5ffQpiipt@ninjato>
+ <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+ <YNmVg3ZhshshlbSx@ninjato>
+ <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+ <YNmg2IEpUlArZXPK@ninjato>
+ <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+ <YNnjh3xxyaZZSo9N@ninjato>
+ <20210629041017.dsvzldikvsaade37@vireshk-i7>
+ <YNyB/+fNK0u2bI6j@kunai>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
+In-Reply-To: <YNyB/+fNK0u2bI6j@kunai>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 05:56:34PM +0300, Amir Goldstein wrote:
-> On Wed, Jun 30, 2021 at 4:44 PM Luis Henriques <lhenriques@suse.de> wrote:
-> >
-> > A regression has been reported by Nicolas Boichat, found while using the
-> > copy_file_range syscall to copy a tracefs file.  Before commit
-> > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> > kernel would return -EXDEV to userspace when trying to copy a file across
-> > different filesystems.  After this commit, the syscall doesn't fail anymore
-> > and instead returns zero (zero bytes copied), as this file's content is
-> > generated on-the-fly and thus reports a size of zero.
-> >
-> > This patch restores some cross-filesystem copy restrictions that existed
-> > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> > devices").  Filesystems are still allowed to fall-back to the VFS
-> > generic_copy_file_range() implementation, but that has now to be done
-> > explicitly.
-> >
-> > nfsd is also modified to fall-back into generic_copy_file_range() in case
-> > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
-> >
-> > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > ---
-> > Changes since v9
-> > - the early return from the syscall when len is zero now checks if the
-> >   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
-> >   otherwise.  Issue reported by test robot.
+On 30-06-21, 16:38, Wolfram Sang wrote:
+> > While we are at it, this has been replaced by a Rust counterpart [1]
+> > (as that makes it hypervisor agnostic, which is the goal of my work
+> > here) and I need someone with I2C knowledge to help review it. It
+> > should be okay even if you don't understand Rust a lot, just review
+> > this file[2] which is where most of i2c specific stuff lies.
 > 
-> What issue was reported?
+> From the high level review I can provide, it looks good to me. Block
+> transfers are missing, but I think you said that already. Mising Rust
+> experience, I might miss details, of course. But the general approach
+> seems fine to me. smbus_prepare() will get a bit more messy when you add
+> block transfers, but it still looks bearable, I think.
 
-Here's the link to my previous email:
+Thanks for having a look.
 
-https://lore.kernel.org/linux-fsdevel/877dk1zibo.fsf@suse.de/
-
-... which reminds me that I need to also send a patch to fix the fstest.
-(Although the test as-is actually allowed to find this bug...)
-
-Cheers,
---
-Luís
+-- 
+viresh
