@@ -2,74 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005173B7DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C503A3B7DDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbhF3HLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhF3HLE (ORCPT
+        id S232835AbhF3HMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:12:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55726 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232823AbhF3HMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:11:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C92C061766;
-        Wed, 30 Jun 2021 00:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p7u2nhiPZvS5G76wt+ReyJp7BmL9rTijTlM9kJWCQB0=; b=jU5tD1CKWUN2AvCok5TsR6gq5q
-        81SLjO6tt7FaxBgRBWbUqVQXYcd+87wzkSA8t5M/0YIYGHDaAwJ4mVWYqS08CyL9xA6xYGazt+zVu
-        HrOCne0sUDUViBVSpeOcH9BlQuxUE5WmHnJVoZsMw3FEjm0KkUb8Aq2UrpreawCFSPumgz0hExF8S
-        em/wR9b6nST13qoCMk80+oupPxiPawRJp+WiDrdGomoU04Ed39H4EOEgR4+PX08HWhhS+5oSGU4kD
-        zqug+xGjvphgGP9lDwW0JcYkroBQHh5Yo7oW/WgF188MFE86PE4qMxwhIKJNTjr1CtqGaHMXS8Mwm
-        WKtY+Mxw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyUK4-0051XX-C6; Wed, 30 Jun 2021 07:07:57 +0000
-Date:   Wed, 30 Jun 2021 08:07:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Gibson <david@gibson.dropbear.id.au>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <YNwYREuSWElXwiAC@infradead.org>
-References: <20210602180925.GH1002214@nvidia.com>
- <20210602130053.615db578.alex.williamson@redhat.com>
- <20210602195404.GI1002214@nvidia.com>
- <20210602143734.72fb4fa4.alex.williamson@redhat.com>
- <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
- <20210603130927.GZ1002214@nvidia.com>
- <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
- <20210604115805.GG1002214@nvidia.com>
- <895671cc-5ef8-bc1a-734c-e9e2fdf03652@redhat.com>
- <20210607141424.GF1002214@nvidia.com>
+        Wed, 30 Jun 2021 03:12:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625036981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q18aGERUrb8MXoJ7uF/M0uiRsJPxf2agVURvlb+VBVE=;
+        b=ervHHmumT2IArFzymCk4+4pN3RLq8IZfYm8sL3dg7+6do2k4YoH+T0ERl4bpuYrove2UQa
+        NdeZ/VWmmbBPzJGl/WQeWMhj+UmEzIQPmQSgOTtTa69RBDy+/2ruVYZ9BNle7uMLdWw05V
+        EMn7NwWP/u+nJWX1VzP5/d6XFGrYEvM=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-HWnVALD_MsmXaxD4qjoqvg-1; Wed, 30 Jun 2021 03:09:39 -0400
+X-MC-Unique: HWnVALD_MsmXaxD4qjoqvg-1
+Received: by mail-pg1-f200.google.com with SMTP id d28-20020a634f1c0000b02902238495b6a7so1061633pgb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:09:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q18aGERUrb8MXoJ7uF/M0uiRsJPxf2agVURvlb+VBVE=;
+        b=C7Oid4gzd8gU8GBijhjjXiLoFYm3DDw2BsEbMzqsmeOq4webDA24W+BMsGgvsr0WLE
+         M4dzuVws7wsEXSpU5uuwKZTiMgZsei1I1Y/0mOXBfuOSnUrMKqCScgJCzHTDsZel87HR
+         UrNGteG4BuTmOAuLCkwJ31dd3e/8xsSMrfJrW+21nBSODY2bH81l/0U9txsOh6B1m2Vp
+         47/yOtFyP0Pz6AAMTINJe44aXGcNH8XaeNkqbVnwVBqH+05KEsVxBDBlaVSO/hYa9Y60
+         J96KuLPYHHrUL66NvdrZ7WdS4l7Xd0cKjQN51vdMrHfxDzQRcvgviWANcugQiKssqQR+
+         YNCw==
+X-Gm-Message-State: AOAM531I+EAspzMmBhix+AZfIxIjtN8pP3Fu/AaT8KcUJW8fb4iR0uUy
+        7f6tvgSdY0Rs9V/EOw5SHgaDaGWM/CG0ug9wCYbkbXBJfQmPTqrnpyzOiRk6W4fk2Yb8vx6wD4u
+        cCUpi5qUOz6ucQBhDLFH6PGGVkI4G6HZ1XS9+bX35
+X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr38116479pji.234.1625036978313;
+        Wed, 30 Jun 2021 00:09:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwyfRTZ234ZIqRtqXaVxOazEOugzigkHX+SuWQnUapE6hJKzL6PWnsWKH0UoiAtg14WGWpsaRbMv84hFVc2rYc=
+X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr38116460pji.234.1625036978035;
+ Wed, 30 Jun 2021 00:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607141424.GF1002214@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <YNtlrrKZVQY4byVa@google.com>
+In-Reply-To: <YNtlrrKZVQY4byVa@google.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 30 Jun 2021 09:09:27 +0200
+Message-ID: <CAO-hwJJ-VyKBohETJabxmgjZ8RtmZHWWOBr2kZNC=feOxHgTtQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: input: do not report stylus battery state as "full"
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bastien Nocera <hadess@hadess.net>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kenneth Albanowski <kenalba@google.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 11:14:24AM -0300, Jason Gunthorpe wrote:
-> "non-coherent DMA" is some general euphemism that evokes images of
-> embedded platforms that don't have coherent DMA at all and have low
-> cost ways to regain coherence. This is not at all what we are talking
-> about here at all.
+Hi Dmitry,
 
-It literally is the same way of working.  And not just low-end embedded
-platforms use this, but a lot of older server platforms did as well.
+On Tue, Jun 29, 2021 at 8:26 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> The power supply states of discharging, charging, full, etc, represent
+> state of charging, not the capacity level of the battery (for which
+> we have a separate property). Current HID usage tables to not allow
+> for expressing charging state of the batteries found in generic
+> styli, so we should simply assume that the battery is discharging
+> even if current capacity is at 100% when battery strength reporting
+> is done via HID interface. In fact, we were doing just that before
+> commit 581c4484769e.
+
+This commit is 4 year old already, so I'd like to have the opinion of
+Bastien on the matter for the upower side (or at least notify him).
+
+>
+> This change helps UIs to not mis-represent fully charged batteries in
+> styli as being charging/topping-off.
+>
+> Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
+> Reported-by: Kenneth Albanowski <kenalba@google.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/hid/hid-input.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> index e982d8173c9c..e85a1a34ff39 100644
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -417,8 +417,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
+>
+>                 if (dev->battery_status == HID_BATTERY_UNKNOWN)
+>                         val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+
+What's the point of keeping the HID_BATTERY_UNKNOWN code path? AFAICT,
+before 581c4484769e, we were just returning
+POWER_SUPPLY_STATUS_DISCHARGING. If we don't need to check for the
+capacity, I think we could also drop the hunk just before where we do
+the query of the capacity.
+
+Cheers,
+Benjamin
+
+
+> -               else if (dev->battery_capacity == 100)
+> -                       val->intval = POWER_SUPPLY_STATUS_FULL;
+>                 else
+>                         val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
+>                 break;
+> --
+> 2.32.0.93.g670b81a890-goog
+>
+> --
+> Dmitry
+>
+
