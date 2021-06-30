@@ -2,248 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294083B8754
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500A33B8759
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhF3REf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhF3REd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:04:33 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C12C061756;
-        Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id i17so3527949ilj.11;
-        Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uDMH1ofvbahbIAwpcPMuU1OKw8HI1Z/fX2NzlSDSFtE=;
-        b=Ubc4OdJMHEKAsz+x339i5DdWwjwKVO9i88dtqBTNPglMcCkDhgkYA2sF4iCTnEFQCS
-         kPLKnZ4uyLJh5kwHQYcBrPuuHmGwCfFvH+UoPYs2AVcOttZixYDvKYT25C/kdsxKaQFR
-         eywoEz7azO+qqvavX9pLvujAhmuB6oxlBKxpulv3skgoJJmfS7KooIEyZogx5aASz73Q
-         SfolA+M3tTxYGhvB4uvu7QxGJtUPfCwwq6Lp4Qw1rTJTKCXyp1iilSOP8WVtHJ3V5l5E
-         tXdHcgE7/jaeHd8+F3Bmnu7OidqjeXqrZEuv/ZmLhcuyyC/rLJQBM0IiPMsmPSSgQoVJ
-         WUNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uDMH1ofvbahbIAwpcPMuU1OKw8HI1Z/fX2NzlSDSFtE=;
-        b=pv2f+3OQhlQq9wk9vWvolUQ6pX5QwP+IsFbtjBmUR/tXOHiCb8eGEfB/4Wf1E1YxQN
-         1OG28CfBNpdfz/x5LWA3lpDMDXkzjri9zjlCuCQs2FqZKdUoNUa4s+3bJPyvRt5+JFCO
-         dzkcUTKVGnoU3vO6jjYejf7/XEmxPMuQn1RDGpVjMNkYIOI3eVHiyiSDC6j2yw/JOVTL
-         DyKmQCFVnr0UllpeE5aZjHeVnPJlV+rsasJXF5TRw3hjSESQOFfblPQXVsT3FyucreAk
-         8chve+YVGvRYJGGI6qWrJYhFeqJdCC45VmL3JRzvR7emS6F0BEqRzPoQoi3Qzs+4wyai
-         Y50A==
-X-Gm-Message-State: AOAM531y57GnictHlc3B4r+V+T3ZywjUTI8Qslx/fKx/jxnfs0O8YXBE
-        vj4K3U62PTI84oafTlKBgxoZqKl+iINeEU9ZMhE=
-X-Google-Smtp-Source: ABdhPJx2TGmhIywd88QsSk0srgelYWP7k/Mj1ZL4wL70NN/rqpo6Erd5+CPf6ToFmkaY7Py9VGl0Iuqrdi5nkp9UkmI=
-X-Received: by 2002:a92:4446:: with SMTP id a6mr27097200ilm.9.1625072524081;
- Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
+        id S232241AbhF3RFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhF3RFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:05:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 394086146E;
+        Wed, 30 Jun 2021 17:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625072568;
+        bh=/WzDn6Kj1sxzJvCvDJAMzxk39jLd33V2v6W2c7ytPiM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=XehvqsVKaBZI153B9pF0tVydNffPznB+rmoCQsGRtI3DpoLAk/FeryV1bNAE8TMOz
+         8NPRJWBw2LkckJ6lFvB3d+jQQh+dZVL/kNEE6iawB3861XfY8E1FMyE1Hmyv79F4TQ
+         zyvNTPWMVJGOGDIO6cjpaQpahgr6LFpXxv53dIaEeDk8OB/gI2aY+UuIeXUB7Ona+g
+         PKG2bKDKPIG4MnHQlGx40HtDzrM9zSXXWjcMIVHR6jq3WZlkOeu7r+MMXna+IIqpw0
+         Vp2mAAZAblnfS5751HrpXaIuvCRf4PfTgLnMX4WCw5KGfaJwqR+opL8imrla0U03Va
+         grLeAV5N2L19A==
+Subject: Re: [PATCH 1/2] Kbuild: lto: add make-version macros
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>, keescook@chromium.org,
+        samitolvanen@google.com, linux-kbuild@vger.kernel.org
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        yj.chiang@mediatek.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+References: <20210630121436.19581-1-lecopzer.chen@mediatek.com>
+ <20210630121436.19581-2-lecopzer.chen@mediatek.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <fdcb8b80-00dd-dd59-1283-836736d4a773@kernel.org>
+Date:   Wed, 30 Jun 2021 10:02:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210630161320.29006-1-lhenriques@suse.de>
-In-Reply-To: <20210630161320.29006-1-lhenriques@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 30 Jun 2021 20:01:53 +0300
-Message-ID: <CAOQ4uxhtsVc3kn14Z7VV0xGLsmKvZQVxDoUnSA5X1oL4UQzcxQ@mail.gmail.com>
-Subject: Re: [PATCH v11] vfs: fix copy_file_range regression in cross-fs copies
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Petr Vorel <pvorel@suse.cz>,
-        kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210630121436.19581-2-lecopzer.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 7:13 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> A regression has been reported by Nicolas Boichat, found while using the
-> copy_file_range syscall to copy a tracefs file.  Before commit
-> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> kernel would return -EXDEV to userspace when trying to copy a file across
-> different filesystems.  After this commit, the syscall doesn't fail anymore
-> and instead returns zero (zero bytes copied), as this file's content is
-> generated on-the-fly and thus reports a size of zero.
->
-> This patch restores some cross-filesystem copy restrictions that existed
-> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> devices").  Filesystems are still allowed to fall-back to the VFS
-> generic_copy_file_range() implementation, but that has now to be done
-> explicitly.
->
-> nfsd is also modified to fall-back into generic_copy_file_range() in case
-> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
->
-> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Hi Lecopzer,
+
+On 6/30/2021 5:14 AM, Lecopzer Chen wrote:
+> To check the GNU make version. Used by the LTO Kconfig.
+> 
+> LTO with MODVERSION will fail in generating correct CRC because
+> the makefile rule doesn't work for make with version 3.8X.[1]
+> 
+> Thus we need to check make version during selecting on LTO Kconfig.
+> The MAKE_VERSION_INT means MAKE_VERSION in canonical digits integer and
+> implemnted by imitating CLANG_VERSION.
+
+implemented
+
+> 
+> [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
 > ---
+>   Makefile                |  2 +-
+>   init/Kconfig            |  4 ++++
+>   scripts/Kconfig.include |  3 +++
+>   scripts/make-version.sh | 13 +++++++++++++
+>   4 files changed, 21 insertions(+), 1 deletion(-)
+>   create mode 100755 scripts/make-version.sh
+> 
+> diff --git a/Makefile b/Makefile
+> index 88888fff4c62..2402745b2ba9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -516,7 +516,7 @@ CLANG_FLAGS :=
+>   
+>   export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+>   export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+> +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
+>   export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+>   export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+>   
+> diff --git a/init/Kconfig b/init/Kconfig
+> index a61c92066c2e..9f2b71fdf23e 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -83,6 +83,10 @@ config TOOLS_SUPPORT_RELR
+>   config CC_HAS_ASM_INLINE
+>   	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+>   
+> +config MAKE_VERSION_INT
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+It might be cleaner to make this "config MAKE_VERSION". It will not 
+conflict with the builtin MAKE_VERSION because this is really 
+CONFIG_MAKE_VERSION, which is how MAKE_VERSION will be handled in Kconfig.
 
-> Changes since v10
-> - simply remove the "if (len == 0)" short-circuit instead of checking if
->   the filesystem implements the syscall.  This is because a filesystem may
->   implement it but a particular instance (hint: overlayfs!) may not.
-> Changes since v9
-> - the early return from the syscall when len is zero now checks if the
->   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
->   otherwise.  Issue reported by test robot.
->   (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
-> Changes since v8
-> - Simply added Amir's Reviewed-by and Olga's Tested-by
-> Changes since v7
-> - set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
->   error returned is always related to the 'copy' operation
-> Changes since v6
-> - restored i_sb checks for the clone operation
-> Changes since v5
-> - check if ->copy_file_range is NULL before calling it
-> Changes since v4
-> - nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
->   or -EXDEV.
-> Changes since v3
-> - dropped the COPY_FILE_SPLICE flag
-> - kept the f_op's checks early in generic_copy_file_checks, implementing
->   Amir's suggestions
-> - modified nfsd to use generic_copy_file_range()
-> Changes since v2
-> - do all the required checks earlier, in generic_copy_file_checks(),
->   adding new checks for ->remap_file_range
-> - new COPY_FILE_SPLICE flag
-> - don't remove filesystem's fallback to generic_copy_file_range()
-> - updated commit changelog (and subject)
-> Changes since v1 (after Amir review)
-> - restored do_copy_file_range() helper
-> - return -EOPNOTSUPP if fs doesn't implement CFR
-> - updated commit description
->
->  fs/nfsd/vfs.c   |  8 +++++++-
->  fs/read_write.c | 52 +++++++++++++++++++++++--------------------------
->  2 files changed, 31 insertions(+), 29 deletions(-)
->
-> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-> index 15adf1f6ab21..f54a88b3b4a2 100644
-> --- a/fs/nfsd/vfs.c
-> +++ b/fs/nfsd/vfs.c
-> @@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
->  ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
->                              u64 dst_pos, u64 count)
->  {
-> +       ssize_t ret;
->
->         /*
->          * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-> @@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
->          * limit like this and pipeline multiple COPY requests.
->          */
->         count = min_t(u64, count, 1 << 22);
-> -       return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> +       ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +	int
+> +	default $(make-version)
 > +
-> +       if (ret == -EOPNOTSUPP || ret == -EXDEV)
-> +               ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
-> +                                             count, 0);
-> +       return ret;
->  }
->
->  __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 9db7adf160d2..049a2dda29f7 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
->  }
->  EXPORT_SYMBOL(generic_copy_file_range);
->
-> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
-> -                                 struct file *file_out, loff_t pos_out,
-> -                                 size_t len, unsigned int flags)
-> -{
-> -       /*
-> -        * Although we now allow filesystems to handle cross sb copy, passing
-> -        * a file of the wrong filesystem type to filesystem driver can result
-> -        * in an attempt to dereference the wrong type of ->private_data, so
-> -        * avoid doing that until we really have a good reason.  NFS defines
-> -        * several different file_system_type structures, but they all end up
-> -        * using the same ->copy_file_range() function pointer.
-> -        */
-> -       if (file_out->f_op->copy_file_range &&
-> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
-> -               return file_out->f_op->copy_file_range(file_in, pos_in,
-> -                                                      file_out, pos_out,
-> -                                                      len, flags);
-> -
-> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                                      flags);
-> -}
-> -
->  /*
->   * Performs necessary checks before doing a file copy
->   *
-> @@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
->         loff_t size_in;
->         int ret;
->
-> +       /*
-> +        * Although we now allow filesystems to handle cross sb copy, passing
-> +        * a file of the wrong filesystem type to filesystem driver can result
-> +        * in an attempt to dereference the wrong type of ->private_data, so
-> +        * avoid doing that until we really have a good reason.  NFS defines
-> +        * several different file_system_type structures, but they all end up
-> +        * using the same ->copy_file_range() function pointer.
-> +        */
-> +       if (file_out->f_op->copy_file_range) {
-> +               if (file_in->f_op->copy_file_range !=
-> +                   file_out->f_op->copy_file_range)
-> +                       return -EXDEV;
-> +       } else if (file_in->f_op->remap_file_range) {
-> +               if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> +                       return -EXDEV;
-> +       } else {
-> +                return -EOPNOTSUPP;
-> +       }
+>   config CONSTRUCTORS
+>   	bool
+>   
+> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> index 0496efd6e117..f956953d0236 100644
+> --- a/scripts/Kconfig.include
+> +++ b/scripts/Kconfig.include
+> @@ -63,3 +63,6 @@ ld-version := $(shell,set -- $(ld-info) && echo $2)
+>   cc-option-bit = $(if-success,$(CC) -Werror $(1) -E -x c /dev/null -o /dev/null,$(1))
+>   m32-flag := $(cc-option-bit,-m32)
+>   m64-flag := $(cc-option-bit,-m64)
 > +
->         ret = generic_file_rw_checks(file_in, file_out);
->         if (ret)
->                 return ret;
-> @@ -1497,11 +1494,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
->         if (unlikely(ret))
->                 return ret;
->
-> -       if (len == 0)
-> -               return 0;
-> -
->         file_start_write(file_out);
->
-> +       ret = -EOPNOTSUPP;
->         /*
->          * Try cloning first, this is supported by more file systems, and
->          * more efficient if both clone and copy are supported (e.g. NFS).
-> @@ -1520,9 +1515,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
->                 }
->         }
->
-> -       ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                               flags);
-> -       WARN_ON_ONCE(ret == -EOPNOTSUPP);
-> +       if (file_out->f_op->copy_file_range)
-> +               ret = file_out->f_op->copy_file_range(file_in, pos_in,
-> +                                                     file_out, pos_out,
-> +                                                     len, flags);
->  done:
->         if (ret > 0) {
->                 fsnotify_access(file_in);
+> +# Get the GNU make version with a canonical digit.
+> +make-version := $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+
+It might be better for this to just be used directly by "config 
+MAKE_VERSION":
+
+config MAKE_VERSION
+	int
+	default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
+
+> diff --git a/scripts/make-version.sh b/scripts/make-version.sh
+> new file mode 100755
+> index 000000000000..ce5af96696cc
+> --- /dev/null
+> +++ b/scripts/make-version.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Print the linker name and its version in a 5 or 6-digit form.
+> +
+> +set -e
+> +
+> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> +IFS=.
+> +set -- $1
+> +
+> +# If the 2nd or 3rd field is missing, fill it with a zero.
+> +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> 
