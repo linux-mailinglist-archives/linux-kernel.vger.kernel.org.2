@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1873B7D75
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A0B3B7D76
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhF3Ggf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhF3Gge (ORCPT
+        id S232444AbhF3GiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:38:00 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:38678 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhF3Gh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:36:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A7BC061766;
-        Tue, 29 Jun 2021 23:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=s7sfPSKomuf1f0Wmri9pkg7H5FgMkGeqUuukUkPYBw4=; b=bDxkUfCB9DBNCSJ5pKDUiiLE0c
-        I3P40JU98JOtXN1eHqyJRrtQSb4BB9NqNa6V5k2n6RCFnDpPYBeqwHj3FiKrzCBBJGS2ObiEUbyhS
-        ozyaQwbKrd1erV7NHHssqMaABAL5h6cNYLsq9i6vHNZJNxtIcKiGZyd7sZGCNotgoQ+JCBkiPc4oR
-        vSmWidy1mlt+8vLxjL6J8pnZlhynoLLAz6lM45O7Og7clkhps4OD0tSwz1YaoY7zIR3YezD0bsB+o
-        6GR7eKmu3XDGK+QIhq6LKTMOdalq/ovZ5XZEpmHiLZ48YfrphXtHRxFZGFBMd+q424ei1UuDqcD+Y
-        BU3nKJjA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyTmf-004zWT-AC; Wed, 30 Jun 2021 06:33:23 +0000
-Date:   Wed, 30 Jun 2021 07:33:17 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 1/2] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <YNwQLV87aBdclTYe@infradead.org>
-References: <cover.1624955710.git.leonro@nvidia.com>
- <dadb01a81e7498f6415233cf19cfc2a0d9b312f2.1624955710.git.leonro@nvidia.com>
- <YNwIL4OguRO/CH6K@infradead.org>
- <YNwPX7BxPl22En9U@unreal>
+        Wed, 30 Jun 2021 02:37:58 -0400
+Received: by mail-lf1-f45.google.com with SMTP id w19so3055922lfk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:35:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h/tLGN3hRZj0zANfVL6Q277rdmp7F9TE5YlLbVXnOt4=;
+        b=DPFPhVcoce7xQhvsFqUDq/krO2kPrlT1HogtgckyFvGEjx+NXa8KQCjnyycNLxgbvO
+         MVKmr3nS/jPc6X6MUcDxY4wIgV0BM4zNfgcBPgMA3Z5fCSz7Lk9rJJkr4XbKmIneCVdL
+         M1+FTBc039L5VjzkVVlrlmYSylDxFLzkDu/oVzQvO6NBt9yTGL5d+LBUf5oyJB9mKFc5
+         7iAuYg9vRma+yWWDB0ngu4uuZ7FMQ316vMRZg8fVut5YME1idgmAes/oKR8urRYQjIzL
+         LyRuajOzVwMKkfGDgkqtrzu5+M10hIN6/swK5MII86oA6s6klVVMWfEdHyXFRWOz8Rmp
+         xRrA==
+X-Gm-Message-State: AOAM533UBl5kNM82cEMFjxTJzQKgzTZBiGFHg4f4seHrHl0ttOcpZHz3
+        Y4ZAR+M4TBN8m3UDbJoiXaLf35StsSSltvNz4LI=
+X-Google-Smtp-Source: ABdhPJw3/8y5ByRxr2zDzj1BO0+/VKGk9doSoT+EA1HcHznuL9vKzdPVhzx5ogdAblvdfTyb435FARtrsF0VUtMWfbo=
+X-Received: by 2002:a19:4916:: with SMTP id w22mr27126889lfa.374.1625034928338;
+ Tue, 29 Jun 2021 23:35:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNwPX7BxPl22En9U@unreal>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-3-namhyung@kernel.org>
+ <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
+In-Reply-To: <CAP-5=fW-0OGDiDnij982xnpqWtimEEWo_qH10y74rTkVkT5p8A@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 29 Jun 2021 23:35:17 -0700
+Message-ID: <CAM9d7cj5EUoDuanLXo+PGqUyaHmvFsR-AgjbtGgaj0SiWzaWew@mail.gmail.com>
+Subject: Re: [PATCH 2/4] perf tools: Add cgroup_is_v2() helper
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:29:51AM +0300, Leon Romanovsky wrote:
-> On Wed, Jun 30, 2021 at 06:59:11AM +0100, Christoph Hellwig wrote:
-> > On Tue, Jun 29, 2021 at 11:40:01AM +0300, Leon Romanovsky wrote:
-> > > 2. Add a new field total_nents to reflect the total number of entries
-> > >    in the table. This is required for the release flow (sg_free_table).
-> > >    This filed should be used internally only by scatterlist.
-> > 
-> > No, please don't bloat the common structure.
-> 
-> Somehow we need to store that total_nents value and our internal
-> proposal was to wrap sg_table with another private structure that is
-> visible in lib/scatterlist.c only.
-> 
-> Something like that:
-> struct sg_table_private {
->   struct sg_table table;
->   unsigned int total_nents;
-> };
-> 
-> But it looks awkward.
+Hi Ian,
 
-Well, the important point is that we only need it for the new
-way of collapsing, appending allocations.  We should not burden
-it on all other users.
+On Tue, Jun 29, 2021 at 8:51 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The cgroup_is_v2() is to check if the given subsystem is mounted on
+> > cgroup v2 or not.  It'll be used by BPF cgroup code later.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/cgroup.c | 19 +++++++++++++++++++
+> >  tools/perf/util/cgroup.h |  2 ++
+> >  2 files changed, 21 insertions(+)
+> >
+> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+> > index ef18c988c681..e819a4f30fc2 100644
+> > --- a/tools/perf/util/cgroup.c
+> > +++ b/tools/perf/util/cgroup.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/zalloc.h>
+> >  #include <sys/types.h>
+> >  #include <sys/stat.h>
+> > +#include <sys/statfs.h>
+> >  #include <fcntl.h>
+> >  #include <stdlib.h>
+> >  #include <string.h>
+> > @@ -70,6 +71,24 @@ int read_cgroup_id(struct cgroup *cgrp)
+> >  }
+> >  #endif  /* HAVE_FILE_HANDLE */
+> >
+> > +#ifndef CGROUP2_SUPER_MAGIC
+> > +#define CGROUP2_SUPER_MAGIC  0x63677270
+> > +#endif
+> > +
+> > +int cgroup_is_v2(const char *subsys)
+> > +{
+> > +       char mnt[PATH_MAX + 1];
+> > +       struct statfs stbuf;
+> > +
+> > +       if (cgroupfs_find_mountpoint(mnt, PATH_MAX + 1, subsys))
+> > +               return -1;
+> > +
+> > +       if (statfs(mnt, &stbuf) < 0)
+> > +               return -1;
+> > +
+> > +       return (stbuf.f_type == CGROUP2_SUPER_MAGIC);
+> > +}
+> > +
+> >  static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str)
+> >  {
+> >         struct evsel *counter;
+> > diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+> > index 707adbe25123..1549ec2fd348 100644
+> > --- a/tools/perf/util/cgroup.h
+> > +++ b/tools/perf/util/cgroup.h
+> > @@ -47,4 +47,6 @@ int read_cgroup_id(struct cgroup *cgrp)
+> >  }
+> >  #endif  /* HAVE_FILE_HANDLE */
+> >
+> > +int cgroup_is_v2(const char *subsys);
+> > +
+>
+> I think this is okay. It may make sense to have this in
+> tools/lib/api/fs/fs.h, for example fs__valid_mount is already checking
+> magic numbers. Perhaps we can avoid a statfs call, but it'd need some
+> reorganization of the fs.h code.
+>
+> Acked-by: Ian Rogers <irogers@google.com>
+
+Thanks for your review!
+
+Actually I'm ok with moving it to tools/lib.  Will do it in the next spin,
+if it needs one. :)
+
+Thanks,
+Namhyung
