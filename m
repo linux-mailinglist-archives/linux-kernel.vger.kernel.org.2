@@ -2,195 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE5B3B7CF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31783B7CFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 07:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhF3FWI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 01:22:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54813 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233364AbhF3FVq (ORCPT
+        id S231892AbhF3FXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 01:23:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45095 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229874AbhF3FXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 01:21:46 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chia-lin.kao@canonical.com>)
-        id 1lySd2-0001dV-MY
-        for linux-kernel@vger.kernel.org; Wed, 30 Jun 2021 05:19:16 +0000
-Received: by mail-ed1-f71.google.com with SMTP id h11-20020a50ed8b0000b02903947b9ca1f3so526116edr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 22:19:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UyIG4rD3Oagh4vKkL1rfDRcvV3u/g4NiyUtXwM4RGjk=;
-        b=Lk0WdI6mHiEJKlzflcoYZg5BHVHgIhxnpwdAF8jLdTi6V+yAwr+EDRf6AW0vddpfyo
-         vofpehm1u5L/LH6xthLFJvcYzTyV/TEjczMChT1S7JkmRopo+xllplK/OFs7KbUYBEqi
-         qdbRkFI0nVIZz7YAnbF5ONM5wix1wR0mkFwvi8YbyIR1gy0iiSTV5kCeOUPvUDDMiIAI
-         i8lBpeUSmshpoevUN1TLc8qKJeeUK0JIlZiLPrZaxWA04acbuoo9ZVs2/gbyYEcnjuzV
-         fX4BN4MVqYFTDl3JrCWDRoOXIemZuJohmhROSBL/iyh8fesfZfvOhrFreOuU8sDiORnD
-         kV+A==
-X-Gm-Message-State: AOAM530NAEODCCSDT/R5FGu0W7Q+FKZvZ+l8pXWM6HQqfr6XquQwogRi
-        pS/osFspsUSv/1aAcsGFNjqKR1ZUT9IxxNZvhYYdplt9lk7FkHUstX00+4Opp10OSrJ+hbxiJuZ
-        7UX+09RXDCl4Lbu2fwh+GaWb81Eot8Jm1YWnZ589JH/7gbK4//awxN27pRA==
-X-Received: by 2002:a05:6402:1057:: with SMTP id e23mr1364842edu.352.1625030356366;
-        Tue, 29 Jun 2021 22:19:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+IcmLjf9OjX2/2mO9F7mn8tmuT19oPDE23BiagGeNY5trgnxhRwfUoWF4+tIaJ1+Pi7tfBNlMZgL/9KIzngA=
-X-Received: by 2002:a05:6402:1057:: with SMTP id e23mr1364823edu.352.1625030356131;
- Tue, 29 Jun 2021 22:19:16 -0700 (PDT)
+        Wed, 30 Jun 2021 01:23:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625030479; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QxoJEqto3m4LmokVHvjxd8H1x79dz+x5nzdLcHQijew=;
+ b=h7dLA/p++GofB/1uLrML8DZaNS3Y0UhXpazjlqc/VkYNK/Ntrdi5Zeeqqk4uKBPxSZbjTode
+ zYfRnOyIes5Md3UBXYm/Q98zqk3NrLpfpqt37hJT8yG+MAvQH2XwFMohq+8a1z6mM8jNeIPp
+ 8FeFiWboboncrrptE7XGgtF8AvQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60dbff4e5e3e57240b3e4df6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 05:21:17
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 14A09C433D3; Wed, 30 Jun 2021 05:21:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF171C43149;
+        Wed, 30 Jun 2021 05:21:14 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210420075406.64105-1-acelan.kao@canonical.com>
- <CAJKOXPfp875V3zHorfyf+QLwia5HYX3N=AXe=xRCxCDi6ifbtg@mail.gmail.com> <f2c051e9-aee6-3409-37a8-1d9d9add8211@gmail.com>
-In-Reply-To: <f2c051e9-aee6-3409-37a8-1d9d9add8211@gmail.com>
-From:   AceLan Kao <acelan.kao@canonical.com>
-Date:   Wed, 30 Jun 2021 13:19:05 +0800
-Message-ID: <CAFv23QmVKEQgZFAsKHv3NENgEUbwjrJSgj-S0v=12qsq0NN9hg@mail.gmail.com>
-Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 30 Jun 2021 10:51:14 +0530
+From:   skakit@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, kgunda@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom
+ pmic gpio bindings to YAML
+In-Reply-To: <YMLhzxMpbSRQac+P@builder.lan>
+References: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
+ <YMLhzxMpbSRQac+P@builder.lan>
+Message-ID: <a4a4f7049e4c43b69124ebd5b8c2c4a1@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's been a while, do we have any conclusion about this?
-Do you need me re-send the patch with "Fixes:"?
+Hi Bjorn,
 
-Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月30日 週五 上午3:36寫道：
->
-> On 29.04.2021 13:58, Krzysztof Kozlowski wrote:
-> > On Tue, 20 Apr 2021 at 09:55, AceLan Kao <acelan.kao@canonical.com> wrote:
-> >>
-> >> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
-> >>
-> >> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
-> >> __dev_open() it calls pm_runtime_resume() to resume devices, and in
-> >> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
-> >> again. That leads to a recursive lock.
-> >>
-> >> It should leave the devices' resume function to decide if they need to
-> >> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
-> >> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
-> >>
-> >> [  967.723577] INFO: task ip:6024 blocked for more than 120 seconds.
-> >> [  967.723588]       Not tainted 5.12.0-rc3+ #1
-> >> [  967.723592] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> >> [  967.723594] task:ip              state:D stack:    0 pid: 6024 ppid:  5957 flags:0x00004000
-> >> [  967.723603] Call Trace:
-> >> [  967.723610]  __schedule+0x2de/0x890
-> >> [  967.723623]  schedule+0x4f/0xc0
-> >> [  967.723629]  schedule_preempt_disabled+0xe/0x10
-> >> [  967.723636]  __mutex_lock.isra.0+0x190/0x510
-> >> [  967.723644]  __mutex_lock_slowpath+0x13/0x20
-> >> [  967.723651]  mutex_lock+0x32/0x40
-> >> [  967.723657]  rtnl_lock+0x15/0x20
-> >> [  967.723665]  igb_resume+0xee/0x1d0 [igb]
-> >> [  967.723687]  ? pci_pm_default_resume+0x30/0x30
-> >> [  967.723696]  igb_runtime_resume+0xe/0x10 [igb]
-> >> [  967.723713]  pci_pm_runtime_resume+0x74/0x90
-> >> [  967.723718]  __rpm_callback+0x53/0x1c0
-> >> [  967.723725]  rpm_callback+0x57/0x80
-> >> [  967.723730]  ? pci_pm_default_resume+0x30/0x30
-> >> [  967.723735]  rpm_resume+0x547/0x760
-> >> [  967.723740]  __pm_runtime_resume+0x52/0x80
-> >> [  967.723745]  __dev_open+0x56/0x160
-> >> [  967.723753]  ? _raw_spin_unlock_bh+0x1e/0x20
-> >> [  967.723758]  __dev_change_flags+0x188/0x1e0
-> >> [  967.723766]  dev_change_flags+0x26/0x60
-> >> [  967.723773]  do_setlink+0x723/0x10b0
-> >> [  967.723782]  ? __nla_validate_parse+0x5b/0xb80
-> >> [  967.723792]  __rtnl_newlink+0x594/0xa00
-> >> [  967.723800]  ? nla_put_ifalias+0x38/0xa0
-> >> [  967.723807]  ? __nla_reserve+0x41/0x50
-> >> [  967.723813]  ? __nla_reserve+0x41/0x50
-> >> [  967.723818]  ? __kmalloc_node_track_caller+0x49b/0x4d0
-> >> [  967.723824]  ? pskb_expand_head+0x75/0x310
-> >> [  967.723830]  ? nla_reserve+0x28/0x30
-> >> [  967.723835]  ? skb_free_head+0x25/0x30
-> >> [  967.723843]  ? security_sock_rcv_skb+0x2f/0x50
-> >> [  967.723850]  ? netlink_deliver_tap+0x3d/0x210
-> >> [  967.723859]  ? sk_filter_trim_cap+0xc1/0x230
-> >> [  967.723863]  ? skb_queue_tail+0x43/0x50
-> >> [  967.723870]  ? sock_def_readable+0x4b/0x80
-> >> [  967.723876]  ? __netlink_sendskb+0x42/0x50
-> >> [  967.723888]  ? security_capable+0x3d/0x60
-> >> [  967.723894]  ? __cond_resched+0x19/0x30
-> >> [  967.723900]  ? kmem_cache_alloc_trace+0x390/0x440
-> >> [  967.723906]  rtnl_newlink+0x49/0x70
-> >> [  967.723913]  rtnetlink_rcv_msg+0x13c/0x370
-> >> [  967.723920]  ? _copy_to_iter+0xa0/0x460
-> >> [  967.723927]  ? rtnl_calcit.isra.0+0x130/0x130
-> >> [  967.723934]  netlink_rcv_skb+0x55/0x100
-> >> [  967.723939]  rtnetlink_rcv+0x15/0x20
-> >> [  967.723944]  netlink_unicast+0x1a8/0x250
-> >> [  967.723949]  netlink_sendmsg+0x233/0x460
-> >> [  967.723954]  sock_sendmsg+0x65/0x70
-> >> [  967.723958]  ____sys_sendmsg+0x218/0x290
-> >> [  967.723961]  ? copy_msghdr_from_user+0x5c/0x90
-> >> [  967.723966]  ? lru_cache_add_inactive_or_unevictable+0x27/0xb0
-> >> [  967.723974]  ___sys_sendmsg+0x81/0xc0
-> >> [  967.723980]  ? __mod_memcg_lruvec_state+0x22/0xe0
-> >> [  967.723987]  ? kmem_cache_free+0x244/0x420
-> >> [  967.723991]  ? dentry_free+0x37/0x70
-> >> [  967.723996]  ? mntput_no_expire+0x4c/0x260
-> >> [  967.724001]  ? __cond_resched+0x19/0x30
-> >> [  967.724007]  ? security_file_free+0x54/0x60
-> >> [  967.724013]  ? call_rcu+0xa4/0x250
-> >> [  967.724021]  __sys_sendmsg+0x62/0xb0
-> >> [  967.724026]  ? exit_to_user_mode_prepare+0x3d/0x1a0
-> >> [  967.724032]  __x64_sys_sendmsg+0x1f/0x30
-> >> [  967.724037]  do_syscall_64+0x38/0x90
-> >> [  967.724044]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>
-> >> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
-> >> ---
-> >>  net/core/dev.c | 5 ++++-
-> >>  1 file changed, 4 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/net/core/dev.c b/net/core/dev.c
-> >> index 1f79b9aa9a3f..427cbc80d1e5 100644
-> >> --- a/net/core/dev.c
-> >> +++ b/net/core/dev.c
-> >> @@ -1537,8 +1537,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
-> >>
-> >>         if (!netif_device_present(dev)) {
-> >>                 /* may be detached because parent is runtime-suspended */
-> >> -               if (dev->dev.parent)
-> >> +               if (dev->dev.parent) {
-> >> +                       rtnl_unlock();
-> >>                         pm_runtime_resume(dev->dev.parent);
-> >
-> > A side topic, maybe a little bit silly question (I don't know that
-> > much about net core):
-> > Why not increase the parent or current PM runtime usage counter
-> > instead? The problem with calling pm_runtime_resume() is that if the
-> > parent device was already suspended (so it's usage counter ==0), it
-> > might get suspended right after this call. IOW, you do not have any
-> > guarantee that the device will be really resumed. Probably it should
-> > be pm_runtime_resume_and_get() (and later "put" on close or other
-> > events). This however might not solve the lock problem at all.
-> >
-> The point of runtime-resuming the parent here isn't to ensure it's
-> resumed for the complete time the device is open. It's called
-> because netif_device_present() may be (initially) false just because
-> the parent is runtime-suspended.
-> We want the device to be able to runtime-suspend later if e.g.
-> the link is down.
->
-> > Best regards,
-> > Krzysztof
-> >
->
+On 2021-06-11 09:38, Bjorn Andersson wrote:
+> On Fri 21 May 01:30 CDT 2021, satya priya wrote:
+> 
+>> Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+>> 
+> 
+> While the structure of the binding is a proper binding, the definition
+> of the pinctrl states doesn't properly represent what we need to be 
+> able
+> to describe with this binding; see below.
+> 
+> [..]
+>> diff --git 
+>> a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml 
+>> b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+>> new file mode 100644
+>> index 0000000..d9024eb
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
+>> @@ -0,0 +1,256 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm PMIC GPIO block
+>> +
+>> +maintainers:
+>> +  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
+> 
+> Please make that bjorn.andersson@linaro.org
+> 
+
+Okay, will change it in next post.
+
+>> +
+>> +description: |
+> 
+> I don't think you need this defined in literal style, so omit the '|'
+> 
+
+OK.
+
+>> +  This binding describes the GPIO block(s) found in the 8xxx series 
+>> of
+>> +  PMIC's from Qualcomm.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - qcom,pm8005-gpio
+>> +          - qcom,pm8018-gpio
+>> +          - qcom,pm8038-gpio
+>> +          - qcom,pm8058-gpio
+>> +          - qcom,pm8916-gpio
+>> +          - qcom,pm8917-gpio
+>> +          - qcom,pm8921-gpio
+>> +          - qcom,pm8941-gpio
+>> +          - qcom,pm8950-gpio
+>> +          - qcom,pm8994-gpio
+>> +          - qcom,pm8998-gpio
+>> +          - qcom,pma8084-gpio
+>> +          - qcom,pmi8950-gpio
+>> +          - qcom,pmi8994-gpio
+>> +          - qcom,pmi8998-gpio
+>> +          - qcom,pms405-gpio
+>> +          - qcom,pm660-gpio
+> 
+> Please keep these sorted alphabetically.
+> 
+
+Okay.
+
+>> +          - qcom,pm660l-gpio
+>> +          - qcom,pm8150-gpio
+>> +          - qcom,pm8150b-gpio
+>> +          - qcom,pm8350-gpio
+>> +          - qcom,pm8350b-gpio
+>> +          - qcom,pm8350c-gpio
+>> +          - qcom,pmk8350-gpio
+>> +          - qcom,pm6150-gpio
+>> +          - qcom,pm6150l-gpio
+>> +          - qcom,pm7325-gpio
+>> +          - qcom,pmr735a-gpio
+>> +          - qcom,pmr735b-gpio
+>> +          - qcom,pm8008-gpio
+>> +          - qcom,pmx55-gpio
+>> +
+>> +      - enum:
+>> +          - qcom,spmi-gpio
+>> +          - qcom,ssbi-gpio
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    minItems: 1
+>> +    maxItems: 44
+>> +    description: |
+>> +        Must contain an array of encoded interrupt specifiers for
+>> +        each available GPIO
+> 
+> We no longer specify "interrupts" but it seems we forgot to update the
+> binding. So perhaps it's the right thing to keep it as part of the
+> conversion and add a second patch that removes this.
+> 
+
+Okay.
+
+>> +
+>> +  '#interrupt-cells':
+>> +    const: 2
+>> +
+>> +  interrupt-controller: true
+>> +
+>> +  gpio-controller: true
+>> +
+>> +  gpio-ranges:
+>> +    maxItems: 1
+>> +
+>> +  '#gpio-cells':
+>> +    const: 2
+>> +    description: |
+>> +        The first cell will be used to define gpio number and the
+>> +        second denotes the flags for this gpio
+>> +
+>> +  gpio-keys:
+> 
+> This is the name of the pinctrl state defined in the example, as 
+> defined
+> here we will only ever be able to describe the volume keys.
+> 
+> You need to describe all valid states - and you need to support the two
+> different nesting of the properties.
+> 
+> See qcom,tlmm-common.yaml and how we use that in the various bindings.
+> 
+
+Ok.
+
+>> +    type: object
+>> +    properties:
+>> +      volume-keys:
+>> +        type: object
+>> +        anyOf:
+>> +          - $ref: "pinmux-node.yaml"
+>> +          - $ref: "pincfg-node.yaml"
+>> +        properties:
+>> +          pins:
+>> +            description: |
+>> +                List of gpio pins affected by the properties 
+>> specified in
+>> +                this subnode.  Valid pins are
+>> +                     - gpio1-gpio4 for pm8005
+>> +                     - gpio1-gpio6 for pm8018
+>> +                     - gpio1-gpio12 for pm8038
+>> +                     - gpio1-gpio40 for pm8058
+>> +                     - gpio1-gpio4 for pm8916
+>> +                     - gpio1-gpio38 for pm8917
+>> +                     - gpio1-gpio44 for pm8921
+>> +                     - gpio1-gpio36 for pm8941
+>> +                     - gpio1-gpio8 for pm8950 (hole on gpio3)
+>> +                     - gpio1-gpio22 for pm8994
+>> +                     - gpio1-gpio26 for pm8998
+>> +                     - gpio1-gpio22 for pma8084
+>> +                     - gpio1-gpio2 for pmi8950
+>> +                     - gpio1-gpio10 for pmi8994
+>> +                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
+>> +                                                and gpio10)
+>> +                     - gpio1-gpio10 for pm8150 (holes on gpio2, 
+>> gpio5,
+>> +                                                gpio7 and gpio8)
+>> +                     - gpio1-gpio12 for pm8150b (holes on gpio3, 
+>> gpio4
+>> +                                                 and gpio7)
+>> +                     - gpio1-gpio12 for pm8150l (hole on gpio7)
+>> +                     - gpio1-gpio10 for pm8350
+>> +                     - gpio1-gpio8 for pm8350b
+>> +                     - gpio1-gpio9 for pm8350c
+>> +                     - gpio1-gpio4 for pmk8350
+>> +                     - gpio1-gpio10 for pm6150
+>> +                     - gpio1-gpio12 for pm6150l
+>> +                     - gpio1-gpio10 for pm7325
+>> +                     - gpio1-gpio4 for pmr735a
+>> +                     - gpio1-gpio4 for pmr735b
+>> +                     - gpio1-gpio2 for pm8008
+>> +                     - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, 
+>> gpio10
+>> +                                                and gpio11)
+>> +
+>> +            items:
+>> +              pattern: "^gpio([0-9]+)$"
+>> +
+>> +          function:
+>> +            items:
+>> +              - enum:
+>> +                  - normal
+>> +                  - paired
+>> +                  - func1
+>> +                  - func2
+>> +                  - dtest1
+>> +                  - dtest2
+>> +                  - dtest3
+>> +                  - dtest4
+>> +                  - func3  # supported by LV/MV GPIO subtypes
+>> +                  - func4  # supported by LV/MV GPIO subtypes
+>> +
+>> +          bias-disable: true
+>> +
+>> +          bias-pull-down: true
+>> +
+>> +          bias-pull-up: true
+>> +
+>> +          qcom,pull-up-strength:
+>> +            $ref: /schemas/types.yaml#/definitions/uint32
+>> +            description: |
+>> +                Specifies the strength to use for pull up, if 
+>> selected.
+>> +                Valid values are defined in
+>> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>> +                If this property is omitted 30uA strength will be 
+>> used
+>> +                if pull up is selected
+>> +
+>> +          bias-high-impedance: true
+>> +
+>> +          input-enable: true
+>> +
+>> +          output-high: true
+>> +
+>> +          output-low: true
+>> +
+>> +          power-source: true
+>> +
+>> +          qcom,drive-strength:
+>> +            $ref: /schemas/types.yaml#/definitions/uint32
+>> +            description: |
+>> +                Selects the drive strength for the specified pins
+>> +                Valid drive strength values are defined in
+>> +                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>> +            enum: [0, 1, 2, 3]
+>> +
+>> +          drive-push-pull: true
+>> +
+>> +          drive-open-drain: true
+>> +
+>> +          drive-open-source: true
+>> +
+>> +          qcom,analog-pass:
+>> +            $ref: /schemas/types.yaml#/definitions/flag
+>> +            description: |
+>> +                The specified pins are configured in
+>> +                analog-pass-through mode.
+>> +
+>> +          qcom,atest:
+>> +            $ref: /schemas/types.yaml#/definitions/uint32
+>> +            description: |
+>> +                Selects ATEST rail to route to GPIO when it's
+>> +                configured in analog-pass-through mode.
+>> +            enum: [1, 2, 3, 4]
+>> +
+>> +          qcom,dtest-buffer:
+>> +            $ref: /schemas/types.yaml#/definitions/uint32
+>> +            description: |
+>> +                Selects DTEST rail to route to GPIO when it's
+>> +                configured as digital input.
+>> +            enum: [1, 2, 3, 4]
+>> +
+>> +        required:
+>> +          - pins
+>> +          - function
+>> +
+>> +        additionalProperties: false
+>> +
+>> +additionalProperties: false
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+> 
+> I think it makes sense to require gpio-controller, '#gpio-cells',
+> gpio-ranges and interrupt-controller as well.
+> 
+Ok, will add them too.
+
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>> +
+>> +    pm8921_gpio: gpio@150 {
+>> +      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
+>> +      reg = <0x150 0x160>;
+>> +      interrupts = <192 1>, <193 1>, <194 1>,
+>> +                   <195 1>, <196 1>, <197 1>,
+>> +                   <198 1>, <199 1>, <200 1>,
+>> +                   <201 1>, <202 1>, <203 1>,
+>> +                   <204 1>, <205 1>, <206 1>,
+>> +                   <207 1>, <208 1>, <209 1>,
+>> +                   <210 1>, <211 1>, <212 1>,
+>> +                   <213 1>, <214 1>, <215 1>,
+>> +                   <216 1>, <217 1>, <218 1>,
+>> +                   <219 1>, <220 1>, <221 1>,
+>> +                   <222 1>, <223 1>, <224 1>,
+>> +                   <225 1>, <226 1>, <227 1>,
+>> +                   <228 1>, <229 1>, <230 1>,
+>> +                   <231 1>, <232 1>, <233 1>,
+>> +                   <234 1>, <235 1>;
+> 
+> As noted above, this list of interrupts should be omitted from the
+> example - but better done separate from the conversion patch.
+> 
+
+Okay.
+
+> Thanks,
+> Bjorn
+> 
+
+Thanks,
+Satya Priya
