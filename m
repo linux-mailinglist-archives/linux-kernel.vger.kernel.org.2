@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4348A3B8443
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ECE3B8444
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236519AbhF3Nx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32904 "EHLO
+        id S235918AbhF3Nx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33046 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235133AbhF3Num (ORCPT
+        with ESMTP id S235893AbhF3Nuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:42 -0400
-Date:   Wed, 30 Jun 2021 13:47:56 -0000
+        Wed, 30 Jun 2021 09:50:44 -0400
+Date:   Wed, 30 Jun 2021 13:47:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060877;
+        s=2020; t=1625060878;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JWQUsI+AzLp1/Tfn8HnXhVGui6X/xKItxiEXjDpo4k0=;
-        b=1UE+Gx18jYRDw2ea582N+gyWqt4IRx0vZOxwXbnK0mgcNKcu1Pi4iH8uebrtmm8+v6v9w+
-        yFT5T5ZcEsXqNr7zPg2bFdlI3YMnmW2Mm6lEVPiherNmxhCAPlOQQlqEx0SGdD0gbgwrMO
-        37nSpmLnYsUt051DT+3Q8HlcVDPqT3UyDMgiGuiR5ExBmxKSr3kQsMoVwMMqdinuoKLSG0
-        RYfTeQX0BDv7WVv22sP/9uK7CYUoy+cBQ99dfH8LNRPNGja/xYhhokLn1oNqr+XrPfdBmA
-        7z+mC8eZ00ILn7OM6XncJC8ziLZIscHnuEUR/BB4xh6HVgSp97Lu8oB9UrZQFw==
+        bh=FONzyO1Zm9hJRyZZCFyBJHv/2i0s4Yooe40atB0O01M=;
+        b=JFZP4fvIC/FMX06808Hqw+6OSRGfdWr3txs26wE76CkOOQh6i/TD22ePlT5qdjZkNnBNKW
+        W8S4ywsSF2md6oz7yPkPpDL679zAtnzWPcP8xY0ssAMLoPfgkiJJYE3nnZqUrEX7na7oK9
+        IaPwhHz4veRsu1LRilrbwnvmINDJ7g8UvLVYXeoouy9ooeqPwT6rTM521byso+Bb50rLmc
+        qaaoKNOgzuKorWfT5+8bugP4qzAGN7jiH0UwKyR6/7KUpWxTcrGBw16HaJS2MD2vXMSMW9
+        Q9dE9FKvEF6ZrAW2ZXOrD+a3pbxZc20QvGY+aH1LntJ025ikMgN+LHlEqQ9+Xw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060877;
+        s=2020e; t=1625060878;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JWQUsI+AzLp1/Tfn8HnXhVGui6X/xKItxiEXjDpo4k0=;
-        b=8JmUdxYyvy3xbYlRA1Q9J5j72KEBMf1gSUJFNQM+OduTCgjRKJCezYT8Wk5+edZHvZfV6X
-        b+ksbj7utgR7liCQ==
-From:   "tip-bot2 for Maninder Singh" <tip-bot2@linutronix.de>
+        bh=FONzyO1Zm9hJRyZZCFyBJHv/2i0s4Yooe40atB0O01M=;
+        b=rjSVD1GrU0t7DwNXW+XOznzKgtAJsETJ94EYdfz0HegTDkRFF2ENgIrVceoVBpbhg4Y+M4
+        TmqsaBISE6dA4YCQ==
+From:   "tip-bot2 for Uladzislau Rezki (Sony)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] mm/slub: Fix backtrace of objects to handle redzone
- adjustment
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Vaneet Narang <v.narang@samsung.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
+Subject: [tip: core/rcu] kvfree_rcu: Fix comments according to current code
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162506087637.395.12392795156320605388.tip-bot2@tip-bot2>
+Message-ID: <162506087745.395.10446409807969301478.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,70 +52,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     0cbc124bce8c527eb14c87f634683c5bcf4299c7
-Gitweb:        https://git.kernel.org/tip/0cbc124bce8c527eb14c87f634683c5bcf4299c7
-Author:        Maninder Singh <maninder1.s@samsung.com>
-AuthorDate:    Tue, 16 Mar 2021 16:07:10 +05:30
+Commit-ID:     d8628f35bae0d0b1f06ca32fa57de76a7055e731
+Gitweb:        https://git.kernel.org/tip/d8628f35bae0d0b1f06ca32fa57de76a7055e731
+Author:        Uladzislau Rezki (Sony) <urezki@gmail.com>
+AuthorDate:    Wed, 28 Apr 2021 15:44:22 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:01:41 -07:00
+CommitterDate: Mon, 10 May 2021 16:00:48 -07:00
 
-mm/slub: Fix backtrace of objects to handle redzone adjustment
+kvfree_rcu: Fix comments according to current code
 
-This commit fixes commit 8e7f37f2aaa5 ("mm: Add mem_dump_obj() to print
-source of memory block").
+The kvfree_rcu() function now defers allocations in the common
+case due to the fact that there is no lockless access to the
+memory-allocator caches/pools.  In addition, in CONFIG_PREEMPT_NONE=y
+and in CONFIG_PREEMPT_VOLUNTARY=y kernels, there is no reliable way to
+determine if spinlocks are held.  As a result, allocation is deferred in
+the common case, and the two-argument form of kvfree_rcu() thus uses the
+"channel 3" queue through all the rcu_head structures.  This channel
+is called referred to as the emergency case in comments, and these
+comments are now obsolete.
 
-With current code, the backtrace of allocated object is incorrect:
-/ # cat /proc/meminfo
-[   14.969843]  slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 0 size 64 allocated at 0x6b6b6b6b
-[   14.970635]     0x6b6b6b6b
-[   14.970794]     0x6b6b6b6b
-[   14.970932]     0x6b6b6b6b
-[   14.971077]     0x6b6b6b6b
-[   14.971202]     0x6b6b6b6b
-[   14.971317]     0x6b6b6b6b
-[   14.971423]     0x6b6b6b6b
-[   14.971635]     0x6b6b6b6b
-[   14.971740]     0x6b6b6b6b
-[   14.971871]     0x6b6b6b6b
-[   14.972229]     0x6b6b6b6b
-[   14.972363]     0x6b6b6b6b
-[   14.972505]     0xa56b6b6b
-[   14.972631]     0xbbbbbbbb
-[   14.972734]     0xc8ab0400
-[   14.972891]     meminfo_proc_show+0x40/0x4fc
+This commit therefore updates these comments to reflect the new
+common-case nature of such emergencies.
 
-The reason is that the object address was not adjusted for the red zone.
-With this fix, the backtrace is correct:
-/ # cat /proc/meminfo
-[   14.870782]  slab kmalloc-64 start c8ab0140 data offset 64 pointer offset 128 size 64 allocated at meminfo_proc_show+0x40/0x4f4
-[   14.871817]     meminfo_proc_show+0x40/0x4f4
-[   14.872035]     seq_read_iter+0x18c/0x4c4
-[   14.872229]     proc_reg_read_iter+0x84/0xac
-[   14.872433]     generic_file_splice_read+0xe8/0x17c
-[   14.872621]     splice_direct_to_actor+0xb8/0x290
-[   14.872747]     do_splice_direct+0xa0/0xe0
-[   14.872896]     do_sendfile+0x2d0/0x438
-[   14.873044]     sys_sendfile64+0x12c/0x140
-[   14.873229]     ret_fast_syscall+0x0/0x58
-[   14.873372]     0xbe861de4
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- mm/slub.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tree.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index feda53a..8f2d135 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4002,6 +4002,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
- 	    !(s->flags & SLAB_STORE_USER))
- 		return;
- #ifdef CONFIG_SLUB_DEBUG
-+	objp = fixup_red_left(s, objp);
- 	trackp = get_track(s, objp, TRACK_ALLOC);
- 	kpp->kp_ret = (void *)trackp->addr;
- #ifdef CONFIG_STACKTRACE
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d643fd8..b043af7 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3355,9 +3355,11 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	}
+ 
+ 	/*
+-	 * Emergency case only. It can happen under low memory
+-	 * condition when an allocation gets failed, so the "bulk"
+-	 * path can not be temporary maintained.
++	 * This is used when the "bulk" path can not be used for the
++	 * double-argument of kvfree_rcu().  This happens when the
++	 * page-cache is empty, which means that objects are instead
++	 * queued on a linked list through their rcu_head structures.
++	 * This list is named "Channel 3".
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
+@@ -3403,8 +3405,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 		if ((krcp->bkvhead[0] && !krwp->bkvhead_free[0]) ||
+ 			(krcp->bkvhead[1] && !krwp->bkvhead_free[1]) ||
+ 				(krcp->head && !krwp->head_free)) {
+-			// Channel 1 corresponds to SLAB ptrs.
+-			// Channel 2 corresponds to vmalloc ptrs.
++			// Channel 1 corresponds to the SLAB-pointer bulk path.
++			// Channel 2 corresponds to vmalloc-pointer bulk path.
+ 			for (j = 0; j < FREE_N_CHANNELS; j++) {
+ 				if (!krwp->bkvhead_free[j]) {
+ 					krwp->bkvhead_free[j] = krcp->bkvhead[j];
+@@ -3412,7 +3414,8 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 				}
+ 			}
+ 
+-			// Channel 3 corresponds to emergency path.
++			// Channel 3 corresponds to both SLAB and vmalloc
++			// objects queued on the linked list.
+ 			if (!krwp->head_free) {
+ 				krwp->head_free = krcp->head;
+ 				krcp->head = NULL;
