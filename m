@@ -2,97 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C253B82B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8503B82BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhF3NOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:14:08 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35560 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234481AbhF3NOF (ORCPT
+        id S234831AbhF3NOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:14:17 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:41900 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234836AbhF3NOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:14:05 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UCuWkL030029;
-        Wed, 30 Jun 2021 15:11:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=H3KL+ZFSxOlQG3AC+pLdhHar+qjF/Zg5vofpMCp/YS4=;
- b=BXeU0cVvxT3vr5DLBRkLa2pE+zO7mbFCgDTOfBV9xvbHbLuSwkO3liuisOGHiu5CPrUV
- R7y34ZsaFQbzrjyBlh8Bd7WBWVN8DaiMGEwoSig03+3IegBK0Ts83HOfPz2mfMGpmzTS
- ww6B+IOrJ44pbF3j9IqLSUnpOS7AqQ2hBSt9TAcAG+L7/e64VnIzgWKIwtsIT1Gf16Uk
- 50pmQRG0mBirGlrSDYbX+qE9UGsvrvYbOPWdn2UmS2LJoRxqBW4ipsHSq71hnLYTQ9vM
- O8T34vmSZxztK/Y4GOKcdI2Xzy6woBzkfitom1kCzgc9lbtANqf5sNm7VJhonTsWfl3Y uA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39g4kpxuat-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 15:11:21 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6D21F10002A;
-        Wed, 30 Jun 2021 15:11:20 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5986222D61F;
-        Wed, 30 Jun 2021 15:11:20 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun
- 2021 15:11:19 +0200
-Date:   Wed, 30 Jun 2021 15:11:18 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        <linux-mmc@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/7] i2c: stm32f7: : use proper DMAENGINE API for
- termination
-Message-ID: <20210630131118.GB12109@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
- <20210623095942.3325-8-wsa+renesas@sang-engineering.com>
- <YNM/TZMWwCLGSEJO@ninjato>
+        Wed, 30 Jun 2021 09:14:12 -0400
+Received: by mail-oi1-f173.google.com with SMTP id t80so2960544oie.8;
+        Wed, 30 Jun 2021 06:11:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9gfuRluoromfET1e03HVVJ5VXuxUog7gz06YrJAltQ8=;
+        b=J+g1EqB3LZM83mb6ZPJs1zl4bYyQNEaKbo8iPoY8KlwpjWHKlCFCLNb8oc3MvNRx77
+         Pr07pb3YgNEhA+0Embb+vXZdBc0LXaMdCUSMeHynm3XbSs44+917D0CFvCfv8PWc+gIC
+         zryaJhf4Q3tGC6ClSOooFTzgyzK4axpfxlSAE/u2M3g1Z+qCshRCz0qijoyWhp8+onUx
+         1AEsiH2txpLULrPCslu1SIgeRf1tnG2BDAobHwz9A4sv6MnJ3iWPAdV9JSwEwVJ1UuHy
+         9uU+gE9JHtAjfFq4eZ2zgLLk3ywjixYtMVUIi9sYHyGT0GmLvMAYIVZFvW1HVtAhTnnn
+         o9IQ==
+X-Gm-Message-State: AOAM5334YD3+io5daXVDJFHwVyp66V0bKbI52jFqwg8bIa54FB5YRTqG
+        Zhub4cFUEpI2XLVgcb94R0Mrd3vjbST4Cbpjeec=
+X-Google-Smtp-Source: ABdhPJw7IX3cgpJ7DCDo4orh1wVhRqWYVvW1zG2Txc4v0vOzFZAw0Q6D25EpqA0RZ2u1Rr0VrioFFQRc8PAsYGsMGFU=
+X-Received: by 2002:a05:6808:15a6:: with SMTP id t38mr3048229oiw.157.1625058702849;
+ Wed, 30 Jun 2021 06:11:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YNM/TZMWwCLGSEJO@ninjato>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-30_05:2021-06-29,2021-06-30 signatures=0
+References: <20210630060226.24652-1-chang.seok.bae@intel.com> <20210630060226.24652-26-chang.seok.bae@intel.com>
+In-Reply-To: <20210630060226.24652-26-chang.seok.bae@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 30 Jun 2021 15:11:31 +0200
+Message-ID: <CAJZ5v0jn6pnwOj0tYO35kNj+WN5Htwc5gzA6GJdQDK+A3g4BLA@mail.gmail.com>
+Subject: Re: [PATCH v6 25/26] intel_idle/amx: Clear the AMX state before
+ entering idle
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On Wed, Jun 30, 2021 at 8:08 AM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> When AMX is enabled, initialize AMX state before going idle.
+>
+> This assures that the kernel will only request idle states with clean AMX
+> state. In the case of the C6 idle state, this may allow the hardware to get
+> to a deeper power saving condition.
 
-thanks for the update. If you are ok with that I modify the patch
-to partially rely on _async / synchronize whenever needed and push it again
-separately.
+At least the changelog needs to be improved, because the patch adds a
+table of idle states for SPR, which is not mentioned here.
 
-Regards,
-Alain
+Also this is an optimization which is only done for SPR C6 in order to
+increase the likelihood of entering this state in case the tile
+registers are dirty when it is requested.
 
-On Wed, Jun 23, 2021 at 04:03:57PM +0200, Wolfram Sang wrote:
-> On Wed, Jun 23, 2021 at 11:59:41AM +0200, Wolfram Sang wrote:
-> > dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-> > it should be sync or async. Here, we want dmaengine_terminate_sync()
-> > because there is no other synchronization code in the driver to handle
-> > an async case.
-> > 
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> 
-> Eeks, this is called from irq context as well. Broken patch :(
-> 
+> [ Based on patch by Artem Bityutskiy <artem.bityutskiy@linux.intel.com>. ]
+>
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> ---
+> Changes from v5:
+> * Moved the code to intel_idle. (Peter Zijlstra)
+> * Fixed to deactivate fpregs. (Andy Lutomirski and Dave Hansen)
+> * Updated the code comment. (Dave Hansen)
+>
+> Changes from v4:
+> * Added as a new patch. (Thomas Gleixner)
+> ---
+>  arch/x86/include/asm/special_insns.h |  6 +++
+>  drivers/idle/intel_idle.c            | 79 ++++++++++++++++++++++++++++
+>  2 files changed, 85 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+> index f3fbb84ff8a7..fada1bb82c7b 100644
+> --- a/arch/x86/include/asm/special_insns.h
+> +++ b/arch/x86/include/asm/special_insns.h
+> @@ -294,6 +294,12 @@ static inline int enqcmds(void __iomem *dst, const void *src)
+>         return 0;
+>  }
+>
+> +static inline void tile_release(void)
+> +{
+> +       /* Instruction opcode for TILERELEASE; supported in binutils >= 2.36. */
+> +       asm volatile(".byte 0xc4, 0xe2, 0x78, 0x49, 0xc0");
+> +}
+> +
+>  #endif /* __KERNEL__ */
+>
+>  #endif /* _ASM_X86_SPECIAL_INSNS_H */
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index ec1b9d306ba6..a77c6d7a10e5 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -54,6 +54,8 @@
+>  #include <asm/intel-family.h>
+>  #include <asm/mwait.h>
+>  #include <asm/msr.h>
+> +#include <asm/fpu/internal.h>
+> +#include <asm/special_insns.h>
+>
+>  #define INTEL_IDLE_VERSION "0.5.1"
+>
+> @@ -155,6 +157,55 @@ static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
+>         return 0;
+>  }
+>
+> +/**
+> + * idle_tile() - Initialize TILE registers in INIT-state
+> + *
+> + * Leaving state in the dirty TILE registers may prevent the processor from
+> + * entering lower-power idle states. Use TILERELEASE to initialize the
+> + * state. Destroying fpregs state is safe after the fpstate update.
+> + *
+> + * Returns:    None
 
+This is redundant for a void function.
 
+> + */
+> +static inline void idle_tile(void)
+> +{
+> +       if (boot_cpu_has(X86_FEATURE_XGETBV1) && (xgetbv(1) & XFEATURE_MASK_XTILE)) {
+> +               tile_release();
+> +               fpregs_deactivate(&current->thread.fpu);
+> +       }
+> +}
+> +
+> +/**
+> + * intel_idle_tile - Ask the processor to enter the given idle state.
+> + * @dev: cpuidle device of the target CPU.
+> + * @drv: cpuidle driver (assumed to point to intel_idle_driver).
+> + * @index: Target idle state index.
+> + *
+> + * Ensure TILE registers in INIT-state.
+
+This is not the only thing done by the function.
+
+> + */
+> +static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
+> +                                    struct cpuidle_driver *drv, int index)
+> +{
+> +       idle_tile();
+> +
+> +       return intel_idle(dev, drv, index);
+> +}
+> +
+> +/**
+> + * intel_idle_s2idle_tile - Ask the processor to enter the given idle state.
+> + * @dev: cpuidle device of the target CPU.
+> + * @drv: cpuidle driver (assumed to point to intel_idle_driver).
+> + * @index: Target idle state index.
+> + *
+> + * Ensure TILE registers in INIT-state.
+
+Same here.
+
+> + */
+> +static __cpuidle int intel_idle_s2idle_tile(struct cpuidle_device *dev,
+> +                                           struct cpuidle_driver *drv, int index)
+> +{
+> +       idle_tile();
+> +
+> +       return intel_idle_s2idle(dev, drv, index);
+> +}
+> +
+>  /*
+>   * States are indexed by the cstate number,
+>   * which is also the index into the MWAIT hint array.
+> @@ -752,6 +803,27 @@ static struct cpuidle_state icx_cstates[] __initdata = {
+>                 .enter = NULL }
+>  };
+>
+> +static struct cpuidle_state spr_cstates[] __initdata = {
+> +       {
+> +               .name = "C1",
+> +               .desc = "MWAIT 0x00",
+> +               .flags = MWAIT2flg(0x00),
+> +               .exit_latency = 1,
+> +               .target_residency = 1,
+> +               .enter = &intel_idle,
+> +               .enter_s2idle = intel_idle_s2idle, },
+> +       {
+> +               .name = "C6",
+> +               .desc = "MWAIT 0x20",
+> +               .flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
+> +               .exit_latency = 128,
+> +               .target_residency = 384,
+> +               .enter = &intel_idle_tile,
+> +               .enter_s2idle = intel_idle_s2idle_tile, },
+> +       {
+> +               .enter = NULL }
+> +};
+> +
+>  static struct cpuidle_state atom_cstates[] __initdata = {
+>         {
+>                 .name = "C1E",
+> @@ -1095,6 +1167,12 @@ static const struct idle_cpu idle_cpu_icx __initconst = {
+>         .use_acpi = true,
+>  };
+>
+> +static const struct idle_cpu idle_cpu_spr __initconst = {
+> +       .state_table = spr_cstates,
+> +       .disable_promotion_to_c1e = true,
+> +       .use_acpi = true,
+> +};
+> +
+>  static const struct idle_cpu idle_cpu_avn __initconst = {
+>         .state_table = avn_cstates,
+>         .disable_promotion_to_c1e = true,
+> @@ -1157,6 +1235,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+>         X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,           &idle_cpu_skx),
+>         X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,           &idle_cpu_icx),
+>         X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,           &idle_cpu_icx),
+> +       X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,    &idle_cpu_spr),
+>         X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,        &idle_cpu_knl),
+>         X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,        &idle_cpu_knl),
+>         X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,       &idle_cpu_bxt),
+> --
