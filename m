@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BF23B802A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2512E3B802C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbhF3Jko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:40:44 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43448 "EHLO mail.skyhub.de"
+        id S233969AbhF3Jlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:41:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233817AbhF3Jkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:40:42 -0400
-Received: from zn.tnic (p200300ec2f12c3005601b47fb9547aa2.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:5601:b47f:b954:7aa2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90C741EC0528;
-        Wed, 30 Jun 2021 11:38:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1625045892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7/Ij8gtUUK45jvstUT5DxylQ3O9KokzsF1985ci5zq8=;
-        b=JvG+JKnBWf9zCbGzM30JoUYM1Knm7WKCM2G1q10IvU4I4dT+328pmpUmldfjlkEwP/JftJ
-        kKyzyIj23q0hMe3PvzkadT5nBO86J5z+NqLivX+55UdC8v7OqpqKZ70C5HumMJjANY9btj
-        tjmqhOY66I/vpRmXd4f6qY70uFf3mtQ=
-Date:   Wed, 30 Jun 2021 11:38:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Marcos Del Sol Vives <marcos@orca.pet>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] x86: add NOPL and CMOV emulation
-Message-ID: <YNw7f1bcjZbzX9ON@zn.tnic>
-References: <YNWAwVfzSdML/WhO@hirez.programming.kicks-ass.net>
- <20210626130313.1283485-1-marcos@orca.pet>
- <YNtLlcYasFR84rp5@zn.tnic>
- <b69e0c78-81eb-0d4d-dce5-076b5f239e28@orca.pet>
+        id S233541AbhF3Jlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3F0F61C9A;
+        Wed, 30 Jun 2021 09:39:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625045961;
+        bh=zr6H4F0/SPank98jRVLiVD3h1/1RuS16gTOp1s5Dwjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FDCCM52Tgm/jDzr5NIwjk3FBlhz9nyMHCnmjQj3Ujspj0y5NkhNQU+yCcyAOo4sQO
+         DoBfMu8COoQTDM9J1L97TqZG1MqSIeUZ9U9jMo7po3ITLwDU0KI+gkRJD3t04NFarp
+         ZQPqKaRgsxqpHXydmcpCfnILI5bSpWIG9YdgAPtY=
+Date:   Wed, 30 Jun 2021 11:39:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com
+Subject: Re: [PATCH V3 1/6] perf/x86/intel/uncore: Add Sapphire Rapids server
+ support
+Message-ID: <YNw7xwyWGVwRroNi@kroah.com>
+References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
+ <1624990443-168533-2-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b69e0c78-81eb-0d4d-dce5-076b5f239e28@orca.pet>
+In-Reply-To: <1624990443-168533-2-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 10:45:17PM +0200, Marcos Del Sol Vives wrote:
-> All the documentation I had previously read suggested that only CMOV and
-> NOPL had been introduced with the i686, and hence these were the two
-> instructions I emulated only. As stated previously this is also enough to
-> boot Debian mostly flawless.
+On Tue, Jun 29, 2021 at 11:13:58AM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> However, and contrary to what I thought, the i686 also saw the introduction
-> of a handful of other x87 instructions (FCMOVB, FCMOVBE, FCMOVE, FCMOVNB,
-> FCMOVNBE, FCMOVNE, FCMOVNU, FCMOVU, FCOMI, FCOMIP, FUCOMI, FUCOMIP)
+> Intel Sapphire Rapids supports a discovery mechanism, that allows an
+> uncore driver to discover the different components ("boxes") of the
+> chip.
+> 
+> All the generic information of the uncore boxes should be retrieved from
+> the discovery tables. This has been enabled with the commit edae1f06c2cd
+> ("perf/x86/intel/uncore: Parse uncore discovery tables"). Add
+> use_discovery to indicate the case. The uncore driver doesn't need to
+> hard code the generic information for each uncore box.
+> 
+> But we still need to enable various functionality that cannot be
+> directly discovered. This is done here.
+>  - Add a meaningful name for each uncore block.
+>  - Add CHA filter support.
+>  - The layout of the control registers for each uncore block is a little
+>    bit different from the generic one. Set the platform specific format
+>    and ops. Expose the common ops which can be reused.
+>  - Add a fixed counter for IMC
 
-Yah, looka here:
+Shouldn't this all be individual patches, one per new feature added?
+There's a lot of stuff happening all at once here, maybe the perf
+maintainers are more lax about this type of thing than other
+subsystems...
 
-https://en.wikipedia.org/wiki/FCMOV
-
-So before we play with this further, you could try to add a "nofpu"
-kernel cmdline param which does what fpu__init_system_early_generic()
-does:
-
-	setup_clear_cpu_cap(X86_FEATURE_FPU)
-
-to stop the kernel from setting up FPU support and see how far you can
-get there.
-
-I'm afraid glibc does its own feature detection so it will see the FPU
-CPUID bit but if the kernel doesn't support an FPU - and glibc needs
-the kernel to handle the context - then maybe it'll stop using FPU
-instructions.
-
-But you'll have to try it because I fear no one even tested such a
-thing.
-
-Good luck. :)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
