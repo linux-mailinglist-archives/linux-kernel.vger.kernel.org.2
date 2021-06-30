@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C383B7FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067E03B7FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhF3JKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:10:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62054 "EHLO mga17.intel.com"
+        id S233786AbhF3JLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:11:34 -0400
+Received: from mga11.intel.com ([192.55.52.93]:56754 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233561AbhF3JKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:10:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="188694987"
+        id S233561AbhF3JLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:11:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="205308402"
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="188694987"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 02:08:04 -0700
+   d="scan'208";a="205308402"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 02:09:04 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="457141140"
+   d="scan'208";a="408491384"
 Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Jun 2021 02:08:02 -0700
+  by orsmga006.jf.intel.com with ESMTP; 30 Jun 2021 02:09:03 -0700
 Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lyWCQ-0009gP-B6; Wed, 30 Jun 2021 09:08:02 +0000
-Date:   Wed, 30 Jun 2021 17:07:59 +0800
+        id 1lyWDO-0009gS-LC; Wed, 30 Jun 2021 09:09:02 +0000
+Date:   Wed, 30 Jun 2021 17:08:03 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:merge-example] BUILD SUCCESS
- d810e482ea8343a61c462f41b3afea64c8310916
-Message-ID: <60dc346f.QlADBh60sIVHxPmb%lkp@intel.com>
+Subject: [rcu:merge-example-rcu] BUILD SUCCESS
+ 4e2b64e124c793186998767306ea5f6fde414a81
+Message-ID: <60dc3473.6L1y635QaMqAbn6o%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git merge-example
-branch HEAD: d810e482ea8343a61c462f41b3afea64c8310916  Merge remote-tracking branch 'linus/master' into HEAD
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git merge-example-rcu
+branch HEAD: 4e2b64e124c793186998767306ea5f6fde414a81  Merge remote-tracking branch 'linus/master' into HEAD
 
 elapsed time: 726m
 
