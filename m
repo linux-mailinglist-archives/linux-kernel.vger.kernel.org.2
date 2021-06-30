@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D203B824F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965E53B824C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbhF3MpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:45:03 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:57169 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234455AbhF3Mo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:44:59 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 15UCfBAA024028;
-        Wed, 30 Jun 2021 14:41:11 +0200
-Date:   Wed, 30 Jun 2021 14:41:11 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Florian Weimer <fweimer@redhat.com>, Len Brown <lenb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210630124111.GC23648@1wt.eu>
-References: <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
- <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
- <87wnqkzklg.fsf@oldenburg.str.redhat.com>
- <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
- <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net>
- <87tulirw5y.fsf@oldenburg.str.redhat.com>
- <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net>
+        id S234630AbhF3Moc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234455AbhF3Mob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:44:31 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD9AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:42:02 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id u25so3061101ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j2HDnCM5DYugUKh5NCiC3rgN76ij9TqOT5vqAWEIccA=;
+        b=MC+FBlY/C8sZZj54lHz8K9fVVhLkvQTU2ysaG5WpxKRFNcktaefcsswogCbSqIC1MR
+         +pvDx05pb5orgrJFUEVep458eOr15YU5Yvt5yhUO271J9nsprX9pAUzpEGwsRPzE3/gC
+         U3w6oSuLOES+nHxpOiUfrgKa0gI492xPCx8k4Wp1POGOUGXTvc0tTXzuxI5ftBvoQamz
+         IR/vepSuyiFIB3e4rBEwvVMIbFQlwya02YOz3UFPjWcauGoWVu6jRYUfT+R2tqOt5qtx
+         6C7n52C/6OYCpT7bbjOy+EU8cq3gooWELiXC8AlFjGOYOdsyC/gpjjkZ+5tvtsNtbXAj
+         /28g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j2HDnCM5DYugUKh5NCiC3rgN76ij9TqOT5vqAWEIccA=;
+        b=UxepeEdRRCKekfIomtLExZENOUiLYStLqx4BMv4ztP8GwSgbs4E+4tAC92os2rIUXv
+         GDnI26Xnpuv70z4XeRP/H9WSW+L+zdJXNJgB6dBCEetnR3k8gbultacvB/Ie1z4MHbEy
+         j8YJHVO4kZwnvtutFCLC6ZTFtefzk9OlppduWqx9XaYXsjWOqYFhnWDcLcjaNpiK2GjL
+         JXOADK59jpkGfCGPRkOUIWDEovfrU0NdQgrTA3v5c2LQBGTo3v9YzkDWT2PtEnLSaKFY
+         NiZubj8O9LAfWDO5v6US6m9uEwaheW2asuy7Ot+IZeQLFHCpFUqPn0vuO9HfJbZ2QpdS
+         OSGw==
+X-Gm-Message-State: AOAM533vGCmnrU2o8YeziSF7So0KdtJfsHEXGwhoH/bSqWNwetIrzCpE
+        7/Sq3M/nQuEO4v3UjByMOSBLEoPmahyoLFbg
+X-Google-Smtp-Source: ABdhPJz+Izz7NDMkJKm58GJreqHSm7hsN6Hdvt+kKUXXnv/NYoN8QYQ5aF2j+LjknUZ9J4pe77ReNQ==
+X-Received: by 2002:a05:651c:b0c:: with SMTP id b12mr7709068ljr.190.1625056920364;
+        Wed, 30 Jun 2021 05:42:00 -0700 (PDT)
+Received: from alyaptyap.localnet (broadband-77-37-213-85.ip.moscow.rt.ru. [77.37.213.85])
+        by smtp.gmail.com with ESMTPSA id q21sm1927714lfp.233.2021.06.30.05.41.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 05:41:59 -0700 (PDT)
+From:   Peter Shkenev <santurysim@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [Issue] linux-staging and linux-5.13 fail to build
+Date:   Wed, 30 Jun 2021 15:41:58 +0300
+Message-ID: <2344468.8uhTOPbOhj@alyaptyap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 02:22:19PM +0200, Enrico Weigelt, metux IT consult wrote:
-> Ah, now I'm beginning to get it:
-> 
-> * this feature needs to be initialized first, before it can be used
-> * on first use (when not initialized yet), it traps into the kernel
-> * we don't want to always initialize it at boot
-> 
-> Correct ?
+Hello,
 
-Not exactly. It's available but comes with a huge context-switch
-cost for each task using it.
+linux-5.13 and linux-staging (main and staging-testing branches) are failing to build.
 
-> What I'm wondering: why shall the process explicitly ask for it and
-> why isn't the initialization be done either on bootup or on first use ?
+Error message: http://ix.io/3ryn. My config: http://ix.io/3ryo. Compiler is GCC 11.1.0. I made no modifications to kernel sources.
 
-The whole discussion about the pros and cons is archived here:
+Best regards,
+Peter
 
-   https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com/
 
-> I'm still claiming already this old model is a horrible misdesign and
-> (most of) the extensions made over the decades are anything but well
-> designed - there had been many changes to do it much, much better.
-> For example there would have been ways to introduce new opcodes in a way
-> that they can be easily emulated in kernel or userland, w/o going
-> through a full trap.
-
-It's not a matter of opcodes but of context switch cost which not
-everyone wants to inflict to every single task that opportunistically
-uses these instructions without realizing what this subsequently
-implies for the rest of their life. All this is discussed in the
-thread above. I don't remember seeing anybody criticize the choice
-of instruction encoding hence it's irrelevant to this discussion.
-
-Hoping this helps,
-Willy
