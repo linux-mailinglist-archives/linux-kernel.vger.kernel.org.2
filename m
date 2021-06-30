@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA67D3B8418
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00BE3B83F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhF3NwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:52:17 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:43114 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhF3NuU (ORCPT
+        id S236207AbhF3Nvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:51:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32904 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235642AbhF3NuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:20 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id CD461D5CE7;
-        Wed, 30 Jun 2021 21:47:47 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P12363T139710655624960S1625060866985686_;
-        Wed, 30 Jun 2021 21:47:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <df29b39a843015d3edb4889d309cad07>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: linux-spi@vger.kernel.org
-X-RCPT-COUNT: 20
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     linux-spi@vger.kernel.org
-Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
-        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
-        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
-        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH v10 05/10] clk: rockchip:  add dt-binding for hclk_sfc on rk3036
-Date:   Wed, 30 Jun 2021 21:47:40 +0800
-Message-Id: <20210630134745.7561-1-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210630134702.7346-1-jon.lin@rock-chips.com>
-References: <20210630134702.7346-1-jon.lin@rock-chips.com>
+        Wed, 30 Jun 2021 09:50:11 -0400
+Date:   Wed, 30 Jun 2021 13:47:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625060861;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=0F09f8zVy8mFr8xczPxcd5oHQp8ME7L5DOD4l4g60B8=;
+        b=J9PkjXKMhfuvho5QPcTButuBuSNkepBQ3exszkFAgUXHfpvdwH7cWHqmsCWAMLmATOmP6m
+        s52nZvaVgnU1AFtGAuMiu1S5+7T72rh0Kz1ffZdwZrrvLqDEvY8BT2U7/PDeZmYor1Yvl0
+        ZY3bO1LXiAxhojOURpk9HftI7gcJX8E0TPtPN3W46VwIZLHLSBRvM8GUjSNbrL10Yce3n0
+        tyai+D3qzNtypHj7w0Znc3IpzXSlnasmbOhHolF/MmAT3LZqH9VbJvFM8uAluhJhkgLv8f
+        BX7yGyuw4Zq1WhIvLMJYfbQY6Dox1XJwFcbiq6p942eTvYaHTu7tBIM8mIiymg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625060861;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=0F09f8zVy8mFr8xczPxcd5oHQp8ME7L5DOD4l4g60B8=;
+        b=fybSfkS25v8dfvj/1Nu4oZCISc8qpPTQoClo+oBp/WcEIAJhLjpSxgc4kiUjm1HdNf369P
+        FS72+7OllrEoHuCg==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] rcutorture: Add BUSTED-BOOST to test RCU priority
+ boosting tests
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <162506086097.395.4670869275615598883.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Morgan <macromorgan@hotmail.com>
+The following commit has been merged into the core/rcu branch of tip:
 
-Add dt-binding for hclk_sfc on rk3036
+Commit-ID:     d4240d628f989efe32b3ad10a78d6921f8e28bd6
+Gitweb:        https://git.kernel.org/tip/d4240d628f989efe32b3ad10a78d6921f8e28bd6
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Sun, 11 Apr 2021 10:44:12 -07:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Mon, 10 May 2021 16:05:07 -07:00
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+rcutorture: Add BUSTED-BOOST to test RCU priority boosting tests
+
+This commit adds the BUSTED-BOOST rcutorture scenario, which can be
+used to test rcutorture's ability to test RCU priority boosting.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
+ tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST      | 17 +++++++++++++++++
+ tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot |  8 ++++++++
+ 2 files changed, 25 insertions(+)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
 
-Changes in v10: None
-Changes in v9:
-- Separate FDT binding docs and includes from rk3036 sfc_hclk patch
-
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-Changes in v1: None
-
- include/dt-bindings/clock/rk3036-cru.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/dt-bindings/clock/rk3036-cru.h b/include/dt-bindings/clock/rk3036-cru.h
-index 35a5a01f9697..a96a9870ad59 100644
---- a/include/dt-bindings/clock/rk3036-cru.h
-+++ b/include/dt-bindings/clock/rk3036-cru.h
-@@ -81,6 +81,7 @@
- #define HCLK_OTG0		449
- #define HCLK_OTG1		450
- #define HCLK_NANDC		453
-+#define HCLK_SFC		454
- #define HCLK_SDMMC		456
- #define HCLK_SDIO		457
- #define HCLK_EMMC		459
--- 
-2.17.1
-
-
-
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
+new file mode 100644
+index 0000000..22d598f
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST
+@@ -0,0 +1,17 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=16
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++#CHECK#CONFIG_PREEMPT_RCU=y
++CONFIG_HZ_PERIODIC=y
++CONFIG_NO_HZ_IDLE=n
++CONFIG_NO_HZ_FULL=n
++CONFIG_RCU_TRACE=y
++CONFIG_HOTPLUG_CPU=y
++CONFIG_RCU_FANOUT=2
++CONFIG_RCU_FANOUT_LEAF=2
++CONFIG_RCU_NOCB_CPU=n
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
+new file mode 100644
+index 0000000..f57720c
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/BUSTED-BOOST.boot
+@@ -0,0 +1,8 @@
++rcutorture.test_boost=2
++rcutorture.stutter=0
++rcutree.gp_preinit_delay=12
++rcutree.gp_init_delay=3
++rcutree.gp_cleanup_delay=3
++rcutree.kthread_prio=2
++threadirqs
++tree.use_softirq=0
