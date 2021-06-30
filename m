@@ -2,101 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E145B3B8934
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03323B8936
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhF3ThN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 15:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhF3ThL (ORCPT
+        id S233875AbhF3Tiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:38:54 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:48799 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229700AbhF3Tiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:37:11 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00C5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:34:42 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id e1-20020a0568200601b029024ea261f0ccso668317oow.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/iOfKm8Iao2lnEDiXuVXkhdoDSAmPD02L6Go09Galk=;
-        b=aRtt5v/XSPRRplkBM50G26ktqpLURc9s+fzFCYrEE/zIXSxiZ/MHA2CSUuzqkw/IqG
-         zmnOWdCW4v/HIHJtlzXhNMUzCsnn8AuB8VwkHYvPCO9tkvrwwikwQCW9T2pa90auAkzy
-         f/uHfzCRxovSMaZgRvgiLPLgwHpFC7VyOO6tZIVFLgezCqRy23wD9Fx+wCSD8r0wO3Yp
-         yDUbl9Ms5UzKe2jTygNQgWr2prCo8g2r2AkK95ykAhfAMBdtNoM9dHFqzyYU2vAvmC4u
-         YYNLEMX/7TA1WnrVh8WhrJrk3xM4eoPDZjQr3HNRMITGeTNKALwwY/x7aH5nima+WfzD
-         VMyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/iOfKm8Iao2lnEDiXuVXkhdoDSAmPD02L6Go09Galk=;
-        b=ZuHtYV57qKoJbxoBspoCRlTI4zeWmTUE4ZEk34zPnV7nlV85Untl1c2uTzW+iDMXvl
-         f+k+dvKzbc8CPzWCBQsj+23AmvmFTQlNH0ssPcneYJFVZehSu9DUNS9aHBK4+VAbinux
-         e0xp3h34d5V/VocyuRADgA2ik1pToUXzwBKwuGKcCBQsW4VN6JJHMc1Kalt9HLl+C8qN
-         rdpnI9QBq5oOq7ac675axHoPYBfwy/QQUUhOK7buTVCfnPUdapES78SAuM1QxPmp/pyy
-         LzDZQ813CgvHYPfq2P1sGdnDGgpgk1KP/XF9m2Pxth8PNOL4GKK+x36CNJn7vOgf3jos
-         EyjQ==
-X-Gm-Message-State: AOAM531PsFvWiIYddNMp75FYffeUKj8Ml6NJ/FBDEDMif13zlWdquVeK
-        14AHFmABH9FYB3MnbSzM0tGczd0TfssY12mFGJrfPg==
-X-Google-Smtp-Source: ABdhPJxhJRxXgIwYjfIZ8HUyLFDhIoKbk0orSRffkmceyffNiCzjG4acjI3uHM1W/9tFIBPDRAZnKjB4jOR3k6nfCfo=
-X-Received: by 2002:a4a:956f:: with SMTP id n44mr9708434ooi.54.1625081681837;
- Wed, 30 Jun 2021 12:34:41 -0700 (PDT)
+        Wed, 30 Jun 2021 15:38:52 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lyg0Q-002Tbr-BY; Wed, 30 Jun 2021 21:36:18 +0200
+Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lyg0Q-002W4E-0F; Wed, 30 Jun 2021 21:36:18 +0200
+Subject: Re: [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <20210627220544.8757-4-rdunlap@infradead.org>
+ <6af41806-e715-4084-418f-4a8924d26c07@physik.fu-berlin.de>
+ <8efd6e1d-9949-9598-9e6b-41d9b2f4ea7a@infradead.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <d1e925b1-b0ef-2e00-ea79-b5ff2be3cf4c@physik.fu-berlin.de>
+Date:   Wed, 30 Jun 2021 21:36:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
- <YNIaFnfnZPGVd1t3@codewreck.org> <CAJfuBxywD3QrsoGszMnVbF2RYcCF7r3h7sCOg6hK7K60E+4qKA@mail.gmail.com>
- <CAJfuBxw-JUpnENT9zNgTq2wdHqH-77pAjNuthoZYbtiCud4T=g@mail.gmail.com>
- <CAJfuBxxsye593-vWtXz5As0vBCYEMm_R9r+JL=YMuD6fg+QGNA@mail.gmail.com> <YNJQBc4dawzwMrhn@codewreck.org>
-In-Reply-To: <YNJQBc4dawzwMrhn@codewreck.org>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 30 Jun 2021 21:34:30 +0200
-Message-ID: <CANpmjNPyjTKd7tSPbQ6G75H3djHtWqipmVzNWguPU+mdnH3uag@mail.gmail.com>
-Subject: Re: [V9fs-developer] KCSAN BUG report on p9_client_cb / p9_client_rpc
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     jim.cromie@gmail.com, kasan-dev@googlegroups.com,
-        v9fs-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8efd6e1d-9949-9598-9e6b-41d9b2f4ea7a@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.150.76
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 at 23:03, Dominique Martinet <asmadeus@codewreck.org> wrote:
+On 6/30/21 9:33 PM, Randy Dunlap wrote:
+> On 6/30/21 2:36 AM, John Paul Adrian Glaubitz wrote:
+>> On 6/28/21 12:05 AM, Randy Dunlap wrote:
+>>> kernel.h defines READ and WRITE, so rename the SH math-emu macros
+>>> to MREAD and MWRITE.
+>>>
+>>> Fixes these warnings:
+>>>
+>>> ../arch/sh/math-emu/math.c:54: warning: "WRITE" redefined
+>>>    54 | #define WRITE(d,a) ({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>> In file included from ../arch/sh/math-emu/math.c:10:
+>>> ../include/linux/kernel.h:37: note: this is the location of the previous definition
+>>>    37 | #define WRITE   1
+>>> ../arch/sh/math-emu/math.c:55: warning: "READ" redefined
+>>>    55 | #define READ(d,a) ({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>> In file included from ../arch/sh/math-emu/math.c:10:
+>>> ../include/linux/kernel.h:36: note: this is the location of the previous definition
+>>>    36 | #define READ   0
+>>>
+>>> Fixes: 4b565680d163 ("sh: math-emu support")
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+>>> Cc: Rich Felker <dalias@libc.org>
+>>> Cc: linux-sh@vger.kernel.org
+>>> Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+>>> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+>>> ---
+>>> v2: renumber patches, otherwise no change;
+>>>
+>>>  arch/sh/math-emu/math.c |   44 +++++++++++++++++++-------------------
+>>>  1 file changed, 22 insertions(+), 22 deletions(-)
+>>>
+>>> --- linux-next-20210625.orig/arch/sh/math-emu/math.c
+>>> +++ linux-next-20210625/arch/sh/math-emu/math.c
+>>> @@ -51,8 +51,8 @@
+>>>  #define Rn	(regs->regs[n])
+>>>  #define Rm	(regs->regs[m])
+>>>  
+>>> -#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>> -#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>> +#define MWRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>> +#define MREAD(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>>>  
+>>>  #define PACK_S(r,f)	FP_PACK_SP(&r,f)
+>>>  #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
+>>> @@ -157,11 +157,11 @@ fmov_idx_reg(struct sh_fpu_soft_struct *
+>>>  {
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(n);
+>>> -		READ(FRn, Rm + R0 + 4);
+>>> +		MREAD(FRn, Rm + R0 + 4);
+>>>  		n++;
+>>> -		READ(FRn, Rm + R0);
+>>> +		MREAD(FRn, Rm + R0);
+>>>  	} else {
+>>> -		READ(FRn, Rm + R0);
+>>> +		MREAD(FRn, Rm + R0);
+>>>  	}
+>>>  
+>>>  	return 0;
+>>> @@ -173,11 +173,11 @@ fmov_mem_reg(struct sh_fpu_soft_struct *
+>>>  {
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(n);
+>>> -		READ(FRn, Rm + 4);
+>>> +		MREAD(FRn, Rm + 4);
+>>>  		n++;
+>>> -		READ(FRn, Rm);
+>>> +		MREAD(FRn, Rm);
+>>>  	} else {
+>>> -		READ(FRn, Rm);
+>>> +		MREAD(FRn, Rm);
+>>>  	}
+>>>  
+>>>  	return 0;
+>>> @@ -189,12 +189,12 @@ fmov_inc_reg(struct sh_fpu_soft_struct *
+>>>  {
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(n);
+>>> -		READ(FRn, Rm + 4);
+>>> +		MREAD(FRn, Rm + 4);
+>>>  		n++;
+>>> -		READ(FRn, Rm);
+>>> +		MREAD(FRn, Rm);
+>>>  		Rm += 8;
+>>>  	} else {
+>>> -		READ(FRn, Rm);
+>>> +		MREAD(FRn, Rm);
+>>>  		Rm += 4;
+>>>  	}
+>>>  
+>>> @@ -207,11 +207,11 @@ fmov_reg_idx(struct sh_fpu_soft_struct *
+>>>  {
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(m);
+>>> -		WRITE(FRm, Rn + R0 + 4);
+>>> +		MWRITE(FRm, Rn + R0 + 4);
+>>>  		m++;
+>>> -		WRITE(FRm, Rn + R0);
+>>> +		MWRITE(FRm, Rn + R0);
+>>>  	} else {
+>>> -		WRITE(FRm, Rn + R0);
+>>> +		MWRITE(FRm, Rn + R0);
+>>>  	}
+>>>  
+>>>  	return 0;
+>>> @@ -223,11 +223,11 @@ fmov_reg_mem(struct sh_fpu_soft_struct *
+>>>  {
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(m);
+>>> -		WRITE(FRm, Rn + 4);
+>>> +		MWRITE(FRm, Rn + 4);
+>>>  		m++;
+>>> -		WRITE(FRm, Rn);
+>>> +		MWRITE(FRm, Rn);
+>>>  	} else {
+>>> -		WRITE(FRm, Rn);
+>>> +		MWRITE(FRm, Rn);
+>>>  	}
+>>>  
+>>>  	return 0;
+>>> @@ -240,12 +240,12 @@ fmov_reg_dec(struct sh_fpu_soft_struct *
+>>>  	if (FPSCR_SZ) {
+>>>  		FMOV_EXT(m);
+>>>  		Rn -= 8;
+>>> -		WRITE(FRm, Rn + 4);
+>>> +		MWRITE(FRm, Rn + 4);
+>>>  		m++;
+>>> -		WRITE(FRm, Rn);
+>>> +		MWRITE(FRm, Rn);
+>>>  	} else {
+>>>  		Rn -= 4;
+>>> -		WRITE(FRm, Rn);
+>>> +		MWRITE(FRm, Rn);
+>>>  	}
+>>>  
+>>>  	return 0;
+>>> @@ -445,11 +445,11 @@ id_sys(struct sh_fpu_soft_struct *fregs,
+>>>  	case 0x4052:
+>>>  	case 0x4062:
+>>>  		Rn -= 4;
+>>> -		WRITE(*reg, Rn);
+>>> +		MWRITE(*reg, Rn);
+>>>  		break;
+>>>  	case 0x4056:
+>>>  	case 0x4066:
+>>> -		READ(*reg, Rn);
+>>> +		MREAD(*reg, Rn);
+>>>  		Rn += 4;
+>>>  		break;
+>>>  	default:
+>>>
+>>
+>> This one no longer applies to Linus' tree:
+>>
+>> glaubitz@node54:/data/home/glaubitz/linux> git am ../sh-patches-2021/\[PATCH\ 3_3\ v2\]\ sh\:\ fix\ READ_WRITE\ redefinition\ warnings.eml
+>> Applying: sh: fix READ/WRITE redefinition warnings
+>> error: patch failed: arch/sh/math-emu/math.c:51
+>> error: arch/sh/math-emu/math.c: patch does not apply
+>> Patch failed at 0001 sh: fix READ/WRITE redefinition warnings
+>> hint: Use 'git am --show-current-patch=diff' to see the failed patch
+>> When you have resolved this problem, run "git am --continue".
+>> If you prefer to skip this patch, run "git am --skip" instead.
+>> To restore the original branch and stop patching, run "git am --abort".
+>> glaubitz@node54:/data/home/glaubitz/linux>
+> 
+> OK. Thanks for all of the testing.
 
-> jim.cromie@gmail.com wrote on Tue, Jun 22, 2021 at 02:55:19PM -0600:
-> > heres a fuller report - Im seeing some new stuff here.
+I'll report back with the other patch applied that Geert mentioned from linux-next before this one.
 
-There are lots of known data races. A non-exhaustive list can be seen
-here: https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
+FWIW, there are some warnings when building the SH-7785LCR configuration:
 
-> Thanks, the one two should be the same as p9_client_cb / p9_client_rpc
-> and p9_client_cb / p9_virtio_zc_request are very similar, and also the
-> same to the first you had, so the patch didn't really work.
->
-> I thought after sending it that it probably needs to be tag =
-> READ_ONCE(req->tc.tag) instead of just assigning it... Would you mind
-> trying that?
->
-> > Im running in a vm, using virtme, which uses 9p to share host filesystems
-> > since 1st report to you, Ive added --smp 2 to my testing, it seems to
-> > have increased reporting
->
-> I'm ashamed to say I've just never tried KCSAN... I can give it a try over
-> the next few weeks* if that patch + READ_ONCE doesn't cut it
+In file included from ./arch/sh/include/asm/hw_irq.h:6,
+                 from ./include/linux/irq.h:591,
+                 from ./include/asm-generic/hardirq.h:17,
+                 from ./arch/sh/include/asm/hardirq.h:9,
+                 from ./include/linux/hardirq.h:11,
+                 from ./include/linux/interrupt.h:11,
+                 from ./include/linux/serial_core.h:13,
+                 from ./include/linux/serial_sci.h:6,
+                 from arch/sh/kernel/cpu/sh4a/setup-sh7785.c:10:
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |         ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:478:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  478 | static DECLARE_INTC_DESC(intc_desc, "sh7785", vectors, groups,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |                                  ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:478:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  478 | static DECLARE_INTC_DESC(intc_desc, "sh7785", vectors, groups,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:105:31: note: in expansion of macro '_INTC_ARRAY'
+  105 |         _INTC_ARRAY(vectors), _INTC_ARRAY(groups),      \
+      |                               ^~~~~~~~~~~
+./include/linux/sh_intc.h:132:15: note: in expansion of macro 'INTC_HW_DESC'
+  132 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:503:8: note: in expansion of macro 'DECLARE_INTC_DESC_ACK'
+  503 | static DECLARE_INTC_DESC_ACK(intc_desc_irq0123, "sh7785-irq0123",
+      |        ^~~~~~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:105:31: note: in expansion of macro '_INTC_ARRAY'
+  105 |         _INTC_ARRAY(vectors), _INTC_ARRAY(groups),      \
+      |                               ^~~~~~~~~~~
+./include/linux/sh_intc.h:132:15: note: in expansion of macro 'INTC_HW_DESC'
+  132 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:507:8: note: in expansion of macro 'DECLARE_INTC_DESC_ACK'
+  507 | static DECLARE_INTC_DESC_ACK(intc_desc_irq4567, "sh7785-irq4567",
+      |        ^~~~~~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:105:31: note: in expansion of macro '_INTC_ARRAY'
+  105 |         _INTC_ARRAY(vectors), _INTC_ARRAY(groups),      \
+      |                               ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:535:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  535 | static DECLARE_INTC_DESC(intc_desc_irl0123, "sh7785-irl0123", vectors_irl0123,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:106:33: note: in expansion of macro '_INTC_ARRAY'
+  106 |         _INTC_ARRAY(mask_regs), _INTC_ARRAY(prio_regs), \
+      |                                 ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:535:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  535 | static DECLARE_INTC_DESC(intc_desc_irl0123, "sh7785-irl0123", vectors_irl0123,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |         ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:535:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  535 | static DECLARE_INTC_DESC(intc_desc_irl0123, "sh7785-irl0123", vectors_irl0123,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |                                  ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:535:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  535 | static DECLARE_INTC_DESC(intc_desc_irl0123, "sh7785-irl0123", vectors_irl0123,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:105:31: note: in expansion of macro '_INTC_ARRAY'
+  105 |         _INTC_ARRAY(vectors), _INTC_ARRAY(groups),      \
+      |                               ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:538:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  538 | static DECLARE_INTC_DESC(intc_desc_irl4567, "sh7785-irl4567", vectors_irl4567,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:106:33: note: in expansion of macro '_INTC_ARRAY'
+  106 |         _INTC_ARRAY(mask_regs), _INTC_ARRAY(prio_regs), \
+      |                                 ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:538:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  538 | static DECLARE_INTC_DESC(intc_desc_irl4567, "sh7785-irl4567", vectors_irl4567,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |         ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:538:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  538 | static DECLARE_INTC_DESC(intc_desc_irl4567, "sh7785-irl4567", vectors_irl4567,
+      |        ^~~~~~~~~~~~~~~~~
+./include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Wsizeof-pointer-div]
+  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 : sizeof(a)/sizeof(*a)
+      |                                                               ^
+./include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
+  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
+      |                                  ^~~~~~~~~~~
+./include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
+  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,                  \
+      |               ^~~~~~~~~~~~
+arch/sh/kernel/cpu/sh4a/setup-sh7785.c:538:8: note: in expansion of macro 'DECLARE_INTC_DESC'
+  538 | static DECLARE_INTC_DESC(intc_desc_irl4567, "sh7785-irl4567", vectors_irl4567,
+      |        ^~~~~~~~~~~~~~~~~
 
-In case it helps, we have this LWN article series:
-https://lwn.net/Articles/816850/
-
-Paul McKenney also kindly wrote a summary of some parts of it:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-
-There are some upcoming changes to KCSAN that can help filter some
-data races that aren't too interesting today -- see linux-next and set
-CONFIG_KCSAN_PERMISSIVE=y (the opposite of that is
-CONFIG_KCSAN_STRICT=y, but not recommended at this time unless you're
-writing complex concurrent code).
-
-Thanks,
--- Marco
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
