@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE4F3B85C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7D63B85CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhF3PLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhF3PLi (ORCPT
+        id S235716AbhF3PMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:12:09 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3336 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235417AbhF3PMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:11:38 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC00C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4516606pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Qwm5a7S4d67APmjTQTuY/hq2xmS0TKPAGGqg/CRnPBo=;
-        b=hQH2rW5/+D+sJ/vCi4D9X8JFCi1w+1YhK43zeTPcZwmHjtigMz7Hxi58hLvpUD+8hL
-         SVROijWxos23t5Bb/r1YMi/mc8Qlw+LBTwkIUiGnwDG98PM+UoaKA+VhNbnNXA8clSry
-         3ldvy7ODk38s0v9vbtVMyVEej8y/uv7Aw61OwDGVw//0fds4QMMRcHpqOZY8wLcHVsR2
-         HE0T2XuJbZ9NOqgWdU6Qigdb4P/k4fjulqOovDJrE67zg57LT9uKxhlcwispghfWLBia
-         hEQgsgBUr6LNJfYAlwn0AIuac1fIrsccm82oCVHZqn4WRMRnsiJDSZ2tL/2WGTWXXZQR
-         DPFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Qwm5a7S4d67APmjTQTuY/hq2xmS0TKPAGGqg/CRnPBo=;
-        b=OWAHMULvH8ih1gd8VbX/uLq0zQ0sSWuaSSeTF4FXq3l59nU53gdIT7czZYmEpGpnKa
-         vut8PyYG5a8ZuR9gs8WE8Z2kvBO36lu1k76IZNi+HS0HFOF9WhhF9HASh1AsF6nxaLTA
-         qDk96c+lEtbuQSuM8PsUcxNLBbnjQ90HC+nsHFOACHBYdADEoSqeNd5SnESWqNHGWCNS
-         CNozBsSmH9Y+wWVMLIBYT5vv4TMQPBUSczBWNPVXj938gAjnFwr70GmrM+bsXBXMipJ+
-         qIqXD4CkidGGu91fZFPybWzNu8CXFDTKwBbcdJ677zd5aT54PT5RzCxPypvWXb+F3Ran
-         NW8Q==
-X-Gm-Message-State: AOAM530kBdR9oHQuqxVDlZlCBWJh4SKsYXsYJfMaVOpjqnewRtluCY1r
-        q01kuI82ZxvsIkwuoW3GGHS6fA==
-X-Google-Smtp-Source: ABdhPJym5Xp6zNUdD2feUDXohHd8CRMVwRm3dGknfSKatUpwmL5kTwmKxG7StUS5g65JI3R/thswEg==
-X-Received: by 2002:a17:90b:4f83:: with SMTP id qe3mr5005813pjb.49.1625065749166;
-        Wed, 30 Jun 2021 08:09:09 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id f69sm3163333pfa.24.2021.06.30.08.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 08:09:08 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 20:39:01 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210630150901.5uzjelg4k7xgbumb@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
- <20210629041017.dsvzldikvsaade37@vireshk-i7>
- <YNyB/+fNK0u2bI6j@kunai>
+        Wed, 30 Jun 2021 11:12:08 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GFPcv70JTz6K9HN;
+        Wed, 30 Jun 2021 22:59:11 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 17:09:37 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Wed, 30 Jun 2021 17:09:37 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>
+CC:     "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
+        "prsriva02@gmail.com" <prsriva02@gmail.com>,
+        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: RE: [PATCH 3/3] ima: Add digest parameter to the functions to measure
+ a buffer
+Thread-Topic: [PATCH 3/3] ima: Add digest parameter to the functions to
+ measure a buffer
+Thread-Index: AQHXbbqSPTqY0Ld1JU6eOssEbBfEiqssgzQAgAAkqvA=
+Date:   Wed, 30 Jun 2021 15:09:36 +0000
+Message-ID: <9d374fab15c8451f8e1ab024412de937@huawei.com>
+References: <20210630141635.2862222-1-roberto.sassu@huawei.com>
+ <20210630141635.2862222-4-roberto.sassu@huawei.com>
+ <e34639b4-145a-05a0-5ab4-ea51f9093e90@linux.microsoft.com>
+In-Reply-To: <e34639b4-145a-05a0-5ab4-ea51f9093e90@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNyB/+fNK0u2bI6j@kunai>
-User-Agent: NeoMutt/20180716-391-311a52
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-06-21, 16:38, Wolfram Sang wrote:
-> > While we are at it, this has been replaced by a Rust counterpart [1]
-> > (as that makes it hypervisor agnostic, which is the goal of my work
-> > here) and I need someone with I2C knowledge to help review it. It
-> > should be okay even if you don't understand Rust a lot, just review
-> > this file[2] which is where most of i2c specific stuff lies.
-> 
-> From the high level review I can provide, it looks good to me. Block
-> transfers are missing, but I think you said that already. Mising Rust
-> experience, I might miss details, of course. But the general approach
-> seems fine to me. smbus_prepare() will get a bit more messy when you add
-> block transfers, but it still looks bearable, I think.
-
-Thanks for having a look.
-
--- 
-viresh
+PiBGcm9tOiBMYWtzaG1pIFJhbWFzdWJyYW1hbmlhbiBbbWFpbHRvOm5yYW1hc0BsaW51eC5taWNy
+b3NvZnQuY29tXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMzAsIDIwMjEgNDo1NiBQTQ0KPiBP
+biA2LzMwLzIwMjEgNzoxNiBBTSwgUm9iZXJ0byBTYXNzdSB3cm90ZToNCj4gDQo+IEhpIFJvYmVy
+dG8sDQo+IA0KPiA+IFRoaXMgcGF0Y2ggYWRkcyB0aGUgJ2RpZ2VzdCcgcGFyYW1ldGVyIHRvIGlt
+YV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoKSBhbmQNCj4gPiBwcm9jZXNzX2J1ZmZlcl9tZWFzdXJl
+bWVudCgpLCBzbyB0aGF0IGNhbGxlcnMgY2FuIGdldCB0aGUgZGlnZXN0IG9mIHRoZQ0KPiA+IHBh
+c3NlZCBidWZmZXIuDQo+ID4NCj4gPiBUaGVzZSBmdW5jdGlvbnMgY2FsY3VsYXRlIHRoZSBkaWdl
+c3QgZXZlbiBpZiB0aGVyZSBpcyBubyBzdWl0YWJsZSBydWxlIGluDQo+ID4gdGhlIElNQSBwb2xp
+Y3kgYW5kLCBpbiB0aGlzIGNhc2UsIHRoZXkgc2ltcGx5IHJldHVybiAxIGJlZm9yZSBnZW5lcmF0
+aW5nIGENCj4gPiBuZXcgbWVhc3VyZW1lbnQgZW50cnkuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4g
+ICBpbmNsdWRlL2xpbnV4L2ltYS5oICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstLQ0K
+PiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWEuaCAgICAgICAgICAgICAgICAgfCAgMiAr
+LQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBwcmFpc2UuYyAgICAgICAgfCAg
+MiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXN5bW1ldHJpY19rZXlzLmMg
+fCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfaW5pdC5jICAgICAgICAg
+ICAgfCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfbWFpbi5jICAgICAg
+ICAgICAgfCAzMSArKysrKysrKysrKysrLS0tLS0tLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5
+L2ltYS9pbWFfcXVldWVfa2V5cy5jICAgICAgfCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvc2VsaW51
+eC9pbWEuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLS0NCj4gPiAgIDggZmlsZXMgY2hh
+bmdlZCwgMzAgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4NCj4gDQo+ID4NCj4g
+PiArCWlmIChkaWdlc3QpDQo+ID4gKwkJbWVtY3B5KGRpZ2VzdCwgaWludC5pbWFfaGFzaC0+ZGln
+ZXN0LA0KPiA+ICsJCSAgICAgICBoYXNoX2RpZ2VzdF9zaXplW2ltYV9oYXNoX2FsZ29dKTsNCj4g
+DQo+IEkgdGhpbmsgdGhlIGNhbGxlciBzaG91bGQgYWxzbyBwYXNzIHRoZSBzaXplIG9mIHRoZSBi
+dWZmZXIgYWxsb2NhdGVkIHRvDQo+IHJlY2VpdmUgdGhlIGNhbGN1bGF0ZWQgZGlnZXN0LiBBbmQs
+IGhlcmUgY29weSBvbmx5IHVwIHRvIHRoYXQgbWFueSBieXRlcw0KPiBzbyB3ZSBkb24ndCBhY2Np
+ZGVudGFsbHkgY2F1c2UgYnVmZmVyIG92ZXJydW4uDQoNCkhpIExha3NobWkNCg0KeWVzLCBJIGFn
+cmVlLiBJIHdpbGwgYWRkIGl0IGluIHRoZSBuZXh0IHZlcnNpb24gb2YgdGhlIHBhdGNoIHNldC4N
+Cg0KVGhhbmtzDQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBH
+bWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkg
+WWFubGkNCg0KPiAgIC1sYWtzaG1pDQo+IA0KPiA+ICsNCj4gPiArCWlmICghaW1hX3BvbGljeV9m
+bGFnIHx8IChmdW5jICYmICEoYWN0aW9uICYgSU1BX01FQVNVUkUpKSkNCj4gPiArCQlyZXR1cm4g
+MTsNCj4gPiArDQo+ID4gICAJcmV0ID0gaW1hX2FsbG9jX2luaXRfdGVtcGxhdGUoJmV2ZW50X2Rh
+dGEsICZlbnRyeSwgdGVtcGxhdGUpOw0KPiA+ICAgCWlmIChyZXQgPCAwKSB7DQo+ID4gICAJCWF1
+ZGl0X2NhdXNlID0gImFsbG9jX2VudHJ5IjsNCj4gPiBAQCAtOTY2LDcgKzk3NSw3IEBAIHZvaWQg
+aW1hX2tleGVjX2NtZGxpbmUoaW50IGtlcm5lbF9mZCwgY29uc3Qgdm9pZA0KPiAqYnVmLCBpbnQg
+c2l6ZSkNCj4gPiAgIAlyZXQgPSBwcm9jZXNzX2J1ZmZlcl9tZWFzdXJlbWVudChmaWxlX21udF91
+c2VyX25zKGYuZmlsZSksDQo+ID4gICAJCQkJCSBmaWxlX2lub2RlKGYuZmlsZSksIGJ1Ziwgc2l6
+ZSwNCj4gPiAgIAkJCQkJICJrZXhlYy1jbWRsaW5lIiwgS0VYRUNfQ01ETElORSwgMCwNCj4gPiAt
+CQkJCQkgTlVMTCwgZmFsc2UpOw0KPiA+ICsJCQkJCSBOVUxMLCBmYWxzZSwgTlVMTCk7DQo+ID4g
+ICAJZmRwdXQoZik7DQo+ID4gICB9DQo+ID4NCj4gPiBAQCAtOTc3LDI2ICs5ODYsMjggQEAgdm9p
+ZCBpbWFfa2V4ZWNfY21kbGluZShpbnQga2VybmVsX2ZkLCBjb25zdCB2b2lkDQo+ICpidWYsIGlu
+dCBzaXplKQ0KPiA+ICAgICogQGJ1ZjogcG9pbnRlciB0byBidWZmZXIgZGF0YQ0KPiA+ICAgICog
+QGJ1Zl9sZW46IGxlbmd0aCBvZiBidWZmZXIgZGF0YSAoaW4gYnl0ZXMpDQo+ID4gICAgKiBAaGFz
+aDogbWVhc3VyZSBidWZmZXIgZGF0YSBoYXNoDQo+ID4gKyAqIEBkaWdlc3Q6IGJ1ZmZlciBkaWdl
+c3Qgd2lsbCBiZSB3cml0dGVuIHRvDQo+ID4gICAgKg0KPiA+ICAgICogTWVhc3VyZSBkYXRhIGNy
+aXRpY2FsIHRvIHRoZSBpbnRlZ3JpdHkgb2YgdGhlIGtlcm5lbCBpbnRvIHRoZSBJTUEgbG9nDQo+
+ID4gICAgKiBhbmQgZXh0ZW5kIHRoZSBwY3IuICBFeGFtcGxlcyBvZiBjcml0aWNhbCBkYXRhIGNv
+dWxkIGJlIHZhcmlvdXMgZGF0YQ0KPiA+ICAgICogc3RydWN0dXJlcywgcG9saWNpZXMsIGFuZCBz
+dGF0ZXMgc3RvcmVkIGluIGtlcm5lbCBtZW1vcnkgdGhhdCBjYW4NCj4gPiAgICAqIGltcGFjdCB0
+aGUgaW50ZWdyaXR5IG9mIHRoZSBzeXN0ZW0uDQo+ID4gICAgKg0KPiA+IC0gKiBSZXR1cm5zIDAg
+aWYgdGhlIGJ1ZmZlciBoYXMgYmVlbiBzdWNjZXNzZnVsbHkgbWVhc3VyZWQsIGEgbmVnYXRpdmUg
+dmFsdWUNCj4gPiAtICogb3RoZXJ3aXNlLg0KPiA+ICsgKiBSZXR1cm5zIDAgaWYgdGhlIGJ1ZmZl
+ciBoYXMgYmVlbiBzdWNjZXNzZnVsbHkgbWVhc3VyZWQsIDEgaWYgdGhlIGRpZ2VzdA0KPiA+ICsg
+KiBoYXMgYmVlbiB3cml0dGVuIHRvIHRoZSBwYXNzZWQgbG9jYXRpb24gYnV0IG5vdCBhZGRlZCB0
+byBhIG1lYXN1cmVtZW50DQo+IGVudHJ5LA0KPiA+ICsgKiBhIG5lZ2F0aXZlIHZhbHVlIG90aGVy
+d2lzZS4NCj4gPiAgICAqLw0KPiA+ICAgaW50IGltYV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoY29u
+c3QgY2hhciAqZXZlbnRfbGFiZWwsDQo+ID4gICAJCQkgICAgICBjb25zdCBjaGFyICpldmVudF9u
+YW1lLA0KPiA+ICAgCQkJICAgICAgY29uc3Qgdm9pZCAqYnVmLCBzaXplX3QgYnVmX2xlbiwNCj4g
+PiAtCQkJICAgICAgYm9vbCBoYXNoKQ0KPiA+ICsJCQkgICAgICBib29sIGhhc2gsIHU4ICpkaWdl
+c3QpDQo+ID4gICB7DQo+ID4gICAJaWYgKCFldmVudF9uYW1lIHx8ICFldmVudF9sYWJlbCB8fCAh
+YnVmIHx8ICFidWZfbGVuKQ0KPiA+ICAgCQlyZXR1cm4gLUVOT1BBUkFNOw0KPiA+DQo+ID4gICAJ
+cmV0dXJuIHByb2Nlc3NfYnVmZmVyX21lYXN1cmVtZW50KCZpbml0X3VzZXJfbnMsIE5VTEwsIGJ1
+ZiwNCj4gYnVmX2xlbiwNCj4gPiAgIAkJCQkJICBldmVudF9uYW1lLCBDUklUSUNBTF9EQVRBLCAw
+LA0KPiA+IC0JCQkJCSAgZXZlbnRfbGFiZWwsIGhhc2gpOw0KPiA+ICsJCQkJCSAgZXZlbnRfbGFi
+ZWwsIGhhc2gsIGRpZ2VzdCk7DQo+ID4gICB9DQo+ID4NCj4gPiAgIHN0YXRpYyBpbnQgX19pbml0
+IGluaXRfaW1hKHZvaWQpDQo+ID4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEv
+aW1hX3F1ZXVlX2tleXMuYw0KPiBiL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tl
+eXMuYw0KPiA+IGluZGV4IGUzMDQ3Y2U2NGYzOS4uYWMwMGE0Nzc4YTkxIDEwMDY0NA0KPiA+IC0t
+LSBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tleXMuYw0KPiA+ICsrKyBiL3Nl
+Y3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tleXMuYw0KPiA+IEBAIC0xNjYsNyArMTY2
+LDcgQEAgdm9pZCBpbWFfcHJvY2Vzc19xdWV1ZWRfa2V5cyh2b2lkKQ0KPiA+ICAgCQkJCQkJCSBl
+bnRyeS0NCj4gPmtleXJpbmdfbmFtZSwNCj4gPiAgIAkJCQkJCQkgS0VZX0NIRUNLLCAwLA0KPiA+
+ICAgCQkJCQkJCSBlbnRyeS0NCj4gPmtleXJpbmdfbmFtZSwNCj4gPiAtCQkJCQkJCSBmYWxzZSk7
+DQo+ID4gKwkJCQkJCQkgZmFsc2UsIE5VTEwpOw0KPiA+ICAgCQlsaXN0X2RlbCgmZW50cnktPmxp
+c3QpOw0KPiA+ICAgCQlpbWFfZnJlZV9rZXlfZW50cnkoZW50cnkpOw0KPiA+ICAgCX0NCj4gPiBk
+aWZmIC0tZ2l0IGEvc2VjdXJpdHkvc2VsaW51eC9pbWEuYyBiL3NlY3VyaXR5L3NlbGludXgvaW1h
+LmMNCj4gPiBpbmRleCA0ZGI5ZmEyMTE2MzguLjk2YmQ3ZWFkODA4MSAxMDA2NDQNCj4gPiAtLS0g
+YS9zZWN1cml0eS9zZWxpbnV4L2ltYS5jDQo+ID4gKysrIGIvc2VjdXJpdHkvc2VsaW51eC9pbWEu
+Yw0KPiA+IEBAIC04OCw3ICs4OCw3IEBAIHZvaWQgc2VsaW51eF9pbWFfbWVhc3VyZV9zdGF0ZV9s
+b2NrZWQoc3RydWN0DQo+IHNlbGludXhfc3RhdGUgKnN0YXRlKQ0KPiA+DQo+ID4gICAJbWVhc3Vy
+ZV9yYyA9IGltYV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoInNlbGludXgiLCAic2VsaW51eC1zdGF0
+ZSIsDQo+ID4gICAJCQkJCSAgICAgICBzdGF0ZV9zdHIsIHN0cmxlbihzdGF0ZV9zdHIpLA0KPiA+
+IC0JCQkJCSAgICAgICBmYWxzZSk7DQo+ID4gKwkJCQkJICAgICAgIGZhbHNlLCBOVUxMKTsNCj4g
+Pg0KPiA+ICAgCWtmcmVlKHN0YXRlX3N0cik7DQo+ID4NCj4gPiBAQCAtMTA1LDcgKzEwNSw3IEBA
+IHZvaWQgc2VsaW51eF9pbWFfbWVhc3VyZV9zdGF0ZV9sb2NrZWQoc3RydWN0DQo+IHNlbGludXhf
+c3RhdGUgKnN0YXRlKQ0KPiA+ICAgCX0NCj4gPg0KPiA+ICAgCW1lYXN1cmVfcmMgPSBpbWFfbWVh
+c3VyZV9jcml0aWNhbF9kYXRhKCJzZWxpbnV4IiwgInNlbGludXgtcG9saWN5LQ0KPiBoYXNoIiwN
+Cj4gPiAtCQkJCQkgICAgICAgcG9saWN5LCBwb2xpY3lfbGVuLCB0cnVlKTsNCj4gPiArCQkJCQkg
+ICAgICAgcG9saWN5LCBwb2xpY3lfbGVuLCB0cnVlLCBOVUxMKTsNCj4gPg0KPiA+ICAgCXZmcmVl
+KHBvbGljeSk7DQo+ID4gICB9DQo+ID4NCg==
