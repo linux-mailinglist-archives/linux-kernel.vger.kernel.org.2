@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2EC3B818A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC843B818F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhF3MBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
+        id S234428AbhF3MDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbhF3MBV (ORCPT
+        with ESMTP id S234353AbhF3MDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:01:21 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B675C061756;
-        Wed, 30 Jun 2021 04:58:51 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id p15so4531022ybe.6;
-        Wed, 30 Jun 2021 04:58:51 -0700 (PDT)
+        Wed, 30 Jun 2021 08:03:09 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0493C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:00:39 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id g21so937109uaw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=EoB32QbQ3pte8D0g3hxaB2ZapmzM19t9cU1a9ijg6c0=;
-        b=lk3MSBC2Q39HUJKogdU4FCGZV7LBZZHy5y7CJAAHQ9Evp0XLYibQqvwDGpSm9OPGfY
-         MzfhUWMbOPFmTR7vVemZLdcwGlCAba8gjh6JDRaA0Bmeerti55Ca8Wwr+4XAxpJJeHu4
-         MZIrs6clEfSZkY0ov02PGi8Gr+ElBoT36F3gu8TAIP6W2PZBzRmADm0n6JMp2xvyduJr
-         ozXKDKYHSc/KFxDqOEs5k6BRgcyJxrOJGSyE0t3q57ezOBUghoxTYyuspJCtszwp3Xtc
-         ES5GuVEpUu6q2QS8Q03q51Lqvbs1aS86GDHPcP+Cz2uHxAoY8M2soBuPP0ffKM4WJXGJ
-         049A==
+        bh=OL62kdeYlXXEkJ1aGiG1sjEtSE7mW2mdMPPQqqcuIxw=;
+        b=GtN/V1W+K3av9LYjLhNVlep99YK92iS+jO2WMN8irtiCujY9UbyESKBImCEyFTSvc2
+         N/9kKpJ5Z+idVw51QclrK/S5v1hCC+YMWrdzDB+c/lgknEujK3RXZBuGL2K6Em+2sqkx
+         hxjQviWx+yPjVjCVldw1zZJoVV+d5AkCzmz2RTozHwBeCsaULN3297BL+DYks+cQfrh2
+         9HZnbbVSRylm+ZHYs7oRA6vupGOXGooPD6JOXo+6QCA61Ba3OPW5fUbdZauH3tDOguww
+         o6Pw9oJ1e1lLB2Na4xHqvXCTbrM4ytKW/XS3fMvB9rQPreyl+INmjhFLLFQeCLHv6fRc
+         21Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EoB32QbQ3pte8D0g3hxaB2ZapmzM19t9cU1a9ijg6c0=;
-        b=RZXTkwKtB5re/kUwk+0cTaay/cz9oFlx5oXDWglMP+t5sgxZGMmFehwPhWb0I82tDm
-         Brlo1h10/xch3StGcr80YFDhH4pl1hVK9ZrurPuI3MglzjIdXsKJBOsDXhlGCcWOxEIC
-         0TuXIP26ThIkb4+nKGvWwG3uu2Ubh7tECMfMcMTjJNI7zn7XABaaAwj/dxEqccPog6Hy
-         /AzAPHjtnfoZv/PNMrpWAw9RGQjf5qsV78g8Kg0oVld4pxzPSG61eyFw18WOxQmL+cRQ
-         GXeWysl8nc/y1OFjVFW6Z84czFEY62mjmFW57k5w9KN7ZLAN/w3znxC3b2p9LESBdTiw
-         BPSA==
-X-Gm-Message-State: AOAM532GvKTUdlCK0dZHXg72vuel6juF2CJ7KJqaXiVN/QN7zSVbuGWX
-        XcK9BqrkJm4yABwd1gIPs1JBSNsC1ccHjFnycUs=
-X-Google-Smtp-Source: ABdhPJx0T9n/JTcxj2+m85UxkpSF62bTVpXOJ0ynahVA6xKjm0cwVmfFvSj5go+WHqQsjdGb2DR2yYyiGr8Ihw1G/X0=
-X-Received: by 2002:a25:b701:: with SMTP id t1mr42905464ybj.517.1625054330916;
- Wed, 30 Jun 2021 04:58:50 -0700 (PDT)
+        bh=OL62kdeYlXXEkJ1aGiG1sjEtSE7mW2mdMPPQqqcuIxw=;
+        b=IDSPHZlpw9zb7zw58cxi90cZHm7NKxzdnyJZ1Ff3cCxeiWXKc718JJHDcN+PvNebRb
+         6PIx4svCdw98N6Jt6LVJHfG2bNlU0588FXloczT4k5Su2bCRASWRO4KXmspilZOzB055
+         tZs2mhP+vBCwTdNxJZ9wsl2jptZ/q8EI5Agxkib05O9Xxgc6gSeT/CIz/eE3hDprLx1Y
+         AbAvfKRGpoFYTtMVXo+QyofFdqdUGy3hHc2rZK8NkkYsTz1wF61EsibgFzxaxYlbV4+W
+         XI+Qm/DOrHOsHBSVoU+vcJxOzflo5qVvn7ph+IajcRw150r0IV3yLzQmG+It1hHhwkMK
+         Isrg==
+X-Gm-Message-State: AOAM53343reBccGgI86PEkduLh/9cPXJwN2RCgFyQX1B2EbE7hqwle0m
+        h4T9WXHd7UlQBPhRgQY8TxB6Dnxm+2Z3rRznzoyrHg==
+X-Google-Smtp-Source: ABdhPJwPGDieMZ+5r43/zWQZ3F64qB/ndaTGdMjbvOXP3BoBFkByykdSNBN4/vPRb1ScCDMM5gnwhSzc1EUNmu10tcw=
+X-Received: by 2002:ab0:484b:: with SMTP id c11mr32650086uad.100.1625054439072;
+ Wed, 30 Jun 2021 05:00:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210627135117.28641-1-bmeng.cn@gmail.com> <11706f7e-a53a-5640-d713-bc4562db71fa@huawei.com>
- <CAEUhbmV=h3nZ8Aa94_uyjrZ_NGe+9-xAorUMubSPJXu3y60PeQ@mail.gmail.com>
- <aa1f027c-bbc7-92f8-80a6-fe290cd1cdf8@huawei.com> <CAEUhbmXeqAsLxm+oCHRPHMZq2mQXPD6fJOFerwp_BRv1kCc7ow@mail.gmail.com>
-In-Reply-To: <CAEUhbmXeqAsLxm+oCHRPHMZq2mQXPD6fJOFerwp_BRv1kCc7ow@mail.gmail.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Wed, 30 Jun 2021 19:58:39 +0800
-Message-ID: <CAEUhbmUvDSocWobb26PcrV6vi6kHjg8o6pNomt9AnGWGbvAuhw@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Fix 32-bit RISC-V boot failure
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
+References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
+ <CAPDyKFo6AVGq5Q9bRKPjypRMxisLf0nZWLtSeARGO-3kO7=+zQ@mail.gmail.com> <2049952.mNMznikF6L@jernej-laptop>
+In-Reply-To: <2049952.mNMznikF6L@jernej-laptop>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 30 Jun 2021 14:00:02 +0200
+Message-ID: <CAPDyKFrr3eUAXgdkWVF1nYBL8A73TkzUyqhLUZOSyGe0ebDKuw@mail.gmail.com>
+Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
+To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     pizza@shaftnet.org, Arnd Bergmann <arnd@arndb.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:21 AM Bin Meng <bmeng.cn@gmail.com> wrote:
+On Wed, 30 Jun 2021 at 12:09, Jernej =C5=A0krabec <jernej.skrabec@gmail.com=
+> wrote:
 >
-> On Mon, Jun 28, 2021 at 10:28 AM Kefeng Wang <wangkefeng.wang@huawei.com>=
- wrote:
-> >
-> >
-> > On 2021/6/28 9:15, Bin Meng wrote:
-> > > On Mon, Jun 28, 2021 at 8:53 AM Kefeng Wang <wangkefeng.wang@huawei.c=
-om> wrote:
-> > >> Hi=EF=BC=8C sorry for the mistake=EF=BC=8Cthe bug is fixed by
-> > >>
-> > >> https://lore.kernel.org/linux-riscv/20210602085517.127481-2-wangkefe=
-ng.wang@huawei.com/
-> > > What are we on the patch you mentioned?
+> Hi Ulf!
+>
+> Dne sreda, 30. junij 2021 ob 12:03:13 CEST je Ulf Hansson napisal(a):
+> > On Tue, 22 Jun 2021 at 22:23, Jernej Skrabec <jernej.skrabec@gmail.com>
+> wrote:
+> > > It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
+> > > memory allocated on stack, SDIO operations fail due to invalid memory
+> > > address conversion:
 > > >
-> > > I don't see it applied in the linux/master.
+> > > cw1200_wlan_sdio: Probe called
+> > > sunxi-mmc 4021000.mmc: DMA addr 0x0000800051eab954+4 overflow (mask
+> > > ffffffff, bus limit 0). WARNING: CPU: 2 PID: 152 at
+> > > kernel/dma/direct.h:97 dma_direct_map_sg+0x26c/0x28c CPU: 2 PID: 152
+> > > Comm: kworker/2:2 Not tainted 5.13.0-rc1-00026-g84114ef026b9-dirty #8=
+5
+> > > Hardware name: X96 Mate (DT)
+> > > Workqueue: events_freezable mmc_rescan
+> > > pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=3D--)
+> > > pc : dma_direct_map_sg+0x26c/0x28c
+> > > lr : dma_direct_map_sg+0x26c/0x28c
+> > > sp : ffff800011eab540
+> > > x29: ffff800011eab540 x28: ffff800011eab738 x27: 0000000000000000
+> > > x26: ffff000001daf010 x25: 0000000000000000 x24: 0000000000000000
+> > > x23: 0000000000000002 x22: fffffc0000000000 x21: ffff8000113b0ab0
+> > > x20: ffff80001181abb0 x19: 0000000000000001 x18: ffffffffffffffff
+> > > x17: 00000000fa97f83f x16: 00000000d2e01bf8 x15: ffff8000117ffb1d
+> > > x14: ffffffffffffffff x13: ffff8000117ffb18 x12: fffffffffffc593f
+> > > x11: ffff800011676ad0 x10: fffffffffffe0000 x9 : ffff800011eab540
+> > > x8 : 206b73616d282077 x7 : 000000000000000f x6 : 000000000000000c
+> > > x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+> > > x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000283b800
 > > >
-> > > Also there should be a "Fixes" tag and stable@vger.kernel.org cc'ed
-> > > because 32-bit is broken since v5.12.
+> > > Call trace:
+> > >  dma_direct_map_sg+0x26c/0x28c
+> > >  dma_map_sg_attrs+0x2c/0x60
+> > >  sunxi_mmc_request+0x70/0x420
+> > >  __mmc_start_request+0x68/0x134
+> > >  mmc_start_request+0x84/0xac
+> > >  mmc_wait_for_req+0x70/0x100
+> > >  mmc_io_rw_extended+0x1cc/0x2c0
+> > >  sdio_io_rw_ext_helper+0x194/0x240
+> > >  sdio_memcpy_fromio+0x20/0x2c
+> > >  cw1200_sdio_memcpy_fromio+0x20/0x2c
+> > >  __cw1200_reg_read+0x34/0x60
+> > >  cw1200_reg_read+0x48/0x70
+> > >  cw1200_load_firmware+0x38/0x5d0
+> > >  cw1200_core_probe+0x794/0x970
+> > >  cw1200_sdio_probe+0x124/0x22c
+> > >  sdio_bus_probe+0xe8/0x1d0
+> > >  really_probe+0xe4/0x504
+> > >  driver_probe_device+0x64/0xcc
+> > >  __device_attach_driver+0xd0/0x14c
+> > >  bus_for_each_drv+0x78/0xd0
+> > >  __device_attach+0xdc/0x184
+> > >  device_initial_probe+0x14/0x20
+> > >  bus_probe_device+0x9c/0xa4
+> > >  device_add+0x350/0x83c
+> > >  sdio_add_func+0x6c/0x90
+> > >  mmc_attach_sdio+0x1b0/0x430
+> > >  mmc_rescan+0x254/0x2e0
+> > >  process_one_work+0x1d0/0x34c
+> > >  worker_thread+0x13c/0x470
+> > >  kthread+0x154/0x160
+> > >  ret_from_fork+0x10/0x34
+> > >
+> > > sunxi-mmc 4021000.mmc: dma_map_sg failed
+> > > sunxi-mmc 4021000.mmc: map DMA failed
+> > > Can't read config register.
+> > >
+> > > Fix that by using kmalloc() allocated memory for read/write 16/32
+> > > funtions.
+> > >
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > >
-> > https://kernel.googlesource.com/pub/scm/linux/kernel/git/riscv/linux/+/=
-c9811e379b211c67ba29fb09d6f644dd44cfcff2
-> >
-> > it's on Palmer' riscv-next.
+> > Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 >
-> Not sure riscv-next is for which release? This is a regression and
-> should be on 5.13.
+> Thanks! But I found few more places which need this kind of fix:
+> https://github.com/jernejsk/linux-1/commit/
+> 1cba9a7764c7d5bbdeb4ddeaa91ff20a0339f6ff
+
+I couldn't find it.
+
 >
-> >
-> > Hi Palmer, should I resend or could you help me to add the fixes tag?
+> I guess I can keep R-b tag?
 
-Your patch mixed 2 things (fix plus one feature) together, so it is
-not proper to back port your patch.
+Well, just send a new version and I will respond to it again, no
+worries. Or send an additional one on top.
 
-Here is my 2 cents:
+[...]
 
-1. Drop your patch from riscv-next
-2. Apply my patch as it is a simple fix to previous commit. This
-allows stable kernel to cherry-pick the fix to v5.12 and v5.13.
-3. Rebase your patch against mine, and resend v2
-
-Let me know if this makes sense.
-
-Regards,
-Bin
+Kind regards
+Uffe
