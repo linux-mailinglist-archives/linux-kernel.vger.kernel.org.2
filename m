@@ -2,95 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AD63B7D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDA13B7D49
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhF3GM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:12:57 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:45951 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhF3GMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:12:12 -0400
-Received: by mail-lf1-f46.google.com with SMTP id h15so2892332lfv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:09:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iRrCIidg3p+53Gp3G45rzdNB0fDCAtNVq4tw07rh17E=;
-        b=GOyJ9GZVYmnLV3Zlg/8z+/x4h33OQ3qlM0q5j/MhnC92PGSY/MZTsmKr5JAjzfE6fY
-         OLqnGXXAY52wt0UYxs2xDGu4ciINkCWPZV875lDZuUFvqg7ii3+WU3HaxCTBRHcgGmlK
-         MvwZ7TgSt2P6K7TokjHMDqfzdh1j89XEcDTdaHNLbZlarORN75mymXhSXBeqfceyuvgr
-         eb0JWVCR44qmDmdrLf0Yw3BwTUN5d3PGFgjSWBGGFve0pu7iuULqBARNq/3A4zEi+Z25
-         1oeArf1DatAnOxIFwYHDLJZw3me4vrvh47Xz31r/jVqMWaqWuMpujJbOZMeQc6GD4lVz
-         4uEQ==
-X-Gm-Message-State: AOAM5330rvZXQct3RM8ieoaJonSsIbK5xTfSGcWTXwdD5OxaH5XWB3BH
-        L8bDnelAM7IcKqJ00UaHj+4+YGeIuZEXB1Cyuko=
-X-Google-Smtp-Source: ABdhPJyLdHzrdIlcN0w/nUWGHFQEFCK+aHbuSFItAWYWWBJ7WPQIq7LI/x841iN7W90xyHCqrCn5ZDl/SDP2LXftPjY=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr27050107lfa.374.1625033382693;
- Tue, 29 Jun 2021 23:09:42 -0700 (PDT)
+        id S232235AbhF3GQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:16:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34424 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229933AbhF3GQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 02:16:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="269428900"
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="269428900"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 23:13:41 -0700
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="447342239"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.169.66]) ([10.185.169.66])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 23:13:38 -0700
+Subject: Re: [Intel-wired-lan] [PATCH] driver core: fix e1000e ltr bug
+To:     Yee Li <seven.yi.lee@gmail.com>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Edri, Michael" <michael.edri@intel.com>,
+        "Efrati, Nir" <nir.efrati@intel.com>
+References: <20210629082128.255988-1-seven.yi.lee@gmail.com>
+ <02ff77ef-e802-8e13-d169-1ab2c250405a@intel.com>
+ <CALX8JfQymbSmCP0xk0C-=v64__uaH=BR0UZjr2yRyLWVwm9dLQ@mail.gmail.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <0234b97a-f207-47b0-1545-582ee5282824@intel.com>
+Date:   Wed, 30 Jun 2021 09:13:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
- <CAM9d7ciOMPTbwTzHwDp2sjn59KButCQpPOpQsqttopodGC7_kg@mail.gmail.com> <8b738198-c77e-e35e-2bc8-f709d8ec937f@linux.intel.com>
-In-Reply-To: <8b738198-c77e-e35e-2bc8-f709d8ec937f@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 29 Jun 2021 23:09:31 -0700
-Message-ID: <CAM9d7ci4M5hNTXm4iqj91=DXnC=qUpeWMXAHsFtgBq=J=VTqKw@mail.gmail.com>
-Subject: Re: [PATCH v7 00/20] Introduce threaded trace streaming for basic
- perf record operation
-To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CALX8JfQymbSmCP0xk0C-=v64__uaH=BR0UZjr2yRyLWVwm9dLQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 1:11 AM Bayduraev, Alexey V
-<alexey.v.bayduraev@linux.intel.com> wrote:
->
-> Hello,
->
-> On 27.06.2021 3:46, Namhyung Kim wrote:
-> > Hello,
-> >
-> > On Tue, Jun 22, 2021 at 1:42 AM Alexey Bayduraev
-> > <alexey.v.bayduraev@linux.intel.com> wrote:
-> >>
-> >> Changes in v7:
-> >> - fixed possible crash after out_free_threads label
-> >> - added missing pthread_attr_destroy() call
-> >> - added check of correctness of user masks
-> >> - fixed zsts_data finalization
-> >>
-> [SNIP]
-> > Thanks for your work, mostly looks good now.
-> >
-> > I have a question, where are the synthesized records saved?
-> > Is it the data.0 file?
->
-> Thanks for the review.
->
-> As I understand the synthesized records (as well as other user-space
-> records) are saved to perf.data/data, kernel records are saved to
-> perf.data/data.<CPU>
+On 6/29/2021 20:33, Yee Li wrote:
+> 
+> Yes, 18874368ns > 3145728ns.
+> But, 0xe40 < 0x1003.
+I got you. I would agree, direct comparison is error-prone. (10M is 
+impacted)
+I would suggest do not use convert function. lat_en should rather 
+presented as lat_enc = scale x value:
+Introduce two u16 variables, u16 lat_enc_d and u16 max_ltr_enc_d;
 
-Ah, ok.  I saw you added a reader for the file in patch 20/20.
-Maybe we can save all tracking records (task/mmap) there
-in the future.
+lat_enc_d = (lat_enc & 0x0x3ff) x (1U << 5*((max_ltr_enc & 0x1c00) >> 10))
 
-For the patchset,
-  Acked-by: Namhyung Kim <namhyung@gmail.com>
+max_ltr_enc_d = (max_ltr_enc & 0x0x3ff) x (1U << 5*((max_ltr_enc & 
+0x1c00) >> 10))
 
-Thanks,
-Namhyung
+Then:
+if (lat_enc_d > max_ltr_enc_d)
+	lat_enc = max_ltr_enc;
+what do you think?
+
+> 
+> So, the final lat_enc is 0xe40.
+> (Latency encoded is less than maximum LTR encoded by platform)
+> 
+> Neftin, Sasha <sasha.neftin@intel.com <mailto:sasha.neftin@intel.com>> 
+> 于 2021年6月29日周二 22:49写道：
+> 
+>     On 6/29/2021 11:21, YeeLi wrote:
+>     Yeeli,
+>      > In e1000e driver, a PCIe-like device, the max snoop/no-snoop latency
+>      > is the upper limit.So, directly compare the size of lat_enc and
+>      > max_ltr_enc is incorrect.
+>      >
+>     why?
+>      >      In 1000Mbps, 0x8b9 < 0x1003, 189440 ns < 3145728 ns, correct.
+>      >
+>      >      In 100Mbps, 0xc3a < 0x1003, 1900544 ns < 3145728 ns, correct.
+>      >
+>      >      In 10Mbps, 0xe40 < 0x1003, 18874368 > 3145728, incorrect.
+>      >
+>     Platform LTR encoded is 0x1003 - right. It is meant 1048576ns x 3 =
+>     3145738ns.
+>     Now,
+>     for 1000M: 0x08b9 => 185ns x 1024 = 189440ns (you are correct)
+>     for 100M: 0x0c3a => 58ns x 32768 = 1900544ns (correct)
+>     for 10M: 0x0e41 => 577ns x 32768 = 18907136ns (ok?)
+>     18907136ns > 3145738ns, (latency encoded is great than maximum LTR
+>     encoded by platform) - so, there is no point to wait more than platform
+>     required, and lat_enc=max_ltr_enc. It is expected and we sent right
+>     value to the power management controller.
+>     What is the problem you try solve?
+> 
+>      > Decoded the lat_enc and max_ltr_enc before compare them is necessary.
+>      >
+>      > Signed-off-by: YeeLi <seven.yi.lee@gmail.com
+>     <mailto:seven.yi.lee@gmail.com>>
+>      > ---
+>      >   drivers/net/ethernet/intel/e1000e/ich8lan.c | 23
+>     ++++++++++++++++++++-
+>      >   1 file changed, 22 insertions(+), 1 deletion(-)
+>      >
+>      > diff --git a/drivers/net/ethernet/intel/e1000e/ich8lan.c
+>     b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+>      > index 590ad110d383..3bff1b570b76 100644
+>      > --- a/drivers/net/ethernet/intel/e1000e/ich8lan.c
+>      > +++ b/drivers/net/ethernet/intel/e1000e/ich8lan.c
+>      > @@ -986,6 +986,27 @@ static s32 e1000_k1_workaround_lpt_lp(struct
+>     e1000_hw *hw, bool link)
+>      >       return ret_val;
+>      >   }
+>      >
+>      > +static u32 convert_e1000e_ltr_scale(u32 val)
+>      > +{
+>      > +     if (val > 5)
+>      > +             return 0;
+>      > +
+>      > +     return 1U << (5 * val);
+>      > +}
+>      > +
+>      > +static u64 decoded_ltr(u32 val)
+>      > +{
+>      > +     u64 decoded_latency;
+>      > +     u32 value;
+>      > +     u32 scale;
+>      > +
+>      > +     value = val & 0x03FF;
+>      > +     scale = (val & 0x1C00) >> 10;
+>      > +     decoded_latency = value * convert_e1000e_ltr_scale(scale);
+>      > +
+>      > +     return decoded_latency;
+>      > +}
+>      > +
+>      >   /**
+>      >    *  e1000_platform_pm_pch_lpt - Set platform power management
+>     values
+>      >    *  @hw: pointer to the HW structure
+>      > @@ -1059,7 +1080,7 @@ static s32 e1000_platform_pm_pch_lpt(struct
+>     e1000_hw *hw, bool link)
+>      >                                    E1000_PCI_LTR_CAP_LPT + 2,
+>     &max_nosnoop);
+>      >               max_ltr_enc = max_t(u16, max_snoop, max_nosnoop);
+>      >
+>      > -             if (lat_enc > max_ltr_enc)
+>      > +             if (decoded_ltr(lat_enc) > decoded_ltr(max_ltr_enc))
+>      >                       lat_enc = max_ltr_enc;
+>      >       }
+>      >
+>      >
+>     sasha
+>
