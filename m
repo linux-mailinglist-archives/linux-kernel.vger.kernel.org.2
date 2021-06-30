@@ -2,117 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD1E3B849D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10EA3B84A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236531AbhF3OEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S235412AbhF3OGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236458AbhF3OEc (ORCPT
+        with ESMTP id S235417AbhF3OFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:04:32 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721D6C09B099
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:53:24 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id t82-20020a1cc3550000b02901ee1ed24f94so2859598wmf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=+15b98OXWiOrEiKCGfnfeWun+23tJxDlHH/wqzYj+20=;
-        b=WXi9U1Vip4zaz3uBNoqN8a2omyzEGIgwOHLP1ooDckRXK/3CMYy03EQAgTTOXhOVsW
-         jmdHZZ/yF5Ox7Fm9TusoCFGZ0KQvVrQD8c0rnGTiyFQ5kYC/sOYOD8RhHBbipYvQbkua
-         hbATd9xyZ/oofzWhQ8fJ7n2GYJpKXKgTNuIMJvXeJKLcEiWZqt4oH73eDwErt19gObFj
-         ePK7x/B/Ih4lHpv4jC71OibbjGzGJnOtWFBhjgCiOsYOdkloQyCxlTiyVmI87HqAC84k
-         5hnGD95dAdkRHC2aMiJXl0S33hgVvZJ0D7hXugZAczLXqj4T1Pd3i6XgmT6Mspy8gKv5
-         hxBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+15b98OXWiOrEiKCGfnfeWun+23tJxDlHH/wqzYj+20=;
-        b=smlsmFsYeLB856lQBBN/TLpvPVvlwEaQHjNvM9UbbhXcjruCBs+gg7Qx5opXEDfBb2
-         hnHY8jSZTIIb7NIWp4P9iXAzasL1Odxho93q6dAtUM5C4ta3wqFX2/VmP2E7l4VC1Mrz
-         fBtHV24nUizia1LvcaIs44gELIN8uY6DW05SbLk/wd5dG2hKN7StqpIcm9XbBrN505qf
-         g/R0sd0v+NAulBiuLyUN25DHYRNkfrlI6Jh9kTXPRtRG+BFJ2sT0bNFkvYaJWvFnZf8C
-         wBjtRDqV7ff1p7vq39r9MZNyg8lirYqvTEq2TjMoX3eVxfxLNIBdmXElRZquX09N6gZg
-         CQDQ==
-X-Gm-Message-State: AOAM530OKRoflSGkVVxvsH7anFK7d07nXxHnfNn6/49I/CELUi5Qq8lS
-        JddWXdKoqrgF1WqRPzmnYTE4w13jg7Y=
-X-Google-Smtp-Source: ABdhPJwZS4PQ4Qo0dgN0XnUOHZBFG5LDZXGSPSb4r9wuy4xppmcnGhAYbCV0/Tahu7HBzZ78p13B8Ltwwjo=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:a3fc:e8:8089:1013])
- (user=glider job=sendgmr) by 2002:a05:600c:3504:: with SMTP id
- h4mr4860507wmq.118.1625061203035; Wed, 30 Jun 2021 06:53:23 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 15:53:13 +0200
-In-Reply-To: <20210630135313.1072577-1-glider@google.com>
-Message-Id: <20210630135313.1072577-2-glider@google.com>
-Mime-Version: 1.0
-References: <20210630135313.1072577-1-glider@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v3 2/2] kfence: skip all GFP_ZONEMASK allocations
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org
-Cc:     dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org, jrdr.linux@gmail.com,
-        Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 30 Jun 2021 10:05:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6257C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L1x+KUBDu+pQNQroM2CacolCsjEtk/jUpjV5NXpjLGM=; b=rIVW6WGlDCGlZcjjtomWTCJK58
+        kszRhsKEgikdaav4vC6m134gi2Ww/ZbLIqwR8R3KZKooEUSOsHxDwd5IcfxFQPRmC2spEfLizgpii
+        KD/qZbMrTQZ9ppQ+9uQs5k3phiCSud1lCjpGUt151AechVCG3y3HIAkSIncwkyU8wstEpbdeXFfY2
+        gwBVSMPUaIMOgfWOsz6rK3+l8I46bMbZcrQ6+l+wATDNdqVchYq5NiJ3H4i30j1bOP/E5/PjnA6jQ
+        k1trot4ua0lEnhn4xfgvULGDy1JeElvJVl360527rokC6xmG9xnDHrHNEzxv4d/PYptxOZBvopl5k
+        b/thshHQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyahu-005Q5f-V0; Wed, 30 Jun 2021 13:56:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2BBB8300091;
+        Wed, 30 Jun 2021 15:56:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0980D2C59D783; Wed, 30 Jun 2021 15:56:50 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 15:56:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Xu, Yanfei" <yanfei.xu@windriver.com>
+Subject: Re: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on
+ unlocked mutex
+Message-ID: <YNx4IWfE/wpFFh0h@hirez.programming.kicks-ass.net>
+References: <20210629201138.31507-1-longman@redhat.com>
+ <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
+ <ecc0cc97-23ca-5de3-2a12-ed50aa12548c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecc0cc97-23ca-5de3-2a12-ed50aa12548c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocation requests outside ZONE_NORMAL (MOVABLE, HIGHMEM or DNA) cannot
-be fulfilled by KFENCE, because KFENCE memory pool is located in a
-zone different from the requested one.
+On Wed, Jun 30, 2021 at 09:50:11AM -0400, Waiman Long wrote:
 
-Because callers of kmem_cache_alloc() may actually rely on the
-allocation to reside in the requested zone (e.g. memory allocations done
-with __GFP_DMA must be DMAable), skip all allocations done with
-GFP_ZONEMASK and/or respective SLAB flags (SLAB_CACHE_DMA and
-SLAB_CACHE_DMA32).
+> The code looks good to me. It is an even better approach to make sure that
+> the HANDOFF will never be set on an unlocked mutex.
+> 
+> Reviewed-by: Waiman Long <longman@redhat.com>
 
-Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: stable@vger.kernel.org # 5.12+
-Signed-off-by: Alexander Potapenko <glider@google.com>
-
----
-
-v2:
- - added parentheses around the GFP clause, as requested by Marco
-v3:
- - ignore GFP_ZONEMASK, which also covers __GFP_HIGHMEM and __GFP_MOVABLE
- - move the flag check at the beginning of the function, as requested by
-   Souptick Joarder
----
- mm/kfence/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 33bb20d91bf6a..d51f77329fd3c 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -740,6 +740,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
- 	if (size > PAGE_SIZE)
- 		return NULL;
- 
-+	/*
-+	 * Skip allocations from non-default zones, including DMA. We cannot guarantee that pages
-+	 * in the KFENCE pool will have the requested properties (e.g. reside in DMAable memory).
-+	 */
-+	if ((flags & GFP_ZONEMASK) ||
-+	    (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
-+		return NULL;
-+
- 	/*
- 	 * allocation_gate only needs to become non-zero, so it doesn't make
- 	 * sense to continue writing to it and pay the associated contention
--- 
-2.32.0.93.g670b81a890-goog
-
+Thanks, what about that XXX? Should we not check sigpending before doing
+the optimistic spinning thing?
