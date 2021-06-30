@@ -2,129 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB363B8528
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354C03B852C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbhF3Olf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234882AbhF3Old (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:41:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCDD61476;
-        Wed, 30 Jun 2021 14:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625063944;
-        bh=L8V2JdvEBC3OUGI9cx9YLOGRxBzDEGMRE1EedaGTRrA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F8wudrmJ7+4o2TNN7S2nlbf/SewXYxiYxBUPEKuPxY0FycN7ZJLRb9ybxw/Y4L7nR
-         pS+SiRbWJ0udH596uiN+HTl1KVB4K/uoVKABgifye1I8hGBESqr36w9kZGd55ft/T9
-         CCqKi1mptAishN67SPLy4fB0ZPzlgQyDWOAeRBjv56DDifMpr5ObLZvROuTyA9SXMF
-         2J1IzjXQ4T3CqP+ZV0xUbnM46Qrhvo+Q7wclOqQMflZNAjtHieQTLzqvg30ZvR5rPZ
-         N5e7tzefgPIFVVEaH5XrafDNM3Zl3hQMjNgq5qqj1sxJCMEQTTtJz/tvrbJL1X2jzp
-         /QwT45zg3G7gA==
-Date:   Wed, 30 Jun 2021 16:38:55 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
+        id S235292AbhF3Opu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:45:50 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:35876 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235215AbhF3Opt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:45:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625064196;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=RZTO0eUtL1ttsyDT07q/xIMk5tcfXV2eWGp5vgDtyWk=;
+    b=LdDpeC7FhaKNPrS43epmdGI9lvMCozN6x7/tqp8c8hJq7znMkGbqDaEl61dcdydaoJ
+    jWgjCBRe2GLrBfetum9kW2M2xeNuR5Wg50lVDXNWeS/qTamiwWN5q1Z3p8ll4whnuoNr
+    I8LRx5Wvg/OugkkYvhYnF+KZl9mZxru38QMNDswRGimitmD5peN8fLU/argkuEPRmnUK
+    5m6LEy7oQf55WPI+DeVFMi59Ge+iGPFPLr3U9gmgS0aKWXqf5wqvfmRgsgkVZJNDkEo5
+    7hFp1kzwN0KrDabbzugac6KWX5fJBvLFFHttRFNwwAaRx+95LiYSV9BNUjD+KXa75oRJ
+    /c/w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlWfXA0NbQ=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
+    with ESMTPSA id h06665x5UEhF1C8
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 30 Jun 2021 16:43:15 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
+ regulator
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20210630130425.GF5106@sirena.org.uk>
+Date:   Wed, 30 Jun 2021 16:43:14 +0200
+Cc:     Graeme Gregory <gg@slimlogic.co.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNyB/+fNK0u2bI6j@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNmK0MP5ffQpiipt@ninjato>
- <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
- <YNmVg3ZhshshlbSx@ninjato>
- <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
- <YNmg2IEpUlArZXPK@ninjato>
- <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
- <YNnjh3xxyaZZSo9N@ninjato>
- <20210629041017.dsvzldikvsaade37@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cnJsFUAyBPHKEwpS"
-Content-Disposition: inline
-In-Reply-To: <20210629041017.dsvzldikvsaade37@vireshk-i7>
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E57CB314-F56C-4B33-81E8-7927564DB751@goldelico.com>
+References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
+ <20210629155922.GD4613@sirena.org.uk>
+ <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
+ <20210629185638.GG4613@sirena.org.uk>
+ <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
+ <20210630121307.GA5106@sirena.org.uk>
+ <02EE05C2-588F-4D50-8A37-46CC3B0C302C@goldelico.com>
+ <20210630130425.GF5106@sirena.org.uk>
+To:     Mark Brown <broonie@kernel.org>, Tony Lindgren <tony@atomide.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
 
---cnJsFUAyBPHKEwpS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Am 30.06.2021 um 15:04 schrieb Mark Brown <broonie@kernel.org>:
+>=20
+> On Wed, Jun 30, 2021 at 02:29:02PM +0200, H. Nikolaus Schaller wrote:
+>>> Am 30.06.2021 um 14:13 schrieb Mark Brown <broonie@kernel.org>:
+>=20
+>> I think it could be indirectly circular since ldo3_reg does not find =
+smps3
+>> registered. But I have to run more tests with printk inserted.
+>=20
+> Why would LDO3 have a dependency on SPMS3 given what's written above =
+and
+> how would that be circular?
 
-Hi Viresh,
+because both can only probe successfully in common or not at all. If =
+either
+fails the other is rewound.
 
-> While we are at it, this has been replaced by a Rust counterpart [1]
-> (as that makes it hypervisor agnostic, which is the goal of my work
-> here) and I need someone with I2C knowledge to help review it. It
-> should be okay even if you don't understand Rust a lot, just review
-> this file[2] which is where most of i2c specific stuff lies.
+>=20
+>>> The driver should just register all the DCDCs before the LDOs, then
+>>> everything will sort itself out.
+>=20
+>> Basically the driver code does it that way. But fails. Probing seems =
+to defer
+>> until deferral limits (AFAIR there is a timer or counter in the probe =
+deferral
+>> queue) an does not succeed.
+>=20
+> Ah, I see - the issue is the intervening 1.8V regulator.  That's not a
+> circularity, that's the callout to a separate device in the middle of
+> the chain.
 
-=46rom the high level review I can provide, it looks good to me. Block
-transfers are missing, but I think you said that already. Mising Rust
-experience, I might miss details, of course. But the general approach
-seems fine to me. smbus_prepare() will get a bit more messy when you add
-block transfers, but it still looks bearable, I think.
+Ok, "circular" is maybe the wrong word. It is an unexpected =
+dependency...
 
-Happy hacking!
+>  It's a super weird hardware design if the DT is accurate,
 
-   Wolfram
+I get the impression that the vdds_1v8_main is in the DT =
+(omap5-board-common.dtsi)
+only as an alias for smps7. Maybe to get more flexibility in overwriting
+in board files? I.e. replace the power controller without having a fixed
+definition of smps7 elsewhere.
 
+Or to separate DT node names defined by the power controller (smps1-5)
+from their useage on the board (vmain, vsys, vdds_1v8, vmmcsd, ...).
 
---cnJsFUAyBPHKEwpS
-Content-Type: application/pgp-signature; name="signature.asc"
+And, vdds_1v8_main is the only fixed-regulator used as a wrapper.
+Others have either no vin-supply or are real regulators with a control =
+gpio.
 
------BEGIN PGP SIGNATURE-----
+Looking into the schematics of the OMAP5432EVM or the Pyra handheld does
+not reveal a physical regulator. It is just that the output signal of
+smps7 is called "VDDS_1v8_MAIN".
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDcgfoACgkQFA3kzBSg
-KbYF7BAAq1r7cuYTp6YJrMb46z5zZ5GxUA2lqtoo6e5LbokrlsQc7NGhGmIkHOJc
-bsoVy3HfJPTDqhVrQrOMuUSsvID8IRtV4jOlENBGjvC7OULYSSZEqIGJBiKv0TM3
-jbQstaKjpumImL+1SzvGmfTX4KhN6WXnxkWo1SHeeNP7/ykIh1au0abmk+LcTcX6
-+pQJ2SzM+P2MMQiAqPq8FOrndPK8VSMyV6Mg+ZJ72jqnIW9IJVsFQv8vwHG2iH/2
-zFC/eLOAD0JoOuA48xM9a3TSPMYaL0FjBNNcTeLULCV3TVlv4C82cOVSCIfZ59fO
-K/94pJ3gLGuDmeimN7IiD5U3JbTmzwLH06Oitl88noLW7OwxQX3F1fMzu9p5jFjg
-wIDPPjSkAOvu6ExHo/TLc7IaaRkZjBNp+SGbVuzRksh7hMkZB5PB2wtVpbwXG7uW
-Mi97r7sEQQ0lX6+wl9ohIOOaE8Na2CYV1oBifTYpAtUxCFkuGuTo2iXAjjs0N5Yv
-Mf5xUZJv9HjJfTHMbHoogJmdatLCluWGW+q7XzVI+l7YfauG7j4WZZ7dCqz1bLhY
-Uz+Zrr4eZ0AwWUmd8QFpjwCqC8awkMDbh8SUPKE7rvNe7RqFC2XiuoRM3Oc1O/hx
-XWvqF/0Z+ChHTb1cEdDb3v25ausl11SsQJt/j9kAkxboV9XNwEE=
-=7H7Z
------END PGP SIGNATURE-----
+Therefore, a completely different approach could be to remove =
+fixedregulator-vdds_1v8_main
+and replace by smps7_reg.
 
---cnJsFUAyBPHKEwpS--
+I tried with
+
+	#define vdds_1v8_main smps7_reg
+
+and it compiles and boots successfully.
+
+There are still messages from the new rule for supply_name && !supply, =
+but this time
+Palmas gets initialized (maybe the -EPROBE_DEFER is silently ignored =
+somewhere).
+
+But is changing the DT the right solution if the Palmas and Fixed =
+regulator
+drivers can't handle the untouched DT which is logically correct (not =
+physically)?
+
+> it's hard to see how it's not going to be hurting efficiency.
+
+Well, I think the regulators are enabled only once during boot so nobody
+notices an issue.
+
+>  In any
+> case simplest thing would be to have separate MFD subdevices in Palmas
+> for the LDOs and DCDCs, that'll do the right thing.
+
+Attached is some logging an additional rdev_info() if the new rule
+in set_machine_constraints() if it triggers and returns -EPROBE_DEFER.
+
+We can see that several regulators trigger on the condition but indeed
+ldo3 fails (which I so far only deduced from DT as the potential =
+disturbance).
+
+So we know several ways to get the hardware running again:
+* revert 98e48cd9283d
+* my hack to set supply_name later (makes the new rule ignored but may =
+have side-effects)
+* modify DTS to make vdds_1v8_main =3D=3D smps7_reg
+* (untested) make SMPS and LDOs separate subdevices in Palmas drivers
+
+@Tony, your comments are needed...
+
+Maybe you didn't notice since you may have configured Palmas into the =
+kernel
+which changes probe sequence.
+
+BR and thanks,
+Nikolaus
+
+[    2.017857] palmas-rtc 48070000.i2c:palmas@48:rtc: registered as rtc0
+[    2.026122] palmas-rtc 48070000.i2c:palmas@48:rtc: setting system =
+clock to 2000-01-01T00:00:00 UTC (946684800)
+[    2.041192] smps123: supply_name: smps1-in supply: 00000000
+[    2.047112] smps123: supplied by regulator-dummy
+[    2.054376] smps45: supply_name: smps4-in supply: 00000000
+[    2.060240] smps45: supplied by regulator-dummy
+[    2.067193] smps6: supply_name: smps6-in supply: 00000000
+[    2.072909] smps6: supplied by vsys_cobra
+[    2.079644] smps7: supply_name: smps7-in supply: 00000000
+[    2.085346] smps7: supplied by vsys_cobra
+[    2.092034] smps8: supply_name: smps8-in supply: 00000000
+[    2.097735] smps8: supplied by vsys_cobra
+[    2.105096] smps9: Bringing 0uV into 2100000-2100000uV
+[    2.113152] smps9: supplied by vsys_cobra
+[    2.118035] smps10_out2: supply_name: smps10-in supply: 00000000
+[    2.124429] smps10_out2: supplied by regulator-dummy
+[    2.133172] smps10_out1: supplied by regulator-dummy
+[    2.138787] ldo1: Bringing 0uV into 1800000-1800000uV
+[    2.145928] ldo1: supplied by vsys_cobra
+[    2.150994] ldo2: supplied by vsys_cobra
+[    2.155633] ldo3: supply_name: ldo3-in supply: 00000000
+[    2.161436] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to =
+register 48070000.i2c:palmas@48:palmas_pmic regulator
+[    2.178796] omap_hsmmc 480ad000.mmc: allocated mmc-pwrseq
+[    2.186431] mmc_pwrseq_simple_set_gpios_value: value=3D1
+[    2.187507] smps123: supply_name: smps1-in supply: 00000000
+[    2.197895] smps123: supplied by regulator-dummy
+[    2.204583] smps45: supply_name: smps4-in supply: 00000000
+[    2.210473] smps45: supplied by regulator-dummy
+[    2.217019] smps6: supply_name: smps6-in supply: 00000000
+[    2.223173] smps6: supplied by vsys_cobra
+[    2.228906] smps7: supply_name: smps7-in supply: 00000000
+[    2.234673] smps7: supplied by vsys_cobra
+[    2.240930] smps8: supply_name: smps8-in supply: 00000000
+[    2.246631] smps8: supplied by vsys_cobra
+[    2.252745] smps9: Bringing 0uV into 2100000-2100000uV
+[    2.259318] smps9: supplied by vsys_cobra
+[    2.264469] smps10_out2: supply_name: smps10-in supply: 00000000
+[    2.270932] smps10_out2: supplied by regulator-dummy
+[    2.278222] smps10_out1: supplied by regulator-dummy
+[    2.284324] ldo1: supplied by vsys_cobra
+[    2.289422] ldo2: supplied by vsys_cobra
+[    2.294270] ldo3: supply_name: ldo3-in supply: 00000000
+[    2.299859] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to =
+register 48070000.i2c:palmas@48:palmas_pmic regulator
+[    2.299905] mmc_pwrseq_simple_set_gpios_value: value=3D0
+[    2.318572] input: user-buttons as =
+/devices/platform/user-buttons/input/input0
+[    2.329003] smps123: supply_name: smps1-in supply: 00000000
+[    2.334916] input: pyra-game-buttons as =
+/devices/platform/pyra-game-buttons/input/input1
+[    2.336655] input: pyra-lid-wakeup as =
+/devices/platform/pyra-lid-wakeup/input/input2
+[    2.352845] smps123: supplied by regulator-dummy
+[    2.359670] l3main2_cm:clk:0010:0: failed to disable
+[    2.370659] l4sec_cm:clk:0038:0: failed to disable
+[    2.376292] ALSA device list:
+[    2.376739] smps45: supply_name: smps4-in supply: 00000000
+[    2.379521]   No soundcards found.
+[    2.389296] smps45: supplied by regulator-dummy
+[    2.396203] smps6: supply_name: smps6-in supply: 00000000
+[    2.401981] smps6: supplied by vsys_cobra
+[    2.406732] omap_hsmmc 480ad000.mmc: card claims to support voltages =
+below defined range
+[    2.416790] smps7: supply_name: smps7-in supply: 00000000
+[    2.422604] smps7: supplied by vsys_cobra
+[    2.428674] smps8: supply_name: smps8-in supply: 00000000
+[    2.434472] smps8: supplied by vsys_cobra
+[    2.440728] smps9: Bringing 0uV into 2100000-2100000uV
+[    2.447350] smps9: supplied by vsys_cobra
+[    2.452508] smps10_out2: supply_name: smps10-in supply: 00000000
+[    2.458917] smps10_out2: supplied by regulator-dummy
+[    2.467645] mmc2: new high speed SDIO card at address 0001
+[    2.474295] mmc_pwrseq_simple_set_gpios_value: value=3D1
+[    2.480100] smps10_out1: supplied by regulator-dummy
+[    2.486272] ldo1: supplied by vsys_cobra
+[    2.492500] ldo2: supplied by vsys_cobra
+[    2.497155] ldo3: supply_name: ldo3-in supply: 00000000
+[    2.502709] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to =
+register 48070000.i2c:palmas@48:palmas_pmic regulator
+[    2.522668] smps123: supply_name: smps1-in supply: 00000000
+[    2.528588] smps123: supplied by regulator-dummy
+[    2.535669] smps45: supply_name: smps4-in supply: 00000000
+[    2.541711] smps45: supplied by regulator-dummy
+[    2.548638] smps6: supply_name: smps6-in supply: 00000000
+[    2.554498] smps6: supplied by vsys_cobra
+[    2.560245] smps7: supply_name: smps7-in supply: 00000000
+[    2.565968] smps7: supplied by vsys_cobra
+[    2.572198] smps8: supply_name: smps8-in supply: 00000000
+[    2.577897] smps8: supplied by vsys_cobra
+[    2.584466] smps9: Bringing 0uV into 2100000-2100000uV
+[    2.591631] smps9: supplied by vsys_cobra
+[    2.596520] smps10_out2: supply_name: smps10-in supply: 00000000
+[    2.603112] smps10_out2: supplied by regulator-dummy
+[    2.610365] smps10_out1: supplied by regulator-dummy
+[    2.616175] ldo1: supplied by vsys_cobra
+[    2.621193] ldo2: supplied by vsys_cobra
+[    2.625845] ldo3: supply_name: ldo3-in supply: 00000000
+[    2.631402] palmas-pmic 48070000.i2c:palmas@48:palmas_pmic: failed to =
+register 48070000.i2c:palmas@48:palmas_pmic regulator
+[    2.646447] Waiting for root device PARTUUID=3D7c769003-02..
+
