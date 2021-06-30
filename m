@@ -2,135 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBC23B8026
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B3C3B8029
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhF3JkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbhF3JkN (ORCPT
+        id S233964AbhF3JkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:40:25 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59637 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233817AbhF3JkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:40:13 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E54C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:37:43 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id v18-20020adfa1d20000b029012c379fbc45so147567wrv.22
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=JhgrCS9Vj640V8x1cFNbO5yNaZtMM+Zz5JPkP+NN88k=;
-        b=hOGR+88o6wgh2BS77C9e3IW5lpLeoKlfQpOyo0vBRi0/nOkMjDwyqlhB1sCe+OArkh
-         9qxed+lEX/yr9DODAh2C+/67NHa38Ru3QIfEuTWy+N0mZPdR3yc9FmtU7HR5TSYrw4XR
-         Pnbphx2nxpTq0y3aE6Xf1wIJNFBrQor8dRtXxpwz+UWHJbubCIMHVOdhrDBe7YaQ9KF1
-         N4zqbDnQD4evL1iqNYm8CkXIeoIU8aKeMUq622KMpnRNff716iQW6ahiSRDH2jjddvWf
-         dHcLiyQq9vn9oEC7xE6//J8vX3Onwt2Syz6i/JKPiGuxKlfK/BuNH3TSq8mNnz0JrMNR
-         /Kmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=JhgrCS9Vj640V8x1cFNbO5yNaZtMM+Zz5JPkP+NN88k=;
-        b=KNAepVoX5Vq4jFihIRkXEqqlZ93MRjul73yCKR76EkzV5ErO9pEDSRC/xrIcTDE2mC
-         AZ+HyXbC7rFGoI5cViRTEX82aQToqTkJe8BDbDPJXgSloGmTZkDMULTrJW1zbeN+d3sG
-         zErEA9pPcG3v1l0voBqBjM+erqPlhj0QqiNnFeatt/xtyU2lkwv2GG9gRFqEhKOj7Esl
-         4vYhPVn/49UnAPBp+pO/EUPYMzuwmO+g9Uxx2TdR2iAJXLTrmF2/2DbTrnIrG/4fWhBp
-         OeFyuNfTnhFmPSj+lMsHw6/ED8x8Hqq8gFu7LcKrXJQD544vTBoKBIa080U6Pp+zrYlR
-         8xUg==
-X-Gm-Message-State: AOAM532LeapycuY9HwnIfNqfCnkPiX0/7aRjVujk/NKW8z7G7K5JCbhk
-        31Jc0oBXVZ98n5p9CAisfmMHDgSkLw==
-X-Google-Smtp-Source: ABdhPJy8vek+rU0qtXlFDtYJdt3+PNfx3+B41Bo8Y+sjctSSWlzprffXwO4wD8JBVvpgXgYl9+b5QOromw==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:d0e2:84e5:6f2a:9752])
- (user=elver job=sendgmr) by 2002:a1c:e486:: with SMTP id b128mr3501221wmh.58.1625045861994;
- Wed, 30 Jun 2021 02:37:41 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 11:37:09 +0200
-Message-Id: <20210630093709.3612997-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] perf: Require CAP_KILL if sigtrap is requested
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org
-Cc:     tglx@linutronix.de, mingo@kernel.org, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, serge@hallyn.com, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-security-module@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 30 Jun 2021 05:40:24 -0400
+Received: from [222.129.34.206] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1lyWfK-0001gm-5f; Wed, 30 Jun 2021 09:37:54 +0000
+From:   Aaron Ma <aaron.ma@canonical.com>
+To:     aaron.ma@canonical.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: [RESEND][PATCH] drm/i915: Force DPCD backlight mode for Samsung 16727 panel
+Date:   Wed, 30 Jun 2021 17:37:21 +0800
+Message-Id: <20210630093721.10887-1-aaron.ma@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YNwzlqgBF/54qFMX@kroah.com>
+References: <YNwzlqgBF/54qFMX@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If perf_event_open() is called with another task as target and
-perf_event_attr::sigtrap is set, and the target task's user does not
-match the calling user, also require the CAP_KILL capability.
+Another Samsung OLED panel needs DPCD to get control of backlight.
+Kernel 5.12+ support the backlight via:
+commit: <4a8d79901d5b> ("drm/i915/dp: Enable Intel's HDR backlight interface (only SDR for now)")
+Only make backlight work on lower versions of kernel.
 
-Otherwise, with the CAP_PERFMON capability alone it would be possible
-for a user to send SIGTRAP signals via perf events to another user's
-tasks. This could potentially result in those tasks being terminated if
-they cannot handle SIGTRAP signals.
-
-Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Marco Elver <elver@google.com>
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3474
+Cc: stable@vger.kernel.org # 5.11-
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
 ---
- include/linux/capability.h |  5 +++++
- kernel/events/core.c       | 13 ++++++++++++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_dp_helper.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/capability.h b/include/linux/capability.h
-index 65efb74c3585..1c6be4743dbe 100644
---- a/include/linux/capability.h
-+++ b/include/linux/capability.h
-@@ -264,6 +264,11 @@ static inline bool bpf_capable(void)
- 	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
- }
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 5bd0934004e3..7b91d8a76cd6 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -1960,6 +1960,7 @@ static const struct edid_quirk edid_quirk_list[] = {
+ 	{ MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+ 	{ MFG(0x4c, 0x83), PROD_ID(0x47, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+ 	{ MFG(0x09, 0xe5), PROD_ID(0xde, 0x08), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
++	{ MFG(0x4c, 0x83), PROD_ID(0x57, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+ };
  
-+static inline bool kill_capable(void)
-+{
-+	return capable(CAP_KILL) || capable(CAP_SYS_ADMIN);
-+}
-+
- static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
- {
- 	return ns_capable(ns, CAP_CHECKPOINT_RESTORE) ||
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index fe88d6eea3c2..1ab4bc867531 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -12152,10 +12152,21 @@ SYSCALL_DEFINE5(perf_event_open,
- 	}
- 
- 	if (task) {
-+		bool is_capable;
-+
- 		err = down_read_interruptible(&task->signal->exec_update_lock);
- 		if (err)
- 			goto err_file;
- 
-+		is_capable = perfmon_capable();
-+		if (attr.sigtrap) {
-+			/*
-+			 * perf_event_attr::sigtrap sends signals to the other
-+			 * task. Require the current task to have CAP_KILL.
-+			 */
-+			is_capable &= kill_capable();
-+		}
-+
- 		/*
- 		 * Preserve ptrace permission check for backwards compatibility.
- 		 *
-@@ -12165,7 +12176,7 @@ SYSCALL_DEFINE5(perf_event_open,
- 		 * perf_event_exit_task() that could imply).
- 		 */
- 		err = -EACCES;
--		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
-+		if (!is_capable && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
- 			goto err_cred;
- 	}
- 
+ #undef MFG
 -- 
-2.32.0.93.g670b81a890-goog
+2.32.0
 
