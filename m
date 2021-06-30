@@ -2,67 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10EA3B84A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9C53B849B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhF3OGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhF3OFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:05:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6257C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L1x+KUBDu+pQNQroM2CacolCsjEtk/jUpjV5NXpjLGM=; b=rIVW6WGlDCGlZcjjtomWTCJK58
-        kszRhsKEgikdaav4vC6m134gi2Ww/ZbLIqwR8R3KZKooEUSOsHxDwd5IcfxFQPRmC2spEfLizgpii
-        KD/qZbMrTQZ9ppQ+9uQs5k3phiCSud1lCjpGUt151AechVCG3y3HIAkSIncwkyU8wstEpbdeXFfY2
-        gwBVSMPUaIMOgfWOsz6rK3+l8I46bMbZcrQ6+l+wATDNdqVchYq5NiJ3H4i30j1bOP/E5/PjnA6jQ
-        k1trot4ua0lEnhn4xfgvULGDy1JeElvJVl360527rokC6xmG9xnDHrHNEzxv4d/PYptxOZBvopl5k
-        b/thshHQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyahu-005Q5f-V0; Wed, 30 Jun 2021 13:56:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2BBB8300091;
-        Wed, 30 Jun 2021 15:56:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0980D2C59D783; Wed, 30 Jun 2021 15:56:50 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 15:56:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
+        id S236284AbhF3OEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:04:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:39026 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236401AbhF3OEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:04:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05ED36D;
+        Wed, 30 Jun 2021 07:02:02 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99D623F718;
+        Wed, 30 Jun 2021 07:02:00 -0700 (PDT)
+Subject: Re: [PATCH] iommu/arm: Cleanup resources in case of probe error path
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org,
-        "Xu, Yanfei" <yanfei.xu@windriver.com>
-Subject: Re: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on
- unlocked mutex
-Message-ID: <YNx4IWfE/wpFFh0h@hirez.programming.kicks-ass.net>
-References: <20210629201138.31507-1-longman@redhat.com>
- <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
- <ecc0cc97-23ca-5de3-2a12-ed50aa12548c@redhat.com>
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210608164559.204023-1-ameynarkhede03@gmail.com>
+ <CGME20210630124816eucas1p27563f0a456c0196e20937619aa2f8d26@eucas1p2.samsung.com>
+ <26f6a765-37c8-d63a-a779-384f095d5770@samsung.com>
+ <20210630125940.GA8515@willie-the-truck>
+ <4e3b1685-323e-2a7e-3aae-7c21b28fc65f@samsung.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <bc07bd52-ed2e-0a44-80a7-36b581018b40@arm.com>
+Date:   Wed, 30 Jun 2021 15:01:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ecc0cc97-23ca-5de3-2a12-ed50aa12548c@redhat.com>
+In-Reply-To: <4e3b1685-323e-2a7e-3aae-7c21b28fc65f@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:50:11AM -0400, Waiman Long wrote:
-
-> The code looks good to me. It is an even better approach to make sure that
-> the HANDOFF will never be set on an unlocked mutex.
+On 2021-06-30 14:48, Marek Szyprowski wrote:
+> On 30.06.2021 14:59, Will Deacon wrote:
+>> On Wed, Jun 30, 2021 at 02:48:15PM +0200, Marek Szyprowski wrote:
+>>> On 08.06.2021 18:45, Amey Narkhede wrote:
+>>>> If device registration fails, remove sysfs attribute
+>>>> and if setting bus callbacks fails, unregister the device
+>>>> and cleanup the sysfs attribute.
+>>>>
+>>>> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+>>> This patch landed in linux-next some time ago as commit 249c9dc6aa0d
+>>> ("iommu/arm: Cleanup resources in case of probe error path"). After
+>>> bisecting and some manual searching I finally found that it is
+>>> responsible for breaking s2idle on DragonBoard 410c. Here is the log
+>>> (captured with no_console_suspend):
+>>>
+>>> # time rtcwake -s10 -mmem
+>>> rtcwake: wakeup from "mem" using /dev/rtc0 at Thu Jan  1 00:02:13 1970
+>>> PM: suspend entry (s2idle)
+>>> Filesystems sync: 0.002 seconds
+>>> Freezing user space processes ... (elapsed 0.006 seconds) done.
+>>> OOM killer disabled.
+>>> Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
+>>> Unable to handle kernel NULL pointer dereference at virtual address
+>>> 0000000000000070
+>>> Mem abort info:
+>>>      ESR = 0x96000006
+>>>      EC = 0x25: DABT (current EL), IL = 32 bits
+>>>      SET = 0, FnV = 0
+>>>      EA = 0, S1PTW = 0
+>>>      FSC = 0x06: level 2 translation fault
+>>> Data abort info:
+>>>      ISV = 0, ISS = 0x00000006
+>>>      CM = 0, WnR = 0
+>>> user pgtable: 4k pages, 48-bit VAs, pgdp=000000008ad08000
+>>> [0000000000000070] pgd=0800000085c3c003, p4d=0800000085c3c003,
+>>> pud=0800000088dcf003, pmd=0000000000000000
+>>> Internal error: Oops: 96000006 [#1] PREEMPT SMP
+>>> Modules linked in: bluetooth ecdh_generic ecc rfkill ipv6 ax88796b
+>>> venus_enc venus_dec videobuf2_dma_contig asix crct10dif_ce adv7511
+>>> snd_soc_msm8916_analog qcom_spmi_temp_alarm rtc_pm8xxx qcom_pon
+>>> qcom_camss qcom_spmi_vadc videobuf2_dma_sg qcom_vadc_common msm
+>>> venus_core v4l2_fwnode v4l2_async snd_soc_msm8916_digital
+>>> videobuf2_memops snd_soc_lpass_apq8016 snd_soc_lpass_cpu v4l2_mem2mem
+>>> snd_soc_lpass_platform snd_soc_apq8016_sbc videobuf2_v4l2
+>>> snd_soc_qcom_common qcom_rng videobuf2_common i2c_qcom_cci qnoc_msm8916
+>>> videodev mc icc_smd_rpm mdt_loader socinfo display_connector rmtfs_mem
+>>> CPU: 1 PID: 1522 Comm: rtcwake Not tainted 5.13.0-next-20210629 #3592
+>>> Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+>>> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+>>> pc : msm_runtime_suspend+0x1c/0x60 [msm]
+>>> lr : msm_pm_suspend+0x18/0x38 [msm]
+>>> ...
+>>> Call trace:
+>>>     msm_runtime_suspend+0x1c/0x60 [msm]
+>>>     msm_pm_suspend+0x18/0x38 [msm]
+>>>     dpm_run_callback+0x84/0x378
+>> I wonder if we're missing a pm_runtime_disable() call on the failure path?
+>> i.e. something like the diff below...
 > 
-> Reviewed-by: Waiman Long <longman@redhat.com>
+> I've checked and it doesn't fix anything.
 
-Thanks, what about that XXX? Should we not check sigpending before doing
-the optimistic spinning thing?
+What's happened previously? Has an IOMMU actually failed to probe, or is 
+this a fiddly "code movement unveils latent bug elsewhere" kind of 
+thing? There doesn't look to be much capable of going wrong in 
+msm_runtime_suspend() itself, so is the DRM driver also in a broken 
+half-probed state where it's left its pm_runtime_ops behind without its 
+drvdata being valid?
+
+Robin.
+
+> 
+>> Will
+>>
+>> --->8
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+>> index 25ed444ff94d..ce8f354755d0 100644
+>> --- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
+>> @@ -836,14 +836,14 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+>>           ret = devm_of_platform_populate(dev);
+>>           if (ret) {
+>>                   dev_err(dev, "Failed to populate iommu contexts\n");
+>> -               return ret;
+>> +               goto err_pm_disable;
+>>           }
+>>    
+>>           ret = iommu_device_sysfs_add(&qcom_iommu->iommu, dev, NULL,
+>>                                        dev_name(dev));
+>>           if (ret) {
+>>                   dev_err(dev, "Failed to register iommu in sysfs\n");
+>> -               return ret;
+>> +               goto err_pm_disable;
+>>           }
+>>    
+>>           ret = iommu_device_register(&qcom_iommu->iommu, &qcom_iommu_ops, dev);
+>> @@ -869,6 +869,9 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
+>>    
+>>    err_sysfs_remove:
+>>           iommu_device_sysfs_remove(&qcom_iommu->iommu);
+>> +
+>> +err_pm_disable:
+>> +       pm_runtime_disable(dev);
+>>           return ret;
+>>    }
+>>
+> Best regards
+> 
