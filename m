@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378933B7BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795B83B7BF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhF3Cwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:52:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:43464 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232922AbhF3Cw2 (ORCPT
+        id S232684AbhF3Cy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:54:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6024 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhF3Cy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:52:28 -0400
-X-UUID: 7366555a74d84cbc81042b1fe9813542-20210630
-X-UUID: 7366555a74d84cbc81042b1fe9813542-20210630
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 926979926; Wed, 30 Jun 2021 10:49:56 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 10:49:55 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 10:49:53 +0800
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
-        <qizhong.cheng@mediatek.com>, <ot_jieyang@mediatek.com>,
-        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
-        Krzysztof Wilczyski <kw@linux.com>, <Ryan-JH.Yu@mediatek.com>
-Subject: [PATCH v3 2/2] PCI: mediatek-gen3: Add support for disable dvfsrc voltage request
-Date:   Wed, 30 Jun 2021 10:49:34 +0800
-Message-ID: <20210630024934.18903-3-jianjun.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210630024934.18903-1-jianjun.wang@mediatek.com>
-References: <20210630024934.18903-1-jianjun.wang@mediatek.com>
+        Tue, 29 Jun 2021 22:54:57 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GF5ND1ZfZzXmhd;
+        Wed, 30 Jun 2021 10:47:08 +0800 (CST)
+Received: from dggpemm500021.china.huawei.com (7.185.36.109) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 10:52:27 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500021.china.huawei.com
+ (7.185.36.109) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
+ 2021 10:52:27 +0800
+From:   Chengyang Fan <cy.fan@huawei.com>
+To:     <akpm@linux-foundation.org>, <terrelln@fb.com>,
+        <sfr@canb.auug.org.au>, <hsiangkao@linux.alibaba.com>,
+        <thisisrast7@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <cy.fan@huawei.com>
+Subject: [PATCH] lz4: fixs use-after-free Read in LZ4_decompress_safe_partial
+Date:   Wed, 30 Jun 2021 11:23:58 +0800
+Message-ID: <20210630032358.949122-1-cy.fan@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500021.china.huawei.com (7.185.36.109)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe Gen3 PHY layer cannot work properly when the requested voltage
-is lower than a specific level(e.g. 0.55V, it's depends on
-the chip manufacturing process).
+==================================================================
+BUG: KASAN: use-after-free in get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
+BUG: KASAN: use-after-free in LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
+BUG: KASAN: use-after-free in LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
+BUG: KASAN: use-after-free in LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
+Read of size 2 at addr ffff888017851000 by task kworker/u12:0/2056
 
-When the dvfsrc feature is implemented, the requested voltage
-may be reduced to a lower level in suspend mode, hence that
-the MAC layer will assert a HW signal to request the dvfsrc
-to raise voltage to normal mode, and it will wait the voltage
-ready signal from dvfsrc to decide if the LTSSM can start normally.
+CPU: 0 PID: 2056 Comm: kworker/u12:0 Not tainted 5.10.40 #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+Workqueue: erofs_unzipd z_erofs_decompressqueue_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:118
+ print_address_description+0x6c/0x640 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
+ get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
+ LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
+ LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
+ LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
+ z_erofs_lz4_decompress+0x839/0xc90 fs/erofs/decompressor.c:162
+ z_erofs_decompress_generic fs/erofs/decompressor.c:291 [inline]
+ z_erofs_decompress+0x57e/0xe10 fs/erofs/decompressor.c:344
+ z_erofs_decompress_pcluster+0x13d1/0x2310 fs/erofs/zdata.c:880
+ z_erofs_decompress_queue fs/erofs/zdata.c:958 [inline]
+ z_erofs_decompressqueue_work+0xde/0x140 fs/erofs/zdata.c:969
+ process_one_work+0x780/0xfc0 kernel/workqueue.c:2269
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-When the dvfsrc feature is not implemented, the MAC layer still
-assert the voltage request to dvfsrc when exit suspend mode,
-but will not receive the voltage ready signal, in this case,
-the LTSSM cannot start normally, and the PCIe link will be failed.
+The buggy address belongs to the page:
+page:00000000a79b76f1 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x17851
+flags: 0xfff00000000000()
+raw: 00fff00000000000 ffffea000081b9c8 ffffea00006ac6c8 0000000000000000
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-Add support for disable dvfsrc voltage request, if the property of
-"disable-dvfsrc-vlt-req" is presented in device node, we assume that
-the requested voltage is always higher enough to keep the PCIe Gen3
-PHY active, and the voltage request to dvfsrc should be disabled.
+Memory state around the buggy address:
+ ffff888017850f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888017850f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888017851000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff888017851080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888017851100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+erofs: (device loop0): z_erofs_lz4_decompress: failed to decompress -4099 in[4096, 0] out[9000]
 
-Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+Off-by-one error causes the above issue. In LZ4_decompress_generic(),
+`iend = src + srcSize`. It means the valid address range should be
+[src, iend - 1]. Therefore, when checking whether the reading is
+out-of-bounds, it should be  `>= iend` rather than `> iend`.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
 ---
- drivers/pci/controller/pcie-mediatek-gen3.c | 31 +++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ lib/lz4/lz4_decompress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-index 3c5b97716d40..028014707588 100644
---- a/drivers/pci/controller/pcie-mediatek-gen3.c
-+++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-@@ -79,6 +79,9 @@
- #define PCIE_ICMD_PM_REG		0x198
- #define PCIE_TURN_OFF_LINK		BIT(4)
- 
-+#define PCIE_MISC_CTRL_REG		0x348
-+#define PCIE_DISABLE_DVFSRC_VLT_REQ	BIT(1)
-+
- #define PCIE_TRANS_TABLE_BASE_REG	0x800
- #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
- #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
-@@ -297,6 +300,34 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
- 	val &= ~PCIE_INTX_ENABLE;
- 	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
- 
-+	/*
-+	 * PCIe Gen3 PHY layer can not work properly when the requested voltage
-+	 * is lower than a specific level(e.g. 0.55V, it's depends on
-+	 * the chip manufacturing process).
-+	 *
-+	 * When the dvfsrc feature is implemented, the requested voltage
-+	 * might be reduced to a lower level in suspend mode, hence that
-+	 * the MAC layer will assert a HW signal to request the dvfsrc
-+	 * to raise voltage to normal mode, and it will wait the voltage
-+	 * ready signal from dvfsrc to start the LTSSM normally.
-+	 *
-+	 * When the dvfsrc feature is not implemented, the MAC layer still
-+	 * assert the voltage request to dvfsrc when exit suspend mode,
-+	 * but will not get the voltage ready signal, in this case, the LTSSM
-+	 * cannot start normally, and the PCIe link will be failed.
-+	 *
-+	 * If the property of "disable-dvfsrc-vlt-req" is presented
-+	 * in device node, we assume that the requested voltage is always
-+	 * higher enough to keep the PCIe Gen3 PHY active, and the voltage
-+	 * request to dvfsrc should be disabled.
-+	 */
-+	val = readl_relaxed(port->base + PCIE_MISC_CTRL_REG);
-+	val &= ~PCIE_DISABLE_DVFSRC_VLT_REQ;
-+	if (of_property_read_bool(port->dev->of_node, "disable-dvfsrc-vlt-req"))
-+		val |= PCIE_DISABLE_DVFSRC_VLT_REQ;
-+
-+	writel_relaxed(val, port->base + PCIE_MISC_CTRL_REG);
-+
- 	/* Assert all reset signals */
- 	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
- 	val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
+diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
+index 926f4823d5ea..ec51837cd31f 100644
+--- a/lib/lz4/lz4_decompress.c
++++ b/lib/lz4/lz4_decompress.c
+@@ -234,7 +234,7 @@ static FORCE_INLINE int LZ4_decompress_generic(
+ 					length = oend - op;
+ 				}
+ 				if ((endOnInput)
+-					&& (ip + length > iend)) {
++					&& (ip + length >= iend)) {
+ 					/*
+ 					 * Error :
+ 					 * read attempt beyond
 -- 
-2.18.0
+2.18.0.huawei.25
 
