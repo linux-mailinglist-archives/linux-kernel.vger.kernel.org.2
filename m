@@ -2,194 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAF13B80D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935983B80E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhF3KZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:25:21 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:31681 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234209AbhF3KZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:25:20 -0400
+        id S234160AbhF3Kho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229882AbhF3Khk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 06:37:40 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33388C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:35:11 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id g3so1123243ilq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1625048571;
-  x=1656584571;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=r+PAHq9b15OpC5PSuLfcuvp7oa6WZJSPUuMIZDnoA4s=;
-  b=Lc+xehf/NLNqdWIsbc6ugCEO1YRv4/E9ALyEptjxugCtAz7b0UXU3T5N
-   kYBu1pL93vA9wsLw0Vy2OfSj/ubHNaW2oGg6LwZ3S0jAOEYHIdspEwph2
-   fAwSkdcJLxHp0ZDYnCurYwx4XgfJAOy4BIH4MLcpB1V9q6a9vBTpJ4Ykw
-   ujneFk2+lzmeKc6p7BVE5+A+qmLFEjme7MN7Qx7f4QVT3HDaQK5vXKbOq
-   XYPzdOYAQnBmDw9yRsPk2/9wDy1AJ3PzkgtOGM3q3nyaxktryYCOv+xcl
-   ArOBjBt/vuIHNiQpy9Ig8PHYUh5gDgwaETKBJqzTLUEAACWjrtScqo43p
-   w==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: dw_mmc: Add data CRC error injection
-Date:   Wed, 30 Jun 2021 12:22:43 +0200
-Message-ID: <20210630102243.17096-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oYowxdHPN61Y9qY1zFymchy5MCzI2srPYMEbOZef5aE=;
+        b=hgDnjDNPxcONENyswmTFE8XXY4m3HgOTeKMOhw0bVmtFmk012qRj6ji+M+7jCJTHb3
+         YqIvrawiTYLD2xSy/a7hBAXqqnpbXwnSVD9IrQyaV9RUyXnbBOjyoa2Xno/TwatLesaW
+         E2KuVhmqNPdoPekT1NR8HoXVWtdY3oUFW1BpS0TvTEW5YAwHrq2C8khf0i2cAMGLZZbl
+         76ecF3LebTIweZEMz/VFo0JMMLMfGc/jbRK46iQT86TtR7wW9MRPTNm/bCib3OTfKJM0
+         ywBTie6eJSJFyTA7Z7EDHm+jDnxHor0OMMqMpnlt170jXxFg1sZabpFHfYLnCWIzEvMZ
+         lxMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oYowxdHPN61Y9qY1zFymchy5MCzI2srPYMEbOZef5aE=;
+        b=jDFaJm36d5yGSvyayS9bUWZdnV3LqNnN5QmeEUHhwesQsHBEGJ+hafCnwKW8aEI9Xu
+         lS6d4Mvza7e2dawjl0tiHt67eOktAOWqchc2L/DKcaq2CpyR0b8GMlFya0hfTVhZaB9k
+         /UfNsFcxwoOOgimvG4l0FB54lCppC6Gstsx117HXhrpee2AqiLf1HjpGwjPZJRcUVbTc
+         pF4+69tHDKp5k8VDaodzKoF9nLat1MFVPSh34UkgGWcaZkiuI6QOBeUTBv01zJmjIbKm
+         TdPVNJjO9G1XGRx2LWulT6osb+8UcMgYk6UeHsQ0ee4816/x7KhiYYQWHzdmhOHB7yXD
+         awDQ==
+X-Gm-Message-State: AOAM530KFTwFj4HwKzOJuoDLN2uV8apnKOVSRbhZSPQtPZw/mWHDfY+a
+        v0ySYq4/s7W85VlSR7A/OuQjgaNwkf/WeNyGS62qwg==
+X-Google-Smtp-Source: ABdhPJxRzsAEg4/s6pozP7seom0nszwjf0oBy2qft+RSoAbYrNP/1NTOVsnnPl/qEmYA92ggPR1vT+gqOkOE+sWob4M=
+X-Received: by 2002:a92:6f07:: with SMTP id k7mr14654789ilc.276.1625049310206;
+ Wed, 30 Jun 2021 03:35:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210202135002.4024825-1-jackmanb@google.com> <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava> <YNtEcjYvSvk8uknO@krava> <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava> <YNuL442y2yn5RRdc@krava>
+In-Reply-To: <YNuL442y2yn5RRdc@krava>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 30 Jun 2021 12:34:58 +0200
+Message-ID: <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver has issues when handling data CRC errors.  Add fault
-injection support so that the handling can be easily triggered and
-regression-tested.  A hrtimer is used to indicate a data CRC errors at
-various points during the data transfer.
+On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
 
-Note that for the recent problem with hangs in the case of some data CRC
-errors, a udelay(10) inserted at the start of send_stop_abort() greatly
-helped in triggering the error, but I've not included this as part of
-the fault injection support since it seemed too specific.
+> > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > > >
+> > > > >
+> > > > > hum, I guess not.. will check
+> > > >
+> > > > nope, it locks up the same:
+> > >
+> > > Do you mean it locks up at commit 91c960b0056 too?
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/mmc/host/dw_mmc.c | 71 +++++++++++++++++++++++++++++++++++++++
- drivers/mmc/host/dw_mmc.h |  5 +++
- 2 files changed, 76 insertions(+)
+Sorry I was being stupid here - the test didn't exist at this commit
 
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index d333130d1531..f85271f5c4fa 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -181,6 +181,9 @@ static void dw_mci_init_debugfs(struct dw_mci_slot *slot)
- 			   &host->pending_events);
- 	debugfs_create_xul("completed_events", S_IRUSR, root,
- 			   &host->completed_events);
-+#ifdef CONFIG_FAULT_INJECTION
-+	fault_create_debugfs_attr("fail_data_crc", root, &host->fail_data_crc);
-+#endif
- }
- #endif /* defined(CONFIG_DEBUG_FS) */
- 
-@@ -1788,6 +1791,68 @@ static const struct mmc_host_ops dw_mci_ops = {
- 	.prepare_hs400_tuning	= dw_mci_prepare_hs400_tuning,
- };
- 
-+#ifdef CONFIG_FAULT_INJECTION
-+static enum hrtimer_restart dw_mci_fault_timer(struct hrtimer *t)
-+{
-+	struct dw_mci *host = container_of(t, struct dw_mci, fault_timer);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&host->irq_lock, flags);
-+
-+	if (!host->data_status)
-+		host->data_status = SDMMC_INT_DCRC;
-+	set_bit(EVENT_DATA_ERROR, &host->pending_events);
-+	tasklet_schedule(&host->tasklet);
-+
-+	spin_unlock_irqrestore(&host->irq_lock, flags);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
-+static void dw_mci_start_fault_timer(struct dw_mci *host)
-+{
-+	struct mmc_data *data = host->data;
-+
-+	if (!data || data->blocks <= 1)
-+		return;
-+
-+	if (!should_fail(&host->fail_data_crc, 1))
-+		return;
-+
-+	/*
-+	 * Try to inject the error at random points during the data transfer.
-+	 */
-+	hrtimer_start(&host->fault_timer,
-+		      ms_to_ktime(prandom_u32() % 25),
-+		      HRTIMER_MODE_REL);
-+}
-+
-+static void dw_mci_stop_fault_timer(struct dw_mci *host)
-+{
-+	hrtimer_cancel(&host->fault_timer);
-+}
-+
-+static void dw_mci_init_fault(struct dw_mci *host)
-+{
-+	host->fail_data_crc = (struct fault_attr) FAULT_ATTR_INITIALIZER;
-+
-+	hrtimer_init(&host->fault_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	host->fault_timer.function = dw_mci_fault_timer;
-+}
-+#else
-+static void dw_mci_init_fault(struct dw_mci *host)
-+{
-+}
-+
-+static void dw_mci_start_fault_timer(struct dw_mci *host)
-+{
-+}
-+
-+static void dw_mci_stop_fault_timer(struct dw_mci *host)
-+{
-+}
-+#endif
-+
- static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
- 	__releases(&host->lock)
- 	__acquires(&host->lock)
-@@ -2102,6 +2167,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
- 				break;
- 			}
- 
-+			dw_mci_stop_fault_timer(host);
- 			host->data = NULL;
- 			set_bit(EVENT_DATA_COMPLETE, &host->completed_events);
- 			err = dw_mci_data_complete(host, data);
-@@ -2151,6 +2217,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
- 			if (mrq->cmd->error && mrq->data)
- 				dw_mci_reset(host);
- 
-+			dw_mci_stop_fault_timer(host);
- 			host->cmd = NULL;
- 			host->data = NULL;
- 
-@@ -2600,6 +2667,8 @@ static void dw_mci_cmd_interrupt(struct dw_mci *host, u32 status)
- 
- 	set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
- 	tasklet_schedule(&host->tasklet);
-+
-+	dw_mci_start_fault_timer(host);
- }
- 
- static void dw_mci_handle_cd(struct dw_mci *host)
-@@ -3223,6 +3292,8 @@ int dw_mci_probe(struct dw_mci *host)
- 	spin_lock_init(&host->irq_lock);
- 	INIT_LIST_HEAD(&host->queue);
- 
-+	dw_mci_init_fault(host);
-+
- 	/*
- 	 * Get the host data width - this assumes that HCON has been set with
- 	 * the correct values.
-diff --git a/drivers/mmc/host/dw_mmc.h b/drivers/mmc/host/dw_mmc.h
-index da5923a92e60..4eb9c5b6c017 100644
---- a/drivers/mmc/host/dw_mmc.h
-+++ b/drivers/mmc/host/dw_mmc.h
-@@ -230,6 +230,11 @@ struct dw_mci {
- 	struct timer_list       cmd11_timer;
- 	struct timer_list       cto_timer;
- 	struct timer_list       dto_timer;
-+
-+#ifdef CONFIG_FAULT_INJECTION
-+	struct fault_attr	fail_data_crc;
-+	struct hrtimer		fault_timer;
-+#endif
- };
- 
- /* DMA ops for Internal/External DMAC interface */
--- 
-2.28.0
+> > I tried this one:
+> >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+> >
+> > I will check also 91c960b0056, but I think it's the new test issue
 
+So yeah hard to say whether this was broken on PowerPC all along. How
+hard is it for me to get set up to reproduce the failure? Is there a
+rootfs I can download, and some instructions for running a PowerPC
+QEMU VM? If so if you can also share your config and I'll take a look.
+
+If it's not as simple as that, I'll stare at the code for a while and
+see if anything jumps out.
