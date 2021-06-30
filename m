@@ -2,133 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87533B8AFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A61E3B8AFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237656AbhF3XiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 19:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S238085AbhF3XnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 19:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236647AbhF3XiE (ORCPT
+        with ESMTP id S236647AbhF3XnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 19:38:04 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A890C061756;
-        Wed, 30 Jun 2021 16:35:32 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso2647878pjp.2;
-        Wed, 30 Jun 2021 16:35:32 -0700 (PDT)
+        Wed, 30 Jun 2021 19:43:06 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78C0C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:40:17 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id g3-20020a256b030000b0290551bbd99700so6119879ybc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=votCsR8QuC+BJJYuIxcHQ0x9+KTlBJzpPzzO+5vNEZg=;
-        b=kfeG4KUCtbuMI2RLmqJGZDydOwhKjll5sSqDv3t1Ce6JcNf9RLaOIuKVtkOnCB2Y2c
-         yu3rc2f5OdkS9JTpEqH3ugYrL08zUg1ror7qjfOx0GGSIS528YW+G9sBmRnk+GI322cH
-         hjSDM7pv+6fLN9vG7LOTSm6ML0PEPig0qL9deap2vU9xycDcCOC0eZpiZmrcpM5BLgn+
-         A3SAxIMc5rEmnVQWTAR/sl3XoQIE6mThQumrqycQ5KH7RiOQmcg+ECuuvImSLxwQ8noz
-         hMjx+40qlk6kKJeXvsylwDc83ltplzEF2CIuklhodVwDKzUrLlQhg+xizoUg4qDxJgP8
-         zLJA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=226YhLrtPsM+oDAFsh4aHlKR6GWSTsDUiT3rX/tB3l8=;
+        b=eD0JLp/wThW0X3IZnITyXnsxqyXeQoImKsaL7NfcSau/u6KOKKFJj6lOADaNd717HK
+         0FwFYII0Xd713WO9wlcu3fEAjNe12PVhuuHTjjZQh3V9m4+XgUMLKo32Ix0srIWYJUGT
+         ZPQbZy9TVnL+7nugc0dbBsXCzsA5dmarzVT+94wK/YmVvmOIMhR7D8akx0ucExOD/KmS
+         HZpFj4YItrSDGmcL1OkMpxgAvDT0TFDEy8/jrD59xneMIa7oFTcUHzMkgAVgucjlLV0j
+         I6XuXbvXDFh8BjAoIfsAGYWwuDgSkzkGmLEU8gIDYdaQpeFFI6zQuq8vDnSS74CjhPRg
+         VrOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=votCsR8QuC+BJJYuIxcHQ0x9+KTlBJzpPzzO+5vNEZg=;
-        b=pjxJMcpVRGYIaJ5ThK5NhyeKh3MsW1hlh0w3CelJrn8dwlvhukFKDsNLdvRwxqHIgX
-         /5lMCMOM74yW0//FL0RkpH9Jgz7UHtea/6joY8CIRSTI0n2g84SlpkCoBvj+rAeLu48o
-         2HCDyQKGq85dbG1kBkZiCurQ1QxUMqBu/5FCfbYzP+ThizTygpDKzGSsxlxQrwCYFduz
-         eMU7cOeyrCihngyZfjVSyqCUNFqcR5zn0O3kLj9ERpThdsC+hGYdNfDxdL6hg1CilJWS
-         th0iBIgV76wCVzIgjY1kCmxR6Uho596pLO2TrBbU/Qr/oHJjNnIfBYFqk9g8tbzSu+mC
-         7Adg==
-X-Gm-Message-State: AOAM531BfRDGZ5cRcaz7Pjd1KeuFTA/YmX4qRhf8ObD3QVmJgd6RMte0
-        f4IZI/qX4mjTfs5LCA4bEVE=
-X-Google-Smtp-Source: ABdhPJzd5JEwCoPqJU17RS0Lrgrkyu2E4sKAT1naAE8xJJf2bR4D/5IEkWgkAJ+hOiFB1KUAnrYq/w==
-X-Received: by 2002:a17:90a:fa97:: with SMTP id cu23mr1645386pjb.126.1625096131882;
-        Wed, 30 Jun 2021 16:35:31 -0700 (PDT)
-Received: from localhost ([160.16.113.140])
-        by smtp.gmail.com with ESMTPSA id i13sm8202807pgm.26.2021.06.30.16.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 16:35:31 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 1 Jul 2021 07:33:38 +0800
-To:     Joe Perches <joe@perches.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 13/19] staging: qlge: rewrite do while loop as for loop in
- qlge_sem_spinlock
-Message-ID: <20210630233338.2l34shhrm3bdd4gx@Rk>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-14-coiby.xu@gmail.com>
- <20210622072036.GK1861@kadam>
- <20210624112245.zgvkcxyu7hzrzc23@Rk>
- <f7beb9aee00a1cdb8dd97a49a36abd60d58279f2.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7beb9aee00a1cdb8dd97a49a36abd60d58279f2.camel@perches.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=226YhLrtPsM+oDAFsh4aHlKR6GWSTsDUiT3rX/tB3l8=;
+        b=kxfYWyDgtBo8xIAh9i+NrrXl3am6RoZz45OaYBpCOBuz+MXdyuTKbR+eqlm21HcfHC
+         MmSxLHGUo8aXQc+r39knAS3f0UDw6/+VfqhKEw9KAbTGuM5lyazRMp1XapSapqV7ElQo
+         NdA7BNFeuBRyhFlbB3y7QHYfTUrzIgzRbAa/+Vr+31eXDS4URl/6b+mZRaBY45BJ+P+y
+         JXYMq45neo/W4LIAMAxxli7vLYBV3GH7Fdn/QCdmZ/D1o9i1knd6DhObLcBURgEwNfkd
+         vBTqPwfpfvDtCN+95374ha94XIpLynAivLcQr3Vq5dvqlpqWrgi4RZVosg3+WMBEbmIS
+         QGtQ==
+X-Gm-Message-State: AOAM530Vp04V0Wrl5JSO5BCXd8SPHkI7Z7BdiaRsg+emNY3KJCn2RCfA
+        VG2vzHwxfs0E3Gs3t2G2p0OFz8ssGg==
+X-Google-Smtp-Source: ABdhPJwdDWxjG+0IqPKGg/Uu1HouRogwWvBOpBzlCgr/uXRIFA1xZudcRWzY8hyAbjUb6tfwDcsqs50Ptw==
+X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
+ (user=rmoar job=sendgmr) by 2002:a25:f20f:: with SMTP id i15mr47248583ybe.119.1625096416848;
+ Wed, 30 Jun 2021 16:40:16 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 23:39:50 +0000
+Message-Id: <20210630233950.1638536-1-rmoar@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] kunit: tool: Fix error messages for cases of no tests and
+ wrong TAP header
+From:   Rae Moar <rmoar@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com,
+        dlatypov@google.com, shuah@kernel.org
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 03:58:06AM -0700, Joe Perches wrote:
->On Thu, 2021-06-24 at 19:22 +0800, Coiby Xu wrote:
->> On Tue, Jun 22, 2021 at 10:20:36AM +0300, Dan Carpenter wrote:
->> > On Mon, Jun 21, 2021 at 09:48:56PM +0800, Coiby Xu wrote:
->> > > Since wait_count=30 > 0, the for loop is equivalent to do while
->> > > loop. This commit also replaces 100 with UDELAY_DELAY.
->[]
->> > > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
->[]
->> > > @@ -140,12 +140,13 @@ static int qlge_sem_trylock(struct qlge_adapter *qdev, u32 sem_mask)
->> > >  int qlge_sem_spinlock(struct qlge_adapter *qdev, u32 sem_mask)
->> > >  {
->> > >  	unsigned int wait_count = 30;
->> > > +	int count;
->> > >
->> > > -	do {
->> > > +	for (count = 0; count < wait_count; count++) {
->> > >  		if (!qlge_sem_trylock(qdev, sem_mask))
->> > >  			return 0;
->> > > -		udelay(100);
->> > > -	} while (--wait_count);
->> > > +		udelay(UDELAY_DELAY);
->> >
->> > This is an interesting way to silence the checkpatch udelay warning.  ;)
->>
->> I didn't know this could silence the warning :)
->
->It also seems odd to have unsigned int wait_count and int count.
->
->Maybe just use 30 in the loop without using wait_count at all.
+This patch addresses misleading error messages reported by kunit_tool in
+two cases. First, in the case of TAP output having an incorrect header
+format or missing a header, the parser used to output an error message of
+'no tests run!'. Now the parser outputs an error message of 'could not
+parse test results!'.
 
-Thanks for the suggestion. I will apply it to v1.
->
->I also think using UDELAY_DELAY is silly and essentially misleading
->as it's also used as an argument value for mdelay
->
->$ git grep -w UDELAY_DELAY
->drivers/staging/qlge/qlge.h:#define UDELAY_DELAY 100
->drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
->drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
->drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
->drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
->drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY); /* 100ms */
+As an example:
 
-Thanks for spotting this issue! How about "#define MDELAY_DELAY 100" for
-mdelay?
+Before:
+$ ./tools/testing/kunit/kunit.py parse /dev/null
+[ERROR] no tests run!
+...
 
->
->
+After:
+$ ./tools/testing/kunit/kunit.py parse /dev/null
+[ERROR] could not parse test results!
+...
 
+Second, in the case of TAP output with the correct header but no
+tests, the parser used to output an error message of 'could not parse
+test results!'. Now the parser outputs an error message of 'no tests
+run!'.
+
+As an example:
+
+Before:
+$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
+[ERROR] could not parse test results!
+
+After:
+$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
+[ERROR] no tests run!
+
+Additionally, this patch also corrects the tests in kunit_tool_test.py
+and adds a test to check the error in the case of TAP output with the
+correct header but no tests (the log for this test was simplified from
+the first version of this patch).
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+ tools/testing/kunit/kunit_parser.py              |  6 ++++--
+ tools/testing/kunit/kunit_tool_test.py           | 16 +++++++++++++---
+ ...st_is_test_passed-no_tests_run_no_header.log} |  0
+ ...t_is_test_passed-no_tests_run_with_header.log |  2 ++
+ 4 files changed, 19 insertions(+), 5 deletions(-)
+ rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
+ create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index c3c524b79db8..b88db3f51dc5 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
+ def parse_test_result(lines: LineStream) -> TestResult:
+ 	consume_non_diagnostic(lines)
+ 	if not lines or not parse_tap_header(lines):
+-		return TestResult(TestStatus.NO_TESTS, [], lines)
++		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+ 	expected_test_suite_num = parse_test_plan(lines)
+-	if not expected_test_suite_num:
++	if expected_test_suite_num == 0:
++		return TestResult(TestStatus.NO_TESTS, [], lines)
++	elif expected_test_suite_num is None:
+ 		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+ 	test_suites = []
+ 	for i in range(1, expected_test_suite_num + 1):
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index bdae0e5f6197..75045aa0f8a1 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
+ 			kunit_parser.TestStatus.FAILURE,
+ 			result.status)
+ 
++	def test_no_header(self):
++		empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
++		with open(empty_log) as file:
++			result = kunit_parser.parse_run_tests(
++				kunit_parser.extract_tap_lines(file.readlines()))
++		self.assertEqual(0, len(result.suites))
++		self.assertEqual(
++			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
++			result.status)
++
+ 	def test_no_tests(self):
+-		empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
++		empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
+ 		with open(empty_log) as file:
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(file.readlines()))
+@@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
+ 		with open(crash_log) as file:
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(file.readlines()))
+-		print_mock.assert_any_call(StrContains('no tests run!'))
++		print_mock.assert_any_call(StrContains('could not parse test results!'))
+ 		print_mock.stop()
+ 		file.close()
+ 
+@@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
+ 			result["sub_groups"][1]["test_cases"][0])
+ 
+ 	def test_no_tests_json(self):
+-		result = self._json_for('test_is_test_passed-no_tests_run.log')
++		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+ 		self.assertEqual(0, len(result['sub_groups']))
+ 
+ class StrContains(str):
+diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+similarity index 100%
+rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
+rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+new file mode 100644
+index 000000000000..5f48ee659d40
+--- /dev/null
++++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+@@ -0,0 +1,2 @@
++TAP version 14
++1..0
 -- 
-Best regards,
-Coiby
+2.32.0.93.g670b81a890-goog
+
