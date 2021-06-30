@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EE93B8232
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C55A3B8233
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhF3Mf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S234631AbhF3Mgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbhF3MfZ (ORCPT
+        with ESMTP id S234510AbhF3Mgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:35:25 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7525CC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:32:55 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id f14so3060760wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:32:55 -0700 (PDT)
+        Wed, 30 Jun 2021 08:36:31 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1054C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:34:01 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id l1so1921986wme.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HUJtWNPJiBHCYwporvv4J+zIbXCE4pbnBbFi48C+38E=;
-        b=jZMFEqHO9CNCmPa5FW5Q7xZIzLc/Zqmscfzxwqe5+MUEpfZYPNcp74CfU+fZHg5Bvp
-         CjkLVdh9YEVGWaZViQCNJDQqFRuu0dFr0zFINCOtbwOwQYM7Ka6t/hH2mC7D+xc/IgOF
-         6ErkqnvmDe6COuHc5HmXmmM9PgUQXqf7UcWyA=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0I7x4z50ZBcplP+tJCE0y7F/DAh3KOim3T2tgat6mws=;
+        b=DV/haovwQcid/QNeu+tBvgIi6elWoHSnFdvTzVvzHvodkx6v/oUjI++8voDbk9Dz8S
+         Qe/7s+vEZ07gnGgBCDxQLZx6YFSdthC6PiLUckzUutC5hBGI/nBIEQbqRPkkvuyBfxP2
+         H2RAO+9O4YpVf+Vi4YboZY1i0Z4umexTJTYlPB36BUq3IecbKmQb9JNnTTODaPtaSh71
+         O1sCgaPvApGItvIUflg4IY+72rvp2Ro43zUNgVTHZGEJ7JlRNP2Nlx4t1XlcrIt1G/wU
+         tQAUrGPx/7MBA7Upwr+wnJ6DiVy5V9KlcMCEuP0TGq3t/4VTAVqwdc1h4pdPNczR0I1H
+         N5ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HUJtWNPJiBHCYwporvv4J+zIbXCE4pbnBbFi48C+38E=;
-        b=KS8o7WATEWuaxVtZ4Um6wjsOtuBvpYCPtIuvvNQIxT4XwfI6q4EJjNa1+BMDwb7/EL
-         Emo4zo+7OOaiLCVsWaXE0s2hjRNjDnoejj7cAAAv7tBuWasVqVPKEGLGKvIuJnqiOgXH
-         WOoDz8BDIFF9IV8SVuSaF69mWitCKCcJptuqUy+NDJB6zKPU+kh0N9/zTfaQtBQbTt6p
-         MCzPmIg88At6R3dTt+neNJLdCcEqbqqQM+7ePQzor1+pqxFFFa+WdzKOjCxpqCGRj4Wl
-         OzR2Hy9bLRsHbxxCGjuIosGvdvRKgVVdWdHZ9OWtVVOjJoXuUvkWYCXeRw3hStx/IeXO
-         GlKA==
-X-Gm-Message-State: AOAM533ex/ACwaWyY/e+WYGbaG+vl5PizMSbVWmNrUv3CKasuXgN4/D9
-        avqkz+myYRuHlnBbJAnCv68aO36JjewqrvhH
-X-Google-Smtp-Source: ABdhPJzubKpTl3fcp+LJcNdajbAh2dVoRapE0348qQ2NU3BYZBxvZ4uk95AgWX5+1MTJB0hBYdIWMQ==
-X-Received: by 2002:a5d:6a0d:: with SMTP id m13mr38405453wru.318.1625056374034;
-        Wed, 30 Jun 2021 05:32:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:8572])
-        by smtp.gmail.com with ESMTPSA id q5sm7997791wrx.57.2021.06.30.05.32.53
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0I7x4z50ZBcplP+tJCE0y7F/DAh3KOim3T2tgat6mws=;
+        b=dTo8L8J9LDinrSNU8nVHUSOpDkW/3y5DesLpAd0iP9ZoWsFxjoMpbufk0CY7yuH3bY
+         UbSjfWZwFgSg60+NArh7DV3AU+0iC5x71/YyfGi6HguWteV1dQwsVEU+XrRkiHGxtZiO
+         4dvJqk/JzcREWSWrVBe9NiWjBO7c+sOWh7MXF4hX+kHPnGB2gwrX3cSSdv5moodj2xvh
+         wMEgRMhNC4hY/lyX0xy/0aDT8CayGaviYB6qhZ9rKk9aMUAAgG6agvh2Lpwjaw3QmH1U
+         2Dxazp2WooZFVeAzM4AAY0uJuo86ZrBn9hdo4ja6t5pq/h+VxLhDCrf4KBEHMsu2yMci
+         ChEA==
+X-Gm-Message-State: AOAM530a+PApg7U1QUOWNzxFeVwCGCoZdlKOIdCYXF6B6aNR6gj0/gq0
+        jQ9z26OgJvWKkGvgf5XP1NpfDw==
+X-Google-Smtp-Source: ABdhPJyI8hVel/wKk+D6gPqCAXuihnJmo/Z/jKlNJWsAAFgsnQBPa3qdL5LMZLMqXn820d9Gj3FO5w==
+X-Received: by 2002:a1c:f616:: with SMTP id w22mr4318414wmc.73.1625056440471;
+        Wed, 30 Jun 2021 05:34:00 -0700 (PDT)
+Received: from dell ([109.180.115.217])
+        by smtp.gmail.com with ESMTPSA id c12sm25566586wrr.90.2021.06.30.05.33.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 05:32:53 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 13:32:52 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Hui Su <suhui@zeku.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/vmpressure: replace vmpressure_to_css() with
- vmpressure_to_memcg()
-Message-ID: <YNxkdGeFu4C5T6MZ@chrisdown.name>
-References: <20210630112146.455103-1-suhui@zeku.com>
+        Wed, 30 Jun 2021 05:33:59 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 13:33:58 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Yunus Bas <Y.Bas@phytec.de>,
+        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
+ to debug
+Message-ID: <YNxktsFmlzLcn4+Y@dell>
+References: <20210616081949.26618-1-y.bas@phytec.de>
+ <YMm+VXRrRKIHGgmr@dell>
+ <5a3f5fd82a391ade9a659338983e5efa7924210d.camel@phytec.de>
+ <YMsHXEP36Vxr7lAb@dell>
+ <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
+ <YNsid9K4PdUJbKqs@dell>
+ <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+ <20210630105557.eaktwdz5p6yzuron@maple.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210630112146.455103-1-suhui@zeku.com>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210630105557.eaktwdz5p6yzuron@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks! This looks like a reasonable cleanup.
+On Wed, 30 Jun 2021, Daniel Thompson wrote:
 
-Hui Su writes:
->We can get memcg directly form vmpr instead of vmpr->memcg->css->memcg,
->so add a new func helper vmpressure_to_memcg().
->And no code will use vmpressure_to_css(), so delete it.
->
->Signed-off-by: Hui Su <suhui@zeku.com>
-
-Acked-by: Chris Down <chris@chrisdown.name>
-
->---
-> include/linux/vmpressure.h | 2 +-
-> mm/memcontrol.c            | 4 ++--
-> mm/vmpressure.c            | 3 +--
-> 3 files changed, 4 insertions(+), 5 deletions(-)
->
->diff --git a/include/linux/vmpressure.h b/include/linux/vmpressure.h
->index 6d28bc433c1c..6a2f51ebbfd3 100644
->--- a/include/linux/vmpressure.h
->+++ b/include/linux/vmpressure.h
->@@ -37,7 +37,7 @@ extern void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio);
-> extern void vmpressure_init(struct vmpressure *vmpr);
-> extern void vmpressure_cleanup(struct vmpressure *vmpr);
-> extern struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg);
->-extern struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr);
->+extern struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr);
-> extern int vmpressure_register_event(struct mem_cgroup *memcg,
-> 				     struct eventfd_ctx *eventfd,
-> 				     const char *args);
->diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->index 64ada9e650a5..62163a9cee63 100644
->--- a/mm/memcontrol.c
->+++ b/mm/memcontrol.c
->@@ -247,9 +247,9 @@ struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
-> 	return &memcg->vmpressure;
+> On Wed, Jun 30, 2021 at 07:27:32AM +0000, Yunus Bas wrote:
+> > Am Dienstag, dem 29.06.2021 um 14:39 +0100 schrieb Lee Jones:
+> > > On Tue, 29 Jun 2021, Yunus Bas wrote:
+> > > > Interestingly, all subdevices defined in the driver are registered
+> > > > as platform devices from the MFD framework, regardless of a
+> > > > devicetree entry or not. The preceding code checks the subdevice
+> > > > cells with an additional compatible. In case a device has no
+> > > > devicetree entry, an irritating failed-message is printed on the
+> > > > display. I'm not sure if this was the intention but the framework
+> > > > somehow forces the users to describe all subdevices of an MFD. I
+> > > > think the info print is not needed. It makes more sense to set it
+> > > > as a debug print.
+> > > 
+> > > Actually, this has served to highlight that your DTS is not correct.
+> > > 
+> > > Why are some devices represented in DT and some aren't?
+> > > 
+> > > If anything, I'm tempted to upgrade the info() print to warn().
+> > 
+> > Imagine only required parts of the MFD is connected to the designed
+> > system and unrequired parts are not. In that case, fully describing the
+> > MFD in the devicetree wouldn't represent the system at all.
+> 
+> To describe hardware that is present but unused we would normally use
+> status = "disabled".
+> 
+> So if, for example, your board cannot use the RTC for some reason
+> (perhaps the board has no 32KHz oscillator?) then the DA9062 still
+> contains the hardware but it is useless. Such hardware could be
+> described as:
+> 
+> da9062_rtc: rtc {
+>     compatible = "dlg,da9062-rtc";
+>     status = "disabled";
 > }
->
->-struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
->+struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
-> {
->-	return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
->+	return container_of(vmpr, struct mem_cgroup, vmpressure);
-> }
->
-> #ifdef CONFIG_MEMCG_KMEM
->diff --git a/mm/vmpressure.c b/mm/vmpressure.c
->index d69019fc3789..04e81ac6d5d8 100644
->--- a/mm/vmpressure.c
->+++ b/mm/vmpressure.c
->@@ -74,8 +74,7 @@ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
->
-> static struct vmpressure *vmpressure_parent(struct vmpressure *vmpr)
-> {
->-	struct cgroup_subsys_state *css = vmpressure_to_css(vmpr);
->-	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->+	struct mem_cgroup *memcg = vmpressure_to_memcg(vmpr);
->
-> 	memcg = parent_mem_cgroup(memcg);
-> 	if (!memcg)
->-- 
->2.25.1
->
->
+> 
+> Is this sufficient to suppress the warnings when the hardware is not
+> fully described?
+> 
+> There is almost certainly a problem here since there is a mismatch
+> between mfd-core and the DA9062 DT bindings. mfd-core warns when the
+> hardware description is incomplete and the DA9062 (and generic mfd) DT
+> bindings are ambiguous about whether sub-nodes are mandatory and include
+> an example that contains missing compatibles rather than disabled nodes
+> like the above.
+> 
+> However it is not entirely clear to me at this point whether this should
+> be fixed in mfd-core or by improving the bindings documentation.
+
+Right.  This is a potential solution.
+
+NB: The suggestion above is usually the default for devices (at least
+this was the case back when I was neck deep in DT).  You usually have
+the a device specified in a DTSI file with the generic properties
+defined from within a top-level node which is usually disabled.  Then
+you link back to that node (usually with a &) from within your DTS
+file where you provide platform specific properties and override the
+status to 'okay' or what have you.
+
+However before I provide any further assistance, I really want to get
+an idea of the H/W you're working with.  Is this a reduced function
+DA9062?  Or is the functionality actually present, you just don't want
+to make use of it?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
