@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2703B89BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1F83B89C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhF3Uf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233899AbhF3UfX (ORCPT
+        id S234534AbhF3Ufi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:35:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42552 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234426AbhF3Ufg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:35:23 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DACBC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=xTIvq7JeERaP44xmsJM3Rl+J9yNC0I1vFHCkU0Gk1ls=; b=ZAk/0tshkV3bIKnweqX8zlrT5B
-        6qqMrqdo+EG92wpGBZ3aOmd0tq5oHvXAW/rirIH/pAD13jDZZ59nxGvdmcLJhmwuBW/lRqohfWlWa
-        b2JwaCb4QlvURfGocqQ4ZuE9DFC/BM90pGzhPPMITeYjg6un4Z8c1BqvY9+CedgxxDLE7EsNTahxA
-        cpEEud7AVAeOLakhN9Li2qCzJhCEHeCzPxWzWrUlF/H6GVwA/f66A4kySze/4gbBJm7h11aHzfQ10
-        1Jq1I9ODqY+OSxW+gzVRC8ALYavtYjJyJ7YL8iToAsT6V1StyPRBKIJxxIDE0jcBcxxEQObGIHc5P
-        RT4Wlv4Q==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lygtB-00FDiE-NU; Wed, 30 Jun 2021 20:32:53 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "VMware Graphics" <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
-        Dave Airlie <airlied@redhat.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH -next] drm: vmwgfx: add header file for ttm_range_manager
-Date:   Wed, 30 Jun 2021 13:32:52 -0700
-Message-Id: <20210630203252.32471-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 30 Jun 2021 16:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625085186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1BKKapww4d5wegIAyWjvMjJRL130mUGbMRABPEvALVk=;
+        b=Et5T/mL8ytpdekf7obTngcnbN7LFbysRQgG0X0OJNxFvTFbR0UEJYm5IxodUnPyPLG45mU
+        h+YNSt62FGc5pfX41nJJMITjeIlrgaQiwRNzbI+Xhz8EnQGDotAOJA0pExpGUeQEf02hs7
+        gEY9dZ09SRiFW4w6vpKoyD5Jz1kY1yM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-3HmKpcuZNr2C0JrClYUolw-1; Wed, 30 Jun 2021 16:33:04 -0400
+X-MC-Unique: 3HmKpcuZNr2C0JrClYUolw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51B45100CCC0;
+        Wed, 30 Jun 2021 20:33:03 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-222.rdu2.redhat.com [10.10.115.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7088B10027A5;
+        Wed, 30 Jun 2021 20:32:59 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 9E1AE22054F; Wed, 30 Jun 2021 16:32:58 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 16:32:58 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <20210630203258.GE75386@redhat.com>
+References: <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+ <20210629152007.GC5231@redhat.com>
+ <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
+ <20210629173530.GD5231@redhat.com>
+ <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
+ <YNvvLIv16jY8mfP8@mit.edu>
+ <YNwmXOqT7LgbeVPn@work-vm>
+ <YNyECw/1FzDCW3G8@mit.edu>
+ <YNyHVhGPe1bFAt+C@work-vm>
+ <YNzNLTxflKbDi8W2@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNzNLTxflKbDi8W2@mit.edu>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a header file for ttm_range_manager function prototypes to
-eliminate build errors:
+On Wed, Jun 30, 2021 at 03:59:41PM -0400, Theodore Ts'o wrote:
+> On Wed, Jun 30, 2021 at 04:01:42PM +0100, Dr. David Alan Gilbert wrote:
+> > 
+> > Even if you fix symlinks, I don't think it fixes device nodes or
+> > anything else where the permissions bitmap isn't purely used as the
+> > permissions on the inode.
+> 
+> I think we're making a mountain out of a molehill.  Again, very few
+> people are using quota these days.  And if you give someone write
+> access to a 8TB disk, do you really care if they can "steal" 32k worth
+> of space (which is the maximum size of an xattr, enforced by the VFS).
 
-../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_init’:
-../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:678:8: error: implicit declaration of function ‘ttm_range_man_init’; did you mean ‘ttm_tt_mgr_init’? [-Werror=implicit-function-declaration]
-  ret = ttm_range_man_init(&dev_priv->bdev, TTM_PL_VRAM, false,
-../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_fini’:
-../drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:690:2: error: implicit declaration of function ‘ttm_range_man_fini’; did you mean ‘ttm_pool_mgr_fini’? [-Werror=implicit-function-declaration]
-  ttm_range_man_fini(&dev_priv->bdev, TTM_PL_VRAM);
+So that should be N * 32K per inode, where N is number of user xattrs
+one can write on the inode. (user.1, user.2, user.3, .., user.N)?
 
-Fixes: 9c3006a4cc1b ("drm/ttm: remove available_caching")
-Fixes: a343160235f5 ("drm/vmwgfx/ttm: fix the non-THP cleanup path.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "VMware Graphics" <linux-graphics-maintainer@vmware.com>
-Cc: Roland Scheidegger <sroland@vmware.com>
-Cc: Zack Rusin <zackr@vmware.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c |    1 +
- 1 file changed, 1 insertion(+)
+Vivek
 
---- linux-next-20210630.orig/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-+++ linux-next-20210630/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-@@ -37,6 +37,7 @@
- #include <drm/drm_sysfs.h>
- #include <drm/ttm/ttm_bo_driver.h>
- #include <drm/ttm/ttm_placement.h>
-+#include <drm/ttm/ttm_range_manager.h>
- #include <generated/utsrelease.h>
- 
- #include "ttm_object.h"
+> 
+> OK, but what about character mode devices?  First of all, most users
+> don't have access to huge number of devices, but let's assume
+> something absurd.  Let's say that a user has write access to *1024*
+> devices.  (My /dev has 233 character mode devices, and I have write
+> access to well under a dozen.)
+> 
+> An 8TB disk costs about $200.  So how much of the "stolen" quota space
+> are we talking about, assuming the user has access to 1024 devices,
+> and the file system actually supports a 32k xattr.
+> 
+>     32k * 1024 * $200 / 8TB / (1024*1024*1024) = $0.000763 = 0.0763 cents
+> 
+> A 2TB SSD is less around $180, so even if we calculate the prices
+> based on SSD space, we're still talking about a quarter of a penny.
+> 
+> Why are we worrying about this?
+> 
+> 						- Ted
+> 
+
