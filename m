@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E34F3B7F32
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6817D3B7F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhF3Ioi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhF3Ioh (ORCPT
+        id S233543AbhF3Iq3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 04:46:29 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:52981 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232984AbhF3Iq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:44:37 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0490C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:42:08 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id j2so2539718wrs.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iupOz/lM3nLVoO3qVSMzdJaUPPRF/UbP8kUJwTndH6g=;
-        b=xrqheZzIL1v8Uc9aMLXQVjrsFhj8HDjnOhnmrWxQqFzW3XoY0hZRVyGSrMfJIqXOAs
-         Vz+fLNceEdmBIpouUalw+j6EBPFwix206qZjcxGYLdoRXXcudaPucHdzMRlQi6Mv6its
-         zEGmsYTQJS2fSiJqeWgbDeJ3i6ylt59cqqcbkjNl2bIzKL7gi5rttOEySAiKHjfEIneF
-         acx35nb8IC/vClbjtjCgwDWlvbHF70SXT+9GGH7b1LgLMZGFMeEIxCOSmO/tWQPM1dNh
-         JTgWnKmgx6B+ycLtJag5vs4o1OaKWRexnhhd5N5sfjG81YuIJ0Cr659HjMCouFYjnpxU
-         IpZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iupOz/lM3nLVoO3qVSMzdJaUPPRF/UbP8kUJwTndH6g=;
-        b=YXv6RRuzeSO7PRB2jFMT5ypUhB7jrWZ+9+BSf0CGdGZZgwrNLosq6UgaaFeosr7+FE
-         +21HPfD7wkJNSzxVQ5A10Nx7wHdhsTB0Zzxq6XG4ss7gYEn9O+2uFzUSI0iuzoTRLIV8
-         lScqpomwx8uPmpCh/4UkxADBd9D+QsT1EcWfU4hy9+2vf4pGJrP43w/BYPRawVZ4pLI7
-         oVOdcWX2RQ/6NTuf6OQk5zUXquBSIsqORkHbwUdt1SLX6F+HrmFGADgUaPTePSL0XR8S
-         2IZ5NRhDEdVwdu3l5YBLmrb3HJt1bEEqCw2MpfMgZ7vNslc7IMsC0z/uuJtzHMHgPuEL
-         asHQ==
-X-Gm-Message-State: AOAM5315ruLZT16l1wXSBGgmvnJ0PAkV8+A3h0wEwwDa+p8o76pFPc4G
-        KqAYZAQVguxMiBGszBRg+CTgJw==
-X-Google-Smtp-Source: ABdhPJyS7wtM5YlTm5jL8zfR/yjvrseRXbC9o6ifJ8dXHEnguNVfftuNFKBMF6Qi+YFo2s1xt6K0NA==
-X-Received: by 2002:a5d:6a81:: with SMTP id s1mr11797876wru.41.1625042527541;
-        Wed, 30 Jun 2021 01:42:07 -0700 (PDT)
-Received: from dell ([95.144.13.171])
-        by smtp.gmail.com with ESMTPSA id d12sm18002529wri.77.2021.06.30.01.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 01:42:07 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 09:42:05 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Yunus Bas <Y.Bas@phytec.de>
-Cc:     "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mfd: mfd-core: Change "Failed to locate of_node" warning
- to debug
-Message-ID: <YNwuXWGe8am89Bn9@dell>
-References: <20210616081949.26618-1-y.bas@phytec.de>
- <YMm+VXRrRKIHGgmr@dell>
- <5a3f5fd82a391ade9a659338983e5efa7924210d.camel@phytec.de>
- <YMsHXEP36Vxr7lAb@dell>
- <03cb3befabdda032b1ec9d97b4daac69fa23c759.camel@phytec.de>
- <YNsid9K4PdUJbKqs@dell>
- <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+        Wed, 30 Jun 2021 04:46:28 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id BF226C0009;
+        Wed, 30 Jun 2021 08:43:54 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 10:43:53 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] mtd: break circular locks in register_mtd_blktrans
+Message-ID: <20210630104353.7575e920@xps13>
+In-Reply-To: <03e19ec8-7479-9be2-3563-a2fcf9d0ec0c@gmail.com>
+References: <20210617160904.570111-1-desmondcheongzx@gmail.com>
+        <03e19ec8-7479-9be2-3563-a2fcf9d0ec0c@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a718e7812f2ce46347ae94fda6175f38c65359e.camel@phytec.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> No. This is not about DA9061 or it's mfd_cell-entries at all. My
-> concern is about the general behaviour of the MFD-framework and how
-> mfd_cell entries with compatibles are initialized.
+Hello,
 
-I'm still not 100% sure I understand your use-case.
+Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com> wrote on Wed, 30 Jun
+2021 16:04:17 +0800:
 
-Let's take this back to basics.
-
-What device are you trying to instantiate?  A DA9062 derivative?
-
-> > Actually, this has served to highlight that your DTS is not correct.
+> On 18/6/21 12:09 am, Desmond Cheong Zhi Xi wrote:
+> > Syzbot reported a circular locking dependency:
+> > https://syzkaller.appspot.com/bug?id=7bd106c28e846d1023d4ca915718b1a0905444cb
 > > 
-> > Why are some devices represented in DT and some aren't?
+> > This happens because of the following lock dependencies:
 > > 
-> > If anything, I'm tempted to upgrade the info() print to warn().
+> > 1. loop_ctl_mutex -> bdev->bd_mutex (when loop_control_ioctl calls
+> > loop_remove, which then calls del_gendisk; this also happens in
+> > loop_exit which eventually calls loop_remove)
+> > 
+> > 2. bdev->bd_mutex -> mtd_table_mutex (when blkdev_get_by_dev calls
+> > __blkdev_get, which then calls blktrans_open)
+> > 
+> > 3. mtd_table_mutex -> major_names_lock (when register_mtd_blktrans
+> > calls __register_blkdev)
+> > 
+> > 4. major_names_lock -> loop_ctl_mutex (when blk_request_module calls
+> > loop_probe)
+> > 
+> > Hence there's an overall dependency of:
+> > 
+> > loop_ctl_mutex   ----------> bdev->bd_mutex
+> >        ^                            |
+> >        |                            |
+> >        |                            v
+> > major_names_lock <---------  mtd_table_mutex
+> > 
+> > We can break this circular dependency by holding mtd_table_mutex only
+> > for the required critical section in register_mtd_blktrans. This
+> > avoids the mtd_table_mutex -> major_names_lock dependency.
+> > 
+> > Reported-and-tested-by: syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com
+> > Co-developed-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > ---
+> > 
+> > Changes in v1 -> v2:
+> > 
+> > Break the circular dependency in register_mtd_blktrans instead of blk_request_module, as suggested by Christoph Hellwig.
+> > 
+> >   drivers/mtd/mtd_blkdevs.c | 8 ++------
+> >   1 file changed, 2 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> > index fb8e12d590a1..7d26cfe24d05 100644
+> > --- a/drivers/mtd/mtd_blkdevs.c
+> > +++ b/drivers/mtd/mtd_blkdevs.c
+> > @@ -528,14 +528,10 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+> >   	if (!blktrans_notifier.list.next)
+> >   		register_mtd_user(&blktrans_notifier);
+> >   > -
+> > -	mutex_lock(&mtd_table_mutex);
+> > -
+> >   	ret = register_blkdev(tr->major, tr->name);
+> >   	if (ret < 0) {
+> >   		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+> >   		       tr->name, tr->major, ret);
+> > -		mutex_unlock(&mtd_table_mutex);
+> >   		return ret;
+> >   	}
+> >   > @@ -545,12 +541,12 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+> >   	tr->blkshift = ffs(tr->blksize) - 1;
+> >   >   	INIT_LIST_HEAD(&tr->devs);
+> > -	list_add(&tr->list, &blktrans_majors);
+> >   > +	mutex_lock(&mtd_table_mutex);
+> > +	list_add(&tr->list, &blktrans_majors);
+> >   	mtd_for_each_device(mtd)
+> >   		if (mtd->type != MTD_ABSENT)
+> >   			tr->add_mtd(tr, mtd);
+> > -
+> >   	mutex_unlock(&mtd_table_mutex);
+> >   	return 0;
+> >   }
 > > 
 > 
-> Imagine only required parts of the MFD is connected to the designed
-> system and unrequired parts are not. In that case, fully describing the
-> MFD in the devicetree wouldn't represent the system at all.
+> Hi maintainers,
 > 
-> Actually it would make more sense to check if mfd_cell-entries with
-> compatibles are represented in the devicetree and add them after
-> matching. This way the warning would serve it's purpose. What do you
-> think of it?
+> Any chance to review this patch?
+> 
+> For additional reference, the mtd_table_mutex --> major_names_lock hierarchy that can be removed by this patch also appears in a different lock chain:
+> https://syzkaller.appspot.com/bug?id=cbf5fe846f14a90f05e10df200b08c57941dc750
 
-I think the DT and MFD should match, so again, the way I currently
-view this, doing it this way is just a different way to paper over the
-cracks.
+I'm fine with the patch, but it came too late in the release cycle so
+now I'm waiting -rc1 to apply it.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Miquèl
