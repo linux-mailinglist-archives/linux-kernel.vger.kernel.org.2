@@ -2,67 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1863B8005
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2599A3B800C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhF3Jei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:34:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233541AbhF3Jeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:34:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 842A061CAD;
-        Wed, 30 Jun 2021 09:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625045528;
-        bh=8YJYFKzB2AT2uOR9CHZEybHLUKDHBfO6khuujKOP3Vk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rVcI3USRtpKoFJGyIvhv5nL5zicxzixTuxJHMnydaNTJnNmhAPtYZJxr0dVXNrOym
-         /2nua1i4shHi0HXlvDHGzwjzfkGTnNEENedNl5yjRRQAFUxkDhFQAiVjtRv15hdoFF
-         ZJmjrIEa171F+cyHzm0K5mxwZKhAm/DbvIoVaFhA=
-Date:   Wed, 30 Jun 2021 11:32:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     mohammad.athari.ismail@intel.com
-Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@intel.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net] net: stmmac: Terminate FPE workqueue in suspend
-Message-ID: <YNw6Fm/bxum6Diiy@kroah.com>
-References: <20210630091754.23423-1-mohammad.athari.ismail@intel.com>
+        id S233906AbhF3JfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:35:12 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:56483 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233911AbhF3JfJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:35:09 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lyWaB-001vyl-MJ; Wed, 30 Jun 2021 11:32:35 +0200
+Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lyWaB-0012uY-DW; Wed, 30 Jun 2021 11:32:35 +0200
+Subject: Re: [PATCH 1/3 v2] sh: fix kconfig unmet dependency warning for
+ FRAME_POINTER
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matt Fleming <matt@console-pimps.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <20210627220544.8757-2-rdunlap@infradead.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <e1f5e3c2-67da-429a-4382-f011c8cd9655@physik.fu-berlin.de>
+Date:   Wed, 30 Jun 2021 11:32:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630091754.23423-1-mohammad.athari.ismail@intel.com>
+In-Reply-To: <20210627220544.8757-2-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.150.76
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 05:17:54PM +0800, mohammad.athari.ismail@intel.com wrote:
-> From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+On 6/28/21 12:05 AM, Randy Dunlap wrote:
+> FRAME_POINTER depends on DEBUG_KERNEL so DWARF_UNWINDER should
+> depend on DEBUG_KERNEL before selecting FRAME_POINTER.
 > 
-> Add stmmac_fpe_stop_wq() in stmmac_suspend() to terminate FPE workqueue
-> during suspend. So, in suspend mode, there will be no FPE workqueue
-> available. Without this fix, new additional FPE workqueue will be created
-> in every suspend->resume cycle.
+> WARNING: unmet direct dependencies detected for FRAME_POINTER
+>   Depends on [n]: DEBUG_KERNEL [=n] && (M68K || UML || SUPERH [=y]) || ARCH_WANT_FRAME_POINTERS [=n]
+>   Selected by [y]:
+>   - DWARF_UNWINDER [=y]
 > 
-> Fixes: 5a5586112b92 ("net: stmmac: support FPE link partner hand-shaking procedure")
-> Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+> Fixes: bd353861c735 ("sh: dwarf unwinder support.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Matt Fleming <matt@console-pimps.org>
+> Cc: Matt Fleming <matt@codeblueprint.co.uk>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
+> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 1 +
+> v2: drop Paul Mundt from Cc: list;
+>     add this previously sent patch to the series;
+>     add more Cc's;
+> 
+>  arch/sh/Kconfig.debug |    1 +
 >  1 file changed, 1 insertion(+)
+> 
+> --- linux-next-20210625.orig/arch/sh/Kconfig.debug
+> +++ linux-next-20210625/arch/sh/Kconfig.debug
+> @@ -57,6 +57,7 @@ config DUMP_CODE
+>  
+>  config DWARF_UNWINDER
+>  	bool "Enable the DWARF unwinder for stacktraces"
+> +	depends on DEBUG_KERNEL
+>  	select FRAME_POINTER
+>  	default n
+>  	help
+> 
 
-<formletter>
+Boot-tested on my SH-7785LCR without any issues (as expected).
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-</formletter>
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
