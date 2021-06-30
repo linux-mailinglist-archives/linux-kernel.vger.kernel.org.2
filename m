@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C7F3B8667
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC993B8669
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhF3Poo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S235878AbhF3Pos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235565AbhF3Pom (ORCPT
+        with ESMTP id S235782AbhF3Pom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 11:44:42 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB1AC061756
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AB2C0617A6
         for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:42:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=0ZQW9RmJYoJQ9offoDck8WWZVpIsVVWht51pM8dPL/Y=; b=qfwEiDBYC6Obk23wiAiKHI/sSx
-        0seuIR+cgqVoHNd2vhRBnKiEanEuI/xaj5bTSY35GA3iUuLGE1qMKCA8OUaPDC4tPQe4eWA3fixsQ
-        IGDGz1Ojze9j/EZVnPKO68mnRGKuTGq9hZGAWenElpf7EgsvPj30y1t525PmzTpZq27EcF+qSv6bf
-        OliCKL0yuYNSyE9DqA4qh5c1kvc6PRujC10FN1HGjJUnVyU6Zn+s9EHZBUfaLu0iQKGocc/RVSukx
-        RXPrwvKuG/QClmZT17MK6214S7B3G8vAOi8rnzOMIrERppPx2OFea1E0QN3qT01NXjtcSbdgJhuqW
-        S/+7C7Iw==;
+        bh=dxR9ukSOwJyqIa3HUHGmgbEdSwL7D1JcPCim4eS+28Y=; b=McWVf+SbtkMbSGoIK+jqkLF7iX
+        WtFBCWlDF9r8HUNkI6/MYReFDlvoPyS3sOZthg00Nm2fPptTjEgM6QjndchJPqFilED/zhQutHlqV
+        5AX12FhU997Rsi9RWXBBpeNNx3Fi9MV3tDbzLeWMbBNeKUZeqUjJJjObsShHyzraMzWZQ2BOoM1wa
+        CpMJ1uYcfaxRNRg8TB2rCU/45i5eEJJ6CmiLOnTA7Q5Y+C9WPWKuzaDz/HjeeaTwZh0vDjYufP7yo
+        RHz7duYmwW3dyxTj4Udm5C1fabZHqKv46/izAaz+BjzldHTCS2LnU85tHMr+RQr55L4k/afVZNdCH
+        CKTfn1uw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lycLo-00DD5b-9B; Wed, 30 Jun 2021 15:42:08 +0000
+        id 1lycLn-00DD5Y-6C; Wed, 30 Jun 2021 15:42:07 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F5E93002EC;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 56B2B30031C;
         Wed, 30 Jun 2021 17:42:06 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 373BE2C66CADD; Wed, 30 Jun 2021 17:42:06 +0200 (CEST)
-Message-ID: <20210630154114.958507900@infradead.org>
+        id 3AEF72C7151A1; Wed, 30 Jun 2021 17:42:06 +0200 (CEST)
+Message-ID: <20210630154115.020298650@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 30 Jun 2021 17:35:19 +0200
+Date:   Wed, 30 Jun 2021 17:35:20 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
         will@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         yanfei.xu@windriver.com
-Subject: [RFC][PATCH 3/4] locking/mutex: Introduce __mutex_trylock_or_handoff()
+Subject: [RFC][PATCH 4/4] locking/mutex: Add MUTEX_WARN_ON
 References: <20210630153516.832731403@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,126 +52,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yanfei reported that it is possible to loose HANDOFF when we race with
-mutex_unlock() and end up setting HANDOFF on an unlocked mutex. At
-that point anybody can steal it, loosing HANDOFF in the process.
+Cleanup some #ifdef'fery.
 
-If this happens often enough, we can in fact starve the top waiter.
-
-Solve this by folding the 'set HANDOFF' operation into the trylock
-operation, such that either we acquire the lock, or it gets HANDOFF
-set. This avoids having HANDOFF set on an unlocked mutex.
-
-Reported-by: Yanfei Xu <yanfei.xu@windriver.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/locking/mutex.c |   58 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 35 insertions(+), 23 deletions(-)
+ kernel/locking/mutex.c |   30 ++++++++++--------------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
 
 --- a/kernel/locking/mutex.c
 +++ b/kernel/locking/mutex.c
-@@ -91,10 +91,7 @@ static inline unsigned long __owner_flag
- 	return owner & MUTEX_FLAGS;
- }
+@@ -32,8 +32,10 @@
  
--/*
-- * Trylock variant that returns the owning task on failure.
-- */
--static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
-+static inline struct task_struct *__mutex_trylock_common(struct mutex *lock, bool handoff)
- {
- 	unsigned long owner, curr = (unsigned long)current;
- 
-@@ -104,39 +101,56 @@ static inline struct task_struct *__mute
- 		unsigned long task = owner & ~MUTEX_FLAGS;
- 
- 		if (task) {
--			if (likely(task != curr))
-+			if (flags & MUTEX_FLAG_PICKUP) {
-+				if (task != curr)
-+					break;
-+				flags &= ~MUTEX_FLAG_HANDOFF;
-+			} else if (handoff) {
-+				if (flags & MUTEX_FLAG_HANDOFF)
-+					break;
-+				flags |= MUTEX_FLAG_HANDOFF;
-+			} else {
- 				break;
--
--			if (likely(!(flags & MUTEX_FLAG_PICKUP)))
--				break;
--
--			flags &= ~MUTEX_FLAG_PICKUP;
-+			}
- 		} else {
  #ifdef CONFIG_DEBUG_MUTEXES
- 			DEBUG_LOCKS_WARN_ON(flags & MUTEX_FLAG_PICKUP);
+ # include "mutex-debug.h"
++# define MUTEX_WARN_ON(cond) DEBUG_LOCKS_WARN_ON(cond)
+ #else
+ # include "mutex.h"
++# define MUTEX_WARN_ON(cond)
  #endif
-+			task = curr;
+ 
+ void
+@@ -113,9 +115,7 @@ static inline struct task_struct *__mute
+ 				break;
+ 			}
+ 		} else {
+-#ifdef CONFIG_DEBUG_MUTEXES
+-			DEBUG_LOCKS_WARN_ON(flags & MUTEX_FLAG_PICKUP);
+-#endif
++			MUTEX_WARN_ON(flags & (MUTEX_FLAG_HANDOFF | MUTEX_FLAG_PICKUP));
+ 			task = curr;
  		}
  
--		/*
--		 * We set the HANDOFF bit, we must make sure it doesn't live
--		 * past the point where we acquire it. This would be possible
--		 * if we (accidentally) set the bit on an unlocked mutex.
--		 */
--		flags &= ~MUTEX_FLAG_HANDOFF;
--
--		if (atomic_long_try_cmpxchg_acquire(&lock->owner, &owner, curr | flags))
--			return NULL;
-+		if (atomic_long_try_cmpxchg_acquire(&lock->owner, &owner, task | flags)) {
-+			if (task == curr)
-+				return NULL;
-+			break;
-+		}
- 	}
+@@ -236,10 +236,8 @@ static void __mutex_handoff(struct mutex
+ 	for (;;) {
+ 		unsigned long new;
  
- 	return __owner_task(owner);
- }
+-#ifdef CONFIG_DEBUG_MUTEXES
+-		DEBUG_LOCKS_WARN_ON(__owner_task(owner) != current);
+-		DEBUG_LOCKS_WARN_ON(owner & MUTEX_FLAG_PICKUP);
+-#endif
++		MUTEX_WARN_ON(__owner_task(owner) != current);
++		MUTEX_WARN_ON(owner & MUTEX_FLAG_PICKUP);
  
- /*
-+ * Trylock or set HANDOFF
-+ */
-+static inline bool __mutex_trylock_or_handoff(struct mutex *lock, bool handoff)
-+{
-+	return !__mutex_trylock_common(lock, handoff);
-+}
-+
-+/*
-+ * Trylock variant that returns the owning task on failure.
-+ */
-+static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
-+{
-+	return __mutex_trylock_common(lock, false);
-+}
-+
-+/*
-  * Actual trylock that will work on any unlocked state.
-  */
- static inline bool __mutex_trylock(struct mutex *lock)
- {
--	return !__mutex_trylock_or_owner(lock);
-+	return !__mutex_trylock_common(lock, false);
- }
+ 		new = (owner & MUTEX_FLAG_WAITERS);
+ 		new |= (unsigned long)task;
+@@ -764,9 +762,7 @@ void __sched ww_mutex_unlock(struct ww_m
+ 	 * into 'unlocked' state:
+ 	 */
+ 	if (lock->ctx) {
+-#ifdef CONFIG_DEBUG_MUTEXES
+-		DEBUG_LOCKS_WARN_ON(!lock->ctx->acquired);
+-#endif
++		MUTEX_WARN_ON(!lock->ctx->acquired);
+ 		if (lock->ctx->acquired > 0)
+ 			lock->ctx->acquired--;
+ 		lock->ctx = NULL;
+@@ -941,9 +937,7 @@ __mutex_lock_common(struct mutex *lock,
  
- #ifndef CONFIG_DEBUG_LOCK_ALLOC
-@@ -1028,8 +1042,6 @@ __mutex_lock_common(struct mutex *lock,
- 		schedule_preempt_disabled();
+ 	might_sleep();
  
- 		first = __mutex_waiter_is_first(lock, &waiter);
--		if (first)
--			__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
+-#ifdef CONFIG_DEBUG_MUTEXES
+-	DEBUG_LOCKS_WARN_ON(lock->magic != lock);
+-#endif
++	MUTEX_WARN_ON(lock->magic != lock);
  
- 		set_current_state(state);
- 		/*
-@@ -1037,7 +1049,7 @@ __mutex_lock_common(struct mutex *lock,
- 		 * state back to RUNNING and fall through the next schedule(),
- 		 * or we must see its unlock and acquire.
- 		 */
--		if (__mutex_trylock(lock) ||
-+		if (__mutex_trylock_or_handoff(lock, first) ||
- 		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
+ 	ww = container_of(lock, struct ww_mutex, base);
+ 	if (ww_ctx) {
+@@ -1235,10 +1229,8 @@ static noinline void __sched __mutex_unl
+ 	 */
+ 	owner = atomic_long_read(&lock->owner);
+ 	for (;;) {
+-#ifdef CONFIG_DEBUG_MUTEXES
+-		DEBUG_LOCKS_WARN_ON(__owner_task(owner) != current);
+-		DEBUG_LOCKS_WARN_ON(owner & MUTEX_FLAG_PICKUP);
+-#endif
++		MUTEX_WARN_ON(__owner_task(owner) != current);
++		MUTEX_WARN_ON(owner & MUTEX_FLAG_PICKUP);
+ 
+ 		if (owner & MUTEX_FLAG_HANDOFF)
  			break;
+@@ -1404,9 +1396,7 @@ int __sched mutex_trylock(struct mutex *
+ {
+ 	bool locked;
  
+-#ifdef CONFIG_DEBUG_MUTEXES
+-	DEBUG_LOCKS_WARN_ON(lock->magic != lock);
+-#endif
++	MUTEX_WARN_ON(lock->magic != lock);
+ 
+ 	locked = __mutex_trylock(lock);
+ 	if (locked)
 
 
