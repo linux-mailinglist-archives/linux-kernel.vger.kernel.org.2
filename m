@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A6C3B88F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483423B88FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhF3TF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 15:05:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42173 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232851AbhF3TFz (ORCPT
+        id S233657AbhF3TJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhF3TJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:05:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625079805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P89NrR3CJ5E3u2RgI6LTGTpGC4VYgbeRbJ9x0xgMwrY=;
-        b=YCos0Sy8Icx4iw/GXiB0b9LBRTjMmDtWxyd7xRrP5xXOP9oJ5nlO2OjOtABRQrXVzjLjdG
-        SZeHzuIDaA6XJS54M8HptGCX4MebSiHP7+YaOl8ssUoF6k5xciDaHiVM7S9sAPeETa2BaT
-        ach0r5r89pv+TYjMHyZHRX3rTj+ZE2I=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-sLrbxqCANryi5NqpqgkBrA-1; Wed, 30 Jun 2021 15:03:24 -0400
-X-MC-Unique: sLrbxqCANryi5NqpqgkBrA-1
-Received: by mail-qk1-f197.google.com with SMTP id 81-20020a370b540000b02903b31f13f7c5so2400435qkl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:03:24 -0700 (PDT)
+        Wed, 30 Jun 2021 15:09:20 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC8DC0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:06:51 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id i18so6668603yba.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DBXYzxuYbrUfubIQ6UvGkUSdg+WS39I5c22pRkza8yU=;
+        b=T2Nrl9yc5bjJCN2r4qbI6DLyowI5EaeRUrMata/pmX303u6wAyJIcw4NJy6H2IG0jx
+         ayfcoRDTEG8x5PfQm04GcJhdXQHmohsFJTcUv1ye1wBNsknk8ank0NgypWy1vnbB7ZHZ
+         FDgGaFmvQFbTPZCQ36V/HyXzi9EGwi5c4D+LJ9C93+bnZZB31GaQj8jG/y1f6Ku/P/by
+         ZPO0N8K1ZMHgRzaMHFE13qhg6v2Ia+Bf28IlNYSvUVczDNqNHecB2AEpG3CUcdV4slwt
+         AsYWsHTL4OLFBRXMIyUcizgchgRt9zZykuOmi6il6g+O5PKN49ikvHvYHbBiMQqETs/z
+         nyAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=P89NrR3CJ5E3u2RgI6LTGTpGC4VYgbeRbJ9x0xgMwrY=;
-        b=p6L0WJnJSSNOA10+IhFZwg0KEs1L/aT0wh9YGBP078YHavOFWxwA2W9Wde9+baHxo3
-         AUMDdnxUf+XNUPh3/Let+bjVUxpkKJYTXC7I5vYurBG5b2d1F7eiiwMgLvNqouTkP8kZ
-         9pDh3n4pSmMkazxwlrPqWUGI+uphiU818vhFYu6PYioC0KhT2US83MifghKdAz6HSry6
-         fbxvUKt+xMmIGIQdILGJW449Um2b33DaoU1hl8NKTwkY1+nX6LUQKVzvoTxptKIxg/8O
-         1mlSky+4utgv+H8uM2XN3leCcDr3RLaZDAD+P6TEDahskiVAR9FLZ1IVBtwu1ozzKdyU
-         SANg==
-X-Gm-Message-State: AOAM533OAVRwRyV+hV2RqjLqogNhSgwlbq5hapZquHzZL+i2KTstRK16
-        lkzpx48Rkw4UJ0TzDbRgN8k1Gg/RTD2bc5N84JS1OfWWxp8kvxcZDvEaauj6czhi653F4uLQrJC
-        D2dL0t1fYfpW318AENNKiwgX6
-X-Received: by 2002:ad4:598f:: with SMTP id ek15mr38255719qvb.15.1625079803381;
-        Wed, 30 Jun 2021 12:03:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJuv8FyvLG2QHr/lcvjRckSNGJMJE+5mOM2HQzrtsQy86Nd1ShbKcIgxazD++ta4Wqgdc2Bw==
-X-Received: by 2002:ad4:598f:: with SMTP id ek15mr38255693qvb.15.1625079803164;
-        Wed, 30 Jun 2021 12:03:23 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id o66sm14328475qkd.60.2021.06.30.12.03.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jun 2021 12:03:22 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC][PATCH 0/4] locking/mutex: Some HANDOFF fixes
-To:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        boqun.feng@gmail.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, yanfei.xu@windriver.com
-References: <20210630153516.832731403@infradead.org>
-Message-ID: <bdc77b11-ac81-d8ae-c7eb-5a013de5e790@redhat.com>
-Date:   Wed, 30 Jun 2021 15:03:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DBXYzxuYbrUfubIQ6UvGkUSdg+WS39I5c22pRkza8yU=;
+        b=LcMOrdNaCQ+lKwvxr6cdQnz9v2e61JZuZaVP8Ywg2k44hdqBSRjLkR5d6H+3G4BNTv
+         KEN72pjb26l6TGzCh9q5vrsxd64OdvGjoqRxD2ehhED37AF6vhklEI/hNCUuN7ewmYVT
+         8SdtANxQ1kIpBBKH4zsb/wq1DRsjTO/aUoAWotlMBG0wr6fRQCxte5qyFwGElnTWoYIn
+         FN0k2EZvnksBxInplMZXV7Y5t0XtWGuM7PckcJf93uCmwYU62ENnP4q3cJlwt4V7vDy5
+         TcKzrpAcTWIQCM0OScYzWovDnLMxLKhD7Vn1iHRYLlj36R4cpKZg58U+DXkBe2B0M0k0
+         8rEA==
+X-Gm-Message-State: AOAM531NGWOtCwlVCZdtd5gv+RYmEAKhY3pc0ehcSejeKvrWbSiU2olL
+        iStpOTGtwac7X+M2uDfermyi2HdLNQPRqZTqBXtHkg==
+X-Google-Smtp-Source: ABdhPJw7XehJAJ/lTBUWul5miVd/lSGPIC8Gj7POEguNh9f02XyBFfJ2p2aSbCed9UbXE8en6B/RWG9jpWX4AJT5NwQ=
+X-Received: by 2002:a25:9945:: with SMTP id n5mr39428387ybo.294.1625080010148;
+ Wed, 30 Jun 2021 12:06:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210630153516.832731403@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210623192822.3072029-1-surenb@google.com> <CALvZod7GPeB6ArrU8oBPx-1NT-ZDBQzTiJHJDojjO2kAgALkHw@mail.gmail.com>
+ <CAJuCfpG4M=ZnqR9D9MPNB88nwWgQ9qA9Z9a6dymZ5abOxNucGg@mail.gmail.com> <CALvZod6deRap_tE_dSPhQnpe7XNgQ6w9hZAEirRRB-bWBK+zBA@mail.gmail.com>
+In-Reply-To: <CALvZod6deRap_tE_dSPhQnpe7XNgQ6w9hZAEirRRB-bWBK+zBA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 30 Jun 2021 12:06:39 -0700
+Message-ID: <CAJuCfpE_d9w9vSbcvfDLTeVpEmTFWN65gSSyLntZYF51Bov+hg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 11:35 AM, Peter Zijlstra wrote:
-> Hi,
+On Wed, Jun 30, 2021 at 12:00 PM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> Cleanup and fix a few issues reported by Yanfei.
+> On Wed, Jun 30, 2021 at 11:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> [...]
+> > > > +       /*
+> > > > +        * If the task is dying and in the process of releasing its memory
+> > > > +        * then get its mm.
+> > > > +        */
+> > > > +       task_lock(task);
+> > > > +       if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> > >
+> > > task_will_free_mem() is fine here but I think in parallel we should
+> > > optimize this function. At the moment it is traversing all the
+> > > processes on the machine. It is very normal to have tens of thousands
+> > > of processes on big machines, so it would be really costly when
+> > > reaping a bunch of processes.
+> >
+> > Hmm. But I think we still need to make sure that the mm is not shared
+> > with another non-dying process. IIUC that's the point of that
+> > traversal. Am I mistaken?
 >
-> Waiman, I didn't preserve your reviewed-by, because there's a few extra
-> changes, and I've not yet boot tested them.
->
-Other than the typo in patch 3, the rests look good to me. I had also 
-boot-tested the patchset and run some mutex stress test without any problem.
+> You are right. I am talking about efficiently finding all processes
+> which are sharing mm (maybe linked into another list) instead of
+> traversing all the processes on the system.
 
-Reviewed-by: Waiman Long <longman@redhat.com>
-
+Oh, I see. I think that's a good idea but belongs to a separate patch
+as an optimization for task_will_free_mem().
+Thanks for reviewing and for good suggestions!
