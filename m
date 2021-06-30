@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AA23B7C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84593B7C85
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhF3EPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 00:15:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49810 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229446AbhF3EPI (ORCPT
+        id S233298AbhF3EVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 00:21:41 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:44748 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232790AbhF3EVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 00:15:08 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15U4CT7S009691
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 00:12:29 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 0BBE815C3C8E; Wed, 30 Jun 2021 00:12:28 -0400 (EDT)
-Date:   Wed, 30 Jun 2021 00:12:28 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Daniel Walsh <dwalsh@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <YNvvLIv16jY8mfP8@mit.edu>
-References: <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
- <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
- <YNn4p+Zn444Sc4V+@work-vm>
- <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
- <YNrhQ9XfcHTtM6QA@work-vm>
- <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
- <20210629152007.GC5231@redhat.com>
- <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
- <20210629173530.GD5231@redhat.com>
- <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
+        Wed, 30 Jun 2021 00:21:39 -0400
+Received: by mail-pj1-f50.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so492122pjo.3;
+        Tue, 29 Jun 2021 21:19:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5C6jNx9+TcPzvp0Y/utV/ErF30s90q+UrdhTRBoe9Vo=;
+        b=X+xg+HJGv5fWbTtGB+O3+Hw372D+pEbssrnnGALXx7xkg0nXDPBuo/5Bfynb+n3INP
+         ZGAE+D4Lxc6HUK4lU0zVCfvEWbVRjV73ib+q9WD4MusdpBitw+IYAxgAc3neodKI4H4g
+         k55RPWbwnzs8Z0NHK7/G1bFbE4p2wad0riqOWBzVtYWU4bnCcvZ3J7iJab6JCQlSHeJp
+         NMPaUSvjHlTKBpdyN988pUNeeXXCtmwN5fWERLzmUxYiw/3RSTp1UCJ0X4BXOQR/lnhc
+         hf1nxEreUkOwPIo+E8Gy4uIDTj5ysK/pG9aFJcMgOzLEij27TCNTV9EiBPZ1dgM5+vp7
+         0awQ==
+X-Gm-Message-State: AOAM531K4JAGQvXF4zm3SOKXZ/1ZV1Cwt1xhnKA2d0njsun6Uj9CAEE2
+        EawIuB1xua/No3Ad2RpHkiW38nB++Dw=
+X-Google-Smtp-Source: ABdhPJyqwHl439haX6M/8UMYRPk3/L5Odjfmy1nvUg9KFwvcj5Xxi5YpOcgb4buc2mNlRM+OjOUYBw==
+X-Received: by 2002:a17:90b:1014:: with SMTP id gm20mr26889821pjb.165.1625026717342;
+        Tue, 29 Jun 2021 21:18:37 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:b36f:1d4c:3b33:df45? ([2601:647:4000:d7:b36f:1d4c:3b33:df45])
+        by smtp.gmail.com with ESMTPSA id j2sm19286203pfj.168.2021.06.29.21.18.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 21:18:36 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] scsi: sd: send REQUEST SENSE for
+ BLIST_MEDIA_CHANGE devices in runtime_resume()
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, stern@rowland.harvard.edu
+References: <20210628133412.1172068-1-martin.kepplinger@puri.sm>
+ <20210628133412.1172068-3-martin.kepplinger@puri.sm>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <37a8e36c-73fd-b8a7-0175-ce6613efc043@acm.org>
+Date:   Tue, 29 Jun 2021 21:18:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
+In-Reply-To: <20210628133412.1172068-3-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 04:28:24PM -0400, Daniel Walsh wrote:
-> All this conversation is great, and I look forward to a better solution, but
-> if we go back to the patch, it was to fix an issue where the kernel is
-> requiring CAP_SYS_ADMIN for writing user Xattrs on link files and other
-> special files.
-> 
-> The documented reason for this is to prevent the users from using XATTRS to
-> avoid quota.
+On 6/28/21 6:34 AM, Martin Kepplinger wrote:
+> +static int sd_resume_runtime(struct device *dev)
+> +{
+> +	struct scsi_disk *sdkp = dev_get_drvdata(dev);
+> +	struct scsi_device *sdp;
+> +	int timeout, retries, res;
+> +	struct scsi_sense_hdr my_sshdr;
 
-Huh?  Where is it so documented?  How file systems store and account
-for space used by extended attributes is a file-system specific
-question, but presumably any way that xattr's on regular files are
-accounted could also be used for xattr's on special files.
+Since the sense data is ignored, consider removing the "my_sshdr"
+declaration and passing NULL as sense pointer to scsi_execute().
 
-Also, xattr's are limited to 32k, so it's not like users can evade
-_that_ much quota space, at least not without it being pretty painful.
-(Assuming that quota is even enabled, which most of the time, it
-isn't.)
+> +	if (!sdkp)	/* E.g.: runtime resume at the start of sd_probe() */
+> +		return 0;
 
-						- Ted
+Are you sure that this code is necessary? There is an
+scsi_autopm_get_device(sdp) call at the start of sd_probe() and
+scsi_autopm_put_device(sdp) call at the end of sd_probe(). In other
+words, no runtime suspend will happen between the
+device_initialize(&sdkp->dev) call in sd_probe() and the
+dev_set_drvdata(dev, sdkp) call in the same function.
 
-P.S.  I'll note that if ext4's ea_in_inode is enabled, for large
-xattr's, if you have 2 million files that all have the same 12k
-windows SID stored as an xattr, ext4 will store that xattr only once.
-Those two million files might be owned by different uids, so we made
-an explicit design choice not to worry about accounting for the quota
-for said 12k xattr value.  After all, if you can save the space and
-access cost of 2M * 12k if each file had to store its own copy of that
-xattr, perhaps not including it in the quota calculation isn't that
-bad.  :-)
+> +	if (sdp->sdev_bflags & BLIST_MEDIA_CHANGE) {
+> +		for (retries = 3; retries > 0; --retries) {
+> +			unsigned char cmd[10] = { 0 };
+> +
+> +			cmd[0] = REQUEST_SENSE;
 
-We also don't account for the disk space used by symbolic links (since
-sometimes they can be stored in the inode as fast symlinks, and
-sometimes they might consume a data block).  But again, that's a file
-system specific implementation question.
+Please define the CDB as follows:
+
+	static const u8 cmd[10] = { REQUEST_SENSE };
+
+> +			/*
+> +			 * Leave the rest of the command zero to indicate
+> +			 * flush everything.
+> +			 */
+
+Shouldn't this comment appear above the CDB definition? Also, what does
+"flush everything" mean? According to SPC sense data is discarded from
+the device while processing REQUEST SENSE, no matter what the value of
+the ALLOCATION LENGTH parameter in that command is. From SPC-6: "the
+REQUEST SENSE command with any allocation length clears the sense data."
+
+> +			res = scsi_execute(sdp, cmd, DMA_NONE, NULL, 0, NULL,
+> +					   &my_sshdr, timeout,
+> +					   sdkp->max_retries, 0, RQF_PM, NULL);
+
+Only one level of retries please. Can sdkp->max_retries be changed into 1?
+
+Thanks,
+
+Bart.
