@@ -2,185 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8197F3B8776
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CAB3B877B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhF3RPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:15:16 -0400
-Received: from smtprelay0245.hostedemail.com ([216.40.44.245]:55118 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229814AbhF3RPP (ORCPT
+        id S232487AbhF3RPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhF3RPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:15:15 -0400
-Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BD58C183B04AF;
-        Wed, 30 Jun 2021 17:12:45 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 23072C417C;
-        Wed, 30 Jun 2021 17:12:45 +0000 (UTC)
-Message-ID: <3010b4d82ea746e5d0557837ceb16429cd7118ac.camel@perches.com>
-Subject: Re: [PATCH 1/3] checkpatch: skip spacing tests on linker scripts
-From:   Joe Perches <joe@perches.com>
-To:     jim.cromie@gmail.com
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 30 Jun 2021 10:12:42 -0700
-In-Reply-To: <CAJfuBxzBuGv95bOF1Pt-5KC+ToH5JXWHySG+72cViGbYXuBR=g@mail.gmail.com>
-References: <20210626034016.170306-1-jim.cromie@gmail.com>
-         <20210626034016.170306-2-jim.cromie@gmail.com>
-         <075e07c40b99f93123051ef8833612bc88a55120.camel@perches.com>
-         <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
-         <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
-         <5d28704b131e375347f266b10fc54891ba2a4fc4.camel@perches.com>
-         <CAJfuBxyQ8OX8+A64SQPG4pXYKBDhyab7_-Dcc_C2_t-4oG9xng@mail.gmail.com>
-         <cabb80f84ee0c11aaa548e8ebc87da72883c5a21.camel@perches.com>
-         <CAJfuBxzBuGv95bOF1Pt-5KC+ToH5JXWHySG+72cViGbYXuBR=g@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 30 Jun 2021 13:15:34 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C722C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:13:05 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id l26-20020a4ac61a0000b029024c94215d77so809008ooq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1PcDWvee9bUH7pg+nGywm20C3Cp3QodJWy+afb8JOg4=;
+        b=cIVQP8WArttqeme2sjcZ5p4ey/hPMw7C47lQNAAXfh+TgLFvZMgc4dAVNb76VdHrqo
+         0o1LvgQu77Iu5wN+p+6Sm5aWwBMJP5rFwqlCf2fPoX/TNYDeEYP2taD3GG+ILOmiDkJo
+         xbGgLI9u8y/PSSR35Cuq2N0eXUzOec2jdUzlSPBrBxGu/jXE1eVhUO/wkM0NUuuAASBu
+         0IKZQZ3Stf6CAWoJZBydu5Eo2s4E3GrOfbVOmKyc2v/6+/HR07/OeZOhkrlFNiZQbfPq
+         dPhu2O+LwA8McwZ8/B605urviHFjj/bd1b8Acgp8++dpONRfbLHyL/2MPoHH1SZRTu+0
+         89+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1PcDWvee9bUH7pg+nGywm20C3Cp3QodJWy+afb8JOg4=;
+        b=hI5EfeoSaTbq+aLtJoFgqrC6ZlHV1HeG9PejP0WMIt0Ad7d+mcRq8ZQB19PlKJm+QU
+         yQp4uKaMjAeBBJjEqiEEK/inGHXZCNHDb5SnDFL1hqUIbDGR4V2k9mPEEAjTeXJHPYA9
+         /BclOiyZU9YB6Hzg+IZwSrlPaWXHjgNYZgm27ayFxh6WwC4JdsJs9ggH36qsb07KCBta
+         zORI48Tn2/nLxx8g52xUn9QitpW4hwoU6LAIaYyJvWGQQmjG/4AHkLTPxBOxCg5n12SZ
+         wJoFkx943TcVT97k41lcBt1hR12Wz8+7Q96pGAOqzTfi34lQVZ7uzxkU348+xBbb8yYi
+         +j0A==
+X-Gm-Message-State: AOAM533PFHPmYlkCE4gOfWu+9iNuoU5WcjNj/payAVBYR3GZN6se4dyu
+        OhQ5VxivU1Xy1ad5RfojXEbXmw==
+X-Google-Smtp-Source: ABdhPJwCIYAg8vaTdpP1GMZHBSZ8mMoWCn4ZsLh6dNl06XEl9BNV2v7msSvuVQEB3/NRA+0hFJvi8Q==
+X-Received: by 2002:a4a:e709:: with SMTP id y9mr6124509oou.64.1625073179861;
+        Wed, 30 Jun 2021 10:12:59 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v203sm4785401oib.37.2021.06.30.10.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 10:12:59 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 12:12:56 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] clk: qcom: dispcc-sm8250: stop using mmcx regulator
+Message-ID: <YNymGEQnwGlFMaIr@yoga>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-6-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 23072C417C
-X-Stat-Signature: z6bhy5w4fwfx784b6tap5ejjo1qrf36g
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/HgoMFBpuDoMhVqKYsnTUvBmDB0y3k7pQ=
-X-HE-Tag: 1625073165-226559
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630133149.3204290-6-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-30 at 10:38 -0600, jim.cromie@gmail.com wrote:
-> On Tue, Jun 29, 2021 at 2:01 PM Joe Perches <joe@perches.com> wrote:
-> > 
-> > On Tue, 2021-06-29 at 13:50 -0600, jim.cromie@gmail.com wrote:
-> > > this does 3 different things
-> > > 
-> > > - non-capturing matches  -  these add no functionality,
-> > 
-> > true, it's nominally a bit faster through.
-> > 
-> > > - moves the skip-remaining-tests check after SPDX
-> > >    that feels like a legal Q: should it be on all files ?
-> > >    moving it does seem proper though.
-> > 
-> > to me too.
-> > 
-> > > - adds the skip linker-script
-> > >   since i went ahead and added it 3 times to see errs/warns
-> > >   I didnt consider your precise placement,
-> > >   how does it do with 18/8 errs/warnings on ref-test ?
-> > 
-> > $ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --strict --terse
+On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
+
+> Now as the common qcom clock controller code has been taught about power
+> domains, stop mentioning mmcx supply as a way to power up the clock
+> controller's gdsc.
 > 
-> cool options.
-> <Aside>
-> some oddities are hidden there;
-> Im seeing the err/warn counts change along with use of those options.
-> not a big deal, but it is mildly surprising
-> forex:
-> $ scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse
-> ...
-> total: 18 errors, 7 warnings, 1164 lines checked
-> $ scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse --strict
-> ...
-> total: 9 errors, 7 warnings, 95 checks, 1164 lines checked
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-The difference is a --strict test 'if ($check)' that precedes and
-in effect 'overrides' the ERROR output for that output around line 5120.
+Regards,
+Bjorn
 
-$ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse
-[]
-include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
-
-vs:
-
-$ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse --strict
-[]
-include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
-include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
-
-> just to note, this is about a generalization of
+> ---
+>  drivers/clk/qcom/dispcc-sm8250.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> commit 263afd39c06f5939ef943e0d535380d4b8e56484
-> Author: Chris Down <chris@chrisdown.name>
-> Date:   Thu Feb 25 17:22:04 2021 -0800
+> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+> index de09cd5c209f..dfbfe64b12f6 100644
+> --- a/drivers/clk/qcom/dispcc-sm8250.c
+> +++ b/drivers/clk/qcom/dispcc-sm8250.c
+> @@ -955,7 +955,6 @@ static struct gdsc mdss_gdsc = {
+>  	},
+>  	.pwrsts = PWRSTS_OFF_ON,
+>  	.flags = HW_CTRL,
+> -	.supply = "mmcx",
+>  };
+>  
+>  static struct clk_regmap *disp_cc_sm8250_clocks[] = {
+> -- 
+> 2.30.2
 > 
->     checkpatch: don't warn about colon termination in linker scripts
-
-Which means the additional test in that commit should be removed too.
-
-Maybe:
----
- scripts/checkpatch.pl | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 461d4221e4a4a..f4f5826054214 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3617,9 +3617,6 @@ sub process {
- 			     "It's generally not useful to have the filename in the file\n" . $herecurr);
- 		}
- 
--# check we are in a valid source file if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
--
- # check for using SPDX-License-Identifier on the wrong line number
- 		if ($realline != $checklicenseline &&
- 		    $rawline =~ /\bSPDX-License-Identifier:/ &&
-@@ -3628,6 +3625,9 @@ sub process {
- 			     "Misplaced SPDX-License-Identifier tag - use line $checklicenseline instead\n" . $herecurr);
- 		}
- 
-+# check we are in a valid source file if not then ignore this hunk
-+		next if ($realfile !~ /\.(?:h|c|s|S|sh|dtsi|dts)$/);
-+
- # line length limit (with some exclusions)
- #
- # There are a few types of lines that may extend beyond $max_line_length:
-@@ -3708,8 +3708,8 @@ sub process {
- 			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
- 		}
- 
--# check we are in a valid source file C or perl if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
-+# check we are in a valid source C or .dts? file, if not then ignore this hunk
-+		next if ($realfile !~ /\.(?:h|c|dtsi|dts)$/);
- 
- # at the beginning of a line any tabs must come first and anything
- # more than $tabsize must use tabs.
-@@ -3737,6 +3737,9 @@ sub process {
- 			}
- 		}
- 
-+# skip all following test for linker files.
-+		next if ($realfile =~ /\.lds\.h$/);
-+
- # check for assignments on the start of a line
- 		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
- 			my $operator = $1;
-@@ -3970,7 +3973,7 @@ sub process {
- 		}
- 
- # check we are in a valid C source file if not then ignore this hunk
--		next if ($realfile !~ /\.(h|c)$/);
-+		next if ($realfile !~ /\.(?:h|c)$/);
- 
- # check for unusual line ending [ or (
- 		if ($line =~ /^\+.*([\[\(])\s*$/) {
-@@ -5147,7 +5150,7 @@ sub process {
- 				# A colon needs no spaces before when it is
- 				# terminating a case value or a label.
- 				} elsif ($opv eq ':C' || $opv eq ':L') {
--					if ($ctx =~ /Wx./ and $realfile !~ m@.*\.lds\.h$@) {
-+					if ($ctx =~ /Wx./) {
- 						if (ERROR("SPACING",
- 							  "space prohibited before that '$op' $at\n" . $hereptr)) {
- 							$good = rtrim($fix_elements[$n]) . trim($fix_elements[$n + 1]);
-
-
