@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677B03B7DC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E3B3B7DCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbhF3HBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        id S232695AbhF3HEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232556AbhF3HBa (ORCPT
+        with ESMTP id S232426AbhF3HEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:01:30 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29418C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:59:02 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id s15so1654524edt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IwnS1NNOOLhOi2omqPYPqrsJqmEq9LWL4DVMsAItlQU=;
-        b=DAmaDKrlMjh6SgLCpuoiQ364yzoICVE3DkNiOgJFE9rQjmXU9IgzebbgvAgWJbQ255
-         LFAhBvww5xdRltBWyM1XqeZGC4s+/0pgGHyGeyaqXeWwMnptgPZOzgxV+YLZIzusTTAc
-         1MaUdsVYF08rhJKo9sR2KLDcSSX2XNYFsAupGLJB40+prDW2BCRzCteAg91ZTfJGdsaS
-         LcdcbMMVactbR1aicj/UhBif68uIlzhX1FA5xYuOo7lSjQr9/hL4AOn9o+ZHp3k5dRv1
-         WVQtKy1nAcZaCXgAbDr56iZV/6kx5BUfM0jw2qVd0/jqG9UtHrBd5g6UZlWUOvaGVQS+
-         QL9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IwnS1NNOOLhOi2omqPYPqrsJqmEq9LWL4DVMsAItlQU=;
-        b=lnh6ZWWTWzms73RuvcgC2jNfi2dvXvwqMzfh81Cbte7or5WxjuyMTWgKO9SpuyJltc
-         4+h/YjbCGquSuInmhST4FM4PmGkHMXDEg/oW8r33ZBj8Kd8GMHUGr7K7cMiUGf/cNeBS
-         AXUZ2PkKettHO5wElAsFXHDjGNS5rFTWtRZRBlnl5QNWEJ7gWBYEwSLs8wliQkhwhKiv
-         rum3I6r10qsbRU7YjAq/8exCbvZUDXYFt/uXAasNKLOmgvp5NiuTf+mBuM+5a5hcpJcK
-         m23IKuPj1xXrUkmzgnJVHmKF1GgJstwuFNcGG+G67yfb+ZnNfGt2MZjXoGrDIOfW4Zdu
-         h+gg==
-X-Gm-Message-State: AOAM530bhdBpXRPCuv6svKor+8ryjAUYeNJi1yEx2QC7IpsCdWbm8Vki
-        I362zA1sePPAns3O9R+lhmSGJ1XbXhR/NC5p
-X-Google-Smtp-Source: ABdhPJzonuGSl/Y6sooTRS7eB+KL1/vq+D3T8l0U6/wVC+3OVKSaOiUu6zS7KBuDzlM9Vd6AIESxHA==
-X-Received: by 2002:aa7:df19:: with SMTP id c25mr10095215edy.80.1625036340488;
-        Tue, 29 Jun 2021 23:59:00 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::648? ([2a02:768:2307:40d6::648])
-        by smtp.gmail.com with ESMTPSA id g23sm2627069edp.74.2021.06.29.23.58.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 23:58:59 -0700 (PDT)
-Subject: Re: [GIT PULL] arch/microblaze patches for 5.14-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
- <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <0d32729b-3c4d-8e71-02b9-c53bd92bfa50@monstr.eu>
-Date:   Wed, 30 Jun 2021 08:58:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 03:04:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEC9C061766;
+        Wed, 30 Jun 2021 00:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PoknwIAy8Q9q+U6w+2a12vknwq+F35xgmvor8JHbCT0=; b=lhnHlNjmjExRd4kOidxPSUtHCF
+        lThr4z+W8p4z9I5Y0rKEDt2xxMBs6nqRsTPYUcwm01rqZGiL6BhwMqG70F9eJyhIh5NUvA1BGqqng
+        JVQ4sw5ouU8XKwWoMKDDo/2UQM4xLgLIsJobhS04QOf37hoyxdpTBlTWOa/xRlMM7SvDue9WSLdzw
+        dXizTRiFfG3ZU8vVDW6II2yjz1FclnXukf/xHjRSJz4pjnPXinchMsgdHyLWM8lZv6s0EYUqr4/kq
+        Uf8NR9mabxA6Qwpt1ElKsJdmFLdqvCWzrLZdJgwPFbYpSkA1aNI8jrMOE1cb4BVyBY4MLZo3/IEZb
+        8wWXiC1Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyUDz-005199-Qi; Wed, 30 Jun 2021 07:01:38 +0000
+Date:   Wed, 30 Jun 2021 08:01:31 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <YNwWy/j+diR7Y4Iv@infradead.org>
+References: <2d1ad075-bec6-bfb9-ce71-ed873795e973@redhat.com>
+ <20210607175926.GJ1002214@nvidia.com>
+ <fdb2f38c-da1f-9c12-af44-22df039fcfea@redhat.com>
+ <20210608131547.GE1002214@nvidia.com>
+ <89d30977-119c-49f3-3bf6-d3f7104e07d8@redhat.com>
+ <20210608124700.7b9aa5a6.alex.williamson@redhat.com>
+ <MWHPR11MB18861A89FE6620921E7A7CAC8C369@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210609115759.GY1002214@nvidia.com>
+ <086ca28f-42e5-a432-8bef-ac47a0a6df45@redhat.com>
+ <20210609124742.GB1002214@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609124742.GB1002214@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Jun 09, 2021 at 09:47:42AM -0300, Jason Gunthorpe wrote:
+> I can vaugely understand this rational for vfio, but not at all for
+> the platform's iommu driver, sorry.
 
-On 6/29/21 8:26 PM, Linus Torvalds wrote:
-> On Tue, Jun 29, 2021 at 7:30 AM Michal Simek <monstr@monstr.eu> wrote:
->>
->>   git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
-> 
-> I think git.monstr.eu is having some issues, I'm not getting any
-> response from it..
-
-Sorry about this. We had a quite a big storm in the whole Czech Republic
-yesterday. Also some power cuts and issues around it.
-As I see it is back again. Can you please pull it again?
-
-Thanks,
-Michal
-
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+Agreed.  More importantly the dependency is not for the platform iommu
+driver but just for the core iommu code, which is always built in if
+enabled.
