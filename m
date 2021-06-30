@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7253E3B7BAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2683B7BB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhF3Ci6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:38:58 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34332 "EHLO
+        id S233157AbhF3CjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:39:07 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34431 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233014AbhF3Ci5 (ORCPT
+        with ESMTP id S232990AbhF3CjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:38:57 -0400
-X-UUID: da1d11cc0dd543538bfc0cd9d22b515d-20210630
-X-UUID: da1d11cc0dd543538bfc0cd9d22b515d-20210630
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        Tue, 29 Jun 2021 22:39:06 -0400
+X-UUID: b4cb33e6b3634fb2a6ee3674bccd518a-20210630
+X-UUID: b4cb33e6b3634fb2a6ee3674bccd518a-20210630
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 405164280; Wed, 30 Jun 2021 10:36:26 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 41645959; Wed, 30 Jun 2021 10:36:34 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 10:36:25 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 30 Jun 2021 10:36:32 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 10:36:23 +0800
+ Transport; Wed, 30 Jun 2021 10:36:31 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH 08/24] iommu/mediatek: Remove for_each_m4u in tlb_sync_all
-Date:   Wed, 30 Jun 2021 10:34:48 +0800
-Message-ID: <20210630023504.18177-9-yong.wu@mediatek.com>
+Subject: [PATCH 09/24] iommu/mediatek: Always pm_runtime_get while tlb flush
+Date:   Wed, 30 Jun 2021 10:34:49 +0800
+Message-ID: <20210630023504.18177-10-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210630023504.18177-1-yong.wu@mediatek.com>
 References: <20210630023504.18177-1-yong.wu@mediatek.com>
@@ -53,50 +53,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tlb_sync_all only is called in
-a) flush_iotlb_all: it will called for each iommu HW.
-b) tlb_flush_range_sync: it already has for_each_m4u.
-c) in irq: it has already fail. no need for_each_m4u to flush
+In previous soc, some SoC don't have PM. Only mt8192 has power-domain,
+and it's display's power-domain which nearly always is enabled.
 
-thus, No need for_each_m4u in this tlb_sync_all.
-This patch remove it.
+When there are 2 M4U HW, it may has problem.
+In this function, we get the pm_status via the m4u dev, but it don't
+reflect the real power-domain status of the HW since there may be other
+HW also use that power-domain.
+
+Currently We can not get the real power-domain status, thus I always
+pm_runtime_get here.
+
+This pach is only a preparing patch for 2 HW sharing pgtable in different
+power-domains, like mt8195 case. thus, no need fix tags here.
+
+this patch may drop the performance, we expect the user could
+pm_runtime_get_sync before dma_alloc_attrs.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ drivers/iommu/mtk_iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 7fe9ebd879fe..ed3455b5cef0 100644
+index ed3455b5cef0..fcf70787d3d1 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -208,19 +208,15 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
+@@ -231,7 +231,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
  
- static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
- {
--	struct list_head *head = data->hw_list;
--
--	for_each_m4u(data, head) {
--		if (pm_runtime_get_if_in_use(data->dev) <= 0)
--			continue;
-+	if (pm_runtime_get_if_in_use(data->dev) <= 0)
-+		return;
+ 	for_each_m4u(data, head) {
+ 		if (has_pm) {
+-			if (pm_runtime_get_if_in_use(data->dev) <= 0)
++			if (pm_runtime_resume_and_get(data->dev) < 0)
+ 				continue;
+ 		}
  
--		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
--			       data->base + data->plat_data->inv_sel_reg);
--		writel_relaxed(F_ALL_INVLD, data->base + REG_MMU_INVALIDATE);
--		wmb(); /* Make sure the tlb flush all done */
-+	writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
-+		       data->base + data->plat_data->inv_sel_reg);
-+	writel_relaxed(F_ALL_INVLD, data->base + REG_MMU_INVALIDATE);
-+	wmb(); /* Make sure the tlb flush all done */
- 
--		pm_runtime_put(data->dev);
--	}
-+	pm_runtime_put(data->dev);
- }
- 
- static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
 -- 
 2.18.0
 
