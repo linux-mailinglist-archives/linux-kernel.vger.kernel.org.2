@@ -2,169 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382163B857F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C580A3B8592
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhF3O47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:56:59 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44510 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbhF3O45 (ORCPT
+        id S235814AbhF3O7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235878AbhF3O7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:56:57 -0400
-Received: from [10.137.112.111] (unknown [131.107.147.111])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 28F6D20B7178;
-        Wed, 30 Jun 2021 07:54:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 28F6D20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625064868;
-        bh=HGkchr0rJ6ttGuCa+aJ+yp5Pb+8sfjGJgBKBkdQo8rE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=jFdIK0OYuWvmfpON7YXsGTq8lvdrfknvK9jHcnGh/nDEtvBLgkEnT1fm+9p65Aq1z
-         Gb+NDtnzY8Rnj9tq19A1ox0h6apcDqApr/R9MQGsIxJdWzW/NYv5enJveYHVuu6VXo
-         IuMEPeZRUuYERxfS0bXy3o9MfQtfD7aENjE6nO4g=
-Subject: Re: [PATCH 3/3] ima: Add digest parameter to the functions to measure
- a buffer
-To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
-        paul@paul-moore.com
-Cc:     stephen.smalley.work@gmail.com, prsriva02@gmail.com,
-        tusharsu@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-References: <20210630141635.2862222-1-roberto.sassu@huawei.com>
- <20210630141635.2862222-4-roberto.sassu@huawei.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <e34639b4-145a-05a0-5ab4-ea51f9093e90@linux.microsoft.com>
-Date:   Wed, 30 Jun 2021 07:56:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 10:59:15 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B249C061756;
+        Wed, 30 Jun 2021 07:56:46 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id a11so3137003ilf.2;
+        Wed, 30 Jun 2021 07:56:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dv9jkp86fXSKSx20JWjmDX6xNXAVdw7od/sU3lZFAoQ=;
+        b=MwqeGBksBPmAtuBHgbyxehDzNHzhkKWDlxgWyFRQgvKaIwCPh0D9X3wEosr64Cn+A9
+         eQ1lBz4iNJsvxnTe0m99+EQgZzg2Y66fm4r4LH3zxrY7AwsuybAvQy38n97VNA6/kje7
+         G47xo3CgO9TD27O8H1JywsluohxGzdNzaXeCjoXfcn5AlB8/Ys6Wz9BpTRGAUMAU8Qh9
+         NmyMsiEA/SCVEzGDLLCXx1oLN6Zw7RU4ATwQa1ejFO7iK9fYQlFsEDUNfwiyi7Ry/qWl
+         9BFDDfrxIqWm6MVHmxQ478xJ2gcx5ExIy0LNOBLVse7If/SsEi1yOPUn7MOzEY0GDWqu
+         QudQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dv9jkp86fXSKSx20JWjmDX6xNXAVdw7od/sU3lZFAoQ=;
+        b=NdSIUwgeS3bI7JphwY3hihtyU86FWivhnBj27CUDWCpLvfXQR8Qs53E8n3aZmJJScG
+         6LncHh2H9PNOU4Y2lDYbT0TotWzftMLWL21myYOlG8d/7D5eNlubBny4D7QR68j497or
+         6tBI6Q6W9HAr0npvLw2x7cNIXko+dfV2cCYKQK8mKYKWvLo2BNReSAgBJuoVdU5RsM4K
+         liYzMRGLUNDboJKgauqL/TxuxngZsfsfF0UbOOV8aMHjlrg1b2yo0Z/Fcuhm3Ajy2YDG
+         JaJif7xx3Dg9reqojAVwjYA5dqkd0FlFBT+EfFzJiekeQuRy8HaTHDQPJugyBUpzEOCS
+         yOOA==
+X-Gm-Message-State: AOAM530fyvauRG8etfn14s0ZksfeOp17I+L1142gR9b13WVi6DvGEKf2
+        1RdiFFB/ENaM+GUuAf2ei0eW7fplqr6anM28kIA=
+X-Google-Smtp-Source: ABdhPJxHw759duf+mgVKmKqMs+WTChWLRbcezyYVpHjs8TbhcoOuHx8nkwFu5WFeXGPC4FOsWpn34XvUmiaSpte24TA=
+X-Received: by 2002:a92:874b:: with SMTP id d11mr25247009ilm.137.1625065005507;
+ Wed, 30 Jun 2021 07:56:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210630141635.2862222-4-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210630134449.16851-1-lhenriques@suse.de>
+In-Reply-To: <20210630134449.16851-1-lhenriques@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 17:56:34 +0300
+Message-ID: <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
+Subject: Re: [PATCH v10] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Petr Vorel <pvorel@suse.cz>,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/2021 7:16 AM, Roberto Sassu wrote:
-
-Hi Roberto,
-
-> This patch adds the 'digest' parameter to ima_measure_critical_data() and
-> process_buffer_measurement(), so that callers can get the digest of the
-> passed buffer.
-> 
-> These functions calculate the digest even if there is no suitable rule in
-> the IMA policy and, in this case, they simply return 1 before generating a
-> new measurement entry.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Wed, Jun 30, 2021 at 4:44 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> A regression has been reported by Nicolas Boichat, found while using the
+> copy_file_range syscall to copy a tracefs file.  Before commit
+> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> kernel would return -EXDEV to userspace when trying to copy a file across
+> different filesystems.  After this commit, the syscall doesn't fail anymore
+> and instead returns zero (zero bytes copied), as this file's content is
+> generated on-the-fly and thus reports a size of zero.
+>
+> This patch restores some cross-filesystem copy restrictions that existed
+> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> devices").  Filesystems are still allowed to fall-back to the VFS
+> generic_copy_file_range() implementation, but that has now to be done
+> explicitly.
+>
+> nfsd is also modified to fall-back into generic_copy_file_range() in case
+> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>
+> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 > ---
->   include/linux/ima.h                          |  4 +--
->   security/integrity/ima/ima.h                 |  2 +-
->   security/integrity/ima/ima_appraise.c        |  2 +-
->   security/integrity/ima/ima_asymmetric_keys.c |  2 +-
->   security/integrity/ima/ima_init.c            |  2 +-
->   security/integrity/ima/ima_main.c            | 31 +++++++++++++-------
->   security/integrity/ima/ima_queue_keys.c      |  2 +-
->   security/selinux/ima.c                       |  4 +--
->   8 files changed, 30 insertions(+), 19 deletions(-)
-> 
+> Changes since v9
+> - the early return from the syscall when len is zero now checks if the
+>   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
+>   otherwise.  Issue reported by test robot.
 
->   
-> +	if (digest)
-> +		memcpy(digest, iint.ima_hash->digest,
-> +		       hash_digest_size[ima_hash_algo]);
+What issue was reported?
 
-I think the caller should also pass the size of the buffer allocated to 
-receive the calculated digest. And, here copy only up to that many bytes 
-so we don't accidentally cause buffer overrun.
-
-  -lakshmi
-
+>   (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
+> Changes since v8
+> - Simply added Amir's Reviewed-by and Olga's Tested-by
+> Changes since v7
+> - set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
+>   error returned is always related to the 'copy' operation
+> Changes since v6
+> - restored i_sb checks for the clone operation
+> Changes since v5
+> - check if ->copy_file_range is NULL before calling it
+> Changes since v4
+> - nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
+>   or -EXDEV.
+> Changes since v3
+> - dropped the COPY_FILE_SPLICE flag
+> - kept the f_op's checks early in generic_copy_file_checks, implementing
+>   Amir's suggestions
+> - modified nfsd to use generic_copy_file_range()
+> Changes since v2
+> - do all the required checks earlier, in generic_copy_file_checks(),
+>   adding new checks for ->remap_file_range
+> - new COPY_FILE_SPLICE flag
+> - don't remove filesystem's fallback to generic_copy_file_range()
+> - updated commit changelog (and subject)
+> Changes since v1 (after Amir review)
+> - restored do_copy_file_range() helper
+> - return -EOPNOTSUPP if fs doesn't implement CFR
+> - updated commit description
+>
+>  fs/nfsd/vfs.c   |  8 +++++++-
+>  fs/read_write.c | 51 ++++++++++++++++++++++++-------------------------
+>  2 files changed, 32 insertions(+), 27 deletions(-)
+>
+> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> index 15adf1f6ab21..f54a88b3b4a2 100644
+> --- a/fs/nfsd/vfs.c
+> +++ b/fs/nfsd/vfs.c
+> @@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
+>  ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>                              u64 dst_pos, u64 count)
+>  {
+> +       ssize_t ret;
+>
+>         /*
+>          * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+> @@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>          * limit like this and pipeline multiple COPY requests.
+>          */
+>         count = min_t(u64, count, 1 << 22);
+> -       return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +       ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
 > +
-> +	if (!ima_policy_flag || (func && !(action & IMA_MEASURE)))
-> +		return 1;
+> +       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+> +               ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
+> +                                             count, 0);
+> +       return ret;
+>  }
+>
+>  __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 9db7adf160d2..7ad07063c551 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>  }
+>  EXPORT_SYMBOL(generic_copy_file_range);
+>
+> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+> -                                 struct file *file_out, loff_t pos_out,
+> -                                 size_t len, unsigned int flags)
+> -{
+> -       /*
+> -        * Although we now allow filesystems to handle cross sb copy, passing
+> -        * a file of the wrong filesystem type to filesystem driver can result
+> -        * in an attempt to dereference the wrong type of ->private_data, so
+> -        * avoid doing that until we really have a good reason.  NFS defines
+> -        * several different file_system_type structures, but they all end up
+> -        * using the same ->copy_file_range() function pointer.
+> -        */
+> -       if (file_out->f_op->copy_file_range &&
+> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+> -               return file_out->f_op->copy_file_range(file_in, pos_in,
+> -                                                      file_out, pos_out,
+> -                                                      len, flags);
+> -
+> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+> -                                      flags);
+> -}
+> -
+>  /*
+>   * Performs necessary checks before doing a file copy
+>   *
+> @@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+>         loff_t size_in;
+>         int ret;
+>
+> +       /*
+> +        * Although we now allow filesystems to handle cross sb copy, passing
+> +        * a file of the wrong filesystem type to filesystem driver can result
+> +        * in an attempt to dereference the wrong type of ->private_data, so
+> +        * avoid doing that until we really have a good reason.  NFS defines
+> +        * several different file_system_type structures, but they all end up
+> +        * using the same ->copy_file_range() function pointer.
+> +        */
+> +       if (file_out->f_op->copy_file_range) {
+> +               if (file_in->f_op->copy_file_range !=
+> +                   file_out->f_op->copy_file_range)
+> +                       return -EXDEV;
+> +       } else if (file_in->f_op->remap_file_range) {
+> +               if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+> +                       return -EXDEV;
+> +       } else {
+> +                return -EOPNOTSUPP;
+> +       }
 > +
->   	ret = ima_alloc_init_template(&event_data, &entry, template);
->   	if (ret < 0) {
->   		audit_cause = "alloc_entry";
-> @@ -966,7 +975,7 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->   	ret = process_buffer_measurement(file_mnt_user_ns(f.file),
->   					 file_inode(f.file), buf, size,
->   					 "kexec-cmdline", KEXEC_CMDLINE, 0,
-> -					 NULL, false);
-> +					 NULL, false, NULL);
->   	fdput(f);
->   }
->   
-> @@ -977,26 +986,28 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->    * @buf: pointer to buffer data
->    * @buf_len: length of buffer data (in bytes)
->    * @hash: measure buffer data hash
-> + * @digest: buffer digest will be written to
->    *
->    * Measure data critical to the integrity of the kernel into the IMA log
->    * and extend the pcr.  Examples of critical data could be various data
->    * structures, policies, and states stored in kernel memory that can
->    * impact the integrity of the system.
->    *
-> - * Returns 0 if the buffer has been successfully measured, a negative value
-> - * otherwise.
-> + * Returns 0 if the buffer has been successfully measured, 1 if the digest
-> + * has been written to the passed location but not added to a measurement entry,
-> + * a negative value otherwise.
->    */
->   int ima_measure_critical_data(const char *event_label,
->   			      const char *event_name,
->   			      const void *buf, size_t buf_len,
-> -			      bool hash)
-> +			      bool hash, u8 *digest)
->   {
->   	if (!event_name || !event_label || !buf || !buf_len)
->   		return -ENOPARAM;
->   
->   	return process_buffer_measurement(&init_user_ns, NULL, buf, buf_len,
->   					  event_name, CRITICAL_DATA, 0,
-> -					  event_label, hash);
-> +					  event_label, hash, digest);
->   }
->   
->   static int __init init_ima(void)
-> diff --git a/security/integrity/ima/ima_queue_keys.c b/security/integrity/ima/ima_queue_keys.c
-> index e3047ce64f39..ac00a4778a91 100644
-> --- a/security/integrity/ima/ima_queue_keys.c
-> +++ b/security/integrity/ima/ima_queue_keys.c
-> @@ -166,7 +166,7 @@ void ima_process_queued_keys(void)
->   							 entry->keyring_name,
->   							 KEY_CHECK, 0,
->   							 entry->keyring_name,
-> -							 false);
-> +							 false, NULL);
->   		list_del(&entry->list);
->   		ima_free_key_entry(entry);
->   	}
-> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
-> index 4db9fa211638..96bd7ead8081 100644
-> --- a/security/selinux/ima.c
-> +++ b/security/selinux/ima.c
-> @@ -88,7 +88,7 @@ void selinux_ima_measure_state_locked(struct selinux_state *state)
->   
->   	measure_rc = ima_measure_critical_data("selinux", "selinux-state",
->   					       state_str, strlen(state_str),
-> -					       false);
-> +					       false, NULL);
->   
->   	kfree(state_str);
->   
-> @@ -105,7 +105,7 @@ void selinux_ima_measure_state_locked(struct selinux_state *state)
->   	}
->   
->   	measure_rc = ima_measure_critical_data("selinux", "selinux-policy-hash",
-> -					       policy, policy_len, true);
-> +					       policy, policy_len, true, NULL);
->   
->   	vfree(policy);
->   }
-> 
+>         ret = generic_file_rw_checks(file_in, file_out);
+>         if (ret)
+>                 return ret;
+> @@ -1498,10 +1495,11 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>                 return ret;
+>
+>         if (len == 0)
+> -               return 0;
+> +               return file_out->f_op->copy_file_range ? 0 : -EOPNOTSUPP;
+
+What is this supposed to do?
+Please add a comment.
+It seems to me that following the checks in generic_copy_file_checks()
+this can only return -EOPNOTSUPP
+if (!file_out->f_op->copy_file_range && file_in->f_op->remap_file_range)
+
+Was that really the intention? Why?
+
+Thanks,
+Amir.
