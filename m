@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED37C3B7DC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677B03B7DC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhF3HAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:00:25 -0400
-Received: from mailout2.secunet.com ([62.96.220.49]:39740 "EHLO
-        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhF3HAY (ORCPT
+        id S232756AbhF3HBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232556AbhF3HBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:00:24 -0400
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id 0B058800056;
-        Wed, 30 Jun 2021 08:57:54 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 08:57:53 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
- 2021 08:57:53 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 26EA4318040F; Wed, 30 Jun 2021 08:57:53 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 08:57:53 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
-        <stable@vger.kernel.org>, Varad Gautam <varad.gautam@suse.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH] xfrm: Fix RCU vs hash_resize_mutex lock inversion
-Message-ID: <20210630065753.GU40979@gauss3.secunet.de>
-References: <20210628133428.5660-1-frederic@kernel.org>
+        Wed, 30 Jun 2021 03:01:30 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29418C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:59:02 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s15so1654524edt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IwnS1NNOOLhOi2omqPYPqrsJqmEq9LWL4DVMsAItlQU=;
+        b=DAmaDKrlMjh6SgLCpuoiQ364yzoICVE3DkNiOgJFE9rQjmXU9IgzebbgvAgWJbQ255
+         LFAhBvww5xdRltBWyM1XqeZGC4s+/0pgGHyGeyaqXeWwMnptgPZOzgxV+YLZIzusTTAc
+         1MaUdsVYF08rhJKo9sR2KLDcSSX2XNYFsAupGLJB40+prDW2BCRzCteAg91ZTfJGdsaS
+         LcdcbMMVactbR1aicj/UhBif68uIlzhX1FA5xYuOo7lSjQr9/hL4AOn9o+ZHp3k5dRv1
+         WVQtKy1nAcZaCXgAbDr56iZV/6kx5BUfM0jw2qVd0/jqG9UtHrBd5g6UZlWUOvaGVQS+
+         QL9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IwnS1NNOOLhOi2omqPYPqrsJqmEq9LWL4DVMsAItlQU=;
+        b=lnh6ZWWTWzms73RuvcgC2jNfi2dvXvwqMzfh81Cbte7or5WxjuyMTWgKO9SpuyJltc
+         4+h/YjbCGquSuInmhST4FM4PmGkHMXDEg/oW8r33ZBj8Kd8GMHUGr7K7cMiUGf/cNeBS
+         AXUZ2PkKettHO5wElAsFXHDjGNS5rFTWtRZRBlnl5QNWEJ7gWBYEwSLs8wliQkhwhKiv
+         rum3I6r10qsbRU7YjAq/8exCbvZUDXYFt/uXAasNKLOmgvp5NiuTf+mBuM+5a5hcpJcK
+         m23IKuPj1xXrUkmzgnJVHmKF1GgJstwuFNcGG+G67yfb+ZnNfGt2MZjXoGrDIOfW4Zdu
+         h+gg==
+X-Gm-Message-State: AOAM530bhdBpXRPCuv6svKor+8ryjAUYeNJi1yEx2QC7IpsCdWbm8Vki
+        I362zA1sePPAns3O9R+lhmSGJ1XbXhR/NC5p
+X-Google-Smtp-Source: ABdhPJzonuGSl/Y6sooTRS7eB+KL1/vq+D3T8l0U6/wVC+3OVKSaOiUu6zS7KBuDzlM9Vd6AIESxHA==
+X-Received: by 2002:aa7:df19:: with SMTP id c25mr10095215edy.80.1625036340488;
+        Tue, 29 Jun 2021 23:59:00 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::648? ([2a02:768:2307:40d6::648])
+        by smtp.gmail.com with ESMTPSA id g23sm2627069edp.74.2021.06.29.23.58.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 23:58:59 -0700 (PDT)
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+ <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <0d32729b-3c4d-8e71-02b9-c53bd92bfa50@monstr.eu>
+Date:   Wed, 30 Jun 2021 08:58:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210628133428.5660-1-frederic@kernel.org>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <CAHk-=wieg+T4HS+7na7m3huPNT3PrGPJE6nwdeABsQueSY=38Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 03:34:28PM +0200, Frederic Weisbecker wrote:
-> xfrm_bydst_resize() calls synchronize_rcu() while holding
-> hash_resize_mutex. But then on PREEMPT_RT configurations,
-> xfrm_policy_lookup_bytype() may acquire that mutex while running in an
-> RCU read side critical section. This results in a deadlock.
-> 
-> In fact the scope of hash_resize_mutex is way beyond the purpose of
-> xfrm_policy_lookup_bytype() to just fetch a coherent and stable policy
-> for a given destination/direction, along with other details.
-> 
-> The lower level net->xfrm.xfrm_policy_lock, which among other things
-> protects per destination/direction references to policy entries, is
-> enough to serialize and benefit from priority inheritance against the
-> write side. As a bonus, it makes it officially a per network namespace
-> synchronization business where a policy table resize on namespace A
-> shouldn't block a policy lookup on namespace B.
-> 
-> Fixes: 77cc278f7b20 (xfrm: policy: Use sequence counters with associated lock)
-> Cc: stable@vger.kernel.org
-> Cc: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Varad Gautam <varad.gautam@suse.com>
-> Cc: Steffen Klassert <steffen.klassert@secunet.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Hi Linus,
 
-Your patch has a conflicht with ("commit d7b0408934c7 xfrm: policy: Read
-seqcount outside of rcu-read side in xfrm_policy_lookup_bytype")
-from Varad. Can you please rebase onto the ipsec tree?
+On 6/29/21 8:26 PM, Linus Torvalds wrote:
+> On Tue, Jun 29, 2021 at 7:30 AM Michal Simek <monstr@monstr.eu> wrote:
+>>
+>>   git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
+> 
+> I think git.monstr.eu is having some issues, I'm not getting any
+> response from it..
 
-Btw. Varad, your above mentioned patch tried to fix the same issue.
-Do we still need it, or is it obsolete with the fix from Frederic?
+Sorry about this. We had a quite a big storm in the whole Czech Republic
+yesterday. Also some power cuts and issues around it.
+As I see it is back again. Can you please pull it again?
 
-Thanks!
+Thanks,
+Michal
+
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
