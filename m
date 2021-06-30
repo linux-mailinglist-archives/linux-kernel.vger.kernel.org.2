@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5993B846E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA9B3B8458
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236357AbhF3N4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:56:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33060 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236292AbhF3NwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:52:04 -0400
-Date:   Wed, 30 Jun 2021 13:48:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060902;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ShDh6ieyzUFBqSQ8wetZp4jRCJccY7ABYkmLjDjbaOM=;
-        b=ItdItQYBs9D8UKHer9IwmuVfPPBCyyZh9q2VupK25zOnLc8jInfitQRSGKf++VDpW1TWUz
-        3p6h/4xSM8urGkyTdTWsp/nKCQi1mt6PFh5HiT26LWDTaYDnjYWDDQzr7z+SINOjrwj2vh
-        nowo5IqftEmD99elS+cNtzGgDr5N9sr8IhHBmLSpZjLaLZx3RHV0kByNuy8i5yLujzV13I
-        wppIxCPNPMZ2RmNXPXwx4WhdNi3DpX0rdmFWjnjlwBsFCBCgLj8qJDOvcvvahTiRQvcEk2
-        u57DHkoEAxGq3aTg+P3H5XWklN8OtDLbBFpT2LIbRZaLEQlNEohHxij/UbKl/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060902;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ShDh6ieyzUFBqSQ8wetZp4jRCJccY7ABYkmLjDjbaOM=;
-        b=k1EHP92CohrxlvApzuKhgWrola4CWNM7SWPCF5f3yzQUVEQaJ/wzlrAZdNcST01WPXcAPj
-        ioKaOs473VKDhGBw==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] kcsan: Add pointer to access-marking.txt to
- data_race() bullet
-Cc:     Akira Yokosawa <akiyks@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S235055AbhF3NzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:55:04 -0400
+Received: from www.zeus03.de ([194.117.254.33]:53554 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236028AbhF3NvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 09:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=aZ8iO9XBy3P3r9iXiFyK52CCdtNx
+        JUEpRXml++Cfx6g=; b=aXzYKQ8Gkzzam+WMp5k1pRjO7qvLN91VBiIe35APextO
+        agZbM5Qf/IdCH8e44yA1B7PS+hpuFjJJs52twGzHC69ly+8o3rQzyNhX8FZd51rT
+        aRPm/lRoi3o6hjJs8/CVd9i/KcVpii2arlUgN1x0Hf31k6OcZzUuPMaJvO0XTaQ=
+Received: (qmail 885806 invoked from network); 30 Jun 2021 15:48:31 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 30 Jun 2021 15:48:31 +0200
+X-UD-Smtp-Session: l3s3148p1@Y8kk+vvFAuYgAwDPXwaiAGDoJRk6bv4I
+Date:   Wed, 30 Jun 2021 15:48:27 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] i2c: stm32f7: : use proper DMAENGINE API for
+ termination
+Message-ID: <YNx2K7Eeqm09Vot6@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
+ <20210623095942.3325-8-wsa+renesas@sang-engineering.com>
+ <YNM/TZMWwCLGSEJO@ninjato>
+ <20210630131118.GB12109@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
-Message-ID: <162506090131.395.14968745337974466077.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qWmVXpjpnw6hcZzE"
+Content-Disposition: inline
+In-Reply-To: <20210630131118.GB12109@gnbcxd0016.gnb.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
 
-Commit-ID:     ea0484644e5b8486c8335f677fc1e2a4a5d76d3f
-Gitweb:        https://git.kernel.org/tip/ea0484644e5b8486c8335f677fc1e2a4a5d76d3f
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 04 Mar 2021 16:04:09 -08:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Tue, 18 May 2021 10:58:14 -07:00
+--qWmVXpjpnw6hcZzE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-kcsan: Add pointer to access-marking.txt to data_race() bullet
+Hi Alain,
 
-This commit references tools/memory-model/Documentation/access-marking.txt
-in the bullet introducing data_race().  The access-marking.txt file
-gives advice on when data_race() should and should not be used.
+> thanks for the update. If you are ok with that I modify the patch
+> to partially rely on _async / synchronize whenever needed and push it again
+> separately.
 
-Suggested-by: Akira Yokosawa <akiyks@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/dev-tools/kcsan.rst | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Perfect, thanks!
 
-diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-index d85ce23..8089466 100644
---- a/Documentation/dev-tools/kcsan.rst
-+++ b/Documentation/dev-tools/kcsan.rst
-@@ -106,7 +106,9 @@ the below options are available:
- 
- * KCSAN understands the ``data_race(expr)`` annotation, which tells KCSAN that
-   any data races due to accesses in ``expr`` should be ignored and resulting
--  behaviour when encountering a data race is deemed safe.
-+  behaviour when encountering a data race is deemed safe.  Please see
-+  ``tools/memory-model/Documentation/access-marking.txt`` in the kernel source
-+  tree for more information.
- 
- * Disabling data race detection for entire functions can be accomplished by
-   using the function attribute ``__no_kcsan``::
+All the best,
+
+   Wolfram
+
+
+--qWmVXpjpnw6hcZzE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDcdicACgkQFA3kzBSg
+KbaXXhAAmxrPbldmgXhVpi+qevyfoKn/StAf2BS8zj+S+vIDRB2yAVQ/yM9t9ooX
+bwPOkJx2oGMcJ1uwFjbyTGvS47iHeW4KAbpIUxr5MmwW5QSXrfn42mfih94g9UaP
+HZzIaM3IY+2oP+0sJ4WrGGI0ZqDJ0ISTnGn/5q0jocO5LelzMMnE99qMw5Z7BsUF
+2Bi5AwaRzqAyDimWIhjktwNAJBDX+fBZcGpgYbmqVhF2R16UIoIVHCLcVumD23lA
+hDU/ows5Wp1bzdh38qadVkaOean/FPSERnTFDx/QkBaGhMc5tz5HQshx4ILGUKI7
+hJJsFjPUsi+6GFHoe5gv7sW948ONb48WxKzbhD10KS+D4k5pAzHWs1rmGgdA+UVD
+hA90vjuDoB9VIlhcTe6K4LIQGfJBzXZOpo4MYTqLxBAnPQF57GQWcdmH5vSlsxV2
+ALPwHYco8CRyxHzpzUU00Q+l/0T9vhuG1lE3LjSRETvUQjB2D4HznNhXqw7SpFxs
+vPfT0AodIvOZXEcCtZHCVXZjceBCoGFYKLXHzsM+XAG5XmwcrO9v1FlfTyTqNwr6
+EEzsUP+lRpEg1SWRlj00U7ckAkR4mo8CjpQwLGy4ilA74TuIFGI83ILuQ8hPBdS4
+Bxdmh62TR6fODqWc7pXdSFx8Jd2EcWqKDLaR6uMExB7XFrVelNU=
+=iyIW
+-----END PGP SIGNATURE-----
+
+--qWmVXpjpnw6hcZzE--
