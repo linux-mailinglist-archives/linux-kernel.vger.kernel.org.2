@@ -2,320 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E913B89E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCDF3B89E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhF3Uwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:52:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234090AbhF3Uwa (ORCPT
+        id S234505AbhF3Uy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233735AbhF3UyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:52:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625086200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8R7hHJmuAVBel6m03TZSyrzhu49GOYABeN9Y+21W5yY=;
-        b=JHlqYh4DE7NwwIPY4mGMC1rXWlPTi1aPa8aL3yvBMacXF/XurnYpt0XXIwv53ixLAQvast
-        wUkOQUs3MK/G9yFadCcFP2FOI6h6qv2iCEcsh4buOKx8wMPqpuFKcn9XHFAc2o184B5CZK
-        k6hBElurHC9kVC83YZEfT4qZY+Zwzic=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-XX_oBmEgMgivHgMhHZuerg-1; Wed, 30 Jun 2021 16:49:59 -0400
-X-MC-Unique: XX_oBmEgMgivHgMhHZuerg-1
-Received: by mail-oo1-f72.google.com with SMTP id r26-20020a4acb1a0000b029024c388a4835so2105198ooq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:49:59 -0700 (PDT)
+        Wed, 30 Jun 2021 16:54:25 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EE5C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:51:56 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id h1-20020a255f410000b02905585436b530so5552868ybm.21
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WXCJB/sn116SgSEffDSjzbCu9ljJn1wLs+Vne4KFJ+E=;
+        b=bte2f2XYQ1DOjqMdsGzUOiZHs6KmPl58pU/flR4jZH0dBZSy8TYGRVvNhSf84qCwA/
+         dXsgZrL4sL1B5mC7YRq0UR0PMS0UYxmuQqlaArrawpRYBZHIZLdY7+j2aU0obbPWyrhG
+         JR2At/fYtMg3FMmKwu99cf1V9+UgCvu0qJfTMiN1FXJKrd5Ll+pucNzKR2RXvoRriWIa
+         +lynkComSrHQiP/O3PaMv26IpIBO6mnSHNt6poK6AEEJpErvgj9LNZikO/Vs4JmECX4N
+         zL6utMIXpZJ/rsK9TEwZXF35TZI81+WjZ+cVDv/reDpTSSXltwRS3zbmFRVImYMSQeBN
+         abtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8R7hHJmuAVBel6m03TZSyrzhu49GOYABeN9Y+21W5yY=;
-        b=rQ4AnWeyP2eTAN+TUOBHiybJvta551+aw4U2t22x8uOwHgF18arnH/obj3Iz85tCxG
-         2Snzl2sBg6M2B5OHn0CFzQpVlPP7q00Tr8i6Hf16AtOvS6v6cXPl45H/fHpHlwLpLGZz
-         FJhvTddCv0Pnx750GRwWjZKBXC2IJseEzrph1VHqmB502g6KVYx4jqBYwoaEsfESW66N
-         CNXbRnxUAQr6mGfGeplQmelxhhSgAbiv8xckXzNSGNOfmXLv21KDwoFFiAFjy4m/jVD9
-         aY/a1NmcSpvehdUpH3e6hZnO80boKteSYdFH1UmLQ5L9n3ok+MFpeLFIKd/2ZH9i8QNC
-         rWHQ==
-X-Gm-Message-State: AOAM5329XbqNjpfaFhjM/W3sTdWH3aMJViUQIlpVtEA+dCcbcoLMOv2l
-        2HhrBL4UycTXbgaumyPC4mDzzzwv07dssD9T9wSLucaXnpmK5z2+H6mJjvV36HVY5pnXgW18bxu
-        iq0+QuG9uF2ShtYPO8ye20g6z
-X-Received: by 2002:a9d:6a06:: with SMTP id g6mr10520073otn.310.1625086197950;
-        Wed, 30 Jun 2021 13:49:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCADS19465If5OYHOL0to6c6RcoeNpwsg45g5B41B28u/Yb0a6zbVN2gOhn0bYwOVVgE0xOA==
-X-Received: by 2002:a9d:6a06:: with SMTP id g6mr10520048otn.310.1625086197646;
-        Wed, 30 Jun 2021 13:49:57 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id u12sm262734oiu.7.2021.06.30.13.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 13:49:57 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 14:49:55 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v8 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210630144955.71c5abac.alex.williamson@redhat.com>
-In-Reply-To: <20210630200415.h6y43akhcmln36uk@archlinux>
-References: <20210629160104.2893-1-ameynarkhede03@gmail.com>
-        <20210629160104.2893-2-ameynarkhede03@gmail.com>
-        <20210630115655.05958cfb.alex.williamson@redhat.com>
-        <20210630200415.h6y43akhcmln36uk@archlinux>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WXCJB/sn116SgSEffDSjzbCu9ljJn1wLs+Vne4KFJ+E=;
+        b=L65a+a5f2mJOiBtCLDqyFs2kYKLpiA5e7Yj4Rz0YerSDhn5ANTMr9vqPJXGP9O8BnB
+         Zj73wEbWixiGuSKO8HpEVH8YsOgP7RSxjbDSKeBF3puH89l+8Ld2jnqrmqWMYQSrnAa6
+         rHMI6D1e0ITb9VZhhgTk2bcAYYPXyHM3OTwwdnN9wOpan28SV8HHYso5Qx20iSVQLcAr
+         G1BCW4HACS//8XETkuOTB/BPEYJVraEIQ3a57ZMQ7rTNxA7W7wD5aRHQzEAdstPj9ZGW
+         8QebY5iAhXK57fL1yYC5y6tM+h9ZfTiojUHatlBHRzrRbMMp3hXFQPaTIe3RjBVkifKQ
+         o1xQ==
+X-Gm-Message-State: AOAM531Db3dn1czyf58WdM8FdFOX0126W1G2SVz8oW58Zlxr0xHAiRkm
+        Bds63eLBdDoeDKV9CL5jJVRQ4Pk1Xyk=
+X-Google-Smtp-Source: ABdhPJxpwShbTyniu85SbURsJRjlKLSAmfOYgM4PaRy3d7FcNFtwT37Wj1f61GUqf0SviwEqaC0xBrhUbOI=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:e135:81d1:5036:d9ff])
+ (user=surenb job=sendgmr) by 2002:a25:3b46:: with SMTP id i67mr49622177yba.207.1625086315507;
+ Wed, 30 Jun 2021 13:51:55 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 13:51:51 -0700
+Message-Id: <20210630205151.137001-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     peterz@infradead.org
+Cc:     hannes@cmpxchg.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, matthias.bgg@gmail.com, minchan@google.com,
+        timmurray@google.com, yt.chang@mediatek.com, wenju.xu@mediatek.com,
+        jonathan.jmchen@mediatek.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel-team@android.com,
+        surenb@google.com, SH Chen <show-hong.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 01:34:15 +0530
-Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+Psi polling mechanism is trying to minimize the number of wakeups to
+run psi_poll_work and is currently relying on timer_pending() to detect
+when this work is already scheduled. This provides a window of opportunity
+for psi_group_change to schedule an immediate psi_poll_work after
+poll_timer_fn got called but before psi_poll_work could reschedule itself.
+Below is the depiction of this entire window:
 
-> On 21/06/30 11:56AM, Alex Williamson wrote:
-> > On Tue, 29 Jun 2021 21:30:57 +0530
-> > Amey Narkhede <ameynarkhede03@gmail.com> wrote:
-> >  
-> > > Add has_flr bitfield in struct pci_dev to indicate support for pcie flr
-> > > to avoid reading PCI_EXP_DEVCAP multiple times and get rid of
-> > > PCI_DEV_FLAGS_NO_FLR_RESET in quirk_no_flr().
-> > >
-> > > Currently there is separate function pcie_has_flr() to probe if pcie flr is
-> > > supported by the device which does not match the calling convention
-> > > followed by reset methods which use second function argument to decide
-> > > whether to probe or not.  Add new function pcie_reset_flr() that follows
-> > > the calling convention of reset methods.
-> > >
-> > > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>  
-> >
-> > There are some non-trivial changes here vs previous, should probably
-> > drop this.
-> >  
-> > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > ---
-> > >  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
-> > >  drivers/pci/pci.c                          | 62 +++++++++++-----------
-> > >  drivers/pci/pcie/aer.c                     | 12 ++---
-> > >  drivers/pci/probe.c                        |  6 ++-
-> > >  drivers/pci/quirks.c                       | 11 ++--
-> > >  include/linux/pci.h                        |  7 ++-
-> > >  6 files changed, 47 insertions(+), 55 deletions(-)
-> > >
-> > > diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > > index facc8e6bc..15d6c8452 100644
-> > > --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > > +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > > @@ -306,9 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
-> > >  		return -ENOMEM;
-> > >  	}
-> > >
-> > > -	/* check flr support */
-> > > -	if (pcie_has_flr(pdev))
-> > > -		pcie_flr(pdev);
-> > > +	pcie_reset_flr(pdev, 0);
-> > >
-> > >  	pci_restore_state(pdev);
-> > >
-> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > index 452351025..28f099a4f 100644
-> > > --- a/drivers/pci/pci.c
-> > > +++ b/drivers/pci/pci.c
-> > > @@ -4611,32 +4611,12 @@ int pci_wait_for_pending_transaction(struct pci_dev *dev)
-> > >  }
-> > >  EXPORT_SYMBOL(pci_wait_for_pending_transaction);
-> > >
-> > > -/**
-> > > - * pcie_has_flr - check if a device supports function level resets
-> > > - * @dev: device to check
-> > > - *
-> > > - * Returns true if the device advertises support for PCIe function level
-> > > - * resets.
-> > > - */
-> > > -bool pcie_has_flr(struct pci_dev *dev)
-> > > -{
-> > > -	u32 cap;
-> > > -
-> > > -	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> > > -		return false;
-> > > -
-> > > -	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
-> > > -	return cap & PCI_EXP_DEVCAP_FLR;
-> > > -}
-> > > -EXPORT_SYMBOL_GPL(pcie_has_flr);
-> > > -
-> > >  /**
-> > >   * pcie_flr - initiate a PCIe function level reset
-> > >   * @dev: device to reset
-> > >   *
-> > > - * Initiate a function level reset on @dev.  The caller should ensure the
-> > > - * device supports FLR before calling this function, e.g. by using the
-> > > - * pcie_has_flr() helper.
-> > > + * Initiate a function level reset unconditionally on @dev without
-> > > + * checking any flags and DEVCAP
-> > >   */
-> > >  int pcie_flr(struct pci_dev *dev)
-> > >  {
-> > > @@ -4659,16 +4639,35 @@ int pcie_flr(struct pci_dev *dev)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(pcie_flr);
-> > >
-> > > +/**
-> > > + * pcie_reset_flr - initiate a PCIe function level reset
-> > > + * @dev: device to reset
-> > > + * @probe: If set, only check if the device can be reset this way.
-> > > + *
-> > > + * Initiate a function level reset on @dev.
-> > > + */
-> > > +int pcie_reset_flr(struct pci_dev *dev, int probe)
-> > > +{
-> > > +	if (!dev->has_flr)
-> > > +		return -ENOTTY;
-> > > +
-> > > +	if (probe)
-> > > +		return 0;
-> > > +
-> > > +	return pcie_flr(dev);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(pcie_reset_flr);
-> > > +
-> > >  static int pci_af_flr(struct pci_dev *dev, int probe)
-> > >  {
-> > >  	int pos;
-> > >  	u8 cap;
-> > >
-> > > -	pos = pci_find_capability(dev, PCI_CAP_ID_AF);
-> > > -	if (!pos)
-> > > +	if (!dev->has_flr)
-> > >  		return -ENOTTY;
-> > >
-> > > -	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> > > +	pos = pci_find_capability(dev, PCI_CAP_ID_AF);
-> > > +	if (!pos)
-> > >  		return -ENOTTY;
-> > >
-> > >  	pci_read_config_byte(dev, pos + PCI_AF_CAP, &cap);  
-> >
-> >
-> > How can has_flr encompass both methods of invoking FLR?  PCIe FLR is
-> > not a prerequisite to AF FLR.
-> >  
-> I see. Does this mean that there should be a separate flag for disabling
-> AF FLR?
+poll_timer_fn
+  wake_up_interruptible(&group->poll_wait);
 
-There hasn't been a need so far.  Per the ECN, the AF capability is
-meant to make select PCIe features available on conventional PCI
-devices.  It seems like it would be against the spirit of the AF
-capability to implement both an AF capability and a PCIe capability,
-but I don't see that it's definitively addressed by the spec.
+psi_poll_worker
+  wait_event_interruptible(group->poll_wait, ...)
+  psi_poll_work
+    psi_schedule_poll_work
+      if (timer_pending(&group->poll_timer)) return;
+      ...
+      mod_timer(&group->poll_timer, jiffies + delay);
 
-AF FLR is sufficiently rare that it's probably reasonable to make a
-has_pcie_flr bit on the device and leave AF FLR alone.  I can't really
-say that I'm in favor of assigning a has_flr bit the double duty of
-also quirking broken FLR, if nothing else it's inconsistent with our
-other means of quirking resets.
+Prior to 461daba06bdc we used to rely on poll_scheduled atomic which was
+reset and set back inside psi_poll_work and therefore this race window
+was much smaller.
+The larger window causes increased number of wakeups and our partners
+report visible power regression of ~10mA after applying 461daba06bdc.
+Bring back the poll_scheduled atomic and make this race window even
+narrower by resetting poll_scheduled only when we reach polling expiration
+time. This does not completely eliminate the possibility of extra wakeups
+caused by a race with psi_group_change however it will limit it to the
+worst case scenario of one extra wakeup per every tracking window (0.5s
+in the worst case).
+By tracing the number of immediate rescheduling attempts performed by
+psi_group_change and the number of these attempts being blocked due to
+psi monitor being already active, we can assess the effects of this change:
 
-> > > @@ -5139,11 +5138,9 @@ int __pci_reset_function_locked(struct pci_dev *dev)
-> > >  	rc = pci_dev_specific_reset(dev, 0);
-> > >  	if (rc != -ENOTTY)
-> > >  		return rc;
-> > > -	if (pcie_has_flr(dev)) {
-> > > -		rc = pcie_flr(dev);
-> > > -		if (rc != -ENOTTY)
-> > > -			return rc;
-> > > -	}
-> > > +	rc = pcie_reset_flr(dev, 0);
-> > > +	if (rc != -ENOTTY)
-> > > +		return rc;
-> > >  	rc = pci_af_flr(dev, 0);
-> > >  	if (rc != -ENOTTY)
-> > >  		return rc;
-> > > @@ -5174,8 +5171,9 @@ int pci_probe_reset_function(struct pci_dev *dev)
-> > >  	rc = pci_dev_specific_reset(dev, 1);
-> > >  	if (rc != -ENOTTY)
-> > >  		return rc;
-> > > -	if (pcie_has_flr(dev))
-> > > -		return 0;
-> > > +	rc = pcie_reset_flr(dev, 1);
-> > > +	if (rc != -ENOTTY)
-> > > +		return rc;
-> > >  	rc = pci_af_flr(dev, 1);
-> > >  	if (rc != -ENOTTY)
-> > >  		return rc;
-> > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > index ec943cee5..98077595a 100644
-> > > --- a/drivers/pci/pcie/aer.c
-> > > +++ b/drivers/pci/pcie/aer.c
-> > > @@ -1405,13 +1405,11 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
-> > >  	}
-> > >
-> > >  	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-> > > -		if (pcie_has_flr(dev)) {
-> > > -			rc = pcie_flr(dev);
-> > > -			pci_info(dev, "has been reset (%d)\n", rc);
-> > > -		} else {
-> > > -			pci_info(dev, "not reset (no FLR support)\n");
-> > > -			rc = -ENOTTY;
-> > > -		}
-> > > +		rc = pcie_reset_flr(dev, 0);
-> > > +		if (!rc)
-> > > +			pci_info(dev, "has been reset\n");
-> > > +		else
-> > > +			pci_info(dev, "not reset (no FLR support: %d)\n", rc);
-> > >  	} else {
-> > >  		rc = pci_bus_error_reset(dev);
-> > >  		pci_info(dev, "%s Port link has been reset (%d)\n",
-> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > index 3a62d09b8..862d91615 100644
-> > > --- a/drivers/pci/probe.c
-> > > +++ b/drivers/pci/probe.c
-> > > @@ -1487,6 +1487,7 @@ void set_pcie_port_type(struct pci_dev *pdev)
-> > >  {
-> > >  	int pos;
-> > >  	u16 reg16;
-> > > +	u32 reg32;
-> > >  	int type;
-> > >  	struct pci_dev *parent;
-> > >
-> > > @@ -1497,8 +1498,9 @@ void set_pcie_port_type(struct pci_dev *pdev)
-> > >  	pdev->pcie_cap = pos;
-> > >  	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
-> > >  	pdev->pcie_flags_reg = reg16;
-> > > -	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
-> > > -	pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
-> > > +	pci_read_config_dword(pdev, pos + PCI_EXP_DEVCAP, &reg32);
-> > > +	pdev->pcie_mpss = reg32 & PCI_EXP_DEVCAP_PAYLOAD;
-> > > +	pdev->has_flr = reg32 & PCI_EXP_DEVCAP_FLR ? 1 : 0;  
-> >
-> > We only set has_flr for PCIe FLR, so I think this effectively kills AF
-> > FLR.  The ternary should be unnecessary here.
-> >  
-> I believe only one of the PCIe FLR and PCI AF FLR will be available at a time.
+Before the patch:
+                                           Run#1    Run#2      Run#3
+Immediate reschedules attempted:           684365   1385156    1261240
+Immediate reschedules blocked:             682846   1381654    1258682
+Immediate reschedules (delta):             1519     3502       2558
+Immediate reschedules (% of attempted):    0.22%    0.25%      0.20%
 
-Likely, possibly required depending on spec interpretation.
+After the patch:
+                                           Run#1    Run#2      Run#3
+Immediate reschedules attempted:           882244   770298    426218
+Immediate reschedules blocked:             881996   769796    426074
+Immediate reschedules (delta):             248      502       144
+Immediate reschedules (% of attempted):    0.03%    0.07%     0.03%
 
-> So I think it should be okay to check for PCI_AF_CAP_FLR and set
-> pdev->has_flr accordingly.
+The number of non-blocked immediate reschedules dropped from 0.22-0.25%
+to 0.03-0.07%. The drop is attributed to the decrease in the race window
+size and the fact that we allow this race only when psi monitors reach
+polling window expiration time.
 
-AF FLR is rare, are the reasons we're wanting to cache its availability
-as relevant as they are for PCIe FLR?
+Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
+Reported-by: Kathleen Chang <yt.chang@mediatek.com>
+Reported-by: Wenju Xu <wenju.xu@mediatek.com>
+Reported-by: Jonathan Chen <jonathan.jmchen@mediatek.com>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Tested-by: SH Chen <show-hong.chen@mediatek.com>
+---
+changes in v2:
+- Simplified atomic_cmpxchg() condition per PeterZ
+- Added Tested-by:
 
-> One question though, what is PCI_AF_CAP_TP
+ include/linux/psi_types.h |  1 +
+ kernel/sched/psi.c        | 41 ++++++++++++++++++++++++++++-----------
+ 2 files changed, 31 insertions(+), 11 deletions(-)
 
-Transaction Pending
-
-> and how is it related to PCI AF FLR?
-
-It's required to be implemented if AF FLR is implemented.  We're
-supposed to wait for TP to clear before issuing an FLR to avoid an
-issue with stale completions of outstanding transactions.  Thanks,
-
-Alex
+diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
+index 0a23300d49af..ef8bd89d065e 100644
+--- a/include/linux/psi_types.h
++++ b/include/linux/psi_types.h
+@@ -158,6 +158,7 @@ struct psi_group {
+ 	struct timer_list poll_timer;
+ 	wait_queue_head_t poll_wait;
+ 	atomic_t poll_wakeup;
++	atomic_t poll_scheduled;
+ 
+ 	/* Protects data used by the monitor */
+ 	struct mutex trigger_lock;
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 58b36d17a09a..82b664ca9ee9 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -195,6 +195,7 @@ static void group_init(struct psi_group *group)
+ 	INIT_DELAYED_WORK(&group->avgs_work, psi_avgs_work);
+ 	mutex_init(&group->avgs_lock);
+ 	/* Init trigger-related members */
++	atomic_set(&group->poll_scheduled, 0);
+ 	mutex_init(&group->trigger_lock);
+ 	INIT_LIST_HEAD(&group->triggers);
+ 	memset(group->nr_triggers, 0, sizeof(group->nr_triggers));
+@@ -555,18 +556,14 @@ static u64 update_triggers(struct psi_group *group, u64 now)
+ 	return now + group->poll_min_period;
+ }
+ 
+-/* Schedule polling if it's not already scheduled. */
+-static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
++/* Schedule polling if it's not already scheduled or forced. */
++static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay,
++				   bool force)
+ {
+ 	struct task_struct *task;
+ 
+-	/*
+-	 * Do not reschedule if already scheduled.
+-	 * Possible race with a timer scheduled after this check but before
+-	 * mod_timer below can be tolerated because group->polling_next_update
+-	 * will keep updates on schedule.
+-	 */
+-	if (timer_pending(&group->poll_timer))
++	/* cmpxchg should be called even when !force to set poll_scheduled */
++	if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
+ 		return;
+ 
+ 	rcu_read_lock();
+@@ -578,12 +575,15 @@ static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
+ 	 */
+ 	if (likely(task))
+ 		mod_timer(&group->poll_timer, jiffies + delay);
++	else
++		atomic_set(&group->poll_scheduled, 0);
+ 
+ 	rcu_read_unlock();
+ }
+ 
+ static void psi_poll_work(struct psi_group *group)
+ {
++	bool force_reschedule = false;
+ 	u32 changed_states;
+ 	u64 now;
+ 
+@@ -591,6 +591,23 @@ static void psi_poll_work(struct psi_group *group)
+ 
+ 	now = sched_clock();
+ 
++	if (now > group->polling_until) {
++		/*
++		 * We are either about to start or might stop polling if no
++		 * state change was recorded. Resetting poll_scheduled leaves
++		 * a small window for psi_group_change to sneak in and schedule
++		 * an immegiate poll_work before we get to rescheduling. One
++		 * potential extra wakeup at the end of the polling window
++		 * should be negligible and polling_next_update still keeps
++		 * updates correctly on schedule.
++		 */
++		atomic_set(&group->poll_scheduled, 0);
++	} else {
++		/* Polling window is not over, keep rescheduling */
++		force_reschedule = true;
++	}
++
++
+ 	collect_percpu_times(group, PSI_POLL, &changed_states);
+ 
+ 	if (changed_states & group->poll_states) {
+@@ -616,7 +633,8 @@ static void psi_poll_work(struct psi_group *group)
+ 		group->polling_next_update = update_triggers(group, now);
+ 
+ 	psi_schedule_poll_work(group,
+-		nsecs_to_jiffies(group->polling_next_update - now) + 1);
++		nsecs_to_jiffies(group->polling_next_update - now) + 1,
++		force_reschedule);
+ 
+ out:
+ 	mutex_unlock(&group->trigger_lock);
+@@ -740,7 +758,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 	write_seqcount_end(&groupc->seq);
+ 
+ 	if (state_mask & group->poll_states)
+-		psi_schedule_poll_work(group, 1);
++		psi_schedule_poll_work(group, 1, false);
+ 
+ 	if (wake_clock && !delayed_work_pending(&group->avgs_work))
+ 		schedule_delayed_work(&group->avgs_work, PSI_FREQ);
+@@ -1235,6 +1253,7 @@ static void psi_trigger_destroy(struct kref *ref)
+ 		 * can no longer be found through group->poll_task.
+ 		 */
+ 		kthread_stop(task_to_destroy);
++		atomic_set(&group->poll_scheduled, 0);
+ 	}
+ 	kfree(t);
+ }
+-- 
+2.32.0.93.g670b81a890-goog
 
