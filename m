@@ -2,118 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795B83B7BF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005603B7BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 05:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhF3Cy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:54:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6024 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhF3Cy5 (ORCPT
+        id S232892AbhF3DJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 23:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232067AbhF3DJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:54:57 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GF5ND1ZfZzXmhd;
-        Wed, 30 Jun 2021 10:47:08 +0800 (CST)
-Received: from dggpemm500021.china.huawei.com (7.185.36.109) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 10:52:27 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm500021.china.huawei.com
- (7.185.36.109) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
- 2021 10:52:27 +0800
-From:   Chengyang Fan <cy.fan@huawei.com>
-To:     <akpm@linux-foundation.org>, <terrelln@fb.com>,
-        <sfr@canb.auug.org.au>, <hsiangkao@linux.alibaba.com>,
-        <thisisrast7@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <cy.fan@huawei.com>
-Subject: [PATCH] lz4: fixs use-after-free Read in LZ4_decompress_safe_partial
-Date:   Wed, 30 Jun 2021 11:23:58 +0800
-Message-ID: <20210630032358.949122-1-cy.fan@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Tue, 29 Jun 2021 23:09:08 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BC2C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 20:06:40 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id h18so388160qve.1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 20:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tuE8eI7xPTlGquO8tV6/emNqMWz8aUAeCyFHK4ouE8w=;
+        b=rkx6mIALp3jHyBBoZq9SF2ZgonpO4rhnFzj9Oq6AC4XtyWLiqwYSc8sv+RT5knSE0P
+         151zlKh5N46Dw1MqHLsr0f4SO444Tff6af4OnO+MCdxStmhZ2rH7dHe3OTegkKABalFw
+         NV/K7VXXowGF0d3lfAX2TFlKNizE3lW4y7PdJ8tWVfeSsntEBHsWOLOvtGQx1gIfJ7EK
+         azMNUMD7fVRF5nv0U6w/xzsVnWkNwipsisEIRtDe/5+H+uhQbvZNlL1D0SUDDusTdZFC
+         ZrTFBztXi+0XCthidA2PFl7XrafhokVsipe0Q9axAQWYlnDEsHfF6yjP2kFKztbWY5y6
+         fstQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tuE8eI7xPTlGquO8tV6/emNqMWz8aUAeCyFHK4ouE8w=;
+        b=k8mNahjsKwlLjpoEWUxY17DHLi1r2ov3DaIgnFgCo6TrYHwiROsVAehSvjKcoYU4G2
+         DnSesHx4bK5ML/LzuGOWeeYLNyleY7EL8gJPtnGavbZ6RLHXmc3SoO7uHK1xIDjzTqzi
+         YqA6zxfLAfE8+JLBqfIiNeHUqG8VKI2QePhifNxGI1bX2kQTJsB5okb7RSKTpWua2MRy
+         CLSxGgMy7SU1HIRPFqbe/yj/0OTOaJlnr3OFmoVzynwhD0KuYGoLTh66xmicKYCdzdab
+         vb0h0tulH0PKgIwFh8rBXZv0wlJx3pECrHuxz/gTTpFUnfTgCGdZKZDdKT1DlIZ/L2Gx
+         DU2w==
+X-Gm-Message-State: AOAM53291kGtb035BPG4ajfBj3Hrs0WPaIbYCab6bVqnoibNBMbd3C8v
+        ZMOiSIdY4TCO9HQcyN5SpcYZ2A==
+X-Google-Smtp-Source: ABdhPJyDCRXOjCYyn/2rVN7uOciWk2PCelVjfocRnOsyglTjcyUENpaO8rZf0vRJ4dI4WQTokC0Mbw==
+X-Received: by 2002:a0c:80ec:: with SMTP id 99mr33958780qvb.55.1625022399521;
+        Tue, 29 Jun 2021 20:06:39 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id u66sm5951765qkc.89.2021.06.29.20.06.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 20:06:38 -0700 (PDT)
+Subject: Re: [Patch v2 2/5] thermal: qcom: Add support for LMh driver
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210624115813.3613290-1-thara.gopinath@linaro.org>
+ <20210624115813.3613290-3-thara.gopinath@linaro.org>
+ <YNS/x8Po4kGILcOC@google.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <35b5e5f3-90d8-1126-0830-3ff40d081d1c@linaro.org>
+Date:   Tue, 29 Jun 2021 23:06:38 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500021.china.huawei.com (7.185.36.109)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YNS/x8Po4kGILcOC@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-==================================================================
-BUG: KASAN: use-after-free in get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
-BUG: KASAN: use-after-free in LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
-BUG: KASAN: use-after-free in LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
-BUG: KASAN: use-after-free in LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
-Read of size 2 at addr ffff888017851000 by task kworker/u12:0/2056
 
-CPU: 0 PID: 2056 Comm: kworker/u12:0 Not tainted 5.10.40 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
-Workqueue: erofs_unzipd z_erofs_decompressqueue_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:118
- print_address_description+0x6c/0x640 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
- get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
- LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
- LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
- LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
- z_erofs_lz4_decompress+0x839/0xc90 fs/erofs/decompressor.c:162
- z_erofs_decompress_generic fs/erofs/decompressor.c:291 [inline]
- z_erofs_decompress+0x57e/0xe10 fs/erofs/decompressor.c:344
- z_erofs_decompress_pcluster+0x13d1/0x2310 fs/erofs/zdata.c:880
- z_erofs_decompress_queue fs/erofs/zdata.c:958 [inline]
- z_erofs_decompressqueue_work+0xde/0x140 fs/erofs/zdata.c:969
- process_one_work+0x780/0xfc0 kernel/workqueue.c:2269
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-The buggy address belongs to the page:
-page:00000000a79b76f1 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x17851
-flags: 0xfff00000000000()
-raw: 00fff00000000000 ffffea000081b9c8 ffffea00006ac6c8 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+On 6/24/21 1:24 PM, Matthias Kaehlcke wrote:
+> On Thu, Jun 24, 2021 at 07:58:10AM -0400, Thara Gopinath wrote:
+>> Driver enabling various pieces of Limits Management Hardware(LMh) for cpu
+>> cluster0 and cpu cluster1 namely kick starting monitoring of temperature,
+>> current, battery current violations, enabling reliability algorithm and
+>> setting up various temperature limits.
+>>
+>> The following has been explained in the cover letter. I am including this
+>> here so that this remains in the commit message as well.
+>>
+>> LMh is a hardware infrastructure on some Qualcomm SoCs that can enforce
+>> temperature and current limits as programmed by software for certain IPs
+>> like CPU. On many newer LMh is configured by firmware/TZ and no programming
+>> is needed from the kernel side. But on certain SoCs like sdm845 the
+>> firmware does not do a complete programming of the h/w. On such soc's
+>> kernel software has to explicitly set up the temperature limits and turn on
+>> various monitoring and enforcing algorithms on the hardware.
+>>
+>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>> ---
+>>
+>> v1->v2:
+>> 	- Cosmetic and spelling fixes from review comments from Randy Dunlap
+>> 	- Added irq_disable to lmh_irq_ops and removed disabling of irq from
+>> 	  lmh_handle_irq. Now cpufreq explicitly disables irq prior to
+>> 	  handling it as per Bjorn's suggestion.
+>> 	- Rebased to new version of qcom_scm_lmh_dcvsh as changed in patch 1.
+>> 	- Removed generic dt compatible string and introduced platform specific one
+>> 	  as per Bjorn's suggestion.
+>> 	- Take arm, low and high temp thresholds for LMh from dt properties instead of
+>> 	  #defines in the driver as per Daniel's suggestion.
+>> 	- Other minor fixes.
+>>
+>>   drivers/thermal/qcom/Kconfig  |  10 ++
+>>   drivers/thermal/qcom/Makefile |   1 +
+>>   drivers/thermal/qcom/lmh.c    | 251 ++++++++++++++++++++++++++++++++++
+>>   3 files changed, 262 insertions(+)
+>>   create mode 100644 drivers/thermal/qcom/lmh.c
+>>
+>> diff --git a/drivers/thermal/qcom/Kconfig b/drivers/thermal/qcom/Kconfig
+>> index 8d5ac2df26dc..7d942f71e532 100644
+>> --- a/drivers/thermal/qcom/Kconfig
+>> +++ b/drivers/thermal/qcom/Kconfig
+>> @@ -31,3 +31,13 @@ config QCOM_SPMI_TEMP_ALARM
+>>   	  trip points. The temperature reported by the thermal sensor reflects the
+>>   	  real time die temperature if an ADC is present or an estimate of the
+>>   	  temperature based upon the over temperature stage value.
+>> +
+>> +config QCOM_LMH
+>> +	tristate "Qualcomm Limits Management Hardware"
+>> +	depends on ARCH_QCOM
+>> +	help
+>> +	  This enables initialization of Qualcomm limits management
+>> +	  hardware(LMh). LMh allows for hardware-enforced mitigation for cpus based on
+>> +	  input from temperature and current sensors.  On many newer Qualcomm SoCs
+>> +	  LMh is configured in the firmware and this feature need not be enabled.
+>> +	  However, on certain SoCs like sdm845 LMh has to be configured from kernel.
+>> diff --git a/drivers/thermal/qcom/Makefile b/drivers/thermal/qcom/Makefile
+>> index 252ea7d9da0b..0fa2512042e7 100644
+>> --- a/drivers/thermal/qcom/Makefile
+>> +++ b/drivers/thermal/qcom/Makefile
+>> @@ -5,3 +5,4 @@ qcom_tsens-y			+= tsens.o tsens-v2.o tsens-v1.o tsens-v0_1.o \
+>>   				   tsens-8960.o
+>>   obj-$(CONFIG_QCOM_SPMI_ADC_TM5)	+= qcom-spmi-adc-tm5.o
+>>   obj-$(CONFIG_QCOM_SPMI_TEMP_ALARM)	+= qcom-spmi-temp-alarm.o
+>> +obj-$(CONFIG_QCOM_LMH)		+= lmh.o
+>> diff --git a/drivers/thermal/qcom/lmh.c b/drivers/thermal/qcom/lmh.c
+>> new file mode 100644
+>> index 000000000000..a14cad83b459
+>> --- /dev/null
+>> +++ b/drivers/thermal/qcom/lmh.c
+>> @@ -0,0 +1,251 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +
+>> +/*
+>> + * Copyright (C) 2021, Linaro Limited. All rights reserved.
+>> + */
+>> +#include <linux/module.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/irqdomain.h>
+>> +#include <linux/err.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/qcom_scm.h>
+>> +
+>> +#define LMH_NODE_DCVS			0x44435653
+>> +#define LMH_CLUSTER0_NODE_ID		0x6370302D
+>> +#define LMH_CLUSTER1_NODE_ID		0x6370312D
+>> +
+>> +#define LMH_SUB_FN_THERMAL		0x54484D4C
+>> +#define LMH_SUB_FN_CRNT			0x43524E54
+>> +#define LMH_SUB_FN_REL			0x52454C00
+>> +#define LMH_SUB_FN_BCL			0x42434C00
+>> +
+>> +#define LMH_ALGO_MODE_ENABLE		0x454E424C
+>> +#define LMH_TH_HI_THRESHOLD		0x48494748
+>> +#define LMH_TH_LOW_THRESHOLD		0x4C4F5700
+>> +#define LMH_TH_ARM_THRESHOLD		0x41524D00
+>> +
+>> +#define LMH_REG_DCVS_INTR_CLR		0x8
+>> +
+>> +struct lmh_hw_data {
+>> +	void __iomem *base;
+>> +	struct irq_domain *domain;
+>> +	int irq;
+>> +	u32 cpu_id;
+>> +};
+>> +
+>> +static irqreturn_t lmh_handle_irq(int hw_irq, void *data)
+>> +{
+>> +	struct lmh_hw_data *lmh_data = data;
+>> +	int irq = irq_find_mapping(lmh_data->domain, 0);
+>> +
+>> +	/*
+>> +	 * Call the cpufreq driver to handle the interrupt.
+>> +	 */
+> 
+> no need for a multiline comment
 
-Memory state around the buggy address:
- ffff888017850f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888017850f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888017851000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff888017851080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888017851100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-erofs: (device loop0): z_erofs_lz4_decompress: failed to decompress -4099 in[4096, 0] out[9000]
+ok..
 
-Off-by-one error causes the above issue. In LZ4_decompress_generic(),
-`iend = src + srcSize`. It means the valid address range should be
-[src, iend - 1]. Therefore, when checking whether the reading is
-out-of-bounds, it should be  `>= iend` rather than `> iend`.
+> 
+>> +	if (irq)
+>> +		generic_handle_irq(irq);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void lmh_enable_interrupt(struct irq_data *d)
+>> +{
+>> +	struct lmh_hw_data *lmh_data = irq_data_get_irq_chip_data(d);
+>> +
+>> +	/* Clear the existing interrupt */
+>> +	writel(0xff, lmh_data->base + LMH_REG_DCVS_INTR_CLR);
+>> +	enable_irq(lmh_data->irq);
+>> +}
+>> +
+>> +static void lmh_disable_interrupt(struct irq_data *d)
+>> +{
+>> +	struct lmh_hw_data *lmh_data = irq_data_get_irq_chip_data(d);
+>> +
+>> +	disable_irq_nosync(lmh_data->irq);
+>> +}
+>> +
+>> +static struct irq_chip lmh_irq_chip = {
+>> +	.name           = "lmh",
+>> +	.irq_enable	= lmh_enable_interrupt,
+>> +	.irq_disable	= lmh_disable_interrupt
+>> +};
+>> +
+>> +static int lmh_irq_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
+>> +{
+>> +	struct lmh_hw_data *lmh_data = d->host_data;
+>> +
+>> +	irq_set_chip_and_handler(irq, &lmh_irq_chip, handle_simple_irq);
+>> +	irq_set_chip_data(irq, lmh_data);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct irq_domain_ops lmh_irq_ops = {
+>> +	.map = lmh_irq_map,
+>> +	.xlate = irq_domain_xlate_onecell,
+>> +};
+>> +
+>> +static int lmh_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev;
+>> +	struct device_node *np;
+>> +	struct lmh_hw_data *lmh_data;
+>> +	u32 node_id;
+>> +	int temp_low, temp_high, temp_arm, ret;
+>> +
+>> +	dev = &pdev->dev;
+>> +	np = dev->of_node;
+>> +	if (!np)
+>> +		return -EINVAL;
+>> +
+>> +	lmh_data = devm_kzalloc(dev, sizeof(*lmh_data), GFP_KERNEL);
+>> +	if (!lmh_data)
+>> +		return -ENOMEM;
+>> +
+>> +	lmh_data->base = devm_platform_ioremap_resource(pdev, 0);
+>> +	if (IS_ERR(lmh_data->base))
+>> +		return PTR_ERR(lmh_data->base);
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,lmh-cpu-id", &lmh_data->cpu_id);
+> 
+> binding missing?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
----
- lib/lz4/lz4_decompress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ya. I am waiting for feeback on the bindings before documenting them. I 
+was not exactly sure how this driver will look like after reviews. But 
+once it is more or less reviewed, I will add the patch documenting the 
+bindings. Same for all the below bindings.
 
-diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
-index 926f4823d5ea..ec51837cd31f 100644
---- a/lib/lz4/lz4_decompress.c
-+++ b/lib/lz4/lz4_decompress.c
-@@ -234,7 +234,7 @@ static FORCE_INLINE int LZ4_decompress_generic(
- 					length = oend - op;
- 				}
- 				if ((endOnInput)
--					&& (ip + length > iend)) {
-+					&& (ip + length >= iend)) {
- 					/*
- 					 * Error :
- 					 * read attempt beyond
+> 
+>> +	if (ret) {
+>> +		dev_err(dev, "missing qcom,lmh-cpu-id property\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,lmh-temperature-high", &temp_high);
+>> +	if (ret) {
+> 
+> ditto
+> 
+>> +		dev_err(dev, "missing qcom,lmh-temperature-high property\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,lmh-temperature-low", &temp_low);
+>> +	if (ret) {
+> 
+> ditto
+> 
+>> +		dev_err(dev, "missing qcom,lmh-temperature-low property\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = of_property_read_u32(np, "qcom,lmh-temperature-arm", &temp_arm);
+>> +	if (ret) {
+> 
+> ditto
+> 
+>> +		dev_err(dev, "missing qcom,lmh-temperature-arm property\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Only sdm845 has lmh hardware currently enabled from hlos. If this is needed
+>> +	 * for other platforms, revisit this to check if the <cpu-id, node-id> should be part
+>> +	 * of a dt match table.
+>> +	 */
+>> +	if (lmh_data->cpu_id == 0) {
+>> +		node_id = LMH_CLUSTER0_NODE_ID;
+>> +	} else if (lmh_data->cpu_id == 4) {
+>> +		node_id = LMH_CLUSTER1_NODE_ID;
+>> +	} else {
+>> +		dev_err(dev, "Wrong CPU id associated with LMh node\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	platform_set_drvdata(pdev, lmh_data);
+>> +
+>> +	if (!qcom_scm_lmh_dcvsh_available())
+>> +		return -EINVAL;
+>> +
+>> +	/* Enable Thermal Algorithm */
+> 
+> nit: thermal algorithm
+
+sure.
+
+> 
+> Same for other comments below.
+> 
+> Actually I think you can delete the comments, the error log a few lines below
+> provides the same information.
+> 
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_ALGO_MODE_ENABLE, 1,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+>> +		dev_err(dev, "Error %d enabling thermal subfunction\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Enable Current Sensing Algorithm */
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_CRNT, LMH_ALGO_MODE_ENABLE, 1,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+>> +		dev_err(dev, "Error %d enabling current subfunction\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Enable Reliability Algorithm */
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_REL, LMH_ALGO_MODE_ENABLE, 1,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+> 
+> disable thermal subfunction??
+
+So, my main reference to this h/w is downstream code which does no 
+disabling of any sorts.. I do have some documentation but not complete. 
+My understanding is that each of these pieces(current, reliability etc) 
+are separate entities that provide an input to LMh h/w in deciding 
+whether to throttle and how much to throttle. Now that you brought this 
+up, I am thinking maybe I should remove returning on error all-together.
+Instead allow for separate pieces to be enabled even if one piece 
+returns an error. I will have to move thermal all the way to the bottom 
+because there is no point is setting the trips if thermal algorithm is 
+not enabled. If this does not work, I will keep this as is because I see 
+no disable code for this downstream.
+
+> 
+>> +		dev_err(dev, "Error %d enabling reliability subfunction\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Enable BCL Algorithm */
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_BCL, LMH_ALGO_MODE_ENABLE, 1,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+> 
+> disable previously enabled stuff?
+> 
+>> +		dev_err(dev, "Error %d enabling BCL subfunction\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = qcom_scm_lmh_profile_change(0x1);
+> 
+> Does profile 1 represent something specific, i.e. should this be a constant?
+> If not, why a hex instead of a decimal value?
+
+Again zero documentation and just the downstream code for reference. So 
+it is hex in the downstream code. I am going to make this a constant.
+
+> 
+>> +	if (ret) {
+> 
+> disable previously enabled stuff?
+> 
+>> +		dev_err(dev, "Error %d changing profile\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Set default thermal trips */
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_ARM_THRESHOLD, temp_arm,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+> 
+> undo stuff?
+> 
+>> +		dev_err(dev, "Error setting thermal ARM threshold%d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_HI_THRESHOLD, temp_high,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+> 
+> undo stuff?
+> 
+>> +		dev_err(dev, "Error setting thermal HI threshold%d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_LOW_THRESHOLD, temp_low,
+>> +				 LMH_NODE_DCVS, node_id, 0);
+>> +	if (ret) {
+> 
+> undo stuff?
+> 
+>> +		dev_err(dev, "Error setting thermal ARM threshold%d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	lmh_data->irq = platform_get_irq(pdev, 0);
+>> +	lmh_data->domain = irq_domain_add_linear(np, 1, &lmh_irq_ops, lmh_data);
+>> +	if (!lmh_data->domain) {
+> 
+> undo stuff?
+
+Even without irq support, lest of LMh can function. So there is no undo 
+needed here.
+
 -- 
-2.18.0.huawei.25
+Warm Regards
+Thara (She/Her/Hers)
+
+> 
+>> +		dev_err(dev, "Error adding irq_domain\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = devm_request_irq(dev, lmh_data->irq, lmh_handle_irq,
+>> +			       IRQF_TRIGGER_HIGH | IRQF_ONESHOT | IRQF_NO_SUSPEND,
+>> +			       "lmh-irq", lmh_data);
+>> +	if (ret) {
+> 
+> undo stuff?
+> 
+>> +		dev_err(dev, "Error %d registering irq %x\n", ret, lmh_data->irq);
+>> +		irq_domain_remove(lmh_data->domain);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Disable the irq and let cpufreq enable it when ready to handle the interrupt */
+>> +	disable_irq(lmh_data->irq);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id lmh_table[] = {
+>> +	{ .compatible = "qcom,sdm845-lmh", },
+>> +	{}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, lmh_table);
+>> +
+>> +static struct platform_driver lmh_driver = {
+>> +	.probe = lmh_probe,
+>> +	.driver = {
+>> +		.name = "qcom-lmh",
+>> +		.of_match_table = lmh_table,
+>> +	},
+>> +};
+>> +module_platform_driver(lmh_driver);
+>> +
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_DESCRIPTION("QCOM LMh driver");
+>> -- 
+>> 2.25.1
+>>
 
