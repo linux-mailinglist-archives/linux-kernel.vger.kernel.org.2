@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2B73B8437
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2653B843C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhF3Nxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:32 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33014 "EHLO
+        id S236476AbhF3Nxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33022 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235548AbhF3Nud (ORCPT
+        with ESMTP id S235396AbhF3Nue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:33 -0400
-Date:   Wed, 30 Jun 2021 13:47:53 -0000
+        Wed, 30 Jun 2021 09:50:34 -0400
+Date:   Wed, 30 Jun 2021 13:47:54 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060874;
+        s=2020; t=1625060875;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JGegXUPtGa1Jh8UBfprANxcZAQlbR/N5lpNifDBISzc=;
-        b=rcyVwcSEFhYt0T6zuOp0ZKgKfUQF7SHk5ar0DTfpU/MnRtd/ITcBmGDm4ZvchtIkwIoDDZ
-        CAoaaaqOPHWTexAqdd9B2LBJE3r3hJSKoRR1ibUqetrYj6DmKho/lHZq2EMIW18fnft3V8
-        EaHVuES0Uz2wMrhGKyQE1EXh742muo5GtRJtT9AFTPBqJVWkqlusZUXoDtWZ2S2uI65znb
-        wGA+nW6lU3md8u9khlHxzIiFzG7w5x1DfIej3BjBRTZbWBWa56s+dGrgzAgOzTOhpaheb7
-        qegKPch68GjiXRCXIpO0epNzt38pxOMPPbD43869848Bvt1zxAbE2SREPR2iGA==
+        bh=WJ2rbnrZWdwUsjLKBgZHktold59pyaDd2hrLcmZrpD4=;
+        b=J6HnDHIN9On1lIRIeKGKTg6McYP0p9YjnDerzPxLwxW9nJmQMGjT5epr0KiLz0Bytusmnr
+        nxBG/tcvHuWon+XJYi3yFM+WiTO+5HgbeU293J76J4BFtmjczuIDUhleGzCg7ytg3agxFf
+        7cqkiUeOSEuWAER0ZuBjdqhC4VPpXjys73UTkKsbvuVcLv+7om4S8gWs0s0SlkN0azg60A
+        QYfmt0lqZysESI8QPpdQqyJ2Bz0qs7nwUyksJ9iii2i9Y3iGwqim+Xd7aGGp63g4KNoAsy
+        f69yRB3aI1970njyXSRp3LGXDE2NEb2pJjaQd/+vITRx65wAV4JzWIozUz1+sQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060874;
+        s=2020e; t=1625060875;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JGegXUPtGa1Jh8UBfprANxcZAQlbR/N5lpNifDBISzc=;
-        b=atCMj7kjHa5+UPyiSaL1cmmMULqY4Mqynxni32VPb2tCjPPBR2Hs2emJGcVPN1IyYdfH7u
-        eXsFOfei02wgz4Bw==
+        bh=WJ2rbnrZWdwUsjLKBgZHktold59pyaDd2hrLcmZrpD4=;
+        b=aFV+RwC584VAJTNUaGcmNYgcIUHqa0nQZU6wot9d4DqxDaiUTlUQ0CZWZG4XGWyWKYIZ9x
+        MOQjwbv5Ej1jeoAA==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] srcu: Unconditionally embed struct lockdep_map
+Subject: [tip: core/rcu] srcu: Remove superfluous sdp->srcu_lock_count zero filling
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162506087330.395.6265963103755920622.tip-bot2@tip-bot2>
+Message-ID: <162506087428.395.11085466467426386302.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,42 +58,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     7bf0a6141ab9c1d113bd85d6d13d43903a4278ba
-Gitweb:        https://git.kernel.org/tip/7bf0a6141ab9c1d113bd85d6d13d43903a4278ba
+Commit-ID:     94df76a1971d9c61eb2c67ae10cc294b68cbd03b
+Gitweb:        https://git.kernel.org/tip/94df76a1971d9c61eb2c67ae10cc294b68cbd03b
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Fri, 09 Apr 2021 00:38:58 +02:00
+AuthorDate:    Fri, 02 Apr 2021 01:47:03 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:03:35 -07:00
+CommitterDate: Mon, 10 May 2021 16:03:34 -07:00
 
-srcu: Unconditionally embed struct lockdep_map
+srcu: Remove superfluous sdp->srcu_lock_count zero filling
 
-Since struct lockdep_map has zero size when CONFIG_DEBUG_LOCK_ALLOC=n,
-this commit removes the #ifdef from the srcu_struct structure's ->dep_map.
-This change will simplify further manipulations of this field.
+Because alloc_percpu() zeroes out the allocated memory, there is no need
+to zero-fill newly allocated per-CPU memory.  This commit therefore removes
+the loop zeroing the ->srcu_lock_count and ->srcu_unlock_count arrays
+from init_srcu_struct_nodes().  This is the only use of that function's
+is_static parameter, which this commit also removes.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutree.h | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/rcu/srcutree.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 9cfcc8a..cb1f435 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -82,9 +82,7 @@ struct srcu_struct {
- 						/*  callback for the barrier */
- 						/*  operation. */
- 	struct delayed_work work;
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	struct lockdep_map dep_map;
--#endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- };
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index e26547b..3414aff 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -80,7 +80,7 @@ do {									\
+  * srcu_read_unlock() running against them.  So if the is_static parameter
+  * is set, don't initialize ->srcu_lock_count[] and ->srcu_unlock_count[].
+  */
+-static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
++static void init_srcu_struct_nodes(struct srcu_struct *ssp)
+ {
+ 	int cpu;
+ 	int i;
+@@ -148,14 +148,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+ 		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+ 		sdp->ssp = ssp;
+ 		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+-		if (is_static)
+-			continue;
+-
+-		/* Dynamically allocated, better be no srcu_read_locks()! */
+-		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
+-			sdp->srcu_lock_count[i] = 0;
+-			sdp->srcu_unlock_count[i] = 0;
+-		}
+ 	}
+ }
  
- /* Values for state variable (bottom bits of ->srcu_gp_seq). */
+@@ -179,7 +171,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
+ 	if (!ssp->sda)
+ 		return -ENOMEM;
+-	init_srcu_struct_nodes(ssp, is_static);
++	init_srcu_struct_nodes(ssp);
+ 	ssp->srcu_gp_seq_needed_exp = 0;
+ 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+ 	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
