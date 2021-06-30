@@ -2,350 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896783B8771
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8197F3B8776
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhF3RNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhF3RNh (ORCPT
+        id S232323AbhF3RPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:15:16 -0400
+Received: from smtprelay0245.hostedemail.com ([216.40.44.245]:55118 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229814AbhF3RPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:13:37 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D539C0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:11:08 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so3412962otq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9/s9IvEBPNA9pXahfJJfU+n+iGTEfqQ+G3GN/FNfWwM=;
-        b=jg0vUelpavcgL1JmD05kfp7WbHop4aDv5uC9w+ad87FMBdzg8+MAW8na+gekTXLMsK
-         rDdz/U4HV/DUr6k+8NjJA/F/493Ka+6DItf9mxx5dbe+20TPeMl51GJnjVsDuTc07Far
-         UMAbNgrA9PaO9i/WH7XEfPtwjgqS0NOaaDvfYgLpDSy1nsHruMaR71+5fHq/HvqtYNrP
-         wvHiaZPuvUbiymFzInoHcSW5fOlZS53c9dMbR8e5LbsnXdX28iX+VWEc0c6K4FHMwSbv
-         gfHtcEVfPZB4KUMCcuh3aSozOyFwQlxyWGF+1p8sX1jStDLwcAtGUVETiZvK+HAY8Zzp
-         PHGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9/s9IvEBPNA9pXahfJJfU+n+iGTEfqQ+G3GN/FNfWwM=;
-        b=RI4yrV0oVOLjKS5ehCIjLgiUQJT0ffi5AoZThJ2SK0zRyP9KFhpoy4pqi7Y8VrlsRW
-         aM6+JpKVf4j0ub9Yy37pYSONHqADDdlFa0Crbk7K1AZsT4NC+UMefBWqIwOu87JepFM3
-         UJnxPa4QGehnF4OXcxrYkZaQAW5D8z2pMPKc9lVaq548uk05fi+Jmk2Vdlkeslv3kuwa
-         CoJT3cmo1h1SMk8vehk6P+X41GmwV/d/ZWlOvQ5jtwSqLTrZaQ5oDve3ajRjCz3gp+Ql
-         jNUFZ9FL+1+8STHWGdDi4QNVMA0vONuuLjhfqdZ13lpwodaWDXk5XywJkRV7zR9Rm9pJ
-         Sn7g==
-X-Gm-Message-State: AOAM5333u+namcesuZcmOyHCdWEekUDZ3ZJp8KVmx36CoYls0iknI8h5
-        Etl4pOnA4VjPeyGgzvHZQHuwxA==
-X-Google-Smtp-Source: ABdhPJzeWO8BkGJl2ov3UJNT5HiOUpwbuncH3s3Bc+2nrQmVYxyQaFGZ4o+e2ng9eEWhO5SICKfrGg==
-X-Received: by 2002:a9d:6287:: with SMTP id x7mr9836718otk.339.1625073067903;
-        Wed, 30 Jun 2021 10:11:07 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z2sm2492753otm.2.2021.06.30.10.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 10:11:07 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 12:11:04 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
-Message-ID: <YNylqGEi7Q3tFCgy@yoga>
-References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
- <20210630133149.3204290-4-dmitry.baryshkov@linaro.org>
- <YNyHDAHk6ad/XCGl@yoga>
- <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+        Wed, 30 Jun 2021 13:15:15 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BD58C183B04AF;
+        Wed, 30 Jun 2021 17:12:45 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 23072C417C;
+        Wed, 30 Jun 2021 17:12:45 +0000 (UTC)
+Message-ID: <3010b4d82ea746e5d0557837ceb16429cd7118ac.camel@perches.com>
+Subject: Re: [PATCH 1/3] checkpatch: skip spacing tests on linker scripts
+From:   Joe Perches <joe@perches.com>
+To:     jim.cromie@gmail.com
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Jun 2021 10:12:42 -0700
+In-Reply-To: <CAJfuBxzBuGv95bOF1Pt-5KC+ToH5JXWHySG+72cViGbYXuBR=g@mail.gmail.com>
+References: <20210626034016.170306-1-jim.cromie@gmail.com>
+         <20210626034016.170306-2-jim.cromie@gmail.com>
+         <075e07c40b99f93123051ef8833612bc88a55120.camel@perches.com>
+         <CAJfuBxxzBevMJYSWq5feO20S4h_T-+EZoifOTYJ1NB4B+J1hqQ@mail.gmail.com>
+         <CAJfuBxywc=oc00F7b=dJU9y_vgrncCUYzvLNgM5VaMsuOiDAyg@mail.gmail.com>
+         <5d28704b131e375347f266b10fc54891ba2a4fc4.camel@perches.com>
+         <CAJfuBxyQ8OX8+A64SQPG4pXYKBDhyab7_-Dcc_C2_t-4oG9xng@mail.gmail.com>
+         <cabb80f84ee0c11aaa548e8ebc87da72883c5a21.camel@perches.com>
+         <CAJfuBxzBuGv95bOF1Pt-5KC+ToH5JXWHySG+72cViGbYXuBR=g@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.90
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 23072C417C
+X-Stat-Signature: z6bhy5w4fwfx784b6tap5ejjo1qrf36g
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/HgoMFBpuDoMhVqKYsnTUvBmDB0y3k7pQ=
+X-HE-Tag: 1625073165-226559
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30 Jun 10:47 CDT 2021, Dmitry Baryshkov wrote:
-
-> Hi,
+On Wed, 2021-06-30 at 10:38 -0600, jim.cromie@gmail.com wrote:
+> On Tue, Jun 29, 2021 at 2:01 PM Joe Perches <joe@perches.com> wrote:
+> > 
+> > On Tue, 2021-06-29 at 13:50 -0600, jim.cromie@gmail.com wrote:
+> > > this does 3 different things
+> > > 
+> > > - non-capturing matches  -  these add no functionality,
+> > 
+> > true, it's nominally a bit faster through.
+> > 
+> > > - moves the skip-remaining-tests check after SPDX
+> > >    that feels like a legal Q: should it be on all files ?
+> > >    moving it does seem proper though.
+> > 
+> > to me too.
+> > 
+> > > - adds the skip linker-script
+> > >   since i went ahead and added it 3 times to see errs/warns
+> > >   I didnt consider your precise placement,
+> > >   how does it do with 18/8 errs/warnings on ref-test ?
+> > 
+> > $ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --strict --terse
 > 
-> On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
-> >
-> > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> > > domain. Currently we used a regulator to enable this domain on demand,
-> > > however this has some consequences, as genpd code is not reentrant.
-> > >
-> > > Teach Qualcomm clock controller code about setting up power domains and
-> > > using them for gdsc control.
-> > >
-> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-> > There's a proposal to add a generic binding for statically assigning a
-> > performance states here:
-> >
-> > https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
-> >
-> >
-> > But that said, do you really need this?
-> >
-> > The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
-> > SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
-> > to 460MHz in &mdss.
-> >
-> > But then in &mdss_mdp you do the same using an opp-table based on the
-> > actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
-> 
-> MDSS and DSI would bump up MMCX performance state requirements on
-> their own, depending on the frequency being selected.
-> 
+> cool options.
+> <Aside>
+> some oddities are hidden there;
+> Im seeing the err/warn counts change along with use of those options.
+> not a big deal, but it is mildly surprising
+> forex:
+> $ scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse
+> ...
+> total: 18 errors, 7 warnings, 1164 lines checked
+> $ scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse --strict
+> ...
+> total: 9 errors, 7 warnings, 95 checks, 1164 lines checked
 
-Right, but as I copied things from the sm8250.dtsi to come up with
-sm8150/sc8180x.dtsi I concluded that as soon as the assigned-clockrate
-in &mdss kicks in I need the performance state to be at NOM.
 
-So keeping the assigned-clockrate in &mdss means that MMCX will never go
-below NOM.
+The difference is a --strict test 'if ($check)' that precedes and
+in effect 'overrides' the ERROR output for that output around line 5120.
 
-> > So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
-> > MMCX and then use opp-tables associated with the devices that scales the
-> > clock and thereby actually carries the "required-opps".
+$ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse
+[]
+include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: ERROR: need consistent spacing around '*' (ctx:VxW)
+
+vs:
+
+$ ./scripts/checkpatch.pl -f include/asm-generic/vmlinux.lds.h --terse --strict
+[]
+include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
+include/asm-generic/vmlinux.lds.h:101: CHECK: spaces preferred around that '*' (ctx:VxW)
+
+> just to note, this is about a generalization of
 > 
-> Actually no. I set the performance state in the qcom_cc_map, so that
-> further register access is possible. Initially I was doing this in the
-> qcom_cc_really_probe() and it was already too late.
-> Just to remind: this patchset is not about MDSS_GDSC being parented by
-> MMCX, it is about dispcc/videocc registers being gated with MMCX.
+> commit 263afd39c06f5939ef943e0d535380d4b8e56484
+> Author: Chris Down <chris@chrisdown.name>
+> Date:   Thu Feb 25 17:22:04 2021 -0800
 > 
+>     checkpatch: don't warn about colon termination in linker scripts
 
-So you're saying that just enabling MMCX isn't enough to touch the
-dispcc/videocc registers? If that's the case it seems like MMCX's
-definition of "on" needs to be adjusted - because just specifying MMCX
-as the power-domain for dispcc/videocc and enabling pm_runtime should
-ensure that MMCX is enabled when the clock registers are accessed (I
-don't see anything like that for the GDSC part though).
+Which means the additional test in that commit should be removed too.
 
-I thought our problem you had was that you need to set a
-performance_state in order to clock up some of the clocks - e.g.
-MDP_CLK.
+Maybe:
+---
+ scripts/checkpatch.pl | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-> > I presume your testing indicates that it doesn't matter on sm8250, but
-> > as stated above, 460MHz on sm8150/sc8180x requires nominal, so per your
-> > suggestion we'd have to vote nominal in &mdss, which means that if the
-> > DPU decides to go to 200MHz the &mdss will still keep the voltage at
-> > NOM, even though the DPU's opp-table says that LOW_SVS is sufficient.
-> 
-> Let me check whether LOW_SVS is really a requirement or if setting
-> MIN_SVS would also be sufficient for that. Interesting enough, from
-> the downstream drivers it looks like dispcc should be able to work
-> with MIN_SVS, while videocc would require LOW_SVS.
-> 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 461d4221e4a4a..f4f5826054214 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3617,9 +3617,6 @@ sub process {
+ 			     "It's generally not useful to have the filename in the file\n" . $herecurr);
+ 		}
+ 
+-# check we are in a valid source file if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c|s|S|sh|dtsi|dts)$/);
+-
+ # check for using SPDX-License-Identifier on the wrong line number
+ 		if ($realline != $checklicenseline &&
+ 		    $rawline =~ /\bSPDX-License-Identifier:/ &&
+@@ -3628,6 +3625,9 @@ sub process {
+ 			     "Misplaced SPDX-License-Identifier tag - use line $checklicenseline instead\n" . $herecurr);
+ 		}
+ 
++# check we are in a valid source file if not then ignore this hunk
++		next if ($realfile !~ /\.(?:h|c|s|S|sh|dtsi|dts)$/);
++
+ # line length limit (with some exclusions)
+ #
+ # There are a few types of lines that may extend beyond $max_line_length:
+@@ -3708,8 +3708,8 @@ sub process {
+ 			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
+ 		}
+ 
+-# check we are in a valid source file C or perl if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
++# check we are in a valid source C or .dts? file, if not then ignore this hunk
++		next if ($realfile !~ /\.(?:h|c|dtsi|dts)$/);
+ 
+ # at the beginning of a line any tabs must come first and anything
+ # more than $tabsize must use tabs.
+@@ -3737,6 +3737,9 @@ sub process {
+ 			}
+ 		}
+ 
++# skip all following test for linker files.
++		next if ($realfile =~ /\.lds\.h$/);
++
+ # check for assignments on the start of a line
+ 		if ($sline =~ /^\+\s+($Assignment)[^=]/) {
+ 			my $operator = $1;
+@@ -3970,7 +3973,7 @@ sub process {
+ 		}
+ 
+ # check we are in a valid C source file if not then ignore this hunk
+-		next if ($realfile !~ /\.(h|c)$/);
++		next if ($realfile !~ /\.(?:h|c)$/);
+ 
+ # check for unusual line ending [ or (
+ 		if ($line =~ /^\+.*([\[\(])\s*$/) {
+@@ -5147,7 +5150,7 @@ sub process {
+ 				# A colon needs no spaces before when it is
+ 				# terminating a case value or a label.
+ 				} elsif ($opv eq ':C' || $opv eq ':L') {
+-					if ($ctx =~ /Wx./ and $realfile !~ m@.*\.lds\.h$@) {
++					if ($ctx =~ /Wx./) {
+ 						if (ERROR("SPACING",
+ 							  "space prohibited before that '$op' $at\n" . $hereptr)) {
+ 							$good = rtrim($fix_elements[$n]) . trim($fix_elements[$n + 1]);
 
-LOW_SVS is the documented requirement for ticking MDP_CLK at 460MHz on
-SM8250. But I would expect we don't need LOW_SVS in order to poke the
-registers in dispcc/videocc.
 
-Regards,
-Bjorn
-
-> >
-> > Regards,
-> > Bjorn
-> >
-> > > ---
-> > >  drivers/clk/qcom/common.c | 55 ++++++++++++++++++++++++++++++++++-----
-> > >  drivers/clk/qcom/gdsc.c   |  6 +++++
-> > >  2 files changed, 55 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
-> > > index 60d2a78d1395..eeb5b8c93032 100644
-> > > --- a/drivers/clk/qcom/common.c
-> > > +++ b/drivers/clk/qcom/common.c
-> > > @@ -10,6 +10,8 @@
-> > >  #include <linux/clk-provider.h>
-> > >  #include <linux/reset-controller.h>
-> > >  #include <linux/of.h>
-> > > +#include <linux/pm_opp.h>
-> > > +#include <linux/pm_runtime.h>
-> > >
-> > >  #include "common.h"
-> > >  #include "clk-rcg.h"
-> > > @@ -76,6 +78,16 @@ qcom_cc_map(struct platform_device *pdev, const struct qcom_cc_desc *desc)
-> > >       struct resource *res;
-> > >       struct device *dev = &pdev->dev;
-> > >
-> > > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
-> > > +             int pd_opp;
-> > > +
-> > > +             pd_opp = of_get_required_opp_performance_state(dev->of_node, 0);
-> > > +             if (pd_opp < 0)
-> > > +                     return ERR_PTR(pd_opp);
-> > > +
-> > > +             dev_pm_genpd_set_performance_state(dev, pd_opp);
-> > > +     }
-> > > +
-> > >       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > >       base = devm_ioremap_resource(dev, res);
-> > >       if (IS_ERR(base))
-> > > @@ -224,6 +236,11 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
-> > >       return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
-> > >  }
-> > >
-> > > +static void qcom_cc_pm_runtime_disable(void *data)
-> > > +{
-> > > +     pm_runtime_disable(data);
-> > > +}
-> > > +
-> > >  int qcom_cc_really_probe(struct platform_device *pdev,
-> > >                        const struct qcom_cc_desc *desc, struct regmap *regmap)
-> > >  {
-> > > @@ -236,11 +253,28 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> > >       struct clk_regmap **rclks = desc->clks;
-> > >       size_t num_clk_hws = desc->num_clk_hws;
-> > >       struct clk_hw **clk_hws = desc->clk_hws;
-> > > +     bool use_pm = false;
-> > >
-> > >       cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-> > >       if (!cc)
-> > >               return -ENOMEM;
-> > >
-> > > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
-> > > +             use_pm = true;
-> > > +
-> > > +             pm_runtime_enable(dev);
-> > > +             ret = pm_runtime_get_sync(dev);
-> > > +             if (ret < 0) {
-> > > +                     pm_runtime_put(dev);
-> > > +                     pm_runtime_disable(dev);
-> > > +                     return ret;
-> > > +             }
-> > > +
-> > > +             ret = devm_add_action_or_reset(dev, qcom_cc_pm_runtime_disable, dev);
-> > > +             if (ret)
-> > > +                     return ret;
-> > > +     }
-> > > +
-> > >       reset = &cc->reset;
-> > >       reset->rcdev.of_node = dev->of_node;
-> > >       reset->rcdev.ops = &qcom_reset_ops;
-> > > @@ -251,7 +285,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> > >
-> > >       ret = devm_reset_controller_register(dev, &reset->rcdev);
-> > >       if (ret)
-> > > -             return ret;
-> > > +             goto err;
-> > >
-> > >       if (desc->gdscs && desc->num_gdscs) {
-> > >               scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
-> > > @@ -262,11 +296,11 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> > >               scd->num = desc->num_gdscs;
-> > >               ret = gdsc_register(scd, &reset->rcdev, regmap);
-> > >               if (ret)
-> > > -                     return ret;
-> > > +                     goto err;
-> > >               ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
-> > >                                              scd);
-> > >               if (ret)
-> > > -                     return ret;
-> > > +                     goto err;
-> > >       }
-> > >
-> > >       cc->rclks = rclks;
-> > > @@ -277,7 +311,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> > >       for (i = 0; i < num_clk_hws; i++) {
-> > >               ret = devm_clk_hw_register(dev, clk_hws[i]);
-> > >               if (ret)
-> > > -                     return ret;
-> > > +                     goto err;
-> > >       }
-> > >
-> > >       for (i = 0; i < num_clks; i++) {
-> > > @@ -286,14 +320,23 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> > >
-> > >               ret = devm_clk_register_regmap(dev, rclks[i]);
-> > >               if (ret)
-> > > -                     return ret;
-> > > +                     goto err;
-> > >       }
-> > >
-> > >       ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
-> > >       if (ret)
-> > > -             return ret;
-> > > +             goto err;
-> > > +
-> > > +     if (use_pm)
-> > > +             pm_runtime_put(dev);
-> > >
-> > >       return 0;
-> > > +
-> > > +err:
-> > > +     if (use_pm)
-> > > +             pm_runtime_put(dev);
-> > > +
-> > > +     return ret;
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
-> > >
-> > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > > index 51ed640e527b..40c384bda4fc 100644
-> > > --- a/drivers/clk/qcom/gdsc.c
-> > > +++ b/drivers/clk/qcom/gdsc.c
-> > > @@ -11,6 +11,7 @@
-> > >  #include <linux/kernel.h>
-> > >  #include <linux/ktime.h>
-> > >  #include <linux/pm_domain.h>
-> > > +#include <linux/pm_runtime.h>
-> > >  #include <linux/regmap.h>
-> > >  #include <linux/regulator/consumer.h>
-> > >  #include <linux/reset-controller.h>
-> > > @@ -237,6 +238,8 @@ static int gdsc_enable(struct generic_pm_domain *domain)
-> > >       struct gdsc *sc = domain_to_gdsc(domain);
-> > >       int ret;
-> > >
-> > > +     pm_runtime_get_sync(domain->dev.parent);
-> > > +
-> > >       if (sc->pwrsts == PWRSTS_ON)
-> > >               return gdsc_deassert_reset(sc);
-> > >
-> > > @@ -326,6 +329,8 @@ static int gdsc_disable(struct generic_pm_domain *domain)
-> > >       if (sc->flags & CLAMP_IO)
-> > >               gdsc_assert_clamp_io(sc);
-> > >
-> > > +     pm_runtime_put(domain->dev.parent);
-> > > +
-> > >       return 0;
-> > >  }
-> > >
-> > > @@ -427,6 +432,7 @@ int gdsc_register(struct gdsc_desc *desc,
-> > >                       continue;
-> > >               scs[i]->regmap = regmap;
-> > >               scs[i]->rcdev = rcdev;
-> > > +             scs[i]->pd.dev.parent = desc->dev;
-> > >               ret = gdsc_init(scs[i]);
-> > >               if (ret)
-> > >                       return ret;
-> > > --
-> > > 2.30.2
-> > >
-> 
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
