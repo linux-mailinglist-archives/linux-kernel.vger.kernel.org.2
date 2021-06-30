@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022933B7F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00973B7F3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhF3IrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:47:04 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35120 "EHLO mail.skyhub.de"
+        id S233668AbhF3IsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:48:09 -0400
+Received: from comms.puri.sm ([159.203.221.185]:59142 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233108AbhF3IrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:47:04 -0400
-Received: from zn.tnic (p200300ec2f12c3005601b47fb9547aa2.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:5601:b47f:b954:7aa2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 238381EC0521;
-        Wed, 30 Jun 2021 10:44:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1625042674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=mjE5wjKFJgfHACkYVBoQm0MkgIkbvmXkN5Worc2rFtQ=;
-        b=kaw444MEx7UHj7NA4UFs6J2CPVplHWdTDZKwNMRrUuMwRUtnpC7eThdftdq06yeeIMcghG
-        wULRkuMyBHEUosM8PiiYx+UY/E/mGJ75Y2vd0dCobwYQCJRc7YRxoHRWw1xe4u74XKjqoF
-        4fC4wkvGiJRaOotTdB0LJ/Rq8MKMXLI=
-Date:   Wed, 30 Jun 2021 10:44:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     glin@suse.com, =?utf-8?B?SsO2cmcgUsO2ZGVs?= <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-efi@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH] efi/mokvar: Reserve the table only if it is in boot
- services data
-Message-ID: <YNwu7LmZaImyoOer@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        id S233536AbhF3IsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:48:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id D4AFBDF765;
+        Wed, 30 Jun 2021 01:45:07 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0ZoC0VD6kptH; Wed, 30 Jun 2021 01:45:03 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, bvanassche@acm.org
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, kernel@puri.sm,
+        stern@rowland.harvard.edu
+Subject: [PATCH v5 0/3] fix runtime PM for SD card readers
+Date:   Wed, 30 Jun 2021 10:44:50 +0200
+Message-Id: <20210630084453.186764-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+hi,
 
-so below is what we've been staring at recently, please doublecheck me
-whether I'm even making sense here.
+(According to Alan Stern, "as far as I know, all") SD card readers send
+MEDIA_CHANGED unit attention notification on (runtime) resume. We cannot
+use runtime PM with these devices as I/O always fails in that case.
 
-Thx!
+This fixes runtime PM for SD cardreaders. I'd appreciate any feedback.
 
----
-From: Borislav Petkov <bp@suse.de>
+To enable runtime PM for an SD cardreader number 0:0:0:0, do:
+    
+echo 0 > /sys/module/block/parameters/events_dfl_poll_msecs
+echo 1000 > /sys/bus/scsi/devices/0:0:0:0/power/autosuspend_delay_ms
+echo auto > /sys/bus/scsi/devices/0:0:0:0/power/control
 
-One of the SUSE QA tests triggered:
+thank you,
+                           martin
 
-  localhost kernel: efi: Failed to lookup EFI memory descriptor for 0x000000003dcf8000
+revision history
+----------------
+v5: (thank you Bart)
+* simplify the sense request itself and remove unnecessary code
 
-which comes from x86's version of efi_arch_mem_reserve() trying to
-reserve a memory region. Usually, that function expects
-EFI_BOOT_SERVICES_DATA memory descriptors but the above case is for the
-MOKvar table which is allocated in the EFI shim as runtime services.
+v4: (thank you Bart and Alan)
+* send SENSE REQUEST in sd instead of adding a global scsi error flag.
+https://lore.kernel.org/linux-scsi/20210628133412.1172068-1-martin.kepplinger@puri.sm/T/#t
 
-That lead to a fix changing the allocation of that table to boot services.
+v3: (thank you Bart)
+ * create a new BLIST entry to mark affected devices instead of the
+   sysfs module parameter for sd only. still, only sd implements handling
+   the flag for now.
+ * cc linux-pm list
+https://lore.kernel.org/linux-scsi/20210328102531.1114535-1-martin.kepplinger@puri.sm/
 
-However, that fix broke booting SEV guests with that shim leading to
-this kernel fix
+v2:
+https://lore.kernel.org/linux-scsi/20210112093329.3639-1-martin.kepplinger@puri.sm/
+ * move module parameter to sd
+ * add Documentation
+v1:
+https://lore.kernel.org/linux-scsi/20210111152029.28426-1-martin.kepplinger@puri.sm/T/
 
-  8d651ee9c71b ("x86/ioremap: Map EFI-reserved memory as encrypted for SEV")
+For the full background, the discussion started in June 2020 here:
+https://lore.kernel.org/linux-scsi/20200623111018.31954-1-martin.kepplinger@puri.sm/
 
-which extended the ioremap hint to map reserved EFI boot services as
-decrypted too.
 
-However, all that wasn't needed, IMO, because that error message in
-efi_arch_mem_reserve() was innocuous in this case - if the MOKvar table
-is not in boot services, then it doesn't need to be reserved in the
-first place because it is, well, in runtime services which *should* be
-reserved anyway.
+Martin Kepplinger (3):
+  scsi: devinfo: add new flag BLIST_MEDIA_CHANGE
+  scsi: sd: send REQUEST SENSE for BLIST_MEDIA_CHANGE devices in
+    runtime_resume()
+  scsi: devinfo: add BLIST_MEDIA_CHANGE for Ultra HS-SD/MMC usb
+    cardreaders
 
-So do that reservation for the MOKvar table only if it is allocated
-in boot services data. I couldn't find any requirement about where
-that table should be allocated in, unlike the ESRT which allocation is
-mandated to be done in boot services data by the UEFI spec.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- drivers/firmware/efi/mokvar-table.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
-index d8bc01340686..38722d2009e2 100644
---- a/drivers/firmware/efi/mokvar-table.c
-+++ b/drivers/firmware/efi/mokvar-table.c
-@@ -180,7 +180,10 @@ void __init efi_mokvar_table_init(void)
- 		pr_err("EFI MOKvar config table is not valid\n");
- 		return;
- 	}
--	efi_mem_reserve(efi.mokvar_table, map_size_needed);
-+
-+	if (md.type == EFI_BOOT_SERVICES_DATA)
-+		efi_mem_reserve(efi.mokvar_table, map_size_needed);
-+
- 	efi_mokvar_table_size = map_size_needed;
- }
- 
--- 
-2.29.2
-
+ drivers/scsi/scsi_devinfo.c |  1 +
+ drivers/scsi/sd.c           | 26 +++++++++++++++++++++++++-
+ include/scsi/scsi_devinfo.h |  6 +++---
+ 3 files changed, 29 insertions(+), 4 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
