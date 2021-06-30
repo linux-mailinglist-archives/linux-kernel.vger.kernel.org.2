@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428313B7D9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEDC3B7DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbhF3GwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:52:19 -0400
-Received: from regular1.263xmail.com ([211.150.70.206]:38378 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbhF3GwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:52:17 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 259FE1B8E;
-        Wed, 30 Jun 2021 14:49:42 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED2: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 1
-Received: from [168.168.4.18] (unknown [183.57.25.242])
-        by smtp.263.net (postfix) whith ESMTP id P12349T139824115734272S1625035780273543_;
-        Wed, 30 Jun 2021 14:49:41 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <abb208db348bf36d1b7ccc7eb5e4bee0>
-X-RL-SENDER: djw@t-chip.com.cn
-X-SENDER: djw@t-chip.com.cn
-X-LOGIN-NAME: djw@t-chip.com.cn
-X-FST-TO: linux-kernel@vger.kernel.org
-X-RCPT-COUNT: 15
-X-SENDER-IP: 183.57.25.242
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v0 2/2] arm64: dts: rockchip: add support for Firefly
- ROC-RK3399-PC-PLUS
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     Wayne Chou <zxf@t-chip.com.cn>, Kongxin Deng <dkx@t-chip.com.cn>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Marty Jones <mj8263788@gmail.com>,
+        id S232512AbhF3Gxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:53:45 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50560 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232518AbhF3Gxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 02:53:39 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn0BYFNxgj64aAA--.10153S2;
+        Wed, 30 Jun 2021 14:51:04 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210628035402.16812-1-djw@t-chip.com.cn>
- <149c2171-471e-343e-8126-38394746b044@t-chip.com.cn>
- <3771996.aKNjEaI27c@diego> <4501122.2vfOZ694Ok@diego>
-From:   Levin <djw@t-chip.com.cn>
-Message-ID: <eb8acfdf-4bc9-7181-89bb-77995b9d2531@t-chip.com.cn>
-Date:   Wed, 30 Jun 2021 14:49:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: [PATCH v6 1/2] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
+Date:   Wed, 30 Jun 2021 14:51:02 +0800
+Message-Id: <20210630065103.23665-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <4501122.2vfOZ694Ok@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-CM-TRANSID: AQAAf9Dxn0BYFNxgj64aAA--.10153S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3tw4fAw18Zr1DAw48Crg_yoW5WF15pF
+        Z8Kw4fAr4rZa17Kw4fJa4UuFW5Z3Z3tFWUuF12v345Zas8WFWkJ3WDta4YyF9rGr1xJFya
+        qrsYqFW5CF4ruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF1l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5_wIPUUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+Add power management register operations to support reboot and poweroff.
 
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-Thanks for your reply.
+v5-v6:
+Calculate others by base
+---
+ drivers/platform/mips/Kconfig      |  6 ++++
+ drivers/platform/mips/Makefile     |  1 +
+ drivers/platform/mips/ls2k-reset.c | 53 ++++++++++++++++++++++++++++++
+ 3 files changed, 60 insertions(+)
+ create mode 100644 drivers/platform/mips/ls2k-reset.c
 
-
-On 2021-06-29 5:32 PM, Heiko Stübner wrote:
-> Am Dienstag, 29. Juni 2021, 11:30:10 CEST schrieb Heiko Stübner:
->> Hi Levin,
->>
->> Am Dienstag, 29. Juni 2021, 11:15:59 CEST schrieb Levin:
->>> Hi all, is it possible to turn on some codec mixer switch in the device
->>> tree?
->> I don't think that is appropriate and/or/ possible in the devicetree.
->>
->> Instead I think you want an Alsa UCM profile for it, see:
->> https://github.com/alsa-project/alsa-ucm-conf/tree/master/ucm2/Rockchip
->>
-
-Alsa UCM profile is a complete solution, yet it requires more labor work 
-of adding a complex profile with all the controls.
-
-
-The problem is, music/video player knows nothing of the mixers. And with 
-currently codec driver setting, user cannot
-
-hear any sound until he turns on two mixer switch.
-
-
-I hope to have a "simple-audio-card,switch" property here.
-
-
->>>
->>> Currently, to hear to sound, we need to run the following commands from
->>> the user space:
->>>
->>>     # turn on mixer switch
->>>
->>>     amixer -c 1 sset 'Left Mixer' on
->>>     amixer -c 1 sset 'Right Mixer' on
->>>
->>>     # raise volume
->>>
->>>     amixer -c 1 sset 'Output 2' 36
->>>
->>>
->>> If these settings can be embedded into device tree, and set by kernel as
->>> initial ALSA path settings,
->>>
->>> user can hear the sound with zero ALSA config. That'll be great.
->>>
->>>
->>> On 2021-06-28 11:54 AM, djw@t-chip.com.cn wrote:
->>>> +
->>>> +	es8388-sound {
->>>> +		compatible = "simple-audio-card";
->>>> +		pinctrl-names = "default";
->>>> +		pinctrl-0 = <&hp_det_pin>;
->>>> +		simple-audio-card,name = "rockchip,es8388-codec";
-> and I guess you'd want a more specific name as that config likely is board-specific
-> not for all boards using the es8388-codec?
->
->
-> Heiko
->
-
-I got what you mean now. It should be renamed to a board-specific card 
-name if using Alsa UCM profile, right ?
-
+diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+index 8ac149173c64..d421e1482395 100644
+--- a/drivers/platform/mips/Kconfig
++++ b/drivers/platform/mips/Kconfig
+@@ -30,4 +30,10 @@ config RS780E_ACPI
+ 	help
+ 	  Loongson RS780E PCH ACPI Controller driver.
+ 
++config LS2K_RESET
++	bool "Loongson-2K1000 Reset Controller"
++	depends on MACH_LOONGSON64 || COMPILE_TEST
++	help
++	  Loongson-2K1000 Reset Controller driver.
++
+ endif # MIPS_PLATFORM_DEVICES
+diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
+index 178149098777..4c71444e453a 100644
+--- a/drivers/platform/mips/Makefile
++++ b/drivers/platform/mips/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
+ obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
++obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
+diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
+new file mode 100644
+index 000000000000..286d47bf6964
+--- /dev/null
++++ b/drivers/platform/mips/ls2k-reset.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
++ *  Loongson-2K1000 reset support
++ */
++
++#include <linux/of_address.h>
++#include <linux/pm.h>
++#include <asm/reboot.h>
++
++#define	PM1_STS		0x0c /* Power Management1 Status Register */
++#define	PM1_CNT		0x14 /* Power Management 1 Control Register */
++#define	RST_CNT		0x30 /* Reset Control Register */
++
++static void __iomem *base;
++
++static void ls2k_restart(char *command)
++{
++	writel(0x1, (void *)base + RST_CNT);
++}
++
++static void ls2k_poweroff(void)
++{
++	/* Clear */
++	writel((readl((void *)base + PM1_STS) & 0xffffffff), (void *)base + PM1_STS);
++	/* Sleep Enable | Soft Off*/
++	writel(GENMASK(12, 10)|BIT(13), (void *)base + PM1_CNT);
++}
++
++static int ls2k_reset_init(void)
++{
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "loongson,ls2k-pm");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	base = of_iomap(np, 0);
++	if (!base) {
++		pr_info("Failed to map PM register base address\n");
++		return -ENOMEM;
++	}
++
++	_machine_restart = ls2k_restart;
++	pm_power_off = ls2k_poweroff;
++
++	of_node_put(np);
++	return 0;
++}
++
++arch_initcall(ls2k_reset_init);
 -- 
-
-Best Regards!
-
-Levin Du
-
-
+2.31.0
 
