@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB4E3B8A10
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D123B8A21
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhF3VOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 17:14:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4366 "EHLO mga18.intel.com"
+        id S232093AbhF3Vgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 17:36:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235470AbhF3VOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 17:14:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="195720895"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="195720895"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 14:11:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="447630144"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 30 Jun 2021 14:11:39 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.174])
-        by linux.intel.com (Postfix) with ESMTP id EE3C4580279;
-        Wed, 30 Jun 2021 14:11:38 -0700 (PDT)
-Message-ID: <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
-Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 30 Jun 2021 14:11:38 -0700
-In-Reply-To: <YNxENGGctLXmifzj@dell>
-References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
-         <20210617215408.1412409-3-david.e.box@linux.intel.com>
-         <YNxENGGctLXmifzj@dell>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229705AbhF3Vgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 17:36:32 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A8EB6146D;
+        Wed, 30 Jun 2021 21:34:02 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 17:34:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Paul Burton <paulburton@google.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] tracing: Resize tgid_map to PID_MAX_LIMIT, not
+ PID_MAX_DEFAULT
+Message-ID: <20210630173400.7963f619@oasis.local.home>
+In-Reply-To: <YNzdllg/634Sa6Rt@google.com>
+References: <20210630003406.4013668-1-paulburton@google.com>
+        <20210630003406.4013668-2-paulburton@google.com>
+        <20210630083513.1658a6fb@oasis.local.home>
+        <YNzdllg/634Sa6Rt@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
-> On Thu, 17 Jun 2021, David E. Box wrote:
+On Wed, 30 Jun 2021 14:09:42 -0700
+Paul Burton <paulburton@google.com> wrote:
+
+> Hi Steven,
 > 
-> > Unlike the other devices in intel_pmt, the Out of Band Management
-> > Services
-> > Module (OOBMSM) is actually not a PMT dedicated device. It can also
-> > be used
-> > to describe non-PMT capabilities. Like PMT, these capabilities are
-> > also
-> > enumerated using PCIe Vendor Specific registers in config space. In
-> > order
-> > to better support these devices without the confusion of a
-> > dependency on
-> > MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
-> > can be
-> > later placed in its own driver. Since much of the same code will be
-> > used by
-> > intel_pmt and the new driver, create a new file with symbols to be
-> > used by
-> > both.
+> On Wed, Jun 30, 2021 at 08:35:13AM -0400, Steven Rostedt wrote:
+> > On Tue, 29 Jun 2021 17:34:06 -0700
+> > Paul Burton <paulburton@google.com> wrote:
+> >   
+> > > On 64 bit systems this will increase the size of tgid_map from 256KiB to
+> > > 16MiB. Whilst this 64x increase in memory overhead sounds significant 64
+> > > bit systems are presumably best placed to accommodate it, and since
+> > > tgid_map is only allocated when the record-tgid option is actually used
+> > > presumably the user would rather it spends sufficient memory to actually
+> > > record the tgids they expect.  
 > > 
-> > While performing this split we need to also handle the creation of
-> > platform
-> > devices for the non-PMT capabilities. Currently PMT devices are
-> > named by
-> > their capability (e.g. pmt_telemetry). Instead, generically name
-> > them by
-> > their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
-> > to be
-> > created automatically.  However, to ensure that unsupported devices
-> > aren't
-> > created, use an allow list to specify supported capabilities.
+> > NAK. Please see how I fixed this for the saved_cmdlines, and implement
+> > it the same way.
 > > 
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> >  MAINTAINERS                                |   1 +
-> >  drivers/mfd/Kconfig                        |   4 +
-> >  drivers/mfd/Makefile                       |   1 +
-> >  drivers/mfd/intel_extended_caps.c          | 208
-> > +++++++++++++++++++++
+> > 785e3c0a3a87 ("tracing: Map all PIDs to command lines")
+> > 
+> > It's a cache, it doesn't need to save everything.  
 > 
-> Please consider moving this <whatever this is> out to either
-> drivers/pci or drivers/platform/x86.
+> Well sure, but it's a cache that (modulo pid recycling) previously had a
+> 100% hit rate for tasks observed in sched_switch events.
 
-None of the cell drivers are in MFD, only the PCI drivers from which
-the cells are created. I understood that these should be in MFD. But
-moving it to drivers/platform/x86 would be fine with me. That keeps the
-code together in the same subsystem. Comment from Hans or Andy? 
+Obviously it wasn't 100% when it went over the PID_MAX_DEFAULT.
 
 > 
-> I suggest Andy should also be on Cc.
+> It differs from saved_cmdlines in a few key ways that led me to treat it
+> differently:
 > 
-> >  drivers/mfd/intel_extended_caps.h          |  40 ++++
-> >  drivers/mfd/intel_pmt.c                    | 198 ++---------------
-> > ---
-> >  drivers/platform/x86/intel_pmt_crashlog.c  |   2 +-
-> >  drivers/platform/x86/intel_pmt_telemetry.c |   2 +-
-> >  8 files changed, 270 insertions(+), 186 deletions(-)
-> >  create mode 100644 drivers/mfd/intel_extended_caps.c
-> >  create mode 100644 drivers/mfd/intel_extended_caps.h
+> 1) The cost of allocating map_pid_to_cmdline is paid by all users of
+>    ftrace, whilst as I mentioned in my commit description the cost of
+>    allocating tgid_map is only paid by those who actually enable the
+>    record-tgid option.
+
+I'll admit that this is a valid point.
+
 > 
+> 2) We verify that the data in map_pid_to_cmdline is valid by
+>    cross-referencing it against map_cmdline_to_pid before reporting it.
+>    We don't currently have an equivalent for tgid_map, so we'd need to
+>    add a second array or make tgid_map an array of struct { int pid; int
+>    tgid; } to avoid reporting incorrect tgids. We therefore need to
+>    double the memory we consume or further reduce the effectiveness of
+>    this cache.
 
+Double 256K is just 512K which is still much less than 16M.
 
+> 
+> 3) As mentioned before, with the default pid_max tgid_map/record-tgid
+>    has a 100% hit rate which was never the case for saved_cmdlines. If
+>    we go with a solution that changes this property then I certainly
+>    think the docs need updating - the description of saved_tgids in
+>    Documentation/trace/ftrace.rst makes no mention of this being
+>    anything but a perfect recreation of pid->tgid relationships, and
+>    unlike the description of saved_cmdlines it doesn't use the word
+>    "cache" at all.
+> 
+> Having said that I think taking a similar approach to saved_cmdlines
+> would be better than what we have now, though I'm not sure whether it'll
+> be sufficient to actually be usable for me. My use case is grouping
+> threads into processes when displaying scheduling information, and
+> experience tells me that if any threads don't get grouped appropriately
+> the result will be questions.
+
+I found a few bugs recently in the saved_cmdlines that were causing a
+much higher miss rate, but now it's been rather accurate. I wonder how
+much pain that's been causing you?
+
+Anyway, I'll wait to hear what Joel says on this. If he thinks this is
+worth 16M of memory when enabled, I may take it.
+
+-- Steve
