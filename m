@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B313B821C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E3A3B8223
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhF3MaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S234571AbhF3Mby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234426AbhF3MaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:30:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD45613C1;
-        Wed, 30 Jun 2021 12:27:46 +0000 (UTC)
+        id S234426AbhF3Mby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:31:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECF4B61494;
+        Wed, 30 Jun 2021 12:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625056066;
-        bh=uluTb2HnmteXU5pZeTimFt6ItcWD2B3y13nc8+jEXvI=;
+        s=korg; t=1625056165;
+        bh=EHmQTb8e2YECJNCJlq3BRBtEN7eaK8TcnhlyN2zl1Hs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yvS8XtnC5uYb/fQ5De4N3V5Svnt4Bvd6phoC6EwYqWX08sThKJoNtUgup0A6P4La5
-         TV7+QR+MMvbh/pQde0VxRTmwzdmj4TL1ql3x/zWJ3nt36gi4gIQOkfZ/nw3adBJtbt
-         NPRzp7UR0JufHuXSI3UySAz93H4cqDoDaRl7Hrpc=
-Date:   Wed, 30 Jun 2021 14:27:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bing Fan <hptsfb@gmail.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] arm pl011 serial: support multi-irq request
-Message-ID: <YNxjQHblAHo04q/+@kroah.com>
-References: <1625052305-18929-1-git-send-email-hptsfb@gmail.com>
+        b=t6abjA0D+JFT5yVpRLqglk9ebYLSi+YqwIN6uwyR99YPpXfR6ESoifyNJnQMKCXoy
+         x85Lh5y/mN1Cmd/g4TBcrYu6eI/1Fw52Aea8A8pzBtycj1scru8n4sOHxVcp0Z9sD2
+         hqtQA9kcsrWHBI0cqIxkg65etcteWT1GD1USZHyE=
+Date:   Wed, 30 Jun 2021 14:29:23 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     =?utf-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: cleancache: fix potential race in cleancache apis
+Message-ID: <YNxjoxBNdWm604FU@kroah.com>
+References: <CGME20210630073310epcms1p2ad6803cfd9dbc8ab501c4c99f799f4da@epcms1p2>
+ <20210630073310epcms1p2ad6803cfd9dbc8ab501c4c99f799f4da@epcms1p2>
+ <YNwnqOuFlIG6Jofy@kroah.com>
+ <YNxVAZDttnWncNUy@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1625052305-18929-1-git-send-email-hptsfb@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNxVAZDttnWncNUy@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 07:25:05PM +0800, Bing Fan wrote:
-> From: Bing Fan <tombinfan@tencent.com>
+On Wed, Jun 30, 2021 at 12:26:57PM +0100, Matthew Wilcox wrote:
+> On Wed, Jun 30, 2021 at 10:13:28AM +0200, gregkh@linuxfoundation.org wrote:
+> > On Wed, Jun 30, 2021 at 04:33:10PM +0900, 권오훈 wrote:
+> > > Current cleancache api implementation has potential race as follows,
+> > > which might lead to corruption in filesystems using cleancache.
+> > > 
+> > > thread 0                thread 1                        thread 2
+> > > 
+> > >                         in put_page
+> > >                         get pool_id K for fs1
+> > > invalidate_fs on fs1
+> > > frees pool_id K
+> > >                                                         init_fs for fs2
+> > >                                                         allocates pool_id K
+> > >                         put_page puts page
+> > >                         which belongs to fs1
+> > >                         into cleancache pool for fs2
+> > > 
+> > > At this point, a file cache which originally belongs to fs1 might be
+> > > copied back to cleancache pool of fs2, which might be later used as if
+> > > it were normal cleancache of fs2, and could eventually corrupt fs2 when
+> > > flushed back.
+> > > 
+> > > Add rwlock in order to synchronize invalidate_fs with other cleancache
+> > > operations.
+> > > 
+> > > In normal situations where filesystems are not frequently mounted or
+> > > unmounted, there will be little performance impact since
+> > > read_lock/read_unlock apis are used.
+> > > 
+> > > Signed-off-by: Ohhoon Kwon <ohoono.kwon@samsung.com>
+> > 
+> > What commit does this fix?  Should it go to stable kernels?
 > 
-> In order to make pl011 work better, multiple interrupts are
-> required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-> at the same time, pl011 to GIC does not merge the interrupt
-> lines(each serial-interrupt corresponding to different GIC hardware
-> interrupt), so need to enable and request multiple gic interrupt
-> numbers in the driver.
+> I have a commit I haven't submitted yet with this changelog:
 > 
-> Signed-off-by: Bing Fan <tombinfan@tencent.com>
-> ---
->  drivers/tty/serial/amba-pl011.c | 35 ++++++++++++++++++++++++++++++---
->  1 file changed, 32 insertions(+), 3 deletions(-)
+>     Remove cleancache
 > 
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 78682c12156a..e84f4b9dff87 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -1701,11 +1701,40 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
->  	}
->  }
->  
-> +static void pl011_release_irq(struct uart_amba_port *uap, unsigned int max_cnt)
-> +{
-> +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
+>     The last cleancache backend was deleted in v5.3 ("xen: remove tmem
+>     driver"), so it has been unused since.  Remove all its filesystem hooks.
+> 
+>     Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Pass in the amba_dev instead here, you already have a pointer to it at
-all places, right?
+That's even better!
 
-> +	int i;
-> +
-> +	for (i = 0; i < max_cnt; i++) {
-> +		if (amba_dev->irq[i])
-> +			free_irq(amba_dev->irq[i], uap);
-> +	}
-
-You do not need { } here, didn't checkpatch warn about this?
-
-> +}
-> +
->  static int pl011_allocate_irq(struct uart_amba_port *uap)
->  {
-> +	int ret = 0;
-> +	int i;
-> +	unsigned int virq;
-> +	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-> +
->  	pl011_write(uap->im, uap, REG_IMSC);
->  
-> -	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-> +	for (i = 0; i < AMBA_NR_IRQS; i++) {
-> +		virq = amba_dev->irq[i];
-> +		if (virq == 0)
-> +			break;
-> +
-> +		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
-> +		if (ret) {
-> +			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
-> +			pl011_release_irq(uap, i - 1);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
->  }
->  
->  /*
-> @@ -1864,7 +1893,7 @@ static void pl011_shutdown(struct uart_port *port)
->  
->  	pl011_dma_shutdown(uap);
->  
-> -	free_irq(uap->port.irq, uap);
-> +	pl011_release_irq(uap, AMBA_NR_IRQS);
-
-Ah, so your original patch was not correct either, how well have you
-tested these changes?
+But if so, how is the above reported problem even a problem if no one is
+using cleancache?
 
 thanks,
 
