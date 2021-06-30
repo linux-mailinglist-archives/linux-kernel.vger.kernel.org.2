@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF7A3B7E4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2982B3B7E4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhF3Hoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:44:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232573AbhF3Hoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:44:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEF7261D12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625038945;
-        bh=cjfMqlvm/KvJKzCzyRAA/75kkZfk7xbN6T0wJUzy51s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E5KRwN9STfJH5A6sSNQaFzPPlLC+HLEg0lJjVpB28QkbVTAXLoLB9lQ+Rh4aZ6OdX
-         UZaVIFJ68amAxadPjraVw/StwsgUtqMZUsbGbt8+NB5EArQXbcAriAn4FE5BvXSbK+
-         L30wGnLk0e23RNZpPSWq8T88Vh9Ywb+5Am67eHUCfy8GoiiCv48F+6YgsGZOqP1kF/
-         XZeWmaQ8cTf8jfmVLsVIFH+Ucd7x9eKGaEr+jiQAtv6pXgWqmZGrbCaEnDzp8uGcuC
-         nWTO3RKQVfkRUPqIfoNV0kzdex4e1svZg2lOZpSNWmo4fK21amPmpNMwA6xOlho/c7
-         vOrL+reeIvoqA==
-Received: by mail-oo1-f53.google.com with SMTP id v3-20020a4ac9030000b029024c9d0bff49so419238ooq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:42:25 -0700 (PDT)
-X-Gm-Message-State: AOAM530A+N5jkJZacCJGJmH7jgITe8Abcae2s0zEH6CwtV99cWEPshaq
-        8TA74kgVHLn2Wqa9XjAikpqihArrWjG5T/Y7Gz8=
-X-Google-Smtp-Source: ABdhPJzjRGSA4n9r5WRvyYFEDgD4rP0aZ4f5diqdxVPRn9C96ekwd0qF/Nym5fonEDj2BXtfJLrV9VYxeht1T2TKOtA=
-X-Received: by 2002:a4a:2f87:: with SMTP id p129mr7413740oop.41.1625038944910;
- Wed, 30 Jun 2021 00:42:24 -0700 (PDT)
+        id S233036AbhF3Hpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232573AbhF3Hph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:45:37 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBBEC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:43:09 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g22so1414261pgl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:43:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jIw5Yrq9q/YX9w76I4+VS10VcJJXkGY5L3EC5IkaPXI=;
+        b=MCAdhewHdNIm3Qgxkn8K+aZEiEIJZkCzSapzpMtqL5/dUWeXAty1DOUnmTzIlaPkf7
+         +hQ3pPl8W5ooVDTWUg9t4pSphU1lCTvY1EFJFTYIRUFKgaKo0raYu0tWAgd2S03K9+uZ
+         1JWTvrlh7nNv0ej+KzT+qic2H/YKQhR36syfm+1gUnJRTsTH9qXzGvP40ytuP7sHSWsK
+         T4vg6X2iJ7wXTDYSZAPuenfaZR6UG6zPkm6N08ZN30fJt7i58zI0bClA8zjsrZolYSPD
+         lE2gMbNU2+DQlVGa/PXamVy2AKvv4Zsrgq/7gvInW0ah8VfTJ9AEkFnMEHK+y/nHao4M
+         GGdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jIw5Yrq9q/YX9w76I4+VS10VcJJXkGY5L3EC5IkaPXI=;
+        b=oFz28IwRUTPj+0gmVCglB+nB+xhuD2s6+R+Y1Ja9TGAeMnd/VfyXNnADz6y8kokPFa
+         8pXeRNBtCa/ZH5ZAGjMqDaoLEVzPAthZ3I4+aaojYYzZOjZp0W4VpRF3aC+ThBtS8Un8
+         0cBsQmJ1ko+PEouowsLPDVrlcw5Teh2HQDpKtvsXvfAsUB0IjwE53xW6DrGj5M+L2F7r
+         FEIC91RphkcNNXDuXqh5kRx8cvnujzDGVOH+63u/X6/7shwGIsqMAQSvzfLCMqNeDn7D
+         0TILxSPMLYaW25o9O21D4fQxR8YDBzX+oqMzErrfTe4S9xjEGAx94Bg7ZdKOcCiol/MF
+         HFmQ==
+X-Gm-Message-State: AOAM530i/yvMFhf/BzTVwxKPvmeLpQSeuleUpKk7L4fTpfz3+y2Y4/vi
+        JXtxLRcxirFKaBzF+bt+wxtKRA==
+X-Google-Smtp-Source: ABdhPJwSUMRF3UQo4guCNMtUDUu/ZjqTwWyGNvrTl3OFJv6jAa/QdjcqwiivDOfZ9LOgi2D9c9LmJA==
+X-Received: by 2002:a63:794:: with SMTP id 142mr1418044pgh.198.1625038988656;
+        Wed, 30 Jun 2021 00:43:08 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id o20sm3142586pgv.80.2021.06.30.00.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 00:43:07 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] regulator: hi6421v600: Fix getting wrong drvdata that causes boot failure
+Date:   Wed, 30 Jun 2021 15:42:46 +0800
+Message-Id: <20210630074246.2305166-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <000000000000f3e94a05c5d8686f@google.com> <b7f0725f-2731-24af-f15d-1054d6398749@intel.com>
-In-Reply-To: <b7f0725f-2731-24af-f15d-1054d6398749@intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 30 Jun 2021 09:42:14 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGTV+U-oy=wyHf2KmuzjmaaPJaLBY4mx09tWjL6gCC=rQ@mail.gmail.com>
-Message-ID: <CAMj1kXGTV+U-oy=wyHf2KmuzjmaaPJaLBY4mx09tWjL6gCC=rQ@mail.gmail.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __fdget_pos
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     syzbot <syzbot+5d1bad8042a8f0e8117a@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, jpa@git.mail.kapsi.fi,
-        kan.liang@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 at 16:46, Dave Hansen <dave.hansen@intel.com> wrote:
->
-> ... adding Ard who was recently modifying some of the
-> kernel_fpu_begin/end() sites in the AESNI crypto code.
->
-> On 6/28/21 12:22 PM, syzbot wrote:
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=170e6c94300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=5d1bad8042a8f0e8117a
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> ...
-> > BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
-> > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 29652, name: syz-executor.0
-> > no locks held by syz-executor.0/29652.
-> > Preemption disabled at:
-> > [<ffffffff812aa454>] kernel_fpu_begin_mask+0x64/0x260 arch/x86/kernel/fpu/core.c:126
-> > CPU: 0 PID: 29652 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
->
-> There's a better backtrace in the log before the rather useless
-> backtrace from lockdep:
->
-> > [ 1341.360547][T29635] FAULT_INJECTION: forcing a failure.
-> > [ 1341.360547][T29635] name failslab, interval 1, probability 0, space 0, times 0
-> > [ 1341.374439][T29635] CPU: 1 PID: 29635 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
-> > [ 1341.374712][T29630] FAT-fs (loop2): bogus number of reserved sectors
-> > [ 1341.383571][T29635] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > [ 1341.383591][T29635] Call Trace:
-> > [ 1341.383603][T29635]  dump_stack+0x141/0x1d7
-> > [ 1341.383630][T29635]  should_fail.cold+0x5/0xa
-> > [ 1341.383651][T29635]  ? skcipher_walk_next+0x6e2/0x1680
-> > [ 1341.383673][T29635]  should_failslab+0x5/0x10
-> > [ 1341.383691][T29635]  __kmalloc+0x72/0x330
-> > [ 1341.383720][T29635]  skcipher_walk_next+0x6e2/0x1680
-> > [ 1341.383744][T29635]  ? kfree+0xe5/0x7f0
-> > [ 1341.383776][T29635]  skcipher_walk_first+0xf8/0x3c0
-> > [ 1341.383805][T29635]  skcipher_walk_virt+0x523/0x760
-> > [ 1341.445438][T29635]  xts_crypt+0x137/0x7f0
-> > [ 1341.449689][T29635]  ? aesni_encrypt+0x80/0x80
->
-> There's one suspect-looking site in xts_crypt():
->
-> >       kernel_fpu_begin();
-> >
-> >       /* calculate first value of T */
-> >       aesni_enc(aes_ctx(ctx->raw_tweak_ctx), walk.iv, walk.iv);
-> >
-> >       while (walk.nbytes > 0) {
-> >               int nbytes = walk.nbytes;
-> >
-> >               ...
-> >
-> >               err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
-> >
-> >               kernel_fpu_end();
-> >
-> >               if (walk.nbytes > 0)
-> >                       kernel_fpu_begin();
-> >       }
->
-> I wonder if a slab allocation failure could leave us with walk.nbytes==0.
+Since config.dev = pdev->dev.parent in current code, so
+dev_get_drvdata(rdev->dev.parent) actually returns the drvdata of the mfd
+device rather than the regulator. Fix it.
 
-The code is actually the other way around: kernel_fpu_end() comes
-before the call to skcipher_walk_done().
+Fixes: 9bc146acc331 ("regulator: hi6421v600: Fix setting wrong driver_data")
+Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Mauro,
+Thanks for your analysis.
+Could you check if this patch works if you think it's good.
+I don't mind applying your earlier fix or this one.
+(This one has less code change with single purpose fot the fix,
+and this patch does not has other dependency.)
 
-So IIUC, this code forces an allocation failure, and checks whether
-the code deals with this gracefully, right?
+Regards,
+Axel
+ drivers/regulator/hi6421v600-regulator.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-The skcipher walk API guarantees that walk.nbytes == 0 if an error is
-returned, so the pairing of FPU begin/end looks correct to me. And
-skcipher_walk_next() should not invoke anything that might sleep from
-this particular context.
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+index 9b162c0555c3..845bc3b4026d 100644
+--- a/drivers/regulator/hi6421v600-regulator.c
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -98,10 +98,9 @@ static const unsigned int ldo34_voltages[] = {
+ 
+ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+ {
+-	struct hi6421_spmi_reg_priv *priv;
++	struct hi6421_spmi_reg_priv *priv = rdev_get_drvdata(rdev);
+ 	int ret;
+ 
+-	priv = dev_get_drvdata(rdev->dev.parent);
+ 	/* cannot enable more than one regulator at one time */
+ 	mutex_lock(&priv->enable_mutex);
+ 
+@@ -119,9 +118,10 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+ 
+ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+ {
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_reg_info *sreg;
+ 	unsigned int reg_val;
+ 
++	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 
+ 	if (reg_val & sreg->eco_mode_mask)
+@@ -133,9 +133,10 @@ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+ 					  unsigned int mode)
+ {
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_reg_info *sreg;
+ 	unsigned int val;
+ 
++	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+ 		val = 0;
+@@ -159,7 +160,9 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
+ 				       int input_uV, int output_uV,
+ 				       int load_uA)
+ {
+-	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
++	struct hi6421_spmi_reg_info *sreg;
++
++	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+ 
+ 	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
+ 		return REGULATOR_MODE_NORMAL;
+@@ -252,13 +255,12 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	mutex_init(&priv->enable_mutex);
+-	platform_set_drvdata(pdev, priv);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
+ 		info = &regulator_info[i];
+ 
+ 		config.dev = pdev->dev.parent;
+-		config.driver_data = info;
++		config.driver_data = priv;
+ 		config.regmap = pmic->regmap;
+ 
+ 		rdev = devm_regulator_register(dev, &info->desc, &config);
+-- 
+2.25.1
 
-Herbert, any ideas?
