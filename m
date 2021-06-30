@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643923B7C69
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AA23B7C78
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhF3EKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 00:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhF3EKW (ORCPT
+        id S233202AbhF3EPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 00:15:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49810 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229446AbhF3EPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 00:10:22 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD687C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 21:07:52 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id t12so1517650ile.13
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 21:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CihQJs+V2hzOjNrHEUutiYZNJeDLEZFfM+aC788Ls8Y=;
-        b=hJf8jbdNdk8vtynuUvXJ5WOrCidPZV0ovCwVJiPYwT8VAp2CGtXqIImAWtyYArBKqS
-         VGpM2s2BD09PWsOu5wPYUcfeExYjrVlwTEbifmekSaMQetnUaCjGZMDQp+yMXtFfbK8A
-         ID3GlMsw+AcrU4wP0WdIEOG6w/0A4ocVeY0l4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CihQJs+V2hzOjNrHEUutiYZNJeDLEZFfM+aC788Ls8Y=;
-        b=Cp/zeicyw5SCPkyEHwMBjiNuxypjODCPdNqpTCZir3mqTy3AoRJ7mNMSUEpmpL2RkD
-         5LF+ARFTA7ZA5YmVav9YMa1Gwwapbb5ePty6yxG6vBTbvd1QlpA/aFAwNhP93wR39G2t
-         AZaDyRytELpUpZA0mHyvMQDbXOyi8ty/SZavCZRGxmYaX1Dbv9eFDvTjXxhx1kPm6Pxc
-         j6Rq1Xbca+UKrFspLilCMYaHd3O5LT5+9jDlHjyYGm6kFC0zqzXIHDxjn8ztvt4WQRvg
-         K3AMG/4xVk7IVSZoLbhWZ+s0Yr/51I0koUN2Jh1ap9p6V2alSAjnUm1Z9pNT4h3jbq5i
-         aeFQ==
-X-Gm-Message-State: AOAM531u8HpmOYC5MixjmfBPHtgMt9pM9PkFbrcTXppWBhA0uwMdEWSa
-        PtSVwe6kVkOCCAJ//Ce2gZAdwm/xbs56SA==
-X-Google-Smtp-Source: ABdhPJzaYxWikUaGviCMBCScH32rZBwQzPRTuuK4RH2rxxjzn8lNwGyTNCUZucUXePQ4KI1rJO14Zw==
-X-Received: by 2002:a05:6e02:1246:: with SMTP id j6mr25047279ilq.30.1625026072124;
-        Tue, 29 Jun 2021 21:07:52 -0700 (PDT)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
-        by smtp.gmail.com with ESMTPSA id a12sm3980023ilt.3.2021.06.29.21.07.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 21:07:51 -0700 (PDT)
-Received: by mail-il1-f173.google.com with SMTP id s11so286330ilt.8
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 21:07:51 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1d10:: with SMTP id i16mr5467198ila.5.1625026071072;
- Tue, 29 Jun 2021 21:07:51 -0700 (PDT)
+        Wed, 30 Jun 2021 00:15:08 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15U4CT7S009691
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 00:12:29 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0BBE815C3C8E; Wed, 30 Jun 2021 00:12:28 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 00:12:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Daniel Walsh <dwalsh@redhat.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <YNvvLIv16jY8mfP8@mit.edu>
+References: <1b446468-dcf8-9e21-58d3-c032686eeee5@redhat.com>
+ <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
+ <YNn4p+Zn444Sc4V+@work-vm>
+ <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
+ <YNrhQ9XfcHTtM6QA@work-vm>
+ <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+ <20210629152007.GC5231@redhat.com>
+ <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
+ <20210629173530.GD5231@redhat.com>
+ <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
 MIME-Version: 1.0
-References: <20210629121625.3633999-1-tientzu@chromium.org> <7f544c68-721c-bbcc-3614-cbadce7261a9@arm.com>
-In-Reply-To: <7f544c68-721c-bbcc-3614-cbadce7261a9@arm.com>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Wed, 30 Jun 2021 12:07:40 +0800
-X-Gmail-Original-Message-ID: <CALiNf2-WcZo=fyaZqw2axyE-KTmGT0HRqvKiN0NZ5=VKmvA0bQ@mail.gmail.com>
-Message-ID: <CALiNf2-WcZo=fyaZqw2axyE-KTmGT0HRqvKiN0NZ5=VKmvA0bQ@mail.gmail.com>
-Subject: Re: [PATCH v2] swiotlb: fix implicit debugfs_create_dir declaration
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 8:52 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-06-29 13:16, Claire Chang wrote:
-> > Remove the ifdef to fix implicit function declaration for other pools.
-> >
-> > Fixes: 1d9f94400a7a ("swiotlb: Refactor swiotlb_create_debugfs")
->
-> There doesn't appear to be a problem with that commit - AFAICS it's
-> 461021875c50 ("swiotlb: Add restricted DMA pool initialization") which
-> introduces a reference to debugfs_create_dir() outside the existing
-> #ifdef guards.
->
-> FWIW (assuming it's the real problem) I'd be inclined to factor out the
-> debugfs bits from rmem_swiotlb_device_init() into a separate
-> rmem_swiotlb_debugfs_init() (or similar) function which can live
-> alongside the others under the #ifdef and be stubbed out in an #else case.
+On Tue, Jun 29, 2021 at 04:28:24PM -0400, Daniel Walsh wrote:
+> All this conversation is great, and I look forward to a better solution, but
+> if we go back to the patch, it was to fix an issue where the kernel is
+> requiring CAP_SYS_ADMIN for writing user Xattrs on link files and other
+> special files.
+> 
+> The documented reason for this is to prevent the users from using XATTRS to
+> avoid quota.
 
-v3 here: https://lore.kernel.org/patchwork/patch/1452807/
+Huh?  Where is it so documented?  How file systems store and account
+for space used by extended attributes is a file-system specific
+question, but presumably any way that xattr's on regular files are
+accounted could also be used for xattr's on special files.
 
->
-> Robin.
->
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > ---
-> >   kernel/dma/swiotlb.c | 5 -----
-> >   1 file changed, 5 deletions(-)
-> >
-> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > index 0ffbaae9fba2..8ae0bef392c3 100644
-> > --- a/kernel/dma/swiotlb.c
-> > +++ b/kernel/dma/swiotlb.c
-> > @@ -36,9 +36,7 @@
-> >   #include <linux/scatterlist.h>
-> >   #include <linux/mem_encrypt.h>
-> >   #include <linux/set_memory.h>
-> > -#ifdef CONFIG_DEBUG_FS
-> >   #include <linux/debugfs.h>
-> > -#endif
-> >   #ifdef CONFIG_DMA_RESTRICTED_POOL
-> >   #include <linux/io.h>
-> >   #include <linux/of.h>
-> > @@ -686,7 +684,6 @@ bool is_swiotlb_active(struct device *dev)
-> >   }
-> >   EXPORT_SYMBOL_GPL(is_swiotlb_active);
-> >
-> > -#ifdef CONFIG_DEBUG_FS
-> >   static struct dentry *debugfs_dir;
-> >
-> >   static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
-> > @@ -709,8 +706,6 @@ static int __init swiotlb_create_default_debugfs(void)
-> >
-> >   late_initcall(swiotlb_create_default_debugfs);
-> >
-> > -#endif
-> > -
-> >   #ifdef CONFIG_DMA_RESTRICTED_POOL
-> >   struct page *swiotlb_alloc(struct device *dev, size_t size)
-> >   {
-> >
+Also, xattr's are limited to 32k, so it's not like users can evade
+_that_ much quota space, at least not without it being pretty painful.
+(Assuming that quota is even enabled, which most of the time, it
+isn't.)
+
+						- Ted
+
+P.S.  I'll note that if ext4's ea_in_inode is enabled, for large
+xattr's, if you have 2 million files that all have the same 12k
+windows SID stored as an xattr, ext4 will store that xattr only once.
+Those two million files might be owned by different uids, so we made
+an explicit design choice not to worry about accounting for the quota
+for said 12k xattr value.  After all, if you can save the space and
+access cost of 2M * 12k if each file had to store its own copy of that
+xattr, perhaps not including it in the quota calculation isn't that
+bad.  :-)
+
+We also don't account for the disk space used by symbolic links (since
+sometimes they can be stored in the inode as fast symlinks, and
+sometimes they might consume a data block).  But again, that's a file
+system specific implementation question.
