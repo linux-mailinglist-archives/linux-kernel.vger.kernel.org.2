@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25D23B7D38
+	by mail.lfdr.de (Postfix) with ESMTP id 731C53B7D37
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhF3GLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:11:32 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46942 "EHLO mga02.intel.com"
+        id S232935AbhF3GL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:11:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46946 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhF3GKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232409AbhF3GKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 02:10:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195448576"
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195448577"
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="195448576"
+   d="scan'208";a="195448577"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 23:08:19 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="455156537"
+   d="scan'208";a="455156541"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by orsmga008.jf.intel.com with ESMTP; 29 Jun 2021 23:08:19 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -27,9 +27,9 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
         chang.seok.bae@intel.com
-Subject: [PATCH v6 15/26] x86/fpu/xstate: Support both legacy and expanded signal XSTATE size
-Date:   Tue, 29 Jun 2021 23:02:15 -0700
-Message-Id: <20210630060226.24652-16-chang.seok.bae@intel.com>
+Subject: [PATCH v6 16/26] x86/fpu/xstate: Adjust the XSAVE feature table to address gaps in state component numbers
+Date:   Tue, 29 Jun 2021 23:02:16 -0700
+Message-Id: <20210630060226.24652-17-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210630060226.24652-1-chang.seok.bae@intel.com>
 References: <20210630060226.24652-1-chang.seok.bae@intel.com>
@@ -37,320 +37,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare to support two XSTATE sizes on the signal stack -- legacy and
-expanded. Legacy programs have not requested access to AMX (or later
-features), and the XSTATE on their signal stack can include up through
-AVX-512.
+At compile-time xfeatures_mask_all includes all possible XCR0 features. At
+run-time fpu__init_system_xstate() clears features in xfeatures_mask_all
+that are not enabled in CPUID. It does this by looping through all possible
+XCR0 features.
 
-Programs that request access to AVX (and/or later features) will have an
-uncompressed XSTATE that includes those features. If such program that also
-use the sigaltstack, they must assure that their sigaltstack is large
-enough to handle that full XSTATE format. (This is most easily done by
-using signal.h from glibc 2.34 or later)
+Update the code to handle the possibility that there will be gaps in the
+XCR0 feature bit numbers.
 
-Introduce a new XSTATE size variable for the legacy stack and some helpers.
+No functional change.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
-Changes form v5:
-* Added as a new patch.
----
- arch/x86/include/asm/fpu/internal.h | 22 +++++++--
- arch/x86/include/asm/fpu/xstate.h   |  3 +-
- arch/x86/kernel/fpu/init.c          |  1 +
- arch/x86/kernel/fpu/signal.c        | 71 +++++++++++++++++++++--------
- arch/x86/kernel/fpu/xstate.c        | 27 ++++++++++-
- 5 files changed, 97 insertions(+), 27 deletions(-)
+Changes from v5:
+* Folded a few lines.
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index 8a5d36856084..4f1652784088 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -337,15 +337,29 @@ static inline void os_xrstor(struct xregs_state *xstate, u64 mask)
-  */
- static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
- {
-+	u32 lmask, hmask;
-+	u64 mask;
-+	int err;
-+
- 	/*
- 	 * Include the features which are not xsaved/rstored by the kernel
- 	 * internally, e.g. PKRU. That's user space ABI and also required
- 	 * to allow the signal handler to modify PKRU.
- 	 */
--	u64 mask = xfeatures_mask_uabi();
--	u32 lmask = mask;
--	u32 hmask = mask >> 32;
--	int err;
-+	mask = xfeatures_mask_uabi();
-+
-+	/*
-+	 * When any dynamic user state is enabled, exclude dynamic user
-+	 * states for non-opt-in threads.
-+	 */
-+	if (xfeatures_mask_user_dynamic) {
-+		mask &= test_thread_flag(TIF_XSTATE_PERM) ?
-+			current->thread.fpu.state_mask :
-+			~xfeatures_mask_user_dynamic;
-+	}
-+
-+	lmask = mask;
-+	hmask = mask >> 32;
- 
- 	/*
- 	 * Clear the xsave header first, so that reserved fields are
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 813510e827a6..bf9eb803ed3c 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -139,7 +139,8 @@ extern void __init update_regset_xstate_info(unsigned int size,
- enum xstate_config {
- 	XSTATE_MIN_SIZE,
- 	XSTATE_MAX_SIZE,
--	XSTATE_USER_SIZE
-+	XSTATE_USER_SIZE,
-+	XSTATE_USER_MINSIG_SIZE,
- };
- 
- extern unsigned int get_xstate_config(enum xstate_config cfg);
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 3e4e14ca723b..acbd3da0e022 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -210,6 +210,7 @@ static void __init fpu__init_system_xstate_size_legacy(void)
- 	set_xstate_config(XSTATE_MIN_SIZE, xstate_size);
- 	set_xstate_config(XSTATE_MAX_SIZE, xstate_size);
- 	set_xstate_config(XSTATE_USER_SIZE, xstate_size);
-+	set_xstate_config(XSTATE_USER_MINSIG_SIZE, xstate_size);
- }
- 
- /* Legacy code to initialize eager fpu mode. */
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index f70f84d53442..0e9505677200 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -15,9 +15,26 @@
- #include <asm/sigframe.h>
- #include <asm/trace/fpu.h>
- 
-+/*
-+ * Record the signal xstate size and feature bits. Exclude dynamic user
-+ * states. See fpu__init_prepare_fx_sw_frame(). The opt-in tasks will
-+ * dynamically adjust the data.
-+ */
- static struct _fpx_sw_bytes fx_sw_reserved __ro_after_init;
- static struct _fpx_sw_bytes fx_sw_reserved_ia32 __ro_after_init;
- 
-+static unsigned int current_sig_xstate_size(void)
-+{
-+	return test_thread_flag(TIF_XSTATE_PERM) ?
-+	       get_xstate_config(XSTATE_USER_SIZE) :
-+	       get_xstate_config(XSTATE_USER_MINSIG_SIZE);
-+}
-+
-+static inline int extend_sig_xstate_size(unsigned int size)
-+{
-+	return use_xsave() ? size + FP_XSTATE_MAGIC2_SIZE : size;
-+}
-+
- /*
-  * Check for the presence of extended state information in the
-  * user fpstate pointer in the sigcontext.
-@@ -36,7 +53,7 @@ static inline int check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
- 	/* Check for the first magic field and other error scenarios. */
- 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
- 	    fx_sw->xstate_size < min_xstate_size ||
--	    fx_sw->xstate_size > get_xstate_config(XSTATE_USER_SIZE) ||
-+	    fx_sw->xstate_size > current_sig_xstate_size() ||
- 	    fx_sw->xstate_size > fx_sw->extended_size)
- 		goto setfx;
- 
-@@ -94,20 +111,35 @@ static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
- 
- static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
- {
-+	unsigned int current_xstate_size = current_sig_xstate_size();
- 	struct xregs_state __user *x = buf;
--	struct _fpx_sw_bytes *sw_bytes;
-+	struct _fpx_sw_bytes sw_bytes;
- 	u32 xfeatures;
- 	int err;
- 
--	/* Setup the bytes not touched by the [f]xsave and reserved for SW. */
--	sw_bytes = ia32_frame ? &fx_sw_reserved_ia32 : &fx_sw_reserved;
--	err = __copy_to_user(&x->i387.sw_reserved, sw_bytes, sizeof(*sw_bytes));
-+	/*
-+	 * Setup the bytes not touched by the [f]xsave and reserved for SW.
-+	 *
-+	 * Use the recorded values if it matches with the current task. Otherwise,
-+	 * adjust it.
-+	 */
-+	if (ia32_frame)
-+		sw_bytes = fx_sw_reserved_ia32;
-+	else
-+		sw_bytes = fx_sw_reserved;
-+	if (sw_bytes.xstate_size != current_xstate_size) {
-+		unsigned int default_xstate_size = sw_bytes.xstate_size;
-+
-+		sw_bytes.xfeatures = xfeatures_mask_uabi();
-+		sw_bytes.xstate_size = current_xstate_size;
-+		sw_bytes.extended_size += (current_xstate_size - default_xstate_size);
-+	}
-+	err = __copy_to_user(&x->i387.sw_reserved, &sw_bytes, sizeof(sw_bytes));
- 
- 	if (!use_xsave())
- 		return err;
- 
--	err |= __put_user(FP_XSTATE_MAGIC2,
--			  (__u32 __user *)(buf + get_xstate_config(XSTATE_USER_SIZE)));
-+	err |= __put_user(FP_XSTATE_MAGIC2, (__u32 __user *)(buf + current_xstate_size));
- 
- 	/*
- 	 * Read the xfeatures which we copied (directly from the cpu or
-@@ -144,7 +176,7 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
- 	else
- 		err = fnsave_to_user_sigframe((struct fregs_state __user *) buf);
- 
--	if (unlikely(err) && __clear_user(buf, get_xstate_config(XSTATE_USER_SIZE)))
-+	if (unlikely(err) && __clear_user(buf, current_sig_xstate_size()))
- 		err = -EFAULT;
- 	return err;
- }
-@@ -205,7 +237,7 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
- 	fpregs_unlock();
- 
- 	if (ret) {
--		if (!fault_in_pages_writeable(buf_fx, get_xstate_config(XSTATE_USER_SIZE)))
-+		if (!fault_in_pages_writeable(buf_fx, current_sig_xstate_size()))
- 			goto retry;
- 		return -EFAULT;
- 	}
-@@ -418,19 +450,13 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 	fpregs_unlock();
- 	return ret;
- }
--static inline int xstate_sigframe_size(void)
--{
--	int xstate_size = get_xstate_config(XSTATE_USER_SIZE);
--
--	return use_xsave() ? xstate_size + FP_XSTATE_MAGIC2_SIZE : xstate_size;
--}
- 
- /*
-  * Restore FPU state from a sigframe:
-  */
- int fpu__restore_sig(void __user *buf, int ia32_frame)
- {
--	unsigned int size = xstate_sigframe_size();
-+	unsigned int size = extend_sig_xstate_size(current_sig_xstate_size());
- 	struct fpu *fpu = &current->thread.fpu;
- 	void __user *buf_fx = buf;
- 	bool ia32_fxstate = false;
-@@ -477,7 +503,7 @@ unsigned long
- fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
- 		     unsigned long *buf_fx, unsigned long *size)
- {
--	unsigned long frame_size = xstate_sigframe_size();
-+	unsigned long frame_size = extend_sig_xstate_size(current_sig_xstate_size());
- 
- 	*buf_fx = sp = round_down(sp - frame_size, 64);
- 	if (ia32_frame && use_fxsr()) {
-@@ -490,9 +516,14 @@ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
- 	return sp;
- }
- 
-+/**
-+ * fpu__get_fpstate_size() - calculate the fpstate size reserved for signal frame.
-+ *
-+ * Returns:	The maximum possible fpstate size.
-+ */
- unsigned long fpu__get_fpstate_size(void)
- {
--	unsigned long ret = xstate_sigframe_size();
-+	unsigned long ret = extend_sig_xstate_size(get_xstate_config(XSTATE_USER_SIZE));
- 
- 	/*
- 	 * This space is needed on (most) 32-bit kernels, or when a 32-bit
-@@ -517,12 +548,12 @@ unsigned long fpu__get_fpstate_size(void)
-  */
- void fpu__init_prepare_fx_sw_frame(void)
- {
--	int xstate_size = get_xstate_config(XSTATE_USER_SIZE);
-+	int xstate_size = get_xstate_config(XSTATE_USER_MINSIG_SIZE);
- 	int ext_size = xstate_size + FP_XSTATE_MAGIC2_SIZE;
- 
- 	fx_sw_reserved.magic1 = FP_XSTATE_MAGIC1;
- 	fx_sw_reserved.extended_size = ext_size;
--	fx_sw_reserved.xfeatures = xfeatures_mask_uabi();
-+	fx_sw_reserved.xfeatures = xfeatures_mask_uabi() & ~xfeatures_mask_user_dynamic;
- 	fx_sw_reserved.xstate_size = xstate_size;
- 
- 	if (IS_ENABLED(CONFIG_IA32_EMULATION) ||
+Changes from v4:
+* Simplified the implementation. (Thomas Gleixner)
+* Updated the patch title accordingly.
+
+Changes from v1:
+* Rebased on the upstream kernel (5.10)
+---
+ arch/x86/kernel/fpu/xstate.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 9b16ae2fca85..a9741e0be387 100644
+index a9741e0be387..3e71aa45c5b7 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -92,11 +92,14 @@ static bool xstate_aligns[XFEATURE_MAX] __ro_after_init =
-  *				expanded to the max size.  The two sizes are the same when using the
-  *				standard format.
-  * @user_size:			The size of the userspace buffer. The buffer is always in the
-- *				standard format. It is used for signal and ptrace frames.
-+ *				standard format. It is used for signal (maximum size) and ptrace
-+ *				frames.
-+ * @user_minsig_size:		The minimum xstate buffer size for signal. It is intended for non-
-+ *				opt-in threads, without a successful ARCH_XSTATE_PERM arch prctl.
-  */
- struct fpu_xstate_buffer_config {
- 	unsigned int min_size, max_size;
--	unsigned int user_size;
-+	unsigned int user_size, user_minsig_size;
+@@ -43,18 +43,17 @@ static const char *xfeature_names[] =
+ 	"unknown xstate feature"	,
  };
  
- static struct fpu_xstate_buffer_config buffer_config __ro_after_init;
-@@ -110,6 +113,8 @@ unsigned int get_xstate_config(enum xstate_config cfg)
- 		return buffer_config.max_size;
- 	case XSTATE_USER_SIZE:
- 		return buffer_config.user_size;
-+	case XSTATE_USER_MINSIG_SIZE:
-+		return buffer_config.user_minsig_size;
- 	default:
- 		return 0;
- 	}
-@@ -127,6 +132,9 @@ void set_xstate_config(enum xstate_config cfg, unsigned int value)
- 		break;
- 	case XSTATE_USER_SIZE:
- 		buffer_config.user_size = value;
-+		break;
-+	case XSTATE_USER_MINSIG_SIZE:
-+		buffer_config.user_minsig_size = value;
- 	}
- }
+-static short xsave_cpuid_features[] __initdata = {
+-	X86_FEATURE_FPU,
+-	X86_FEATURE_XMM,
+-	X86_FEATURE_AVX,
+-	X86_FEATURE_MPX,
+-	X86_FEATURE_MPX,
+-	X86_FEATURE_AVX512F,
+-	X86_FEATURE_AVX512F,
+-	X86_FEATURE_AVX512F,
+-	X86_FEATURE_INTEL_PT,
+-	X86_FEATURE_PKU,
+-	X86_FEATURE_ENQCMD,
++static unsigned short xsave_cpuid_features[] __initdata = {
++	[XFEATURE_SSE]				= X86_FEATURE_XMM,
++	[XFEATURE_YMM]				= X86_FEATURE_AVX,
++	[XFEATURE_BNDREGS]			= X86_FEATURE_MPX,
++	[XFEATURE_BNDCSR]			= X86_FEATURE_MPX,
++	[XFEATURE_OPMASK]			= X86_FEATURE_AVX512F,
++	[XFEATURE_ZMM_Hi256]			= X86_FEATURE_AVX512F,
++	[XFEATURE_Hi16_ZMM]			= X86_FEATURE_AVX512F,
++	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
++	[XFEATURE_PKRU]				= X86_FEATURE_PKU,
++	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
+ };
  
-@@ -877,6 +885,21 @@ static int __init init_xstate_size(void)
- 	 * User space is always in standard format.
+ /*
+@@ -973,7 +972,8 @@ void __init fpu__init_system_xstate(void)
+ 	 * Clear XSAVE features that are disabled in the normal CPUID.
  	 */
- 	set_xstate_config(XSTATE_USER_SIZE, xsave_size);
-+
-+	/*
-+	 * The minimum signal xstate size is for non-opt-in user threads when
-+	 * any dynamic user state is enabled. This size excludes dynamic states.
-+	 */
-+	if (xfeatures_mask_user_dynamic) {
-+		int nr = fls64(xfeatures_mask_uabi() & ~xfeatures_mask_user_dynamic) - 1;
-+		unsigned int size, offset, ecx, edx;
-+
-+		cpuid_count(XSTATE_CPUID, nr, &size, &offset, &ecx, &edx);
-+		set_xstate_config(XSTATE_USER_MINSIG_SIZE, offset + size);
-+	} else {
-+		set_xstate_config(XSTATE_USER_MINSIG_SIZE, xsave_size);
-+	}
-+
- 	return 0;
- }
+ 	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+-		if (!boot_cpu_has(xsave_cpuid_features[i]))
++		if (((i == 0) || xsave_cpuid_features[i]) &&
++		    !boot_cpu_has(xsave_cpuid_features[i]))
+ 			xfeatures_mask_all &= ~BIT_ULL(i);
+ 	}
  
 -- 
 2.17.1
