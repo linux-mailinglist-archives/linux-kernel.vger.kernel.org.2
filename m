@@ -2,79 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC583B7EAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08F43B7EB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhF3IKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:10:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51495 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232966AbhF3IKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:10:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208129836"
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="208129836"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 01:07:33 -0700
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="641620819"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 01:07:28 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lyVFj-006W5i-Cc; Wed, 30 Jun 2021 11:07:23 +0300
-Date:   Wed, 30 Jun 2021 11:07:23 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jie Deng <jie.deng@intel.com>, Wolfram Sang <wsa@kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, conghui.chen@intel.com,
-        kblaiech@mellanox.com, jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNwmO0LhcS//hvc5@smile.fi.intel.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <05cc9484-f97b-0533-64fe-ff917c6b87ee@intel.com>
- <YNwd/t3DMKSOrTAT@ninjato>
- <3016ab8b-cbff-1309-6a1f-080703a4130f@intel.com>
- <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
+        id S233304AbhF3IKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:10:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233127AbhF3IKa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:10:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625040482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=spXMVCuw6N13xLjcZGemYJM/fS6G+xh95O5x4vR27TA=;
+        b=OWR0TFQKbwRRrRFQdmmtbq6QQrvoe53uEI+PzplIStXMHP1/mnI59qEQX0SAFdX1dXoJ76
+        DLqMZ0IItq4d9RNkZusg2qMIKcF+FGYWprAoYJexTl4qA15v4WA0nt4hdIMoBCXDDd06rm
+        FlV+l+r8Hn7YKQdvHX/VfaJQWqeRO2U=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182-q0bTb4EZPTik-u2Y84fIuQ-1; Wed, 30 Jun 2021 04:08:00 -0400
+X-MC-Unique: q0bTb4EZPTik-u2Y84fIuQ-1
+Received: by mail-wr1-f70.google.com with SMTP id x8-20020a5d54c80000b029012583535285so561234wrv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:08:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=spXMVCuw6N13xLjcZGemYJM/fS6G+xh95O5x4vR27TA=;
+        b=Hyz+DklzgAuoq+ThwtD82/PUIQw/OQicFvTeTg1BDB053rVlI7qRRqGJJ9amde9rNR
+         ik0U10GaoPsW9/3a/MptDej2egjrIUNGz6V+lSwG8EhyVoquTHkFrD/zE9fSEDQ+f1B5
+         XROs18zYTVm4I2yozhOOTLeiT/ZM1ANwtLIn+U2QqhRTyZ25UZ/gDL9GPJei1YCaB/7m
+         rUGs/IOTehDZcomUDzGej4ij19arXdiUf8YvbeiCVFPLSCx+ZYZ3I0r6jKCxtLKJL8by
+         qqfU2dWsjZc3h8iNADw0JFU/g7XGOLbgx5PnOqks7rSql3SzcRlC+SNeFs96MiXmo8bc
+         OmAA==
+X-Gm-Message-State: AOAM530KNNniCwNounjLjM6wvByVKILaCw1ckV+4EYnBe7ZAdc7gejpt
+        AMpnZCvsU6XOZj3hcCQSX2t5tIHTl3185krij/vg/BQZ2Qp0yPty94LnrZHXktOOPQNosi4OJ2f
+        9wh2XSZrXA1bbxmr70lObjITh
+X-Received: by 2002:a05:600c:4f8a:: with SMTP id n10mr3045913wmq.11.1625040479481;
+        Wed, 30 Jun 2021 01:07:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhZXi0exlmVWXNW1b1HA6azTiENG2juGHvNPkDsRCdeTCmLeynlOmWabasKRpCJAXel/C2Tw==
+X-Received: by 2002:a05:600c:4f8a:: with SMTP id n10mr3045884wmq.11.1625040479197;
+        Wed, 30 Jun 2021 01:07:59 -0700 (PDT)
+Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
+        by smtp.gmail.com with ESMTPSA id m7sm22064425wrv.35.2021.06.30.01.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 01:07:58 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 09:07:56 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Daniel Walsh <dwalsh@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <YNwmXOqT7LgbeVPn@work-vm>
+References: <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
+ <YNn4p+Zn444Sc4V+@work-vm>
+ <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
+ <YNrhQ9XfcHTtM6QA@work-vm>
+ <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+ <20210629152007.GC5231@redhat.com>
+ <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
+ <20210629173530.GD5231@redhat.com>
+ <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
+ <YNvvLIv16jY8mfP8@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNvvLIv16jY8mfP8@mit.edu>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:55:49AM +0200, Arnd Bergmann wrote:
-> On Wed, Jun 30, 2021 at 9:51 AM Jie Deng <jie.deng@intel.com> wrote:
+* Theodore Ts'o (tytso@mit.edu) wrote:
+> On Tue, Jun 29, 2021 at 04:28:24PM -0400, Daniel Walsh wrote:
+> > All this conversation is great, and I look forward to a better solution, but
+> > if we go back to the patch, it was to fix an issue where the kernel is
+> > requiring CAP_SYS_ADMIN for writing user Xattrs on link files and other
+> > special files.
+> > 
+> > The documented reason for this is to prevent the users from using XATTRS to
+> > avoid quota.
+> 
+> Huh?  Where is it so documented?
 
-...
+man xattr(7):
 
-> On a related note, we are apparently still missing the bit in the virtio bus
-> layer that fills in the dev->of_node pointer of the virtio device. Without
-> this, it is not actually possible to automatically probe i2c devices connected
-> to a virtio-i2c bus. The same problem came up again with the virtio-gpio
-> driver that suffers from the same issue.
+       The  file permission bits of regular files and directories are
+       interpreted differently from the file permission bits of special
+       files and symbolic links.  For regular files and directories the
+       file permission bits define ac‐ cess to the file's contents,
+       while for device special files they define access to the device
+       described by the special file.  The file permissions of symbolic
+       links are not used in access checks. *** These differences would
+       al‐ low users to consume filesystem resources in a way not
+       controllable by disk quotas for group or world writable special
+       files and directories.****
 
-Don't we need to take care about fwnode handle as well?
+       ***For  this reason, user extended attributes are allowed only
+       for regular files and directories ***, and access to user extended
+       attributes is restricted to the owner and to users with appropriate
+       capabilities for directories with the sticky bit set (see the
+       chmod(1) manual page for an explanation of the sticky bit).
 
+(***'s my addition)
+
+
+Dave
+
+>  How file systems store and account
+> for space used by extended attributes is a file-system specific
+> question, but presumably any way that xattr's on regular files are
+> accounted could also be used for xattr's on special files.
+> 
+> Also, xattr's are limited to 32k, so it's not like users can evade
+> _that_ much quota space, at least not without it being pretty painful.
+> (Assuming that quota is even enabled, which most of the time, it
+> isn't.)
+> 
+> 						- Ted
+> 
+> P.S.  I'll note that if ext4's ea_in_inode is enabled, for large
+> xattr's, if you have 2 million files that all have the same 12k
+> windows SID stored as an xattr, ext4 will store that xattr only once.
+> Those two million files might be owned by different uids, so we made
+> an explicit design choice not to worry about accounting for the quota
+> for said 12k xattr value.  After all, if you can save the space and
+> access cost of 2M * 12k if each file had to store its own copy of that
+> xattr, perhaps not including it in the quota calculation isn't that
+> bad.  :-)
+> 
+> We also don't account for the disk space used by symbolic links (since
+> sometimes they can be stored in the inode as fast symlinks, and
+> sometimes they might consume a data block).  But again, that's a file
+> system specific implementation question.
+> 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
