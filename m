@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB32F3B85B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E548B3B85BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhF3PFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:05:35 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45646 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbhF3PFc (ORCPT
+        id S235687AbhF3PIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:08:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48990 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235352AbhF3PIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:05:32 -0400
-Received: from [192.168.86.23] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 17B5220B7188;
-        Wed, 30 Jun 2021 08:03:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 17B5220B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625065383;
-        bh=1A02Vb1b0hWl2fsJJswCKDtOOcqlivyCit8PUhlwAU4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Go8xRQTHsSWhZIKZ1FtjNlG7k3rULbb589ryayPmFbnQFelG5VYc86izQWQaCd1+N
-         z7o7C3aV9S1sKGMFeVAewa9ntrbeX+SfuoeeB5xM+Y4Y+OMI3pyqHy8VeIO3vYih6G
-         FszfrRg+vL0jjL/nzoJipPaRcQ1zx0Ardlhn2Jdc=
-Subject: Re: [PATCH 06/17] mshv: SynIC port and connection hypercalls
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-References: <cover.1622654100.git.viremana@linux.microsoft.com>
- <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
- <20210630111048.xn3gbht33inx2luh@liuwe-devbox-debian-v2>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <50df2b12-18a6-8a11-f57a-d1e4bc04e9cd@linux.microsoft.com>
-Date:   Wed, 30 Jun 2021 11:03:05 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 11:08:40 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3115222770;
+        Wed, 30 Jun 2021 15:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625065570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
+        b=i8j3M07faKq9TQBenVIfdZmIALxxxTu7PENlW3xjdfHTWN0l/Eqvg23R0Lp/PyHD/zLyiZ
+        nPHsgkm6TDd+LwDXm9GNcqRNV3xG6h/ef+6SU+nZyX1k1UUA/1pjAljHDYF0EDpShdXNG6
+        SMFjl6xAYo2xvWkN47uboGENzC/42AI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625065570;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
+        b=398dourgC4zMm+NCPvIKaN3ye7FhTwm6y7xRyFthUtb//n1BCl4M6siuOUIiKm5LLjCdnT
+        8geb4pFyLXxrmyBg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A762F118DD;
+        Wed, 30 Jun 2021 15:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625065570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
+        b=i8j3M07faKq9TQBenVIfdZmIALxxxTu7PENlW3xjdfHTWN0l/Eqvg23R0Lp/PyHD/zLyiZ
+        nPHsgkm6TDd+LwDXm9GNcqRNV3xG6h/ef+6SU+nZyX1k1UUA/1pjAljHDYF0EDpShdXNG6
+        SMFjl6xAYo2xvWkN47uboGENzC/42AI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625065570;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e83E/uBs3EEaF5PdmWJZN8o1DNeX+cP8Kros1I/iaIM=;
+        b=398dourgC4zMm+NCPvIKaN3ye7FhTwm6y7xRyFthUtb//n1BCl4M6siuOUIiKm5LLjCdnT
+        8geb4pFyLXxrmyBg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id HM16JWGI3GBINAAALh3uQQ
+        (envelope-from <lhenriques@suse.de>); Wed, 30 Jun 2021 15:06:09 +0000
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 02e01176;
+        Wed, 30 Jun 2021 15:06:08 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 16:06:08 +0100
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Petr Vorel <pvorel@suse.cz>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v10] vfs: fix copy_file_range regression in cross-fs
+ copies
+Message-ID: <YNyIYNpcy2WsnUnu@suse.de>
+References: <20210630134449.16851-1-lhenriques@suse.de>
+ <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210630111048.xn3gbht33inx2luh@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxi6pMEehkXWAk=vzx3mZAfcxwVPvFs9W7LM2CfgBkZWxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 30, 2021 at 05:56:34PM +0300, Amir Goldstein wrote:
+> On Wed, Jun 30, 2021 at 4:44 PM Luis Henriques <lhenriques@suse.de> wrote:
+> >
+> > A regression has been reported by Nicolas Boichat, found while using the
+> > copy_file_range syscall to copy a tracefs file.  Before commit
+> > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> > kernel would return -EXDEV to userspace when trying to copy a file across
+> > different filesystems.  After this commit, the syscall doesn't fail anymore
+> > and instead returns zero (zero bytes copied), as this file's content is
+> > generated on-the-fly and thus reports a size of zero.
+> >
+> > This patch restores some cross-filesystem copy restrictions that existed
+> > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> > devices").  Filesystems are still allowed to fall-back to the VFS
+> > generic_copy_file_range() implementation, but that has now to be done
+> > explicitly.
+> >
+> > nfsd is also modified to fall-back into generic_copy_file_range() in case
+> > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> >
+> > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > ---
+> > Changes since v9
+> > - the early return from the syscall when len is zero now checks if the
+> >   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
+> >   otherwise.  Issue reported by test robot.
+> 
+> What issue was reported?
 
->> +
->> +int
->> +hv_call_create_port(u64 port_partition_id, union hv_port_id port_id,
->> +		    u64 connection_partition_id,
->> +		    struct hv_port_info *port_info,
->> +		    u8 port_vtl, u8 min_connection_vtl, int node)
->> +{
->> +	struct hv_create_port *input;
->> +	unsigned long flags;
->> +	int ret = 0;
->> +	int status;
->> +
->> +	do {
->> +		local_irq_save(flags);
->> +		input = (struct hv_create_port *)(*this_cpu_ptr(
->> +				hyperv_pcpu_input_arg));
->> +		memset(input, 0, sizeof(*input));
->> +
->> +		input->port_partition_id = port_partition_id;
->> +		input->port_id = port_id;
->> +		input->connection_partition_id = connection_partition_id;
->> +		input->port_info = *port_info;
->> +		input->port_vtl = port_vtl;
->> +		input->min_connection_vtl = min_connection_vtl;
->> +		input->proximity_domain_info =
->> +			numa_node_to_proximity_domain_info(node);
-> This misses the check for NUMA_NO_NODE, so does the function for port
-> connection (see below).
->
-> I think it would actually be better to leave the check in
-> numa_node_to_proximity_domain_info to avoid problems like this.
->
-> Of course, adapting this approach means some call sites for that
-> function will need to be changed too.
-Thanks for catching this and fixing Wei, will roll it into my branch.
+Here's the link to my previous email:
 
-~Vineeth
+https://lore.kernel.org/linux-fsdevel/877dk1zibo.fsf@suse.de/
 
+... which reminds me that I need to also send a patch to fix the fstest.
+(Although the test as-is actually allowed to find this bug...)
 
->
-> ---8<---
-> >From 8705857c62b3e5f13d415736ca8b508c22e3f5ba Mon Sep 17 00:00:00 2001
-> From: Wei Liu <wei.liu@kernel.org>
-> Date: Wed, 30 Jun 2021 11:08:31 +0000
-> Subject: [PATCH] numa_node_to_proximity_domain_info should cope with
->   NUMA_NO_NODE
->
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
->   include/asm-generic/mshyperv.h | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-> index d9b91b8f63c8..44552b7a02ef 100644
-> --- a/include/asm-generic/mshyperv.h
-> +++ b/include/asm-generic/mshyperv.h
-> @@ -31,10 +31,14 @@ numa_node_to_proximity_domain_info(int node)
->   {
->   	union hv_proximity_domain_info proximity_domain_info;
->   
-> -	proximity_domain_info.domain_id = node_to_pxm(node);
-> -	proximity_domain_info.flags.reserved = 0;
-> -	proximity_domain_info.flags.proximity_info_valid = 1;
-> -	proximity_domain_info.flags.proximity_preferred = 1;
-> +	proximity_domain_info.as_uint64 = 0;
-> +
-> +	if (node != NUMA_NO_NODE) {
-> +		proximity_domain_info.domain_id = node_to_pxm(node);
-> +		proximity_domain_info.flags.reserved = 0;
-> +		proximity_domain_info.flags.proximity_info_valid = 1;
-> +		proximity_domain_info.flags.proximity_preferred = 1;
-> +	}
->   
->   	return proximity_domain_info;
->   }
+Cheers,
+--
+Luís
