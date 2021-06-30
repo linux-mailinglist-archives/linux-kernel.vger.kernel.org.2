@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457023B7DCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6943B7DD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbhF3HF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S232752AbhF3HJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhF3HFZ (ORCPT
+        with ESMTP id S232598AbhF3HJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:05:25 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306CDC061766;
-        Wed, 30 Jun 2021 00:02:56 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id c20so618764uar.12;
-        Wed, 30 Jun 2021 00:02:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DWGJQjLPHSCbQm/Yojx5qSO/ziuBYx37jmq+GyBBQNA=;
-        b=NRSymyDmOFevXISrQD3H5aC2pmJ6AvTmWud+3xO6T5O2wvFj+vqFmQ1bd4TL9qyvRH
-         rYtv3y3KDLfgQjQ1i1t5WJsQd3qSgLQwLgQisQTKENnPkk+86N+QISP02Qhh2n4PzA1H
-         RA4FsznmVS6Lf7j9EUQypfp+Y401dXqSzp8nqNYPxHAjjbHxz2PrPxGozTyGVFtX8Ycg
-         PRF29KJaC55AAv07F58A7UR/z/hOwVH0m7dOmmDIPOXQ1VZf03hSa2K6CsnYVCtn8TTf
-         326E6AG82FdSH7WpmR0LLSXJ/KFAgHpClrWpwKcPbpRKdBexW79Uh3p/CWEKFVGRkhXR
-         qWag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DWGJQjLPHSCbQm/Yojx5qSO/ziuBYx37jmq+GyBBQNA=;
-        b=k7G9UCskDvr0YBPu6yWhr4L/lMhd2jNLhztX0FD6biDT8DkjLBOEg7Fj1FyaTD893o
-         Q7QbIAp4GPEutDuByApON5807N7kZfG6LkChF56tRIhZIFWet9f4a2bk2uMGfgRSrPEr
-         J0YCh5GhLhscN5OGi/MZHPUlQA1KJbCCucSs+9x0KdDRMFvjD95lP0ufh2CsfwOb8cvi
-         i5QDQL0jMTO2mefEylscZjgL9/eK7K/HQTuw9lxnhrJCPWWLgF73g1mGMI9F1OyoswDG
-         bEW0VDUs3li1BJlP9OEI8WmY8hawPPn0pGpdmcgg/cmJTbJOnZgFcVRY+50od4oTmbKL
-         XYNA==
-X-Gm-Message-State: AOAM532PiizCYpMV8BXEYhfNwJIR9OSWtqDaEfnHxtVYx93Y4XmDXe4b
-        ILxk/XyDsVgE2Xn96X3QU3i3GA6XQFzy8ZzscXI=
-X-Google-Smtp-Source: ABdhPJwYoGKIfotZeQTeYk/Fps+YEiMMdTjYBiQq8rzg4yQdxhpX9sPXUqSrgq0gFfUdpgg66wWjoHgyfiEgZAhLJ+Q=
-X-Received: by 2002:ab0:36da:: with SMTP id v26mr14995990uau.118.1625036575349;
- Wed, 30 Jun 2021 00:02:55 -0700 (PDT)
+        Wed, 30 Jun 2021 03:09:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947D4C061766;
+        Wed, 30 Jun 2021 00:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dsmF65Hp+Uqc28Sl8LwGXWskjtwe7+DI92hwHXbQkFA=; b=GIxFrLBhO6vSrFlIovAS3oKhAk
+        2Lz/EWmV4MXClGxqw8kfRDKlmi2GtdV0uLz8GInzsTYbp/j6OaWyhAKVo1eo4a9b8H2/k56EKbDvV
+        y2GtJ+TR5lnwszsDINs9HafiqdqlixqmpVUDT5RFgxU2QLLv+/cho+grL+1Vc0g8+2/SlnePBKOG7
+        OLho8hViHIYAx4TUPolbnmtBlBALFzfpGJ4VyBleE5rlmpssM7wYM8+dhx4YMPSsVXI8Z8G2kF82i
+        JQuions/tMg957LyjA2UxTSvzyqVxDMuHCys225WIfNum1nPw/BR1E6gHvktOeYDO7jdCSD6Jd991
+        piooUF5A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyUI0-0051Ka-BD; Wed, 30 Jun 2021 07:05:46 +0000
+Date:   Wed, 30 Jun 2021 08:05:40 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <YNwXxAEIRz5t631E@infradead.org>
+References: <20210602173510.GE1002214@nvidia.com>
+ <20210602120111.5e5bcf93.alex.williamson@redhat.com>
+ <20210602180925.GH1002214@nvidia.com>
+ <20210602130053.615db578.alex.williamson@redhat.com>
+ <20210602195404.GI1002214@nvidia.com>
+ <20210602143734.72fb4fa4.alex.williamson@redhat.com>
+ <6a9426d7-ed55-e006-9c4c-6b7c78142e39@redhat.com>
+ <20210603130927.GZ1002214@nvidia.com>
+ <65614634-1db4-7119-1a90-64ba5c6e9042@redhat.com>
+ <20210604115805.GG1002214@nvidia.com>
 MIME-Version: 1.0
-References: <20210629161738.936790-1-glider@google.com>
-In-Reply-To: <20210629161738.936790-1-glider@google.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Wed, 30 Jun 2021 12:32:43 +0530
-Message-ID: <CAFqt6zZ8ZL8WtTg368VJ0WHjXc+YzMuA9D8OBXJ5T9j0ePctQQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kfence: skip DMA allocations
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>, elver@google.com,
-        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        stable@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604115805.GG1002214@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 9:47 PM Alexander Potapenko <glider@google.com> wrote:
->
-> Allocation requests with __GFP_DMA/__GFP_DMA32 or
-> SLAB_CACHE_DMA/SLAB_CACHE_DMA32 cannot be fulfilled by KFENCE, because
-> they must reside in low memory, whereas KFENCE memory pool is located in
-> high memory.
->
-> Skip such allocations to avoid crashes where DMAable memory is expected.
->
-> Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: stable@vger.kernel.org # 5.12+
-> Signed-off-by: Alexander Potapenko <glider@google.com>
->
-> ---
->
-> v2:
->  - added parentheses around the GFP clause, as requested by Marco
-> ---
->  mm/kfence/core.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 4d21ac44d5d35..f7ce3d876bc9e 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -760,6 +760,14 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
->         if (size > PAGE_SIZE)
->                 return NULL;
->
-> +       /*
-> +        * Skip DMA allocations. These must reside in the low memory, which we
-> +        * cannot guarantee.
-> +        */
-> +       if ((flags & (__GFP_DMA | __GFP_DMA32)) ||
-> +           (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
-> +               return NULL;
-> +
+On Fri, Jun 04, 2021 at 08:58:05AM -0300, Jason Gunthorpe wrote:
+> On Fri, Jun 04, 2021 at 09:11:03AM +0800, Jason Wang wrote:
+> > > nor do any virtio drivers implement the required platform specific
+> > > cache flushing to make no-snoop TLPs work.
+> > 
+> > I don't get why virtio drivers needs to do that. I think DMA API should hide
+> > those arch/platform specific stuffs from us.
+> 
+> It is not arch/platform stuff. If the device uses no-snoop then a
+> very platform specific recovery is required in the device driver.
 
-I prefer to move this check at the top of the function.
-Although it won't make much difference except avoiding atomic operations
-in case this condition is true.
-
->         return kfence_guarded_alloc(s, size, flags);
->  }
->
-> --
-> 2.32.0.93.g670b81a890-goog
->
->
+Well, the proper way to support NO_SNOOP DMA would be to force the
+DMA API into supporting the device as if the platform was not DMA
+coherent, probably on a per-call basis.  It is just that no one bothered
+to actually do the work an people just kept piling hacks over hacks.
