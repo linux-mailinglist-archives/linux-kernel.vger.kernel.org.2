@@ -2,213 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32D03B81FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12723B8205
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhF3MYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:24:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:11104 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234627AbhF3MYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:24:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="293973846"
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="293973846"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 05:21:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="419972979"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 05:21:37 -0700
-Subject: Re: [PATCH] [RESEND] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Renius Chen <reniuschengl@gmail.com>, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben.Chuang@genesyslogic.com.tw
-References: <20210624032543.101861-1-reniuschengl@gmail.com>
- <916ea01b-4265-0964-9139-8f50b80ea66e@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9d720c5d-f15b-ff4f-ec42-77907b419f1b@intel.com>
-Date:   Wed, 30 Jun 2021 15:21:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234603AbhF3MYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:24:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60310 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234507AbhF3MYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:24:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 89462226F9;
+        Wed, 30 Jun 2021 12:22:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625055728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jy9BUnnL9F4MU2WhkG8c4GL66SNmDqJ6jDqN3uAgDRg=;
+        b=Wvb5ZzhZYyujUgG5/ndOGyrXHa6nuv/37LimXf4fJjhnFF1SLhtKTP3v1Zp01GJzK5BJ2R
+        G8YmkcX2a9fEuckIv4jYOZvUCsCH6bSnITCJiHwJ+gymd2RTQVnkPnpJy24U5ben1NVDi4
+        qP7FxhuqHkGHj1ceUp9W5Wb3lPtIXaI=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4FF10A3B8E;
+        Wed, 30 Jun 2021 12:22:08 +0000 (UTC)
+Date:   Wed, 30 Jun 2021 14:22:07 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Hui Su <suhui@zeku.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/vmpressure: replace vmpressure_to_css() with
+ vmpressure_to_memcg()
+Message-ID: <YNxh72LydwZPE4qY@dhcp22.suse.cz>
+References: <20210630112146.455103-1-suhui@zeku.com>
 MIME-Version: 1.0
-In-Reply-To: <916ea01b-4265-0964-9139-8f50b80ea66e@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630112146.455103-1-suhui@zeku.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/06/21 3:18 pm, Adrian Hunter wrote:
-> On 24/06/21 6:25 am, Renius Chen wrote:
->> During a sequence of random 4K read operations, the performance will be
->> reduced due to spending much time on entering/exiting the low power state
->> between requests. We disable the low power state negotiation of GL9763E
->> during a sequence of random 4K read operations to improve the performance
->> and enable it again after the operations have finished.
->>
->> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
->> ---
->>  drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
->>  1 file changed, 86 insertions(+)
->>
->> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
->> index 302a7579a9b3..0105f728ccc4 100644
->> --- a/drivers/mmc/host/sdhci-pci-gli.c
->> +++ b/drivers/mmc/host/sdhci-pci-gli.c
->> @@ -88,6 +88,9 @@
->>  #define PCIE_GLI_9763E_SCR	 0x8E0
->>  #define   GLI_9763E_SCR_AXI_REQ	   BIT(9)
->>  
->> +#define PCIE_GLI_9763E_CFG       0x8A0
->> +#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
->> +
->>  #define PCIE_GLI_9763E_CFG2      0x8A4
->>  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
->>  #define   GLI_9763E_CFG2_L1DLY_MID 0x54
->> @@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host *mmc)
->>  	sdhci_dumpregs(mmc_priv(mmc));
->>  }
->>  
->> +static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *mrq)
->> +{
->> +	struct sdhci_host *host = mmc_priv(mmc);
->> +	struct mmc_command *cmd;
->> +	struct sdhci_pci_slot *slot = sdhci_priv(host);
->> +	struct pci_dev *pdev = slot->chip->pdev;
->> +	u32 value;
->> +	static bool start_4k_r;
->> +	static int  continuous_4k_r;
-> 
-> Please do not use static variables.  Instead define a struct for them and
-> set .priv_size in sdhci_pci_fixes e.g.
-> 
-> struct sdhci_pci_gli {
-> 	static bool start_4k_r;
-> 	static int  continuous_4k_r;
-> };
+On Wed 30-06-21 19:21:46, Hui Su wrote:
+> We can get memcg directly form vmpr instead of vmpr->memcg->css->memcg,
+> so add a new func helper vmpressure_to_memcg().
+> And no code will use vmpressure_to_css(), so delete it.
 
-Cut'n'pasted without paying attention.  This was meant to be:
+Nice cleanup.
 
-struct sdhci_pci_gli {
-	bool start_4k_r;
-	int  continuous_4k_r;
-};
+> Signed-off-by: Hui Su <suhui@zeku.com>
 
-> 
-> const struct sdhci_pci_fixes sdhci_gl9763e = {
-> 	.quirks		= SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC,
-> 	.probe_slot	= gli_probe_slot_gl9763e,
-> 	.ops            = &sdhci_gl9763e_ops,
-> #ifdef CONFIG_PM_SLEEP
-> 	.resume		= sdhci_cqhci_gli_resume,
-> 	.suspend	= sdhci_cqhci_gli_suspend,
-> #endif
-> 	.add_host       = gl9763e_add_host,
-> 	.priv_size      = sizeof(struct sdhci_pci_gli);
-> };
-> 
-> And then you can get a pointer to it:
-> 
-> struct sdhci_pci_gli *sdhci_pci_gli = sdhci_pci_priv(slot);
-> 
-> 
->> +
->> +	cmd = (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sbc : mrq->cmd;
-> 
-> mrq->cmd is always the main command, so why look at mrq->sbc?
-> 
->> +
->> +	if (cmd->opcode == MMC_READ_MULTIPLE_BLOCK) {
->> +		if (cmd->data->blocks == 8) {
->> +			continuous_4k_r++;
->> +
->> +			if ((!start_4k_r) && (continuous_4k_r >= 3)) {
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +				value &= ~GLI_9763E_VHS_REV;
->> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
->> +				value |= GLI_9763E_CFG_LPSN_DIS;
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
->> +
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +				value &= ~GLI_9763E_VHS_REV;
->> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +				start_4k_r = true;
->> +			}
->> +		} else {
->> +			continuous_4k_r = 0;
->> +
->> +			if (start_4k_r) {
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +				value &= ~GLI_9763E_VHS_REV;
->> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
->> +				value &= ~GLI_9763E_CFG_LPSN_DIS;
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
->> +
->> +				pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +				value &= ~GLI_9763E_VHS_REV;
->> +				value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
->> +				pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +				start_4k_r = false;
->> +			}
->> +		}
->> +	} else {
->> +		continuous_4k_r = 0;
->> +
->> +		if (start_4k_r)	{
->> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +			value &= ~GLI_9763E_VHS_REV;
->> +			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
->> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
->> +			value &= ~GLI_9763E_CFG_LPSN_DIS;
->> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
->> +
->> +			pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
->> +			value &= ~GLI_9763E_VHS_REV;
->> +			value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
->> +			pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->> +
->> +			start_4k_r = false;
->> +		}
-> 
-> The code chunk above is the same as the previous and almost
-> the same as the one before that.  Please make a separate function
-> 
->> +	}
->> +
->> +	sdhci_request(mmc, mrq);
->> +}
->> +
->> +
->>  static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
->>  {
->>  	struct cqhci_host *cq_host = mmc->cqe_private;
->> @@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
->>  	gli_pcie_enable_msi(slot);
->>  	host->mmc_host_ops.hs400_enhanced_strobe =
->>  					gl9763e_hs400_enhanced_strobe;
->> +
->> +	host->mmc_host_ops.request = gl9763e_request;
->> +
->>  	gli_set_gl9763e(slot);
->>  	sdhci_enable_v4_mode(host);
->>  
->>
-> 
+Acked-by: Michal Hocko <mhocko@suse.com>
 
+Thanks!
+> ---
+>  include/linux/vmpressure.h | 2 +-
+>  mm/memcontrol.c            | 4 ++--
+>  mm/vmpressure.c            | 3 +--
+>  3 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/vmpressure.h b/include/linux/vmpressure.h
+> index 6d28bc433c1c..6a2f51ebbfd3 100644
+> --- a/include/linux/vmpressure.h
+> +++ b/include/linux/vmpressure.h
+> @@ -37,7 +37,7 @@ extern void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio);
+>  extern void vmpressure_init(struct vmpressure *vmpr);
+>  extern void vmpressure_cleanup(struct vmpressure *vmpr);
+>  extern struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg);
+> -extern struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr);
+> +extern struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr);
+>  extern int vmpressure_register_event(struct mem_cgroup *memcg,
+>  				     struct eventfd_ctx *eventfd,
+>  				     const char *args);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 64ada9e650a5..62163a9cee63 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -247,9 +247,9 @@ struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
+>  	return &memcg->vmpressure;
+>  }
+>  
+> -struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
+> +struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
+>  {
+> -	return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
+> +	return container_of(vmpr, struct mem_cgroup, vmpressure);
+>  }
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+> diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+> index d69019fc3789..04e81ac6d5d8 100644
+> --- a/mm/vmpressure.c
+> +++ b/mm/vmpressure.c
+> @@ -74,8 +74,7 @@ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
+>  
+>  static struct vmpressure *vmpressure_parent(struct vmpressure *vmpr)
+>  {
+> -	struct cgroup_subsys_state *css = vmpressure_to_css(vmpr);
+> -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> +	struct mem_cgroup *memcg = vmpressure_to_memcg(vmpr);
+>  
+>  	memcg = parent_mem_cgroup(memcg);
+>  	if (!memcg)
+> -- 
+> 2.25.1
+
+-- 
+Michal Hocko
+SUSE Labs
