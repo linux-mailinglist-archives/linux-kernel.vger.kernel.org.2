@@ -2,92 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C803B7EB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983FA3B7EBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhF3IMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        id S233247AbhF3IOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbhF3IMh (ORCPT
+        with ESMTP id S233051AbhF3IOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:12:37 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B1BC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:10:08 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id u14so1462123pga.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:10:08 -0700 (PDT)
+        Wed, 30 Jun 2021 04:14:46 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D23C061766;
+        Wed, 30 Jun 2021 01:12:14 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hc16so2710336ejc.12;
+        Wed, 30 Jun 2021 01:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0XSmPgSj0fdFBLsZJ/VblJqLDOdAGVIaBxvJNyRn2g4=;
-        b=MJpMzqzlsJxICRx0u858aWlaqmetVD04LAxP+sMK1wBPvxziSKZFGEx4+BL8MIbjc3
-         Hr5Ngd1NCyC06X5i6lH5VMc8hk7UphVLMfikFCWHZ276pk6hw9JPfSAh3bQE9CNIgMIf
-         sp05lYhXKa3zFQejjsU9GEM9l7HvLDNqDcKttVhJ2hjEj/jmb5xDnlgn3qBP6oKnmFG6
-         4+vfv4u0PNozX4Z4rl+VF38KXDQU8vvNkv1lb6sRDrTyiODuTTHNlZBE4OPDo74e1Tcc
-         XppAX8ORyCeza9bfWfGlcF1JReo4GUP4k1BmjMxthENQZ5vBMyPbs1ffJrurmLQUjC+N
-         dIHg==
+        bh=zPRdx0QRo7nzdsh8ED97M0eRdszbBRIeqzvVm0DA5wI=;
+        b=Zj/QFMaYYl8hPs4a6H8kudkxgrARZRa3aHjQ9v4gBawGr1Rk44TxYOTokjotD7W+k5
+         ps6palupDfdCkxCVJL/g1XeeW+Ki2wXpumk5u+hpTw5xqrWlofhrYc8XYlk4/574tgEz
+         2eu07GWcZsYGc9BSP52qwdCZ6gnK7UihpsmPRCrLqCL5C7rVEj1TRGyc7yDmOxUnrYJU
+         qm4jqf++hcc+5Zs8aQTqT3BKNpG7aHjEQ3jNett1RV/0kIh5biHz7VnjC6URa1adbkY6
+         5tXo0z6Ds+tI9+FSQTFOQQKl1eS1/dxR8redkVrehmLcpQ1YXQQhRY9t3Z6ncJvB5TIS
+         MtSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0XSmPgSj0fdFBLsZJ/VblJqLDOdAGVIaBxvJNyRn2g4=;
-        b=O0uJyQPwMGDzA5zZKzW5bzi0n4lHl2jFAWdIz+8k9Kzg+lla5SRs7T7qN7pbPZBD5S
-         t+e62t4ggWgphNcLDSShR/qmH6PFMvEAAWaI3DkCdpzGUvEg8CIGpGFx/A4hri81D/Pv
-         mENydFwmD2+g0AnJNJ/JhyARv6zcEwT39uPC1sUq0+4CSFz6vAS+FR8COeoMIg3hSPjb
-         rGn/17ZxuxFmLNkVKu79EPv2Ov5pXUTBbY9mKheqY5Cgb4mcM8ciDWQDMxOkbL/S5RDQ
-         W7T6MduZZqorIk8DpMbQz9lBMuYr5nD1Q+PpkcKhfTGHGDCjKDvULkIAqbgbICQ2Bokn
-         WsZA==
-X-Gm-Message-State: AOAM5323w7QdznqgDy3plbkXL0xX7ALnGt40vk3APl8Qxmo0o5FCTAUV
-        RwDmSoUwRtEBuKno/AFqlIg=
-X-Google-Smtp-Source: ABdhPJxDXXSWiAxwVnsiIDiKm42GRoCNRJwceCMDQiOVS8U3kqdibHcpWBKF5VlTsGXyRItSTOMaig==
-X-Received: by 2002:a65:5346:: with SMTP id w6mr19774241pgr.392.1625040607600;
-        Wed, 30 Jun 2021 01:10:07 -0700 (PDT)
-Received: from ubuntu.localdomain ([218.17.89.92])
-        by smtp.gmail.com with ESMTPSA id 10sm20723080pgl.42.2021.06.30.01.10.05
+        bh=zPRdx0QRo7nzdsh8ED97M0eRdszbBRIeqzvVm0DA5wI=;
+        b=PEQb4UDbCV1A7SXCmmtb6GJTJ/Udr7rPvmjcbNEWv35hHrJdQGZyjDx4g6gD4eAdPj
+         oMOKERwHKumt6Nz3v8vsgfzcfhahyWnAqG2YQQEeD2hnYucRgvKW5FTnEK3/4ge4uKcu
+         iJ12BDTyLtWsXpAjpiadZXG6zeSbBnLVfrBW4kzn0e7tVIsLURO8w9yBQvAIPXIlBP5R
+         6rEY53jRrAk3dFW0XrcpwIWn5yKcwjdTrOKFZbDsmQTAFuxStrMWfu6e+acQG8Q6uUd/
+         eyPIEAJXKDcJD2Bp4YX2kknYiF0AZ1mmdArEXRQheclJLkyvge+rKjFjDUWpoEVGRZpS
+         ah+g==
+X-Gm-Message-State: AOAM533Aux2lVPV9BWRc3ICPmHvISN2Z7Zg08/w7AOxsEfUNgYfa8Gvf
+        9+UKwtZFQwVDguj7mqbscaE=
+X-Google-Smtp-Source: ABdhPJzKTmHtvvcYdXvAc3Zx13bZiN3UQt8ySxYFfBKIElMmfp1fzqt5Ji6wjKmswUBxVBveb4suFA==
+X-Received: by 2002:a17:906:2985:: with SMTP id x5mr33888561eje.438.1625040733002;
+        Wed, 30 Jun 2021 01:12:13 -0700 (PDT)
+Received: from masalkhi.fritz.box (dslb-178-005-073-162.178.005.pools.vodafone-ip.de. [178.5.73.162])
+        by smtp.gmail.com with ESMTPSA id ml14sm9218318ejb.27.2021.06.30.01.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 01:10:07 -0700 (PDT)
-From:   gushengxian <gushengxian507419@gmail.com>
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        gushengxian <gushengxian@yulong.com>
-Subject: [PATCH] ndtest: Remove NULL test before vfree
-Date:   Wed, 30 Jun 2021 01:10:01 -0700
-Message-Id: <20210630081001.1052396-1-gushengxian507419@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 30 Jun 2021 01:12:12 -0700 (PDT)
+From:   Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
+Subject: [PATCH] block: Removed a warning while compiling with a cross compiler for parisc
+Date:   Wed, 30 Jun 2021 10:10:28 +0200
+Message-Id: <20210630081028.161284-1-abd.masalkhi@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.dirty
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+I have compiled the kernel with a cross compiler "hppa-linux-gnu-" on
+x86-64 host machine. I got the follwing warning:
 
-This NULL test is redundant since vfree() checks for NULL.
-Reported by Coccinelle.
+block/genhd.c: In function ‘diskstats_show’:
+block/genhd.c:1227:1: warning: the frame size of 1688 bytes is larger
+than 1280 bytes [-Wframe-larger-than=]
+ 1227  |  }
 
-Signed-off-by: gushengxian <gushengxian@yulong.com>
+The problem was calling seq_printf function with too long argumnets list.
+Therefore, I cut it into two halves. For the second half I have defined
+a function called "print_disk_stats" to print the states of the disk.
+
+Signed-off-by: Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>
 ---
- tools/testing/nvdimm/test/ndtest.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ block/genhd.c | 75 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 34 deletions(-)
 
-diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
-index 6862915f1fb0..b1025c08ba92 100644
---- a/tools/testing/nvdimm/test/ndtest.c
-+++ b/tools/testing/nvdimm/test/ndtest.c
-@@ -487,8 +487,8 @@ static void *ndtest_alloc_resource(struct ndtest_priv *p, size_t size,
- buf_err:
- 	if (__dma && size >= DIMM_SIZE)
- 		gen_pool_free(ndtest_pool, __dma, size);
--	if (buf)
--		vfree(buf);
-+
-+	vfree(buf);
- 	kfree(res);
+diff --git a/block/genhd.c b/block/genhd.c
+index 9f8cb7beaad1..caf5ac8b509f 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1151,6 +1151,44 @@ const struct device_type disk_type = {
+ };
  
- 	return NULL;
+ #ifdef CONFIG_PROC_FS
++
++void print_disk_stats(struct seq_file *seqf,
++		      unsigned int inflight, struct disk_stats *stat)
++{
++	seq_printf(seqf, "%lu %lu %lu %u "
++		   "%lu %lu %lu %u "
++		   "%u %u %u "
++		   "%lu %lu %lu %u "
++		   "%lu %u"
++		   "\n",
++		   stat->ios[STAT_READ],
++		   stat->merges[STAT_READ],
++		   stat->sectors[STAT_READ],
++		   (unsigned int)div_u64(stat->nsecs[STAT_READ],
++					 NSEC_PER_MSEC),
++		   stat->ios[STAT_WRITE],
++		   stat->merges[STAT_WRITE],
++		   stat->sectors[STAT_WRITE],
++		   (unsigned int)div_u64(stat->nsecs[STAT_WRITE],
++					 NSEC_PER_MSEC),
++		   inflight,
++		   jiffies_to_msecs(stat->io_ticks),
++		   (unsigned int)div_u64(stat->nsecs[STAT_READ] +
++					 stat->nsecs[STAT_WRITE] +
++					 stat->nsecs[STAT_DISCARD] +
++					 stat->nsecs[STAT_FLUSH],
++					 NSEC_PER_MSEC),
++		   stat->ios[STAT_DISCARD],
++		   stat->merges[STAT_DISCARD],
++		   stat->sectors[STAT_DISCARD],
++		   (unsigned int)div_u64(stat->nsecs[STAT_DISCARD],
++					 NSEC_PER_MSEC),
++		   stat->ios[STAT_FLUSH],
++		   (unsigned int)div_u64(stat->nsecs[STAT_FLUSH],
++					 NSEC_PER_MSEC)
++		);
++}
++
+ /*
+  * aggregate disk stat collector.  Uses the same stats that the sysfs
+  * entries do, above, but makes them available through one seq_file.
+@@ -1185,41 +1223,10 @@ static int diskstats_show(struct seq_file *seqf, void *v)
+ 		else
+ 			inflight = part_in_flight(hd);
+ 
+-		seq_printf(seqf, "%4d %7d %s "
+-			   "%lu %lu %lu %u "
+-			   "%lu %lu %lu %u "
+-			   "%u %u %u "
+-			   "%lu %lu %lu %u "
+-			   "%lu %u"
+-			   "\n",
++		seq_printf(seqf, "%4d %7d %s ",
+ 			   MAJOR(hd->bd_dev), MINOR(hd->bd_dev),
+-			   disk_name(gp, hd->bd_partno, buf),
+-			   stat.ios[STAT_READ],
+-			   stat.merges[STAT_READ],
+-			   stat.sectors[STAT_READ],
+-			   (unsigned int)div_u64(stat.nsecs[STAT_READ],
+-							NSEC_PER_MSEC),
+-			   stat.ios[STAT_WRITE],
+-			   stat.merges[STAT_WRITE],
+-			   stat.sectors[STAT_WRITE],
+-			   (unsigned int)div_u64(stat.nsecs[STAT_WRITE],
+-							NSEC_PER_MSEC),
+-			   inflight,
+-			   jiffies_to_msecs(stat.io_ticks),
+-			   (unsigned int)div_u64(stat.nsecs[STAT_READ] +
+-						 stat.nsecs[STAT_WRITE] +
+-						 stat.nsecs[STAT_DISCARD] +
+-						 stat.nsecs[STAT_FLUSH],
+-							NSEC_PER_MSEC),
+-			   stat.ios[STAT_DISCARD],
+-			   stat.merges[STAT_DISCARD],
+-			   stat.sectors[STAT_DISCARD],
+-			   (unsigned int)div_u64(stat.nsecs[STAT_DISCARD],
+-						 NSEC_PER_MSEC),
+-			   stat.ios[STAT_FLUSH],
+-			   (unsigned int)div_u64(stat.nsecs[STAT_FLUSH],
+-						 NSEC_PER_MSEC)
+-			);
++			   disk_name(gp, hd->bd_partno, buf));
++		print_disk_stats(seqf, inflight, &stat);
+ 	}
+ 	rcu_read_unlock();
+ 
 -- 
-2.25.1
+2.29.0.rc1.dirty
 
