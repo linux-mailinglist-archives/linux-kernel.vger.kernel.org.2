@@ -2,144 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41A03B8994
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774F13B8996
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhF3UPE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 16:15:04 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:43860 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhF3UPA (ORCPT
+        id S234213AbhF3UPY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 16:15:24 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:54027 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233847AbhF3UPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:15:00 -0400
-Received: by mail-lf1-f46.google.com with SMTP id a18so7363046lfs.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:12:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qkhtb/Z3/Lfu4wzfzMpPHgn7YGxmP6lS4b+MzhFSQB4=;
-        b=iQGDLpNRGn54Nm7lfEcs+IdP83BuElgSwzs0jF5e98iGB4ZFNNKYp0vJQiHdEVnbab
-         VAtKXIRpCBdfjsjC62hgJfIQnIn/JMKDc7YhfJBNeqVl2TxMGgZrKbyqQdInE3vSfLV1
-         DDI+GYNw3oKxazbsddhk5SH9dmeSpGmvnB4UTXyv82JsLD5RDtb2UxLVCJnMyvoQ26A3
-         XKzPl0XC7Ivv0XdfDDx8glccS7Y8c3Nuy2F2D9hNY0ZO36zmQ6C/tMHsdiY8X6SXTGOP
-         2tZ/aUMJcAowTrRjABWtp2APiXYeXvjrMyNCTEB9TX5iNdfpRQWpIHebaNjaJMZ2KTTI
-         6M6g==
-X-Gm-Message-State: AOAM5308hu45yBMnilUW2MlyNnRitSHLSkL6UcRxKVoUvrVc1kdNku9w
-        V2aKwoF4WGjt9YctLUwvmY1iPF4eboVdO+27XxI=
-X-Google-Smtp-Source: ABdhPJwueC/6wvIbtKqwBTAdjqEjnzvQEIJCQ+6yIx7qdwdWzFqln7AXvH6pxjHXt9PixgbUGy1YHyC+XcVCtjJpeWw=
-X-Received: by 2002:ac2:4314:: with SMTP id l20mr3196692lfh.509.1625083948542;
- Wed, 30 Jun 2021 13:12:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-5-namhyung@kernel.org>
- <YNy85M22XZ8Sc/Gz@kernel.org>
-In-Reply-To: <YNy85M22XZ8Sc/Gz@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 30 Jun 2021 13:12:17 -0700
-Message-ID: <CAM9d7chZmydDJr-QBfGkQ-bWCTOH96sTO6fzrFLaHkgeGYVomw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] perf stat: Enable BPF counter with --for-each-cgroup
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 30 Jun 2021 16:15:23 -0400
+Received: from smtpclient.apple (tmo-122-159.customers.d1-online.com [80.187.122.159])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 68983CED24;
+        Wed, 30 Jun 2021 22:12:51 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v3 1/1] Bluetooth: btusb: Record debug log for Mediatek
+ Chip.
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210629190934.11710-1-mark-yw.chen@mediatek.com>
+Date:   Wed, 30 Jun 2021 22:12:48 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
+        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        michaelfsun@google.com, shawnku@google.com, jemele@google.com,
+        apusaka@google.com
 Content-Transfer-Encoding: 8BIT
+Message-Id: <54B58ECB-2931-4020-BE22-0DCEFD1F1ABA@holtmann.org>
+References: <20210629190934.11710-1-mark-yw.chen@mediatek.com>
+To:     Mark-YW.Chen@mediatek.com
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Hi Mark,
 
-On Wed, Jun 30, 2021 at 11:50 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Jun 25, 2021 at 12:18:26AM -0700, Namhyung Kim escreveu:
-> > Recently bperf was added to use BPF to count perf events for various
-> > purposes.  This is an extension for the approach and targetting to
-> > cgroup usages.
-> >
-> > Unlike the other bperf, it doesn't share the events with other
-> > processes but it'd reduce unnecessary events (and the overhead of
-> > multiplexing) for each monitored cgroup within the perf session.
-> >
-> > When --for-each-cgroup is used with --bpf-counters, it will open
-> > cgroup-switches event per cpu internally and attach the new BPF
-> > program to read given perf_events and to aggregate the results for
-> > cgroups.  It's only called when task is switched to a task in a
-> > different cgroup.
->
-> I'll take a stab at fixing these:
+> Mediatek Bluetooth Controller send the fw log via EP2, this patch
+> create callback(data->recv_acl) for processing acl packet.
+> 
+> 1. create callback(data->recv_acl) for processing acl packet.
+> 2. Add btusb_recv_acl_mtk to dispatch acl packet.
+> 3. Send mediatek debug log and coredump via hci_recv_diag channel.
+> 4. The upper layerd can use hci_channel_minitor to receive
+>   these packets.
 
-Oops, sorry about that.  My build environment didn't catch this..
-Will fix it in the v5.
+can you be more specific in what the logs do. I think the changes are easy to understand. I rather have an example btmon from this or more details on what is in these traces. Or even how they can be enabled etc.
 
-Thanks,
-Namhyung
+> 
+> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
+> ---
+> drivers/bluetooth/btusb.c | 37 ++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 36 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index b015dcecfb13..cabf6eba2d95 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -569,6 +569,7 @@ struct btusb_data {
+> 	int suspend_count;
+> 
+> 	int (*recv_event)(struct hci_dev *hdev, struct sk_buff *skb);
+> +	int (*recv_acl)(struct hci_dev *hdev, struct sk_buff *skb);
+> 	int (*recv_bulk)(struct btusb_data *data, void *buffer, int count);
+> 
+> 	int (*setup_on_usb)(struct hci_dev *hdev);
+> @@ -776,7 +777,7 @@ static int btusb_recv_bulk(struct btusb_data *data, void *buffer, int count)
+> 
+> 		if (!hci_skb_expect(skb)) {
+> 			/* Complete frame */
+> -			hci_recv_frame(data->hdev, skb);
+> +			data->recv_acl(data->hdev, skb);
+> 			skb = NULL;
+> 		}
+> 	}
+> @@ -3075,6 +3076,10 @@ static int btusb_shutdown_intel_new(struct hci_dev *hdev)
+> 	return 0;
+> }
+> 
+> +#define MTK_FW_DUMP	0xfc6f
+> +#define MTK_FW_LOG_1	0x05ff
+> +#define MTK_FW_LOG_2	0x05fe
+> +
+> #define FIRMWARE_MT7663		"mediatek/mt7663pr2h.bin"
+> #define FIRMWARE_MT7668		"mediatek/mt7668pr2h.bin"
+> 
+> @@ -3851,6 +3856,33 @@ static int btusb_mtk_shutdown(struct hci_dev *hdev)
+> 	return 0;
+> }
+> 
+> +static int btusb_recv_acl_mtk(struct hci_dev *hdev, struct sk_buff *skb)
+> +{
+> +	struct btusb_data *data = hci_get_drvdata(hdev);
+> +	int err;
+> +	u16 handle = le16_to_cpu(hci_acl_hdr(skb)->handle);
+> +
+> +	switch (handle) {
+> +	case MTK_FW_DUMP:
+> +		/* It's MediaTek firmware dump from device. When the firmware
+> +		 * hang, the device can't be suspend successfully.
+> +		 */
+> +		usb_disable_autosuspend(data->udev);
+> +		err = hci_recv_diag(data->hdev, skb);
+> +		break;
+> +	case MTK_FW_LOG_1:
+> +	case MTK_FW_LOG_2:
+> +		/* It's MediaTek fw debug log */
+> +		err = hci_recv_diag(data->hdev, skb);
+> +		break;
+> +	default:
+> +		err = hci_recv_frame(data->hdev, skb);
+> +		break;
+> +	}
+> +
+> +	return err;
 
->
-> ⬢[acme@toolbox perf]$ make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 DEBUG=1 O=/tmp/build/perf -C tools/perf install-bin
-> make: Entering directory '/var/home/acme/git/perf/tools/perf'
->   BUILD:   Doing 'make -j24' parallel build
-> Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
-> diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
-> Warning: Kernel ABI header at 'tools/include/uapi/linux/mount.h' differs from latest version at 'include/uapi/linux/mount.h'
-> diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
-> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h'
-> diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
-> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
-> diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
-> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs from latest version at 'arch/x86/include/uapi/asm/kvm.h'
-> diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
-> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs from latest version at 'arch/x86/include/uapi/asm/svm.h'
-> diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
-> Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
-> diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
->   DESCEND plugins
->   GEN     /tmp/build/perf/python/perf.so
->   INSTALL trace_plugins
->   CC      /tmp/build/perf/util/bpf_counter_cgroup.o
->   CC      /tmp/build/perf/util/demangle-java.o
->   CC      /tmp/build/perf/util/demangle-rust.o
->   CC      /tmp/build/perf/util/jitdump.o
->   CC      /tmp/build/perf/util/genelf.o
->   CC      /tmp/build/perf/util/genelf_debug.o
->   CC      /tmp/build/perf/util/perf-hooks.o
->   CC      /tmp/build/perf/util/bpf-event.o
-> util/bpf_counter_cgroup.c: In function ‘bperf_load_program’:
-> util/bpf_counter_cgroup.c:96:23: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
->    96 |         for (i = 0; i < nr_cpus; i++) {
->       |                       ^
-> util/bpf_counter_cgroup.c:125:43: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
->   125 |                         for (cpu = 0; cpu < nr_cpus; cpu++) {
->       |                                           ^
-> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__load’:
-> util/bpf_counter_cgroup.c:178:65: error: unused parameter ‘target’ [-Werror=unused-parameter]
->   178 | static int bperf_cgrp__load(struct evsel *evsel, struct target *target)
->       |                                                  ~~~~~~~~~~~~~~~^~~~~~
-> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__install_pe’:
-> util/bpf_counter_cgroup.c:195:49: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
->   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
->       |                                   ~~~~~~~~~~~~~~^~~~~
-> util/bpf_counter_cgroup.c:195:60: error: unused parameter ‘cpu’ [-Werror=unused-parameter]
->   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
->       |                                                        ~~~~^~~
-> util/bpf_counter_cgroup.c:195:69: error: unused parameter ‘fd’ [-Werror=unused-parameter]
->   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
->       |                                                                 ~~~~^~
-> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__enable’:
-> util/bpf_counter_cgroup.c:219:45: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
->   219 | static int bperf_cgrp__enable(struct evsel *evsel)
->       |                               ~~~~~~~~~~~~~~^~~~~
-> cc1: all warnings being treated as errors
-> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter_cgroup.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
-> make[3]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: util] Error 2
-> make[2]: *** [Makefile.perf:655: /tmp/build/perf/perf-in.o] Error 2
-> make[1]: *** [Makefile.perf:238: sub-make] Error 2
-> make: *** [Makefile:113: install-bin] Error 2
-> make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> ⬢[acme@toolbox perf]$
+
+	switch (handle) {
+	case 0xfc6f:		/* Firmware dump from device */
+		/* When the firmware hangs, the device can no longer
+		 * suspend and thus disable auto-suspend.
+		 */
+		usb_disable_autosuspend(data->udev);
+		/* fall through */
+
+	case 0x05ff:		/* Firmware debug logging 1 */
+	case 0x05fe:		/* Firmware debug logging 2 */
+		return hci_recv_diag(data->hdev, skb);
+	}
+
+	return hci_recv_frame(data->hdev, skb);
+}
+
+> +}
+> +
+> MODULE_FIRMWARE(FIRMWARE_MT7663);
+> MODULE_FIRMWARE(FIRMWARE_MT7668);
+> 
+> @@ -4543,6 +4575,8 @@ static int btusb_probe(struct usb_interface *intf,
+> 		data->recv_bulk = btusb_recv_bulk;
+> 	}
+> 
+> +	data->recv_acl = hci_recv_frame;
+> +
+> 	hdev = hci_alloc_dev();
+> 	if (!hdev)
+> 		return -ENOMEM;
+> @@ -4669,6 +4703,7 @@ static int btusb_probe(struct usb_interface *intf,
+> 		hdev->setup = btusb_mtk_setup;
+> 		hdev->shutdown = btusb_mtk_shutdown;
+> 		hdev->manufacturer = 70;
+> +		data->recv_acl = btusb_recv_acl_mtk;
+> 		set_bit(HCI_QUIRK_NON_PERSISTENT_SETUP, &hdev->quirks);
+
+Move this change after the quirk setting since it is local to btusb and not the hdev.
+
+> 	}
+
+Regards
+
+Marcel
+
