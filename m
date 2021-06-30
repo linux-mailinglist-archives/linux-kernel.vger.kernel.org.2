@@ -2,324 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435AC3B8A08
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A3F3B89FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235565AbhF3VNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 17:13:36 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2806 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235173AbhF3VMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 17:12:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="272284720"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="272284720"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 14:10:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="558431216"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga004.jf.intel.com with ESMTP; 30 Jun 2021 14:10:16 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, gregkh@linuxfoundation.org,
-        acme@kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V4 16/16] perf pmu: Add PMU alias support
-Date:   Wed, 30 Jun 2021 14:08:40 -0700
-Message-Id: <1625087320-194204-17-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625087320-194204-1-git-send-email-kan.liang@linux.intel.com>
-References: <1625087320-194204-1-git-send-email-kan.liang@linux.intel.com>
+        id S234932AbhF3VMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 17:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233777AbhF3VMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 17:12:22 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE39C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 14:09:52 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso4568744pjx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 14:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zliHdHGG472sIu8ixUkfKUhqE1vaBtcNdSUI7bd2ULM=;
+        b=ZInbAOcF/bWPptX9K7BG4muTK2GRM1TyOAjCIFajbG8pSNpLPkh+GEf4zu5didRBgu
+         nqe5ArkROxRRSgOVcKZ2g9mcivD16da0D1PUviKDUxosFwf/x167OGeoGK6n0Ly97BrV
+         Hm1d1gWqRlFHlcL4gkjmD+PFPnz8SQLyMw4P/63UjVR+OG6iM2GLlwzn9g8TxK0m1ji1
+         zCwRnxAIn+KdORyoqhVmap0arTgM/iE/raOmi/4+Ws6F0P/UV+MUAmClTo3rRfCuMKvw
+         gO8yXeCRXfNA+75jmu+n/L2X/f2ZtOE6VSDacONss2iF6k9M7SdkAmQ+iinPccSLB37F
+         6Alg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zliHdHGG472sIu8ixUkfKUhqE1vaBtcNdSUI7bd2ULM=;
+        b=I4gVH9Wc+5dy6Tg8oZfxCpl4uH4oFzJHnggbsLTqBxlR3DSMuApc9eN4dp/BZLuckf
+         JI7bleYImrI5fwXnEcAZQWXDozaaP+BF3DFV+Li31Nn+0TkJtL2dbVd3dvFvaEQYMGmh
+         RttVbGYur3qpXU1t5qRTb/iaE0cV4/cfn4innS0oEPX6jn65Bu1N4Hj5YNJVmuONqL+I
+         F2co0+an0qZZe0qYuwSsjXGC/Xn9/uUmZF7ttS7+gEBG8lsijSAWOO8X5CryusV+Cu+5
+         35ktkIb2YA4YIZ0W18QRUMhbcxjYgfD7FZLoZVmnE2p8UYC6u1rv648DrudyvdVT9lDI
+         0XhQ==
+X-Gm-Message-State: AOAM531m0phdFFsZhC+AyivYbeQaqspijUyIeCXz1sIfC0X/NrgACcne
+        wDeqiuMVeurGgAKULXURVVV0TQ==
+X-Google-Smtp-Source: ABdhPJydqCEOn2deMKN7lqCp97zhVvtslBQti30JyKwMfzP0zuCEM5QbR2pAjfLPg7FW4QhNSePQsA==
+X-Received: by 2002:a17:90b:380a:: with SMTP id mq10mr6092395pjb.79.1625087391352;
+        Wed, 30 Jun 2021 14:09:51 -0700 (PDT)
+Received: from google.com ([2620:15c:280:201:b405:10e4:843c:2483])
+        by smtp.gmail.com with ESMTPSA id o15sm23758482pfd.96.2021.06.30.14.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 14:09:48 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 14:09:42 -0700
+From:   Paul Burton <paulburton@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] tracing: Resize tgid_map to PID_MAX_LIMIT, not
+ PID_MAX_DEFAULT
+Message-ID: <YNzdllg/634Sa6Rt@google.com>
+References: <20210630003406.4013668-1-paulburton@google.com>
+ <20210630003406.4013668-2-paulburton@google.com>
+ <20210630083513.1658a6fb@oasis.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210630083513.1658a6fb@oasis.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Hi Steven,
 
-A perf uncore PMU may have two PMU names, a real name and an alias. The
-alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
-The perf tool should support the alias as well.
+On Wed, Jun 30, 2021 at 08:35:13AM -0400, Steven Rostedt wrote:
+> On Tue, 29 Jun 2021 17:34:06 -0700
+> Paul Burton <paulburton@google.com> wrote:
+> 
+> > On 64 bit systems this will increase the size of tgid_map from 256KiB to
+> > 16MiB. Whilst this 64x increase in memory overhead sounds significant 64
+> > bit systems are presumably best placed to accommodate it, and since
+> > tgid_map is only allocated when the record-tgid option is actually used
+> > presumably the user would rather it spends sufficient memory to actually
+> > record the tgids they expect.
+> 
+> NAK. Please see how I fixed this for the saved_cmdlines, and implement
+> it the same way.
+> 
+> 785e3c0a3a87 ("tracing: Map all PIDs to command lines")
+> 
+> It's a cache, it doesn't need to save everything.
 
-Add alias_name in the struct perf_pmu to store the alias. For the PMU
-which doesn't have an alias. It's NULL.
+Well sure, but it's a cache that (modulo pid recycling) previously had a
+100% hit rate for tasks observed in sched_switch events.
 
-Introduce two X86 specific functions to retrieve the real name and the
-alias separately.
+It differs from saved_cmdlines in a few key ways that led me to treat it
+differently:
 
-Only go through the sysfs to retrieve the mapping between the real name
-and the alias once. The result is cached in a list, uncore_pmu_list.
+1) The cost of allocating map_pid_to_cmdline is paid by all users of
+   ftrace, whilst as I mentioned in my commit description the cost of
+   allocating tgid_map is only paid by those who actually enable the
+   record-tgid option.
 
-Nothing changed for the other ARCHs.
+2) We verify that the data in map_pid_to_cmdline is valid by
+   cross-referencing it against map_cmdline_to_pid before reporting it.
+   We don't currently have an equivalent for tgid_map, so we'd need to
+   add a second array or make tgid_map an array of struct { int pid; int
+   tgid; } to avoid reporting incorrect tgids. We therefore need to
+   double the memory we consume or further reduce the effectiveness of
+   this cache.
 
-With the patch, the perf tool can monitor the PMU with either the real
-name or the alias.
+3) As mentioned before, with the default pid_max tgid_map/record-tgid
+   has a 100% hit rate which was never the case for saved_cmdlines. If
+   we go with a solution that changes this property then I certainly
+   think the docs need updating - the description of saved_tgids in
+   Documentation/trace/ftrace.rst makes no mention of this being
+   anything but a perfect recreation of pid->tgid relationships, and
+   unlike the description of saved_cmdlines it doesn't use the word
+   "cache" at all.
 
-Use the real name,
- $perf stat -e uncore_cha_2/event=1/ -x,
-  4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
+Having said that I think taking a similar approach to saved_cmdlines
+would be better than what we have now, though I'm not sure whether it'll
+be sufficient to actually be usable for me. My use case is grouping
+threads into processes when displaying scheduling information, and
+experience tells me that if any threads don't get grouped appropriately
+the result will be questions.
 
-Use the alias,
- $perf stat -e uncore_type_0_2/event=1/ -x,
-  3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
-
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++++++++++-
- tools/perf/util/parse-events.y |   4 +-
- tools/perf/util/pmu.c          |  23 +++++++-
- tools/perf/util/pmu.h          |   5 ++
- 4 files changed, 156 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index d48d608..f864ba2 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -1,12 +1,28 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <string.h>
--
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <dirent.h>
-+#include <fcntl.h>
- #include <linux/stddef.h>
- #include <linux/perf_event.h>
-+#include <linux/zalloc.h>
-+#include <api/fs/fs.h>
- 
- #include "../../../util/intel-pt.h"
- #include "../../../util/intel-bts.h"
- #include "../../../util/pmu.h"
-+#include "../../../util/fncache.h"
-+
-+#define TEMPLATE_UNCORE_ALIAS	"%s/bus/event_source/devices/%s/alias"
-+
-+struct perf_uncore_pmu_name {
-+	char *name;
-+	char *alias;
-+	struct list_head list;
-+};
-+
-+static LIST_HEAD(uncore_pmu_list);
- 
- struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
- {
-@@ -18,3 +34,114 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
- #endif
- 	return NULL;
- }
-+
-+static void setup_uncore_pmu_list(void)
-+{
-+	char path[PATH_MAX];
-+	DIR *dir;
-+	struct dirent *dent;
-+	const char *sysfs = sysfs__mountpoint();
-+	struct perf_uncore_pmu_name *pmu;
-+	char buf[MAX_PMU_NAME_LEN];
-+	FILE *file;
-+	int size;
-+
-+	if (!sysfs)
-+		return;
-+
-+	snprintf(path, PATH_MAX,
-+		 "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
-+
-+	dir = opendir(path);
-+	if (!dir)
-+		return;
-+
-+	while ((dent = readdir(dir))) {
-+		if (!strcmp(dent->d_name, ".") ||
-+		    !strcmp(dent->d_name, "..") ||
-+		    strncmp(dent->d_name, "uncore_", 7))
-+			continue;
-+
-+		snprintf(path, PATH_MAX,
-+			 TEMPLATE_UNCORE_ALIAS, sysfs, dent->d_name);
-+
-+		if (!file_available(path))
-+			continue;
-+
-+		file = fopen(path, "r");
-+		if (!file)
-+			continue;
-+
-+		memset(buf, 0, sizeof(buf));
-+		if (!fread(buf, 1, sizeof(buf), file))
-+			continue;
-+
-+		pmu = zalloc(sizeof(*pmu));
-+		if (!pmu)
-+			continue;
-+
-+		size = strlen(buf) - 1;
-+		pmu->alias = zalloc(size);
-+		if (!pmu->alias) {
-+			free(pmu);
-+			continue;
-+		}
-+		strncpy(pmu->alias, buf, size);
-+		pmu->name = strdup(dent->d_name);
-+		list_add_tail(&pmu->list, &uncore_pmu_list);
-+
-+		fclose(file);
-+	}
-+
-+	closedir(dir);
-+
-+}
-+
-+static char *__pmu_find_real_name(const char *name)
-+{
-+	struct perf_uncore_pmu_name *pmu;
-+
-+	/*
-+	 * The template of the uncore alias is uncore_type_*
-+	 * Only find the real name for the uncore alias.
-+	 */
-+	if (strncmp(name, "uncore_type_", 12))
-+		return strdup(name);
-+
-+	list_for_each_entry(pmu, &uncore_pmu_list, list) {
-+		if (!strcmp(name, pmu->alias))
-+			return strdup(pmu->name);
-+	}
-+
-+	return strdup(name);
-+}
-+
-+char *pmu_find_real_name(const char *name)
-+{
-+	static bool cached_list;
-+
-+	if (strncmp(name, "uncore_", 7))
-+		return strdup(name);
-+
-+	if (cached_list)
-+		return __pmu_find_real_name(name);
-+
-+	setup_uncore_pmu_list();
-+	cached_list = true;
-+
-+	return __pmu_find_real_name(name);
-+}
-+
-+char *pmu_find_alias_name(const char *name)
-+{
-+	struct perf_uncore_pmu_name *pmu;
-+
-+	if (strncmp(name, "uncore_", 7))
-+		return NULL;
-+
-+	list_for_each_entry(pmu, &uncore_pmu_list, list) {
-+		if (!strcmp(name, pmu->name))
-+			return strdup(pmu->alias);
-+	}
-+	return NULL;
-+}
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index aba12a4..bc812af 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -316,7 +316,9 @@ event_pmu_name opt_pmu_config
- 			if (!strncmp(name, "uncore_", 7) &&
- 			    strncmp($1, "uncore_", 7))
- 				name += 7;
--			if (!fnmatch(pattern, name, 0)) {
-+
-+			if (!fnmatch(pattern, name, 0) ||
-+			    (pmu->alias_name && !fnmatch(pattern, pmu->alias_name, 0))) {
- 				if (parse_events_copy_term_list(orig_terms, &terms))
- 					CLEANUP_YYABORT;
- 				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 88c8ecdc..d7fb627 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -921,13 +921,28 @@ static int pmu_max_precise(const char *name)
- 	return max_precise;
- }
- 
--static struct perf_pmu *pmu_lookup(const char *name)
-+char * __weak
-+pmu_find_real_name(const char *name)
-+{
-+	return strdup(name);
-+}
-+
-+char * __weak
-+pmu_find_alias_name(const char *name __maybe_unused)
-+{
-+	return NULL;
-+}
-+
-+static struct perf_pmu *pmu_lookup(const char *lookup_name)
- {
- 	struct perf_pmu *pmu;
-+	char *name;
- 	LIST_HEAD(format);
- 	LIST_HEAD(aliases);
- 	__u32 type;
- 
-+	name = pmu_find_real_name(lookup_name);
-+
- 	/*
- 	 * The pmu data we store & need consists of the pmu
- 	 * type value and format definitions. Load both right
-@@ -950,7 +965,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
- 		return NULL;
- 
- 	pmu->cpus = pmu_cpumask(name);
--	pmu->name = strdup(name);
-+	pmu->name = name;
-+	pmu->alias_name = pmu_find_alias_name(name);
- 	pmu->type = type;
- 	pmu->is_uncore = pmu_is_uncore(name);
- 	if (pmu->is_uncore)
-@@ -980,7 +996,8 @@ static struct perf_pmu *pmu_find(const char *name)
- 	struct perf_pmu *pmu;
- 
- 	list_for_each_entry(pmu, &pmus, list)
--		if (!strcmp(pmu->name, name))
-+		if (!strcmp(pmu->name, name) ||
-+		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
- 			return pmu;
- 
- 	return NULL;
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index a790ef7..87212ec 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -21,6 +21,7 @@ enum {
- #define PERF_PMU_FORMAT_BITS 64
- #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
- #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
-+#define MAX_PMU_NAME_LEN 128
- 
- struct perf_event_attr;
- 
-@@ -32,6 +33,7 @@ struct perf_pmu_caps {
- 
- struct perf_pmu {
- 	char *name;
-+	char *alias_name;	/* PMU alias name */
- 	char *id;
- 	__u32 type;
- 	bool selectable;
-@@ -134,4 +136,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
- 
- bool perf_pmu__has_hybrid(void);
- 
-+char *pmu_find_real_name(const char *name);
-+char *pmu_find_alias_name(const char *name);
-+
- #endif /* __PMU_H */
--- 
-2.7.4
-
+Thanks,
+    Paul
