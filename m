@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D2E3B8796
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD80C3B8799
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhF3RVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:21:49 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:40838 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231879AbhF3RVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:21:47 -0400
-Received: by mail-oi1-f174.google.com with SMTP id l26so1266492oic.7;
-        Wed, 30 Jun 2021 10:19:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=whtWAytPA5br2VV4bJUkRa0hO694zx905NLhlKUp6LU=;
-        b=aUD2KogdniYhCFtx3q0EkA+BYPKrXuXebRT1OyYfACrqrQDAuuStijVQsgiCarb973
-         QfAKLZGkbeHCWgcsmHY5xLt6KEovSIq90SY0u5kmDAdvtRicsX0uao85tkfHHD43cl7G
-         D6SJ6rKg/ScNmf6NS9RUgiBAb8fLKKPDZ2VcJzb7HpziLMFf8rqh/adqnbenQgZ8oR6r
-         8SvRFxeJlR4Wn84OysZK3vnrwMXBjp1PmlpJOJeN3KWLxUeBdq46fq9Ssw3lt41BwQh+
-         5ErVEe0lPZj0xVUO8tCKB3cvYUkX+w8cTjX7dFGhpLiIgYNMccT4eAMslWUiH0CbR9Ru
-         XRvg==
-X-Gm-Message-State: AOAM530OiDEOXB9SkHYIbEG/U9tCjgFxkFpycYqEMI4cjJfvAZtirraw
-        hF/ChrumQVTI7D8lv5yHFDi/+XT1us9wy2Q3XgHzZuTy9Lc=
-X-Google-Smtp-Source: ABdhPJygstd0PRgk2pxEcXN0jArtIMaBZc9XO/XHoaayrFM6WqvQTdGWNTD46q43af/peMAHQCUHNxybVhOfWC9ocRY=
-X-Received: by 2002:aca:417:: with SMTP id 23mr11542778oie.71.1625073556563;
- Wed, 30 Jun 2021 10:19:16 -0700 (PDT)
+        id S232335AbhF3RWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:22:17 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59478 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229963AbhF3RWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:22:15 -0400
+Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7A3731EC046E;
+        Wed, 30 Jun 2021 19:19:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625073585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=syI5n/mgumSxP3cXwbe5EO+1+eQv1oVSzGSYKAY8H7g=;
+        b=SlpZ0VlFkPFToeVN1iWtPvSyrWP7p9oyaGFJIzxrtvApfrjOHt92zKNj8gK7GFVFYb9BYE
+        Kacay/dfnA/sUnpchO9nINqt+qtBzCP9czo/putShdSwmglUcOKbkfdEUQ5Z1W65I/gkmg
+        yiHUGMWMoNrTL56JA7N3MGY2MHPifw8=
+Date:   Wed, 30 Jun 2021 19:19:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 06/31] EDAC/amd64: Define Data Fabric operations
+Message-ID: <YNynsT6J1NTddv0z@zn.tnic>
+References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
+ <20210623192002.3671647-7-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-References: <CAJZ5v0hm5ihfU_hBbMB9u7SmH18PLGp6+Z6=wBLa8WxaVQRTpg@mail.gmail.com>
- <YNxLvhBBE7Ff6Q5u@zn.tnic>
-In-Reply-To: <YNxLvhBBE7Ff6Q5u@zn.tnic>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 30 Jun 2021 19:19:05 +0200
-Message-ID: <CAJZ5v0g_+xDVYRiVR4aDFKsNqLg9DeGAMKU1+CPCorpf=Ceb7A@mail.gmail.com>
-Subject: Re: [GIT PULL] ACPI updates for v5.14-rc1
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210623192002.3671647-7-yazen.ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 12:47 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Tue, Jun 29, 2021 at 09:01:10PM +0200, Rafael J. Wysocki wrote:
-> > Erik Kaneda (6):
-> >       ACPICA: Fix memory leak caused by _CID repair function
-> >       ACPICA: iASL: add disassembler support for PRMT
-> >       ACPICA: Add support for PlatformRtMechanism OperationRegion handler
-> >       ACPICA: Add PRMT module header to facilitate parsing
-> >       ACPI: PRM: implement OperationRegion handler for the
-> > PlatformRtMechanism subtype
->
-> $ git checkout master
-> $ git pull
-> $ make oldconfig
->
-> Platform Runtime Mechanism Support (ACPI_PRMT) [Y/n/?] (NEW) ?
->
-> There is no help available for this option.
-> Symbol: ACPI_PRMT [=y]
-> Type  : bool
-> Defined at drivers/acpi/Kconfig:547
->   Prompt: Platform Runtime Mechanism Support
->   Depends on: EFI [=y] && X86_64 [=y]
->   Location:
->     -> Power management and ACPI options
->
->
->
-> Platform Runtime Mechanism Support (ACPI_PRMT) [Y/n/?] (NEW)
->
-> I don't know what that means, there's no help, no nothing. And it is
-> default y for no apparent reason.
->
-> /me looks at the commit message:
->
->     Platform Runtime Mechanism (PRM) is a firmware interface that exposes
->     a set of binary executables that can either be called from the AML
->     interpreter or device drivers by bypassing the AML interpreter.
->     This change implements the AML interpreter path.
->
-> I'm still unclear whether I need it or not.
+On Wed, Jun 23, 2021 at 07:19:37PM +0000, Yazen Ghannam wrote:
+> Define a stub to hold operations for different Data Fabric versions.
+> This will be filled in following patches.
+> 
+> Define a function to set the appropriate operations. Use a return code
+> because future updates have checks that may fail.
+> 
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> ---
+> Link:
+> https://lkml.kernel.org/r/20210507190140.18854-3-Yazen.Ghannam@amd.com
+> 
+> v1->v2:
+> * New in v2.
+> 
+>  drivers/edac/amd64_edac.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+> index 62eca188458f..f769353ef7e4 100644
+> --- a/drivers/edac/amd64_edac.c
+> +++ b/drivers/edac/amd64_edac.c
+> @@ -1085,6 +1085,21 @@ struct addr_ctx {
+>  	u8 inst_id;
+>  };
+>  
+> +struct data_fabric_ops {
+> +};
+> +
+> +struct data_fabric_ops df2_ops = {
+> +};
+> +
+> +struct data_fabric_ops *df_ops;
+> +
+> +static int set_df_ops(struct addr_ctx *ctx)
+> +{
+> +	df_ops = &df2_ops;
+> +
+> +	return 0;
+> +}
+> +
+>  static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
+>  {
+>  	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
+> @@ -1110,6 +1125,9 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  	ctx.nid = nid;
+>  	ctx.inst_id = umc;
+>  
+> +	if (set_df_ops(&ctx))
+> +		return -EINVAL;
+> +
+>  	if (amd_df_indirect_read(nid, df_regs[DRAM_OFFSET], umc, &tmp))
+>  		goto out_err;
+>  
+> -- 
 
-That's a fair point.
+Why?
 
-> Guys, you need to think about your users and to write help text which is
-> *actually* usable for people who do not deal with ACPI firmware gunk.
+You can simply assign to df_ops as this is all driver-static data.
 
-We will.
+-- 
+Regards/Gruss,
+    Boris.
 
-What about the following help text (white space damage by gmail)?
-
----
- drivers/acpi/Kconfig |   10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-Index: linux-pm/drivers/acpi/Kconfig
-===================================================================
---- linux-pm.orig/drivers/acpi/Kconfig
-+++ linux-pm/drivers/acpi/Kconfig
-@@ -548,3 +548,13 @@ config ACPI_PRMT
-     bool "Platform Runtime Mechanism Support"
-     depends on EFI && X86_64
-     default y
-+    help
-+      Platform Runtime Mechanism (PRM) is a firmware interface exposing a
-+      set of binary executables that can be called from the AML interpreter
-+      or directly from device drivers.
-+
-+      Say Y to enable the AML interpreter to execute the PRM code.
-+
-+      While this feature is optional in principle, leaving it out may
-+      substantially increase computational overhead related to the
-+      initialization of some server systems.
+https://people.kernel.org/tglx/notes-about-netiquette
