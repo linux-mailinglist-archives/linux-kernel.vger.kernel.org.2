@@ -2,120 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199333B7EA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20DF3B7EA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbhF3IHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:07:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233035AbhF3IHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:07:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1042F61A2B;
-        Wed, 30 Jun 2021 08:04:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625040273;
-        bh=7tnwHLbYqbXhx2qSLXJfed/m+hgZ3KoXLS9UtXG+kys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGrO7tGW9nBPQrO+mjGUXH6tT7IuaO9G8j/D88IjDx4ETayniDQ5UQeg7AnQSn4jz
-         dNNFsMkbXjFDU5/7sQASRfXVhyMccUQnrUc28sBtS1Z/PZS/aSQJuQrTo/DszMzxBC
-         x+pxRaWWh5DmB8x1YkiXF43ANSdteJPtKiaxbpH7j43St8wQbVepKiBmDjdoQHdD1u
-         ObSB/CFJ0xbMBjvp0X+0LA58PiNiy5qpPrifzTcj480fT8iNIR2n/UQZwVA2ts9EXp
-         vX6qvMQRK3UIjcVXDzIpWjNGUQfy8/j5fuwcOOorjQhR/TrIBniv6bb5DvLxcUhHpL
-         /rdvPJXfFrIoA==
-Date:   Wed, 30 Jun 2021 10:04:30 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <YNwljrHzOmD1V5be@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <05cc9484-f97b-0533-64fe-ff917c6b87ee@intel.com>
- <YNwd/t3DMKSOrTAT@ninjato>
- <3016ab8b-cbff-1309-6a1f-080703a4130f@intel.com>
- <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
+        id S233356AbhF3IIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233035AbhF3IIU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:08:20 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B0DC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:05:51 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id j1so2421148wrn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=DId9LnbLM3hbyZPvKaEqBLZP2ivvdgRtflnyMWD9ptY=;
+        b=WHnqqDMgC+t6fIxvM/MsRjJxZpHDbk+hKsvh8vLkbQRm5J725JVlxuxnD8ovNuJHm5
+         r32UmAX+tXBZDF+fmL4LA0e8Pt+syu2MWjNQYTBX829Te7k2oZya6WXpR3SxkBnDhmbc
+         z+4KoUDMglrUPB9KP1Mq976C3iQ72/TxcYZ5uSlW2u9s+rtDkTmI90+ZYM+p6/7aoP9r
+         0tm1V96yR2W1KXZ+tGg9EidPj4JJ8EpZOJN800A09/ldYA7sQ5gwbaMVq98pA/vvt4zq
+         fP+BjwyP7FmCiDm4WfRsKfwdKkBr9BCFQYjS3QaE04m7dLdouoUZ5+o+8c3x36NyLQwz
+         Wo+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=DId9LnbLM3hbyZPvKaEqBLZP2ivvdgRtflnyMWD9ptY=;
+        b=SVHjpAmvX94i3+fnqKURzimQq384QTQV4sleRxmBcO8svuVjSFzEgseMe88bnhI+Ft
+         1x09JzJzqDZE+pzchZORQnNgLgvid/IJWZojt/sipSx9BRzWaWDTUzLeFI+OHPCBa5mN
+         Fm7s4D3uGKaLzRA5M9x2YBx/tHf1X3rZOF4HtzALyNODH2gtdruES+H4LSHfIJdR9kb7
+         Ll4YqDbqYtVr7Oph7VORxQaSsJJTkCJvEMVZBV0mLXtq/rECeGLwI+XQ3QZvZ2wPKtgi
+         sJK81BUqSsnIWoL2UJ0FIQKB8NxHdl1xER+hmKoOehC0UzmogLmfhX2CwRBrjtejbXGx
+         chug==
+X-Gm-Message-State: AOAM533xkKofhZ3eyZplzydn54/rgTgtjjECZBAdO0Z05RscSNfZROJx
+        T9PXq1qFhvnZmTAypZQOE74=
+X-Google-Smtp-Source: ABdhPJxWDUvno0t9fERBMD3RJIKBHcRj/oJSSMsp4iCUKn26j/D6cdsK1Xzql1ZXBK+shCe6pexR8g==
+X-Received: by 2002:adf:ea46:: with SMTP id j6mr9058590wrn.81.1625040350143;
+        Wed, 30 Jun 2021 01:05:50 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.44.148])
+        by smtp.gmail.com with ESMTPSA id n18sm700667wms.3.2021.06.30.01.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 01:05:49 -0700 (PDT)
+Message-ID: <565db357cfe61c4b350323968aee15bd477ef606.camel@gmail.com>
+Subject: Re: [PATCH v7 07/20] perf record: Introduce data transferred and
+ compressed stats
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Date:   Wed, 30 Jun 2021 10:05:48 +0200
+In-Reply-To: <138f94642ae93f526249f6320abdc41ab90b467b.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+         <138f94642ae93f526249f6320abdc41ab90b467b.1624350588.git.alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kdQpy3ObinWCWOTi"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---kdQpy3ObinWCWOTi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, 2021-06-22 at 11:42 +0300, Alexey Bayduraev wrote:
+> Introduce bytes_transferred and bytes_compressed stats so they
+> would capture statistics for the related data buffer transfers.
+> 
+> Acked-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> ---
+>  tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
+>  tools/perf/util/mmap.h      |  3 ++
+>  2 files changed, 54 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 38bb5afbb359..c9fd31211600 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -198,6 +198,11 @@ static int record__write(struct record *rec, struct mmap
+> *map __maybe_unused,
+>                 return -1;
+>         }
+>  
+> +       if (map && map->file) {
+> +               map->bytes_written += size;
+> +               return 0;
+> +       }
+> +
+>         rec->bytes_written += size;
+>  
+>         if (record__output_max_size_exceeded(rec) && !done) {
+
+This breaks the --max-size option in parallel trace mode.
+Maybe, we could change record__output_max_size_exceeded to check all
+thread_data->maps and sum up bytes_written. Concurrency should not be an issue
+since it's not required to stop at exactly the max-size (this is also the
+current behaviour).
+Otherwise, we could atomically increase an accumulator inside struct record
+(maybe rec->bytes_written could be reused, but I'm not sure if it's used by the
+main thread in the parallel mode), and check it for exceeded max size.
+
+Thanks,
+Riccardo
 
 
-> Is that position stable across kernel versions? We do have stable naming
-> for PCI devices and for platform devices that are the parent of a virtio
-> device, but I would expect the virtio device to be numbered in probe
-> order instead.
+> @@ -215,8 +220,8 @@ static int record__write(struct record *rec, struct mmap
+> *map __maybe_unused,
+>  
+>  static int record__aio_enabled(struct record *rec);
+>  static int record__comp_enabled(struct record *rec);
+> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
+> dst_size,
+> -                           void *src, size_t src_size);
+> +static size_t zstd_compress(struct zstd_data *data,
+> +                           void *dst, size_t dst_size, void *src, size_t
+> src_size);
+>  
+>  #ifdef HAVE_AIO_SUPPORT
+>  static int record__aio_write(struct aiocb *cblock, int trace_fd,
+> @@ -350,9 +355,13 @@ static int record__aio_pushfn(struct mmap *map, void *to,
+> void *buf, size_t size
+>          */
+>  
+>         if (record__comp_enabled(aio->rec)) {
+> -               size = zstd_compress(aio->rec->session, aio->data + aio->size,
+> -                                    mmap__mmap_len(map) - aio->size,
+> +               struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
+> +
+> +               aio->rec->session->bytes_transferred += size;
+> +               size = zstd_compress(zstd_data,
+> +                                    aio->data + aio->size,
+> mmap__mmap_len(map) - aio->size,
+>                                      buf, size);
+> +               aio->rec->session->bytes_compressed += size;
+>         } else {
+>                 memcpy(aio->data + aio->size, buf, size);
+>         }
+> @@ -577,8 +586,22 @@ static int record__pushfn(struct mmap *map, void *to,
+> void *bf, size_t size)
+>         struct record *rec = to;
+>  
+>         if (record__comp_enabled(rec)) {
+> -               size = zstd_compress(rec->session, map->data,
+> mmap__mmap_len(map), bf, size);
+> +               struct zstd_data *zstd_data = &rec->session->zstd_data;
+> +
+> +               if (map->file) {
+> +                       zstd_data = &map->zstd_data;
+> +                       map->bytes_transferred += size;
+> +               } else {
+> +                       rec->session->bytes_transferred += size;
+> +               }
+> +
+> +               size = zstd_compress(zstd_data, map->data,
+> mmap__mmap_len(map), bf, size);
+>                 bf   = map->data;
+> +
+> +               if (map->file)
+> +                       map->bytes_compressed += size;
+> +               else
+> +                       rec->session->bytes_compressed += size;
+>         }
+>  
+>         thread->samples++;
+> @@ -1311,18 +1334,15 @@ static size_t process_comp_header(void *record, size_t
+> increment)
+>         return size;
+>  }
+>  
+> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
+> dst_size,
+> +static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t
+> dst_size,
+>                             void *src, size_t src_size)
+>  {
+>         size_t compressed;
+>         size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct
+> perf_record_compressed) - 1;
+>  
+> -       compressed = zstd_compress_stream_to_records(&session->zstd_data, dst,
+> dst_size, src, src_size,
+> +       compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size,
+> src, src_size,
+>                                                      max_record_size,
+> process_comp_header);
+>  
+> -       session->bytes_transferred += src_size;
+> -       session->bytes_compressed  += compressed;
+> -
+>         return compressed;
+>  }
+>  
+> @@ -2006,8 +2026,10 @@ static int record__start_threads(struct record *rec)
+>  
+>  static int record__stop_threads(struct record *rec, unsigned long *waking)
+>  {
+> -       int t;
+> +       int t, tm;
+> +       struct mmap *map, *overwrite_map;
+>         struct thread_data *thread_data = rec->thread_data;
+> +       u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
+>  
+>         for (t = 1; t < rec->nr_threads; t++)
+>                 record__terminate_thread(&thread_data[t]);
+> @@ -2015,9 +2037,25 @@ static int record__stop_threads(struct record *rec,
+> unsigned long *waking)
+>         for (t = 0; t < rec->nr_threads; t++) {
+>                 rec->samples += thread_data[t].samples;
+>                 *waking += thread_data[t].waking;
+> -               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
+> trasferred=%ld, compressed=%ld\n",
+> +               for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
+> +                       if (thread_data[t].maps) {
+> +                               map = thread_data[t].maps[tm];
+> +                               bytes_transferred += map->bytes_transferred;
+> +                               bytes_compressed += map->bytes_compressed;
+> +                               bytes_written += map->bytes_written;
+> +                       }
+> +                       if (thread_data[t].overwrite_maps) {
+> +                               overwrite_map =
+> thread_data[t].overwrite_maps[tm];
+> +                               bytes_transferred += overwrite_map-
+> >bytes_transferred;
+> +                               bytes_compressed += overwrite_map-
+> >bytes_compressed;
+> +                               bytes_written += overwrite_map->bytes_written;
+> +                       }
+> +               }
+> +               rec->session->bytes_transferred += bytes_transferred;
+> +               rec->session->bytes_compressed += bytes_compressed;
+> +               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
+> trasferred=%ld, compressed=%ld, written=%ld\n",
+>                          thread_data[t].tid, thread_data[t].samples,
+> thread_data[t].waking,
+> -                        rec->session->bytes_transferred, rec->session-
+> >bytes_compressed);
+> +                        bytes_transferred, bytes_compressed, bytes_written);
+>         }
+>  
+>         return 0;
+> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
+> index c4aed6e89549..c04ca4b5adf5 100644
+> --- a/tools/perf/util/mmap.h
+> +++ b/tools/perf/util/mmap.h
+> @@ -46,6 +46,9 @@ struct mmap {
+>         int             comp_level;
+>         struct perf_data_file *file;
+>         struct zstd_data      zstd_data;
+> +       u64                   bytes_transferred;
+> +       u64                   bytes_compressed;
+> +       u64                   bytes_written;
+>  };
+>  
+>  struct mmap_params {
 
-For me, it would be good enough to know who (= which device) created
-this adapter when I look at the name at runtime. I wouldn't require this
-to be stable across kernel versions. In general, this is just an info
-string with no guarantees. But maybe you have reasons to insist on it
-being stable nonetheless.
 
-
---kdQpy3ObinWCWOTi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDcJYoACgkQFA3kzBSg
-KbYsbxAAmlealqAbiVXEdd9mmVIZA//KjCbOIxz9zGg6QyZhThboDHDVm6Kaf3D9
-wMAZR/u8sWqAJXUAN2jfAndOwggGD+JWJNRfl6eggWz8kV1LztEzJuvEiftRPkUh
-XHXCGIoZAGjeooDE3QMsvejrerWlNqjAB8u+Grf1mfEC4u5cU+5AFX51xGvpdWh/
-MMhyNw65LOK1mQdbh7Zc16bzxPpQAOP4k6YNGGlt+IYto9gpIonqADoX7aILjZL+
-+j+L4UWfvTCEY/+5TzhVKtJ/lVPMdmVgAgDWMOflQO8cpGyMzlrLUemmin7fYaeG
-2V/FZp0GKMhxCMA7g8ySG7SljbHUj+jBH7X+5Kh4ngJRdLpLpY66+6v8Jg9rIleM
-GRbA8Qi4SYyFRQ1Z+lME65rt+7WnBv/uWr+zbhisDT04GBWFeofIfFHFvWH5DKaf
-l+8iXOOrstJ7RIHK9d446jqV7lsO1u0P1YSxFgZJQPpYDbfXNFD3QOwvcb/9JK3l
-2d6x7LrvjZrupQQUCjb7P/MAo7kZ5cxRbe1D9kjyicEAMgr9xiHek0BJIqd+js1Z
-IrASEC82er/YLwBdAg1gudSBoUl3MZTIiMH22XLiglixKfatZPMEZSVA1i+f5sff
-qJE1EpqDY4LOr5teWHiyJwpahcIKJkf3uMS4OZEkXAPV5Vhftao=
-=DQ2b
------END PGP SIGNATURE-----
-
---kdQpy3ObinWCWOTi--
