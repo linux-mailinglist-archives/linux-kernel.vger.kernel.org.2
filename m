@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FEC3B80AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410003B80B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhF3KN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:13:26 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:22388 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233959AbhF3KNY (ORCPT
+        id S234280AbhF3KN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:13:58 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:21242 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhF3KNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:13:24 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UA6khj016476;
-        Wed, 30 Jun 2021 12:10:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=AaMW5guJyM9rrWLGwovSkn6cyMpP8PMNR7duyIEQJ58=;
- b=fDMTM7DZq0BMclC4XSEwNFhCjNN+K0ndPMpiIvIrPSKzpGUUPdfC/E/2oWpdLBfzGtqc
- PJhIoXRogEnOZQP5Nn8aZ9MNl35HWooLPkkacd23cbKEJp3j5faHN+6JHP3Vd2Ib9P41
- Me/U07xzrr7bTvlymsjqX57VtYKclWGsrumBOkBRCDTClTmBcsL2WVk3YxGvwymqHuwJ
- jBVJi9DnHHI7y1xdpXZ18Q4FHyk+TwMav96e1myVX74hYWgETUUXvX2r45+qcWlcK0ha
- 8b1A/HgCdL0uuc3QVRo3CE/uXJH2lwf2sOYuBpmDWHjfnMSwcQrenJtHRtFMNA5E2aJQ SQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39ghqhv9hr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 12:10:36 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 61EFE10002A;
-        Wed, 30 Jun 2021 12:10:33 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 512E8221787;
-        Wed, 30 Jun 2021 12:10:33 +0200 (CEST)
-Received: from lmecxl0995.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun
- 2021 12:10:32 +0200
-Subject: Re: [PATCH 0/6] spi: stm32: various fixes & cleanup
-To:     Alain Volmat <alain.volmat@foss.st.com>, <broonie@kernel.org>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
-References: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
-From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
-Message-ID: <5008768a-5647-ea57-c772-6d783704f292@foss.st.com>
-Date:   Wed, 30 Jun 2021 12:10:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 06:13:44 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UA5TTE002637;
+        Wed, 30 Jun 2021 03:11:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=fs09opRq/geNPzt49jP9ntkcEtT8fP8OX0tRcahqdGA=;
+ b=Ru76czYmVfoGDVCAfK/eArtgUtG3v3q9ZGr3NwpTvJrztXlyTpGuCjeA8WsqNIwP8HHc
+ hH21rr5UF5UrXiU7a5B3OWBOwamqhM+gW038FrAwx9X6cFDhjCvqJgUedXp/woxlb7SF
+ RZLk8ebR0C11Cdhy9Xg14lca86EkeTltqGTfckUU6JoE8DpP9K26VgFB/+JKMZar5bjL
+ ml6XGK8o8r7nXdk/KXeFFzDDl1gXpDc1tSP465kMx5QDWC175W7OS4EaPaPB+f4PPSy7
+ J9HX0gBCTYRuuhuzqzrHc5DfS680qDd+5pVRdwvfWjGjsLS9eJoDiWfUsZKbRoXhnUBe Sg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 39g93dtxw5-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 03:11:06 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 30 Jun
+ 2021 03:11:04 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 30 Jun 2021 03:11:04 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 05F0D3F709C;
+        Wed, 30 Jun 2021 03:11:00 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [net-next Patch v3 0/3] DMAC based packet filtering
+Date:   Wed, 30 Jun 2021 15:40:56 +0530
+Message-ID: <20210630101059.27334-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: TMmsjte0XtRusHfbyvY2ZWUFibeY1HAd
+X-Proofpoint-GUID: TMmsjte0XtRusHfbyvY2ZWUFibeY1HAd
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-30_02:2021-06-29,2021-06-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 10:45 AM, Alain Volmat wrote:
-> This series contains fixes & cleanup mainly regarding fifo
-> and the way end of transfer triggered, when used with or
-> without DMA.
-> An additional patch cleans up the pm_runtime calls.
-> 
-> Alain Volmat (5):
->    spi: stm32: fixes pm_runtime calls in probe/remove
->    spi: stm32h7: fix full duplex irq handler handling
->    Revert "spi: stm32: properly handle 0 byte transfer"
->    spi: stm32h7: don't wait for EOT and flush fifo on disable
->    spi: stm32: finalize message either on dma callback or EOT
-> 
-> Amelie Delaunay (1):
->    spi: stm32h7: rework rx fifo read function
-> 
->   drivers/spi/spi-stm32.c | 146 +++++++++++++++++-----------------------
->   1 file changed, 61 insertions(+), 85 deletions(-)
-> 
+Each MAC block supports 32 DMAC filters which can be configured to accept
+or drop packets based on address match This patch series adds mbox
+handlers and extends ntuple filter callbacks to accomdate DMAC filters
+such that user can install DMAC based filters on interface from ethtool.
 
-For the whole series,
+Patch1 adds necessary mbox handlers such that mbox consumers like PF netdev
+can add/delete/update DMAC filters and Patch2 adds debugfs support to dump
+current list of installed filters. Patch3 adds support to call mbox
+handlers upon receiving DMAC filters from ethtool ntuple commands.
 
-Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Change-log:
+v2 -
+   - fixed indentation issues.
+v3 -
+   - fixed kdoc warnings
 
-Thanks Alain!
+Hariprasad Kelam (2):
+  octeontx2-af: Debugfs support for DMAC filters
+  octeontx2-pf: offload DMAC filters to CGX/RPM block
 
-Regards,
-Amelie
+Sunil Kumar Kori (1):
+  octeontx2-af: DMAC filter support in MAC block
+
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 292 +++++++++++++++++-
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  10 +
+ .../marvell/octeontx2/af/lmac_common.h        |  12 +-
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  48 ++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   3 +
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 111 ++++++-
+ .../marvell/octeontx2/af/rvu_debugfs.c        |  88 +++++-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   3 +
+ .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   3 +
+ .../marvell/octeontx2/nic/otx2_common.h       |  11 +
+ .../marvell/octeontx2/nic/otx2_dmac_flt.c     | 173 +++++++++++
+ .../marvell/octeontx2/nic/otx2_flows.c        | 229 +++++++++++++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |   9 +
+ 14 files changed, 955 insertions(+), 39 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
+
+--
+2.17.1
