@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667DA3B8242
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5173B8292
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234746AbhF3Mhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:37:52 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:14736 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234510AbhF3Mho (ORCPT
+        id S234618AbhF3M6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:58:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57004 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234824AbhF3M6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:37:44 -0400
-X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Jun 2021 08:37:43 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625056165;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=bZsMABrIP30hs37+nedxyh4eEvRphAwrH1bbzL0H7+Q=;
-    b=BJl9LKYQMGKbxWfKkUCA4+FlI/pDKvslD8BZp8TVzf3sLyy/oOmBvPxx+iaDCgQpjB
-    Wn77NtJezyHUzdrF1CGWoEln77Q8LpZ/8p4kqoY5rqZNLyPA5CrU4dHyr1aha6QlQHWA
-    j2aNTnbNwGfvUqB8SCChHeKk/ZUFvGvLuHTFGwEaWl29eiKVdrokYJv8NrF2FHZzGRN8
-    2dFlNheDawYDBRx+uivp1f07aLXbSvgGW0Wh6wDVP9hxDlhDbPUwvosfHe0VHdSo0z2w
-    DYk4xR/6Zz1AaRat30Rl6+hT8pPYSrq/9XpPJkB4rlF6tqIQqccMjoJpliLOL+B7Hn4W
-    jbNA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCym3NQGSmPRBNE1Ujq6xQREsTid4kuKCecl97Y="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2001:16b8:263a:bd00:d7b:6d54:c5bb:5950]
-    by smtp.strato.de (RZmta 47.28.1 AUTH)
-    with ESMTPSA id h06665x5UCTF0Sq
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 30 Jun 2021 14:29:15 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
- regulator
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20210630121307.GA5106@sirena.org.uk>
-Date:   Wed, 30 Jun 2021 14:29:02 +0200
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Wed, 30 Jun 2021 08:58:49 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 274431FE79;
+        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
+        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
+        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625057779;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
+        T81d9SHcp5uEUCAA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 0F1B9118DD;
+        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
+        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
+        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625057779;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
+        T81d9SHcp5uEUCAA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id bdpOAvNp3GDUYAAALh3uQQ
+        (envelope-from <chrubis@suse.cz>); Wed, 30 Jun 2021 12:56:19 +0000
+Date:   Wed, 30 Jun 2021 14:30:45 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <02EE05C2-588F-4D50-8A37-46CC3B0C302C@goldelico.com>
-References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
- <20210629155922.GD4613@sirena.org.uk>
- <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
- <20210629185638.GG4613@sirena.org.uk>
- <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
- <20210630121307.GA5106@sirena.org.uk>
-To:     Mark Brown <broonie@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [CFT][PATCH] exit/bdflush: Remove the deprecated bdflush system
+ call
+Message-ID: <YNxj9Ydotv39vwPW@yuki>
+References: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+ <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+ <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
+ <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
+ <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
+ <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+ <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
+ <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
+ <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com>
+ <87sg10quue.fsf_-_@disp2133>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg10quue.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+I've send a similar patch [1] a while ago when I removed bdflush tests from
+LTP.
 
+[1] https://lore.kernel.org/lkml/20190528101012.11402-1-chrubis@suse.cz/
 
-> Am 30.06.2021 um 14:13 schrieb Mark Brown <broonie@kernel.org>:
->=20
-> On Tue, Jun 29, 2021 at 10:21:45PM +0200, H. Nikolaus Schaller wrote:
->=20
->> There seems to be a deadlock in probing:
->=20
->> 	e.g. ldo3_reg depends on vdds_1v8_main supply
->> 	vdds_1v8_main depends on smps7_reg supply
->> 	smps7_reg depends on vsys_cobra supply
->> 	vsys_cobra depends on nothing
->=20
->> This would normally lead to a simple chain as you described above. =
-But
->> ldo3_reg and smps7_reg share the same driver and can probe =
-successfully or
->> fail only in common.
->=20
-> I don't see any deadlock there?  Just a straightforward set of
-> dependencies.  Anything circular would clearly be a driver bug.
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
-I think it could be indirectly circular since ldo3_reg does not find =
-smps3
-registered. But I have to run more tests with printk inserted.
-
-So I am not sure if that is the issue but the best hypothesis I =
-currently know of.
-
->=20
->> Now if ldo3_reg defers probe through the new rule, smps7_reg is never
->> probed successfully because it is the same driver. Hence =
-vdds_1v8_main can
->> not become available. And the Palmas continues to run in boot =
-initialization
->> until some driver (MMC) wants to switch voltages or whatever.
->=20
-> The driver should just register all the DCDCs before the LDOs, then
-> everything will sort itself out.
-
-Basically the driver code does it that way. But fails. Probing seems to =
-defer
-until deferral limits (AFAIR there is a timer or counter in the probe =
-deferral
-queue) an does not succeed.
-
-It only works if I disable the new condition - but apparently it =
-suffices
-to do so for the LDOs because I noticed that the smps initialization =
-also
-defines supply_name and there it is no problem to have it before
-devm_regulator_register(). Every simple problem becomes complex if you =
-look
-deeper :)
-
-Which I interpret (without additional tests) that the smps7_reg is =
-registered
-but does not pass the (new) test when asked by ldo3_reg.
-
->  It's *possible* you might see a system
-> trying to link things together regulators of the same type but that's
-> very unusual as it makes the system less efficient.
-
-I can check that - and there may be other LDOs in the Palmas
-chained (as described by device tree).
-
-It will need some test time to get more factual information about this
-issue besides that reverting the new rule or adding a trick to make
-the Palmas driver initialize properly again.
-
-BR and thanks,
-Nikolaus
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
