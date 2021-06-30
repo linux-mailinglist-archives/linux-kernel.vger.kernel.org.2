@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9503B84DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791F13B84E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235000AbhF3OSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:18:15 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:37549 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbhF3OSO (ORCPT
+        id S235155AbhF3OTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:19:21 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3332 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234851AbhF3OTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:18:14 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 3159622256;
-        Wed, 30 Jun 2021 16:15:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1625062543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SX/9eBY4x1bVLRTwmiIGVEkZkYCSKmmnZrPEoWHtXIU=;
-        b=N+BllY4qWN167p/5p2A3RHLWXTSjgV7a7Snl2DCKBGFDPqSRz3VhdezBPNHTmQKCX9+GAM
-        iZokpON3cjU14LP9HBylBhq7Qj9UDfvKng/RJzg2YmU+EQzIuCx4sxcl4V7X5YaMrTcF+F
-        +W4ReEyki485TzXPQyp8rsEGExDGy6A=
+        Wed, 30 Jun 2021 10:19:20 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GFNW35R5Fz6H6nB;
+        Wed, 30 Jun 2021 22:09:03 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 16:16:49 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <paul@paul-moore.com>
+CC:     <stephen.smalley.work@gmail.com>, <prsriva02@gmail.com>,
+        <tusharsu@linux.microsoft.com>, <nramas@linux.microsoft.com>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 0/3] ima: Provide more info about buffer measurement
+Date:   Wed, 30 Jun 2021 16:16:32 +0200
+Message-ID: <20210630141635.2862222-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 30 Jun 2021 16:15:43 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     code@reto-schneider.ch, linux-mtd@lists.infradead.org, sr@denx.de,
-        reto.schneider@husqvarnagroup.com, miquel.raynal@bootlin.com,
-        p.yadav@ti.com, richard@nod.at, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: spi-nor: Add support for XM25QH64C
-In-Reply-To: <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
-References: <20210613121248.1529292-1-code@reto-schneider.ch>
- <1ba367f93650cb65122acd32fb4a4159@walle.cc>
- <0328347c-572d-b636-5542-99cb36e9efa9@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <064317e561f1ad20282efe778f633723@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-06-28 06:55, schrieb Tudor.Ambarus@microchip.com:
-> On 6/14/21 9:56 AM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Hi Reto,
->> 
->> Am 2021-06-13 14:12, schrieb Reto Schneider:
->>> From: Reto Schneider <reto.schneider@husqvarnagroup.com>
->>> 
->>> The data sheets can be found here:
->>> http://xmcwh.com/Uploads/2020-12-17/XM25QH64C_Ver1.1.pdf
->> 
->> Could you add that as a "Datasheet:" tag before your Sob tag?
->> 
->>> This chip has been (briefly) tested on the MediaTek MT7688 based
->>> GARDENA
->>> smart gateway.
->> 
->> Could you also apply my SFDP patch [1] and send the dump? 
->> Unfortunately,
->> I can't think of a good way to do that along with the patch and if 
->> this
->> in some way regarded as copyrighted material. So feel free to send it 
->> to
->> me privately. I'm starting to build a database.
->> 
-> 
-> Can the SFDP dump fit in the commit message when introducing a new 
-> flash ID?
+This patch set provides more information about buffer measurement.
 
-As ASCII hex dump? I'd guess we need some instructions how to do
-that. 4k would be 256 lines with 16 byte per line.
+First, it introduces the new function ima_get_current_hash_algo(), to
+obtain the algorithm used to calculate the buffer digest (patch 1).
 
-But yes, I had the same thought.
+Second, it changes the type of return value of ima_measure_critical_data()
+and process_buffer_measurement() from void to int, to signal to the callers
+whether or not the buffer has been measured, or just the digest has been
+calculated and written to the supplied location (patch 2).
 
-> The SFDP standard is public. SFDP reveals just what the flash
-> supports, why would that be sensitive information?
+Lastly, it adds a new parameter to the functions above, so that those
+functions can write the buffer digest to the location supplied by the
+callers (patch 3).
 
-copyright material must not be sensitive information, no? I'm no
-laywer, thus I'd played it safe.
+This patch set replaces the patch 'ima: Add digest, algo, measured
+parameters to ima_measure_critical_data()' in:
 
-> Reto, would you please dump the SFDP tables here?
+https://lore.kernel.org/linux-integrity/20210625165614.2284243-1-roberto.sassu@huawei.com/
 
-FWIW, he already provided me a binary dump for the flash (actually
-for the former version, too) and its already in my DB which you
-should have access, too.
+Changelog
 
-If we mandate that (and I am all for it) for new flashes, we will
-have to come up with a common format. Something like
+Huawei Digest Lists patch set:
+- introduce ima_get_current_hash_algo() (suggested by Mimi)
+- remove algo and measured parameters from ima_measure_critical_data() and
+  process_buffer_measurement() (suggested by Mimi)
+- return an integer from ima_measure_critical_data() and
+  process_buffer_measurement() (suggested by Mimi)
+- correctly check when process_buffer_measurement() should return earlier
 
-  echo "-----BEGIN SFDP (JEDEC ID ...)------"
-  cat sfdp | xxd -ps -c 20
-  echo "-----END SFDP------"
+Roberto Sassu (3):
+  ima: Introduce ima_get_current_hash_algo()
+  ima: Return int in the functions to measure a buffer
+  ima: Add digest parameter to the functions to measure a buffer
 
-I really don't know if such meta data belongs into the
-commit logs, though.
+ include/linux/ima.h                          | 22 +++++--
+ security/integrity/ima/ima.h                 | 10 +--
+ security/integrity/ima/ima_appraise.c        |  6 +-
+ security/integrity/ima/ima_asymmetric_keys.c |  6 +-
+ security/integrity/ima/ima_init.c            |  6 +-
+ security/integrity/ima/ima_main.c            | 66 +++++++++++++-------
+ security/integrity/ima/ima_queue_keys.c      | 15 ++---
+ security/selinux/ima.c                       | 10 +--
+ 8 files changed, 92 insertions(+), 49 deletions(-)
 
--michael
+-- 
+2.25.1
+
