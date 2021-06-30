@@ -2,236 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5A63B8094
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C13B80A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhF3KIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:08:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59748 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233954AbhF3KIq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:08:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625047578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LMceomtZpeBJxouu/8TZ2RWttETJTNeq4YrEIozF2xg=;
-        b=VY2X7ZnQcKMNfb/oWgksKDkPHGJoA7QhKCatCZiPiqBrr4r5HJwL5Gr16Sk+fgIP4qhHYf
-        tK0X8l4sLOvOSYBRse1Sv2DbedOWkXq4qr/tHzwCE3KmWv7vnvc6nbweW1VNge8OHCZBQ3
-        Ogzy3TyCzATqlneZzO1yKIMGnQPNlSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-eLpe537eMKuoj_qUhesd5w-1; Wed, 30 Jun 2021 06:06:15 -0400
-X-MC-Unique: eLpe537eMKuoj_qUhesd5w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S234149AbhF3KK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:10:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62142 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234057AbhF3KK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 06:10:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625047707; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=V2ANtGMjJP031vwtea0cvuT0DcS61OO8FRdPjBQ676g=;
+ b=eA/YWnsYUt1CDJZbaM3vu8mKoIwVoLGmm2iGOv7Smy/RfNKRyTyJ6Cwk9wS/MpLh/KO29mbp
+ fRS0p/6evUZewk8CmKVyxmiV2u6eRX8VWxtxks3upRt9ON1I3eN0jThW+TV0e/zkn1w26Pw4
+ pRbjCYoofdbMxUK7/a71YfbzQDg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60dc42803a8b6d0a45791531 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 10:08:00
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0543C43143; Wed, 30 Jun 2021 10:08:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B65AB1084F4B;
-        Wed, 30 Jun 2021 10:06:12 +0000 (UTC)
-Received: from localhost (ovpn-113-77.ams2.redhat.com [10.36.113.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B6621980E;
-        Wed, 30 Jun 2021 10:06:07 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 11:06:06 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-Message-ID: <YNxCDpM3bO5cPjqi@stefanha-x1.localdomain>
-References: <20210615141331.407-1-xieyongji@bytedance.com>
- <20210615141331.407-11-xieyongji@bytedance.com>
- <YNSCH6l31zwPxBjL@stefanha-x1.localdomain>
- <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17A87C433D3;
+        Wed, 30 Jun 2021 10:07:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="geeWI88lXXlJDriY"
-Content-Disposition: inline
-In-Reply-To: <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 30 Jun 2021 15:37:59 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
+ flag
+In-Reply-To: <20210325173311.GA15504@willie-the-truck>
+References: <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210129090516.GB3998@willie-the-truck>
+ <5d23fce629323bcda71594010824aad0@codeaurora.org>
+ <20210201111556.GA7172@willie-the-truck>
+ <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
+ <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+ <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
+ <20210203214612.GB19847@willie-the-truck>
+ <4988e2ef35f76a0c2f1fe3f66f023a3b@codeaurora.org>
+ <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
+ <20210325173311.GA15504@willie-the-truck>
+Message-ID: <21239ba603d0bdc4e4c696588a905f88@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Will,
 
---geeWI88lXXlJDriY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2021-03-25 23:03, Will Deacon wrote:
+> On Tue, Mar 09, 2021 at 12:10:44PM +0530, Sai Prakash Ranjan wrote:
+>> On 2021-02-05 17:38, Sai Prakash Ranjan wrote:
+>> > On 2021-02-04 03:16, Will Deacon wrote:
+>> > > On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
+>> > > > On 2021-02-01 23:50, Jordan Crouse wrote:
+>> > > > > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
+>> > > > > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+>> > > > > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
+>> > > > > > > > On 2021-01-29 14:35, Will Deacon wrote:
+>> > > > > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
+>> > > > > > > > > > +#define IOMMU_LLC        (1 << 6)
+>> > > > > > > > >
+>> > > > > > > > > On reflection, I'm a bit worried about exposing this because I think it
+>> > > > > > > > > will
+>> > > > > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
+>> > > > > > > > > MAIR
+>> > > > > > > > > set up for this memory type). Now, we also have that issue for the PTW,
+>> > > > > > > > > but
+>> > > > > > > > > since we always use cache maintenance (i.e. the streaming API) for
+>> > > > > > > > > publishing the page-tables to a non-coheren walker, it works out.
+>> > > > > > > > > However,
+>> > > > > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
+>> > > > > > > > > allocation, then they're potentially in for a nasty surprise due to the
+>> > > > > > > > > mismatched outer-cacheability attributes.
+>> > > > > > > > >
+>> > > > > > > >
+>> > > > > > > > Can't we add the syscached memory type similar to what is done on android?
+>> > > > > > >
+>> > > > > > > Maybe. How does the GPU driver map these things on the CPU side?
+>> > > > > >
+>> > > > > > Currently we use writecombine mappings for everything, although there
+>> > > > > > are some cases that we'd like to use cached (but have not merged
+>> > > > > > patches that would give userspace a way to flush/invalidate)
+>> > > > > >
+>> > > > >
+>> > > > > LLC/system cache doesn't have a relationship with the CPU cache.  Its
+>> > > > > just a
+>> > > > > little accelerator that sits on the connection from the GPU to DDR and
+>> > > > > caches
+>> > > > > accesses. The hint that Sai is suggesting is used to mark the buffers as
+>> > > > > 'no-write-allocate' to prevent GPU write operations from being cached in
+>> > > > > the LLC
+>> > > > > which a) isn't interesting and b) takes up cache space for read
+>> > > > > operations.
+>> > > > >
+>> > > > > Its easiest to think of the LLC as a bonus accelerator that has no cost
+>> > > > > for
+>> > > > > us to use outside of the unfortunate per buffer hint.
+>> > > > >
+>> > > > > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
+>> > > > > different hint) and in that case we have all of concerns that Will
+>> > > > > identified.
+>> > > > >
+>> > > >
+>> > > > For mismatched outer cacheability attributes which Will
+>> > > > mentioned, I was
+>> > > > referring to [1] in android kernel.
+>> > >
+>> > > I've lost track of the conversation here :/
+>> > >
+>> > > When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also
+>> > > mapped
+>> > > into the CPU and with what attributes? Rob said "writecombine for
+>> > > everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
+>> > >
+>> >
+>> > Rob answered this.
+>> >
+>> > > Finally, we need to be careful when we use the word "hint" as
+>> > > "allocation
+>> > > hint" has a specific meaning in the architecture, and if we only
+>> > > mismatch on
+>> > > those then we're actually ok. But I think IOMMU_LLC is more than
+>> > > just a
+>> > > hint, since it actually drives eviction policy (i.e. it enables
+>> > > writeback).
+>> > >
+>> > > Sorry for the pedantry, but I just want to make sure we're all talking
+>> > > about the same things!
+>> > >
+>> >
+>> > Sorry for the confusion which probably was caused by my mentioning of
+>> > android, NWA(no write allocate) is an allocation hint which we can
+>> > ignore
+>> > for now as it is not introduced yet in upstream.
+>> >
+>> 
+>> Any chance of taking this forward? We do not want to miss out on small 
+>> fps
+>> gain when the product gets released.
+> 
+> Do we have a solution to the mismatched virtual alias?
+> 
 
-On Tue, Jun 29, 2021 at 01:43:11PM +0800, Yongji Xie wrote:
-> On Mon, Jun 28, 2021 at 9:02 PM Stefan Hajnoczi <stefanha@redhat.com> wro=
-te:
-> > On Tue, Jun 15, 2021 at 10:13:31PM +0800, Xie Yongji wrote:
-> > > +     static void *iova_to_va(int dev_fd, uint64_t iova, uint64_t *le=
-n)
-> > > +     {
-> > > +             int fd;
-> > > +             void *addr;
-> > > +             size_t size;
-> > > +             struct vduse_iotlb_entry entry;
-> > > +
-> > > +             entry.start =3D iova;
-> > > +             entry.last =3D iova + 1;
-> >
-> > Why +1?
-> >
-> > I expected the request to include *len so that VDUSE can create a bounce
-> > buffer for the full iova range, if necessary.
-> >
->=20
-> The function is used to translate iova to va. And the *len is not
-> specified by the caller. Instead, it's used to tell the caller the
-> length of the contiguous iova region from the specified iova. And the
-> ioctl VDUSE_IOTLB_GET_FD will get the file descriptor to the first
-> overlapped iova region. So using iova + 1 should be enough here.
+Sorry for the long delay on this thread.
 
-Does the entry.last field have any purpose with VDUSE_IOTLB_GET_FD? I
-wonder why userspace needs to assign a value at all if it's always +1.
+For mismatched virtual alias question, wasn't this already discussed in 
+stretch
+when initial support for system cache [1] (which was reverted by you) 
+was added?
 
->=20
-> > > +             fd =3D ioctl(dev_fd, VDUSE_IOTLB_GET_FD, &entry);
-> > > +             if (fd < 0)
-> > > +                     return NULL;
-> > > +
-> > > +             size =3D entry.last - entry.start + 1;
-> > > +             *len =3D entry.last - iova + 1;
-> > > +             addr =3D mmap(0, size, perm_to_prot(entry.perm), MAP_SH=
-ARED,
-> > > +                         fd, entry.offset);
-> > > +             close(fd);
-> > > +             if (addr =3D=3D MAP_FAILED)
-> > > +                     return NULL;
-> > > +
-> > > +             /* do something to cache this iova region */
-> >
-> > How is userspace expected to manage iotlb mmaps? When should munmap(2)
-> > be called?
-> >
->=20
-> The simple way is using a list to store the iotlb mappings. And we
-> should call the munmap(2) for the old mappings when VDUSE_UPDATE_IOTLB
-> or VDUSE_STOP_DATAPLANE message is received.
+Excerpt from there,
 
-Thanks for explaining. It would be helpful to have a description of
-IOTLB operation in this document.
+"As seen in downstream kernels there are few non-coherent devices which
+would not want to allocate in system cache, and therefore would want
+Inner/Outer non-cached memory. So, we may want to either override the
+attributes per-device, or as you suggested we may want to introduce
+another memory type 'sys-cached' that can be added with its separate
+infra."
 
-> > Should userspace expect VDUSE_IOTLB_GET_FD to return a full chunk of
-> > guest RAM (e.g. multiple gigabytes) that can be cached permanently or
-> > will it return just enough pages to cover [start, last)?
-> >
->=20
-> It should return one iotlb mapping that covers [start, last). In
-> vhost-vdpa cases, it might be a full chunk of guest RAM. In
-> virtio-vdpa cases, it might be the whole bounce buffer or one coherent
-> mapping (produced by dma_alloc_coherent()).
+As for DMA API usage, we do not have any upstream users (video will be
+one if they decide to upstream that).
 
-Great, thanks. Adding something about this to the documentation would
-help others implementing VDUSE devices or libraries.
+[1] 
+https://patchwork.kernel.org/project/linux-arm-msm/patch/20180615105329.26800-1-vivek.gautam@codeaurora.org/
 
-> > > +
-> > > +             return addr + iova - entry.start;
-> > > +     }
-> > > +
-> > > +- VDUSE_DEV_GET_FEATURES: Get the negotiated features
-> >
-> > Are these VIRTIO feature bits? Please explain how feature negotiation
-> > works. There must be a way for userspace to report the device's
-> > supported feature bits to the kernel.
-> >
->=20
-> Yes, these are VIRTIO feature bits. Userspace will specify the
-> device's supported feature bits when creating a new VDUSE device with
-> ioctl(VDUSE_CREATE_DEV).
+Thanks,
+Sai
 
-Can the VDUSE device influence feature bit negotiation? For example, if
-the VDUSE virtio-blk device does not implement discard/write-zeroes, how
-does QEMU or the guest find out about this?
-
-> > > +- VDUSE_DEV_UPDATE_CONFIG: Update the configuration space and inject=
- a config interrupt
-> >
-> > Does this mean the contents of the configuration space are cached by
-> > VDUSE?
->=20
-> Yes, but the kernel will also store the same contents.
->=20
-> > The downside is that the userspace code cannot generate the
-> > contents on demand. Most devices doin't need to generate the contents
-> > on demand, so I think this is okay but I had expected a different
-> > interface:
-> >
-> > kernel->userspace VDUSE_DEV_GET_CONFIG
-> > userspace->kernel VDUSE_DEV_INJECT_CONFIG_IRQ
-> >
->=20
-> The problem is how to handle the failure of VDUSE_DEV_GET_CONFIG. We
-> will need lots of modification of virtio codes to support that. So to
-> make it simple, we choose this way:
->=20
-> userspace -> kernel VDUSE_DEV_SET_CONFIG
-> userspace -> kernel VDUSE_DEV_INJECT_CONFIG_IRQ
->=20
-> > I think you can leave it the way it is, but I wanted to mention this in
-> > case someone thinks it's important to support generating the contents of
-> > the configuration space on demand.
-> >
->=20
-> Sorry, I didn't get you here. Can't VDUSE_DEV_SET_CONFIG and
-> VDUSE_DEV_INJECT_CONFIG_IRQ achieve that?
-
-If the contents of the configuration space change continuously, then the
-VDUSE_DEV_SET_CONFIG approach is inefficient and might have race
-conditions. For example, imagine a device where the driver can read a
-timer from the configuration space. I think the VIRTIO device model
-allows that although I'm not aware of any devices that do something like
-it today. The problem is that VDUSE_DEV_SET_CONFIG would have to be
-called frequently to keep the timer value updated even though the guest
-driver probably isn't accessing it.
-
-What's worse is that there might be race conditions where other
-driver->device operations are supposed to update the configuration space
-but VDUSE_DEV_SET_CONFIG means that the VDUSE kernel code is caching an
-outdated copy.
-
-Again, I don't think it's a problem for existing devices in the VIRTIO
-specification. But I'm not 100% sure and future devices might require
-what I've described, so the VDUSE_DEV_SET_CONFIG interface could become
-a problem.
-
-Stefan
-
---geeWI88lXXlJDriY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDcQg4ACgkQnKSrs4Gr
-c8h7hggAnQQOdWOGK8gte/C5wPC6wIaHByFsU4T4LRipSwLegybqDEkWufZOH+Sa
-1xx1Jh7X2zc+VrfGU6jMXoejDqg/+powEv+AtJcm7EKUDOWNBpUK4e36qaxSjhqd
-U2Gya8ZhM+qgGnxgEJPl1anLmISVmMHSnulGdPy5c7Lsf6qa8n3PrBYcKpiwaFcJ
-keyHVt9KxkIJsV/2UVUsA+LzYL4H24FOyAllkjTRLm3wjqwsmciUELmvTvMKORu1
-TeIVS7Mn7J10Fegx54MOlWakdPahmuXloGv/yhxR102k/9dieMeoE3N4H+30PaU9
-IAuiYtoWhZNM5xwyR/ht7sVUVkOlQw==
-=j8XL
------END PGP SIGNATURE-----
-
---geeWI88lXXlJDriY--
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
