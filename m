@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45623B85B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC4F3B85B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235789AbhF3PFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        id S235835AbhF3PFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235352AbhF3PFI (ORCPT
+        with ESMTP id S235817AbhF3PFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:05:08 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E74C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:02:39 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id f9-20020a7bcd090000b02901eca9a0d67cso1438971wmj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:02:39 -0700 (PDT)
+        Wed, 30 Jun 2021 11:05:11 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41152C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:02:41 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id eb2-20020ad44e420000b029025a58adfc6bso1582768qvb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:02:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=lvrIaQ6ThTaENrGFdNSy44zlHv6vzHwWs8O331HJaOs=;
-        b=UedDNaHadRhM1ur9CcmhNsbBrMJzHEB1U+0r2AOapItU7e7vsnxt3c9g0LnyNpCox3
-         oY1ub/Vq0GNFDP4URYTbHrG8G5qqLvTSMvekpZ4F39GE+u/bot8Kanw4LCwn+j36aEhj
-         i47cryF1FdWFZi8blrc9xRb9zSV5lPP5aTPFNlpA3Y2di1UfAV6KrCZKzGTJqnsnSEQU
-         sgUjRWtus0jBIR8XPgwE9r6tldW5PgFmHRGZm3jmRejMWv/x/2NmjRQGf/uWQZsvRxvE
-         ymtFZELBVHFsnM8UZ/4gj3dTCBECQeH/udKlGBdrzTQKS3VQ5J61/+i+aKSV6UlzGt7g
-         5ARQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=NsJPxv+Yi9Y0Cxl+/SZ8/0DfgNfKjUrGLSr4GOlizVE=;
+        b=ZSFYc1N7Bh9wv2errbcoilHdQgrtZa4Egl/x1q8DWx087ZrALCwjG7d45PprJ7nOV+
+         8ybg4z8OgnOrqDzpnDFp+d256wUotxawgE/vD2sBzRB+i9B08DGeCdhjXrw3GFVws+AS
+         syJ+SBqSs9SGklX7ualr3e0kyhIbqSZqAXs5MsS0ReBBnE3YswrsTgZ4xk6ur3Q3qwkh
+         mlkpUkSm1Y3v1Fgz/jYzX7caVUQz7AWqahH08YA04wZxzv4uDmF8A7Zo8QN3KPPw2DYy
+         wtL6FSIyBrpaFv5c37rI/H2FcsggCqbNJLo/kQWTBPugSIKS0T8xVMd4H67528gI2oDi
+         6H2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=lvrIaQ6ThTaENrGFdNSy44zlHv6vzHwWs8O331HJaOs=;
-        b=UbYIAiGfPkO6GiLOBpjew1MdzNAjYifKq3fOJue48YuNc+uI4haOl53qAaNJ40EBnb
-         +ktyhXKEbKQkQI1FnuUZgpPcXOh+J+lQr+WKFiZnHYcvj/3FbCIYd7WbSKTrunAnna84
-         Nd8jALnlQP1WxkgCs5Io7KjnDDkjoxRAcQs1M54U6QfOTKUmYnR+F6LtCVOBRTfH51ej
-         igzc5gkU4w3LFeNjb48TcZ1BvwtKcId8JVznAxb29mSR/dyYBP197OJplk5Yxteukj9y
-         iBBJMxNXL0JRDizrVxsBJGGYgSiYo4fSc2sIM2saO8O85o/Xv/6kVTpTkpgaEr+otlQU
-         QuUw==
-X-Gm-Message-State: AOAM532984wC2lo6CUbwqPpwEOIchVRhr8pYtZ/YF7+zo3siOYmuCxoT
-        PZtdZZ5cm0rnWoX9uttslxSAGS5Slj0=
-X-Google-Smtp-Source: ABdhPJw3Yb4pAIycwjH7H7zCVelcp5Z4pYuZ2OS90TFwioUrU+wqzGQYm+MMsUvB66LM+CC6SclAOogXvy4=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=NsJPxv+Yi9Y0Cxl+/SZ8/0DfgNfKjUrGLSr4GOlizVE=;
+        b=swduT26uVAXMG5H9wJOnSskRuYNJ2MLZ40er+XCqANRjrWGqZTAlx0vDzQ0CQCsomZ
+         J4YFdBLQ/nl7b9pyiyk6ndfihgzo8DtmNdovRgUxwp7WEKBylEfg710opLfpaK8nbTo3
+         y0W5axNlbQxoh2UQYC+XIaJ2AWRENBkqU18q6RPM9gm+W5HyIqEsuYCBno8tzS0Df/zv
+         RbObG19dtTHOV/F+DR5JRnLwHMBiYKhMt39qctKCU0kgBMn0KseHYICUBMRoZprJ5SNb
+         /5a/sn+iAlL141KwoCe9Udw8Q8reo+FbkzqIQoETsZHHQ8U8xQuaDxhlkfqfGkq9J1XB
+         iLHQ==
+X-Gm-Message-State: AOAM530O2Ogrud+LCy68bwB53cQzEtEsIgodqL+t4MG9aGH70Weuo3Ph
+        J0Z1iUuagezbkTpY7kmi+ooNoN/7NNo=
+X-Google-Smtp-Source: ABdhPJy7krc3G3WIMTiQX8NdRFoM6NqtuGwGFCDI6oCddBMt9ABKJsibDaVZoTeNgXV5FaqCkdk5iSEw/Sg=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:a3fc:e8:8089:1013])
- (user=glider job=sendgmr) by 2002:a05:600c:1552:: with SMTP id
- f18mr39350083wmg.184.1625065358251; Wed, 30 Jun 2021 08:02:38 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 17:02:33 +0200
-Message-Id: <20210630150234.1109496-1-glider@google.com>
+ (user=glider job=sendgmr) by 2002:a05:6214:966:: with SMTP id
+ do6mr37584817qvb.57.1625065360398; Wed, 30 Jun 2021 08:02:40 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 17:02:34 +0200
+In-Reply-To: <20210630150234.1109496-1-glider@google.com>
+Message-Id: <20210630150234.1109496-2-glider@google.com>
 Mime-Version: 1.0
+References: <20210630150234.1109496-1-glider@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v4 1/2] kfence: move the size check to the beginning of __kfence_alloc()
+Subject: [PATCH v4 2/2] kfence: skip all GFP_ZONEMASK allocations
 From:   Alexander Potapenko <glider@google.com>
 To:     akpm@linux-foundation.org
 Cc:     dvyukov@google.com, elver@google.com, linux-kernel@vger.kernel.org,
@@ -59,51 +63,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check the allocation size before toggling kfence_allocation_gate.
-This way allocations that can't be served by KFENCE will not result in
-waiting for another CONFIG_KFENCE_SAMPLE_INTERVAL without allocating
-anything.
+Allocation requests outside ZONE_NORMAL (MOVABLE, HIGHMEM or DMA) cannot
+be fulfilled by KFENCE, because KFENCE memory pool is located in a
+zone different from the requested one.
 
-Suggested-by: Marco Elver <elver@google.com>
+Because callers of kmem_cache_alloc() may actually rely on the
+allocation to reside in the requested zone (e.g. memory allocations done
+with __GFP_DMA must be DMAable), skip all allocations done with
+GFP_ZONEMASK and/or respective SLAB flags (SLAB_CACHE_DMA and
+SLAB_CACHE_DMA32).
+
+Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Dmitry Vyukov <dvyukov@google.com>
 Cc: Marco Elver <elver@google.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>
 Cc: stable@vger.kernel.org # 5.12+
 Signed-off-by: Alexander Potapenko <glider@google.com>
 Reviewed-by: Marco Elver <elver@google.com>
+
 ---
- mm/kfence/core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+
+v2:
+ - added parentheses around the GFP clause, as requested by Marco
+v3:
+ - ignore GFP_ZONEMASK, which also covers __GFP_HIGHMEM and __GFP_MOVABLE
+ - move the flag check at the beginning of the function, as requested by
+   Souptick Joarder
+v4:
+ - minor fixes to description and comment formatting
+---
+ mm/kfence/core.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 4d21ac44d5d35..33bb20d91bf6a 100644
+index 33bb20d91bf6a..1cbdb62e6d0fb 100644
 --- a/mm/kfence/core.c
 +++ b/mm/kfence/core.c
-@@ -733,6 +733,13 @@ void kfence_shutdown_cache(struct kmem_cache *s)
+@@ -740,6 +740,15 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
+ 	if (size > PAGE_SIZE)
+ 		return NULL;
  
- void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
- {
 +	/*
-+	 * Perform size check before switching kfence_allocation_gate, so that
-+	 * we don't disable KFENCE without making an allocation.
++	 * Skip allocations from non-default zones, including DMA. We cannot
++	 * guarantee that pages in the KFENCE pool will have the requested
++	 * properties (e.g. reside in DMAable memory).
 +	 */
-+	if (size > PAGE_SIZE)
++	if ((flags & GFP_ZONEMASK) ||
++	    (s->flags & (SLAB_CACHE_DMA | SLAB_CACHE_DMA32)))
 +		return NULL;
 +
  	/*
  	 * allocation_gate only needs to become non-zero, so it doesn't make
  	 * sense to continue writing to it and pay the associated contention
-@@ -757,9 +764,6 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
- 	if (!READ_ONCE(kfence_enabled))
- 		return NULL;
- 
--	if (size > PAGE_SIZE)
--		return NULL;
--
- 	return kfence_guarded_alloc(s, size, flags);
- }
- 
 -- 
 2.32.0.93.g670b81a890-goog
 
