@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F81D3B845D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6F03B844C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhF3NzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:55:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33002 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbhF3NvW (ORCPT
+        id S235911AbhF3Ny1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:54:27 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:46106 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235942AbhF3Nut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:51:22 -0400
-Date:   Wed, 30 Jun 2021 13:48:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0uc/PPgOA3whdRN+v7RK+e5rNR2sx4zQnXR9MK1wtFA=;
-        b=OPAX7cZ9i9TuAWCllDMhKlaNL/PriN9WIFu0MQqjNFJBvu0r8LvyUvKHZGn5Z/X5SiDrku
-        BWkHRpKEoiiSNo3CDv5EvZU4R0ztjnLQNsQeYZnDUmMg4Z/cRtK0zsJg7RKbX8Tk/XyKxd
-        CGWHnTlY8jAdeH//8QH9h90yA/ydaYhlzpBnCLJIz3ozLLiDMUrWAjOYhV4nxX9JCbz48f
-        QvhTbiDLbyCPATAlZEzicD9TBYjY9TGDFwygMKR8dMFM4I8gxcQD/oboxJqIlOAvM3uVFl
-        Ljt3v0nRg8GWVBJKBRWZmCiqrVR1JRH/p0a7walQysc7gy5FQzqd38/EQsKl0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060883;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0uc/PPgOA3whdRN+v7RK+e5rNR2sx4zQnXR9MK1wtFA=;
-        b=8jPjP/Eszls1okaES6jhbdU3TyiBpelqiMwrE5Tq4w6kJCv7wW+BV4eToLzDJNq/VZOH4G
-        M2bs0p8NfhjH8XAw==
-From:   "tip-bot2 for Yury Norov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] bitmap_parse: Support 'all' semantics
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <162506088324.395.4488352989288920101.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 30 Jun 2021 09:50:49 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id BB0C1C16CA;
+        Wed, 30 Jun 2021 21:48:17 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P5175T139827884320512S1625060896405688_;
+        Wed, 30 Jun 2021 21:48:18 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d80fb7853f0d3e5eec241dab975cdec2>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v10 10/10] arm64: dts: rockchip: Enable SFC for Odroid Go Advance
+Date:   Wed, 30 Jun 2021 21:48:14 +0800
+Message-Id: <20210630134814.7748-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+References: <20210630134745.7561-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Commit-ID:     b18def121f077857ccf92fc620366e19850bc297
-Gitweb:        https://git.kernel.org/tip/b18def121f077857ccf92fc620366e19850bc297
-Author:        Yury Norov <yury.norov@gmail.com>
-AuthorDate:    Tue, 20 Apr 2021 20:13:25 -07:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 15:38:20 -07:00
+This enables the Rockchip Serial Flash Controller for the Odroid Go
+Advance. Note that while the attached SPI NOR flash and the controller
+both support quad read mode, only 2 of the required 4 pins are present.
+The rx and tx bus width is set to 2 for this reason.
 
-bitmap_parse: Support 'all' semantics
-
-RCU code supports an 'all' group as a special case when parsing rcu_nocbs
-parameter. This patch moves the 'all' support to the core bitmap_parse
-code, so that all bitmap users can enjoy this extension.
-
-Moving 'all' parsing to a bitmap_parse level also allows users to pass
-patterns together with 'all' in regular group:pattern format, for example,
-"rcu_nocbs=all:1/2" would offload all the even-numbered CPUs regardless
-of the number of CPUs on the system.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- Documentation/admin-guide/kernel-parameters.rst |  5 +++++
- lib/bitmap.c                                    |  9 +++++++++
- lib/test_bitmap.c                               |  7 +++++++
- 3 files changed, 21 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 3996b54..01ba293 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
- will also change.  Use the same on a small 4 core system, and "16-N" becomes
- "16-3" and now the same boot input will be flagged as invalid (start > end).
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts      | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+index 49c97f76df77..f78e11dd8447 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+@@ -484,6 +484,22 @@
+ 	status = "okay";
+ };
  
-+The special case-tolerant group name "all" has a meaning of selecting all CPUs,
-+so that "nohz_full=all" is the equivalent of "nohz_full=0-N".
++&sfc {
++	pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus2>;
++	pinctrl-names = "default";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
 +
-+The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-+all users of bitmap_parse().
- 
- This document may not be entirely up to date and comprehensive. The command
- "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 74ceb02..6e29b2a 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -581,6 +581,14 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- {
- 	unsigned int lastbit = r->nbits - 1;
- 
-+	if (!strncasecmp(str, "all", 3)) {
-+		r->start = 0;
-+		r->end = lastbit;
-+		str += 3;
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <108000000>;
++		spi-rx-bus-width = <2>;
++		spi-tx-bus-width = <2>;
++	};
++};
 +
-+		goto check_pattern;
-+	}
-+
- 	str = bitmap_getnum(str, &r->start, lastbit);
- 	if (IS_ERR(str))
- 		return str;
-@@ -595,6 +603,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 	if (IS_ERR(str))
- 		return str;
- 
-+check_pattern:
- 	if (end_of_region(*str))
- 		goto no_pattern;
- 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 9cd5755..4ea73f5 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -366,6 +366,13 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
- 	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
- 
-+	{0,	  "all",		&exp1[8 * step], 32, 0},
-+	{0,	  "0, 1, all,  ",	&exp1[8 * step], 32, 0},
-+	{0,	  "all:1/2",		&exp1[4 * step], 32, 0},
-+	{0,	  "ALL:1/2",		&exp1[4 * step], 32, 0},
-+	{-EINVAL, "al", NULL, 8, 0},
-+	{-EINVAL, "alll", NULL, 8, 0},
-+
- 	{-EINVAL, "-1",	NULL, 8, 0},
- 	{-EINVAL, "-0",	NULL, 8, 0},
- 	{-EINVAL, "10-1", NULL, 8, 0},
+ &tsadc {
+ 	status = "okay";
+ };
+-- 
+2.17.1
+
+
+
