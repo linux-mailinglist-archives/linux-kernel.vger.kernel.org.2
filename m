@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432253B7B16
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 02:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F07C3B7B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 03:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235617AbhF3Amo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 20:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235456AbhF3Amm (ORCPT
+        id S231593AbhF3BDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 21:03:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9428 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhF3BDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 20:42:42 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299D4C061766
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 17:40:14 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id q18so1695303lfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 17:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P7Utv4Xv8f3LH8imsHGmptaGmIFWX2rE9yPI15cM4JE=;
-        b=BqZ4kuWIKpcEbo5JFvNEWhlCsZTvb34CVpR4i+0+loWhTWPtml6JIFjqg1Qp8qCWPi
-         h2JoCr3J3SXpLTSRGzstXsfhOuyoo+sY4paGysoJ4oo6SldinBLQfasOmwLvilO5Sigf
-         DEAZat0rj+wquVcEQkELDVxcTxxlu9Nf65+yq9GmhF6eRZLohF8/+NQLA7hiozuyYmc3
-         e1R6f6tuPhWTkqMpZFBdgQUDOrFZPv9re5fLiojOIxq+Z1qK3QwZIflDhdB9VUC7XnMI
-         kbSgbvA7A/ALiS2S/wDsk8gaslJhBVIX8C+k42aEHl/+My6TBicBp+jVzmxPXsLCEzIz
-         cEwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P7Utv4Xv8f3LH8imsHGmptaGmIFWX2rE9yPI15cM4JE=;
-        b=JMNYFsNTOdtIipddxhpIJvqrNT9BF2z0dUvaIhgn8HY4sQFQNnr2grRzsdVo/gyqkX
-         72yZwbeqOdLzjGBCcbYDScelsyAguxZfsVy2a8rn26UbHRiB+veElcVNM7EsKduM55SF
-         89TIjiM+4UK2B2qAz+BuAYos1ClnlP16OeC586TAXdF2X/GwAfNzefd8elmKmMl5Qpmk
-         UINWOWUGx5ZCwNiziKqTLqP7R4SVJutMHu9BUBxbzNNFR+LSl/d4rT0IqZfO7TJfMI3f
-         s7VS+rOqQ7wXF+9YyKbWYViTwzvMg4VdEc3gRCiJwpgYeuJ3L3K0VDoZOZaXrDvhg98A
-         K2oA==
-X-Gm-Message-State: AOAM533PffXB1p/R5UmjE2FDRkHBz9U5JgObIzvRVR7JN/ROam/q/Aqj
-        cv7WCmsVqbAN+BHLLaKp8DTF7G5z49q/s41oYeE1SQ==
-X-Google-Smtp-Source: ABdhPJyX/BDkaV92LQFDyRo8cQnD2mbip2JzER1wKjy13vKvSgKZN5woD1/LHTQqro4rdrfZ3m3SAi82jBj9IF/fbv4=
-X-Received: by 2002:ac2:5237:: with SMTP id i23mr26347233lfl.29.1625013612407;
- Tue, 29 Jun 2021 17:40:12 -0700 (PDT)
+        Tue, 29 Jun 2021 21:03:01 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GF2xc4BzGzZkC1;
+        Wed, 30 Jun 2021 08:57:24 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 09:00:30 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 09:00:30 +0800
+Subject: Re: [PATCH 4.19 000/109] 4.19.196-rc1 review
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>
+References: <20210628143305.32978-1-sashal@kernel.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <fbb5f71a-0b2c-52c8-1c4b-7e0acb9e33ef@huawei.com>
+Date:   Wed, 30 Jun 2021 09:00:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20210629143407.14703-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20210629143407.14703-1-sergio.paracuellos@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 30 Jun 2021 02:40:01 +0200
-Message-ID: <CACRpkdZJjuCMrxka5R2YLgcjwjjXCBEgDP5_+M7nxo5ZX6W4+A@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ralink: rt305x: add missing include
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210628143305.32978-1-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 4:34 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
 
-> Header 'rt305x.h' is ralink architecture dependent file where
-> other general definitions which are in 'ralink_regs.h' are
-> being used. This 'rt305x.h' is only being included in two
-> different files: 'rt305x.c' and 'pinctrl-rt305x.c'. When
-> file 'pinctrl-rt305x.c' is being compiled definitions in
-> 'ralink_regs.h' are need to build it properly. Hence, add
-> missing include 'ralink_regs.h' in 'pinctrl-rt305x.c'
-> source to avoid compilation problems.
->
-> Fixes: 3a1b0ca5a83b ("pinctrl: ralink: move RT305X SoC pinmux config into a new 'pinctrl-rt305x.c' file")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-Patch applied!
+On 2021/6/28 22:31, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.19.196 release.
+> There are 109 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed 30 Jun 2021 02:32:48 PM UTC.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.195
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
 
-Yours,
-Linus Walleij
+Tested on arm64 and x86 for 4.19.196-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.196-rc1
+Commit: 7064c50476914a248e42de8f0d3fa614be5f1b8f
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8858
+passed: 8858
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8858
+passed: 8858
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
