@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E403B7B9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657FB3B7B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhF3CiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:38:14 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:33572 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232009AbhF3CiI (ORCPT
+        id S232218AbhF3CiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:38:19 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33855 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232699AbhF3CiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:38:08 -0400
-X-UUID: bb68e647902745cc82e25a7cd7b47ca0-20210630
-X-UUID: bb68e647902745cc82e25a7cd7b47ca0-20210630
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        Tue, 29 Jun 2021 22:38:14 -0400
+X-UUID: 09c797874b1040d0acd9164099f03e60-20210630
+X-UUID: 09c797874b1040d0acd9164099f03e60-20210630
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 337488588; Wed, 30 Jun 2021 10:35:37 +0800
+        with ESMTP id 1464235330; Wed, 30 Jun 2021 10:35:43 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 10:35:36 +0800
+ 15.0.1497.2; Wed, 30 Jun 2021 10:35:42 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 10:35:34 +0800
+ Transport; Wed, 30 Jun 2021 10:35:41 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -40,9 +40,9 @@ CC:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH 02/24] dt-bindings: mediatek: mt8195: Add binding for infra IOMMU
-Date:   Wed, 30 Jun 2021 10:34:42 +0800
-Message-ID: <20210630023504.18177-3-yong.wu@mediatek.com>
+Subject: [PATCH 03/24] iommu/mediatek: Fix 2 HW sharing pgtable issue
+Date:   Wed, 30 Jun 2021 10:34:43 +0800
+Message-ID: <20210630023504.18177-4-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210630023504.18177-1-yong.wu@mediatek.com>
 References: <20210630023504.18177-1-yong.wu@mediatek.com>
@@ -53,101 +53,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mt8195, we have a new IOMMU that is for INFRA IOMMU. its masters
-mainly are PCIe and USB. Different with MM IOMMU, all these masters
-connect with IOMMU directly, there is no mediatek,larbs property for
-infra IOMMU.
+In the this commit 4f956c97d26b ("iommu/mediatek: Move domain_finalise
+into attach_device"), I overlooked the sharing pgtable case.
+After that commit, the "data" in the mtk_iommu_domain_finalise always is
+the data of the current IOMMU HW, If it's sharing pgtable case, here is
+not right. This patch fix this. In sharing pgable case, we will loop the
+list to find if there already is the exist domain.
 
-Another thing is about PCIe ports. currently the function
-"of_iommu_configure_dev_id" only support the id number is 1, But our
-PCIe have two ports, one is for reading and the other is for writing.
-see more about the PCIe patch in this patchset. Thus, I only list
-the reading id here and add the other id in our driver.
+this only affect mt2712 which is the only SoC that sharing pgtable.
 
+Fixes: 4f956c97d26b ("iommu/mediatek: Move domain_finalise into attach_device")
+Signed-off-by: Chao Hao <chao.hao@mediatek.com>
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- .../bindings/iommu/mediatek,iommu.yaml         | 14 +++++++++++++-
- .../dt-bindings/memory/mt8195-memory-port.h    | 18 ++++++++++++++++++
- include/dt-bindings/memory/mtk-memory-port.h   |  2 ++
- 3 files changed, 33 insertions(+), 1 deletion(-)
+ drivers/iommu/mtk_iommu.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml b/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-index 9b04630158c8..6f3ff631c06b 100644
---- a/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-+++ b/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-@@ -79,6 +79,7 @@ properties:
-           - mediatek,mt8192-m4u  # generation two
-           - mediatek,mt8195-iommu-vdo        # generation two
-           - mediatek,mt8195-iommu-vpp        # generation two
-+          - mediatek,mt8195-iommu-infra      # generation two
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index e06b8a0e2b56..013dbcc87d49 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -390,12 +390,19 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
+ 				     unsigned int domid)
+ {
+ 	const struct mtk_iommu_iova_region *region;
++	struct mtk_iommu_data *tmpdata;
  
-       - description: mt7623 generation one
-         items:
-@@ -129,7 +130,6 @@ required:
-   - compatible
-   - reg
-   - interrupts
--  - mediatek,larbs
-   - '#iommu-cells'
- 
- allOf:
-@@ -161,6 +161,18 @@ allOf:
-       required:
-         - power-domains
- 
-+  - if:
-+      not:
-+        properties:
-+          compatible:
-+            items:
-+              enum:
-+                - mediatek,mt8195-iommu-infra
+-	/* Use the exist domain as there is only one pgtable here. */
+-	if (data->m4u_dom) {
+-		dom->iop = data->m4u_dom->iop;
+-		dom->cfg = data->m4u_dom->cfg;
+-		dom->domain.pgsize_bitmap = data->m4u_dom->cfg.pgsize_bitmap;
++	/*
++	 * Loop to find if there is already the exist domain.
++	 * Use it when 2 iommu HWs share the pgtable.
++	 */
++	for_each_m4u(tmpdata) {
++		if (!tmpdata->m4u_dom)
++			continue;
 +
-+    then:
-+      required:
-+        - mediatek,larbs
-+
- additionalProperties: false
++		dom->iop = tmpdata->m4u_dom->iop;
++		dom->cfg = tmpdata->m4u_dom->cfg;
++		dom->domain.pgsize_bitmap = tmpdata->m4u_dom->cfg.pgsize_bitmap;
+ 		goto update_iova_region;
+ 	}
  
- examples:
-diff --git a/include/dt-bindings/memory/mt8195-memory-port.h b/include/dt-bindings/memory/mt8195-memory-port.h
-index 783bcae8cdea..67afad848725 100644
---- a/include/dt-bindings/memory/mt8195-memory-port.h
-+++ b/include/dt-bindings/memory/mt8195-memory-port.h
-@@ -387,4 +387,22 @@
- #define M4U_PORT_L28_CAM_DRZS4NO_R1		MTK_M4U_ID(28, 5)
- #define M4U_PORT_L28_CAM_TNCSO_R1		MTK_M4U_ID(28, 6)
- 
-+/* infra iommu ports */
-+/* PCIe1: read: BIT16; write BIT17. */
-+#define M4U_PORT_INFRA_PCIE1			MTK_IFAIOMMU_PERI_ID(16)
-+/* PCIe0: read: BIT18; write BIT19. */
-+#define M4U_PORT_INFRA_PCIE0			MTK_IFAIOMMU_PERI_ID(18)
-+#define M4U_PORT_INFRA_SSUSB_P3_R		MTK_IFAIOMMU_PERI_ID(20)
-+#define M4U_PORT_INFRA_SSUSB_P3_W		MTK_IFAIOMMU_PERI_ID(21)
-+#define M4U_PORT_INFRA_SSUSB_P2_R		MTK_IFAIOMMU_PERI_ID(22)
-+#define M4U_PORT_INFRA_SSUSB_P2_W		MTK_IFAIOMMU_PERI_ID(23)
-+#define M4U_PORT_INFRA_SSUSB_P1_1_R		MTK_IFAIOMMU_PERI_ID(24)
-+#define M4U_PORT_INFRA_SSUSB_P1_1_W		MTK_IFAIOMMU_PERI_ID(25)
-+#define M4U_PORT_INFRA_SSUSB_P1_0_R		MTK_IFAIOMMU_PERI_ID(26)
-+#define M4U_PORT_INFRA_SSUSB_P1_0_W		MTK_IFAIOMMU_PERI_ID(27)
-+#define M4U_PORT_INFRA_SSUSB2_R			MTK_IFAIOMMU_PERI_ID(28)
-+#define M4U_PORT_INFRA_SSUSB2_W			MTK_IFAIOMMU_PERI_ID(29)
-+#define M4U_PORT_INFRA_SSUSB_R			MTK_IFAIOMMU_PERI_ID(30)
-+#define M4U_PORT_INFRA_SSUSB_W			MTK_IFAIOMMU_PERI_ID(31)
-+
- #endif
-diff --git a/include/dt-bindings/memory/mtk-memory-port.h b/include/dt-bindings/memory/mtk-memory-port.h
-index 7d64103209af..2f68a0511a25 100644
---- a/include/dt-bindings/memory/mtk-memory-port.h
-+++ b/include/dt-bindings/memory/mtk-memory-port.h
-@@ -12,4 +12,6 @@
- #define MTK_M4U_TO_LARB(id)		(((id) >> 5) & 0x1f)
- #define MTK_M4U_TO_PORT(id)		((id) & 0x1f)
- 
-+#define MTK_IFAIOMMU_PERI_ID(port)	MTK_M4U_ID(0, port)
-+
- #endif
 -- 
 2.18.0
 
