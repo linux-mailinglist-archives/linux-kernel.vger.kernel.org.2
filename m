@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455863B87C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9465E3B87CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhF3Rg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:36:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229852AbhF3Rg5 (ORCPT
+        id S232545AbhF3Rl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:41:27 -0400
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:42729 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhF3Rl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625074468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N4ro5oL6ovpNBSp+T8bHCUqPQn0i5VVo5zsyKjCXD18=;
-        b=gAiCnIl8aH7kfY/fUxM79rpbBM/XSKeapJAvhOh1uArm3h1OzGhNi2FgV+Lj3vph6ekGqg
-        S2AKY6c6qER1Sx8+A92tyECNAv2s158UuWpOmtzQXJFRiqTWr77Yfu0/gsvMj8s1+Zhzq3
-        FUT3bkV7eI2oLktp58dAggpP+Xx8gAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-uiy8ntILMKG-kB9HWVSukw-1; Wed, 30 Jun 2021 13:34:24 -0400
-X-MC-Unique: uiy8ntILMKG-kB9HWVSukw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E04F981CD1C;
-        Wed, 30 Jun 2021 17:34:22 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-222.rdu2.redhat.com [10.10.115.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36B343AC2;
-        Wed, 30 Jun 2021 17:33:59 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id C3B6422054F; Wed, 30 Jun 2021 13:33:58 -0400 (EDT)
-Date:   Wed, 30 Jun 2021 13:33:58 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
- get_all_fs_names
-Message-ID: <20210630173358.GD75386@redhat.com>
-References: <20210621062657.3641879-1-hch@lst.de>
- <20210622081217.GA2975@lst.de>
- <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
- <20210629205048.GE5231@redhat.com>
- <20210630053601.GA29241@lst.de>
+        Wed, 30 Jun 2021 13:41:26 -0400
+Received: by mail-oo1-f51.google.com with SMTP id s10-20020a4aeaca0000b029024c2acf6eecso831962ooh.9;
+        Wed, 30 Jun 2021 10:38:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v8JSghkeuF9S6UG+ix50DzAmP5iiLVa7Kv5BETwhQUY=;
+        b=Ouh519BVMnd6DOX0ExdOKEGNW+P74h+SlZB/RojH7yitQZWTepi9bkbJ3vDG3OzQjv
+         bjN6vpwpWM07X51xz9Ie4E2wilvYpjfUHzqytqFisFlgPp+b2X44r9COkTIITjHf9nCn
+         9wmSttKl99DQMaD4Mftq09t4mrLoQ42fHUZl4p7hIo7253iC70rP+Wota5WwK0R4NOvr
+         VEWaT2t9ZjX8eQCnXF85k3L+7D9GxSvqijKbVRNCWlI2/54oT72opgKGgAHWVdMx8UIp
+         jQV2e/Lw2D4qeQn6ZVCHYIan4FqezU0UoQNaqfSVa8y8exljqNv4ukIL147JXn2/kVu7
+         aW7Q==
+X-Gm-Message-State: AOAM531R7U8WrmKKkWhnbJuvJ5ytw6j+F3qK/ituYGa6a++JElPJCbBV
+        SA9fT6usTtjEpIBKk5+z5xvIRPNPMtwA5vPksf8=
+X-Google-Smtp-Source: ABdhPJyIqBN/PMZlwg+zLDpLQ+5vZtZEEPWWBWAMKd/bSA7C3Ih6//8+RKzY37SrjDfbUGDhqKlFPVZgdZPn4aL+HpQ=
+X-Received: by 2002:a4a:5285:: with SMTP id d127mr9203493oob.2.1625074736951;
+ Wed, 30 Jun 2021 10:38:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630053601.GA29241@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210623092545.20675-1-wjc@cdjrlc.com>
+In-Reply-To: <20210623092545.20675-1-wjc@cdjrlc.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 30 Jun 2021 19:38:46 +0200
+Message-ID: <CAJZ5v0iJ6Zo9k3A_4sMBxcNZVB0M1+qTcbrsbQ63-M5OZSGSdg@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: moved EXPORT_SYMBOL so that it immediately
+ followed its function/variable
+To:     Jinchao Wang <wjc@cdjrlc.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 07:36:01AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 29, 2021 at 04:50:48PM -0400, Vivek Goyal wrote:
-> > May be we should modify mount_block_root() code so that it does not
-> > require that extra "\0". Possibly zero initialize page and that should
-> > make sure list_bdev_fs_names() does not have to worry about it.
-> > 
-> > It is possible that a page gets full from the list of filesystems, and
-> > last byte on page is terminating null. In that case just zeroing page
-> > will not help. We can keep track of some sort of end pointer and make
-> > sure we are not searching beyond that for valid filesystem types.
-> > 
-> > end = page + PAGE_SIZE - 1;
-> > 
-> > mount_block_root()
-> > {
-> > 	for (p = fs_names; p < end && *p; p += strlen(p)+1) {
-> > 	}
-> > }
-> 
-> Maybe.  To honest I'd prefer to not even touch this unrelated code given
-> how full of landmines it is :)
+On Wed, Jun 23, 2021 at 11:26 AM Jinchao Wang <wjc@cdjrlc.com> wrote:
+>
+> change made to resolve following checkpatch message:
+>   WARNING: EXPORT_SYMBOL(foo); should immediately follow its
+> function/variable
 
-Agreed. It probably is better to make such changes incrementally. 
+checkpatch errors regarding the existing code base are not relevant as a rule.
 
-Given third patch is nice to have cleanup kind of thing, can we first
-just merge first two patches to support non-block device filesystems as
-rootfs.
+Now, this patch removes unnecessary empty lines, so it is not
+meritless, but it should go under a different subject and with a
+changelog describing what's going on.
 
-We will really like to have a method to properly boot virtiofs as rootfs.
+Something like
 
-Thanks
-Vivek
+Subject: [PATCH] cpuidle: Remove unnecessary empty lines preceding
+EXPORT_SYMBOL_GPL()
 
+In several places in cpuidle.c there are empty lines between the
+definition of a function and the following EXPORT_SYMBOL_GPL() which
+are not necessary, so remove them.
+
+> Signed-off-by: Jinchao Wang <wjc@cdjrlc.com>
+> ---
+>  drivers/cpuidle/cpuidle.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+> index ef2ea1b12cd8..ddd11236a0cc 100644
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -457,7 +457,6 @@ void cpuidle_pause_and_lock(void)
+>         mutex_lock(&cpuidle_lock);
+>         cpuidle_uninstall_idle_handler();
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_pause_and_lock);
+>
+>  /**
+> @@ -468,7 +467,6 @@ void cpuidle_resume_and_unlock(void)
+>         cpuidle_install_idle_handler();
+>         mutex_unlock(&cpuidle_lock);
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_resume_and_unlock);
+>
+>  /* Currently used in suspend/resume path to suspend cpuidle */
+> @@ -538,7 +536,6 @@ int cpuidle_enable_device(struct cpuidle_device *dev)
+>
+>         return ret;
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_enable_device);
+>
+>  /**
+> @@ -566,7 +563,6 @@ void cpuidle_disable_device(struct cpuidle_device *dev)
+>         cpuidle_remove_device_sysfs(dev);
+>         enabled_devices--;
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_disable_device);
+>
+>  static void __cpuidle_unregister_device(struct cpuidle_device *dev)
+> @@ -665,7 +661,6 @@ int cpuidle_register_device(struct cpuidle_device *dev)
+>         __cpuidle_unregister_device(dev);
+>         goto out_unlock;
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_register_device);
+>
+>  /**
+> @@ -689,7 +684,6 @@ void cpuidle_unregister_device(struct cpuidle_device *dev)
+>
+>         cpuidle_resume_and_unlock();
+>  }
+> -
+>  EXPORT_SYMBOL_GPL(cpuidle_unregister_device);
+>
+>  /**
+> --
+> 2.31.1
+>
+>
+>
