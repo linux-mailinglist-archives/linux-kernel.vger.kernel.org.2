@@ -2,258 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0F13B838C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05CD3B838E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbhF3NuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235173AbhF3Ntu (ORCPT
+        id S235451AbhF3NuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:50:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32800 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235178AbhF3Nty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:49:50 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB85C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:47:20 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id hr1so913619ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NiFfnM4nxPKv3wBf/KQmGM6lG+GXst7adkovnLuCU8U=;
-        b=wQ/r+hCBG+g9+ksz+k4ZRvsyRx0gxoQDcA+TuwHe8mxhBDxQ0rPrEFZGazh7JncXtc
-         yYVWG8d6O7IOUocV6gfxaHea7kuewGWzhuXl2fmW4lF/KJTUcwvQplKndHLHkpEdlKR2
-         wtlPBg2u9Hlz4+xy1m3THQwLwcxAVllSBERvcXscx/4vwbUUawRuM29w63EaITUiEeGp
-         ibVGzMn9gY9Q3VAGLnNqg4IX0YHOI0eqya93IxLsJvxaicqDAkDynqW4fBF6XRGAmaOy
-         cF2tQYSrK3uJ4wfpJfXUGToIJbTQxUJJBe/RMkm66nE3cVv92G6bbEdxyqvB8unwLi2d
-         FhnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NiFfnM4nxPKv3wBf/KQmGM6lG+GXst7adkovnLuCU8U=;
-        b=OsrfQm/GViy+ESMUW69g7oUNkr2l3uKXsahyHEHLcQFDRtvsI3hjPbDNwljWpyKCZr
-         GAOGMvefbsR74fil0bcrBJoq0womeoUwiOkuilXw1y5WRDB/gn1b1NCwVj8GxgAMa2gi
-         tM3YVrVAWK3frzULhahXKxr4cuyousPln1Z9s9OTW9V1oLmKypXQDRl/brM2euaXxxks
-         Y30f0D4HrTT65BosvJqXSFeCK0B78fTpOIemxRgz0IPpATaDbKhx+bTUJ/jFp6birQKf
-         RYap0BFxi0gcQtlAzAFMLxN5DP7Ar7CQP7XqSFF6K/dDxJEvXjOMR6q9sSHYDkKkjtBP
-         4tgw==
-X-Gm-Message-State: AOAM5336GzqHCfyJT3K9OC3R2gJKB16kU2fWmsYPaprfH61paHBjOpQk
-        PTBVSaQxCt3SM+N71nPTSuHvpA==
-X-Google-Smtp-Source: ABdhPJxsqeSQfJuyngC91sLJZ+6xnm0UeG2PQ+/LMc3+fz5GGaWtZwgPqPtgtUI3SwnHPFIXlNQ59g==
-X-Received: by 2002:a17:906:c010:: with SMTP id e16mr35364761ejz.214.1625060839125;
-        Wed, 30 Jun 2021 06:47:19 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::648? ([2a02:768:2307:40d6::648])
-        by smtp.gmail.com with ESMTPSA id s5sm12876834edi.93.2021.06.30.06.47.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jun 2021 06:47:18 -0700 (PDT)
-From:   Michal Simek <monstr@monstr.eu>
-Subject: Re: [PATCH v4 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Sean Anderson <sean.anderson@seco.com>, linux-pwm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
-References: <20210528214522.617435-1-sean.anderson@seco.com>
-Message-ID: <13c9345f-b3e5-cc97-437b-c342777fcf3c@monstr.eu>
-Date:   Wed, 30 Jun 2021 15:47:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 09:49:54 -0400
+Date:   Wed, 30 Jun 2021 13:47:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625060844;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=QPyltbgbo3ToP6WYW7nuZSR1FFjhPACA6g4JtLpsHM0=;
+        b=n//F9nfb80uCrf0or1fPzZKg+bZTUSmSu52fWsNCryNTQPbVN4QbPhzZOvXvCLvmK8Gd6w
+        xfyRN4GJH3Nv+9MPoi7fjBFtkPEywaSSmrhFIb1tkV+GndTq0fM2TRimU1wWzh6fLPUpUz
+        a6ipjcWaCNOkHrOE1o3o/cA1aAQh4RZVgVZpzHx1Zu/0QvA3L06whRWzSZTXpum2Ik/dNJ
+        Kf0pFb1M3EiyVB3yKx61XLMoCR9CaCOzn94EfeNkWi++gBP9EIRe8kKJvdl2RluFRlHRij
+        f+oBg7rpnybVHMFdELHslXtoNotA8qQed/03w7DIP6I14mNHxjlqtiqtwWjBkg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625060844;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=QPyltbgbo3ToP6WYW7nuZSR1FFjhPACA6g4JtLpsHM0=;
+        b=t2SehsuwC4csFpD+EhT3S3C20xRSlmWzQn5s6SjMro/u1Ct0UYk7Ue0FegyYqZ/OEiIGJq
+        +crcagicMtABKjBA==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
+Cc:     kernel test robot <lkp@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210528214522.617435-1-sean.anderson@seco.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <162506084324.395.16870757216022933477.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the core/rcu branch of tip:
 
+Commit-ID:     474d0997361c07d163693d0de41e76a2f2899d0a
+Gitweb:        https://git.kernel.org/tip/474d0997361c07d163693d0de41e76a2f2899d0a
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Tue, 20 Apr 2021 10:58:07 -07:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Tue, 18 May 2021 10:55:17 -07:00
 
-On 5/28/21 11:45 PM, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
-> a "soft" block, so it has many parameters which would not be
-> configurable in most hardware. This binding is usually automatically
-> generated by Xilinx's tools, so the names and values of some properties
-> must be kept as they are. Replacement properties have been provided for
-> new device trees.
-> 
-> Because we need to init timer devices so early in boot, the easiest way
-> to configure things is to use a device tree property. For the moment
-> this is 'xlnx,pwm', but this could be extended/renamed/etc. in the
-> future if these is a need for a generic property.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> 
-> Changes in v4:
-> - Remove references to generate polarity so this can get merged
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Make some properties optional for clocksource drivers
-> 
-> Changes in v3:
-> - Mark all boolean-as-int properties as deprecated
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Add an example with non-deprecated properties only.
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/pwm/xlnx,axi-timer.yaml          | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
-> new file mode 100644
-> index 000000000000..48a280f96e63
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
+tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
 
-I don't think this is the right location for this.
+In some architectures, the no-op variant of show_rcu_tasks_gp_kthreads()
+get "no previous prototype" compiler warnings.  These are false positives
+given that kernel/rcu/tasks.h is included only once.  But why put up
+with the compiler noise?
 
-I have done some grepping and I think this should be done in a different
-way. I pretty much like solution around "ti,omap3430-timer" which is
-calling dmtimer_systimer_select_best() and later dmtimer_is_preferred()
-which in this case would allow us to get rid of cases which are not
-suitable for clocksource and clockevent.
+This commit therefore adds "static inline" to this definition to force
+the compiler to accept this situation, while also moving it to its proper
+place in kernel/rcu/rcu.h.
 
-And there is drivers/pwm/pwm-omap-dmtimer.c which has link to timer
-which is providing functions for it's functionality.
+Reported-by: kernel test robot <lkp@intel.com>
+[ paulmck: Update per Stephen Rothwell feedback. ]
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcu.h   | 4 ++++
+ kernel/rcu/tasks.h | 1 -
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-I have also looked at
-Documentation/devicetree/bindings/timer/nxp,tpm-timer.yaml which is also
-the same device.
-
-And sort of curious if you look at
-https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v2_0/pg079-axi-timer.pdf
-( Figure 1-1)
-that PWM is taking input from generate out 0 and generate out 1 which is
-maybe can be modeled is any output and pwm driver can register inputs
-for pwm driver.
-
-
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/xlnx,axi-timer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
-> +
-> +maintainers:
-> +  - Sean Anderson <sean.anderson@seco.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +         - const: xlnx,axi-timer-2.0
-> +         - const: xlnx,xps-timer-1.00.a
-> +      - items:
-> +         - const: xlnx,xps-timer-1.00.a
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: s_axi_aclk
-
-Origin driver is not using this clock name and it is only one that's why
-it shouldn't be listed.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  xlnx,count-width:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 8
-> +    maximum: 32
-> +    default: 32
-
-This is not accurate. It should be enum because only 8/16/32 are valid
-values here.
-
-> +    description:
-> +      The width of the counter(s), in bits.
-> +
-> +  xlnx,one-timer-only:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 0, 1 ]
-> +    description:
-> +      Whether only one timer is present in this block.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - xlnx,one-timer-only
-> +
-> +allOf:
-> +  - if:
-> +      required:
-> +        - '#pwm-cells'
-
-Let's discussed this usage based on design.
-
-> +    then:
-> +      allOf:
-> +        - required:
-> +            - clocks
-> +        - properties:
-> +            xlnx,one-timer-only:
-> +              const: 0
-> +    else:
-> +      required:
-> +        - interrupts
-> +  - if:
-> +      required:
-> +        - clocks
-> +    then:
-> +      required:
-> +        - clock-names
-
-And this checking should be removed too.
-
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    axi_timer_0: timer@800e0000 {
-
-label is useless here and should be removed.
-
-> +        #pwm-cells = <0>;
-> +        clock-names = "s_axi_aclk";
-> +        clocks = <&zynqmp_clk 71>;
-> +        compatible = "xlnx,axi-timer-2.0", "xlnx,xps-timer-1.00.a";
-> +        reg = <0x800e0000 0x10000>;
-> +        xlnx,count-width = <0x20>;
-> +        xlnx,one-timer-only = <0x0>;
-> +    };
-> 
-
-I would list example without pwm-cells first as it is valid and reflect
-current status.
-
-Thanks,
-Michal
-
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index bf0827d..c0b3ab6 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -441,7 +441,11 @@ bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+ void rcu_expedite_gp(void);
+ void rcu_unexpedite_gp(void);
+ void rcupdate_announce_bootup_oddness(void);
++#ifdef CONFIG_TASKS_RCU_GENERIC
+ void show_rcu_tasks_gp_kthreads(void);
++#else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
++static inline void show_rcu_tasks_gp_kthreads(void) {}
++#endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+ void rcu_request_urgent_qs_task(struct task_struct *t);
+ #endif /* #else #ifdef CONFIG_TINY_RCU */
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index d6aa352..fc21853 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1401,5 +1401,4 @@ void __init rcu_init_tasks_generic(void)
+ 
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void rcu_tasks_bootup_oddness(void) {}
+-void show_rcu_tasks_gp_kthreads(void) {}
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
