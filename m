@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E1F3B7DE1
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4203B7DE2
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhF3HOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:14:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52098 "EHLO mail.kernel.org"
+        id S232804AbhF3HOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232018AbhF3HOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:14:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F2C61C8D;
-        Wed, 30 Jun 2021 07:12:15 +0000 (UTC)
+        id S232745AbhF3HOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:14:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B769161D0D;
+        Wed, 30 Jun 2021 07:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625037138;
-        bh=h98dREsVdJUhSNVlPxZc1muoXPqPKUOOk+l4lcg/OiY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LgGfCRbgRZ63j8MKoB1udTXqmn7U2QzWIkuI4ti75anaODrjI4u6HOYa33r1fGac5
-         3BJL6Ts+urrdYjV1H9Wuj7Uce60pxqoP3QMegMrpknkP+gO0t+dTcGI0T+o2lGW69J
-         AgWM1PYKSOYdtQqIB3UC3dJ/R4oKsRt2w8MExYXOLkZwT2ydKxRr2dwViIDQ9RI7RD
-         E4nMUzbHb/iXCDtSkotpSrt6v9p1mVUW9oPBbvVShuTpC6yigCmooPUR03kGITtgbw
-         +0HnJX4zGDmERLIaN+SPJ0zQT0VS8buXZXR4v72m43ljONhPsWU61kWVaVyb4Uy5x2
-         XWhN85/rVVhgw==
+        s=k20201202; t=1625037141;
+        bh=qrNdjflpUvLivu9UtSwHedId14adKJHrYDNOU0/V3Hs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KUqE6XNSw7dk8e2ZILlvfQq1B44GHU4kBesWjirZ6covpZVFA40ua/1O47D6jqxSB
+         iuO138aUwA+rxwY6m0o/pbHv4c8JpG3aY0jES2YDxV5hvX+//xHdMbMWnwwWqShJKM
+         R01ukn142OFPS2qQRvllI/9k5GTkVukP7Mg40e1LHJkrmfnNk9FQoxHby/K8ck19NP
+         CW2W3061j+8wpglgwGYglAj9DAhdB5hjUifUibLsMXrsJTaAy9l77cznRzv5hgFS5t
+         hmLS3L+wmYYXh1XovlmRz8Fvb8cagnxWeEA0/Q4RqhTiTNzLRAS2U6y6J3gc0GR6E6
+         ZHOo2z4dndf5g==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -32,12 +32,13 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Russell King <linux@armlinux.org.uk>,
         Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v3 0/4] memblock, arm: fixes for freeing of the memory map
-Date:   Wed, 30 Jun 2021 10:12:07 +0300
-Message-Id: <20210630071211.21011-1-rppt@kernel.org>
+Subject: [PATCH v3 1/4] memblock: free_unused_memmap: use pageblock units instead of MAX_ORDER
+Date:   Wed, 30 Jun 2021 10:12:08 +0300
+Message-Id: <20210630071211.21011-2-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210630071211.21011-1-rppt@kernel.org>
+References: <20210630071211.21011-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,65 +46,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi,
+The code that frees unused memory map uses rounds start and end of the
+holes that are freed to MAX_ORDER_NR_PAGES to preserve continuity of the
+memory map for MAX_ORDER regions.
 
-The coordination between freeing of unused memory map, pfn_valid() and core
-mm assumptions about validity of the memory map in various ranges was not
-designed for complex layouts of the physical memory with a lot of holes all
-over the place.
+Lots of core memory management functionality relies on homogeneity of the
+memory map within each pageblock which size may differ from MAX_ORDER in
+certain configurations.
 
-Kefen Wang reported crashes in move_freepages() on a system with the
-following memory layout [1]:
+Although currently, for the architectures that use free_unused_memmap(),
+pageblock_order and MAX_ORDER are equivalent, it is cleaner to have common
+notation thought mm code.
 
-  node   0: [mem 0x0000000080a00000-0x00000000855fffff]
-  node   0: [mem 0x0000000086a00000-0x0000000087dfffff]
-  node   0: [mem 0x000000008bd00000-0x000000008c4fffff]
-  node   0: [mem 0x000000008e300000-0x000000008ecfffff]
-  node   0: [mem 0x0000000090d00000-0x00000000bfffffff]
-  node   0: [mem 0x00000000cc000000-0x00000000dc9fffff]
-  node   0: [mem 0x00000000de700000-0x00000000de9fffff]
-  node   0: [mem 0x00000000e0800000-0x00000000e0bfffff]
-  node   0: [mem 0x00000000f4b00000-0x00000000f6ffffff]
-  node   0: [mem 0x00000000fda00000-0x00000000ffffefff]
+Replace MAX_ORDER_NR_PAGES with pageblock_nr_pages and update the comments
+to make it more clear why the alignment to pageblock boundaries is
+required.
 
-The crashes can be mitigated by enabling CONFIG_HOLES_IN_ZONE and
-essentially turning pfn_valid_within() to pfn_valid() instead of having it
-hardwired to 1, but this would require to keep CONFIG_HOLES_IN_ZONE which
-could be removed after arm64 and MIPS stopped using it ([2], [3]).
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+ mm/memblock.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Alternatively, we can update ARM's implementation of pfn_valid() to take
-into accounting rounding of the freed memory map to pageblock boundaries
-and make sure it returns true for PFNs that have memory map entries even if
-there is no physical memory.
-
-I'm planning to merge this via memblock tree.
-
-v3: 
-* Add patch 3/4 to ensure there is no overflow in memblock_overlaps_region()
-
-v2: Link: https://lore.kernel.org/lkml/20210519141436.11961-1-rppt@kernel.org
-* Use single memblock_overlaps_region() instead of several
-  memblock_is_map_memory() lookups. This makes this series depend on update
-  of MEMBLOCK_NOMAP handling in the memory map [2]
-
-v1: Link: https://lore.kernel.org/lkml/20210518090613.21519-1-rppt@kernel.org
-
-[1] https://lore.kernel.org/lkml/2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com
-[2] https://lore.kernel.org/lkml/20210511100550.28178-1-rppt@kernel.org
-[3] https://lore.kernel.org/lkml/20210418093512.668-1-rppt@kernel.org
-
-Mike Rapoport (4):
-  memblock: free_unused_memmap: use pageblock units instead of MAX_ORDER
-  memblock: align freed memory map on pageblock boundaries with SPARSEMEM
-  memblock: ensure there is no overflow in memblock_overlaps_region()
-  arm: extend pfn_valid to take into account freed memory map alignment
-
- arch/arm/mm/init.c | 13 ++++++++++++-
- mm/memblock.c      | 26 ++++++++++++++------------
- 2 files changed, 26 insertions(+), 13 deletions(-)
-
-
-base-commit: c4681547bcce777daf576925a966ffa824edd09d
+diff --git a/mm/memblock.c b/mm/memblock.c
+index afaefa8fc6ab..97fa87541b5f 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1943,11 +1943,11 @@ static void __init free_unused_memmap(void)
+ 		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
+ #else
+ 		/*
+-		 * Align down here since the VM subsystem insists that the
+-		 * memmap entries are valid from the bank start aligned to
+-		 * MAX_ORDER_NR_PAGES.
++		 * Align down here since many operations in VM subsystem
++		 * presume that there are no holes in the memory map inside
++		 * a pageblock
+ 		 */
+-		start = round_down(start, MAX_ORDER_NR_PAGES);
++		start = round_down(start, pageblock_nr_pages);
+ #endif
+ 
+ 		/*
+@@ -1958,11 +1958,11 @@ static void __init free_unused_memmap(void)
+ 			free_memmap(prev_end, start);
+ 
+ 		/*
+-		 * Align up here since the VM subsystem insists that the
+-		 * memmap entries are valid from the bank end aligned to
+-		 * MAX_ORDER_NR_PAGES.
++		 * Align up here since many operations in VM subsystem
++		 * presume that there are no holes in the memory map inside
++		 * a pageblock
+ 		 */
+-		prev_end = ALIGN(end, MAX_ORDER_NR_PAGES);
++		prev_end = ALIGN(end, pageblock_nr_pages);
+ 	}
+ 
+ #ifdef CONFIG_SPARSEMEM
 -- 
 2.28.0
 
