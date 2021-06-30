@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60813B7E49
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF7A3B7E4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhF3HnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhF3HnT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:43:19 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BA0C061766;
-        Wed, 30 Jun 2021 00:40:50 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id a5-20020a7bc1c50000b02901e3bbe0939bso833509wmj.0;
-        Wed, 30 Jun 2021 00:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ESnsglEXUA/oJjny6ysW39DXZqWa0zaOszI34gO6+Xw=;
-        b=BZlmzT+xB4JIRTvah0usPFHMmSJcAwGpRUEE8yNnFHadXBng8BHWDGe5NiHn3I/pkk
-         b+mGUsQp1WgvWv7pNgLX3YWOrORvkrubrWsFPZ+SMC1WcjTq5vihnoId53id9aWpXGEt
-         cfUW8ILkisSYzEqTZ0YfCEimVggW6/PD/Oq4x+5gjF23O1oz3cc8LKU0wZZtMUFlcsuQ
-         bbRWnWIouTnYM7RJB3jEqEeUbIUTpvakZ8HBZ1AaY/k2XcywN0iZEXLm9xPz6/mtLL7B
-         OqMfZxxTUAjW6KHfhrM4GcVwsNg3Sem4MfILH9q0mJbakEYRrLX40grsNAzDq/PdgO3q
-         PiVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ESnsglEXUA/oJjny6ysW39DXZqWa0zaOszI34gO6+Xw=;
-        b=gnqOH9qCRhtTnfUfSukjnLyzHo7ZD69fNPqhn4gh5wutmJKqNXEzWTK24r1LRtTeet
-         asGbdPclc1XUZ2yL+BTKpwI/bmhCWwXlMKSAEtfC0i+n3h82Q5zu3MlFaGtwHEuEsn1P
-         Pi3/LOFm6YlZ25vYPlBUQfx8WYay8trLxoYVBzXFcgPnYld2CKe/i3YcMl1hPRuE1cmu
-         b+sxnhhcvQYmLFNElHANp8iAoF9XiXTT77/WlLZy0guPqID4bMAq7uOQzo+Q3rGCO2zr
-         oHFKFUqmbHrZcAnnZk9pKXJvg0KkaC/pR+9KTMZ+DpLapyAt840MfNqM2R3PyBssH82c
-         qArQ==
-X-Gm-Message-State: AOAM531XVbOj5iPcFv6iK1dXsgslPO250M019KZwQOOoyk58wSUdC+Mx
-        kfDSGzTY1E0WasTYDdTpmz4=
-X-Google-Smtp-Source: ABdhPJzEHpvyW7L35YzdPCMfy3750B4ApNGNOi4nwfJuKIL34GnQ57OlGDecCLVHBqBhmzoTebMLlg==
-X-Received: by 2002:a1c:2985:: with SMTP id p127mr37133724wmp.165.1625038849067;
-        Wed, 30 Jun 2021 00:40:49 -0700 (PDT)
-Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
-        by smtp.gmail.com with ESMTPSA id s5sm21282739wrn.38.2021.06.30.00.40.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jun 2021 00:40:48 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 3/4] soc: mediatek: pm-domains: Add support for
- mt8195
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20210616000659.28347-1-chun-jie.chen@mediatek.com>
- <20210616000659.28347-4-chun-jie.chen@mediatek.com>
- <3c7695d9-f7aa-0cb0-871a-f53daee0362d@collabora.com>
- <526fc951eaf6c44f04c7a84786ca3c7ddf63a9d6.camel@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <4062efe7-b327-b33b-42d3-28570cae2c6e@gmail.com>
-Date:   Wed, 30 Jun 2021 09:40:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S232979AbhF3Hoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:44:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232573AbhF3Hoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:44:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEF7261D12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625038945;
+        bh=cjfMqlvm/KvJKzCzyRAA/75kkZfk7xbN6T0wJUzy51s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E5KRwN9STfJH5A6sSNQaFzPPlLC+HLEg0lJjVpB28QkbVTAXLoLB9lQ+Rh4aZ6OdX
+         UZaVIFJ68amAxadPjraVw/StwsgUtqMZUsbGbt8+NB5EArQXbcAriAn4FE5BvXSbK+
+         L30wGnLk0e23RNZpPSWq8T88Vh9Ywb+5Am67eHUCfy8GoiiCv48F+6YgsGZOqP1kF/
+         XZeWmaQ8cTf8jfmVLsVIFH+Ucd7x9eKGaEr+jiQAtv6pXgWqmZGrbCaEnDzp8uGcuC
+         nWTO3RKQVfkRUPqIfoNV0kzdex4e1svZg2lOZpSNWmo4fK21amPmpNMwA6xOlho/c7
+         vOrL+reeIvoqA==
+Received: by mail-oo1-f53.google.com with SMTP id v3-20020a4ac9030000b029024c9d0bff49so419238ooq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:42:25 -0700 (PDT)
+X-Gm-Message-State: AOAM530A+N5jkJZacCJGJmH7jgITe8Abcae2s0zEH6CwtV99cWEPshaq
+        8TA74kgVHLn2Wqa9XjAikpqihArrWjG5T/Y7Gz8=
+X-Google-Smtp-Source: ABdhPJzjRGSA4n9r5WRvyYFEDgD4rP0aZ4f5diqdxVPRn9C96ekwd0qF/Nym5fonEDj2BXtfJLrV9VYxeht1T2TKOtA=
+X-Received: by 2002:a4a:2f87:: with SMTP id p129mr7413740oop.41.1625038944910;
+ Wed, 30 Jun 2021 00:42:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <526fc951eaf6c44f04c7a84786ca3c7ddf63a9d6.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000f3e94a05c5d8686f@google.com> <b7f0725f-2731-24af-f15d-1054d6398749@intel.com>
+In-Reply-To: <b7f0725f-2731-24af-f15d-1054d6398749@intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 30 Jun 2021 09:42:14 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGTV+U-oy=wyHf2KmuzjmaaPJaLBY4mx09tWjL6gCC=rQ@mail.gmail.com>
+Message-ID: <CAMj1kXGTV+U-oy=wyHf2KmuzjmaaPJaLBY4mx09tWjL6gCC=rQ@mail.gmail.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in __fdget_pos
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     syzbot <syzbot+5d1bad8042a8f0e8117a@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, jpa@git.mail.kapsi.fi,
+        kan.liang@linux.intel.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 29 Jun 2021 at 16:46, Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> ... adding Ard who was recently modifying some of the
+> kernel_fpu_begin/end() sites in the AESNI crypto code.
+>
+> On 6/28/21 12:22 PM, syzbot wrote:
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=170e6c94300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=42ecca11b759d96c
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=5d1bad8042a8f0e8117a
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> ...
+> > BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+> > in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 29652, name: syz-executor.0
+> > no locks held by syz-executor.0/29652.
+> > Preemption disabled at:
+> > [<ffffffff812aa454>] kernel_fpu_begin_mask+0x64/0x260 arch/x86/kernel/fpu/core.c:126
+> > CPU: 0 PID: 29652 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
+>
+> There's a better backtrace in the log before the rather useless
+> backtrace from lockdep:
+>
+> > [ 1341.360547][T29635] FAULT_INJECTION: forcing a failure.
+> > [ 1341.360547][T29635] name failslab, interval 1, probability 0, space 0, times 0
+> > [ 1341.374439][T29635] CPU: 1 PID: 29635 Comm: syz-executor.0 Not tainted 5.13.0-rc7-syzkaller #0
+> > [ 1341.374712][T29630] FAT-fs (loop2): bogus number of reserved sectors
+> > [ 1341.383571][T29635] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > [ 1341.383591][T29635] Call Trace:
+> > [ 1341.383603][T29635]  dump_stack+0x141/0x1d7
+> > [ 1341.383630][T29635]  should_fail.cold+0x5/0xa
+> > [ 1341.383651][T29635]  ? skcipher_walk_next+0x6e2/0x1680
+> > [ 1341.383673][T29635]  should_failslab+0x5/0x10
+> > [ 1341.383691][T29635]  __kmalloc+0x72/0x330
+> > [ 1341.383720][T29635]  skcipher_walk_next+0x6e2/0x1680
+> > [ 1341.383744][T29635]  ? kfree+0xe5/0x7f0
+> > [ 1341.383776][T29635]  skcipher_walk_first+0xf8/0x3c0
+> > [ 1341.383805][T29635]  skcipher_walk_virt+0x523/0x760
+> > [ 1341.445438][T29635]  xts_crypt+0x137/0x7f0
+> > [ 1341.449689][T29635]  ? aesni_encrypt+0x80/0x80
+>
+> There's one suspect-looking site in xts_crypt():
+>
+> >       kernel_fpu_begin();
+> >
+> >       /* calculate first value of T */
+> >       aesni_enc(aes_ctx(ctx->raw_tweak_ctx), walk.iv, walk.iv);
+> >
+> >       while (walk.nbytes > 0) {
+> >               int nbytes = walk.nbytes;
+> >
+> >               ...
+> >
+> >               err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
+> >
+> >               kernel_fpu_end();
+> >
+> >               if (walk.nbytes > 0)
+> >                       kernel_fpu_begin();
+> >       }
+>
+> I wonder if a slab allocation failure could leave us with walk.nbytes==0.
 
+The code is actually the other way around: kernel_fpu_end() comes
+before the call to skcipher_walk_done().
 
-On 28/06/2021 15:15, Chun-Jie Chen wrote:
-> On Fri, 2021-06-25 at 11:07 +0200, Enric Balletbo i Serra wrote:
->> Hi Chun-Jie Chen,
->>
->> Thank you for your patch.
->>
->> On 16/6/21 2:06, Chun-Jie Chen wrote:
->>> Add domain control data including bus protection data size
->>> change due to more protection steps in mt8195 and wakeup flag
->>> in power domain for wakeup control in suspend.
->>>
->>
->> The wakeup flag is used for different SoCs apart from mt8195, isn't
->> it? I'd add
->> this on a separate patch so it is not dependent on the mt8195
->> changes. This will
->> also make more clear that is not really a mt8195 thing and can help
->> in case at
->> some point we need to run a bisection because something is broken on
->> another SoC.
->>
->> Thanks,
->>   Enric
->>
->>
-> 
-> Yes, this wakeup flag also is used by other SoC like MT8173, but
-> missing this flag in new power domain driver(mtk-pm-domain.c).
-> I will separate this modification of wakeup flag from this patch but
-> put it in same series. 
-> 
+So IIUC, this code forces an allocation failure, and checks whether
+the code deals with this gracefully, right?
 
-Sounds perfect.
+The skcipher walk API guarantees that walk.nbytes == 0 if an error is
+returned, so the pairing of FPU begin/end looks correct to me. And
+skcipher_walk_next() should not invoke anything that might sleep from
+this particular context.
 
-Regards,
-Matthias
+Herbert, any ideas?
