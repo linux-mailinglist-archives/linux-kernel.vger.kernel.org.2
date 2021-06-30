@@ -2,155 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08F43B7EB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1903B7EB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 10:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233304AbhF3IKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:10:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233127AbhF3IKa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:10:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625040482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=spXMVCuw6N13xLjcZGemYJM/fS6G+xh95O5x4vR27TA=;
-        b=OWR0TFQKbwRRrRFQdmmtbq6QQrvoe53uEI+PzplIStXMHP1/mnI59qEQX0SAFdX1dXoJ76
-        DLqMZ0IItq4d9RNkZusg2qMIKcF+FGYWprAoYJexTl4qA15v4WA0nt4hdIMoBCXDDd06rm
-        FlV+l+r8Hn7YKQdvHX/VfaJQWqeRO2U=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-q0bTb4EZPTik-u2Y84fIuQ-1; Wed, 30 Jun 2021 04:08:00 -0400
-X-MC-Unique: q0bTb4EZPTik-u2Y84fIuQ-1
-Received: by mail-wr1-f70.google.com with SMTP id x8-20020a5d54c80000b029012583535285so561234wrv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 01:08:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=spXMVCuw6N13xLjcZGemYJM/fS6G+xh95O5x4vR27TA=;
-        b=Hyz+DklzgAuoq+ThwtD82/PUIQw/OQicFvTeTg1BDB053rVlI7qRRqGJJ9amde9rNR
-         ik0U10GaoPsW9/3a/MptDej2egjrIUNGz6V+lSwG8EhyVoquTHkFrD/zE9fSEDQ+f1B5
-         XROs18zYTVm4I2yozhOOTLeiT/ZM1ANwtLIn+U2QqhRTyZ25UZ/gDL9GPJei1YCaB/7m
-         rUGs/IOTehDZcomUDzGej4ij19arXdiUf8YvbeiCVFPLSCx+ZYZ3I0r6jKCxtLKJL8by
-         qqfU2dWsjZc3h8iNADw0JFU/g7XGOLbgx5PnOqks7rSql3SzcRlC+SNeFs96MiXmo8bc
-         OmAA==
-X-Gm-Message-State: AOAM530KNNniCwNounjLjM6wvByVKILaCw1ckV+4EYnBe7ZAdc7gejpt
-        AMpnZCvsU6XOZj3hcCQSX2t5tIHTl3185krij/vg/BQZ2Qp0yPty94LnrZHXktOOPQNosi4OJ2f
-        9wh2XSZrXA1bbxmr70lObjITh
-X-Received: by 2002:a05:600c:4f8a:: with SMTP id n10mr3045913wmq.11.1625040479481;
-        Wed, 30 Jun 2021 01:07:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhZXi0exlmVWXNW1b1HA6azTiENG2juGHvNPkDsRCdeTCmLeynlOmWabasKRpCJAXel/C2Tw==
-X-Received: by 2002:a05:600c:4f8a:: with SMTP id n10mr3045884wmq.11.1625040479197;
-        Wed, 30 Jun 2021 01:07:59 -0700 (PDT)
-Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
-        by smtp.gmail.com with ESMTPSA id m7sm22064425wrv.35.2021.06.30.01.07.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 01:07:58 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 09:07:56 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Daniel Walsh <dwalsh@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
- files if caller has CAP_SYS_RESOURCE
-Message-ID: <YNwmXOqT7LgbeVPn@work-vm>
-References: <5d8f033c-eba2-7a8b-f19a-1005bbb615ea@schaufler-ca.com>
- <YNn4p+Zn444Sc4V+@work-vm>
- <a13f2861-7786-09f4-99a8-f0a5216d0fb1@schaufler-ca.com>
- <YNrhQ9XfcHTtM6QA@work-vm>
- <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
- <20210629152007.GC5231@redhat.com>
- <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
- <20210629173530.GD5231@redhat.com>
- <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
- <YNvvLIv16jY8mfP8@mit.edu>
+        id S233127AbhF3ILq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 04:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232954AbhF3ILo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 04:11:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E198B61D05;
+        Wed, 30 Jun 2021 08:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625040556;
+        bh=AnB297cq1an/p5yM1VCuQYRJ6yhgkedt4mx7LKYvZzw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AU3RSqVW03Rg3PblGAIIwZFX7cED75mxXijroSA76zyv4O15enNPeGZ1uO2VKnQoI
+         3MWxKUU7S9ecw7L/bQeGzyiYYjY2NQh2HcwqplBbks2DMjNN95hnHFa3ZECF/KWm7a
+         14PE3Zb319JGgn5ZmWNFJC1vS7ITJl1img7SxY92WMxgzoQtyjxa3LSzXzckZ1B0/3
+         RN2OevOb+fflo/cG4H6yVmepAoU/udEWAlpZ9UuwRV8MmWlc6FpQ+SMYHSINp9GUfR
+         cvHgtSsjLN/daSKbzfh8sR4VM7Ig1SVz5RG6Hb7izazJVbTLCQ5ey+jrR9r1imKSHm
+         IqDH0xTC7KJtQ==
+Date:   Wed, 30 Jun 2021 10:09:11 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFT] regulator: hi6421v600: Fix getting wrong drvdata
+ that causes boot failure
+Message-ID: <20210630100911.5e866629@coco.lan>
+In-Reply-To: <20210630074246.2305166-1-axel.lin@ingics.com>
+References: <20210630074246.2305166-1-axel.lin@ingics.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YNvvLIv16jY8mfP8@mit.edu>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Theodore Ts'o (tytso@mit.edu) wrote:
-> On Tue, Jun 29, 2021 at 04:28:24PM -0400, Daniel Walsh wrote:
-> > All this conversation is great, and I look forward to a better solution, but
-> > if we go back to the patch, it was to fix an issue where the kernel is
-> > requiring CAP_SYS_ADMIN for writing user Xattrs on link files and other
-> > special files.
-> > 
-> > The documented reason for this is to prevent the users from using XATTRS to
-> > avoid quota.
+Hi Axel,
+
+Em Wed, 30 Jun 2021 15:42:46 +0800
+Axel Lin <axel.lin@ingics.com> escreveu:
+
+> Since config.dev = pdev->dev.parent in current code, so
+> dev_get_drvdata(rdev->dev.parent) actually returns the drvdata of the mfd
+> device rather than the regulator. Fix it.
 > 
-> Huh?  Where is it so documented?
+> Fixes: 9bc146acc331 ("regulator: hi6421v600: Fix setting wrong driver_data")
+> Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+> Hi Mauro,
+> Thanks for your analysis.
+> Could you check if this patch works if you think it's good.
+> I don't mind applying your earlier fix or this one.
+> (This one has less code change with single purpose fot the fix,
+> and this patch does not has other dependency.)
 
-man xattr(7):
+Yeah, this fixed the issue:
 
-       The  file permission bits of regular files and directories are
-       interpreted differently from the file permission bits of special
-       files and symbolic links.  For regular files and directories the
-       file permission bits define ac‐ cess to the file's contents,
-       while for device special files they define access to the device
-       described by the special file.  The file permissions of symbolic
-       links are not used in access checks. *** These differences would
-       al‐ low users to consume filesystem resources in a way not
-       controllable by disk quotas for group or world writable special
-       files and directories.****
+	[    1.105691] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.111942] spmi spmi-0: spmi_write_cmd: id:0 slave_addr:0x202, wrote value: ff
+	[    1.119344] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.125589] spmi spmi-0: spmi_write_cmd: id:0 slave_addr:0x203, wrote value: ff
+	[    1.132992] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.139238] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x212, read value: 00
+	[    1.146461] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.152706] spmi spmi-0: spmi_write_cmd: id:0 slave_addr:0x212, wrote value: ff
+	[    1.160103] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.166348] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x213, read value: 00
+	[    1.173570] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.179815] spmi spmi-0: spmi_write_cmd: id:0 slave_addr:0x213, wrote value: ff
+	[    1.187723] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.193970] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x51, read value: 08
+	[    1.201114] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.207358] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x16, read value: 03
+	[    1.234794] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.241040] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x51, read value: 08
+	[    1.248182] spmi spmi-0: spmi_controller_wait_for_done: status 0x1
+	[    1.254428] spmi spmi-0: spmi_read_cmd: id:0 slave_addr:0x16, read value: 03
+	[    1.261560] ldo3: 1500 <--> 2000 mV at 1800 mV, enabled
+...
+	hikey970 login: 
 
-       ***For  this reason, user extended attributes are allowed only
-       for regular files and directories ***, and access to user extended
-       attributes is restricted to the owner and to users with appropriate
-       capabilities for directories with the sticky bit set (see the
-       chmod(1) manual page for an explanation of the sticky bit).
+And the regulators are also working:
 
-(***'s my addition)
+	$ lsusb
+	Bus 002 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
+	Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+	Bus 001 Device 003: ID 046d:c52b Logitech, Inc. Unifying Receiver
+	Bus 001 Device 002: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
+	Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+	
+Thanks! 
+
+I'm OK on merging this version.
+
+Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+-
+
+It would be better to merge this version either via Greg's tree or before
+-rc1, in order to avoid conflicts with staging, as there will be a change
+on this hunk:
+
+	@@ -252,13 +255,12 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+	 		return -ENOMEM;
+	 
+	 	mutex_init(&priv->enable_mutex);
+	-	platform_set_drvdata(pdev, priv);
+	 
+	 	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
+	 		info = &regulator_info[i];
+	 
+	 		config.dev = pdev->dev.parent;
+	-		config.driver_data = info;
+	+		config.driver_data = priv;
+	 		config.regmap = pmic->regmap;
+ 
+	 		rdev = devm_regulator_register(dev, &info->desc, &config);
+
+As a patch at staging will be doing:
+
+	- 		config.regmap = pmic->regmap;
+	+		config.regmap = regmap;
 
 
-Dave
-
->  How file systems store and account
-> for space used by extended attributes is a file-system specific
-> question, but presumably any way that xattr's on regular files are
-> accounted could also be used for xattr's on special files.
 > 
-> Also, xattr's are limited to 32k, so it's not like users can evade
-> _that_ much quota space, at least not without it being pretty painful.
-> (Assuming that quota is even enabled, which most of the time, it
-> isn't.)
+> Regards,
+> Axel
+>  drivers/regulator/hi6421v600-regulator.c | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> 						- Ted
-> 
-> P.S.  I'll note that if ext4's ea_in_inode is enabled, for large
-> xattr's, if you have 2 million files that all have the same 12k
-> windows SID stored as an xattr, ext4 will store that xattr only once.
-> Those two million files might be owned by different uids, so we made
-> an explicit design choice not to worry about accounting for the quota
-> for said 12k xattr value.  After all, if you can save the space and
-> access cost of 2M * 12k if each file had to store its own copy of that
-> xattr, perhaps not including it in the quota calculation isn't that
-> bad.  :-)
-> 
-> We also don't account for the disk space used by symbolic links (since
-> sometimes they can be stored in the inode as fast symlinks, and
-> sometimes they might consume a data block).  But again, that's a file
-> system specific implementation question.
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+> index 9b162c0555c3..845bc3b4026d 100644
+> --- a/drivers/regulator/hi6421v600-regulator.c
+> +++ b/drivers/regulator/hi6421v600-regulator.c
+> @@ -98,10 +98,9 @@ static const unsigned int ldo34_voltages[] = {
+>  
+>  static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+>  {
+> -	struct hi6421_spmi_reg_priv *priv;
+> +	struct hi6421_spmi_reg_priv *priv = rdev_get_drvdata(rdev);
+>  	int ret;
+>  
+> -	priv = dev_get_drvdata(rdev->dev.parent);
+>  	/* cannot enable more than one regulator at one time */
+>  	mutex_lock(&priv->enable_mutex);
+>  
+> @@ -119,9 +118,10 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+>  
+>  static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+>  {
+> -	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+> +	struct hi6421_spmi_reg_info *sreg;
+>  	unsigned int reg_val;
+>  
+> +	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+>  	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+>  
+>  	if (reg_val & sreg->eco_mode_mask)
+> @@ -133,9 +133,10 @@ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+>  static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+>  					  unsigned int mode)
+>  {
+> -	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+> +	struct hi6421_spmi_reg_info *sreg;
+>  	unsigned int val;
+>  
+> +	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+>  	switch (mode) {
+>  	case REGULATOR_MODE_NORMAL:
+>  		val = 0;
+> @@ -159,7 +160,9 @@ hi6421_spmi_regulator_get_optimum_mode(struct regulator_dev *rdev,
+>  				       int input_uV, int output_uV,
+>  				       int load_uA)
+>  {
+> -	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+> +	struct hi6421_spmi_reg_info *sreg;
+> +
+> +	sreg = container_of(rdev->desc, struct hi6421_spmi_reg_info, desc);
+>  
+>  	if (!sreg->eco_uA || ((unsigned int)load_uA > sreg->eco_uA))
+>  		return REGULATOR_MODE_NORMAL;
+> @@ -252,13 +255,12 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&priv->enable_mutex);
+> -	platform_set_drvdata(pdev, priv);
+>  
+>  	for (i = 0; i < ARRAY_SIZE(regulator_info); i++) {
+>  		info = &regulator_info[i];
+>  
+>  		config.dev = pdev->dev.parent;
+> -		config.driver_data = info;
+> +		config.driver_data = priv;
+>  		config.regmap = pmic->regmap;
+>  
+>  		rdev = devm_regulator_register(dev, &info->desc, &config);
 
+
+
+Thanks,
+Mauro
