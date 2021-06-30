@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2352E3B7E0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2874D3B7E11
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhF3HcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbhF3Hb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:31:58 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248A6C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:29:29 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id f13so1885850ljp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WOz5FXFqlIUEejwuKtAkxrx7VDAh1RhiLyn80MGNpio=;
-        b=Q0pzAtxbYpihfjoXE9FYAu2jSQauzQI5qhDX6gnA4OlPb2HGu/0vIiSb2f/0ycA1XD
-         vgnsu2OkLCXNblx1anPjFEPbI6rD7ZbYveXHcu0uEAqBaU84GgphiKQzFa5Py63lyJto
-         PhqD+iIJnnLSHXtRO9pvJO4socDpTbeyL6f4U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WOz5FXFqlIUEejwuKtAkxrx7VDAh1RhiLyn80MGNpio=;
-        b=jxHWpQyJVp6OJvht26d7DWRZK3QKxsbQVonFt3k/OxDNu3VP7oP0QbqvWd4YyiPKel
-         MBYkUZGmUGn3pMdJnrMts1gNimztEwZALbepjYbB0a4rxMsWwJNeMwGRdycrCHJ6rlJa
-         KDFOy89LKbmTIh28OS+N0WDb1+9cUoMaKNPriQJ4lFo4dgiO4PNI6Go+Nul+RtUXeaIY
-         OXcb5VFghvLGt2CYZwfnRa0omaNoUa5B+Wp/LDiAq1Z/pfGQ/SyZzlGbtlY/2AkdDEqR
-         EPKz8PoBRh+I5aXLZUOe9wyTwBHc1XpX2K2dJ+fSXxoB4cynOcRdeNBP9DlW/DfLN5vj
-         WQkA==
-X-Gm-Message-State: AOAM533bW9diebELT9s6lypxwNXe8vIVPe2CFY3Z4S9vmv1mw8MI1o7k
-        ai8a5PvcUAd3c15D5N0oUxb0ksWxhu/lNEbsLBhVSA==
-X-Google-Smtp-Source: ABdhPJwYLSlGhsJsYqCeO7APTJb4qDm1dEtuszdzm+gIcVQiuh5EK3GdQGHHjxusv9UuYfUd7ZYs3NX98WcUnIJSOTg=
-X-Received: by 2002:a2e:a583:: with SMTP id m3mr6793596ljp.305.1625038167569;
- Wed, 30 Jun 2021 00:29:27 -0700 (PDT)
+        id S232932AbhF3Hcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232785AbhF3Hcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:32:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E742361D0D;
+        Wed, 30 Jun 2021 07:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625038225;
+        bh=LgLwRlM2vgAjiWG1CvKhmKGXiZHELEvEd1+PAclEGZM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cbubElthuvDlQB1LHWO6FW8GGsopz4SX7tKIdQK0TxDO74KeBFtcx0/DPVOwyYQDN
+         6qb8Mtw7D4qae4jShR9NApX3uTZoOyileMkHMDufA3sHz4RGhjJ+166IMMsRbDsvcn
+         3pQydfyZiKTr/Uzg+22NwSIz9uVBxlJuiA1XJYcE9JOE8IOY1BPgoAs3EmS/SbGJyu
+         rS/UpDJjN9vsTtspBOy37QpJ+j8W8XsuHa1dca/JWKB9TUIie2tB++xh+VebD6ncoZ
+         wHWGUGbqvHFJE3vQQrLZw72st6Bo3oqY45O4hCr5tgZ4ii6ZOBc1IWF0uIvtEAVRqn
+         qy64a4TG0mRjA==
+Received: by mail-oi1-f180.google.com with SMTP id h9so2016368oih.4;
+        Wed, 30 Jun 2021 00:30:25 -0700 (PDT)
+X-Gm-Message-State: AOAM530wvzLu0gj2DCmN07z9bIoRZdVi8RpcCPV6jTX0wT25QsOJ66Lc
+        JeYwF9tS5neBYGrT7UTXw7s+ytsrp3gfbV0Et8c=
+X-Google-Smtp-Source: ABdhPJz4vMMdAJ6JJGe6ILpvyoclvoJOW/dpZm8I2fUqYOw2PoCl+WKEED/i5LKogGBU687vnmdSi3bTOuRd7B2gAf8=
+X-Received: by 2002:aca:5a04:: with SMTP id o4mr24661915oib.33.1625038225214;
+ Wed, 30 Jun 2021 00:30:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210630035443.2144958-1-hsinyi@chromium.org> <CAGXv+5ERomKaid2wQ5Sz9CB-q+DVLMzWq08b+rkkh5=3WnG5Vg@mail.gmail.com>
-In-Reply-To: <CAGXv+5ERomKaid2wQ5Sz9CB-q+DVLMzWq08b+rkkh5=3WnG5Vg@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 30 Jun 2021 15:29:16 +0800
-Message-ID: <CAGXv+5GE_ksZseTWKLpwrZvQkLx64TvATYw_dGKzOCU1Jd0hKQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: mt8183: kukui: use generic pin configs for
- i2c pins
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        zhiyong.tao@mediatek.com, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210629134018.62859-1-xypron.glpk@gmx.de> <CAOnJCUKuHGUZi-13PpnZGHKkXxhj3asVJgaNMTv3=830eVwi=g@mail.gmail.com>
+In-Reply-To: <CAOnJCUKuHGUZi-13PpnZGHKkXxhj3asVJgaNMTv3=830eVwi=g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 30 Jun 2021 09:30:14 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXG-O5PLnEWGWXzYf2r471ng7j-jZ2ziTwLdSgdVFdJNaA@mail.gmail.com>
+Message-ID: <CAMj1kXG-O5PLnEWGWXzYf2r471ng7j-jZ2ziTwLdSgdVFdJNaA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RISC-V: load initrd wherever it fits into memory
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 3:27 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+On Wed, 30 Jun 2021 at 00:56, Atish Patra <atishp@atishpatra.org> wrote:
 >
-> On Wed, Jun 30, 2021 at 11:55 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Tue, Jun 29, 2021 at 6:40 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
 > >
-> > mt8183 i2c pins don't support PUPD register, so change to use generic
-> > pin configs instead of let it fail and fallback.
+> > Requiring that initrd is loaded below RAM start + 256 MiB led to failure
+> > to boot SUSE Linux with GRUB on QEMU, cf.
+> > https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
 > >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > Remove the constraint.
+> >
+> > Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> > ---
+> >  arch/riscv/include/asm/efi.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
+> > index 7542282f1141..649ab513dc99 100644
+> > --- a/arch/riscv/include/asm/efi.h
+> > +++ b/arch/riscv/include/asm/efi.h
+> > @@ -33,10 +33,10 @@ static inline unsigned long efi_get_max_fdt_addr(unsigned long image_addr)
+> >
+> >  #define ARCH_EFI_IRQ_FLAGS_MASK (SR_IE | SR_SPIE)
+> >
+> > -/* Load initrd at enough distance from DRAM start */
+> > +/* Load initrd anywhere in system RAM */
+> >  static inline unsigned long efi_get_max_initrd_addr(unsigned long image_addr)
+> >  {
+> > -       return image_addr + SZ_256M;
+> > +       return ULONG_MAX;
+> >  }
+> >
+> >  #define alloc_screen_info(x...)                (&screen_info)
+> > --
+> > 2.30.2
+> >
 >
-> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> LGTM
+>
+> Reviewed-by: Atish Patra <atish.patra@wdc.com>
+>
 
-You might also want:
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-Fixes: cd894e274b74 ("arm64: dts: mt8183: Add krane-sku176 board")
-
-> On a side note, the `mediatek,pull-up-adv` property probably should be
-> merged into `bias-pull-up` with an argument.
+Please take this via the RISC-V tree.
