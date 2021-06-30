@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5CC3B842E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C4B3B8425
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbhF3NxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235793AbhF3Nu2 (ORCPT
+        id S235413AbhF3Nw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:52:58 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:53510 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235744AbhF3NuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CE3C0611FA;
-        Wed, 30 Jun 2021 06:47:45 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 13:47:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060863;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=fS4ytAepcpCvZpy7951mTjnruDx4TSWue2nVJYDoviA=;
-        b=l3UIa7VFzghspdNqcUqURyV+fpt3JNc0xrYNZqYcoPaz0kcGeBvGXUPfNk3+uWvek2FaNX
-        RDKPQ4nfKiUIxhJ0L2s7jQwBD1dJl9+/BM6x9mae07UszyDSFaim7T8BUx3L09gxhGSP+S
-        uRFOEgeLpsWkAffIOoXcjnDUb9/cdzqrbFfPmz4OoEu0tjjsNk+rOAlfw09OfGzAQJqnvU
-        mOqKin/NDtcrRzLOzjtsWezTMaKfQNxFAgUuU2weWyvfqJL64PZnP2uOaMJaa5p+/12eHf
-        vCIcbGo3BPalAE00DmH5PuHjGcQSOqKYf2ahlxFnP+4pOWIQvtsim918x2LZ/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060863;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=fS4ytAepcpCvZpy7951mTjnruDx4TSWue2nVJYDoviA=;
-        b=drhXWnemVmDAJIwar+BZmr5z/JrJnOoLauDNhq/uABHdnlg2xDpSw9PmifUeHd2nACdeHX
-        CMsyLeC/UTq8eUDQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Set kvm.sh language to English
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <162506086306.395.8587867830739240977.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 30 Jun 2021 09:50:24 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id A6A64B1C66;
+        Wed, 30 Jun 2021 21:47:51 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139710655624960S1625060866985686_;
+        Wed, 30 Jun 2021 21:47:53 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <3c8b5476e487fac7bf8ac5e0c245043c>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v10 08/10] arm: dts: rockchip: Add SFC to RV1108
+Date:   Wed, 30 Jun 2021 21:47:43 +0800
+Message-Id: <20210630134745.7561-4-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+References: <20210630134702.7346-1-jon.lin@rock-chips.com>
+ <20210630134745.7561-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Commit-ID:     00ad25f6019b3bd61bd2ddc128509728b49ac589
-Gitweb:        https://git.kernel.org/tip/00ad25f6019b3bd61bd2ddc128509728b49ac589
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 01 Apr 2021 15:26:56 -07:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:05:06 -07:00
+Add a devicetree entry for the Rockchip SFC for the RV1108 SOC.
 
-torture:  Set kvm.sh language to English
-
-Some of the code invoked directly and indirectly from kvm.sh parses
-the output of commands.  This parsing assumes English, which can cause
-failures if the user has set some other language.  In a few cases,
-there are language-independent commands available, but this is not
-always the case.  Therefore, as an alternative to polyglot parsing,
-this commit sets the LANG environment variable to en_US.UTF-8.
-
-Reported-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index fab3bd9..390bb97 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -20,6 +20,9 @@ mkdir $T
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ arch/arm/boot/dts/rv1108.dtsi | 37 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
+index 884872ca5207..6d4f289aff53 100644
+--- a/arch/arm/boot/dts/rv1108.dtsi
++++ b/arch/arm/boot/dts/rv1108.dtsi
+@@ -536,6 +536,17 @@
+ 		status = "disabled";
+ 	};
  
- cd `dirname $scriptname`/../../../../../
- 
-+# This script knows only English.
-+LANG=en_US.UTF-8; export LANG
++	sfc: spi@301c0000 {
++		compatible = "rockchip,sfc";
++		reg = <0x301c0000 0x4000>;
++		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++		clock-names = "clk_sfc", "hclk_sfc";
++		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
 +
- dur=$((30*60))
- dryrun=""
- KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+ 	gmac: eth@30200000 {
+ 		compatible = "rockchip,rv1108-gmac";
+ 		reg = <0x30200000 0x10000>;
+@@ -704,6 +715,32 @@
+ 			};
+ 		};
+ 
++		sfc {
++			sfc_bus4: sfc-bus4 {
++				rockchip,pins =
++					<2 RK_PA0 3 &pcfg_pull_none>,
++					<2 RK_PA1 3 &pcfg_pull_none>,
++					<2 RK_PA2 3 &pcfg_pull_none>,
++					<2 RK_PA3 3 &pcfg_pull_none>;
++			};
++
++			sfc_bus2: sfc-bus2 {
++				rockchip,pins =
++					<2 RK_PA0 3 &pcfg_pull_none>,
++					<2 RK_PA1 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs0: sfc-cs0 {
++				rockchip,pins =
++					<2 RK_PB4 3 &pcfg_pull_none>;
++			};
++
++			sfc_clk: sfc-clk {
++				rockchip,pins =
++					<2 RK_PB7 2 &pcfg_pull_none>;
++			};
++		};
++
+ 		gmac {
+ 			rmii_pins: rmii-pins {
+ 				rockchip,pins =	<1 RK_PC5 2 &pcfg_pull_none>,
+-- 
+2.17.1
+
+
+
