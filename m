@@ -2,124 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54383B7C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 05:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F26A3B7C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 05:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhF3Dk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 23:40:59 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53374 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233806AbhF3Dkv (ORCPT
+        id S233960AbhF3DlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 23:41:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3330 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233906AbhF3DlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 23:40:51 -0400
-X-UUID: fefe8626717f4900a25b0c8d2479e50a-20210630
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2VlqRRg44sL5xrfMMeXAy4DWOwYJ341cF9f4mlVSKCQ=;
-        b=cPTbapyDf3MA3l1lchFnAbmAqSNaMa5ER/3XGsPOHF67CO31q+KFVkuEVnwO2NVLIIrdA3+3ULsAqx8lnxunRZmNQY2wlkffw/PGwJ8COClDlwTuUBzU6yzUHgctuLbU6keJOpQQrLUZFvq7vBlQ0G2IftsSatTS3PBOHCGsobY=;
-X-UUID: fefe8626717f4900a25b0c8d2479e50a-20210630
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <qizhong.cheng@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1553400662; Wed, 30 Jun 2021 11:38:19 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 30 Jun 2021 11:38:11 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 11:38:08 +0800
-Message-ID: <1625024288.20084.9.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 2/2] PCI: mediatek-gen3: Add support for disable
- dvfsrc voltage request
-From:   Qizhong Cheng <qizhong.cheng@mediatek.com>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <youlin.pei@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <ot_jieyang@mediatek.com>,
-        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
-        Krzysztof Wilczyski <kw@linux.com>, <Ryan-JH.Yu@mediatek.com>
-Date:   Wed, 30 Jun 2021 11:38:08 +0800
-In-Reply-To: <20210630024934.18903-3-jianjun.wang@mediatek.com>
-References: <20210630024934.18903-1-jianjun.wang@mediatek.com>
-         <20210630024934.18903-3-jianjun.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 29 Jun 2021 23:41:01 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15U3Xa7a189228;
+        Tue, 29 Jun 2021 23:38:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=YLeau4/G/xDk1KdRLtfKn+qh+YspZIA9rUqM/9Cz+YE=;
+ b=XpDTJKRgRySl0D5v4ZUf7Bg48znjyzJRzEn8RfTVFOuQ3H2H+s9Tb8e34IsqoTFbkB7C
+ 1MEw13yFInEgU+sENQMZZEqZcG8qr8HZj2Vp8vWzgEj+D3/3JopfU5K3pJrBIfN7NKx/
+ EWcx/ZNmGkpKKUWOvfcxu2mZc0eg+jg3Qu3zMBTdxtff1RW+Pvawk/lJ9zF0GoCp1FE9
+ iPdCJeohVDiRvlb2p/D3MTEEixU0ef6P8HNyzjBWX0phHBwuO7IdCXzMT6mQ2Ej9vQ2X
+ RopSt0+qe5wYX0rXUhm4B5SamcFlgBjfyq29TVp7sCMwa8VTYpBbLchfOz5t0os4olBK zA== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39gfc21ukv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 29 Jun 2021 23:38:28 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15U3cQ09018122;
+        Wed, 30 Jun 2021 03:38:26 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 39ft8er8j4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 03:38:26 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15U3cN3a31129912
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 03:38:23 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE9A2A405B;
+        Wed, 30 Jun 2021 03:38:23 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3856BA4051;
+        Wed, 30 Jun 2021 03:38:22 +0000 (GMT)
+Received: from [9.199.50.145] (unknown [9.199.50.145])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Jun 2021 03:38:21 +0000 (GMT)
+Subject: Re: [to-be-updated]
+ mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+ removed from -mm tree
+To:     kernel test robot <lkp@intel.com>, akpm@linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org
+References: <20210616230804.7nsBdkkF4%akpm@linux-foundation.org>
+ <202106300416.lys9Wk5a-lkp@intel.com>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <b8b326db-9461-eece-b6c2-f2d7a6d05286@linux.ibm.com>
+Date:   Wed, 30 Jun 2021 09:08:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <202106300416.lys9Wk5a-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tyBflBnd-giub3nPQMAFG3OBETHTePmU
+X-Proofpoint-ORIG-GUID: tyBflBnd-giub3nPQMAFG3OBETHTePmU
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_14:2021-06-29,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106300023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UmV2aWV3ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcuY2hlbmdAbWVkaWF0ZWsuY29tPg0K
-VGVzdGVkLWJ5OiBRaXpob25nIENoZW5nIDxxaXpob25nLmNoZW5nQG1lZGlhdGVrLmNvbT4NCg0K
-T24gV2VkLCAyMDIxLTA2LTMwIGF0IDEwOjQ5ICswODAwLCBKaWFuanVuIFdhbmcgd3JvdGU6DQo+
-IFBDSWUgR2VuMyBQSFkgbGF5ZXIgY2Fubm90IHdvcmsgcHJvcGVybHkgd2hlbiB0aGUgcmVxdWVz
-dGVkIHZvbHRhZ2UNCj4gaXMgbG93ZXIgdGhhbiBhIHNwZWNpZmljIGxldmVsKGUuZy4gMC41NVYs
-IGl0J3MgZGVwZW5kcyBvbg0KPiB0aGUgY2hpcCBtYW51ZmFjdHVyaW5nIHByb2Nlc3MpLg0KPiAN
-Cj4gV2hlbiB0aGUgZHZmc3JjIGZlYXR1cmUgaXMgaW1wbGVtZW50ZWQsIHRoZSByZXF1ZXN0ZWQg
-dm9sdGFnZQ0KPiBtYXkgYmUgcmVkdWNlZCB0byBhIGxvd2VyIGxldmVsIGluIHN1c3BlbmQgbW9k
-ZSwgaGVuY2UgdGhhdA0KPiB0aGUgTUFDIGxheWVyIHdpbGwgYXNzZXJ0IGEgSFcgc2lnbmFsIHRv
-IHJlcXVlc3QgdGhlIGR2ZnNyYw0KPiB0byByYWlzZSB2b2x0YWdlIHRvIG5vcm1hbCBtb2RlLCBh
-bmQgaXQgd2lsbCB3YWl0IHRoZSB2b2x0YWdlDQo+IHJlYWR5IHNpZ25hbCBmcm9tIGR2ZnNyYyB0
-byBkZWNpZGUgaWYgdGhlIExUU1NNIGNhbiBzdGFydCBub3JtYWxseS4NCj4gDQo+IFdoZW4gdGhl
-IGR2ZnNyYyBmZWF0dXJlIGlzIG5vdCBpbXBsZW1lbnRlZCwgdGhlIE1BQyBsYXllciBzdGlsbA0K
-PiBhc3NlcnQgdGhlIHZvbHRhZ2UgcmVxdWVzdCB0byBkdmZzcmMgd2hlbiBleGl0IHN1c3BlbmQg
-bW9kZSwNCj4gYnV0IHdpbGwgbm90IHJlY2VpdmUgdGhlIHZvbHRhZ2UgcmVhZHkgc2lnbmFsLCBp
-biB0aGlzIGNhc2UsDQo+IHRoZSBMVFNTTSBjYW5ub3Qgc3RhcnQgbm9ybWFsbHksIGFuZCB0aGUg
-UENJZSBsaW5rIHdpbGwgYmUgZmFpbGVkLg0KPiANCj4gQWRkIHN1cHBvcnQgZm9yIGRpc2FibGUg
-ZHZmc3JjIHZvbHRhZ2UgcmVxdWVzdCwgaWYgdGhlIHByb3BlcnR5IG9mDQo+ICJkaXNhYmxlLWR2
-ZnNyYy12bHQtcmVxIiBpcyBwcmVzZW50ZWQgaW4gZGV2aWNlIG5vZGUsIHdlIGFzc3VtZSB0aGF0
-DQo+IHRoZSByZXF1ZXN0ZWQgdm9sdGFnZSBpcyBhbHdheXMgaGlnaGVyIGVub3VnaCB0byBrZWVw
-IHRoZSBQQ0llIEdlbjMNCj4gUEhZIGFjdGl2ZSwgYW5kIHRoZSB2b2x0YWdlIHJlcXVlc3QgdG8g
-ZHZmc3JjIHNob3VsZCBiZSBkaXNhYmxlZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYW5qdW4g
-V2FuZyA8amlhbmp1bi53YW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3BjaS9j
-b250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jIHwgMzEgKysrKysrKysrKysrKysrKysrKysr
-DQo+ICAxIGZpbGUgY2hhbmdlZCwgMzEgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMgYi9kcml2ZXJzL3Bj
-aS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jDQo+IGluZGV4IDNjNWI5NzcxNmQ0MC4u
-MDI4MDE0NzA3NTg4IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUt
-bWVkaWF0ZWstZ2VuMy5jDQo+ICsrKyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRp
-YXRlay1nZW4zLmMNCj4gQEAgLTc5LDYgKzc5LDkgQEANCj4gICNkZWZpbmUgUENJRV9JQ01EX1BN
-X1JFRwkJMHgxOTgNCj4gICNkZWZpbmUgUENJRV9UVVJOX09GRl9MSU5LCQlCSVQoNCkNCj4gIA0K
-PiArI2RlZmluZSBQQ0lFX01JU0NfQ1RSTF9SRUcJCTB4MzQ4DQo+ICsjZGVmaW5lIFBDSUVfRElT
-QUJMRV9EVkZTUkNfVkxUX1JFUQlCSVQoMSkNCj4gKw0KPiAgI2RlZmluZSBQQ0lFX1RSQU5TX1RB
-QkxFX0JBU0VfUkVHCTB4ODAwDQo+ICAjZGVmaW5lIFBDSUVfQVRSX1NSQ19BRERSX01TQl9PRkZT
-RVQJMHg0DQo+ICAjZGVmaW5lIFBDSUVfQVRSX1RSU0xfQUREUl9MU0JfT0ZGU0VUCTB4OA0KPiBA
-QCAtMjk3LDYgKzMwMCwzNCBAQCBzdGF0aWMgaW50IG10a19wY2llX3N0YXJ0dXBfcG9ydChzdHJ1
-Y3QgbXRrX3BjaWVfcG9ydCAqcG9ydCkNCj4gIAl2YWwgJj0gflBDSUVfSU5UWF9FTkFCTEU7DQo+
-ICAJd3JpdGVsX3JlbGF4ZWQodmFsLCBwb3J0LT5iYXNlICsgUENJRV9JTlRfRU5BQkxFX1JFRyk7
-DQo+ICANCj4gKwkvKg0KPiArCSAqIFBDSWUgR2VuMyBQSFkgbGF5ZXIgY2FuIG5vdCB3b3JrIHBy
-b3Blcmx5IHdoZW4gdGhlIHJlcXVlc3RlZCB2b2x0YWdlDQo+ICsJICogaXMgbG93ZXIgdGhhbiBh
-IHNwZWNpZmljIGxldmVsKGUuZy4gMC41NVYsIGl0J3MgZGVwZW5kcyBvbg0KPiArCSAqIHRoZSBj
-aGlwIG1hbnVmYWN0dXJpbmcgcHJvY2VzcykuDQo+ICsJICoNCj4gKwkgKiBXaGVuIHRoZSBkdmZz
-cmMgZmVhdHVyZSBpcyBpbXBsZW1lbnRlZCwgdGhlIHJlcXVlc3RlZCB2b2x0YWdlDQo+ICsJICog
-bWlnaHQgYmUgcmVkdWNlZCB0byBhIGxvd2VyIGxldmVsIGluIHN1c3BlbmQgbW9kZSwgaGVuY2Ug
-dGhhdA0KPiArCSAqIHRoZSBNQUMgbGF5ZXIgd2lsbCBhc3NlcnQgYSBIVyBzaWduYWwgdG8gcmVx
-dWVzdCB0aGUgZHZmc3JjDQo+ICsJICogdG8gcmFpc2Ugdm9sdGFnZSB0byBub3JtYWwgbW9kZSwg
-YW5kIGl0IHdpbGwgd2FpdCB0aGUgdm9sdGFnZQ0KPiArCSAqIHJlYWR5IHNpZ25hbCBmcm9tIGR2
-ZnNyYyB0byBzdGFydCB0aGUgTFRTU00gbm9ybWFsbHkuDQo+ICsJICoNCj4gKwkgKiBXaGVuIHRo
-ZSBkdmZzcmMgZmVhdHVyZSBpcyBub3QgaW1wbGVtZW50ZWQsIHRoZSBNQUMgbGF5ZXIgc3RpbGwN
-Cj4gKwkgKiBhc3NlcnQgdGhlIHZvbHRhZ2UgcmVxdWVzdCB0byBkdmZzcmMgd2hlbiBleGl0IHN1
-c3BlbmQgbW9kZSwNCj4gKwkgKiBidXQgd2lsbCBub3QgZ2V0IHRoZSB2b2x0YWdlIHJlYWR5IHNp
-Z25hbCwgaW4gdGhpcyBjYXNlLCB0aGUgTFRTU00NCj4gKwkgKiBjYW5ub3Qgc3RhcnQgbm9ybWFs
-bHksIGFuZCB0aGUgUENJZSBsaW5rIHdpbGwgYmUgZmFpbGVkLg0KPiArCSAqDQo+ICsJICogSWYg
-dGhlIHByb3BlcnR5IG9mICJkaXNhYmxlLWR2ZnNyYy12bHQtcmVxIiBpcyBwcmVzZW50ZWQNCj4g
-KwkgKiBpbiBkZXZpY2Ugbm9kZSwgd2UgYXNzdW1lIHRoYXQgdGhlIHJlcXVlc3RlZCB2b2x0YWdl
-IGlzIGFsd2F5cw0KPiArCSAqIGhpZ2hlciBlbm91Z2ggdG8ga2VlcCB0aGUgUENJZSBHZW4zIFBI
-WSBhY3RpdmUsIGFuZCB0aGUgdm9sdGFnZQ0KPiArCSAqIHJlcXVlc3QgdG8gZHZmc3JjIHNob3Vs
-ZCBiZSBkaXNhYmxlZC4NCj4gKwkgKi8NCj4gKwl2YWwgPSByZWFkbF9yZWxheGVkKHBvcnQtPmJh
-c2UgKyBQQ0lFX01JU0NfQ1RSTF9SRUcpOw0KPiArCXZhbCAmPSB+UENJRV9ESVNBQkxFX0RWRlNS
-Q19WTFRfUkVROw0KPiArCWlmIChvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wocG9ydC0+ZGV2LT5vZl9u
-b2RlLCAiZGlzYWJsZS1kdmZzcmMtdmx0LXJlcSIpKQ0KPiArCQl2YWwgfD0gUENJRV9ESVNBQkxF
-X0RWRlNSQ19WTFRfUkVROw0KPiArDQo+ICsJd3JpdGVsX3JlbGF4ZWQodmFsLCBwb3J0LT5iYXNl
-ICsgUENJRV9NSVNDX0NUUkxfUkVHKTsNCj4gKw0KPiAgCS8qIEFzc2VydCBhbGwgcmVzZXQgc2ln
-bmFscyAqLw0KPiAgCXZhbCA9IHJlYWRsX3JlbGF4ZWQocG9ydC0+YmFzZSArIFBDSUVfUlNUX0NU
-UkxfUkVHKTsNCj4gIAl2YWwgfD0gUENJRV9NQUNfUlNUQiB8IFBDSUVfUEhZX1JTVEIgfCBQQ0lF
-X0JSR19SU1RCIHwgUENJRV9QRV9SU1RCOw0KDQo=
+On 6/30/21 1:38 AM, kernel test robot wrote:
+> Hi,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on powerpc/next]
+> [also build test ERROR on tip/x86/mm asm-generic/master linus/master sparc/master v5.13]
+> [cannot apply to sparc-next/master next-20210629]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/akpm-linux-foundation-org/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-patch-removed-from-mm-tree/20210617-075958
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+> config: sparc-defconfig (attached as .config)
+> compiler: sparc-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/0day-ci/linux/commit/490957abd94a7b67576c0029c771c6691dce1878
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review akpm-linux-foundation-org/mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-patch-removed-from-mm-tree/20210617-075958
+>          git checkout 490957abd94a7b67576c0029c771c6691dce1878
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sparc
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from include/linux/pgtable.h:6,
+>                      from include/linux/mm.h:33,
+>                      from include/linux/kallsyms.h:12,
+>                      from include/linux/ftrace.h:12,
+>                      from include/linux/kprobes.h:29,
+>                      from include/linux/kgdb.h:19,
+>                      from arch/sparc/kernel/kgdb_32.c:7:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from include/linux/pgtable.h:6,
+>                      from arch/sparc/kernel/traps_32.c:21:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/kernel/traps_32.c: At top level:
+>     arch/sparc/kernel/traps_32.c:368:6: error: no previous prototype for 'trap_init' [-Werror=missing-prototypes]
+>       368 | void trap_init(void)
+>           |      ^~~~~~~~~
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from arch/sparc/include/asm/viking.h:13,
+>                      from arch/sparc/include/asm/mbus.h:12,
+>                      from arch/sparc/include/asm/elf_32.h:94,
+>                      from arch/sparc/include/asm/elf.h:7,
+>                      from include/linux/elf.h:6,
+>                      from include/linux/module.h:18,
+>                      from include/linux/moduleloader.h:6,
+>                      from arch/sparc/kernel/module.c:8:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/kernel/module.c: In function 'module_frob_arch_sections':
+>     arch/sparc/kernel/module.c:62:8: error: variable 'strtab' set but not used [-Werror=unused-but-set-variable]
+>        62 |  char *strtab;
+>           |        ^~~~~~
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from include/linux/pgtable.h:6,
+>                      from include/linux/mm.h:33,
+>                      from include/linux/memblock.h:13,
+>                      from arch/sparc/mm/srmmu.c:14:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/mm/srmmu.c: In function 'poke_hypersparc':
+>     arch/sparc/mm/srmmu.c:1081:25: error: variable 'clear' set but not used [-Werror=unused-but-set-variable]
+>      1081 |  volatile unsigned long clear;
+>           |                         ^~~~~
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from include/linux/pgtable.h:6,
+>                      from include/linux/mm.h:33,
+>                      from arch/sparc/mm/leon_mm.c:14:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/mm/leon_mm.c: In function 'leon_swprobe':
+>     arch/sparc/mm/leon_mm.c:42:25: error: variable 'paddrbase' set but not used [-Werror=unused-but-set-variable]
+>        42 |  unsigned int lvl, pte, paddrbase;
+>           |                         ^~~~~~~~~
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from arch/sparc/include/asm/viking.h:13,
+>                      from arch/sparc/include/asm/mbus.h:12,
+>                      from arch/sparc/include/asm/elf_32.h:94,
+>                      from arch/sparc/include/asm/elf.h:7,
+>                      from include/linux/elf.h:6,
+>                      from include/linux/module.h:18,
+>                      from arch/sparc/lib/cmpdi2.c:2:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/lib/cmpdi2.c: At top level:
+>     arch/sparc/lib/cmpdi2.c:6:11: error: no previous prototype for '__cmpdi2' [-Werror=missing-prototypes]
+>         6 | word_type __cmpdi2(long long a, long long b)
+>           |           ^~~~~~~~
+>     cc1: all warnings being treated as errors
+> --
+>     In file included from arch/sparc/include/asm/pgtable.h:7,
+>                      from arch/sparc/include/asm/viking.h:13,
+>                      from arch/sparc/include/asm/mbus.h:12,
+>                      from arch/sparc/include/asm/elf_32.h:94,
+>                      from arch/sparc/include/asm/elf.h:7,
+>                      from include/linux/elf.h:6,
+>                      from include/linux/module.h:18,
+>                      from arch/sparc/lib/ucmpdi2.c:2:
+>     arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+>>> arch/sparc/include/asm/pgtable_32.h:158:10: error: returning 'int' from a function with return type 'pmd_t *' {aka 'long unsigned int *'} makes pointer from integer without a cast [-Werror=int-conversion]
+>       158 |   return ~0;
+>           |          ^
+>     arch/sparc/lib/ucmpdi2.c: At top level:
+>     arch/sparc/lib/ucmpdi2.c:5:11: error: no previous prototype for '__ucmpdi2' [-Werror=missing-prototypes]
+>         5 | word_type __ucmpdi2(unsigned long long a, unsigned long long b)
+>           |           ^~~~~~~~~
+>     cc1: all warnings being treated as errors
+> 
+> 
+> vim +158 arch/sparc/include/asm/pgtable_32.h
+> 
+> 974b9b2c68f3d3 arch/sparc/include/asm/pgtable_32.h Mike Rapoport 2020-06-08  154
+> 490957abd94a7b arch/sparc/include/asm/pgtable_32.h Andrew Morton 2021-06-16  155  static inline pmd_t *pud_pgtable(pud_t pud)
+> 9701b264d3267b arch/sparc/include/asm/pgtable_32.h Sam Ravnborg  2012-05-13  156  {
+> 7235db268a2777 arch/sparc/include/asm/pgtable_32.h Mike Rapoport 2019-12-04  157  	if (srmmu_device_memory(pud_val(pud))) {
+> 9701b264d3267b arch/sparc/include/asm/pgtable_32.h Sam Ravnborg  2012-05-13 @158  		return ~0;
+> 9701b264d3267b arch/sparc/include/asm/pgtable_32.h Sam Ravnborg  2012-05-13  159  	} else {
+> 7235db268a2777 arch/sparc/include/asm/pgtable_32.h Mike Rapoport 2019-12-04  160  		unsigned long v = pud_val(pud) & SRMMU_PTD_PMASK;
+> 490957abd94a7b arch/sparc/include/asm/pgtable_32.h Andrew Morton 2021-06-16  161  		return (pmd_t *)__nocache_va(v << 4);
+> 9701b264d3267b arch/sparc/include/asm/pgtable_32.h Sam Ravnborg  2012-05-13  162  	}
+> 9701b264d3267b arch/sparc/include/asm/pgtable_32.h Sam Ravnborg  2012-05-13  163  }
+> f5e706ad886b6a include/asm-sparc/pgtable_32.h      Sam Ravnborg  2008-07-17  164
+> 
 
+This patch was updated sometime back and the equivalent series we have 
+in -mm tree now can be found at https://ozlabs.org/~akpm/mmots/broken-out/
+
+mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-fix-2.patch
+mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch
+mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t-fix.patch
+selftest-mremap_test-update-the-test-to-handle-pagesize-other-than-4k.patch
+selftest-mremap_test-avoid-crash-with-static-build.patch
+mm-mremap-convert-huge-pud-move-to-separate-helper.patch
+mm-mremap-convert-huge-pud-move-to-separate-helper-fix.patch
+mm-mremap-dont-enable-optimized-pud-move-if-page-table-levels-is-2.patch
+mm-mremap-use-pmd-pud_poplulate-to-update-page-table-entries.patch
+mm-mremap-hold-the-rmap-lock-in-write-mode-when-moving-page-table-entries.patch
+mm-mremap-allow-arch-runtime-override.patch
+powerpc-book3s64-mm-update-flush_tlb_range-to-flush-page-walk-cache.patch
+powerpc-mm-enable-have_move_pmd-support.patch
+mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t-fix-3.patch
+
+
+-aneesh
