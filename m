@@ -2,135 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5F03B888E
+	by mail.lfdr.de (Postfix) with ESMTP id 8530A3B888F
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhF3SjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:39:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40178 "EHLO mail.kernel.org"
+        id S232727AbhF3Sj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234478AbhF3SjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:39:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B70561419;
-        Wed, 30 Jun 2021 18:36:41 +0000 (UTC)
+        id S234478AbhF3SjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 14:39:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40974613F1;
+        Wed, 30 Jun 2021 18:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625078201;
-        bh=PtGIy8uES8lpVrm7A/jpEfmcT3dtRFF+39NWMa0vsQE=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=iK+/f1R1XK8FzW+eejfbYnXrTa3X/aeUAnkFzuC0r4S3L6RQwcrbc/0FOdrZUHGXG
-         +xkP5XXWmQ41ZHkdxXam444JShQKxRdlmP2F75q29HADfsfnOVW/U8lMFbTWSgTQKw
-         Gl+5hHSc9ivQJGig6LcFnG3F7J1RlRe6laXr1Jc1XSvGx1KpMdJV58SjkaHtoZvd4U
-         rwe32LlZTncfKf4eKcHKK911rAjOxh6HAxT+31bqf9M9bR+wQ7r2zRmnRydMWS07Ys
-         w+QK3zt5YJJ5bRm3m1Ahtz3tUlw+v28EFyczyODWHvijfEqTqFwlGT2uPF5F8Utm6Q
-         ag1Pew4mXIgrQ==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1625078215;
+        bh=i907bq5Q74JNq6szL7VJHZaktp1wkdZJhhYltX8DBhY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RNmJXKTllWZXiCehrvEPYk05C4asKJRZqNBi30QGDn4KOW/jOXH4mpGIoreOiKAXJ
+         +Gz9MbvQRp8XFxTeA5niEX+P39fMBvhXrvIgm662Alh+exAIPZV+IzVLolA+RmVjir
+         Lwk0jGpAcxHo7m3tU4HQCaEK+KMSuBduGrqck2hlnck+GrTv5G/PHRgjESAN/bsdYr
+         el7UOr+WPH1qi3OP6HWsPew6Af8m1DmG7PfYjYwA2Df581+LmMYl0GOIkLvqKEOwAy
+         b3tYaPVKikoOYoWcaAAs3ZUFuTnmMgXfPMnX21m1DrNwTeloA+EkcRYcJJqVYfGV5N
+         rUjWoiggbtnZQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 608CE40B1A; Wed, 30 Jun 2021 15:36:52 -0300 (-03)
+Date:   Wed, 30 Jun 2021 15:36:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH v8 12/22] perf report: Output data file name in raw trace
+ dump
+Message-ID: <YNy5xERHrtldjIM8@kernel.org>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <783fdabdb6bd62114a658eb360d2772f9662a55d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210623210039.19494-1-dariobin@libero.it>
-References: <20210623210039.19494-1-dariobin@libero.it>
-Subject: Re: [PATCH v2] clk: stm32f4: fix post divisor setup for I2S/SAI PLLs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Gabriel Fernandez <gabriel.fernandez@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-To:     Dario Binacchi <dariobin@libero.it>, linux-clk@vger.kernel.org
-Date:   Wed, 30 Jun 2021 11:36:40 -0700
-Message-ID: <162507820040.3331010.117987763331641988@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <783fdabdb6bd62114a658eb360d2772f9662a55d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dario Binacchi (2021-06-23 14:00:39)
-> Enabling the framebuffer leads to a system hang. Running, as a debug
-> hack, the store_pan() function in drivers/video/fbdev/core/fbsysfs.c
-> without taking the console_lock, allows to see the crash backtrace on
-> the serial line.
->=20
-> ~ # echo 0 0 > /sys/class/graphics/fb0/pan
->=20
-> [    9.719414] Unhandled exception: IPSR =3D 00000005 LR =3D fffffff1
-> [    9.726937] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-> [    9.733008] Hardware name: STM32 (Device Tree Support)
-> [    9.738296] PC is at clk_gate_is_enabled+0x0/0x28
-> [    9.743426] LR is at stm32f4_pll_div_set_rate+0xf/0x38
-> [    9.748857] pc : [<0011e4be>]    lr : [<0011f9e3>]    psr: 0100000b
-> [    9.755373] sp : 00bc7be0  ip : 00000000  fp : 001f3ac4
-> [    9.760812] r10: 002610d0  r9 : 01efe920  r8 : 00540560
-> [    9.766269] r7 : 02e7ddb0  r6 : 0173eed8  r5 : 00000000  r4 : 004027c0
-> [    9.773081] r3 : 0011e4bf  r2 : 02e7ddb0  r1 : 0173eed8  r0 : 1d3267b8
-> [    9.779911] xPSR: 0100000b
-> [    9.782719] CPU: 0 PID: 49 Comm: sh Not tainted 5.13.0-rc5 #9
-> [    9.788791] Hardware name: STM32 (Device Tree Support)
-> [    9.794120] [<0000afa1>] (unwind_backtrace) from [<0000a33f>] (show_st=
-ack+0xb/0xc)
-> [    9.802421] [<0000a33f>] (show_stack) from [<0000a8df>] (__invalid_ent=
-ry+0x4b/0x4c)
->=20
-> The `pll_num' field in the post_div_data configuration contained a wrong
-> value which also referenced an uninitialized hardware clock when
-> clk_register_pll_div() was called.
->=20
-> Fixes: 517633ef630e ("clk: stm32f4: Add post divisor for I2S & SAI PLLs")
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
->=20
-> ---
+Em Wed, Jun 30, 2021 at 06:54:51PM +0300, Alexey Bayduraev escreveu:
+> Print path and name of a data file into raw dump (-D)
+> <file_offset>@<path/file>. Print offset of PERF_RECORD_COMPRESSED
+> record instead of zero for decompressed records:
+>   0x2226a@perf.data [0x30]: event: 9
+> or
+>   0x15cc36@perf.data/data.7 [0x30]: event: 9
 
-Can someone from ST review this? Gabriel or Alexandre?
+You're changing the logic in a subtle way here, see below
+ 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Acked-by: Andi Kleen <ak@linux.intel.com>
 
->=20
-> Changes in v2:
-> - Change  'u8 pll_num' from 'stm32f4_pll_post_div_data' structure into
->   'int pll_idx'.
->=20
->  drivers/clk/clk-stm32f4.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> index 18117ce5ff85..5c75e3d906c2 100644
-> --- a/drivers/clk/clk-stm32f4.c
-> +++ b/drivers/clk/clk-stm32f4.c
-> @@ -526,7 +526,7 @@ struct stm32f4_pll {
-> =20
->  struct stm32f4_pll_post_div_data {
->         int idx;
-> -       u8 pll_num;
-> +       int pll_idx;
->         const char *name;
->         const char *parent;
->         u8 flag;
-> @@ -557,13 +557,13 @@ static const struct clk_div_table post_divr_table[]=
- =3D {
-> =20
->  #define MAX_POST_DIV 3
->  static const struct stm32f4_pll_post_div_data  post_div_data[MAX_POST_DI=
-V] =3D {
-> -       { CLK_I2SQ_PDIV, PLL_I2S, "plli2s-q-div", "plli2s-q",
-> +       { CLK_I2SQ_PDIV, PLL_VCO_I2S, "plli2s-q-div", "plli2s-q",
->                 CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 0, 5, 0, NULL},
-> =20
-> -       { CLK_SAIQ_PDIV, PLL_SAI, "pllsai-q-div", "pllsai-q",
-> +       { CLK_SAIQ_PDIV, PLL_VCO_SAI, "pllsai-q-div", "pllsai-q",
->                 CLK_SET_RATE_PARENT, STM32F4_RCC_DCKCFGR, 8, 5, 0, NULL },
-> =20
-> -       { NO_IDX, PLL_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_PAREN=
-T,
-> +       { NO_IDX, PLL_VCO_SAI, "pllsai-r-div", "pllsai-r", CLK_SET_RATE_P=
-ARENT,
->                 STM32F4_RCC_DCKCFGR, 16, 2, 0, post_divr_table },
->  };
-> =20
-> @@ -1774,7 +1774,7 @@ static void __init stm32f4_rcc_init(struct device_n=
-ode *np)
->                                 post_div->width,
->                                 post_div->flag_div,
->                                 post_div->div_table,
-> -                               clks[post_div->pll_num],
-> +                               clks[post_div->pll_idx],
->                                 &stm32f4_clk_lock);
-> =20
->                 if (post_div->idx !=3D NO_IDX)
+<SNIP>
+
+> @@ -2021,7 +2031,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
+>  		}
+>  	}
+>  
+> -	if ((skip = perf_session__process_event(session, event, head)) < 0) {
+> +	skip = perf_session__process_event(session, event, head, "pipe");
+> +	if (skip < 0) {
+
+
+Why do this in this patch? Its not needed, leave it alone to make the
+patch smaller.
+
+>  		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
+>  		       head, event->header.size, event->header.type);
+>  		err = -EINVAL;
+> @@ -2102,7 +2113,7 @@ fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
+>  static int __perf_session__process_decomp_events(struct perf_session *session)
+>  {
+>  	s64 skip;
+> -	u64 size, file_pos = 0;
+> +	u64 size;
+>  	struct decomp *decomp = session->decomp_last;
+>  
+>  	if (!decomp)
+> @@ -2116,9 +2127,9 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
+>  			break;
+>  
+>  		size = event->header.size;
+> -
+> -		if (size < sizeof(struct perf_event_header) ||
+> -		    (skip = perf_session__process_event(session, event, file_pos)) < 0) {
+
+
+The call to perf_session__process_event() will not be made if
+
+  (size < sizeof(struct perf_event_header)
+
+evaluates to true, with your change it is being made unconditionally,
+also before it was using that file_pos variable, set to zero and
+possibly modified by the logic in this function.
+
+And I read just "perf report: Output data file name in raw trace", so
+when I saw this separate change to pass 'decomp->file_pos' and remove
+that 'file_pos = 0' part I scratched my head, then I read again the
+commit log messsage and there it says it also does this separate change.
+
+Please make it separate patch where you explain why this has to be done
+this way and what previous cset this fixes, so that the
+stable@kernel.org guys pick it as it sounds like a fix.
+
+> +		skip = perf_session__process_event(session, event, decomp->file_pos,
+> +						   decomp->file_path);
+> +		if (size < sizeof(struct perf_event_header) || skip < 0) {
+>  			pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
+>  				decomp->file_pos + decomp->head, event->header.size, event->header.type);
+>  			return -EINVAL;
+> @@ -2149,10 +2160,12 @@ struct reader;
+>  
+>  typedef s64 (*reader_cb_t)(struct perf_session *session,
+>  			   union perf_event *event,
+> -			   u64 file_offset);
+> +			   u64 file_offset,
+> +			   const char *file_path);
+>  
+>  struct reader {
+>  	int		 fd;
+> +	const char	 *path;
+>  	u64		 data_size;
+>  	u64		 data_offset;
+>  	reader_cb_t	 process;
+> @@ -2234,9 +2247,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>  	skip = -EINVAL;
+>  
+>  	if (size < sizeof(struct perf_event_header) ||
+> -	    (skip = rd->process(session, event, file_pos)) < 0) {
+> -		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d [%s]\n",
+> -		       file_offset + head, event->header.size,
+> +	    (skip = rd->process(session, event, file_pos, rd->path)) < 0) {
+> +		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
+> +		       file_offset + head, rd->path, event->header.size,
+>  		       event->header.type, strerror(-skip));
+>  		err = skip;
+>  		goto out;
+> @@ -2266,9 +2279,10 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>  
+>  static s64 process_simple(struct perf_session *session,
+>  			  union perf_event *event,
+> -			  u64 file_offset)
+> +			  u64 file_offset,
+> +			  const char *file_path)
+>  {
+> -	return perf_session__process_event(session, event, file_offset);
+> +	return perf_session__process_event(session, event, file_offset, file_path);
+>  }
+>  
+>  static int __perf_session__process_events(struct perf_session *session)
+> @@ -2278,6 +2292,7 @@ static int __perf_session__process_events(struct perf_session *session)
+>  		.data_size	= session->header.data_size,
+>  		.data_offset	= session->header.data_offset,
+>  		.process	= process_simple,
+> +		.path		= session->data->file.path,
+>  		.in_place_update = session->data->in_place_update,
+>  	};
+>  	struct ordered_events *oe = &session->ordered_events;
+> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+> index e31ba4c92a6c..6895a22ab5b7 100644
+> --- a/tools/perf/util/session.h
+> +++ b/tools/perf/util/session.h
+> @@ -46,6 +46,7 @@ struct perf_session {
+>  struct decomp {
+>  	struct decomp *next;
+>  	u64 file_pos;
+> +	const char *file_path;
+>  	size_t mmap_len;
+>  	u64 head;
+>  	size_t size;
+> diff --git a/tools/perf/util/tool.h b/tools/perf/util/tool.h
+> index bbbc0dcd461f..c966531d3eca 100644
+> --- a/tools/perf/util/tool.h
+> +++ b/tools/perf/util/tool.h
+> @@ -28,7 +28,8 @@ typedef int (*event_attr_op)(struct perf_tool *tool,
+>  
+>  typedef int (*event_op2)(struct perf_session *session, union perf_event *event);
+>  typedef s64 (*event_op3)(struct perf_session *session, union perf_event *event);
+> -typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data);
+> +typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data,
+> +			 const char *str);
+>  
+>  typedef int (*event_oe)(struct perf_tool *tool, union perf_event *event,
+>  			struct ordered_events *oe);
+> -- 
+> 2.19.0
+> 
+
+-- 
+
+- Arnaldo
