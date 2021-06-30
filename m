@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C683B8169
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62503B8175
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhF3Lqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234300AbhF3Lq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:46:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 658936191E;
-        Wed, 30 Jun 2021 11:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625053440;
-        bh=T1naDXZ4KL7jQSaB561jHvJlgBOMGMQ3/1PtLxSRV3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vw8LJOu5KCD34mYOTCMTaQTWi8sHKQiF+Cb+FRKyG+InGjsh4w5CH8gnw31a5qAII
-         fdxwWup5a6Ngr850taEcU9ZCSLqJ9xB2i8TJhh5jtbhjxfDnOyNmjKcCavn+Lg4tkH
-         BT4r0W8tudkIUpIlaA5qcnegOAtKQcX6CJcSCUAclVHoKv4x47CJbH5I8ALtxpamjf
-         y69MeQSUFUeisr4w4Nt7M+WH4SJ7ztkfgf6rb2x4qemdLyCnbXEMIuY+1x1gvjyIVN
-         oskCC9GD49xMtxzkxb+rjm1PqbzB1n44Y73LgO/3einGNWpmSI/rVZcsQyguvuwKPI
-         LyjS1rkSbdFqQ==
-Date:   Wed, 30 Jun 2021 12:43:48 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210630114348.GA8383@willie-the-truck>
-References: <20210624155526.2775863-1-tientzu@chromium.org>
- <20210624155526.2775863-7-tientzu@chromium.org>
- <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
- <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+        id S234315AbhF3Ltc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 07:49:32 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:20633 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234270AbhF3Lta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 07:49:30 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2053.outbound.protection.outlook.com [104.47.20.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-29-sKloBjCBMeCVMqH8IGB00w-1; Wed, 30 Jun 2021 13:46:58 +0200
+X-MC-Unique: sKloBjCBMeCVMqH8IGB00w-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:bb::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Wed, 30 Jun
+ 2021 11:46:57 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4264.026; Wed, 30 Jun 2021
+ 11:46:57 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+Subject: [PATCHv2] block: prevent sending events from removed device
+Thread-Topic: [PATCHv2] block: prevent sending events from removed device
+Thread-Index: AQHXbaWhnC4F2rAZIUirytfsa24BGg==
+Date:   Wed, 30 Jun 2021 11:46:57 +0000
+Message-ID: <CWXP265MB2680C04F5A68F11BFD36F441C4019@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680EBAF4FEE64FBE80FAF25C4019@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB2680EBAF4FEE64FBE80FAF25C4019@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 55d5ea2c-af7b-40e8-9345-08d93bbcc41c
+x-ms-traffictypediagnostic: CWLP265MB3217:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CWLP265MB32172650910288D2A5592F52C4019@CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8273
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: S6zR9unI4IDFjXNAj2UeLEuBzoVv18J6PgP/QJTUdRWkLm95YJ9+7QUggNe4MtPA3CHJtkRfempGwbsFqSWr27zllYBoslNwhnmB/ZpsmPHKZCZXpVgH3otqTkRPrDkfjPtMsvN3ow+z7PT0k2OPZvWfnV9BbK9FVqkKUzgNBX8Go3i62rulfn6TtspGyPMmr9NTTjo1JeMwah7bjSAKCVkWGgoSzEr9079+lPI6xynHzDnTzQBuquOGhxXj58mA/G/WIjBDYe5PeLVlOM1rkqw85lJPIyPgwM5OtvtsbL02QIamt4AR5fWylR993aSmqKbJVsr7/TxopCr2O02AMpOTKXbPPySjWfN03845yWnxx7l855Hqh3vMxLkWYeeTlEu0a2dFUlXwNje4intMtxRWXqS4d9acnhiCeW3p+3X5EVdqqOQh9GLJ8fKHH4uGjyjTlV3RWPMIHYqv0lbBlVOMEYztps6Jln9UGY++e2/2TJJwySjq0KzeK9WAE5kTr6AxwUbmQIz0d408rmNsoPTArIwzSVsczDmGDasjknq4d0d68HYH2eF2xD2NW3HZ4uxcK5GbI+oSlT7nnOZCQQYyhyAoKOxSvLJOZSyD/PDzwoYHrwap+YeP/OjE3R07nAgRHPMDX7pfjUivYL0TyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39830400003)(396003)(346002)(83380400001)(55016002)(9686003)(7696005)(86362001)(33656002)(5660300002)(478600001)(6506007)(26005)(2906002)(110136005)(8676002)(316002)(8936002)(4744005)(66556008)(52536014)(66446008)(186003)(38100700002)(2940100002)(122000001)(71200400001)(64756008)(66476007)(91956017)(76116006)(66946007);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?ctRuNUabVCMoO0BSirzlXkMsbnysSoxO+0U4I5Osbeebxw1O2J/LIWvzFT?=
+ =?iso-8859-1?Q?srop+cwLzVl5cQ3OzX76H6OQkuryDqOQr86x+FIgkFMpeMgwLs2td/I2nj?=
+ =?iso-8859-1?Q?E8+KSqBOk+TQpepASebMdbxmDSPIBC3tnNeCcb5YrBa0KOJjQQtgc+PI5j?=
+ =?iso-8859-1?Q?ObFGFp9rwzy59GOHkCMx8R12XoJyUG+DWuhNUPZNIo0iHElioO88SZPYBQ?=
+ =?iso-8859-1?Q?cuP2CS+Lgu4UFsTjk38eumKq6mZZCGrxMBgZ/W5gteArfG+lLwcvv2gG8M?=
+ =?iso-8859-1?Q?yF5Rq6yT9tEqFNOb3ylcb/aH5OcRGSzY0pLbY59ikSUbH/jToAi6NfHGg7?=
+ =?iso-8859-1?Q?5IASrPOWZPIFCwnzwOenLKgTweV4VzQbN0JlZmXv6cflYemM8tyU+jwfvD?=
+ =?iso-8859-1?Q?qKC+NQ9paSVqSHtY6NcIosorhO52svNNN1d2zp2DE3xO36prMAuxB34pi7?=
+ =?iso-8859-1?Q?VsorIxnSReep1Sg4y4bQUyGJ8R71ptD6vdRyfRNqrKs0vHIbR2o0KeGRXV?=
+ =?iso-8859-1?Q?suymRb8BC7FMDZwtRdGScle9F9p4JQdbT4DVB5G6GMItDFQnz37wWz1GIg?=
+ =?iso-8859-1?Q?amFy90OBlKhV1M8Dc+RhwKAr40DYZ3eutYs8gkxQ/bp6cGOAbsKQ45jg2C?=
+ =?iso-8859-1?Q?T/qE/TYxXX98qOeALpjCAd+XfKb6913hHRLVFe3MWkOQSVjcjle+9e2qmw?=
+ =?iso-8859-1?Q?Iy61EKuuBPiFXPxRV6ttm1oXKHwDOd5WMswTot7GNL6aYVoeHT2JnIKyd+?=
+ =?iso-8859-1?Q?cA2csRAhP2ORw7VOnhpXN+pBu60oWvqVW6qZlidPCRmnegvucBcV1/THCz?=
+ =?iso-8859-1?Q?+tGnlX8Y5DKiM81XNzc1ajQrRusi/TdjEKFLiMdUVAv3AsKesVeEyERGCA?=
+ =?iso-8859-1?Q?nKc/Fk/qi4N+oiRWUv1W1RNmQX/WvGJL4sCBo9hy0EZ22eRCOoQbyH+7cI?=
+ =?iso-8859-1?Q?nVwTyHPLXpvAOo1K/KZc8x3rZ4QjWB8ws+u5HHT/pxH2AyA/BEn/e19r9V?=
+ =?iso-8859-1?Q?5shw98e+XMOqJhiPDezgsaDgt9JVrBcsOc8qpxG270CTtBYU+UVc33x1Iz?=
+ =?iso-8859-1?Q?q2qkBUizS4i0saFlBJMEXtcxjhrSxmGso7IgJpBI/spMsbUnCQ0nI+YtyD?=
+ =?iso-8859-1?Q?UcPqXCO9hnEXKcOJiDU7rGbQ7JJtQrtk57m+muFLc1q2Yruey5J2qiKbLP?=
+ =?iso-8859-1?Q?I/vnqgF/UXEYEJOAjV2i2tPfvIfZoW2vHI/DdCocQxqnVti3FFHJp6yvDw?=
+ =?iso-8859-1?Q?2n7vjL5RGZrVxgr9jePJONE7P72V17bDnb2teO/Ur3t7Cm6QtaWUxyW8Va?=
+ =?iso-8859-1?Q?Eap8Akwd4I9e9SR5FPykV0JnASSKKnQEm/Y5fECERVAN1rs=3D?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55d5ea2c-af7b-40e8-9345-08d93bbcc41c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2021 11:46:57.8538
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6Z2qen/lmKcH4qJ/TAwCfedKChTYvAZhtDaENUqM2TJQjzE76hUsdRqTkF5iJ2/Zem/f0rDF8wfoRpP/YhuQHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB3217
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 05:17:27PM +0800, Claire Chang wrote:
-> On Wed, Jun 30, 2021 at 9:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Thu, Jun 24, 2021 at 11:55:20PM +0800, Claire Chang wrote:
-> > > Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
-> > > use it to determine whether to bounce the data or not. This will be
-> > > useful later to allow for different pools.
-> > >
-> > > Signed-off-by: Claire Chang <tientzu@chromium.org>
-> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> > > Tested-by: Will Deacon <will@kernel.org>
-> > > Acked-by: Stefano Stabellini <sstabellini@kernel.org>
-> >
-> > This patch as commit af452ec1b1a3 ("swiotlb: Use is_swiotlb_force_bounce
-> > for swiotlb data bouncing") causes my Ryzen 3 4300G system to fail to
-> > get to an X session consistently (although not every single time),
-> > presumably due to a crash in the AMDGPU driver that I see in dmesg.
-> >
-> > I have attached logs at af452ec1b1a3 and f127c9556a8e and I am happy
-> > to provide any further information, debug, or test patches as necessary.
-> 
-> Are you using swiotlb=force? or the swiotlb_map is called because of
-> !dma_capable? (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/kernel/dma/direct.h#n93)
+Skip kobject_uevent_env in case the associated kobject
+no longer exists, as calling kobject_uevent_env with
+NULL is not safe.
 
-The command line is in the dmesg:
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+---
+ block/genhd.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-  | Kernel command line: initrd=\amd-ucode.img initrd=\initramfs-linux-next-llvm.img root=PARTUUID=8680aa0c-cf09-4a69-8cf3-970478040ee7 rw intel_pstate=no_hwp irqpoll
+diff --git a/block/genhd.c b/block/genhd.c
+index 9f8cb7beaad1..46629fbe23ae 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1655,8 +1655,16 @@ static void disk_check_events(struct disk_events *ev,
+                     (disk->event_flags & DISK_EVENT_FLAG_UEVENT))
+                         envp[nr_events++] = disk_uevents[i];
+ 
+-       if (nr_events)
+-               kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
++       if (nr_events) {
++               struct kobject *dev_kobj = kobject_get(&disk_to_dev(disk)->kobj);
++               /* The device kobject might have been removed in the
++                * meantime, so check for it first.
++                * If it was removed there is no need to signal events
++                */
++               if (dev_kobj)
++                       kobject_uevent_env(dev_kobj, KOBJ_CHANGE, envp);
++               kobject_put(dev_kobj);
++       }
+ }
+ 
+ /*
+-- 
+2.32.0
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-but I worry that this looks _very_ similar to the issue reported by Qian
-Cai which we thought we had fixed. Nathan -- is the failure deterministic?
-
-> `BUG: unable to handle page fault for address: 00000000003a8290` and
-> the fact it crashed at `_raw_spin_lock_irqsave` look like the memory
-> (maybe dev->dma_io_tlb_mem) was corrupted?
-> The dev->dma_io_tlb_mem should be set here
-> (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/probe.c#n2528)
-> through device_initialize.
-
-I'm less sure about this. 'dma_io_tlb_mem' should be pointing at
-'io_tlb_default_mem', which is a page-aligned allocation from memblock.
-The spinlock is at offset 0x24 in that structure, and looking at the
-register dump from the crash:
-
-Jun 29 18:28:42 hp-4300G kernel: RSP: 0018:ffffadb4013db9e8 EFLAGS: 00010006
-Jun 29 18:28:42 hp-4300G kernel: RAX: 00000000003a8290 RBX: 0000000000000000 RCX: ffff8900572ad580
-Jun 29 18:28:42 hp-4300G kernel: RDX: ffff89005653f024 RSI: 00000000000c0000 RDI: 0000000000001d17
-Jun 29 18:28:42 hp-4300G kernel: RBP: 000000000a20d000 R08: 00000000000c0000 R09: 0000000000000000
-Jun 29 18:28:42 hp-4300G kernel: R10: 000000000a20d000 R11: ffff89005653f000 R12: 0000000000000212
-Jun 29 18:28:42 hp-4300G kernel: R13: 0000000000001000 R14: 0000000000000002 R15: 0000000000200000
-Jun 29 18:28:42 hp-4300G kernel: FS:  00007f1f8898ea40(0000) GS:ffff890057280000(0000) knlGS:0000000000000000
-Jun 29 18:28:42 hp-4300G kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Jun 29 18:28:42 hp-4300G kernel: CR2: 00000000003a8290 CR3: 00000001020d0000 CR4: 0000000000350ee0
-Jun 29 18:28:42 hp-4300G kernel: Call Trace:
-Jun 29 18:28:42 hp-4300G kernel:  _raw_spin_lock_irqsave+0x39/0x50
-Jun 29 18:28:42 hp-4300G kernel:  swiotlb_tbl_map_single+0x12b/0x4c0
-
-Then that correlates with R11 holding the 'dma_io_tlb_mem' pointer and
-RDX pointing at the spinlock. Yet RAX is holding junk :/
-
-I agree that enabling KASAN would be a good idea, but I also think we
-probably need to get some more information out of swiotlb_tbl_map_single()
-to see see what exactly is going wrong in there.
-
-Will
