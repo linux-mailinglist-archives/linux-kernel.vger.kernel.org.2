@@ -2,68 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BB93B851B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB363B8528
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhF3Ogo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:36:44 -0400
-Received: from m15112.mail.126.com ([220.181.15.112]:50519 "EHLO
-        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234882AbhF3Ogm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=yYZx7OJCN/9Q00hcQp
-        F22VIKH/8bsew3VKwL0pMebUs=; b=j4HcDOFS4qudeFtIG63tbPCVso/nQ+jv0s
-        jwOr+0qsLh3PgshpNUv0ULGkbcHjZyaj8AuNAaSDVAdD/EOslPd3Vpeoe0AWof5z
-        nh/6hDDESwT6tq63/VPTEX+fBWupBySpwiQODe6ZYbvGvWC4F6/lt70+8yvjvFHf
-        y4BAoGFaU=
-Received: from 192.168.137.133 (unknown [112.10.75.196])
-        by smtp2 (Coremail) with SMTP id DMmowAAnFKLdgNxg3RjqCg--.15597S3;
-        Wed, 30 Jun 2021 22:34:07 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     damien.lemoal@wdc.com, naohiro.aota@wdc.com, jth@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH] zonefs: remove redundant null bio check
-Date:   Wed, 30 Jun 2021 10:33:36 -0400
-Message-Id: <1625063616-8467-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DMmowAAnFKLdgNxg3RjqCg--.15597S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWruF18tw4DtFW3ury7uF43Awb_yoW3Wwc_J3
-        yIqa97WrWUJrnIk3y2g3yFvryF93WY93WUWF1Fy3W3XF4Dtws5Cw1qvw1fZw15Za1SvFZ8
-        Ja10grW29r40gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0wNVDUUUUU==
-X-Originating-IP: [112.10.75.196]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5h-BpFpEBONwPgAAsr
+        id S235216AbhF3Olf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234882AbhF3Old (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:41:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCDD61476;
+        Wed, 30 Jun 2021 14:39:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625063944;
+        bh=L8V2JdvEBC3OUGI9cx9YLOGRxBzDEGMRE1EedaGTRrA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F8wudrmJ7+4o2TNN7S2nlbf/SewXYxiYxBUPEKuPxY0FycN7ZJLRb9ybxw/Y4L7nR
+         pS+SiRbWJ0udH596uiN+HTl1KVB4K/uoVKABgifye1I8hGBESqr36w9kZGd55ft/T9
+         CCqKi1mptAishN67SPLy4fB0ZPzlgQyDWOAeRBjv56DDifMpr5ObLZvROuTyA9SXMF
+         2J1IzjXQ4T3CqP+ZV0xUbnM46Qrhvo+Q7wclOqQMflZNAjtHieQTLzqvg30ZvR5rPZ
+         N5e7tzefgPIFVVEaH5XrafDNM3Zl3hQMjNgq5qqj1sxJCMEQTTtJz/tvrbJL1X2jzp
+         /QwT45zg3G7gA==
+Date:   Wed, 30 Jun 2021 16:38:55 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YNyB/+fNK0u2bI6j@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
+        shuo.a.liu@intel.com, Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <YNmK0MP5ffQpiipt@ninjato>
+ <CAK8P3a2qrfhyfZA-8qPVQ252tZXSBKVT==GigJMVvX5_XLPrCQ@mail.gmail.com>
+ <YNmVg3ZhshshlbSx@ninjato>
+ <CAK8P3a3Z-9MbsH6ZkXENZ-vt8+W5aP3t+EBcEGRmh2Cgr89R8Q@mail.gmail.com>
+ <YNmg2IEpUlArZXPK@ninjato>
+ <CAK8P3a3vD0CpuJW=3w3nq0h9HECCiOigNWK-SvXq=m1zZpqvjA@mail.gmail.com>
+ <YNnjh3xxyaZZSo9N@ninjato>
+ <20210629041017.dsvzldikvsaade37@vireshk-i7>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cnJsFUAyBPHKEwpS"
+Content-Disposition: inline
+In-Reply-To: <20210629041017.dsvzldikvsaade37@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xianting Tian <xianting.tian@linux.alibaba.com>
 
-bio_alloc() with __GFP_DIRECT_RECLAIM, which is included in
-GFP_NOFS, never fails, see comments in bio_alloc_bioset().
+--cnJsFUAyBPHKEwpS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- fs/zonefs/super.c | 3 ---
- 1 file changed, 3 deletions(-)
+Hi Viresh,
 
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index cd145d3..d6d08da 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -705,9 +705,6 @@ static ssize_t zonefs_file_dio_append(struct kiocb *iocb, struct iov_iter *from)
- 		return 0;
- 
- 	bio = bio_alloc(GFP_NOFS, nr_pages);
--	if (!bio)
--		return -ENOMEM;
--
- 	bio_set_dev(bio, bdev);
- 	bio->bi_iter.bi_sector = zi->i_zsector;
- 	bio->bi_write_hint = iocb->ki_hint;
--- 
-1.8.3.1
+> While we are at it, this has been replaced by a Rust counterpart [1]
+> (as that makes it hypervisor agnostic, which is the goal of my work
+> here) and I need someone with I2C knowledge to help review it. It
+> should be okay even if you don't understand Rust a lot, just review
+> this file[2] which is where most of i2c specific stuff lies.
 
+=46rom the high level review I can provide, it looks good to me. Block
+transfers are missing, but I think you said that already. Mising Rust
+experience, I might miss details, of course. But the general approach
+seems fine to me. smbus_prepare() will get a bit more messy when you add
+block transfers, but it still looks bearable, I think.
+
+Happy hacking!
+
+   Wolfram
+
+
+--cnJsFUAyBPHKEwpS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDcgfoACgkQFA3kzBSg
+KbYF7BAAq1r7cuYTp6YJrMb46z5zZ5GxUA2lqtoo6e5LbokrlsQc7NGhGmIkHOJc
+bsoVy3HfJPTDqhVrQrOMuUSsvID8IRtV4jOlENBGjvC7OULYSSZEqIGJBiKv0TM3
+jbQstaKjpumImL+1SzvGmfTX4KhN6WXnxkWo1SHeeNP7/ykIh1au0abmk+LcTcX6
++pQJ2SzM+P2MMQiAqPq8FOrndPK8VSMyV6Mg+ZJ72jqnIW9IJVsFQv8vwHG2iH/2
+zFC/eLOAD0JoOuA48xM9a3TSPMYaL0FjBNNcTeLULCV3TVlv4C82cOVSCIfZ59fO
+K/94pJ3gLGuDmeimN7IiD5U3JbTmzwLH06Oitl88noLW7OwxQX3F1fMzu9p5jFjg
+wIDPPjSkAOvu6ExHo/TLc7IaaRkZjBNp+SGbVuzRksh7hMkZB5PB2wtVpbwXG7uW
+Mi97r7sEQQ0lX6+wl9ohIOOaE8Na2CYV1oBifTYpAtUxCFkuGuTo2iXAjjs0N5Yv
+Mf5xUZJv9HjJfTHMbHoogJmdatLCluWGW+q7XzVI+l7YfauG7j4WZZ7dCqz1bLhY
+Uz+Zrr4eZ0AwWUmd8QFpjwCqC8awkMDbh8SUPKE7rvNe7RqFC2XiuoRM3Oc1O/hx
+XWvqF/0Z+ChHTb1cEdDb3v25ausl11SsQJt/j9kAkxboV9XNwEE=
+=7H7Z
+-----END PGP SIGNATURE-----
+
+--cnJsFUAyBPHKEwpS--
