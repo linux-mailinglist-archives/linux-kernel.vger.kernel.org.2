@@ -2,206 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9253B878A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0A53B8792
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbhF3RUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhF3RUR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:20:17 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E575BC061756;
-        Wed, 30 Jun 2021 10:17:47 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4F3161EC046E;
-        Wed, 30 Jun 2021 19:17:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1625073466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lZkWfm5u08oDdFUR6N+KHOvVmnsC24sm5yc+HxeB/CY=;
-        b=ldHx2lzmiOHxUFziw6arVd4BG2SyN/yZtPY3lsNNSX+TrqizOvZUohfsFjCxugP2u5JEOw
-        WHp4EICXAI/oleuPVK7/8WR5UUZDFmGdRM0Js4KjtoBeAF0b2X1viO9PZm6lWLAY0Jbv+A
-        QODloyCYzYOjlXa+UX3sEF5oVUr5pZ8=
-Date:   Wed, 30 Jun 2021 19:17:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, tony.luck@intel.com,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH v2 05/31] EDAC/amd64: Add context struct
-Message-ID: <YNynNc9oMZVnri8X@zn.tnic>
-References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
- <20210623192002.3671647-6-yazen.ghannam@amd.com>
+        id S232577AbhF3RVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhF3RVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:21:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5BAA61490;
+        Wed, 30 Jun 2021 17:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625073520;
+        bh=ohBF5doleQ88UekCrryE/LgkJIOu0E7nVTeOcvrcJJw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZFJXcFAQEgF47F4PS4whtBRe6vbk/1YJnUQ6VGEbQDEpD0q1vnOMiuKyKZ3O3CtDm
+         tjShohuMFh62Yqb2FINWLcEQStnTrvwD/qpDvJUWJbT9yFQmC8gacE2vTw2UF6jeJ7
+         nRpMlMPNwHpZBULMaPxEGxUgdqcUMlVMJcKssEobEHNmjH13cjlwnjAd3idjPtpnlg
+         Mj0dypMFGdRoq8E6LrsYiVYRYkNG2k4pGFmr3KiK5ddYcVfVQRdTL3GOxODcXcDfVP
+         ICQNLs1YqPPl82sMgjC7tlESt8R4obqQrajyIRUhZL/IwU3Dn4admuK5n6/AUlyLqT
+         WLDSIBZcb3L4Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3CB1C40B1A; Wed, 30 Jun 2021 14:18:37 -0300 (-03)
+Date:   Wed, 30 Jun 2021 14:18:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH v8 02/22] perf record: Introduce thread specific data
+ array
+Message-ID: <YNynbdAMeq5xHUFF@kernel.org>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <54085f942fb8deedc617732b4716cb85a5c6ebfb.1625065643.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623192002.3671647-6-yazen.ghannam@amd.com>
+In-Reply-To: <54085f942fb8deedc617732b4716cb85a5c6ebfb.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 07:19:36PM +0000, Yazen Ghannam wrote:
-> Define an address translation context struct. This will hold values that
-> will be passed between multiple functions.
+Em Wed, Jun 30, 2021 at 06:54:41PM +0300, Alexey Bayduraev escreveu:
+> Introduce thread specific data object and array of such objects
+> to store and manage thread local data. Implement functions to
+> allocate, initialize, finalize and release thread specific data.
 > 
-> Save return address, Node ID, and the Instance ID number to start.
-> Currently, we use the UMC number as the Instance ID, but future DF
-
-Please use passive voice in your commit message: no "we" or "I", etc.
-
-And this here is a perfect example: it sounds here like "we" is "AMD"
-but we use "we" mostly for the kernel. And there's the confusion.
-
-So please teach yourself to formulate those commit messages properly -
-the future you will thank you, trust me!
-
-:-)
-
-> versions may use another value.
+> Thread local maps and overwrite_maps arrays keep pointers to
+> mmap buffer objects to serve according to maps thread mask.
+> Thread local pollfd array keeps event fds connected to mmaps
+> buffers according to maps thread mask.
 > 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> Thread control commands are delivered via thread local comm pipes
+> and ctlfd_pos fd. External control commands (--control option)
+> are delivered via evlist ctlfd_pos fd and handled by the main
+> tool thread.
+> 
+> Acked-by: Namhyung Kim <namhyung@gmail.com>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 > ---
-> Link:
-> https://lkml.kernel.org/r/20210507190140.18854-3-Yazen.Ghannam@amd.com
+>  tools/lib/api/fd/array.c    |  17 ++++
+>  tools/lib/api/fd/array.h    |   1 +
+>  tools/perf/builtin-record.c | 196 +++++++++++++++++++++++++++++++++++-
+>  3 files changed, 211 insertions(+), 3 deletions(-)
 > 
-> v1->v2:
-> * Moved from arch/x86 to EDAC.
-> * Changed "umc" variable to "inst_id".
-> * Drop df_types enum.
-> 
->  drivers/edac/amd64_edac.c | 49 +++++++++++++++++++++++++--------------
->  1 file changed, 31 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-> index d67cd8f57b94..62eca188458f 100644
-> --- a/drivers/edac/amd64_edac.c
-> +++ b/drivers/edac/amd64_edac.c
-> @@ -1079,12 +1079,15 @@ static struct df_reg df_regs[] = {
->  	[SYS_FAB_ID_MASK]	=	{1, 0x208},
+> diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+> index 5e6cb9debe37..de8bcbaea3f1 100644
+> --- a/tools/lib/api/fd/array.c
+> +++ b/tools/lib/api/fd/array.c
+> @@ -88,6 +88,23 @@ int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags
+>  	return pos;
+>  }
+>  
+> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base)
+> +{
+> +	struct pollfd *entry;
+> +	int npos;
+> +
+> +	if (pos >= base->nr)
+> +		return -EINVAL;
+> +
+> +	entry = &base->entries[pos];
+> +
+> +	npos = fdarray__add(fda, entry->fd, entry->events, base->priv[pos].flags);
+> +	if (npos >= 0)
+> +		fda->priv[npos] = base->priv[pos];
+> +
+> +	return npos;
+> +}
+> +
+>  int fdarray__filter(struct fdarray *fda, short revents,
+>  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+>  		    void *arg)
+> diff --git a/tools/lib/api/fd/array.h b/tools/lib/api/fd/array.h
+> index 7fcf21a33c0c..4a03da7f1fc1 100644
+> --- a/tools/lib/api/fd/array.h
+> +++ b/tools/lib/api/fd/array.h
+> @@ -42,6 +42,7 @@ struct fdarray *fdarray__new(int nr_alloc, int nr_autogrow);
+>  void fdarray__delete(struct fdarray *fda);
+>  
+>  int fdarray__add(struct fdarray *fda, int fd, short revents, enum fdarray_flags flags);
+> +int fdarray__clone(struct fdarray *fda, int pos, struct fdarray *base);
+>  int fdarray__poll(struct fdarray *fda, int timeout);
+>  int fdarray__filter(struct fdarray *fda, short revents,
+>  		    void (*entry_destructor)(struct fdarray *fda, int fd, void *arg),
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 31b3a515abc1..11ce64b23db4 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -58,6 +58,7 @@
+>  #include <poll.h>
+>  #include <pthread.h>
+>  #include <unistd.h>
+> +#include <sys/syscall.h>
+>  #include <sched.h>
+>  #include <signal.h>
+>  #ifdef HAVE_EVENTFD_SUPPORT
+> @@ -92,6 +93,23 @@ struct thread_mask {
+>  	struct mmap_cpu_mask	affinity;
 >  };
 >  
-> +struct addr_ctx {
-> +	u64 ret_addr;
-> +	u16 nid;
-> +	u8 inst_id;
+> +struct thread_data {
+
+Please rename this to 'struct record_thread', 'data' is way too generic.
+
+> +	pid_t			tid;
+> +	struct thread_mask	*mask;
+> +	struct {
+> +		int		msg[2];
+> +		int		ack[2];
+> +	} pipes;
+> +	struct fdarray		pollfd;
+> +	int			ctlfd_pos;
+> +	struct mmap		**maps;
+> +	struct mmap		**overwrite_maps;
+> +	int			nr_mmaps;
+> +	struct record		*rec;
+> +	unsigned long long	samples;
+> +	unsigned long		waking;
 > +};
 > +
->  static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
+>  struct record {
+>  	struct perf_tool	tool;
+>  	struct record_opts	opts;
+> @@ -117,6 +135,7 @@ struct record {
+>  	struct mmap_cpu_mask	affinity_mask;
+>  	unsigned long		output_max_size;	/* = 0: unlimited */
+>  	struct thread_mask	*thread_masks;
+> +	struct thread_data	*thread_data;
+>  	int			nr_threads;
+>  };
+>  
+> @@ -847,9 +866,174 @@ static int record__kcore_copy(struct machine *machine, struct perf_data *data)
+>  	return kcore_copy(from_dir, kcore_dir);
+>  }
+>  
+> +static int record__thread_data_init_pipes(struct thread_data *thread_data)
+> +{
+> +	if (pipe(thread_data->pipes.msg) || pipe(thread_data->pipes.ack)) {
+> +		pr_err("Failed to create thread communication pipes: %s\n", strerror(errno));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	pr_debug2("thread_data[%p]: msg=[%d,%d], ack=[%d,%d]\n", thread_data,
+> +		 thread_data->pipes.msg[0], thread_data->pipes.msg[1],
+> +		 thread_data->pipes.ack[0], thread_data->pipes.ack[1]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__thread_data_init_maps(struct thread_data *thread_data, struct evlist *evlist)
+> +{
+> +	int m, tm, nr_mmaps = evlist->core.nr_mmaps;
+> +	struct mmap *mmap = evlist->mmap;
+> +	struct mmap *overwrite_mmap = evlist->overwrite_mmap;
+> +	struct perf_cpu_map *cpus = evlist->core.cpus;
+> +
+> +	thread_data->nr_mmaps = bitmap_weight(thread_data->mask->maps.bits,
+> +					      thread_data->mask->maps.nbits);
+> +	if (mmap) {
+> +		thread_data->maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
+> +		if (!thread_data->maps) {
+> +			pr_err("Failed to allocate maps thread data\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	if (overwrite_mmap) {
+> +		thread_data->overwrite_maps = zalloc(thread_data->nr_mmaps * sizeof(struct mmap *));
+> +		if (!thread_data->overwrite_maps) {
+> +			pr_err("Failed to allocate overwrite maps thread data\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	pr_debug2("thread_data[%p]: nr_mmaps=%d, maps=%p, ow_maps=%p\n", thread_data,
+> +		 thread_data->nr_mmaps, thread_data->maps, thread_data->overwrite_maps);
+> +
+> +	for (m = 0, tm = 0; m < nr_mmaps && tm < thread_data->nr_mmaps; m++) {
+> +		if (test_bit(cpus->map[m], thread_data->mask->maps.bits)) {
+> +			if (thread_data->maps) {
+> +				thread_data->maps[tm] = &mmap[m];
+> +				pr_debug2("thread_data[%p]: maps[%d] -> mmap[%d], cpus[%d]\n",
+> +					  thread_data, tm, m, cpus->map[m]);
+> +			}
+> +			if (thread_data->overwrite_maps) {
+> +				thread_data->overwrite_maps[tm] = &overwrite_mmap[m];
+> +				pr_debug2("thread_data[%p]: ow_maps[%d] -> ow_mmap[%d], cpus[%d]\n",
+> +					  thread_data, tm, m, cpus->map[m]);
+> +			}
+> +			tm++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__thread_data_init_pollfd(struct thread_data *thread_data, struct evlist *evlist)
+> +{
+> +	int f, tm, pos;
+> +	struct mmap *map, *overwrite_map;
+> +
+> +	fdarray__init(&thread_data->pollfd, 64);
+> +
+> +	for (tm = 0; tm < thread_data->nr_mmaps; tm++) {
+> +		map = thread_data->maps ? thread_data->maps[tm] : NULL;
+> +		overwrite_map = thread_data->overwrite_maps ?
+> +				thread_data->overwrite_maps[tm] : NULL;
+> +
+> +		for (f = 0; f < evlist->core.pollfd.nr; f++) {
+> +			void *ptr = evlist->core.pollfd.priv[f].ptr;
+> +
+> +			if ((map && ptr == map) || (overwrite_map && ptr == overwrite_map)) {
+> +				pos = fdarray__clone(&thread_data->pollfd, f, &evlist->core.pollfd);
+> +				if (pos < 0)
+> +					return pos;
+> +				pr_debug2("thread_data[%p]: pollfd[%d] <- event_fd=%d\n",
+> +					 thread_data, pos, evlist->core.pollfd.entries[f].fd);
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int record__alloc_thread_data(struct record *rec, struct evlist *evlist)
+> +{
+> +	int t, ret;
+> +	struct thread_data *thread_data;
+> +
+> +	rec->thread_data = zalloc(rec->nr_threads * sizeof(*(rec->thread_data)));
+> +	if (!rec->thread_data) {
+> +		pr_err("Failed to allocate thread data\n");
+> +		return -ENOMEM;
+> +	}
+> +	thread_data = rec->thread_data;
+> +
+> +	for (t = 0; t < rec->nr_threads; t++) {
+> +		thread_data[t].rec = rec;
+> +		thread_data[t].mask = &rec->thread_masks[t];
+> +		ret = record__thread_data_init_maps(&thread_data[t], evlist);
+> +		if (ret)
+> +			return ret;
+> +		ret = record__thread_data_init_pollfd(&thread_data[t], evlist);
+> +		if (ret)
+> +			return ret;
+> +		if (t) {
+> +			thread_data[t].tid = -1;
+> +			ret = record__thread_data_init_pipes(&thread_data[t]);
+> +			if (ret)
+> +				return ret;
+> +			thread_data[t].ctlfd_pos = fdarray__add(&thread_data[t].pollfd,
+> +								thread_data[t].pipes.msg[0],
+> +								POLLIN | POLLERR | POLLHUP,
+> +								fdarray_flag__nonfilterable);
+> +			if (thread_data[t].ctlfd_pos < 0)
+> +				return -ENOMEM;
+> +			pr_debug2("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
+> +				 thread_data, thread_data[t].ctlfd_pos,
+> +				 thread_data[t].pipes.msg[0]);
+> +		} else {
+> +			thread_data[t].tid = syscall(SYS_gettid);
+> +			if (evlist->ctl_fd.pos == -1)
+> +				continue;
+> +			thread_data[t].ctlfd_pos = fdarray__clone(&thread_data[t].pollfd,
+> +								  evlist->ctl_fd.pos,
+> +								  &evlist->core.pollfd);
+> +			if (thread_data[t].ctlfd_pos < 0)
+> +				return -ENOMEM;
+> +			pr_debug2("thread_data[%p]: pollfd[%d] <- ctl_fd=%d\n",
+> +				 thread_data, thread_data[t].ctlfd_pos,
+> +				 evlist->core.pollfd.entries[evlist->ctl_fd.pos].fd);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void record__free_thread_data(struct record *rec)
+> +{
+> +	int t;
+> +
+> +	if (rec->thread_data == NULL)
+> +		return;
+> +
+> +	for (t = 0; t < rec->nr_threads; t++) {
+> +		if (rec->thread_data[t].pipes.msg[0])
+> +			close(rec->thread_data[t].pipes.msg[0]);
+> +		if (rec->thread_data[t].pipes.msg[1])
+> +			close(rec->thread_data[t].pipes.msg[1]);
+> +		if (rec->thread_data[t].pipes.ack[0])
+> +			close(rec->thread_data[t].pipes.ack[0]);
+> +		if (rec->thread_data[t].pipes.ack[1])
+> +			close(rec->thread_data[t].pipes.ack[1]);
+> +		zfree(&rec->thread_data[t].maps);
+> +		zfree(&rec->thread_data[t].overwrite_maps);
+> +		fdarray__exit(&rec->thread_data[t].pollfd);
+> +	}
+> +
+> +	zfree(&rec->thread_data);
+> +}
+> +
+>  static int record__mmap_evlist(struct record *rec,
+>  			       struct evlist *evlist)
 >  {
->  	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
-> -	/* We start from the normalized address */
-> -	u64 ret_addr = norm_addr;
-> -
->  	u32 tmp;
->  
->  	u8 die_id_shift, die_id_mask, socket_id_shift, socket_id_mask;
-> @@ -1097,6 +1100,16 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  
->  	struct df_reg reg;
->  
-> +	struct addr_ctx ctx;
-
-Those empty-lines spaced-out local vars look weird.
-
-> +	memset(&ctx, 0, sizeof(ctx));
-> +
-> +	/* We start from the normalized address */
-> +	ctx.ret_addr = norm_addr;
-> +
-> +	ctx.nid = nid;
-> +	ctx.inst_id = umc;
-> +
->  	if (amd_df_indirect_read(nid, df_regs[DRAM_OFFSET], umc, &tmp))
->  		goto out_err;
->  
-> @@ -1105,7 +1118,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  		u64 hi_addr_offset = (tmp & GENMASK_ULL(31, 20)) << 8;
->  
->  		if (norm_addr >= hi_addr_offset) {
-> -			ret_addr -= hi_addr_offset;
-> +			ctx.ret_addr -= hi_addr_offset;
->  			base = 1;
+> +	int ret;
+>  	struct record_opts *opts = &rec->opts;
+>  	bool auxtrace_overwrite = opts->auxtrace_snapshot_mode ||
+>  				  opts->auxtrace_sample_mode;
+> @@ -880,6 +1064,14 @@ static int record__mmap_evlist(struct record *rec,
+>  				return -EINVAL;
 >  		}
 >  	}
-> @@ -1236,14 +1249,14 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  		 * bits there are. "intlv_addr_bit" tells us how many "Y" bits
->  		 * there are (where "I" starts).
->  		 */
-> -		temp_addr_y = ret_addr & GENMASK_ULL(intlv_addr_bit-1, 0);
-> +		temp_addr_y = ctx.ret_addr & GENMASK_ULL(intlv_addr_bit - 1, 0);
->  		temp_addr_i = (cs_id << intlv_addr_bit);
-> -		temp_addr_x = (ret_addr & GENMASK_ULL(63, intlv_addr_bit)) << num_intlv_bits;
-> -		ret_addr    = temp_addr_x | temp_addr_i | temp_addr_y;
-> +		temp_addr_x = (ctx.ret_addr & GENMASK_ULL(63, intlv_addr_bit)) << num_intlv_bits;
-> +		ctx.ret_addr    = temp_addr_x | temp_addr_i | temp_addr_y;
-
-You want to align those vertically on the "=" for better readability.
-
+> +
+> +	if (evlist__initialize_ctlfd(evlist, opts->ctl_fd, opts->ctl_fd_ack))
+> +		return -1;
+> +
+> +	ret = record__alloc_thread_data(rec, evlist);
+> +	if (ret)
+> +		return ret;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1880,9 +2072,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  		evlist__start_workload(rec->evlist);
 >  	}
 >  
->  	/* Add dram base address */
-> -	ret_addr += dram_base_addr;
-> +	ctx.ret_addr += dram_base_addr;
+> -	if (evlist__initialize_ctlfd(rec->evlist, opts->ctl_fd, opts->ctl_fd_ack))
+> -		goto out_child;
+> -
+>  	if (opts->initial_delay) {
+>  		pr_info(EVLIST_DISABLED_MSG);
+>  		if (opts->initial_delay > 0) {
+> @@ -2040,6 +2229,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  out_child:
+>  	evlist__finalize_ctlfd(rec->evlist);
+>  	record__mmap_read_all(rec, true);
+> +	record__free_thread_data(rec);
+>  	record__aio_mmap_read_sync(rec);
 >  
->  	/* If legacy MMIO hole enabled */
->  	if (lgcy_mmio_hole_en) {
-> @@ -1251,29 +1264,29 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
->  			goto out_err;
->  
->  		dram_hole_base = tmp & GENMASK(31, 24);
-> -		if (ret_addr >= dram_hole_base)
-> -			ret_addr += (BIT_ULL(32) - dram_hole_base);
-> +		if (ctx.ret_addr >= dram_hole_base)
-> +			ctx.ret_addr += (BIT_ULL(32) - dram_hole_base);
->  	}
->  
->  	if (hash_enabled) {
->  		/* Save some parentheses and grab ls-bit at the end. */
-> -		hashed_bit =	(ret_addr >> 12) ^
-> -				(ret_addr >> 18) ^
-> -				(ret_addr >> 21) ^
-> -				(ret_addr >> 30) ^
-> +		hashed_bit =	(ctx.ret_addr >> 12) ^
-> +				(ctx.ret_addr >> 18) ^
-> +				(ctx.ret_addr >> 21) ^
-> +				(ctx.ret_addr >> 30) ^
->  				cs_id;
->  
->  		hashed_bit &= BIT(0);
->  
-> -		if (hashed_bit != ((ret_addr >> intlv_addr_bit) & BIT(0)))
-> -			ret_addr ^= BIT(intlv_addr_bit);
-> +		if (hashed_bit != ((ctx.ret_addr >> intlv_addr_bit) & BIT(0)))
-> +			ctx.ret_addr ^= BIT(intlv_addr_bit);
->  	}
->  
->  	/* Is calculated system address is above DRAM limit address? */
-> -	if (ret_addr > dram_limit_addr)
-> +	if (ctx.ret_addr > dram_limit_addr)
->  		goto out_err;
->  
-> -	*sys_addr = ret_addr;
-> +	*sys_addr = ctx.ret_addr;
-
-So adding ctx to exchange data between functions - that was a good idea.
-
-But what this patch does is pointless because you simply replace those
-variables with a local struct.
-
-I guess the aha moment will come with the later patches when you start
-passing it around to functions.
-
-/me waits to see.
+>  	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
+> -- 
+> 2.19.0
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- Arnaldo
