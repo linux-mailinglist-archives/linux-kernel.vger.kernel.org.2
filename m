@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27CE3B876D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85F23B876F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhF3RLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:11:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhF3RLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:11:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C1C6146E;
-        Wed, 30 Jun 2021 17:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625072930;
-        bh=YFJP55cmbAqgs8sSAVdSjr3f86joqS6BnmO4BVogJ5Y=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sNy8kmkX6Vs3LhFd8+zjza11NGG94rgVndCLRTynbJerkkZy7bCdV4qg/ds1P7GVe
-         1jpAWf52DYmwqHmivSN6y0bW/mKNtm6R7ftO6C7vs4Vhek4oApzo1lx5o6N1Sr0n/g
-         KfuNn7V8qOAnf59zg/frIsjZZMpNAWku82K+ts61dwAIMa1+9qv3kJUgXHZ+aClLvW
-         eymjuqZ/RhhggLfAK0LHVkkVRi/JU28dRIS6xUJH4cAVumbXwTqHFsilUpOcFJpIC/
-         oqEL/yZPC0Gx4Rl5VQ9OLCqRLiFdEkAb9LGTtj6Fph78UhQbT+ujN843SgMIJrFrkc
-         Q0Six4eeahalg==
-Subject: Re: [PATCH 2/2] Kbuild: lto: add make version checking
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>, keescook@chromium.org,
-        samitolvanen@google.com, linux-kbuild@vger.kernel.org
-Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        yj.chiang@mediatek.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net
-References: <20210630121436.19581-1-lecopzer.chen@mediatek.com>
- <20210630121436.19581-3-lecopzer.chen@mediatek.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <6d687b9a-c295-ce8b-9472-d2859977be2d@kernel.org>
-Date:   Wed, 30 Jun 2021 10:08:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232491AbhF3RLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhF3RLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:11:51 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0444AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:09:21 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id a15so6432812lfr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 10:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wMrs2skzTM0HY+lsZxoBQR/QKSygEmkXMJOZY+h7EgU=;
+        b=I/5vOpSFnyOPXZ3RLvoghmYhzElCIdMhy+l/aRdXSWff3CU0Y6AwdAXjYXvYyjqzvu
+         rolos0Kx+uEM6ryzcmaErs3qWR4n+D3cWk7aFTNjjNZQ5ESC4MAsLzcxmssHOAH1wCBl
+         Xz8xcxm+pKmIK+ccbCHfDr7EO4MaqK9/I7K3PPy0EEUbZadSwbU/PRuXBmOo4L7sUcKx
+         nz/MenT5nb54eWizcmxlYfrRjcQ7OmOSwP13r1onCw6hDZEJXZmqsqAijN5RJ2D6u8Gm
+         YGZ76RagyQ26oA9iNgtgM6Kzd6WjkDEgZseVgxjAdloZ5J5rEzBvxPsfp4+PuQ7oYk2c
+         JdJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wMrs2skzTM0HY+lsZxoBQR/QKSygEmkXMJOZY+h7EgU=;
+        b=gsG1hdQnab0oPb3yKYMSMp1AXf/JeA3siW1MCJmp3TIllGGbCcj698nUU0bZNNCKoZ
+         7FNavmx097m/Qjv7602tTxCRGOQu8e82I17j5ptUVLa2vMmXdCBoso3f6udmq1YKe/xx
+         yWEyP9GeouWBujf5V3awcW+znrdCugId5i6N5M+bZklW2matEmfZksFzJ1gFDyS6+Isg
+         XxVT8flutLOxjRtGbSs71FW1JB4alWdQZeQgv4//NNFe1gLIYk83rdvxmCb1qglGy+nl
+         47/CbRRI/pnbRD5/lrIrZigOVDm6minNMx5ddvp+6zXvbiIRcVyQ2RGkkJ+CXf6yR8RS
+         uV0w==
+X-Gm-Message-State: AOAM531QlVYyWBfY5eCQyfetlaZb6q7ySHeoV/FZVhVxPYRRYTMh5E73
+        AiKrDNm0FSFB3AZDJNAsv9quD0XtRUUgp6gKt+IZ3Iitl6M=
+X-Google-Smtp-Source: ABdhPJwZkV4B0dPt6ZzKjYDuj/F1a4LpZ+b/3/t80CdZOdZTxUKldx+7TwMuz7chFvQvV9SZJiuuTbIGFeHUk5Djj9I=
+X-Received: by 2002:a05:6512:2314:: with SMTP id o20mr27246583lfu.531.1625072959006;
+ Wed, 30 Jun 2021 10:09:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210630121436.19581-3-lecopzer.chen@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210628173152.2062988-1-david.edmondson@oracle.com> <YNyc26bXNg4bEAlG@google.com>
+In-Reply-To: <YNyc26bXNg4bEAlG@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Wed, 30 Jun 2021 10:08:52 -0700
+Message-ID: <CALzav=ewuTYiRS57iYkrVCa6T-garkyFh1OygsQWrUgOS993wQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] KVM: x86: Convey the exit reason to user-space on
+ emulation failure
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/2021 5:14 AM, Lecopzer Chen wrote:
-> LTO with MODVERSION will fail in generating correct CRC because
-> the makefile rule doesn't work for make with version 3.8X.[1]
-> 
-> Thus we need to check make version during selecting on LTO Kconfig.
-> and the suitable version should be 4.2(40200) which release in 2016[2].
-> 
-> [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> [2] https://ftp.gnu.org/gnu/make/
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> ---
->   arch/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index c45b770d3579..1571957bade5 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -632,6 +632,7 @@ config HAS_LTO_CLANG
->   	def_bool y
->   	# Clang >= 11: https://github.com/ClangBuiltLinux/linux/issues/510
->   	depends on CC_IS_CLANG && CLANG_VERSION >= 110000 && LD_IS_LLD && AS_IS_LLVM
-> +	depends on MAKE_VERSION_INT >= 40200
+On Wed, Jun 30, 2021 at 9:33 AM David Matlack <dmatlack@google.com> wrote:
+>
+> On Mon, Jun 28, 2021 at 06:31:50PM +0100, David Edmondson wrote:
+> > To aid in debugging failures in the field, when instruction emulation
+>
+> What do you mean by a "debugging failure"?
 
-If the bug depends on CONFIG_MODVERSIONS, should this be
+Oh! Sorry I misread this as "*debugging failures*" rather than
+"debugging *failures*". I know what you mean here :-).
 
-depends on !MODVERSIONS || MAKE_VERSION >= 40200
-
-? Especially since the problematic block in your original report is 
-gated on CONFIG_LTO_CLANG + CONFIG_MODVERSIONS.
-
->   	depends on $(success,$(NM) --help | head -n 1 | grep -qi llvm)
->   	depends on $(success,$(AR) --help | head -n 1 | grep -qi llvm)
->   	depends on ARCH_SUPPORTS_LTO_CLANG
-> 
+>
+> > fails, report the VM exit reason to userspace in order that it can be
+> > recorded.
+>
+> What is the benefit of seeing the VM-exit reason that led to an
+> emulation failure?
+>
+> >
+> > The changes are on top of Aaron's patches from
+> > https://lore.kernel.org/r/20210510144834.658457-1-aaronlewis@google.com
+> > which are in the KVM queue, but not yet upstream.
+> >
+> > David Edmondson (2):
+> >   KVM: x86: Add kvm_x86_ops.get_exit_reason
+> >   KVM: x86: On emulation failure, convey the exit reason to userspace
+> >
+> >  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+> >  arch/x86/include/asm/kvm_host.h    |  1 +
+> >  arch/x86/kvm/svm/svm.c             |  6 ++++++
+> >  arch/x86/kvm/vmx/vmx.c             |  6 ++++++
+> >  arch/x86/kvm/x86.c                 | 23 +++++++++++++++++------
+> >  include/uapi/linux/kvm.h           |  2 ++
+> >  6 files changed, 33 insertions(+), 6 deletions(-)
+> >
+> > --
+> > 2.30.2
+> >
