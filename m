@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE433B87B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08FE3B87B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhF3Rbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:31:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:42988 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhF3Rbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:31:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 302C36D;
-        Wed, 30 Jun 2021 10:29:04 -0700 (PDT)
-Received: from [10.57.10.3] (unknown [10.57.10.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4243F718;
-        Wed, 30 Jun 2021 10:29:01 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAJZ5v0iOzp5FKo4NsNE-m+sEXZUvv1TbkAO_9+jSidx9c0iq8A@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <ffc63114-c1c2-f866-8b2a-15e9fd0a7818@arm.com>
-Date:   Wed, 30 Jun 2021 18:28:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232680AbhF3RcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhF3RcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:32:04 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797C7C061756;
+        Wed, 30 Jun 2021 10:29:35 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1749E1EC046E;
+        Wed, 30 Jun 2021 19:29:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625074174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=YGhnZGfwTfvy3zpIFETm0Gunr6e5gwD/LYq1Fu48WQ4=;
+        b=sUZpfB/Q+SeJQ3jfq1IfLkvy+1ILlBYyNJCbW3uX0iS1dVkVEhEHr+k/6R5JOCOlEHzFHf
+        gBBJjn8bp5jZ9i780+ihjO68WOQ5+QV7QGJslWpipG/3C7rcjXedHsWm5Y5rViMiiyBWFr
+        VXO4meDUbuWPmfvOm2Yl0pbt4/nt610=
+Date:   Wed, 30 Jun 2021 19:29:33 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 08/31] EDAC/amd64: Define function to read DRAM
+ address map registers
+Message-ID: <YNyp/ZsGwnjFZr04@zn.tnic>
+References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
+ <20210623192002.3671647-9-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iOzp5FKo4NsNE-m+sEXZUvv1TbkAO_9+jSidx9c0iq8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210623192002.3671647-9-yazen.ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 23, 2021 at 07:19:39PM +0000, Yazen Ghannam wrote:
+> @@ -1170,22 +1194,13 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  	if (remove_dram_offset(&ctx))
+>  		goto out_err;
+>  
+> -	reg = df_regs[DRAM_BASE_ADDR];
+> -	reg.offset += ctx.map_num * 8;
+> -	if (amd_df_indirect_read(nid, reg, umc, &tmp))
+> -		goto out_err;
+> -
+> -	/* Check if address range is valid. */
+> -	if (!(tmp & BIT(0))) {
+> -		pr_err("%s: Invalid DramBaseAddress range: 0x%x.\n",
+> -			__func__, tmp);
+> +	if (get_dram_addr_map(&ctx))
+>  		goto out_err;
+> -	}
 
+Aha, I see where you're going with the context struct. Yap, ok.
 
-On 6/30/21 6:01 PM, Rafael J. Wysocki wrote:
-> On Fri, Jun 25, 2021 at 5:26 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
->> task. It probes many possibilities and compares the estimated energy values
->> for different scenarios. For calculating those energy values it relies on
->> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
->> EM data is in milli-Watts (or abstract scale), which sometimes is not
->> sufficient. In some cases it might happen that two CPUs from different
->> Performance Domains (PDs) get the same calculated value for a given task
->> placement, but in more precised scale, they might differ. This rounding
->> error has to be addressed. This patch prepares EAS code for better
->> precision in the coming EM improvements.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> 
-> If you want me to pick up this series, this patch requires an ACK from
-> the scheduler maintainers.
-> 
+-- 
+Regards/Gruss,
+    Boris.
 
-It would be great, if you could take it after e.g. Peter ACK it.
-
-Peter could you have a look at it, please?
-In this patch 1/3 we have only variables upgrade.
-
-Regards,
-Lukasz
+https://people.kernel.org/tglx/notes-about-netiquette
