@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6648D3B8255
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37B63B8256
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbhF3Mps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:45:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49022 "EHLO mail.kernel.org"
+        id S234781AbhF3Mpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234713AbhF3Mpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:45:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2738E61461;
-        Wed, 30 Jun 2021 12:43:18 +0000 (UTC)
+        id S234713AbhF3Mpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:45:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A67EA61607;
+        Wed, 30 Jun 2021 12:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625056998;
-        bh=J0Gszs8pv1ZVL9B9l2TF6Y0s+M7aKB70DnAjQIctv0c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nU2WTDr7v65lyactIc5lmNxQx01B4g2ebLDbUjUnj68SmArfYikVP++lDEzyQAvdp
-         AflRvkxgCGGIIAxXEMn14rrnX09gOxRy49iF0PnJzz1Gh7SCWcqS9GBxEBgrNFbj2O
-         cFeCmI6XY8U4CADW64ACd1GWYnkq3nVItsXkbC9695ADa0JBEFjPlLEB6y+WbG9CBj
-         o5G/jYPbU9LeWIG0nUYa/Jwt62jZhR4MnfcKyaCxudo94lvBXpXT3I9QsRrp/CJwi+
-         uhb5p49NHHLDKsoMPQp5BOr7MZzPhT5wHYPkFGVlKs/GxKpmE8fP3l+itrvTtLpbcR
-         8/u6edBlrrVqQ==
-Date:   Wed, 30 Jun 2021 08:43:17 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.12 000/110] 5.12.14-rc1 review
-Message-ID: <YNxm5VZ1K/IIzVfu@sashalap>
-References: <20210628141828.31757-1-sashal@kernel.org>
- <60da130e.1c69fb81.c638f.a74a@mx.google.com>
+        s=k20201202; t=1625057002;
+        bh=6OF4N7JUtnNgaXGoSID4OhvWKE5ES8/5xECcYMjn9GM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FeTNFP/0ZM6PCu6uCPphHKqYIH1H53Fn0P0lBSgSiPaSnDxaiEDoTfwPnscep264G
+         VD1qn9Du9w5RFbMpaoP9kVqAoS1qW6MWuYMYAky4JPkgi0Q3CzwopOlXhVIH6adUP0
+         LX1s2/SHr3RkVVE6SCBGo+8/iMPT1lg3xWSop3EqsrAMhyACheA9CZw9gt5d0C/TWG
+         v+y1BgP9nZaz+HPITZG95rI25JNIzHguGMlKNmxdf7ZhPIaaFZlCkas7kJTmAEPvz1
+         1/TccvltwJ8Iv3+zLrLmFdNM0jThM1U0Vy58BJB+KCztbGEkOiPPqRlps3x4HvXybC
+         f8ALCQLH4m1Jg==
+Date:   Wed, 30 Jun 2021 14:43:18 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Ling Pei Lee <pei.lee.ling@intel.com>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, weifeng.voon@intel.com,
+        vee.khee.wong@linux.intel.com, vee.khee.wong@intel.com
+Subject: Re: [PATCH net-next V2] net: phy: marvell10g: enable WoL for mv2110
+Message-ID: <20210630144318.42786e1b@dellmb>
+In-Reply-To: <20210629105554.1443676-1-pei.lee.ling@intel.com>
+References: <20210629105554.1443676-1-pei.lee.ling@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <60da130e.1c69fb81.c638f.a74a@mx.google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:21:02AM -0700, Fox Chen wrote:
->On Mon, 28 Jun 2021 10:16:38 -0400, Sasha Levin <sashal@kernel.org> wrote:
->>
->> This is the start of the stable review cycle for the 5.12.14 release.
->> There are 110 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed 30 Jun 2021 02:18:05 PM UTC.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.12.y&id2=v5.12.13
->> or in the git tree and branch at:
->>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
->> and the diffstat can be found below.
->>
->> Thanks,
->> Sasha
->>
->
->5.12.14-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
->
->Tested-by: Fox Chen <foxhlchen@gmail.com>
+Hi Ling,
 
-Thanks for testing Fox!
+some more things, please look at these.
 
--- 
-Thanks,
-Sasha
+First, the subject line should be
+  net: phy: marvell10g: enable WoL for 88X3310 and 88E2110
+since you are also implementing it for 3310.
+
+> From: Voon Weifeng <weifeng.voon@intel.com>
+> 
+> Basically it is just to enable to WoL interrupt and enable WoL
+> detection. Then, configure the MAC address into address detection
+> register.
+
+"Implement Wake-on-LAN feature for 88X3310 and 88E2110.
+
+ This is done by enabling WoL interrupt and WoL detection and
+ configuring MAC address into WoL magic packet registers."
+
+> Change Log:
+>  V2:
+>  (1) Reviewer Marek request to rorganize code to readable way.
+>  (2) Reviewer Rusell request to put phy_clear_bits_mmd() outside of
+> if(){}else{} and modify return ret to return phy_clear_bits_mmd().
+>  (3) Reviewer Rusell request to add return on phy_read_mmd() in
+> set_wol(). (4) Reorganize register layout to be put before
+> MV_V2_TEMP_CTRL. (5) Add the .{get|set}_wol for 88E3110 too as per
+> feedback from Russell.
+
+We do not put changelogs into the commit message normally. Mostly we
+put it into cover letters or after the "--" line so that it is not
+included in the commit message in git history (merge commits are one
+of the exceptions).
+
+As Russell wrote, you have only partially reorganized register
+constants. The constants should be defined in this order
++	MV_V2_PORT_INTR_STS	= 0xf040,
++	MV_V2_PORT_INTR_MASK	= 0xf043,
++	MV_V2_WOL_INTR_EN	= BIT(8),
++	MV_V2_MAGIC_PKT_WORD0	= 0xf06b,
++	MV_V2_MAGIC_PKT_WORD1	= 0xf06c,
++	MV_V2_MAGIC_PKT_WORD2	= 0xf06d,
++	/* Wake on LAN registers */
++	MV_V2_WOL_CTRL		= 0xf06e,
++	MV_V2_WOL_CLEAR_STS	= BIT(15),
++	MV_V2_WOL_MAGIC_PKT_EN	= BIT(0),
++	MV_V2_WOL_STS		= 0xf06f,
+
+Also:
+- MV_V2_WOL_STS is not used, you should read the register before
+  cleaning or don't define the constant at all. (IMO you should read
+  it).
+- register value constants should be prefixed with whole register names,
+  so:
+    MV_V2_WOL_INTR_EN  rename to  MV_V2_PORT_INTR_STS_WOL_EN
+    MV_V2_WOL_CLEAR_STS  rename to  MV_V2_WOL_CTRL_CLEAR_STS
+    MV_V2_WOL_MAGIC_PKT_EN  rename to  MV_V2_WOL_CTRL_MAGIC_PKT_EN
+
++	/* Reset the clear WOL status bit as it does not self-clear */
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND2,
++					MV_V2_WOL_CTRL,
++					MV_V2_WOL_CLEAR_STS);
+
+This has wrong indentation, the arguments in new lines should start at
+the position of first argument.
+
+Marek
+
