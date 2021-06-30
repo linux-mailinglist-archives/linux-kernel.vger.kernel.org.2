@@ -2,145 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE593B7E40
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23D23B7E47
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhF3Hkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:40:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21326 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232785AbhF3Hkj (ORCPT
+        id S232990AbhF3Hmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232573AbhF3Hmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:40:39 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15U7ZHRT152265;
-        Wed, 30 Jun 2021 03:38:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VQb3oXP7a/NtEgzrUvK9Rt998x3BEpLj4eKcKZN21Ss=;
- b=PSHdb3bqwlY2+ot7SImYFhR4ZU/CDVQxeBZHqpEXNozc5+5hjkVBECcS9KFOgcjMCCjI
- kZLiBnkj/7eEiMhYQ0VhBAiw651fKacOxO8jH7Ej3KSHCEnzp8yAaOfSupckNp70xE+a
- CiMxDtwOZWVHxuLPN7SiAehraK+mu98HCEpdYEUrD4eg0a9A6n33T47XrtXRMhXY1VRY
- AapJQTrGjB3NvfiThZMmuygM280fuxM8agsHArodoSEdmiad1yN8LojAnfCdTjfJLs/Q
- OndRbOrefFfATk0tJ7lAEQwrpfxjKJ6DVNXMm/4jw8FL+oe5jdAffdm7XSaxdnGmbFuK eA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gfv6xbmb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 03:38:00 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15U7aDuu155690;
-        Wed, 30 Jun 2021 03:38:00 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gfv6xbkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 03:38:00 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15U7bwxu025284;
-        Wed, 30 Jun 2021 07:37:58 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 39duv8gunp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 07:37:58 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15U7btqQ27001188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 07:37:55 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB38B4C063;
-        Wed, 30 Jun 2021 07:37:54 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 690874C050;
-        Wed, 30 Jun 2021 07:37:54 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.84.194])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Jun 2021 07:37:54 +0000 (GMT)
-Subject: Re: [PATCH] KVM: selftests: Fix mapping length truncation in
- m{,un}map()
-To:     Zenghui Yu <yuzenghui@huawei.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com
-Cc:     wanghaibin.wang@huawei.com
-References: <20210624070931.565-1-yuzenghui@huawei.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <78f94832-4a87-91fa-77fc-6b32252664de@de.ibm.com>
-Date:   Wed, 30 Jun 2021 09:37:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Jun 2021 03:42:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AB0C061766;
+        Wed, 30 Jun 2021 00:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3OELB8OXI9teM7TxgJcDkkpSNV+n0n/1PROLl9QSkrI=; b=JeF/7pQ66uQ5h5XIqWjIXLoQDR
+        WCcF4PLTj0Rx4NSr749dNIpfNiN0RnJOd3kKpdPOTnsN0fcaNS/1eYaWiiH3IT/AthMysoU09fSky
+        a3vQZ5Dq2XsrOdecuVvQT6xKy4A8xqqEvqFuZAdMu7ceREHBtgXQGRdlRjzSE91euE454pVZG+aTD
+        wlAX5WMyxSLn06EBjK130qy567pS3S8rMeaB/6JYnYRF59P61KuWRV7Rynce4UaGXN1VGIGcVhLsO
+        gBjY2LQ5ZpfyGhFzOxqYTGbdlu0TsPqWRT7RiOUgX+4BeGOuabV9GXZ0wbJtyoz0urNhtUcwKo9qB
+        e8hRSzgQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyUnn-0053R2-Jq; Wed, 30 Jun 2021 07:38:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 78970300204;
+        Wed, 30 Jun 2021 09:38:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6077E201570E3; Wed, 30 Jun 2021 09:38:30 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 09:38:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, masahiroy@kernel.org, michal.lkml@markovi.net,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [tip: objtool/core] jump_label, x86: Allow short NOPs
+Message-ID: <YNwfdltMu44wnoLH@hirez.programming.kicks-ass.net>
+References: <20210506194158.216763632@infradead.org>
+ <162082558708.29796.10992563428983424866.tip-bot2@tip-bot2>
+ <20210518195004.GD21560@worktop.programming.kicks-ass.net>
+ <20210518202443.GA48949@worktop.programming.kicks-ass.net>
+ <20210519004411.xpx4i6qcnfpyyrbj@treble>
+ <YKS2oX/PCfp4NQ8V@hirez.programming.kicks-ass.net>
+ <YNt7+fRNOnorLsYW@casper.infradead.org>
+ <YNuEGUrjTvOrZkj5@casper.infradead.org>
+ <YNwYGVdB3QI1kcLL@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210624070931.565-1-yuzenghui@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cxGgkxEhtgaV2NwEC0fjTy3WHU2x36np
-X-Proofpoint-GUID: VvwMi8GI9FhJEF1TPKmg3R4NCfNj6ptX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-30_01:2021-06-29,2021-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106300049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNwYGVdB3QI1kcLL@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 30, 2021 at 09:07:05AM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 29, 2021 at 09:35:37PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jun 29, 2021 at 09:01:25PM +0100, Matthew Wilcox wrote:
+> > > So this got merged without the corresponding Kbuild update being merged,
+> > > and my kernel failed to boot.  Bisect got as far as
+> > > 
+> > > $ git bisect good
+> > > Bisecting: 4 revisions left to test after this (roughly 2 steps)
+> > > [ab3257042c26d0cd44793c741e2f89bf38b21fe8] jump_label, x86: Allow short NOPs
+> > > 
+> > > before my sluggish memory remembered this thread from six weeks ago.
+> > > 
+> > > So if anybody else hits this, do a make clean.
+> > 
+> > Actually, this is a different bug with the same symptom.
+> > 
+> > Applying the patch from Peter, and running it:
+> > 
+> > $ ./.build_test_kernel-x86_64/tools/objtool/objtool check -abdJsuld .build_test_kernel-x86_64/vmlinux.o
+> > nr_sections: 15446
+> > section_bits: 13
+> > nr_symbols: 116448
+> > symbol_bits: 16
+> > max_reloc: 8031700
+> > tot_reloc: 12477754
+> > reloc_bits: 19
+> > nr_insns: 2523443
+> > .build_test_kernel-x86_64/vmlinux.o: warning: objtool: want_init_on_free()+0x0: jump-label unpatched
+> > 
+> > This is against a freshly built kernel -- i removed the build directory,
+> > copied in a .config file and built a fresh kernel.
+> 
+> You happen to have said .config for me?
 
+Also GCC version I suppose. The thing I'm wondering about in particular
+is what translation unit is responsible for that symbol.
 
-On 24.06.21 09:09, Zenghui Yu wrote:
-> max_mem_slots is now declared as uint32_t. The result of (0x200000 * 32767)
-> is unexpectedly truncated to be 0xffe00000, whilst we actually need to
-> allocate about, 63GB. Cast max_mem_slots to size_t in both mmap() and
-> munmap() to fix the length truncation.
-> 
-> We'll otherwise see the failure on arm64 thanks to the access_ok() checking
-> in __kvm_set_memory_region(), as the unmapped VA happen to go beyond the
-> task's allowed address space.
-> 
->   # ./set_memory_region_test
-> Allowed number of memory slots: 32767
-> Adding slots 0..32766, each memory region with 2048K size
-> ==== Test Assertion Failure ====
->    set_memory_region_test.c:391: ret == 0
->    pid=94861 tid=94861 errno=22 - Invalid argument
->       1	0x00000000004015a7: test_add_max_memory_regions at set_memory_region_test.c:389
->       2	 (inlined by) main at set_memory_region_test.c:426
->       3	0x0000ffffb8e67bdf: ?? ??:0
->       4	0x00000000004016db: _start at :?
->    KVM_SET_USER_MEMORY_REGION IOCTL failed,
->    rc: -1 errno: 22 slot: 2615
-> 
-> Fixes: 3bf0fcd75434 ("KVM: selftests: Speed up set_memory_region_test")
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-
-While likely correct, this now breaks on many test systems in our CI that have less memory than 64GB.
-(We do get ENOMEM). I have not seen the ENOMEM failures in earlier versions. Strange
-
-> ---
->   tools/testing/selftests/kvm/set_memory_region_test.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-> index d79d58eada9f..85b18bb8f762 100644
-> --- a/tools/testing/selftests/kvm/set_memory_region_test.c
-> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-> @@ -376,7 +376,7 @@ static void test_add_max_memory_regions(void)
->   	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
->   		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
-> 
-> -	mem = mmap(NULL, MEM_REGION_SIZE * max_mem_slots + alignment,
-> +	mem = mmap(NULL, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment,
->   		   PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->   	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
->   	mem_aligned = (void *)(((size_t) mem + alignment - 1) & ~(alignment - 1));
-> @@ -401,7 +401,7 @@ static void test_add_max_memory_regions(void)
->   	TEST_ASSERT(ret == -1 && errno == EINVAL,
->   		    "Adding one more memory slot should fail with EINVAL");
-> 
-> -	munmap(mem, MEM_REGION_SIZE * max_mem_slots + alignment);
-> +	munmap(mem, (size_t)max_mem_slots * MEM_REGION_SIZE + alignment);
->   	munmap(mem_extra, MEM_REGION_SIZE);
->   	kvm_vm_free(vm);
->   }
-> 
+AFAICT the function itself is an inline from linux/mm.h, but I cannot
+find any of the files or functions it's used in as being excluded from
+objtool coverage :/
