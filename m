@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B403B81A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821883B81A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhF3MHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:07:25 -0400
-Received: from mail-dm6nam10on2055.outbound.protection.outlook.com ([40.107.93.55]:17337
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234498AbhF3MHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:07:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dduNLiLuzh7zeEN89x/uG5T9Lyio0y1s4T/DN15CxSdv+StRUKK9ErYQixWAivHTE6aRxnGxVFFigH+1XBCJGas5J4wSykdfM7pn+7emhhrV3VdHr3RcPsih6A3AWweOrgKRA9hM3VYdmGrXRdh7BUkusZd8y1oAnlJ1k4ItgXDrlVMkZOH5Qtor3uGPuz61atzJM94oeDjV4Nj+NvKIcDV+l+e0vujgBwupwD94BCAK4gjRzN4f1tpwjuhNw4jBySuVV7850IitBFEQ2UFAPbNRM42jLFwyASs//gGinUJhVpUl1ebb7VWPPRv7q5HunVlZzg8D+fOdtAcKEaQrEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GR/ArOBgut+NAPXxXwppebwgI2N4y+/+c0hbpjqcmO0=;
- b=FwQ/ayRUjgXKBlcRIUIdj42ttTXUE6wjofr1R/JxWcwBn15E51I0iNZiTJ60z2mCeqZPmVn+WhdveQZ/CLVskYrR8MBRsm50xCwpLwY3x+c5Dckw7ZI+PKkaJA359+bQT6OQq20ytmPcxpsUqddozZZ2mZBtiOGGtYZ4tg3fWcXJxvv9v53CMf25wFgZngWUN4rkCG03bLsTelLrnSWNmu7FtxQRFMipYD3xKS4GivuTE6bj8D+UNQtbGzeVa96RtzdQp+cJg64m8CENfSTxLvCA9RApQWJoBz0LY80xT+P3kJdj2p+Yyv6cLS+sHUQFzwpILwZKzzUOus4vNw/jqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GR/ArOBgut+NAPXxXwppebwgI2N4y+/+c0hbpjqcmO0=;
- b=CSL804gryk5YilrJbBNVlHi/yIgkEpF98ZxeOVYIb1iocHKBwM3Cc7a5aWoxY+DqGROL5JrIGISJD18/tCGlrhXipGCu0Xq32HIOcSYV9vObUb4KY/1zfIBAsxrWxZfTjxw5S3rtR51ptz+tb6q/FKKhvRotmwTfS/NyeBZI5pg=
-Received: from MW4P223CA0028.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::33)
- by CH2PR12MB3816.namprd12.prod.outlook.com (2603:10b6:610:2f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Wed, 30 Jun
- 2021 12:04:49 +0000
-Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:80:cafe::9e) by MW4P223CA0028.outlook.office365.com
- (2603:10b6:303:80::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20 via Frontend
- Transport; Wed, 30 Jun 2021 12:04:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4264.18 via Frontend Transport; Wed, 30 Jun 2021 12:04:49 +0000
-Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 30 Jun
- 2021 07:04:46 -0500
-From:   Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-To:     <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Nehal Bakulchandra Shah" <Nehal-Bakulchandra.shah@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Liang Liang <liang.liang@amd.com>
-Subject: [PATCH v3 3/3] spi:amd:Fix for compilation error for non X86 platforms.
-Date:   Wed, 30 Jun 2021 17:34:25 +0530
-Message-ID: <20210630120425.606957-4-Nehal-Bakulchandra.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210630120425.606957-1-Nehal-Bakulchandra.shah@amd.com>
-References: <20210630120425.606957-1-Nehal-Bakulchandra.shah@amd.com>
+        id S234535AbhF3MI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234349AbhF3MIZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:08:25 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC73DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:05:55 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id u20so2899896ljo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BtORUJyjB87YtTBYfSfGySn25Jv/2+Q+hPA+h56ovV4=;
+        b=uEErsoTpFGyOctEjTypHQEJluWwAK6BYJM2LKVNY3L0vIf+zPVu9uFT1NihntKgAey
+         T8zz5XlezEThkQ2ldlwjBKB7BZuSE6F22hnouvRE6+MC3Xeu0h3z5YPldJkYa0bGQ1kJ
+         g2BWst75rh376V4ikLWzQf5msoFSqiCV6Z144aHgChiFdy5LH2IksLK9F/aQwUVkTdAV
+         J1Py5HKSV3v2j99FdQC3wEzfcdCkgLYy1nlcpi9WPY09tNkJjhTcDXtufj6K1361Qxjm
+         p58jUxcpOyQysb5kqSsCzhsOg+GTsx465r62ysG4Yrj77Rv8HqjqAhdst5rZYlr7pqra
+         Netg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BtORUJyjB87YtTBYfSfGySn25Jv/2+Q+hPA+h56ovV4=;
+        b=pP/ervF/XLdpgfjPk3J7QC0DzUglQLNJfPCXHq7PjVMMzTTd+/DxUO81z1WgeBd9v1
+         5co5fAhJboePHuQomLHm+x1nU++J38+i/zettETRMkMkhT6w+MncneuyclxZdJqQ2MqV
+         ji0mohq0+zgsD3T5NUYLWlrJxNNUdks0JHxcOmw7icEJCUVAFiOqPirs1mtuiUdRLBY1
+         ibyLeO/2G8np2Xxedgg0McmiCjgic5tIE5b19MPXgNDT18TE8Gab3aP+pHqFt7T5jAG0
+         OfIZUdQozD+ZMg58G5UoBqRP5I5AI1UocKOxyQglbozXpQA9x+dDFlQT9FcoPOVapre8
+         4lqQ==
+X-Gm-Message-State: AOAM531/fEE+ACJ00CnoLW/JP/1sVkDxiZPJ7BBvp9snV+F2tnE2mMwv
+        /LAgkgyDhFy7fUFqRwzm+DmfiRISUCQxibN0EuYuXDwE3TA=
+X-Google-Smtp-Source: ABdhPJxoFl60qtawGlI8nuGvULLl+HzEKw1KTJwO0t4M3sRm/QUVigLYAXXO3Zp0+3Rf/GzafVyL2I5rMfC77/P8ir0=
+X-Received: by 2002:a2e:700f:: with SMTP id l15mr7624471ljc.52.1625054753967;
+ Wed, 30 Jun 2021 05:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd2d4ead-7623-4d97-a9f6-08d93bbf429b
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3816:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB3816E9575AC1F89CBBBAB949A0019@CH2PR12MB3816.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VPELlNzL5OUZ3UxE7IcmViRKGUUZiniCt52CI+AueAir+G+KYn3DcvI2HuPtcDlenG3TQAAzNyjDDs+K4/k6N/il/j2wJvvNX40NJVz6SbH9WqcSN/oyXUWvMg7NnH1GRXSQR9CKG3hfG5w7MrAFT6qsrDpByAeKixr5mKUFURsKyYAwI3kRsB31I7Sk35Y2KtJUwjVQmK5EHTtV+CZ30o5rWgomr1mxXLziXa+ndKLjIBAkaESnUi8TEXpTaFsMn7JpZjiI0w/aTdzadLIZnC4OJQPy0i7fakox+0YegL/EWNJ2KVHdZ01Aj/rBWhi3PJiOk6a6XLdF+ZDmbAMlsor1AWXlE3AXJUcKro5L9K87Y2NQuJGmQcg+p1Moqsh86hgmvJeGzq7idnUfLtrLikA2LNQEeXms7Ocm/jmvfFQG1IWQSqTaV1Eei8GlVyTnsJ+my3smAOBJo0eV0HIUxXkM2drGrUvyckhFMkK0bF3cpGBfIbQx4YSoaWGv2rH6HTEiRnf7vqhemOt4btD1Ymhm8z6NF6JqRTlyzqrIJsUSXFrwo6WgTv/20XtOPQLwj99zp8d4MImAolO0S+dH+YqrnSiRLyFcCeiXS5ps/lDfvvvJuLi/lRa6h/2WDSkPCtDmY4QnglyG648n/CpM6pqfEIKWSfAHgtUIpk5GkwbuwdZK0JeP2oY/XPPjrYPn6YUUTXD9H7YFzbj2lSA0H1n9qcW2tH5xiQkDnJqvtLc=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(36840700001)(46966006)(5660300002)(83380400001)(82310400003)(478600001)(54906003)(2906002)(4326008)(8936002)(7696005)(81166007)(16526019)(186003)(70586007)(8676002)(6916009)(70206006)(82740400003)(356005)(26005)(36756003)(6666004)(36860700001)(47076005)(4744005)(426003)(86362001)(336012)(316002)(1076003)(2616005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 12:04:49.0266
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd2d4ead-7623-4d97-a9f6-08d93bbf429b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3816
+References: <20210618072349.503-1-xuewen.yan94@gmail.com> <87fsx093vm.mognet@arm.com>
+ <CAB8ipk9TMTbw2WGrbLuewk_CaYxrvMOp2Ui5xiHiwYB4NmoRhA@mail.gmail.com> <87czs38u72.mognet@arm.com>
+In-Reply-To: <87czs38u72.mognet@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Wed, 30 Jun 2021 20:05:37 +0800
+Message-ID: <CAB8ipk8tdA7tB3yJQSeVW1vz6W9PDzqWoU3tv2XdDcoSrhbEqA@mail.gmail.com>
+Subject: Re: [PATCH] sched/uclamp: Fix getting unreasonable ucalmp_max when rq
+ is idle
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Quentin Perret <qperret@google.com>,
+        Qais Yousef <qais.yousef@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the KConfig with dependency for ACPI as driver is only
-supported for x86 platform. This fixes the compilation error
-reported by kernel test robot.
+On Wed, Jun 30, 2021 at 7:31 PM Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> On 30/06/21 09:24, Xuewen Yan wrote:
+> > On Tue, Jun 29, 2021 at 9:50 PM Valentin Schneider
+> > <valentin.schneider@arm.com> wrote:
+> >> +       min_util =3D max_t(unsigned long, min_util, READ_ONCE(rq->ucla=
+mp[UCLAMP_MIN].value));
+> >> +       max_util =3D max_t(unsigned long, max_util, READ_ONCE(rq->ucla=
+mp[UCLAMP_MAX].value));
+> >
+> > Is it necessary to use max_t here? although it is not the main problem.=
+..
+> >
+>
+> I got comparison warnings when using a regular max() - the RQ clamp value=
+s
+> are unsigned int, whereas the local variable is unsigned long.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Reviewed-by: Liang Liang (Leo) <liang.liang@amd.com>
-Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
----
- drivers/spi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes=EF=BC=8CI miss the rq clamp value's type.
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index e71a4c514f7b..532387929085 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -978,7 +978,7 @@ config SPI_ZYNQMP_GQSPI
- 
- config SPI_AMD
- 	tristate "AMD SPI controller"
--	depends on SPI_MASTER || COMPILE_TEST
-+	depends on (SPI_MASTER && ACPI) || COMPILE_TEST
- 	help
- 	  Enables SPI controller driver for AMD SoC.
- 
--- 
-2.25.1
-
+Thanks!
+xuewen
