@@ -2,132 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117643B7DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE173B7DFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhF3HXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:23:23 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4744 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232785AbhF3HXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:23:22 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15U72h5B048508;
-        Wed, 30 Jun 2021 03:20:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=973EgiF50mXgJhpr6evy6DSCnIvYAM1+Him4gsa37N0=;
- b=DYHls9J7VDS4TuDrPst0cZROzjEDEmQlt3LyuBLnAjWFbtzsPxmjP5RFyhsnpnKltizH
- HVShX7HG6dzrBOOn0TzACr+etLXVmda5PWLPr7VPfd+0hl70d6lYIg5XdsIrWYdCDmWS
- Pfd8moMG5YTwu8sjyfR8hAgwO7ggsY3YcfNLFR67vXH2Ii7mNvaV2tV0ehnWhVVuwaTM
- it0yOvrQ26jFGJmlAzUJYes7u8dXAJ8gQsvD+OuEanYoQ+1gLXiGZkOm1AC1gGrxhji1
- +Jr1owPew/GdB+rQZzguLWtQg/GBM7FlEZ3/2IHVnlvkTD70qkZhTaHzfHMNrJFzZF8R gQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39gk5d1jup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 03:20:30 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15U7Cd5D024447;
-        Wed, 30 Jun 2021 07:20:28 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 39duv8hmm3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 07:20:28 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15U7KQg420775172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Jun 2021 07:20:26 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00AA5A4092;
-        Wed, 30 Jun 2021 07:20:25 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2F7FA40A1;
-        Wed, 30 Jun 2021 07:20:23 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.56.105])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 30 Jun 2021 07:20:23 +0000 (GMT)
-Date:   Wed, 30 Jun 2021 10:20:21 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-omap@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: [PATCH v2 3/3] arm: extend pfn_valid to take into accound freed
- memory map alignment
-Message-ID: <YNwbNX7oyosZAuEJ@linux.ibm.com>
-References: <20210519141436.11961-1-rppt@kernel.org>
- <20210519141436.11961-4-rppt@kernel.org>
- <YNmiW6CYzy9lG8ks@atomide.com>
- <YNnLxFM4ZeQ5epX3@linux.ibm.com>
- <YNnqIv3PApHFZMgp@atomide.com>
- <YNqwl8EPVYZJV0EF@linux.ibm.com>
- <YNrfqtBpKsNj033w@atomide.com>
- <YNr6+wOiR7/Yx9M1@linux.ibm.com>
- <YNsJh7trg4up5l26@atomide.com>
- <YNsXDEgreCpshZxb@linux.ibm.com>
+        id S232905AbhF3HYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:24:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232816AbhF3HX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 03:23:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B197561CC9;
+        Wed, 30 Jun 2021 07:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625037690;
+        bh=FN/meNLvDmOu6pyfurfTWAQRf673LlfAXWSqmwocKnw=;
+        h=Date:From:To:cc:Subject:From;
+        b=pXtBfVWKz6oWQNQv5un1lO3KPe7+0rMshcDnLiQFqI3oyTm6C4Nb1ZseP+lHII74F
+         0QzaqK2CHK2MNmU6lxiySZKJKvhjUtTQM1gSwuLVQcwb+4JWil43Ap8D5jWgvbuusX
+         76+b4G64RyWZat6jZMu5TsGlSQwT5b4/VjFl/nTdLC0kfuIC0mjfskI1Z8QRZ93lnv
+         Ib+UPKpjFg/A7AwEVZ/w+YqVyH8Q94Q9Oyu3klxSEzk/ao0Oww6R2ke3C9LA6RRSzN
+         kOF6qS0QqrUwGM7Nnq5D6TyerrGVHsFkUWwiAuqMPFdCcfz0EAysxV4FJ2AHyg3+Ox
+         iHmjDV83YgPog==
+Date:   Wed, 30 Jun 2021 09:21:27 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [GIT PULL] HID for 5.14
+Message-ID: <nycvar.YFH.7.76.2106300918230.18969@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNsXDEgreCpshZxb@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rvs5R5nyoEt68OsbalfVyq0zwKsMmEvN
-X-Proofpoint-GUID: rvs5R5nyoEt68OsbalfVyq0zwKsMmEvN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-30_01:2021-06-29,2021-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 phishscore=0 clxscore=1015 bulkscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 adultscore=0 mlxlogscore=487
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106300045
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 03:50:23PM +0300, Mike Rapoport wrote:
-> On Tue, Jun 29, 2021 at 02:52:39PM +0300, Tony Lindgren wrote:
-> > * Mike Rapoport <rppt@linux.ibm.com> [210629 10:51]:
-> > > As it seems, the new version of pfn_valid() decides that last pages are not
-> > > valid because of the overflow in memblock_overlaps_region(). As the result,
-> > > __sync_icache_dcache() skips flushing these pages.
-> > > 
-> > > The patch below should fix this. I've left the prints for now, hopefully
-> > > they will not appear anymore. 
-> > 
-> > Yes this allows the system to boot for me :)
-> > 
-> > I'm still seeing these three prints though:
-> > 
-> > ...
-> > smp: Brought up 1 node, 2 CPUs
-> > SMP: Total of 2 processors activated (3994.41 BogoMIPS).
-> > CPU: All CPU(s) started in SVC mode.
-> > pfn_valid(__pageblock_pfn_to_page+0x14/0xa8): pfn: afe00: is_map: 0 overlaps: 1
-> > pfn_valid(__pageblock_pfn_to_page+0x28/0xa8): pfn: affff: is_map: 0 overlaps: 1
-> > pfn_valid(__pageblock_pfn_to_page+0x38/0xa8): pfn: afe00: is_map: 0 overlaps: 1
-> 
-> These pfns do have memory map despite they are stolen in
-> arm_memblock_steal():
-> 
-> memblock_free: [0xaff00000-0xafffffff] arm_memblock_steal+0x50/0x70
-> memblock_remove: [0xaff00000-0xafffffff] arm_memblock_steal+0x5c/0x70
-> ...
-> memblock_free: [0xafe00000-0xafefffff] arm_memblock_steal+0x50/0x70
-> memblock_remove: [0xafe00000-0xafefffff] arm_memblock_steal+0x5c/0x70
-> 
-> But the struct pages there are never initialized.
+Linus,
 
-Actually, with FLATMEM these struct pages will be always set to 0 because
-we don't do memory map poisoning with FLATMEM.
+please pull from
 
-I could not find a case where zeroed struct page would cause real trouble,
-so I'd say it is more theoretical issue and it can be addressed unrelated
-to these changes.
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+
+to receive HID subsystem changes queued for 5.14 merge window. Highlights:
+
+=====
+- patch series that ensures that hid-multitouch driver disables touch 
+  and button-press reporting on hid-mt devices during suspend when the 
+  device is not configured as a wakeup-source, from Hans de Goede
+- support for ISH DMA on Intel EHL platform, from Even Xu
+- support for Renoir and Cezanne SoCs, Ambient Light Sensor and Human 
+  Presence Detection sensor for amd-sfh driver, from Basavaraj Natikar
+- other assorted code cleanups and device-specific fixes/quirks
+=====
+
+Thanks.
+
+----------------------------------------------------------------
+Ahelenia Ziemiañska (1):
+      HID: input: replace outdated HID numbers+comments with macros
+
+Austin Kim (1):
+      HID: intel-ish-hid: Fix minor typos in comments
+
+Basavaraj Natikar (4):
+      HID: amd_sfh: change in maintainer
+      HID: amd_sfh: Extend driver capabilities for multi-generation support
+      HID: amd_sfh: Extend ALS support for newer AMD platform
+      HID: amd_sfh: Add initial support for HPD sensor
+
+Dmitry Torokhov (1):
+      HID: do not use down_interruptible() when unbinding devices
+
+Even Xu (3):
+      HID: intel-ish-hid: Set ISH driver depends on x86
+      HID: intel-ish-hid: ishtp: Add dma_no_cache_snooping() callback
+      HID: intel-ish-hid: ipc: Specify that EHL no cache snooping
+
+Hans de Goede (11):
+      HID: logitech-dj/hidpp: Add info/warn/err messages about 27 MHz keyboard encryption
+      HID: lg-g15: Remove unused size argument from lg_*_event() functions
+      HID: lg-g15: Add a lg_g15_handle_lcd_menu_keys() helper function
+      HID: lg-g15: Add a lg_g15_init_input_dev() helper function
+      HID: lg-g15: Make the LED-name used by lg_g15_register_led() a parameter
+      HID: lg-g15: Add support for the Logitech Z-10 speakers
+      HID: lg-g15 + ite: Add MODULE_AUTHOR
+      HID: core: Add hid_hw_may_wakeup() function
+      HID: usbhid: Implement may_wakeup ll-driver callback
+      HID: logitech-dj: Implement may_wakeup ll-driver callback
+      HID: multitouch: Disable event reporting on suspend when the device is not a wakeup-source
+
+Hyeonggon Yoo (2):
+      HID: usbmouse: Avoid GFP_ATOMIC when GFP_KERNEL is possible
+      HID: usbkbd: Avoid GFP_ATOMIC when GFP_KERNEL is possible
+
+Ikjoon Jang (1):
+      HID: google: Add of_match table to Whiskers switch device.
+
+Jason Gerecke (1):
+      HID: wacom: Correct base usage for capacitive ExpressKey status bits
+
+Lee Jones (11):
+      HID: intel-ish-hid: Remove unused variable 'err'
+      HID: ishtp-hid-client: Move variable to where it's actually used
+      HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
+      HID: intel-ish: Supply some missing param descriptions
+      HID: intel-ish: Fix a naming disparity and a formatting error
+      HID: intel-ish-hid: Fix a little doc-rot
+      HID: intel-ish-hid: Fix potential copy/paste error
+      HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in header
+      HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
+      HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
+      HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
+
+Maximilian Luz (1):
+      HID: surface-hid: Fix get-report request
+
+Pascal Giard (1):
+      HID: sony: fix freeze when inserting ghlive ps3/wii dongles
+
+Thomas Weißschuh (1):
+      HID: input: Add support for Programmable Buttons
+
+Uwe Kleine-König (3):
+      HID: intel-ish-hid: Drop if block with an always false condition
+      HID: intel-ish-hid: Simplify logic in ishtp_cl_device_remove()
+      HID: intel-ish-hid: Make remove callback return void
+
+Yang Yingliang (1):
+      HID: thrustmaster: Switch to kmemdup() when allocate change_request
+
+Ye Xiang (1):
+      HID: intel_ish-hid: HBM: Use connected standby state bit during suspend/resume
+
+Zoltan Tamas Vajda (1):
+      HID: hid-input: add Surface Go battery quirk
+
+ MAINTAINERS                                        |   2 +-
+ drivers/hid/amd-sfh-hid/amd_sfh_client.c           |  43 +++----
+ drivers/hid/amd-sfh-hid/amd_sfh_hid.h              |  12 +-
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             |  89 ++++++++++++-
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.h             |  43 +++++++
+ .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.c  |  48 ++++++-
+ .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h  |  11 +-
+ .../hid_descriptor/amd_sfh_hid_report_desc.h       | 112 ++++++++++++++++
+ drivers/hid/hid-core.c                             |  10 +-
+ drivers/hid/hid-debug.c                            |  11 ++
+ drivers/hid/hid-google-hammer.c                    |  10 ++
+ drivers/hid/hid-ids.h                              |   2 +
+ drivers/hid/hid-input.c                            |  30 ++++-
+ drivers/hid/hid-ite.c                              |   1 +
+ drivers/hid/hid-lg-g15.c                           | 141 ++++++++++++++-------
+ drivers/hid/hid-logitech-dj.c                      |  16 +++
+ drivers/hid/hid-logitech-hidpp.c                   |  12 ++
+ drivers/hid/hid-multitouch.c                       |   3 +-
+ drivers/hid/hid-sony.c                             |  98 +++++++-------
+ drivers/hid/hid-thrustmaster.c                     |   5 +-
+ drivers/hid/intel-ish-hid/Kconfig                  |   1 +
+ drivers/hid/intel-ish-hid/ipc/ipc.c                |  28 +++-
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c            |   3 +-
+ drivers/hid/intel-ish-hid/ishtp-fw-loader.c        |  51 ++++----
+ drivers/hid/intel-ish-hid/ishtp-hid-client.c       |  15 ++-
+ drivers/hid/intel-ish-hid/ishtp-hid.c              |   2 +-
+ drivers/hid/intel-ish-hid/ishtp-hid.h              |   9 +-
+ drivers/hid/intel-ish-hid/ishtp/bus.c              |  24 ++--
+ drivers/hid/intel-ish-hid/ishtp/client.c           |  23 +++-
+ drivers/hid/intel-ish-hid/ishtp/hbm.c              |  10 +-
+ drivers/hid/intel-ish-hid/ishtp/hbm.h              |   1 +
+ drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h        |   5 +-
+ drivers/hid/surface-hid/surface_hid.c              |   2 +-
+ drivers/hid/usbhid/hid-core.c                      |   8 ++
+ drivers/hid/usbhid/usbkbd.c                        |   4 +-
+ drivers/hid/usbhid/usbmouse.c                      |   2 +-
+ drivers/hid/wacom_wac.h                            |   2 +-
+ drivers/platform/chrome/cros_ec_ishtp.c            |   4 +-
+ include/linux/hid.h                                |  19 +++
+ include/linux/intel-ish-client-if.h                |  10 +-
+ 40 files changed, 703 insertions(+), 219 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+Jiri Kosina
+SUSE Labs
+
