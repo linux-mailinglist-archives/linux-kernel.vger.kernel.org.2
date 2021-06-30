@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9689C3B84C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F5B3B84CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhF3OOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:14:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:39244 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234851AbhF3ONz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:13:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EAABED1;
-        Wed, 30 Jun 2021 07:11:26 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AFFF3F718;
-        Wed, 30 Jun 2021 07:11:24 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 15:11:22 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH] sched/uclamp: Fix getting unreasonable ucalmp_max when
- rq is idle
-Message-ID: <20210630141122.h5tktnx6kdnlmd32@e107158-lin.cambridge.arm.com>
-References: <20210618072349.503-1-xuewen.yan94@gmail.com>
- <87fsx093vm.mognet@arm.com>
- <CAB8ipk9TMTbw2WGrbLuewk_CaYxrvMOp2Ui5xiHiwYB4NmoRhA@mail.gmail.com>
+        id S235143AbhF3OPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:15:40 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:38158 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234851AbhF3OPh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:15:37 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UECm2J019682;
+        Wed, 30 Jun 2021 16:12:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=IFFSjjhuK7hpbYhX8q4QMoe7AicReb+FwH97hXJauXY=;
+ b=5q9nIbf7K4NP9X0nPNTUy8gm9GojwkOIMUSoH4buiTX3zc9a/8zbS8z/NjQca4TnRme+
+ Ox8H5LW+L4z9+p/gCuKotG7vcQJpc47kspPvDjQ1KjrLCVlouFQzgIp/zPQBd2QEB3V4
+ +vBMiVVHaN+dD6B2on/LSEDuEQISD1w0cpILzBU2vLiP9kryF6LT5Uhzm0FZblfkNS+J
+ Yf8WqZE/jdXgXXhWvArbnesp8rwmTY4FiPrzgY4xHOA6rOfyJNezwR1d4JNMFwIMbx5W
+ 0U3A5KjNNWkun1Ye7fUMILYw+rBe+sFzz+5mdUqPx8w6/FDUINvosySikfHGfkP78gBU pQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39gnbpjpf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 16:12:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B637010003A;
+        Wed, 30 Jun 2021 16:12:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A30DB23151C;
+        Wed, 30 Jun 2021 16:12:56 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun 2021 16:12:56
+ +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <wsa@kernel.org>, <pierre-yves.mordret@foss.st.com>
+CC:     <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <amelie.delaunay@foss.st.com>, <alain.volmat@foss.st.com>
+Subject: [PATCH 0/3] i2c: stm32f7: several fixes in error cases
+Date:   Wed, 30 Jun 2021 16:11:40 +0200
+Message-ID: <1625062303-15327-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB8ipk9TMTbw2WGrbLuewk_CaYxrvMOp2Ui5xiHiwYB4NmoRhA@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-30_06:2021-06-29,2021-06-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the CC.
+This serie provides several fixes needed for cases when communication
+when a device is not behaving properly.
 
-On 06/30/21 09:24, Xuewen Yan wrote:
-> On Tue, Jun 29, 2021 at 9:50 PM Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
-> >
-> >
-> > +Cc Patrick's current address
-> >
-> > On 18/06/21 15:23, Xuewen Yan wrote:
-> > > From: Xuewen Yan <xuewen.yan@unisoc.com>
-> > >
-> > > Now in uclamp_rq_util_with(), when the task != NULL, the uclamp_max as following:
-> > > uc_rq_max = rq->uclamp[UCLAMP_MAX].value;
-> > > uc_eff_max = uclamp_eff_value(p, UCLAMP_MAX);
-> > > uclamp_max = max{uc_rq_max, uc_eff_max};
-> > >
-> > > Consider the following scenario:
-> > > (1)the rq is idle, the uc_rq_max is last task's UCLAMP_MAX;
-> > > (2)the p's uc_eff_max < uc_rq_max.
-> > >
-> > > The result is the uclamp_max = uc_rq_max instead of uc_eff_max, it is unreasonable.
-> > >
-> > > The scenario often happens in find_energy_efficient_cpu(), when the task has smaller UCLAMP_MAX.
-> > >
-> > > Inserts whether the rq is idle in the uclamp_rq_util_with().
-> > >
-> > > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > > ---
-> > >  kernel/sched/sched.h | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > > index a189bec13729..0feef6af89f2 100644
-> > > --- a/kernel/sched/sched.h
-> > > +++ b/kernel/sched/sched.h
-> > > @@ -2550,7 +2550,10 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
-> > >
-> > >       if (p) {
-> > >               min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
-> > > -             max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
-> > > +             if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> > > +                     max_util = uclamp_eff_value(p, UCLAMP_MAX);
-> > > +             else
-> > > +                     max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
-> >
-> > That makes sense to me - enqueuing the task will lift UCLAMP_FLAG_IDLE and
-> > set the rq clamp as the task's via uclamp_idle_reset().
-> >
-> > Does this want a
-> >
-> >   Fixes: 9d20ad7dfc9a ("sched/uclamp: Add uclamp_util_with()")
-> >
-> > ?
-> 
-> Yes，add it.
+Alain Volmat (3):
+  i2c: stm32f7: recover the bus on access timeout
+  i2c: stm32f7: flush TX FIFO upon transfer errors
+  i2c: stm32f7: prevent calling slave handling if no slave running
 
-+1
+ drivers/i2c/busses/i2c-stm32f7.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-> 
-> >
-> > Also, when we have UCLAMP_FLAG_IDLE, we don't even need to read the rq max
-> > - and I'm pretty sure the same applies to the rq min. What about something like:
+-- 
+2.25.1
 
-uclamp_min is fine since it defaults to 0. But the suggested improvement looks
-good to me.
-
-Thanks
-
---
-Qais Yousef
