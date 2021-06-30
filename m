@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062593B7DBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED37C3B7DC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhF3G7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:59:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56317 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhF3G7S (ORCPT
+        id S232746AbhF3HAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:00:25 -0400
+Received: from mailout2.secunet.com ([62.96.220.49]:39740 "EHLO
+        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhF3HAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:59:18 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lyU9P-0000bI-7v; Wed, 30 Jun 2021 06:56:47 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] staging: r8188eu: Fix while-loop that iterates only once
-Date:   Wed, 30 Jun 2021 07:56:47 +0100
-Message-Id: <20210630065647.5641-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 30 Jun 2021 03:00:24 -0400
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout2.secunet.com (Postfix) with ESMTP id 0B058800056;
+        Wed, 30 Jun 2021 08:57:54 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 08:57:53 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
+ 2021 08:57:53 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 26EA4318040F; Wed, 30 Jun 2021 08:57:53 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 08:57:53 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
+        <stable@vger.kernel.org>, Varad Gautam <varad.gautam@suse.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH] xfrm: Fix RCU vs hash_resize_mutex lock inversion
+Message-ID: <20210630065753.GU40979@gauss3.secunet.de>
+References: <20210628133428.5660-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210628133428.5660-1-frederic@kernel.org>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Jun 28, 2021 at 03:34:28PM +0200, Frederic Weisbecker wrote:
+> xfrm_bydst_resize() calls synchronize_rcu() while holding
+> hash_resize_mutex. But then on PREEMPT_RT configurations,
+> xfrm_policy_lookup_bytype() may acquire that mutex while running in an
+> RCU read side critical section. This results in a deadlock.
+> 
+> In fact the scope of hash_resize_mutex is way beyond the purpose of
+> xfrm_policy_lookup_bytype() to just fetch a coherent and stable policy
+> for a given destination/direction, along with other details.
+> 
+> The lower level net->xfrm.xfrm_policy_lock, which among other things
+> protects per destination/direction references to policy entries, is
+> enough to serialize and benefit from priority inheritance against the
+> write side. As a bonus, it makes it officially a per network namespace
+> synchronization business where a policy table resize on namespace A
+> shouldn't block a policy lookup on namespace B.
+> 
+> Fixes: 77cc278f7b20 (xfrm: policy: Use sequence counters with associated lock)
+> Cc: stable@vger.kernel.org
+> Cc: Ahmed S. Darwish <a.darwish@linutronix.de>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Varad Gautam <varad.gautam@suse.com>
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-The while-loop only iterates once becase the post increment test of count
-being non-zero is false on the first iteration because count is zero. Fix
-this by using a for-loop instead. Static analysis found the issue on the
-count > POLLING_LLT_THRESHOLD check always being false since the loop
-currently just iterates once.
+Your patch has a conflicht with ("commit d7b0408934c7 xfrm: policy: Read
+seqcount outside of rcu-read side in xfrm_policy_lookup_bytype")
+from Varad. Can you please rebase onto the ipsec tree?
 
-Thanks to David Laight for suggesting using for-loop instead to improve
-the readability of the fix.
+Btw. Varad, your above mentioned patch tried to fix the same issue.
+Do we still need it, or is it obsolete with the fix from Frederic?
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
-V2: use for-loop instead of change count increment to pre-increment.
----
- drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-index d1086699f952..1c6365832247 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
-@@ -168,14 +168,14 @@ void rtw_hal_notch_filter(struct adapter *adapter, bool enable)
- static s32 _LLTWrite(struct adapter *padapter, u32 address, u32 data)
- {
- 	s32	status = _SUCCESS;
--	s32	count = 0;
-+	s32	count;
- 	u32	value = _LLT_INIT_ADDR(address) | _LLT_INIT_DATA(data) | _LLT_OP(_LLT_WRITE_ACCESS);
- 	u16	LLTReg = REG_LLT_INIT;
- 
- 	usb_write32(padapter, LLTReg, value);
- 
- 	/* polling */
--	do {
-+	for (count = 0; ; count++) {
- 		value = usb_read32(padapter, LLTReg);
- 		if (_LLT_OP_VALUE(value) == _LLT_NO_ACTIVE)
- 			break;
-@@ -185,7 +185,7 @@ static s32 _LLTWrite(struct adapter *padapter, u32 address, u32 data)
- 			break;
- 		}
- 		udelay(5);
--	} while (count++);
-+	}
- 
- 	return status;
- }
--- 
-2.31.1
-
+Thanks!
