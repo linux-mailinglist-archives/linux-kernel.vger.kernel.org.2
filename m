@@ -2,115 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60203B8597
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B73E3B85A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbhF3PBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:01:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:40286 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235177AbhF3PBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:01:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 480FB1FB;
-        Wed, 30 Jun 2021 07:58:52 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B37F73F718;
-        Wed, 30 Jun 2021 07:58:50 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 15:58:48 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
-Message-ID: <20210630145848.htb7pnwsl2gao77x@e107158-lin.cambridge.arm.com>
-References: <20210623123441.592348-1-qperret@google.com>
- <20210623123441.592348-2-qperret@google.com>
+        id S235675AbhF3PDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235405AbhF3PDB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 11:03:01 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D2DC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:00:32 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id b2so3355023oiy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FXVON6UbQqGkLPMTAZ705DncSqnWs/KJ6hi9B+B7iEA=;
+        b=BCdSFyncUkYSn+RAF0inhWzw5hfvKsy7Rq0z3ymrOlxDRQcfr0eDprK5y8SLjpDKTm
+         SRNifrQOzs0HIIabCQg6Uld3ud2rzdrF6rs/u/QTvpZ6d1SOSdtTImxeFRNaQbrAL304
+         /TPfgoI1jGhhFWsc/9Od8Tc6jwnSSPaaqStGNwu6NLJ4XaQTwMgOBBQCZDaqKuc8Gkd0
+         hf4nJ6EjpqNMeWsAD/wC37LRvfzg4cJojOtHhw3cJEEemY6LwA6/TSpkBPmxZe72YAS2
+         f4ZYRL5ugiq6BiktJzU1CkeKHExwHjo+6XuCwmjU/m7eZdysVWtvbedIV9GtSUx68NAH
+         MD5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FXVON6UbQqGkLPMTAZ705DncSqnWs/KJ6hi9B+B7iEA=;
+        b=CGTnQw+nAO3UMmfKExloUmlmX8uWn4CKGSsuJTY2Rc7pkrW4mb3Ohir/OqpCsMVlJn
+         yzapOpqxA4rGL2bRi7915YZ7WccgWzyTc9eNuDq6MMr8r8k0emg3mlov0NplySaHRJRi
+         C9drTSrkcS0gHOaaZu7Pvglq7SZir9MGmmAth3Zl1zDnn0+S5ef6Gv3woMVxGI3DtCr6
+         n41ih4uv59k0dWhrcWI3OAe5eUlXNIumSjQqyr2oP0WL1mUwfVcyFZL4U/gnrSLoDCBM
+         a+bVO/YQmSQnDMoFPJ7UsxdJ/F2hjFxjk9ov54RpEdp0Uo6lfaak34azjCoHKg/Erv/e
+         9nmw==
+X-Gm-Message-State: AOAM532RRyq92AALyJ5klH7x+KvV7+Cbel7DpHNKW4PSKfkeKa6sZZXN
+        9pjULrJ/TdRQv+p3ugBn3/sB6w==
+X-Google-Smtp-Source: ABdhPJzNKiXR125pZK+K/v/cxzouxQWFjeB5S15bysaD6y142DEGtsFzzZ9qxyZhOhDXKOlq9AZcEw==
+X-Received: by 2002:aca:ad52:: with SMTP id w79mr12866589oie.86.1625065231559;
+        Wed, 30 Jun 2021 08:00:31 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 5sm4494248oot.29.2021.06.30.08.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 08:00:30 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 10:00:28 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
+Message-ID: <YNyHDAHk6ad/XCGl@yoga>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-4-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210623123441.592348-2-qperret@google.com>
+In-Reply-To: <20210630133149.3204290-4-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin
+On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
 
-On 06/23/21 12:34, Quentin Perret wrote:
-> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
-> active task to maintain the last uclamp.max and prevent blocked util
-> from suddenly becoming visible.
+> On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> domain. Currently we used a regulator to enable this domain on demand,
+> however this has some consequences, as genpd code is not reentrant.
 > 
-> However, there is an asymmetry in how the flag is set and cleared which
-> can lead to having the flag set whilst there are active tasks on the rq.
-> Specifically, the flag is cleared in the uclamp_rq_inc() path, which is
-> called at enqueue time, but set in uclamp_rq_dec_id() which is called
-> both when dequeueing a task _and_ in the update_uclamp_active() path. As
-> a result, when both uclamp_rq_{dec,ind}_id() are called from
-> update_uclamp_active(), the flag ends up being set but not cleared,
-> hence leaving the runqueue in a broken state.
+> Teach Qualcomm clock controller code about setting up power domains and
+> using them for gdsc control.
 > 
-> Fix this by clearing the flag in uclamp_idle_reset() which is also
-> called in both paths to ensure things remain symmetrical.
-> 
-> Fixes: e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
-> Reported-by: Rick Yiu <rickyiu@google.com>
-> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-> Signed-off-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+There's a proposal to add a generic binding for statically assigning a
+performance states here:
+
+https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
+
+
+But that said, do you really need this?
+
+The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
+SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
+to 460MHz in &mdss.
+
+But then in &mdss_mdp you do the same using an opp-table based on the
+actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
+
+
+So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
+MMCX and then use opp-tables associated with the devices that scales the
+clock and thereby actually carries the "required-opps".
+
+
+I presume your testing indicates that it doesn't matter on sm8250, but
+as stated above, 460MHz on sm8150/sc8180x requires nominal, so per your
+suggestion we'd have to vote nominal in &mdss, which means that if the
+DPU decides to go to 200MHz the &mdss will still keep the voltage at
+NOM, even though the DPU's opp-table says that LOW_SVS is sufficient.
+
+Regards,
+Bjorn
+
 > ---
->  kernel/sched/core.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  drivers/clk/qcom/common.c | 55 ++++++++++++++++++++++++++++++++++-----
+>  drivers/clk/qcom/gdsc.c   |  6 +++++
+>  2 files changed, 55 insertions(+), 6 deletions(-)
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 4ca80df205ce..e514a093a0ba 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -980,6 +980,7 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
->  	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
->  		return;
+> diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> index 60d2a78d1395..eeb5b8c93032 100644
+> --- a/drivers/clk/qcom/common.c
+> +++ b/drivers/clk/qcom/common.c
+> @@ -10,6 +10,8 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/reset-controller.h>
+>  #include <linux/of.h>
+> +#include <linux/pm_opp.h>
+> +#include <linux/pm_runtime.h>
 >  
-> +	rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-
-I just realized this needs
-
-	if (clamp_id == UCLAMP_MAX)
-		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-
-The code is only set for UCLAMP_MAX, so should be cleared for UCLAMP_MAX too.
-
-Though there's ugly overload here:
-
-	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
-		return;
-
-This check would fail prematurely if UCLAMP_MAX was reset before UCLAMP_MIN.
-The code before your change would reset both then do the clear. But now when we
-do it from here, we need to be more careful about that.
-
-Not sure what we can do beside adding a comment. The options I'm thinking about
-are too intrusive FWIW.
-
-Cheers
-
---
-Qais Yousef
-
->  	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+>  #include "common.h"
+>  #include "clk-rcg.h"
+> @@ -76,6 +78,16 @@ qcom_cc_map(struct platform_device *pdev, const struct qcom_cc_desc *desc)
+>  	struct resource *res;
+>  	struct device *dev = &pdev->dev;
+>  
+> +	if (of_find_property(dev->of_node, "required-opps", NULL)) {
+> +		int pd_opp;
+> +
+> +		pd_opp = of_get_required_opp_performance_state(dev->of_node, 0);
+> +		if (pd_opp < 0)
+> +			return ERR_PTR(pd_opp);
+> +
+> +		dev_pm_genpd_set_performance_state(dev, pd_opp);
+> +	}
+> +
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	base = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(base))
+> @@ -224,6 +236,11 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+>  	return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
 >  }
 >  
-> @@ -1252,10 +1253,6 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+> +static void qcom_cc_pm_runtime_disable(void *data)
+> +{
+> +	pm_runtime_disable(data);
+> +}
+> +
+>  int qcom_cc_really_probe(struct platform_device *pdev,
+>  			 const struct qcom_cc_desc *desc, struct regmap *regmap)
+>  {
+> @@ -236,11 +253,28 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  	struct clk_regmap **rclks = desc->clks;
+>  	size_t num_clk_hws = desc->num_clk_hws;
+>  	struct clk_hw **clk_hws = desc->clk_hws;
+> +	bool use_pm = false;
 >  
->  	for_each_clamp_id(clamp_id)
->  		uclamp_rq_inc_id(rq, p, clamp_id);
-> -
-> -	/* Reset clamp idle holding when there is one RUNNABLE task */
-> -	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-> -		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+>  	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+>  	if (!cc)
+>  		return -ENOMEM;
+>  
+> +	if (of_find_property(dev->of_node, "required-opps", NULL)) {
+> +		use_pm = true;
+> +
+> +		pm_runtime_enable(dev);
+> +		ret = pm_runtime_get_sync(dev);
+> +		if (ret < 0) {
+> +			pm_runtime_put(dev);
+> +			pm_runtime_disable(dev);
+> +			return ret;
+> +		}
+> +
+> +		ret = devm_add_action_or_reset(dev, qcom_cc_pm_runtime_disable, dev);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	reset = &cc->reset;
+>  	reset->rcdev.of_node = dev->of_node;
+>  	reset->rcdev.ops = &qcom_reset_ops;
+> @@ -251,7 +285,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  
+>  	ret = devm_reset_controller_register(dev, &reset->rcdev);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+>  
+>  	if (desc->gdscs && desc->num_gdscs) {
+>  		scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
+> @@ -262,11 +296,11 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  		scd->num = desc->num_gdscs;
+>  		ret = gdsc_register(scd, &reset->rcdev, regmap);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  		ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
+>  					       scd);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	cc->rclks = rclks;
+> @@ -277,7 +311,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  	for (i = 0; i < num_clk_hws; i++) {
+>  		ret = devm_clk_hw_register(dev, clk_hws[i]);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	for (i = 0; i < num_clks; i++) {
+> @@ -286,14 +320,23 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  
+>  		ret = devm_clk_register_regmap(dev, rclks[i]);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+> +
+> +	if (use_pm)
+> +		pm_runtime_put(dev);
+>  
+>  	return 0;
+> +
+> +err:
+> +	if (use_pm)
+> +		pm_runtime_put(dev);
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+>  
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index 51ed640e527b..40c384bda4fc 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/ktime.h>
+>  #include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset-controller.h>
+> @@ -237,6 +238,8 @@ static int gdsc_enable(struct generic_pm_domain *domain)
+>  	struct gdsc *sc = domain_to_gdsc(domain);
+>  	int ret;
+>  
+> +	pm_runtime_get_sync(domain->dev.parent);
+> +
+>  	if (sc->pwrsts == PWRSTS_ON)
+>  		return gdsc_deassert_reset(sc);
+>  
+> @@ -326,6 +329,8 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+>  	if (sc->flags & CLAMP_IO)
+>  		gdsc_assert_clamp_io(sc);
+>  
+> +	pm_runtime_put(domain->dev.parent);
+> +
+>  	return 0;
 >  }
 >  
->  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+> @@ -427,6 +432,7 @@ int gdsc_register(struct gdsc_desc *desc,
+>  			continue;
+>  		scs[i]->regmap = regmap;
+>  		scs[i]->rcdev = rcdev;
+> +		scs[i]->pd.dev.parent = desc->dev;
+>  		ret = gdsc_init(scs[i]);
+>  		if (ret)
+>  			return ret;
 > -- 
-> 2.32.0.288.g62a8d224e6-goog
+> 2.30.2
 > 
