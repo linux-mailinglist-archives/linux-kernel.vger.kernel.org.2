@@ -2,150 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7D63B85CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BF73B85D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235716AbhF3PMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:12:09 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3336 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhF3PMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:12:08 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GFPcv70JTz6K9HN;
-        Wed, 30 Jun 2021 22:59:11 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 17:09:37 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Wed, 30 Jun 2021 17:09:37 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>
-CC:     "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "prsriva02@gmail.com" <prsriva02@gmail.com>,
-        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: RE: [PATCH 3/3] ima: Add digest parameter to the functions to measure
- a buffer
-Thread-Topic: [PATCH 3/3] ima: Add digest parameter to the functions to
- measure a buffer
-Thread-Index: AQHXbbqSPTqY0Ld1JU6eOssEbBfEiqssgzQAgAAkqvA=
-Date:   Wed, 30 Jun 2021 15:09:36 +0000
-Message-ID: <9d374fab15c8451f8e1ab024412de937@huawei.com>
-References: <20210630141635.2862222-1-roberto.sassu@huawei.com>
- <20210630141635.2862222-4-roberto.sassu@huawei.com>
- <e34639b4-145a-05a0-5ab4-ea51f9093e90@linux.microsoft.com>
-In-Reply-To: <e34639b4-145a-05a0-5ab4-ea51f9093e90@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235749AbhF3PMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:12:55 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:45218 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235488AbhF3PMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 11:12:54 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 55B84C80086;
+        Wed, 30 Jun 2021 17:10:24 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id PR1NKElp0h6k; Wed, 30 Jun 2021 17:10:24 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300e37F394900095779a208783f8e.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:957:79a2:878:3f8e])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 3A283C80068;
+        Wed, 30 Jun 2021 17:10:23 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        emil.l.velikov@gmail.com
+Subject: [PATCH v5 00/17] New uAPI drm properties for color management
+Date:   Wed, 30 Jun 2021 17:10:01 +0200
+Message-Id: <20210630151018.330354-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBMYWtzaG1pIFJhbWFzdWJyYW1hbmlhbiBbbWFpbHRvOm5yYW1hc0BsaW51eC5taWNy
-b3NvZnQuY29tXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bmUgMzAsIDIwMjEgNDo1NiBQTQ0KPiBP
-biA2LzMwLzIwMjEgNzoxNiBBTSwgUm9iZXJ0byBTYXNzdSB3cm90ZToNCj4gDQo+IEhpIFJvYmVy
-dG8sDQo+IA0KPiA+IFRoaXMgcGF0Y2ggYWRkcyB0aGUgJ2RpZ2VzdCcgcGFyYW1ldGVyIHRvIGlt
-YV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoKSBhbmQNCj4gPiBwcm9jZXNzX2J1ZmZlcl9tZWFzdXJl
-bWVudCgpLCBzbyB0aGF0IGNhbGxlcnMgY2FuIGdldCB0aGUgZGlnZXN0IG9mIHRoZQ0KPiA+IHBh
-c3NlZCBidWZmZXIuDQo+ID4NCj4gPiBUaGVzZSBmdW5jdGlvbnMgY2FsY3VsYXRlIHRoZSBkaWdl
-c3QgZXZlbiBpZiB0aGVyZSBpcyBubyBzdWl0YWJsZSBydWxlIGluDQo+ID4gdGhlIElNQSBwb2xp
-Y3kgYW5kLCBpbiB0aGlzIGNhc2UsIHRoZXkgc2ltcGx5IHJldHVybiAxIGJlZm9yZSBnZW5lcmF0
-aW5nIGENCj4gPiBuZXcgbWVhc3VyZW1lbnQgZW50cnkuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4g
-ICBpbmNsdWRlL2xpbnV4L2ltYS5oICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstLQ0K
-PiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWEuaCAgICAgICAgICAgICAgICAgfCAgMiAr
-LQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXBwcmFpc2UuYyAgICAgICAgfCAg
-MiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfYXN5bW1ldHJpY19rZXlzLmMg
-fCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfaW5pdC5jICAgICAgICAg
-ICAgfCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9pbWFfbWFpbi5jICAgICAg
-ICAgICAgfCAzMSArKysrKysrKysrKysrLS0tLS0tLQ0KPiA+ICAgc2VjdXJpdHkvaW50ZWdyaXR5
-L2ltYS9pbWFfcXVldWVfa2V5cy5jICAgICAgfCAgMiArLQ0KPiA+ICAgc2VjdXJpdHkvc2VsaW51
-eC9pbWEuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLS0NCj4gPiAgIDggZmlsZXMgY2hh
-bmdlZCwgMzAgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4NCj4gDQo+ID4NCj4g
-PiArCWlmIChkaWdlc3QpDQo+ID4gKwkJbWVtY3B5KGRpZ2VzdCwgaWludC5pbWFfaGFzaC0+ZGln
-ZXN0LA0KPiA+ICsJCSAgICAgICBoYXNoX2RpZ2VzdF9zaXplW2ltYV9oYXNoX2FsZ29dKTsNCj4g
-DQo+IEkgdGhpbmsgdGhlIGNhbGxlciBzaG91bGQgYWxzbyBwYXNzIHRoZSBzaXplIG9mIHRoZSBi
-dWZmZXIgYWxsb2NhdGVkIHRvDQo+IHJlY2VpdmUgdGhlIGNhbGN1bGF0ZWQgZGlnZXN0LiBBbmQs
-IGhlcmUgY29weSBvbmx5IHVwIHRvIHRoYXQgbWFueSBieXRlcw0KPiBzbyB3ZSBkb24ndCBhY2Np
-ZGVudGFsbHkgY2F1c2UgYnVmZmVyIG92ZXJydW4uDQoNCkhpIExha3NobWkNCg0KeWVzLCBJIGFn
-cmVlLiBJIHdpbGwgYWRkIGl0IGluIHRoZSBuZXh0IHZlcnNpb24gb2YgdGhlIHBhdGNoIHNldC4N
-Cg0KVGhhbmtzDQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBH
-bWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkg
-WWFubGkNCg0KPiAgIC1sYWtzaG1pDQo+IA0KPiA+ICsNCj4gPiArCWlmICghaW1hX3BvbGljeV9m
-bGFnIHx8IChmdW5jICYmICEoYWN0aW9uICYgSU1BX01FQVNVUkUpKSkNCj4gPiArCQlyZXR1cm4g
-MTsNCj4gPiArDQo+ID4gICAJcmV0ID0gaW1hX2FsbG9jX2luaXRfdGVtcGxhdGUoJmV2ZW50X2Rh
-dGEsICZlbnRyeSwgdGVtcGxhdGUpOw0KPiA+ICAgCWlmIChyZXQgPCAwKSB7DQo+ID4gICAJCWF1
-ZGl0X2NhdXNlID0gImFsbG9jX2VudHJ5IjsNCj4gPiBAQCAtOTY2LDcgKzk3NSw3IEBAIHZvaWQg
-aW1hX2tleGVjX2NtZGxpbmUoaW50IGtlcm5lbF9mZCwgY29uc3Qgdm9pZA0KPiAqYnVmLCBpbnQg
-c2l6ZSkNCj4gPiAgIAlyZXQgPSBwcm9jZXNzX2J1ZmZlcl9tZWFzdXJlbWVudChmaWxlX21udF91
-c2VyX25zKGYuZmlsZSksDQo+ID4gICAJCQkJCSBmaWxlX2lub2RlKGYuZmlsZSksIGJ1Ziwgc2l6
-ZSwNCj4gPiAgIAkJCQkJICJrZXhlYy1jbWRsaW5lIiwgS0VYRUNfQ01ETElORSwgMCwNCj4gPiAt
-CQkJCQkgTlVMTCwgZmFsc2UpOw0KPiA+ICsJCQkJCSBOVUxMLCBmYWxzZSwgTlVMTCk7DQo+ID4g
-ICAJZmRwdXQoZik7DQo+ID4gICB9DQo+ID4NCj4gPiBAQCAtOTc3LDI2ICs5ODYsMjggQEAgdm9p
-ZCBpbWFfa2V4ZWNfY21kbGluZShpbnQga2VybmVsX2ZkLCBjb25zdCB2b2lkDQo+ICpidWYsIGlu
-dCBzaXplKQ0KPiA+ICAgICogQGJ1ZjogcG9pbnRlciB0byBidWZmZXIgZGF0YQ0KPiA+ICAgICog
-QGJ1Zl9sZW46IGxlbmd0aCBvZiBidWZmZXIgZGF0YSAoaW4gYnl0ZXMpDQo+ID4gICAgKiBAaGFz
-aDogbWVhc3VyZSBidWZmZXIgZGF0YSBoYXNoDQo+ID4gKyAqIEBkaWdlc3Q6IGJ1ZmZlciBkaWdl
-c3Qgd2lsbCBiZSB3cml0dGVuIHRvDQo+ID4gICAgKg0KPiA+ICAgICogTWVhc3VyZSBkYXRhIGNy
-aXRpY2FsIHRvIHRoZSBpbnRlZ3JpdHkgb2YgdGhlIGtlcm5lbCBpbnRvIHRoZSBJTUEgbG9nDQo+
-ID4gICAgKiBhbmQgZXh0ZW5kIHRoZSBwY3IuICBFeGFtcGxlcyBvZiBjcml0aWNhbCBkYXRhIGNv
-dWxkIGJlIHZhcmlvdXMgZGF0YQ0KPiA+ICAgICogc3RydWN0dXJlcywgcG9saWNpZXMsIGFuZCBz
-dGF0ZXMgc3RvcmVkIGluIGtlcm5lbCBtZW1vcnkgdGhhdCBjYW4NCj4gPiAgICAqIGltcGFjdCB0
-aGUgaW50ZWdyaXR5IG9mIHRoZSBzeXN0ZW0uDQo+ID4gICAgKg0KPiA+IC0gKiBSZXR1cm5zIDAg
-aWYgdGhlIGJ1ZmZlciBoYXMgYmVlbiBzdWNjZXNzZnVsbHkgbWVhc3VyZWQsIGEgbmVnYXRpdmUg
-dmFsdWUNCj4gPiAtICogb3RoZXJ3aXNlLg0KPiA+ICsgKiBSZXR1cm5zIDAgaWYgdGhlIGJ1ZmZl
-ciBoYXMgYmVlbiBzdWNjZXNzZnVsbHkgbWVhc3VyZWQsIDEgaWYgdGhlIGRpZ2VzdA0KPiA+ICsg
-KiBoYXMgYmVlbiB3cml0dGVuIHRvIHRoZSBwYXNzZWQgbG9jYXRpb24gYnV0IG5vdCBhZGRlZCB0
-byBhIG1lYXN1cmVtZW50DQo+IGVudHJ5LA0KPiA+ICsgKiBhIG5lZ2F0aXZlIHZhbHVlIG90aGVy
-d2lzZS4NCj4gPiAgICAqLw0KPiA+ICAgaW50IGltYV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoY29u
-c3QgY2hhciAqZXZlbnRfbGFiZWwsDQo+ID4gICAJCQkgICAgICBjb25zdCBjaGFyICpldmVudF9u
-YW1lLA0KPiA+ICAgCQkJICAgICAgY29uc3Qgdm9pZCAqYnVmLCBzaXplX3QgYnVmX2xlbiwNCj4g
-PiAtCQkJICAgICAgYm9vbCBoYXNoKQ0KPiA+ICsJCQkgICAgICBib29sIGhhc2gsIHU4ICpkaWdl
-c3QpDQo+ID4gICB7DQo+ID4gICAJaWYgKCFldmVudF9uYW1lIHx8ICFldmVudF9sYWJlbCB8fCAh
-YnVmIHx8ICFidWZfbGVuKQ0KPiA+ICAgCQlyZXR1cm4gLUVOT1BBUkFNOw0KPiA+DQo+ID4gICAJ
-cmV0dXJuIHByb2Nlc3NfYnVmZmVyX21lYXN1cmVtZW50KCZpbml0X3VzZXJfbnMsIE5VTEwsIGJ1
-ZiwNCj4gYnVmX2xlbiwNCj4gPiAgIAkJCQkJICBldmVudF9uYW1lLCBDUklUSUNBTF9EQVRBLCAw
-LA0KPiA+IC0JCQkJCSAgZXZlbnRfbGFiZWwsIGhhc2gpOw0KPiA+ICsJCQkJCSAgZXZlbnRfbGFi
-ZWwsIGhhc2gsIGRpZ2VzdCk7DQo+ID4gICB9DQo+ID4NCj4gPiAgIHN0YXRpYyBpbnQgX19pbml0
-IGluaXRfaW1hKHZvaWQpDQo+ID4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEv
-aW1hX3F1ZXVlX2tleXMuYw0KPiBiL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tl
-eXMuYw0KPiA+IGluZGV4IGUzMDQ3Y2U2NGYzOS4uYWMwMGE0Nzc4YTkxIDEwMDY0NA0KPiA+IC0t
-LSBhL3NlY3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tleXMuYw0KPiA+ICsrKyBiL3Nl
-Y3VyaXR5L2ludGVncml0eS9pbWEvaW1hX3F1ZXVlX2tleXMuYw0KPiA+IEBAIC0xNjYsNyArMTY2
-LDcgQEAgdm9pZCBpbWFfcHJvY2Vzc19xdWV1ZWRfa2V5cyh2b2lkKQ0KPiA+ICAgCQkJCQkJCSBl
-bnRyeS0NCj4gPmtleXJpbmdfbmFtZSwNCj4gPiAgIAkJCQkJCQkgS0VZX0NIRUNLLCAwLA0KPiA+
-ICAgCQkJCQkJCSBlbnRyeS0NCj4gPmtleXJpbmdfbmFtZSwNCj4gPiAtCQkJCQkJCSBmYWxzZSk7
-DQo+ID4gKwkJCQkJCQkgZmFsc2UsIE5VTEwpOw0KPiA+ICAgCQlsaXN0X2RlbCgmZW50cnktPmxp
-c3QpOw0KPiA+ICAgCQlpbWFfZnJlZV9rZXlfZW50cnkoZW50cnkpOw0KPiA+ICAgCX0NCj4gPiBk
-aWZmIC0tZ2l0IGEvc2VjdXJpdHkvc2VsaW51eC9pbWEuYyBiL3NlY3VyaXR5L3NlbGludXgvaW1h
-LmMNCj4gPiBpbmRleCA0ZGI5ZmEyMTE2MzguLjk2YmQ3ZWFkODA4MSAxMDA2NDQNCj4gPiAtLS0g
-YS9zZWN1cml0eS9zZWxpbnV4L2ltYS5jDQo+ID4gKysrIGIvc2VjdXJpdHkvc2VsaW51eC9pbWEu
-Yw0KPiA+IEBAIC04OCw3ICs4OCw3IEBAIHZvaWQgc2VsaW51eF9pbWFfbWVhc3VyZV9zdGF0ZV9s
-b2NrZWQoc3RydWN0DQo+IHNlbGludXhfc3RhdGUgKnN0YXRlKQ0KPiA+DQo+ID4gICAJbWVhc3Vy
-ZV9yYyA9IGltYV9tZWFzdXJlX2NyaXRpY2FsX2RhdGEoInNlbGludXgiLCAic2VsaW51eC1zdGF0
-ZSIsDQo+ID4gICAJCQkJCSAgICAgICBzdGF0ZV9zdHIsIHN0cmxlbihzdGF0ZV9zdHIpLA0KPiA+
-IC0JCQkJCSAgICAgICBmYWxzZSk7DQo+ID4gKwkJCQkJICAgICAgIGZhbHNlLCBOVUxMKTsNCj4g
-Pg0KPiA+ICAgCWtmcmVlKHN0YXRlX3N0cik7DQo+ID4NCj4gPiBAQCAtMTA1LDcgKzEwNSw3IEBA
-IHZvaWQgc2VsaW51eF9pbWFfbWVhc3VyZV9zdGF0ZV9sb2NrZWQoc3RydWN0DQo+IHNlbGludXhf
-c3RhdGUgKnN0YXRlKQ0KPiA+ICAgCX0NCj4gPg0KPiA+ICAgCW1lYXN1cmVfcmMgPSBpbWFfbWVh
-c3VyZV9jcml0aWNhbF9kYXRhKCJzZWxpbnV4IiwgInNlbGludXgtcG9saWN5LQ0KPiBoYXNoIiwN
-Cj4gPiAtCQkJCQkgICAgICAgcG9saWN5LCBwb2xpY3lfbGVuLCB0cnVlKTsNCj4gPiArCQkJCQkg
-ICAgICAgcG9saWN5LCBwb2xpY3lfbGVuLCB0cnVlLCBOVUxMKTsNCj4gPg0KPiA+ICAgCXZmcmVl
-KHBvbGljeSk7DQo+ID4gICB9DQo+ID4NCg==
+Implementation of https://lkml.org/lkml/2021/5/12/764 now feature complete
+albeit not fully tested.
+
+I have now corrected the DSC behavior, but still no wait to test it.
+
+Exact dithering behavior remains a mistery so in case dithering is active it's
+not 100% clear what "active bpc" means, or where the "max bpc" limit is applied.
+
+I have no DP MST splitter at hand. I tried my best to not break anything,
+but if one who has one could test it would be very helpful.
+
+Things on my TODO list:
+    - add "min bpc" property
+    - rewrite "preferred color format" to "force color format"
+    - make "Broadcast RGB" only affect RGB on AMD too
+    - remove unreachable enums of "active/preferred/force color format"
+
+
