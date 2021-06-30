@@ -2,67 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C243B8018
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC09D3B801A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhF3Jim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:38:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233026AbhF3Jil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:38:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1484E61C9A;
-        Wed, 30 Jun 2021 09:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625045771;
-        bh=bpZ+VvH0FO7FAkI5yZooXRQ/ZHgF1QWhTHv/+o1nc6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EdN9Xc37rq4Zw72WFvkwSV1KCRLKINTI5f3bj/5GWddkYG7ohsIZfxn+5QWD431Ge
-         6iQJULeTw4OnYFRktBmNoXLJQ4W6cw2hlLvyx5WtgPdy78OqlCSlfikhZxOzg+gfFY
-         NwKp6LANZHxDU6iWB9ZYDhE9uN65X4GpdPRlDxSs=
-Date:   Wed, 30 Jun 2021 11:36:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, stable@vger.kernel.org
-Subject: Re: [PATCH V3 5/6] perf/x86/intel/uncore: Fix invalid unit check
-Message-ID: <YNw7CT2sBE0l8aNf@kroah.com>
-References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
- <1624990443-168533-6-git-send-email-kan.liang@linux.intel.com>
+        id S233979AbhF3Jit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:38:49 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:48439 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233944AbhF3Jir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:38:47 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lyWdj-001xla-1j; Wed, 30 Jun 2021 11:36:15 +0200
+Received: from p57bd964c.dip0.t-ipconnect.de ([87.189.150.76] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lyWdi-0013Qy-RC; Wed, 30 Jun 2021 11:36:15 +0200
+Subject: Re: [PATCH 3/3 v2] sh: fix READ/WRITE redefinition warnings
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <20210627220544.8757-4-rdunlap@infradead.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <6af41806-e715-4084-418f-4a8924d26c07@physik.fu-berlin.de>
+Date:   Wed, 30 Jun 2021 11:36:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624990443-168533-6-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20210627220544.8757-4-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.150.76
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 11:14:02AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On 6/28/21 12:05 AM, Randy Dunlap wrote:
+> kernel.h defines READ and WRITE, so rename the SH math-emu macros
+> to MREAD and MWRITE.
 > 
-> The uncore unit with the type ID 0 and the unit ID 0 is missed.
+> Fixes these warnings:
 > 
-> The table3 of the uncore unit maybe 0. The
-> uncore_discovery_invalid_unit() mistakenly treated it as an invalid
-> value.
+> ../arch/sh/math-emu/math.c:54: warning: "WRITE" redefined
+>    54 | #define WRITE(d,a) ({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+> In file included from ../arch/sh/math-emu/math.c:10:
+> ../include/linux/kernel.h:37: note: this is the location of the previous definition
+>    37 | #define WRITE   1
+> ../arch/sh/math-emu/math.c:55: warning: "READ" redefined
+>    55 | #define READ(d,a) ({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+> In file included from ../arch/sh/math-emu/math.c:10:
+> ../include/linux/kernel.h:36: note: this is the location of the previous definition
+>    36 | #define READ   0
 > 
-> Remove the !unit.table3 check.
-> 
-> Fixes: edae1f06c2cd ("perf/x86/intel/uncore: Parse uncore discovery tables")
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> Cc: stable@vger.kernel.org
+> Fixes: 4b565680d163 ("sh: math-emu support")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
+> Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  arch/x86/events/intel/uncore_discovery.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v2: renumber patches, otherwise no change;
+> 
+>  arch/sh/math-emu/math.c |   44 +++++++++++++++++++-------------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+> 
+> --- linux-next-20210625.orig/arch/sh/math-emu/math.c
+> +++ linux-next-20210625/arch/sh/math-emu/math.c
+> @@ -51,8 +51,8 @@
+>  #define Rn	(regs->regs[n])
+>  #define Rm	(regs->regs[m])
+>  
+> -#define WRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+> -#define READ(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+> +#define MWRITE(d,a)	({if(put_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+> +#define MREAD(d,a)	({if(get_user(d, (typeof (d) __user *)a)) return -EFAULT;})
+>  
+>  #define PACK_S(r,f)	FP_PACK_SP(&r,f)
+>  #define UNPACK_S(f,r)	FP_UNPACK_SP(f,&r)
+> @@ -157,11 +157,11 @@ fmov_idx_reg(struct sh_fpu_soft_struct *
+>  {
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(n);
+> -		READ(FRn, Rm + R0 + 4);
+> +		MREAD(FRn, Rm + R0 + 4);
+>  		n++;
+> -		READ(FRn, Rm + R0);
+> +		MREAD(FRn, Rm + R0);
+>  	} else {
+> -		READ(FRn, Rm + R0);
+> +		MREAD(FRn, Rm + R0);
+>  	}
+>  
+>  	return 0;
+> @@ -173,11 +173,11 @@ fmov_mem_reg(struct sh_fpu_soft_struct *
+>  {
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(n);
+> -		READ(FRn, Rm + 4);
+> +		MREAD(FRn, Rm + 4);
+>  		n++;
+> -		READ(FRn, Rm);
+> +		MREAD(FRn, Rm);
+>  	} else {
+> -		READ(FRn, Rm);
+> +		MREAD(FRn, Rm);
+>  	}
+>  
+>  	return 0;
+> @@ -189,12 +189,12 @@ fmov_inc_reg(struct sh_fpu_soft_struct *
+>  {
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(n);
+> -		READ(FRn, Rm + 4);
+> +		MREAD(FRn, Rm + 4);
+>  		n++;
+> -		READ(FRn, Rm);
+> +		MREAD(FRn, Rm);
+>  		Rm += 8;
+>  	} else {
+> -		READ(FRn, Rm);
+> +		MREAD(FRn, Rm);
+>  		Rm += 4;
+>  	}
+>  
+> @@ -207,11 +207,11 @@ fmov_reg_idx(struct sh_fpu_soft_struct *
+>  {
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(m);
+> -		WRITE(FRm, Rn + R0 + 4);
+> +		MWRITE(FRm, Rn + R0 + 4);
+>  		m++;
+> -		WRITE(FRm, Rn + R0);
+> +		MWRITE(FRm, Rn + R0);
+>  	} else {
+> -		WRITE(FRm, Rn + R0);
+> +		MWRITE(FRm, Rn + R0);
+>  	}
+>  
+>  	return 0;
+> @@ -223,11 +223,11 @@ fmov_reg_mem(struct sh_fpu_soft_struct *
+>  {
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(m);
+> -		WRITE(FRm, Rn + 4);
+> +		MWRITE(FRm, Rn + 4);
+>  		m++;
+> -		WRITE(FRm, Rn);
+> +		MWRITE(FRm, Rn);
+>  	} else {
+> -		WRITE(FRm, Rn);
+> +		MWRITE(FRm, Rn);
+>  	}
+>  
+>  	return 0;
+> @@ -240,12 +240,12 @@ fmov_reg_dec(struct sh_fpu_soft_struct *
+>  	if (FPSCR_SZ) {
+>  		FMOV_EXT(m);
+>  		Rn -= 8;
+> -		WRITE(FRm, Rn + 4);
+> +		MWRITE(FRm, Rn + 4);
+>  		m++;
+> -		WRITE(FRm, Rn);
+> +		MWRITE(FRm, Rn);
+>  	} else {
+>  		Rn -= 4;
+> -		WRITE(FRm, Rn);
+> +		MWRITE(FRm, Rn);
+>  	}
+>  
+>  	return 0;
+> @@ -445,11 +445,11 @@ id_sys(struct sh_fpu_soft_struct *fregs,
+>  	case 0x4052:
+>  	case 0x4062:
+>  		Rn -= 4;
+> -		WRITE(*reg, Rn);
+> +		MWRITE(*reg, Rn);
+>  		break;
+>  	case 0x4056:
+>  	case 0x4066:
+> -		READ(*reg, Rn);
+> +		MREAD(*reg, Rn);
+>  		Rn += 4;
+>  		break;
+>  	default:
+> 
 
-Why is a bugfix that needs to be backported patch 5 in the series?
-Shouldn't that be totally independant and sent on its own and not part
-of this series at all so that it can be accepted and merged much
-quicker?  It also should not depened on the previous 4 patches, right?
+This one no longer applies to Linus' tree:
 
-Andi, you know better than this...
+glaubitz@node54:/data/home/glaubitz/linux> git am ../sh-patches-2021/\[PATCH\ 3_3\ v2\]\ sh\:\ fix\ READ_WRITE\ redefinition\ warnings.eml
+Applying: sh: fix READ/WRITE redefinition warnings
+error: patch failed: arch/sh/math-emu/math.c:51
+error: arch/sh/math-emu/math.c: patch does not apply
+Patch failed at 0001 sh: fix READ/WRITE redefinition warnings
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+glaubitz@node54:/data/home/glaubitz/linux>
 
-greg k-h
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
