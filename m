@@ -2,145 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC993B8669
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9053B8650
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235878AbhF3Pos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S235824AbhF3Pij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbhF3Pom (ORCPT
+        with ESMTP id S235466AbhF3Pii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:44:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AB2C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=dxR9ukSOwJyqIa3HUHGmgbEdSwL7D1JcPCim4eS+28Y=; b=McWVf+SbtkMbSGoIK+jqkLF7iX
-        WtFBCWlDF9r8HUNkI6/MYReFDlvoPyS3sOZthg00Nm2fPptTjEgM6QjndchJPqFilED/zhQutHlqV
-        5AX12FhU997Rsi9RWXBBpeNNx3Fi9MV3tDbzLeWMbBNeKUZeqUjJJjObsShHyzraMzWZQ2BOoM1wa
-        CpMJ1uYcfaxRNRg8TB2rCU/45i5eEJJ6CmiLOnTA7Q5Y+C9WPWKuzaDz/HjeeaTwZh0vDjYufP7yo
-        RHz7duYmwW3dyxTj4Udm5C1fabZHqKv46/izAaz+BjzldHTCS2LnU85tHMr+RQr55L4k/afVZNdCH
-        CKTfn1uw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lycLn-00DD5Y-6C; Wed, 30 Jun 2021 15:42:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 56B2B30031C;
-        Wed, 30 Jun 2021 17:42:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3AEF72C7151A1; Wed, 30 Jun 2021 17:42:06 +0200 (CEST)
-Message-ID: <20210630154115.020298650@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 30 Jun 2021 17:35:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
-        will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        yanfei.xu@windriver.com
-Subject: [RFC][PATCH 4/4] locking/mutex: Add MUTEX_WARN_ON
-References: <20210630153516.832731403@infradead.org>
+        Wed, 30 Jun 2021 11:38:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7656C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:36:09 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lycFw-0005CI-LS; Wed, 30 Jun 2021 17:36:04 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lycFu-0003fc-Gl; Wed, 30 Jun 2021 17:36:02 +0200
+Date:   Wed, 30 Jun 2021 17:36:00 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] pwm: ep93xx: Fix uninitialized variable bug in
+ ep93xx_pwm_apply()
+Message-ID: <20210630153600.327ff7vcrx76lw26@pengutronix.de>
+References: <YNx1y8PlSLehZVIY@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vphn4jk3p3wcvnpg"
+Content-Disposition: inline
+In-Reply-To: <YNx1y8PlSLehZVIY@mwanda>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleanup some #ifdef'fery.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/locking/mutex.c |   30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+--vphn4jk3p3wcvnpg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -32,8 +32,10 @@
- 
- #ifdef CONFIG_DEBUG_MUTEXES
- # include "mutex-debug.h"
-+# define MUTEX_WARN_ON(cond) DEBUG_LOCKS_WARN_ON(cond)
- #else
- # include "mutex.h"
-+# define MUTEX_WARN_ON(cond)
- #endif
- 
- void
-@@ -113,9 +115,7 @@ static inline struct task_struct *__mute
- 				break;
- 			}
- 		} else {
--#ifdef CONFIG_DEBUG_MUTEXES
--			DEBUG_LOCKS_WARN_ON(flags & MUTEX_FLAG_PICKUP);
--#endif
-+			MUTEX_WARN_ON(flags & (MUTEX_FLAG_HANDOFF | MUTEX_FLAG_PICKUP));
- 			task = curr;
- 		}
- 
-@@ -236,10 +236,8 @@ static void __mutex_handoff(struct mutex
- 	for (;;) {
- 		unsigned long new;
- 
--#ifdef CONFIG_DEBUG_MUTEXES
--		DEBUG_LOCKS_WARN_ON(__owner_task(owner) != current);
--		DEBUG_LOCKS_WARN_ON(owner & MUTEX_FLAG_PICKUP);
--#endif
-+		MUTEX_WARN_ON(__owner_task(owner) != current);
-+		MUTEX_WARN_ON(owner & MUTEX_FLAG_PICKUP);
- 
- 		new = (owner & MUTEX_FLAG_WAITERS);
- 		new |= (unsigned long)task;
-@@ -764,9 +762,7 @@ void __sched ww_mutex_unlock(struct ww_m
- 	 * into 'unlocked' state:
- 	 */
- 	if (lock->ctx) {
--#ifdef CONFIG_DEBUG_MUTEXES
--		DEBUG_LOCKS_WARN_ON(!lock->ctx->acquired);
--#endif
-+		MUTEX_WARN_ON(!lock->ctx->acquired);
- 		if (lock->ctx->acquired > 0)
- 			lock->ctx->acquired--;
- 		lock->ctx = NULL;
-@@ -941,9 +937,7 @@ __mutex_lock_common(struct mutex *lock,
- 
- 	might_sleep();
- 
--#ifdef CONFIG_DEBUG_MUTEXES
--	DEBUG_LOCKS_WARN_ON(lock->magic != lock);
--#endif
-+	MUTEX_WARN_ON(lock->magic != lock);
- 
- 	ww = container_of(lock, struct ww_mutex, base);
- 	if (ww_ctx) {
-@@ -1235,10 +1229,8 @@ static noinline void __sched __mutex_unl
- 	 */
- 	owner = atomic_long_read(&lock->owner);
- 	for (;;) {
--#ifdef CONFIG_DEBUG_MUTEXES
--		DEBUG_LOCKS_WARN_ON(__owner_task(owner) != current);
--		DEBUG_LOCKS_WARN_ON(owner & MUTEX_FLAG_PICKUP);
--#endif
-+		MUTEX_WARN_ON(__owner_task(owner) != current);
-+		MUTEX_WARN_ON(owner & MUTEX_FLAG_PICKUP);
- 
- 		if (owner & MUTEX_FLAG_HANDOFF)
- 			break;
-@@ -1404,9 +1396,7 @@ int __sched mutex_trylock(struct mutex *
- {
- 	bool locked;
- 
--#ifdef CONFIG_DEBUG_MUTEXES
--	DEBUG_LOCKS_WARN_ON(lock->magic != lock);
--#endif
-+	MUTEX_WARN_ON(lock->magic != lock);
- 
- 	locked = __mutex_trylock(lock);
- 	if (locked)
+Hello,
 
+this problem was found already earlier by Colin King:
 
+	https://lore.kernel.org/r/20210629172253.43131-1-colin.king@canonical.com
+
+I'm fine with either change.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vphn4jk3p3wcvnpg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDcj10ACgkQwfwUeK3K
+7AmM7wf/e97AoCAkzfOVrEkGepxK6NtmYvP59bREHrSkc6WWjRtwhe2PoHG/IzdH
+aDSuq2c0fk3SAcfocPBHKg87iTOPR6sQb/f853pze5fdURgJy46DzcRT1bEjnXlf
+0iSbHWiLmtYQVfidvopKrazQz/6OPxpm+1NLH6Qsia7YxZhaO/9XHJPQuXIQphq0
+zfnr8jHnB25yuo32GCMb1lQg4poOVvLXpIY1IWME910jn8JT9/Ui8lUiN1bIkR9d
+Hkksrq+KLHFa+opJLcLg2D9V8Y+gXycS3xmm0XU3EyUJrJc11ZPFiPgfGXl3i+Xr
+ar3u5ALK5GVQG+QhxSQMC4AY/JJWIw==
+=12r2
+-----END PGP SIGNATURE-----
+
+--vphn4jk3p3wcvnpg--
