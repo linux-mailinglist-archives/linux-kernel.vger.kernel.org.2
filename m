@@ -2,222 +2,687 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FDB3B80AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843053B80B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhF3KNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:13:45 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:64110 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229455AbhF3KNn (ORCPT
+        id S234299AbhF3KOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:14:12 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:22086 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234240AbhF3KNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:13:43 -0400
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UA9OZW016880;
-        Wed, 30 Jun 2021 03:11:10 -0700
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by mx0a-0064b401.pphosted.com with ESMTP id 39gf0u094r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Jun 2021 03:11:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RPc4Ol2IG6OpPo7s+/XoQA0LUV8ES6nWKVKVfJSQyE2D4eQ4AuYuwtTyKeJ8bL8FHuwRiC1PbZQ2ABlz6LRVJcCounzCzuDgHO/yCpg7MrsPFBb5GzX0Y04mJGJuyHXmfXZFEZ3GHwMNPdntOLl1Nud7mAdUNbpFO04bS/UXaAdfehQrn26jzzYs1mmXzhqvRKOngvtzjTZ3cZ94Bf4S1hyLi3jUHOSXbi/Al6xlvMLSPAH+Ex8wp/jEMUpzOlTXJ3/MPWmGz31rbgrrJG/OSsR9gYCUNvb7QGbMqvZGj0IL7erdDjeFtDCRRRZRjpF7wjExzYVL07i9HnkUroatwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OEq3hzSf0Srb/8hZUoKrtImp5tN4mbC7/0NtoN34zHY=;
- b=ULeAmIVmuP9PSUVugbAqZmYkoaYc4TebQK5fSER9ESlfrQAajq6gfJkA3D22DEaG9QCTQflYpIRFnxHFUAb+O/CBLgytamU4+InhSbLJhJujZtdSLZk86x6viv68i64KGgOAHiHBzTfgIzk6RNVO7xbTxBK96JSoDTNdWDIjfkJkOB9++67c80vFaDkKfIq4rqk3fXQsalRMVlKCUYtTHGk0t53FDO0AgQRjCnwUaMNJjoz+schdQW4pPGOWHn9rasyzURe9mm8kXQ4lDl0sEnSp41AapjsUsBcb2UNJTygHdz4f4Ny3+08F9z5G3YqUiqTew3ixoCPfE7OcT32sbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OEq3hzSf0Srb/8hZUoKrtImp5tN4mbC7/0NtoN34zHY=;
- b=IijKvxIYMUWDS0YOUH5/j9fPZTODRg9OES9yneQJcHonl4xB4Ks3jBFMHwpr0Zfv7gZSMd3EOSEacmh1XaZ2dW2a+J13AD85beCNcfgv4Zy4YUR6GwEQ8zKn5JuHVI6bT7QHh7mSkUtDFS9tZL4btCCSLS505B8N8c1g4D7R8sU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB4252.namprd11.prod.outlook.com (2603:10b6:5:201::26)
- by DM5PR1101MB2249.namprd11.prod.outlook.com (2603:10b6:4:5a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 30 Jun
- 2021 10:11:07 +0000
-Received: from DM6PR11MB4252.namprd11.prod.outlook.com
- ([fe80::c0f2:cf50:3404:90ac]) by DM6PR11MB4252.namprd11.prod.outlook.com
- ([fe80::c0f2:cf50:3404:90ac%3]) with mapi id 15.20.4264.026; Wed, 30 Jun 2021
- 10:11:07 +0000
-Subject: Re: [PATCH v2] locking/mutex: Fix the handoff mechanism doesn't take
- effect
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-To:     peterz@infradead.org, mingo@redhat.com, longman@redhat.com,
-        boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20210630054224.13495-1-yanfei.xu@windriver.com>
-Message-ID: <af83d70f-67ad-3480-9e03-e2363add1f31@windriver.com>
-Date:   Wed, 30 Jun 2021 18:10:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210630054224.13495-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK0PR03CA0110.apcprd03.prod.outlook.com
- (2603:1096:203:b0::26) To DM6PR11MB4252.namprd11.prod.outlook.com
- (2603:10b6:5:201::26)
+        Wed, 30 Jun 2021 06:13:55 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UA5SOV002622;
+        Wed, 30 Jun 2021 03:11:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=nYLj6AjWuEaDFlV9iqQRhokArR5gWtOJX0d2c1D6ua4=;
+ b=FpOKAwTj1xKNYg3Xpg5yOEOn0uZQ2s5OjmhX0VoCKn8eqmT23etJYTGnp5m9YszueImt
+ aVIWQ6NLKRi1iGvE30weo85y932bL1A83TXiOhn/KUrMn1bec5Z9JktEzLIjNnLZX7kI
+ oUIGxew6ZCZJZ6LtoKGLTQOtskMOsWtz/e8JbtjDcFVWOEPoaMsqL8TMQUDwe5htzmBn
+ Pz9ZHYns7EPMK6myG8iT7+OSoiS0bsBRoa2DijBIJlJ8cOk4qDgK2HkM1p4iGtIDFgzc
+ eYxAC0AivFdBxR3voHkY+ybZT8b4mMfOHYUy3vXo3KGpREkuL1idt7L/wFucHLVElDrf UA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 39g93dtxwn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 03:11:18 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 30 Jun
+ 2021 03:11:15 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 30 Jun 2021 03:11:15 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 96D263F709E;
+        Wed, 30 Jun 2021 03:11:12 -0700 (PDT)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [net-next Patch v3 3/3] octeontx2-pf: offload DMAC filters to CGX/RPM block
+Date:   Wed, 30 Jun 2021 15:40:59 +0530
+Message-ID: <20210630101059.27334-4-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630101059.27334-1-hkelam@marvell.com>
+References: <20210630101059.27334-1-hkelam@marvell.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK0PR03CA0110.apcprd03.prod.outlook.com (2603:1096:203:b0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Wed, 30 Jun 2021 10:11:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7f79b000-95a6-4b28-9320-08d93baf6052
-X-MS-TrafficTypeDiagnostic: DM5PR1101MB2249:
-X-Microsoft-Antispam-PRVS: <DM5PR1101MB2249885CE54FB377DE67D3AEE4019@DM5PR1101MB2249.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5xKPxSd+xuUMrwyPAUDfOoAV9b6FFuGBGO0vk5YjjKllYSFfhd/hP3PAiyo4LKADU+GhLuNkD7AFpBl8UAHPj1ho77yvVSJE7kKnUzQbgbwTub7hvmMeQeZDjowxqpJCpY6q2C4pmneKAzm9kLfsF6ek3qBI39PRC8dwY62RfVLa3XDPpPYa+F+7uLxEowC3Hmu3ulqgJAbtxynBuvfgBSLm1W9ekvF1F7TSux02QpZ28+VAN5a7l3P12OagnoPIpjy/OVie9Rw8ruAzm/we02pI3HrmE247kKlNqvq9CO6m5eohCeE6PrMVsjWiHEz2wTt62XaBwoYgeh+wl+53599bszcEQW+wnz1d1h+e/9hqPYbhv6CL92A5XIwdrcbp8PebXW99tX6pOcyKXMNW+G5v7dmxMpgB3FdGhxwpi+j3RhKqbbBI3b0htXPeuwHaZDPYYGMu+msEKIkCN+h9xm/97Gxy3bWIGP7ZsQkQdjiavEqCIfeL60lo1jvOhAvUccQ0rzV7U/jXI+rh4CTPvky/byg1iaSMHrXmE98Jyt0EmryUqFkfiF3oDaHC56zcbbAAr0/72rO9H9TLP2cK8HC2dWF8GAqjhEAMXv4ebreCuIgKIcEnkgI/tOLp5/sVYVWHVNxRN+nxt75pMbBIQHYjxmC/SFueHIRy6kJ6bQ9CIudXwVaQ5CPYYzoCuOatjOeUDZ+N/0uQOx7UkD4gdt0fNrCxggku5qdd+AigzlJFmDDWXZram2VH8HypgkjaRVyWA7prbwfKzWlfXdvubw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4252.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(366004)(136003)(346002)(396003)(376002)(6666004)(478600001)(6486002)(38350700002)(38100700002)(31686004)(83380400001)(86362001)(31696002)(2616005)(2906002)(316002)(16576012)(36756003)(5660300002)(8936002)(66946007)(26005)(8676002)(4326008)(66476007)(956004)(66556008)(52116002)(6706004)(53546011)(16526019)(186003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VFUxajhnWG44bEI3Q1c5bjhyWmlzZnIxaEJ6SEdJYmNnTEVMNjJkZUJyTkFG?=
- =?utf-8?B?VDV2UEVLUmVYKy8zeUJFRTdnK0I2VGtsMktFRXBGZWJSQ1ZqNno4RGI0QzYv?=
- =?utf-8?B?L1ZjaStVcUc5a2VhN2JTcGdPYXRDWGU5T0l5QUxNckY1bjcyZnBnZEFZSG54?=
- =?utf-8?B?WThBUE5FK2s3dlpOR2ZQc0FpVHRtZ1RBNWRWMGZtbDFkWjNwME5ET0FLNWxK?=
- =?utf-8?B?NGcvQ3hWRThIbDFUd0FuM28yQy9aUkQvYkhRTHlDcThPUGtTZ3NSRHI2K3Ja?=
- =?utf-8?B?SlJTVnBXdGZGYW1zWENJaEFodmlPMk8vZEttNzZvLzFRWnJqcmJreVV2c2tZ?=
- =?utf-8?B?OFBwKzZmeXZGNTJSYXo3cDdXTVFNTXpTejV5L2tFckpralNuN25pVWhaSTlG?=
- =?utf-8?B?V25nWTVMWjA2cDB2azhYZWV6RGNEMkRqUjR0ajNjb3RQdDFSS3hhbnpXQjF4?=
- =?utf-8?B?M0dobjVTR1FSNTRCTVBTeFc4U1RJQ3NoWDJmNzZGS2ExbXd2NXdYRVlDL1BK?=
- =?utf-8?B?OWR0QlZCQTZJU2hJbHMwc0RZSVBOeTUzVjc1c0pqaFpYZVlEUmNWbDdqMFBK?=
- =?utf-8?B?RXA0b3lRcG55cnNZLzBmUHZ6VHhDZk9WbVdwV1k4VDkxbHhsOFBDNTd6U2lS?=
- =?utf-8?B?VCtvMHc1OFNMbU5ZejlBNVNpMWRLa3FhOFNvbmtydUFLa1R0blJOU21kYjB4?=
- =?utf-8?B?bkN6MUJBQmV0RCtVaUlqaUhycVlrYmNDSHFIZmozK2Y1QUpTelh5dXIvUE5J?=
- =?utf-8?B?K0tBMzFtWFN5dzdRY0hxYVBmZXhhYW1CTEFWZ01GekhidEZ5RnZndWV0RDk1?=
- =?utf-8?B?ZFl2SUV4K2tKWHVuc09CZU1iZmFyZDQ2djMxQUt6S3RXR2lxVk1ndVhhcVQ1?=
- =?utf-8?B?bGFiUG1Na1pqLy9yTnA1eDkxdWlNOEhybHY0RkpIYnBqSGhCaEtOOUlFUmdW?=
- =?utf-8?B?cEJ6aUhCT0daM1FBdS9qbFk5WjlwVTg4Qk5hQUtEYlA5dE05MGhlUmJHYzJo?=
- =?utf-8?B?SFNZVVBwVGZFRjA1dFc5ak9jbk5mWithVVhmNTJFTjBVSERORFpYMFE1dVJJ?=
- =?utf-8?B?UWdrcHRrODFodjNSTmh5S3Z2djRPMjc3Q0Vla1E0SkU1SHN1TG9oWHhpNm81?=
- =?utf-8?B?UnY0TityelFpL0ZobE9RR21EaVg1UkpLbXlHS1ZXMlFQWTByVlRkaGpQVUlM?=
- =?utf-8?B?ZklJWUg0Uy9UTnNOa0N3T3MxVzh4WDBBaWNVcmhVQ2hJZGlxV2ZKVGtEYzNi?=
- =?utf-8?B?RkVlTTB6OS9TRGRNa2FlM0ZtN2RMbUJFbEhLWmgvbVhHdHRnMjZxbXVCOFg4?=
- =?utf-8?B?b1ZONnl1VC9XaWdQMFNQbDJsQk13UElNRDBCWEc2S0IyR2hmTUpoS3ZSTG9z?=
- =?utf-8?B?UDMzempzc3pId3F0VTV5dkpKLzFGUHFvdlg2MERFTzJQeitEbjNEZnNrTHpK?=
- =?utf-8?B?YnhzUyt1UjIvTzNBa01QMy9nUk1LZFJDYlVmRG1WOFo1VVBhZU9xWkhVSThL?=
- =?utf-8?B?dXlYRVovemVKQXIxejFOenNweS8vZTBkaWFIa20zQnhxNFE2NUYzTTJZVGQx?=
- =?utf-8?B?UTMrYktKRHpvYmhmYk9ZR0lQczFobHBsTi9sRndwSS95UFYwUGhkcEo1R1cr?=
- =?utf-8?B?Vm5SdE00TzE4amNsOUlVQlQ3b3cxOElZWnZxRnVNUEEyOUtFRXpWNEEwaytT?=
- =?utf-8?B?UU1WbVJiYjZxc2xHTkZhNU5xMGFnWi9rUGxtR21aQVZMazJGcURDN1oyU1Zv?=
- =?utf-8?Q?aF0O3EjnFcEeCQZVflGcm1ChUKZqJwU9Xj6ltMp?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f79b000-95a6-4b28-9320-08d93baf6052
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4252.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 10:11:07.4363
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bfjWJvtfN9wFMoKslUuEUvRl3KNPVfQtwwMBV98ltgeiTUCsdaHwKMz/JpfHXNWzsmermtjLo27xtl11Wb1Qrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2249
-X-Proofpoint-GUID: AVxogsaG-wSYUHxuiaIhU4LGwAC2Yu-n
-X-Proofpoint-ORIG-GUID: AVxogsaG-wSYUHxuiaIhU4LGwAC2Yu-n
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: KODsBGhhr-zxjN3Uoru1jwL-azAvr0KC
+X-Proofpoint-GUID: KODsBGhhr-zxjN3Uoru1jwL-azAvr0KC
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-30_02:2021-06-29,2021-06-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 priorityscore=1501
- malwarescore=0 bulkscore=0 phishscore=0 adultscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106300066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this.
+DMAC filtering can be achieved by either NPC MCAM rules or
+CGX/RPM MAC filters. Currently we are achieving this by NPC
+MCAM rules. This patch offloads DMAC filters to CGX/RPM MAC
+filters instead of NPC MCAM rules. Offloading DMAC filter to
+CGX/RPM block helps in reducing traffic to NPC block and
+save MCAM rules
 
-Thanks,
-Yanfei
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+---
+ .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   3 +
+ .../marvell/octeontx2/nic/otx2_common.h       |  11 +
+ .../marvell/octeontx2/nic/otx2_dmac_flt.c     | 173 +++++++++++++
+ .../marvell/octeontx2/nic/otx2_flows.c        | 229 +++++++++++++++++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |   9 +
+ 6 files changed, 417 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
 
-On 6/30/21 1:42 PM, Yanfei Xu wrote:
-> Commit e274795ea7b7 ("locking/mutex: Fix mutex handoff") removes the
-> judgment of "handoff" in __mutex_trylock_or_owner() as blow, it makes
-> anyone can clear MUTEX_FLAG_HANDOFF bit when it gets the lock, even it
-> is the stealing lock. That makes set of MUTEX_FLAG_HANDOFF by the
-> top-waiter in vain.
-> 
-> -               if (handoff)
-> -                       flags &= ~MUTEX_FLAG_HANDOFF;
-> +               flags &= ~MUTEX_FLAG_HANDOFF;
-> 
-> We could fix it by setting MUTEX_FLAG_HANDOFF bit before the top-waiter
-> in wait_list falls asleep, then It must can grab the lock after being
-> woken up. Instead of probably being stolen lock by a optimistic spinner,
-> and being cleared MUTEX_FLAG_HANDOFF bit by the task which stole the lock,
-> and probably fall to sleep again without MUTEX_FLAG_HANDOFF due to the
-> task which stole the lock falls asleep.
-> 
-> Note: there still is a very small window that the top-waiter can't get
-> the lock after being awoken because no MUTEX_FLAG_HANDOFF bit is observed
-> in unlock path and then wake up the top-waiter. But it doesn't matter,
-> the top-waiter will optimistically spin on the lock or fall asleep with
-> MUTEX_FLAG_HANDOFF bit again.
-> 
-> Also correct a obsolete comment in __mutex_trylock_or_owner().
-> 
-> Fixes: e274795ea7b7 ("locking/mutex: Fix mutex handoff")
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
-> v1->v2:
-> 1. Bring the assignment of "first" variable to the front of
->     schedule_preempt_disabled() to make the top-waiter can grab the
->     lock when it wakes up for the first time.
-> 2. Correct the comments in __mutex_trylock_or_owner by Waiman.
-> 3. Rename this patch name form "locking/mutex: fix the
->     MUTEX_FLAG_HANDOFF bit is cleared unexpected" to "locking/mutex: Fix
->     the handoff mechanism doesn't take effect"
-> 
->   kernel/locking/mutex.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 013e1b08a1bf..ba36d93e65e8 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -118,9 +118,9 @@ static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
->   		}
->   
->   		/*
-> -		 * We set the HANDOFF bit, we must make sure it doesn't live
-> -		 * past the point where we acquire it. This would be possible
-> -		 * if we (accidentally) set the bit on an unlocked mutex.
-> +		 * Always clear the HANDOFF bit before acquiring the lock.
-> +		 * Note that if the bit is accidentally set on an unlocked
-> +		 * mutex, anyone can acquire it.
->   		 */
->   		flags &= ~MUTEX_FLAG_HANDOFF;
->   
-> @@ -1033,17 +1033,17 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
->   		}
->   
->   		spin_unlock(&lock->wait_lock);
-> -		schedule_preempt_disabled();
->   
->   		/*
->   		 * ww_mutex needs to always recheck its position since its waiter
->   		 * list is not FIFO ordered.
->   		 */
-> -		if (ww_ctx || !first) {
-> +		if (ww_ctx || !first)
->   			first = __mutex_waiter_is_first(lock, &waiter);
-> -			if (first)
-> -				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
-> -		}
-> +		if (first)
-> +			__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
-> +
-> +		schedule_preempt_disabled();
->   
->   		set_current_state(state);
->   		/*
-> 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+index 457c94793e63..3254b02205ca 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+@@ -7,7 +7,7 @@ obj-$(CONFIG_OCTEONTX2_PF) += rvu_nicpf.o
+ obj-$(CONFIG_OCTEONTX2_VF) += rvu_nicvf.o
+ 
+ rvu_nicpf-y := otx2_pf.o otx2_common.o otx2_txrx.o otx2_ethtool.o \
+-		     otx2_ptp.o otx2_flows.o otx2_tc.o cn10k.o
++               otx2_ptp.o otx2_flows.o otx2_tc.o cn10k.o otx2_dmac_flt.o
+ rvu_nicvf-y := otx2_vf.o
+ 
+ ccflags-y += -I$(srctree)/drivers/net/ethernet/marvell/octeontx2/af
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index cf7875d51d87..7cccd802c4ed 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -210,6 +210,9 @@ int otx2_set_mac_address(struct net_device *netdev, void *p)
+ 		/* update dmac field in vlan offload rule */
+ 		if (pfvf->flags & OTX2_FLAG_RX_VLAN_SUPPORT)
+ 			otx2_install_rxvlan_offload_flow(pfvf);
++		/* update dmac address in ntuple and DMAC filter list */
++		if (pfvf->flags & OTX2_FLAG_DMACFLTR_SUPPORT)
++			otx2_dmacflt_update_pfmac_flow(pfvf);
+ 	} else {
+ 		return -EPERM;
+ 	}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 234b330f3183..71448674fb24 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -288,6 +288,9 @@ struct otx2_flow_config {
+ 	u16			tc_flower_offset;
+ 	u16                     ntuple_max_flows;
+ 	u16			tc_max_flows;
++	u8			dmacflt_max_flows;
++	u8			*bmap_to_dmacindex;
++	unsigned long		dmacflt_bmap;
+ 	struct list_head	flow_list;
+ };
+ 
+@@ -329,6 +332,7 @@ struct otx2_nic {
+ #define OTX2_FLAG_TC_FLOWER_SUPPORT		BIT_ULL(11)
+ #define OTX2_FLAG_TC_MATCHALL_EGRESS_ENABLED	BIT_ULL(12)
+ #define OTX2_FLAG_TC_MATCHALL_INGRESS_ENABLED	BIT_ULL(13)
++#define OTX2_FLAG_DMACFLTR_SUPPORT		BIT_ULL(14)
+ 	u64			flags;
+ 
+ 	struct otx2_qset	qset;
+@@ -833,4 +837,11 @@ int otx2_init_tc(struct otx2_nic *nic);
+ void otx2_shutdown_tc(struct otx2_nic *nic);
+ int otx2_setup_tc(struct net_device *netdev, enum tc_setup_type type,
+ 		  void *type_data);
++/* CGX/RPM DMAC filters support */
++int otx2_dmacflt_get_max_cnt(struct otx2_nic *pf);
++int otx2_dmacflt_add(struct otx2_nic *pf, const u8 *mac, u8 bit_pos);
++int otx2_dmacflt_remove(struct otx2_nic *pf, const u8 *mac, u8 bit_pos);
++int otx2_dmacflt_update(struct otx2_nic *pf, u8 *mac, u8 bit_pos);
++void otx2_dmacflt_reinstall_flows(struct otx2_nic *pf);
++void otx2_dmacflt_update_pfmac_flow(struct otx2_nic *pfvf);
+ #endif /* OTX2_COMMON_H */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
+new file mode 100644
+index 000000000000..ffe3e94562d0
+--- /dev/null
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_dmac_flt.c
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Marvell OcteonTx2 RVU Physcial Function ethernet driver
++ *
++ * Copyright (C) 2021 Marvell.
++ */
++
++#include "otx2_common.h"
++
++static int otx2_dmacflt_do_add(struct otx2_nic *pf, const u8 *mac,
++			       u8 *dmac_index)
++{
++	struct cgx_mac_addr_add_req *req;
++	struct cgx_mac_addr_add_rsp *rsp;
++	int err;
++
++	mutex_lock(&pf->mbox.lock);
++
++	req = otx2_mbox_alloc_msg_cgx_mac_addr_add(&pf->mbox);
++	if (!req) {
++		mutex_unlock(&pf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	ether_addr_copy(req->mac_addr, mac);
++	err = otx2_sync_mbox_msg(&pf->mbox);
++
++	if (!err) {
++		rsp = (struct cgx_mac_addr_add_rsp *)
++			 otx2_mbox_get_rsp(&pf->mbox.mbox, 0, &req->hdr);
++		*dmac_index = rsp->index;
++	}
++
++	mutex_unlock(&pf->mbox.lock);
++	return err;
++}
++
++static int otx2_dmacflt_add_pfmac(struct otx2_nic *pf)
++{
++	struct cgx_mac_addr_set_or_get *req;
++	int err;
++
++	mutex_lock(&pf->mbox.lock);
++
++	req = otx2_mbox_alloc_msg_cgx_mac_addr_set(&pf->mbox);
++	if (!req) {
++		mutex_unlock(&pf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	ether_addr_copy(req->mac_addr, pf->netdev->dev_addr);
++	err = otx2_sync_mbox_msg(&pf->mbox);
++
++	mutex_unlock(&pf->mbox.lock);
++	return err;
++}
++
++int otx2_dmacflt_add(struct otx2_nic *pf, const u8 *mac, u8 bit_pos)
++{
++	u8 *dmacindex;
++
++	/* Store dmacindex returned by CGX/RPM driver which will
++	 * be used for macaddr update/remove
++	 */
++	dmacindex = &pf->flow_cfg->bmap_to_dmacindex[bit_pos];
++
++	if (ether_addr_equal(mac, pf->netdev->dev_addr))
++		return otx2_dmacflt_add_pfmac(pf);
++	else
++		return otx2_dmacflt_do_add(pf, mac, dmacindex);
++}
++
++static int otx2_dmacflt_do_remove(struct otx2_nic *pfvf, const u8 *mac,
++				  u8 dmac_index)
++{
++	struct cgx_mac_addr_del_req *req;
++	int err;
++
++	mutex_lock(&pfvf->mbox.lock);
++	req = otx2_mbox_alloc_msg_cgx_mac_addr_del(&pfvf->mbox);
++	if (!req) {
++		mutex_unlock(&pfvf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	req->index = dmac_index;
++
++	err = otx2_sync_mbox_msg(&pfvf->mbox);
++	mutex_unlock(&pfvf->mbox.lock);
++
++	return err;
++}
++
++static int otx2_dmacflt_remove_pfmac(struct otx2_nic *pf)
++{
++	struct msg_req *req;
++	int err;
++
++	mutex_lock(&pf->mbox.lock);
++	req = otx2_mbox_alloc_msg_cgx_mac_addr_reset(&pf->mbox);
++	if (!req) {
++		mutex_unlock(&pf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	err = otx2_sync_mbox_msg(&pf->mbox);
++
++	mutex_unlock(&pf->mbox.lock);
++	return err;
++}
++
++int otx2_dmacflt_remove(struct otx2_nic *pf, const u8 *mac,
++			u8 bit_pos)
++{
++	u8 dmacindex = pf->flow_cfg->bmap_to_dmacindex[bit_pos];
++
++	if (ether_addr_equal(mac, pf->netdev->dev_addr))
++		return otx2_dmacflt_remove_pfmac(pf);
++	else
++		return otx2_dmacflt_do_remove(pf, mac, dmacindex);
++}
++
++/* CGX/RPM blocks support max unicast entries of 32.
++ * on typical configuration MAC block associated
++ * with 4 lmacs, each lmac will have 8 dmac entries
++ */
++int otx2_dmacflt_get_max_cnt(struct otx2_nic *pf)
++{
++	struct cgx_max_dmac_entries_get_rsp *rsp;
++	struct msg_req *msg;
++	int err;
++
++	mutex_lock(&pf->mbox.lock);
++	msg = otx2_mbox_alloc_msg_cgx_mac_max_entries_get(&pf->mbox);
++
++	if (!msg) {
++		mutex_unlock(&pf->mbox.lock);
++		return -ENOMEM;
++	}
++
++	err = otx2_sync_mbox_msg(&pf->mbox);
++	if (err)
++		goto out;
++
++	rsp = (struct cgx_max_dmac_entries_get_rsp *)
++		     otx2_mbox_get_rsp(&pf->mbox.mbox, 0, &msg->hdr);
++	pf->flow_cfg->dmacflt_max_flows = rsp->max_dmac_filters;
++
++out:
++	mutex_unlock(&pf->mbox.lock);
++	return err;
++}
++
++int otx2_dmacflt_update(struct otx2_nic *pf, u8 *mac, u8 bit_pos)
++{
++	struct cgx_mac_addr_update_req *req;
++	int rc;
++
++	mutex_lock(&pf->mbox.lock);
++
++	req = otx2_mbox_alloc_msg_cgx_mac_addr_update(&pf->mbox);
++
++	if (!req) {
++		mutex_unlock(&pf->mbox.lock);
++		rc = -ENOMEM;
++	}
++
++	ether_addr_copy(req->mac_addr, mac);
++	req->index = pf->flow_cfg->bmap_to_dmacindex[bit_pos];
++	rc = otx2_sync_mbox_msg(&pf->mbox);
++
++	mutex_unlock(&pf->mbox.lock);
++	return rc;
++}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
+index 8c97106bdd1c..4d9de525802d 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
+@@ -18,6 +18,12 @@ struct otx2_flow {
+ 	bool is_vf;
+ 	u8 rss_ctx_id;
+ 	int vf;
++	bool dmac_filter;
++};
++
++enum dmac_req {
++	DMAC_ADDR_UPDATE,
++	DMAC_ADDR_DEL
+ };
+ 
+ static void otx2_clear_ntuple_flow_info(struct otx2_nic *pfvf, struct otx2_flow_config *flow_cfg)
+@@ -219,6 +225,22 @@ int otx2_mcam_flow_init(struct otx2_nic *pf)
+ 	if (!pf->mac_table)
+ 		return -ENOMEM;
+ 
++	otx2_dmacflt_get_max_cnt(pf);
++
++	/* DMAC filters are not allocated */
++	if (!pf->flow_cfg->dmacflt_max_flows)
++		return 0;
++
++	pf->flow_cfg->bmap_to_dmacindex =
++			devm_kzalloc(pf->dev, sizeof(u8) *
++				     pf->flow_cfg->dmacflt_max_flows,
++				     GFP_KERNEL);
++
++	if (!pf->flow_cfg->bmap_to_dmacindex)
++		return -ENOMEM;
++
++	pf->flags |= OTX2_FLAG_DMACFLTR_SUPPORT;
++
+ 	return 0;
+ }
+ 
+@@ -280,6 +302,12 @@ int otx2_add_macfilter(struct net_device *netdev, const u8 *mac)
+ {
+ 	struct otx2_nic *pf = netdev_priv(netdev);
+ 
++	if (bitmap_weight(&pf->flow_cfg->dmacflt_bmap,
++			  pf->flow_cfg->dmacflt_max_flows))
++		netdev_warn(netdev,
++			    "Add %pM to CGX/RPM DMAC filters list as well\n",
++			    mac);
++
+ 	return otx2_do_add_macfilter(pf, mac);
+ }
+ 
+@@ -351,12 +379,22 @@ static void otx2_add_flow_to_list(struct otx2_nic *pfvf, struct otx2_flow *flow)
+ 	list_add(&flow->list, head);
+ }
+ 
++static int otx2_get_maxflows(struct otx2_flow_config *flow_cfg)
++{
++	if (flow_cfg->nr_flows == flow_cfg->ntuple_max_flows ||
++	    bitmap_weight(&flow_cfg->dmacflt_bmap,
++			  flow_cfg->dmacflt_max_flows))
++		return flow_cfg->ntuple_max_flows + flow_cfg->dmacflt_max_flows;
++	else
++		return flow_cfg->ntuple_max_flows;
++}
++
+ int otx2_get_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc,
+ 		  u32 location)
+ {
+ 	struct otx2_flow *iter;
+ 
+-	if (location >= pfvf->flow_cfg->ntuple_max_flows)
++	if (location >= otx2_get_maxflows(pfvf->flow_cfg))
+ 		return -EINVAL;
+ 
+ 	list_for_each_entry(iter, &pfvf->flow_cfg->flow_list, list) {
+@@ -378,7 +416,7 @@ int otx2_get_all_flows(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc,
+ 	int idx = 0;
+ 	int err = 0;
+ 
+-	nfc->data = pfvf->flow_cfg->ntuple_max_flows;
++	nfc->data = otx2_get_maxflows(pfvf->flow_cfg);
+ 	while ((!err || err == -ENOENT) && idx < rule_cnt) {
+ 		err = otx2_get_flow(pfvf, nfc, location);
+ 		if (!err)
+@@ -760,6 +798,32 @@ int otx2_prepare_flow_request(struct ethtool_rx_flow_spec *fsp,
+ 	return 0;
+ }
+ 
++static int otx2_is_flow_rule_dmacfilter(struct otx2_nic *pfvf,
++					struct ethtool_rx_flow_spec *fsp)
++{
++	struct ethhdr *eth_mask = &fsp->m_u.ether_spec;
++	struct ethhdr *eth_hdr = &fsp->h_u.ether_spec;
++	u64 ring_cookie = fsp->ring_cookie;
++	u32 flow_type;
++
++	if (!(pfvf->flags & OTX2_FLAG_DMACFLTR_SUPPORT))
++		return false;
++
++	flow_type = fsp->flow_type & ~(FLOW_EXT | FLOW_MAC_EXT | FLOW_RSS);
++
++	/* CGX/RPM block dmac filtering configured for white listing
++	 * check for action other than DROP
++	 */
++	if (flow_type == ETHER_FLOW && ring_cookie != RX_CLS_FLOW_DISC &&
++	    !ethtool_get_flow_spec_ring_vf(ring_cookie)) {
++		if (is_zero_ether_addr(eth_mask->h_dest) &&
++		    is_valid_ether_addr(eth_hdr->h_dest))
++			return true;
++	}
++
++	return false;
++}
++
+ static int otx2_add_flow_msg(struct otx2_nic *pfvf, struct otx2_flow *flow)
+ {
+ 	u64 ring_cookie = flow->flow_spec.ring_cookie;
+@@ -818,14 +882,46 @@ static int otx2_add_flow_msg(struct otx2_nic *pfvf, struct otx2_flow *flow)
+ 	return err;
+ }
+ 
++static int otx2_add_flow_with_pfmac(struct otx2_nic *pfvf,
++				    struct otx2_flow *flow)
++{
++	struct otx2_flow *pf_mac;
++	struct ethhdr *eth_hdr;
++
++	pf_mac = kzalloc(sizeof(*pf_mac), GFP_KERNEL);
++	if (!pf_mac)
++		return -ENOMEM;
++
++	pf_mac->entry = 0;
++	pf_mac->dmac_filter = true;
++	pf_mac->location = pfvf->flow_cfg->ntuple_max_flows;
++	memcpy(&pf_mac->flow_spec, &flow->flow_spec,
++	       sizeof(struct ethtool_rx_flow_spec));
++	pf_mac->flow_spec.location = pf_mac->location;
++
++	/* Copy PF mac address */
++	eth_hdr = &pf_mac->flow_spec.h_u.ether_spec;
++	ether_addr_copy(eth_hdr->h_dest, pfvf->netdev->dev_addr);
++
++	/* Install DMAC filter with PF mac address */
++	otx2_dmacflt_add(pfvf, eth_hdr->h_dest, 0);
++
++	otx2_add_flow_to_list(pfvf, pf_mac);
++	pfvf->flow_cfg->nr_flows++;
++	set_bit(0, &pfvf->flow_cfg->dmacflt_bmap);
++
++	return 0;
++}
++
+ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
+ {
+ 	struct otx2_flow_config *flow_cfg = pfvf->flow_cfg;
+ 	struct ethtool_rx_flow_spec *fsp = &nfc->fs;
+ 	struct otx2_flow *flow;
++	struct ethhdr *eth_hdr;
+ 	bool new = false;
++	int err = 0;
+ 	u32 ring;
+-	int err;
+ 
+ 	ring = ethtool_get_flow_spec_ring(fsp->ring_cookie);
+ 	if (!(pfvf->flags & OTX2_FLAG_NTUPLE_SUPPORT))
+@@ -834,16 +930,15 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
+ 	if (ring >= pfvf->hw.rx_queues && fsp->ring_cookie != RX_CLS_FLOW_DISC)
+ 		return -EINVAL;
+ 
+-	if (fsp->location >= flow_cfg->ntuple_max_flows)
++	if (fsp->location >= otx2_get_maxflows(flow_cfg))
+ 		return -EINVAL;
+ 
+ 	flow = otx2_find_flow(pfvf, fsp->location);
+ 	if (!flow) {
+-		flow = kzalloc(sizeof(*flow), GFP_ATOMIC);
++		flow = kzalloc(sizeof(*flow), GFP_KERNEL);
+ 		if (!flow)
+ 			return -ENOMEM;
+ 		flow->location = fsp->location;
+-		flow->entry = flow_cfg->flow_ent[flow->location];
+ 		new = true;
+ 	}
+ 	/* struct copy */
+@@ -852,7 +947,54 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
+ 	if (fsp->flow_type & FLOW_RSS)
+ 		flow->rss_ctx_id = nfc->rss_context;
+ 
+-	err = otx2_add_flow_msg(pfvf, flow);
++	if (otx2_is_flow_rule_dmacfilter(pfvf, &flow->flow_spec)) {
++		eth_hdr = &flow->flow_spec.h_u.ether_spec;
++
++		/* Sync dmac filter table with updated fields */
++		if (flow->dmac_filter)
++			return otx2_dmacflt_update(pfvf, eth_hdr->h_dest,
++						   flow->entry);
++
++		if (bitmap_full(&flow_cfg->dmacflt_bmap,
++				flow_cfg->dmacflt_max_flows)) {
++			netdev_warn(pfvf->netdev,
++				    "Can't insert the rule %d as max allowed dmac filters are %d\n",
++				    flow->location +
++				    flow_cfg->dmacflt_max_flows,
++				    flow_cfg->dmacflt_max_flows);
++			err = -EINVAL;
++			if (new)
++				kfree(flow);
++			return err;
++		}
++
++		/* Install PF mac address to DMAC filter list */
++		if (!test_bit(0, &flow_cfg->dmacflt_bmap))
++			otx2_add_flow_with_pfmac(pfvf, flow);
++
++		flow->dmac_filter = true;
++		flow->entry = find_first_zero_bit(&flow_cfg->dmacflt_bmap,
++						  flow_cfg->dmacflt_max_flows);
++		fsp->location = flow_cfg->ntuple_max_flows + flow->entry;
++		flow->flow_spec.location = fsp->location;
++		flow->location = fsp->location;
++
++		set_bit(flow->entry, &flow_cfg->dmacflt_bmap);
++		otx2_dmacflt_add(pfvf, eth_hdr->h_dest, flow->entry);
++
++	} else {
++		if (flow->location >= pfvf->flow_cfg->ntuple_max_flows) {
++			netdev_warn(pfvf->netdev,
++				    "Can't insert non dmac ntuple rule at %d, allowed range %d-0\n",
++				    flow->location,
++				    flow_cfg->ntuple_max_flows - 1);
++			err = -EINVAL;
++		} else {
++			flow->entry = flow_cfg->flow_ent[flow->location];
++			err = otx2_add_flow_msg(pfvf, flow);
++		}
++	}
++
+ 	if (err) {
+ 		if (new)
+ 			kfree(flow);
+@@ -890,20 +1032,70 @@ static int otx2_remove_flow_msg(struct otx2_nic *pfvf, u16 entry, bool all)
+ 	return err;
+ }
+ 
++static void otx2_update_rem_pfmac(struct otx2_nic *pfvf, int req)
++{
++	struct otx2_flow *iter;
++	struct ethhdr *eth_hdr;
++	bool found = false;
++
++	list_for_each_entry(iter, &pfvf->flow_cfg->flow_list, list) {
++		if (iter->dmac_filter && iter->entry == 0) {
++			eth_hdr = &iter->flow_spec.h_u.ether_spec;
++			if (req == DMAC_ADDR_DEL) {
++				otx2_dmacflt_remove(pfvf, eth_hdr->h_dest,
++						    0);
++				clear_bit(0, &pfvf->flow_cfg->dmacflt_bmap);
++				found = true;
++			} else {
++				ether_addr_copy(eth_hdr->h_dest,
++						pfvf->netdev->dev_addr);
++				otx2_dmacflt_update(pfvf, eth_hdr->h_dest, 0);
++			}
++			break;
++		}
++	}
++
++	if (found) {
++		list_del(&iter->list);
++		kfree(iter);
++		pfvf->flow_cfg->nr_flows--;
++	}
++}
++
+ int otx2_remove_flow(struct otx2_nic *pfvf, u32 location)
+ {
+ 	struct otx2_flow_config *flow_cfg = pfvf->flow_cfg;
+ 	struct otx2_flow *flow;
+ 	int err;
+ 
+-	if (location >= flow_cfg->ntuple_max_flows)
++	if (location >= otx2_get_maxflows(flow_cfg))
+ 		return -EINVAL;
+ 
+ 	flow = otx2_find_flow(pfvf, location);
+ 	if (!flow)
+ 		return -ENOENT;
+ 
+-	err = otx2_remove_flow_msg(pfvf, flow->entry, false);
++	if (flow->dmac_filter) {
++		struct ethhdr *eth_hdr = &flow->flow_spec.h_u.ether_spec;
++
++		/* user not allowed to remove dmac filter with interface mac */
++		if (ether_addr_equal(pfvf->netdev->dev_addr, eth_hdr->h_dest))
++			return -EPERM;
++
++		err = otx2_dmacflt_remove(pfvf, eth_hdr->h_dest,
++					  flow->entry);
++		clear_bit(flow->entry, &flow_cfg->dmacflt_bmap);
++		/* If all dmac filters are removed delete macfilter with
++		 * interface mac address and configure CGX/RPM block in
++		 * promiscuous mode
++		 */
++		if (bitmap_weight(&flow_cfg->dmacflt_bmap,
++				  flow_cfg->dmacflt_max_flows) == 1)
++			otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
++	} else {
++		err = otx2_remove_flow_msg(pfvf, flow->entry, false);
++	}
++
+ 	if (err)
+ 		return err;
+ 
+@@ -1100,3 +1292,22 @@ int otx2_enable_rxvlan(struct otx2_nic *pf, bool enable)
+ 	mutex_unlock(&pf->mbox.lock);
+ 	return rsp_hdr->rc;
+ }
++
++void otx2_dmacflt_reinstall_flows(struct otx2_nic *pf)
++{
++	struct otx2_flow *iter;
++	struct ethhdr *eth_hdr;
++
++	list_for_each_entry(iter, &pf->flow_cfg->flow_list, list) {
++		if (iter->dmac_filter) {
++			eth_hdr = &iter->flow_spec.h_u.ether_spec;
++			otx2_dmacflt_add(pf, eth_hdr->h_dest,
++					 iter->entry);
++		}
++	}
++}
++
++void otx2_dmacflt_update_pfmac_flow(struct otx2_nic *pfvf)
++{
++	otx2_update_rem_pfmac(pfvf, DMAC_ADDR_UPDATE);
++}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index 59912f73417b..fe8789357746 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1110,6 +1110,11 @@ static int otx2_cgx_config_loopback(struct otx2_nic *pf, bool enable)
+ 	struct msg_req *msg;
+ 	int err;
+ 
++	if (enable && bitmap_weight(&pf->flow_cfg->dmacflt_bmap,
++				    pf->flow_cfg->dmacflt_max_flows))
++		netdev_warn(pf->netdev,
++			    "CGX/RPM internal loopback might not work as DMAC filters are active\n");
++
+ 	mutex_lock(&pf->mbox.lock);
+ 	if (enable)
+ 		msg = otx2_mbox_alloc_msg_cgx_intlbk_enable(&pf->mbox);
+@@ -1644,6 +1649,10 @@ int otx2_open(struct net_device *netdev)
+ 	/* Restore pause frame settings */
+ 	otx2_config_pause_frm(pf);
+ 
++	/* Install DMAC Filters */
++	if (pf->flags & OTX2_FLAG_DMACFLTR_SUPPORT)
++		otx2_dmacflt_reinstall_flows(pf);
++
+ 	err = otx2_rxtx_enable(pf, true);
+ 	if (err)
+ 		goto err_tx_stop_queues;
+-- 
+2.17.1
+
