@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193AA3B895F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAA13B8964
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhF3UAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:00:22 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39640 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhF3UAV (ORCPT
+        id S234012AbhF3UCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:02:22 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35779 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233693AbhF3UCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:00:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625083072; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=amOKaGT0U/tmgATHYPw2L7GZLIJkHCUxJX7IjppSDIw=;
- b=GNH+3LvEEoJSUvSLav58oH1GePqnl9a2Xzawr2qlnS0P7xa8dY+3PEadu5XAZdZCZYDRQvVQ
- eRh/3mWKq/Bd0j7OIpwzLl4htG3p5h8ERiWriD1U8adR/p4CcRinisacU52bwq4san7n5Dqe
- loN9Ts118RmfOqkZ0zjhF4qHeMc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60dcccaf2a2a9a9761959fab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 19:57:35
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10C13C433D3; Wed, 30 Jun 2021 19:57:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C67AC433F1;
-        Wed, 30 Jun 2021 19:57:33 +0000 (UTC)
+        Wed, 30 Jun 2021 16:02:20 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 15UJxfAp014915
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 15:59:42 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7001C15C3C8E; Wed, 30 Jun 2021 15:59:41 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 15:59:41 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Daniel Walsh <dwalsh@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "Schaufler, Casey" <casey.schaufler@intel.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "virtio-fs@redhat.com" <virtio-fs@redhat.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/1] xattr: Allow user.* xattr on symlink/special
+ files if caller has CAP_SYS_RESOURCE
+Message-ID: <YNzNLTxflKbDi8W2@mit.edu>
+References: <YNrhQ9XfcHTtM6QA@work-vm>
+ <e6f9ed0d-c101-01df-3dff-85c1b38f9714@schaufler-ca.com>
+ <20210629152007.GC5231@redhat.com>
+ <78663f5c-d2fd-747a-48e3-0c5fd8b40332@schaufler-ca.com>
+ <20210629173530.GD5231@redhat.com>
+ <f4992b3a-a939-5bc4-a5da-0ce8913bd569@redhat.com>
+ <YNvvLIv16jY8mfP8@mit.edu>
+ <YNwmXOqT7LgbeVPn@work-vm>
+ <YNyECw/1FzDCW3G8@mit.edu>
+ <YNyHVhGPe1bFAt+C@work-vm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Jul 2021 01:27:33 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 3/9] dt-bindings: remoteproc: qcom: Add Q6V5 Modem PIL
- binding
-In-Reply-To: <YNZqEJxp9dZUJe5U@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-4-git-send-email-sibis@codeaurora.org>
- <YNZqEJxp9dZUJe5U@google.com>
-Message-ID: <5a1534346e524b3808c11c6a4d224c86@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNyHVhGPe1bFAt+C@work-vm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-26 05:13, Matthias Kaehlcke wrote:
-> On Fri, Jun 25, 2021 at 01:17:32AM +0530, Sibi Sankar wrote:
->> Add a new modem compatible string for QTI SC7280 SoCs and introduce 
->> the
->> "qcom,ext-regs" and "qcom,qaccept-regs" bindings needed by the modem
->> sub-system running on SC7280 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  .../devicetree/bindings/remoteproc/qcom,q6v5.txt   | 32 
->> ++++++++++++++++++++--
->>  1 file changed, 30 insertions(+), 2 deletions(-)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt 
->> b/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
->> index 494257010629..d802e57701b8 100644
->> --- a/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
->> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
->> 
->> ...
->> 
->> @@ -208,6 +218,24 @@ For the compatible strings below the following 
->> phandle references are required:
->>  		    by the offset within syscon for conn_box_spare0 register
->>  		    used by the modem sub-system running on SC7180 SoC.
->> 
->> +For the compatible strings below the following phandle references are 
->> required:
->> +  "qcom,sc7280-mss-pil"
->> +- qcom,ext-regs:
->> +	Usage: required
->> +	Value type: <prop-encoded-array>
->> +	Definition: two phandles reference to syscons representing TCSR_REG 
->> and
+On Wed, Jun 30, 2021 at 04:01:42PM +0100, Dr. David Alan Gilbert wrote:
 > 
-> s/phandles reference/phandle references/
-> 
->> +		    TCSR register space followed by the two offset within the 
->> syscon
-> 
-> s/offset/offsets/
-> 
->> +		    to force_clk_en/rscc_disable and axim1_clk_off/crypto_clk_off
->> +		    registers respectively.
+> Even if you fix symlinks, I don't think it fixes device nodes or
+> anything else where the permissions bitmap isn't purely used as the
+> permissions on the inode.
 
-will fix ^^ in the re-spin.
+I think we're making a mountain out of a molehill.  Again, very few
+people are using quota these days.  And if you give someone write
+access to a 8TB disk, do you really care if they can "steal" 32k worth
+of space (which is the maximum size of an xattr, enforced by the VFS).
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+OK, but what about character mode devices?  First of all, most users
+don't have access to huge number of devices, but let's assume
+something absurd.  Let's say that a user has write access to *1024*
+devices.  (My /dev has 233 character mode devices, and I have write
+access to well under a dozen.)
+
+An 8TB disk costs about $200.  So how much of the "stolen" quota space
+are we talking about, assuming the user has access to 1024 devices,
+and the file system actually supports a 32k xattr.
+
+    32k * 1024 * $200 / 8TB / (1024*1024*1024) = $0.000763 = 0.0763 cents
+
+A 2TB SSD is less around $180, so even if we calculate the prices
+based on SSD space, we're still talking about a quarter of a penny.
+
+Why are we worrying about this?
+
+						- Ted
