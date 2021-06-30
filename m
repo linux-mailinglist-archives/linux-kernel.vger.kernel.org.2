@@ -2,244 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FEC3B80ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577E23B80F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbhF3Kqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:46:44 -0400
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:44796 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhF3Kqi (ORCPT
+        id S234201AbhF3KuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229882AbhF3KuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:46:38 -0400
-Received: by mail-wr1-f49.google.com with SMTP id u11so2992776wrw.11;
-        Wed, 30 Jun 2021 03:44:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/bJ9mAQYrDoSXVCmRwiqqyM6D6DKwLpDAmVZGqsyNP8=;
-        b=mSfum+3Usmu3DYz3G0He6wxlPhSxPcHmTeYdfKQXjpfla6TlRwOgiN+jwRco+9ue0p
-         mbuOIds6uQpGnBSNM4FAvA1Z4JktG1/kMmGD9x0u45ly0dejDTvRkvFzQxqKpM136Lwx
-         holc5Etrq0YwtmgWtjrFI/2oDcuoKBnUjWy/iOxq4QClG7o1B5/PExrFmJCyoF//bQ4V
-         ZzgQvQzSZvrwGQg55lx6TCI9k69cmCbAYn0QmOz22V7VQRx6kP6gnbTjQJTJpn2mEnnl
-         8YLcV51U8aJOfwf2tSQ8cTmFfBdGk91CNR3qt5o9MMzEHIVN9txcs6FskHqd/wBEbD93
-         Mh4w==
-X-Gm-Message-State: AOAM531XiQuL1asjHJaCujAYiBNI//vsCegn2e/thlRSEoOmv2+UXEu/
-        eRitlI7+1xDeKZYN+NliEEhI9FMgYRg=
-X-Google-Smtp-Source: ABdhPJyL+mp3g1Emvl7mP2Zj7s2nSsV7cz3X6/FBrJRGHOsgWS6u4mIbcuMgQDH2qB2m4YdGKs5AYg==
-X-Received: by 2002:a5d:6d8b:: with SMTP id l11mr38553508wrs.21.1625049848038;
-        Wed, 30 Jun 2021 03:44:08 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r2sm21581269wrv.39.2021.06.30.03.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 03:44:07 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 10:44:05 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 06/17] mshv: SynIC port and connection hypercalls
-Message-ID: <20210630104405.3ufcmg5gnwu2hxxo@liuwe-devbox-debian-v2>
-References: <cover.1622654100.git.viremana@linux.microsoft.com>
- <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
+        Wed, 30 Jun 2021 06:50:04 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9304C061756;
+        Wed, 30 Jun 2021 03:47:35 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f12c30098bf4c52f71fbadd.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:98bf:4c52:f71f:badd])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2ACFC1EC0391;
+        Wed, 30 Jun 2021 12:47:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625050052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TkZy/QD833ha13+1IsV4q1qSizeGPCgUyVXoEPrETa0=;
+        b=C7pdnqFEEK2T/fX3doHU2H9dhnWElzyZdk6lcxAG+/mRWm8i09G0hU8kCbGoGnByP06lAr
+        h1BYRT350UhDMxencZmZJoJ0M5pwZ+y7jovHlmtW70GzdER3tSh/FjBqeIyVCE6dZnMjZ7
+        RT3mcw55i6niPEBe1YSU/1K/fWdgwVc=
+Date:   Wed, 30 Jun 2021 12:47:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] ACPI updates for v5.14-rc1
+Message-ID: <YNxLvhBBE7Ff6Q5u@zn.tnic>
+References: <CAJZ5v0hm5ihfU_hBbMB9u7SmH18PLGp6+Z6=wBLa8WxaVQRTpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3125953aae8e7950a6da4c311ef163b79d6fb6b3.1622654100.git.viremana@linux.microsoft.com>
+In-Reply-To: <CAJZ5v0hm5ihfU_hBbMB9u7SmH18PLGp6+Z6=wBLa8WxaVQRTpg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 05:20:51PM +0000, Vineeth Pillai wrote:
-[...]
-> +int
-> +hv_call_notify_port_ring_empty(u32 sint_index)
-> +{
-> +	union hv_notify_port_ring_empty input = { 0 };
-> +	unsigned long flags;
-> +	int status;
-> +
-> +	local_irq_save(flags);
-> +	input.sint_index = sint_index;
-> +	status = hv_do_fast_hypercall8(HVCALL_NOTIFY_PORT_RING_EMPTY,
-> +					input.as_uint64) &
-> +			HV_HYPERCALL_RESULT_MASK;
-> +	local_irq_restore(flags);
-> +
-> +	if (status != HV_STATUS_SUCCESS) {
-> +		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
-> +		return -hv_status_to_errno(status);
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/drivers/hv/mshv.h b/drivers/hv/mshv.h
-> index 037291a0ad45..e16818e977b9 100644
-> --- a/drivers/hv/mshv.h
-> +++ b/drivers/hv/mshv.h
-> @@ -117,4 +117,16 @@ int hv_call_translate_virtual_address(
->  		u64 *gpa,
->  		union hv_translate_gva_result *result);
->  
-> +int hv_call_create_port(u64 port_partition_id, union hv_port_id port_id,
-> +			u64 connection_partition_id, struct hv_port_info *port_info,
-> +			u8 port_vtl, u8 min_connection_vtl, int node);
-> +int hv_call_delete_port(u64 port_partition_id, union hv_port_id port_id);
-> +int hv_call_connect_port(u64 port_partition_id, union hv_port_id port_id,
-> +			 u64 connection_partition_id,
-> +			 union hv_connection_id connection_id,
-> +			 struct hv_connection_info *connection_info,
-> +			 u8 connection_vtl, int node);
-> +int hv_call_disconnect_port(u64 connection_partition_id,
-> +			    union hv_connection_id connection_id);
-> +int hv_call_notify_port_ring_empty(u32 sint_index);
->  #endif /* _MSHV_H */
-> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> index f70391a3320f..42e0237b0da8 100644
-> --- a/include/asm-generic/hyperv-tlfs.h
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> @@ -159,6 +159,8 @@ struct ms_hyperv_tsc_page {
->  #define HVCALL_GET_VP_REGISTERS			0x0050
->  #define HVCALL_SET_VP_REGISTERS			0x0051
->  #define HVCALL_TRANSLATE_VIRTUAL_ADDRESS	0x0052
-> +#define HVCALL_DELETE_PORT			0x0058
-> +#define HVCALL_DISCONNECT_PORT			0x005b
->  #define HVCALL_POST_MESSAGE			0x005c
->  #define HVCALL_SIGNAL_EVENT			0x005d
->  #define HVCALL_POST_DEBUG_DATA			0x0069
-> @@ -168,7 +170,10 @@ struct ms_hyperv_tsc_page {
->  #define HVCALL_MAP_DEVICE_INTERRUPT		0x007c
->  #define HVCALL_UNMAP_DEVICE_INTERRUPT		0x007d
->  #define HVCALL_RETARGET_INTERRUPT		0x007e
-> +#define HVCALL_NOTIFY_PORT_RING_EMPTY		0x008b
->  #define HVCALL_ASSERT_VIRTUAL_INTERRUPT		0x0094
-> +#define HVCALL_CREATE_PORT			0x0095
-> +#define HVCALL_CONNECT_PORT			0x0096
->  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
->  #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
->  #define HVCALL_MAP_VP_STATE_PAGE			0x00e1
-> @@ -949,4 +954,54 @@ struct hv_translate_virtual_address_out {
->  	u64 gpa_page;
->  } __packed;
->  
-> +struct hv_create_port {
-> +	u64 port_partition_id;
-> +	union hv_port_id port_id;
-> +	u8 port_vtl;
-> +	u8 min_connection_vtl;
-> +	u16 padding;
-> +	u64 connection_partition_id;
-> +	struct hv_port_info port_info;
-> +	union hv_proximity_domain_info proximity_domain_info;
-> +} __packed;
-> +
-> +union hv_delete_port {
-> +	u64 as_uint64[2];
-> +	struct {
-> +		u64 port_partition_id;
-> +		union hv_port_id port_id;
-> +		u32 reserved;
-> +	} __packed;
-> +};
-> +
-> +union hv_notify_port_ring_empty {
-> +	u64 as_uint64;
-> +	struct {
-> +		u32 sint_index;
-> +		u32 reserved;
-> +	} __packed;
-> +};
-> +
-> +struct hv_connect_port {
-> +	u64 connection_partition_id;
-> +	union hv_connection_id connection_id;
-> +	u8 connection_vtl;
-> +	u8 rsvdz0;
-> +	u16 rsvdz1;
-> +	u64 port_partition_id;
-> +	union hv_port_id port_id;
-> +	u32 reserved2;
-> +	struct hv_connection_info connection_info;
-> +	union hv_proximity_domain_info proximity_domain_info;
-> +} __packed;
-> +
-> +union hv_disconnect_port {
-> +	u64 as_uint64[2];
-> +	struct {
-> +		u64 connection_partition_id;
-> +		union hv_connection_id connection_id;
-> +		u32 is_doorbell: 1;
-> +		u32 reserved: 31;
-> +	} __packed;
-> +};
->  #endif
-> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> index 2e859d2f9609..76ff26579622 100644
-> --- a/include/linux/hyperv.h
-> +++ b/include/linux/hyperv.h
-> @@ -750,15 +750,6 @@ struct vmbus_close_msg {
->  	struct vmbus_channel_close_channel msg;
->  };
->  
-> -/* Define connection identifier type. */
-> -union hv_connection_id {
-> -	u32 asu32;
-> -	struct {
-> -		u32 id:24;
-> -		u32 reserved:8;
-> -	} u;
-> -};
-> -
->  enum vmbus_device_type {
->  	HV_IDE = 0,
->  	HV_SCSI,
-> diff --git a/include/uapi/asm-generic/hyperv-tlfs.h b/include/uapi/asm-generic/hyperv-tlfs.h
-> index 388c4eb29212..2031115c6cce 100644
-> --- a/include/uapi/asm-generic/hyperv-tlfs.h
-> +++ b/include/uapi/asm-generic/hyperv-tlfs.h
-> @@ -53,6 +53,25 @@ union hv_message_flags {
->  	} __packed;
->  };
->  
-> +enum hv_port_type {
-> +	HV_PORT_TYPE_MESSAGE = 1,
-> +	HV_PORT_TYPE_EVENT   = 2,
-> +	HV_PORT_TYPE_MONITOR = 3,
-> +	HV_PORT_TYPE_DOORBELL = 4	// Root Partition only
-> +};
-> +
-> +
-> +/*
-> + * Doorbell connection_info flags.
-> + */
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_MASK  0x00000007
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_ANY   0x00000000
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_BYTE  0x00000001
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_WORD  0x00000002
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_DWORD 0x00000003
-> +#define HV_DOORBELL_FLAG_TRIGGER_SIZE_QWORD 0x00000004
-> +#define HV_DOORBELL_FLAG_TRIGGER_ANY_VALUE  0x80000000
-> +
->  /* Define port identifier type. */
->  union hv_port_id {
->  	__u32 asu32;
-> @@ -62,6 +81,63 @@ union hv_port_id {
->  	} __packed u;
->  };
->  
-> +struct hv_port_info {
-> +	enum hv_port_type port_type;
+On Tue, Jun 29, 2021 at 09:01:10PM +0200, Rafael J. Wysocki wrote:
+> Erik Kaneda (6):
+>       ACPICA: Fix memory leak caused by _CID repair function
+>       ACPICA: iASL: add disassembler support for PRMT
+>       ACPICA: Add support for PlatformRtMechanism OperationRegion handler
+>       ACPICA: Add PRMT module header to facilitate parsing
+>       ACPI: PRM: implement OperationRegion handler for the
+> PlatformRtMechanism subtype
 
-Can you please replace the enum from the input / output structures with
-__u32? I don't think the C standard specifies the exact size of enum so
-this is prone to error. You can see in other places in this header when
-we need to store an enum we use __u32.
+$ git checkout master
+$ git pull
+$ make oldconfig
 
-Wei.
+Platform Runtime Mechanism Support (ACPI_PRMT) [Y/n/?] (NEW) ?
+
+There is no help available for this option.
+Symbol: ACPI_PRMT [=y]
+Type  : bool
+Defined at drivers/acpi/Kconfig:547
+  Prompt: Platform Runtime Mechanism Support
+  Depends on: EFI [=y] && X86_64 [=y]
+  Location:
+    -> Power management and ACPI options
+
+
+
+Platform Runtime Mechanism Support (ACPI_PRMT) [Y/n/?] (NEW)
+
+I don't know what that means, there's no help, no nothing. And it is
+default y for no apparent reason.
+
+/me looks at the commit message:
+
+    Platform Runtime Mechanism (PRM) is a firmware interface that exposes
+    a set of binary executables that can either be called from the AML
+    interpreter or device drivers by bypassing the AML interpreter.
+    This change implements the AML interpreter path.
+
+I'm still unclear whether I need it or not.
+
+Guys, you need to think about your users and to write help text which is
+*actually* usable for people who do not deal with ACPI firmware gunk.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
