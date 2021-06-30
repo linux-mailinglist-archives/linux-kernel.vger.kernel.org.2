@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9533B8239
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30A53B8243
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhF3Mh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:37:28 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36314 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234510AbhF3Mh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:37:26 -0400
-Received: from [10.130.0.191] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj0HWZNxgmtEaAA--.10408S3;
-        Wed, 30 Jun 2021 20:34:51 +0800 (CST)
-Subject: Re: [PATCH v6 2/2] MIPS: Loongson64: DTS: Add pm block node for
- Loongson-2K1000
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210630065103.23665-1-zhangqing@loongson.cn>
- <20210630065103.23665-2-zhangqing@loongson.cn>
- <a69323fd-c770-89e2-d3a7-a0807ad831af@flygoat.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <cf8a7dae-53cc-3911-6e65-eafe61b92ad6@loongson.cn>
-Date:   Wed, 30 Jun 2021 20:34:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S234765AbhF3Mhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:37:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234618AbhF3Mho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:37:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2DA61622;
+        Wed, 30 Jun 2021 12:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625056516;
+        bh=Ou0dDCgoY93+XH7Ohp1U845vXDZIJyhjcdMYSiuQTkY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C56YgfjRwydgzFN0x7mgvW0G4MUTRG/h21qRv1gFf57Z8fePi1NOU9hsbSNqfe6bp
+         n6BvGMRjpFR82y/1STdAjD46sczRg2gRbQa6cCQuKe3aOq3ts+rqJ/iRYQd7q76fA7
+         FGH/oJrHYVKUEg6KzCgtmRUt4QxmHlAuZ4R13OsrAx8BQ1TPAOm61Zn3agDgmK6AgJ
+         KdcmNOeQ3T7uDV1L+sGDe1f4pky5Cjk/0OLPRT0hiVZ6CbqemMmS0WehZzjYH5RnlF
+         hOVVLd04fomkCA1tC1GqhNWcfcAWvneCbd8lVmMj6nq1Mh8ejpXwIQMlF7aK2jXwYm
+         qkT0wLLwMY/vg==
+Date:   Wed, 30 Jun 2021 13:34:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     amelie.delaunay@foss.st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@foss.st.com
+Subject: Re: [PATCH 3/6] Revert "spi: stm32: properly handle 0 byte transfer"
+Message-ID: <20210630123447.GD5106@sirena.org.uk>
+References: <1625042723-661-1-git-send-email-alain.volmat@foss.st.com>
+ <1625042723-661-4-git-send-email-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <a69323fd-c770-89e2-d3a7-a0807ad831af@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxj0HWZNxgmtEaAA--.10408S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWfur4fGF4kWr18tFWfuFg_yoWkArX_t3
-        W2kF1kGFWfJF1xJ34UWr1UJry3urW7Z3WrCF18Zr1YqasIywn8JayUA395Gry3GFyY9rs3
-        Xr4rXFn7ArWIgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbI8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc2xS
-        Y4AK67AK6ryUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
-        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        xUcfHUDUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0vzXIDBeUiKkjNJl"
+Content-Disposition: inline
+In-Reply-To: <1625042723-661-4-git-send-email-alain.volmat@foss.st.com>
+X-Cookie: Use at own risk.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--0vzXIDBeUiKkjNJl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 06/30/2021 04:20 PM, Jiaxun Yang wrote:
->
-> 在 2021/6/30 14:51, Qing Zhang 写道:
->> The module is now supported, enable it.
->
-> Oh, you forgot binding document.
+On Wed, Jun 30, 2021 at 10:45:20AM +0200, Alain Volmat wrote:
+> This reverts commit 2269f5a8b1a7b38651d62676b98182828f29d11a.
+> 0 byte transfer handling is now done within the core in code added
+> by commit b306320322c9 ("spi: Skip zero-length transfers in spi_transfer_one_message()")
 
-     oh, I forgot a patch... :
-     I'll send it make RESEND.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-     Thanks,
+--0vzXIDBeUiKkjNJl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-     -Qing
+-----BEGIN PGP SIGNATURE-----
 
->
-> Thanks.
->
-> - Jiaxun
->
->>
->> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
->> ---
->>   arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi 
->> b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> index 569e814def83..8f469b623740 100644
->> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
->> @@ -52,6 +52,11 @@ package0: bus@10000000 {
->>               0 0x40000000 0 0x40000000 0 0x40000000
->>               0xfe 0x00000000 0xfe 0x00000000 0 0x40000000>;
->>   +        pm: power-controller@1fe07000 {
->> +            compatible = "loongson,ls2k-pm";
->> +            reg = <0 0x1fe07000 0 0x422>;
->> +        };
->> +
->>           liointc0: interrupt-controller@1fe11400 {
->>               compatible = "loongson,liointc-2.0";
->>               reg = <0 0x1fe11400 0 0x40>,
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcZOcACgkQJNaLcl1U
+h9B/ogf/Vst1y720ItQmoJtAnynVuU00lwrfCgpr2gA02reYHLKL2xL3r0VmqKBe
+SCuYcM9dUn+xbGcvjgWs2vufZmXKUu7WLkSHl6F01GZWMV2oHflU9XsY7zcbYZIO
+hRV7/ZN/Q1s/jwqwnI+pd4EbJ+lpdW6GRrJVgxj4TzUgEqwv0X2LPtZDDKqbSpHH
+vtdwsYl/4JFmz/OfvHT046uAdbNeJft/Cwzn4ZZA83QxGuHbnVAOzSC1YQKiwuxR
+Zsp5Ppr2NHJqD4em8bY7PKfZpocM0MGTknqrF9ZEs9It/vUnjF6JRDkJmze7R79d
+nIdR40lj7E6pdA4xrv3U+mkfRkBY6g==
+=8ayZ
+-----END PGP SIGNATURE-----
 
+--0vzXIDBeUiKkjNJl--
