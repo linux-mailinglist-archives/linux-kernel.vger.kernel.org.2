@@ -2,175 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18A53B8197
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0E03B8196
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhF3MGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        id S234379AbhF3MG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbhF3MGf (ORCPT
+        with ESMTP id S234148AbhF3MG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:06:35 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2076BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:04:07 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id j8so1559220vsd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:04:07 -0700 (PDT)
+        Wed, 30 Jun 2021 08:06:26 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6386C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:03:56 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id df12so2901503edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 05:03:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mSTV53Ormamnz9oqAVbKwPR4krBuUta3co+KXeJPHTg=;
-        b=i3YCo3zIZgM/TMmAMT/nWKjm1SEkngb8OZSJX7RhK6wVQWHAk6bOvgLXemQd6NlQ0b
-         1sHUk+7+VWxqSrtLtCtlrBFMv9ndzit/PePEAJ+O0lUR/UELemODu5Oq38UosW6pW7HZ
-         ix7pjqv7BOZ5swTxXcw/23GnY+SD1sb2e6Va+Wyub7ch1vP090r1d9InhXHQKaWy8XPj
-         Ra4XvoFao/g66k9qMa0f4xjS+UCrKsvPGYKfBExOuy56ICJ/cb/+EDo2w85l+hosGr7Q
-         llEWVobxh6V2Wj1TeCbtAxSj3UWN4BlbJD3ngagjmJRfshWS1gynqd9j26FvU4Eyq8ed
-         4jBw==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PGqfMLR1AMj29tMPKqbUUGw05oAykXOuNpPiQvs4AjI=;
+        b=ny8ehxZdNZHCiNeSJf5TyJF2HdPeKNTIXbzHv6efvOvHjarKyeUrf41Pk+WqskwiQH
+         VROciDUxRz6J8RNuboRe0XfBjl0JwzWoEFOOM2nQeaxJ/Aj5+J0DXZcUdD1NaLcKixwE
+         InFwKmZnQI/PbG5x709d8XKhxSxkE9VZkb4TTNhvrGiKtywwyVIodcCuSfi0b38CbJQq
+         0l48i4A7I/JmGPqKT1NWQovrMj4KRVVHVaEuexJ0cxjdcXChn0yI3PCGAQFacf3CCfeB
+         1TWGrAu75OqfAOPMpHWwmFlGS0PmbLN3kCZYPyEsGQclNzYLX0jpMDbhp73IDqanw92B
+         lJAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mSTV53Ormamnz9oqAVbKwPR4krBuUta3co+KXeJPHTg=;
-        b=IYvQsUNRUArPKdlvrvVwfSRhXvaUxI9m0PYzlNk6RQT+OOdHA3tLTPnEA+2h0SxYX8
-         g+woZ+kNmSk2ClyNbIVzdzBzxv8Q4kwKJNfcYQqNJN0GaQZOg/UOrs1RqVXtUJdDJiJN
-         36K6mvtOb5B6z+/mpSTWSVZsxThu3GTPqvMQio8pCiMbscVQDKWo3f71UizyH4f0LV9B
-         hlgywXbe3WXDeewRv+/8LkeHYZ8eUt7EZxTfiQwcYCRG7m+xz2r/z+gsHoC0/Apx28Yx
-         E3db2yV2g4NZqpRaVxN5BBZ0pKL0NoIexgaQrUpUEaOqbXbEjY72wPxSQDVlSKjrcOnF
-         lJMA==
-X-Gm-Message-State: AOAM533bif3ljW3gY6LPyHJ8/UMB6F4+HtDZGFeTAtTmIcQEpQWhv622
-        MGgIp8hTdTmRIdTLfsOiFsTcFZv4Pe7y79hdqpWtsQ==
-X-Google-Smtp-Source: ABdhPJyXl4iLVbk5mGr0+59tFQmdQGrW1ymmtZZdl8lmpno5eXnWmnqUpraj4mElrt1qUMlbrqdtgti5y9uGGTw4nbs=
-X-Received: by 2002:a67:ee54:: with SMTP id g20mr22316142vsp.55.1625054646254;
- Wed, 30 Jun 2021 05:04:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PGqfMLR1AMj29tMPKqbUUGw05oAykXOuNpPiQvs4AjI=;
+        b=uS0SwxDXalnzBi8XEIixWAitZvd/G8VLSRXvo5z9ufuk5ALw+I5LI/Ls3ryJeOmgg8
+         6Zc3ihX1nzFjHYusbI+8voiscxndynjM7buAsPGY/DLy95vTWYPgwLqVWrnzBumU2nQM
+         /F6VzCeADorl4uuQzG8kTGi1fhsN8K7m0dT0qRcoZB/czhRZ07iGB5B6HO2e7u5WfdEA
+         T5iiYrz0/mTYCsfpLZe4Nx1HJR4faw7B1U257hb2/a4TgLsqTaM4Sc2p6WViahKWI1zT
+         rYGwrB5QeBSHFV7U1OdXeEqbEl/+8VBjj5ftppKRlbbmJ+shnBS/lPBa4FLV/lTZ2r7j
+         l3Pg==
+X-Gm-Message-State: AOAM532fC1acTP/W6vzNOpmVMRy9RXl2DFCA8vvz9q9OKs2dMDcwE3SF
+        kzoWltc9Ks2pUNjOJlDknPSYzA==
+X-Google-Smtp-Source: ABdhPJwRIbC5S4CIcN4ylAyrM7dbLOgsKBD7iZ7VpQ7wlD3Gm14TjOuP8G18kUI3YnNGz5PsE+2/Mg==
+X-Received: by 2002:a50:ef09:: with SMTP id m9mr3392887eds.130.1625054635250;
+        Wed, 30 Jun 2021 05:03:55 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id u21sm9405610eja.59.2021.06.30.05.03.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 05:03:54 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: accel: da311: convert probe to device-managed functions
+Date:   Wed, 30 Jun 2021 15:03:38 +0300
+Message-Id: <20210630120338.482426-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210622202345.795578-1-jernej.skrabec@gmail.com>
- <CAK8P3a1mvRTTFHtxqREmcbgJS+e94BHajCtAU_fzBhNNKjJBcg@mail.gmail.com>
- <CAPDyKFqFTCzXFMar88CYdZKc=eMjKszsOCS1LwLmnF0uNQyPAw@mail.gmail.com> <CAK8P3a2yo6eAe+jZQ7XB9ERYOYvBdCfjMKCYgm=gh-Ekd=SQ3Q@mail.gmail.com>
-In-Reply-To: <CAK8P3a2yo6eAe+jZQ7XB9ERYOYvBdCfjMKCYgm=gh-Ekd=SQ3Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 30 Jun 2021 14:03:29 +0200
-Message-ID: <CAPDyKFp4BkfEW+wKwED97FNvnb4_5AWDO8KwpQvVXaHa7pSywQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>, pizza@shaftnet.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 at 13:30, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Jun 30, 2021 at 11:56 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Tue, 22 Jun 2021 at 22:33, Arnd Bergmann <arnd@arndb.de> wrote:
-> > >
-> > > On Tue, Jun 22, 2021 at 10:24 PM Jernej Skrabec
-> > > <jernej.skrabec@gmail.com> wrote:
-> > > >
-> > > > It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
-> > > > memory allocated on stack, SDIO operations fail due to invalid memory
-> > > > address conversion:
-> > >
-> > > Thank you for sending this!
-> > >
-> > > It's worth pointing out that even without CONFIG_VMAP_STACK, using
-> > > dma_map_sg() on a stack variable is broken, though it will appear to
-> > > work most of the time but rarely cause a stack data corruption when
-> > > the cache management goes wrong.
-> > >
-> > > This clearly needs to be fixed somewhere, if not with your patch, then
-> > > a similar one.
-> > >
-> > > > diff --git a/drivers/net/wireless/st/cw1200/hwio.c b/drivers/net/wireless/st/cw1200/hwio.c
-> > > > index 3ba462de8e91..5521cb7f2233 100644
-> > > > --- a/drivers/net/wireless/st/cw1200/hwio.c
-> > > > +++ b/drivers/net/wireless/st/cw1200/hwio.c
-> > > > @@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common *priv, u16 addr,
-> > > >  static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
-> > > >                                         u16 addr, u32 *val)
-> > > >  {
-> > > > -       __le32 tmp;
-> > > > -       int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
-> > > > -       *val = le32_to_cpu(tmp);
-> > > > +       __le32 *tmp;
-> > > > +       int i;
-> > > > +
-> > > > +       tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-> > > > +       if (!tmp)
-> > > > +               return -ENOMEM;
-> > > > +
-> > > > +       i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-> > > > +       *val = le32_to_cpu(*tmp);
-> > > > +       kfree(tmp);
-> > > >         return i;
-> > > >  }
-> > >
-> > > There is a possible problem here when the function gets called from
-> > > atomic context, so it might need to use GFP_ATOMIC instead of
-> > > GFP_KERNEL. If it's never called from atomic context, then this patch
-> > > looks correct to me.
-> >
-> > I would be surprised if this is called from atomic context (when IRQs
-> > are turned off), because in most cases, to complete the read/write
-> > request the mmc controller driver relies on IRQs being delivered.
->
-> I thought I had seen a spinlock in the forked driver, but I don't see
-> it now, so I probably misremembered that bit.
->
-> > > The alternative would be to add a bounce buffer check based on
-> > > is_vmalloc_or_module_addr() in sdio_io_rw_ext_helper(), which would
-> > > add a small bit of complexity there but solve the problem for
-> > > all drivers at once. In this case, it would probably have to use
-> > > GFP_ATOMIC regardless of whether __cw1200_reg_read_32()
-> > > is allowed to sleep, since other callers might not.
-> >
-> > I like the idea, but...
-> >
-> > I don't think we should see this as an alternative, but rather as a
-> > complement which would have performance issues. A warning should be
-> > printed, if the buffer isn't properly allocated.
->
-> Fair enough. I found the function call I was looking for: object_is_on_stack(),
-> the patch below should print a warning once when a driver passes
-> a bad buffer, but I did not test that.
->
-> There are some possible variations on that: an on-stack buffer by
-> itself can work as long as the DMA is cache-coherent and stacks
-> are not vmapped. For the is_vmalloc_or_module_addr() case,
-> we may decide to just return an error, rather than running into
-> a kernel oops.
->
-> > Additionally, I don't think GFT_ATOMIC should be needed.
->
-> Ok, I now see the mmc_wait_for_req() in mmc_io_rw_extended()
-> that probably means it can not be called in atomic context at all,
-> and that GFP_KERNEL is safe, and that any driver calling it with
-> a spinlock held is already broken.
->
->        Arnd
->
-> 8<---
-> diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
-> index 4c229dd2b6e5..845f9ca3b200 100644
-> --- a/drivers/mmc/core/sdio_ops.c
-> +++ b/drivers/mmc/core/sdio_ops.c
-> @@ -124,6 +124,7 @@ int mmc_io_rw_extended(struct mmc_card *card, int
-> write, unsigned fn,
->         int err;
->
->         WARN_ON(blksz == 0);
-> +       WARN_ON_ONCE(is_vmalloc_or_module_addr(buf) || object_is_on_stack(buf));
+This is another simple conversion to device-managed functions, requiring
+the use of devm_iio_device_register() and moving the disabling of the
+device on a devm_add_action_or_reset() hook.
 
-Looks reasonable to me, at least we should start giving a warning.
-Would you like to send a formal patch that we can test?
+The i2c_set_clientdata() can be removed, as the PM functions can work with
+just the device object, to obtain the i2c_client object.
 
-Kind regards
-Uffe
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/iio/accel/da311.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/iio/accel/da311.c b/drivers/iio/accel/da311.c
+index 92593a1cd1aa..04e13487e706 100644
+--- a/drivers/iio/accel/da311.c
++++ b/drivers/iio/accel/da311.c
+@@ -212,6 +212,11 @@ static const struct iio_info da311_info = {
+ 	.read_raw	= da311_read_raw,
+ };
+ 
++static void da311_disable(void *client)
++{
++	da311_enable(client, false);
++}
++
+ static int da311_probe(struct i2c_client *client,
+ 			const struct i2c_device_id *id)
+ {
+@@ -229,7 +234,6 @@ static int da311_probe(struct i2c_client *client,
+ 
+ 	data = iio_priv(indio_dev);
+ 	data->client = client;
+-	i2c_set_clientdata(client, indio_dev);
+ 
+ 	indio_dev->info = &da311_info;
+ 	indio_dev->name = "da311";
+@@ -245,22 +249,11 @@ static int da311_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = iio_device_register(indio_dev);
+-	if (ret < 0) {
+-		dev_err(&client->dev, "device_register failed\n");
+-		da311_enable(client, false);
+-	}
+-
+-	return ret;
+-}
+-
+-static int da311_remove(struct i2c_client *client)
+-{
+-	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+-
+-	iio_device_unregister(indio_dev);
++	ret = devm_add_action_or_reset(&client->dev, da311_disable, client);
++	if (ret)
++		return ret;
+ 
+-	return da311_enable(client, false);
++	return devm_iio_device_register(&client->dev, indio_dev);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -289,7 +282,6 @@ static struct i2c_driver da311_driver = {
+ 		.pm = &da311_pm_ops,
+ 	},
+ 	.probe		= da311_probe,
+-	.remove		= da311_remove,
+ 	.id_table	= da311_i2c_id,
+ };
+ 
+-- 
+2.31.1
+
