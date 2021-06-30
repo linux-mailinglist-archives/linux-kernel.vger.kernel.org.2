@@ -2,290 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F88C3B8679
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE313B867E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhF3PtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        id S235908AbhF3PuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhF3PtD (ORCPT
+        with ESMTP id S235743AbhF3Pt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:49:03 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C6C061756;
-        Wed, 30 Jun 2021 08:46:34 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id y76so3695593iof.6;
-        Wed, 30 Jun 2021 08:46:34 -0700 (PDT)
+        Wed, 30 Jun 2021 11:49:59 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A281EC0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:47:28 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id h18so1336426qve.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DQtlKoCc9YSJGpDWgsPOEOvlsOxc9jffBtGa2EcQTms=;
-        b=JgoTCEZWNGvGo04wuKHdsw577/uZhlfIg47P9qxRFAN/TEZrJN+qGEGgb5UqA16ZPn
-         MJHuYmYcx1QBCVXDfOdvj2QgZAlXzrauFy/SrjnymV875+WY1YYgfZq7qBbVOeqPI7qh
-         lCokm0VKF1EXhTLBg7PIwvtvE//akoKu/P0q+jag4awhxAOqIfDU8TRp2lQrg4o8FQMP
-         VySH+WQ1WVX3C2DwBoUH1aP5F90OnsDek86EibqpYV/c2xQqASWjtRkN84U3GaHT6MXG
-         ScgwTFK89o7YJU8LfgqpqzupjOj0J0kbbXAcUE5BK6d2a9bHM2DTw71Iw5M7LO2QKsr7
-         7KcA==
+         :cc;
+        bh=VxezOHsPVxs+xB6BVTLLYf2XI/Gpz28qXdqPvfvuUuY=;
+        b=swaiBn8GrCoTmoRBrySgqREVdAql6hqiSVM2EWhkYOjNdx1uYvOEZKtm6LuGTYKbNe
+         C6Y8HhXzvumyE55ctUhCymF4q7GKDLoD09ByN5GMlkH/J5e5MwpwSS37xdKzsIOYpW7j
+         WwiXv2C7tgQz8bS3v4kQhzF9AiN88YZt91YjpOc8Wp18kp/I5e+npykGyw4AzSR6SP4V
+         ywTkN21gsgbMydOL+WiGbLey/rCKJh3rXNe5keH9lsX+/57XWfJ8ssOTtf6Fe4AfV4SB
+         yynX3BebGV2NgYkLi+8eipvZ9s5UTQybGMOpDgWtRjtAo+4w87pxvaTAY4R+AY1eljjN
+         eFQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DQtlKoCc9YSJGpDWgsPOEOvlsOxc9jffBtGa2EcQTms=;
-        b=T/iqlBQTFKhdWOYYwH6sjJdX7myYucXX1a5vRPeomwMQ53ArzIsUDJP93ZXqp7kMOl
-         ygAhNXRvv6zm1jXbbRSwIuxVjmHp7m1Hcezvs3sejPkvW08u25i0sfJ/JxY1qjqtvMGs
-         aT96qDxBjHZwrQ6pqP59BQlH+VpKlMkOr8gw/8WyHMUD0HCqqe7ropcbuNkqRlM48nGH
-         ZqjxTNclH2tkPmTKHlAa53ewvambpuqxKemkGXiJEVkIrvjNgP2PPC1/KvJmL1kXYb4o
-         k8Id0Sr3v16n/k5asgJX0VqB2aAyVcF9J23agKODJ8dsMkuj8FGX5sPpVGZMIuzhIcG0
-         xR+A==
-X-Gm-Message-State: AOAM531x7eF+Qu24kC5NMvFEabCsj2/aAi7FnhTwxw9/jnc825e3xHBJ
-        ecbXOUe7ZU87TlMZ8rh6AG7pqLBZpxymdCL031A=
-X-Google-Smtp-Source: ABdhPJysHxvk5qcwQJzY0bzYS66Eb29ROJRKzIhokSPLXEzgIfWYaxQBcpUsM/8d0yAuz0Hv4fIryDGRbJaY6fUNcrA=
-X-Received: by 2002:a02:908a:: with SMTP id x10mr9258682jaf.30.1625067993559;
- Wed, 30 Jun 2021 08:46:33 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=VxezOHsPVxs+xB6BVTLLYf2XI/Gpz28qXdqPvfvuUuY=;
+        b=UFNPSvJOFA3xkSFoKlzij8q3Eu6JNRxaZhDeZhAkB1EIuGOUi/PmgrmHHLpKVoKd2K
+         mg9NfsH3aoShHEDvGfVwn5ImFP1m7Tew7ecOHwZh5InhmAZZqSPKIKlyj8JfW9nuusXX
+         V4+Xb4MfjPqmcyiURXHuNTF3l6Y0yct/wJ+XMCxtMqnfv7Mb9o1Pwuia3I/qz8iQyXVz
+         efre/mXjnK8Y3ZFKVcodUERB3P1fVsq7OORUgLq4AfXXULzfe7BDRLrokUPvN1fjkL9w
+         /H1Laoqy8PD07083hXw9ys3XDLUmPNGBr9XCfIpC3aTWSlFGu0aU0iHgf2uhFZmUXJin
+         /HDA==
+X-Gm-Message-State: AOAM532DAjgfephEfROEr0A7diyeYgaEFhACEEB4EuaoRjEPKt4SFiet
+        fsns63Lis0Xungr78Du19PKSLRxkh+sD3erRJeCu0g==
+X-Google-Smtp-Source: ABdhPJzYqNwD4zU1M2ImlWlNP0d/DQxxzoAQ8IpRwQtALWrSM6WyNllcw8r40MR4AOeIs+TXf/dbsGl9oWW1vyky/+o=
+X-Received: by 2002:a05:6214:1021:: with SMTP id k1mr37760978qvr.4.1625068047671;
+ Wed, 30 Jun 2021 08:47:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513135644.GE20142@xsang-OptiPlex-9020> <877dk1zibo.fsf@suse.de>
-In-Reply-To: <877dk1zibo.fsf@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 30 Jun 2021 18:46:22 +0300
-Message-ID: <CAOQ4uxgde72YDADffihj1P-Kse_P6zkhrjBb1DhwVUC+yRJooQ@mail.gmail.com>
-Subject: Re: [vfs] 94a4dd06a6: xfstests.generic.263.fail
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-4-dmitry.baryshkov@linaro.org> <YNyHDAHk6ad/XCGl@yoga>
+In-Reply-To: <YNyHDAHk6ad/XCGl@yoga>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 30 Jun 2021 18:47:16 +0300
+Message-ID: <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 2:03 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> kernel test robot <oliver.sang@intel.com> writes:
->
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: 94a4dd06a6bbf3978b0bb1dddc2d8ec4e5bcad26 ("[PATCH v9] vfs: fix =
-copy_file_range regression in cross-fs copies")
-> > url: https://github.com/0day-ci/linux/commits/Luis-Henriques/vfs-fix-co=
-py_file_range-regression-in-cross-fs-copies/20210510-170804
-> > base: https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git for-nex=
-t
-> >
-> > in testcase: xfstests
-> > version: xfstests-x86_64-73c0871-1_20210401
-> > with following parameters:
-> >
-> >       disk: 4HDD
-> >       fs: xfs
-> >       test: generic-group-13
-> >       ucode: 0x21
-> >
-> > test-description: xfstests is a regression test suite for xfs and other=
- files ystems.
-> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> >
-> >
-> > on test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.=
-30GHz with 8G memory
-> >
-> > caused below changes (please refer to attached dmesg/kmsg for entire lo=
-g/backtrace):
-> >
-> >
-> >
-> >
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> >
-> > 2021-05-11 11:28:23 export TEST_DIR=3D/fs/sda1
-> > 2021-05-11 11:28:23 export TEST_DEV=3D/dev/sda1
-> > 2021-05-11 11:28:23 export FSTYP=3Dxfs
-> > 2021-05-11 11:28:23 export SCRATCH_MNT=3D/fs/scratch
-> > 2021-05-11 11:28:23 mkdir /fs/scratch -p
-> > 2021-05-11 11:28:23 export SCRATCH_DEV=3D/dev/sda4
-> > 2021-05-11 11:28:23 export SCRATCH_LOGDEV=3D/dev/sda2
-> > 2021-05-11 11:28:23 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests=
-/generic-group-13
-> > 2021-05-11 11:28:23 ./check generic/260 generic/261 generic/262 generic=
-/263 generic/264 generic/265 generic/266 generic/267 generic/268 generic/26=
-9 generic/270 generic/271 generic/272 generic/273 generic/274 generic/275 g=
-eneric/276 generic/277 generic/278 generic/279
-> > FSTYP         -- xfs (debug)
-> > PLATFORM      -- Linux/x86_64 lkp-ivb-d02 5.12.0-rc6-00061-g94a4dd06a6b=
-b #1 SMP Tue May 11 00:58:17 CST 2021
-> > MKFS_OPTIONS  -- -f -bsize=3D4096 /dev/sda4
-> > MOUNT_OPTIONS -- /dev/sda4 /fs/scratch
-> >
-> > generic/260   [not run] FITRIM not supported on /fs/scratch
-> > generic/261   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/262   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/263   [failed, exit status 1]- output mismatch (see /lkp/benchm=
-arks/xfstests/results//generic/263.out.bad)
-> >     --- tests/generic/263.out 2021-04-01 03:07:08.000000000 +0000
-> >     +++ /lkp/benchmarks/xfstests/results//generic/263.out.bad 2021-05-1=
-1 11:28:29.773460096 +0000
-> >     @@ -1,3 +1,32 @@
-> >      QA output created by 263
-> >      fsx -N 10000 -o 8192 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
-> >     -fsx -N 10000 -o 128000 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
-> >     +Seed set to 1
-> >     +main: filesystem does not support clone range, disabling!
-> >     +main: filesystem does not support dedupe range, disabling!
-> >     +skipping zero size read
-> >     ...
-> >     (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/263.out /lkp/b=
-enchmarks/xfstests/results//generic/263.out.bad'  to see the entire diff)
-> > generic/264   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/265   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/266   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/267   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/268   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/269    48s
-> > generic/270    61s
-> > generic/271   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/272   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/273    17s
-> > generic/274    14s
-> > generic/275    11s
-> > generic/276   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/277    3s
-> > generic/278   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > generic/279   [not run] Reflink not supported by scratch filesystem typ=
-e: xfs
-> > Ran: generic/260 generic/261 generic/262 generic/263 generic/264 generi=
-c/265 generic/266 generic/267 generic/268 generic/269 generic/270 generic/2=
-71 generic/272 generic/273 generic/274 generic/275 generic/276 generic/277 =
-generic/278 generic/279
-> > Not run: generic/260 generic/261 generic/262 generic/264 generic/265 ge=
-neric/266 generic/267 generic/268 generic/271 generic/272 generic/276 gener=
-ic/278 generic/279
-> > Failures: generic/263
-> > Failed 1 of 20 tests
->
-> OK, I see what's going on.  There are 2 issues: one with patch and anothe=
-r
-> one with the test itself.
->
-> The CFR syscall should have been disabled in this test but it isn't
-> because the test tries to copy 1 byte from a zero-sized file:
->
-> int
-> test_copy_range(void)
-> {
->         loff_t o1 =3D 0, o2 =3D 1;
->
->         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) =3D=3D =
--1 &&
->             (errno =3D=3D ENOSYS || errno =3D=3D EOPNOTSUPP || errno =3D=
-=3D ENOTTY)) {
->                 if (!quiet)
->                         fprintf(stderr,
->                                 "main: filesystem does not support "
->                                 "copy range, disabling!\n");
->                 return 0;
->         }
->
->         return 1;
-> }
->
-> The syscall is doing an early '0' return because the file size is < len.
->
-> Fixing the kernel should probably be as easy as removing the
-> short-circuiting check in vfs_copy_file_range():
->
->         if (len =3D=3D 0)
->                 return 0;
->
-> This will force the filesystems code to handle '0' size copies but will
-> also make sure -EOPNOTSUPP is returned in this case.
->
+Hi,
 
-Sorry for the late reply.
-The solution above is correct.
-That is aligned with the behavior of vfs_clone_file_range().
-Need to call into the filesystem method also with 0 length
-in order to learn about CFR support of this filesystem instance.
+On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
+>
+> > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > domain. Currently we used a regulator to enable this domain on demand,
+> > however this has some consequences, as genpd code is not reentrant.
+> >
+> > Teach Qualcomm clock controller code about setting up power domains and
+> > using them for gdsc control.
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>
+> There's a proposal to add a generic binding for statically assigning a
+> performance states here:
+>
+> https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
+>
+>
+> But that said, do you really need this?
+>
+> The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
+> SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
+> to 460MHz in &mdss.
+>
+> But then in &mdss_mdp you do the same using an opp-table based on the
+> actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
 
-> Alternatively, we could have something like:
->
->         if (len =3D=3D 0) {
->                 if (file_out->f_op->copy_file_range)
->                         return 0;
->                 else
->                         return -EOPNOTSUPP;
->         }
->
+MDSS and DSI would bump up MMCX performance state requirements on
+their own, depending on the frequency being selected.
 
-This does not catch the case of a filesystem driver that has
-CFR method but a filesystem instance does not support CFR.
-For example, overlayfs with ext4 as upper fs.
+> So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
+> MMCX and then use opp-tables associated with the devices that scales the
+> clock and thereby actually carries the "required-opps".
 
-> What do you guys think is the right thing to do?
->
-> Additionally, the test should also be fixed with something as the patch
-> bellow.  By making sure we have 1 byte to copy we also ensure the syscall
-> will return -EOPNOTSUPP, even with the current version of the patch.
->
+Actually no. I set the performance state in the qcom_cc_map, so that
+further register access is possible. Initially I was doing this in the
+qcom_cc_really_probe() and it was already too late.
+Just to remind: this patchset is not about MDSS_GDSC being parented by
+MMCX, it is about dispcc/videocc registers being gated with MMCX.
 
-I don't think that the test should be fixed.
+> I presume your testing indicates that it doesn't matter on sm8250, but
+> as stated above, 460MHz on sm8150/sc8180x requires nominal, so per your
+> suggestion we'd have to vote nominal in &mdss, which means that if the
+> DPU decides to go to 200MHz the &mdss will still keep the voltage at
+> NOM, even though the DPU's opp-table says that LOW_SVS is sufficient.
 
-Thanks,
-Amir.
+Let me check whether LOW_SVS is really a requirement or if setting
+MIN_SVS would also be sufficient for that. Interesting enough, from
+the downstream drivers it looks like dispcc should be able to work
+with MIN_SVS, while videocc would require LOW_SVS.
 
-> Cheers,
-> --
-> Luis
 >
-> diff --git a/ltp/fsx.c b/ltp/fsx.c
-> index cd0bae55aeb8..97db594ae142 100644
-> --- a/ltp/fsx.c
-> +++ b/ltp/fsx.c
-> @@ -1596,6 +1596,10 @@ int
->  test_copy_range(void)
->  {
->         loff_t o1 =3D 0, o2 =3D 1;
-> +       int ret =3D 1;
-> +
-> +       /* Make sure we have 1 byte to copy */
-> +       ftruncate(fd, 1);
+> Regards,
+> Bjorn
 >
->         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) =3D=3D =
--1 &&
->             (errno =3D=3D ENOSYS || errno =3D=3D EOPNOTSUPP || errno =3D=
-=3D ENOTTY)) {
-> @@ -1603,10 +1607,13 @@ test_copy_range(void)
->                         fprintf(stderr,
->                                 "main: filesystem does not support "
->                                 "copy range, disabling!\n");
-> -               return 0;
-> +               ret =3D 0;
->         }
->
-> -       return 1;
-> +       /* Restore file size */
-> +       ftruncate(fd, 0);
-> +
-> +       return ret;
->  }
->
->  void
+> > ---
+> >  drivers/clk/qcom/common.c | 55 ++++++++++++++++++++++++++++++++++-----
+> >  drivers/clk/qcom/gdsc.c   |  6 +++++
+> >  2 files changed, 55 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> > index 60d2a78d1395..eeb5b8c93032 100644
+> > --- a/drivers/clk/qcom/common.c
+> > +++ b/drivers/clk/qcom/common.c
+> > @@ -10,6 +10,8 @@
+> >  #include <linux/clk-provider.h>
+> >  #include <linux/reset-controller.h>
+> >  #include <linux/of.h>
+> > +#include <linux/pm_opp.h>
+> > +#include <linux/pm_runtime.h>
+> >
+> >  #include "common.h"
+> >  #include "clk-rcg.h"
+> > @@ -76,6 +78,16 @@ qcom_cc_map(struct platform_device *pdev, const struct qcom_cc_desc *desc)
+> >       struct resource *res;
+> >       struct device *dev = &pdev->dev;
+> >
+> > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
+> > +             int pd_opp;
+> > +
+> > +             pd_opp = of_get_required_opp_performance_state(dev->of_node, 0);
+> > +             if (pd_opp < 0)
+> > +                     return ERR_PTR(pd_opp);
+> > +
+> > +             dev_pm_genpd_set_performance_state(dev, pd_opp);
+> > +     }
+> > +
+> >       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >       base = devm_ioremap_resource(dev, res);
+> >       if (IS_ERR(base))
+> > @@ -224,6 +236,11 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+> >       return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+> >  }
+> >
+> > +static void qcom_cc_pm_runtime_disable(void *data)
+> > +{
+> > +     pm_runtime_disable(data);
+> > +}
+> > +
+> >  int qcom_cc_really_probe(struct platform_device *pdev,
+> >                        const struct qcom_cc_desc *desc, struct regmap *regmap)
+> >  {
+> > @@ -236,11 +253,28 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >       struct clk_regmap **rclks = desc->clks;
+> >       size_t num_clk_hws = desc->num_clk_hws;
+> >       struct clk_hw **clk_hws = desc->clk_hws;
+> > +     bool use_pm = false;
+> >
+> >       cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+> >       if (!cc)
+> >               return -ENOMEM;
+> >
+> > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
+> > +             use_pm = true;
+> > +
+> > +             pm_runtime_enable(dev);
+> > +             ret = pm_runtime_get_sync(dev);
+> > +             if (ret < 0) {
+> > +                     pm_runtime_put(dev);
+> > +                     pm_runtime_disable(dev);
+> > +                     return ret;
+> > +             }
+> > +
+> > +             ret = devm_add_action_or_reset(dev, qcom_cc_pm_runtime_disable, dev);
+> > +             if (ret)
+> > +                     return ret;
+> > +     }
+> > +
+> >       reset = &cc->reset;
+> >       reset->rcdev.of_node = dev->of_node;
+> >       reset->rcdev.ops = &qcom_reset_ops;
+> > @@ -251,7 +285,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >
+> >       ret = devm_reset_controller_register(dev, &reset->rcdev);
+> >       if (ret)
+> > -             return ret;
+> > +             goto err;
+> >
+> >       if (desc->gdscs && desc->num_gdscs) {
+> >               scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
+> > @@ -262,11 +296,11 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >               scd->num = desc->num_gdscs;
+> >               ret = gdsc_register(scd, &reset->rcdev, regmap);
+> >               if (ret)
+> > -                     return ret;
+> > +                     goto err;
+> >               ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
+> >                                              scd);
+> >               if (ret)
+> > -                     return ret;
+> > +                     goto err;
+> >       }
+> >
+> >       cc->rclks = rclks;
+> > @@ -277,7 +311,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >       for (i = 0; i < num_clk_hws; i++) {
+> >               ret = devm_clk_hw_register(dev, clk_hws[i]);
+> >               if (ret)
+> > -                     return ret;
+> > +                     goto err;
+> >       }
+> >
+> >       for (i = 0; i < num_clks; i++) {
+> > @@ -286,14 +320,23 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >
+> >               ret = devm_clk_register_regmap(dev, rclks[i]);
+> >               if (ret)
+> > -                     return ret;
+> > +                     goto err;
+> >       }
+> >
+> >       ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
+> >       if (ret)
+> > -             return ret;
+> > +             goto err;
+> > +
+> > +     if (use_pm)
+> > +             pm_runtime_put(dev);
+> >
+> >       return 0;
+> > +
+> > +err:
+> > +     if (use_pm)
+> > +             pm_runtime_put(dev);
+> > +
+> > +     return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+> >
+> > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> > index 51ed640e527b..40c384bda4fc 100644
+> > --- a/drivers/clk/qcom/gdsc.c
+> > +++ b/drivers/clk/qcom/gdsc.c
+> > @@ -11,6 +11,7 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/ktime.h>
+> >  #include <linux/pm_domain.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/regulator/consumer.h>
+> >  #include <linux/reset-controller.h>
+> > @@ -237,6 +238,8 @@ static int gdsc_enable(struct generic_pm_domain *domain)
+> >       struct gdsc *sc = domain_to_gdsc(domain);
+> >       int ret;
+> >
+> > +     pm_runtime_get_sync(domain->dev.parent);
+> > +
+> >       if (sc->pwrsts == PWRSTS_ON)
+> >               return gdsc_deassert_reset(sc);
+> >
+> > @@ -326,6 +329,8 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+> >       if (sc->flags & CLAMP_IO)
+> >               gdsc_assert_clamp_io(sc);
+> >
+> > +     pm_runtime_put(domain->dev.parent);
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -427,6 +432,7 @@ int gdsc_register(struct gdsc_desc *desc,
+> >                       continue;
+> >               scs[i]->regmap = regmap;
+> >               scs[i]->rcdev = rcdev;
+> > +             scs[i]->pd.dev.parent = desc->dev;
+> >               ret = gdsc_init(scs[i]);
+> >               if (ret)
+> >                       return ret;
+> > --
+> > 2.30.2
+> >
+
+
+
+-- 
+With best wishes
+Dmitry
