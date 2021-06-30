@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27A83B8AD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8558C3B8AD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhF3XQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 19:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
+        id S232992AbhF3XQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 19:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhF3XQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 19:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B560E613A9;
-        Wed, 30 Jun 2021 23:14:10 +0000 (UTC)
+        id S232788AbhF3XQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 19:16:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6D00B613A9;
+        Wed, 30 Jun 2021 23:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625094850;
-        bh=OaobmDfYGlODepv0TfEoXUQolmhzH19OwnEyRNaOgyc=;
+        s=k20201202; t=1625094860;
+        bh=l6g/POHpndAcH7V0vKojli5qWJw2M3glZGXZDJp2gXg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OcIPiWagCPF9rqVh77aSVcDmGilk+r0T4Z/G8ANWa/iqPGKFjyB0k5+FW9u3jBb37
-         qjceOcbExuXlFhhOSvdDICywYmj4lZJziYKUCTujVqgcBGvfYcU4wjQ9SPFJqnrBV2
-         lePf66NYE+yep9rwKpijZUhMauvWrRW9YmeO47uwYHHImtir1l34hjw3gF49OPOfWv
-         8qhKiovNeZx+yRcLM3uBWWAJMcvQE8bA1+Y+becVzlIJ8knswmwY7BjcG3ufK+KXeP
-         nfslfVDb7G2IBbvZdGMDadlqW4tXbzswwwi35c6Z2ttVt09Q930ZK31ZqnL0GbYMl3
-         EMmouxbNo55Xg==
+        b=UOdnWFFVJoo2GLkqN11TubP6efqVb4yHuIS3sEH0P5O5/n9Y5OhFhEkJwGizunhbd
+         5ljccZ9OB4aGa4ehGkNioUUDwK5+aP9P/sa+RQ/clqFhiCzCsYbpjxFgNIoGdZequ3
+         cOCz09T8H+N8ogWU97CPNdogu1zl2F5vpAcN+WC8f7KI8+8wB5gBSBfWYMF+3h+1hX
+         8zFbX9qHhcQZSoCbc6VNj2isAEZduqBOeX2Tz/KquhAtt4zZ7dZEaUlR64dQEV0aWV
+         6Pb7rzAfJVInChHrhb+KQBN8CXOphUp6RtfnTkEKFb9OuGW4rNeFbrQDy0Iz8OosPt
+         6ptStLuZp93Wg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A24376095D;
-        Wed, 30 Jun 2021 23:14:10 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 63267609B2;
+        Wed, 30 Jun 2021 23:14:20 +0000 (UTC)
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.14-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210630051855.3380189-1-kuba@kernel.org>
-References: <20210630051855.3380189-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210630051855.3380189-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.14
-X-PR-Tracked-Commit-Id: b6df00789e2831fff7a2c65aa7164b2a4dcbe599
+In-Reply-To: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+References: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <e566b945-2fd0-bff0-b291-e7538bafc3fc@monstr.eu>
+X-PR-Tracked-Remote: git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
+X-PR-Tracked-Commit-Id: 14a832498c23cf480243222189066a8006182b9d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dbe69e43372212527abf48609aba7fc39a6daa27
-Message-Id: <162509485060.23001.15009915450669760468.pr-tracker-bot@kernel.org>
-Date:   Wed, 30 Jun 2021 23:14:10 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: f4cc74c9382d8b02181cfdc6d29ee5bc7a1f7d02
+Message-Id: <162509486039.23001.17712682774020279940.pr-tracker-bot@kernel.org>
+Date:   Wed, 30 Jun 2021 23:14:20 +0000
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Jun 2021 22:18:55 -0700:
+The pull request you sent on Tue, 29 Jun 2021 16:29:56 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.14
+> git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dbe69e43372212527abf48609aba7fc39a6daa27
+https://git.kernel.org/torvalds/c/f4cc74c9382d8b02181cfdc6d29ee5bc7a1f7d02
 
 Thank you!
 
