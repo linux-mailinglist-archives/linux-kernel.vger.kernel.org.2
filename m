@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7783B862B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9DE3B862E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235615AbhF3PXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:23:40 -0400
-Received: from mail-ed1-f41.google.com ([209.85.208.41]:35416 "EHLO
-        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbhF3PX2 (ORCPT
+        id S235777AbhF3PZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:25:14 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:43937 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235508AbhF3PZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:23:28 -0400
-Received: by mail-ed1-f41.google.com with SMTP id df12so3826129edb.2;
-        Wed, 30 Jun 2021 08:20:59 -0700 (PDT)
+        Wed, 30 Jun 2021 11:25:12 -0400
+Received: by mail-lf1-f43.google.com with SMTP id a18so5773749lfs.10;
+        Wed, 30 Jun 2021 08:22:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sz1XXHWZ7zn1WpHe2P7mcJtnwjKt4l13a3EOZTMRPAo=;
-        b=YlJwaIFd1dvboak11sCCPkFvUblbcUhH4kkHmQYGjUVWfk65TxvrBEt3cCGh+IVcVl
-         8ODa4KqRakqWmt3uZE3F49SGGVCbErtfiTt+g84X5UXmgxbZ037nVlsu+ExO/aWoBk52
-         111Zhb8jlW8C3Weq5wYA3RoodWLhah9WuX3gGk6j/L6BoGNLxduOIyGLBlQ4ICAoo9w4
-         LDjCobAYkNWcaPBgQz3uoH3gW9/fQcfjnKZrUq5EQyjbn/NFPKAfHYRS784TAzn+7WZu
-         bb9EOxCB/Rajo3LNixyGPyqQqPrhPCQhtSphEQPCTO7u4s6JG5aZcWCTDL6lHeJO2a4Q
-         hlbg==
-X-Gm-Message-State: AOAM5311U9VaUcf3hPA0gBg5cenadp1b2siKA3GG6NWZtDXnjTBx0ijw
-        264XFwIr9QdAgMp6Jq+CtYvkGv+ro8YBgbUxzmnBDMe2O/A=
-X-Google-Smtp-Source: ABdhPJxTzFTAllAFF5dh/zsKE885gd2rn3QWQvuP9AHb6vrfEx/T/lgKjt1C+F/rqfHw6PNi6YS86cztvhpC7hViPEs=
-X-Received: by 2002:a05:6402:31b4:: with SMTP id dj20mr48326007edb.186.1625066458480;
- Wed, 30 Jun 2021 08:20:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=aNsbaawHSZdLzNi+kcO4dCrPNqRYibLDyVHy8t4TKZk=;
+        b=YAS17x46bmWWiYyzjOq3sriaKSsCuxpeUMiOL70tFkK3toxvnTOBjNAefB0NEb8ui0
+         Gsy0DanRScaeRkce03LGyfOEdJWpxM6ijnDrtrgh2ElxDShJPux6JldN6hVw0RBwPqp3
+         AHuxPLXXzj314MzkeUGQswNI655YpzA6owscrRw2xqqaqPMGHN5BWS+bMqddhBxVEP1T
+         E4boMfdGQybAV4iEXJdkbR//v+/aYoQo3D69tg/OwNGmoPMIPVb/X5CUmvU20dyolVze
+         TnBjLGHyuVdSW5sCDPJxYrCWjevef3kAunTnEkK6mZcbQpUKyWy1G0oh1ynyyi/++Gkl
+         +VXw==
+X-Gm-Message-State: AOAM532hFUSwNUd4Y6SqjiwrzepegkNfvkvBs2UNQCyRzCjSD3LfygK8
+        PS+vQRluGiq0xe7jP1ukzfi2Gat93H941A==
+X-Google-Smtp-Source: ABdhPJyEnLhzsH4r/aLzItyar6QlVFv5xV2AqV0gm5FeyxBUcoLjKcTTMdIwCgqf48F4sGKWjqvydQ==
+X-Received: by 2002:a19:520b:: with SMTP id m11mr28294950lfb.548.1625066561628;
+        Wed, 30 Jun 2021 08:22:41 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id r81sm1955032lff.249.2021.06.30.08.22.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 08:22:41 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id t17so5915929lfq.0;
+        Wed, 30 Jun 2021 08:22:40 -0700 (PDT)
+X-Received: by 2002:a19:7414:: with SMTP id v20mr27452708lfe.203.1625066560684;
+ Wed, 30 Jun 2021 08:22:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com> <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net> <87wnqkzklg.fsf@oldenburg.str.redhat.com>
- <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
- <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net> <87tulirw5y.fsf@oldenburg.str.redhat.com>
- <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net> <0978e79c-33ad-c05b-3897-99334c381396@linux.intel.com>
-In-Reply-To: <0978e79c-33ad-c05b-3897-99334c381396@linux.intel.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Wed, 30 Jun 2021 11:20:47 -0400
-Message-ID: <CAJvTdKkwSxUzyUjTMKUUpaFRz49AoxtxTDYAPfAFPQtRmA_87w@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Arjan van de Ven <arjan@linux.intel.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Willy Tarreau <w@1wt.eu>
+References: <20210629171239.6618-1-hdegoede@redhat.com>
+In-Reply-To: <20210629171239.6618-1-hdegoede@redhat.com>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 30 Jun 2021 23:22:29 +0800
+X-Gmail-Original-Message-ID: <CAGb2v661FZ0J4VjmDsLaM6KK8DGrxZv8ej0yna4EpOVB3jMgrw@mail.gmail.com>
+Message-ID: <CAGb2v661FZ0J4VjmDsLaM6KK8DGrxZv8ej0yna4EpOVB3jMgrw@mail.gmail.com>
+Subject: Re: [PATCH v2] mfd: axp20x: Update AXP288 volatile ranges
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-acpi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Clamshell <clamfly@163.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest proposal for kernel AMX support (updated today) is here:
+On Wed, Jun 30, 2021 at 1:12 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> On Cherry Trail devices with an AXP288 PMIC the external SD-card slot
+> used the AXP's DLDO2 as card-voltage and either DLDO3 or GPIO1LDO
+> (GPIO1 pin in low noise LDO mode) as signal-voltage.
+>
+> These regulators are turned on/off and in case of the signal-voltage
+> also have their output-voltage changed by the _PS0 and _PS3 power-
+> management ACPI methods on the MMC-controllers ACPI fwnode as well as
+> by the _DSM ACPI method for changing the signal voltage.
+>
+> The AML code implementing these methods is directly accessing the
+> PMIC through ACPI I2C OpRegion accesses, instead of using the special
+> PMIC OpRegion handled by drivers/acpi/pmic/intel_pmic_xpower.c .
+>
+> This means that the contents of the involved PMIC registers can change
+> without the change being made through the regmap interface, so regmap
+> should not cache the contents of these registers.
+>
+> Mark the regulator power on/off, the regulator voltage control and the
+> GPIO1 control registers as volatile, to avoid regmap caching them.
+>
+> Specifically this fixes an issue on some models where the i915 driver
+> toggles another LDO using the same on/off register on/off through
+> MIPI sequences (through intel_soc_pmic_exec_mipi_pmic_seq_element())
+> which then writes back a cached on/off register-value where the
+> card-voltage is off causing the external sdcard slot to stop working
+> when the screen goes blank, or comes back on again.
+>
+> The regulator register-range now marked volatile also includes the
+> buck regulator control registers. This is done on purpose these are
+> normally not touched by the AML code, but they are updated directly
+> by the SoC's PUNIT which means that they may also change without going
+> through regmap.
+>
+> Note the AXP288 PMIC is only used on Bay- and Cherry-Trail platforms,
+> so even though this is an ACPI specific problem there is no need to
+> make the new volatile ranges conditional since these platforms always
+> use ACPI.
+>
+> Fixes: dc91c3b6fe66 ("mfd: axp20x: Mark AXP20X_VBUS_IPSOUT_MGMT as volatile")
+> Fixes: cd53216625a0 ("mfd: axp20x: Fix axp288 volatile ranges")
+> Reported-and-tested-by: Clamshell <clamfly@163.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-https://lore.kernel.org/lkml/20210630060226.24652-1-chang.seok.bae@intel.com/
-
-The main challenge for AMX is not context switch performance.
-Hardware recognizes INIT state (the common case) and skips that data
-transfer when it is not needed.
-
-The main challenge for AMX is compatibility.  Specifically, user
-signal stack growth.
-The legacy ABI is that we put an uncompacted XSTATE image on the signal stack.
-In the default stack case, this isn't a problem, but when a user
-allocates an alternative signal stack,
-the 8K of XSTATE growth that AMX can exceed what the user allocated.
-The new system call tells the kernel that the application can handle it.
-(it can do this by not using altsigstack, or by using the updated
-stack size advertised
- by glibc 2.34 and later, or some other means)
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
