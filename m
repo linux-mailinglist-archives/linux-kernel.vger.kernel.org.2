@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B453B89DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430B43B89E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbhF3Usp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        id S234067AbhF3Uu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbhF3Usn (ORCPT
+        with ESMTP id S229700AbhF3Uuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:48:43 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C76C061756;
-        Wed, 30 Jun 2021 13:46:14 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id t3so5086232edt.12;
-        Wed, 30 Jun 2021 13:46:14 -0700 (PDT)
+        Wed, 30 Jun 2021 16:50:55 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A9DC0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id w15so3543899pgk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uyOIws1NwRjU5AeOGv92EO33F5wkxRy0F4p5GCbs6FE=;
-        b=ALwGJCrSJiGSH1zjPXW3co4uYtKh6dGDqsnqebW8IRN62HIXGubTfsN0DNwZXbmNkK
-         43ni97FbrwjtS5rKLaTABF2rekhP9gK+hgUjbMVJWEZcEzEHhQsuVk1VYzUIIBgYZmYn
-         CO8V+uNwkv2d4C8xvRSW+QdRWNnVVxP8OuV0rqHWcaQ/NtIN1FEsZyJ9KDYRYFgjmQ6e
-         iH0NtT9hUEVzA7cZzKlPrFVDuJmOpfo4t+C0iV0JHLlLx8VbhlMswu7RnyI8Mx/EduGc
-         6QEH5KxGETFbMPGtvyptrQr/BK/WOgwK9KF876fTJkxHVODUHt/NcnOSbJsqmyZxGOgU
-         gejw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3V3OFykueXALQcb8bHaOuERxTOWs4Agns0W740chGTg=;
+        b=dXFdaB5eK79hyNZjeXXsAOEOK1YUd22gnr/ukEbvG5B/Cj0fkM+Vihe1cNwY+Aed/S
+         YiqwQ8eUD2Un/L66bOnABrG0xmvMZOydY9l9QRQ8aRB2SQqPAKQjVkWUGgcwtrGS0KZZ
+         2MjkWulYiPLphm4SQOJ/iKEm1kBZxL9LrjtiQMcLjIiW6CyLDOR0ECn9Tp0cWjwMKvij
+         BG6LAP6BNgSaq3oeK3QyaEjZQdfmi/LZ8l0DwXUFBwWm7ba2nyRY1fHs3t1oNLdHwj3d
+         FqTmnDNlRgEcK0beAB76IkESPtnILtCF+6816JOPQ6X6ijIUdgkWO73EgQolp8jyH2GJ
+         +MpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uyOIws1NwRjU5AeOGv92EO33F5wkxRy0F4p5GCbs6FE=;
-        b=TQqH5Mgg6HDjXGPacKjwTUnAc+lDnhN0qNM++j4G6+y/ewIlY2vLU752A7T6l48qp2
-         Jt38xI6K6jwmI/YRgPlz2GhUPDlKZPE30G5Bt5YF4KqlZYrBHhFa6nrxZaGlUZ7eG1eD
-         LnpTk0opOolNw69BGBjIIseW69BXAXQ9s6y5WVUarFgaDuMlmXYbwFX0Zw+NUlVf4SgH
-         0e3/q/L+2IcppMWrDmschmpTydF/YPIPKSP5urG4BNe9usTCLM+MBWkKEufJGCbe4ciS
-         pPRqZZHjQsfHMBzgYOmuxaVZkDani7VMLKNqZU0TNiQBHXFHXOZQ8BoPctNskqkjo6nZ
-         uSGA==
-X-Gm-Message-State: AOAM5324Rb0fi0gW/DXaadBHRzojAGEirSZ7kDvfYeYQ/N58Rwf5Ksr/
-        +PrKHVifqDjwIJOVeiCkHjR/dKBFQz63MumKIvc=
-X-Google-Smtp-Source: ABdhPJwwnn9NVGiuvvqx8+JFJpK5tsR8/WFhvHyYY8hQw1xjn/WA4R/G+XYCIy6mZn7SpKdR8k07K4CX6l/orEOcK5Y=
-X-Received: by 2002:a05:6402:5cc:: with SMTP id n12mr49591923edx.354.1625085973084;
- Wed, 30 Jun 2021 13:46:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3V3OFykueXALQcb8bHaOuERxTOWs4Agns0W740chGTg=;
+        b=U0tfh2dLR/rU9UiT4vcZ4TRimebgY5kgdFAzuvsz0qCls72bjbU4WpBqG+yuggAYYh
+         N6Ul2v9N4FapQx9L2lvH/n4hxtGRcZ8anMIbOxJSSKQlu/WItNFPsizSN5fT8RPO63td
+         kRn/JajdQ5PZUs1P4KRN4BnURGu9qjxGSdNrn/KGHdQqAfkYeUY9gwuipUoq8j95S2s6
+         lZVdfKT0Q+xBpo+1Su5ELpivGgb2axO0klTasgjx3L21ElGDdx636BSYWxLRch0T7g+t
+         U0ZULGqzU/7pdMQ2vgsEvYUaIJoHqSb5Um64h+WfHiyOiqNiM9+fgE76L9MOW91P4E9v
+         9SnA==
+X-Gm-Message-State: AOAM533bOe7ZoNqvwUcbRGwC7uPyJk5lnd16teRe/7PWuH78FhvmR5/T
+        bbZST+Sn3Rq1rQ8Ag+eiIYkqmA==
+X-Google-Smtp-Source: ABdhPJyFJr3vbX3/L7gBnKcYr0blRFKn0IkndBGDGYJMRGGsjExVmR1Ip/lyLEQuCxkfAa/UE5iIWA==
+X-Received: by 2002:a63:5057:: with SMTP id q23mr35744377pgl.271.1625086106139;
+        Wed, 30 Jun 2021 13:48:26 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id m21sm7339455pjz.57.2021.06.30.13.48.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 13:48:25 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 14:48:23 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
+Subject: Re: [PATCH v2 3/4] rpmsg: char: Add possibility to use default
+ endpoint of the rpmsg device.
+Message-ID: <20210630204823.GC1290178@p14s>
+References: <20210623150504.14450-1-arnaud.pouliquen@foss.st.com>
+ <20210623150504.14450-4-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-References: <e7f3bd28-8e5e-362d-11a9-43a60ff79dd2@redhat.com> <20210630203030.GA4178852@bjorn-Precision-5520>
-In-Reply-To: <20210630203030.GA4178852@bjorn-Precision-5520>
-From:   Peter Robinson <pbrobinson@gmail.com>
-Date:   Wed, 30 Jun 2021 21:46:01 +0100
-Message-ID: <CALeDE9P0bNWTDO+4kUt66QOQFbp548Jum_XkGKUQro7_G+YQdA@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210623150504.14450-4-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 9:30 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, Jun 30, 2021 at 09:59:58PM +0200, Javier Martinez Canillas wrote:
-> > On 6/30/21 8:59 PM, Bjorn Helgaas wrote:
-> > > [+cc Michal, Jingoo, Thierry, Jonathan]
-> >
-> > [snip]
-> >
-> > >
-> > > I think the above commit log is perfectly accurate, but all the
-> > > details might suggest that this is something specific to rockchip or
-> > > CONFIG_DEBUG_SHIRQ, which it isn't, and they might obscure the
-> > > fundamental problem, which is actually very simple: we registered IRQ
-> > > handlers before we were ready for them to be called.
-> > >
-> > > I propose the following commit log in the hope that it would help
-> > > other driver authors to make similar fixes:
-> > >
-> > >     PCI: rockchip: Register IRQ handlers after device and data are ready
-> > >
-> > >     An IRQ handler may be called at any time after it is registered, so
-> > >     anything it relies on must be ready before registration.
-> > >
-> > >     rockchip_pcie_subsys_irq_handler() and rockchip_pcie_client_irq_handler()
-> > >     read registers in the PCIe controller, but we registered them before
-> > >     turning on clocks to the controller.  If either is called before the clocks
-> > >     are turned on, the register reads fail and the machine hangs.
-> > >
-> > >     Similarly, rockchip_pcie_legacy_int_handler() uses rockchip->irq_domain,
-> > >     but we installed it before initializing irq_domain.
-> > >
-> > >     Register IRQ handlers after their data structures are initialized and
-> > >     clocks are enabled.
-> > >
-> > > If this is inaccurate or omits something important, let me know.  I
-> > > can make any updates locally.
-> > >
-> >
-> > I think your description is accurate and agree that the commit message may
-> > be misleading. As you said, this is a general problem and the fact that an
-> > IRQ is shared and CONFIG_DEBUG_SHIRQ fires a spurious interrupt just make
-> > the assumptions in the driver to fall apart.
-> >
-> > But maybe you can also add a paragraph that mentions the CONFIG_DEBUG_SHIRQ
-> > option and shared interrupts? That way, other driver authors could know that
-> > by enabling this an underlying problem might be exposed for them to fix.
->
-> Good idea, thanks!  I added this; is it something like what you had in
-> mind?
->
->     Found by enabling CONFIG_DEBUG_SHIRQ, which calls the IRQ handler when it
->     is being unregistered.  An error during the probe path might cause this
->     unregistration and IRQ handler execution before the device or data
->     structure init has finished.
+On Wed, Jun 23, 2021 at 05:05:03PM +0200, Arnaud Pouliquen wrote:
+> Current implementation create/destroy a new endpoint on each
+> rpmsg_eptdev_open/rpmsg_eptdev_release calls.
+> 
+> For a rpmsg device created by the NS announcement mechanism we need to
+> use a unique static endpoint that is the default rpmsg device endpoint
+> associated to the channel.
+> 
+> This patch prepares the introduction of a rpmsg channel device for the
+> char device. The rpmsg channel device will require a default endpoint to
+> communicate to the remote processor.
+> 
+> Add the static_ept field in rpmsg_eptdev structure. This boolean
+> determines the behavior on rpmsg_eptdev_open and rpmsg_eptdev_release call.
+> 
+> - If static_ept == false:
+>   Use the legacy behavior by creating a new endpoint each time
+>   rpmsg_eptdev_open is called and release it when rpmsg_eptdev_release
+>   is called on /dev/rpmsgX device open/close.
+> 
+> - If static_ept == true:
+>   use the rpmsg device default endpoint for the communication.
+> - Address the update of _rpmsg_chrdev_eptdev_create in e separate patch for readability.
+> 
+> Add protection in rpmsg_eptdev_ioctl to prevent to destroy a default endpoint.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+> update vs V1:
+> - remove the management of the default endpoint creation from rpmsg_eptdev_open.
+> 
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 50b7d4b00175..a75dce1e29d8 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -45,6 +45,8 @@ static DEFINE_IDA(rpmsg_minor_ida);
+>   * @queue_lock:	synchronization of @queue operations
+>   * @queue:	incoming message queue
+>   * @readq:	wait object for incoming queue
+> + * @static_ept: specify if the endpoint has to be created at each device opening or
+> + *              if the default endpoint should be used.
+>   */
+>  struct rpmsg_eptdev {
+>  	struct device dev;
+> @@ -59,6 +61,8 @@ struct rpmsg_eptdev {
+>  	spinlock_t queue_lock;
+>  	struct sk_buff_head queue;
+>  	wait_queue_head_t readq;
+> +
+> +	bool static_ept;
+>  };
+>  
+>  int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
+> @@ -116,7 +120,15 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
+>  
+>  	get_device(dev);
+>  
+> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+> +	/*
+> +	 * If the static_ept is set to true, the rpmsg device default endpoint is used.
+> +	 * Else a new endpoint is created on open that will be destroyed on release.
+> +	 */
+> +	if (eptdev->static_ept)
+> +		ept = rpdev->ept;
+> +	else
+> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+> +
+>  	if (!ept) {
+>  		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
+>  		put_device(dev);
+> @@ -137,7 +149,8 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
+>  	/* Close the endpoint, if it's not already destroyed by the parent */
+>  	mutex_lock(&eptdev->ept_lock);
+>  	if (eptdev->ept) {
+> -		rpmsg_destroy_ept(eptdev->ept);
+> +		if (!eptdev->static_ept)
+> +			rpmsg_destroy_ept(eptdev->ept);
+>  		eptdev->ept = NULL;
+>  	}
+>  	mutex_unlock(&eptdev->ept_lock);
+> @@ -264,6 +277,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
+>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
+>  		return -EINVAL;
+>  
+> +	/* Don't allow to destroy a default endpoint. */
+> +	if (!eptdev->rpdev || eptdev->ept == eptdev->rpdev->ept)
 
-Would it make sense to enable CONFIG_DEBUG_SHIRQ in defconfig to
-better pick up these problems?
+Did you find a scenario where eptdev->rpdev would not be valid when this is
+called?  To me if this code is called __rpmsg_chrdev_eptdev_create() has setup
+the rpdev pointer and therefore it will be valid.
 
-Peter
+If there is a scenario where it is possible that eptdev->rpdev is invalid then
+please add a comment with the details.  Otherwise simply remove the first part
+of the condition.
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> +		return -EPERM;
+> +
+>  	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
+>  }
+>  
+> -- 
+> 2.17.1
+> 
