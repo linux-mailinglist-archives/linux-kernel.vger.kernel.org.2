@@ -2,133 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245013B7DE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC893B7DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhF3HSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S232861AbhF3HUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbhF3HSs (ORCPT
+        with ESMTP id S232705AbhF3HUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:18:48 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840E5C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:16:20 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id 68so1112294vsu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TuH+apv+oCsNlAaVg/wm9SSIEaZ31aCvx1H+A/KchsU=;
-        b=IGdEYV6iubpDLMJ5m37PeamgcGglH/0msMCWnvoKR2cBD1N3/JtHZL1wE9KAdHSi3H
-         xTvWfW3VmOzaVAhl7Ii0oVmP0EXSE8BIH6ZM0M+ciyJnXN4JsjWPfSHYIuxLKRzev0nx
-         fV1gE7pl10g/f8CqwzUpUmUoEvnO25cj1vEnbRKmoifogBgMly3lkbQAU/AhBFtI610G
-         GkFjOJhJwnT7+ieWuJK+83HH5LU3Z6NspbkLupjpvsxE5AP/oxfv+wEhtg1A3vLO5Y2z
-         Pg3fKMwDqP6oZ/wVIQ9Kun1+Qy/UL/5dReInoEsbi/58arJ9eK0h1oc36jewINxUW/+D
-         loLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TuH+apv+oCsNlAaVg/wm9SSIEaZ31aCvx1H+A/KchsU=;
-        b=qJV+PKRXqrSKPEl0jSvfhq9JzMa0WrtY+m7rqTk4IagBiKX4iph8RIHEX4s17NVBcI
-         HWpJe0j1+XPh1TUzSS0spH3zYKVRPjzHL2wZxzMKYF1+UNICGRj9zFK/qrY9mW23Fd/f
-         COFrNDDg+4JVIDhZmdFXflccS1UOEHlky1SzkWDS7VSnKHKancAOqUjS/q3dHDHTgDFY
-         xPEyfXNOomAAg76ts6n1es/g/8fDyvaJ5yOnaePrIrhxzTQenlZSwGmXmF1i3bZD8HV5
-         DwCRl+1LIPki7WBEn4k0+5xqFv0iQZ0D3Dqe9NkehoeTp1ffimTg5JtsJucs8fo26UAN
-         kvwg==
-X-Gm-Message-State: AOAM53319po/8P2LmOmVl4vlvPecV3dh9SXNT4tBey6VYz5ppbz0JywF
-        9pGn1N7Qe2r5s34GZVxWbh0Mr7IafGaw4C2t9d8=
-X-Google-Smtp-Source: ABdhPJw7g8ho6fKOpvf4aTR7903FLbCsjlynaCr0P8Dos7cRRhdQHQRQLYhXXpH90eWmhbXWXbhuUGYOqhbmNPO9n+U=
-X-Received: by 2002:a67:ed5a:: with SMTP id m26mr28872305vsp.59.1625037379726;
- Wed, 30 Jun 2021 00:16:19 -0700 (PDT)
+        Wed, 30 Jun 2021 03:20:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDECFC061766;
+        Wed, 30 Jun 2021 00:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AmLWm8f1+xjYGNy9dtQzaNaqp/ZZfO73MYaUMsPh1Dg=; b=F8b+pRoMBgZQhdcjcephjDNsSI
+        VA/3Xojz0o/TRMdjW+z7a/VKUfEThgnYdDQaUcXc4PejZicM3AxahMUxxLqkGboHXMP29hAd5ThOl
+        Ut2N2h7kiLB3fYN9IkffojJT7nZ3varaq5I4oZyrJPNNx7pC7QEtI75+5oVoOgwTEjajRzSeKXdgZ
+        ZeJB4jzuhqkMY/QmAvbpQR78Q60mh0OKr3Mm3QpU2Sj3nL/cJtuPLXgSvGhtFoQ4sgl0p94E3w6IS
+        pBQfqFXCTEtDx91plZxAtTNyTIqBMPHiPdiWcMQhZFYvkmgv4XIBEGO6shDHjz2vX+YtN5EX5o59f
+        HDi2xZWQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyUSb-0051uJ-FJ; Wed, 30 Jun 2021 07:16:48 +0000
+Date:   Wed, 30 Jun 2021 08:16:37 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 1/2] lib/scatterlist: Fix wrong update of
+ orig_nents
+Message-ID: <YNwaVTT0qmQdxaZz@infradead.org>
+References: <cover.1624955710.git.leonro@nvidia.com>
+ <dadb01a81e7498f6415233cf19cfc2a0d9b312f2.1624955710.git.leonro@nvidia.com>
+ <YNwIL4OguRO/CH6K@infradead.org>
+ <YNwPX7BxPl22En9U@unreal>
+ <YNwQLV87aBdclTYe@infradead.org>
+ <YNwW83ZpXZSSPDfM@unreal>
 MIME-Version: 1.0
-References: <202106292156.mWNAaVQA-lkp@intel.com> <20210629132909.GA7935@233d919f385f>
-In-Reply-To: <20210629132909.GA7935@233d919f385f>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Wed, 30 Jun 2021 12:46:07 +0530
-Message-ID: <CAFqt6zZ6V27JK6MtC__T6o2bpT_BJJHcGX0xOURoqTaTQEBc2A@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix returnvar.cocci warnings
-To:     kernel test robot <lkp@intel.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNwW83ZpXZSSPDfM@unreal>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 6:59 PM kernel test robot <lkp@intel.com> wrote:
->
-> From: kernel test robot <lkp@intel.com>
->
-> sound/soc/codecs/wcd938x.c:1628:5-8: Unneeded variable: "ret". Return "0" on line 1656
-> sound/soc/codecs/wcd938x.c:1871:5-8: Unneeded variable: "ret". Return "0" on line 1907
->
->
->  Remove unneeded variable used to store return value.
->
-> Generated by: scripts/coccinelle/misc/returnvar.cocci
->
-> Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
-> CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
+On Wed, Jun 30, 2021 at 10:02:11AM +0300, Leon Romanovsky wrote:
+> Another possible solution is to change __sg_alloc_table()/__sg_alloc_table_from_pages
+> to return total_nents and expect from the users to store it internally and pass
+> it later to the __sg_free_table().
+> 
+> Something like that.
 
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
-
-> ---
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   73748627df83aab934c81332ca83a44ab8c7b3e3
-> commit: 04544222886881cb0865040dcdf747fe7e025947 [8525/14055] ASoC: codecs: wcd938x: add audio routing and Kconfig
-> :::::: branch date: 4 hours ago
-> :::::: commit date: 2 weeks ago
->
->  wcd938x.c |    6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> --- a/sound/soc/codecs/wcd938x.c
-> +++ b/sound/soc/codecs/wcd938x.c
-> @@ -1625,7 +1625,6 @@ static int wcd938x_codec_aux_dac_event(s
->  {
->         struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
->         struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
-> -       int ret = 0;
->
->         switch (event) {
->         case SND_SOC_DAPM_PRE_PMU:
-> @@ -1653,7 +1652,7 @@ static int wcd938x_codec_aux_dac_event(s
->                                 WCD938X_ANA_RX_DIV4_CLK_EN_MASK, 0);
->                 break;
->         }
-> -       return ret;
-> +       return 0;
->
->  }
->
-> @@ -1868,7 +1867,6 @@ static int wcd938x_codec_enable_aux_pa(s
->         struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
->         struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
->         int hph_mode = wcd938x->hph_mode;
-> -       int ret = 0;
->
->         switch (event) {
->         case SND_SOC_DAPM_PRE_PMU:
-> @@ -1904,7 +1902,7 @@ static int wcd938x_codec_enable_aux_pa(s
->                                                       WCD938X_EN_CUR_DET_MASK, 1);
->                 break;
->         }
-> -       return ret;
-> +       return 0;
->  }
->
->  static int wcd938x_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
->
+Yes, that sounds pretty reasonable.
