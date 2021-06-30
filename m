@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6543B89AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474DE3B89B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbhF3UY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhF3UYx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:24:53 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F171FC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:22:23 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id t3so5000144edt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=PImIOt51jDKDCmCJ/0hr5VWTombGFAivqhWe2AxFwn8=;
-        b=QOxYdtn/vWyv8gwk/dWsQZjWjHT2G4lNmAfD/biG3tk5sy6DZUSmpiCGkYj/LpGkww
-         8gA3xS19cxhZa7iNGZF6OvZFPtOMnYFxLdt3xvWYxnf149qH3eAj+GN1TQDfdQVp60Jb
-         evhD6bMXLujlV/obFZn1I8sE2Mm3QvaSqIZBI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=PImIOt51jDKDCmCJ/0hr5VWTombGFAivqhWe2AxFwn8=;
-        b=driOm03gLw0DfqoXDX3vhKM0A+HbWKhjPP3x537HdR2rMbnlM+U3/J2/6vMxTmfAit
-         F9RJ15Y+whiKiNzSJ8OLFSYMr838hflKVQpVb3bScEHOKC+fO/P8ZILr6faYUTc3sGpL
-         bb0xPKlElJbp2Poqe5gndXO/Tc6Weeue1DIgwbJ3y6eoXhE0GMxiEpFojn+IgJS73VyC
-         xN4ns4sYyn730ZuazHhTorBOeFi1QJ2lf5of87jQfCVaed27+8f9mRA52+b0XErg0jNN
-         RYK4kfmCUjw+GFG46jPxoUmYBfwD3tZoSSf/PcHBZV9gkOHjfrvIKqHofP2Dhvfj9vql
-         0Ozw==
-X-Gm-Message-State: AOAM532OYnGt1Vd1N5/6o6uNyfZkUH5kMWwOIaluoLwOOigGqEdIYaN1
-        2eccnoy/2MVQ3qkeJ1REKK2XrX6MZW1rBmWqykWwpQ==
-X-Google-Smtp-Source: ABdhPJy7u84dJq/DmHkKhh2+ktLunIqakK5FT1750p6s3XEvk6F66J/QiB96iLt40pM7ZRmwckZk+cfrBJtZbwJ3F6Q=
-X-Received: by 2002:a05:6402:10cc:: with SMTP id p12mr49652298edu.328.1625084542606;
- Wed, 30 Jun 2021 13:22:22 -0700 (PDT)
+        id S234295AbhF3U3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:29:46 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:56754 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234208AbhF3U3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 16:29:45 -0400
+Received: from zn.tnic (p200300ec2f12c300341904cf3ce6da03.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:3419:4cf:3ce6:da03])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9468B1EC052A;
+        Wed, 30 Jun 2021 22:27:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625084834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=86yXg3hLUA1nTjtkdrF8ezRaEgM4FbW0oMD3BQItYJ4=;
+        b=U9QqFhZE8zeta3O6rwSTpio3PZepEPd6hMTZZlMZKI3j5AviK6zI4HnHVp4eBgXlPt2TP7
+        yDC5EOErSIrTFJFqMhIFFb3ScTHtjKVpqp2EgD1XJumGLQfoJjgqyYyJM/AHUwOTT6FsxJ
+        0PCd12rXShZCeUsZt9LtS4ce6RFn7OU=
+Date:   Wed, 30 Jun 2021 22:27:06 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] ACPI updates for v5.14-rc1
+Message-ID: <YNzTmmru8JK++Abo@zn.tnic>
+References: <CAJZ5v0hm5ihfU_hBbMB9u7SmH18PLGp6+Z6=wBLa8WxaVQRTpg@mail.gmail.com>
+ <YNxLvhBBE7Ff6Q5u@zn.tnic>
+ <CAJZ5v0g_+xDVYRiVR4aDFKsNqLg9DeGAMKU1+CPCorpf=Ceb7A@mail.gmail.com>
 MIME-Version: 1.0
-From:   Micah Morton <mortonm@chromium.org>
-Date:   Wed, 30 Jun 2021 10:22:11 -1000
-Message-ID: <CAJ-EccODUD45ZFgqqSxwZ9-DkqJL7F9fYOiHt+2tLZBss3VoAA@mail.gmail.com>
-Subject: [GIT PULL] SafeSetID changes for v5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0g_+xDVYRiVR4aDFKsNqLg9DeGAMKU1+CPCorpf=Ceb7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+On Wed, Jun 30, 2021 at 07:19:05PM +0200, Rafael J. Wysocki wrote:
+> What about the following help text (white space damage by gmail)?
+> 
+> ---
+>  drivers/acpi/Kconfig |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> Index: linux-pm/drivers/acpi/Kconfig
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/Kconfig
+> +++ linux-pm/drivers/acpi/Kconfig
+> @@ -548,3 +548,13 @@ config ACPI_PRMT
+>      bool "Platform Runtime Mechanism Support"
+>      depends on EFI && X86_64
+>      default y
+> +    help
+> +      Platform Runtime Mechanism (PRM) is a firmware interface exposing a
+> +      set of binary executables that can be called from the AML interpreter
+> +      or directly from device drivers.
+> +
+> +      Say Y to enable the AML interpreter to execute the PRM code.
+> +
+> +      While this feature is optional in principle, leaving it out may
+> +      substantially increase computational overhead related to the
+> +      initialization of some server systems.
 
-  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+Thanks, much better!
 
-are available in the Git repository at:
+-- 
+Regards/Gruss,
+    Boris.
 
-  https://github.com/micah-morton/linux.git tags/safesetid-5.14
-
-for you to fetch changes up to 1b8b719229197b7afa1b1191e083fb41ace095c5:
-
-  LSM: SafeSetID: Mark safesetid_initialized as __initdata (2021-06-10
-09:52:32 -0700)
-
-----------------------------------------------------------------
-Just a single change that marks a variable as __initdata.
-
-This change has been in -next for a few weeks now.
-
-No other work was done on SafeSetID for the 5.14 merge window.
-
-----------------------------------------------------------------
-Austin Kim (1):
-      LSM: SafeSetID: Mark safesetid_initialized as __initdata
-
- security/safesetid/lsm.c | 2 +-
- security/safesetid/lsm.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+https://people.kernel.org/tglx/notes-about-netiquette
