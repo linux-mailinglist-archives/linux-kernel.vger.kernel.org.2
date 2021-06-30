@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D5D3B7D45
+	by mail.lfdr.de (Postfix) with ESMTP id E82693B7D46
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhF3GMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:12:12 -0400
+        id S233065AbhF3GMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:12:17 -0400
 Received: from mga02.intel.com ([134.134.136.20]:46961 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232441AbhF3GKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:10:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195448594"
+        id S232431AbhF3GKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 02:10:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="195448595"
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="195448594"
+   d="scan'208";a="195448595"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2021 23:08:22 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
-   d="scan'208";a="455156574"
+   d="scan'208";a="455156577"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by orsmga008.jf.intel.com with ESMTP; 29 Jun 2021 23:08:22 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -26,10 +26,10 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: [PATCH v6 24/26] x86/insn/amx: Add TILERELEASE instruction to the opcode map
-Date:   Tue, 29 Jun 2021 23:02:24 -0700
-Message-Id: <20210630060226.24652-25-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com, linux-pm@vger.kernel.org
+Subject: [PATCH v6 25/26] intel_idle/amx: Clear the AMX state before entering idle
+Date:   Tue, 29 Jun 2021 23:02:25 -0700
+Message-Id: <20210630060226.24652-26-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210630060226.24652-1-chang.seok.bae@intel.com>
 References: <20210630060226.24652-1-chang.seok.bae@intel.com>
@@ -37,73 +37,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the opcode of TILERELEASE that returns all the AMX state to
-INIT-state.
+When AMX is enabled, initialize AMX state before going idle.
+
+This assures that the kernel will only request idle states with clean AMX
+state. In the case of the C6 idle state, this may allow the hardware to get
+to a deeper power saving condition.
+
+[ Based on patch by Artem Bityutskiy <artem.bityutskiy@linux.intel.com>. ]
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
+Cc: linux-pm@vger.kernel.org
 ---
-Changes from v4:
-* Added as a new patch as preparatory to use the instruction in the kernel.
----
- arch/x86/lib/x86-opcode-map.txt       | 8 +++++++-
- tools/arch/x86/lib/x86-opcode-map.txt | 8 +++++++-
- 2 files changed, 14 insertions(+), 2 deletions(-)
+Changes from v5:
+* Moved the code to intel_idle. (Peter Zijlstra)
+* Fixed to deactivate fpregs. (Andy Lutomirski and Dave Hansen)
+* Updated the code comment. (Dave Hansen)
 
-diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index ec31f5b60323..dbc5078ccafe 100644
---- a/arch/x86/lib/x86-opcode-map.txt
-+++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -690,7 +690,9 @@ AVXcode: 2
- 45: vpsrlvd/q Vx,Hx,Wx (66),(v)
- 46: vpsravd Vx,Hx,Wx (66),(v) | vpsravd/q Vx,Hx,Wx (66),(evo)
- 47: vpsllvd/q Vx,Hx,Wx (66),(v)
--# Skip 0x48-0x4b
-+# Skip 0x48
-+49: Grp22 (1A)
-+# Skip 0x4a-0x4b
- 4c: vrcp14ps/d Vpd,Wpd (66),(ev)
- 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
- 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
-@@ -1082,6 +1084,10 @@ GrpTable: Grp21
- 7: ENDBR64 (F3),(010),(11B) | ENDBR32 (F3),(011),(11B)
- EndTable
+Changes from v4:
+* Added as a new patch. (Thomas Gleixner)
+---
+ arch/x86/include/asm/special_insns.h |  6 +++
+ drivers/idle/intel_idle.c            | 79 ++++++++++++++++++++++++++++
+ 2 files changed, 85 insertions(+)
+
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index f3fbb84ff8a7..fada1bb82c7b 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -294,6 +294,12 @@ static inline int enqcmds(void __iomem *dst, const void *src)
+ 	return 0;
+ }
  
-+GrpTable: Grp22
-+0: TILERELEASE (!F3),(v1),(11B)
-+EndTable
++static inline void tile_release(void)
++{
++	/* Instruction opcode for TILERELEASE; supported in binutils >= 2.36. */
++	asm volatile(".byte 0xc4, 0xe2, 0x78, 0x49, 0xc0");
++}
 +
- # AMD's Prefetch Group
- GrpTable: GrpP
- 0: PREFETCH
-diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index ec31f5b60323..dbc5078ccafe 100644
---- a/tools/arch/x86/lib/x86-opcode-map.txt
-+++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -690,7 +690,9 @@ AVXcode: 2
- 45: vpsrlvd/q Vx,Hx,Wx (66),(v)
- 46: vpsravd Vx,Hx,Wx (66),(v) | vpsravd/q Vx,Hx,Wx (66),(evo)
- 47: vpsllvd/q Vx,Hx,Wx (66),(v)
--# Skip 0x48-0x4b
-+# Skip 0x48
-+49: Grp22 (1A)
-+# Skip 0x4a-0x4b
- 4c: vrcp14ps/d Vpd,Wpd (66),(ev)
- 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
- 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
-@@ -1082,6 +1084,10 @@ GrpTable: Grp21
- 7: ENDBR64 (F3),(010),(11B) | ENDBR32 (F3),(011),(11B)
- EndTable
+ #endif /* __KERNEL__ */
  
-+GrpTable: Grp22
-+0: TILERELEASE (!F3),(v1),(11B)
-+EndTable
+ #endif /* _ASM_X86_SPECIAL_INSNS_H */
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index ec1b9d306ba6..a77c6d7a10e5 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -54,6 +54,8 @@
+ #include <asm/intel-family.h>
+ #include <asm/mwait.h>
+ #include <asm/msr.h>
++#include <asm/fpu/internal.h>
++#include <asm/special_insns.h>
+ 
+ #define INTEL_IDLE_VERSION "0.5.1"
+ 
+@@ -155,6 +157,55 @@ static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
+ 	return 0;
+ }
+ 
++/**
++ * idle_tile() - Initialize TILE registers in INIT-state
++ *
++ * Leaving state in the dirty TILE registers may prevent the processor from
++ * entering lower-power idle states. Use TILERELEASE to initialize the
++ * state. Destroying fpregs state is safe after the fpstate update.
++ *
++ * Returns:	None
++ */
++static inline void idle_tile(void)
++{
++	if (boot_cpu_has(X86_FEATURE_XGETBV1) && (xgetbv(1) & XFEATURE_MASK_XTILE)) {
++		tile_release();
++		fpregs_deactivate(&current->thread.fpu);
++	}
++}
 +
- # AMD's Prefetch Group
- GrpTable: GrpP
- 0: PREFETCH
++/**
++ * intel_idle_tile - Ask the processor to enter the given idle state.
++ * @dev: cpuidle device of the target CPU.
++ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
++ * @index: Target idle state index.
++ *
++ * Ensure TILE registers in INIT-state.
++ */
++static __cpuidle int intel_idle_tile(struct cpuidle_device *dev,
++				     struct cpuidle_driver *drv, int index)
++{
++	idle_tile();
++
++	return intel_idle(dev, drv, index);
++}
++
++/**
++ * intel_idle_s2idle_tile - Ask the processor to enter the given idle state.
++ * @dev: cpuidle device of the target CPU.
++ * @drv: cpuidle driver (assumed to point to intel_idle_driver).
++ * @index: Target idle state index.
++ *
++ * Ensure TILE registers in INIT-state.
++ */
++static __cpuidle int intel_idle_s2idle_tile(struct cpuidle_device *dev,
++					    struct cpuidle_driver *drv, int index)
++{
++	idle_tile();
++
++	return intel_idle_s2idle(dev, drv, index);
++}
++
+ /*
+  * States are indexed by the cstate number,
+  * which is also the index into the MWAIT hint array.
+@@ -752,6 +803,27 @@ static struct cpuidle_state icx_cstates[] __initdata = {
+ 		.enter = NULL }
+ };
+ 
++static struct cpuidle_state spr_cstates[] __initdata = {
++	{
++		.name = "C1",
++		.desc = "MWAIT 0x00",
++		.flags = MWAIT2flg(0x00),
++		.exit_latency = 1,
++		.target_residency = 1,
++		.enter = &intel_idle,
++		.enter_s2idle = intel_idle_s2idle, },
++	{
++		.name = "C6",
++		.desc = "MWAIT 0x20",
++		.flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
++		.exit_latency = 128,
++		.target_residency = 384,
++		.enter = &intel_idle_tile,
++		.enter_s2idle = intel_idle_s2idle_tile, },
++	{
++		.enter = NULL }
++};
++
+ static struct cpuidle_state atom_cstates[] __initdata = {
+ 	{
+ 		.name = "C1E",
+@@ -1095,6 +1167,12 @@ static const struct idle_cpu idle_cpu_icx __initconst = {
+ 	.use_acpi = true,
+ };
+ 
++static const struct idle_cpu idle_cpu_spr __initconst = {
++	.state_table = spr_cstates,
++	.disable_promotion_to_c1e = true,
++	.use_acpi = true,
++};
++
+ static const struct idle_cpu idle_cpu_avn __initconst = {
+ 	.state_table = avn_cstates,
+ 	.disable_promotion_to_c1e = true,
+@@ -1157,6 +1235,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&idle_cpu_skx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&idle_cpu_icx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
++	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&idle_cpu_spr),
+ 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNL,	&idle_cpu_knl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,	&idle_cpu_knl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	&idle_cpu_bxt),
 -- 
 2.17.1
 
