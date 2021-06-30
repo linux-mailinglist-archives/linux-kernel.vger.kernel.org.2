@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29B3B7D54
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ED93B7D55
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhF3GWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:22:34 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:9299 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhF3GWa (ORCPT
+        id S232343AbhF3GWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:22:41 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:39683 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhF3GWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:22:30 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GF9zg6nFBz1BRjB;
-        Wed, 30 Jun 2021 14:14:39 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 14:19:59 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 30 Jun 2021 14:19:58 +0800
-Subject: Re: [PATCH 4.14 00/88] 4.14.238-rc1 review
-To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>
-References: <20210628143628.33342-1-sashal@kernel.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <c1e29a9a-7561-3aa0-8589-949dcf6d9304@huawei.com>
-Date:   Wed, 30 Jun 2021 14:19:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 30 Jun 2021 02:22:39 -0400
+Received: by mail-lj1-f169.google.com with SMTP id c11so1675635ljd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:20:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fi84/fcfdof1rBJUwt6I4qit4XezHxGkLHK4x+X55A0=;
+        b=jFuNg6orlKQJyPLfgqQvpkC4w9UK9hJv4Gb1hXUYXzkZpHViLqkEOWWRek1or1tbrO
+         Di/mlkf8zMUwf6zEzKg48YvzHLNoCNxRX0vFJLG2Kwk6uikOIEh3EI9oHepkZpgWiISH
+         hXeFGapN7g7tSY34MdU6FJw2n85Zhgc7W3d2q1JFJtakQ0IT8sDhtDJillS69qOyJ8Mt
+         WsueQhSSNW2YlrUvnuw7HnD1hAcmH1ZFMd+KXsgDKhxAJmCwA6moKAe6GtXB01j5sLgb
+         uHaYa8l61u0ZLSZ1ZdG2NjO3ml6qcdMjHsdre+Z6Ubt1OJnTw14hobD20a5d3QvIWAdd
+         YmGg==
+X-Gm-Message-State: AOAM531mYy+zGVZfyXfhKcqnJP1Bce5cM7id3gFqNE6EEYrChkJwapCa
+        gHdCDNE7+g+ckJRYSuy0pPZAq318pwQi7p3Vj34=
+X-Google-Smtp-Source: ABdhPJwtshQlkTpu133O2Eazog1AoiarWWI9uQt4mgYxEI7iFpRcT3mckJ6nW9u7oaU3dJ1XOnrqpgjorM2492/Ui9Y=
+X-Received: by 2002:a2e:5c42:: with SMTP id q63mr6508934ljb.23.1625034010564;
+ Tue, 29 Jun 2021 23:20:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628143628.33342-1-sashal@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+References: <20210625071826.608504-1-namhyung@kernel.org> <CAM9d7ci=S2p4_Baqo_vY8sVnST1jKL-HxcHNtcfKzuv0fA-R+Q@mail.gmail.com>
+In-Reply-To: <CAM9d7ci=S2p4_Baqo_vY8sVnST1jKL-HxcHNtcfKzuv0fA-R+Q@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 29 Jun 2021 23:19:59 -0700
+Message-ID: <CAM9d7cjopjKuLktX_kgEREbQdF5GmhuG9prKuBpP_=fkhfP05g@mail.gmail.com>
+Subject: Re: [PATCHSET v4 0/4] perf stat: Enable BPF counters with --for-each-cgroup
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 27, 2021 at 8:29 AM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Fri, Jun 25, 2021 at 12:18 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > This is to add BPF support for --for-each-cgroup to handle many cgroup
+> > events on big machines.  You can use the --bpf-counters to enable the
+> > new behavior.
+> >
+> >  * changes in v4
+> >   - convert cgrp_readings to a per-cpu array map
+> >   - remove now-unused cpu_idx map
+> >   - move common functions to a header file
+> >   - reuse bpftool bootstrap binary
+> >   - fix build error in the cgroup code
+> >
+> >  * changes in v3
+> >   - support cgroup hierarchy with ancestor ids
+> >   - add and trigger raw_tp BPF program
+> >   - add a build rule for vmlinux.h
+> >
+> >  * changes in v2
+> >   - remove incorrect use of BPF_F_PRESERVE_ELEMS
+> >   - add missing map elements after lookup
+> >   - handle cgroup v1
+> >
+> > Basic idea is to use a single set of per-cpu events to count
+> > interested events and aggregate them to each cgroup.  I used bperf
+> > mechanism to use a BPF program for cgroup-switches and save the
+> > results in a matching map element for given cgroups.
+> >
+> > Without this, we need to have separate events for cgroups, and it
+> > creates unnecessary multiplexing overhead (and PMU programming) when
+> > tasks in different cgroups are switched.  I saw this makes a big
+> > difference on 256 cpu machines with hundreds of cgroups.
+> >
+> > Actually this is what I wanted to do it in the kernel [1], but we can
+> > do the job using BPF!
+>
+> Ugh, I found the current kernel bpf verifier doesn't accept the
+> bpf_get_current_ancestor_cgroup_id() helper.  Will send the fix
+> to BPF folks.
 
+The fix landed on the bpf-next tree.
 
-On 2021/6/28 22:35, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 4.14.238 release.
-> There are 88 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed 30 Jun 2021 02:36:04 PM UTC.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.14.y&id2=v4.14.237
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
-> 
-
-Tested on x86 for 4.14.238-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.14.y
-Version: 4.14.238-rc1
-Commit: f8f0323505c56f13af223c8b9ad54f2fad125756
-Compiler: gcc version 7.3.0 (GCC)
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8836
-passed: 8836
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Thanks,
+Namhyung
