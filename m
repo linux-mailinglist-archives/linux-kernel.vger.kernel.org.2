@@ -2,313 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE313B867E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C0A3B868C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbhF3PuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhF3Pt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:49:59 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A281EC0617A8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:47:28 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id h18so1336426qve.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VxezOHsPVxs+xB6BVTLLYf2XI/Gpz28qXdqPvfvuUuY=;
-        b=swaiBn8GrCoTmoRBrySgqREVdAql6hqiSVM2EWhkYOjNdx1uYvOEZKtm6LuGTYKbNe
-         C6Y8HhXzvumyE55ctUhCymF4q7GKDLoD09ByN5GMlkH/J5e5MwpwSS37xdKzsIOYpW7j
-         WwiXv2C7tgQz8bS3v4kQhzF9AiN88YZt91YjpOc8Wp18kp/I5e+npykGyw4AzSR6SP4V
-         ywTkN21gsgbMydOL+WiGbLey/rCKJh3rXNe5keH9lsX+/57XWfJ8ssOTtf6Fe4AfV4SB
-         yynX3BebGV2NgYkLi+8eipvZ9s5UTQybGMOpDgWtRjtAo+4w87pxvaTAY4R+AY1eljjN
-         eFQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VxezOHsPVxs+xB6BVTLLYf2XI/Gpz28qXdqPvfvuUuY=;
-        b=UFNPSvJOFA3xkSFoKlzij8q3Eu6JNRxaZhDeZhAkB1EIuGOUi/PmgrmHHLpKVoKd2K
-         mg9NfsH3aoShHEDvGfVwn5ImFP1m7Tew7ecOHwZh5InhmAZZqSPKIKlyj8JfW9nuusXX
-         V4+Xb4MfjPqmcyiURXHuNTF3l6Y0yct/wJ+XMCxtMqnfv7Mb9o1Pwuia3I/qz8iQyXVz
-         efre/mXjnK8Y3ZFKVcodUERB3P1fVsq7OORUgLq4AfXXULzfe7BDRLrokUPvN1fjkL9w
-         /H1Laoqy8PD07083hXw9ys3XDLUmPNGBr9XCfIpC3aTWSlFGu0aU0iHgf2uhFZmUXJin
-         /HDA==
-X-Gm-Message-State: AOAM532DAjgfephEfROEr0A7diyeYgaEFhACEEB4EuaoRjEPKt4SFiet
-        fsns63Lis0Xungr78Du19PKSLRxkh+sD3erRJeCu0g==
-X-Google-Smtp-Source: ABdhPJzYqNwD4zU1M2ImlWlNP0d/DQxxzoAQ8IpRwQtALWrSM6WyNllcw8r40MR4AOeIs+TXf/dbsGl9oWW1vyky/+o=
-X-Received: by 2002:a05:6214:1021:: with SMTP id k1mr37760978qvr.4.1625068047671;
- Wed, 30 Jun 2021 08:47:27 -0700 (PDT)
+        id S235914AbhF3P5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:57:47 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3913 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235839AbhF3P5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 11:57:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="230015502"
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="230015502"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 08:55:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="559099422"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jun 2021 08:55:02 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH v8 00/22] Introduce threaded trace streaming for basic perf record operation
+Date:   Wed, 30 Jun 2021 18:54:39 +0300
+Message-Id: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
- <20210630133149.3204290-4-dmitry.baryshkov@linaro.org> <YNyHDAHk6ad/XCGl@yoga>
-In-Reply-To: <YNyHDAHk6ad/XCGl@yoga>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 30 Jun 2021 18:47:16 +0300
-Message-ID: <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Changes in v8:
+- captured Acked-by: tags by Namhyung Kim
+- merged with origin/perf/core
+- added patch 21/22 introducing READER_NODATA state
+- added patch 22/22 fixing --max-size option
 
-On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
->
-> > On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> > domain. Currently we used a regulator to enable this domain on demand,
-> > however this has some consequences, as genpd code is not reentrant.
-> >
-> > Teach Qualcomm clock controller code about setting up power domains and
-> > using them for gdsc control.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> There's a proposal to add a generic binding for statically assigning a
-> performance states here:
->
-> https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
->
->
-> But that said, do you really need this?
->
-> The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
-> SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
-> to 460MHz in &mdss.
->
-> But then in &mdss_mdp you do the same using an opp-table based on the
-> actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
+v7: https://lore.kernel.org/lkml/cover.1624350588.git.alexey.v.bayduraev@linux.intel.com/
 
-MDSS and DSI would bump up MMCX performance state requirements on
-their own, depending on the frequency being selected.
+Changes in v7:
+- fixed possible crash after out_free_threads label
+- added missing pthread_attr_destroy() call
+- added check of correctness of user masks 
+- fixed zsts_data finalization
 
-> So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
-> MMCX and then use opp-tables associated with the devices that scales the
-> clock and thereby actually carries the "required-opps".
+v6: https://lore.kernel.org/lkml/cover.1622025774.git.alexey.v.bayduraev@linux.intel.com/
 
-Actually no. I set the performance state in the qcom_cc_map, so that
-further register access is possible. Initially I was doing this in the
-qcom_cc_really_probe() and it was already too late.
-Just to remind: this patchset is not about MDSS_GDSC being parented by
-MMCX, it is about dispcc/videocc registers being gated with MMCX.
+Changes in v6:
+- fixed leaks and possible double free in record__thread_mask_alloc()
+- fixed leaks in record__init_thread_user_masks()
+- fixed final mmaps flushing for threads id > 0
+- merged with origin/perf/core
 
-> I presume your testing indicates that it doesn't matter on sm8250, but
-> as stated above, 460MHz on sm8150/sc8180x requires nominal, so per your
-> suggestion we'd have to vote nominal in &mdss, which means that if the
-> DPU decides to go to 200MHz the &mdss will still keep the voltage at
-> NOM, even though the DPU's opp-table says that LOW_SVS is sufficient.
+v5: https://lore.kernel.org/lkml/cover.1619781188.git.alexey.v.bayduraev@linux.intel.com/
 
-Let me check whether LOW_SVS is really a requirement or if setting
-MIN_SVS would also be sufficient for that. Interesting enough, from
-the downstream drivers it looks like dispcc should be able to work
-with MIN_SVS, while videocc would require LOW_SVS.
+Changes in v5:
+- fixed leaks in record__init_thread_masks_spec()
+- fixed leaks after failed realloc
+- replaced "%m" to strerror()
+- added masks examples to the documentation
+- captured Acked-by: tags by Andi Kleen
+- do not allow --thread option for full_auxtrace mode 
+- split patch 06/12 to 06/20 and 07/20
+- split patch 08/12 to 09/20 and 10/20
+- split patches 11/12 and 11/12 to 13/20-20/20
 
->
-> Regards,
-> Bjorn
->
-> > ---
-> >  drivers/clk/qcom/common.c | 55 ++++++++++++++++++++++++++++++++++-----
-> >  drivers/clk/qcom/gdsc.c   |  6 +++++
-> >  2 files changed, 55 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
-> > index 60d2a78d1395..eeb5b8c93032 100644
-> > --- a/drivers/clk/qcom/common.c
-> > +++ b/drivers/clk/qcom/common.c
-> > @@ -10,6 +10,8 @@
-> >  #include <linux/clk-provider.h>
-> >  #include <linux/reset-controller.h>
-> >  #include <linux/of.h>
-> > +#include <linux/pm_opp.h>
-> > +#include <linux/pm_runtime.h>
-> >
-> >  #include "common.h"
-> >  #include "clk-rcg.h"
-> > @@ -76,6 +78,16 @@ qcom_cc_map(struct platform_device *pdev, const struct qcom_cc_desc *desc)
-> >       struct resource *res;
-> >       struct device *dev = &pdev->dev;
-> >
-> > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
-> > +             int pd_opp;
-> > +
-> > +             pd_opp = of_get_required_opp_performance_state(dev->of_node, 0);
-> > +             if (pd_opp < 0)
-> > +                     return ERR_PTR(pd_opp);
-> > +
-> > +             dev_pm_genpd_set_performance_state(dev, pd_opp);
-> > +     }
-> > +
-> >       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >       base = devm_ioremap_resource(dev, res);
-> >       if (IS_ERR(base))
-> > @@ -224,6 +236,11 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
-> >       return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
-> >  }
-> >
-> > +static void qcom_cc_pm_runtime_disable(void *data)
-> > +{
-> > +     pm_runtime_disable(data);
-> > +}
-> > +
-> >  int qcom_cc_really_probe(struct platform_device *pdev,
-> >                        const struct qcom_cc_desc *desc, struct regmap *regmap)
-> >  {
-> > @@ -236,11 +253,28 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> >       struct clk_regmap **rclks = desc->clks;
-> >       size_t num_clk_hws = desc->num_clk_hws;
-> >       struct clk_hw **clk_hws = desc->clk_hws;
-> > +     bool use_pm = false;
-> >
-> >       cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-> >       if (!cc)
-> >               return -ENOMEM;
-> >
-> > +     if (of_find_property(dev->of_node, "required-opps", NULL)) {
-> > +             use_pm = true;
-> > +
-> > +             pm_runtime_enable(dev);
-> > +             ret = pm_runtime_get_sync(dev);
-> > +             if (ret < 0) {
-> > +                     pm_runtime_put(dev);
-> > +                     pm_runtime_disable(dev);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             ret = devm_add_action_or_reset(dev, qcom_cc_pm_runtime_disable, dev);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +
-> >       reset = &cc->reset;
-> >       reset->rcdev.of_node = dev->of_node;
-> >       reset->rcdev.ops = &qcom_reset_ops;
-> > @@ -251,7 +285,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> >
-> >       ret = devm_reset_controller_register(dev, &reset->rcdev);
-> >       if (ret)
-> > -             return ret;
-> > +             goto err;
-> >
-> >       if (desc->gdscs && desc->num_gdscs) {
-> >               scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
-> > @@ -262,11 +296,11 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> >               scd->num = desc->num_gdscs;
-> >               ret = gdsc_register(scd, &reset->rcdev, regmap);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto err;
-> >               ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
-> >                                              scd);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto err;
-> >       }
-> >
-> >       cc->rclks = rclks;
-> > @@ -277,7 +311,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> >       for (i = 0; i < num_clk_hws; i++) {
-> >               ret = devm_clk_hw_register(dev, clk_hws[i]);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto err;
-> >       }
-> >
-> >       for (i = 0; i < num_clks; i++) {
-> > @@ -286,14 +320,23 @@ int qcom_cc_really_probe(struct platform_device *pdev,
-> >
-> >               ret = devm_clk_register_regmap(dev, rclks[i]);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto err;
-> >       }
-> >
-> >       ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
-> >       if (ret)
-> > -             return ret;
-> > +             goto err;
-> > +
-> > +     if (use_pm)
-> > +             pm_runtime_put(dev);
-> >
-> >       return 0;
-> > +
-> > +err:
-> > +     if (use_pm)
-> > +             pm_runtime_put(dev);
-> > +
-> > +     return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
-> >
-> > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > index 51ed640e527b..40c384bda4fc 100644
-> > --- a/drivers/clk/qcom/gdsc.c
-> > +++ b/drivers/clk/qcom/gdsc.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/ktime.h>
-> >  #include <linux/pm_domain.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/regulator/consumer.h>
-> >  #include <linux/reset-controller.h>
-> > @@ -237,6 +238,8 @@ static int gdsc_enable(struct generic_pm_domain *domain)
-> >       struct gdsc *sc = domain_to_gdsc(domain);
-> >       int ret;
-> >
-> > +     pm_runtime_get_sync(domain->dev.parent);
-> > +
-> >       if (sc->pwrsts == PWRSTS_ON)
-> >               return gdsc_deassert_reset(sc);
-> >
-> > @@ -326,6 +329,8 @@ static int gdsc_disable(struct generic_pm_domain *domain)
-> >       if (sc->flags & CLAMP_IO)
-> >               gdsc_assert_clamp_io(sc);
-> >
-> > +     pm_runtime_put(domain->dev.parent);
-> > +
-> >       return 0;
-> >  }
-> >
-> > @@ -427,6 +432,7 @@ int gdsc_register(struct gdsc_desc *desc,
-> >                       continue;
-> >               scs[i]->regmap = regmap;
-> >               scs[i]->rcdev = rcdev;
-> > +             scs[i]->pd.dev.parent = desc->dev;
-> >               ret = gdsc_init(scs[i]);
-> >               if (ret)
-> >                       return ret;
-> > --
-> > 2.30.2
-> >
+v4: https://lore.kernel.org/lkml/6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com/
 
+Changes in v4:
+- renamed 'comm' structure to 'pipes'
+- moved thread fd/maps messages to verbose=2
+- fixed leaks during allocation of thread_data structures
+- fixed leaks during allocation of thread masks
+- fixed possible fails when releasing thread masks
 
+v3: https://lore.kernel.org/lkml/7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com/
+
+Changes in v3:
+- avoided skipped redundant patch 3/15
+- applied "data file" and "data directory" terms allover the patch set
+- captured Acked-by: tags by Namhyung Kim
+- avoided braces where don't needed
+- employed thread local variable for serial trace streaming 
+- added specs for --thread option - core, socket, numa and user defined
+- added parallel loading of data directory files similar to the prototype [1]
+
+v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
+
+Changes in v2:
+- explicitly added credit tags to patches 6/15 and 15/15,
+  additionally to cites [1], [2]
+- updated description of 3/15 to explicitly mention the reason
+  to open data directories in read access mode (e.g. for perf report)
+- implemented fix for compilation error of 2/15
+- explicitly elaborated on found issues to be resolved for
+  threaded AUX trace capture
+
+v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
+
+Patch set provides parallel threaded trace streaming mode for basic
+perf record operation. Provided mode mitigates profiling data losses
+and resolves scalability issues of serial and asynchronous (--aio)
+trace streaming modes on multicore server systems. The design and
+implementation are based on the prototype [1], [2].
+
+Parallel threaded mode executes trace streaming threads that read kernel
+data buffers and write captured data into several data files located at
+data directory. Layout of trace streaming threads and their mapping to data
+buffers to read can be configured using a value of --thread command line
+option. Specification value provides masks separated by colon so the masks
+define cpus to be monitored by one thread and thread affinity mask is
+separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
+specifies parallel threads layout that consists of two threads with
+corresponding assigned cpus to be monitored. Specification value can be
+a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
+thread for monitoring every cpu, whole core or socket. The option provided
+with no or empty value defaults to "cpu" layout creating data streaming
+thread for every cpu being monitored. Specification masks are filtered
+by the mask provided via -C option.
+
+Parallel streaming mode is compatible with Zstd compression/decompression
+(--compression-level) and external control commands (--control). The mode
+is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
+related and derived modes like --snapshot or --aux-sample. --switch-output-*
+and --timestamp-filename options are not enabled for parallel streaming.
+Initial intent to enable AUX area tracing faced the need to define some
+optimal way to store index data in data directory. --switch-output-* and
+--timestamp-filename use cases are not clear for data directories.
+Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
+mutually exclusive to parallel streaming mode.
+
+Basic analysis of data directories is provided in perf report mode.
+Raw dump and aggregated reports are available for data directories,
+still with no memory consumption optimizations.
+
+Tested:
+
+tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -a
+tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+
+tools/perf/perf report -i prof.data
+tools/perf/perf report -i prof.data --call-graph=callee
+tools/perf/perf report -i prof.data --stdio --header
+tools/perf/perf report -i prof.data -D --header
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+
+Alexey Bayduraev (22):
+  perf record: Introduce thread affinity and mmap masks
+  perf record: Introduce thread specific data array
+  perf record: Introduce thread local variable
+  perf record: Stop threads in the end of trace streaming
+  perf record: Start threads in the beginning of trace streaming
+  perf record: Introduce data file at mmap buffer object
+  perf record: Introduce data transferred and compressed stats
+  perf record: Init data file at mmap buffer object
+  tools lib: Introduce bitmap_intersects() operation
+  perf record: Introduce --threads=<spec> command line option
+  perf record: Document parallel data streaming mode
+  perf report: Output data file name in raw trace dump
+  perf session: Move reader structure to the top
+  perf session: Introduce reader_state in reader object
+  perf session: Introduce reader objects in session object
+  perf session: Introduce decompressor into trace reader object
+  perf session: Move init into reader__init function
+  perf session: Move map/unmap into reader__mmap function
+  perf session: Load single file for analysis
+  perf session: Load data directory files for analysis
+  perf session: Introduce READER_NODATA state
+  perf record: Introduce record__bytes_written and fix --max-size option
+
+ tools/include/linux/bitmap.h             |   11 +
+ tools/lib/api/fd/array.c                 |   17 +
+ tools/lib/api/fd/array.h                 |    1 +
+ tools/lib/bitmap.c                       |   14 +
+ tools/perf/Documentation/perf-record.txt |   30 +
+ tools/perf/builtin-inject.c              |    3 +-
+ tools/perf/builtin-record.c              | 1119 ++++++++++++++++++++--
+ tools/perf/util/evlist.c                 |   16 +
+ tools/perf/util/evlist.h                 |    1 +
+ tools/perf/util/mmap.c                   |    6 +
+ tools/perf/util/mmap.h                   |    6 +
+ tools/perf/util/ordered-events.h         |    1 +
+ tools/perf/util/record.h                 |    2 +
+ tools/perf/util/session.c                |  501 +++++++---
+ tools/perf/util/session.h                |    5 +
+ tools/perf/util/tool.h                   |    3 +-
+ 16 files changed, 1531 insertions(+), 205 deletions(-)
 
 -- 
-With best wishes
-Dmitry
+2.19.0
+
