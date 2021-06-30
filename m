@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE143B82A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BAD3B82A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhF3NIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:08:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53226 "EHLO mail.kernel.org"
+        id S234830AbhF3NIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234790AbhF3NIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:08:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C4C61455;
-        Wed, 30 Jun 2021 13:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625058333;
-        bh=TMFdQw4PME/r/zLGH4gKHa8lKrUKP8Eihr/D1qlyhEA=;
+        id S234804AbhF3NIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 09:08:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62D9261466;
+        Wed, 30 Jun 2021 13:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625058335;
+        bh=+XFoT1s+yWmHl8v8zBGy1e6ffolKkthCOrD0n4FkztM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lNV8wa3g4UGArm5bcX0twmdq46kNiPV9/goMj+oXgeoBqIsrmQC2jtAVNAVAokqJp
-         J/BLiPsdN7VxUev1nLH3kCILwAS+g8vlRfdx1ssE3Y4Y4kxIG567zZdjmHeiA+Ttso
-         t3poUsRLNYX4yWvPwHDAaSJnJ0fGOmYAnuh5ki3qYs4dtBx9JmXPNpAdr+elLSUfy3
-         JjYLpf9JR0JnD+lcs/NlAWVsttXBKq0nkQzpT53Rhx11qi7/fmsf86rtA1Ec30P28O
-         fPhJqQzrHwLGmyW9xPabj2xqMqXw8RVMy8Pf6Ufa1t+WHDCzwJoBnm1ICBJxN/vA8L
-         N/1v8DF6ICIPA==
-Date:   Wed, 30 Jun 2021 09:05:32 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Samuel Zou <zou_wei@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org
-Subject: Re: [PATCH 5.10 000/101] 5.10.47-rc1 review
-Message-ID: <YNxsHGa+X8SpYpOv@sashalap>
-References: <20210628142607.32218-1-sashal@kernel.org>
- <d365efba-fb1a-bff1-f5c8-ee70cf53d821@huawei.com>
+        b=TUt7RlMHo5hOs0C0jqodkLJSgZ8FWM75MJVVrhYeaN88Pd+1R1poPTP9gH+GObA9N
+         tDdrFRnknUm1mSigS7Cc72/CZr6W+cBx5gNTWMNKpKrkp9CD2UFIQSUH/MrCfIlEbz
+         4NuiY3K2v+TmFHWFqo4WZVaVkt31i+wC3kHpK2cE=
+Date:   Wed, 30 Jun 2021 15:05:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com
+Subject: Re: [PATCH V3 1/6] perf/x86/intel/uncore: Add Sapphire Rapids server
+ support
+Message-ID: <YNxsHfzX4PGdM1rP@kroah.com>
+References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
+ <1624990443-168533-2-git-send-email-kan.liang@linux.intel.com>
+ <YNw7KorfwK/OcrTw@kroah.com>
+ <1b7ecd8e-ba0d-5448-5c43-f730ec7e5b35@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d365efba-fb1a-bff1-f5c8-ee70cf53d821@huawei.com>
+In-Reply-To: <1b7ecd8e-ba0d-5448-5c43-f730ec7e5b35@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 09:01:21AM +0800, Samuel Zou wrote:
->
->
->On 2021/6/28 22:24, Sasha Levin wrote:
->>
->>This is the start of the stable review cycle for the 5.10.47 release.
->>There are 101 patches in this series, all will be posted as a response
->>to this one.  If anyone has any issues with these being applied, please
->>let me know.
->>
->>Responses should be made by Wed 30 Jun 2021 02:25:36 PM UTC.
->>Anything received after that time might be too late.
->>
->>The whole patch series can be found in one patch at:
->>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.10.y&id2=v5.10.46
->>or in the git tree and branch at:
->>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
->>and the diffstat can be found below.
->>
->>Thanks,
->>Sasha
->>
->
->Tested on arm64 and x86 for 5.10.47-rc1,
+On Wed, Jun 30, 2021 at 08:56:10AM -0400, Liang, Kan wrote:
+> 
+> 
+> On 6/30/2021 5:36 AM, Greg KH wrote:
+> > On Tue, Jun 29, 2021 at 11:13:58AM -0700, kan.liang@linux.intel.com wrote:
+> > > From: Kan Liang <kan.liang@linux.intel.com>
+> > > 
+> > > Intel Sapphire Rapids supports a discovery mechanism, that allows an
+> > > uncore driver to discover the different components ("boxes") of the
+> > > chip.
+> > > 
+> > > All the generic information of the uncore boxes should be retrieved from
+> > > the discovery tables. This has been enabled with the commit edae1f06c2cd
+> > > ("perf/x86/intel/uncore: Parse uncore discovery tables"). Add
+> > > use_discovery to indicate the case. The uncore driver doesn't need to
+> > > hard code the generic information for each uncore box.
+> > > 
+> > > But we still need to enable various functionality that cannot be
+> > > directly discovered. This is done here.
+> > >   - Add a meaningful name for each uncore block.
+> > >   - Add CHA filter support.
+> > >   - The layout of the control registers for each uncore block is a little
+> > >     bit different from the generic one. Set the platform specific format
+> > >     and ops. Expose the common ops which can be reused.
+> > >   - Add a fixed counter for IMC
+> > > 
+> > > All the undiscovered platform-specific features are hard code in the
+> > > spr_uncores[]. Add uncore_type_customized_copy(), instead of the memcpy,
+> > > to only overwrite these features.
+> > > 
+> > > Only the uncore blocks which are inculded in the discovery tables are
+> > > enabled here. Other uncore blocks, e.g., free-running counters, will be
+> > > supported in the following patch.
+> > > 
+> > > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> > > ---
+> > 
+> > Why is there no other intel.com review on this before sending it out?
+> > 
+> 
+> For the perf related code, currently I follow a loose internal review
+> process. Before posting any patches to LKML, I start an internal review
+> process by sending the patches to an internal mailing list. People (mainly
+> Andi) will review the patches and give some comments.
+> After several rounds of reviews, the reviewers may give a reviewed-by tag or
+> just keep silent. I usually wait for several days. If there is no objection,
+> I will post the patches in LKML for further review. That's why some patches
+> have a reviewed-by, some doesn't in this patchset.
+> But for the patches which you are the key maintainer, I followed the
+> standard internal review process. As you can see, the reviewed-by from
+> Rafael is tagged in the first patch of V1.
 
-Thanks for testing Samuel!
+Thanks for the explaination, it does look very odd to see some patches
+with a reviewed-by and others not.  Makes me thing that the reviewers
+really did not read them all :(
 
--- 
-Thanks,
-Sasha
+> Please let me know if you'd like me to follow the standard internal review
+> process in the future.
+
+The "process" is there to help you all do better work.  If you feel it
+is somehow making it harder then feel free to take it up with Intel
+internally as people there know why it is in place.
+
+thanks,
+
+greg k-h
