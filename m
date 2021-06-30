@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7793B7B65
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 03:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9FE3B7B68
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 03:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhF3Btv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 21:49:51 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:9320 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbhF3Btt (ORCPT
+        id S232049AbhF3B61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 21:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231879AbhF3B60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 21:49:49 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GF3yK6cWxz73kY;
-        Wed, 30 Jun 2021 09:43:05 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 30 Jun 2021 09:47:19 +0800
-Received: from localhost (10.175.101.6) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 30
- Jun 2021 09:47:18 +0800
-From:   Weilong Chen <chenweilong@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <keescook@chromium.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <samitolvanen@google.com>, <ojeda@kernel.org>, <johan@kernel.org>,
-        <akpm@linux-foundation.org>, <masahiroy@kernel.org>,
-        <elver@google.com>, <joe@perches.com>, <hare@suse.de>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [linux-next v2] rootfs: rootflags take effect when mount rootfs
-Date:   Wed, 30 Jun 2021 09:47:44 +0800
-Message-ID: <20210630014744.88735-1-chenweilong@huawei.com>
-X-Mailer: git-send-email 2.31.GIT
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+        Tue, 29 Jun 2021 21:58:26 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5CEC061760;
+        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id p17-20020a17090b0111b02901723ab8d11fso325777pjz.1;
+        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3XEmE3tBGvyuKAhQyT6Z2Ge4lC3BY97Gtc5iIn4CjGA=;
+        b=KkAQGChq+8NzbfFmR1tyl6K0QlHezai+O4ffrI1vf7v6lauxKfb1Fc7VUR0Hrw+m/O
+         eLkkgepe9fr73zl4t2xSr+PQGXGwOp5M8VNVyba0VYVX5BFIiS4TKzcrsv8kEG3+spRQ
+         Efns8xzIx0ljwtQhXSdOVRfJP7BdRDFWE6ZO2c3mY89xN6Qu7uV7K6kIrxUetDaRMIa5
+         C1C/xoSxwu6+d8KilP1P5JSyOy0tN0xjDziAHvrr8fx4raNHqaoXPKl6Pn/91SjI8Yxz
+         FpdD4vA3C8MfnDThfHOoe9miXKRtGuZDX02Xv1JKmlyT8OPUkFBE2pk9YbpSeNP8TzEe
+         HwYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3XEmE3tBGvyuKAhQyT6Z2Ge4lC3BY97Gtc5iIn4CjGA=;
+        b=X9g1WhOapj0KQkacZJtUw+82fZQGEoW9aKmZvrZlrJ+qNqcscsUeNLOHctRGoSFuKT
+         BbulwmEf8tzsm712+RgG9UIPIvnSjU6u9gSf7XDgPTDXIj75RfgADBzEx6Ez2zj/KV9w
+         QxeRhmrHG8vBwOvTzoDalrzGydth50kpcbD+FljqLhZ63QU3ERKmWfEPcxLd3I8C6mPi
+         HzkyabVXMLsA0CXTNhlvYnaf9SdNQDAxxOuNmuXYFIxSBq1+dNRqJ0SYjAFmdgQCbOq4
+         vCy5pnrliLPi415Rur1QWwBFi7mGTUOM8Mv1+bFaX6IYOHKEuuXLaY6yChF6ZPIBToXT
+         b0XQ==
+X-Gm-Message-State: AOAM530tZZo7uwfdzm2MkclnD46cFP5vkMFsTLLbtBlvM8qJx+/J92uy
+        fdtjI44fSKVV4hg+F2mHFWNvu9ZOFqiAK5X3
+X-Google-Smtp-Source: ABdhPJwfkhhsbKt9qHbVrR7ViYv6sCNsxDdFVpWaoQLudfM9KvIjS2M9aJyE3EK53g63l761z109KA==
+X-Received: by 2002:a17:902:b08c:b029:128:4b85:b6f7 with SMTP id p12-20020a170902b08cb02901284b85b6f7mr24966157plr.39.1625018157087;
+        Tue, 29 Jun 2021 18:55:57 -0700 (PDT)
+Received: from localhost.localdomain ([150.109.127.35])
+        by smtp.gmail.com with ESMTPSA id j12sm19412048pjw.52.2021.06.29.18.55.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Jun 2021 18:55:56 -0700 (PDT)
+From:   Bing Fan <hptsfb@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] arm pl011 serial: support multi-irq request
+Date:   Wed, 30 Jun 2021 09:55:53 +0800
+Message-Id: <1625018153-14672-1-git-send-email-hptsfb@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel root filesystem may use the rootflags parameters
-when mount, especially for tmpfs, to setup a variety of features.
+From: Bing Fan <tombinfan@tencent.com>
 
-For example:
-1. Add 'rootflags=huge=always' to boot args.
-2. When the OS bootup:
-rootfs on / type rootfs (..., huge=always)
-Then we can get the hugepage performance improvement of tmpfs.
+In order to make pl011 work better, multiple interrupts are
+required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
+at the same time, pl011 to GIC does not merge the interrupt
+lines(each serial-interrupt corresponding to different GIC hardware
+interrupt), so need to enable and request multiple gic interrupt
+numbers in the driver.
 
-Usage:
-Relevant documents (Documentation/admin-guide/kernel-parameters.txt)
-description:
-    rootflags=      [KNL] Set root filesystem mount option string
-
-Signed-off-by: Weilong Chen <chenweilong@huawei.com>
+Signed-off-by: Bing Fan <tombinfan@tencent.com>
 ---
- fs/namespace.c       | 5 +++--
- include/linux/init.h | 2 +-
- init/do_mounts.c     | 4 +++-
- 3 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/tty/serial/amba-pl011.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index c3f1a78ba369..318ad4fbc20b 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -4184,6 +4184,7 @@ SYSCALL_DEFINE5(mount_setattr, int, dfd, const char __user *, path,
- 	return err;
- }
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index 78682c12156a..8b471de0e31c 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -1703,9 +1703,26 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
  
-+static char * __initdata rootfs_flags;
- static void __init init_mount_tree(void)
+ static int pl011_allocate_irq(struct uart_amba_port *uap)
  {
- 	struct vfsmount *mnt;
-@@ -4191,7 +4192,7 @@ static void __init init_mount_tree(void)
- 	struct mnt_namespace *ns;
- 	struct path root;
- 
--	mnt = vfs_kern_mount(&rootfs_fs_type, 0, "rootfs", NULL);
-+	mnt = vfs_kern_mount(&rootfs_fs_type, 0, "rootfs", rootfs_flags);
- 	if (IS_ERR(mnt))
- 		panic("Can't create rootfs");
- 
-@@ -4245,7 +4246,7 @@ void __init mnt_init(void)
- 	if (!fs_kobj)
- 		printk(KERN_WARNING "%s: kobj create error\n", __func__);
- 	shmem_init();
--	init_rootfs();
-+	init_rootfs(&rootfs_flags);
- 	init_mount_tree();
- }
- 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index d82b4b2e1d25..d8d46d3c73fb 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -148,7 +148,7 @@ extern unsigned int reset_devices;
- /* used by init/main.c */
- void setup_arch(char **);
- void prepare_namespace(void);
--void __init init_rootfs(void);
-+void __init init_rootfs(char **rootfs_flags);
- extern struct file_system_type rootfs_fs_type;
- 
- #if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index a78e44ee6adb..42019b5fbf45 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -632,9 +632,11 @@ struct file_system_type rootfs_fs_type = {
- 	.kill_sb	= kill_litter_super,
- };
- 
--void __init init_rootfs(void)
-+void __init init_rootfs(char **rootfs_flags)
- {
- 	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
- 		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
- 		is_tmpfs = true;
++	int ret = 0;
++	int i;
++	unsigned int virq;
++	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
 +
-+	*rootfs_flags = root_mount_data;
+ 	pl011_write(uap->im, uap, REG_IMSC);
+ 
+-	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
++	for (i = 0; i < AMBA_NR_IRQS; i++) {
++		virq = amba_dev->irq[i];
++		if (virq == 0)
++			break;
++
++		ret = request_irq(virq, pl011_int, IRQF_SHARED, "uart-pl011-*", uap);
++		if (ret) {
++			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
++			break;
++		}
++	}
++
++	return ret;
  }
+ 
+ /*
 -- 
-2.31.GIT
+2.17.1
 
