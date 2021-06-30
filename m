@@ -2,233 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55013B80C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1553D3B80C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhF3KUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S234111AbhF3KYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 06:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233994AbhF3KTx (ORCPT
+        with ESMTP id S229882AbhF3KYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:19:53 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0530CC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:17:23 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id f14so2563150wrs.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8nIzMejevNlcayC5ysEAr8LTPQnvQ1k4Qis/Zmzckfs=;
-        b=AMTJyNglTori0IxVNpucKG+59a7Jt+/Au26IZkPquBgEfc7jBsmIimc5Az4UWR6Seh
-         1pHxNefyU5KyQtM2bS4AhwrXu8JD1Bboj2jvRsXTnbbDVBbd/fpFOeQ3ZLG8J6dBRI1g
-         EjpuLlJ4dWElA8vwZRaHuU/D4ZzKfVXC7MPpEI8ER/7CJPMFg3cGZ02zMdwxW/3jedgf
-         gymz8FSTJYY/4t2t8mHuYJ6wOzgyPkr3Uji0sJG/Pyky95qd+wIZIR8bZamp07VJMoqa
-         J+nOBdym/Hypdk8DH4F2+WM95MhEnFSf7fUJEQLUCG8NRuW/9vVKR5BBWtkICo/HriP+
-         Rx7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8nIzMejevNlcayC5ysEAr8LTPQnvQ1k4Qis/Zmzckfs=;
-        b=qsGP9OuE0oBFu7rYnc6uYzieIIsuRp+4Na/poUBo8862572CVL6NwW3NRPSlcQCi4Q
-         dBuvSETZFVnSMDL8UQ0eiurEUk5a7eCeUbwtMUr+GXBXdtDIV6PYzlUkBXySLYBaqT4h
-         wkztHrfT/sUJoHURKo30Tjcc0bt0qd4+53CTMKVhzZcz5o2dQi9NDJsYstjKsKU1UG87
-         LdzGmiaXFVOYup0Ka9JJNNdu9TWdQ8XFmZHGnIytRhr4Sz3ELsU9tOYJAUhyiKImj8e2
-         3+lMTY3d/NKs7pH1iHUWXFVcbGPx+au5dgfVdNG6o50bz+FjLqqa4cEyVj42I7IAtfcQ
-         R7oA==
-X-Gm-Message-State: AOAM5332Iq3Wor7lVQpyCkYLFAPeBl8iQa5kBAetwZsLDiaPNvL0/qbg
-        ypWgh0Wv83Y1kA6JP3ybE7Gtlw==
-X-Google-Smtp-Source: ABdhPJyBy0lJW8EeksUz43z1dVZXdAyVcITFlfhSYrJrftXGur0j7mj0Ix0a5MfMwE/o+4bu5w77uA==
-X-Received: by 2002:adf:f850:: with SMTP id d16mr17863257wrq.258.1625048242462;
-        Wed, 30 Jun 2021 03:17:22 -0700 (PDT)
-Received: from dell ([95.144.13.171])
-        by smtp.gmail.com with ESMTPSA id o33sm15060349wms.32.2021.06.30.03.17.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 03:17:22 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 11:17:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     hdegoede@redhat.com, mgross@linux.intel.com, bhelgaas@google.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH 3/4] MFD: Intel Out of Band Management Services Module
- (OOBMSM) driver
-Message-ID: <YNxEr+X8GozvxNrW@dell>
-References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
- <20210617215408.1412409-4-david.e.box@linux.intel.com>
+        Wed, 30 Jun 2021 06:24:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF8CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:21:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RzHMjvvEyN0rvuw1i76cbiN/8lpVMpbe6dkowiHqxQc=; b=WCdIBPgXp42HszgyF7ud/Ae0cz
+        Ev2hfHhZChIwJ9gPgEhSVzUGq1fz+KRevszAqWM2ue4lQAuDfY5qJo6LZr2B0wSTpam6Qa8umU0Cn
+        bWVaDvu4qjEtAVueC2eZ/MsdNWRksxygKaoGYzyTi7lPwZOL/d2B1YAK3YW2qabbd0omIzzE9eJpV
+        Hcdbdi8GumlkOW56aJOnwdhuMbdgfxrGX9TDUNJ2USIYmSlR2puaFjBOEza4yVn/jFVuKBvbHivzi
+        jtMr1iqGWCKQuKhGTygvRsrtLLz8uoh6QFmpweKa9w1kNewAIwWkXrA/5DfmQQAuUYRnEnhNtGSbZ
+        uKoa7nVw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyXLA-005DMZ-2e; Wed, 30 Jun 2021 10:21:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00CA6300242;
+        Wed, 30 Jun 2021 12:21:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D42A520412F60; Wed, 30 Jun 2021 12:21:04 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 12:21:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Xu, Yanfei" <yanfei.xu@windriver.com>
+Subject: Re: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on
+ unlocked mutex
+Message-ID: <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
+References: <20210629201138.31507-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210617215408.1412409-4-david.e.box@linux.intel.com>
+In-Reply-To: <20210629201138.31507-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021, David E. Box wrote:
+On Tue, Jun 29, 2021 at 04:11:38PM -0400, Waiman Long wrote:
 
-> The Intel Out of Band Management Services Module (OOBMSM) is a device
-> that provides access to Intel capabilities described in PCIE vendor
-> specific extended capability registers (both VSEC and DVSEC). These
-> capabilities include features like Intel Platform Monitoring Technology
-> as well as others that are not supported by the intel_pmt driver. Add a
-> driver for creating platform devices for these capabilities coming from
-> OOBMSM.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  MAINTAINERS                  |  1 +
->  drivers/mfd/Kconfig          | 11 +++++++
->  drivers/mfd/Makefile         |  1 +
->  drivers/mfd/intel_oobmsm.c   | 61 ++++++++++++++++++++++++++++++++++++
->  drivers/platform/x86/Kconfig |  4 +--
->  5 files changed, 76 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/mfd/intel_oobmsm.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ebdc2a0f794b..0961e3f89497 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9356,6 +9356,7 @@ INTEL PMT DRIVER
->  M:	"David E. Box" <david.e.box@linux.intel.com>
->  S:	Maintained
->  F:	drivers/mfd/intel_extended_cap.c
-> +F:	drivers/mfd/intel_oobmsm.c
->  F:	drivers/mfd/intel_pmt.c
->  F:	drivers/platform/x86/intel_pmt_*
+> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+> index d2df5e68b503..472ab21b5b8e 100644
+> --- a/kernel/locking/mutex.c
+> +++ b/kernel/locking/mutex.c
+> @@ -118,9 +118,9 @@ static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
+>  		}
 >  
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 4dde8e223a9e..269312de2666 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -687,6 +687,17 @@ config MFD_INTEL_PMT
->  	  Telemetry, Watcher, and Crashlog PMT capabilities/devices for
->  	  platforms starting from Tiger Lake.
+>  		/*
+> -		 * We set the HANDOFF bit, we must make sure it doesn't live
+> -		 * past the point where we acquire it. This would be possible
+> -		 * if we (accidentally) set the bit on an unlocked mutex.
+> +		 * Always clear the HANDOFF bit before acquiring the lock.
+> +		 * Note that if the bit is accidentally set on an unlocked
+> +		 * mutex, anyone can acquire it.
+>  		 */
+>  		flags &= ~MUTEX_FLAG_HANDOFF;
 >  
-> +config MFD_INTEL_OOBMSM
-> +	tristate "Intel Out Of Band Management Services Module (OOBMSM) support"
-> +	depends on PCI
-> +	select MFD_INTEL_EXTENDED_CAPS
-> +	help
-> +	  The Intel Out of Band Management Service Module driver is used to
-> +	  enumerate auxiliary platform features described in both Vendor
-> +	  Specific and Designated Vendor Specific PCIe config space. Supported
-> +	  features include Intel Platform Monitoring Technology (PMT) as well
-> +	  as other non-PMT capabilities.
-> +
->  config MFD_IPAQ_MICRO
->  	bool "Atmel Micro ASIC (iPAQ h3100/h3600/h3700) Support"
->  	depends on SA1100_H3100 || SA1100_H3600
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 7fa35399ec76..50fa38810bbd 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -213,6 +213,7 @@ obj-$(CONFIG_MFD_INTEL_EXTENDED_CAPS)	+= intel_extended_caps.o
->  obj-$(CONFIG_MFD_INTEL_LPSS)	+= intel-lpss.o
->  obj-$(CONFIG_MFD_INTEL_LPSS_PCI)	+= intel-lpss-pci.o
->  obj-$(CONFIG_MFD_INTEL_LPSS_ACPI)	+= intel-lpss-acpi.o
-> +obj-$(CONFIG_MFD_INTEL_OOBMSM)	+= intel_oobmsm.o
->  obj-$(CONFIG_MFD_INTEL_PMC_BXT)	+= intel_pmc_bxt.o
->  obj-$(CONFIG_MFD_INTEL_PMT)	+= intel_pmt.o
->  obj-$(CONFIG_MFD_PALMAS)	+= palmas.o
-> diff --git a/drivers/mfd/intel_oobmsm.c b/drivers/mfd/intel_oobmsm.c
-> new file mode 100644
-> index 000000000000..c66532f11c29
-> --- /dev/null
-> +++ b/drivers/mfd/intel_oobmsm.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel Out of Band Management Services Module driver
-> + *
-> + * Copyright (c) 2021, Intel Corporation.
-> + * All Rights Reserved.
-> + *
-> + * Author: David E. Box <david.e.box@linux.intel.com>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/pm_runtime.h>
-
-This doesn't appear to have anything to do with MFD?
-
-> +#include "intel_extended_caps.h"
-> +
-> +static int intel_oobmsm_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> @@ -180,6 +180,11 @@ static inline void __mutex_set_flag(struct mutex *lock, unsigned long flag)
+>  	atomic_long_or(flag, &lock->owner);
+>  }
+>  
+> +static inline long __mutex_fetch_set_flag(struct mutex *lock, unsigned long flag)
 > +{
-> +	struct intel_ext_cap_platform_info *info;
-> +	int ret;
-> +
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	info = (struct intel_ext_cap_platform_info *)id->driver_data;
-> +
-> +	ret = intel_ext_cap_probe(pdev, info);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +	pm_runtime_allow(&pdev->dev);
-> +
-> +	return 0;
+> +	return atomic_long_fetch_or_relaxed(flag, &lock->owner);
 > +}
 > +
-> +static void intel_oobmsm_pci_remove(struct pci_dev *pdev)
-> +{
-> +	pm_runtime_forbid(&pdev->dev);
-> +	pm_runtime_get_sync(&pdev->dev);
-> +}
-> +
-> +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
-> +static const struct pci_device_id intel_oobmsm_pci_ids[] = {
-> +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, NULL) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(pci, intel_oobmsm_pci_ids);
-> +
-> +static struct pci_driver intel_oobmsm_pci_driver = {
-> +	.name = "intel-oobmsm",
-> +	.id_table = intel_oobmsm_pci_ids,
-> +	.probe = intel_oobmsm_pci_probe,
-> +	.remove = intel_oobmsm_pci_remove,
-> +};
-> +module_pci_driver(intel_oobmsm_pci_driver);
-> +
-> +MODULE_AUTHOR("David E. Box <david.e.box@linux.intel.com>");
-> +MODULE_DESCRIPTION("Intel Out of Band Management Services Module driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 60592fb88e7a..4dd3af9f848e 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1226,7 +1226,7 @@ config INTEL_PMT_CLASS
->  
->  config INTEL_PMT_TELEMETRY
->  	tristate "Intel Platform Monitoring Technology (PMT) Telemetry driver"
-> -	depends on MFD_INTEL_PMT
-> +	depends on MFD_INTEL_PMT || MFD_INTEL_OOBMSM
->  	select INTEL_PMT_CLASS
->  	help
->  	  The Intel Platform Monitory Technology (PMT) Telemetry driver provides
-> @@ -1238,7 +1238,7 @@ config INTEL_PMT_TELEMETRY
->  
->  config INTEL_PMT_CRASHLOG
->  	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
-> -	depends on MFD_INTEL_PMT
-> +	depends on MFD_INTEL_PMT || MFD_INTEL_OOBMSM
->  	select INTEL_PMT_CLASS
->  	help
->  	  The Intel Platform Monitoring Technology (PMT) crashlog driver provides
+>  static inline void __mutex_clear_flag(struct mutex *lock, unsigned long flag)
+>  {
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Hurmph, so we already have a cmpxchg loop in trylock, might as well make
+that do exactly what we want without holes on.
+
+How's something like the below? Boot tested, but please verify.
+
+---
+ kernel/locking/mutex.c | 89 ++++++++++++++++++++++++++------------------------
+ 1 file changed, 46 insertions(+), 43 deletions(-)
+
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index d2df5e68b503..53f7fcadce85 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -91,44 +91,54 @@ static inline unsigned long __owner_flags(unsigned long owner)
+ 	return owner & MUTEX_FLAGS;
+ }
+ 
++#ifdef CONFIG_DEBUG_MUTEXES
++#define MUTEX_WARN_ON(cond) DEBUG_LOCKS_WARN_ON(cond)
++#else
++#define MUTEX_WARN_ON(cond)
++#endif
++
+ /*
+  * Trylock variant that returns the owning task on failure.
+  */
+-static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
++static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock, bool handoff)
+ {
+ 	unsigned long owner, curr = (unsigned long)current;
+ 
+ 	owner = atomic_long_read(&lock->owner);
+ 	for (;;) { /* must loop, can race against a flag */
+-		unsigned long old, flags = __owner_flags(owner);
++		unsigned long flags = __owner_flags(owner);
+ 		unsigned long task = owner & ~MUTEX_FLAGS;
+ 
+ 		if (task) {
+-			if (likely(task != curr))
+-				break;
++			if (flags & MUTEX_FLAG_PICKUP) {
+ 
+-			if (likely(!(flags & MUTEX_FLAG_PICKUP)))
+-				break;
++				if (task != curr)
++					break;
++
++				flags &= ~MUTEX_FLAG_PICKUP;
++
++			} else if (handoff) {
+ 
+-			flags &= ~MUTEX_FLAG_PICKUP;
++				if (flags & MUTEX_FLAG_HANDOFF)
++					break;
++
++				flags |= MUTEX_FLAG_HANDOFF;
++
++			} else {
++
++				break;
++			}
+ 		} else {
+-#ifdef CONFIG_DEBUG_MUTEXES
+-			DEBUG_LOCKS_WARN_ON(flags & MUTEX_FLAG_PICKUP);
+-#endif
++			MUTEX_WARN_ON(flags & (MUTEX_FLAG_HANDOFF | MUTEX_FLAG_PICKUP));
++			task = curr;
+ 		}
+ 
+-		/*
+-		 * We set the HANDOFF bit, we must make sure it doesn't live
+-		 * past the point where we acquire it. This would be possible
+-		 * if we (accidentally) set the bit on an unlocked mutex.
+-		 */
+-		flags &= ~MUTEX_FLAG_HANDOFF;
++		if (atomic_long_try_cmpxchg_acquire(&lock->owner, &owner, task | flags)) {
++			if (task == curr)
++				return NULL;
+ 
+-		old = atomic_long_cmpxchg_acquire(&lock->owner, owner, curr | flags);
+-		if (old == owner)
+-			return NULL;
+-
+-		owner = old;
++			break;
++		}
+ 	}
+ 
+ 	return __owner_task(owner);
+@@ -139,7 +149,7 @@ static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
+  */
+ static inline bool __mutex_trylock(struct mutex *lock)
+ {
+-	return !__mutex_trylock_or_owner(lock);
++	return !__mutex_trylock_or_owner(lock, false);
+ }
+ 
+ #ifndef CONFIG_DEBUG_LOCK_ALLOC
+@@ -226,7 +236,7 @@ static void __mutex_handoff(struct mutex *lock, struct task_struct *task)
+ 	unsigned long owner = atomic_long_read(&lock->owner);
+ 
+ 	for (;;) {
+-		unsigned long old, new;
++		unsigned long new;
+ 
+ #ifdef CONFIG_DEBUG_MUTEXES
+ 		DEBUG_LOCKS_WARN_ON(__owner_task(owner) != current);
+@@ -238,11 +248,8 @@ static void __mutex_handoff(struct mutex *lock, struct task_struct *task)
+ 		if (task)
+ 			new |= MUTEX_FLAG_PICKUP;
+ 
+-		old = atomic_long_cmpxchg_release(&lock->owner, owner, new);
+-		if (old == owner)
++		if (atomic_long_try_cmpxchg_release(&lock->owner, &owner, new))
+ 			break;
+-
+-		owner = old;
+ 	}
+ }
+ 
+@@ -662,7 +669,7 @@ mutex_optimistic_spin(struct mutex *lock, struct ww_acquire_ctx *ww_ctx,
+ 		struct task_struct *owner;
+ 
+ 		/* Try to acquire the mutex... */
+-		owner = __mutex_trylock_or_owner(lock);
++		owner = __mutex_trylock_or_owner(lock, false);
+ 		if (!owner)
+ 			break;
+ 
+@@ -928,7 +935,6 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
+ {
+ 	struct mutex_waiter waiter;
+-	bool first = false;
+ 	struct ww_mutex *ww;
+ 	int ret;
+ 
+@@ -1007,6 +1013,8 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 
+ 	set_current_state(state);
+ 	for (;;) {
++		bool first;
++
+ 		/*
+ 		 * Once we hold wait_lock, we're serialized against
+ 		 * mutex_unlock() handing the lock off to us, do a trylock
+@@ -1035,23 +1043,18 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		spin_unlock(&lock->wait_lock);
+ 		schedule_preempt_disabled();
+ 
+-		/*
+-		 * ww_mutex needs to always recheck its position since its waiter
+-		 * list is not FIFO ordered.
+-		 */
+-		if (ww_ctx || !first) {
+-			first = __mutex_waiter_is_first(lock, &waiter);
+-			if (first)
+-				__mutex_set_flag(lock, MUTEX_FLAG_HANDOFF);
+-		}
+-
+ 		set_current_state(state);
++
++		first = __mutex_waiter_is_first(lock, &waiter);
++
+ 		/*
+-		 * Here we order against unlock; we must either see it change
+-		 * state back to RUNNING and fall through the next schedule(),
+-		 * or we must see its unlock and acquire.
++		 * We got woken up, see if we can acquire the mutex now. If
++		 * not, and we're the first waiter, make sure to mark the mutex
++		 * for HANDOFF to avoid starvation.
++		 *
++		 * XXX spin-wait vs sigpending
+ 		 */
+-		if (__mutex_trylock(lock) ||
++		if (!__mutex_trylock_or_owner(lock, first) ||
+ 		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
+ 			break;
+ 
