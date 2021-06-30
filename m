@@ -2,135 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7877D3B873B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B113B873D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 18:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhF3QsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 12:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhF3QsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:48:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E544561462;
-        Wed, 30 Jun 2021 16:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625071545;
-        bh=b4EG3FctjD+P2bVnJsm0/NJB1of9hQu0Bo1Xezaz8t0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MhygzgX2Wv/YcBJ3Or/nKpNouqY9zqBYNFI6l32cR+ue6LYdmgZw6VxxltmJMEjVv
-         oMhdhR1XHlNLDXShI3PJkgNIWzxQiXvBjo9i2i+nK6X4VLH5Twg1UGhcwYDUC5+hM7
-         4vLhCH6BBv44CVRo4R62S98UvsOC17YznyTk7rnykre8c8s/Q8sBtHwcayNhX1cE81
-         IpPUhuA//3giHo26Ixl/dXnyZNoTypacD3iClVno2qyk5rRVBWkMi1v4ab+G5MBUJL
-         3mmyZ2HVwtl3q4MV3bJmpDFOHulNJWOCMbxPixe/YBrKk9t+bMdawi7vbDNXTzDto2
-         clk2teG6zqJFQ==
-Date:   Wed, 30 Jun 2021 17:45:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
- regulator
-Message-ID: <20210630164517.GI5106@sirena.org.uk>
-Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        kernel@pyra-handheld.com, Peter Ujfalusi <peter.ujfalusi@gmail.com>
-References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
- <20210629155922.GD4613@sirena.org.uk>
- <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
- <20210629185638.GG4613@sirena.org.uk>
- <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
- <20210630121307.GA5106@sirena.org.uk>
- <02EE05C2-588F-4D50-8A37-46CC3B0C302C@goldelico.com>
- <20210630130425.GF5106@sirena.org.uk>
- <E57CB314-F56C-4B33-81E8-7927564DB751@goldelico.com>
+        id S231940AbhF3QvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 12:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhF3QvR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 12:51:17 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAB4C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 09:48:47 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso1773224pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 09:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hx4sHPmpea1ssyo//7YojpBEY/8Dcb5c5IPS9PMJhIk=;
+        b=jw4C41UcaJLjRGuy4z9pSqd4r5Z5SnfuXfelNN0qNxjZCfFm4y61lAm2gS/JbmuC+y
+         pTkSg/zoQc+ojr+tDHflc4aTT33Y3V7sq0sGWNZTKokoJ5v9gKSllQJKRrC7xN3lh6JU
+         W+8sx3juiAIraD3gqInA/NklMtZezqx8B2Y/IiLA1wZ2Wu5YMQHLJMAcfhxBs+3QMpw1
+         sb3S1UBBzyXkKo1gMYg/bcAJh1hVJKrfeejbIcSMcoroznlfrf0slh32djIVKpx6b2ed
+         Sz05nHV6NSS90mMWwNUWAaU4hS9LCxycbbmGB9JqSw/SbSOnVgcO5L9mQEFyxDwjecHT
+         4c+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hx4sHPmpea1ssyo//7YojpBEY/8Dcb5c5IPS9PMJhIk=;
+        b=P5YBTTCc/KNVQrKFwX8PeXhPcxgo4p2C7P2Gxn87uMOk7ZubHPH9lYOKJBBPkKmC8T
+         F4b4rjGlfSTPVajjf75zO0NhozPZUe2R2YzS/0Qg3zlbPtFw4rRR8ZzngeIUbD5fNBs2
+         92BzAo9ExdY31jhxYVIbJHohXiDZxZw9aVZllEm2+1t7VN2Bdka8m50dAK8rxbTGgWS1
+         qj+eqaiGcy19rcg1TLNjUJuWoKvVEZB/D5/i8nEUy/fytNf9wl+BQCLj5zfTUo4fq5w4
+         5en3TM41U9PjNK1LIFzHroNmifmucTjCKDWwUg7Y4TlgowDugh1r3nJRR1YilH8n4CDM
+         BCeg==
+X-Gm-Message-State: AOAM531mQEYkV13zNWzop6Or/40debYZ0Qd+ghRQ0bymXKmtDtO1rcq3
+        ZL7mnVLBWbFZJgjcdkEiSjvtHQ==
+X-Google-Smtp-Source: ABdhPJxs1KpcsKXdwFRVLG2nyYxkQ7sqFlLA6mfloOo099zl9iV5Yv046zB363+6JA1C8jrzLqW9Zg==
+X-Received: by 2002:a17:902:fe10:b029:127:6549:fe98 with SMTP id g16-20020a170902fe10b02901276549fe98mr32880513plj.25.1625071726557;
+        Wed, 30 Jun 2021 09:48:46 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id v3sm22917472pfb.126.2021.06.30.09.48.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 09:48:45 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 16:48:42 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+Message-ID: <YNygagjfTIuptxL8@google.com>
+References: <20210628173152.2062988-1-david.edmondson@oracle.com>
+ <20210628173152.2062988-3-david.edmondson@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o71xDhNo7p97+qVi"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E57CB314-F56C-4B33-81E8-7927564DB751@goldelico.com>
-X-Cookie: Use at own risk.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210628173152.2062988-3-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 28, 2021 at 06:31:52PM +0100, David Edmondson wrote:
+> To aid in debugging.
 
---o71xDhNo7p97+qVi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please add more context to the commit message.
 
-On Wed, Jun 30, 2021 at 04:43:14PM +0200, H. Nikolaus Schaller wrote:
-> > Am 30.06.2021 um 15:04 schrieb Mark Brown <broonie@kernel.org>:
-> > On Wed, Jun 30, 2021 at 02:29:02PM +0200, H. Nikolaus Schaller wrote:
-> >>> Am 30.06.2021 um 14:13 schrieb Mark Brown <broonie@kernel.org>:
+> 
+> Suggested-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+> ---
+>  arch/x86/kvm/x86.c       | 23 +++++++++++++++++------
+>  include/uapi/linux/kvm.h |  2 ++
+>  2 files changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 8166ad113fb2..48ef0dc68faf 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7455,7 +7455,7 @@ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_inject_realmode_interrupt);
+>  
+> -static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+> +static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu, uint64_t flags)
+>  {
+>  	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+>  	u32 insn_size = ctxt->fetch.end - ctxt->fetch.data;
+> @@ -7466,7 +7466,8 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>  	run->emulation_failure.ndata = 0;
+>  	run->emulation_failure.flags = 0;
+>  
+> -	if (insn_size) {
+> +	if (insn_size &&
+> +	    (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES)) {
+>  		run->emulation_failure.ndata = 3;
+>  		run->emulation_failure.flags |=
+>  			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
+> @@ -7476,6 +7477,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>  		memcpy(run->emulation_failure.insn_bytes,
+>  		       ctxt->fetch.data, insn_size);
+>  	}
+> +
+> +	if (flags & KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON) {
 
-> >  It's a super weird hardware design if the DT is accurate,
+This flag is always passed so this check if superfluous. Perhaps change
+`int flags` to `bool instruction_bytes` and have it control only whether
+the instruction bytes are populated.
 
-> I get the impression that the vdds_1v8_main is in the DT (omap5-board-common.dtsi)
-> only as an alias for smps7. Maybe to get more flexibility in overwriting
-> in board files? I.e. replace the power controller without having a fixed
-> definition of smps7 elsewhere.
+> +		run->emulation_failure.ndata = 4;
+> +		run->emulation_failure.flags |=
+> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
+> +		run->emulation_failure.exit_reason =
+> +			static_call(kvm_x86_get_exit_reason)(vcpu);
+> +	}
+>  }
+>  
+>  static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
+> @@ -7492,16 +7501,18 @@ static int handle_emulation_failure(struct kvm_vcpu *vcpu, int emulation_type)
+>  
+>  	if (kvm->arch.exit_on_emulation_error ||
+>  	    (emulation_type & EMULTYPE_SKIP)) {
+> -		prepare_emulation_failure_exit(vcpu);
+> +		prepare_emulation_failure_exit(
+> +			vcpu,
+> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES |
+> +			KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
+>  		return 0;
+>  	}
+>  
+>  	kvm_queue_exception(vcpu, UD_VECTOR);
+>  
+>  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
+> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
+> -		vcpu->run->internal.ndata = 0;
+> +		prepare_emulation_failure_exit(
+> +			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
 
-It doesn't seem to have any effect in software and the input is
-specified at the same voltage as the output which would be very unusual.
-No idea why you'd do any aliasing, you can already name the regulators
-with DT handles and with user visible strings.
+Should kvm_task_switch and kvm_handle_memory_failure also be updated
+like this?
 
-> Looking into the schematics of the OMAP5432EVM or the Pyra handheld does
-> not reveal a physical regulator. It is just that the output signal of
-> smps7 is called "VDDS_1v8_MAIN".
+>  		return 0;
+>  	}
+>  
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 68c9e6d8bbda..3e4126652a67 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -282,6 +282,7 @@ struct kvm_xen_exit {
+>  
+>  /* Flags that describe what fields in emulation_failure hold valid data. */
+>  #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
+> +#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
+>  
+>  /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
+>  struct kvm_run {
+> @@ -404,6 +405,7 @@ struct kvm_run {
+>  			__u64 flags;
+>  			__u8  insn_size;
+>  			__u8  insn_bytes[15];
+> +			__u64 exit_reason;
 
-It could be something incorrectly factored out of some early prototypes
-or something.
+Please document what this field contains, especially since its contents
+depend on AMD versus Intel.
 
-> Therefore, a completely different approach could be to remove fixedregulator-vdds_1v8_main
-> and replace by smps7_reg.
-
-If there's no physical regulator on the board then that is indeed a DT
-bug, the fixed regulator just shouldn't be there.
-
-> But is changing the DT the right solution if the Palmas and Fixed regulator
-> drivers can't handle the untouched DT which is logically correct (not physically)?
-
-Well, it's a good thing to do anyway since the DT is supposed to
-accurately reflect the hardware.  Like I say splitting the LDOs and
-SMPSs can also be done independently and should separately resolve the
-issue.
-
-> > it's hard to see how it's not going to be hurting efficiency.
-
-> Well, I think the regulators are enabled only once during boot so nobody
-> notices an issue.
-
-When I say having an extra regulator in there hurts efficiency I'm
-saying that the power losses from regulation will be increased as
-there's more of it happening.
-
---o71xDhNo7p97+qVi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcn5wACgkQJNaLcl1U
-h9Cdrwf8CtXZ8EO02rOrbfxyRsTjm8Xyqd25vm+80N20eY7Xl1ThsRH3X631k75B
-b8tz2pI6Q/A2XVeuL2VAnDW8CTapvuUSDn0jaf/ssE4gHgokam/JDE62rfBpT6ks
-H48Ai9rLMydVMG1fpA41jguR8cT8TAWOLw2XAhx+foKYIcE1bbweNIYfYhmPzhBS
-rmkOMnKUyUlsT0nC2LB3VQs51yjWB3l/fstRCrpKCFvSUD62jAIyoaNw3fmXtYKM
-AdwPa8FqYJrMyoBaO1HqazU8Ymg/mRKjo3BxYlCRiuCO1LRTCJiidQZdTOotwH+F
-Z236+9KYGqx3J2kAlExfpiQTakCCtw==
-=Z582
------END PGP SIGNATURE-----
-
---o71xDhNo7p97+qVi--
+>  		} emulation_failure;
+>  		/* KVM_EXIT_OSI */
+>  		struct {
+> -- 
+> 2.30.2
+> 
