@@ -2,274 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AD83B8557
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2340F3B855D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbhF3OvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:51:16 -0400
-Received: from mga04.intel.com ([192.55.52.120]:38124 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhF3Ouu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:50:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="206539565"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="206539565"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 07:48:21 -0700
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="457264116"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.67]) ([10.249.227.67])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 07:48:17 -0700
-Subject: Re: [PATCH v7 07/20] perf record: Introduce data transferred and
- compressed stats
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>
-References: <cover.1624350588.git.alexey.v.bayduraev@linux.intel.com>
- <138f94642ae93f526249f6320abdc41ab90b467b.1624350588.git.alexey.v.bayduraev@linux.intel.com>
- <565db357cfe61c4b350323968aee15bd477ef606.camel@gmail.com>
- <b42361e7-ebe8-5f95-3e62-a31ed6b0be04@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <438e8335-c31d-5621-d066-5f03c0244499@linux.intel.com>
-Date:   Wed, 30 Jun 2021 17:48:14 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235455AbhF3Owf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235177AbhF3Owc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 10:52:32 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055CC061756;
+        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id p7so1218037qvn.5;
+        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
+        b=gGD9BAtpYOeepZdTbE3KHgAiQMcPPfpnG9JJlnbUMfEhlC8BfSFmt8miSEvOuIEZiB
+         3rzRcjaUvadqxpFG1/UCWQxX3S4rZ592U9H9rz8afxfdqc1r2Rde8c8BEn9i7xgMhNDv
+         JPyYE28nZZUx9+NLzRiuD3VmblJGAy13TwSeiDfi41Y1wHRqNK+gLcQjTZxfG2M1YsUZ
+         0c2kCQtqWyTPbUPzKbLyuJMbmCzox2eNsaFegX5bjW/wN/jIK4/VDB9Z58im/s+xDGmz
+         cCYbg8XIqnEdiJwNjEYwVOBbY9TWqJad9qQ5AqQ/TxIfy00Mt1Ykar5zkLmd3VYYunt6
+         2M3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
+        b=PDPMaTjq1k6GTeER9af4SASAxCKlnBWzj4eWr85gENLUVdWfEPb/76p1xLSBpApgxi
+         hwnwadc+2ybQbM+RQzxyTvO8WQZyMOdEauz3cOoxH5ZejXmq2Ny4ev7oqCOLV7OXhGig
+         cc4Qq4L+QlpoJ7EWHSMtrtvP4fmKVNir/IhAcqRKdN4TNDl77jM0SEIy1Z4u3ZsqW5E9
+         ueU2sn7+XFPtW0YImxYzusV6rOZijeJ0iE1vA+Peao7tvRyYWyVtSz02jmP3XjgVKbDa
+         cLtFp1nSIF+1NjYWCfn1sWz1pez1r8RfxSqlzJqgdBjvx+5N9+CkrimHGwwUdCBSU2vW
+         F/Dg==
+X-Gm-Message-State: AOAM532pvOHYbQWWMx5EqsDRJs0NrCkb2xGUs2VPNSxWhhmkGXF65/M1
+        4VWHC2j7tVN9P+2dLJD1Nc0=
+X-Google-Smtp-Source: ABdhPJzThHMaJANHAXxziTuH+SOn3cwvDIkQnU3dUtRtaQNsiFdcVi7NPiUTXYnhp8pT1LY+NU4BrQ==
+X-Received: by 2002:a05:6214:21ab:: with SMTP id t11mr21581134qvc.26.1625064602268;
+        Wed, 30 Jun 2021 07:50:02 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:1008])
+        by smtp.gmail.com with ESMTPSA id g4sm5047069qtb.50.2021.06.30.07.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 07:50:01 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 10:49:58 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
+Message-ID: <YNyEltLABd17spxy@dschatzberg-fedora-PC0Y6AEN>
+References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
+ <20210610173944.1203706-4-schatzberg.dan@gmail.com>
+ <YNXvr81YFzbaTxCb@blackbook>
+ <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
+ <YNr1TYfBwR/tEpEJ@blackbook>
+ <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
+ <YNw8kRpT6R2emuhI@blackbook>
 MIME-Version: 1.0
-In-Reply-To: <b42361e7-ebe8-5f95-3e62-a31ed6b0be04@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNw8kRpT6R2emuhI@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> This is how I understand it:
+> 
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -996,6 +996,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
+>         rb_insert_color(&worker->rb_node, &lo->worker_tree);
+>  queue_work:
+>         if (worker) {
+> +               WARN_ON_ONCE(worker->blkcg_css != cmd->blkcg_css);
 
+Yes, this is correct. Though the check here seems a bit obvious to me
+- it must be correct because we assign worker above:
 
-On 30.06.2021 15:19, Bayduraev, Alexey V wrote:
-> 
-> Hi,
-> 
-> On 30.06.2021 11:05, Riccardo Mancini wrote:
->> Hi,
->>
->> On Tue, 2021-06-22 at 11:42 +0300, Alexey Bayduraev wrote:
->>> Introduce bytes_transferred and bytes_compressed stats so they
->>> would capture statistics for the related data buffer transfers.
->>>
->>> Acked-by: Andi Kleen <ak@linux.intel.com>
->>> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
->>> ---
->>>  tools/perf/builtin-record.c | 64 +++++++++++++++++++++++++++++--------
->>>  tools/perf/util/mmap.h      |  3 ++
->>>  2 files changed, 54 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->>> index 38bb5afbb359..c9fd31211600 100644
->>> --- a/tools/perf/builtin-record.c
->>> +++ b/tools/perf/builtin-record.c
->>> @@ -198,6 +198,11 @@ static int record__write(struct record *rec, struct mmap
->>> *map __maybe_unused,
->>>                 return -1;
->>>         }
->>>  
->>> +       if (map && map->file) {
->>> +               map->bytes_written += size;
->>> +               return 0;
->>> +       }
->>> +
->>>         rec->bytes_written += size;
->>>  
->>>         if (record__output_max_size_exceeded(rec) && !done) {
->>
->> This breaks the --max-size option in parallel trace mode.
->> Maybe, we could change record__output_max_size_exceeded to check all
->> thread_data->maps and sum up bytes_written. Concurrency should not be an issue
->> since it's not required to stop at exactly the max-size (this is also the
->> current behaviour).
->> Otherwise, we could atomically increase an accumulator inside struct record
->> (maybe rec->bytes_written could be reused, but I'm not sure if it's used by the
->> main thread in the parallel mode), and check it for exceeded max size.
-> 
-> Thanks, currently threaded mode doesn't use rec->bytes_written and atomic64_t
-> framework is not available in kernel/tools.
-> I think better is to calculate sum of map->bytes_written like for threads 
-> statistics.
+if (cur_worker->blkcg_css == cmd->blkcg_css) {
+        worker = cur_worker;
+        break;
 
-Just a little clarification: threaded mode uses rec->bytes_written for user
-records (perf.data/data), whereas maps->bytes_written for per-cpu records
-(perf.data/data.CPU).
-Thus, the total amount of data transferred is their sum.
- 
-Regards,
-Alexey
+or when we construct the worker:
 
-> 
-> Regards,
-> Alexey
-> 
->>
->> Thanks,
->> Riccardo
->>
->>
->>> @@ -215,8 +220,8 @@ static int record__write(struct record *rec, struct mmap
->>> *map __maybe_unused,
->>>  
->>>  static int record__aio_enabled(struct record *rec);
->>>  static int record__comp_enabled(struct record *rec);
->>> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
->>> dst_size,
->>> -                           void *src, size_t src_size);
->>> +static size_t zstd_compress(struct zstd_data *data,
->>> +                           void *dst, size_t dst_size, void *src, size_t
->>> src_size);
->>>  
->>>  #ifdef HAVE_AIO_SUPPORT
->>>  static int record__aio_write(struct aiocb *cblock, int trace_fd,
->>> @@ -350,9 +355,13 @@ static int record__aio_pushfn(struct mmap *map, void *to,
->>> void *buf, size_t size
->>>          */
->>>  
->>>         if (record__comp_enabled(aio->rec)) {
->>> -               size = zstd_compress(aio->rec->session, aio->data + aio->size,
->>> -                                    mmap__mmap_len(map) - aio->size,
->>> +               struct zstd_data *zstd_data = &aio->rec->session->zstd_data;
->>> +
->>> +               aio->rec->session->bytes_transferred += size;
->>> +               size = zstd_compress(zstd_data,
->>> +                                    aio->data + aio->size,
->>> mmap__mmap_len(map) - aio->size,
->>>                                      buf, size);
->>> +               aio->rec->session->bytes_compressed += size;
->>>         } else {
->>>                 memcpy(aio->data + aio->size, buf, size);
->>>         }
->>> @@ -577,8 +586,22 @@ static int record__pushfn(struct mmap *map, void *to,
->>> void *bf, size_t size)
->>>         struct record *rec = to;
->>>  
->>>         if (record__comp_enabled(rec)) {
->>> -               size = zstd_compress(rec->session, map->data,
->>> mmap__mmap_len(map), bf, size);
->>> +               struct zstd_data *zstd_data = &rec->session->zstd_data;
->>> +
->>> +               if (map->file) {
->>> +                       zstd_data = &map->zstd_data;
->>> +                       map->bytes_transferred += size;
->>> +               } else {
->>> +                       rec->session->bytes_transferred += size;
->>> +               }
->>> +
->>> +               size = zstd_compress(zstd_data, map->data,
->>> mmap__mmap_len(map), bf, size);
->>>                 bf   = map->data;
->>> +
->>> +               if (map->file)
->>> +                       map->bytes_compressed += size;
->>> +               else
->>> +                       rec->session->bytes_compressed += size;
->>>         }
->>>  
->>>         thread->samples++;
->>> @@ -1311,18 +1334,15 @@ static size_t process_comp_header(void *record, size_t
->>> increment)
->>>         return size;
->>>  }
->>>  
->>> -static size_t zstd_compress(struct perf_session *session, void *dst, size_t
->>> dst_size,
->>> +static size_t zstd_compress(struct zstd_data *zstd_data, void *dst, size_t
->>> dst_size,
->>>                             void *src, size_t src_size)
->>>  {
->>>         size_t compressed;
->>>         size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct
->>> perf_record_compressed) - 1;
->>>  
->>> -       compressed = zstd_compress_stream_to_records(&session->zstd_data, dst,
->>> dst_size, src, src_size,
->>> +       compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size,
->>> src, src_size,
->>>                                                      max_record_size,
->>> process_comp_header);
->>>  
->>> -       session->bytes_transferred += src_size;
->>> -       session->bytes_compressed  += compressed;
->>> -
->>>         return compressed;
->>>  }
->>>  
->>> @@ -2006,8 +2026,10 @@ static int record__start_threads(struct record *rec)
->>>  
->>>  static int record__stop_threads(struct record *rec, unsigned long *waking)
->>>  {
->>> -       int t;
->>> +       int t, tm;
->>> +       struct mmap *map, *overwrite_map;
->>>         struct thread_data *thread_data = rec->thread_data;
->>> +       u64 bytes_written = 0, bytes_transferred = 0, bytes_compressed = 0;
->>>  
->>>         for (t = 1; t < rec->nr_threads; t++)
->>>                 record__terminate_thread(&thread_data[t]);
->>> @@ -2015,9 +2037,25 @@ static int record__stop_threads(struct record *rec,
->>> unsigned long *waking)
->>>         for (t = 0; t < rec->nr_threads; t++) {
->>>                 rec->samples += thread_data[t].samples;
->>>                 *waking += thread_data[t].waking;
->>> -               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
->>> trasferred=%ld, compressed=%ld\n",
->>> +               for (tm = 0; tm < thread_data[t].nr_mmaps; tm++) {
->>> +                       if (thread_data[t].maps) {
->>> +                               map = thread_data[t].maps[tm];
->>> +                               bytes_transferred += map->bytes_transferred;
->>> +                               bytes_compressed += map->bytes_compressed;
->>> +                               bytes_written += map->bytes_written;
->>> +                       }
->>> +                       if (thread_data[t].overwrite_maps) {
->>> +                               overwrite_map =
->>> thread_data[t].overwrite_maps[tm];
->>> +                               bytes_transferred += overwrite_map-
->>>> bytes_transferred;
->>> +                               bytes_compressed += overwrite_map-
->>>> bytes_compressed;
->>> +                               bytes_written += overwrite_map->bytes_written;
->>> +                       }
->>> +               }
->>> +               rec->session->bytes_transferred += bytes_transferred;
->>> +               rec->session->bytes_compressed += bytes_compressed;
->>> +               pr_debug("threads[%d]: samples=%lld, wakes=%ld,
->>> trasferred=%ld, compressed=%ld, written=%ld\n",
->>>                          thread_data[t].tid, thread_data[t].samples,
->>> thread_data[t].waking,
->>> -                        rec->session->bytes_transferred, rec->session-
->>>> bytes_compressed);
->>> +                        bytes_transferred, bytes_compressed, bytes_written);
->>>         }
->>>  
->>>         return 0;
->>> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
->>> index c4aed6e89549..c04ca4b5adf5 100644
->>> --- a/tools/perf/util/mmap.h
->>> +++ b/tools/perf/util/mmap.h
->>> @@ -46,6 +46,9 @@ struct mmap {
->>>         int             comp_level;
->>>         struct perf_data_file *file;
->>>         struct zstd_data      zstd_data;
->>> +       u64                   bytes_transferred;
->>> +       u64                   bytes_compressed;
->>> +       u64                   bytes_written;
->>>  };
->>>  
->>>  struct mmap_params {
->>
->>
+worker->blkcg_css = cmd->blkcg_css;
+
+I think this WARN_ON_ONCE check might be more interesting in
+loop_process_work which invokes loop_handle_cmd and actually uses
+cmd->blkcg_css. In any event, your understanding is correct here.
+
+>                 /*
+>                  * We need to remove from the idle list here while
+>                  * holding the lock so that the idle timer doesn't
+> @@ -2106,6 +2107,8 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
+>         cmd->memcg_css = NULL;
+>  #ifdef CONFIG_BLK_CGROUP
+>         if (rq->bio && rq->bio->bi_blkg) {
+> +               /* reference to blkcg_css will be held by loop_worker (outlives
+> +                * cmd) or it is the eternal root css */
+
+Yes, this is correct. Feel free to add my Acked-by to such a patch
