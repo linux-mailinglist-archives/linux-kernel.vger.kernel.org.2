@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9233B7D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10E73B7D86
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhF3GkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        id S232553AbhF3GlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 02:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhF3Gj6 (ORCPT
+        with ESMTP id S232552AbhF3GlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:39:58 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73E6C061766;
-        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id y17so1233771pgf.12;
-        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
+        Wed, 30 Jun 2021 02:41:00 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897D9C061766;
+        Tue, 29 Jun 2021 23:38:31 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id x37so597104uac.13;
+        Tue, 29 Jun 2021 23:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QIvNKpu6whR4KbUvMINCyHMH+hf3gIcrSC/Vwhdr3Lw=;
-        b=YNGt9ANUzqBZpiARnaJOzXbbBqylmMuYP/nI/dR8iVc9BR8fyloomrSEDAc7BHhB1t
-         3TGc7sm8bxGH/Kh9sl8FHkfQJSb9d3wZc8s8UirITisqGy/BMijpPFumavBt9BKtTU5t
-         KzteOijczl9A4g7/s10zsj2dYedhe1Fapf+4S2kq7X8GW4dWZ0TB6l4xKWnCaHJBb3yv
-         aCAHePk8renhA6LzrrWsTBRGjtv5j4O5a8Au8q3RkfIywGYHTOT0+daMkNfKzK0g8ow7
-         H32WH1O2xZUCj3wKo23i3lBi3mlxMgE9oEMsxMx30Gk6CRC9uoOiSUHvfb+/212Ng/q9
-         bXPg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s2FjwLxovXBV9j2+en42ozr40O/MKm4dTTxEw/Bf9Q0=;
+        b=NKRJwc3qnwV8NIgwx+hi/D946yO6PRGMnL611nOz8th3n45Qxv5tgbb2FZ/sYMki6d
+         /Dpc9Dm/1Qj0L3NKLKQqRa1r87vZffiQy3ABOWPnZURvUr9nOtHIQpV16qIXxDRRfpwh
+         1xtW6Bqn0OIZMfm5wz7dl+zg4JXOxHokdOqEqQbahHMg4uhxu8alGUVneHw6USRFFevE
+         0uHrkW8nBPpZJhWitCO6cgY670kU7BiIXYniyv91GUfDxtLHzMgwI2tbNWyO5JIB8vcz
+         cJIw9IfVfNLtXI4PXQ29hyBSqNpkI9ZrCTE+1QSbylUgFoWfO877aqkZGvKr38Zs1nvz
+         h3qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QIvNKpu6whR4KbUvMINCyHMH+hf3gIcrSC/Vwhdr3Lw=;
-        b=XUcM7x70yCkNmJaB+EhyAAUMXCbxnPI4RKVVjOBN7jru8x1m4I7+xLn3XsmdrMdioL
-         907WagfbuVYNvcCvJqlf5lnAba4YQIeWYoO1Vr7dFspNXj7DgwbIyBu06gsQL8/cLYXx
-         f53EsNMi44FjwjE64ubppJ/GzzD37tvUICUTklhJd5VFLSVsPeDjitvBHVV6IWHkxvoO
-         DyEaJZ6ADUfU9KGgLFZplvhcgtIYntj+9Tem4wNrbeH1/M3maT/HbTnwaNqFzClwODlN
-         2AxKc06O20KSW5N0S+oxyQBh83lQUQJEtjVrDNyNOr9hUcMhyte44egMct5azyAkMEjw
-         oABg==
-X-Gm-Message-State: AOAM531gdZZ8usUa8e2sYOLus3PqWQ3bOJDb2JA292TaDWFZgRnJIRtP
-        Qtv7yovd/sds6xztGAwP1iE=
-X-Google-Smtp-Source: ABdhPJxv35ffdyTf2HuDhIhk6MMvfhVyiCMQtPK0P585CwMD0Mvofwueer0wUTiw7OflmgcVoXCMCQ==
-X-Received: by 2002:a63:2f05:: with SMTP id v5mr32113452pgv.449.1625035049301;
-        Tue, 29 Jun 2021 23:37:29 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id h24sm20304574pjv.27.2021.06.29.23.37.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 23:37:28 -0700 (PDT)
-Subject: Re: [PATCH v5 3/3] drm: protect drm_master pointers in drm_lease.c
-To:     Emil Velikov <emil.l.velikov@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        skhan@linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20210629033706.20537-1-desmondcheongzx@gmail.com>
- <20210629033706.20537-4-desmondcheongzx@gmail.com>
- <CACvgo514T=PZCWwhNsYqCC504SJ+2WivcRtmHhDoKsWMSLFU4A@mail.gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <e2ca777f-f185-688a-5813-0ff2e5025f77@gmail.com>
-Date:   Wed, 30 Jun 2021 14:37:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s2FjwLxovXBV9j2+en42ozr40O/MKm4dTTxEw/Bf9Q0=;
+        b=idIgBWWNnalNvMJ51CHrUbvALvKSxhiLqzcO8J2S0k5WcupuprarfsYCdxm/0gmhZh
+         7+7uGzUuY5VrTM1DM3851HbJ/GFTj+iXjeoakj89VsFn+EunSLRuYgI5wrHRNixdYKZ3
+         G3bxHuNMG418MQ+K02cAKhgtjMH43ZwnqHOlmeWkFHb+ge2FGX8M5F5hhFCgCMsk+4uT
+         cQNVV1onvh3QBgDT7+wLZCBTWLBaXdvt/OmQVmJAr8tOCPKOzf0onCW5vYiwb/1R5tME
+         7QjlZvwdwlJVmV1aMR4dmojfvhuMvuX00wcMTJ6v7eiXeEzi47tE8+i3bmu301Imo3YX
+         xiww==
+X-Gm-Message-State: AOAM532bSfnnAkyuTXQ37hk/+/ufJa83ynzwoXcNyOZnRPi+i/ZLFYjc
+        t5QYgZL0UpJHQ/DjosMZQ0WepSrlgz0p0rnVFVg=
+X-Google-Smtp-Source: ABdhPJxJ5n2FIByplo2fbqSuTw0k3n9ealqhoFzmX//g82nZe2r8ZP3+7FVZYTdUXjA1YQejA6halQ6ecwY1hiRTGtk=
+X-Received: by 2002:a9f:35e9:: with SMTP id u38mr30206243uad.131.1625035110794;
+ Tue, 29 Jun 2021 23:38:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACvgo514T=PZCWwhNsYqCC504SJ+2WivcRtmHhDoKsWMSLFU4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210629143407.14703-1-sergio.paracuellos@gmail.com> <CACRpkdZJjuCMrxka5R2YLgcjwjjXCBEgDP5_+M7nxo5ZX6W4+A@mail.gmail.com>
+In-Reply-To: <CACRpkdZJjuCMrxka5R2YLgcjwjjXCBEgDP5_+M7nxo5ZX6W4+A@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Wed, 30 Jun 2021 08:38:19 +0200
+Message-ID: <CAMhs-H8up-47e9T4uGxTfwiM1V=_ofok3-ZRbawFZKBVMnYk4A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: ralink: rt305x: add missing include
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/6/21 8:16 am, Emil Velikov wrote:
-> Hi Desmond,
-> 
-> Couple of small suggestions, with those the series is:
-> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
-> 
-> On Tue, 29 Jun 2021 at 04:38, Desmond Cheong Zhi Xi
-> <desmondcheongzx@gmail.com> wrote:
-> 
->> @@ -128,13 +137,20 @@ bool drm_lease_held(struct drm_file *file_priv, int id)
->>          struct drm_master *master;
->>          bool ret;
->>
->> -       if (!file_priv || !file_priv->master || !file_priv->master->lessor)
->> +       if (!file_priv)
->>                  return true;
->>
->> -       master = file_priv->master;
->> +       master = drm_file_get_master(file_priv);
->> +       if (master == NULL)
->> +               return true;
->> +       if (!master->lessor) {
->> +               drm_master_put(&master);
->> +               return true;
-> 
-> Let's add a "ret = true; goto unlock;" here, so we can have a single
-> drm_master_put() in the function.
-> Nearly all code paths touched by this patch already follow this approach.
-> 
->> @@ -154,10 +170,16 @@ uint32_t drm_lease_filter_crtcs(struct drm_file *file_priv, uint32_t crtcs_in)
->>          int count_in, count_out;
->>          uint32_t crtcs_out = 0;
->>
->> -       if (!file_priv || !file_priv->master || !file_priv->master->lessor)
->> +       if (!file_priv)
->>                  return crtcs_in;
->>
->> -       master = file_priv->master;
->> +       master = drm_file_get_master(file_priv);
->> +       if (master == NULL)
->> +               return crtcs_in;
->> +       if (!master->lessor) {
->> +               drm_master_put(&master);
->> +               return crtcs_in;
-> 
-> Ditto
-> 
-> Thanks
-> Emil
-> 
+On Wed, Jun 30, 2021 at 2:40 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Jun 29, 2021 at 4:34 PM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+>
+> > Header 'rt305x.h' is ralink architecture dependent file where
+> > other general definitions which are in 'ralink_regs.h' are
+> > being used. This 'rt305x.h' is only being included in two
+> > different files: 'rt305x.c' and 'pinctrl-rt305x.c'. When
+> > file 'pinctrl-rt305x.c' is being compiled definitions in
+> > 'ralink_regs.h' are need to build it properly. Hence, add
+> > missing include 'ralink_regs.h' in 'pinctrl-rt305x.c'
+> > source to avoid compilation problems.
+> >
+> > Fixes: 3a1b0ca5a83b ("pinctrl: ralink: move RT305X SoC pinmux config into a new 'pinctrl-rt305x.c' file")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>
+> Patch applied!
 
-Sounds good to me, I'll revise these functions. Thanks for the review 
-and suggestions, Emil.
+Thanks!
 
-Best wishes,
-Desmond
+Best regards,
+    Sergio Paracuellos
+
+>
+> Yours,
+> Linus Walleij
