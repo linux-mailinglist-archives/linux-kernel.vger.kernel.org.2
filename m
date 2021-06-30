@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669BF3B7DA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82D53B7DA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhF3Gxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:53:47 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50558 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232557AbhF3Gxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232660AbhF3Gxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 30 Jun 2021 02:53:40 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn0BYFNxgj64aAA--.10153S3;
-        Wed, 30 Jun 2021 14:51:05 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 2/2] MIPS: Loongson64: DTS: Add pm block node for Loongson-2K1000
-Date:   Wed, 30 Jun 2021 14:51:03 +0800
-Message-Id: <20210630065103.23665-2-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210630065103.23665-1-zhangqing@loongson.cn>
-References: <20210630065103.23665-1-zhangqing@loongson.cn>
+Received: from mailout2.secunet.com ([62.96.220.49]:39710 "EHLO
+        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232491AbhF3Gxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 02:53:38 -0400
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout2.secunet.com (Postfix) with ESMTP id B63B7800051;
+        Wed, 30 Jun 2021 08:51:08 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 08:51:08 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 30 Jun
+ 2021 08:51:08 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 0182E318040F; Wed, 30 Jun 2021 08:51:07 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 08:51:07 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <0x7f454c46@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        <syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] net: xfrm: fix memory leak in xfrm_user_rcv_msg
+Message-ID: <20210630065107.GT40979@gauss3.secunet.de>
+References: <20210625102354.18266-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn0BYFNxgj64aAA--.10153S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF43KFWxZFy8JrW8KryUZFb_yoWfWrc_t3
-        ZFkF1kGrWfJF43J34UXr1UXry3u3yxA3WrCF1kWr1YqasIvwnxJFWUAaykCFy3Gryj9rs3
-        Xw48Wr1kAFWxKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfAYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUCVW8JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
-        6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
-        02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE
-        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r47MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0xpnPUUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210625102354.18266-1-paskripkin@gmail.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module is now supported, enable it.
+On Fri, Jun 25, 2021 at 01:23:54PM +0300, Pavel Skripkin wrote:
+> Syzbot reported memory leak in xfrm_user_rcv_msg(). The
+> problem was is non-freed skb's frag_list.
+> 
+> In skb_release_all() skb_release_data() will be called only
+> in case of skb->head != NULL, but netlink_skb_destructor()
+> sets head to NULL. So, allocated frag_list skb should be
+> freed manualy, since consume_skb() won't take care of it
+> 
+> Fixes: 5106f4a8acff ("xfrm/compat: Add 32=>64-bit messages translator")
+> Reported-and-tested-by: syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..8f469b623740 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -52,6 +52,11 @@ package0: bus@10000000 {
- 			0 0x40000000 0 0x40000000 0 0x40000000
- 			0xfe 0x00000000 0xfe 0x00000000 0 0x40000000>;
- 
-+		pm: power-controller@1fe07000 {
-+			compatible = "loongson,ls2k-pm";
-+			reg = <0 0x1fe07000 0 0x422>;
-+		};
-+
- 		liointc0: interrupt-controller@1fe11400 {
- 			compatible = "loongson,liointc-2.0";
- 			reg = <0 0x1fe11400 0 0x40>,
--- 
-2.31.0
-
+Applied, thanks a lot!
