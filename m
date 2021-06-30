@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52343B8104
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B85C3B8106
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 12:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhF3K7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 06:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhF3K7r (ORCPT
+        id S234262AbhF3LAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:00:41 -0400
+Received: from smtprelay0226.hostedemail.com ([216.40.44.226]:56216 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229882AbhF3LAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:59:47 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7115FC061766
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:57:16 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id j1so3055024wrn.9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 03:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DmYIvYkRX4IsUDGy0OBH/JkPnt12KYyi21aGW72CZ7A=;
-        b=a04xkbmpsgErnHdAiuLzV3LmUxzEnj6J7OFvUta9tOj3pItR0QD019BYty0qw9Drq2
-         KAVo64B7vvenhDkTuN2rh8Uq4Eq5CYAq0/BEY16zf2Ne3ocNS7Ci5Zg5triMs4Bx5d1l
-         bWVr4SUr1KH6q78WJnKY9ZE0dmLhwBcxnYck12xsH93G4uupfbxZ6E3tNkHH+kB2Fmnc
-         WVtDZc2WIn/rYzg+Lr22qtdarrR2E3oQeWDnaSNFhOMj48zDb7OZc11guCyK3+pKWF+H
-         Dr4kLs8Y0MyPZem/hodGmxABYKw8lhGCKBDwTQJRzcX8D0K+jqAADmBfFtlzCeTAvEvP
-         d6nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DmYIvYkRX4IsUDGy0OBH/JkPnt12KYyi21aGW72CZ7A=;
-        b=ixEKnKLcv7/Fs9ps7hYilzoi4H7lBeGfzHHSefteMmDgvtQsSWVGUe8l3gmebiV8Js
-         Ig7Yfm04hn+KfMVym+jkk3OCD6bfozIjaI/JPriD+oqBVLv7Os2DIxrs8ls65gawMAjo
-         yTrMbF4Fo30CcI78omGLAd2OQ92UpStnHT4Ln+C9uJpY/VtssmvKUHvLmUA5syMxK1oP
-         1xtAVEPD5wBofLN+otMrANVPZjayJDgUKihnLvfh8oWcbFzYS9VltA7PYWFVKGsZtfSv
-         iNftRbNzvdlzx9nC+UNMai+v5jCMNIO/IPEwmxp3F8irxRb+YWQqXB1LIefu6wZCjj53
-         h+NQ==
-X-Gm-Message-State: AOAM533ESmGps4ARQ0XaduUCgfcKWxW2J6udbhkcF1RcNJtjOoBX6LFT
-        jHFRyHLQqujRD1+CPftxsj3d+o8b2S3Mlw==
-X-Google-Smtp-Source: ABdhPJz3JeDagWbYMUoFJT/9R94VInUH6Gicf0QhP+KXAgXOEqIJFHfg3tish5VeJwfEtFNxv+L7NA==
-X-Received: by 2002:adf:ff8e:: with SMTP id j14mr38565132wrr.374.1625050634869;
-        Wed, 30 Jun 2021 03:57:14 -0700 (PDT)
-Received: from dell ([95.144.13.171])
-        by smtp.gmail.com with ESMTPSA id k16sm4653787wru.79.2021.06.30.03.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 03:57:14 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 11:57:12 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mfd: intel-m10-bmc: add n5010 variant
-Message-ID: <YNxOCJNgG5x6zUU+@dell>
-References: <20210625074213.654274-1-martin@geanix.com>
- <20210625074213.654274-5-martin@geanix.com>
+        Wed, 30 Jun 2021 07:00:38 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 03D2F18096A36;
+        Wed, 30 Jun 2021 10:58:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 6F18E2448BB;
+        Wed, 30 Jun 2021 10:58:07 +0000 (UTC)
+Message-ID: <f7beb9aee00a1cdb8dd97a49a36abd60d58279f2.camel@perches.com>
+Subject: Re: [RFC 13/19] staging: qlge: rewrite do while loop as for loop in
+ qlge_sem_spinlock
+From:   Joe Perches <joe@perches.com>
+To:     Coiby Xu <coiby.xu@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Jun 2021 03:58:06 -0700
+In-Reply-To: <20210624112245.zgvkcxyu7hzrzc23@Rk>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+         <20210621134902.83587-14-coiby.xu@gmail.com> <20210622072036.GK1861@kadam>
+         <20210624112245.zgvkcxyu7hzrzc23@Rk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625074213.654274-5-martin@geanix.com>
+X-Spam-Status: No, score=-1.39
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 6F18E2448BB
+X-Stat-Signature: byo61h9tdyfet1zjamufshpd8jh1i6zk
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19+Me1uZrs5Ho696/FTg+x3rB2212tX89w=
+X-HE-Tag: 1625050687-621425
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021, Martin Hundeb√∏ll wrote:
-
-> From: Martin Hundeb√∏ll <mhu@silicom.dk>
+On Thu, 2021-06-24 at 19:22 +0800, Coiby Xu wrote:
+> On Tue, Jun 22, 2021 at 10:20:36AM +0300, Dan Carpenter wrote:
+> > On Mon, Jun 21, 2021 at 09:48:56PM +0800, Coiby Xu wrote:
+> > > Since wait_count=30 > 0, the for loop is equivalent to do while
+> > > loop. This commit also replaces 100 with UDELAY_DELAY.
+[]
+> > > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+[]
+> > > @@ -140,12 +140,13 @@ static int qlge_sem_trylock(struct qlge_adapter *qdev, u32 sem_mask)
+> > > †int qlge_sem_spinlock(struct qlge_adapter *qdev, u32 sem_mask)
+> > > †{
+> > > †	unsigned int wait_count = 30;
+> > > +	int count;
+> > > 
+> > > -	do {
+> > > +	for (count = 0; count < wait_count; count++) {
+> > > †		if (!qlge_sem_trylock(qdev, sem_mask))
+> > > †			return 0;
+> > > -		udelay(100);
+> > > -	} while (--wait_count);
+> > > +		udelay(UDELAY_DELAY);
+> > 
+> > This is an interesting way to silence the checkpatch udelay warning.  ;)
 > 
->  The m10-bmc is used on the Silicom N5010 PAC too, so add it to list of
->  m10bmc types.
-> 
-> Signed-off-by: Martin Hundeb√∏ll <mhu@silicom.dk>
-> ---
-> 
-> Changes since v1:
->  * Patch split out to separate mfd changes
-> 
->  drivers/mfd/intel-m10-bmc.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
+> I didn't know this could silence the warning :)
 
-For my own reference (apply this as-is to your sign-off block):
+It also seems odd to have unsigned int wait_count and int count.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+Maybe just use 30 in the loop without using wait_count at all.
 
--- 
-Lee Jones [ÊùéÁêºÊñØ]
-Senior Technical Lead - Developer Services
-Linaro.org ‚îÇ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I also think using UDELAY_DELAY is silly and essentially misleading
+as it's also used as an argument value for mdelay
+
+$ git grep -w UDELAY_DELAY
+drivers/staging/qlge/qlge.h:#define UDELAY_DELAY 100
+drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
+drivers/staging/qlge/qlge_main.c:               udelay(UDELAY_DELAY);
+drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
+drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY);
+drivers/staging/qlge/qlge_mpi.c:                mdelay(UDELAY_DELAY); /* 100ms */
+
+
