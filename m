@@ -2,334 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2160D3B898C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154C43B8993
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhF3UMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:12:35 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:37799 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhF3UMe (ORCPT
+        id S234070AbhF3UOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:14:40 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:49604 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233847AbhF3UOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:12:34 -0400
-Received: by mail-lj1-f181.google.com with SMTP id k8so5013366lja.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 13:10:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwMk+yYg4yq0UlvJwYGfzylb7KCXN/Db8wQDFzC4Hv0=;
-        b=rVGreHRBlO3OivE+QHY95tdJFwYtOerx2blc2LLFdMeuMhtbKfnbE3Mo+GdzppfB5U
-         uM1IGf+SE3j40exx1mwYj1kDUl5bLPh16L7FhZQvx5wyoAvoUpMviVFCLRC6j808bosM
-         HX+/+XLm4Xici0B+EKARjAWSnSQfZ6FZuPH/FfNhSMmI8sPxNvF46iOpV/+Ez/bhE3q+
-         aAoC3zQBRpD11ovN3W/hC0L2DHiM9NwMQ35+WAs31WQXw59rJax0VtCEUkK26uv0ODPV
-         YgAZcDOMdUr0TUVHJei2GSDfkipscBL/Ovv3Ocz3ddk8HobqBp6IXsTnf3XVDajxMJGB
-         r/Kg==
-X-Gm-Message-State: AOAM531W03SzfU1f17DL/VYdjmJSpKeuiwQ8uOW2+hTE+diLCbJy8HLN
-        HmsYhHov52Ci81nl4Qs0pl8CeQs8lY0n4lktfx8=
-X-Google-Smtp-Source: ABdhPJzo9jwLLipfr5krrU5chP8AhgY1f4uiKBoYFzLJiMNOiJMT5TOrEzP5NHXDaUeGAZZ7dS8j+86SncQIYUW5BsI=
-X-Received: by 2002:a2e:8e6d:: with SMTP id t13mr8975912ljk.26.1625083803161;
- Wed, 30 Jun 2021 13:10:03 -0700 (PDT)
+        Wed, 30 Jun 2021 16:14:39 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lygZ7-00BxLo-8J; Wed, 30 Jun 2021 14:12:09 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:43832 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lygZ5-007Q6s-LZ; Wed, 30 Jun 2021 14:12:08 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     linux-api@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>, linux-man@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <87r1gkp9i7.fsf@disp2133> <202106292156.9458CF22@keescook>
+Date:   Wed, 30 Jun 2021 15:11:23 -0500
+In-Reply-To: <202106292156.9458CF22@keescook> (Kees Cook's message of "Tue, 29
+        Jun 2021 22:23:06 -0700")
+Message-ID: <87k0mbp0yc.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-5-namhyung@kernel.org>
- <43811928-C46C-45CE-AB5A-4DE84DCDB1AF@fb.com>
-In-Reply-To: <43811928-C46C-45CE-AB5A-4DE84DCDB1AF@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 30 Jun 2021 13:09:52 -0700
-Message-ID: <CAM9d7ciSjaVsAKGo8Y5x2UucfBZVPX-yGwcvoeUhGjQQ50ADVA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] perf stat: Enable BPF counter with --for-each-cgroup
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lygZ5-007Q6s-LZ;;;mid=<87k0mbp0yc.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18aOKYeX4bVt7U5rQ+ngAg94VyPJEFtMio=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4969]
+        *  0.7 XMSubLong Long Subject
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Michael Kerrisk <mtk.manpages@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1015 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 10 (1.0%), b_tie_ro: 8 (0.8%), parse: 0.96 (0.1%),
+         extract_message_metadata: 12 (1.2%), get_uri_detail_list: 0.82 (0.1%),
+         tests_pri_-1000: 18 (1.7%), tests_pri_-950: 1.34 (0.1%),
+        tests_pri_-900: 1.09 (0.1%), tests_pri_-90: 86 (8.5%), check_bayes: 84
+        (8.3%), b_tokenize: 6 (0.6%), b_tok_get_all: 5 (0.5%), b_comp_prob:
+        2.4 (0.2%), b_tok_touch_all: 67 (6.6%), b_finish: 1.18 (0.1%),
+        tests_pri_0: 874 (86.0%), check_dkim_signature: 0.62 (0.1%),
+        check_dkim_adsp: 2.9 (0.3%), poll_dns_idle: 0.67 (0.1%), tests_pri_10:
+        2.1 (0.2%), tests_pri_500: 8 (0.7%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] seccomp.2:  Clarify that bad system calls kill the thread
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
 
-On Wed, Jun 30, 2021 at 11:47 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Jun 25, 2021, at 12:18 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Recently bperf was added to use BPF to count perf events for various
-> > purposes.  This is an extension for the approach and targetting to
-> > cgroup usages.
-> >
-> > Unlike the other bperf, it doesn't share the events with other
-> > processes but it'd reduce unnecessary events (and the overhead of
-> > multiplexing) for each monitored cgroup within the perf session.
-> >
-> > When --for-each-cgroup is used with --bpf-counters, it will open
-> > cgroup-switches event per cpu internally and attach the new BPF
-> > program to read given perf_events and to aggregate the results for
-> > cgroups.  It's only called when task is switched to a task in a
-> > different cgroup.
-> >
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > tools/perf/Makefile.perf                    |  17 +-
-> > tools/perf/util/Build                       |   1 +
-> > tools/perf/util/bpf_counter.c               |   5 +
-> > tools/perf/util/bpf_counter_cgroup.c        | 299 ++++++++++++++++++++
-> > tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 191 +++++++++++++
-> > tools/perf/util/cgroup.c                    |   2 +
-> > tools/perf/util/cgroup.h                    |   1 +
-> > 7 files changed, 515 insertions(+), 1 deletion(-)
-> > create mode 100644 tools/perf/util/bpf_counter_cgroup.c
-> > create mode 100644 tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
->
-> [...]
->
-> > diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-> > new file mode 100644
-> > index 000000000000..327f97a23a84
-> > --- /dev/null
-> > +++ b/tools/perf/util/bpf_counter_cgroup.c
-> > @@ -0,0 +1,299 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/* Copyright (c) 2019 Facebook */
->
-> I am not sure whether this ^^^ is accurate.
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+---
+ man2/seccomp.2 | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Well, I just copied it from the bpf_counter.c file which was the base
-of this patch.  Now I don't think I have many lines of code directly
-came from the origin.
-
-So I'm not sure what I can do.  Do you want to update the
-copyright year to 2021?  Or are you ok with removing the
-line at all?
-
->
-> > +/* Copyright (c) 2021 Google */
-> > +
-> > +#include <assert.h>
-> > +#include <limits.h>
-> > +#include <unistd.h>
-> > +#include <sys/file.h>
-> > +#include <sys/time.h>
-> > +#include <sys/resource.h>
-> > +#include <linux/err.h>
-> > +#include <linux/zalloc.h>
-> > +#include <linux/perf_event.h>
-> > +#include <api/fs/fs.h>
-> > +#include <perf/bpf_perf.h>
-> > +
-> > +#include "affinity.h"
-> > +#include "bpf_counter.h"
-> > +#include "cgroup.h"
-> > +#include "counts.h"
-> > +#include "debug.h"
-> > +#include "evsel.h"
-> > +#include "evlist.h"
-> > +#include "target.h"
-> > +#include "cpumap.h"
-> > +#include "thread_map.h"
-> > +
-> > +#include "bpf_skel/bperf_cgroup.skel.h"
-> > +
-> > +static struct perf_event_attr cgrp_switch_attr = {
-> > +     .type = PERF_TYPE_SOFTWARE,
-> > +     .config = PERF_COUNT_SW_CGROUP_SWITCHES,
-> > +     .size = sizeof(cgrp_switch_attr),
-> > +     .sample_period = 1,
-> > +     .disabled = 1,
-> > +};
-> > +
-> > +static struct evsel *cgrp_switch;
-> > +static struct bperf_cgroup_bpf *skel;
-> > +
-> > +#define FD(evt, cpu) (*(int *)xyarray__entry(evt->core.fd, cpu, 0))
-> > +
-> > +static int bperf_load_program(struct evlist *evlist)
-> > +{
-> > +     struct bpf_link *link;
-> > +     struct evsel *evsel;
-> > +     struct cgroup *cgrp, *leader_cgrp;
-> > +     __u32 i, cpu;
-> > +     int nr_cpus = evlist->core.all_cpus->nr;
-> > +     int total_cpus = cpu__max_cpu();
-> > +     int map_size, map_fd;
-> > +     int prog_fd, err;
-> > +
-> > +     skel = bperf_cgroup_bpf__open();
-> > +     if (!skel) {
-> > +             pr_err("Failed to open cgroup skeleton\n");
-> > +             return -1;
-> > +     }
-> > +
-> > +     skel->rodata->num_cpus = total_cpus;
-> > +     skel->rodata->num_events = evlist->core.nr_entries / nr_cgroups;
-> > +
-> > +     BUG_ON(evlist->core.nr_entries % nr_cgroups != 0);
-> > +
-> > +     /* we need one copy of events per cpu for reading */
-> > +     map_size = total_cpus * evlist->core.nr_entries / nr_cgroups;
-> > +     bpf_map__resize(skel->maps.events, map_size);
-> > +     bpf_map__resize(skel->maps.cgrp_idx, nr_cgroups);
-> > +     /* previous result is saved in a per-cpu array */
-> > +     map_size = evlist->core.nr_entries / nr_cgroups;
-> > +     bpf_map__resize(skel->maps.prev_readings, map_size);
-> > +     /* cgroup result needs all events (per-cpu) */
-> > +     map_size = evlist->core.nr_entries;
-> > +     bpf_map__resize(skel->maps.cgrp_readings, map_size);
-> > +
-> > +     set_max_rlimit();
-> > +
-> > +     err = bperf_cgroup_bpf__load(skel);
-> > +     if (err) {
-> > +             pr_err("Failed to load cgroup skeleton\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (cgroup_is_v2("perf_event") > 0)
-> > +             skel->bss->use_cgroup_v2 = 1;
-> > +
-> > +     err = -1;
-> > +
-> > +     cgrp_switch = evsel__new(&cgrp_switch_attr);
-> > +     if (evsel__open_per_cpu(cgrp_switch, evlist->core.all_cpus, -1) < 0) {
-> > +             pr_err("Failed to open cgroup switches event\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     for (i = 0; i < nr_cpus; i++) {
-> > +             link = bpf_program__attach_perf_event(skel->progs.on_cgrp_switch,
-> > +                                                   FD(cgrp_switch, i));
-> > +             if (IS_ERR(link)) {
-> > +                     pr_err("Failed to attach cgroup program\n");
-> > +                     err = PTR_ERR(link);
-> > +                     goto out;
-> > +             }
-> > +     }
-> > +
-> > +     /*
-> > +      * Update cgrp_idx map from cgroup-id to event index.
-> > +      */
-> > +     cgrp = NULL;
-> > +     i = 0;
-> > +
-> > +     evlist__for_each_entry(evlist, evsel) {
-> > +             if (cgrp == NULL || evsel->cgrp == leader_cgrp) {
-> > +                     leader_cgrp = evsel->cgrp;
-> > +                     evsel->cgrp = NULL;
-> > +
-> > +                     /* open single copy of the events w/o cgroup */
-> > +                     err = evsel__open_per_cpu(evsel, evlist->core.all_cpus, -1);
-> > +                     if (err) {
-> > +                             pr_err("Failed to open first cgroup events\n");
-> > +                             goto out;
-> > +                     }
-> > +
-> > +                     map_fd = bpf_map__fd(skel->maps.events);
-> > +                     for (cpu = 0; cpu < nr_cpus; cpu++) {
-> > +                             int fd = FD(evsel, cpu);
-> > +                             __u32 idx = evsel->idx * total_cpus +
-> > +                                     evlist->core.all_cpus->map[cpu];
-> > +
-> > +                             err = bpf_map_update_elem(map_fd, &idx, &fd,
-> > +                                                       BPF_ANY);
-> > +                             if (err < 0) {
-> > +                                     pr_err("Failed to update perf_event fd\n");
-> > +                                     goto out;
-> > +                             }
-> > +                     }
-> > +
-> > +                     evsel->cgrp = leader_cgrp;
-> > +             }
-> > +             evsel->supported = true;
-> > +
-> > +             if (evsel->cgrp == cgrp)
-> > +                     continue;
-> > +
-> > +             cgrp = evsel->cgrp;
-> > +
-> > +             if (read_cgroup_id(cgrp) < 0) {
-> > +                     pr_err("Failed to get cgroup id\n");
-> > +                     err = -1;
-> > +                     goto out;
-> > +             }
-> > +
-> > +             map_fd = bpf_map__fd(skel->maps.cgrp_idx);
-> > +             err = bpf_map_update_elem(map_fd, &cgrp->id, &i, BPF_ANY);
-> > +             if (err < 0) {
-> > +                     pr_err("Failed to update cgroup index map\n");
-> > +                     goto out;
-> > +             }
-> > +
-> > +             i++;
-> > +     }
-> > +
-> > +     /*
-> > +      * bperf uses BPF_PROG_TEST_RUN to get accurate reading. Check
-> > +      * whether the kernel support it
-> > +      */
-> > +     prog_fd = bpf_program__fd(skel->progs.trigger_read);
-> > +     err = bperf_trigger_reading(prog_fd, 0);
-> > +     if (err) {
-> > +             pr_debug("The kernel does not support test_run for raw_tp BPF programs.\n"
-> > +                      "Therefore, --for-each-cgroup might show inaccurate readings\n");
->
-> I think this should be a warning, and we should set err = 0 to continue?
-
-Sounds good, will change.
-
->
-> > +     }
-> > +
-> > +out:
-> > +     return err;
-> > +}
-> > +
->
-> [...]
->
-> > +
-> > +/*
-> > + * trigger the leader prog on each cpu, so the cgrp_reading map could get
-> > + * the latest results.
-> > + */
-> > +static int bperf_cgrp__sync_counters(struct evlist *evlist)
-> > +{
-> > +     int i, cpu;
-> > +     int nr_cpus = evlist->core.all_cpus->nr;
-> > +     int prog_fd = bpf_program__fd(skel->progs.trigger_read);
-> > +
-> > +     for (i = 0; i < nr_cpus; i++) {
-> > +             cpu = evlist->core.all_cpus->map[i];
-> > +             bperf_trigger_reading(prog_fd, cpu);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int bperf_cgrp__enable(struct evsel *evsel)
-> > +{
->
-> Do we need to call bperf_cgrp__sync_counters() before setting enabled to 1?
-> If we don't, we may count some numbers before setting enabled to 1, no?
-
-Actually it'll update the prev_readings even if enabled = 0.
-So I think it should get the correct counts after setting it to 1
-without the bperf_cgrp__sync_counters().
-
-Thanks,
-Namhyung
-
-
->
-> > +     skel->bss->enabled = 1;
-> > +     return 0;
-> > +}
->
-> [...]
->
+diff --git a/man2/seccomp.2 b/man2/seccomp.2
+index a3421871f0f4..bde54c3e3e99 100644
+--- a/man2/seccomp.2
++++ b/man2/seccomp.2
+@@ -69,9 +69,10 @@ The only system calls that the calling thread is permitted to make are
+ .BR exit_group (2)),
+ and
+ .BR sigreturn (2).
+-Other system calls result in the delivery of a
++Other system calls result in the termination of the calling thread,
++or termination of the entire process with the
+ .BR SIGKILL
+-signal.
++signal when there is only one thread.
+ Strict secure computing mode is useful for number-crunching
+ applications that may need to execute untrusted byte code, perhaps
+ obtained by reading from a pipe or socket.
+-- 
+2.29.2
