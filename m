@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA59A3B8288
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D203B824F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbhF3M47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:56:59 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59651 "EHLO elvis.franken.de"
+        id S234645AbhF3MpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:45:03 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:57169 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234719AbhF3M46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:56:58 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lyZjT-0007Hs-00; Wed, 30 Jun 2021 14:54:23 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A29A3C073D; Wed, 30 Jun 2021 14:37:56 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 14:37:56 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, paul@crapouillou.net,
-        robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Re: [PATCH v4 0/5] Misc Ingenic patches.
-Message-ID: <20210630123756.GA7139@alpha.franken.de>
-References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
+        id S234455AbhF3Mo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:44:59 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 15UCfBAA024028;
+        Wed, 30 Jun 2021 14:41:11 +0200
+Date:   Wed, 30 Jun 2021 14:41:11 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Florian Weimer <fweimer@redhat.com>, Len Brown <lenb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <20210630124111.GC23648@1wt.eu>
+References: <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+ <87pmxk87th.fsf@oldenburg.str.redhat.com>
+ <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
+ <87wnqkzklg.fsf@oldenburg.str.redhat.com>
+ <CAJvTdKkBTD62GTi=GW0+y0_1qc2JxfpfkNbXKWniWWOEmZZmUw@mail.gmail.com>
+ <93e3b500-5992-a674-18e6-445d1db7b1f0@metux.net>
+ <87tulirw5y.fsf@oldenburg.str.redhat.com>
+ <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
+In-Reply-To: <84be3cfd-e825-ae75-bbae-2bbd3360daa7@metux.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 26, 2021 at 02:18:36PM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Some misc patches that don't really have any relation
-> between themselves.
+On Wed, Jun 30, 2021 at 02:22:19PM +0200, Enrico Weigelt, metux IT consult wrote:
+> Ah, now I'm beginning to get it:
 > 
-> 周琰杰 (Zhou Yanjie) (5):
->   MIPS: X1830: Respect cell count of common properties.
->   dt-bindings: clock: Add documentation for MAC PHY control bindings.
->   MIPS: Ingenic: Add MAC syscon nodes for Ingenic SoCs.
->   MIPS: CI20: Reduce clocksource to 750 kHz.
->   MIPS: CI20: Add second percpu timer for SMP.
+> * this feature needs to be initialized first, before it can be used
+> * on first use (when not initialized yet), it traps into the kernel
+> * we don't want to always initialize it at boot
 > 
->  .../devicetree/bindings/clock/ingenic,cgu.yaml     |  2 ++
->  arch/mips/boot/dts/ingenic/ci20.dts                | 24 +++++++++++++---------
->  arch/mips/boot/dts/ingenic/x1000.dtsi              |  7 +++++++
->  arch/mips/boot/dts/ingenic/x1830.dtsi              | 16 ++++++++++-----
->  4 files changed, 34 insertions(+), 15 deletions(-)
+> Correct ?
 
-applied to mips-next.
+Not exactly. It's available but comes with a huge context-switch
+cost for each task using it.
 
-Thomas.
+> What I'm wondering: why shall the process explicitly ask for it and
+> why isn't the initialization be done either on bootup or on first use ?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+The whole discussion about the pros and cons is archived here:
+
+   https://lore.kernel.org/lkml/CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com/
+
+> I'm still claiming already this old model is a horrible misdesign and
+> (most of) the extensions made over the decades are anything but well
+> designed - there had been many changes to do it much, much better.
+> For example there would have been ways to introduce new opcodes in a way
+> that they can be easily emulated in kernel or userland, w/o going
+> through a full trap.
+
+It's not a matter of opcodes but of context switch cost which not
+everyone wants to inflict to every single task that opportunistically
+uses these instructions without realizing what this subsequently
+implies for the rest of their life. All this is discussed in the
+thread above. I don't remember seeing anybody criticize the choice
+of instruction encoding hence it's irrelevant to this discussion.
+
+Hoping this helps,
+Willy
