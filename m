@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D1D3B8690
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A943B8692
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235969AbhF3P6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:58:08 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3954 "EHLO mga01.intel.com"
+        id S235994AbhF3P6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:58:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3979 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235939AbhF3P6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:58:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="230015588"
+        id S235978AbhF3P6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 11:58:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="230015605"
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="230015588"
+   d="scan'208";a="230015605"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 08:55:19 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 08:55:22 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="559099589"
+   d="scan'208";a="559099602"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Jun 2021 08:55:16 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jun 2021 08:55:19 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v8 04/22] perf record: Stop threads in the end of trace streaming
-Date:   Wed, 30 Jun 2021 18:54:43 +0300
-Message-Id: <0140e468bf81b3c10f9780473a49804f820a7023.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v8 05/22] perf record: Start threads in the beginning of trace streaming
+Date:   Wed, 30 Jun 2021 18:54:44 +0300
+Message-Id: <d592768896213a55dd035a1aa4c2eb5c6f8b3b4d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,73 +45,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signal thread to terminate by closing write fd of msg pipe.
-Receive THREAD_MSG__READY message as the confirmation of the
-thread's termination. Stop threads created for parallel trace
-streaming prior their stats processing.
+Start thread in detached state because its management is implemented
+via messaging to avoid any scaling issues. Block signals prior thread
+start so only main tool thread would be notified on external async
+signals during data collection. Thread affinity mask is used to assign
+eligible cpus for the thread to run. Wait and sync on thread start using
+thread ack pipe.
 
-Acked-by: Andi Kleen <ak@linux.intel.com>
 Acked-by: Namhyung Kim <namhyung@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ tools/perf/builtin-record.c | 108 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 107 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 3935c0fabe01..82a21da2af16 100644
+index 82a21da2af16..cead2b3c56d7 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -112,6 +112,16 @@ struct thread_data {
- 
- static __thread struct thread_data *thread;
- 
-+enum thread_msg {
-+	THREAD_MSG__UNDEFINED = 0,
-+	THREAD_MSG__READY,
-+	THREAD_MSG__MAX,
-+};
-+
-+static const char *thread_msg_tags[THREAD_MSG__MAX] = {
-+	"UNDEFINED", "READY"
-+};
-+
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -1857,6 +1867,23 @@ static void record__uniquify_name(struct record *rec)
- 	}
+@@ -1423,6 +1423,66 @@ static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
+ 		perf_mmap__put(map);
  }
  
-+static int record__terminate_thread(struct thread_data *thread_data)
++static void *record__thread(void *arg)
 +{
-+	int res;
-+	enum thread_msg ack = THREAD_MSG__UNDEFINED;
-+	pid_t tid = thread_data->tid;
++	enum thread_msg msg = THREAD_MSG__READY;
++	bool terminate = false;
++	struct fdarray *pollfd;
++	int err, ctlfd_pos;
 +
-+	close(thread_data->pipes.msg[1]);
-+	res = read(thread_data->pipes.ack[0], &ack, sizeof(ack));
-+	if (res != -1)
-+		pr_debug2("threads[%d]: sent %s\n", tid, thread_msg_tags[ack]);
-+	else
-+		pr_err("threads[%d]: failed to recv msg=%s from tid=%d\n",
-+		       thread->tid, thread_msg_tags[ack], tid);
++	thread = arg;
++	thread->tid = syscall(SYS_gettid);
 +
-+	return 0;
++	err = write(thread->pipes.ack[1], &msg, sizeof(msg));
++	if (err == -1)
++		pr_err("threads[%d]: failed to notify on start: %s", thread->tid, strerror(errno));
++
++	pr_debug("threads[%d]: started on cpu=%d\n", thread->tid, sched_getcpu());
++
++	pollfd = &thread->pollfd;
++	ctlfd_pos = thread->ctlfd_pos;
++
++	for (;;) {
++		unsigned long long hits = thread->samples;
++
++		if (record__mmap_read_all(thread->rec, false) < 0 || terminate)
++			break;
++
++		if (hits == thread->samples) {
++
++			err = fdarray__poll(pollfd, -1);
++			/*
++			 * Propagate error, only if there's any. Ignore positive
++			 * number of returned events and interrupt error.
++			 */
++			if (err > 0 || (err < 0 && errno == EINTR))
++				err = 0;
++			thread->waking++;
++
++			if (fdarray__filter(pollfd, POLLERR | POLLHUP,
++					    record__thread_munmap_filtered, NULL) == 0)
++				break;
++		}
++
++		if (pollfd->entries[ctlfd_pos].revents & POLLHUP) {
++			terminate = true;
++			close(thread->pipes.msg[0]);
++			pollfd->entries[ctlfd_pos].fd = -1;
++			pollfd->entries[ctlfd_pos].events = 0;
++		}
++
++		pollfd->entries[ctlfd_pos].revents = 0;
++	}
++	record__mmap_read_all(thread->rec, true);
++
++	err = write(thread->pipes.ack[1], &msg, sizeof(msg));
++	if (err == -1)
++		pr_err("threads[%d]: failed to notify on termination: %s",
++		       thread->tid, strerror(errno));
++
++	return NULL;
 +}
 +
+ static void record__init_features(struct record *rec)
+ {
+ 	struct perf_session *session = rec->session;
+@@ -1886,13 +1946,59 @@ static int record__terminate_thread(struct thread_data *thread_data)
+ 
  static int record__start_threads(struct record *rec)
  {
++	int t, tt, ret = 0, nr_threads = rec->nr_threads;
  	struct thread_data *thread_data = rec->thread_data;
-@@ -1873,6 +1900,9 @@ static int record__stop_threads(struct record *rec, unsigned long *waking)
- 	int t;
- 	struct thread_data *thread_data = rec->thread_data;
- 
-+	for (t = 1; t < rec->nr_threads; t++)
-+		record__terminate_thread(&thread_data[t]);
++	sigset_t full, mask;
++	pthread_t handle;
++	pthread_attr_t attrs;
 +
- 	for (t = 0; t < rec->nr_threads; t++) {
- 		rec->samples += thread_data[t].samples;
- 		*waking += thread_data[t].waking;
++	sigfillset(&full);
++	if (sigprocmask(SIG_SETMASK, &full, &mask)) {
++		pr_err("Failed to block signals on threads start: %s\n", strerror(errno));
++		return -1;
++	}
++
++	pthread_attr_init(&attrs);
++	pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
++
++	for (t = 1; t < nr_threads; t++) {
++		enum thread_msg msg = THREAD_MSG__UNDEFINED;
++
++		pthread_attr_setaffinity_np(&attrs,
++					    MMAP_CPU_MASK_BYTES(&(thread_data[t].mask->affinity)),
++					    (cpu_set_t *)(thread_data[t].mask->affinity.bits));
++
++		if (pthread_create(&handle, &attrs, record__thread, &thread_data[t])) {
++			for (tt = 1; tt < t; tt++)
++				record__terminate_thread(&thread_data[t]);
++			pr_err("Failed to start threads: %s\n", strerror(errno));
++			ret = -1;
++			goto out_err;
++		}
++
++		if (read(thread_data[t].pipes.ack[0], &msg, sizeof(msg)) > 0)
++			pr_debug2("threads[%d]: sent %s\n", rec->thread_data[t].tid,
++				 thread_msg_tags[msg]);
++	}
++
++	if (nr_threads > 1) {
++		sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&thread_data[0].mask->affinity),
++				  (cpu_set_t *)thread_data[0].mask->affinity.bits);
++	}
+ 
+ 	thread = &thread_data[0];
+ 
+ 	pr_debug("threads[%d]: started on cpu=%d\n", thread->tid, sched_getcpu());
+ 
+-	return 0;
++out_err:
++	pthread_attr_destroy(&attrs);
++
++	if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
++		pr_err("Failed to unblock signals on threads start: %s\n", strerror(errno));
++		ret = -1;
++	}
++
++	return ret;
+ }
+ 
+ static int record__stop_threads(struct record *rec, unsigned long *waking)
 -- 
 2.19.0
 
