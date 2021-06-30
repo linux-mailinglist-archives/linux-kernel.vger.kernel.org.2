@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F973B8140
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D943B8141
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbhF3L1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
+        id S234320AbhF3L1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbhF3L1j (ORCPT
+        with ESMTP id S234263AbhF3L1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:27:39 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C31C061756;
-        Wed, 30 Jun 2021 04:25:10 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id a127so2117403pfa.10;
-        Wed, 30 Jun 2021 04:25:10 -0700 (PDT)
+        Wed, 30 Jun 2021 07:27:40 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F215C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:25:10 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id yy20so3642496ejb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=29+GEYVJGSurUohvXnAFypVRG5Ebr54t54b9IharxTo=;
-        b=SLc8Cb4XM02o0nZB60JoBKIn92x1wm8XdOd1OoT3JN9UrnixuH8YiWUwTd9ydPVMCa
-         OAIAQuHRzIlUpY3L1bf8WojccTnObmNL3Y3lmxN9Lkw7No2adS95fGLrt3khONgHMY2A
-         Avx9/KSRQ9wlKnVlJhMPNkyFRu2oVygCKyyISx8EwkluamaVck9I2t+f4SSqVoeURMwJ
-         y3QEeFBiZ4yHVEeXieYL/FRm+wkfcVJAO+RUT9A0FIDEaGhX0waLAlN2ZarbyO7IJR0m
-         xA4TeXCIm1VdlXqvIIHra9kWn4TVV0nR6IZwZXKYt9/ZcsDQLXXd/sOVzgYuM56vjJTb
-         ZfgA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2fXLawCAx2duKCs9SGoXLY+toznj1lDdA/XUhKtet0g=;
+        b=Qa1lJ8N0kUOoO6foNc8JuqWoL1Haqi4jUIw0VWB0wmUwN+mM8tiYrzTB/RPVCvLD4X
+         r1BZCimZNpypAnFpy/bWAUGI4yJ706LS24LfOabr/qUHW8lC7N6APE5n/7bmUj+B2fZu
+         X0tANEt1AvQkMl0bYLkZ6ikf2aWy9FPGZ65yRlJzsrl+iObcQNPAaLky2dVmQdb37K4x
+         ii1my9eoHbLdA9tFd6+rgUC2DKI+tOvj5U5luZwe+OJn8Njo+QWGC+kFiCTbelrqWzWQ
+         JyZ7NuBJzcYiMF1IWECvASgdHkpsi3G+hoh2FNGa8Lkl7Em1tU3vzXtOiJxtNrVEk9rs
+         igQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=29+GEYVJGSurUohvXnAFypVRG5Ebr54t54b9IharxTo=;
-        b=NXMez1V9kvP7ZYc8UAvhRP8//F71AnfVKjE+VrCPowDzJRuUYwtgfnc/vkZibOJpgg
-         tou/O8WQrj0LII4frQelT9PMRGbgZIihEbqUoAUGvoica4x0/A8zPb4KiMYrvPZTQh0S
-         PJHYQTUPo9MJ8CLxKRc7YK7llibFLSrzudztJPtLhypyVPv0QbKZW6h3QtMJNGnv28H3
-         k8OO8Zhs0gTmkQNIwUwoLjQKlc5ooOo2yzpnMmYyJgnvF5hGnMSwaUC9Pl8SidEV2TUl
-         Yca2heRvgaJOulOUHE30K1yGTi4mr9BtunIoEkcF99yowUIkrk6dIxzdifmM+HggR2yk
-         +bnA==
-X-Gm-Message-State: AOAM531r+jonwUpHeHz5VpJLZAyHxV80ZmG2AwpzYd5m7uFZD2+CL02B
-        3+nJ1Ort3e/q7jkvBrU5tL3iqfswlniTQ8hE
-X-Google-Smtp-Source: ABdhPJx5XUCk8OKv7e1Iq4Xs9i2AhQa1PBaqoDpe7ibAXnmXNwU5Lz4Qka5erRlTLDZLWTSHCY0sdg==
-X-Received: by 2002:a63:6642:: with SMTP id a63mr33480670pgc.241.1625052309591;
-        Wed, 30 Jun 2021 04:25:09 -0700 (PDT)
-Received: from localhost.localdomain ([150.109.127.35])
-        by smtp.gmail.com with ESMTPSA id c20sm21764985pfp.203.2021.06.30.04.25.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Jun 2021 04:25:08 -0700 (PDT)
-From:   Bing Fan <hptsfb@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] arm pl011 serial: support multi-irq request
-Date:   Wed, 30 Jun 2021 19:25:05 +0800
-Message-Id: <1625052305-18929-1-git-send-email-hptsfb@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2fXLawCAx2duKCs9SGoXLY+toznj1lDdA/XUhKtet0g=;
+        b=V2Jl67UCkdln4e7gFNi2qXbGCN0gJIdiyrayyYUGOiHZ1YSYYu0cZyqMPPhyBMH7V7
+         HtlYseQIIR2dCtUTEmtVeXx68CGorDDpViEg4N+lSjKWakpCu4Zteh3IAp6Go0HSQGCY
+         B9N6la8QyJFEXLqXkSGyEl2WY7Ooh6STaPfjAxsjxHQm26uhh7/CZkQqrNsxgv1R9Gxa
+         jaoQ9O50P/kLz7a85Ie/UKI73f6Yl/jN1O1LWIt7nhZeS3eyHAdtfyvPXuVBX8rFK3JM
+         DB+AGk1i+R84O4xJRtEKaQ+rSgwGnmwfg/iOShmQVWUt7mn2Inus7SqbWzaDYb6pKkaT
+         d8rg==
+X-Gm-Message-State: AOAM5338zPLbaNVKTFgLu4HQ+RMvuLBd/qWpAMhsFuiYsyEFCWfUTQRp
+        4WYuqRYIa+qO5gh/SJmEYCgdtb+72nZbudM83zg=
+X-Google-Smtp-Source: ABdhPJzuLcVaY4mCR8o0aLvKglxo0DJRCvfT7fiLcuoK/gGsOoN7Ja0ShdYDOW90faKlkPD3kmDMp4PCx/2kFC1lF5I=
+X-Received: by 2002:a17:906:38c6:: with SMTP id r6mr22222942ejd.411.1625052308528;
+ Wed, 30 Jun 2021 04:25:08 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab4:a5c4:0:0:0:0:0 with HTTP; Wed, 30 Jun 2021 04:25:07
+ -0700 (PDT)
+Reply-To: faty.muhamad@gmail.com
+From:   Ms Fatima Muhammad <mscarolineduke24@gmail.com>
+Date:   Wed, 30 Jun 2021 11:25:07 +0000
+Message-ID: <CACDPqnaWF0ZXLTDt6W=vWQf_42uMvJrkKByRZ02+hH1AvzQ=mw@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bing Fan <tombinfan@tencent.com>
+Hello Dear,
 
-In order to make pl011 work better, multiple interrupts are
-required, such as TXIM, RXIM, RTIM, error interrupt(FE/PE/BE/OE);
-at the same time, pl011 to GIC does not merge the interrupt
-lines(each serial-interrupt corresponding to different GIC hardware
-interrupt), so need to enable and request multiple gic interrupt
-numbers in the driver.
+My name is Ms.Fatima Muhammad., Please forgive me for stressing you
+with my predicaments and I sorry to approach you through this media
+because is serves the fastest means of  my communication right now,
 
-Signed-off-by: Bing Fan <tombinfan@tencent.com>
----
- drivers/tty/serial/amba-pl011.c | 35 ++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
+I came across your Email from my personal search and I decided to
+contact you believing you will be honest to fulfill my business
+proposal which I believe that will be a very good opportunity for both
+of us. Please it is my pleasure to contact you today for a business
+partnership investments projects which I intend to establish in your
+country..
 
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index 78682c12156a..e84f4b9dff87 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -1701,11 +1701,40 @@ static void pl011_write_lcr_h(struct uart_amba_port *uap, unsigned int lcr_h)
- 	}
- }
- 
-+static void pl011_release_irq(struct uart_amba_port *uap, unsigned int max_cnt)
-+{
-+	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-+	int i;
-+
-+	for (i = 0; i < max_cnt; i++) {
-+		if (amba_dev->irq[i])
-+			free_irq(amba_dev->irq[i], uap);
-+	}
-+}
-+
- static int pl011_allocate_irq(struct uart_amba_port *uap)
- {
-+	int ret = 0;
-+	int i;
-+	unsigned int virq;
-+	struct amba_device *amba_dev = container_of(uap->port.dev, struct amba_device, dev);
-+
- 	pl011_write(uap->im, uap, REG_IMSC);
- 
--	return request_irq(uap->port.irq, pl011_int, IRQF_SHARED, "uart-pl011", uap);
-+	for (i = 0; i < AMBA_NR_IRQS; i++) {
-+		virq = amba_dev->irq[i];
-+		if (virq == 0)
-+			break;
-+
-+		ret = request_irq(virq, pl011_int, IRQF_SHARED, dev_name(&amba_dev->dev), uap);
-+		if (ret) {
-+			dev_err(uap->port.dev, "request %u interrupt failed\n", virq);
-+			pl011_release_irq(uap, i - 1);
-+			break;
-+		}
-+	}
-+
-+	return ret;
- }
- 
- /*
-@@ -1864,7 +1893,7 @@ static void pl011_shutdown(struct uart_port *port)
- 
- 	pl011_dma_shutdown(uap);
- 
--	free_irq(uap->port.irq, uap);
-+	pl011_release_irq(uap, AMBA_NR_IRQS);
- 
- 	pl011_disable_uart(uap);
- 
-@@ -1894,7 +1923,7 @@ static void sbsa_uart_shutdown(struct uart_port *port)
- 
- 	pl011_disable_interrupts(uap);
- 
--	free_irq(uap->port.irq, uap);
-+	pl011_release_irq(uap, AMBA_NR_IRQS);
- 
- 	if (uap->port.ops->flush_buffer)
- 		uap->port.ops->flush_buffer(port);
--- 
-2.17.1
+Pls If this business proposal offends your moral and ethic values do
+accept my apology. therefore kindly contact me immediately if you are
+interested for more details.
 
+Thank you for your wiliness to help me
+Yours Sincerely Fatima Muhammad
