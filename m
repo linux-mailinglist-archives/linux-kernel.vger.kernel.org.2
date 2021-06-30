@@ -2,181 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC03B7FDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041943B7FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhF3JWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:22:52 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:56764 "EHLO srv6.fidu.org"
+        id S233881AbhF3JXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:23:24 -0400
+Received: from mga07.intel.com ([134.134.136.100]:10722 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233653AbhF3JWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:22:50 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 13D73C8007C;
-        Wed, 30 Jun 2021 11:20:19 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id nQiGca3dEL4e; Wed, 30 Jun 2021 11:20:18 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:4900:3452:53ea:4253:eacd] (p200300e37F394900345253EA4253EaCd.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:3452:53ea:4253:eacd])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 8A682C80077;
-        Wed, 30 Jun 2021 11:20:18 +0200 (CEST)
-Subject: Re: [PATCH v4 12/17] drm/uAPI: Add "preferred color format" drm
- property as setting for userspace
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     sunpeng.li@amd.com, Simon Ser <contact@emersion.fr>,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
-        rodrigo.vivi@intel.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-References: <20210618091116.14428-1-wse@tuxedocomputers.com>
- <20210618091116.14428-13-wse@tuxedocomputers.com>
- <20210622101516.6a53831c@eldfell>
- <jIDQ2rRRMWlhDDPf08Z8xZlEE8HTBx7fHsylFdK0joSSFVyES8D444Giyiji9zbIm7dU4QpbsXZLvIDTbGW0wEoUWKsMEI4evizn0UdGMvM=@emersion.fr>
- <20210629141712.21f00c38@eldfell>
- <6d8716e0-e68a-e7b7-a341-a7471c413e9c@tuxedocomputers.com>
- <20210630114133.47397e2f@eldfell>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <d3674d49-8bca-7ecf-1735-7bff2d9d526e@tuxedocomputers.com>
-Date:   Wed, 30 Jun 2021 11:20:18 +0200
+        id S233653AbhF3JXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:23:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="272173514"
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="272173514"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 02:20:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,311,1616482800"; 
+   d="scan'208";a="419928542"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 02:20:49 -0700
+Subject: Re: [PATCH 1/3] perf/x86: Add new event for AUX output counter index
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210609142055.32226-1-adrian.hunter@intel.com>
+ <20210609142055.32226-2-adrian.hunter@intel.com>
+ <YNXW4+QqeO1KL4Xq@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <cc79fce0-2c92-dd55-fd50-46b28644f4fc@intel.com>
+Date:   Wed, 30 Jun 2021 12:21:07 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210630114133.47397e2f@eldfell>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YNXW4+QqeO1KL4Xq@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.06.21 um 10:41 schrieb Pekka Paalanen:
+On 25/06/21 4:15 pm, Peter Zijlstra wrote:
+> On Wed, Jun 09, 2021 at 05:20:53PM +0300, Adrian Hunter wrote:
+> 
+>> +static void intel_pmu_report_aux_output_id(struct perf_event *event)
+>> +{
+>> +	struct hw_perf_event *hwc = &event->hw;
+>> +
+>> +	/*
+>> +	 * So long as all PEBS-via-PT events for a recording session are
+>> +	 * scheduled together, then only changes to hwc->idx need be reported.
+>> +	 */
+>> +	if (hwc->idx != hwc->idx_reported) {
+>> +		hwc->idx_reported = hwc->idx;
+>> +		perf_report_aux_output_id(event, hwc->idx);
+>> +	}
+>> +}
+> 
+> AFAICT you want a callback in x86_assign_hw_event(), is that so?
+> 
 
-> On Tue, 29 Jun 2021 13:39:18 +0200
-> Werner Sembach <wse@tuxedocomputers.com> wrote:
->
->> Am 29.06.21 um 13:17 schrieb Pekka Paalanen:
->>> On Tue, 29 Jun 2021 08:12:54 +0000
->>> Simon Ser <contact@emersion.fr> wrote:
->>>   
->>>> On Tuesday, June 22nd, 2021 at 09:15, Pekka Paalanen <ppaalanen@gmail.com> wrote:
->>>>   
->>>>> yes, I think this makes sense, even if it is a property that one can't
->>>>> tell for sure what it does before hand.
->>>>>
->>>>> Using a pair of properties, preference and active, to ask for something
->>>>> and then check what actually worked is good for reducing the
->>>>> combinatorial explosion caused by needing to "atomic TEST_ONLY commit"
->>>>> test different KMS configurations. Userspace has a better chance of
->>>>> finding a configuration that is possible.
->>>>>
->>>>> OTOH, this has the problem than in UI one cannot tell the user in
->>>>> advance which options are truly possible. Given that KMS properties are
->>>>> rarely completely independent, and in this case known to depend on
->>>>> several other KMS properties, I think it is good enough to know after
->>>>> the fact.
->>>>>
->>>>> If a driver does not use what userspace prefers, there is no way to
->>>>> understand why, or what else to change to make it happen. That problem
->>>>> exists anyway, because TEST_ONLY commits do not give useful feedback
->>>>> but only a yes/no.
->>>> By submitting incremental atomic reqs with TEST_ONLY (i.e. only changing one
->>>> property at a time), user-space can discover which property makes the atomic
->>>> commit fail.
->>> That works if the properties are independent of each other. Color
->>> range, color format, bpc and more may all be interconnected,
->>> allowing only certain combinations to work.
->>>
->>> If all these properties have "auto" setting too, then it would be
->>> possible to probe each property individually, but that still does not
->>> tell which combinations are valid.
->>>
->>> If you probe towards a certain configuration by setting the properties
->>> one by one, then depending on the order you pick the properties, you
->>> may come to a different conclusion on which property breaks the
->>> configuration.
->> My mind crossed another point that must be considered: When plugin in
->> a Monitor a list of possible Resolutions+Framerate combinations is
->> created for xrandr and other userspace (I guess by atomic checks? but
->> I don't know).
-> Hi,
->
-> I would not think so, but I hope to be corrected if I'm wrong.
->
-> My belief is that the driver collects a list of modes from EDID, some
-> standard modes, and maybe some other hardcoded modes, and then
-> validates each entry against all the known limitations like vertical
-> and horizontal frequency limits, discarding modes that do not fit.
->
-> Not all limitations are known during that phase, which is why KMS
-> property "link-status" exists. When userspace actually programs a mode
-> (not a TEST_ONLY commit), the link training may fail. The kernel prunes
-> the mode from the list and sets the link status property to signal
-> failure, and sends a hotplug uevent. Userspace needs to re-check the
-> mode list and try again.
->
-> That is a generic escape hatch for when TEST_ONLY commit succeeds, but
-> in reality the hardware cannot do it, you just cannot know until you
-> actually try for real. It causes end user visible flicker if it happens
-> on an already running connector, but since it usually happens when
-> turning a connector on to begin with, there is no flicker to be seen,
-> just a small delay in finding a mode that works.
->
->> During this drm
->> properties are already considered, which is no problem atm because as
->> far as i can tell there is currently no drm property that would make
->> a certain Resolutions+Framerate combination unreachable that would be
->> possible with everything on default.
-> I would not expect KMS properties to be considered at all. It would
-> reject modes that are actually possible if the some KMS properties were
-> changed. So at least going forward, current KMS property values cannot
-> factor in.
+Yes, or open-coded e.g.
 
-At least the debugfs variable "force_yuv420_output" did change the 
-available modes here: 
-https://elixir.bootlin.com/linux/v5.13/source/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c#L5165 
-before my patch 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=68eb3ae3c63708f823aeeb63bb15197c727bd9bf
-
-Forcing a color format via a DRM property in this function would 
-reintroduce the problem.
-
-And I think i915 driver works similar in this regard.
-
->
->> However for example forcing YCbCr420 encoding would limit the
->> available resolutions (my screen for example only supports YCbCr420
->> on 4k@60 and @50Hz and on no other resolution or frequency (native is
->> 2560x1440@144Hz).
->>
->> So would a "force color format" that does not get resetted on
->> repluging/reenabling a monitor break the output, for example, of an
->> not updated xrandr, unaware of this new property?
-> Yes, not because the mode list would be missing the mode, but because
-> actually setting the mode would fail.
-Well, like described above, I think the mode would actually be missing, 
-which is also an unexpected behavior from a user perspective.
->
-> RandR in particular is problematic, because it does not actually
-> understand any KMS properties, it is merely a relay. So anything
-> that *uses* RandR protocol or xrandr command would also need to be
-> patched to understand the new properties.
->
-> The kernel automatically resetting *some* properties in *some*
-> occasions seems really fragile and complicated to me, which is why I'm
-> a lot more keen to see a "reset everything to sensible defaults"
-> generic mechanism added to KMS.
-Would you see that mechanism not (yet) existing a blocker for this 
-patchset/the "force-" properties?
->
->
-> Thanks,
-> pq
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 8f71dd72ef95..46dac45298d1 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1207,6 +1207,11 @@ static int collect_events(struct cpu_hw_events *cpuc, struct perf_event *leader,
+ 	return n;
+ }
+ 
++static inline bool report_aux_output_id(struct perf_event *event)
++{
++	return is_pebs_pt(event);
++}
++
+ static inline void x86_assign_hw_event(struct perf_event *event,
+ 				struct cpu_hw_events *cpuc, int i)
+ {
+@@ -1217,6 +1222,9 @@ static inline void x86_assign_hw_event(struct perf_event *event,
+ 	hwc->last_cpu = smp_processor_id();
+ 	hwc->last_tag = ++cpuc->tags[i];
+ 
++	if (report_aux_output_id(event))
++		perf_report_aux_output_id(event, idx);
++
+ 	switch (hwc->idx) {
+ 	case INTEL_PMC_IDX_FIXED_BTS:
+ 	case INTEL_PMC_IDX_FIXED_VLBR:
