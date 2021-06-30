@@ -2,127 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB4D3B84FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E663B84FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 16:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbhF3OXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 10:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        id S235167AbhF3OXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 10:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235141AbhF3OXd (ORCPT
+        with ESMTP id S234851AbhF3OXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 10:23:33 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF099C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:21:03 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id x12so1778607vsp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 07:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ul+xfgqMRCF8BIHYL3fuS5RV/KFPrPSsd3KoauRtG+E=;
-        b=g1/Yz7J7EbTwoG2FKUYTMNDjHw+J0zuJngzLKCwBAi92YOaR1H/rH1Aimab0guY8m9
-         HL/RTgwaI2Pnx4QodfDqzcVF+2fVtDzDjgzxvrWp43H85z8lJcKW4y0ZAJujo4vS844T
-         kNdioF3dVQG6vf2b+LRTRYXBY6PtwEEjEs0UjWFreSepzJaqTWsDKGrZq0rRq8OspE7M
-         34m4qoTX3DwPYz3H9ab6koTkroo3lby4TQi3BmjealppKuiQrgn1P9pAlFhN5dgo0KPX
-         vFVDgL04i/qvHMuCRfwbhiArPVr37rvlk4i2Hi3CrR9v2MdhEQH6F9jJFOQJ5nDLSyot
-         iJog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ul+xfgqMRCF8BIHYL3fuS5RV/KFPrPSsd3KoauRtG+E=;
-        b=TKJDyFypj6Bs3GEe3QEJsd8XKGOON6b+cWJmtftaCmEFGvJlsD0cNEIVN+v9R5WoUn
-         XbqlXSxcXbsYWk4IE7j6EtDDYuaVOmRR45nGbbOtlQmBB8pu1hqvZRRtflLFfensaENs
-         lK8NN7HjpHCVlN38rDBP5qTd3Bivx/3iFTtCopAV+HnbRVHUI0uEXdc385jfdO0tGciz
-         Jf7eS1sDmMPhy1sYJeQbhOAQr4wLojdEALPGWksO9o9tugXDmyOp07ik1MoeD2YYI+K1
-         RGhDxPrKrmUZyIzp/n/GyIzL/BL56KJ6vVfad70VznWUShse/eaiPVq5tWLCYbj01izh
-         XiJQ==
-X-Gm-Message-State: AOAM533bbcLD5wCN/xcCBlksn2crpSYCq7bel0u1F/GqBdhPnPNj9/Uf
-        cofPxrGvIaX8uAL6I1E9jcUMRIYkXPb+utICLEhBzw==
-X-Google-Smtp-Source: ABdhPJwSZ0Nw8q+87tEXQ8Kz1ZEXL/lCsklv41CrRimd986bvtdFFmZpnkAGKH67f1m9IPzvusrw7mFjxJzIYXr5/E8=
-X-Received: by 2002:a67:8783:: with SMTP id j125mr7711177vsd.42.1625062863038;
- Wed, 30 Jun 2021 07:21:03 -0700 (PDT)
+        Wed, 30 Jun 2021 10:23:32 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386F8C061756;
+        Wed, 30 Jun 2021 07:21:03 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1lyb57-0001Fh-WB; Wed, 30 Jun 2021 16:20:50 +0200
+Date:   Wed, 30 Jun 2021 16:20:49 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: netfilter: Add RFC-7597 Section 5.1 PSID support
+Message-ID: <20210630142049.GC18022@breakpoint.cc>
+References: <20210426122324.GA975@breakpoint.cc>
+ <20210629004819.4750-1-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20210624163045.33651-1-alcooperx@gmail.com>
-In-Reply-To: <20210624163045.33651-1-alcooperx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 30 Jun 2021 16:20:26 +0200
-Message-ID: <CAPDyKFqwrX64W8t-PYrN-JYTttu6Bsfg40abPOOYFdZqDH0qMw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Fix warning message when accessing RPMB in
- HS400 mode
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210629004819.4750-1-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 18:31, Al Cooper <alcooperx@gmail.com> wrote:
->
-> When an eMMC device is being run in HS400 mode, any access to the
-> RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-> selected". This happens as a result of tuning being disabled before
-> RPMB access and then re-enabled after the RPMB access is complete.
-> When tuning is re-enabled, the system has to switch from HS400
-> to HS200 to do the tuning and then back to HS400. As part of
-> sequence to switch from HS400 to HS200 the system is temporarily
-> put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-> is called and does not have support for HS mode and prints the warning
-> message and returns the preset for SDR12. The fix is to add support
-> for MMC and SD HS modes to sdhci_get_preset_value().
->
-> This can be reproduced on any system running eMMC in HS400 mode
-> (not HS400ES) by using the "mmc" utility to run the following
-> command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
->
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+>     Comments:
+>     Selecting the ports for psid needs to be in nf_nat_core since the PSID ranges are not a single range. e.g. offset=1024, PSID=0, psid_length=8 generates the ranges 1024-1027, 2048-2051, ..., 63488-63491, ... (example taken from RFC7597 B.2).
+>     This is why it is enough to set NF_NAT_RANGE_PROTO_SPECIFIED and init upper/lower boundaries.
 
-I assume we want this for stable kernels, but it would be nice to add
-a fixes tag as well.
+I suspect this misses a NOT.  But current algorithm has problems, see
+below.
 
-Do you know if there is a specific commit that this fixes?
+> +	if (range->flags & NF_NAT_RANGE_PSID) {
+> +		/* PSID defines a group of port ranges, per PSID. PSID
+> +		 * is already contained in min and max.
+> +		 */
+> +		unsigned int min_to_max, base;
+> +
+> +		min = ntohs(range->min_proto.all);
+> +		max = ntohs(range->max_proto.all);
+> +		base = ntohs(range->base_proto.all);
+> +		min_to_max = max - min;
+> +		for (; max <= (1 << 16) - 1; min += base, max = min + min_to_max) {
+> +			for (off = 0; off <= min_to_max; off++) {
+> +				*keyptr = htons(min + off);
+> +				if (!nf_nat_used_tuple(tuple, ct))
+> +					return;
+> +			}
+> +		}
+> +	}
 
-Kind regards
-Uffe
+I fear this searches waaaay to many ports.
+We had softlockups in the past because of exhausive searches.
 
-> ---
->  drivers/mmc/host/sdhci.c | 4 ++++
->  drivers/mmc/host/sdhci.h | 1 +
->  2 files changed, 5 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index bf238ade1602..6b39126fbf06 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1812,6 +1812,10 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
->         u16 preset = 0;
->
->         switch (host->timing) {
-> +       case MMC_TIMING_MMC_HS:
-> +       case MMC_TIMING_SD_HS:
-> +               preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-> +               break;
->         case MMC_TIMING_UHS_SDR12:
->                 preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
->                 break;
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index 0770c036e2ff..960fed78529e 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -253,6 +253,7 @@
->
->  /* 60-FB reserved */
->
-> +#define SDHCI_PRESET_FOR_HIGH_SPEED    0x64
->  #define SDHCI_PRESET_FOR_SDR12 0x66
->  #define SDHCI_PRESET_FOR_SDR25 0x68
->  #define SDHCI_PRESET_FOR_SDR50 0x6A
->
-> base-commit: 7426cedc7dad67bf3c71ea6cc29ab7822e1a453f
-> --
-> 2.17.1
->
+See a504b703bb1da526a01593da0e4be2af9d9f5fa8
+("netfilter: nat: limit port clash resolution attempts").
+
+I suggest you try pre-selecting one of the eligible ranges in
+nf_nat_masquerade_ipv4 when the 'newrange' is filled in and set
+RANGE_PROTO_SPECIFIED.
+
+Maybe even prandom-based preselection is good enough.
+
+>  	/* If no range specified... */
+>  	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
+>  		/* If it's dst rewrite, can't change port */
+> @@ -529,11 +572,19 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
+>  
+>  	/* Only bother mapping if it's not already in range and unique */
+>  	if (!(range->flags & NF_NAT_RANGE_PROTO_RANDOM_ALL)) {
+> -		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
+> +		/* PSID mode is present always needs to check
+> +		 * to see if the source ports are in range.
+> +		 */
+> +		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED ||
+> +		    (range->flags & NF_NAT_RANGE_PSID &&
+
+Why the extra check?
+Can't you set NF_NAT_RANGE_PROTO_SPECIFIED in case PSID is requested by
+userspace?
+
+> diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
+> index aace6768a64e..f65163278db0 100644
+> --- a/net/netfilter/nf_nat_ftp.c
+> +++ b/net/netfilter/nf_nat_ftp.c
+> @@ -17,6 +17,10 @@
+>  #include <net/netfilter/nf_conntrack_helper.h>
+>  #include <net/netfilter/nf_conntrack_expect.h>
+>  #include <linux/netfilter/nf_conntrack_ftp.h>
+> +void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+> +				 const struct nf_nat_range2 *range,
+> +				 enum nf_nat_manip_type maniptype,
+> +				 const struct nf_conn *ct);
+>  
+>  #define NAT_HELPER_NAME "ftp"
+>  
+> @@ -72,8 +76,13 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+>  	u_int16_t port;
+>  	int dir = CTINFO2DIR(ctinfo);
+>  	struct nf_conn *ct = exp->master;
+> +	struct nf_conn_nat *nat = nfct_nat(ct);
+>  	char buffer[sizeof("|1||65535|") + INET6_ADDRSTRLEN];
+>  	unsigned int buflen;
+> +	int ret;
+> +
+> +	if (WARN_ON_ONCE(!nat))
+> +		return NF_DROP;
+>  
+>  	pr_debug("type %i, off %u len %u\n", type, matchoff, matchlen);
+>  
+> @@ -86,18 +95,14 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+>  	 * this one. */
+>  	exp->expectfn = nf_nat_follow_master;
+>  
+> -	/* Try to get same port: if not, try to change it. */
+> -	for (port = ntohs(exp->saved_proto.tcp.port); port != 0; port++) {
+> -		int ret;
+> -
+> -		exp->tuple.dst.u.tcp.port = htons(port);
+> -		ret = nf_ct_expect_related(exp, 0);
+> -		if (ret == 0)
+> -			break;
+> -		else if (ret != -EBUSY) {
+> -			port = 0;
+> -			break;
+> -		}
+> +	/* Find a port that matches the MASQ rule. */
+> +	nf_nat_l4proto_unique_tuple(&exp->tuple, nat->range,
+> +				    dir ? NF_NAT_MANIP_SRC : NF_NAT_MANIP_DST,
+> +				    ct);
+
+Hmm, I am ingorant on details here, but is this correct?
+
+This could be an inbound connection, rather than outbound.
+
+> diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.c
+> index a263505455fc..2d105e4eb8f8 100644
+> --- a/net/netfilter/nf_nat_helper.c
+> +++ b/net/netfilter/nf_nat_helper.c
+> @@ -179,15 +179,23 @@ EXPORT_SYMBOL(nf_nat_mangle_udp_packet);
+>  void nf_nat_follow_master(struct nf_conn *ct,
+>  			  struct nf_conntrack_expect *exp)
+>  {
+> +	struct nf_conn_nat *nat = NULL;
+>  	struct nf_nat_range2 range;
+>  
+>  	/* This must be a fresh one. */
+>  	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
+>  
+> -	/* Change src to where master sends to */
+> -	range.flags = NF_NAT_RANGE_MAP_IPS;
+> -	range.min_addr = range.max_addr
+> -		= ct->master->tuplehash[!exp->dir].tuple.dst.u3;
+> +	if (exp->master && !exp->dir) {
+> +		nat = nfct_nat(exp->master);
+> +		if (nat)
+> +			range = *nat->range;
+
+Can't you store the psid-relevant parts of the range struct only?
+Non-PSID doesn't need the original range, so why do you?
+
+> diff --git a/net/netfilter/nf_nat_masquerade.c b/net/netfilter/nf_nat_masquerade.c
+> index 8e8a65d46345..d83cd3d8ad3f 100644
+> --- a/net/netfilter/nf_nat_masquerade.c
+> +++ b/net/netfilter/nf_nat_masquerade.c
+> @@ -45,10 +45,6 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
+>  		return NF_DROP;
+>  	}
+>  
+> -	nat = nf_ct_nat_ext_add(ct);
+> -	if (nat)
+> -		nat->masq_index = out->ifindex;
+> -
+>  	/* Transfer from original range. */
+>  	memset(&newrange.min_addr, 0, sizeof(newrange.min_addr));
+>  	memset(&newrange.max_addr, 0, sizeof(newrange.max_addr));
+> @@ -57,6 +53,15 @@ nf_nat_masquerade_ipv4(struct sk_buff *skb, unsigned int hooknum,
+>  	newrange.max_addr.ip = newsrc;
+>  	newrange.min_proto   = range->min_proto;
+>  	newrange.max_proto   = range->max_proto;
+> +	newrange.base_proto  = range->base_proto;
+> +
+> +	nat = nf_ct_nat_ext_add(ct);
+> +	if (nat) {
+> +		nat->masq_index = out->ifindex;
+> +		if (!nat->range)
+> +			nat->range = kmalloc(sizeof(*nat->range), 0);
+> +		memcpy(nat->range, &newrange, sizeof(*nat->range));
+
+kmemdup.  Also misses error handling.  Should use GFP_ATOMIC.
+Where is this free'd again?
+
+It would be good if you could chop this up in smaller chunks.
+A selftest would be nice as well (see tools/testing/selftests/netfilter).
