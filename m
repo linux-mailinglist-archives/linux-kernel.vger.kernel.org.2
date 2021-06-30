@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300D33B827F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EA43B8282
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 14:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhF3Myz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 08:54:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:61720 "EHLO mga06.intel.com"
+        id S234754AbhF3M4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 08:56:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:61814 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234761AbhF3Myy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:54:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="269474314"
+        id S234481AbhF3M4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 08:56:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="269474485"
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="269474314"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 05:52:24 -0700
+   d="scan'208";a="269474485"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 05:54:08 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="419979517"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 05:52:22 -0700
-Subject: Re: [PATCH] mmc: sdhci: Fix warning message when accessing RPMB in
- HS400 mode
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-References: <20210624163045.33651-1-alcooperx@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a025f2b0-8353-3180-2724-9548e9c38349@intel.com>
-Date:   Wed, 30 Jun 2021 15:52:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+   d="scan'208";a="455246293"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 30 Jun 2021 05:54:08 -0700
+Received: from [10.209.45.119] (kliang2-MOBL.ccr.corp.intel.com [10.209.45.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 4E226580279;
+        Wed, 30 Jun 2021 05:54:07 -0700 (PDT)
+Subject: Re: [PATCH V3 5/6] perf/x86/intel/uncore: Fix invalid unit check
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com, stable@vger.kernel.org
+References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
+ <1624990443-168533-6-git-send-email-kan.liang@linux.intel.com>
+ <YNw7CT2sBE0l8aNf@kroah.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <cb0d2d43-102a-994c-f777-e11d61c77bf5@linux.intel.com>
+Date:   Wed, 30 Jun 2021 08:54:05 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210624163045.33651-1-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YNw7CT2sBE0l8aNf@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/21 7:30 pm, Al Cooper wrote:
-> When an eMMC device is being run in HS400 mode, any access to the
-> RPMB device will cause the error message "mmc1: Invalid UHS-I mode
-> selected". This happens as a result of tuning being disabled before
-> RPMB access and then re-enabled after the RPMB access is complete.
-> When tuning is re-enabled, the system has to switch from HS400
-> to HS200 to do the tuning and then back to HS400. As part of
-> sequence to switch from HS400 to HS200 the system is temporarily
-> put into HS mode. When switching to HS mode, sdhci_get_preset_value()
-> is called and does not have support for HS mode and prints the warning
-> message and returns the preset for SDR12. The fix is to add support
-> for MMC and SD HS modes to sdhci_get_preset_value().
-> 
-> This can be reproduced on any system running eMMC in HS400 mode
-> (not HS400ES) by using the "mmc" utility to run the following
-> command: "mmc rpmb read-counter /dev/mmcblk0rpmb".
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> ---
->  drivers/mmc/host/sdhci.c | 4 ++++
->  drivers/mmc/host/sdhci.h | 1 +
->  2 files changed, 5 insertions(+)
+On 6/30/2021 5:36 AM, Greg KH wrote:
+> On Tue, Jun 29, 2021 at 11:14:02AM -0700, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> The uncore unit with the type ID 0 and the unit ID 0 is missed.
+>>
+>> The table3 of the uncore unit maybe 0. The
+>> uncore_discovery_invalid_unit() mistakenly treated it as an invalid
+>> value.
+>>
+>> Remove the !unit.table3 check.
+>>
+>> Fixes: edae1f06c2cd ("perf/x86/intel/uncore: Parse uncore discovery tables")
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>   arch/x86/events/intel/uncore_discovery.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index bf238ade1602..6b39126fbf06 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1812,6 +1812,10 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
->  	u16 preset = 0;
->  
->  	switch (host->timing) {
-> +	case MMC_TIMING_MMC_HS:
-> +	case MMC_TIMING_SD_HS:
-> +		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HIGH_SPEED);
-> +		break;
->  	case MMC_TIMING_UHS_SDR12:
->  		preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR12);
->  		break;
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index 0770c036e2ff..960fed78529e 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -253,6 +253,7 @@
->  
->  /* 60-FB reserved */
->  
-> +#define SDHCI_PRESET_FOR_HIGH_SPEED	0x64
->  #define SDHCI_PRESET_FOR_SDR12 0x66
->  #define SDHCI_PRESET_FOR_SDR25 0x68
->  #define SDHCI_PRESET_FOR_SDR50 0x6A
-> 
-> base-commit: 7426cedc7dad67bf3c71ea6cc29ab7822e1a453f
-> 
+> Why is a bugfix that needs to be backported patch 5 in the series?
+> Shouldn't that be totally independant and sent on its own and not part
+> of this series at all so that it can be accepted and merged much
+> quicker?  It also should not depened on the previous 4 patches, right?
+>
 
+Yes, you are right.
+
+I found the bug when I tested this patch set. so I appended it at the 
+end of the patch set. I will split the patch and send it separately.
+
+Thanks,
+Kan
