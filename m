@@ -2,56 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1973B7C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A6C3B7CC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 06:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbhF3EZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 00:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230200AbhF3EZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 00:25:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0089661D28;
-        Wed, 30 Jun 2021 04:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625026995;
-        bh=kfVIrUp5BJMPXgGi+SKitP2xMU5X2s71OIZL89q3Jik=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kgwc52ch1Jj2pGPsqlFcsAZUODYdbMVPDP66X4tyfZpqHLKfKtPPs7/reb9Rjb8T3
-         OcS8P9e59CEDzDFpxzejRkxYBucWRPsSYXUrO2uqcEt0JoSGKFtYxMq4q3+dsC5qXc
-         GksYOcvBuUmiLbrD0YzwlGNUdllKkD/9eoC/BANZ5/a1sWv0a2FicTnSGjC6iH+BWG
-         zpSWfA8eu9FEAEQ6BjqGvKU767A//2N6HoVZZOUbMV4KdSmhDfdh6YhsmisqG/lT2t
-         PBy0jCnIoKb24zlXJWHbVSK9pgypQ1toEtWosXoBqiMDPSELQehz4AZu4BK8lXDM+M
-         V52flCkQ18OGw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DBD8F5C02AB; Tue, 29 Jun 2021 21:23:14 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 21:23:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     liu.song11@zte.com.cn
-Cc:     fishland@aliyun.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Remove unnecessary updates to ret in rcu_gp_fqs_loop
-Message-ID: <20210630042314.GU4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210629174408.GS4397@paulmck-ThinkPad-P17-Gen-1>
- <202106301122531910761@zte.com.cn>
+        id S233279AbhF3Ebp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Jun 2021 00:31:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54250 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhF3Ebo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 00:31:44 -0400
+Received: from [222.129.34.206] (helo=[192.168.1.18])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1lyRqb-0003QF-SV; Wed, 30 Jun 2021 04:29:14 +0000
+To:     lyude@redhat.com, jani.nikula@intel.com, airlied@linux.ie,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+References: <20210519095305.47133-1-aaron.ma@canonical.com>
+ <57b373372cb64e8a48d12e033a23e7711332b0ec.camel@redhat.com>
+From:   Aaron Ma <aaron.ma@canonical.com>
+Subject: Re: [PATCH] drm/i915: Force DPCD backlight mode for Samsung 16727
+ panel
+Message-ID: <33f42229-780f-9b4e-69db-db3fad32bf3a@canonical.com>
+Date:   Wed, 30 Jun 2021 12:29:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106301122531910761@zte.com.cn>
+In-Reply-To: <57b373372cb64e8a48d12e033a23e7711332b0ec.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 11:22:53AM +0800, liu.song11@zte.com.cn wrote:
-> > rcu: Remove useless "ret" update in rcu_gp_fqs_loop()
-> >      
-> >     Within rcu_gp_fqs_loop(), the "ret" local variable is set to the
-> >     return value from swait_event_idle_timeout_exclusive(), but "ret" is
-> >     unconditionally overwritten later in the code.  This commit therefore
-> >     removes this useless assignment.
-> 
-> The revised commit log is exactly what I want to express, it is perfect.
+Hi Greg:
 
-Thank you for looking it over!
+Could this patch get a chance to be applied on stable kernel?
+It only for 5.11- kernel, not for Linus' tree.
 
-							Thanx, Paul
+Thanks,
+Aaron
+
+On 5/20/21 12:27 AM, Lyude Paul wrote:
+> Seems reasonable to me:
+>
+> Reviewed-by: Lyude Paul <lyude@redhat.com>
+>
+> On Wed, 2021-05-19 at 17:53 +0800, Aaron Ma wrote:
+>> Another Samsung OLED panel needs DPCD to get control of backlight.
+>> Kernel 5.12+ support the backlight via:
+>> commit: <4a8d79901d5b> ("drm/i915/dp: Enable Intel's HDR backlight interface
+>> (only SDR for now)")
+>> Only make backlight work on lower versions of kernel.
+>>
+>> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3474
+>> Cc: stable@vger.kernel.org # 5.11-
+>> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+>> ---
+>>   drivers/gpu/drm/drm_dp_helper.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+>> index 5bd0934004e3..7b91d8a76cd6 100644
+>> --- a/drivers/gpu/drm/drm_dp_helper.c
+>> +++ b/drivers/gpu/drm/drm_dp_helper.c
+>> @@ -1960,6 +1960,7 @@ static const struct edid_quirk edid_quirk_list[] = {
+>>          { MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14),
+>> BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+>>          { MFG(0x4c, 0x83), PROD_ID(0x47, 0x41),
+>> BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+>>          { MFG(0x09, 0xe5), PROD_ID(0xde, 0x08),
+>> BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+>> +       { MFG(0x4c, 0x83), PROD_ID(0x57, 0x41),
+>> BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
+>>   };
+>>   
+>>   #undef MFG
+
+
