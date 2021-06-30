@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431BB3B887F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1C23B8882
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhF3Sh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:37:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
+        id S233300AbhF3Shc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232745AbhF3ShZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:37:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DD0F461419;
-        Wed, 30 Jun 2021 18:34:55 +0000 (UTC)
+        id S233400AbhF3Sh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 14:37:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F12861424;
+        Wed, 30 Jun 2021 18:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625078095;
-        bh=o7HWFBp8JYLf/BFqmOzk6+xx+xon3y637YTwer/C800=;
+        s=k20201202; t=1625078098;
+        bh=R+4WDHUPPD0Hzxhv4s36nqaaKKd58V1KUq+M97H86Ow=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=M8rIc/WiM5Z3dKLaLSRul49OfyxMr9JF0kKsPc8SNWB0rkOy3gOSZm4cZrG3xPwzL
-         482FaStSQLW/QCLBdhcsxNcSdwzO+AyONFu3+JpGC/T3gRv3HBQPc3SI8A2bvh0OZ1
-         6uLscZ3BofyuCZBvCiOrLC0F3gm5ah51EMWEW21d2KxzbAPybBjHUIx3Nn5knUEKBN
-         Fzs7oG/aJaO7SC7ZQSQez22A0VlFnX3FxEkKPdozKjWMH8iL7NJkOFNCsrH5Jz7TgQ
-         BwRis1/TTQTGsd726PdNWRAal1mRrd8dxzpqilvr1zE06y/1Me+ajc0Ju/xHlFeqQe
-         ovPS9VLDZGJOQ==
+        b=sfteYiI0kgqqXDNFJdIzn6edynBNbxcnJMnpeiKDH53UwLSF4zBDh6e1aNZ42Fcci
+         rkQAJO/ItVcgfgObK6s/5uD5jHh9SPEv7Y0/cbJUVpmqhqOx1lKqojVlwG9wBvt30F
+         vnLZP1P2QEQRuZ/GcJtI+inDlwc4lNDP7P9QcviKWwcO+1rmelHrZDMSKq5LoVay2h
+         1qNLFhV6j4mTGxEKYNXSm0/h2adHV56BIkaoGpYJDtphT9Kjfp+o+8c4v2m8s5kd7l
+         XxbNbGtq8W0szSG6HAZWQUvnk3p8BMpmR+Y+NOwN9UcYKfLyhLHSbsktrD4unUdBt4
+         ogc/oEBSHdl6Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CBE7D60A17;
-        Wed, 30 Jun 2021 18:34:55 +0000 (UTC)
-Subject: Re: [GIT PULL] ras/edac changes for v5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 897F860A17;
+        Wed, 30 Jun 2021 18:34:58 +0000 (UTC)
+Subject: Re: [GIT PULL] Mailbox changes for v5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210629234446.GA1239895@agluck-desk2.amr.corp.intel.com>
-References: <20210629234446.GA1239895@agluck-desk2.amr.corp.intel.com>
-X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210629234446.GA1239895@agluck-desk2.amr.corp.intel.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.14
-X-PR-Tracked-Commit-Id: 0a9ece9ba154dd6205709108180952c55e630833
+In-Reply-To: <CABb+yY23+V0zG1_G+_rLi4SsnrqXFZe7onv=JTedgAgWim_nYQ@mail.gmail.com>
+References: <CABb+yY23+V0zG1_G+_rLi4SsnrqXFZe7onv=JTedgAgWim_nYQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CABb+yY23+V0zG1_G+_rLi4SsnrqXFZe7onv=JTedgAgWim_nYQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.linaro.org/landing-teams/working/fujitsu/integration.git tags/mailbox-v5.14
+X-PR-Tracked-Commit-Id: 4f197188da668180d5ea7d808ae6221ce66cfe33
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4b5e35ce075817bc36d7c581b22853be984e5b41
-Message-Id: <162507809577.10377.5016426522118551443.pr-tracker-bot@kernel.org>
-Date:   Wed, 30 Jun 2021 18:34:55 +0000
-To:     "Luck, Tony" <tony.luck@intel.com>
+X-PR-Merge-Commit-Id: ebb81c14543fb43cb2e1f2bfb5d32f5e390cf895
+Message-Id: <162507809855.10377.6514445590374845087.pr-tracker-bot@kernel.org>
+Date:   Wed, 30 Jun 2021 18:34:58 +0000
+To:     Jassi Brar <jassisinghbrar@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Borislav Petkov <bp@suse.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 29 Jun 2021 16:44:46 -0700:
+The pull request you sent on Mon, 28 Jun 2021 23:24:14 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.14
+> git://git.linaro.org/landing-teams/working/fujitsu/integration.git tags/mailbox-v5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4b5e35ce075817bc36d7c581b22853be984e5b41
+https://git.kernel.org/torvalds/c/ebb81c14543fb43cb2e1f2bfb5d32f5e390cf895
 
 Thank you!
 
