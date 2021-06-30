@@ -2,145 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53323B87F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EA53B87F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhF3RuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:50:00 -0400
-Received: from mail-sn1anam02on2066.outbound.protection.outlook.com ([40.107.96.66]:5682
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232585AbhF3Rt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233066AbhF3RuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:50:02 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:39618 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231879AbhF3Rt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Jun 2021 13:49:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k9w5nyshtqZkdrAuM4G/AJ1tu/1yKl6p0dmjKKb822cLTaiLPZ272fe0Mlq2u4qpF01pA1j6q3rO211hh+mfJxJIp1FTMtuBWdA8P8VLlz7BYTL13OeqpNEZRYLPu4/POt2faE+tmM0YsjzkBLWI4t5cjsxPlzsRqJ5BOjblP7GjtBLors8f2Kwken64dye27tpgAbAabeQC1it0MxVLMYy13dH1iovFcSdbvEASRri+vyxq+1zsMmg64XpTcVMuNeSZnEIvKbQFrvLXlsYe+nFtixHESEAkcoChIA7JF1MpaHVWT55uof1rNToiH4QkYHTC8yEYbv10et3+guouzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zzct2mlhLfIzHMmwPNQD1n9lmX+jZkKe6f0cq0ViKeA=;
- b=Y5kllxYcZbZBgelMIiFIfOYl87LFRyBNd+BHR5jTMJ6LaMZbB4+8mwm/XJ8Ro7Unzx1JznLT6NQDaHK2haiuSkmp6oeU5YJBAJutEr+5zWxIPCrxD82Q3YjnTC5S7n8co4EhgTKlX8K8Y5FrzPzgl+++tdfjzJ6G3PP7Ykop3jRM2ZohXUpqSrB992606569fsE+pBN9qrtvEfDj/wBDKuSRaehME9D8k1R6CrvLVZ4hyL3ohL5xAwZYOVk5WWRCvL4xG22s3QXZodT7XXA1ItmcJJv216JFJInX+58dapbG6VMw/wqujYW1/3cvOlSV9b6bd0u4kuPVyg6+dnG+jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zzct2mlhLfIzHMmwPNQD1n9lmX+jZkKe6f0cq0ViKeA=;
- b=rQq3yqMDP+OemhUwZPfzoeyV16USiwofFCUP3WFYMMMjsfJ3vseXq4T/+7uDQPEfgVJxy/iexZaq700FxuGn1XwxdkR8dV93Fy3lyR3/0TNP7StTFw6o1nUSHkd0s0wk5f1J2tNKYAOOd44Msg74ab2UL4HtKLX63J6j/ynFN90mYXeaKJ6X3PX1wvMKXUeXDN+yK0jrcd5K8rrs0a55n0RBsnWUGRpPmKed6Pji//RhuUXIklnNW2ze0xg4TB2VSgxKZfivcua2Rj3kKnsWb+FLtm2ggV1FcekxtqHCelXtocjsH5pZRZRCXWJGr/eJ80B3mL3TYHtmoHXOuxxWFA==
-Received: from DM3PR12CA0100.namprd12.prod.outlook.com (2603:10b6:0:55::20) by
- BN6PR1201MB0260.namprd12.prod.outlook.com (2603:10b6:405:50::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Wed, 30 Jun
- 2021 17:47:27 +0000
-Received: from DM6NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:55:cafe::5a) by DM3PR12CA0100.outlook.office365.com
- (2603:10b6:0:55::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend
- Transport; Wed, 30 Jun 2021 17:47:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- DM6NAM11FT056.mail.protection.outlook.com (10.13.173.99) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4287.22 via Frontend Transport; Wed, 30 Jun 2021 17:47:26 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun
- 2021 10:47:25 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun
- 2021 17:47:25 +0000
-Received: from kyarlagadda-linux.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Jun 2021 17:47:21 +0000
-From:   Akhil R <akhilrajeev@nvidia.com>
-To:     <andy.shevchenko@gmail.com>
-CC:     <akhilrajeev@nvidia.com>, <bgolaszewski@baylibre.com>,
-        <jonathanh@nvidia.com>, <kyarlagadda@nvidia.com>,
-        <ldewangan@nvidia.com>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <mperttunen@nvidia.com>,
-        <smangipudi@nvidia.com>, <thierry.reding@gmail.com>
-Subject: Re: [PATCH v2] gpio: tegra186: Add ACPI support
-Date:   Wed, 30 Jun 2021 23:17:19 +0530
-Message-ID: <1625075239-19120-1-git-send-email-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <CAHp75VdkC4vcOnC37D4iDZs3g=2K=+iTsXZX=20CK2Og6WtgPA@mail.gmail.com>
-References: <CAHp75VdkC4vcOnC37D4iDZs3g=2K=+iTsXZX=20CK2Og6WtgPA@mail.gmail.com>
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 69DA85212CB;
+        Wed, 30 Jun 2021 20:47:27 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1625075247;
+        bh=KMK/XtAgaPbAL+Ft8ff2uL8aGm1M1EL96l+Q9qcXa20=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=BZt5fbT4AyCsoPdJQb2Y0HVyxcWOJbXdMh4Piaa0+HDGpzKY7u682fIQyC9Gq87MA
+         PTPUQqIPCitn3SKmMF8o2LcdrzFtDAK4YrEpFYDBhbJsBIatglz+Mse6uCBKXuuomz
+         Tn9v6wlqXEzeGoMADDZIzCBy0qoaLZ6Lm3t+za6But1zAg+UsxpczHDqLuVn3aNxuk
+         nmSnh7yNfvVHTAOmMcXtrNShhTIqelcFalxJYkgq+EkX3hqf19lyHA5KXbU65wzKll
+         +6rOH+oYdDKPuX2u47zEFfZAjgLmlC3j3CKSGBcdi/Tx4YE6/kZnDceSS62obkTtOE
+         QaorEeBfcEtzA==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id B2BAD5212DF;
+        Wed, 30 Jun 2021 20:47:26 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Wed, 30
+ Jun 2021 20:47:26 +0300
+Subject: Re: [MASSMAIL KLMS] Re: [RFC PATCH v1 05/16] af_vsock: use
+ SOCK_STREAM function to check data
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        kvm <kvm@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Krasnov Arseniy <oxffffaa@gmail.com>
+References: <20210628095959.569772-1-arseny.krasnov@kaspersky.com>
+ <20210628100250.570726-1-arseny.krasnov@kaspersky.com>
+ <CAGxU2F6owSKJWEkYSTBGy+yrVhp1tcjDmC+gwj9NAJzddMrFkQ@mail.gmail.com>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <ed0a3ac9-41eb-8826-9758-b1e7f1831e0e@kaspersky.com>
+Date:   Wed, 30 Jun 2021 20:47:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 63b02bca-6776-45a6-5f73-08d93bef1fec
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0260:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB026078D38291857BEC23491EC0019@BN6PR1201MB0260.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uObmLxZgrVn4P7V3o+gRu9ixVFqx/vge5cyrD/5M11Y1lst38o3NBdqridHk2FcVoXZdaqhQ3ljxdSHYHZLXmzHGPqEVWtLu8nqfmwmAeDhDu+59tKA/nIHdrv5golKOd9Ngk0vAOAzA8r2TzNcZJ0ztFO0M0o34vAD07OIr/ztdOR6AxrGiqk5IyGSqmXx8u1T4IyI9LQbFZG5IE28bwqnu/LsMSVeryiLGpooQBhEHphcxJuTB8YJnTzdOCj3Wds9vyFuasPI4UyUDWMb5j/AErG3bul/gg5eIwViYCtqkc48oH6zNeaN81n2b0G/tFz3Ak7JrwF9jGrXMrkiNSjoS1Bk/X2to5NEQ+ZjtdUowrgjbwYULvnE2oRzaKMS5aIDGqSl2dblrKyO1MD1LL4JhDRIMOUhvJqi51uF6b+txY1o8s/UMO9GXf65UtSdIgQvple2YsZzCpXmEpmOmGB3TBHARsX/E4gFgalocxokAjsNmjxKr0T+D2vS8PiUkg2YcJL9cXOlnZn4t2hhAJmDBFqaF2ljuxZBEHcGiTPgp3Ui9piKOUkkOcFFKJWSKbRZ70W1dm07miGagQiqZNO9DgXqzkn6kvbKI3sxj9o4kreNdltrR/GAolvDepao/Gokp3N7XmMym8B+IHno8A8lqpV8Tf0Dur2NX8VINcFnwjzYAz6f7EM7s0wpGrxmabI73yp8Zopt7Dyrdt7uWyw==
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(36840700001)(46966006)(47076005)(54906003)(82310400003)(316002)(83380400001)(82740400003)(7696005)(336012)(6916009)(5660300002)(86362001)(7636003)(356005)(70586007)(478600001)(2616005)(36860700001)(2906002)(426003)(36756003)(26005)(8936002)(70206006)(4326008)(8676002)(186003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 17:47:26.7463
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63b02bca-6776-45a6-5f73-08d93bef1fec
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0260
+In-Reply-To: <CAGxU2F6owSKJWEkYSTBGy+yrVhp1tcjDmC+gwj9NAJzddMrFkQ@mail.gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/30/2021 17:34:42
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164748 [Jun 30 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/30/2021 17:37:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 30.06.2021 11:32:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/30 16:18:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/30 08:30:00 #16841989
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >What about doing like
-> >
-> >      gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
-> > >      if (IS_ERR(gpio->secure))
-> > >              gpio->secure = devm_platform_ioremap_resource(pdev, 0);
-> > >      if (IS_ERR(gpio->secure))
-> > >              return PTR_ERR(gpio->secure);
-> > >
-> > >and similar for gpio->base?
-> >
-> > Wouldn't this cause a redundant check if it had already succeeded in getting
-> > the resource by name? Also, could it happen that if the device tree is
-> > incorrect, then one of the resource is fetched by name and other by the index,
-> > which I guess, would mess things up. Just my random thoughts, not sure if it
-> > is valid enough.
-> >
-> > >Wouldn't the following be enough?
-> > >
-> > >-       gpio->intc.name = pdev->dev.of_node->name;
-> > >+       gpio->intc.name = devm_kasprintf(&pdev->dev, "%pfw",
-> > >dev_fwnode(&pdev->dev));
-> > >+       if (!gpio->intc.name)
-> > >+
-> >
-> > How about this way? I feel it would be right to add the OF functions conditionally.
-> 
-> Looks okay, although I have a question here.
-> 
-> +   if (pdev->dev.of_node) {
-> 
-> Do we really need this check at all? If the OF-node is NULL then it
-> doesn't matter if other fields are filled or not, correct?
-> 
-> What you need is #ifdef CONFIG_OF_GPIO (IIRC the name correctly).
-> 
-> > +       gpio->gpio.of_node = pdev->dev.of_node;
-> > +       gpio->gpio.of_gpio_n_cells = 2;
-> > +       gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
-> > +   }
-> >
-> > +   gpio->intc.name = gpio->soc->name;
 
-Okay. It makes sense. Thanks Andy. I would make the changes and send out an updated patch.
-
---
-Best Regards,
-Akhil
+On 30.06.2021 15:10, Stefano Garzarella wrote:
+> On Mon, Jun 28, 2021 at 01:02:47PM +0300, Arseny Krasnov wrote:
+>> Also remove 'seqpacket_has_data' callback from transport.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>> include/net/af_vsock.h   |  1 -
+>> net/vmw_vsock/af_vsock.c | 12 +-----------
+>> 2 files changed, 1 insertion(+), 12 deletions(-)
+> In order to avoid issues while bisecting the kernel, we should have
+> commit that doesn't break the build or the runtime, so please take this
+> in mind also for other commits.
+>
+> For example here we removed the seqpacket_has_data callbacks assignment
+> before to remove where we use the callback, with a potential fault at
+> runtime.
+>
+> I think you can simply put patches from 1 to 5 together in a single
+> patch.
+>
+> In addition, we should move these changes after we don't need
+> vsock_connectible_has_data() anymore, for example, where we replace the
+> receive loop logic.
+>
+> Thanks,
+> Stefano
+Ack
+>
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index ab207677e0a8..bf5ea1873e6f 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -141,7 +141,6 @@ struct vsock_transport {
+>>       int (*seqpacket_enqueue)(struct vsock_sock *vsk, struct msghdr *msg,
+>>                                size_t len);
+>>       bool (*seqpacket_allow)(u32 remote_cid);
+>> -      u32 (*seqpacket_has_data)(struct vsock_sock *vsk);
+>>
+>>       /* Notification. */
+>>       int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 21ccf450e249..59ce35da2e5b 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -860,16 +860,6 @@ s64 vsock_stream_has_data(struct vsock_sock *vsk)
+>> }
+>> EXPORT_SYMBOL_GPL(vsock_stream_has_data);
+>>
+>> -static s64 vsock_connectible_has_data(struct vsock_sock *vsk)
+>> -{
+>> -      struct sock *sk = sk_vsock(vsk);
+>> -
+>> -      if (sk->sk_type == SOCK_SEQPACKET)
+>> -              return vsk->transport->seqpacket_has_data(vsk);
+>> -      else
+>> -              return vsock_stream_has_data(vsk);
+>> -}
+>> -
+>> s64 vsock_stream_has_space(struct vsock_sock *vsk)
+>> {
+>>       return vsk->transport->stream_has_space(vsk);
+>> @@ -1881,7 +1871,7 @@ static int vsock_connectible_wait_data(struct
+>> sock *sk,
+>>       err = 0;
+>>       transport = vsk->transport;
+>>
+>> -      while ((data = vsock_connectible_has_data(vsk)) == 0) {
+>> +      while ((data = vsock_stream_has_data(vsk)) == 0) {
+>>               prepare_to_wait(sk_sleep(sk), wait, TASK_INTERRUPTIBLE);
+>>
+>>               if (sk->sk_err != 0 ||
+>> -- 2.25.1
+>>
+>
