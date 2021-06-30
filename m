@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423B53B842F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBB73B842B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236146AbhF3NxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235456AbhF3Nu2 (ORCPT
+        id S236099AbhF3NxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:01 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:45126 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235763AbhF3NuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:50:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FFBC061198;
-        Wed, 30 Jun 2021 06:47:45 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 13:47:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060864;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=X4NXepe+xoB7u+ztAWzimD79x+JiJ9EuzhOs6UrzoM4=;
-        b=PF/q6mgjDRSKOhdLVY+aQjjRcDk5Gg8lKVBxSp/UOmOaFjFb2XMQ9rZ0aMfZean25k5B9H
-        t1rctRV7eHds8QK4i2UzAplVum1tnCs/8AyKXTjQQGTviKoBQWJ8/lLPKzfi8Zo6liaYOB
-        SLC0D+AgeFkM1kD1usvbMP7Ovn2i+GwRmS6/NfEN3XyBycLEAAYzQCdxFZEr1xj0jL89E9
-        Dw9bY4w5fcchqAA0x7vYDHoWQ/LwVZ5uxqnuBIK5ASZTudPGOZ1UxYdjr6sWH9Uxpu+x65
-        070ggb6Jq/3/fW4Eeb5svpNV9m2oPzi6jt9oN6Ze2EUKl9WjKPwh/Vyp/RhXMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060864;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=X4NXepe+xoB7u+ztAWzimD79x+JiJ9EuzhOs6UrzoM4=;
-        b=S2h0PL/mASS1xfkxHUF87IZAzIgFkFruxfPbfrUwhYBGcNdDse/kTcRO1BWCRduqxRCftI
-        FAjOn7mLRdEUH5CQ==
-From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Correctly fetch number of CPUs for
- non-English languages
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-MIME-Version: 1.0
-Message-ID: <162506086356.395.13470413546177636597.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 30 Jun 2021 09:50:25 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B9320C1CB9;
+        Wed, 30 Jun 2021 21:47:53 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139710655624960S1625060866985686_;
+        Wed, 30 Jun 2021 21:47:54 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <aacb964fb1875f1e7b08523a3aadf23b>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: linux-spi@vger.kernel.org
+X-RCPT-COUNT: 20
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     linux-spi@vger.kernel.org
+Cc:     jon.lin@rock-chips.com, broonie@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, jbx6244@gmail.com, hjc@rock-chips.com,
+        yifeng.zhao@rock-chips.com, sugar.zhang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
+        p.yadav@ti.com, macroalpha82@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH v10 09/10] arm64: dts: rockchip: Add SFC to RK3308
+Date:   Wed, 30 Jun 2021 21:47:44 +0800
+Message-Id: <20210630134745.7561-5-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210630134745.7561-1-jon.lin@rock-chips.com>
+References: <20210630134702.7346-1-jon.lin@rock-chips.com>
+ <20210630134745.7561-1-jon.lin@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Chris Morgan <macromorgan@hotmail.com>
 
-Commit-ID:     f8c8484dbda78e09912a391a8c87414920bbdfee
-Gitweb:        https://git.kernel.org/tip/f8c8484dbda78e09912a391a8c87414920bbdfee
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Thu, 01 Apr 2021 15:26:02 +02:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:05:06 -07:00
+Add a devicetree entry for the Rockchip SFC for the RK3308 SOC.
 
-torture: Correctly fetch number of CPUs for non-English languages
-
-Grepping for "CPU" on lscpu output isn't always successful, depending
-on the local language setting.  As a result, the build can be aborted
-early with:
-
-	"make: the '-j' option requires a positive integer argument"
-
-This commit therefore uses the human-language-independent approach
-available via the getconf command, both in kvm-build.sh and in
-kvm-remote.sh.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-build.sh  | 2 +-
- tools/testing/selftests/rcutorture/bin/kvm-remote.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-index 55f4fc1..5ad973d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-@@ -42,7 +42,7 @@ then
- fi
+Changes in v10: None
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2: None
+Changes in v1: None
+
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi | 37 ++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+index 0c5fa9801e6f..cb8d96235986 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -637,6 +637,17 @@
+ 		status = "disabled";
+ 	};
  
- # Tell "make" to use double the number of real CPUs on the build system.
--ncpus="`lscpu | grep '^CPU(' | awk '{ print $2 }'`"
-+ncpus="`getconf _NPROCESSORS_ONLN`"
- make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
- retval=$?
- if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-index c4859fc..f08d415 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-remote.sh
-@@ -136,7 +136,7 @@ chmod +x $T/bin/kvm-remote-*.sh
- # Check first to avoid the need for cleanup for system-name typos
- for i in $systems
- do
--	ncpus="`ssh $i lscpu | grep '^CPU(' | awk '{ print $2 }'`"
-+	ncpus="`ssh $i getconf _NPROCESSORS_ONLN 2> /dev/null`"
- 	echo $i: $ncpus CPUs " " `date` | tee -a "$oldrun/remote-log"
- 	ret=$?
- 	if test "$ret" -ne 0
++	sfc: spi@ff4c0000 {
++		compatible = "rockchip,sfc";
++		reg = <0x0 0xff4c0000 0x0 0x4000>;
++		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
++		clock-names = "clk_sfc", "hclk_sfc";
++		pinctrl-0 = <&sfc_clk &sfc_cs0 &sfc_bus4>;
++		pinctrl-names = "default";
++		status = "disabled";
++	};
++
+ 	cru: clock-controller@ff500000 {
+ 		compatible = "rockchip,rk3308-cru";
+ 		reg = <0x0 0xff500000 0x0 0x1000>;
+@@ -910,6 +921,32 @@
+ 			};
+ 		};
+ 
++		sfc {
++			sfc_bus4: sfc-bus4 {
++				rockchip,pins =
++					<3 RK_PA0 3 &pcfg_pull_none>,
++					<3 RK_PA1 3 &pcfg_pull_none>,
++					<3 RK_PA2 3 &pcfg_pull_none>,
++					<3 RK_PA3 3 &pcfg_pull_none>;
++			};
++
++			sfc_bus2: sfc-bus2 {
++				rockchip,pins =
++					<3 RK_PA0 3 &pcfg_pull_none>,
++					<3 RK_PA1 3 &pcfg_pull_none>;
++			};
++
++			sfc_cs0: sfc-cs0 {
++				rockchip,pins =
++					<3 RK_PA4 3 &pcfg_pull_none>;
++			};
++
++			sfc_clk: sfc-clk {
++				rockchip,pins =
++					<3 RK_PA5 3 &pcfg_pull_none>;
++			};
++		};
++
+ 		gmac {
+ 			rmii_pins: rmii-pins {
+ 				rockchip,pins =
+-- 
+2.17.1
+
+
+
