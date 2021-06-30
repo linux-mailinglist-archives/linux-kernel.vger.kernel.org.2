@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED703B82A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C253B82B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbhF3NJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:09:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:43434 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234679AbhF3NJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:09:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10030"; a="208291367"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="208291367"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 06:06:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="626004088"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 30 Jun 2021 06:06:32 -0700
-Received: from [10.209.45.119] (kliang2-MOBL.ccr.corp.intel.com [10.209.45.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 059D058086A;
-        Wed, 30 Jun 2021 06:06:30 -0700 (PDT)
-Subject: Re: [PATCH V3 2/6] perf/x86/intel/uncore: Add alias PMU name
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org, eranian@google.com,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com
-References: <1624990443-168533-1-git-send-email-kan.liang@linux.intel.com>
- <1624990443-168533-3-git-send-email-kan.liang@linux.intel.com>
- <YNw76ZUUUG+qUyP2@kroah.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <bc46391e-5029-56a5-5a8a-51e16a62dab7@linux.intel.com>
-Date:   Wed, 30 Jun 2021 09:06:29 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234805AbhF3NOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:14:08 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35560 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234481AbhF3NOF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 09:14:05 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UCuWkL030029;
+        Wed, 30 Jun 2021 15:11:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=H3KL+ZFSxOlQG3AC+pLdhHar+qjF/Zg5vofpMCp/YS4=;
+ b=BXeU0cVvxT3vr5DLBRkLa2pE+zO7mbFCgDTOfBV9xvbHbLuSwkO3liuisOGHiu5CPrUV
+ R7y34ZsaFQbzrjyBlh8Bd7WBWVN8DaiMGEwoSig03+3IegBK0Ts83HOfPz2mfMGpmzTS
+ ww6B+IOrJ44pbF3j9IqLSUnpOS7AqQ2hBSt9TAcAG+L7/e64VnIzgWKIwtsIT1Gf16Uk
+ 50pmQRG0mBirGlrSDYbX+qE9UGsvrvYbOPWdn2UmS2LJoRxqBW4ipsHSq71hnLYTQ9vM
+ O8T34vmSZxztK/Y4GOKcdI2Xzy6woBzkfitom1kCzgc9lbtANqf5sNm7VJhonTsWfl3Y uA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39g4kpxuat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 15:11:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6D21F10002A;
+        Wed, 30 Jun 2021 15:11:20 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5986222D61F;
+        Wed, 30 Jun 2021 15:11:20 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Jun
+ 2021 15:11:19 +0200
+Date:   Wed, 30 Jun 2021 15:11:18 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        <linux-mmc@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/7] i2c: stm32f7: : use proper DMAENGINE API for
+ termination
+Message-ID: <20210630131118.GB12109@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210623095942.3325-1-wsa+renesas@sang-engineering.com>
+ <20210623095942.3325-8-wsa+renesas@sang-engineering.com>
+ <YNM/TZMWwCLGSEJO@ninjato>
 MIME-Version: 1.0
-In-Reply-To: <YNw76ZUUUG+qUyP2@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YNM/TZMWwCLGSEJO@ninjato>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-30_05:2021-06-29,2021-06-30 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wolfram,
 
+thanks for the update. If you are ok with that I modify the patch
+to partially rely on _async / synchronize whenever needed and push it again
+separately.
 
-On 6/30/2021 5:39 AM, Greg KH wrote:
-> On Tue, Jun 29, 2021 at 11:13:59AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> A perf PMU may have two PMU names. For example, Intel Sapphire Rapids
->> server supports the discovery mechanism. Without the platform-specific
->> support, an uncore PMU is named by a type ID plus a box ID, e.g.,
->> uncore_type_0_0, because the real name of the uncore PMU cannot be
->> retrieved from the discovery table. With the platform-specific support
->> later, perf has the mapping information from a type ID to a specific
->> uncore unit. Just like the previous platforms, the uncore PMU is named
->> by the real PMU name, e.g., uncore_cha_0. The user scripts which work
->> well with the old numeric name may not work anymore.
->>
->> Add a new attribute "alias" to indicate the old numeric name. The
->> following userspace perf tool patch will handle both names. The user
->> scripts should work properly with the updated perf tool.
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> Cc: gregkh@linuxfoundation.org
->> ---
->>   arch/x86/events/intel/uncore.c       | 19 +++++++++++++------
->>   arch/x86/events/intel/uncore.h       |  1 +
->>   arch/x86/events/intel/uncore_snbep.c | 28 +++++++++++++++++++++++++++-
->>   3 files changed, 41 insertions(+), 7 deletions(-)
+Regards,
+Alain
+
+On Wed, Jun 23, 2021 at 04:03:57PM +0200, Wolfram Sang wrote:
+> On Wed, Jun 23, 2021 at 11:59:41AM +0200, Wolfram Sang wrote:
+> > dmaengine_terminate_all() is deprecated in favor of explicitly saying if
+> > it should be sync or async. Here, we want dmaengine_terminate_sync()
+> > because there is no other synchronization code in the driver to handle
+> > an async case.
+> > 
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > 
-> No Documentation/ABI/ update for your new sysfs file?
-> 
-> :(
+> Eeks, this is called from irq context as well. Broken patch :(
 > 
 
-Ah, I forgot to git add the new file. Sorry for it.
-I will resend the V4.
 
-Thanks,
-Kan
