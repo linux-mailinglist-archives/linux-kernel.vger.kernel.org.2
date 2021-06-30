@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC503B8478
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601043B8472
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbhF3N4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:56:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:35430 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235516AbhF3Nxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:53:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625061079; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=jyUb42qJgomuB7pQkbu5JzcZ0Y3XJSuvxS8VVPF5vLU=; b=igYciiwi+AmXzYSnW8tT3OgIHDVQNu7Dyj5kw6qrHeDYjQVJ3ApHlfSZ9R6qL8vzKqMloRVL
- huVgKKkiwG1qeyHdMCmpyxV5EGeu7muDOyyK8LzmZ0oScTAOYgg9ws6Ans2F8Lt9K0cu7s5/
- innaSdjfhzQaLUgO32+Dl8ytXrA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60dc76d25d0d101e38b7c022 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 13:51:14
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6785EC2BB5A; Wed, 30 Jun 2021 13:51:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35018C2ACBC;
-        Wed, 30 Jun 2021 13:51:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 35018C2ACBC
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V5 4/4] arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support node
-Date:   Wed, 30 Jun 2021 19:20:03 +0530
-Message-Id: <13643589864a8ed2d14c530636cf7c73c16ef8a6.1625059245.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1625059245.git.schowdhu@codeaurora.org>
-References: <cover.1625059245.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1625059245.git.schowdhu@codeaurora.org>
-References: <cover.1625059245.git.schowdhu@codeaurora.org>
+        id S235827AbhF3N4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:56:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236407AbhF3Nwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 09:52:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625061015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X1s6ZGU7Ei2clicgZUd38j5YVof6F6vYQwTasSbc+gA=;
+        b=WCGgAN3rV99jGeRW5XXxTsuZA+mk6VEBLWxQKZo5HyBYU6iNF2JspDcC/gcAk5CgziPzZ/
+        WNWflpDaXcbs4OrU+6bzBgoWhhHPySpk9/4Z37p4QjQ69VtR+isOev9aKl0d4fcyJWFiLs
+        0IaXZOCGi8WLt2CWflSbIZVMWJqWtsk=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-0Lrz77syPoyaw-NxzA8oqg-1; Wed, 30 Jun 2021 09:50:14 -0400
+X-MC-Unique: 0Lrz77syPoyaw-NxzA8oqg-1
+Received: by mail-qt1-f198.google.com with SMTP id t21-20020a05622a01d5b0290251ab5e37d4so944109qtw.19
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:50:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=X1s6ZGU7Ei2clicgZUd38j5YVof6F6vYQwTasSbc+gA=;
+        b=uI3mebNro/Bn2zQOeUOU12a5M1eRsNT+NcSs5ULy+IC5Zyhkd/tw79rvyhXG1H9em5
+         d9nqUqyA6vFozH+l5EXj5+qWAwuzgJR98Nu2GsDvRzSnO0rmYc0Ro1YVD9K3NLnni2nc
+         TmI34hsmTftgq8J4aU/Cc7dwYdCnImD9xR6aKXbOsaDcLrVeBZ5sRr537kbgggw/6+0E
+         otH56ZDuKvmZV6783oq7j1H9k/mVTrkH9E+EpGvCXHWmIq8yZLqLe4ICXpeDTp41YS8d
+         EfJhn3ZBL+LWopBuJFt9TlJZGIidOkV9N28o5XMkR6uyN6lO6IkEj7PCC+pEolpOZjHP
+         ZoHA==
+X-Gm-Message-State: AOAM531BVgi6FtdtfAIW56azXzwkYNxhp/yxAFO9lAO6XwY/bRgwFaVl
+        XOfzbz6vf/IcpUiMahgiP220spOwvbKjJJ7tSDRNNThn4qNrXxwUbG9OrlwEMIefNYftpFWXHRs
+        fo9ur/PLUXpk8dyuCyW5tKves
+X-Received: by 2002:ac8:5a81:: with SMTP id c1mr32706772qtc.194.1625061013897;
+        Wed, 30 Jun 2021 06:50:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4ZgiB+tAt4p/NZ/eFDSBAFpTxOQVduMgfWMNorzI+jUArN7qo91dl4vyiir8cvFQ/IbYQLA==
+X-Received: by 2002:ac8:5a81:: with SMTP id c1mr32706755qtc.194.1625061013664;
+        Wed, 30 Jun 2021 06:50:13 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id l6sm13658962qkk.117.2021.06.30.06.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 06:50:12 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] locking/mutex: Reduce chance of setting HANDOFF bit on
+ unlocked mutex
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Xu, Yanfei" <yanfei.xu@windriver.com>
+References: <20210629201138.31507-1-longman@redhat.com>
+ <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
+Message-ID: <ecc0cc97-23ca-5de3-2a12-ed50aa12548c@redhat.com>
+Date:   Wed, 30 Jun 2021 09:50:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <YNxFkD8qzex9MvQp@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DCC(Data Capture and Compare) device tree node entry along with
-the addresses for register regions.
+On 6/30/21 6:21 AM, Peter Zijlstra wrote:
+> On Tue, Jun 29, 2021 at 04:11:38PM -0400, Waiman Long wrote:
+>
+>> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+>> index d2df5e68b503..472ab21b5b8e 100644
+>> --- a/kernel/locking/mutex.c
+>> +++ b/kernel/locking/mutex.c
+>> @@ -118,9 +118,9 @@ static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
+>>   		}
+>>   
+>>   		/*
+>> -		 * We set the HANDOFF bit, we must make sure it doesn't live
+>> -		 * past the point where we acquire it. This would be possible
+>> -		 * if we (accidentally) set the bit on an unlocked mutex.
+>> +		 * Always clear the HANDOFF bit before acquiring the lock.
+>> +		 * Note that if the bit is accidentally set on an unlocked
+>> +		 * mutex, anyone can acquire it.
+>>   		 */
+>>   		flags &= ~MUTEX_FLAG_HANDOFF;
+>>   
+>> @@ -180,6 +180,11 @@ static inline void __mutex_set_flag(struct mutex *lock, unsigned long flag)
+>>   	atomic_long_or(flag, &lock->owner);
+>>   }
+>>   
+>> +static inline long __mutex_fetch_set_flag(struct mutex *lock, unsigned long flag)
+>> +{
+>> +	return atomic_long_fetch_or_relaxed(flag, &lock->owner);
+>> +}
+>> +
+>>   static inline void __mutex_clear_flag(struct mutex *lock, unsigned long flag)
+>>   {
+> Hurmph, so we already have a cmpxchg loop in trylock, might as well make
+> that do exactly what we want without holes on.
+>
+> How's something like the below? Boot tested, but please verify.
+>
+> ---
+>   kernel/locking/mutex.c | 89 ++++++++++++++++++++++++++------------------------
+>   1 file changed, 46 insertions(+), 43 deletions(-)
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+The code looks good to me. It is an even better approach to make sure 
+that the HANDOFF will never be set on an unlocked mutex.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index e5bb17b..7d4bb28 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -654,6 +654,12 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		dma@10a2000 {
-+			compatible = "qcom,sm8150-dcc", "qcom,dcc";
-+			reg = <0x0 0x010a2000 0x0 0x1000>,
-+			      <0x0 0x010ad000 0x0 0x3000>;
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Reviewed-by: Waiman Long <longman@redhat.com>
 
