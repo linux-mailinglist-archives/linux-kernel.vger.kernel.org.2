@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0617D3B8824
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87933B8827
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhF3SHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhF3SHi (ORCPT
+        id S232409AbhF3SJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:09:54 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:37636 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhF3SJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:07:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA034C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VE0q9DtRkjzggaaOScdLZfxUKJH7PVc8WW0c2VORJjw=; b=Q3Cn3XxrA/5nM7Hz1HDG32Ck5W
-        K2m+4JUgMzi50dyWMhjvbsS7qwrvI1To3xY3HPFbLtYCnca1VC6Wp4gD0XV481M+tVS3Un2mQrDrT
-        ynpl0WHfEL8mK0E6/S12XSKCA66HKPbC50xoKTBAqpOuVSK5wyt68MHb7lhut7z7+br8zhes5gx7i
-        VMKMUFYUE7K8B6O3PHTf9pdQ1Rw3ApovquxT+XkjQ+3aoxRAcTt03DPoHi9Va8tZQ44ato9TqmeWK
-        0q5keJQjLIqY8i0UPxTeI+AQjD6mitU0CajKFQ68HLaN48U/p45CECnHdVWc1YjWih2QWk8xktbb5
-        kPZZU5lg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyeZg-005dO7-UQ; Wed, 30 Jun 2021 18:04:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11808300242;
-        Wed, 30 Jun 2021 20:04:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E3A3D2C3ACFF8; Wed, 30 Jun 2021 20:04:34 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 20:04:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     mingo@redhat.com, boqun.feng@gmail.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, yanfei.xu@windriver.com
-Subject: Re: [RFC][PATCH 3/4] locking/mutex: Introduce
- __mutex_trylock_or_handoff()
-Message-ID: <YNyyMvPYBmyexlmC@hirez.programming.kicks-ass.net>
-References: <20210630153516.832731403@infradead.org>
- <20210630154114.958507900@infradead.org>
- <9c47a47c-0c95-4f8f-8b62-a1aff10be748@redhat.com>
+        Wed, 30 Jun 2021 14:09:53 -0400
+Received: by mail-il1-f198.google.com with SMTP id o18-20020a92d3920000b02901ee901c30f3so2490443ilo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:07:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/N0igB5XioROVmxu3rw/cYh2TT/weJAfNRahEGQcMnQ=;
+        b=get5VVzheCOuLngBEccaVtLM6gXo40qX63wiSo3lU6v2VyG5yfusjnqDbrGlkDWncc
+         QF3s6EVkkE/I1Pgr3ZkVe+UBk/ul17+Eoo1TsxQcO7co5JRZfyWmdKfgwqjaub/Ntq+5
+         UQVJn3XgDPstQwRJCyv/FcIkVaxXPJcidJ56q9Q0KKWIxR1PSVTSWhFiz/Dt0ZDzlY4m
+         8vm3s2fI53J/KyMP+qLAs/jIsSIIjxWdlRS7Gah6lZMM3IbGLitEokhEvxh221w6uDUK
+         ycjIB7vymXiMZGVS0A4/fo0DY93TcCpHsD2I0Kns9n2EMCgSjPB7oz272mC5Oqkdj+c2
+         +rEQ==
+X-Gm-Message-State: AOAM531XjgfVxvw2nIMLQ5Ac45PAyjjgPIk6aOBqcP1VymISnE/rcmgl
+        yhdQ1zd1iT7lI2VK1rv9umV8+JAGsyzo6WEs7USwFIN5bV8o
+X-Google-Smtp-Source: ABdhPJx+LDRN4fObwmGBMTJ4FmR6AnmqocOdfB6/ETiVPpW6p+R0iJjEYhjCLfFFAg68UCjGuCO7j4M8E8o723Z1LyYn7GI5MyVb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c47a47c-0c95-4f8f-8b62-a1aff10be748@redhat.com>
+X-Received: by 2002:a05:6602:2433:: with SMTP id g19mr8930362iob.100.1625076444401;
+ Wed, 30 Jun 2021 11:07:24 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 11:07:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033930805c5ff98b5@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in __fput
+From:   syzbot <syzbot+ecdd08539833605a9399@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 12:30:43PM -0400, Waiman Long wrote:
-> On 6/30/21 11:35 AM, Peter Zijlstra wrote:
-> > Yanfei reported that it is possible to loose HANDOFF when we race with
-> > mutex_unlock() and end up setting HANDOFF on an unlocked mutex. At
-> > that point anybody can steal it, loosing HANDOFF in the process.
-> > 
-> > If this happens often enough, we can in fact starve the top waiter.
-> > 
-> > Solve this by folding the 'set HANDOFF' operation into the trylock
-> > operation, such that either we acquire the lock, or it gets HANDOFF
-> > set. This avoids having HANDOFF set on an unlocked mutex.
-> > 
-> > Reported-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >   kernel/locking/mutex.c |   58 +++++++++++++++++++++++++++++--------------------
-> >   1 file changed, 35 insertions(+), 23 deletions(-)
-> > 
-> > --- a/kernel/locking/mutex.c
-> > +++ b/kernel/locking/mutex.c
-> > @@ -91,10 +91,7 @@ static inline unsigned long __owner_flag
-> >   	return owner & MUTEX_FLAGS;
-> >   }
-> > -/*
-> > - * Trylock variant that returns the owning task on failure.
-> > - */
-> > -static inline struct task_struct *__mutex_trylock_or_owner(struct mutex *lock)
-> > +static inline struct task_struct *__mutex_trylock_common(struct mutex *lock, bool handoff)
-> >   {
-> >   	unsigned long owner, curr = (unsigned long)current;
-> > @@ -104,39 +101,56 @@ static inline struct task_struct *__mute
-> >   		unsigned long task = owner & ~MUTEX_FLAGS;
-> >   		if (task) {
-> > -			if (likely(task != curr))
-> > +			if (flags & MUTEX_FLAG_PICKUP) {
-> > +				if (task != curr)
-> > +					break;
-> > +				flags &= ~MUTEX_FLAG_HANDOFF;
-> 
-> I think you mean "flags &= ~MUTEX_FLAG_PICKUP". Right:-)
+Hello,
 
-Duh, yes. That's what you get trying to write patches with a kid in your
-lap.. :-)
+syzbot found the following issue on:
+
+HEAD commit:    ff8744b5 Merge branch '100GbE' of git://git.kernel.org/pub..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1338e88c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7cf9abab1592f017
+dashboard link: https://syzkaller.appspot.com/bug?extid=ecdd08539833605a9399
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ecdd08539833605a9399@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at fs/file_table.c:264
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8392, name: syz-executor.2
+no locks held by syz-executor.2/8392.
+Preemption disabled at:
+[<ffffffff812aa3e4>] kernel_fpu_begin_mask+0x64/0x260 arch/x86/kernel/fpu/core.c:126
+CPU: 1 PID: 8392 Comm: syz-executor.2 Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:8337
+ __fput+0xf9/0x920 fs/file_table.c:264
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ get_signal+0x1ba2/0x2150 kernel/signal.c:2608
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x180/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff928e9e188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: fffffffffffffff4 RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000001 RSI: 0000000020001f40 RDI: 0000000000000004
+RBP: 00007ff928e9e1d0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffdfbf7c36f R14: 00007ff928e9e300 R15: 0000000000022000
+note: syz-executor.2[8392] exited with preempt_count 1
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
