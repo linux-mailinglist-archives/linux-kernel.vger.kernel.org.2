@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F7C3B7DE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245013B7DE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232874AbhF3HS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 03:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S232823AbhF3HSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbhF3HS5 (ORCPT
+        with ESMTP id S232705AbhF3HSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:18:57 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988C6C061766;
-        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id e33so1371970pgm.3;
-        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
+        Wed, 30 Jun 2021 03:18:48 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840E5C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:16:20 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id 68so1112294vsu.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xonZNlE+l6sBtKA7UNKEQ0/jPH3nyQ4s6DxRX9fs0lI=;
-        b=uW8c87PFM4174j/Wd1DNcpOQPC9Ka6CjksrqU4eo4XnXTmwYgc4rXGyYe0hMW2FSne
-         Jv7bi9UkL/K6gkSxdmpUo6PY0l/YE4OBEsT6BvGofrY2fa8ghfE7B7HBfW8pg6D5q+kP
-         s+KGRruGtH072QXvggVltyGxcIMpM7zGfFE4u1eUy09NoSkxdoEsELKwXC6dr2EiyJHv
-         yYJYA9CcLF6e6GnVFPIE6vbbCFsvkc/mX7BH7f67pkKhH2pui8DGUGEJIwJmjg3GoIFe
-         lrZF/WWWcMxowXNFdAbW8eVqipaeh2dVWa+9fauENG5Bu8L1OfmHqiHtDu65kgkHzspn
-         T8xw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TuH+apv+oCsNlAaVg/wm9SSIEaZ31aCvx1H+A/KchsU=;
+        b=IGdEYV6iubpDLMJ5m37PeamgcGglH/0msMCWnvoKR2cBD1N3/JtHZL1wE9KAdHSi3H
+         xTvWfW3VmOzaVAhl7Ii0oVmP0EXSE8BIH6ZM0M+ciyJnXN4JsjWPfSHYIuxLKRzev0nx
+         fV1gE7pl10g/f8CqwzUpUmUoEvnO25cj1vEnbRKmoifogBgMly3lkbQAU/AhBFtI610G
+         GkFjOJhJwnT7+ieWuJK+83HH5LU3Z6NspbkLupjpvsxE5AP/oxfv+wEhtg1A3vLO5Y2z
+         Pg3fKMwDqP6oZ/wVIQ9Kun1+Qy/UL/5dReInoEsbi/58arJ9eK0h1oc36jewINxUW/+D
+         loLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xonZNlE+l6sBtKA7UNKEQ0/jPH3nyQ4s6DxRX9fs0lI=;
-        b=ksXuBPu8qwYTVsbFas2fXLctcBJ0rNxlhaKfv067A9QMUmLUZOUH3OZhyEqfgQ3Eti
-         DsmXhznaIR9lHrREyOw9bXkY/gEZY6AcKWqLKeUyCKZhZXLIsXpCSpxzBn/XIho7RZY3
-         AUbq0nXMZykEjwTpf1yb4Kvqy23FSuC1Q2HbG+VbEorX4ykWm3se0OcihQMO4mfeprOs
-         U62srnoXQ6m4EwbqYsu5am/PfHA9XbVhl8ZGqIWzOI5ypoEfZdqgwCr8kVKv0enQ/s85
-         Fn1IrdKCLLerQR61aszOEJ6Z52rfpBrZnnB55t1xLmwpQhPf+h6jeVT2v4+i9ZqZz9Eb
-         +9Ug==
-X-Gm-Message-State: AOAM5329NoV4GM2Qc4Rb2UB8vztM1520YKCvYjXc0C2PiU3ExQU38FlF
-        JvrdkRZsLitKWXpF93BOrYc=
-X-Google-Smtp-Source: ABdhPJyXt5mu22Dh0CprhoQwKxErQ9vG90XQm8t6hV/p9URQU/LnBmaG3a0CXaR4CG6+w9ShnVZwxA==
-X-Received: by 2002:a63:d213:: with SMTP id a19mr32858796pgg.28.1625037388076;
-        Wed, 30 Jun 2021 00:16:28 -0700 (PDT)
-Received: from vessel.. ([103.242.196.99])
-        by smtp.gmail.com with ESMTPSA id ay3sm12288517pjb.38.2021.06.30.00.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 00:16:26 -0700 (PDT)
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-Subject: [PATCH] char: tpm: vtpm_proxy: Fix race in init
-Date:   Wed, 30 Jun 2021 12:44:51 +0530
-Message-Id: <20210630071451.15507-1-saubhik.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210629210524.hze6yb23pps3flnv@kernel.org>
-References: <20210629210524.hze6yb23pps3flnv@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TuH+apv+oCsNlAaVg/wm9SSIEaZ31aCvx1H+A/KchsU=;
+        b=qJV+PKRXqrSKPEl0jSvfhq9JzMa0WrtY+m7rqTk4IagBiKX4iph8RIHEX4s17NVBcI
+         HWpJe0j1+XPh1TUzSS0spH3zYKVRPjzHL2wZxzMKYF1+UNICGRj9zFK/qrY9mW23Fd/f
+         COFrNDDg+4JVIDhZmdFXflccS1UOEHlky1SzkWDS7VSnKHKancAOqUjS/q3dHDHTgDFY
+         xPEyfXNOomAAg76ts6n1es/g/8fDyvaJ5yOnaePrIrhxzTQenlZSwGmXmF1i3bZD8HV5
+         DwCRl+1LIPki7WBEn4k0+5xqFv0iQZ0D3Dqe9NkehoeTp1ffimTg5JtsJucs8fo26UAN
+         kvwg==
+X-Gm-Message-State: AOAM53319po/8P2LmOmVl4vlvPecV3dh9SXNT4tBey6VYz5ppbz0JywF
+        9pGn1N7Qe2r5s34GZVxWbh0Mr7IafGaw4C2t9d8=
+X-Google-Smtp-Source: ABdhPJw7g8ho6fKOpvf4aTR7903FLbCsjlynaCr0P8Dos7cRRhdQHQRQLYhXXpH90eWmhbXWXbhuUGYOqhbmNPO9n+U=
+X-Received: by 2002:a67:ed5a:: with SMTP id m26mr28872305vsp.59.1625037379726;
+ Wed, 30 Jun 2021 00:16:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202106292156.mWNAaVQA-lkp@intel.com> <20210629132909.GA7935@233d919f385f>
+In-Reply-To: <20210629132909.GA7935@233d919f385f>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 30 Jun 2021 12:46:07 +0530
+Message-ID: <CAFqt6zZ6V27JK6MtC__T6o2bpT_BJJHcGX0xOURoqTaTQEBc2A@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix returnvar.cocci warnings
+To:     kernel test robot <lkp@intel.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vtpm_module_init calls vtpmx_init which calls misc_register. The file
-operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-vtpm_proxy_work_start, which could read uninitialized workqueue.
+On Tue, Jun 29, 2021 at 6:59 PM kernel test robot <lkp@intel.com> wrote:
+>
+> From: kernel test robot <lkp@intel.com>
+>
+> sound/soc/codecs/wcd938x.c:1628:5-8: Unneeded variable: "ret". Return "0" on line 1656
+> sound/soc/codecs/wcd938x.c:1871:5-8: Unneeded variable: "ret". Return "0" on line 1907
+>
+>
+>  Remove unneeded variable used to store return value.
+>
+> Generated by: scripts/coccinelle/misc/returnvar.cocci
+>
+> Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+> CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-To avoid this, create workqueue before vtpmx init.
+Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
----
- drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-index 91c772e38bb5..225dfa026a8f 100644
---- a/drivers/char/tpm/tpm_vtpm_proxy.c
-+++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-@@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
- {
- 	int rc;
- 
--	rc = vtpmx_init();
--	if (rc) {
--		pr_err("couldn't create vtpmx device\n");
--		return rc;
--	}
--
- 	workqueue = create_workqueue("tpm-vtpm");
- 	if (!workqueue) {
- 		pr_err("couldn't create workqueue\n");
--		rc = -ENOMEM;
--		goto err_vtpmx_cleanup;
-+		return -ENOMEM;
-+	}
-+
-+	rc = vtpmx_init();
-+	if (rc) {
-+		pr_err("couldn't create vtpmx device\n");
-+		goto err_destroy_workqueue;
- 	}
- 
- 	return 0;
- 
--err_vtpmx_cleanup:
--	vtpmx_cleanup();
-+err_destroy_workqueue:
-+	destroy_workqueue(workqueue);
- 
- 	return rc;
- }
--- 
-2.30.2
-
+> ---
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   73748627df83aab934c81332ca83a44ab8c7b3e3
+> commit: 04544222886881cb0865040dcdf747fe7e025947 [8525/14055] ASoC: codecs: wcd938x: add audio routing and Kconfig
+> :::::: branch date: 4 hours ago
+> :::::: commit date: 2 weeks ago
+>
+>  wcd938x.c |    6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> --- a/sound/soc/codecs/wcd938x.c
+> +++ b/sound/soc/codecs/wcd938x.c
+> @@ -1625,7 +1625,6 @@ static int wcd938x_codec_aux_dac_event(s
+>  {
+>         struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+>         struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
+> -       int ret = 0;
+>
+>         switch (event) {
+>         case SND_SOC_DAPM_PRE_PMU:
+> @@ -1653,7 +1652,7 @@ static int wcd938x_codec_aux_dac_event(s
+>                                 WCD938X_ANA_RX_DIV4_CLK_EN_MASK, 0);
+>                 break;
+>         }
+> -       return ret;
+> +       return 0;
+>
+>  }
+>
+> @@ -1868,7 +1867,6 @@ static int wcd938x_codec_enable_aux_pa(s
+>         struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+>         struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
+>         int hph_mode = wcd938x->hph_mode;
+> -       int ret = 0;
+>
+>         switch (event) {
+>         case SND_SOC_DAPM_PRE_PMU:
+> @@ -1904,7 +1902,7 @@ static int wcd938x_codec_enable_aux_pa(s
+>                                                       WCD938X_EN_CUR_DET_MASK, 1);
+>                 break;
+>         }
+> -       return ret;
+> +       return 0;
+>  }
+>
+>  static int wcd938x_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
+>
