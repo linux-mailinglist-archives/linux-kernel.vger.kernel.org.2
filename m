@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366DA3B7E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04083B7E66
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 09:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhF3IAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 04:00:55 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:51355 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232788AbhF3IAx (ORCPT
+        id S233075AbhF3H7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232788AbhF3H7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 04:00:53 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MWixU-1ljA7M0oNU-00X3Kn; Wed, 30 Jun 2021 09:58:24 +0200
-Received: by mail-wr1-f48.google.com with SMTP id v5so2440312wrt.3;
-        Wed, 30 Jun 2021 00:58:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532CmRsIWO/Mc7g2Y1m6ZYKpznUsa5IAkkeZKGsVSIj/6pNkp+zc
-        ooC+Gkxcd1IfSyhZ4/PBJjysiQDVqpVgOCCbOHQ=
-X-Google-Smtp-Source: ABdhPJw/54Ymafy8iJydjgPOOW+N/LuLT/C7tu8FRFKuPYFqT73YoCsIrQFVMpqbzhM8lXHUuzTJSikU14gArx6gH0Q=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr37559025wrz.165.1625039903884;
- Wed, 30 Jun 2021 00:58:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato> <05cc9484-f97b-0533-64fe-ff917c6b87ee@intel.com>
- <YNwd/t3DMKSOrTAT@ninjato> <3016ab8b-cbff-1309-6a1f-080703a4130f@intel.com>
-In-Reply-To: <3016ab8b-cbff-1309-6a1f-080703a4130f@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 30 Jun 2021 09:55:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
-Message-ID: <CAK8P3a0Ew+RS_1buR+1OneH8XEqVjPOr0FGCF5d6CvFQuJqg6g@mail.gmail.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
+        Wed, 30 Jun 2021 03:59:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C01C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 00:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MO9wOENG6cq+VnqNYgZme5a0lTewntqK4HBGcPdZUiY=; b=lIWRAVHTQ3xznZUDbIo50fwumi
+        45EQzWG4KdtBWHr/VcvRGif8aR6SRJotfAdbPNIsU5RH4aJ4WllmKRSuWtmURf9fREM+OQzM2m26B
+        AsctFyPAYJE0aSqm0t46ZLsC1yhDAebqKF8SlckeCwZznwXZI8mTi9r0mKvcv7WT7i7uzBcJe+Swj
+        58TWoSJblAp9bIqdk3q/JsSQYsPmrIdqcCFfs33fhkUFZNwjPAC3oskjQbB4n5aRRhp8XwaOXrAa1
+        G4zGKa7wIa/pvvP4NO/nxJ4LgZDg+VRuPkIo6vODD2Lut4ZUPjfy+zcKcIQ1SgLBwvqZqLSDpEfDW
+        k0H1pujg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyV4i-00D7N5-Gl; Wed, 30 Jun 2021 07:56:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F464300204;
+        Wed, 30 Jun 2021 09:55:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16F1E286BAB98; Wed, 30 Jun 2021 09:55:55 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 09:55:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:6egYPYexTmL/MQIuD73eM2fYrrSLN1LLs/3bxSH3ZOnZ17tD4Ke
- bMlNqaOgRZmh7TPit/Ztgkj/QRdXk3dpnIEfG9jaWr+jEmh/2MToYlsBU8WvlWJgiPLPC6M
- cX5ZoWFjM58WD9JjmzvpXD+dAnsdVAumXV2uXhPwIrGUnjlcItCcoKcupIPmzPd90L8/viS
- nyzZTS43zCMS5DXEuj0hw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Bd/ORH/iKMw=:vazu2uKZHxqr6kCR3d/1GJ
- ky5yHRxj2jlpE+HloqKXSpD0NdsFitDEgYk9F2suYwYDwHJkHPqpBY6As+DvY4UvYEahkkuYV
- YgpqPqvFxzGf0eatwaZ5pt4NIzvLERh/ImqfVCku6DePl7qhCGWBxKc7sORi78Oac48/moDhw
- mMCKHgsLYerA8vMRI15b0dS4zTaRP1/WQrCif2vgdVvJ0jcIJIi2vrOSxq2JRW/CIaH65r1AB
- UnH+IRTzGh5zYzS7XC3+BGbcp8jo87XFGUndyCRS+jxnDmYIFzu43kNbGcJdeEuBvsxX3vXzD
- wYykQO4Bt3Zsh3nybhAeyDtMqDwHfvwqRvp7Hskj/jPxlGhWU1AcfUWllCQHO1dwJPGMfCTW4
- z2M3J/gjjrDsn0zBvUcf8ZE1yMyv8rULHM/2nXp4a2VirbY9ZB8naj4J7+LwyKyRFVjUQ6S3f
- +207c+kgp5EL68hEpOyHHrP1a3eDX55R5Q/RKY+7HGTSkGNLjklJETfoz77rTVfb2Py1OLr0I
- Fro9ZlVHQGcgXE6TZ98K0NfLq+UhKtW/ahbo36L3+CkxJSpkPlnpNBbqnBE2MS4DMHD6t/j6/
- P4SaBrmMhuLE+VZ2fAYCmdgDmndY8AIPar2MQnTGiw/pZMJmEqQfWOCQXhuHJ9C+PDydAGZgw
- 4GAg=
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Brian Cain <bcain@codeaurora.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Zankel <chris@zankel.net>, Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
+ ARCH_ATOMIC
+Message-ID: <YNwji8yPUfQp/ErQ@hirez.programming.kicks-ass.net>
+References: <20210525140232.53872-1-mark.rutland@arm.com>
+ <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+ <20210618084847.GA93984@C02TD0UTHF1T.local>
+ <8a056e32-26bf-3038-984e-fcf8cac988d0@infradead.org>
+ <4ec7308f-02c6-a357-eab8-63b6f2b7a5eb@infradead.org>
+ <YNpJnzqg0yySeEE7@hirez.programming.kicks-ass.net>
+ <a38e3284-62ee-4894-0475-2668733c5903@infradead.org>
+ <CAK8P3a2yH+dSWrS=1E0UbwcRhYJEThgrk2i9=omCQvcMMQZcww@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2yH+dSWrS=1E0UbwcRhYJEThgrk2i9=omCQvcMMQZcww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 9:51 AM Jie Deng <jie.deng@intel.com> wrote:
-> On 2021/6/30 15:32, Wolfram Sang wrote:
-> >>>> +  snprintf(vi->adap.name, sizeof(vi->adap.name), "Virtio I2C Adapter");
-> >>> Is there something to add so you can distinguish multiple instances?
-> >>> Most people want that.
-> >>
-> >> I find the I2C core will set a device name "i2c-%d" for this purpose, right?
-> >>
-> >> I think this name can be used to distinguish the adapter types while
-> >> "i2c-%d" can be used to
-> >>
-> >> distinguish instances. Does it make sense ?
-> > That alone does not help. See the 'i2cdetect -l' output of my Renesas
-> > board here:
-> >
-> > i2c-4 i2c             e66d8000.i2c                            I2C adapter
-> > i2c-2 i2c             e6510000.i2c                            I2C adapter
-> > i2c-7 i2c             e60b0000.i2c                            I2C adapter
-> >
-> > Notice that the third column carries the base address, so you know which
-> > i2c-%d is which physical bus. I don't know if it makes sense in your
-> > "virtual" case, but so far it would always print "Virtio I2C Adapter".
-> > Maybe it makes sense to add some parent device name, too?
-> >
-> > And if this is not reasonable, just skip it. As I said, it can be
-> > helpful at times, but it is definately not a show stopper.
->
->
-> OK. I will add the virtio_device index for this purpose.
-> which indicates the unique position on the virtio bus.
+On Tue, Jun 29, 2021 at 09:36:23AM +0200, Arnd Bergmann wrote:
+> For the specific case of cmpxchg64(), I do think it would make sense to either
+> have a Kconfig symbol that controls the few users, or to provide a spinlock
+> based fallback for those that don't have a native implementation.
 
-Is that position stable across kernel versions? We do have stable naming
-for PCI devices and for platform devices that are the parent of a virtio
-device, but I would expect the virtio device to be numbered in probe
-order instead.
+My preference goes to a Kconfig based solution; I so detest spinlock
+based atomics. I dream of the day we can kill the lot of 'em
+(sparc32-smp, parisc-smp are always the ones that come to mind).
 
-On a related note, we are apparently still missing the bit in the virtio bus
-layer that fills in the dev->of_node pointer of the virtio device. Without
-this, it is not actually possible to automatically probe i2c devices connected
-to a virtio-i2c bus. The same problem came up again with the virtio-gpio
-driver that suffers from the same issue.
+This is doubly true for the xchg/cmpxchg/cmpxchg64 family of functions
+that are supposed to work together with READ_ONCE/WRITE_ONCE but don't
+(when 'emulated', we'd need WRITE_ONCE to also be spinlock based in
+that case).
 
-       Arnd
+That is, at least for atomic64_*() the whole API is self contained so we
+can (and do) frob atomic64_set() to behave sanely vs atomic64_cmpxchg().
+
+
