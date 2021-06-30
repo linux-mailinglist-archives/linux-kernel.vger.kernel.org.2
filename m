@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDCD3B8A0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435AC3B8A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 23:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhF3VNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 17:13:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4263 "EHLO mga18.intel.com"
+        id S235565AbhF3VNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 17:13:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:2806 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235270AbhF3VMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 17:12:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="195720750"
+        id S235173AbhF3VMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 17:12:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="272284720"
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="195720750"
+   d="scan'208";a="272284720"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 14:10:16 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 14:10:16 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="558431212"
+   d="scan'208";a="558431216"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
   by orsmga004.jf.intel.com with ESMTP; 30 Jun 2021 14:10:16 -0700
 From:   kan.liang@linux.intel.com
@@ -27,9 +27,9 @@ To:     peterz@infradead.org, mingo@redhat.com, gregkh@linuxfoundation.org,
 Cc:     eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
         ak@linux.intel.com, yao.jin@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V4 15/16] perf/x86/intel/uncore: Support IMC free-running counters on Sapphire Rapids server
-Date:   Wed, 30 Jun 2021 14:08:39 -0700
-Message-Id: <1625087320-194204-16-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V4 16/16] perf pmu: Add PMU alias support
+Date:   Wed, 30 Jun 2021 14:08:40 -0700
+Message-Id: <1625087320-194204-17-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1625087320-194204-1-git-send-email-kan.liang@linux.intel.com>
 References: <1625087320-194204-1-git-send-email-kan.liang@linux.intel.com>
@@ -39,120 +39,287 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Several free-running counters for IMC uncore blocks are supported on
-Sapphire Rapids server.
+A perf uncore PMU may have two PMU names, a real name and an alias. The
+alias is exported at /sys/bus/event_source/devices/uncore_*/alias.
+The perf tool should support the alias as well.
 
-They are not enumerated in the discovery tables. The number of the
-free-running counter boxes is calculated from the number of
-corresponding standard boxes.
+Add alias_name in the struct perf_pmu to store the alias. For the PMU
+which doesn't have an alias. It's NULL.
 
-The snbep_pci2phy_map_init() is invoked to setup the mapping from a PCI
-BUS to a Die ID, which is used to locate the corresponding MC device of
-a IMC uncore unit in the spr_uncore_imc_freerunning_init_box().
+Introduce two X86 specific functions to retrieve the real name and the
+alias separately.
+
+Only go through the sysfs to retrieve the mapping between the real name
+and the alias once. The result is cached in a list, uncore_pmu_list.
+
+Nothing changed for the other ARCHs.
+
+With the patch, the perf tool can monitor the PMU with either the real
+name or the alias.
+
+Use the real name,
+ $perf stat -e uncore_cha_2/event=1/ -x,
+  4044879584,,uncore_cha_2/event=1/,2528059205,100.00,,
+
+Use the alias,
+ $perf stat -e uncore_type_0_2/event=1/ -x,
+  3659675336,,uncore_type_0_2/event=1/,2287306455,100.00,,
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/uncore_snbep.c | 66 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 1 deletion(-)
+ tools/perf/arch/x86/util/pmu.c | 129 ++++++++++++++++++++++++++++++++++++++++-
+ tools/perf/util/parse-events.y |   4 +-
+ tools/perf/util/pmu.c          |  23 +++++++-
+ tools/perf/util/pmu.h          |   5 ++
+ 4 files changed, 156 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index d195c17..09692ac 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5595,6 +5595,7 @@ static struct intel_uncore_type spr_uncore_mdf = {
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index d48d608..f864ba2 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -1,12 +1,28 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <string.h>
+-
++#include <stdio.h>
++#include <sys/types.h>
++#include <dirent.h>
++#include <fcntl.h>
+ #include <linux/stddef.h>
+ #include <linux/perf_event.h>
++#include <linux/zalloc.h>
++#include <api/fs/fs.h>
  
- #define UNCORE_SPR_NUM_UNCORE_TYPES		12
- #define UNCORE_SPR_IIO				1
-+#define UNCORE_SPR_IMC				6
- 
- static struct intel_uncore_type *spr_uncores[UNCORE_SPR_NUM_UNCORE_TYPES] = {
- 	&spr_uncore_chabox,
-@@ -5691,12 +5692,65 @@ static struct intel_uncore_type spr_uncore_iio_free_running = {
- 	.format_group		= &skx_uncore_iio_freerunning_format_group,
- };
- 
-+enum perf_uncore_spr_imc_freerunning_type_id {
-+	SPR_IMC_DCLK,
-+	SPR_IMC_PQ_CYCLES,
+ #include "../../../util/intel-pt.h"
+ #include "../../../util/intel-bts.h"
+ #include "../../../util/pmu.h"
++#include "../../../util/fncache.h"
 +
-+	SPR_IMC_FREERUNNING_TYPE_MAX,
++#define TEMPLATE_UNCORE_ALIAS	"%s/bus/event_source/devices/%s/alias"
++
++struct perf_uncore_pmu_name {
++	char *name;
++	char *alias;
++	struct list_head list;
 +};
 +
-+static struct freerunning_counters spr_imc_freerunning[] = {
-+	[SPR_IMC_DCLK]		= { 0x22b0, 0x0, 0, 1, 48 },
-+	[SPR_IMC_PQ_CYCLES]	= { 0x2318, 0x8, 0, 2, 48 },
-+};
++static LIST_HEAD(uncore_pmu_list);
+ 
+ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+ {
+@@ -18,3 +34,114 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
+ #endif
+ 	return NULL;
+ }
 +
-+static struct uncore_event_desc spr_uncore_imc_freerunning_events[] = {
-+	INTEL_UNCORE_EVENT_DESC(dclk,			"event=0xff,umask=0x10"),
-+
-+	INTEL_UNCORE_EVENT_DESC(rpq_cycles,		"event=0xff,umask=0x20"),
-+	INTEL_UNCORE_EVENT_DESC(wpq_cycles,		"event=0xff,umask=0x21"),
-+	{ /* end: all zeroes */ },
-+};
-+
-+#define SPR_MC_DEVICE_ID	0x3251
-+
-+static void spr_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
++static void setup_uncore_pmu_list(void)
 +{
-+	int mem_offset = box->pmu->pmu_idx * ICX_IMC_MEM_STRIDE + SNR_IMC_MMIO_MEM0_OFFSET;
++	char path[PATH_MAX];
++	DIR *dir;
++	struct dirent *dent;
++	const char *sysfs = sysfs__mountpoint();
++	struct perf_uncore_pmu_name *pmu;
++	char buf[MAX_PMU_NAME_LEN];
++	FILE *file;
++	int size;
 +
-+	snr_uncore_mmio_map(box, uncore_mmio_box_ctl(box),
-+			    mem_offset, SPR_MC_DEVICE_ID);
++	if (!sysfs)
++		return;
++
++	snprintf(path, PATH_MAX,
++		 "%s" EVENT_SOURCE_DEVICE_PATH, sysfs);
++
++	dir = opendir(path);
++	if (!dir)
++		return;
++
++	while ((dent = readdir(dir))) {
++		if (!strcmp(dent->d_name, ".") ||
++		    !strcmp(dent->d_name, "..") ||
++		    strncmp(dent->d_name, "uncore_", 7))
++			continue;
++
++		snprintf(path, PATH_MAX,
++			 TEMPLATE_UNCORE_ALIAS, sysfs, dent->d_name);
++
++		if (!file_available(path))
++			continue;
++
++		file = fopen(path, "r");
++		if (!file)
++			continue;
++
++		memset(buf, 0, sizeof(buf));
++		if (!fread(buf, 1, sizeof(buf), file))
++			continue;
++
++		pmu = zalloc(sizeof(*pmu));
++		if (!pmu)
++			continue;
++
++		size = strlen(buf) - 1;
++		pmu->alias = zalloc(size);
++		if (!pmu->alias) {
++			free(pmu);
++			continue;
++		}
++		strncpy(pmu->alias, buf, size);
++		pmu->name = strdup(dent->d_name);
++		list_add_tail(&pmu->list, &uncore_pmu_list);
++
++		fclose(file);
++	}
++
++	closedir(dir);
++
 +}
 +
-+static struct intel_uncore_ops spr_uncore_imc_freerunning_ops = {
-+	.init_box	= spr_uncore_imc_freerunning_init_box,
-+	.exit_box	= uncore_mmio_exit_box,
-+	.read_counter	= uncore_mmio_read_counter,
-+	.hw_config	= uncore_freerunning_hw_config,
-+};
++static char *__pmu_find_real_name(const char *name)
++{
++	struct perf_uncore_pmu_name *pmu;
 +
-+static struct intel_uncore_type spr_uncore_imc_free_running = {
-+	.name			= "imc_free_running",
-+	.num_counters		= 3,
-+	.mmio_map_size		= SNR_IMC_MMIO_SIZE,
-+	.num_freerunning_types	= SPR_IMC_FREERUNNING_TYPE_MAX,
-+	.freerunning		= spr_imc_freerunning,
-+	.ops			= &spr_uncore_imc_freerunning_ops,
-+	.event_descs		= spr_uncore_imc_freerunning_events,
-+	.format_group		= &skx_uncore_iio_freerunning_format_group,
-+};
++	/*
++	 * The template of the uncore alias is uncore_type_*
++	 * Only find the real name for the uncore alias.
++	 */
++	if (strncmp(name, "uncore_type_", 12))
++		return strdup(name);
 +
- #define UNCORE_SPR_MSR_EXTRA_UNCORES		1
-+#define UNCORE_SPR_MMIO_EXTRA_UNCORES		1
- 
- static struct intel_uncore_type *spr_msr_uncores[UNCORE_SPR_MSR_EXTRA_UNCORES] = {
- 	&spr_uncore_iio_free_running,
- };
- 
-+static struct intel_uncore_type *spr_mmio_uncores[UNCORE_SPR_MMIO_EXTRA_UNCORES] = {
-+	&spr_uncore_imc_free_running,
-+};
-+
- static void uncore_type_customized_copy(struct intel_uncore_type *to_type,
- 					struct intel_uncore_type *from_type)
- {
-@@ -5799,7 +5853,17 @@ int spr_uncore_pci_init(void)
- 
- void spr_uncore_mmio_init(void)
- {
--	uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO, 0, NULL);
-+	int ret = snbep_pci2phy_map_init(0x3250, SKX_CPUNODEID, SKX_GIDNIDMAP, true);
-+
-+	if (ret)
-+		uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO, 0, NULL);
-+	else {
-+		uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO,
-+							 UNCORE_SPR_MMIO_EXTRA_UNCORES,
-+							 spr_mmio_uncores);
-+
-+		spr_uncore_imc_free_running.num_boxes = uncore_type_max_boxes(uncore_mmio_uncores, UNCORE_SPR_IMC) / 2;
++	list_for_each_entry(pmu, &uncore_pmu_list, list) {
++		if (!strcmp(name, pmu->alias))
++			return strdup(pmu->name);
 +	}
++
++	return strdup(name);
++}
++
++char *pmu_find_real_name(const char *name)
++{
++	static bool cached_list;
++
++	if (strncmp(name, "uncore_", 7))
++		return strdup(name);
++
++	if (cached_list)
++		return __pmu_find_real_name(name);
++
++	setup_uncore_pmu_list();
++	cached_list = true;
++
++	return __pmu_find_real_name(name);
++}
++
++char *pmu_find_alias_name(const char *name)
++{
++	struct perf_uncore_pmu_name *pmu;
++
++	if (strncmp(name, "uncore_", 7))
++		return NULL;
++
++	list_for_each_entry(pmu, &uncore_pmu_list, list) {
++		if (!strcmp(name, pmu->name))
++			return strdup(pmu->alias);
++	}
++	return NULL;
++}
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index aba12a4..bc812af 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -316,7 +316,9 @@ event_pmu_name opt_pmu_config
+ 			if (!strncmp(name, "uncore_", 7) &&
+ 			    strncmp($1, "uncore_", 7))
+ 				name += 7;
+-			if (!fnmatch(pattern, name, 0)) {
++
++			if (!fnmatch(pattern, name, 0) ||
++			    (pmu->alias_name && !fnmatch(pattern, pmu->alias_name, 0))) {
+ 				if (parse_events_copy_term_list(orig_terms, &terms))
+ 					CLEANUP_YYABORT;
+ 				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 88c8ecdc..d7fb627 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -921,13 +921,28 @@ static int pmu_max_precise(const char *name)
+ 	return max_precise;
  }
  
- /* end of SPR uncore support */
+-static struct perf_pmu *pmu_lookup(const char *name)
++char * __weak
++pmu_find_real_name(const char *name)
++{
++	return strdup(name);
++}
++
++char * __weak
++pmu_find_alias_name(const char *name __maybe_unused)
++{
++	return NULL;
++}
++
++static struct perf_pmu *pmu_lookup(const char *lookup_name)
+ {
+ 	struct perf_pmu *pmu;
++	char *name;
+ 	LIST_HEAD(format);
+ 	LIST_HEAD(aliases);
+ 	__u32 type;
+ 
++	name = pmu_find_real_name(lookup_name);
++
+ 	/*
+ 	 * The pmu data we store & need consists of the pmu
+ 	 * type value and format definitions. Load both right
+@@ -950,7 +965,8 @@ static struct perf_pmu *pmu_lookup(const char *name)
+ 		return NULL;
+ 
+ 	pmu->cpus = pmu_cpumask(name);
+-	pmu->name = strdup(name);
++	pmu->name = name;
++	pmu->alias_name = pmu_find_alias_name(name);
+ 	pmu->type = type;
+ 	pmu->is_uncore = pmu_is_uncore(name);
+ 	if (pmu->is_uncore)
+@@ -980,7 +996,8 @@ static struct perf_pmu *pmu_find(const char *name)
+ 	struct perf_pmu *pmu;
+ 
+ 	list_for_each_entry(pmu, &pmus, list)
+-		if (!strcmp(pmu->name, name))
++		if (!strcmp(pmu->name, name) ||
++		    (pmu->alias_name && !strcmp(pmu->alias_name, name)))
+ 			return pmu;
+ 
+ 	return NULL;
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index a790ef7..87212ec 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -21,6 +21,7 @@ enum {
+ #define PERF_PMU_FORMAT_BITS 64
+ #define EVENT_SOURCE_DEVICE_PATH "/bus/event_source/devices/"
+ #define CPUS_TEMPLATE_CPU	"%s/bus/event_source/devices/%s/cpus"
++#define MAX_PMU_NAME_LEN 128
+ 
+ struct perf_event_attr;
+ 
+@@ -32,6 +33,7 @@ struct perf_pmu_caps {
+ 
+ struct perf_pmu {
+ 	char *name;
++	char *alias_name;	/* PMU alias name */
+ 	char *id;
+ 	__u32 type;
+ 	bool selectable;
+@@ -134,4 +136,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+ 
+ bool perf_pmu__has_hybrid(void);
+ 
++char *pmu_find_real_name(const char *name);
++char *pmu_find_alias_name(const char *name);
++
+ #endif /* __PMU_H */
 -- 
 2.7.4
 
