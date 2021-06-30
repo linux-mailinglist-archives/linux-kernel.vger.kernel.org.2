@@ -2,136 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764D43B8752
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294083B8754
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhF3RDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:03:46 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:40802 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhF3RDo (ORCPT
+        id S232380AbhF3REf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhF3REd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:03:44 -0400
-Received: by mail-oi1-f175.google.com with SMTP id l26so1200363oic.7;
-        Wed, 30 Jun 2021 10:01:14 -0700 (PDT)
+        Wed, 30 Jun 2021 13:04:33 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C12C061756;
+        Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id i17so3527949ilj.11;
+        Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uDMH1ofvbahbIAwpcPMuU1OKw8HI1Z/fX2NzlSDSFtE=;
+        b=Ubc4OdJMHEKAsz+x339i5DdWwjwKVO9i88dtqBTNPglMcCkDhgkYA2sF4iCTnEFQCS
+         kPLKnZ4uyLJh5kwHQYcBrPuuHmGwCfFvH+UoPYs2AVcOttZixYDvKYT25C/kdsxKaQFR
+         eywoEz7azO+qqvavX9pLvujAhmuB6oxlBKxpulv3skgoJJmfS7KooIEyZogx5aASz73Q
+         SfolA+M3tTxYGhvB4uvu7QxGJtUPfCwwq6Lp4Qw1rTJTKCXyp1iilSOP8WVtHJ3V5l5E
+         tXdHcgE7/jaeHd8+F3Bmnu7OidqjeXqrZEuv/ZmLhcuyyC/rLJQBM0IiPMsmPSSgQoVJ
+         WUNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xTjSyaFQS7XnJNczYIzf9hXNc2aJUcdGoOWTLAlowDc=;
-        b=DCjT515hgYCEH4yCNadp2NCKBjDa9BXrqS6o6Inaad31yaZmrs7vjQsuo7R8cWie4e
-         qVJQpOmE7gUebTB/BVoSgAqm8/qXjL/z59TR7tIifhpTeKCuamyVCAOUEdIs3OIxOD//
-         TicSBmruAunBRY5fzTBe+oaMoogrUYWM0jyUtxPE1CHHKi2XNf9ABUPvgsQd+pPXmNMP
-         NQqgcIq/DncmyeBfYxuMrmGZQ4/+F3ys8dNUsZkNIrNJ3rervl4iVltMhBghmXbjCsu0
-         55DumJh44RqR1AuP7yalzpNPTC1I6EBx5Epm07PgHapmpnLIlgCIk0Q8apoXCxHP6SYV
-         VuLg==
-X-Gm-Message-State: AOAM532MtNHC/jO0GReS/Ob0KjYCAtYtSZa5rcj52Bi2qUS0RztpiVVA
-        b8HKNnrw4rsi23t5TO567AJiJF32mQWpPYLFNbg=
-X-Google-Smtp-Source: ABdhPJxW87779//+LyPvUb00M0A5ZCmL8LjAd5vaItb5M9OLoWKDmHUM9UY5gn0xqTUscZ1GHKYLRFStBEG792r5OQc=
-X-Received: by 2002:aca:417:: with SMTP id 23mr11474706oie.71.1625072474548;
- Wed, 30 Jun 2021 10:01:14 -0700 (PDT)
+        bh=uDMH1ofvbahbIAwpcPMuU1OKw8HI1Z/fX2NzlSDSFtE=;
+        b=pv2f+3OQhlQq9wk9vWvolUQ6pX5QwP+IsFbtjBmUR/tXOHiCb8eGEfB/4Wf1E1YxQN
+         1OG28CfBNpdfz/x5LWA3lpDMDXkzjri9zjlCuCQs2FqZKdUoNUa4s+3bJPyvRt5+JFCO
+         dzkcUTKVGnoU3vO6jjYejf7/XEmxPMuQn1RDGpVjMNkYIOI3eVHiyiSDC6j2yw/JOVTL
+         DyKmQCFVnr0UllpeE5aZjHeVnPJlV+rsasJXF5TRw3hjSESQOFfblPQXVsT3FyucreAk
+         8chve+YVGvRYJGGI6qWrJYhFeqJdCC45VmL3JRzvR7emS6F0BEqRzPoQoi3Qzs+4wyai
+         Y50A==
+X-Gm-Message-State: AOAM531y57GnictHlc3B4r+V+T3ZywjUTI8Qslx/fKx/jxnfs0O8YXBE
+        vj4K3U62PTI84oafTlKBgxoZqKl+iINeEU9ZMhE=
+X-Google-Smtp-Source: ABdhPJx2TGmhIywd88QsSk0srgelYWP7k/Mj1ZL4wL70NN/rqpo6Erd5+CPf6ToFmkaY7Py9VGl0Iuqrdi5nkp9UkmI=
+X-Received: by 2002:a92:4446:: with SMTP id a6mr27097200ilm.9.1625072524081;
+ Wed, 30 Jun 2021 10:02:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210625152603.25960-1-lukasz.luba@arm.com> <20210625152603.25960-2-lukasz.luba@arm.com>
-In-Reply-To: <20210625152603.25960-2-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 30 Jun 2021 19:01:03 +0200
-Message-ID: <CAJZ5v0iOzp5FKo4NsNE-m+sEXZUvv1TbkAO_9+jSidx9c0iq8A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
+References: <20210630161320.29006-1-lhenriques@suse.de>
+In-Reply-To: <20210630161320.29006-1-lhenriques@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 20:01:53 +0300
+Message-ID: <CAOQ4uxhtsVc3kn14Z7VV0xGLsmKvZQVxDoUnSA5X1oL4UQzcxQ@mail.gmail.com>
+Subject: Re: [PATCH v11] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Petr Vorel <pvorel@suse.cz>,
+        kernel test robot <oliver.sang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 5:26 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+On Wed, Jun 30, 2021 at 7:13 PM Luis Henriques <lhenriques@suse.de> wrote:
 >
-> The Energy Aware Scheduler (EAS) tries to find best CPU for a waking up
-> task. It probes many possibilities and compares the estimated energy values
-> for different scenarios. For calculating those energy values it relies on
-> Energy Model (EM) data and em_cpu_energy(). The precision which is used in
-> EM data is in milli-Watts (or abstract scale), which sometimes is not
-> sufficient. In some cases it might happen that two CPUs from different
-> Performance Domains (PDs) get the same calculated value for a given task
-> placement, but in more precised scale, they might differ. This rounding
-> error has to be addressed. This patch prepares EAS code for better
-> precision in the coming EM improvements.
+> A regression has been reported by Nicolas Boichat, found while using the
+> copy_file_range syscall to copy a tracefs file.  Before commit
+> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> kernel would return -EXDEV to userspace when trying to copy a file across
+> different filesystems.  After this commit, the syscall doesn't fail anymore
+> and instead returns zero (zero bytes copied), as this file's content is
+> generated on-the-fly and thus reports a size of zero.
 >
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-
-If you want me to pick up this series, this patch requires an ACK from
-the scheduler maintainers.
-
+> This patch restores some cross-filesystem copy restrictions that existed
+> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> devices").  Filesystems are still allowed to fall-back to the VFS
+> generic_copy_file_range() implementation, but that has now to be done
+> explicitly.
+>
+> nfsd is also modified to fall-back into generic_copy_file_range() in case
+> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>
+> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 > ---
->  kernel/sched/fair.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+> Changes since v10
+> - simply remove the "if (len == 0)" short-circuit instead of checking if
+>   the filesystem implements the syscall.  This is because a filesystem may
+>   implement it but a particular instance (hint: overlayfs!) may not.
+> Changes since v9
+> - the early return from the syscall when len is zero now checks if the
+>   filesystem is implemented, returning -EOPNOTSUPP if it is not and 0
+>   otherwise.  Issue reported by test robot.
+>   (obviously, dropped Amir's Reviewed-by and Olga's Tested-by tags)
+> Changes since v8
+> - Simply added Amir's Reviewed-by and Olga's Tested-by
+> Changes since v7
+> - set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
+>   error returned is always related to the 'copy' operation
+> Changes since v6
+> - restored i_sb checks for the clone operation
+> Changes since v5
+> - check if ->copy_file_range is NULL before calling it
+> Changes since v4
+> - nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
+>   or -EXDEV.
+> Changes since v3
+> - dropped the COPY_FILE_SPLICE flag
+> - kept the f_op's checks early in generic_copy_file_checks, implementing
+>   Amir's suggestions
+> - modified nfsd to use generic_copy_file_range()
+> Changes since v2
+> - do all the required checks earlier, in generic_copy_file_checks(),
+>   adding new checks for ->remap_file_range
+> - new COPY_FILE_SPLICE flag
+> - don't remove filesystem's fallback to generic_copy_file_range()
+> - updated commit changelog (and subject)
+> Changes since v1 (after Amir review)
+> - restored do_copy_file_range() helper
+> - return -EOPNOTSUPP if fs doesn't implement CFR
+> - updated commit description
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 7b8990fd4896..b517c9e79768 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6582,7 +6582,7 @@ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
->   * to compute what would be the energy if we decided to actually migrate that
->   * task.
->   */
-> -static long
-> +static u64
->  compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>  fs/nfsd/vfs.c   |  8 +++++++-
+>  fs/read_write.c | 52 +++++++++++++++++++++++--------------------------
+>  2 files changed, 31 insertions(+), 29 deletions(-)
+>
+> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> index 15adf1f6ab21..f54a88b3b4a2 100644
+> --- a/fs/nfsd/vfs.c
+> +++ b/fs/nfsd/vfs.c
+> @@ -569,6 +569,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
+>  ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>                              u64 dst_pos, u64 count)
 >  {
->         struct cpumask *pd_mask = perf_domain_span(pd);
-> @@ -6689,12 +6689,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->   */
->  static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  {
-> -       unsigned long prev_delta = ULONG_MAX, best_delta = ULONG_MAX;
->         struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
-> +       u64 prev_delta = ULLONG_MAX, best_delta = ULLONG_MAX;
->         int cpu, best_energy_cpu = prev_cpu, target = -1;
-> -       unsigned long cpu_cap, util, base_energy = 0;
-> +       unsigned long cpu_cap, util;
->         struct sched_domain *sd;
->         struct perf_domain *pd;
-> +       u64 base_energy = 0;
+> +       ssize_t ret;
 >
->         rcu_read_lock();
->         pd = rcu_dereference(rd->pd);
-> @@ -6718,9 +6719,9 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->                 goto unlock;
->
->         for (; pd; pd = pd->next) {
-> -               unsigned long cur_delta, spare_cap, max_spare_cap = 0;
-> +               unsigned long spare_cap, max_spare_cap = 0;
->                 bool compute_prev_delta = false;
-> -               unsigned long base_energy_pd;
-> +               u64 base_energy_pd, cur_delta;
->                 int max_spare_cap_cpu = -1;
->
->                 for_each_cpu_and(cpu, perf_domain_span(pd), sched_domain_span(sd)) {
-> @@ -6790,7 +6791,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->          * Pick the best CPU if prev_cpu cannot be used, or if it saves at
->          * least 6% of the energy used by prev_cpu.
+>         /*
+>          * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+> @@ -579,7 +580,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>          * limit like this and pipeline multiple COPY requests.
 >          */
-> -       if ((prev_delta == ULONG_MAX) ||
-> +       if ((prev_delta == ULLONG_MAX) ||
->             (prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
->                 target = best_energy_cpu;
+>         count = min_t(u64, count, 1 << 22);
+> -       return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +       ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +
+> +       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+> +               ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
+> +                                             count, 0);
+> +       return ret;
+>  }
 >
-> --
-> 2.17.1
+>  __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 9db7adf160d2..049a2dda29f7 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -1395,28 +1395,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>  }
+>  EXPORT_SYMBOL(generic_copy_file_range);
 >
+> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+> -                                 struct file *file_out, loff_t pos_out,
+> -                                 size_t len, unsigned int flags)
+> -{
+> -       /*
+> -        * Although we now allow filesystems to handle cross sb copy, passing
+> -        * a file of the wrong filesystem type to filesystem driver can result
+> -        * in an attempt to dereference the wrong type of ->private_data, so
+> -        * avoid doing that until we really have a good reason.  NFS defines
+> -        * several different file_system_type structures, but they all end up
+> -        * using the same ->copy_file_range() function pointer.
+> -        */
+> -       if (file_out->f_op->copy_file_range &&
+> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+> -               return file_out->f_op->copy_file_range(file_in, pos_in,
+> -                                                      file_out, pos_out,
+> -                                                      len, flags);
+> -
+> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+> -                                      flags);
+> -}
+> -
+>  /*
+>   * Performs necessary checks before doing a file copy
+>   *
+> @@ -1434,6 +1412,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+>         loff_t size_in;
+>         int ret;
+>
+> +       /*
+> +        * Although we now allow filesystems to handle cross sb copy, passing
+> +        * a file of the wrong filesystem type to filesystem driver can result
+> +        * in an attempt to dereference the wrong type of ->private_data, so
+> +        * avoid doing that until we really have a good reason.  NFS defines
+> +        * several different file_system_type structures, but they all end up
+> +        * using the same ->copy_file_range() function pointer.
+> +        */
+> +       if (file_out->f_op->copy_file_range) {
+> +               if (file_in->f_op->copy_file_range !=
+> +                   file_out->f_op->copy_file_range)
+> +                       return -EXDEV;
+> +       } else if (file_in->f_op->remap_file_range) {
+> +               if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+> +                       return -EXDEV;
+> +       } else {
+> +                return -EOPNOTSUPP;
+> +       }
+> +
+>         ret = generic_file_rw_checks(file_in, file_out);
+>         if (ret)
+>                 return ret;
+> @@ -1497,11 +1494,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>         if (unlikely(ret))
+>                 return ret;
+>
+> -       if (len == 0)
+> -               return 0;
+> -
+>         file_start_write(file_out);
+>
+> +       ret = -EOPNOTSUPP;
+>         /*
+>          * Try cloning first, this is supported by more file systems, and
+>          * more efficient if both clone and copy are supported (e.g. NFS).
+> @@ -1520,9 +1515,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>                 }
+>         }
+>
+> -       ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+> -                               flags);
+> -       WARN_ON_ONCE(ret == -EOPNOTSUPP);
+> +       if (file_out->f_op->copy_file_range)
+> +               ret = file_out->f_op->copy_file_range(file_in, pos_in,
+> +                                                     file_out, pos_out,
+> +                                                     len, flags);
+>  done:
+>         if (ret > 0) {
+>                 fsnotify_access(file_in);
