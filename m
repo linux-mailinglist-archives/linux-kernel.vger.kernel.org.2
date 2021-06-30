@@ -2,58 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4C83B8147
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837B13B814C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhF3LbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:31:14 -0400
-Received: from smtprelay0064.hostedemail.com ([216.40.44.64]:58038 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234148AbhF3LbM (ORCPT
+        id S234368AbhF3LcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:32:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36986 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhF3LcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:31:12 -0400
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 670E2100E7B4F;
-        Wed, 30 Jun 2021 11:28:42 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 6764C1727C;
-        Wed, 30 Jun 2021 11:28:40 +0000 (UTC)
-Message-ID: <e3a04d2554bfbe6a7e516c18b5f2848aa040e498.camel@perches.com>
-Subject: Re: [PATCH V2] treewide: Add missing semicolons to __assign_str uses
-From:   Joe Perches <joe@perches.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, lima@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Date:   Wed, 30 Jun 2021 04:28:39 -0700
-In-Reply-To: <48a056adabd8f70444475352f617914cef504a45.camel@perches.com>
-References: <cover.1621024265.git.bristot@redhat.com>
-         <2c59beee3b36b15592bfbb9f26dee7f8b55fd814.1621024265.git.bristot@redhat.com>
-         <20210603172902.41648183@gandalf.local.home>
-         <1e068d21106bb6db05b735b4916bb420e6c9842a.camel@perches.com>
-         <20210604122128.0d348960@oasis.local.home>
-         <48a056adabd8f70444475352f617914cef504a45.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 30 Jun 2021 07:32:16 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 194891FE76;
+        Wed, 30 Jun 2021 11:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625052587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
+        b=ahMFe4kxqAr6ueSduanu8ivNo0m8vDKaSEkb4pG/Qi/05WQRTOrGkzh1J40pYoAJ3KBikV
+        M5JYxKcMeW0svIA/2h2D7Veog/xZ+B8jDsWLdxSJDpkdqWV9IphicqsKgIpyp5JJEPF1Oh
+        R9PvwOBQhAK+NvxsEWVRcSz7joKLYXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625052587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
+        b=ISanfFyNsTDcmf/hJGeEewWmmA9CgWCXw2JvPbz70fjhijtToL0lFRU1PwRQLCUjZpzy/+
+        +yWiGRLd8SPAPQBQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id BC248118DD;
+        Wed, 30 Jun 2021 11:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625052587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
+        b=ahMFe4kxqAr6ueSduanu8ivNo0m8vDKaSEkb4pG/Qi/05WQRTOrGkzh1J40pYoAJ3KBikV
+        M5JYxKcMeW0svIA/2h2D7Veog/xZ+B8jDsWLdxSJDpkdqWV9IphicqsKgIpyp5JJEPF1Oh
+        R9PvwOBQhAK+NvxsEWVRcSz7joKLYXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625052587;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
+        b=ISanfFyNsTDcmf/hJGeEewWmmA9CgWCXw2JvPbz70fjhijtToL0lFRU1PwRQLCUjZpzy/+
+        +yWiGRLd8SPAPQBQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id ImMGLKpV3GD+LgAALh3uQQ
+        (envelope-from <pvorel@suse.cz>); Wed, 30 Jun 2021 11:29:46 +0000
+Date:   Wed, 30 Jun 2021 13:29:45 +0200
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
+        "ltp@lists.linux.it" <ltp@lists.linux.it>,
+        David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [LTP] [BUG] btrfs potential failure on 32 core LTP test
+ (fallocate05)
+Message-ID: <YNxVqca+WeQcBmzA@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+ <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
+ <b5c6779b-f11d-661e-18c5-569a07f6fd8e@canonical.com>
+ <YNxTr43lvviG0GOn@pevik>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.52
-X-Stat-Signature: whcnsbfbnesep8uuw6hx4999zh9dre4t
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 6764C1727C
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19avg+OhJp2lgEOQwhdkfQyil/n7SIpQsE=
-X-HE-Tag: 1625052520-537384
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNxTr43lvviG0GOn@pevik>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-06-12 at 08:42 -0700, Joe Perches wrote:
-> The __assign_str macro has an unusual ending semicolon but the vast
-> majority of uses of the macro already have semicolon termination.
+Hi all,
 
-ping?
+...
+> > >> Reproduction steps:
+> > >> git clone https://github.com/linux-test-project/ltp.git
+> > >> cd ltp
+> > >> ./build.sh && make install -j8
+> > >> cd ../ltp-install
+> > >> sudo ./runltp -f syscalls -s fallocate05
 
+NOTE: you can also be a bit faster if you test just single test, see
+https://github.com/linux-test-project/ltp#shortcut-to-running-a-single-test
+(not compiling and installing whole LTP)
 
+$ cd testcases/kernel/syscalls/fallocate/
+$ make -j`nproc`
+$ sudo ./fallocate05
+
+> > > This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
+
+> > It tests all available file systems, just wait till it gets to btrfs. I
+> > don't know how to limit it only to one file system.
+> In the future we can add environment variable to specify the only fs to be
+> tested. There is LTP_DEV_FS_TYPE, but that does not work when .all_filesystems
+> flag is enabled. Thus just patch the file:
+
+NOTE: It detect kernel filesystem support and presence of mkfs.xxx.
+Thus other way to limit filesystem is to rename mkfs.xxx of other filesystems
+(in case you test LTP from package and don't want / cannot compile and can
+modify root filesystem).
+
+Kind regards,
+Petr
