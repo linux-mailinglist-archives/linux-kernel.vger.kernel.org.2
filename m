@@ -2,179 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A80A3B8789
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9253B878A
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhF3RUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:20:15 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:20724 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhF3RUM (ORCPT
+        id S232482AbhF3RUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhF3RUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625073449;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=PaZ4QfjrWr9o3a5HeoGKce26NQC+59YzfuJZdJpUzpE=;
-    b=TSasPWIexuttte1dRb5hyYDoPDvJIV6lyBecevfw3gioYjN0L3dIae464U47zluXkv
-    IvIK3EnE4XAlBlpLBceGyN1yetp+PWBRPKf1j2qGMrzQDsIeqCT6y5huePbePSh9ZWGs
-    lcNZvf5ZuWyMvg/fMn6PCg7eMODUyHw9yelWeySoMHSQZhqGvs+YMBE4uBg2H0hBM9Xt
-    UyOAVzZ4tWFnCdLu4y7J4D/Moe/qwOHE0FZm3vuFuY24RrCGTdctRiBajnkMThQkWQJr
-    fE2gqMHeHsF4rE5qCk1QYYcSseS5exycuysEQ0djjHsDcg1JzNWF+0Jw/Q5IBkg6LHbX
-    y0jA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlWfXA0NbQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id h06665x5UHHT24k
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 30 Jun 2021 19:17:29 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
- regulator
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20210630164517.GI5106@sirena.org.uk>
-Date:   Wed, 30 Jun 2021 19:17:28 +0200
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Graeme Gregory <gg@slimlogic.co.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <54FC87BA-D45A-4ABF-B233-2A70B4A4A632@goldelico.com>
-References: <4ed67090bc048442567931ede8f1298a0b312b28.1624980242.git.hns@goldelico.com>
- <20210629155922.GD4613@sirena.org.uk>
- <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
- <20210629185638.GG4613@sirena.org.uk>
- <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
- <20210630121307.GA5106@sirena.org.uk>
- <02EE05C2-588F-4D50-8A37-46CC3B0C302C@goldelico.com>
- <20210630130425.GF5106@sirena.org.uk>
- <E57CB314-F56C-4B33-81E8-7927564DB751@goldelico.com>
- <20210630164517.GI5106@sirena.org.uk>
-To:     Mark Brown <broonie@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Wed, 30 Jun 2021 13:20:17 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E575BC061756;
+        Wed, 30 Jun 2021 10:17:47 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f12c300d32a22941298d01c.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:c300:d32a:2294:1298:d01c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4F3161EC046E;
+        Wed, 30 Jun 2021 19:17:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1625073466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lZkWfm5u08oDdFUR6N+KHOvVmnsC24sm5yc+HxeB/CY=;
+        b=ldHx2lzmiOHxUFziw6arVd4BG2SyN/yZtPY3lsNNSX+TrqizOvZUohfsFjCxugP2u5JEOw
+        WHp4EICXAI/oleuPVK7/8WR5UUZDFmGdRM0Js4KjtoBeAF0b2X1viO9PZm6lWLAY0Jbv+A
+        QODloyCYzYOjlXa+UX3sEF5oVUr5pZ8=
+Date:   Wed, 30 Jun 2021 19:17:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 05/31] EDAC/amd64: Add context struct
+Message-ID: <YNynNc9oMZVnri8X@zn.tnic>
+References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
+ <20210623192002.3671647-6-yazen.ghannam@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210623192002.3671647-6-yazen.ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Wed, Jun 23, 2021 at 07:19:36PM +0000, Yazen Ghannam wrote:
+> Define an address translation context struct. This will hold values that
+> will be passed between multiple functions.
+> 
+> Save return address, Node ID, and the Instance ID number to start.
+> Currently, we use the UMC number as the Instance ID, but future DF
 
-> Am 30.06.2021 um 18:45 schrieb Mark Brown <broonie@kernel.org>:
->=20
-> On Wed, Jun 30, 2021 at 04:43:14PM +0200, H. Nikolaus Schaller wrote:
->>> Am 30.06.2021 um 15:04 schrieb Mark Brown <broonie@kernel.org>:
->>> On Wed, Jun 30, 2021 at 02:29:02PM +0200, H. Nikolaus Schaller =
-wrote:
->>>>> Am 30.06.2021 um 14:13 schrieb Mark Brown <broonie@kernel.org>:
->=20
->>> It's a super weird hardware design if the DT is accurate,
->=20
->> I get the impression that the vdds_1v8_main is in the DT =
-(omap5-board-common.dtsi)
->> only as an alias for smps7. Maybe to get more flexibility in =
-overwriting
->> in board files? I.e. replace the power controller without having a =
-fixed
->> definition of smps7 elsewhere.
->=20
-> It doesn't seem to have any effect in software and the input is
-> specified at the same voltage as the output which would be very =
-unusual.
-> No idea why you'd do any aliasing, you can already name the regulators
-> with DT handles and with user visible strings.
->=20
->> Looking into the schematics of the OMAP5432EVM or the Pyra handheld =
-does
->> not reveal a physical regulator. It is just that the output signal of
->> smps7 is called "VDDS_1v8_MAIN".
->=20
-> It could be something incorrectly factored out of some early =
-prototypes
-> or something.
+Please use passive voice in your commit message: no "we" or "I", etc.
 
-Yes, most likely. Or as I assumed: separating regulator names from =
-signal names.
+And this here is a perfect example: it sounds here like "we" is "AMD"
+but we use "we" mostly for the kernel. And there's the confusion.
 
-According to git blame it was introduced 5 years ago by Nisanth.
-Maybe he is still reading here and wants to comment.
+So please teach yourself to formulate those commit messages properly -
+the future you will thank you, trust me!
 
->=20
->> Therefore, a completely different approach could be to remove =
-fixedregulator-vdds_1v8_main
->> and replace by smps7_reg.
->=20
-> If there's no physical regulator on the board then that is indeed a DT
-> bug, the fixed regulator just shouldn't be there.
+:-)
 
-Agreed.
+> versions may use another value.
+> 
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> ---
+> Link:
+> https://lkml.kernel.org/r/20210507190140.18854-3-Yazen.Ghannam@amd.com
+> 
+> v1->v2:
+> * Moved from arch/x86 to EDAC.
+> * Changed "umc" variable to "inst_id".
+> * Drop df_types enum.
+> 
+>  drivers/edac/amd64_edac.c | 49 +++++++++++++++++++++++++--------------
+>  1 file changed, 31 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+> index d67cd8f57b94..62eca188458f 100644
+> --- a/drivers/edac/amd64_edac.c
+> +++ b/drivers/edac/amd64_edac.c
+> @@ -1079,12 +1079,15 @@ static struct df_reg df_regs[] = {
+>  	[SYS_FAB_ID_MASK]	=	{1, 0x208},
+>  };
+>  
+> +struct addr_ctx {
+> +	u64 ret_addr;
+> +	u16 nid;
+> +	u8 inst_id;
+> +};
+> +
+>  static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
+>  {
+>  	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
+> -	/* We start from the normalized address */
+> -	u64 ret_addr = norm_addr;
+> -
+>  	u32 tmp;
+>  
+>  	u8 die_id_shift, die_id_mask, socket_id_shift, socket_id_mask;
+> @@ -1097,6 +1100,16 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  
+>  	struct df_reg reg;
+>  
+> +	struct addr_ctx ctx;
 
->=20
->> But is changing the DT the right solution if the Palmas and Fixed =
-regulator
->> drivers can't handle the untouched DT which is logically correct (not =
-physically)?
->=20
-> Well, it's a good thing to do anyway since the DT is supposed to
-> accurately reflect the hardware.  Like I say splitting the LDOs and
-> SMPSs can also be done independently and should separately resolve the
-> issue.
+Those empty-lines spaced-out local vars look weird.
 
-According to the code they are done separately by calling smps_register
-first and then ldo_register inside palmas_regulators_probe().
+> +	memset(&ctx, 0, sizeof(ctx));
+> +
+> +	/* We start from the normalized address */
+> +	ctx.ret_addr = norm_addr;
+> +
+> +	ctx.nid = nid;
+> +	ctx.inst_id = umc;
+> +
+>  	if (amd_df_indirect_read(nid, df_regs[DRAM_OFFSET], umc, &tmp))
+>  		goto out_err;
+>  
+> @@ -1105,7 +1118,7 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  		u64 hi_addr_offset = (tmp & GENMASK_ULL(31, 20)) << 8;
+>  
+>  		if (norm_addr >= hi_addr_offset) {
+> -			ret_addr -= hi_addr_offset;
+> +			ctx.ret_addr -= hi_addr_offset;
+>  			base = 1;
+>  		}
+>  	}
+> @@ -1236,14 +1249,14 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  		 * bits there are. "intlv_addr_bit" tells us how many "Y" bits
+>  		 * there are (where "I" starts).
+>  		 */
+> -		temp_addr_y = ret_addr & GENMASK_ULL(intlv_addr_bit-1, 0);
+> +		temp_addr_y = ctx.ret_addr & GENMASK_ULL(intlv_addr_bit - 1, 0);
+>  		temp_addr_i = (cs_id << intlv_addr_bit);
+> -		temp_addr_x = (ret_addr & GENMASK_ULL(63, intlv_addr_bit)) << num_intlv_bits;
+> -		ret_addr    = temp_addr_x | temp_addr_i | temp_addr_y;
+> +		temp_addr_x = (ctx.ret_addr & GENMASK_ULL(63, intlv_addr_bit)) << num_intlv_bits;
+> +		ctx.ret_addr    = temp_addr_x | temp_addr_i | temp_addr_y;
 
-But separate regulators or regulator blocks could probe independently.
+You want to align those vertically on the "=" for better readability.
 
-Other similar drivers seem to split registration into many
-individual regulators, e.g. twl6030-regulator.c while others
-seem to do it more like the Palmas, e.g. tps65090-regulator.c
+>  	}
+>  
+>  	/* Add dram base address */
+> -	ret_addr += dram_base_addr;
+> +	ctx.ret_addr += dram_base_addr;
+>  
+>  	/* If legacy MMIO hole enabled */
+>  	if (lgcy_mmio_hole_en) {
+> @@ -1251,29 +1264,29 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+>  			goto out_err;
+>  
+>  		dram_hole_base = tmp & GENMASK(31, 24);
+> -		if (ret_addr >= dram_hole_base)
+> -			ret_addr += (BIT_ULL(32) - dram_hole_base);
+> +		if (ctx.ret_addr >= dram_hole_base)
+> +			ctx.ret_addr += (BIT_ULL(32) - dram_hole_base);
+>  	}
+>  
+>  	if (hash_enabled) {
+>  		/* Save some parentheses and grab ls-bit at the end. */
+> -		hashed_bit =	(ret_addr >> 12) ^
+> -				(ret_addr >> 18) ^
+> -				(ret_addr >> 21) ^
+> -				(ret_addr >> 30) ^
+> +		hashed_bit =	(ctx.ret_addr >> 12) ^
+> +				(ctx.ret_addr >> 18) ^
+> +				(ctx.ret_addr >> 21) ^
+> +				(ctx.ret_addr >> 30) ^
+>  				cs_id;
+>  
+>  		hashed_bit &= BIT(0);
+>  
+> -		if (hashed_bit != ((ret_addr >> intlv_addr_bit) & BIT(0)))
+> -			ret_addr ^= BIT(intlv_addr_bit);
+> +		if (hashed_bit != ((ctx.ret_addr >> intlv_addr_bit) & BIT(0)))
+> +			ctx.ret_addr ^= BIT(intlv_addr_bit);
+>  	}
+>  
+>  	/* Is calculated system address is above DRAM limit address? */
+> -	if (ret_addr > dram_limit_addr)
+> +	if (ctx.ret_addr > dram_limit_addr)
+>  		goto out_err;
+>  
+> -	*sys_addr = ret_addr;
+> +	*sys_addr = ctx.ret_addr;
 
-Splitting into many regulators also needs to touch the device trees
-to have individual compatible entries which currently do not exist.
+So adding ctx to exchange data between functions - that was a good idea.
 
-On the other hand, a theoretical system could have a real fixed =
-regulator
-in between (maybe a power switch?) and should still work. Why should=20
-driver core care about that case and not the core system it is using?
+But what this patch does is pointless because you simply replace those
+variables with a local struct.
 
->=20
->>> it's hard to see how it's not going to be hurting efficiency.
->=20
->> Well, I think the regulators are enabled only once during boot so =
-nobody
->> notices an issue.
->=20
-> When I say having an extra regulator in there hurts efficiency I'm
-> saying that the power losses from regulation will be increased as
-> there's more of it happening.
+I guess the aha moment will come with the later patches when you start
+passing it around to functions.
 
-Ah, you did think about hardware efficiency, I did about software =
-efficiency :)
+/me waits to see.
 
-Well, a real "LDO" from 1.8V to 1.8V makes no sense but a power
-interrupt switch (with e.g. 12 m=CE=A9 RDSon like some ADP197) could in =
-some
-circuits, e.g. to reduce reverse leakage or whatever.
+-- 
+Regards/Gruss,
+    Boris.
 
-We don't have it of course but it would be modeled as a fixed regulator
-with GPIO and 1.8V output although input is also 1.8V.
-
-But that doesn't help for the Palmas issue.
-
-Generally, I'd now prefer the "DTS" fix approach and leaving to fix the
-intermediate fixed-regulator solution by rewriting the Palmas driver
-to future discussion.
-
-BR and thanks,
-Nikolaus
-
+https://people.kernel.org/tglx/notes-about-netiquette
