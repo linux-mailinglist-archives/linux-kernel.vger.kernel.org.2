@@ -2,142 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B503B82C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278E53B82C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhF3NUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S234836AbhF3NTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234847AbhF3NUC (ORCPT
+        with ESMTP id S234713AbhF3NTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:20:02 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE3DC061767
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:17:31 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id l24so4112711ejq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:17:31 -0700 (PDT)
+        Wed, 30 Jun 2021 09:19:31 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FD1C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:17:02 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id h4so2231114pgp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 06:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XH4RKf95uj0XGgjr7ofqfjtHRyfEBIs1/NXlXnVrwYI=;
-        b=ax2et6Fq3SGMp+nmQS31Tgr4Z7CKWxguDv2PSQ03cdoudNQkw3+6hYf4ABbioe94/5
-         ykmaOBtoqURlgq3vRWFLbjr9r+YYCfuCG7wKxmQI7+1PV/6cFJW9OYDnobz4fUj0IqYF
-         gURDBI970v7SoJPEXTAeVpm7aXwVZIY1Wp+cNetyzch9aBb5qfr4N5NAN6zPK4TlqpyM
-         AdN0Mbsg2P0ex+Mbt3zTdj6PLGqlxZyBz6Dqqhm8S8+1eROIQ1aaA4B2xEhGRotz/vBb
-         z14RF+79DIPx4uTAZ/l9ZQpFQI52HVxxqNQTazelQhbj9lpGRzLE8Qj2pfIPCHN4gqnu
-         lFkg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fgdFcWlgoPypBIRoYUde3N58e9Twt3JB/QiM0lXDUWI=;
+        b=RJFbHULSsaCe2wRav93soy+7dgaRoot7nNDKvGe754HFdzty/DNF19Bcuq/sZzsB7m
+         kfYO3Ph5p/aW7ODv4rj1iGGZ+E1hDntDeZ6N8VCj15UtFJqIlviSZgLsPoRKORiBHntk
+         IRT8ULCoWkFWyIQaogamNDT4YjjjtVKosyrIlu4+Le5nocHse11/b96jqr4mwlrLHgOj
+         qatNwWNz+ktQYbAPA+30fpryZ1aDkFkglOqeLfLL29HLLRg5xKUV0zdJVzd8wAmmm6xD
+         A48AR3p/O9qf8F/EiK22xuv68R6FUvZdLeh6EGQY0YDjiG+o8JyGtKMC2rivNb5HXw3r
+         w9Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XH4RKf95uj0XGgjr7ofqfjtHRyfEBIs1/NXlXnVrwYI=;
-        b=c6qIEDbA0oJnsqlf8lKonbmEk2upqnjU76Nd+2XZj0pUJlLPbOAMbWh06mb+YCVGlc
-         N22h9v9ruIsyQbZnSGy1B1Y8DVi2jggU0+/0Rp0yR8pFwKpmbPd9vEoyLBQyVwe9CBeB
-         EEkS620eOID+d18X7Ih7hPDG1m1tcAiYIwFcsd4WJDMFRqI3PmNeGjWx3OIzOPvI7MvN
-         6YBmqMMyWh3eEb8Ub1s5mIRHDm8Dh0jckPWcBh7hMfwmLo5GCzSSHnAq8ZmZ6cothqWv
-         tgGFZokJlMCf+9CeoaJmDYR+sheprv4kl1Axo+Vrl7WnPYP1ZI6lQCi509Tt+qlMkL6a
-         HYGg==
-X-Gm-Message-State: AOAM531n5MBjLf/fKi5ewrebuDHbwv+WTeO9bpG9/AS1pDFJp0W43azP
-        8QsqpdUtQ3UHZawdPOJau40a9g==
-X-Google-Smtp-Source: ABdhPJyGQ0J8ACUJhNNJ8MLetWxk0lXprsnPX+MhLU9yn8pn9wm9bA4xIV972M6LjqIPKrMrWHgPdw==
-X-Received: by 2002:a17:907:2da6:: with SMTP id gt38mr34186045ejc.528.1625059050398;
-        Wed, 30 Jun 2021 06:17:30 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id md14sm39511ejb.125.2021.06.30.06.17.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 06:17:30 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 2/2] iio: proximity: rfd77402: convert probe to device-managed functions
-Date:   Wed, 30 Jun 2021 16:16:36 +0300
-Message-Id: <20210630131636.1563148-2-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210630131636.1563148-1-aardelean@deviqon.com>
-References: <20210630131636.1563148-1-aardelean@deviqon.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fgdFcWlgoPypBIRoYUde3N58e9Twt3JB/QiM0lXDUWI=;
+        b=C2UfKSr0fwUjAHnzVp80GnECcr1+0JXNgGK/t4pZifNz8kotbYaDe/dRZuu/wWbZ19
+         QFo9bmb9JiaqF657/hmKkPZq7coNqh/CqW4dTC3OWxuk/Mpt/Q8YvYWjRb7nmGcM9Eer
+         pytc61m/a1Z9kmKxisTcHDKg1a81U6xRsU1Y22FJyGv+ZtFBwCFUgfcanfSy90ovFTyQ
+         eXuwZv+aQnhhCi1s75cIgHp5vI+/Y0eZ1UlL2D/QnpfRg1ZoHfk0dk15/rOZGSjVVOOB
+         6Nn5vSl8QTFrGKRs0vMinoYK3kv6NgFolcwzYFRtK93oo5U5Guj6+Uaowit92j7nvW2v
+         f4TQ==
+X-Gm-Message-State: AOAM533N+EjznKjMw0qS/Ewpno7gyuZJKe3cmM6phqT4uRoSTg8l6Y2g
+        5xEeddzs7XfSfZy0PQyv20TH
+X-Google-Smtp-Source: ABdhPJwP08UOveU6IrebsAzxULeGoj7rDhUudmYe3gn3bDi3yRcY6TAhgxW2TZAG7ZmtikkGUFkRyA==
+X-Received: by 2002:a63:5153:: with SMTP id r19mr34252156pgl.56.1625059021948;
+        Wed, 30 Jun 2021 06:17:01 -0700 (PDT)
+Received: from workstation ([120.138.13.102])
+        by smtp.gmail.com with ESMTPSA id k8sm13349323pfa.142.2021.06.30.06.16.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Jun 2021 06:17:01 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 18:46:56 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH 00/10] MHI patches for v5.14 - Take 2
+Message-ID: <20210630131656.GA18484@workstation>
+References: <20210625123355.11578-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210625123355.11578-1-manivannan.sadhasivam@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts the probe hook to register the IIO device with
-devm_iio_device_register() and register a hook with
-devm_add_action_or_reset() to put the device in powerdown when the driver
-gets unloaded.
+Hi Greg,
 
-Since the PM suspend/resume functions need only a reference to the
-i2c_client object (which can be obtained from the base device object), the
-i2c_set_clientdata() call can be removed.
+On Fri, Jun 25, 2021 at 06:03:45PM +0530, Manivannan Sadhasivam wrote:
+> Hi Greg,
+> 
+> Please find the remaining MHI patches for v5.14. This series has the left over
+> patches from the previous patchset and one new series that was reviewed a
+> while ago and put on hold for Ack from Kalle Valo for ath11k.
+> 
+> Summary:
+> 
+> 1. Added validation for the channel ID read from event ring. If we get events
+> from an invalid channel, we throw an error message and skip the event.
+> 
+> 2. Fixed the MHI wake routines used for the newer modems such as SDX55 and
+> SDX65 by using no-op routines only for the older modems and then relying on
+> the default routines provided by MHI stack for newer ones.
+> 
+> 3. Added support for processing the events based on the priorities. Earlier
+> a fixed priority was used for all events.
+> 
+> 4. Added a dedicated flag to the MHI client transfer APIs for inbound
+> buffer allocation by the MHI stack. Since this patch modifies the MHI
+> client drivers under "net/", Ack has been collected from the netdev
+> maintainer.
+> 
+> 5. Added support for Cinterion MV31-W modem in pci_generic controller:
+> https://www.thalesgroup.com/en/markets/digital-identity-and-security/iot/iot-connectivity/products/iot-products/mv31-w-ultra-high
+> 
+> 6. Rearranged the setting of BHI/BHIe offsets for better validation of the
+> register values read from MMIO
+> 
+> 7. Cleanup of the BHI/BHIe pointers by setting them to NULL to prevent access
+> after power down.
+> 
+> 8. Added support for getting the MMIO register length from the controller
+> drivers. This helps in validation of the read offsets from MMIO registers.
+> Since this patch touches ath11k, Ack has been collected from Kalle Valo.
+> 
+> 9. With the help of above register length, added check for BHI/BHIe offsets.
+> 
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/proximity/rfd77402.c | 27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+Is this series on your queue for 5.14?
 
-diff --git a/drivers/iio/proximity/rfd77402.c b/drivers/iio/proximity/rfd77402.c
-index f349526421f3..8c06d02139b6 100644
---- a/drivers/iio/proximity/rfd77402.c
-+++ b/drivers/iio/proximity/rfd77402.c
-@@ -252,6 +252,11 @@ static int rfd77402_powerdown(struct i2c_client *client)
- 				  RFD77402_STATUS_STANDBY);
- }
- 
-+static void rfd77402_disable(void *client)
-+{
-+	rfd77402_powerdown(client);
-+}
-+
- static int rfd77402_probe(struct i2c_client *client,
- 			  const struct i2c_device_id *id)
- {
-@@ -270,7 +275,6 @@ static int rfd77402_probe(struct i2c_client *client,
- 		return -ENOMEM;
- 
- 	data = iio_priv(indio_dev);
--	i2c_set_clientdata(client, indio_dev);
- 	data->client = client;
- 	mutex_init(&data->lock);
- 
-@@ -284,25 +288,11 @@ static int rfd77402_probe(struct i2c_client *client,
- 	if (ret < 0)
- 		return ret;
- 
--	ret = iio_device_register(indio_dev);
-+	ret = devm_add_action_or_reset(&client->dev, rfd77402_disable, client);
- 	if (ret)
--		goto err_powerdown;
--
--	return 0;
--
--err_powerdown:
--	rfd77402_powerdown(client);
--	return ret;
--}
--
--static int rfd77402_remove(struct i2c_client *client)
--{
--	struct iio_dev *indio_dev = i2c_get_clientdata(client);
--
--	iio_device_unregister(indio_dev);
--	rfd77402_powerdown(client);
-+		return ret;
- 
--	return 0;
-+	return devm_iio_device_register(&client->dev, indio_dev);
- }
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -331,7 +321,6 @@ static struct i2c_driver rfd77402_driver = {
- 		.pm     = &rfd77402_pm_ops,
- 	},
- 	.probe  = rfd77402_probe,
--	.remove = rfd77402_remove,
- 	.id_table = rfd77402_id,
- };
- 
--- 
-2.31.1
+Thanks,
+Mani
 
+> Thanks,
+> Mani
+> 
+> Bhaumik Bhatt (8):
+>   bus: mhi: pci_generic: Apply no-op for wake using sideband wake
+>     boolean
+>   bus: mhi: core: Validate channel ID when processing command
+>     completions
+>   bus: mhi: core: Set BHI/BHIe offsets on power up preparation
+>   bus: mhi: core: Set BHI and BHIe pointers to NULL in clean-up
+>   bus: mhi: Add MMIO region length to controller structure
+>   ath11k: set register access length for MHI driver
+>   bus: mhi: pci_generic: Set register access length for MHI driver
+>   bus: mhi: core: Add range checks for BHI and BHIe
+> 
+> Loic Poulain (1):
+>   bus: mhi: Add inbound buffers allocation flag
+> 
+> ULRICH Thomas (1):
+>   bus: mhi: pci_generic: Add Cinterion MV31-W PCIe to MHI
+> 
+>  drivers/bus/mhi/core/init.c           | 61 +++++++++++++++++--------
+>  drivers/bus/mhi/core/internal.h       |  2 +-
+>  drivers/bus/mhi/core/main.c           | 26 +++++++----
+>  drivers/bus/mhi/core/pm.c             | 28 ++----------
+>  drivers/bus/mhi/pci_generic.c         | 65 +++++++++++++++++++++++----
+>  drivers/net/mhi/net.c                 |  2 +-
+>  drivers/net/wireless/ath/ath11k/mhi.c |  1 +
+>  drivers/net/wwan/mhi_wwan_ctrl.c      |  2 +-
+>  include/linux/mhi.h                   |  9 +++-
+>  net/qrtr/mhi.c                        |  2 +-
+>  10 files changed, 134 insertions(+), 64 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
