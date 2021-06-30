@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1879B3B7DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260D43B7DBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 08:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhF3G5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 02:57:31 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:44915 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232605AbhF3G53 (ORCPT
+        id S232699AbhF3HAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 03:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232445AbhF3HAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 02:57:29 -0400
-Received: by mail-vs1-f49.google.com with SMTP id y21so1067850vsm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Jun 2021 23:55:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q+6q6qdz667Cf0iKSQ/dUdaHbp2LScTUHAPwkTfCDGY=;
-        b=CchA3rsLdORWnW/NiyXWGkIwgQ/DBiYCvJp4sxN9JmUtVbdlnsWljxAu8DT3oKqvQH
-         SLg3JYcaDWsjcsYX/okzNFVB+IiAWWy+RAXkU0NWwjYlTdfZboJa6Gv2SuxpvZmGZXio
-         wkm4ObjGq1qC7JhLfGaDgtXq3TG053wm8hnH654NvDXfBants+FV48sSe05BS7ymAD2X
-         hjfOT7svgxuF9L7y9k77BheFWiYQKgW77ZSPE/MaZ0UjPoSvSD1YDOinmFDUwFTp71mp
-         TTJdF2JyPk2odp4ge9QO9LUXPutmC9/IKaH/SlqECI5w01kfVRBpfOHGvRyoPSm63hTI
-         Mw1g==
-X-Gm-Message-State: AOAM5308BsxzFv5kJ6zWtLMIm1Bw01iXvbx8PgBi9K2cxu72y1+nI1lk
-        FIjEEugmdjU+gnZHw8xCM6Teqk5KBmDz2g8nXy2cFiRttts=
-X-Google-Smtp-Source: ABdhPJxWKHAqwLWfIvAhQ3sgATgRT6fdrhFg7ubK6vw9zZ3/JkR/4I9iKK/R5EPjxfZrm8YhbsnNCvmZdyiW1T3riDQ=
-X-Received: by 2002:a67:770d:: with SMTP id s13mr16034470vsc.40.1625036100451;
- Tue, 29 Jun 2021 23:55:00 -0700 (PDT)
+        Wed, 30 Jun 2021 03:00:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EF3C061766;
+        Tue, 29 Jun 2021 23:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7hjCe6790yJYG2knci/u7lshTqKfgMUWNj9c/qQQmOI=; b=msqZuJMeBAI1Ng4YKMnTEPn4me
+        ZUo+C+FnoFV8z/5bZoOnp+CkdeyyLQV2+Ohs+D5B7OcVQhY4BJVc5puoZVPPEFoteqh/AsSe8PoND
+        QfH9zFiPJv41TALoDbOZkP/NwW/W9zFeZiEs4t9U+IzXEuU1LXjvWqfFlu9eghIBRbiWzMQHTqVev
+        V/LcMCU3NMCcYXJ96J+luawTeg9igB77ulhin/ZRPQt9Osh6dJmDGgxIcF7/5+foNRdc/AFkNzmSC
+        fDZ3o5udhRXWu/5GqiIYdAUJlURi62LvWS/L2fhf3Jh0j3RjkA/XiXikszGS3ZXwUz+gbaQGjU/4w
+        fCjpyQ0A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyU9N-0050qE-2A; Wed, 30 Jun 2021 06:56:50 +0000
+Date:   Wed, 30 Jun 2021 07:56:45 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jason Wang <jasowang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: [RFC] /dev/ioasid uAPI proposal
+Message-ID: <YNwVrZoR5k3RnWeL@infradead.org>
+References: <20210604122830.GK1002214@nvidia.com>
+ <20210604092620.16aaf5db.alex.williamson@redhat.com>
+ <815fd392-0870-f410-cbac-859070df1b83@redhat.com>
+ <20210604155016.GR1002214@nvidia.com>
+ <30e5c597-b31c-56de-c75e-950c91947d8f@redhat.com>
+ <20210604160336.GA414156@nvidia.com>
+ <2c62b5c7-582a-c710-0436-4ac5e8fd8b39@redhat.com>
+ <20210604172207.GT1002214@nvidia.com>
+ <20210604152918.57d0d369.alex.williamson@redhat.com>
+ <MWHPR11MB1886E95C6646F7663DBA10DD8C389@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <1b2fd6f2b2e87a7d483450c20f31366b7f17c997.1624972206.git.geert+renesas@glider.be>
- <CACRpkdavxy4wmsj8XtXmbMDkmScquABynphnmD_GAARfudd1AQ@mail.gmail.com>
-In-Reply-To: <CACRpkdavxy4wmsj8XtXmbMDkmScquABynphnmD_GAARfudd1AQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 30 Jun 2021 08:54:49 +0200
-Message-ID: <CAMuHMdUm1acjWjrAz+FMnTit+ABL4tKrutQwt-6pHs64-=dyTg@mail.gmail.com>
-Subject: Re: [PATCH] arm: Typo s/PCI_IXP4XX_LEGACY/IXP4XX_PCI_LEGACY/
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB1886E95C6646F7663DBA10DD8C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, Arnd,
+On Mon, Jun 07, 2021 at 03:25:32AM +0000, Tian, Kevin wrote:
+> 
+> Possibly just a naming thing, but I feel it's better to just talk about
+> no-snoop or non-coherent in the uAPI. Per Intel SDM wbinvd is a
+> privileged instruction. A process on the host has no privilege to 
+> execute it. Only when this process holds a VM, this instruction matters
+> as there are guest privilege levels. But having VFIO uAPI (which is
+> userspace oriented) to explicitly deal with a CPU instruction which
+> makes sense only in a virtualization context sounds a bit weird...
 
-On Wed, Jun 30, 2021 at 2:26 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Jun 29, 2021 at 3:12 PM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
->
-> > Kconfig symbol PCI_IXP4XX_LEGACY does not exist, but IXP4XX_PCI_LEGACY
-> > does.
-> >
-> > Fixes: d5d9f7ac58ea1041 ("ARM/ixp4xx: Make NEED_MACH_IO_H optional")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Are you sending this to ARM SoC or should I?
-
-Arnd: can you pick this up? Or is it Olof time?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+More importantly the Intel instructions here are super weird.
+Pretty much every other architecture just has plan old cache
+writeback/invalidate/writeback+invalidate instructions without all these
+weird implications.
