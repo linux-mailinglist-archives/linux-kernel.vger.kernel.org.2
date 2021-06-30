@@ -2,130 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABCD3B8673
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F88C3B8679
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbhF3Prt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
+        id S235854AbhF3PtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbhF3Prs (ORCPT
+        with ESMTP id S235743AbhF3PtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:47:48 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBFEC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:45:19 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id o35-20020a05600c5123b02901e6a7a3266cso1960290wms.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:45:19 -0700 (PDT)
+        Wed, 30 Jun 2021 11:49:03 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C6C061756;
+        Wed, 30 Jun 2021 08:46:34 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id y76so3695593iof.6;
+        Wed, 30 Jun 2021 08:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1ENtviZFf6UB6WhzhBRX4oayXJFsy08o+zUtpcML1eY=;
-        b=sDizoLBzqEtNrNupqrMoJqqdNSqgHESxaRCdnE5PdDJqat6n9Gu8dQHPR1n+Ow5+wX
-         nLS/USgKRlgOWl/AuWbSwt9NMyL0HKDduu66WsBdYyjEn6YdxtmXLQH8YQM5ygK6hZxa
-         rm8WVh4euy8DL5bA/+PvVzBEuxxlyNyd3jBuPOHRjecZ/aVraaI1CxTTQoh1tUb+1x3v
-         /CiX6VH4SALj3i2GZpCwrTFaFUhHTyznY1W1JX3VaqdQK6NBYDiLpTs5huyiKk/Gb/DD
-         mEc/ItQPKD76RQT22Kj790w8GaBnEqrapaJuzSwwM4Knur0K7iVlQYcYOxiCQ7jz1gnj
-         96HQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DQtlKoCc9YSJGpDWgsPOEOvlsOxc9jffBtGa2EcQTms=;
+        b=JgoTCEZWNGvGo04wuKHdsw577/uZhlfIg47P9qxRFAN/TEZrJN+qGEGgb5UqA16ZPn
+         MJHuYmYcx1QBCVXDfOdvj2QgZAlXzrauFy/SrjnymV875+WY1YYgfZq7qBbVOeqPI7qh
+         lCokm0VKF1EXhTLBg7PIwvtvE//akoKu/P0q+jag4awhxAOqIfDU8TRp2lQrg4o8FQMP
+         VySH+WQ1WVX3C2DwBoUH1aP5F90OnsDek86EibqpYV/c2xQqASWjtRkN84U3GaHT6MXG
+         ScgwTFK89o7YJU8LfgqpqzupjOj0J0kbbXAcUE5BK6d2a9bHM2DTw71Iw5M7LO2QKsr7
+         7KcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1ENtviZFf6UB6WhzhBRX4oayXJFsy08o+zUtpcML1eY=;
-        b=Ar0rk6JTD/FUKNGV31VWd3C7Z1MmUqFTjBO/L1sOEhFmpGEXB9mBPqq/015M/aG72c
-         KU9jdSagKqCAGWbKbpjukh+yVQEolJeFValRed+J5wL3NqbnO032NoVXL8bh+9cbY9mS
-         UN4WXOLV5fVPw7pZUzFvcuV+R3eHB876FPqdMFHGe9kVrMpupwR5Tpwot5N+/I0UrtLu
-         qgYGS3+tKHBY7ZO7dy7fbItVkVfa8Gmq65dx6IrTcN/M80YZKVykn5P9vMO0CM3O3gNC
-         MHf9YBM0f8n7O5gzvFODrvzZeu7aMotTYRe8be/UacefCqfT0OnEJEPf0sqYUyWOnO15
-         aQzQ==
-X-Gm-Message-State: AOAM532qjCXQGNYFJD7BN/sIUdrUaF5p+e1i9vA3LGkOaF5pxUWclgkp
-        IDfG7HjfouXO/HcVhRm3spvto9yRQe0X8Kf8
-X-Google-Smtp-Source: ABdhPJxXSM+xte/i3dUh9QxdLooYbrIzNQ+oCdy2XkFAgcFBEgMTKPiVFbPqBP3+ifpAs2Erpt0leA==
-X-Received: by 2002:a1c:771a:: with SMTP id t26mr5505758wmi.36.1625067917656;
-        Wed, 30 Jun 2021 08:45:17 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id w22sm6769228wmc.4.2021.06.30.08.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 08:45:17 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 15:45:14 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
-Message-ID: <YNyRisb3bNhDR0Rh@google.com>
-References: <20210623123441.592348-1-qperret@google.com>
- <20210623123441.592348-2-qperret@google.com>
- <20210630145848.htb7pnwsl2gao77x@e107158-lin.cambridge.arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DQtlKoCc9YSJGpDWgsPOEOvlsOxc9jffBtGa2EcQTms=;
+        b=T/iqlBQTFKhdWOYYwH6sjJdX7myYucXX1a5vRPeomwMQ53ArzIsUDJP93ZXqp7kMOl
+         ygAhNXRvv6zm1jXbbRSwIuxVjmHp7m1Hcezvs3sejPkvW08u25i0sfJ/JxY1qjqtvMGs
+         aT96qDxBjHZwrQ6pqP59BQlH+VpKlMkOr8gw/8WyHMUD0HCqqe7ropcbuNkqRlM48nGH
+         ZqjxTNclH2tkPmTKHlAa53ewvambpuqxKemkGXiJEVkIrvjNgP2PPC1/KvJmL1kXYb4o
+         k8Id0Sr3v16n/k5asgJX0VqB2aAyVcF9J23agKODJ8dsMkuj8FGX5sPpVGZMIuzhIcG0
+         xR+A==
+X-Gm-Message-State: AOAM531x7eF+Qu24kC5NMvFEabCsj2/aAi7FnhTwxw9/jnc825e3xHBJ
+        ecbXOUe7ZU87TlMZ8rh6AG7pqLBZpxymdCL031A=
+X-Google-Smtp-Source: ABdhPJysHxvk5qcwQJzY0bzYS66Eb29ROJRKzIhokSPLXEzgIfWYaxQBcpUsM/8d0yAuz0Hv4fIryDGRbJaY6fUNcrA=
+X-Received: by 2002:a02:908a:: with SMTP id x10mr9258682jaf.30.1625067993559;
+ Wed, 30 Jun 2021 08:46:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630145848.htb7pnwsl2gao77x@e107158-lin.cambridge.arm.com>
+References: <20210513135644.GE20142@xsang-OptiPlex-9020> <877dk1zibo.fsf@suse.de>
+In-Reply-To: <877dk1zibo.fsf@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 30 Jun 2021 18:46:22 +0300
+Message-ID: <CAOQ4uxgde72YDADffihj1P-Kse_P6zkhrjBb1DhwVUC+yRJooQ@mail.gmail.com>
+Subject: Re: [vfs] 94a4dd06a6: xfstests.generic.263.fail
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+On Fri, May 14, 2021 at 2:03 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> kernel test robot <oliver.sang@intel.com> writes:
+>
+> > Greeting,
+> >
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: 94a4dd06a6bbf3978b0bb1dddc2d8ec4e5bcad26 ("[PATCH v9] vfs: fix =
+copy_file_range regression in cross-fs copies")
+> > url: https://github.com/0day-ci/linux/commits/Luis-Henriques/vfs-fix-co=
+py_file_range-regression-in-cross-fs-copies/20210510-170804
+> > base: https://git.kernel.org/cgit/linux/kernel/git/viro/vfs.git for-nex=
+t
+> >
+> > in testcase: xfstests
+> > version: xfstests-x86_64-73c0871-1_20210401
+> > with following parameters:
+> >
+> >       disk: 4HDD
+> >       fs: xfs
+> >       test: generic-group-13
+> >       ucode: 0x21
+> >
+> > test-description: xfstests is a regression test suite for xfs and other=
+ files ystems.
+> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> >
+> >
+> > on test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.=
+30GHz with 8G memory
+> >
+> > caused below changes (please refer to attached dmesg/kmsg for entire lo=
+g/backtrace):
+> >
+> >
+> >
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> >
+> > 2021-05-11 11:28:23 export TEST_DIR=3D/fs/sda1
+> > 2021-05-11 11:28:23 export TEST_DEV=3D/dev/sda1
+> > 2021-05-11 11:28:23 export FSTYP=3Dxfs
+> > 2021-05-11 11:28:23 export SCRATCH_MNT=3D/fs/scratch
+> > 2021-05-11 11:28:23 mkdir /fs/scratch -p
+> > 2021-05-11 11:28:23 export SCRATCH_DEV=3D/dev/sda4
+> > 2021-05-11 11:28:23 export SCRATCH_LOGDEV=3D/dev/sda2
+> > 2021-05-11 11:28:23 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests=
+/generic-group-13
+> > 2021-05-11 11:28:23 ./check generic/260 generic/261 generic/262 generic=
+/263 generic/264 generic/265 generic/266 generic/267 generic/268 generic/26=
+9 generic/270 generic/271 generic/272 generic/273 generic/274 generic/275 g=
+eneric/276 generic/277 generic/278 generic/279
+> > FSTYP         -- xfs (debug)
+> > PLATFORM      -- Linux/x86_64 lkp-ivb-d02 5.12.0-rc6-00061-g94a4dd06a6b=
+b #1 SMP Tue May 11 00:58:17 CST 2021
+> > MKFS_OPTIONS  -- -f -bsize=3D4096 /dev/sda4
+> > MOUNT_OPTIONS -- /dev/sda4 /fs/scratch
+> >
+> > generic/260   [not run] FITRIM not supported on /fs/scratch
+> > generic/261   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/262   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/263   [failed, exit status 1]- output mismatch (see /lkp/benchm=
+arks/xfstests/results//generic/263.out.bad)
+> >     --- tests/generic/263.out 2021-04-01 03:07:08.000000000 +0000
+> >     +++ /lkp/benchmarks/xfstests/results//generic/263.out.bad 2021-05-1=
+1 11:28:29.773460096 +0000
+> >     @@ -1,3 +1,32 @@
+> >      QA output created by 263
+> >      fsx -N 10000 -o 8192 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
+> >     -fsx -N 10000 -o 128000 -l 500000 -r PSIZE -t BSIZE -w BSIZE -Z
+> >     +Seed set to 1
+> >     +main: filesystem does not support clone range, disabling!
+> >     +main: filesystem does not support dedupe range, disabling!
+> >     +skipping zero size read
+> >     ...
+> >     (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/263.out /lkp/b=
+enchmarks/xfstests/results//generic/263.out.bad'  to see the entire diff)
+> > generic/264   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/265   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/266   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/267   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/268   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/269    48s
+> > generic/270    61s
+> > generic/271   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/272   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/273    17s
+> > generic/274    14s
+> > generic/275    11s
+> > generic/276   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/277    3s
+> > generic/278   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > generic/279   [not run] Reflink not supported by scratch filesystem typ=
+e: xfs
+> > Ran: generic/260 generic/261 generic/262 generic/263 generic/264 generi=
+c/265 generic/266 generic/267 generic/268 generic/269 generic/270 generic/2=
+71 generic/272 generic/273 generic/274 generic/275 generic/276 generic/277 =
+generic/278 generic/279
+> > Not run: generic/260 generic/261 generic/262 generic/264 generic/265 ge=
+neric/266 generic/267 generic/268 generic/271 generic/272 generic/276 gener=
+ic/278 generic/279
+> > Failures: generic/263
+> > Failed 1 of 20 tests
+>
+> OK, I see what's going on.  There are 2 issues: one with patch and anothe=
+r
+> one with the test itself.
+>
+> The CFR syscall should have been disabled in this test but it isn't
+> because the test tries to copy 1 byte from a zero-sized file:
+>
+> int
+> test_copy_range(void)
+> {
+>         loff_t o1 =3D 0, o2 =3D 1;
+>
+>         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) =3D=3D =
+-1 &&
+>             (errno =3D=3D ENOSYS || errno =3D=3D EOPNOTSUPP || errno =3D=
+=3D ENOTTY)) {
+>                 if (!quiet)
+>                         fprintf(stderr,
+>                                 "main: filesystem does not support "
+>                                 "copy range, disabling!\n");
+>                 return 0;
+>         }
+>
+>         return 1;
+> }
+>
+> The syscall is doing an early '0' return because the file size is < len.
+>
+> Fixing the kernel should probably be as easy as removing the
+> short-circuiting check in vfs_copy_file_range():
+>
+>         if (len =3D=3D 0)
+>                 return 0;
+>
+> This will force the filesystems code to handle '0' size copies but will
+> also make sure -EOPNOTSUPP is returned in this case.
+>
 
-On Wednesday 30 Jun 2021 at 15:58:48 (+0100), Qais Yousef wrote:
-> I just realized this needs
-> 
-> 	if (clamp_id == UCLAMP_MAX)
-> 		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-> 
-> The code is only set for UCLAMP_MAX, so should be cleared for UCLAMP_MAX too.
-> 
-> Though there's ugly overload here:
-> 
-> 	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
-> 		return;
-> 
-> This check would fail prematurely if UCLAMP_MAX was reset before UCLAMP_MIN.
-> The code before your change would reset both then do the clear. But now when we
-> do it from here, we need to be more careful about that.
+Sorry for the late reply.
+The solution above is correct.
+That is aligned with the behavior of vfs_clone_file_range().
+Need to call into the filesystem method also with 0 length
+in order to learn about CFR support of this filesystem instance.
 
-Right, although this should all work fine as-is, I agree that relying on
-the calling order is a bit dodgy and might cause issues in the long run.
+> Alternatively, we could have something like:
+>
+>         if (len =3D=3D 0) {
+>                 if (file_out->f_op->copy_file_range)
+>                         return 0;
+>                 else
+>                         return -EOPNOTSUPP;
+>         }
+>
 
-What do you think of this instead?
+This does not catch the case of a filesystem driver that has
+CFR method but a filesystem instance does not support CFR.
+For example, overlayfs with ext4 as upper fs.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index b094da4c5fea..c0b999a8062a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -980,7 +980,6 @@ static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
-        if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
-                return;
+> What do you guys think is the right thing to do?
+>
+> Additionally, the test should also be fixed with something as the patch
+> bellow.  By making sure we have 1 byte to copy we also ensure the syscall
+> will return -EOPNOTSUPP, even with the current version of the patch.
+>
 
--       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-        WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
- }
+I don't think that the test should be fixed.
 
-@@ -1253,6 +1252,10 @@ static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+Thanks,
+Amir.
 
-        for_each_clamp_id(clamp_id)
-                uclamp_rq_inc_id(rq, p, clamp_id);
-+
-+       /* Reset clamp idle holding when there is one RUNNABLE task */
-+       if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-+               rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
- }
-
- static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
-@@ -1300,6 +1303,13 @@ uclamp_update_active(struct task_struct *p, enum uclamp_id clamp_id)
-        if (p->uclamp[clamp_id].active) {
-                uclamp_rq_dec_id(rq, p, clamp_id);
-                uclamp_rq_inc_id(rq, p, clamp_id);
-+
-+               /*
-+                * Make sure to clear the idle flag if we've transiently reached
-+                * 0 uclamp active tasks on the rq.
-+                */
-+               if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
-+                       rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-        }
-
-        task_rq_unlock(rq, p, &rf);
+> Cheers,
+> --
+> Luis
+>
+> diff --git a/ltp/fsx.c b/ltp/fsx.c
+> index cd0bae55aeb8..97db594ae142 100644
+> --- a/ltp/fsx.c
+> +++ b/ltp/fsx.c
+> @@ -1596,6 +1596,10 @@ int
+>  test_copy_range(void)
+>  {
+>         loff_t o1 =3D 0, o2 =3D 1;
+> +       int ret =3D 1;
+> +
+> +       /* Make sure we have 1 byte to copy */
+> +       ftruncate(fd, 1);
+>
+>         if (syscall(__NR_copy_file_range, fd, &o1, fd, &o2, 1, 0) =3D=3D =
+-1 &&
+>             (errno =3D=3D ENOSYS || errno =3D=3D EOPNOTSUPP || errno =3D=
+=3D ENOTTY)) {
+> @@ -1603,10 +1607,13 @@ test_copy_range(void)
+>                         fprintf(stderr,
+>                                 "main: filesystem does not support "
+>                                 "copy range, disabling!\n");
+> -               return 0;
+> +               ret =3D 0;
+>         }
+>
+> -       return 1;
+> +       /* Restore file size */
+> +       ftruncate(fd, 0);
+> +
+> +       return ret;
+>  }
+>
+>  void
