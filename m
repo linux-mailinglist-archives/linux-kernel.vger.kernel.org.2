@@ -2,176 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE23B88DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3863B88E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 21:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbhF3TBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 15:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhF3TBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:01:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CFF613DF;
-        Wed, 30 Jun 2021 18:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625079564;
-        bh=+Qoi6zaLjN1sx/hHLl2ILKRfVIWSzyopQklvN1Izyu4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Sw9/2/1gN72JQ0kM1tTNHVuDPXymLqQ65jUUva/SL4uRF4yovOUUAzz4MwF/ljksR
-         O2Sb3P6Z4xg+KXbamWozGCqigXjTFa9QpMisIwSzyrNXyDO7o/l8TXDAlWeR3riihy
-         AYdHn29UotCsQ6qXOtYLd070CWeCYLicc8Q+1pUJdQYgZMvPyAvavzAMiHOoAObOSk
-         v3z6olvK+j2UVAzYLWfgqi3qonfnIurxMkvIDs+BrFnLPajetU8Jx91uA8kOHBpJDH
-         1SaEh73Apjs61DGAmi+b7qESo6w8fE9E/mx3pgbQBAH5geEMnxm2sET/7dWqRiQiae
-         nheBUdcbkhu8A==
-Date:   Wed, 30 Jun 2021 13:59:22 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: rockchip: Avoid accessing PCIe registers with
- clocks gated
-Message-ID: <20210630185922.GA4170992@bjorn-Precision-5520>
+        id S233618AbhF3TDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 15:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhF3TDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 15:03:21 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C826C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:00:52 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id d16so7035809lfn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 12:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AEgh9Jy+v2hf9QQxXrhqFRUWrnkAgTuVo3us79cOIOw=;
+        b=ZKBY6VftutgEegz48judWjWXy81U7xX6OZgRzr3GXzWpadR6jP1iqlLNU7Y0d91WTG
+         Beq8K5ZKgeKbUwLlCcz/aYP37Gj8UvZH42R94ZAq7P0Rc43sFsmak+4n6NY8UGlVWZBt
+         DDCSUjd/HrmFRtzM5nWojlT5UF+iBDUCSRMJq5cbRi+d4m93TcHPHdB6yHVlIV8p8Ko6
+         Qj0HTt7jrncgZ4ntXM0Xazu8x5iwm77s+HJe7YvmCAJFyZcNXez8Oez4IdvPIMf/M9tw
+         bLbErz1qi1vxtLpvIBXoPpc5K9bdOU+yS/Ifv/UG3pA9BpwzpqV+e1vd5kSLvUmOWBe5
+         AnnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AEgh9Jy+v2hf9QQxXrhqFRUWrnkAgTuVo3us79cOIOw=;
+        b=ZqjnYn1HN3IMFldvXWZN8iCJXdiI3QSfMQo1CvL/i4Siy8zaJPRTD/kY9kcWZFZJuw
+         wi8WdnC4jy1J9WOMbkJKhWpq0j9d7LULOwcpf9AQVYOmvaNefOKzs9DLTSSo1yFQIAXt
+         SsJlw94zfVCwwh6etGf1czuSJ+9B3yp808T34vGQTShQBbyAEBILxPzuzMUqf321V8dR
+         NSF53Xmxdpe6R7vGdDm5sxfvg+QNhQwqgtRgF4ytqQiZ59mkSFsDicN4dCuTjY2+5OVH
+         3ZZzyziwCd/auBLUG2w84gV3CDctrAnRC/WdSe+auZqk9jin3Uad9aYxzjnTFxKRrIMg
+         PM3g==
+X-Gm-Message-State: AOAM532jzbRy79nNj4MWt8AM89xlrOMK7OE6omUdg987gJMtRzig/1F6
+        UCczWMR87PDMd5Zbpy8mZAtjFvGfUu57kadBf8Vd+Q==
+X-Google-Smtp-Source: ABdhPJzDjoniOT1Bd7VA+hYgwG7DePFjKijlt9GhP+NN1iQALNtamNNzBBHpZmLXaQL0UebX9WZd5/yC9rRoLL/gt2g=
+X-Received: by 2002:a05:6512:442:: with SMTP id y2mr27208904lfk.117.1625079650220;
+ Wed, 30 Jun 2021 12:00:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608080409.1729276-1-javierm@redhat.com>
+References: <20210623192822.3072029-1-surenb@google.com> <CALvZod7GPeB6ArrU8oBPx-1NT-ZDBQzTiJHJDojjO2kAgALkHw@mail.gmail.com>
+ <CAJuCfpG4M=ZnqR9D9MPNB88nwWgQ9qA9Z9a6dymZ5abOxNucGg@mail.gmail.com>
+In-Reply-To: <CAJuCfpG4M=ZnqR9D9MPNB88nwWgQ9qA9Z9a6dymZ5abOxNucGg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 30 Jun 2021 12:00:38 -0700
+Message-ID: <CALvZod6deRap_tE_dSPhQnpe7XNgQ6w9hZAEirRRB-bWBK+zBA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Michal, Jingoo, Thierry, Jonathan]
+On Wed, Jun 30, 2021 at 11:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+[...]
+> > > +       /*
+> > > +        * If the task is dying and in the process of releasing its memory
+> > > +        * then get its mm.
+> > > +        */
+> > > +       task_lock(task);
+> > > +       if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> >
+> > task_will_free_mem() is fine here but I think in parallel we should
+> > optimize this function. At the moment it is traversing all the
+> > processes on the machine. It is very normal to have tens of thousands
+> > of processes on big machines, so it would be really costly when
+> > reaping a bunch of processes.
+>
+> Hmm. But I think we still need to make sure that the mm is not shared
+> with another non-dying process. IIUC that's the point of that
+> traversal. Am I mistaken?
 
-On Tue, Jun 08, 2021 at 10:04:09AM +0200, Javier Martinez Canillas wrote:
-> IRQ handlers that are registered for shared interrupts can be called at
-> any time after have been registered using the request_irq() function.
-> 
-> It's up to drivers to ensure that's always safe for these to be called.
-> 
-> Both the "pcie-sys" and "pcie-client" interrupts are shared, but since
-> their handlers are registered very early in the probe function, an error
-> later can lead to these handlers being executed before all the required
-> resources have been properly setup.
-> 
-> For example, the rockchip_pcie_read() function used by these IRQ handlers
-> expects that some PCIe clocks will already be enabled, otherwise trying
-> to access the PCIe registers causes the read to hang and never return.
-> 
-> The CONFIG_DEBUG_SHIRQ option tests if drivers are able to cope with their
-> shared interrupt handlers being called, by generating a spurious interrupt
-> just before a shared interrupt handler is unregistered.
-> 
-> But this means that if the option is enabled, any error in the probe path
-> of this driver could lead to one of the IRQ handlers to be executed.
-> 
-> In a rockpro64 board, the following sequence of events happens:
-> 
->   1) "pcie-sys" IRQ is requested and its handler registered.
->   2) "pcie-client" IRQ is requested and its handler registered.
->   3) probe later fails due readl_poll_timeout() returning a timeout.
->   4) the "pcie-sys" IRQ is unregistered.
->   5) CONFIG_DEBUG_SHIRQ triggers a spurious interrupt.
->   6) "pcie-client" IRQ handler is called for this spurious interrupt.
->   7) IRQ handler tries to read PCIE_CLIENT_INT_STATUS with clocks gated.
->   8) the machine hangs because rockchip_pcie_read() call never returns.
-> 
-> To avoid cases like this, the handlers don't have to be registered until
-> very late in the probe function, once all the resources have been setup.
-> 
-> So let's just move all the IRQ init before the pci_host_probe() call, that
-> will prevent issues like this and seems to be the correct thing to do too.
-> 
-> Reported-by: Peter Robinson <pbrobinson@gmail.com>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> Acked-by: Shawn Lin <shawn.lin@rock-chips.com>
-
-I think the above commit log is perfectly accurate, but all the
-details might suggest that this is something specific to rockchip or
-CONFIG_DEBUG_SHIRQ, which it isn't, and they might obscure the
-fundamental problem, which is actually very simple: we registered IRQ
-handlers before we were ready for them to be called.
-
-I propose the following commit log in the hope that it would help
-other driver authors to make similar fixes:
-
-    PCI: rockchip: Register IRQ handlers after device and data are ready
-
-    An IRQ handler may be called at any time after it is registered, so
-    anything it relies on must be ready before registration.
-
-    rockchip_pcie_subsys_irq_handler() and rockchip_pcie_client_irq_handler()
-    read registers in the PCIe controller, but we registered them before
-    turning on clocks to the controller.  If either is called before the clocks
-    are turned on, the register reads fail and the machine hangs.
-
-    Similarly, rockchip_pcie_legacy_int_handler() uses rockchip->irq_domain,
-    but we installed it before initializing irq_domain.
-
-    Register IRQ handlers after their data structures are initialized and
-    clocks are enabled.
-
-If this is inaccurate or omits something important, let me know.  I
-can make any updates locally.
-
-Bjorn
-
-> ---
-> 
-> Changes in v2:
-> - Add missing word in the commit message.
-> - Include Shawn Lin's Acked-by tag.
-> 
->  drivers/pci/controller/pcie-rockchip-host.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
-> index f1d08a1b159..78d04ac29cd 100644
-> --- a/drivers/pci/controller/pcie-rockchip-host.c
-> +++ b/drivers/pci/controller/pcie-rockchip-host.c
-> @@ -592,10 +592,6 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
->  	if (err)
->  		return err;
->  
-> -	err = rockchip_pcie_setup_irq(rockchip);
-> -	if (err)
-> -		return err;
-> -
->  	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
->  	if (IS_ERR(rockchip->vpcie12v)) {
->  		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
-> @@ -973,8 +969,6 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
->  	if (err)
->  		goto err_vpcie;
->  
-> -	rockchip_pcie_enable_interrupts(rockchip);
-> -
->  	err = rockchip_pcie_init_irq_domain(rockchip);
->  	if (err < 0)
->  		goto err_deinit_port;
-> @@ -992,6 +986,12 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
->  	bridge->sysdata = rockchip;
->  	bridge->ops = &rockchip_pcie_ops;
->  
-> +	err = rockchip_pcie_setup_irq(rockchip);
-> +	if (err)
-> +		goto err_remove_irq_domain;
-> +
-> +	rockchip_pcie_enable_interrupts(rockchip);
-> +
->  	err = pci_host_probe(bridge);
->  	if (err < 0)
->  		goto err_remove_irq_domain;
-> -- 
-> 2.31.1
-> 
+You are right. I am talking about efficiently finding all processes
+which are sharing mm (maybe linked into another list) instead of
+traversing all the processes on the system.
