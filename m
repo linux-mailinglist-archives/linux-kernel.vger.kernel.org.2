@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D02F3B7FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBC53B7FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 11:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbhF3JSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 05:18:03 -0400
-Received: from out0.migadu.com ([94.23.1.103]:15282 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233541AbhF3JSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:18:02 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1625044532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XtD1Z679yl9jfdfDlft91RCChqPkkEUMqDgoGMpv8Lg=;
-        b=kF6VHFFJ3hE/TH1E8BvUplPs7VoEShTZf257Ss0/Lu/kEKgv2nAx/xmMkmIV4szg1D8Xea
-        y4GxoF3u0ImYD4K5AaJ1yKIiNmUwujTyKp33caZb1r6v+37FeP7rjH9KAdQD44XlRnk27h
-        ZxHTGwrh3AZqfUs/zp4BBdUZFfBqHdo=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     ms@dev.tdt.de, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-x25@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] net: x25: Optimize the code in {compat_}x25_subscr_ioctl()
-Date:   Wed, 30 Jun 2021 17:15:21 +0800
-Message-Id: <20210630091521.15568-1-yajun.deng@linux.dev>
+        id S233837AbhF3JUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 05:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233696AbhF3JUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:20:19 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77189C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:17:50 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id c8so1840351pfp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SGxHKBuGZkCU1I+kyNcTwBrZAXyCdyYBNGIIT95dpcY=;
+        b=PitW6imfDn0IzY3RG7JEiKUR+7Nsn4w2y1bEvPgW/HS2AbzJNtJNRONqnYjnNN01RO
+         f4Cy3TS0FXR+ruq1aYhiZGEJMhWbD1l8vF9wU2uLP3NYm94onDiG0L+Sdwsda2NHyvii
+         j6adVFIua9Ybkbk/RCb14aonwq2ISknAbeRG8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SGxHKBuGZkCU1I+kyNcTwBrZAXyCdyYBNGIIT95dpcY=;
+        b=WXaP359Cj8nZDLoa8jVcQEItyyLx5ymhcH2Isiko9Zs6EWNuNt/BVvFhCv5B8qMALO
+         jwndwVDiESEP5sNJvtip2Mvphg6keU3B5Z7IBiD3H51FHiBdlwb3od6OVcyrkRBaNLfa
+         7UlP+S8Bec62JAdfz9ISYZWh11t5LpQO/VWXBvnrM0qkc/HPt8z3RB8yQpud13zpHEM9
+         wlrs1wLpwcuc4vxKtKTDzaElVQzPaq08U0lET3s87HO2ZzLGW2ZCzfv5kqy88fs9y6Z1
+         XCBWAzH5xVGgbWZta5RsTC6SIl296NBQok3BHVXbbDK/bDp38tkmVFbVLwqb3rbjxAsx
+         w2vw==
+X-Gm-Message-State: AOAM530QQlxwCpW9SGVDSTJIymoFLNnst/llSeqTPM9Q9BGCgOan/XLs
+        8VO9QOflR1/zQreL+sISgCINz6zrmJWftw==
+X-Google-Smtp-Source: ABdhPJzwSQVnmSdrpavlwSvFkcSMYA/hbXk14tbqQSPab7BPPTH7O0acACLS9wqyYa3tYna6Q5flxQ==
+X-Received: by 2002:a63:3383:: with SMTP id z125mr907095pgz.26.1625044670021;
+        Wed, 30 Jun 2021 02:17:50 -0700 (PDT)
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com. [209.85.215.170])
+        by smtp.gmail.com with ESMTPSA id q18sm21015019pfj.178.2021.06.30.02.17.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 02:17:49 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id g22so1631491pgl.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 02:17:49 -0700 (PDT)
+X-Received: by 2002:a6b:e013:: with SMTP id z19mr7163972iog.34.1625044658498;
+ Wed, 30 Jun 2021 02:17:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+References: <20210624155526.2775863-1-tientzu@chromium.org>
+ <20210624155526.2775863-7-tientzu@chromium.org> <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
+In-Reply-To: <YNvMDFWKXSm4LRfZ@Ryzen-9-3900X.localdomain>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 30 Jun 2021 17:17:27 +0800
+X-Gmail-Original-Message-ID: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+Message-ID: <CALiNf2-a-haQN0-4+gX8+wa++52-0CnO2O4BEkxrQCxoTa_47w@mail.gmail.com>
+Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
+ swiotlb data bouncing
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Qian Cai <quic_qiancai@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combine the redundant return values, make it more concise.
+On Wed, Jun 30, 2021 at 9:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Thu, Jun 24, 2021 at 11:55:20PM +0800, Claire Chang wrote:
+> > Propagate the swiotlb_force into io_tlb_default_mem->force_bounce and
+> > use it to determine whether to bounce the data or not. This will be
+> > useful later to allow for different pools.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+> > Tested-by: Will Deacon <will@kernel.org>
+> > Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+>
+> This patch as commit af452ec1b1a3 ("swiotlb: Use is_swiotlb_force_bounce
+> for swiotlb data bouncing") causes my Ryzen 3 4300G system to fail to
+> get to an X session consistently (although not every single time),
+> presumably due to a crash in the AMDGPU driver that I see in dmesg.
+>
+> I have attached logs at af452ec1b1a3 and f127c9556a8e and I am happy
+> to provide any further information, debug, or test patches as necessary.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- net/x25/af_x25.c   | 19 ++++++++-----------
- net/x25/x25_link.c | 21 ++++++++++-----------
- 2 files changed, 18 insertions(+), 22 deletions(-)
+Are you using swiotlb=force? or the swiotlb_map is called because of
+!dma_capable? (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/kernel/dma/direct.h#n93)
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 3583354a7d7f..53c40fc7c1fd 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -1625,21 +1625,19 @@ static int compat_x25_subscr_ioctl(unsigned int cmd,
- 	struct net_device *dev;
- 	int rc = -EINVAL;
- 
--	rc = -EFAULT;
--	if (copy_from_user(&x25_subscr, x25_subscr32, sizeof(*x25_subscr32)))
-+	if (copy_from_user(&x25_subscr, x25_subscr32, sizeof(*x25_subscr32))) {
-+		rc = -EFAULT;
- 		goto out;
-+	}
- 
--	rc = -EINVAL;
- 	dev = x25_dev_get(x25_subscr.device);
--	if (dev == NULL)
-+	if (!dev)
- 		goto out;
- 
- 	nb = x25_get_neigh(dev);
--	if (nb == NULL)
-+	if (!nb)
- 		goto out_dev_put;
- 
--	dev_put(dev);
--
- 	if (cmd == SIOCX25GSUBSCRIP) {
- 		read_lock_bh(&x25_neigh_list_lock);
- 		x25_subscr.extended = nb->extended;
-@@ -1648,7 +1646,6 @@ static int compat_x25_subscr_ioctl(unsigned int cmd,
- 		rc = copy_to_user(x25_subscr32, &x25_subscr,
- 				sizeof(*x25_subscr32)) ? -EFAULT : 0;
- 	} else {
--		rc = -EINVAL;
- 		if (x25_subscr.extended == 0 || x25_subscr.extended == 1) {
- 			rc = 0;
- 			write_lock_bh(&x25_neigh_list_lock);
-@@ -1658,11 +1655,11 @@ static int compat_x25_subscr_ioctl(unsigned int cmd,
- 		}
- 	}
- 	x25_neigh_put(nb);
--out:
--	return rc;
-+
- out_dev_put:
- 	dev_put(dev);
--	goto out;
-+out:
-+	return rc;
- }
- 
- static int compat_x25_ioctl(struct socket *sock, unsigned int cmd,
-diff --git a/net/x25/x25_link.c b/net/x25/x25_link.c
-index 5460b9146dd8..01a13ec88ce8 100644
---- a/net/x25/x25_link.c
-+++ b/net/x25/x25_link.c
-@@ -360,19 +360,19 @@ int x25_subscr_ioctl(unsigned int cmd, void __user *arg)
- 	if (cmd != SIOCX25GSUBSCRIP && cmd != SIOCX25SSUBSCRIP)
- 		goto out;
- 
--	rc = -EFAULT;
--	if (copy_from_user(&x25_subscr, arg, sizeof(x25_subscr)))
-+	if (copy_from_user(&x25_subscr, arg, sizeof(x25_subscr))) {
-+		rc = -EFAULT;
- 		goto out;
-+	}
- 
--	rc = -EINVAL;
--	if ((dev = x25_dev_get(x25_subscr.device)) == NULL)
-+	dev = x25_dev_get(x25_subscr.device);
-+	if (!dev)
- 		goto out;
- 
--	if ((nb = x25_get_neigh(dev)) == NULL)
-+	nb = x25_get_neigh(dev);
-+	if (!nb)
- 		goto out_dev_put;
- 
--	dev_put(dev);
--
- 	if (cmd == SIOCX25GSUBSCRIP) {
- 		read_lock_bh(&x25_neigh_list_lock);
- 		x25_subscr.extended	     = nb->extended;
-@@ -381,7 +381,6 @@ int x25_subscr_ioctl(unsigned int cmd, void __user *arg)
- 		rc = copy_to_user(arg, &x25_subscr,
- 				  sizeof(x25_subscr)) ? -EFAULT : 0;
- 	} else {
--		rc = -EINVAL;
- 		if (!(x25_subscr.extended && x25_subscr.extended != 1)) {
- 			rc = 0;
- 			write_lock_bh(&x25_neigh_list_lock);
-@@ -391,11 +390,11 @@ int x25_subscr_ioctl(unsigned int cmd, void __user *arg)
- 		}
- 	}
- 	x25_neigh_put(nb);
--out:
--	return rc;
-+
- out_dev_put:
- 	dev_put(dev);
--	goto out;
-+out:
-+	return rc;
- }
- 
- 
--- 
-2.32.0
+`BUG: unable to handle page fault for address: 00000000003a8290` and
+the fact it crashed at `_raw_spin_lock_irqsave` look like the memory
+(maybe dev->dma_io_tlb_mem) was corrupted?
+The dev->dma_io_tlb_mem should be set here
+(https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/pci/probe.c#n2528)
+through device_initialize.
 
+I can't tell what happened from the logs, but maybe we could try KASAN
+to see if it provides more clue.
+
+Thanks,
+Claire
+
+>
+> Cheers,
+> Nathan
