@@ -2,205 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8530A3B888F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEA13B8893
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbhF3Sj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234478AbhF3SjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:39:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40974613F1;
-        Wed, 30 Jun 2021 18:36:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625078215;
-        bh=i907bq5Q74JNq6szL7VJHZaktp1wkdZJhhYltX8DBhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RNmJXKTllWZXiCehrvEPYk05C4asKJRZqNBi30QGDn4KOW/jOXH4mpGIoreOiKAXJ
-         +Gz9MbvQRp8XFxTeA5niEX+P39fMBvhXrvIgm662Alh+exAIPZV+IzVLolA+RmVjir
-         Lwk0jGpAcxHo7m3tU4HQCaEK+KMSuBduGrqck2hlnck+GrTv5G/PHRgjESAN/bsdYr
-         el7UOr+WPH1qi3OP6HWsPew6Af8m1DmG7PfYjYwA2Df581+LmMYl0GOIkLvqKEOwAy
-         b3tYaPVKikoOYoWcaAAs3ZUFuTnmMgXfPMnX21m1DrNwTeloA+EkcRYcJJqVYfGV5N
-         rUjWoiggbtnZQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 608CE40B1A; Wed, 30 Jun 2021 15:36:52 -0300 (-03)
-Date:   Wed, 30 Jun 2021 15:36:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v8 12/22] perf report: Output data file name in raw trace
- dump
-Message-ID: <YNy5xERHrtldjIM8@kernel.org>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <783fdabdb6bd62114a658eb360d2772f9662a55d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+        id S234608AbhF3Sjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:39:51 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:44605 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233129AbhF3Sju (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 14:39:50 -0400
+Received: by mail-io1-f70.google.com with SMTP id p4-20020a5d9c840000b02904fbbc3e404aso2507923iop.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:37:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/AVs9oHqf5mp42OqIZCGa4M29OQT9RBw7MUMCFsEQn0=;
+        b=DG+k/HWcIHCQTelXw2sX2fddWMLRUKNDin7CAuMrJSaOls1Ue0AkXwCPqBwLmuXVRm
+         E/WI92fNTLlEu4i9rKMeeFUxdcP94UkRzFiYKO1I/iJknXPa+sST8XPi6WNRkQ/y/Ra2
+         0ueAaoI6NxSynaB2rwqll21DSShrCs41DY6wKhACwGBhj30s0V2577zdgTiFVWfjlrYa
+         ZLmUhFX/ZiwO8WtYA6F0IAWyb41f94bV8L/RtR5zm9bZ+OPl26LU6q8PIC8qGDRaSv/p
+         mX2efq9IThbmGAe1IZT7qK5/fBuKB4VmgP6cvww4qR//wQn/f7XdQDZ9jt/uO6PXIgqd
+         ewxg==
+X-Gm-Message-State: AOAM5305FqffDcW+2cAmxqltHRU8M8yBJPknLm9E9jH98TG6zuqKiql6
+        RjmOqxl4ej3CwgVD6oKTPlywynqsqVtQpr1tLWYX/UJ1pR9q
+X-Google-Smtp-Source: ABdhPJzZvR0NYGpXS3+SeZggX9oRZCqPAvFkSzttmjiRa4KtvdZZePDccoA3EO2tRxLo/siE0QTBhoKRFS4/qqnOhrXt1qFzLRvy
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <783fdabdb6bd62114a658eb360d2772f9662a55d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a5d:8d16:: with SMTP id p22mr8920953ioj.90.1625078240745;
+ Wed, 30 Jun 2021 11:37:20 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 11:37:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000459ea305c6000318@google.com>
+Subject: [syzbot] BUG: scheduling while atomic: syz-executor/ADDR
+From:   syzbot <syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com>
+To:     ardb@kernel.org, bp@alien8.de, dave.hansen@intel.com,
+        davem@davemloft.net, herbert@gondor.apana.org.au, hpa@zytor.com,
+        jpa@git.mail.kapsi.fi, kan.liang@linux.intel.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jun 30, 2021 at 06:54:51PM +0300, Alexey Bayduraev escreveu:
-> Print path and name of a data file into raw dump (-D)
-> <file_offset>@<path/file>. Print offset of PERF_RECORD_COMPRESSED
-> record instead of zero for decompressed records:
->   0x2226a@perf.data [0x30]: event: 9
-> or
->   0x15cc36@perf.data/data.7 [0x30]: event: 9
+Hello,
 
-You're changing the logic in a subtle way here, see below
- 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> Acked-by: Andi Kleen <ak@linux.intel.com>
+syzbot found the following issue on:
 
-<SNIP>
+HEAD commit:    ff8744b5 Merge branch '100GbE' of git://git.kernel.org/pub..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=163cc5dc300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7cf9abab1592f017
+dashboard link: https://syzkaller.appspot.com/bug?extid=20191dc583eff8602d2d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a81190300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1417f5bfd00000
 
-> @@ -2021,7 +2031,8 @@ static int __perf_session__process_pipe_events(struct perf_session *session)
->  		}
->  	}
->  
-> -	if ((skip = perf_session__process_event(session, event, head)) < 0) {
-> +	skip = perf_session__process_event(session, event, head, "pipe");
-> +	if (skip < 0) {
+The issue was bisected to:
+
+commit 2481104fe98d5b016fdd95d649b1235f21e491ba
+Author: Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu Dec 31 16:41:55 2020 +0000
+
+    crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164ee60c300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=154ee60c300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=114ee60c300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Fixes: 2481104fe98d ("crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper")
+
+RBP: 00007ffd23488340 R08: 0000000000000000 R09: 00007ffd234884c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
+R13: 0000000000000000 R14: 00000000004ae018 R15: 0000000000400488
+syz-executor607[8444]: segfault at 4b0e48 ip 0000000000408e15 sp 00007ffd234882e0 error 7 in syz-executor607098311[401000+82000]
+Code: 0a 00 00 74 08 84 c9 0f 85 46 02 00 00 45 31 e4 0f 1f 44 00 00 64 8b 04 25 18 00 00 00 ba 01 00 00 00 85 c0 0f 85 d5 01 00 00 <0f> b1 15 2c 80 0a 00 4c 8b 33 4d 85 f6 75 3b e9 72 01 00 00 0f 1f
+BUG: scheduling while atomic: syz-executor607/8444/0x00000002
+no locks held by syz-executor607/8444.
+Modules linked in:
+Preemption disabled at:
+[<ffffffff812aa3e4>] kernel_fpu_begin_mask+0x64/0x260 arch/x86/kernel/fpu/core.c:126
+Kernel panic - not syncing: scheduling while atomic
+CPU: 1 PID: 8444 Comm: syz-executor607 Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ panic+0x306/0x73d kernel/panic.c:231
+ __schedule_bug.cold+0x10c/0x143 kernel/sched/core.c:4880
+ schedule_debug kernel/sched/core.c:4909 [inline]
+ __schedule+0x19df/0x23e0 kernel/sched/core.c:5038
+ schedule+0xcf/0x270 kernel/sched/core.c:5226
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x14d/0x290 kernel/entry/common.c:209
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:315
+ exc_page_fault+0xc6/0x180 arch/x86/mm/fault.c:1534
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
+RIP: 0033:0x408e15
+Code: 0a 00 00 74 08 84 c9 0f 85 46 02 00 00 45 31 e4 0f 1f 44 00 00 64 8b 04 25 18 00 00 00 ba 01 00 00 00 85 c0 0f 85 d5 01 00 00 <0f> b1 15 2c 80 0a 00 4c 8b 33 4d 85 f6 75 3b e9 72 01 00 00 0f 1f
+RSP: 002b:00007ffd234882e0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 00000000004ae108 RCX: 0000000000000001
+RDX: 0000000000000001 RSI: 00000000004ae108 RDI: 0000000000000001
+RBP: 0000000000000001 R08: 0000000000000000 R09: 00007ffd234884c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00000000004ae018 R15: 0000000000400488
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
-Why do this in this patch? Its not needed, leave it alone to make the
-patch smaller.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->  		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
->  		       head, event->header.size, event->header.type);
->  		err = -EINVAL;
-> @@ -2102,7 +2113,7 @@ fetch_decomp_event(u64 head, size_t mmap_size, char *buf, bool needs_swap)
->  static int __perf_session__process_decomp_events(struct perf_session *session)
->  {
->  	s64 skip;
-> -	u64 size, file_pos = 0;
-> +	u64 size;
->  	struct decomp *decomp = session->decomp_last;
->  
->  	if (!decomp)
-> @@ -2116,9 +2127,9 @@ static int __perf_session__process_decomp_events(struct perf_session *session)
->  			break;
->  
->  		size = event->header.size;
-> -
-> -		if (size < sizeof(struct perf_event_header) ||
-> -		    (skip = perf_session__process_event(session, event, file_pos)) < 0) {
-
-
-The call to perf_session__process_event() will not be made if
-
-  (size < sizeof(struct perf_event_header)
-
-evaluates to true, with your change it is being made unconditionally,
-also before it was using that file_pos variable, set to zero and
-possibly modified by the logic in this function.
-
-And I read just "perf report: Output data file name in raw trace", so
-when I saw this separate change to pass 'decomp->file_pos' and remove
-that 'file_pos = 0' part I scratched my head, then I read again the
-commit log messsage and there it says it also does this separate change.
-
-Please make it separate patch where you explain why this has to be done
-this way and what previous cset this fixes, so that the
-stable@kernel.org guys pick it as it sounds like a fix.
-
-> +		skip = perf_session__process_event(session, event, decomp->file_pos,
-> +						   decomp->file_path);
-> +		if (size < sizeof(struct perf_event_header) || skip < 0) {
->  			pr_err("%#" PRIx64 " [%#x]: failed to process type: %d\n",
->  				decomp->file_pos + decomp->head, event->header.size, event->header.type);
->  			return -EINVAL;
-> @@ -2149,10 +2160,12 @@ struct reader;
->  
->  typedef s64 (*reader_cb_t)(struct perf_session *session,
->  			   union perf_event *event,
-> -			   u64 file_offset);
-> +			   u64 file_offset,
-> +			   const char *file_path);
->  
->  struct reader {
->  	int		 fd;
-> +	const char	 *path;
->  	u64		 data_size;
->  	u64		 data_offset;
->  	reader_cb_t	 process;
-> @@ -2234,9 +2247,9 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  	skip = -EINVAL;
->  
->  	if (size < sizeof(struct perf_event_header) ||
-> -	    (skip = rd->process(session, event, file_pos)) < 0) {
-> -		pr_err("%#" PRIx64 " [%#x]: failed to process type: %d [%s]\n",
-> -		       file_offset + head, event->header.size,
-> +	    (skip = rd->process(session, event, file_pos, rd->path)) < 0) {
-> +		pr_err("%#" PRIx64 " [%s] [%#x]: failed to process type: %d [%s]\n",
-> +		       file_offset + head, rd->path, event->header.size,
->  		       event->header.type, strerror(-skip));
->  		err = skip;
->  		goto out;
-> @@ -2266,9 +2279,10 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->  
->  static s64 process_simple(struct perf_session *session,
->  			  union perf_event *event,
-> -			  u64 file_offset)
-> +			  u64 file_offset,
-> +			  const char *file_path)
->  {
-> -	return perf_session__process_event(session, event, file_offset);
-> +	return perf_session__process_event(session, event, file_offset, file_path);
->  }
->  
->  static int __perf_session__process_events(struct perf_session *session)
-> @@ -2278,6 +2292,7 @@ static int __perf_session__process_events(struct perf_session *session)
->  		.data_size	= session->header.data_size,
->  		.data_offset	= session->header.data_offset,
->  		.process	= process_simple,
-> +		.path		= session->data->file.path,
->  		.in_place_update = session->data->in_place_update,
->  	};
->  	struct ordered_events *oe = &session->ordered_events;
-> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-> index e31ba4c92a6c..6895a22ab5b7 100644
-> --- a/tools/perf/util/session.h
-> +++ b/tools/perf/util/session.h
-> @@ -46,6 +46,7 @@ struct perf_session {
->  struct decomp {
->  	struct decomp *next;
->  	u64 file_pos;
-> +	const char *file_path;
->  	size_t mmap_len;
->  	u64 head;
->  	size_t size;
-> diff --git a/tools/perf/util/tool.h b/tools/perf/util/tool.h
-> index bbbc0dcd461f..c966531d3eca 100644
-> --- a/tools/perf/util/tool.h
-> +++ b/tools/perf/util/tool.h
-> @@ -28,7 +28,8 @@ typedef int (*event_attr_op)(struct perf_tool *tool,
->  
->  typedef int (*event_op2)(struct perf_session *session, union perf_event *event);
->  typedef s64 (*event_op3)(struct perf_session *session, union perf_event *event);
-> -typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data);
-> +typedef int (*event_op4)(struct perf_session *session, union perf_event *event, u64 data,
-> +			 const char *str);
->  
->  typedef int (*event_oe)(struct perf_tool *tool, union perf_event *event,
->  			struct ordered_events *oe);
-> -- 
-> 2.19.0
-> 
-
--- 
-
-- Arnaldo
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
