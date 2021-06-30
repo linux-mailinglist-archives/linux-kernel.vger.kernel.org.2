@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717433B87C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455863B87C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 19:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhF3Rgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 13:36:46 -0400
-Received: from mga04.intel.com ([192.55.52.120]:54091 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhF3Rgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:36:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="206574695"
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="206574695"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 10:33:50 -0700
-X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="scan'208";a="457340742"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.67]) ([10.249.227.67])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 10:33:47 -0700
-Subject: Re: [PATCH v8 09/22] tools lib: Introduce bitmap_intersects()
- operation
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <f75aa738d8ff8f9cffd7532d671f3ef3deb97a7c.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <YNyoyvXouLyCRRgt@kernel.org>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <da33716e-eb5a-8bba-df93-7a2357c1c097@linux.intel.com>
-Date:   Wed, 30 Jun 2021 20:33:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232827AbhF3Rg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 13:36:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56272 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229852AbhF3Rg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 13:36:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625074468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N4ro5oL6ovpNBSp+T8bHCUqPQn0i5VVo5zsyKjCXD18=;
+        b=gAiCnIl8aH7kfY/fUxM79rpbBM/XSKeapJAvhOh1uArm3h1OzGhNi2FgV+Lj3vph6ekGqg
+        S2AKY6c6qER1Sx8+A92tyECNAv2s158UuWpOmtzQXJFRiqTWr77Yfu0/gsvMj8s1+Zhzq3
+        FUT3bkV7eI2oLktp58dAggpP+Xx8gAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-uiy8ntILMKG-kB9HWVSukw-1; Wed, 30 Jun 2021 13:34:24 -0400
+X-MC-Unique: uiy8ntILMKG-kB9HWVSukw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E04F981CD1C;
+        Wed, 30 Jun 2021 17:34:22 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-222.rdu2.redhat.com [10.10.115.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36B343AC2;
+        Wed, 30 Jun 2021 17:33:59 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C3B6422054F; Wed, 30 Jun 2021 13:33:58 -0400 (EDT)
+Date:   Wed, 30 Jun 2021 13:33:58 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <20210630173358.GD75386@redhat.com>
+References: <20210621062657.3641879-1-hch@lst.de>
+ <20210622081217.GA2975@lst.de>
+ <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
+ <20210629205048.GE5231@redhat.com>
+ <20210630053601.GA29241@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <YNyoyvXouLyCRRgt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630053601.GA29241@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 30.06.2021 20:24, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Jun 30, 2021 at 06:54:48PM +0300, Alexey Bayduraev escreveu:
->> Introduce bitmap_intersects() routine that tests whether
+On Wed, Jun 30, 2021 at 07:36:01AM +0200, Christoph Hellwig wrote:
+> On Tue, Jun 29, 2021 at 04:50:48PM -0400, Vivek Goyal wrote:
+> > May be we should modify mount_block_root() code so that it does not
+> > require that extra "\0". Possibly zero initialize page and that should
+> > make sure list_bdev_fs_names() does not have to worry about it.
+> > 
+> > It is possible that a page gets full from the list of filesystems, and
+> > last byte on page is terminating null. In that case just zeroing page
+> > will not help. We can keep track of some sort of end pointer and make
+> > sure we are not searching beyond that for valid filesystem types.
+> > 
+> > end = page + PAGE_SIZE - 1;
+> > 
+> > mount_block_root()
+> > {
+> > 	for (p = fs_names; p < end && *p; p += strlen(p)+1) {
+> > 	}
+> > }
 > 
-> Is this _adopting_ bitmap_intersects() from the kernel sources?
+> Maybe.  To honest I'd prefer to not even touch this unrelated code given
+> how full of landmines it is :)
 
-Yes, __bitmap_intersects is copy-pasted from the kernel sources,
-like the others in bitmap.h
+Agreed. It probably is better to make such changes incrementally. 
 
-Regards,
-Alexey
+Given third patch is nice to have cleanup kind of thing, can we first
+just merge first two patches to support non-block device filesystems as
+rootfs.
 
-> 
->> bitmaps bitmap1 and bitmap2 intersects. This routine will
->> be used during thread masks initialization.
->>
->> Acked-by: Andi Kleen <ak@linux.intel.com>
->> Acked-by: Namhyung Kim <namhyung@gmail.com>
->> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
->> ---
->>  tools/include/linux/bitmap.h | 11 +++++++++++
->>  tools/lib/bitmap.c           | 14 ++++++++++++++
->>  2 files changed, 25 insertions(+)
->>
->> diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
->> index 330dbf7509cc..9d959bc24859 100644
->> --- a/tools/include/linux/bitmap.h
->> +++ b/tools/include/linux/bitmap.h
->> @@ -18,6 +18,8 @@ int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
->>  int __bitmap_equal(const unsigned long *bitmap1,
->>  		   const unsigned long *bitmap2, unsigned int bits);
->>  void bitmap_clear(unsigned long *map, unsigned int start, int len);
->> +int __bitmap_intersects(const unsigned long *bitmap1,
->> +			const unsigned long *bitmap2, unsigned int bits);
->>  
->>  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
->>  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
->> @@ -170,4 +172,13 @@ static inline int bitmap_equal(const unsigned long *src1,
->>  	return __bitmap_equal(src1, src2, nbits);
->>  }
->>  
->> +static inline int bitmap_intersects(const unsigned long *src1,
->> +			const unsigned long *src2, unsigned int nbits)
->> +{
->> +	if (small_const_nbits(nbits))
->> +		return ((*src1 & *src2) & BITMAP_LAST_WORD_MASK(nbits)) != 0;
->> +	else
->> +		return __bitmap_intersects(src1, src2, nbits);
->> +}
->> +
->>  #endif /* _PERF_BITOPS_H */
->> diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
->> index f4e914712b6f..db466ef7be9d 100644
->> --- a/tools/lib/bitmap.c
->> +++ b/tools/lib/bitmap.c
->> @@ -86,3 +86,17 @@ int __bitmap_equal(const unsigned long *bitmap1,
->>  
->>  	return 1;
->>  }
->> +
->> +int __bitmap_intersects(const unsigned long *bitmap1,
->> +			const unsigned long *bitmap2, unsigned int bits)
->> +{
->> +	unsigned int k, lim = bits/BITS_PER_LONG;
->> +	for (k = 0; k < lim; ++k)
->> +		if (bitmap1[k] & bitmap2[k])
->> +			return 1;
->> +
->> +	if (bits % BITS_PER_LONG)
->> +		if ((bitmap1[k] & bitmap2[k]) & BITMAP_LAST_WORD_MASK(bits))
->> +			return 1;
->> +	return 0;
->> +}
->> -- 
->> 2.19.0
->>
-> 
+We will really like to have a method to properly boot virtiofs as rootfs.
+
+Thanks
+Vivek
+
