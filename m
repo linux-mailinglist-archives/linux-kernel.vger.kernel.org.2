@@ -2,120 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7C63B7C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 05:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E4D3B7C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 05:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbhF3D0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 23:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbhF3D03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 23:26:29 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0159C061760;
-        Tue, 29 Jun 2021 20:24:00 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id f13so491598qtb.6;
-        Tue, 29 Jun 2021 20:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IzYfIbSH+BtK6NX8sZPey5wWb+kKK+4WjltH9j9ILrU=;
-        b=fCvY0xuDWPHkB9aAw6vN6eSm2JCrKCHZwc+GewZFFA8/oe4Hqwovjg2Unji/GvVUSD
-         81flcHqj339pGWfhSvLUt/TifoBJiOVpZgFCnhbEpEoJ5IUiPQjF+5qndZTsMZAZOAKX
-         B989y/q/kSoZClNMXn+FRnTzNWmhgi/NsXcNYF3j5vf5q5yOps2Ku2GedQVq8ROmjkRa
-         +I/BwzDTJf4kEpFGebB56nWEze1RSCZjbc+THNNl8jXgPqcqOMJzdumuDV10SMEp3Z8i
-         y2FrPiOjOha47EGk+P9pEPuP8GfoLYfOVQpYDWlPzltoVVl2h2Ht+bUuVYFGovvW8Rok
-         3qqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=IzYfIbSH+BtK6NX8sZPey5wWb+kKK+4WjltH9j9ILrU=;
-        b=F8lqjBZC6S9YSJVtoOYmZIzQDMPBbvzTcssnc+N/TUKgapJG8zkzYNuTPCTdFXeyVn
-         Gb+46X/Gs50h4Zpvt0SN+Gm0VdoKkedoSjBkywtD1NZ0Z6sYGSWTuZv9+KaNGOQxI++s
-         uzU7CwcBupGqcvroBKPjyaI8naXL3AhzfFnKXiwOBU5d7wvqjzgL2uGkRwToaggu2ZsG
-         Pc7xqb042D2mfRqO9nI1Bh1TLOAnxoY+JpG8tHzT3gFcJv990U8N9eUtxhwTHXptRvZC
-         kCrTFey/T8tNKHiDMjpqvdnJwV71aQxBLVSHG5Ec0cZJxvMlAqbKPAsGJFbkEETbZzVT
-         9y+Q==
-X-Gm-Message-State: AOAM533NWi+rmyhTkLuIUGCFS57lJqmboKmtiTvE0kCxP/CrdrUO+hOd
-        ARX5dkYccjwHg/TK/n/WM/ibIF9I18ntuQ==
-X-Google-Smtp-Source: ABdhPJyNnjXL70B3iyOdbm3RNMcb5ZGqvt9LRsfETveKuAQXFLDsycsDQZvZ4NFaXSjwU7ZHSh5nXQ==
-X-Received: by 2002:ac8:5784:: with SMTP id v4mr25533183qta.29.1625023439645;
-        Tue, 29 Jun 2021 20:23:59 -0700 (PDT)
-Received: from localhost.localdomain (bras-base-rdwyon0600w-grc-10-174-88-120-156.dsl.bell.ca. [174.88.120.156])
-        by smtp.gmail.com with ESMTPSA id e6sm8106457qkg.12.2021.06.29.20.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 20:23:59 -0700 (PDT)
-Sender: John Kacur <jkacur@gmail.com>
-From:   John Kacur <jkacur@redhat.com>
-To:     RT <linux-rt-users@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Clark Williams <williams@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        John Kacur <jkacur@redhat.com>
-Subject: [ANNOUNCE] rt-tests-2.1
-Date:   Tue, 29 Jun 2021 23:23:30 -0400
-Message-Id: <20210630032330.17973-1-jkacur@redhat.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233262AbhF3DiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 23:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232164AbhF3DiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Jun 2021 23:38:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E152C61CA8;
+        Wed, 30 Jun 2021 03:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625024146;
+        bh=FGDn7EdSDBP+Z6Ic2fSBcnpJfqseTM16tuKxRyjkafA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IrXe4nfubIdnbogZLvtYN7+yZ5eUaiSTCrj+/p80/REZOZbsv1FHPcs2c8FhkCtLe
+         O2jU+w3AQ30Tm5Y5ap5Y5QYmlmHa4p9fHnfVM8L5MNQoy0QskBxRBaeH4Hr4WBXwE6
+         BsNprO84hJnYa8pDJE0NmoVUYS2Q6xVnUaT+1sARALCapC2RhyGSiCXb71D7hGJwzw
+         t4kCnUyRHeFau2JkRl3llWWVfb1i2lZjskDexpiBSJUd236MXwB3EgAUosSK6S1JO+
+         eAz/UIF8mpLBzBIPOknk2/nRZO1kgIMhllN27RkJP3Ss5EK1sNGTrPfVRb2oKJZPhW
+         TNFIJq9Td18fw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D78C560A36;
+        Wed, 30 Jun 2021 03:35:46 +0000 (UTC)
+Subject: Re: [GIT PULL] Various minor gfs2 cleanups and fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210629102710.1934579-1-agruenba@redhat.com>
+References: <20210629102710.1934579-1-agruenba@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210629102710.1934579-1-agruenba@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-fixes
+X-PR-Tracked-Commit-Id: 7a607a41cdc6c6f27b8e234cb44ce57070513dac
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8418dabd97ce4b0713c36dd8226978f737c342b0
+Message-Id: <162502414687.31877.12120348639784733924.pr-tracker-bot@kernel.org>
+Date:   Wed, 30 Jun 2021 03:35:46 +0000
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This release just contains the fix for the problem reported and
-investigated by Mike Galbraith. Thanks Mike
+The pull request you sent on Tue, 29 Jun 2021 12:27:10 +0200:
 
-The solution was to move the get_timestamp() call to the ramp up phase
-before the actual benchmark starts.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-fixes
 
-Bug reports, testing, patches are always appreciated.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8418dabd97ce4b0713c36dd8226978f737c342b0
 
-Enjoy!
-
-Clone
-git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://kernel.googlesource.com/pub/scm/utils/rt-tests/rt-tests.git
-
-Branch: main
-
-Tag: v2.1
-
-Tarballs are available here:
-https://kernel.org/pub/linux/utils/rt-tests
-
-Older version tarballs are available here:
-https://kernel.org/pub/linux/utils/rt-tests/older
-
-Daniel Wagner (2):
-  rt-utils: Call get_timestmap() in rt_init()
-  rt-utils: Remove empty rt_test_start()
-
-John Kacur (1):
-  rt-tests: Change VERSION to 2.1
-
-
- Makefile                              |  2 +-
- src/cyclictest/cyclictest.c           |  1 -
- src/include/rt-utils.h                |  2 --
- src/lib/rt-utils.c                    | 29 ++++++++++++---------------
- src/oslat/oslat.c                     |  1 -
- src/pi_tests/pi_stress.c              |  1 -
- src/pmqtest/pmqtest.c                 |  1 -
- src/ptsematest/ptsematest.c           |  1 -
- src/rt-migrate-test/rt-migrate-test.c |  1 -
- src/sched_deadline/cyclicdeadline.c   |  1 -
- src/signaltest/signaltest.c           |  1 -
- src/sigwaittest/sigwaittest.c         |  1 -
- src/ssdd/ssdd.c                       |  1 -
- src/svsematest/svsematest.c           |  1 -
- 14 files changed, 14 insertions(+), 30 deletions(-)
+Thank you!
 
 -- 
-2.31.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
