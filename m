@@ -2,66 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AC63B8819
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722353B881C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 20:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhF3SCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 14:02:47 -0400
-Received: from smtprelay0036.hostedemail.com ([216.40.44.36]:57326 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229573AbhF3SCq (ORCPT
+        id S232966AbhF3SDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 14:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232825AbhF3SDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:02:46 -0400
-Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 996BA182BF4F3;
-        Wed, 30 Jun 2021 18:00:14 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 9D93620A29C;
-        Wed, 30 Jun 2021 18:00:13 +0000 (UTC)
-Message-ID: <d32d67710c87e5fde488ccbf094f4fa649655a58.camel@perches.com>
-Subject: Re: [PATCH] powercap: Replace symbolic permissions with octal
- permissions
-From:   Joe Perches <joe@perches.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jinchao Wang <wjc@cdjrlc.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Date:   Wed, 30 Jun 2021 11:00:12 -0700
-In-Reply-To: <CAJZ5v0h9Nx-u0U5O1hp1-BzzKXMVd3UO5BuGH6oc95aXQeu=ag@mail.gmail.com>
-References: <20210624084403.1163-1-wjc@cdjrlc.com>
-         <CAJZ5v0h9Nx-u0U5O1hp1-BzzKXMVd3UO5BuGH6oc95aXQeu=ag@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Wed, 30 Jun 2021 14:03:39 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CE1C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:01:09 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id n14so6693133lfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 11:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f7Zc20M89DiLlQ+moMDDwd+VTvIiSSibcrF+4SaGp1M=;
+        b=t+qcpe2VpHTQAZMvMfUa8hTVYiG9UEnIuclYa6oqSZoPe++uiGLJdbJf1lNa6xQp9s
+         bMdc7XO7sqeSUfBvUjN3t2rtxSNNrnwlu7290pttzrctk62ECG9urOqo+Oy/W6gwdete
+         oltlaUhK3LUJ17DlVRL2QtaNDMmK7qwIei2X8JXddo8NGdF2F7AIBzzrnrqwbmzRkprv
+         CD1FNIzEe9EPf03lrjJjBkF39Iw49KiH1U2+fvsonnIGIdQ1oM3aXELMD0rK1/mw9uZM
+         OU/5seZRhsrFdJ+ULPu03FEV0V2+nGrDMzNSCM55pKJfBfv2wKLuOKWPhUaEITVaup+z
+         /C0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f7Zc20M89DiLlQ+moMDDwd+VTvIiSSibcrF+4SaGp1M=;
+        b=J+kbr5kMwNKvAjsUFHWGbeER7Dw6TWSKC8FpX4K/1Vw6UMyZcuN2Y4sTGkuIRtLXa0
+         i1Ra5nom1Bz2kC5x1+J6Ev5uXrJDNDyLLg6KDp4auJRTw85OZ1saTSviYkM6f1cg//ra
+         sPV9DbT/sgdgu7taDsc+k+LoSc8jdT9X8qKp8ganPFHxe0dkctwQ3MuDID3a7S4OApKZ
+         QlcRhNZtMVBy9jQPEzGoI3giMhAtze963lCRFusoy0vf+ooCBkT8SYMtj2QNybk/gRmV
+         uIzV+86ZF/KSNV1EhB9POLUSI7nbFtI/vxvncPIJms2KA4gjMQlXobuJAUVDdrI8LhtY
+         DYbg==
+X-Gm-Message-State: AOAM5321CijPfwBz977RKwu3Ufh7JR3mVqUqTzB5Fto5y71iFLsZbpoV
+        nU9M6NgfalduSR7lVGl4YnyI48uVd4UB+jR/repp7w==
+X-Google-Smtp-Source: ABdhPJyzv8U11rrq4ziEq24flRmWXao2NiiFFqLQu8OaqSR5WpQxTM+m2nhk+h3b3tTZNyFZcKI+/0zP7z3IhqmJPR8=
+X-Received: by 2002:a05:6512:3155:: with SMTP id s21mr27115898lfi.358.1625076067603;
+ Wed, 30 Jun 2021 11:01:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 9D93620A29C
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: r3aumi41y1cmpu7by8xrwmz566mj1rzi
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19q3KI551Z+RXekoPIyewutzcuwojVEW2A=
-X-HE-Tag: 1625076013-190973
+References: <20210623192822.3072029-1-surenb@google.com>
+In-Reply-To: <20210623192822.3072029-1-surenb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 30 Jun 2021 11:00:56 -0700
+Message-ID: <CALvZod7GPeB6ArrU8oBPx-1NT-ZDBQzTiJHJDojjO2kAgALkHw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-30 at 19:41 +0200, Rafael J. Wysocki wrote:
-> On Thu, Jun 24, 2021 at 10:44 AM Jinchao Wang <wjc@cdjrlc.com> wrote:
-> > 
-> > Resolve following checkpatch issue,
-> > Replace symbolic permissions with octal permissions
-> 
-> I don't see much value in this replacement and checkpatch complaining
-> about the existing code base is not something to worry about in
-> general.
+Hi Suren,
 
-https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
+On Wed, Jun 23, 2021 at 12:28 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> In modern systems it's not unusual to have a system component monitoring
+> memory conditions of the system and tasked with keeping system memory
+> pressure under control. One way to accomplish that is to kill
+> non-essential processes to free up memory for more important ones.
+> Examples of this are Facebook's OOM killer daemon called oomd and
+> Android's low memory killer daemon called lmkd.
+> For such system component it's important to be able to free memory
+> quickly and efficiently. Unfortunately the time process takes to free
+> up its memory after receiving a SIGKILL might vary based on the state
+> of the process (uninterruptible sleep), size and OPP level of the core
+> the process is running. A mechanism to free resources of the target
+> process in a more predictable way would improve system's ability to
+> control its memory pressure.
+> Introduce process_reap system call that reclaims memory of a dying process
+> from the context of the caller. This way the memory in freed in a more
+> controllable way with CPU affinity and priority of the caller. The workload
+> of freeing the memory will also be charged to the caller.
+> The operation is allowed only on a dying process.
+>
+> Previously I proposed a number of alternatives to accomplish this:
+> - https://lore.kernel.org/patchwork/patch/1060407 extending
+> pidfd_send_signal to allow memory reaping using oom_reaper thread;
+> - https://lore.kernel.org/patchwork/patch/1338196 extending
+> pidfd_send_signal to reap memory of the target process synchronously from
+> the context of the caller;
+> - https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+> support for process_madvise implementing synchronous memory reaping.
+>
+> The end of the last discussion culminated with suggestion to introduce a
+> dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+> The reasoning was that the new variant of process_madvise
+>   a) does not work on an address range
+>   b) is destructive
+>   c) doesn't share much code at all with the rest of process_madvise
+> From the userspace point of view it was awkward and inconvenient to provide
+> memory range for this operation that operates on the entire address space.
+> Using special flags or address values to specify the entire address space
+> was too hacky.
+>
+> The API is as follows,
+>
+>           int process_reap(int pidfd, unsigned int flags);
+>
+>         DESCRIPTION
+>           The process_reap() system call is used to free the memory of a
+>           dying process.
+>
+>           The pidfd selects the process referred to by the PID file
+>           descriptor.
+>           (See pidofd_open(2) for further information)
 
-I do agree that in general checkpatch should not really be used as
-the sole argument in favor of changing existing code.
+*pidfd_open
 
-So removing the "resolve following checkpatch issue" from the
-commit message and replacing it with something like "to improve
-readability" would be better.
+>
+>           The flags argument is reserved for future use; currently, this
+>           argument must be specified as 0.
+>
+>         RETURN VALUE
+>           On success, process_reap() returns 0. On error, -1 is returned
+>           and errno is set to indicate the error.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
+Thanks for continuously pushing this. One question I have is how do
+you envision this syscall to be used for the cgroup based workloads.
+Traverse the target tree, read pids from cgroup.procs files,
+pidfd_open them, send SIGKILL and then process_reap them. Is that
+right?
 
+Orthogonal to this patch I wonder if we should have an optimized way
+to reap processes from a cgroup. Something similar to cgroup.kill (or
+maybe overload cgroup.kill with reaping as well).
+
+[...]
+
+> +
+> +SYSCALL_DEFINE2(process_reap, int, pidfd, unsigned int, flags)
+> +{
+> +       struct pid *pid;
+> +       struct task_struct *task;
+> +       struct mm_struct *mm = NULL;
+> +       unsigned int f_flags;
+> +       long ret = 0;
+> +
+> +       if (flags != 0)
+> +               return -EINVAL;
+> +
+> +       pid = pidfd_get_pid(pidfd, &f_flags);
+> +       if (IS_ERR(pid))
+> +               return PTR_ERR(pid);
+> +
+> +       task = get_pid_task(pid, PIDTYPE_PID);
+> +       if (!task) {
+> +               ret = -ESRCH;
+> +               goto put_pid;
+> +       }
+> +
+> +       /*
+> +        * If the task is dying and in the process of releasing its memory
+> +        * then get its mm.
+> +        */
+> +       task_lock(task);
+> +       if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+
+task_will_free_mem() is fine here but I think in parallel we should
+optimize this function. At the moment it is traversing all the
+processes on the machine. It is very normal to have tens of thousands
+of processes on big machines, so it would be really costly when
+reaping a bunch of processes.
