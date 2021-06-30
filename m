@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9569A3B810D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9069B3B810E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbhF3LFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S234235AbhF3LID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbhF3LFe (ORCPT
+        with ESMTP id S229882AbhF3LHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:05:34 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85848C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:03:05 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id b13so4313485ybk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 04:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d+YReNfrn+My6MDFsEwu0i1PD0fj98FTmiER+oq8EEw=;
-        b=O0F4mQ7TW8eCorQS/KggtcA3XG8b//n0jyjvjvDUide7BKe4L0TLOIbJkVji41E1Mv
-         cx14tKQlg0+uinPaaLy8/4aqeRNLX4FTOETrAdf6Mf+LNoqE06DeWFv+qZh4h8J1xx0a
-         Y8lYu4YkMo/Lt4h4J6kz6dyaaA/zptvxt6PR2Hgl5YNk4xjcLxb5jXXA7zzC1z0kvv8X
-         dCyPx0rzLpzoU6LwMNRHT/9/7GIkNLNQfBBHfK57xzD8V0MjHaz+GX6Sau5fF/+VBg7O
-         9jOnw9ZFyyDraguIMlHNIRQ72Yb56fyDBbOZpu/z7HV81zDHcG/kooASlSjCPsZPsLUT
-         NaqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+YReNfrn+My6MDFsEwu0i1PD0fj98FTmiER+oq8EEw=;
-        b=jpVKkpmE1w6dlNwxEgiIq2Lxt8PBjPCuShhsqxbeYohj/KkFbst/XwWMKObY+EOFBa
-         KsYWv0/qSIGoE/7UfGSYRcjst1/AO3zdRAgKqzRQs+YI5Ussm5M2GuQeXr0MkbHRIKZl
-         DAOGKH+w18CZWcObvtuVDcHFcucI93vY01YZmeufrmzcVpDWRiAA1yTKcByFsr/c8NBU
-         TKGnRFoXxuclhO+SLDtssBqizThXvZAUFQoXrWSuIkc+tM4GP+h2OrlrHWBEfDj/RS3p
-         KXiNXBcb5WrHcICzoF5kKg/UN8i+ItjdCh/uyGPWpPI+w+mxq33SjDVin0rPt/jMBqr9
-         5xpg==
-X-Gm-Message-State: AOAM532jfdKT4KwyT+xMIuSpUnZQ3/C96p1kyPaI3q3rAro3Wum6Qc/4
-        /JTnU7mZ5i22eRm64gnXBD4UqDBrEMeeVQSZuVBsgw==
-X-Google-Smtp-Source: ABdhPJwrrqzx1XPekwwxSUGhBbvWSAE/6iMN0chVuS1LN4hSNUSx0uUaMlBjn0ofNXn4moedbQpgiX+kn81SBqgokuo=
-X-Received: by 2002:a25:6e82:: with SMTP id j124mr42144554ybc.132.1625050984283;
- Wed, 30 Jun 2021 04:03:04 -0700 (PDT)
+        Wed, 30 Jun 2021 07:07:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DE2C061756;
+        Wed, 30 Jun 2021 04:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D323D401TdCk6w7+sRla9GhM2/NvkKAQNpWP3TaT4EE=; b=ABerm+bQzI7rlXpwm6vCG1tJl6
+        Eas/5ugMF7eFiDEMY1pewlzE36OAVa2/VzI9Dudf1yG5FcvmIa426d8/Vv7DYfZdEm1oJ6VwCwXDf
+        f2VX/n2/M5C2GlQ/RNzYQS0E2ZHUErj6yGnW9OtETybgvh6T9oZsodd/U8du4yyJijuXka+Qr7NOS
+        bRee3FByYg9CNa+MQIugir8PTZWyEEkIJXekpN97GLgw0/4JdZ3wIfjUzDEDYAsf+nFFitqAsi1Q7
+        fLwkV8E/V5tjKD+UhqIwwmAtyfWTdLjf3kwRIQF6KrIjCC6FSSZcGNzIRBYylJPzSA/roQiUqsV1D
+        EtbBupug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyY18-005FbH-3j; Wed, 30 Jun 2021 11:04:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CB23D300242;
+        Wed, 30 Jun 2021 13:04:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8BAE72C306076; Wed, 30 Jun 2021 13:04:28 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 13:04:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] perf/x86: Add new event for AUX output counter index
+Message-ID: <YNxPvIC3gVdy1bp4@hirez.programming.kicks-ass.net>
+References: <20210609142055.32226-1-adrian.hunter@intel.com>
+ <20210609142055.32226-2-adrian.hunter@intel.com>
+ <YNXW4+QqeO1KL4Xq@hirez.programming.kicks-ass.net>
+ <cc79fce0-2c92-dd55-fd50-46b28644f4fc@intel.com>
 MIME-Version: 1.0
-References: <20210630051118.2212-1-yajun.deng@linux.dev>
-In-Reply-To: <20210630051118.2212-1-yajun.deng@linux.dev>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 30 Jun 2021 13:02:53 +0200
-Message-ID: <CANn89iJp8NoGeqP47u22tXpO78gzQoJBQQ4dpSdGb+v_dZ9kPQ@mail.gmail.com>
-Subject: Re: [PATCH] net: core: Modify alloc_size in alloc_netdev_mqs()
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, andriin@fb.com,
-        atenart@kernel.org, alobakin@pm.me, ast@kernel.org,
-        daniel@iogearbox.net, weiwan@google.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc79fce0-2c92-dd55-fd50-46b28644f4fc@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 7:11 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->
-> Use ALIGN for 'struct net_device', and remove the unneeded
-> 'NETDEV_ALIGN - 1'. This can save a few bytes. and modify
-> the pr_err content when txqs < 1.
+On Wed, Jun 30, 2021 at 12:21:07PM +0300, Adrian Hunter wrote:
+> On 25/06/21 4:15 pm, Peter Zijlstra wrote:
+> > On Wed, Jun 09, 2021 at 05:20:53PM +0300, Adrian Hunter wrote:
+> > 
+> >> +static void intel_pmu_report_aux_output_id(struct perf_event *event)
+> >> +{
+> >> +	struct hw_perf_event *hwc = &event->hw;
+> >> +
+> >> +	/*
+> >> +	 * So long as all PEBS-via-PT events for a recording session are
+> >> +	 * scheduled together, then only changes to hwc->idx need be reported.
+> >> +	 */
+> >> +	if (hwc->idx != hwc->idx_reported) {
+> >> +		hwc->idx_reported = hwc->idx;
+> >> +		perf_report_aux_output_id(event, hwc->idx);
+> >> +	}
+> >> +}
+> > 
+> > AFAICT you want a callback in x86_assign_hw_event(), is that so?
+> > 
+> 
+> Yes, or open-coded e.g.
+> 
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 8f71dd72ef95..46dac45298d1 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1207,6 +1207,11 @@ static int collect_events(struct cpu_hw_events *cpuc, struct perf_event *leader,
+>  	return n;
+>  }
+>  
+> +static inline bool report_aux_output_id(struct perf_event *event)
+> +{
+> +	return is_pebs_pt(event);
+> +}
+> +
+>  static inline void x86_assign_hw_event(struct perf_event *event,
+>  				struct cpu_hw_events *cpuc, int i)
+>  {
+> @@ -1217,6 +1222,9 @@ static inline void x86_assign_hw_event(struct perf_event *event,
+>  	hwc->last_cpu = smp_processor_id();
+>  	hwc->last_tag = ++cpuc->tags[i];
+>  
+> +	if (report_aux_output_id(event))
+> +		perf_report_aux_output_id(event, idx);
+> +
+>  	switch (hwc->idx) {
+>  	case INTEL_PMC_IDX_FIXED_BTS:
+>  	case INTEL_PMC_IDX_FIXED_VLBR:
 
-I think that in old times (maybe still today), SLAB debugging could
-lead to not unaligned allocated zones.
-The forced alignment for netdev structures came in
-commit f346af6a27c0cea99522213cb813fd30489136e2 ("net_device and
-netdev private struct allocation improvements.")
-in linux-2.6.3 (back in 2004)
+Right, bit yuck, but I suppose it works. The alternative is something
+like:
 
-This supposedly was a win in itself, otherwise Al Viro would not have
-spent time on this.
+	static_call_cond(x86_pmu_assign)(event, idx);
 
->
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/core/dev.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index c253c2aafe97..c42a682a624d 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -10789,7 +10789,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
->         BUG_ON(strlen(name) >= sizeof(dev->name));
->
->         if (txqs < 1) {
-> -               pr_err("alloc_netdev: Unable to allocate device with zero queues\n");
-> +               pr_err("alloc_netdev: Unable to allocate device with zero TX queues\n");
->                 return NULL;
->         }
->
-> @@ -10798,14 +10798,12 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
->                 return NULL;
->         }
->
-> -       alloc_size = sizeof(struct net_device);
-> +       /* ensure 32-byte alignment of struct net_device*/
-> +       alloc_size = ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
-
-This is not really needed, because struct net_device is cache line
-aligned already on SMP builds.
-
->         if (sizeof_priv) {
->                 /* ensure 32-byte alignment of private area */
-> -               alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
-> -               alloc_size += sizeof_priv;
-> +               alloc_size += ALIGN(sizeof_priv, NETDEV_ALIGN);
-
-No longer needed, the private area starts at the end of struct net_device, whose
-size is a multiple of cache line.
-
-Really I doubt this makes sense anymore these days, we have hundreds
-of structures in the kernel
-that would need a similar handling if SLAB/SLUB was doing silly things.
-
-I would simply do :
-
-alloc_size += sizeof_priv;
+but I'm not sure that's worth it, but it avoids stuffing even more intel
+specific bits into the core.
 
 
->         }
-> -       /* ensure 32-byte alignment of whole construct */
-> -       alloc_size += NETDEV_ALIGN - 1;
->
->         p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
->         if (!p)
-> --
-> 2.32.0
->
