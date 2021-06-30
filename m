@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5033B8453
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0625B3B842D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 15:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236390AbhF3Nym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 09:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235420AbhF3NvA (ORCPT
+        id S235855AbhF3NxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 09:53:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32958 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235787AbhF3Nu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 09:51:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A00CC061146;
-        Wed, 30 Jun 2021 06:47:52 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 13:47:50 -0000
+        Wed, 30 Jun 2021 09:50:27 -0400
+Date:   Wed, 30 Jun 2021 13:47:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625060870;
+        s=2020; t=1625060872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=lpr2lWeND1+hbD9J8b7icYQ4aFYGQ3kwyfmbbIB81AU=;
-        b=PVQWTRML6ooHGp9XtzZenOQfOzY5ze0fvMSZsa66M5tyPQ4K9OQ8P1fmT6Lce+T09aObgs
-        vKWnDeMZnF9Z+fQVrgaF1BaHH0YfLOA8htpOEBRGKOc72Xb9daOIv8hdB/CEnKQe3SsF/+
-        H8pttgXDkbfUrm1QZaURZvXP/gyF2KTABTYdpDPU9XyfceZ3uFLyRwDptN8DN/OJDj+xHE
-        aUDRpi9y0HiTBCC74Hx4lwtxcnAOkwmX4zR0uscY8y3QHZwpaoMHSJt+jsu66/uyE7Fuwx
-        BmPoumPbMyJ2RDCocOxhxZba5TtGLdRAfAA2ypw8ZyQpRSCRVkdlHZ8sny3UJQ==
+        bh=GDXQzZdEyq+tA7O+KlKpgPs+hIdJYgbzb8sBH4Ej8XE=;
+        b=WobaWQfdnnm8UcfVSOUaMbm0DoBhr3WBkdCiVuPwMIjIgomz1GOauBuoi9K1+N1gVmLPIX
+        9hxTdhxIYVD3L2E8gqhZ+dggzqM8/lhq+6oS2EYjnKgrpnYJNpf0oACN8p6Zgmi2c14igQ
+        wLWo7f9bHAaLvZkv6fj8otxLBXo7JQLNLMRD7SuJZcqC3JcFZ/LZKfLChVLq9wrf2GJcc/
+        eOO4N4fsZCUG8kmi4BBlk3g/eGqwVDnCPxDHR8XELhSgCQ5l/nM13r6Bmdop+XDSkeKHK2
+        N4EKda335+f6UwuiRctjXRdJVvQIBLtD2H0PKjJZ+B1gqL6uxuaGfj2LcTQVqw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625060870;
+        s=2020e; t=1625060872;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=lpr2lWeND1+hbD9J8b7icYQ4aFYGQ3kwyfmbbIB81AU=;
-        b=uO0zfJQCaLDMW5LLiP0wg87ZHDgex7a8B2YU8Rqq4OkLofZ6q66SxnFTV7U+T56atrHZp6
-        SvVaXKoy7V8l7BDw==
+        bh=GDXQzZdEyq+tA7O+KlKpgPs+hIdJYgbzb8sBH4Ej8XE=;
+        b=XibmdSLPxzzTmsX/0FzszVZxGEGVJxB/5RJR/ZSEugp3celbAag4iOp6OP80H7Luih+LxU
+        7BrP1YTV5JoN21Bg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Add "scenarios" option to kvm.sh --dryrun parameter
+Subject: [tip: core/rcu] rcu-tasks: Add block comment laying out RCU Tasks design
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162506087022.395.11725260654168880390.tip-bot2@tip-bot2>
+Message-ID: <162506087179.395.15551489265942613535.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,96 +51,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     3d2cc4fec861a825ecd7d9ce2797df4e5f0f5517
-Gitweb:        https://git.kernel.org/tip/3d2cc4fec861a825ecd7d9ce2797df4e5f0f5517
+Commit-ID:     06a3ec9205d570526665c2071d1a5492c3091a54
+Gitweb:        https://git.kernel.org/tip/06a3ec9205d570526665c2071d1a5492c3091a54
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 04 Mar 2021 17:21:17 -08:00
+AuthorDate:    Thu, 04 Mar 2021 14:41:47 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 10 May 2021 16:05:05 -07:00
+CommitterDate: Mon, 10 May 2021 16:04:24 -07:00
 
-torture: Add "scenarios" option to kvm.sh --dryrun parameter
+rcu-tasks: Add block comment laying out RCU Tasks design
 
-This commit adds "--dryrun scenarios" to kvm.sh, which prints something
-like this:
-
-1.  TREE03
-2.  TREE07
-3.  SRCU-P SRCU-N
-4.  TREE01 TRACE01
-5.  TREE02 TRACE02
-6.  TREE04 RUDE01 TASKS01
-7.  TREE05 TASKS03 SRCU-T SRCU-U
-8.  TASKS02 TINY01 TINY02 TREE09
-
-This format is more convenient for scripts that run batches of scenarios.
+This commit adds a block comment that gives a high-level overview of how
+RCU tasks grace periods progress.  It also adds a note about how exiting
+tasks are handled, plus it gives an overview of the memory ordering.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 28 ++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 6bf00a0..3bd523a 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -64,7 +64,7 @@ usage () {
- 	echo "       --cpus N"
- 	echo "       --datestamp string"
- 	echo "       --defconfig string"
--	echo "       --dryrun batches|sched|script"
-+	echo "       --dryrun batches|scenarios|sched|script"
- 	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
- 	echo "       --gdb"
- 	echo "       --help"
-@@ -130,7 +130,7 @@ do
- 		shift
- 		;;
- 	--dryrun)
--		checkarg --dryrun "batches|sched|script" $# "$2" 'batches\|sched\|script' '^--'
-+		checkarg --dryrun "batches|sched|script" $# "$2" 'batches\|scenarios\|sched\|script' '^--'
- 		dryrun=$2
- 		shift
- 		;;
-@@ -577,6 +577,25 @@ egrep 'Start batch|Starting build\.' $T/script | grep -v ">>" |
- 		print batchno, $1, $2
- 	}' > $T/batches
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 350ebf5..94d2c2c 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -377,6 +377,46 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ // Finally, this implementation does not support high call_rcu_tasks()
+ // rates from multiple CPUs.  If this is required, per-CPU callback lists
+ // will be needed.
++//
++// The implementation uses rcu_tasks_wait_gp(), which relies on function
++// pointers in the rcu_tasks structure.  The rcu_spawn_tasks_kthread()
++// function sets these function pointers up so that rcu_tasks_wait_gp()
++// invokes these functions in this order:
++//
++// rcu_tasks_pregp_step():
++//	Invokes synchronize_rcu() in order to wait for all in-flight
++//	t->on_rq and t->nvcsw transitions to complete.	This works because
++//	all such transitions are carried out with interrupts disabled.
++// rcu_tasks_pertask(), invoked on every non-idle task:
++//	For every runnable non-idle task other than the current one, use
++//	get_task_struct() to pin down that task, snapshot that task's
++//	number of voluntary context switches, and add that task to the
++//	holdout list.
++// rcu_tasks_postscan():
++//	Invoke synchronize_srcu() to ensure that all tasks that were
++//	in the process of exiting (and which thus might not know to
++//	synchronize with this RCU Tasks grace period) have completed
++//	exiting.
++// check_all_holdout_tasks(), repeatedly until holdout list is empty:
++//	Scans the holdout list, attempting to identify a quiescent state
++//	for each task on the list.  If there is a quiescent state, the
++//	corresponding task is removed from the holdout list.
++// rcu_tasks_postgp():
++//	Invokes synchronize_rcu() in order to ensure that all prior
++//	t->on_rq and t->nvcsw transitions are seen by all CPUs and tasks
++//	to have happened before the end of this RCU Tasks grace period.
++//	Again, this works because all such transitions are carried out
++//	with interrupts disabled.
++//
++// For each exiting task, the exit_tasks_rcu_start() and
++// exit_tasks_rcu_finish() functions begin and end, respectively, the SRCU
++// read-side critical sections waited for by rcu_tasks_postscan().
++//
++// Pre-grace-period update-side code is ordered before the grace via the
++// ->cbs_lock and the smp_mb__after_spinlock().  Pre-grace-period read-side
++// code is ordered before the grace period via synchronize_rcu() call
++// in rcu_tasks_pregp_step() and by the scheduler's locks and interrupt
++// disabling.
  
-+# As above, but one line per batch.
-+grep -v '^#' $T/batches | awk '
-+BEGIN {
-+	oldbatch = 1;
-+}
-+
-+{
-+	if (oldbatch != $1) {
-+		print ++n ". " curbatch;
-+		curbatch = "";
-+		oldbatch = $1;
-+	}
-+	curbatch = curbatch " " $2;
-+}
-+
-+END {
-+	print ++n ". " curbatch;
-+}' > $T/scenarios
-+
- if test "$dryrun" = script
- then
- 	cat $T/script
-@@ -597,11 +616,16 @@ elif test "$dryrun" = batches
- then
- 	cat $T/batches
- 	exit 0
-+elif test "$dryrun" = scenarios
-+then
-+	cat $T/scenarios
-+	exit 0
- else
- 	# Not a dryrun.  Record the batches and the number of CPUs, then run the script.
- 	bash $T/script
- 	ret=$?
- 	cp $T/batches $resdir/$ds/batches
-+	cp $T/scenarios $resdir/$ds/scenarios
- 	echo '#' cpus=$cpus >> $resdir/$ds/batches
- 	echo " --- Done at `date` (`get_starttime_duration $starttime`) exitcode $ret" | tee -a $resdir/$ds/log
- 	exit $ret
+ /* Pre-grace-period preparation. */
+ static void rcu_tasks_pregp_step(void)
