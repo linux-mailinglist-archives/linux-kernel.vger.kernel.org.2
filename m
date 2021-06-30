@@ -2,347 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A863B8A9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734AA3B8AAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 00:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhF3WwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 18:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233554AbhF3Wv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 18:51:57 -0400
-Received: from smtp-bc0f.mail.infomaniak.ch (smtp-bc0f.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc0f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1920C0617AD
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 15:49:26 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4GFc3T5h8jzMqHjK;
-        Thu,  1 Jul 2021 00:49:25 +0200 (CEST)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4GFc3T3QBmzlh8ms;
-        Thu,  1 Jul 2021 00:49:25 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v1 4/4] selftests/landlock: Check all possible intermediate directories
-Date:   Thu,  1 Jul 2021 00:48:56 +0200
-Message-Id: <20210630224856.1313928-5-mic@digikod.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210630224856.1313928-1-mic@digikod.net>
-References: <20210630224856.1313928-1-mic@digikod.net>
+        id S233537AbhF3XAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 19:00:14 -0400
+Received: from mout.gmx.net ([212.227.17.22]:50585 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232971AbhF3XAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 19:00:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625093854;
+        bh=NaS6NWz5hAdA8VokT4izVYKBa9VxtERQx5BuK2c9IAQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=RlylW0XqelHXjVtqZ1iveK6yupcBMLddJ+7sC0QDL+L1esOCH66bPz+LfFctCeabD
+         fCtPz3LHPrrljwI1anhIoD1fQHUX49TS9O0ZS8C8r9KzF7KIsMGirKwAS/x205cByI
+         v6CvVZTGgtJV5nVbQ/nwqLTTarIQcWkIiUG0nIJU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([149.172.234.120]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MORAU-1lZtWi15Q6-00PufC; Thu, 01
+ Jul 2021 00:57:34 +0200
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH v3] serial: amba-pl011: add RS485 support
+Date:   Thu,  1 Jul 2021 00:56:44 +0200
+Message-Id: <20210630225644.3744-1-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:ESBFkLxIrFDj9kXAvmHFhGgX4laKVLsYxxcVI/y0GHzpb64AMsN
+ SdJ2oFZWSkxsI3zYV2wAiIwfJGRz8/xtpmPG7e+8Fsbsocm0mGzNQkXWo0/QE1tnwTwuQsx
+ HfUgzjx9rM+4v/XtK/Bp6hAL4ASUsF+bKVv8mJKIZ1OwzqCqnQcKRRV+zZA56ZcEwmD7Eqw
+ xHPJKSy6zmigAHEhcs+GQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dXFoP/Shyb0=:ro6keEg/pfiGo4uRgsxQPl
+ LV4j7nTZUXQcYbBnVi+OsU1CadjNmtpVMYWShQ0gXsaSXoMoAld9XRDwLpXCP0CiT/kv5sD0m
+ PYVO6yM7+3MDPtypJt3/e58xIyxBFe4XigwabxAUc5caKoKP0dicO3k9sGT+ZwO67/rziMo2w
+ lEHHbI4JroH2PLBfn1zgF/5vHT88UU2FptngtGhDewz29HT2zkxe2jPufmwJatNJtmMjWClkC
+ IGlhKdmhoD6/qqJDpPcwK2p23FfVXSYtx5/3RwaCyNiFZqv3QJrFWvsl2gChUUvqv2ErmIRyA
+ ltniOox2B7lCkmAc+m1j4gyZLdEryBr4QZ2l1rpMmO1G/G1qd5J+vEysk0FleQmCf469kncoZ
+ z00g8AVmKbj431ldaFjjIciGP37+v9LYOuKzH9YN3+E2FQZy3XqKBuTDD5m2sTz/c0HveSEmD
+ fef2tAxjnCTFdYfJDFE481ay4t8ocsXCOmvUti4QT9v7Bx5Ypy9IR0Qv6NgCmptzEFWpbjGev
+ ZpBxM7gk9x/STDMPIGuk4/h/Nb6PNlnooTPb9j1hcBIhWNqD8PCA5YlLLe+NHOqx78b9zxaek
+ iXGJU/Yf3ES9gBQzsWJMJZ85QhTa8pKqHwc55xs/iLAL8KJ/1OoajUYSy6f9Ekvo98BbMdWkA
+ JgtEQSrO7qn65yoPQp0WF9snFNk/4dQYG1/YVCuQZcyIxkNvPFz1ytGgf8tWA6cdDN7vTJczc
+ QbnoCGJazj0K2lhk0nHBkgLUdp4LNjaOUpvjfK1hqUGxYlUN2ucblsCewql76vTu6KSDUpYP9
+ SH4TCXtvlm7c/3dIUPEfmXCA/7MLmlagE3ia2ZOALD0s3tygV6sYO4LD04+aA1kNJBQUR54Yx
+ 3IqjulDJ7h+BAVe3lnTFWsCWM6U0h0Yg232wN+//Kh05+o9M6TOMJmea/e6eN1OWLO+ThgC94
+ BQmMg7a3FQgmlg+O7lUXWhJOzsuoJoNHEbLl7kEXbdRFLnIIwF+8yKUy0+DsfhGeI4bNvSraT
+ ZMHAZcQTYk1uc3uAoFYzmgl5hddicgcc0pVkFD03rfVVCQORpy+exJ2DNrPcGlRHQ9170pcIe
+ 0A5QsoLF6pyBaMbEzxHbsqmYMxbnUBFG2iSa2mQs1W5HTKyAVjctI8sCw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
-
-Open and store file descriptors for the initial test directory at layout
-initialization and at sandbox creation.  This enables checking relative
-path opening with different scenarios.  To be sure to test all
-combinations, the intermediate path checks are of exponential
-complexity, which is OK for these use case though.  All meaningful tests
-now also check relative paths.
-
-Use some macros to avoid useless helper call rewrites with a context
-tied to each test.
-
-Cc: James Morris <jmorris@namei.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210630224856.1313928-5-mic@digikod.net
----
- tools/testing/selftests/landlock/fs_test.c | 140 ++++++++++++++++++---
- 1 file changed, 125 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
-index 403c8255311f..b1a91fdd0f88 100644
---- a/tools/testing/selftests/landlock/fs_test.c
-+++ b/tools/testing/selftests/landlock/fs_test.c
-@@ -154,7 +154,13 @@ static int remove_path(const char *const path)
- 	return err;
- }
- 
--static void prepare_layout(struct __test_metadata *const _metadata)
-+struct layout_context {
-+	int init_layout_cwd_fd;
-+	int init_sandbox_cwd_fd;
-+};
-+
-+static void prepare_layout(struct __test_metadata *const _metadata,
-+		struct layout_context *const ctx)
- {
- 	disable_caps(_metadata);
- 	umask(0077);
-@@ -171,10 +177,18 @@ static void prepare_layout(struct __test_metadata *const _metadata)
- 	clear_cap(_metadata, CAP_SYS_ADMIN);
- 
- 	ASSERT_EQ(0, chdir(TMP_DIR));
-+	ctx->init_layout_cwd_fd = open(".", O_DIRECTORY | O_CLOEXEC);
-+	ASSERT_LE(0, ctx->init_layout_cwd_fd);
-+	ctx->init_sandbox_cwd_fd = -1;
- }
- 
--static void cleanup_layout(struct __test_metadata *const _metadata)
-+static void cleanup_layout(struct __test_metadata *const _metadata,
-+		const struct layout_context *const ctx)
- {
-+	EXPECT_EQ(0, close(ctx->init_layout_cwd_fd));
-+	if (ctx->init_sandbox_cwd_fd != -1) {
-+		EXPECT_EQ(0, close(ctx->init_sandbox_cwd_fd));
-+	}
- 	EXPECT_EQ(0, chdir(".."));
- 
- 	set_cap(_metadata, CAP_SYS_ADMIN);
-@@ -227,11 +241,12 @@ static void remove_layout1(struct __test_metadata *const _metadata)
- }
- 
- FIXTURE(layout1) {
-+	struct layout_context ctx;
- };
- 
- FIXTURE_SETUP(layout1)
- {
--	prepare_layout(_metadata);
-+	prepare_layout(_metadata, &self->ctx);
- 
- 	create_layout1(_metadata);
- }
-@@ -240,7 +255,7 @@ FIXTURE_TEARDOWN(layout1)
- {
- 	remove_layout1(_metadata);
- 
--	cleanup_layout(_metadata);
-+	cleanup_layout(_metadata, &self->ctx);
- }
- 
- /*
-@@ -264,11 +279,84 @@ static int test_open_rel(const int dirfd, const char *const path, const int flag
- 	return 0;
- }
- 
--static int test_open(const char *const path, const int flags)
-+static int _test_open_all(const int base_fd, char *const path, const int flags)
-+{
-+	int ret_child, i;
-+
-+	ret_child = test_open_rel(base_fd, path, flags);
-+	if (ret_child == ENOENT)
-+		return ret_child;
-+
-+	for (i = strlen(path); i > 0; i--) {
-+		int inter_fd, ret_parent;
-+
-+		if (path[i] != '/')
-+			continue;
-+		path[i] = '\0';
-+		/* Using a non-O_PATH FD fills the cache. */
-+		inter_fd = openat(base_fd, path, O_CLOEXEC | O_DIRECTORY);
-+		path[i] = '/';
-+		if (inter_fd < 0) {
-+			if (errno != EACCES)
-+				return -1;
-+			/* If the sandbox denies access, then use O_PATH. */
-+			path[i] = '\0';
-+			inter_fd = openat(base_fd, path, O_CLOEXEC |
-+					O_DIRECTORY | O_PATH);
-+			path[i] = '/';
-+			if (inter_fd < 0)
-+				return -1;
-+		}
-+
-+		/*
-+		 * Checks all possible inter_fd combinations with
-+		 * recursive calls.
-+		 */
-+		ret_parent = _test_open_all(inter_fd, path + i + 1, flags);
-+		close(inter_fd);
-+
-+		/* Checks inconsistencies that may come from the cache. */
-+		if (ret_parent != ret_child)
-+			return -1;
-+	}
-+	return ret_child;
-+}
-+
-+static int _test_open_ctx(const struct layout_context *const ctx,
-+		const char *const path, const int flags)
- {
--	return test_open_rel(AT_FDCWD, path, flags);
-+	char *walker;
-+	int ret_init, ret_next, i;
-+	/*
-+	 * Checks with a FD opened without sandbox, and another FD opened
-+	 * within a sandbox (but maybe not the same).
-+	 */
-+	const int extra_dirfd[] = {
-+		ctx->init_layout_cwd_fd,
-+		ctx->init_sandbox_cwd_fd
-+	};
-+
-+	walker = strdup(path);
-+	if (!walker)
-+		return ENOMEM;
-+
-+	ret_init = _test_open_all(AT_FDCWD, walker, flags);
-+	for (i = 0; i < ARRAY_SIZE(extra_dirfd); i++) {
-+		const int dirfd = extra_dirfd[i];
-+
-+		if (dirfd != -1) {
-+			ret_next = _test_open_all(dirfd, walker, flags);
-+			if (ret_next != ret_init)
-+				return -1;
-+		}
-+	}
-+
-+	free(walker);
-+	return ret_init;
- }
- 
-+#define test_open(path, flags)	_test_open_ctx(&self->ctx, path, flags)
-+
- TEST_F_FORK(layout1, no_restriction)
- {
- 	ASSERT_EQ(0, test_open(dir_s1d1, O_RDONLY));
-@@ -493,15 +581,28 @@ static int create_ruleset(struct __test_metadata *const _metadata,
- 	return ruleset_fd;
- }
- 
--static void enforce_ruleset(struct __test_metadata *const _metadata,
--		const int ruleset_fd)
-+static void _enforce_ruleset(struct layout_context *const ctx,
-+		struct __test_metadata *const _metadata, const int ruleset_fd)
- {
- 	ASSERT_EQ(0, prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
- 	ASSERT_EQ(0, landlock_restrict_self(ruleset_fd, 0)) {
- 		TH_LOG("Failed to enforce ruleset: %s", strerror(errno));
- 	}
-+
-+	if (ctx->init_sandbox_cwd_fd == -1) {
-+		ctx->init_sandbox_cwd_fd = open(".", O_DIRECTORY | O_CLOEXEC);
-+		if (ctx->init_sandbox_cwd_fd == -1) {
-+			ASSERT_EQ(EACCES, errno);
-+			ctx->init_sandbox_cwd_fd = open(".", O_DIRECTORY |
-+					O_CLOEXEC | O_PATH);
-+			ASSERT_LE(0, ctx->init_sandbox_cwd_fd);
-+		}
-+	}
- }
- 
-+#define enforce_ruleset(_metadata, ruleset_fd)	\
-+	_enforce_ruleset(&self->ctx, _metadata, ruleset_fd)
-+
- TEST_F_FORK(layout1, proc_nsfs)
- {
- 	const struct rule rules[] = {
-@@ -1265,7 +1366,6 @@ TEST_F_FORK(layout1, rule_inside_mount_ns)
- 	enforce_ruleset(_metadata, ruleset_fd);
- 	ASSERT_EQ(0, close(ruleset_fd));
- 
--	ASSERT_EQ(0, test_open("s3d3", O_RDONLY));
- 	ASSERT_EQ(EACCES, test_open("/", O_RDONLY));
- }
- 
-@@ -1366,7 +1466,8 @@ enum relative_access {
- 	REL_CHROOT_CHDIR,
- };
- 
--static void test_relative_path(struct __test_metadata *const _metadata,
-+static void _test_relative_path(struct __test_metadata *const _metadata,
-+		FIXTURE_DATA(layout1) *const self,
- 		const enum relative_access rel)
- {
- 	/*
-@@ -1479,6 +1580,8 @@ static void test_relative_path(struct __test_metadata *const _metadata,
- 	ASSERT_EQ(0, close(ruleset_fd));
- }
- 
-+#define test_relative_path(_metadata, rel)	_test_relative_path(_metadata, self, rel)
-+
- TEST_F_FORK(layout1, relative_open)
- {
- 	test_relative_path(_metadata, REL_OPEN);
-@@ -1809,7 +1912,8 @@ TEST_F_FORK(layout1, remove_file)
- 	ASSERT_EQ(0, unlinkat(AT_FDCWD, file1_s1d3, 0));
- }
- 
--static void test_make_file(struct __test_metadata *const _metadata,
-+static void _test_make_file(struct __test_metadata *const _metadata,
-+		FIXTURE_DATA(layout1) *self,
- 		const __u64 access, const mode_t mode, const dev_t dev)
- {
- 	const struct rule rules[] = {
-@@ -1860,6 +1964,10 @@ static void test_make_file(struct __test_metadata *const _metadata,
- 	ASSERT_EQ(0, rename(file1_s1d3, file2_s1d3));
- }
- 
-+#define test_make_file(_metadata, access, mode, dev)	\
-+	_test_make_file(_metadata, self, access, mode, dev)
-+
-+
- TEST_F_FORK(layout1, make_char)
- {
- 	/* Creates a /dev/null device. */
-@@ -2076,11 +2184,12 @@ TEST_F_FORK(layout1, proc_pipe)
- }
- 
- FIXTURE(layout1_bind) {
-+	struct layout_context ctx;
- };
- 
- FIXTURE_SETUP(layout1_bind)
- {
--	prepare_layout(_metadata);
-+	prepare_layout(_metadata, &self->ctx);
- 
- 	create_layout1(_metadata);
- 
-@@ -2097,7 +2206,7 @@ FIXTURE_TEARDOWN(layout1_bind)
- 
- 	remove_layout1(_metadata);
- 
--	cleanup_layout(_metadata);
-+	cleanup_layout(_metadata, &self->ctx);
- }
- 
- static const char bind_dir_s1d3[] = "./s2d1/s2d2/s1d3";
-@@ -2417,11 +2526,12 @@ static const char (*merge_sub_files[])[] = {
-  */
- 
- FIXTURE(layout2_overlay) {
-+	struct layout_context ctx;
- };
- 
- FIXTURE_SETUP(layout2_overlay)
- {
--	prepare_layout(_metadata);
-+	prepare_layout(_metadata, &self->ctx);
- 
- 	create_directory(_metadata, LOWER_BASE);
- 	set_cap(_metadata, CAP_SYS_ADMIN);
-@@ -2484,7 +2594,7 @@ FIXTURE_TEARDOWN(layout2_overlay)
- 	clear_cap(_metadata, CAP_SYS_ADMIN);
- 	EXPECT_EQ(0, remove_path(MERGE_DATA));
- 
--	cleanup_layout(_metadata);
-+	cleanup_layout(_metadata, &self->ctx);
- }
- 
- TEST_F_FORK(layout2_overlay, no_restriction)
--- 
-2.32.0
-
+QWRkIGJhc2ljIHN1cHBvcnQgZm9yIFJTNDg1OiBQcm92aWRlIGEgY2FsbGJhY2sgdG8gY29uZmln
+dXJlIFJTNDg1CnNldHRpbmdzLiBIYW5kbGUgdGhlIFJTNDg1IHNwZWNpZmljIHBhcnQgaW4gdGhl
+IGZ1bmN0aW9ucwpwbDAxMV9yczQ4NV90eF9zdGFydCgpIGFuZCBwbDAxMV9yczQ4NV90eF9zdG9w
+KCkgd2hpY2ggZXh0ZW5kIHRoZSBnZW5lcmljCnN0YXJ0L3N0b3AgY2FsbGJhY2tzLgpCZXNpZGUg
+dmlhIElPQ1RMIGZyb20gdXNlcnNwYWNlIFJTNDg1IGNhbiBiZSBlbmFibGVkIGJ5IG1lYW5zIG9m
+IHRoZQpkZXZpY2UgdHJlZSBwcm9wZXJ0eSAicnM0ODUtZW5hYmxlZC1hdC1ib290LXRpbWUiLgoK
+U2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0t
+LQpDaGFuZ2VzIGluIFYzOgotIGF2b2lkIHBvdGVudGlhbCBlbmRsZXNzIGxvb3AgYXMgcmVxdWVz
+dGVkIGJ5IEdyZWcKLSBhZGQgYmxhbmsgbGluZXMgYmVmb3JlIGNvbW1lbnRzIGFzIHJlcXVlc3Rl
+ZCBieSBHcmVnCi0gYXZvaWQgZG91YmxlIG5lZ2F0aW9uIGluIGlmLXN0YXRlbWVudCBhcyByZXF1
+ZXN0ZWQgYnkgR3JlZyBhbmQKICBzdWdnZXN0ZWQgYnkgSmlyaQoKQ2hhbmdlcyBpbiB2MjoKLSBj
+bGFtcCBSVFMgZGVsYXlzIHRvIDEwMG1zIGFzIHN1Z2dlc3RlZCBieSBKaXJpIFNsYWJ5Ci0gaW5z
+dGVhZCBvZiBjb3VudGluZyBiaXRzICJieSBoYW5kIiB1c2UgdGhlIG5ldyBmdW5jdGlvbiB0dHlf
+Z2V0X2ZyYW1lX3NpemUoKQogIChhbHNvIHN1Z2dlc3RlZCBieSBKaXJpKQotIHVzZSB0aGUgdGVy
+bSBSUzQ4NSBjb25zaXN0ZW50bHkgaW4gdGhlIGNvbW1pdCBtZXNzYWdlCi0gcmVtb3ZlIG9uZSBi
+bGFuayBsaW5lCgoKIGRyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMgfCAxNjMgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKy0KIDEgZmlsZSBjaGFuZ2VkLCAxNjEgaW5zZXJ0aW9u
+cygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3R0eS9zZXJpYWwvYW1i
+YS1wbDAxMS5jIGIvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYwppbmRleCBlMTRmMzM3
+OGI4YTAuLmQzNjFjZDg0ZmY4YyAxMDA2NDQKLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEt
+cGwwMTEuYworKysgYi9kcml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1wbDAxMS5jCkBAIC0yNjUsNiAr
+MjY1LDggQEAgc3RydWN0IHVhcnRfYW1iYV9wb3J0IHsKIAl1bnNpZ25lZCBpbnQJCW9sZF9jcjsJ
+CS8qIHN0YXRlIGR1cmluZyBzaHV0ZG93biAqLwogCXVuc2lnbmVkIGludAkJZml4ZWRfYmF1ZDsJ
+LyogdmVuZG9yLXNldCBmaXhlZCBiYXVkIHJhdGUgKi8KIAljaGFyCQkJdHlwZVsxMl07CisJYm9v
+bAkJCXJzNDg1X3R4X3N0YXJ0ZWQ7CisJdW5zaWduZWQgaW50CQlyczQ4NV90eF9kcmFpbl9pbnRl
+cnZhbDsgLyogdXNlY3MgKi8KICNpZmRlZiBDT05GSUdfRE1BX0VOR0lORQogCS8qIERNQSBzdHVm
+ZiAqLwogCWJvb2wJCQl1c2luZ190eF9kbWE7CkBAIC0yNzUsNiArMjc3LDggQEAgc3RydWN0IHVh
+cnRfYW1iYV9wb3J0IHsKICNlbmRpZgogfTsKIAorc3RhdGljIHVuc2lnbmVkIGludCBwbDAxMV90
+eF9lbXB0eShzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KTsKKwogc3RhdGljIHVuc2lnbmVkIGludCBw
+bDAxMV9yZWdfdG9fb2Zmc2V0KGNvbnN0IHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCXVu
+c2lnbmVkIGludCByZWcpCiB7CkBAIC0xMjgyLDYgKzEyODYsNDIgQEAgc3RhdGljIGlubGluZSBi
+b29sIHBsMDExX2RtYV9yeF9ydW5uaW5nKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQogI2Rl
+ZmluZSBwbDAxMV9kbWFfZmx1c2hfYnVmZmVyCU5VTEwKICNlbmRpZgogCitzdGF0aWMgdm9pZCBw
+bDAxMV9yczQ4NV90eF9zdG9wKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQoreworCXN0cnVj
+dCB1YXJ0X3BvcnQgKnBvcnQgPSAmdWFwLT5wb3J0OworCWludCBpID0gMDsKKwl1MzIgY3I7CisK
+KwkvKiBXYWl0IHVudGlsIGhhcmR3YXJlIHR4IHF1ZXVlIGlzIGVtcHR5ICovCisJd2hpbGUgKCFw
+bDAxMV90eF9lbXB0eShwb3J0KSkgeworCQlpZiAoaSA9PSBwb3J0LT5maWZvc2l6ZSkgeworCQkJ
+ZGV2X3dhcm4ocG9ydC0+ZGV2LAorCQkJCSAidGltZW91dCB3aGlsZSBkcmFpbmluZyBoYXJkd2Fy
+ZSB0eCBxdWV1ZVxuIik7CisJCQlicmVhazsKKwkJfQorCisJCXVkZWxheSh1YXAtPnJzNDg1X3R4
+X2RyYWluX2ludGVydmFsKTsKKwkJaSsrOworCX0KKworCWlmIChwb3J0LT5yczQ4NS5kZWxheV9y
+dHNfYWZ0ZXJfc2VuZCkKKwkJbWRlbGF5KHBvcnQtPnJzNDg1LmRlbGF5X3J0c19hZnRlcl9zZW5k
+KTsKKworCWNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CisKKwlpZiAocG9ydC0+cnM0ODUu
+ZmxhZ3MgJiBTRVJfUlM0ODVfUlRTX0FGVEVSX1NFTkQpCisJCWNyICY9IH5VQVJUMDExX0NSX1JU
+UzsKKwllbHNlCisJCWNyIHw9IFVBUlQwMTFfQ1JfUlRTOworCisJLyogRGlzYWJsZSB0aGUgdHJh
+bnNtaXR0ZXIgYW5kIHJlZW5hYmxlIHRoZSB0cmFuc2NlaXZlciAqLworCWNyICY9IH5VQVJUMDEx
+X0NSX1RYRTsKKwljciB8PSBVQVJUMDExX0NSX1JYRTsKKwlwbDAxMV93cml0ZShjciwgdWFwLCBS
+RUdfQ1IpOworCisJdWFwLT5yczQ4NV90eF9zdGFydGVkID0gZmFsc2U7Cit9CisKIHN0YXRpYyB2
+b2lkIHBsMDExX3N0b3BfdHgoc3RydWN0IHVhcnRfcG9ydCAqcG9ydCkKIHsKIAlzdHJ1Y3QgdWFy
+dF9hbWJhX3BvcnQgKnVhcCA9CkBAIC0xMjkwLDYgKzEzMzAsOSBAQCBzdGF0aWMgdm9pZCBwbDAx
+MV9zdG9wX3R4KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCiAJdWFwLT5pbSAmPSB+VUFSVDAxMV9U
+WElNOwogCXBsMDExX3dyaXRlKHVhcC0+aW0sIHVhcCwgUkVHX0lNU0MpOwogCXBsMDExX2RtYV90
+eF9zdG9wKHVhcCk7CisKKwlpZiAoKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJM
+RUQpICYmIHVhcC0+cnM0ODVfdHhfc3RhcnRlZCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXAp
+OwogfQogCiBzdGF0aWMgYm9vbCBwbDAxMV90eF9jaGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQg
+KnVhcCwgYm9vbCBmcm9tX2lycSk7CkBAIC0xMzgwLDYgKzE0MjMsMzIgQEAgc3RhdGljIGJvb2wg
+cGwwMTFfdHhfY2hhcihzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwgdW5zaWduZWQgY2hhciBj
+LAogCXJldHVybiB0cnVlOwogfQogCitzdGF0aWMgdm9pZCBwbDAxMV9yczQ4NV90eF9zdGFydChz
+dHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCkKK3sKKwlzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0ID0g
+JnVhcC0+cG9ydDsKKwl1MzIgY3I7CisKKwkvKiBFbmFibGUgdHJhbnNtaXR0ZXIgKi8KKwljciA9
+IHBsMDExX3JlYWQodWFwLCBSRUdfQ1IpOworCWNyIHw9IFVBUlQwMTFfQ1JfVFhFOworCisJLyog
+RGlzYWJsZSByZWNlaXZlciBpZiBoYWxmLWR1cGxleCAqLworCWlmICghKHBvcnQtPnJzNDg1LmZs
+YWdzICYgU0VSX1JTNDg1X1JYX0RVUklOR19UWCkpCisJCWNyICY9IH5VQVJUMDExX0NSX1JYRTsK
+KworCWlmIChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9SVFNfT05fU0VORCkKKwkJY3Ig
+Jj0gflVBUlQwMTFfQ1JfUlRTOworCWVsc2UKKwkJY3IgfD0gVUFSVDAxMV9DUl9SVFM7CisKKwlw
+bDAxMV93cml0ZShjciwgdWFwLCBSRUdfQ1IpOworCisJaWYgKHBvcnQtPnJzNDg1LmRlbGF5X3J0
+c19iZWZvcmVfc2VuZCkKKwkJbWRlbGF5KHBvcnQtPnJzNDg1LmRlbGF5X3J0c19iZWZvcmVfc2Vu
+ZCk7CisKKwl1YXAtPnJzNDg1X3R4X3N0YXJ0ZWQgPSB0cnVlOworfQorCiAvKiBSZXR1cm5zIHRy
+dWUgaWYgdHggaW50ZXJydXB0cyBoYXZlIHRvIGJlIChrZXB0KSBlbmFibGVkICAqLwogc3RhdGlj
+IGJvb2wgcGwwMTFfdHhfY2hhcnMoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAsIGJvb2wgZnJv
+bV9pcnEpCiB7CkBAIC0xMzk3LDYgKzE0NjYsMTAgQEAgc3RhdGljIGJvb2wgcGwwMTFfdHhfY2hh
+cnMoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAsIGJvb2wgZnJvbV9pcnEpCiAJCXJldHVybiBm
+YWxzZTsKIAl9CiAKKwlpZiAoKHVhcC0+cG9ydC5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9FTkFC
+TEVEKSAmJgorCSAgICAhdWFwLT5yczQ4NV90eF9zdGFydGVkKQorCQlwbDAxMV9yczQ4NV90eF9z
+dGFydCh1YXApOworCiAJLyogSWYgd2UgYXJlIHVzaW5nIERNQSBtb2RlLCB0cnkgdG8gc2VuZCBz
+b21lIGNoYXJhY3RlcnMuICovCiAJaWYgKHBsMDExX2RtYV90eF9pcnEodWFwKSkKIAkJcmV0dXJu
+IHRydWU7CkBAIC0xNTQyLDYgKzE2MTUsOSBAQCBzdGF0aWMgdm9pZCBwbDAxMV9zZXRfbWN0cmwo
+c3RydWN0IHVhcnRfcG9ydCAqcG9ydCwgdW5zaWduZWQgaW50IG1jdHJsKQogCSAgICBjb250YWlu
+ZXJfb2YocG9ydCwgc3RydWN0IHVhcnRfYW1iYV9wb3J0LCBwb3J0KTsKIAl1bnNpZ25lZCBpbnQg
+Y3I7CiAKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkKKwkJbWN0
+cmwgJj0gflRJT0NNX1JUUzsKKwogCWNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CiAKICNk
+ZWZpbmUJVElPQ01CSVQodGlvY21iaXQsIHVhcnRiaXQpCQlcCkBAIC0xNzYzLDcgKzE4MzksMTcg
+QEAgc3RhdGljIGludCBwbDAxMV9zdGFydHVwKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCiAKIAkv
+KiByZXN0b3JlIFJUUyBhbmQgRFRSICovCiAJY3IgPSB1YXAtPm9sZF9jciAmIChVQVJUMDExX0NS
+X1JUUyB8IFVBUlQwMTFfQ1JfRFRSKTsKLQljciB8PSBVQVJUMDF4X0NSX1VBUlRFTiB8IFVBUlQw
+MTFfQ1JfUlhFIHwgVUFSVDAxMV9DUl9UWEU7CisJY3IgfD0gVUFSVDAxeF9DUl9VQVJURU4gfCBV
+QVJUMDExX0NSX1JYRTsKKworCWlmIChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9FTkFC
+TEVEKSB7CisJCWlmIChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9SVFNfQUZURVJfU0VO
+RCkKKwkJCWNyICY9IH5VQVJUMDExX0NSX1JUUzsKKwkJZWxzZQorCQkJY3IgfD0gVUFSVDAxMV9D
+Ul9SVFM7CisJfSBlbHNlIHsKKwkJY3IgfD0gVUFSVDAxMV9DUl9UWEU7CisJfQorCiAJcGwwMTFf
+d3JpdGUoY3IsIHVhcCwgUkVHX0NSKTsKIAogCXNwaW5fdW5sb2NrX2lycSgmdWFwLT5wb3J0Lmxv
+Y2spOwpAQCAtMTg2NCw2ICsxOTUwLDkgQEAgc3RhdGljIHZvaWQgcGwwMTFfc2h1dGRvd24oc3Ry
+dWN0IHVhcnRfcG9ydCAqcG9ydCkKIAogCXBsMDExX2RtYV9zaHV0ZG93bih1YXApOwogCisJaWYg
+KChwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9FTkFCTEVEKSAmJiB1YXAtPnJzNDg1X3R4
+X3N0YXJ0ZWQpCisJCXBsMDExX3JzNDg1X3R4X3N0b3AodWFwKTsKKwogCWZyZWVfaXJxKHVhcC0+
+cG9ydC5pcnEsIHVhcCk7CiAKIAlwbDAxMV9kaXNhYmxlX3VhcnQodWFwKTsKQEAgLTE5NDEsNiAr
+MjAzMCw3IEBAIHBsMDExX3NldF90ZXJtaW9zKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVj
+dCBrdGVybWlvcyAqdGVybWlvcywKIAl1bnNpZ25lZCBpbnQgbGNyX2gsIG9sZF9jcjsKIAl1bnNp
+Z25lZCBsb25nIGZsYWdzOwogCXVuc2lnbmVkIGludCBiYXVkLCBxdW90LCBjbGtkaXY7CisJdW5z
+aWduZWQgaW50IGJpdHM7CiAKIAlpZiAodWFwLT52ZW5kb3ItPm92ZXJzYW1wbGluZykKIAkJY2xr
+ZGl2ID0gODsKQEAgLTE5OTEsNiArMjA4MSw4IEBAIHBsMDExX3NldF90ZXJtaW9zKHN0cnVjdCB1
+YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlvcyAqdGVybWlvcywKIAlpZiAodWFwLT5maWZv
+c2l6ZSA+IDEpCiAJCWxjcl9oIHw9IFVBUlQwMXhfTENSSF9GRU47CiAKKwliaXRzID0gdHR5X2dl
+dF9mcmFtZV9zaXplKHRlcm1pb3MtPmNfY2ZsYWcpOworCiAJc3Bpbl9sb2NrX2lycXNhdmUoJnBv
+cnQtPmxvY2ssIGZsYWdzKTsKIAogCS8qCkBAIC0xOTk4LDExICsyMDkwLDIxIEBAIHBsMDExX3Nl
+dF90ZXJtaW9zKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlvcyAqdGVybWlv
+cywKIAkgKi8KIAl1YXJ0X3VwZGF0ZV90aW1lb3V0KHBvcnQsIHRlcm1pb3MtPmNfY2ZsYWcsIGJh
+dWQpOwogCisJLyoKKwkgKiBDYWxjdWxhdGUgdGhlIGFwcHJveGltYXRlZCB0aW1lIGl0IHRha2Vz
+IHRvIHRyYW5zbWl0IG9uZSBjaGFyYWN0ZXIKKwkgKiB3aXRoIHRoZSBnaXZlbiBiYXVkIHJhdGUu
+IFdlIHVzZSB0aGlzIGFzIHRoZSBwb2xsIGludGVydmFsIHdoZW4gd2UKKwkgKiB3YWl0IGZvciB0
+aGUgdHggcXVldWUgdG8gZW1wdHkuCisJICovCisJdWFwLT5yczQ4NV90eF9kcmFpbl9pbnRlcnZh
+bCA9IChiaXRzICogMTAwMCAqIDEwMDApIC8gYmF1ZDsKKwogCXBsMDExX3NldHVwX3N0YXR1c19t
+YXNrcyhwb3J0LCB0ZXJtaW9zKTsKIAogCWlmIChVQVJUX0VOQUJMRV9NUyhwb3J0LCB0ZXJtaW9z
+LT5jX2NmbGFnKSkKIAkJcGwwMTFfZW5hYmxlX21zKHBvcnQpOwogCisJaWYgKHBvcnQtPnJzNDg1
+LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpCisJCXRlcm1pb3MtPmNfY2ZsYWcgJj0gfkNSVFND
+VFM7CisKIAkvKiBmaXJzdCwgZGlzYWJsZSBldmVyeXRoaW5nICovCiAJb2xkX2NyID0gcGwwMTFf
+cmVhZCh1YXAsIFJFR19DUik7CiAJcGwwMTFfd3JpdGUoMCwgdWFwLCBSRUdfQ1IpOwpAQCAtMjEy
+NCw2ICsyMjI2LDQxIEBAIHN0YXRpYyBpbnQgcGwwMTFfdmVyaWZ5X3BvcnQoc3RydWN0IHVhcnRf
+cG9ydCAqcG9ydCwgc3RydWN0IHNlcmlhbF9zdHJ1Y3QgKnNlcikKIAlyZXR1cm4gcmV0OwogfQog
+CitzdGF0aWMgaW50IHBsMDExX3JzNDg1X2NvbmZpZyhzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0LAor
+CQkJICAgICAgc3RydWN0IHNlcmlhbF9yczQ4NSAqcnM0ODUpCit7CisJc3RydWN0IHVhcnRfYW1i
+YV9wb3J0ICp1YXAgPQorCQljb250YWluZXJfb2YocG9ydCwgc3RydWN0IHVhcnRfYW1iYV9wb3J0
+LCBwb3J0KTsKKworCS8qIHBpY2sgc2FuZSBzZXR0aW5ncyBpZiB0aGUgdXNlciBoYXNuJ3QgKi8K
+KwlpZiAoIShyczQ4NS0+ZmxhZ3MgJiBTRVJfUlM0ODVfUlRTX09OX1NFTkQpID09CisJICAgICEo
+cnM0ODUtPmZsYWdzICYgU0VSX1JTNDg1X1JUU19BRlRFUl9TRU5EKSkgeworCQlyczQ4NS0+Zmxh
+Z3MgfD0gU0VSX1JTNDg1X1JUU19PTl9TRU5EOworCQlyczQ4NS0+ZmxhZ3MgJj0gflNFUl9SUzQ4
+NV9SVFNfQUZURVJfU0VORDsKKwl9CisJLyogY2xhbXAgdGhlIGRlbGF5cyB0byBbMCwgMTAwbXNd
+ICovCisJcnM0ODUtPmRlbGF5X3J0c19iZWZvcmVfc2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRz
+X2JlZm9yZV9zZW5kLCAxMDBVKTsKKwlyczQ4NS0+ZGVsYXlfcnRzX2FmdGVyX3NlbmQgPSBtaW4o
+cnM0ODUtPmRlbGF5X3J0c19hZnRlcl9zZW5kLCAxMDBVKTsKKwltZW1zZXQocnM0ODUtPnBhZGRp
+bmcsIDAsIHNpemVvZihyczQ4NS0+cGFkZGluZykpOworCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdz
+ICYgU0VSX1JTNDg1X0VOQUJMRUQpCisJCXBsMDExX3JzNDg1X3R4X3N0b3AodWFwKTsKKworCS8q
+IFNldCBuZXcgY29uZmlndXJhdGlvbiAqLworCXBvcnQtPnJzNDg1ID0gKnJzNDg1OworCisJLyog
+TWFrZSBzdXJlIGF1dG8gUlRTIGlzIGRpc2FibGVkICovCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdz
+ICYgU0VSX1JTNDg1X0VOQUJMRUQpIHsKKwkJdTMyIGNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19D
+Uik7CisKKwkJY3IgJj0gflVBUlQwMTFfQ1JfUlRTRU47CisJCXBsMDExX3dyaXRlKGNyLCB1YXAs
+IFJFR19DUik7CisJCXBvcnQtPnN0YXR1cyAmPSB+VVBTVEFUX0FVVE9SVFM7CisJfQorCisJcmV0
+dXJuIDA7Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgdWFydF9vcHMgYW1iYV9wbDAxMV9wb3Bz
+ID0gewogCS50eF9lbXB0eQk9IHBsMDExX3R4X2VtcHR5LAogCS5zZXRfbWN0cmwJPSBwbDAxMV9z
+ZXRfbWN0cmwsCkBAIC0yNTg4LDEwICsyNzI1LDI4IEBAIHN0YXRpYyBpbnQgcGwwMTFfZmluZF9m
+cmVlX3BvcnQodm9pZCkKIAlyZXR1cm4gLUVCVVNZOwogfQogCitzdGF0aWMgaW50IHBsMDExX2dl
+dF9yczQ4NV9tb2RlKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQoreworCXN0cnVjdCB1YXJ0
+X3BvcnQgKnBvcnQgPSAmdWFwLT5wb3J0OworCXN0cnVjdCBzZXJpYWxfcnM0ODUgKnJzNDg1ID0g
+JnBvcnQtPnJzNDg1OworCWludCByZXQ7CisKKwlyZXQgPSB1YXJ0X2dldF9yczQ4NV9tb2RlKHBv
+cnQpOworCWlmIChyZXQpCisJCXJldHVybiByZXQ7CisKKwkvKiBjbGFtcCB0aGUgZGVsYXlzIHRv
+IFswLCAxMDBtc10gKi8KKwlyczQ4NS0+ZGVsYXlfcnRzX2JlZm9yZV9zZW5kID0gbWluKHJzNDg1
+LT5kZWxheV9ydHNfYmVmb3JlX3NlbmQsIDEwMFUpOworCXJzNDg1LT5kZWxheV9ydHNfYWZ0ZXJf
+c2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRzX2FmdGVyX3NlbmQsIDEwMFUpOworCisJcmV0dXJu
+IDA7Cit9CisKIHN0YXRpYyBpbnQgcGwwMTFfc2V0dXBfcG9ydChzdHJ1Y3QgZGV2aWNlICpkZXYs
+IHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCQkJICAgIHN0cnVjdCByZXNvdXJjZSAqbW1p
+b2Jhc2UsIGludCBpbmRleCkKIHsKIAl2b2lkIF9faW9tZW0gKmJhc2U7CisJaW50IHJldDsKIAog
+CWJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2LCBtbWlvYmFzZSk7CiAJaWYgKElTX0VS
+UihiYXNlKSkKQEAgLTI2MDgsNiArMjc2MywxMCBAQCBzdGF0aWMgaW50IHBsMDExX3NldHVwX3Bv
+cnQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwKIAl1YXAt
+PnBvcnQuZmxhZ3MgPSBVUEZfQk9PVF9BVVRPQ09ORjsKIAl1YXAtPnBvcnQubGluZSA9IGluZGV4
+OwogCisJcmV0ID0gcGwwMTFfZ2V0X3JzNDg1X21vZGUodWFwKTsKKwlpZiAocmV0KQorCQlyZXR1
+cm4gcmV0OworCiAJYW1iYV9wb3J0c1tpbmRleF0gPSB1YXA7CiAKIAlyZXR1cm4gMDsKQEAgLTI2
+NjUsNyArMjgyNCw3IEBAIHN0YXRpYyBpbnQgcGwwMTFfcHJvYmUoc3RydWN0IGFtYmFfZGV2aWNl
+ICpkZXYsIGNvbnN0IHN0cnVjdCBhbWJhX2lkICppZCkKIAl1YXAtPnBvcnQuaW90eXBlID0gdmVu
+ZG9yLT5hY2Nlc3NfMzJiID8gVVBJT19NRU0zMiA6IFVQSU9fTUVNOwogCXVhcC0+cG9ydC5pcnEg
+PSBkZXYtPmlycVswXTsKIAl1YXAtPnBvcnQub3BzID0gJmFtYmFfcGwwMTFfcG9wczsKLQorCXVh
+cC0+cG9ydC5yczQ4NV9jb25maWcgPSBwbDAxMV9yczQ4NV9jb25maWc7CiAJc25wcmludGYodWFw
+LT50eXBlLCBzaXplb2YodWFwLT50eXBlKSwgIlBMMDExIHJldiV1IiwgYW1iYV9yZXYoZGV2KSk7
+CiAKIAlyZXQgPSBwbDAxMV9zZXR1cF9wb3J0KCZkZXYtPmRldiwgdWFwLCAmZGV2LT5yZXMsIHBv
+cnRucik7CgpiYXNlLWNvbW1pdDogMTUyNzllYmU5OWQ3YzYxNDJkOWYxYTZhZTRkZWQ2NmMwZjE2
+ODY3OAotLSAKMi4zMS4xCgo=
