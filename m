@@ -2,109 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3373B8621
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B015C3B8629
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 17:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235641AbhF3PSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 11:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235508AbhF3PSj (ORCPT
+        id S235729AbhF3PVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 11:21:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20348 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235466AbhF3PVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 11:18:39 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501EBC061787
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:16:09 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id l68so1861244vsc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 08:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EX0yD5vyB2JSovF9JbqRbMIPNXB/HidlyJdS3p9zVkY=;
-        b=Ta1z4y0NySMB0lQKyEp9yrCuqF1iGPI9+BDkSN1EMNKrjmn7ilgHL+GKD2jqaXCSzP
-         NarV5UlnWQ+KQ/SNGaipD91wHpM3B0NX1/Vm+ed1W9M6eg/hIRQ2xeaFAYRLihv/ys+2
-         mzEXU2C9X/+gG6+SHXQwtG+vV9xdIpTyhdWTTGeUCoffdhbks+SUCXsF/q9IcNI06xfd
-         joP4w1y3OWZa1G2KYSS15kVFYtyaL7+KmSL3J9zvWRv3oeFEq+0ZZ2b7Wd46l1CZ9/tU
-         rS6p0LqJj83xXBFKHdlSHO/PF53gufvAokK9UkXkvTvBnBEiBX94L6m6sfA4vHowkpLp
-         CvKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EX0yD5vyB2JSovF9JbqRbMIPNXB/HidlyJdS3p9zVkY=;
-        b=Je3lvQ08mgEVpDxGgySDiE6KgUMq62cJli9ehEXeedxDwIBCwOorAWuGvIlIT+p4y+
-         2xkehr/RBYzS34M29na7lpveo3JutISOQkcaINprl/dgZNt7ojCrsoVqHpqbI/76Adjq
-         siOaZqVYVvatglmQyeNgpVXl+SGSq+Znmv3OwBgYaU3mgkScpQImG0soC/huQbqrPDbY
-         3YNXWRZwt354EBVG+Uwckt+0D5+B7c1nY02mTm3vfGCZtSpt6lq2kqggsXhubfHbFL4P
-         mY4DBQGVkvLO9mS9deoaF4R99dplvXJMaUoUlUDhQdcfbbYUZSU4SAS7lQgMMsRF5kq9
-         V4Kw==
-X-Gm-Message-State: AOAM530zFz+HYlCQiRmg864Q/WBdB5i/OgYGPYNxMdD1n2xSMEHP5kx3
-        Lg0LMdMvGR9bTme/HRJDnAGnmHNz7gO+IWAS42PLvg==
-X-Google-Smtp-Source: ABdhPJyJA5xUuemu6r/8anRVrrPBaVlut++DKAHCudMJgFLdL6Ct9WZkcsWDS5S65+Y6Y0GWzMVNFebGBgSMk0IO5Rg=
-X-Received: by 2002:a05:6102:3a70:: with SMTP id bf16mr32576862vsb.48.1625066168121;
- Wed, 30 Jun 2021 08:16:08 -0700 (PDT)
+        Wed, 30 Jun 2021 11:21:02 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15UF4leh194518;
+        Wed, 30 Jun 2021 11:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YB1TIFBdVx+YsDKIL1JpP6KOM9G79WBYY10k1K5hXGM=;
+ b=HZffoDCVbLGcGAEWQ1ckv4HQTQ7RDiQ+YZddI7caTTsriLf4hjI1P04xd85ryr8QQM+b
+ XGOe2/alRgNiAlzLjsudRVsk9mFxFnH4gchiJZGAhsCLMRW4taaHmTFQPc6H+anRN+b6
+ JB7jVg6njRPIYp+5UzEPm8vui+B0g1bNzpxfYLgjweOkflOUF3pLbPONpnCsgek59ANh
+ uqc3GIkWExoCXO3BGDy2Co2dgh5Cc9ZLMtHpdZzI1g6tVUrNN4XntP298ikh4LJLozeG
+ BYbo50R+sGHm6poJh/QSp1Rz35AAvFTfnOp8nj23l03P3OG1DBff1kud2tCvYF50ujEz Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39gtxf0fdn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 11:18:31 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15UF4k0T194440;
+        Wed, 30 Jun 2021 11:18:30 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39gtxf0fd7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 11:18:30 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15UF6mgA028057;
+        Wed, 30 Jun 2021 15:18:29 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma03dal.us.ibm.com with ESMTP id 39duvdqm2k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Jun 2021 15:18:29 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15UFIS0d39190786
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Jun 2021 15:18:28 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A03237E1B3;
+        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EE097E1AA;
+        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.148.193])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Jun 2021 15:18:28 +0000 (GMT)
+Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
+ handler function pointer
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
+ <20210621155714.1198545-3-akrowiak@linux.ibm.com>
+Message-ID: <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
+Date:   Wed, 30 Jun 2021 11:18:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210624025647.101387-1-reniuschengl@gmail.com>
-In-Reply-To: <20210624025647.101387-1-reniuschengl@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 30 Jun 2021 17:15:31 +0200
-Message-ID: <CAPDyKFoQNDTe8__eUmmbE=98HgjERYudzjyRu1fr2ZCyWXuqew@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Finetune GL9763E L1 Entry Delay
-To:     Renius Chen <reniuschengl@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210621155714.1198545-3-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -6yjKoIkkZ6ChKe1izHtl-o-72MGWyJB
+X-Proofpoint-ORIG-GUID: B3yKi1NeiqG5l_ZVs6UxQu7WwLrdSqG0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-30_06:2021-06-29,2021-06-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106300089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 at 04:56, Renius Chen <reniuschengl@gmail.com> wrote:
+I assumed that this patch would get queued along with the other one in 
+this series,
+but it looks like that was an erroneous assumption. Should this also be 
+queued?
+
+On 6/21/21 11:57 AM, Tony Krowiak wrote:
+> The function pointer to the interception handler for the PQAP instruction
+> can get changed during the interception process. Let's add a
+> semaphore to struct kvm_s390_crypto to control read/write access to the
+> function pointer contained therein.
 >
-> Finetune the L1 entry delay to 20us for better balance of performance and
-> battery life.
+> The semaphore must be locked for write access by the vfio_ap device driver
+> when notified that the KVM pointer has been set or cleared. It must be
+> locked for read access by the interception framework when the PQAP
+> instruction is intercepted.
 >
-> Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/mmc/host/sdhci-pci-gli.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>   arch/s390/include/asm/kvm_host.h      |  8 +++-----
+>   arch/s390/kvm/kvm-s390.c              |  1 +
+>   arch/s390/kvm/priv.c                  | 10 ++++++----
+>   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
+>   drivers/s390/crypto/vfio_ap_private.h |  2 +-
+>   5 files changed, 28 insertions(+), 16 deletions(-)
 >
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index 302a7579a9b3..4e3c0561354d 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -90,7 +90,7 @@
->
->  #define PCIE_GLI_9763E_CFG2      0x8A4
->  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
-> -#define   GLI_9763E_CFG2_L1DLY_MID 0x54
-> +#define   GLI_9763E_CFG2_L1DLY_MID 0x50
+> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+> index 8925f3969478..36441669ffba 100644
+> --- a/arch/s390/include/asm/kvm_host.h
+> +++ b/arch/s390/include/asm/kvm_host.h
+> @@ -803,14 +803,12 @@ struct kvm_s390_cpu_model {
+>   	unsigned short ibc;
+>   };
+>   
+> -struct kvm_s390_module_hook {
+> -	int (*hook)(struct kvm_vcpu *vcpu);
+> -	struct module *owner;
+> -};
+> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
+>   
+>   struct kvm_s390_crypto {
+>   	struct kvm_s390_crypto_cb *crycb;
+> -	struct kvm_s390_module_hook *pqap_hook;
+> +	struct rw_semaphore pqap_hook_rwsem;
+> +	crypto_hook *pqap_hook;
+>   	__u32 crycbd;
+>   	__u8 aes_kw;
+>   	__u8 dea_kw;
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index 1296fc10f80c..418d910df569 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2606,6 +2606,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
+>   {
+>   	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
+>   	kvm_s390_set_crycb_format(kvm);
+> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
+>   
+>   	if (!test_kvm_facility(kvm, 76))
+>   		return;
+> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
+> index 9928f785c677..6bed9406c1f3 100644
+> --- a/arch/s390/kvm/priv.c
+> +++ b/arch/s390/kvm/priv.c
+> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
+>   static int handle_pqap(struct kvm_vcpu *vcpu)
+>   {
+>   	struct ap_queue_status status = {};
+> +	crypto_hook pqap_hook;
+>   	unsigned long reg0;
+>   	int ret;
+>   	uint8_t fc;
+> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>   	 * Verify that the hook callback is registered, lock the owner
+>   	 * and call the hook.
+>   	 */
+> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
+>   	if (vcpu->kvm->arch.crypto.pqap_hook) {
+> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+> -			return -EOPNOTSUPP;
+> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
+> +		ret = pqap_hook(vcpu);
+>   		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
+>   			kvm_s390_set_psw_cc(vcpu, 3);
+> +		up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
+>   		return ret;
+>   	}
+> +	up_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
+>   	/*
+>   	 * A vfio_driver must register a hook.
+>   	 * No hook means no driver to enable the SIE CRYCB and no queues.
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 122c85c22469..742277bc8d1c 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -352,8 +352,7 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
+>   	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
+>   	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
+>   	mdev_set_drvdata(mdev, matrix_mdev);
+> -	matrix_mdev->pqap_hook.hook = handle_pqap;
+> -	matrix_mdev->pqap_hook.owner = THIS_MODULE;
+> +	matrix_mdev->pqap_hook = handle_pqap;
+>   	mutex_lock(&matrix_dev->lock);
+>   	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
+>   	mutex_unlock(&matrix_dev->lock);
+> @@ -1115,15 +1114,20 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>   		}
+>   
+>   		kvm_get_kvm(kvm);
+> +		matrix_mdev->kvm = kvm;
+>   		matrix_mdev->kvm_busy = true;
+>   		mutex_unlock(&matrix_dev->lock);
+> +
+> +		down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> +		up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> +
+>   		kvm_arch_crypto_set_masks(kvm,
+>   					  matrix_mdev->matrix.apm,
+>   					  matrix_mdev->matrix.aqm,
+>   					  matrix_mdev->matrix.adm);
+> +
+>   		mutex_lock(&matrix_dev->lock);
+> -		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> -		matrix_mdev->kvm = kvm;
+>   		matrix_mdev->kvm_busy = false;
+>   		wake_up_all(&matrix_mdev->wait_for_kvm);
+>   	}
+> @@ -1189,10 +1193,17 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+>   	if (matrix_mdev->kvm) {
+>   		matrix_mdev->kvm_busy = true;
+>   		mutex_unlock(&matrix_dev->lock);
+> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> +
+> +		if (matrix_mdev->kvm->arch.crypto.crycbd) {
+> +			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> +			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> +			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> +
+> +			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> +		}
+> +
+>   		mutex_lock(&matrix_dev->lock);
+>   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+>   		kvm_put_kvm(matrix_mdev->kvm);
+>   		matrix_mdev->kvm = NULL;
+>   		matrix_mdev->kvm_busy = false;
+> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+> index f82a6396acae..e12218e5a629 100644
+> --- a/drivers/s390/crypto/vfio_ap_private.h
+> +++ b/drivers/s390/crypto/vfio_ap_private.h
+> @@ -86,7 +86,7 @@ struct ap_matrix_mdev {
+>   	bool kvm_busy;
+>   	wait_queue_head_t wait_for_kvm;
+>   	struct kvm *kvm;
+> -	struct kvm_s390_module_hook pqap_hook;
+> +	crypto_hook pqap_hook;
+>   	struct mdev_device *mdev;
+>   };
+>   
 
-We just changed from 21us to 20us. Really, how big of a difference can
-this make?
-
-Moreover, I suppose the difference is related to the running use case. No?
-
-If you really want this, at least I want an ack from Ben for it, then
-let's be done with it.
-
-Kind regards
-Uffe
-
->
->  #define PCIE_GLI_9763E_MMC_CTRL  0x960
->  #define   GLI_9763E_HS400_SLOW     BIT(3)
-> @@ -810,7 +810,7 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
->
->         pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG2, &value);
->         value &= ~GLI_9763E_CFG2_L1DLY;
-> -       /* set ASPM L1 entry delay to 21us */
-> +       /* set ASPM L1 entry delay to 20us */
->         value |= FIELD_PREP(GLI_9763E_CFG2_L1DLY, GLI_9763E_CFG2_L1DLY_MID);
->         pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG2, value);
->
-> --
-> 2.27.0
->
