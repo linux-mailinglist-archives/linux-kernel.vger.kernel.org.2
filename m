@@ -2,153 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F40A3B8987
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2DF3B898A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 22:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhF3UK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 16:10:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54912 "EHLO m43-7.mailgun.net"
+        id S234192AbhF3ULk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 16:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234022AbhF3UK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 16:10:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625083707; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=aipWx0eXu5H1+PAAnZ34CVHzoEMTtgLG7iEC7D6WI5k=;
- b=j6B0VazRcu/vc1AgLfCXrbPLy3xTIQTPIxZR3kRHXRKSnpTBd2zlyQfbwGt1R7sFxz/VrTI+
- n218T7pK9UXonvbgr2hstcu2Ve0ChmVMbB3iN0F13IO+ZnhhkTND86YiX8/KEUOxQGdR5Is9
- mgqxaGtn2o0ctoJDooFevKZRLzY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60dccf34ec0b18a74527508f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Jun 2021 20:08:19
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 208ECC43460; Wed, 30 Jun 2021 20:08:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3B2CC433D3;
-        Wed, 30 Jun 2021 20:08:16 +0000 (UTC)
+        id S233899AbhF3ULi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 16:11:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2056261220;
+        Wed, 30 Jun 2021 20:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625083749;
+        bh=q2DNNaBfHjfMGZ6v+6whLo9Bzquzv0M/PVbTQxs8TcE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jrhrpm8nx8aBA0YRNM05PdIIBAE/TziDVUv5bIg05qJOP9EsUXmYHuNpezOgu2ov/
+         PDtoZIPjk845oXHAwWlO4pb21xvi5uS/OJ7sKbEnHufVus+WWO5zx22go5FHrizzi1
+         yXh8JmZaPDu/8JX428Dsv8LS/9TPD2drUyF8uq3ewYAiiBpu/f6QGVUceAMoINElE3
+         appJOaldjG71eXsil1s6pldPC8t3oBb2EgZTixOzRBirdkh/IQe8sB5suQjGW/Ls32
+         /prNmCIlBnHK5JLTdL0O2srnzvZP3LjHc+nHkpt0waBNUOb0JnLot+b202bve9ohxR
+         xOLJtIUW5FY5A==
+Date:   Wed, 30 Jun 2021 21:08:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Graeme Gregory <gg@slimlogic.co.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH] regulator: palmas: set supply_name after registering the
+ regulator
+Message-ID: <20210630200840.GJ5106@sirena.org.uk>
+Mail-Followup-To: "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Graeme Gregory <gg@slimlogic.co.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        kernel@pyra-handheld.com, Peter Ujfalusi <peter.ujfalusi@gmail.com>
+References: <20210629155922.GD4613@sirena.org.uk>
+ <2C7C3A47-4A5B-4052-98FC-7A96E2F138CA@goldelico.com>
+ <20210629185638.GG4613@sirena.org.uk>
+ <7B58B1BF-9D65-4CEC-B7D1-4EFDB2C0CB4E@goldelico.com>
+ <20210630121307.GA5106@sirena.org.uk>
+ <02EE05C2-588F-4D50-8A37-46CC3B0C302C@goldelico.com>
+ <20210630130425.GF5106@sirena.org.uk>
+ <E57CB314-F56C-4B33-81E8-7927564DB751@goldelico.com>
+ <20210630164517.GI5106@sirena.org.uk>
+ <54FC87BA-D45A-4ABF-B233-2A70B4A4A632@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Jul 2021 01:38:16 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, ohad@wizery.com,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH 9/9] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-In-Reply-To: <YNodaqE9n9+sQUFq@google.com>
-References: <1624564058-24095-1-git-send-email-sibis@codeaurora.org>
- <1624564058-24095-10-git-send-email-sibis@codeaurora.org>
- <YNodaqE9n9+sQUFq@google.com>
-Message-ID: <c561f99cb281c28581d10e5805190df8@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yzvKDKJiLNESc64M"
+Content-Disposition: inline
+In-Reply-To: <54FC87BA-D45A-4ABF-B233-2A70B4A4A632@goldelico.com>
+X-Cookie: Use at own risk.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-29 00:35, Matthias Kaehlcke wrote:
-> On Fri, Jun 25, 2021 at 01:17:38AM +0530, Sibi Sankar wrote:
->> Update MSS node to support MSA based modem boot on SC7280 SoCs.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  7 +++++++
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 19 ++++++++++++++++---
->>  2 files changed, 23 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> index 191e8a92d153..d66e3ca42ad5 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -343,3 +343,10 @@
->>  		bias-pull-up;
->>  	};
->>  };
->> +
->> +&remoteproc_mpss {
->> +	status = "okay";
->> +	compatible = "qcom,sc7280-mss-pil";
->> +	iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
->> +	memory-region = <&mba_mem &mpss_mem>;
->> +};
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 56ea172f641f..6d3687744440 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -586,7 +586,8 @@
->> 
->>  		remoteproc_mpss: remoteproc@4080000 {
->>  			compatible = "qcom,sc7280-mpss-pas";
->> -			reg = <0 0x04080000 0 0x10000>;
->> +			reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
->> +			reg-names = "qdsp6", "rmb";
-> 
-> Binding needs update?
-> 
-> Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
-> 
->   reg:
->       maxItems: 1
-> 
->> 
->>  			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_EDGE_RISING>,
->>  					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
->> @@ -597,8 +598,11 @@
->>  			interrupt-names = "wdog", "fatal", "ready", "handover",
->>  					  "stop-ack", "shutdown-ack";
->> 
->> -			clocks = <&rpmhcc RPMH_CXO_CLK>;
->> -			clock-names = "xo";
->> +			clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
->> +				 <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
->> +				 <&gcc GCC_MSS_SNOC_AXI_CLK>,
->> +				 <&rpmhcc RPMH_CXO_CLK>;
->> +			clock-names = "iface", "offline", "snoc_axi", "xo";
-> 
-> Binding needs update?
-> 
-> Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml:
-> 
->   clocks:
->     items:
->       - description: XO clock
->   clock-names:
->     items:
->       - const: xo
 
-qcom,sc7280-mpss-pas compatible requires
-just the xo clock and one reg space whereas
-the qcom,sc7280-mss-pil compatible requires
-the additional clks and reg spaces. We just
-overload properties where re-use is possible
-across boards. Hence it would be wrong to
-list those clks/reg spaces as requirements
-for the pas compatible.
+--yzvKDKJiLNESc64M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jun 30, 2021 at 07:17:28PM +0200, H. Nikolaus Schaller wrote:
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> Splitting into many regulators also needs to touch the device trees
+> to have individual compatible entries which currently do not exist.
+
+No, it doesn't.  There's absolutely no need for any specific mapping
+between Linux devices and compatible strings or nodes in the DT, we can
+create any number of Linux devices for any number of compatibles - just
+look at MFDs (where we create multiple Linux devices for a single DT
+compatible string) or system devices (where we create Linux devices with
+potentially no node in the device tree).
+
+> On the other hand, a theoretical system could have a real fixed regulator
+> in between (maybe a power switch?) and should still work. Why should=20
+> driver core care about that case and not the core system it is using?
+
+For deferred probe to be guaranteed to work we really should have one
+regulator per Linux device but in practice that is overhead and effort
+that almost never buys us anything in practical systems (I can't
+emphasize strongly enough how unusual chains of more than two regulators
+are) so we don't enforce doing that.
+
+--yzvKDKJiLNESc64M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcz0gACgkQJNaLcl1U
+h9Alhwf6A/l+yQTivY2BnuVIBZ3uHpdIaDRcqTQsayu6wYKFdGu7joB5ljdLvUkp
+IKqZ6KyC2h4CoZqT9nxIdQM8ZXn+JCjjdbiZ6fXJ8+o879/BgAPR1meYwAB6KCMD
+upl1DDewOLR/9Z3Rq60KAOD9Q7U6ypsoDfqjWtVJu115gUrgSOPB/Mc0/1g+BUwA
+EFd7gbvqgM5vlM8ADJn6SRfm3JbApGQBOoV+0kUvChN3os4gUzmQfcZPI2tCywvD
+WFJogLXGFpEIr+GZiQEZsKLe0lFR81OS/QdZ7JSdYFJHlYdM4bXlhRCWnFBwSNlF
+oZ2RK4T665bSAUVBUPMZgt9MvqK7Ew==
+=XMMb
+-----END PGP SIGNATURE-----
+
+--yzvKDKJiLNESc64M--
