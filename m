@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5A73B8163
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98FC3B8166
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 13:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbhF3LpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 07:45:17 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:51898 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234148AbhF3LpP (ORCPT
+        id S234367AbhF3Lpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 07:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhF3Lpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:45:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UeAcx2E_1625053353;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UeAcx2E_1625053353)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 30 Jun 2021 19:42:35 +0800
-Date:   Wed, 30 Jun 2021 19:42:33 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Chengyang Fan <cy.fan@huawei.com>
-Cc:     akpm@linux-foundation.org, terrelln@fb.com, sfr@canb.auug.org.au,
-        thisisrast7@gmail.com, linux-kernel@vger.kernel.org,
-        Yann Collet <yann.collet.73@gmail.com>,
-        linux-erofs@lists.ozlabs.org
-Subject: Re: [PATCH] lz4: fixs use-after-free Read in
- LZ4_decompress_safe_partial
-Message-ID: <YNxYqXhw5g7Nl3JP@B-P7TQMD6M-0146.local>
-References: <20210630032358.949122-1-cy.fan@huawei.com>
+        Wed, 30 Jun 2021 07:45:51 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5493C061756;
+        Wed, 30 Jun 2021 04:43:21 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so1345965wmc.2;
+        Wed, 30 Jun 2021 04:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iODbWiouD0QpY2BGF1bz2zvH9cqIAWCPddrbkXWdpQM=;
+        b=KJMKkEGNHAUHuk5D6X3LEbETeBJhBvD8t6AyN5xPMN8srDc19A0OEVyK5h+xIWRhjn
+         sf96TLzwxbXF2IY2vE2ECZ+vYVA9vfrlK9+UMV2mRXlEkQ2CwUNlTgX+4pV+Dk0lPlSl
+         gXcWGkkcQiAPfKb/9RbJN8cRbxFZQttUuDM9F0rfT5fOv9svEOYc5/t8EjqEI7wBQslv
+         4BIyQ/qDfMdZU+sDbMcXWdqpPhD03cuH0md405YHkXj0WVR71Dp3I9b8m16zYqVzMWvr
+         GqXAbjG7DXFE5RGXs6aLsphoD4lVqSdPD2smTytZ0yNJvrmlzFkvxdURMbmfFYM7ZEab
+         6mEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iODbWiouD0QpY2BGF1bz2zvH9cqIAWCPddrbkXWdpQM=;
+        b=MswxG6C67AdySymhocajWCA1b8LxgwuEyYZEwnTD1UrxhZdQqgWbYLqYiXd6Ec+fci
+         gD7UHsiz3KIH99FZGh/xxtYgRBYwE6TJg49h5144nfk30Q1Y9gi1k7Ban0IzVekKY1jB
+         LsTR47YNuhGdaEqayL9RJfOWrcjVlkgBh/+8s/DbGIbj9F6sUoNmBNq+RMJDxmYFk0D5
+         5HA/QcqA33H6tmDwD3BqUyIoxkFubMJGXgCjb+p9NWhS/yZ5PylnWLs1jiDwOUyd4FmY
+         HbHJN1nhFVlglTl+wRkw2i3wslSPfAwHmDLbH5Sxuv9gR/rreNbZr0U0bTG/3YOswxLa
+         pHcQ==
+X-Gm-Message-State: AOAM532eGmdy3Tk07rJAZZbgvqFCXz88g7srb7WFl5Ru4SzQtN1wzrvK
+        hhGzREqB7L8hJ8JstmArNdE=
+X-Google-Smtp-Source: ABdhPJyXaz/kDNmiMTIsGgDK7ph+Gfm+KdTCvu18y18r0ZCf+HsuoVtRyW3YnpWwR3RqHGNmyYOezw==
+X-Received: by 2002:a05:600c:3b8b:: with SMTP id n11mr3977228wms.159.1625053400497;
+        Wed, 30 Jun 2021 04:43:20 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id k5sm21380301wmk.11.2021.06.30.04.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 04:43:19 -0700 (PDT)
+Subject: Re: [PATCH 03/22] clk: mediatek: Fix corner case of tuner_en_reg
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com>
+ <20210616224743.5109-4-chun-jie.chen@mediatek.com>
+ <CAGXv+5F2zTcqnjH2ud38vUD149KJtgxhPQME2Mk6-vGtQv+2YQ@mail.gmail.com>
+ <ff6179e8-06f9-fbba-c704-a74381c2149a@gmail.com>
+ <CAGXv+5FXuMnhsnytLYKKA9YE97bps7KnkDNADvv8f_wdTqnrfg@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <be824462-4c2f-3bde-0a3d-c5470a5b0fbb@gmail.com>
+Date:   Wed, 30 Jun 2021 13:43:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <CAGXv+5FXuMnhsnytLYKKA9YE97bps7KnkDNADvv8f_wdTqnrfg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210630032358.949122-1-cy.fan@huawei.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(also +cc Yann as well as Nick..)
 
-Hi Chengyang,
 
-If I understand correctly, is this a manually produced fuzzed
-EROFS compressed data? If it's just a normal image, could you
-also share the original image?
-
-On Wed, Jun 30, 2021 at 11:23:58AM +0800, Chengyang Fan wrote:
-> ==================================================================
-> BUG: KASAN: use-after-free in get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
-> BUG: KASAN: use-after-free in LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
-> BUG: KASAN: use-after-free in LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
-> BUG: KASAN: use-after-free in LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
-> Read of size 2 at addr ffff888017851000 by task kworker/u12:0/2056
+On 30/06/2021 13:09, Chen-Yu Tsai wrote:
+> On Wed, Jun 30, 2021 at 6:53 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>>
+>>
+>>
+>> On 30/06/2021 09:31, Chen-Yu Tsai wrote:
+>>> On Thu, Jun 17, 2021 at 7:01 AM Chun-Jie Chen
+>>> <chun-jie.chen@mediatek.com> wrote:
+>>>>
+>>>> On MT8195, tuner_en_reg is moved to register offest 0x0.
+>>>> If we only judge by tuner_en_reg, it may lead to wrong address.
+>>>> Add tuner_en_bit to the check condition. And it has been confirmed,
+>>>> on all the MediaTek SoCs, bit0 of offset 0x0 is always occupied by
+>>>> clock square control.
+>>>>
+>>>> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+>>>
+>>> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+>>>
+>>> Though you might want to consider converting these types of checks into feature
+>>> flags.
+>>>
+>>
+>> Yes I think adding a feature flag is the way to go. Luckily there are only a few
+>> SoCs that will need updates at the same time.
 > 
-> CPU: 0 PID: 2056 Comm: kworker/u12:0 Not tainted 5.10.40 #2
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
-> Workqueue: erofs_unzipd z_erofs_decompressqueue_work
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x137/0x1be lib/dump_stack.c:118
->  print_address_description+0x6c/0x640 mm/kasan/report.c:385
->  __kasan_report mm/kasan/report.c:545 [inline]
->  kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
->  get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
->  LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
->  LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
->  LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
->  z_erofs_lz4_decompress+0x839/0xc90 fs/erofs/decompressor.c:162
->  z_erofs_decompress_generic fs/erofs/decompressor.c:291 [inline]
->  z_erofs_decompress+0x57e/0xe10 fs/erofs/decompressor.c:344
->  z_erofs_decompress_pcluster+0x13d1/0x2310 fs/erofs/zdata.c:880
->  z_erofs_decompress_queue fs/erofs/zdata.c:958 [inline]
->  z_erofs_decompressqueue_work+0xde/0x140 fs/erofs/zdata.c:969
->  process_one_work+0x780/0xfc0 kernel/workqueue.c:2269
->  worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
->  kthread+0x39a/0x3c0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> I also see that the different clock modules are tied together using only clock
+> names written in the drivers, instead of clock references in the device tree.
 > 
-> The buggy address belongs to the page:
-> page:00000000a79b76f1 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x17851
-> flags: 0xfff00000000000()
-> raw: 00fff00000000000 ffffea000081b9c8 ffffea00006ac6c8 0000000000000000
-> raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> 
-> Memory state around the buggy address:
->  ffff888017850f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff888017850f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >ffff888017851000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->                    ^
->  ffff888017851080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->  ffff888017851100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> ==================================================================
-> erofs: (device loop0): z_erofs_lz4_decompress: failed to decompress -4099 in[4096, 0] out[9000]
-> 
-> Off-by-one error causes the above issue. In LZ4_decompress_generic(),
-> `iend = src + srcSize`. It means the valid address range should be
-> [src, iend - 1]. Therefore, when checking whether the reading is
-> out-of-bounds, it should be  `>= iend` rather than `> iend`.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
-> ---
->  lib/lz4/lz4_decompress.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
-> index 926f4823d5ea..ec51837cd31f 100644
-> --- a/lib/lz4/lz4_decompress.c
-> +++ b/lib/lz4/lz4_decompress.c
-> @@ -234,7 +234,7 @@ static FORCE_INLINE int LZ4_decompress_generic(
->  					length = oend - op;
->  				}
->  				if ((endOnInput)
-> -					&& (ip + length > iend)) {
-> +					&& (ip + length >= iend)) {
 
-I'm not sure it should be fixed as this.
+Not sure I understand what you mean. Do you refer to something like [1]? That's
+because the clock is probed by the DRM driver, as they share the same compatible
+and IP block.
 
-The current lz4 decompression code was from lz4 1.8.3, and I saw
-several following up fixes for incomplete input partial decoding
-in recent LZ4 upstream, you could check them out together. However,
-EROFS should never pass incomplete lz4 compressed data to the LZ4
-side unless it's somewhat a corrupted image on purpose.
-https://github.com/lz4/lz4/blame/dev/lib/lz4.c
+Regards,
+Matthias
 
-Thanks,
-Gao Xiang
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/mediatek/clk-mt8173-mm.c?h=v5.13#n139
 
->  					/*
->  					 * Error :
->  					 * read attempt beyond
-> -- 
-> 2.18.0.huawei.25
+> Unfortunately reworking this would likely require a lot more work. I previously
+> did a bit of internal reworking for the sunxi drivers. While not the same, I
+> think the plumbing required is comparable.
+> 
+> ChenYu
+> 
