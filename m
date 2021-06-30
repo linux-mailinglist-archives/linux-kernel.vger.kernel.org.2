@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E703D3B7B87
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D103B7B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Jun 2021 04:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhF3CcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Jun 2021 22:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S232421AbhF3Cgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Jun 2021 22:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbhF3CcL (ORCPT
+        with ESMTP id S231938AbhF3Cgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Jun 2021 22:32:11 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93F48C061760;
-        Tue, 29 Jun 2021 19:29:43 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 348A892009C; Wed, 30 Jun 2021 04:29:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 2D5D292009B;
-        Wed, 30 Jun 2021 04:29:40 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 04:29:40 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] x86/PCI: Add support for the Intel 82378ZB/82379AB
- (SIO/SIO.A) PIRQ router
-Message-ID: <alpine.DEB.2.21.2106300420370.37803@angie.orcam.me.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 29 Jun 2021 22:36:53 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA346C061760;
+        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id w15so691484pgk.13;
+        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xyUEIZGpIb1NyoL6/ECmCTQUD6rZiw2GeCIvk55fMkc=;
+        b=JTeiLvPoNHljuJCxPgGR0yl0ONXcug3EO0DftgEoSPuMWVohtETSFQT67jZIsFMB55
+         7dAyYOK6Yy35o4RmGUCtLp4K40ZoahCcgx+HpZFrTTjNLJkrKgxV8CgZvMxMLLcmoArn
+         EX0YS9t8RTfwI6doxm4VojM6nVQwse3tmuhjhiycynjG0FsGVUeQGNeqyiiAE+tKJyw+
+         JTCbwqn4MZ87vz5XHNqE5+ZKTNsKuDpFOaiDBbZtwD4IqSX62bQb+P0V9zhszRZyHAjX
+         H7/3V5OP5PxjGzqckWlCePYwSzqGGaT+UZ9nocTC+og++dpmjrLGlkOTXH3XkWK/YcER
+         +yUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xyUEIZGpIb1NyoL6/ECmCTQUD6rZiw2GeCIvk55fMkc=;
+        b=Qi0wjLlMy61eKtF417vtyEteQCN0dl11/9NWobUbDM7qPWD8TyanboW5MaBs+TQMTq
+         K0Q/WU4v3K78QWUAEJcxaAO+9KEc2mOFKggkq6gUapwjJMuJcaO4gX+1QJgxtTu4jTTj
+         8GWzVCryAga01hjJeL4Bo4EbLENfkxPEYmbpsopattO3ca5yx4z1P0Rz/RWHD/w7ov9o
+         mbhCT5bHtpM6PD4Lw60eyXrqnX53JJGftvGUh9uLX3guA4PvNXwiZvNCKgrZRtwf1xFH
+         gppTU9CtHIuSWAAhwT2d7dZCt8z8BNG6QkGXyE2B4bJNuVi5FAp8bsut7k33QKZ5T2r0
+         jnJg==
+X-Gm-Message-State: AOAM531olu2BDIu+tB/hMKU8OeZy80AmhKuClhv5aRNc+QHcIOtPupF+
+        K/vA0WfHS27eNYf4NrNPVIkGTqYqJZo=
+X-Google-Smtp-Source: ABdhPJwfbyymmzhlGHY5wfS5TI9dKLhBfKmIkiJqamxf2F1ZSxfihIfR97wOK0VcD8yeX7PgncW7xQ==
+X-Received: by 2002:a63:ff4b:: with SMTP id s11mr31635563pgk.436.1625020462030;
+        Tue, 29 Jun 2021 19:34:22 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id w21sm5964589pge.30.2021.06.29.19.34.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jun 2021 19:34:21 -0700 (PDT)
+Subject: Re: [PATCH net v2] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+To:     Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210630001419.402366-1-opendmb@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <4a6b88ef-fbec-e5bc-f4d9-0abaa6ae799b@gmail.com>
+Date:   Tue, 29 Jun 2021 19:34:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210630001419.402366-1-opendmb@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel 82378ZB System I/O (SIO) and 82379AB System I/O APIC (SIO.A) 
-ISA bridges implement PCI interrupt steering with a PIRQ router[1][2] 
-that is exactly the same as that of the PIIX and ICH southbridges (or 
-actually the other way round, given that the SIO ASIC was there first).
 
-An earlier version of the SIO, the 82378IB[3][4], does not implement PCI 
-interrupt steering however, so we need to exclude it by checking the low 
-nibble of the PCI Revision Identification Register[5][6] for being at 
-least 3.
 
-There is a note in the 82379AB specification update[7] saying that the 
-device ID for that chip is 0x7, rather than 0x484 as stated in the 
-datasheet[8].  It looks like a red herring however, for no report has 
-been ever seen with that value quoted and it matches the documented 
-default value of the PCI Command Register, which comes next after the 
-PCI Device Identification Register, so it looks like a copy-&-paste 
-editorial mistake.
+On 6/29/2021 5:14 PM, Doug Berger wrote:
+> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
+> logic of the internal PHY to prevent the system from sleeping. Some
+> internal PHYs will report that energy is detected when the network
+> interface is closed which can prevent the system from going to sleep
+> if WoL is enabled when the interface is brought down.
+> 
+> Since the driver does not support waking the system on this logic,
+> this commit clears the bit whenever the internal PHY is powered up
+> and the other logic for manipulating the bit is removed since it
+> serves no useful function.
+> 
+> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
 
-NB the 82378ZB has been commonly used with smaller DEC Alpha systems 
-with the contents of the Revision Identification Register reported as 
-one of 0x3, 0x43, or 0x84, so the masking of the high nibble seems 
-indeed right by empirical observation.  The value in the high nibble 
-might be either random, or depend on the batch, or correspond to some 
-other state such as reset straps.
-
-References:
-
-[1] "82378 System I/O (SIO)", Intel Corporation, Order Number: 
-    290473-004, December 1994, Section 4.1.26 "PIRQ[3:0]#--PIRQ Route 
-    Control Registers"
-
-[2] "82378ZB System I/O (SIO) and 82379AB System I/O APIC (SIO.A)",
-    Intel Corporation, Order Number: 290571-001, March 1996, Section 
-    3.1.25. "PIRQ[3:0]#--PIRQ Route Control Registers", p. 48
-
-[3] "82378IB System I/O (SIO)", Intel Corporation, Order Number:
-    290473-002, April 1993, Section 5.8.7.7 "Edge and Level Triggered
-    Modes"
-
-[4] "82378IB to 82378ZB Errata Fix and Feature Enhancement Conversion
-    FOL933002-01",
-    <https://web.archive.org/web/19990421045433/http://support.intel.com/support/chipsets/420/8511.htm>
-
-[5] "82378 System I/O (SIO)", Intel Corporation, Order Number: 
-    290473-004, December 1994, Section 4.1.5. "RID--Revision 
-    Identification Register"
-
-[6] "82378ZB System I/O (SIO) and 82379AB System I/O APIC (SIO.A)",
-    Intel Corporation, Order Number: 290571-001, March 1996, Section 
-    3.1.5. "RID--Revision Identification Register", p. 34
-
-[7] "Intel 82379AB (SIO.A) System I/O Component Specification Update", 
-    Intel Corporation, Order Number: 297734-001, May, 1996, "Component 
-    Identification via Programming Interface", p. 5
-
-[8] "82378ZB System I/O (SIO) and 82379AB System I/O APIC (SIO.A)",
-    Intel Corporation, Order Number: 290571-001, March 1996, Section 
-    3.1.2. "DID--Device Identification Register", p. 33
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
----
-Changes from v1:
-
-- Add [PATCH] annotation (umm...).
-
-- Fix RID values listed to include 0x84 rather than 0x83 (braino).
----
- arch/x86/pci/irq.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-linux-x86-pirq-router-sio.diff
-Index: linux-macro-ide/arch/x86/pci/irq.c
-===================================================================
---- linux-macro-ide.orig/arch/x86/pci/irq.c
-+++ linux-macro-ide/arch/x86/pci/irq.c
-@@ -627,6 +627,13 @@ static __init int intel_router_probe(str
- 		return 0;
- 
- 	switch (device) {
-+		u8 rid;
-+	case PCI_DEVICE_ID_INTEL_82378:
-+		pci_read_config_byte(router, PCI_REVISION_ID, &rid);
-+		/* Tell 82378IB (rev < 3) and 82378ZB/82379AB apart.  */
-+		if ((rid & 0xfu) < 3)
-+			break;
-+		fallthrough;
- 	case PCI_DEVICE_ID_INTEL_82371FB_0:
- 	case PCI_DEVICE_ID_INTEL_82371SB_0:
- 	case PCI_DEVICE_ID_INTEL_82371AB_0:
-@@ -668,7 +675,7 @@ static __init int intel_router_probe(str
- 	case PCI_DEVICE_ID_INTEL_ICH10_3:
- 	case PCI_DEVICE_ID_INTEL_PATSBURG_LPC_0:
- 	case PCI_DEVICE_ID_INTEL_PATSBURG_LPC_1:
--		r->name = "PIIX/ICH";
-+		r->name = "SIO/PIIX/ICH";
- 		r->get = pirq_piix_get;
- 		r->set = pirq_piix_set;
- 		return 1;
-@@ -682,7 +689,7 @@ static __init int intel_router_probe(str
- 	     device <= PCI_DEVICE_ID_INTEL_DH89XXCC_LPC_MAX)
- 	||  (device >= PCI_DEVICE_ID_INTEL_PANTHERPOINT_LPC_MIN &&
- 	     device <= PCI_DEVICE_ID_INTEL_PANTHERPOINT_LPC_MAX)) {
--		r->name = "PIIX/ICH";
-+		r->name = "SIO/PIIX/ICH";
- 		r->get = pirq_piix_get;
- 		r->set = pirq_piix_set;
- 		return 1;
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
