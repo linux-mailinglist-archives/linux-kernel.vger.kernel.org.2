@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930293B8E13
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 09:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774D93B8E22
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 09:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhGAHPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 03:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S234849AbhGAHX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 03:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbhGAHPt (ORCPT
+        with ESMTP id S234807AbhGAHXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 03:15:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466C6C061756;
-        Thu,  1 Jul 2021 00:13:19 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id d16so10017081lfn.3;
-        Thu, 01 Jul 2021 00:13:19 -0700 (PDT)
+        Thu, 1 Jul 2021 03:23:55 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34C2C0617A8
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 00:21:24 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id p24so7071871ljj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 00:21:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wC/1PRe7GxJ7bj3s9B4DAneAO/QGqwh19ucy+kWnhCA=;
-        b=ndOvXXVTn2C2JkZz3OFnCn4n4EBES3xtc66LFHjz/NCg4kBuqcuOGJ4t1t4KNL0CEW
-         2nKxzGri/rkaRFbqEizsHe7q14CeaFYQD2z/B2z3V6zuPuMSVYK6UVOY3RNyMwDegbHX
-         Vn11ipJ2O07rXzbxzJbHHSEkG2y8ZaLWOyzfRnGTV6hz7N0Se7ps1F+AWQFzsXbQXv3k
-         8pdblh6aLrnckoryblXxGWRw8gAdcID7sPNoOg/1uG8Pww0uH0EDeXBz8+d6jOnZt0k9
-         NxPFOt0193RNFWuQ8AuRQKcNtoDELYm4cwjwZX2QuVdVvBJjX0vXncf+bTTKT8mfF209
-         mziA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ga4/H+zFc4BIvkIZp/GwacqLCotWEZsIhOfh+7jAZ3s=;
+        b=IaI97DW3ssIIS+7nQ5kQe8/cemQmh7BCye8Vf2G2Io0KFRMGvpn3hkzbv4E0GNYhAl
+         klR2AaOqqU+FUSziNdA/ipLW79CJGazcHBsd80s/iR0+tiLs3yar5ixRAwrCCH7BUFxV
+         mwR/rL3iszdTDvZjTJDIrKMoqUgj28IFMpYKc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wC/1PRe7GxJ7bj3s9B4DAneAO/QGqwh19ucy+kWnhCA=;
-        b=jhWI8hhP1CLecn6Z8axYG2BG6hPJUUtbk8K5FBNuW2ex55ElarS+Zh6VcYWFOL+swG
-         phIHx5Mo5vyXRQi1lhqUqbOuyS2RTzovIcIQUdbDaQCKFuFfrYoWrcIejnIC8R06F4iZ
-         10/4U7HeselEMqOgS53TO3QkPN5b8RkOPzI2b16Jkkol6sYAwE36jMAkcslZU+97KLFF
-         dcHlO+cKkmXoa8TFyCcmGxIMTl3kEaYlK3KyhrNxTiiFEV8fVJTcw5XeSkFLDgEdBeku
-         qIeHAOfTC5Xa7DEliru81d41YG+TsEiSlT+35LufNr5NGhOVNSo4Y35GJZwfAfetfZ4z
-         S6BQ==
-X-Gm-Message-State: AOAM533nrl3Pg/jFKO8jCSE5MCmRk+ViM1M+GwtBXjdzzWa5XCMhrNrY
-        C4mGpSzjehcTWI+okhO/mAxrip2uSe3ExBAV
-X-Google-Smtp-Source: ABdhPJw5w86wS2OjtaqCQmcrqgJC+BDR4pNsOQLr7pCTLWACRkErm1u69GCrRpMEe7nCaTxWN59v9w==
-X-Received: by 2002:a19:484f:: with SMTP id v76mr7190429lfa.469.1625123597425;
-        Thu, 01 Jul 2021 00:13:17 -0700 (PDT)
-Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
-        by smtp.gmail.com with ESMTPSA id x17sm2470993ljx.75.2021.07.01.00.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 00:13:16 -0700 (PDT)
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210624182449.31164-1-p.yadav@ti.com>
- <6b8662e2-2dd5-b1c4-6bc1-24a69776ffac@gmail.com>
- <20210628105822.ighgnu6ebs5npbv3@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH v3] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
-Message-ID: <7bd64aaf-8836-6484-3160-f2410c85f8de@gmail.com>
-Date:   Thu, 1 Jul 2021 10:13:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ga4/H+zFc4BIvkIZp/GwacqLCotWEZsIhOfh+7jAZ3s=;
+        b=njKvK7l4kPa9pwG1dywd81iE6lT4EkKuT0Y5LYxnToZv/0kZE5ty0KOkKCqq1Fi5Ww
+         4w1EOvmUrVAT5OVb8pSlC58g1+pBcjcaWlYnRrBBod4zVTW6hmKWtiuWhpaXZelE2Guq
+         SfveS5qH4C6VbtpVLbDqoc9ddmWpeciofM6/LiRy/aCGZa/pWiM9Le1jMa+M5NY4LlKL
+         Nl5816DkwA61KpIjmOlCi/JevCYrWqysTQsTFTfukuXmPU4R54bOYnXDpy8vQX+21rWb
+         VILsIrz8TM7AQEmEcdQJIyZPFOBGeOHtRx+Lc54n2eT6tpE+p8Dhl9nEFNXCn6LoMaue
+         gNTw==
+X-Gm-Message-State: AOAM5320GDTYd6gfwL6ELPZqWLKjzYC7ObTV75E7L4n6c7w2LlIh0Y6Z
+        1+g4dXfMt/GRf9TR70mTz/xOvnlnBRx0tYfCe7k/8w==
+X-Google-Smtp-Source: ABdhPJyxvSNuZmwRYoKy8FDKToeJS7PWq88q64REDzsuI4/M4wTPs/gV+/Jhx06I0DFC/KinbxeFXBAee1LQDg9hUZE=
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr10809961ljp.251.1625124082895;
+ Thu, 01 Jul 2021 00:21:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210628105822.ighgnu6ebs5npbv3@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210701065439.2527790-1-hsinyi@chromium.org>
+In-Reply-To: <20210701065439.2527790-1-hsinyi@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 1 Jul 2021 15:21:11 +0800
+Message-ID: <CAGXv+5GNkqHOxv9zXoa3yLh5_FXGUARqXd82W00CBTnHS_BFPw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: mediatek: Fix fallback behavior for bias_set_combo
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        zhiyong.tao@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 1, 2021 at 2:55 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Some pin doesn't support PUPD register, if it fails and fallbacks with
+> bias_set_combo case, it will call mtk_pinconf_bias_set_pupd_r1_r0() to
+> modify the PUPD pin again.
+>
+> Since the general bias set are either PU/PD or PULLSEL/PULLEN, try
+> bias_set or bias_set_rev1 for this fallback case.
+>
+> Fixes: 81bd1579b43e ("pinctrl: mediatek: Fix fallback call path")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 5b3b048725cc8..0cdff487836fa 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -926,9 +926,12 @@ int mtk_pinconf_adv_pull_set(struct mtk_pinctrl *hw,
+>                         if (err)
+>                                 return err;
+>                 } else if (hw->soc->bias_set_combo) {
+> -                       err = hw->soc->bias_set_combo(hw, desc, pullup, arg);
+> -                       if (err)
+> -                               return err;
+> +                       err = mtk_pinconf_bias_set_rev1(hw, desc, pullup);
+> +                       if (err) {
+> +                               err = mtk_pinconf_bias_set(hw, desc, pullup);
+> +                               if (err)
+> +                                       return err;
+
+You don't need to nest this. If mtk_pinconf_bias_set_rev1() succeeds,
+err would be 0 and the following if blocks would all be skipped. So:
+
+err = mtk_pinconf_bias_set_rev1();
+if (err)
+        err = mtk_pinconf_bias_set();
+if (err)
+        return err;
+
+Moreover, maybe you should rework the test for hw->soc->bias_set_combo,
+as it is no longer relevant to the code within the if block?
 
 
-On 28/06/2021 13:58, Pratyush Yadav wrote:
-> On 28/06/21 01:38PM, Péter Ujfalusi wrote:
->>
->>
->> On 24/06/2021 21:24, Pratyush Yadav wrote:
->>> The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory.
->>
->> If we want to be correct:
->> The CSI2RX subsystem in j721e is serviced by UDMA via PSI-L to transfer
->> frames to memory.
->>
->> If you update the commit message you can also add my:
-> 
-> Ah, I thought you were picking the patch up. Does Vinod pick them up
-> instead?
+ChenYu
 
-Yes.
-
-> Vinod,
-> 
-> Can you update the commit message when applying or do you want me to 
-> send another re-roll?
-
-I would send v4 if I were you. Maintainers are under heavy load most of
-the time.
-
--- 
-Péter
+> +                       }
+>                 } else {
+>                         return -ENOTSUPP;
+>                 }
+> --
+> 2.32.0.93.g670b81a890-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
