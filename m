@@ -2,152 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB83B3B9332
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3612E3B932E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhGAO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhGAO0D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:26:03 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4D8C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 07:23:31 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id f34so2516242uae.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 07:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ZYZZPLtxm0D8wKCq6t4+Fy+RhxhZRnjK7G5sIibVAY=;
-        b=kBv9cdGrIayWfMzZazwxNI9/duBTp2RkiZ5RCpTGoMmI4sxwPfmxtyqijgoC6eFaHP
-         vuY6nQPmSg0rBx1F6AnU3iGjJXVrIv6hMPT5BDZnXtJ8kZ6ta2AKfwvSzsQiBoGDBLxe
-         Dmi2eQ+66de1aSZjyItIFwNWh1cy7b6EjIO393RJPGKNXebp3P4Yx/mAegF28z7zxu3H
-         LLjGSN1TkEEC2gynwHgOJdUg1KIDxVmNmxUfSOg+YNg1SDUVOYC9QVrLdvNk9oHHIut5
-         NEaw07sNcTuAQPUw2+IKV8UcC+TCiR2ZQmvtrZRt2mROer1FgbKX1f54BG6f/nPVo19B
-         +X5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ZYZZPLtxm0D8wKCq6t4+Fy+RhxhZRnjK7G5sIibVAY=;
-        b=K2C5VGLtdhpRjgRcU1YwXpSQMC5Pf2Mk8D+cOmii5IdnjrExxQ0fEh7qD2Uv/GRPJi
-         WfcOI8DMxj/5iqwHBJqd6v8s0IjuxrzaIIyX8nYTuPBHUYL6/BECCDcXUV7GEao8aBJ0
-         GcDslBcI5ii9rnd/fA+8wy7uAqYsgG2oO8HewnWBgSev5AOX9qmnI6YOvrSvDY8Syw1x
-         GqcEarjQVeDXUQzVbCifmkFGy/5zCNbxpGW5tKuvpV/LoXNqrWtSKbvGJCzLKChe+IM9
-         0QTI8QKZRQjc2a6df2JdYMoPpUk9tYzdZt1masuLVI3yr85o+zYVziTfIcfBZogyXQsJ
-         xXEw==
-X-Gm-Message-State: AOAM5315JdU+vUnOgt0anh1jHBp5RQtiPdJrE1L4Bv63pGBMvsNTv88z
-        CXu3Aydq2CQYCFWzqeGvCZy8CuPerk/PjZujrPJLiQ==
-X-Google-Smtp-Source: ABdhPJx2oBw+TeBECEm0/q5V+pChm69gVODCsQXZeTvzl9jaJ3WWW/V23J8lrJcxwiS1GyjoBORkKFEfajqRXSJj0AE=
-X-Received: by 2002:ab0:3ae:: with SMTP id 43mr211048uau.63.1625149409711;
- Thu, 01 Jul 2021 07:23:29 -0700 (PDT)
+        id S233210AbhGAOZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:25:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233099AbhGAOZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:25:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7E06613FE;
+        Thu,  1 Jul 2021 14:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625149403;
+        bh=71dtrSrZfrzS+xQNIPrnzH/rK7SELJ0qjeko7lo3GbY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dBv+FAd78+T0qfW/ZsK3Wa9bq9Zv+49V7xKPG+QuODWvzsomfzRUAHl+jo8FwR4Ab
+         rg7IkFiKaya0h0w140sNdsdyUgqOmQEMQgNbMpUh+UyH1Mkiofxb51oHj52IDpQbnb
+         39tok0eAaG4WsilBYj+VZVEhYd7ghIbutInXC1H4b/fZwLh/TzLaDzRTiimRxlZlHP
+         hawNZl2XNhiqnozEnemp7T7q3Uuuuh3nB3jfr34XHAhFkT7krVj9Engd9fYSNFnS2j
+         cZhdjf2q/z1Ik6yfIcOlqOIPDz/GUab67saHkI2z7xfWberoWyNV+PPa6NW+MN6NN6
+         npNXp/fe+Nh/g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 11F1040B1A; Thu,  1 Jul 2021 11:23:19 -0300 (-03)
+Date:   Thu, 1 Jul 2021 11:23:18 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH v8 01/22] perf record: Introduce thread affinity and mmap
+ masks
+Message-ID: <YN3P1uHBkh7JXBDN@kernel.org>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <ab1e7917845cc175a9e1d7f149e07b000d24c881.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <YNyZCZ92W39inSD2@kernel.org>
+ <b4e43f46-71d5-457b-dcbf-aada28d7ba95@linux.intel.com>
 MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
- <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com> <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
- <CADVnQyk9maCc+tJ4-b6kufcBES9+Y2KpHPZadXssoVWX=Xr1Vw@mail.gmail.com> <30527e25-dd66-da7a-7344-494b4539abf7@gmail.com>
-In-Reply-To: <30527e25-dd66-da7a-7344-494b4539abf7@gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Thu, 1 Jul 2021 10:23:13 -0400
-Message-ID: <CADVnQyn_965EHdQke_S7FUySiamyyRx-3b8o+cm+=4jYxG_GOw@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Phi Nguyen <phind.uet@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4e43f46-71d5-457b-dcbf-aada28d7ba95@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 2:25 PM Phi Nguyen <phind.uet@gmail.com> wrote:
->
-> On 6/29/2021 11:59 PM, Neal Cardwell wrote:
-> >    On Tue, Jun 29, 2021 at 8:58 AM Eric Dumazet <edumazet@google.com> wrote:
-> >  From my perspective, the bug was introduced when that 8919a9b31eb4
-> > commit introduced icsk_ca_initialized and set icsk_ca_initialized to 0
-> > in tcp_init_transfer(), missing the possibility that a process could
-> > call setsockopt(TCP_CONGESTION)  in state TCP_SYN_SENT (i.e. after the
-> > connect() or TFO open sendmsg()), which would call
-> > tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend
-> > to reset any initialization that the user had already explicitly made;
-> > it just missed the possibility of that particular sequence (which
-> > syzkaller managed to find!).
-> >
-> >> Although I am not sure what happens at accept() time when the listener
-> >> socket is cloned.
-> >
-> > It seems that for listener sockets, they cannot initialize their CC
-> > module state, because there is no way for them to reach
-> > tcp_init_congestion_control(), since:
-> >
-> > (a) tcp_set_congestion_control() -> tcp_reinit_congestion_control()
-> > will not call tcp_init_congestion_control() on a socket in CLOSE or
-> > LISTEN
-> >
-> > (b) tcp_init_transfer() -> tcp_init_congestion_control() can only
-> > happen for established sockets and successful TFO SYN_RECV sockets
-> Is this what was mentioned in this commit ce69e563b325(tcp: make sure
-> listeners don't initialize congestion-control state)
+Em Thu, Jul 01, 2021 at 04:05:09PM +0300, Bayduraev, Alexey V escreveu:
+> Hi,
+> 
+> On 30.06.2021 19:17, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Jun 30, 2021 at 06:54:40PM +0300, Alexey Bayduraev escreveu:
+> [SNIP]
+> >> +static void record__mmap_cpu_mask_free(struct mmap_cpu_mask *mask)
+> >> +{
+> >> +	bitmap_free(mask->bits);
+> >> +	mask->nbits = 0;
+> > 
+> > Plese use NULL, as 'mask->nbits' is a pointer.
+> 
+> In perf/util/mmap.h "nbits" is size_t:
+> 
+> struct mmap_cpu_mask {
+>         unsigned long *bits;
+>         size_t nbits;
+> };
 
-Yes, exactly.
+My bad, I saw the pattern of:
 
-> > --
-> > [PATCH] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-> >
-> > This commit fixes a bug (found by syzkaller) that could cause spurious
-> > double-initializations for congestion control modules, which could cause memory
-> > leaks orother problems for congestion control modules (like CDG) that allocate
-> > memory in their init functions.
-> >
-> > The buggy scenario constructed by syzkaller was something like:
-> >
-> > (1) create a TCP socket
-> > (2) initiate a TFO connect via sendto()
-> > (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
-> >      which calls:
-> >         tcp_set_congestion_control() ->
-> >           tcp_reinit_congestion_control() ->
-> >             tcp_init_congestion_control()
-> > (4) receive ACK, connection is established, call tcp_init_transfer(),
-> >      set icsk_ca_initialized=0 (without first calling cc->release()),
-> >      call tcp_init_congestion_control() again.
-> >
-> > Note that in this sequence tcp_init_congestion_control() is called twice
-> > without a cc->release() call in between. Thus, for CC modules that allocate
-> > memory in their init() function, e.g, CDG, a memory leak may occur. The
-> > syzkaller tool managed to find a reproducer that triggered such a leak in CDG.
-> >
-> > The bug was introduced when that 8919a9b31eb4 commit introduced
-> > icsk_ca_initialized and set icsk_ca_initialized to 0 in tcp_init_transfer(),
-> > missing the possibility for a sequence like the one above, where a process
-> > could call setsockopt(TCP_CONGESTION) in state TCP_SYN_SENT (i.e. after the
-> > connect() or TFO open sendmsg()), which would call
-> > tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend to reset
-> > any initialization that the user had already explicitly made; it just missed
-> > the possibility of that particular sequence (which syzkaller managed to find).
->
-> Could I use your commit message when I resubmit patch?
+    *_free(mask->bits);
+    mask->bits = 0;
 
-Yes, feel free to use that commit message verbatim or modified.
+Nevermind :-)
 
-thanks,
-neal
+- Arnaldo
