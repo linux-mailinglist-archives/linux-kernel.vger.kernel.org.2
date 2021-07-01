@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A587B3B92BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFB33B92A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhGAOGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:06:11 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:37740 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhGAOGJ (ORCPT
+        id S232707AbhGAOFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:05:21 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:34572 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhGAOFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:06:09 -0400
-Received: by mail-io1-f50.google.com with SMTP id b15so7641916iow.4;
-        Thu, 01 Jul 2021 07:03:38 -0700 (PDT)
+        Thu, 1 Jul 2021 10:05:20 -0400
+Received: by mail-io1-f46.google.com with SMTP id g22so7682686iom.1;
+        Thu, 01 Jul 2021 07:02:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=RIHU3Dvz8UVhaI+52yb7oaZyHsIEgAYHrT+AJwUGDLs=;
-        b=eCFaA2qQQrrx5FudTkEO3deBFhn7Fao2Oz1x29Kkcq5GHIi7py+iRb4J5GynbQQneS
-         UcgVLjmes5g34MElw4c4Cg8sd/Imb1MfhiC7kMD9c7zvuxJLG1Y16TEQbBg3xxFcalJU
-         aSNC7z8dCfrCOE2Hfq6cpUj1hWqFlS2KlYey/APJ/l/nQOFeoQ4SDmfaZgjjFxwUMU3J
-         lN4qIWCVechjun1syHYPFCCgzPV8EZFr3ZDCHYmdX8jn1q1z69eeJLNzIJLJWdyQNZFE
-         zOgD6nHuioWQcxgbYwBmaJ16qVu2FniRIqN1AW7DEPwgVIyiqDn7zhpJkxNXlc294SPa
-         C2sg==
-X-Gm-Message-State: AOAM5322AZry67LBsbvx9GCZCyRWf3vWl9FnYcZwWhWncKuKBtrRsKKl
-        Iertt0KacBDXCuSLvX6V6w==
-X-Google-Smtp-Source: ABdhPJwQKT+kR+WAjiGnVYsmWaj61qH7vLyuBErKzSWqz2Eyox/gsoOirr+2wRLgFZVQLStOn2NurQ==
-X-Received: by 2002:a5d:9ad6:: with SMTP id x22mr6096646ion.182.1625148217955;
-        Thu, 01 Jul 2021 07:03:37 -0700 (PDT)
+        bh=THjpgrJovveE0NhsgOiUBUqHrg+mADZu3fJVwSRkCSc=;
+        b=o2ZzcFV81zc+nuN757TT6OGC16F/NfaF5W5J7xjGhO6NSQ+bIzJUaK9jy6pLZUleLI
+         BVnmhnqtUKMoZ3tpczrG+Pa8Fk8YpKYBT/zkRGNQ26vNAMtjlg3YPQA/tiiY5fQrmuHG
+         XQ6WyjKWRtEWS42nnjIW655dPc5YS/z3yXMnoWsDb8Enj8Rpz+l81AdkRwJOJpNbzCxS
+         Q/s0asRjks3YYqr6niLBoq/9DAyDXf9DChRQzWCEOLPeLh9Wmx4FEh0+T0KHh9oHR6Jj
+         73sGLe+ND8EbZTaN7dvifPBbOOpiBquFooTLI8wckddqwaWzrKXdqMb8dnbXdoQXj7Im
+         1SlQ==
+X-Gm-Message-State: AOAM5334vcq6weUz6U9kvcury6/P10Dc+T2FdIrFPwE1LueNRUIokq8B
+        iFWJqJgbIzphvl+RQG9IUQ==
+X-Google-Smtp-Source: ABdhPJzJ7Low6+obMGZc22tdSQJCTAnBXTetdd/zkTKltPCjJi63xgkwIOo8xZkxCniERctV+IGf2w==
+X-Received: by 2002:a6b:e911:: with SMTP id u17mr12551013iof.54.1625148169359;
+        Thu, 01 Jul 2021 07:02:49 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id r13sm38814ilg.37.2021.07.01.07.03.32
+        by smtp.gmail.com with ESMTPSA id h10sm29866ili.27.2021.07.01.07.02.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:03:36 -0700 (PDT)
-Received: (nullmailer pid 2278714 invoked by uid 1000);
+        Thu, 01 Jul 2021 07:02:48 -0700 (PDT)
+Received: (nullmailer pid 2278689 invoked by uid 1000);
         Thu, 01 Jul 2021 14:02:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     konrad.dybcio@somainline.org, broonie@kernel.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, jami.kettunen@somainline.org,
-        agross@kernel.org, jeffrey.l.hugo@gmail.com,
-        martin.botka@somainline.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        bjorn.andersson@linaro.org, paul.bouchara@somainline.org,
-        marijn.suijten@somainline.org, devicetree@vger.kernel.org
-In-Reply-To: <20210701105441.319572-7-angelogioacchino.delregno@somainline.org>
-References: <20210701105441.319572-1-angelogioacchino.delregno@somainline.org> <20210701105441.319572-7-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v6 6/6] dt-bindings: soc: qcom: cpr3: Add bindings for CPR3 driver
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+In-Reply-To: <20210624192200.22559-11-p.yadav@ti.com>
+References: <20210624192200.22559-1-p.yadav@ti.com> <20210624192200.22559-11-p.yadav@ti.com>
+Subject: Re: [PATCH v3 10/11] media: dt-bindings: Add DT bindings for TI J721E CSI2RX driver
 Date:   Thu, 01 Jul 2021 08:02:43 -0600
-Message-Id: <1625148163.611445.2278713.nullmailer@robh.at.kernel.org>
+Message-Id: <1625148163.481805.2278688.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021 12:54:41 +0200, AngeloGioacchino Del Regno wrote:
-> Add the bindings for the CPR3 driver to the documentation.
+On Fri, 25 Jun 2021 00:51:59 +0530, Pratyush Yadav wrote:
+> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+> capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
+> parts together.
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
 > ---
->  .../bindings/soc/qcom/qcom,cpr3.yaml          | 241 ++++++++++++++++++
->  1 file changed, 241 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
+> 
+> (no changes since v2)
+> 
+> Changes in v2:
+> - Rename to ti,j721e-csi2rx.yaml
+> - Add an entry in MAINTAINERS.
+> - Add a description for the binding.
+> - Change compatible to ti,j721e-csi2rx to make it SoC specific.
+> - Remove description from dmas, reg, power-domains.
+> - Remove a limit of 2 from #address-cells and #size-cells.
+> - Fix add ^ to csi-bridge subnode regex.
+> - Make ranges mandatory.
+> - Add unit address in example.
+> - Add a reference to cdns,csi2rx in csi-bridge subnode.
+> - Expand the example to include the csi-bridge subnode as well.
+> - Re-order subject prefixes.
+> 
+>  .../bindings/media/ti,j721e-csi2rx.yaml       | 101 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 102 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/ti,j721e-csi2rx.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -73,12 +92,16 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.example.dt.yaml:0:0: /example-0/cpu-silver-opp-table: failed to match any schema with compatible: ['operating-points-v2']
-Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.example.dt.yaml:0:0: /example-0/cpu-gold-opp-table: failed to match any schema with compatible: ['operating-points-v2']
-Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.example.dt.yaml:0:0: /example-0/cpr-hardened-opp-table: failed to match any schema with compatible: ['operating-points-v2-qcom-level']
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/media/cdns,csi2rx.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/media/ti,j721e-csi2rx.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/media/cdns,csi2rx.yaml'
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/media/ti,j721e-csi2rx.example.dt.yaml] Error 255
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1499495
+See https://patchwork.ozlabs.org/patch/1496774
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
