@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2193B93C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729873B93CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhGAPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhGAPRR (ORCPT
+        id S233349AbhGAPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:18:41 -0400
+Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:40116 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233064AbhGAPSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:17:17 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9201CC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 08:14:46 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id k8so8962834lja.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 08:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q7SjopVfMaoe2w1JGzt6b1vmcs3L6pEjOQkXiBAboM4=;
-        b=jARjQAjpT1Pteq9LIloPJ12XXwl3ru2QtvI5Xyczm8P1DnqizCjMAl6CGFsaVZSQXW
-         UH4Hu60KYVYF33Hpi9nO6zdgMaS+2YIGUXKBSPFlxAdHDHMhRuR4rzAD4t/vYAhqfwhf
-         UuK0ki44hCoY3jV9pO5abEx/wbgBBDgqCPPKi4atuI3TRAuzGOsLwAaKRUd77/2Pcred
-         YVpKBTYxixUj/pefHVMp8kWpL0P4HpitZPWHiGgF1LhzQjm07sbXNVX6+8HvXimBvaEG
-         iEPQ4+NHYEmpPXAdTc1NIJ5fflduLSi3PXyvmNoIBxgKI6+557v4NSvF/kNgoR/siOvB
-         ZHOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q7SjopVfMaoe2w1JGzt6b1vmcs3L6pEjOQkXiBAboM4=;
-        b=VqvG+Zw7e1S/qZPBEybFRZrxAbrlAFVIQhoLFqlG115Pf5rgCLdlJWHTNajUKfMnwA
-         SS6v26b/zG1DAzhMW8bEhu69EOAAo87sAQnGuWtRBzzEG65UG2n+vxjyyyiUvIeTTTxk
-         s4LIWOxF6GH9ilQqo0NP1eLV+0FTRc0NfS1tPJAuxWP96+EhrESdkK3w6fdavvOR8dLE
-         ek3sgatIzJ1sV3J6JhDMVoYxexfEpC2kJ7dAV227GzhTWY6Klmgzqv5ym2Ypm3sTGaZl
-         Mn2PMm9BWHu4/Afq7hljTf4zU8pNuQYBz1p8or7laH6RgGcKJxl86PyAs1w6z/5kfD61
-         8b1w==
-X-Gm-Message-State: AOAM531q/RHMMRGEg8fZmb712liANnjqdmA3DqqsShamiZgys7+IU7cN
-        YkdaFPuhkirkTYS9gWfWFbfEPsv+RaeXyUdAeXmlHw==
-X-Google-Smtp-Source: ABdhPJxC4w3fPVooBAMn4WWUnwrS5E6in2N7SPbQK1SBNtse+qOq2rotFBO6pLxfWd1Qv0cPwWy3J+dvg9FTY5HP/+4=
-X-Received: by 2002:a2e:b4ce:: with SMTP id r14mr70353ljm.76.1625152484773;
- Thu, 01 Jul 2021 08:14:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210611101540.3379937-1-dmitry.baryshkov@linaro.org>
- <20210611101540.3379937-3-dmitry.baryshkov@linaro.org> <CAPDyKFo5mUZZcPum9A5mniYSsbG2KBxqw628M622FaP+piG=Pw@mail.gmail.com>
- <CAA8EJprSj8FUuHkFUcinrbfd3oukeLqOivWianBrnt_9Si8ZRQ@mail.gmail.com>
- <CAPDyKFoMC_7kJx_Wb4LKgxvRCoqHYFtwsJ2b7Cr4OvjA94DtHg@mail.gmail.com>
- <YMjNaM0z+OzhAeO/@yoga> <CAPDyKFo_eNwEx5rryg3bHt_-pxBeeYfVrUZuTOHoL-x94LBwDA@mail.gmail.com>
- <c6e99362-56c1-f2bd-7170-7b001e0f96fe@linaro.org> <YNs3q0HI1WKrKOXx@yoga>
- <CAPDyKFqSwPn7wUXB9mayT78hshDFBK+DO7cqbmZRjXNAJDQfZw@mail.gmail.com> <CAA8EJpoOFyFh8vp4Q5w0DMT7-1MrN930gQiv6dk-Mu05B2dT3Q@mail.gmail.com>
-In-Reply-To: <CAA8EJpoOFyFh8vp4Q5w0DMT7-1MrN930gQiv6dk-Mu05B2dT3Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 1 Jul 2021 17:14:07 +0200
-Message-ID: <CAPDyKFrC-ibr1bOKndS0_NirW=B5E1CetB3OwgS9jfQadAQWjg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: domain: use per-genpd lockdep class
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
+        Thu, 1 Jul 2021 11:18:39 -0400
+Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 09FFB182CF670;
+        Thu,  1 Jul 2021 15:16:08 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id E6EFF2351FC;
+        Thu,  1 Jul 2021 15:16:02 +0000 (UTC)
+Message-ID: <59794f7f5a481e670a2490017649a872a8639be2.camel@perches.com>
+Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
+From:   Joe Perches <joe@perches.com>
+To:     Long Li <longli@microsoft.com>, Jiri Slaby <jirislaby@kernel.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Date:   Thu, 01 Jul 2021 08:16:01 -0700
+In-Reply-To: <BY5PR21MB15062914C8301F2EF9C24F15CE009@BY5PR21MB1506.namprd21.prod.outlook.com>
+References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
+         <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
+         <f5155516-4054-459a-c23c-a787fa429e5e@kernel.org>
+         <BY5PR21MB15062914C8301F2EF9C24F15CE009@BY5PR21MB1506.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: dsf3h6ga59m8sx4ehmp9tsmrym5oi8tz
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: E6EFF2351FC
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+tjnrxZq5D3ZdkY3toM7Ry7rBvXa0HGQU=
+X-HE-Tag: 1625152562-567931
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 at 13:01, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Thu, 1 Jul 2021 at 13:07, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Tue, 29 Jun 2021 at 17:09, Bjorn Andersson
-> > <bjorn.andersson@linaro.org> wrote:
-> > >
-> > > On Mon 28 Jun 14:55 CDT 2021, Dmitry Baryshkov wrote:
-> > >
-> > > > Hi,
-> > > >
-> > > > On 17/06/2021 12:07, Ulf Hansson wrote:
-> > > > > + Rajendra
-> > > > >
-> > > > > On Tue, 15 Jun 2021 at 17:55, Bjorn Andersson
-> > > > > <bjorn.andersson@linaro.org> wrote:
-> > > [..]
-> > > > > > But I am unable to find a way for the gdsc driver to get hold of the
-> > > > > > struct generic_pm_domain of the resources exposed by the rpmhpd driver.
-> > > > >
-> > > > > You don't need a handle to the struct generic_pm_domain, to assign a
-> > > > > parent/child domain. Instead you can use of_genpd_add_subdomain(),
-> > > > > which takes two "struct of_phandle_args*" corresponding to the
-> > > > > parent/child device nodes of the genpd providers and then let genpd
-> > > > > internally do the look up.
-> > > >
-> > > [..]
-> > > >
-> > > > I think I'd need this function anyway for the gdsc code. During gdsc_init()
-> > > > we check gdsc status and this requires register access (and thus powering on
-> > > > the parent domain) before the gdsc is registered itself as a power domain.
-> > > >
-> > >
-> > > But this is a register access in the dispcc block, which is the context
-> > > that our gdsc_init() operates. So describing that MMCX is the
-> > > power-domain for dispcc should ensure that the power-domain is enabled.
-> >
-> > Right.
-> >
-> > As a note, when we assign a child domain to a parent domain, via
-> > of_genpd_add_subdomain() for example - and the child domain has been
-> > powered on, this requires the parent domain to be turned on as well.
->
-> Most probably we should also teach genpd code to call pm_runtime
-> functions on respective devices when the genpd is powered on or off.
-> For now I had to do this manually.
+On Thu, 2021-07-01 at 07:09 +0000, Long Li wrote:
+> > On 26. 06. 21, 8:30, longli@linuxonhyperv.com wrote:
 
-No, that's not the way it works or should work for that matter.
+> > Have you fed this patch through checkpatch?
+> 
+> Yes, it didn't throw out any errors.
 
-It's the runtime PM status of the devices that are attached to a
-genpd, that controls whether a genpd should be powered on/off.
-Additionally, if there is a child domain powered on, then its parent
-needs to be powered on too and so forth.
+Several warnings and checks though.
 
->
-> >
-> > >
-> > > We do however need to make sure that dispcc doesn't hog its
-> > > power-domain, and that any register accesses in runtime is done with the
-> > > parenting power-domain enabled. E.g. the clock framework wraps all
-> > > operations in pm_runtime_get/put(), but I don't see anything in the
-> > > gnepd code for this.
-> > >
-> > >
-> > > And for gcc I'm worried that we might have some GDSCs that are parented
-> > > by CX and some by MX, but I do still think that the register accesses
-> > > are only related to one of these.
-> > >
-> > > But this seems like a continuation of the special case in dispcc, so I
-> > > think we should be able to focus on getting that right before we attempt
-> > > the general case (and I don't know if we have a need for this today).
-> > >
-> > > Regards,
-> > > Bjorn
-> >
-> > Unfortunately, I didn't understand all the above things.
-> >
-> > In any case, please tell me if there is anything else that blocks you
-> > from moving forward with the power domain conversion? I am happy to
-> > help.
->
-> Patch series was submitted:
-> https://lore.kernel.org/linux-arm-msm/20210630133149.3204290-1-dmitry.baryshkov@linaro.org/
+$ ./scripts/checkpatch.pl 2.patch --strict --terse
+2.patch:68: WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+2.patch:148: WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+2.patch:173: CHECK: spinlock_t definition without comment
+2.patch:220: CHECK: spinlock_t definition without comment
+2.patch:250: CHECK: Alignment should match open parenthesis
+2.patch:255: CHECK: Alignment should match open parenthesis
+2.patch:257: CHECK: Macro argument 'level' may be better as '(level)' to avoid precedence issues
+2.patch:280: CHECK: Alignment should match open parenthesis
+2.patch:283: CHECK: No space is necessary after a cast
+2.patch:287: WARNING: quoted string split across lines
+2.patch:296: CHECK: Blank lines aren't necessary before a close brace '}'
+2.patch:303: CHECK: Please don't use multiple blank lines
+2.patch:308: CHECK: Please don't use multiple blank lines
+2.patch:331: CHECK: Alignment should match open parenthesis
+2.patch:348: CHECK: Alignment should match open parenthesis
+2.patch:362: CHECK: Alignment should match open parenthesis
+2.patch:371: CHECK: Alignment should match open parenthesis
+2.patch:381: CHECK: Alignment should match open parenthesis
+2.patch:404: CHECK: No space is necessary after a cast
+2.patch:426: WARNING: quoted string split across lines
+2.patch:437: WARNING: quoted string split across lines
+2.patch:438: WARNING: quoted string split across lines
+2.patch:458: CHECK: No space is necessary after a cast
+2.patch:459: CHECK: Alignment should match open parenthesis
+2.patch:464: CHECK: No space is necessary after a cast
+2.patch:465: CHECK: Alignment should match open parenthesis
+2.patch:472: CHECK: Alignment should match open parenthesis
+2.patch:472: CHECK: No space is necessary after a cast
+2.patch:482: CHECK: Alignment should match open parenthesis
+2.patch:506: CHECK: Alignment should match open parenthesis
+2.patch:513: CHECK: Alignment should match open parenthesis
+2.patch:519: CHECK: Alignment should match open parenthesis
+2.patch:535: CHECK: Alignment should match open parenthesis
+2.patch:537: WARNING: quoted string split across lines
+2.patch:538: WARNING: quoted string split across lines
+2.patch:539: WARNING: quoted string split across lines
+2.patch:549: CHECK: Alignment should match open parenthesis
+2.patch:549: CHECK: No space is necessary after a cast
+2.patch:565: CHECK: Alignment should match open parenthesis
+2.patch:574: CHECK: Alignment should match open parenthesis
+2.patch:595: CHECK: Alignment should match open parenthesis
+2.patch:634: WARNING: quoted string split across lines
+2.patch:639: CHECK: Alignment should match open parenthesis
+2.patch:643: CHECK: Alignment should match open parenthesis
+2.patch:646: CHECK: Alignment should match open parenthesis
+2.patch:648: CHECK: Alignment should match open parenthesis
+2.patch:650: CHECK: Alignment should match open parenthesis
+2.patch:694: CHECK: braces {} should be used on all arms of this statement
+2.patch:696: CHECK: Alignment should match open parenthesis
+2.patch:703: CHECK: Unbalanced braces around else statement
+2.patch:724: CHECK: Alignment should match open parenthesis
+2.patch:744: CHECK: Alignment should match open parenthesis
+total: 0 errors, 10 warnings, 42 checks, 749 lines checked
 
-Okay, I will have a look over there. Thanks!
 
-Kind regards
-Uffe
