@@ -2,400 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63ABF3B9564
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5A03B956D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhGARYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:24:40 -0400
-Received: from mga18.intel.com ([134.134.136.126]:14148 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhGARYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:24:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="195868067"
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="195868067"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:22:06 -0700
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="457748026"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.231.202]) ([10.249.231.202])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:22:03 -0700
-Subject: Re: [PATCH v8 03/22] perf record: Introduce thread local variable
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S233150AbhGAR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhGAR0p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:26:45 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DE8C061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:24:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z64-20020a257e430000b0290550b1931c8dso9597934ybc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=W+yNXXd/sg5bPnMG2widlIL5j/blFdFa+1fW6PCvTrY=;
+        b=Bhfx27LQ0RjZ0y8IYfAXVvXGTR4DzeM+8nLGds/UaofotENeKPUTQCxkK47YTSnf/q
+         HZ5DWFhZQm8E1S1GP0987jeT2DZDblhWqmL0xsApweZRVdBg2aOhl/lE0tknIpfEX+om
+         AZ+8woXC6FLAffO+mgr344d+UIu8XdkQ2RbQuAol84DEs9FcOa53Xq6XsXoxlD3Ej790
+         4JER2lVCiHR6Xw2+V/ZWDAVr2XGpMq2dsKgrzNOHDHbaaK/y2TzmqWk8lxCXrtdW7qkz
+         DiZEO6d0uLWLprV38Pb9mc/p8UIwcOVbGV005Esz7nFpzL/fwscRKJyUa4Y913JRBF3F
+         ElKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=W+yNXXd/sg5bPnMG2widlIL5j/blFdFa+1fW6PCvTrY=;
+        b=cmff96A/pjXIrZwgPGriyQnDfmuRKLIqG2+MiLlJScr3OV3L5SdFXsiQ2s/AVmpEs4
+         yt6Fwu2XlcIHVC3Uowcd1unt8uwMLEJhtAgA4APyW/q141f2vaw7SOGmJHVaB9n5nl/E
+         VWatfdbs/BgSDNbntigCI2EJY8MRynFgCzsnndYeiH/gxE2Enb0omHii7bko++ju7KNe
+         N1qEhrfoP9kqgTQDjSdf5TP2PXOmC/TkllfHzQ6/GEzeL31qsHhd9HzWVlxp3j3ZamyL
+         MsFT4URzmjVIgWrqnWVR+VklIWdTnjcXCV797XTR/Kfka40vIfOU4oZa5KFzZynKoush
+         uYHQ==
+X-Gm-Message-State: AOAM530C0orO7yHBsCRIbQxFukE9Xv8SB7ymDGTyeXetxzLWpSqfgQLj
+        ZasiLHCZEPFEMikhzO28ceBu1G6dA2SqqFlVPa59+ALjDGQs4JE/4paGUTektAhKOh0Ju++u667
+        o5vjDgzwqBXSZbnjBm9WKN6rpwlhI6SkBjdkLRwSQFwKNirRGcLrFzcdss64TFbW9dsLUjDrv2h
+        GplhcC
+X-Google-Smtp-Source: ABdhPJyz7zVQc6WT9tGwAUSqYMLpintRtDgSOaOx3pqUXRNAodmPXxTpYoG+FPVO9E9Fb2d/4z1tud7OxUX/wY6+
+X-Received: from paulburton.mtv.corp.google.com ([2620:15c:280:201:558a:406a:d453:dbe5])
+ (user=paulburton job=sendgmr) by 2002:a25:a225:: with SMTP id
+ b34mr1015554ybi.485.1625160253483; Thu, 01 Jul 2021 10:24:13 -0700 (PDT)
+Date:   Thu,  1 Jul 2021 10:24:06 -0700
+In-Reply-To: <20210701095525.400839d3@oasis.local.home>
+Message-Id: <20210701172407.889626-1-paulburton@google.com>
+Mime-Version: 1.0
+References: <20210701095525.400839d3@oasis.local.home>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2 1/2] tracing: Simplify & fix saved_tgids logic
+From:   Paul Burton <paulburton@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Paul Burton <paulburton@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <15e08085a9040209bf13b26239b81b4b52b02d6d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
- <YNynCbUE/yjkUxcN@kernel.org>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <43cc693f-a032-3648-cd78-88cc7d65bb35@linux.intel.com>
-Date:   Thu, 1 Jul 2021 20:22:00 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YNynCbUE/yjkUxcN@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        Joel Fernandes <joelaf@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The tgid_map array records a mapping from pid to tgid, where the index
+of an entry within the array is the pid & the value stored at that index
+is the tgid.
 
-On 30.06.2021 20:16, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Jun 30, 2021 at 06:54:42PM +0300, Alexey Bayduraev escreveu:
->> Introduce thread local variable and use it for threaded trace streaming.
-[SNIP]
->>  static void record__adjust_affinity(struct record *rec, struct mmap *map)
->>  {
->> +	int ret = 0;
-> 
-> Why you set this to zero here if it is going to be used only insde the
-> if block?
-> 
->> +
->>  	if (rec->opts.affinity != PERF_AFFINITY_SYS &&
->> -	    !bitmap_equal(rec->affinity_mask.bits, map->affinity_mask.bits,
->> -			  rec->affinity_mask.nbits)) {
->> -		bitmap_zero(rec->affinity_mask.bits, rec->affinity_mask.nbits);
->> -		bitmap_or(rec->affinity_mask.bits, rec->affinity_mask.bits,
->> -			  map->affinity_mask.bits, rec->affinity_mask.nbits);
->> -		sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&rec->affinity_mask),
->> -				  (cpu_set_t *)rec->affinity_mask.bits);
->> -		if (verbose == 2)
->> -			mmap_cpu_mask__scnprintf(&rec->affinity_mask, "thread");
->> +	    !bitmap_equal(thread->mask->affinity.bits, map->affinity_mask.bits,
->> +			  thread->mask->affinity.nbits)) {
->> +		bitmap_zero(thread->mask->affinity.bits, thread->mask->affinity.nbits);
->> +		bitmap_or(thread->mask->affinity.bits, thread->mask->affinity.bits,
->> +			  map->affinity_mask.bits, thread->mask->affinity.nbits);
->> +		ret = sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&thread->mask->affinity),
->> +					(cpu_set_t *)thread->mask->affinity.bits);
->> +		if (ret)
->> +			pr_err("threads[%d]: sched_setaffinity() call failed: %s\n",
->> +			       thread->tid, strerror(errno));
-> 
-> Also, if record__adjust_affinity() fails by means of sched_setaffinity
-> not working, shouldn't we propagate this error?
-> 
+The saved_tgids_next() function iterates over pointers into the tgid_map
+array & dereferences the pointers which results in the tgid, but then it
+passes that dereferenced value to trace_find_tgid() which treats it as a
+pid & does a further lookup within the tgid_map array. It seems likely
+that the intent here was to skip over entries in tgid_map for which the
+recorded tgid is zero, but instead we end up skipping over entries for
+which the thread group leader hasn't yet had its own tgid recorded in
+tgid_map.
 
-I am also in doubt. record__adjust_affinity() is called inside mmap read
-function and I don't think it's a good idea to terminate the data
-collection in the middle. I guess this can be critical only for real-time
-workloads.
+A minimal fix would be to remove the call to trace_find_tgid, turning:
 
-Regards,
-Alexey
+  if (trace_find_tgid(*ptr))
 
->> +		if (verbose == 2) {
->> +			pr_debug("threads[%d]: addr=", thread->tid);
->> +			mmap_cpu_mask__scnprintf(&thread->mask->affinity, "thread");
->> +			pr_debug("threads[%d]: on cpu=%d\n", thread->tid, sched_getcpu());
->> +		}
->>  	}
->>  }
->>  
->> @@ -1310,14 +1319,17 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
->>  	u64 bytes_written = rec->bytes_written;
->>  	int i;
->>  	int rc = 0;
->> -	struct mmap *maps;
->> +	int nr_mmaps;
->> +	struct mmap **maps;
->>  	int trace_fd = rec->data.file.fd;
->>  	off_t off = 0;
->>  
->>  	if (!evlist)
->>  		return 0;
->>  
->> -	maps = overwrite ? evlist->overwrite_mmap : evlist->mmap;
->> +	nr_mmaps = thread->nr_mmaps;
->> +	maps = overwrite ? thread->overwrite_maps : thread->maps;
->> +
->>  	if (!maps)
->>  		return 0;
->>  
->> @@ -1327,9 +1339,9 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
->>  	if (record__aio_enabled(rec))
->>  		off = record__aio_get_pos(trace_fd);
->>  
->> -	for (i = 0; i < evlist->core.nr_mmaps; i++) {
->> +	for (i = 0; i < nr_mmaps; i++) {
->>  		u64 flush = 0;
->> -		struct mmap *map = &maps[i];
->> +		struct mmap *map = maps[i];
->>  
->>  		if (map->core.base) {
->>  			record__adjust_affinity(rec, map);
->> @@ -1392,6 +1404,15 @@ static int record__mmap_read_all(struct record *rec, bool synch)
->>  	return record__mmap_read_evlist(rec, rec->evlist, true, synch);
->>  }
->>  
->> +static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
->> +					   void *arg __maybe_unused)
->> +{
->> +	struct perf_mmap *map = fda->priv[fd].ptr;
->> +
->> +	if (map)
->> +		perf_mmap__put(map);
->> +}
->> +
->>  static void record__init_features(struct record *rec)
->>  {
->>  	struct perf_session *session = rec->session;
->> @@ -1836,6 +1857,33 @@ static void record__uniquify_name(struct record *rec)
->>  	}
->>  }
->>  
->> +static int record__start_threads(struct record *rec)
->> +{
->> +	struct thread_data *thread_data = rec->thread_data;
->> +
->> +	thread = &thread_data[0];
->> +
->> +	pr_debug("threads[%d]: started on cpu=%d\n", thread->tid, sched_getcpu());
->> +
->> +	return 0;
->> +}
->> +
->> +static int record__stop_threads(struct record *rec, unsigned long *waking)
->> +{
->> +	int t;
->> +	struct thread_data *thread_data = rec->thread_data;
->> +
->> +	for (t = 0; t < rec->nr_threads; t++) {
->> +		rec->samples += thread_data[t].samples;
->> +		*waking += thread_data[t].waking;
->> +		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
->> +			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
->> +			 rec->session->bytes_transferred, rec->session->bytes_compressed);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  {
->>  	int err;
->> @@ -1944,7 +1992,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  
->>  	if (record__open(rec) != 0) {
->>  		err = -1;
->> -		goto out_child;
->> +		goto out_free_threads;
->>  	}
->>  	session->header.env.comp_mmap_len = session->evlist->core.mmap_len;
->>  
->> @@ -1952,7 +2000,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  		err = record__kcore_copy(&session->machines.host, data);
->>  		if (err) {
->>  			pr_err("ERROR: Failed to copy kcore\n");
->> -			goto out_child;
->> +			goto out_free_threads;
->>  		}
->>  	}
->>  
->> @@ -1963,7 +2011,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  		bpf__strerror_apply_obj_config(err, errbuf, sizeof(errbuf));
->>  		pr_err("ERROR: Apply config to BPF failed: %s\n",
->>  			 errbuf);
->> -		goto out_child;
->> +		goto out_free_threads;
->>  	}
->>  
->>  	/*
->> @@ -1981,11 +2029,11 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  	if (data->is_pipe) {
->>  		err = perf_header__write_pipe(fd);
->>  		if (err < 0)
->> -			goto out_child;
->> +			goto out_free_threads;
->>  	} else {
->>  		err = perf_session__write_header(session, rec->evlist, fd, false);
->>  		if (err < 0)
->> -			goto out_child;
->> +			goto out_free_threads;
->>  	}
->>  
->>  	err = -1;
->> @@ -1993,16 +2041,16 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  	    && !perf_header__has_feat(&session->header, HEADER_BUILD_ID)) {
->>  		pr_err("Couldn't generate buildids. "
->>  		       "Use --no-buildid to profile anyway.\n");
->> -		goto out_child;
->> +		goto out_free_threads;
->>  	}
->>  
->>  	err = record__setup_sb_evlist(rec);
->>  	if (err)
->> -		goto out_child;
->> +		goto out_free_threads;
->>  
->>  	err = record__synthesize(rec, false);
->>  	if (err < 0)
->> -		goto out_child;
->> +		goto out_free_threads;
->>  
->>  	if (rec->realtime_prio) {
->>  		struct sched_param param;
->> @@ -2011,10 +2059,13 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
->>  			pr_err("Could not set realtime priority.\n");
->>  			err = -1;
->> -			goto out_child;
->> +			goto out_free_threads;
->>  		}
->>  	}
->>  
->> +	if (record__start_threads(rec))
->> +		goto out_free_threads;
->> +
->>  	/*
->>  	 * When perf is starting the traced process, all the events
->>  	 * (apart from group members) have enable_on_exec=1 set,
->> @@ -2085,7 +2136,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  	trigger_ready(&switch_output_trigger);
->>  	perf_hooks__invoke_record_start();
->>  	for (;;) {
->> -		unsigned long long hits = rec->samples;
->> +		unsigned long long hits = thread->samples;
->>  
->>  		/*
->>  		 * rec->evlist->bkw_mmap_state is possible to be
->> @@ -2154,20 +2205,24 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  				alarm(rec->switch_output.time);
->>  		}
->>  
->> -		if (hits == rec->samples) {
->> +		if (hits == thread->samples) {
->>  			if (done || draining)
->>  				break;
->> -			err = evlist__poll(rec->evlist, -1);
->> +			err = fdarray__poll(&thread->pollfd, -1);
->>  			/*
->>  			 * Propagate error, only if there's any. Ignore positive
->>  			 * number of returned events and interrupt error.
->>  			 */
->>  			if (err > 0 || (err < 0 && errno == EINTR))
->>  				err = 0;
->> -			waking++;
->> +			thread->waking++;
->>  
->> -			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
->> +			if (fdarray__filter(&thread->pollfd, POLLERR | POLLHUP,
->> +					    record__thread_munmap_filtered, NULL) == 0)
->>  				draining = true;
->> +
->> +			evlist__ctlfd_update(rec->evlist,
->> +				&thread->pollfd.entries[thread->ctlfd_pos]);
->>  		}
->>  
->>  		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
->> @@ -2220,18 +2275,20 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  		goto out_child;
->>  	}
->>  
->> -	if (!quiet)
->> -		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
->> -
->>  	if (target__none(&rec->opts.target))
->>  		record__synthesize_workload(rec, true);
->>  
->>  out_child:
->> -	evlist__finalize_ctlfd(rec->evlist);
->> +	record__stop_threads(rec, &waking);
->>  	record__mmap_read_all(rec, true);
->> +out_free_threads:
->>  	record__free_thread_data(rec);
->> +	evlist__finalize_ctlfd(rec->evlist);
->>  	record__aio_mmap_read_sync(rec);
->>  
->> +	if (!quiet)
->> +		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
->> +
->>  	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
->>  		ratio = (float)rec->session->bytes_transferred/(float)rec->session->bytes_compressed;
->>  		session->header.env.comp_ratio = ratio + 0.5;
->> @@ -3093,17 +3150,6 @@ int cmd_record(int argc, const char **argv)
->>  
->>  	symbol__init(NULL);
->>  
->> -	if (rec->opts.affinity != PERF_AFFINITY_SYS) {
->> -		rec->affinity_mask.nbits = cpu__max_cpu();
->> -		rec->affinity_mask.bits = bitmap_alloc(rec->affinity_mask.nbits);
->> -		if (!rec->affinity_mask.bits) {
->> -			pr_err("Failed to allocate thread mask for %zd cpus\n", rec->affinity_mask.nbits);
->> -			err = -ENOMEM;
->> -			goto out_opts;
->> -		}
->> -		pr_debug2("thread mask[%zd]: empty\n", rec->affinity_mask.nbits);
->> -	}
->> -
->>  	err = record__auxtrace_init(rec);
->>  	if (err)
->>  		goto out;
->> @@ -3241,7 +3287,6 @@ int cmd_record(int argc, const char **argv)
->>  
->>  	err = __cmd_record(&record, argc, argv);
->>  out:
->> -	bitmap_free(rec->affinity_mask.bits);
->>  	evlist__delete(rec->evlist);
->>  	symbol__exit();
->>  	auxtrace_record__free(rec->itr);
-> 
-> 
-> Can the following be moved to a separate patch?
-> 
->> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->> index 6ba9664089bd..3d555a98c037 100644
->> --- a/tools/perf/util/evlist.c
->> +++ b/tools/perf/util/evlist.c
->> @@ -2132,6 +2132,22 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
->>  	return err;
->>  }
->>  
->> +int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update)
->> +{
->> +	int ctlfd_pos = evlist->ctl_fd.pos;
->> +	struct pollfd *entries = evlist->core.pollfd.entries;
->> +
->> +	if (!evlist__ctlfd_initialized(evlist))
->> +		return 0;
->> +
->> +	if (entries[ctlfd_pos].fd != update->fd ||
->> +	    entries[ctlfd_pos].events != update->events)
->> +		return -1;
->> +
->> +	entries[ctlfd_pos].revents = update->revents;
->> +	return 0;
->> +}
->> +
->>  struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
->>  {
->>  	struct evsel *evsel;
->> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
->> index 2073cfa79f79..b7aa719c638d 100644
->> --- a/tools/perf/util/evlist.h
->> +++ b/tools/perf/util/evlist.h
->> @@ -358,6 +358,7 @@ void evlist__close_control(int ctl_fd, int ctl_fd_ack, bool *ctl_fd_close);
->>  int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
->>  int evlist__finalize_ctlfd(struct evlist *evlist);
->>  bool evlist__ctlfd_initialized(struct evlist *evlist);
->> +int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update);
->>  int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
->>  int evlist__ctlfd_ack(struct evlist *evlist);
->>  
->> -- 
->> 2.19.0
->>
-> 
+into:
+
+  if (*ptr)
+
+..but it seems like this logic can be much simpler if we simply let
+seq_read() iterate over the whole tgid_map array & filter out empty
+entries by returning SEQ_SKIP from saved_tgids_show(). Here we take that
+approach, removing the incorrect logic here entirely.
+
+Signed-off-by: Paul Burton <paulburton@google.com>
+Fixes: d914ba37d714 ("tracing: Add support for recording tgid of tasks")
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: <stable@vger.kernel.org>
+---
+Changes in v2:
+- Add comments describing why we know tgid_map is non-NULL in
+  saved_tgids_next() & saved_tgids_start().
+---
+ kernel/trace/trace.c | 45 ++++++++++++++++++++------------------------
+ 1 file changed, 20 insertions(+), 25 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index d23a09d3eb37..7a37c9e36b88 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5608,37 +5608,23 @@ static const struct file_operations tracing_readme_fops = {
+ 
+ static void *saved_tgids_next(struct seq_file *m, void *v, loff_t *pos)
+ {
+-	int *ptr = v;
++	int pid = ++(*pos);
+ 
+-	if (*pos || m->count)
+-		ptr++;
+-
+-	(*pos)++;
+-
+-	for (; ptr <= &tgid_map[PID_MAX_DEFAULT]; ptr++) {
+-		if (trace_find_tgid(*ptr))
+-			return ptr;
+-	}
++	if (pid > PID_MAX_DEFAULT)
++		return NULL;
+ 
+-	return NULL;
++	// We already know that tgid_map is non-NULL here because the v
++	// argument is by definition a non-NULL pointer into tgid_map returned
++	// by saved_tgids_start() or an earlier call to saved_tgids_next().
++	return &tgid_map[pid];
+ }
+ 
+ static void *saved_tgids_start(struct seq_file *m, loff_t *pos)
+ {
+-	void *v;
+-	loff_t l = 0;
+-
+-	if (!tgid_map)
++	if (!tgid_map || *pos > PID_MAX_DEFAULT)
+ 		return NULL;
+ 
+-	v = &tgid_map[0];
+-	while (l <= *pos) {
+-		v = saved_tgids_next(m, v, &l);
+-		if (!v)
+-			return NULL;
+-	}
+-
+-	return v;
++	return &tgid_map[*pos];
+ }
+ 
+ static void saved_tgids_stop(struct seq_file *m, void *v)
+@@ -5647,9 +5633,18 @@ static void saved_tgids_stop(struct seq_file *m, void *v)
+ 
+ static int saved_tgids_show(struct seq_file *m, void *v)
+ {
+-	int pid = (int *)v - tgid_map;
++	int *entry = (int *)v;
++	int pid, tgid;
++
++	// We already know that tgid_map is non-NULL here because the v
++	// argument is by definition a non-NULL pointer into tgid_map returned
++	// by saved_tgids_start() or saved_tgids_next().
++	pid = entry - tgid_map;
++	tgid = *entry;
++	if (tgid == 0)
++		return SEQ_SKIP;
+ 
+-	seq_printf(m, "%d %d\n", pid, trace_find_tgid(pid));
++	seq_printf(m, "%d %d\n", pid, tgid);
+ 	return 0;
+ }
+ 
+
+base-commit: 62fb9874f5da54fdb243003b386128037319b219
+-- 
+2.32.0.93.g670b81a890-goog
+
