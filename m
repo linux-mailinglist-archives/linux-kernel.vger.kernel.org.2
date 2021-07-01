@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5458E3B963A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB93B963D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhGASvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:51:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34354 "EHLO m43-7.mailgun.net"
+        id S233489AbhGASwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhGASvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:51:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625165358; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=blxOe96Hr8SQcdVl95JnLY5mZV4CcHsOypImKe+oKsg=;
- b=U25QPp46+nW9zNA02RkqMUNvNsM11J1K46/6N6Xw05xvSn1HijEOjDySzMMK37JJLxftGy2r
- PKdxiupFAjFN2ULG64+DwaEGNGfEzY42lSJkel2IE0hYcfqmrOTEjNfrfBIAF8fejieB2Ngc
- LrNnqpn35rp1LtIvbTSAzVsE3EI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60de0e0eec0b18a745fd994b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Jul 2021 18:48:46
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A7CA0C43460; Thu,  1 Jul 2021 18:48:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA2A6C433F1;
-        Thu,  1 Jul 2021 18:48:44 +0000 (UTC)
+        id S233239AbhGASwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 14:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A692D6141E;
+        Thu,  1 Jul 2021 18:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625165403;
+        bh=eRyn9P+vGJ1WcJIyTwNUPQx37m3fDEqxlgykLPzZn/U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IgSJbCMMufW3BXkoYbPvCqQ6czDXHsj3dhVqQdU1Bo6/p+73xfumrI3/uIGzZWsao
+         5xBpjW4vw4iAYiiAOr0IHwstv0VZmgDh6uFiGoQT1/2n30mdEBoBfsgVCQm8e0ScE8
+         GPA5OyKoRnyNXpo+Qmwkga6L8ORPCRWoCL1UKv1BNE2/tAQ7QQDkc4SclM0WDLAIu0
+         f+fgrC/ctXwlXxf0Yr6TN9s3n+Pjvo/kldXKJOSArgN8aeM53sSifO/TDyrJUsqTaM
+         p5FFwmXzvpsc436vX7xeZ0g20uADFQ/zq90p9LhuBc4imvEoBUNW8FI/mAhw0neqTd
+         hCn8MuLE3hj+g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 96D6F60A56;
+        Thu,  1 Jul 2021 18:50:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 02 Jul 2021 00:18:44 +0530
-From:   okukatla@codeaurora.org
-To:     Mike Tipton <mdtipton@codeaurora.org>
-Cc:     djakov@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        saravanak@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdtipton=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH 3/4] interconnect: qcom: icc-rpmh: Ensure floor BW is
- enforced for all nodes
-In-Reply-To: <20210625212839.24155-4-mdtipton@codeaurora.org>
-References: <20210625212839.24155-1-mdtipton@codeaurora.org>
- <20210625212839.24155-4-mdtipton@codeaurora.org>
-Message-ID: <afaf4cb4ccc60a1c7c937a296f199f70@codeaurora.org>
-X-Sender: okukatla@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162516540361.27350.271838834305327308.git-patchwork-notify@kernel.org>
+Date:   Thu, 01 Jul 2021 18:50:03 +0000
+References: <20210630001419.402366-1-opendmb@gmail.com>
+In-Reply-To: <20210630001419.402366-1-opendmb@gmail.com>
+To:     Doug Berger <opendmb@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-26 02:58, Mike Tipton wrote:
-> We currently only enforce BW floors for a subset of nodes in a path.
-> All BCMs that need updating are queued in the pre_aggregate/aggregate
-> phase. The first set() commits all queued BCMs and subsequent set()
-> calls short-circuit without committing anything. Since the floor BW
-> isn't set in sum_avg/max_peak until set(), then some BCMs are committed
-> before their associated nodes reflect the floor.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Tue, 29 Jun 2021 17:14:19 -0700 you wrote:
+> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
+> logic of the internal PHY to prevent the system from sleeping. Some
+> internal PHYs will report that energy is detected when the network
+> interface is closed which can prevent the system from going to sleep
+> if WoL is enabled when the interface is brought down.
 > 
-> Set the floor as each node is being aggregated. This ensures that all
-> all relevant floors are set before the BCMs are committed.
+> Since the driver does not support waking the system on this logic,
+> this commit clears the bit whenever the internal PHY is powered up
+> and the other logic for manipulating the bit is removed since it
+> serves no useful function.
 > 
-> Fixes: 266cd33b5913 ("interconnect: qcom: Ensure that the floor
-> bandwidth value is enforced")
-> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-> ---
->  drivers/interconnect/qcom/icc-rpmh.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/icc-rpmh.c
-> b/drivers/interconnect/qcom/icc-rpmh.c
-> index bf01d09dba6c..f118f57eae37 100644
-> --- a/drivers/interconnect/qcom/icc-rpmh.c
-> +++ b/drivers/interconnect/qcom/icc-rpmh.c
-> @@ -57,6 +57,11 @@ int qcom_icc_aggregate(struct icc_node *node, u32
-> tag, u32 avg_bw,
->  			qn->sum_avg[i] += avg_bw;
->  			qn->max_peak[i] = max_t(u32, qn->max_peak[i], peak_bw);
->  		}
-> +
-> +		if (node->init_avg || node->init_peak) {
-> +			qn->sum_avg[i] = max_t(u64, qn->sum_avg[i], node->init_avg);
-> +			qn->max_peak[i] = max_t(u64, qn->max_peak[i], node->init_peak);
-> +		}
-Hi Mike,
-Original problem is BCMs not getting added to commit_list for unused 
-nodes, right? that is solved by moving *_bcm_voter_add() to 
-pre_aggregate().
-I could not get why we need to do above change, we are enforcing node 
-votes with floor votes in framework + below code snippet that you 
-removed.
-How would adding this code in qcom_icc_aggregate() make difference? Is 
-there any other issue that i am not to able to get?
->  	}
-> 
->  	*agg_avg += avg_bw;
-> @@ -90,11 +95,6 @@ int qcom_icc_set(struct icc_node *src, struct 
-> icc_node *dst)
->  	qp = to_qcom_provider(node->provider);
->  	qn = node->data;
-> 
-> -	qn->sum_avg[QCOM_ICC_BUCKET_AMC] = max_t(u64,
-> qn->sum_avg[QCOM_ICC_BUCKET_AMC],
-> -						 node->avg_bw);
-> -	qn->max_peak[QCOM_ICC_BUCKET_AMC] = max_t(u64,
-> qn->max_peak[QCOM_ICC_BUCKET_AMC],
-> -						  node->peak_bw);
-> -
->  	qcom_icc_bcm_voter_commit(qp->voter);
-> 
->  	return 0;
+> [...]
+
+Here is the summary with links:
+  - [net,v2] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+    https://git.kernel.org/netdev/net/c/5a3c680aa2c1
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
