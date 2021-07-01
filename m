@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AABD3B8C65
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66B63B8C6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238669AbhGACrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:47:20 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45518 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238056AbhGACrT (ORCPT
+        id S238670AbhGACzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238056AbhGACzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:47:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UeDiCxH_1625107487;
-Received: from Dillions-MBP-16.local(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0UeDiCxH_1625107487)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 01 Jul 2021 10:44:48 +0800
-From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
-Subject: Re: [PATCH v3 0/2] x86/ioremap: fix boundary calculation and boundary
- judgment issues for ioremap()
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     linux-kernel@vger.kernel.org, yaohuiwang@linux.alibaba.com
-References: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
-Message-ID: <55fa4f7e-356b-8b41-0e06-efa5a065277a@linux.alibaba.com>
-Date:   Thu, 1 Jul 2021 10:44:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
+        Wed, 30 Jun 2021 22:55:23 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D8BC0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:52:53 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b1so2830076pls.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hvxDF3nom/N8rPm+Ppo7zGPA/qzGtO9RuOCfsxZTu98=;
+        b=SpjFL08PBqV7tkh6qKJFbHlv80PlDkGq07wcYsvXaYnweI2EpYhmpM/u8RV0DX7eud
+         lszQ4GyMHGCeoLbl8uNh/YKcZWbdc+fRt/XgL1QGeyrevEt5RgdJ6m0PW/BND3i+5Mvt
+         Tf1Ptudl3du2nRf77SJ/JTGH4r2jVQ6ewpyf6qFhyG5k2cA8/+YIheA6dKXE0TLYOJ4N
+         TiemKl2puGeIDcT/OFNCWGTGKsgDz4DYMn/wxKrrGcVMn9+0e2BzC1Ov8ExreTRiJpb8
+         //MHSLFw+Mp/ugzIgYixQV3a4jfQgyIOYoHYuZkvH1D9IaVUWIAkkKC4GniP/WYVuQpc
+         HoJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=hvxDF3nom/N8rPm+Ppo7zGPA/qzGtO9RuOCfsxZTu98=;
+        b=BCFauAcvtedNJgvYyeGGMxjWmzX5GAN2wvOv89M0w4PQbeiXYZcqTjNFDT0D7sGoWs
+         AxPxo8QTWQu8y9cMMqEAzlYOBBowlZ/MCejLRAu67YqnnNa4SPlTa/GB+4nkCaX3rgCO
+         3PIbRCogWgBKvL9qM2E5WXVkqJIp3F7t/C+ARsp9fY5PyKA6XfxH3D6upHnDnChznp50
+         0KHsD3532llDKOhZLCjlaDBq0eDJj2omWzvYQFFvvA8OCTwjzj9xyJ/Bv3V8Olz6vHGv
+         JayezAZ062qSNtJ527PK8c45yfSeZqa9xrlJXURPZocv3sBHh+dHo7zGnfBjOTe7RiRF
+         B/mA==
+X-Gm-Message-State: AOAM530BZoXiJbZlDXkfzOZttpsJlQV+X84dyWkjCSqRWphaExH22ndm
+        KEDIEHMXeUURhh2usFx+ceo02g==
+X-Google-Smtp-Source: ABdhPJwTB1Hi0X5cFeHOElli+j39Ed7Ljy/aE1Qg7eTojjCof97X9FW3uTdfNXuJxXddlvtQXZecVA==
+X-Received: by 2002:a17:903:2341:b029:129:1282:fd37 with SMTP id c1-20020a1709032341b02901291282fd37mr6223940plh.6.1625107972559;
+        Wed, 30 Jun 2021 19:52:52 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 206sm23381385pfv.108.2021.06.30.19.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 19:52:51 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 19:52:51 -0700 (PDT)
+X-Google-Original-Date: Wed, 30 Jun 2021 19:52:49 PDT (-0700)
+Subject:     Re: [PATCH 2/3] riscv: Remove non-standard linux,elfcorehdr handling
+In-Reply-To: <CAL_JsqKJgz=ixNAJProoVFmQXGEOsTYX=bXTdtf7RLQErL1VRg@mail.gmail.com>
+CC:     mick@ics.forth.gr, geert@linux-m68k.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, frowand.list@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     robh+dt@kernel.org
+Message-ID: <mhng-6db38728-4f82-45bd-9b17-c41da55c41e9@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, maintainers,
+On Wed, 16 Jun 2021 07:47:46 PDT (-0700), robh+dt@kernel.org wrote:
+> On Wed, Jun 16, 2021 at 4:43 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
+>>
+>> Στις 2021-06-16 10:56, Geert Uytterhoeven έγραψε:
+>> >
+>> > I can't comment on the duplication on arm64, but to me, /chosen
+>> > sounds like the natural place for both "linux,elfcorehdr" and
+>> > "linux,usable-memory-range".  First rule of DT is "DT describes
+>> > hardware, not software policy", with /chosen describing some software
+>> > configuration.
+>> >
+>>
+>> We already have "linux,usable-memory" on /memory node:
+>> https://elixir.bootlin.com/linux/v5.13-rc6/source/drivers/of/fdt.c#L1011
+>> and it makes perfect sense to be there since it overrides /memory's reg
+>> property.
+>>
+>> Why define another binding for the same thing on /chosen ?
+>
+> Go look at the thread adding "linux,usable-memory-range". There were
+> only 35 versions of it[1]. I wasn't happy with a 2nd way either, but
+> as I've mentioned before we don't always have /memory node.
 
-It's been 10 days since I sent the patches at Jun 21st. Would you please
-help to review them? Wish to hear your feedbacks, Thanks!
+I don't really understand what's going on here, but IIUC what I merged 
+in 5.13 doesn't match the behavior that other architectures have.  In 
+that case I'm happy moving RISC-V over to the more standard way of doing 
+things and just calling what we have in 5.13 a screwup.
 
-
-Yaohui
-
-On 2021/6/21 20:34, Yaohui Wang wrote:
-> ioremap_xxx() functions should fail if the memory address range contains
-> normal RAM. But due to some boundary calculation and boundary judgment
-> issues, the RAM check may be omitted for the very start or the very end
-> page in the memory range. As a consequence, ioremap_xxx() can be applied
-> to normal RAM pages by mistake. This raises the risk of misusing
-> ioremap_xxx() functions on normal RAM ranges, and may incur terrible
-> performance issues.
-> 
-> For example, suppose [phys_addr ~ phys_addr + PAGE_SIZE - 1] is a normal
-> RAM page. Calling ioremap(phys_addr, PAGE_SIZE-1) will succeed (but it
-> should not). This will set the cache flag of the phys_addr's directing
-> mapping pte to be PCD. What's worse, iounmap() won't revert this cache
-> flag in the directing mapping. So the pte in the directing mapping keeps
-> polluted until workarounds are applied (by invoking ioremap_cache() on
-> phys_addr) to fix the cache bit. If there is important data/code in the
-> polluted page, which is accessed frequently, then the performance of the
-> machine will drop terribly.
-> 
-> These two patches aim to address this issue.
-> 
-> Yahui Wang (2):
->    x86/ioremap: fix the pfn calculation mistake in __ioremap_check_ram()
->    kernel/resource: fix boundary judgment issues in find_next_iomem_res()
->      and __walk_iomem_res_desc()
-> 
->   arch/x86/mm/ioremap.c | 16 ++++++++--------
->   kernel/resource.c     |  4 ++--
->   2 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> 
-> base-commit: 13311e74253fe64329390df80bed3f07314ddd61
-> 
+Sorry for the confusion.
