@@ -2,70 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7AC3B93F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EAC3B93FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhGAPdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:33:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhGAPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:33:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C4506140C;
-        Thu,  1 Jul 2021 15:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625153434;
-        bh=KplcsUz5EPujORenVsapc0TaiOFOj0cwWG8KLoYP5h4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KKb6nteJLe9Ab0ti6zI+eReHimNncjem6stUroePoFj6ZH7nXRcZUOZls5qTLiJ25
-         8YEaB0QJueBFTq0N5RcQ4Dgqy2tj4r8WF7AENnmz5lv4OHZw5KeG7osxeHFDKDE8bM
-         MqbPgdESSqTcNwsOVZEfzoAMObxYldHwetAYknLiLZptnAOqes55L7Zn+6NdXXfYum
-         WmTjnpSVLWQEUHmAVFGXaImhe1LYY38Udb3LVztEr6VZwf0bgNSBNvC0Y8bjOVUQtE
-         yqPhm5907r9K8oFuCxvFdNFZY4Ga7eiY73McgKyL2r3gGjkZqcySZ6lImtYvI2F5BA
-         BAwgCc16iC6ig==
-Received: by mail-ed1-f45.google.com with SMTP id x12so9013658eds.5;
-        Thu, 01 Jul 2021 08:30:34 -0700 (PDT)
-X-Gm-Message-State: AOAM533YAz7k3GW/B9cp//wLQvX9+dE9w9dibuTmwHJfXe3XeSoNBpV2
-        033ormgYzcPslPFBAXKt0gPno3oEMQExPuNBWA==
-X-Google-Smtp-Source: ABdhPJzIvcS3XZE1OUYeuHNDEAGCqgevyqYZlOCL0nBdsk7GZwOgyCOOawNz0q9OYmjZTjT79/uhD90cUACnd6TAa2Y=
-X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr580847edb.62.1625153432682;
- Thu, 01 Jul 2021 08:30:32 -0700 (PDT)
+        id S233562AbhGAPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhGAPe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 11:34:27 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D40AC061762;
+        Thu,  1 Jul 2021 08:31:56 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p8so8816479wrr.1;
+        Thu, 01 Jul 2021 08:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=qN42ft8TO2D20OJfcUBVmNsGjubNKzxaIpoGBDjnO30=;
+        b=Q7QeFRYl7E8TGVI6mpGHeYbpPhGVz34QWBhGzMMsjh4Bs6YWjM2qYqgmf0JRNBJy2a
+         3lFCVl6R3hyIpFjKdgZkNYD5bD9CVRXcyIfLCeIamimChCDq7kslUlK7dFN7WiyZgpUI
+         pPJ8EueVXNyQKlLN4tgYi5Lfzk+QnzKr0hiUcQskudq/84vuANguULX/weG/7mCLDWP4
+         yMdxwZZihKgyWXuzbbx/Pm16tuOL4vXbVdSzSQuGXjOpH1WoEgfq56HIDPnkrTV74eb9
+         uICaBniL/x9CXDDy1ASKA+KPBCFam8+J9SrY2O9Kk/eUm0jAxYKQOWzCnn1TxRPtmj0g
+         6FVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=qN42ft8TO2D20OJfcUBVmNsGjubNKzxaIpoGBDjnO30=;
+        b=PaXa6yoCWMlehVrVPLWskcCpsvxrob/TC/Btov3OC1RvVhaifeImcc8cJ7lM8DqfH0
+         SBGzS/dHsWI5tfhg6+Zpmq2G7gcXb8+76SWZnM8cZsqmI0mfg3XSf97Y3Bd/wIONCTrg
+         Yx7I53Ym9Bx6HXS2JNu9N296kMRf0vxrHtJjndvAFhqYwakH/9RJbvkSHB8mxKqee4na
+         fUDGUSc+mgSciqjS/6nXwTCEsfa/3vPNTL0nACnLIVv73FhxMwgtRDt6JTUU4OgQtOe7
+         ASOsVCUKHXUoeuphf4tPEIn6XXAVXmu1QkQ28wJAcwpUEbl2cqCBBxw7e1+Bt/uFUgct
+         sd/A==
+X-Gm-Message-State: AOAM531QmgMsSNShiwsfJtAu/yutHJckTCOx76sKaVBgFoa1VFvW4+oG
+        D7S9RHfVl5XJuGtQYFt/9FunrSeUAIxCi93+
+X-Google-Smtp-Source: ABdhPJyIwrGCUiIisBSvA/Fnc66c8FQsKA95biC021Cnax4FXkMb2O882/LBxxAptkQ4atwhOeO7mw==
+X-Received: by 2002:a5d:5307:: with SMTP id e7mr242782wrv.353.1625153514460;
+        Thu, 01 Jul 2021 08:31:54 -0700 (PDT)
+Received: from pc ([196.235.73.129])
+        by smtp.gmail.com with ESMTPSA id l20sm385220wmq.3.2021.07.01.08.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 08:31:54 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 16:31:52 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ppc4xx: replace sscanf() by kstrtoul()
+Message-ID: <20210701153152.GA256018@pc>
 MIME-Version: 1.0
-References: <20210629234952.306578-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210629234952.306578-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-In-Reply-To: <20210629234952.306578-2-nobuhiro1.iwamatsu@toshiba.co.jp>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 1 Jul 2021 09:30:21 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKqM8yFLsB3kBDqv=_8HqY4Cv2JOT5CmQA3q-WebdmXpw@mail.gmail.com>
-Message-ID: <CAL_JsqKqM8yFLsB3kBDqv=_8HqY4Cv2JOT5CmQA3q-WebdmXpw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: pci: Add DT binding for Toshiba
- Visconti PCIe controller
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 5:50 PM Nobuhiro Iwamatsu
-<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
->
-> This commit adds the Device Tree binding documentation that allows
-> to describe the PCIe controller found in Toshiba Visconti SoCs.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++++++++++++++
->  1 file changed, 110 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+Fix the checkpatch.pl warning: "Prefer kstrto<type> to single variable sscanf".
 
-Please resend to DT list so that automated checks run.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/dma/ppc4xx/adma.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Rob
+diff --git a/drivers/dma/ppc4xx/adma.c b/drivers/dma/ppc4xx/adma.c
+index df7704053d91..e2b5129c5f84 100644
+--- a/drivers/dma/ppc4xx/adma.c
++++ b/drivers/dma/ppc4xx/adma.c
+@@ -4319,6 +4319,7 @@ static ssize_t enable_store(struct device_driver *dev, const char *buf,
+ 			    size_t count)
+ {
+ 	unsigned long val;
++	int err;
+ 
+ 	if (!count || count > 11)
+ 		return -EINVAL;
+@@ -4327,7 +4328,10 @@ static ssize_t enable_store(struct device_driver *dev, const char *buf,
+ 		return -EFAULT;
+ 
+ 	/* Write a key */
+-	sscanf(buf, "%lx", &val);
++	err = kstrtoul(buf, 16, &val);
++	if (err)
++		return err;
++
+ 	dcr_write(ppc440spe_mq_dcr_host, DCRN_MQ0_XORBA, val);
+ 	isync();
+ 
+@@ -4368,7 +4372,7 @@ static ssize_t poly_store(struct device_driver *dev, const char *buf,
+ 			  size_t count)
+ {
+ 	unsigned long reg, val;
+-
++	int err;
+ #ifdef CONFIG_440SP
+ 	/* 440SP uses default 0x14D polynomial only */
+ 	return -EINVAL;
+@@ -4378,7 +4382,9 @@ static ssize_t poly_store(struct device_driver *dev, const char *buf,
+ 		return -EINVAL;
+ 
+ 	/* e.g., 0x14D or 0x11D */
+-	sscanf(buf, "%lx", &val);
++	err = kstrtoul(buf, 16, &val);
++	if (err)
++		return err;
+ 
+ 	if (val & ~0x1FF)
+ 		return -EINVAL;
+-- 
+2.25.1
+
