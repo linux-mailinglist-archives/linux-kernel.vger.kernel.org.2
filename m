@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26023B9543
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DCA3B9547
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhGARMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:12:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229987AbhGARMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D70661405;
-        Thu,  1 Jul 2021 17:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625159422;
-        bh=xdnAA7baVCohcq+q0n62eDKdetlkpnI4UjNwJ3Ih8CU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M+RhoUajTF1gDgnHS60QrdV574dAeRY/sXEy1jFcWO6rPhV07SByNFM8vKZH/auLT
-         PSINIJLIG8yzSgOA8LTGfMk9heo0H5qbFim6132xUPayb9R7uvBIpgyqLis9Ej4EsF
-         9FyE4zlnLw8iKeQ1hTPUN+k1IkgUcvtEhesKv3I7Lj8WyHQemeLMz1onksshmlA/jd
-         0udbOX+Nwau9XcbhVdimeNGmjoeang+5BLX2GU+MHCGhbpYqGsz9dNnrGD+VQGunkF
-         Vasq0rXWNNzqRrXkgsSLuzvyNZA0hlN2fMQ/ZNM331EC2MI+WcJCEAuz86T21tQOwj
-         wD2WPOszA+gKA==
-Date:   Thu, 1 Jul 2021 10:10:20 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2 RFC] f2fs: fix to force keeping write barrier for
- strict fsync mode
-Message-ID: <YN32/NsjqJONbvz7@google.com>
-References: <20210601101024.119356-1-yuchao0@huawei.com>
+        id S233120AbhGARNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:13:42 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:37521 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229974AbhGARNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:13:42 -0400
+Received: by mail-lf1-f48.google.com with SMTP id q16so13113943lfr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:11:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TkLSd88P8swfZZPFWHEYFw2bADcxqOmNRhso9H/AhMI=;
+        b=QiHFxb3AjQGW8Q0mWF2rRXikYfzHh4YILTTuP5s4BPeKfhaaDfPHWFBpm0wz92SrA6
+         RH2bEZZJUI9FNHI2qY8+aPwSj2XfHcZr0GIqKGHp+whTFxrNboLSEmTuxVnCOhYz6lwG
+         gST4LMn/66hvarSZ8HxTTEAskTR2sITg7WFbklkjE+jz4Zi4g/BFUV5e+7molZAOedVP
+         8kSaTfRZzOWs1cz2xpZ5iInePkMgEniWvynSzxI7i3TEQ8gSW3g6KUfGy106difwFco8
+         ER0eBfZ7tdDtqu9n9k0qcUJbcWCvduZdjuGeiF2yipAf73Phu7KFA7bCsUNtFM6VrnUm
+         QOYg==
+X-Gm-Message-State: AOAM531VjxiKOmM+Bu8BAG2+nLTaeJWrwoao+FPBrIope0dfBDsD7oyT
+        g6Iw+hoQLVAB6OS9Q0StN1OSbG4oKh1MglwD/jA=
+X-Google-Smtp-Source: ABdhPJwJ89Gp6+fGJk3upWd+c73eIN+isjAYAGXDOKAgY0UQ+R0PViZr3PgSiIw7VQ6nHnkZjlylV3bvt+3jUXDeZTw=
+X-Received: by 2002:a05:6512:3744:: with SMTP id a4mr500420lfs.112.1625159468500;
+ Thu, 01 Jul 2021 10:11:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210601101024.119356-1-yuchao0@huawei.com>
+References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-5-namhyung@kernel.org>
+ <YNy85M22XZ8Sc/Gz@kernel.org> <YN3GgMUFtMCYpNI7@kernel.org>
+In-Reply-To: <YN3GgMUFtMCYpNI7@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 1 Jul 2021 10:10:57 -0700
+Message-ID: <CAM9d7ci833BC_9moyF7pbRLJ=tYxR8GH_y41pS1jcF3vC163bA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] perf stat: Enable BPF counter with --for-each-cgroup
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/01, Chao Yu wrote:
-> [1] https://www.mail-archive.com/linux-f2fs-devel@lists.sourceforge.net/msg15126.html
-> 
-> As [1] reported, if lower device doesn't support write barrier, in below
-> case:
-> 
-> - write page #0; persist
-> - overwrite page #0
-> - fsync
->  - write data page #0 OPU into device's cache
->  - write inode page into device's cache
->  - issue flush
+On Thu, Jul 1, 2021 at 6:43 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Wed, Jun 30, 2021 at 03:50:12PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Jun 25, 2021 at 12:18:26AM -0700, Namhyung Kim escreveu:
+> > > Recently bperf was added to use BPF to count perf events for various
+> > > purposes.  This is an extension for the approach and targetting to
+> > > cgroup usages.
+> > >
+> > > Unlike the other bperf, it doesn't share the events with other
+> > > processes but it'd reduce unnecessary events (and the overhead of
+> > > multiplexing) for each monitored cgroup within the perf session.
+> > >
+> > > When --for-each-cgroup is used with --bpf-counters, it will open
+> > > cgroup-switches event per cpu internally and attach the new BPF
+> > > program to read given perf_events and to aggregate the results for
+> > > cgroups.  It's only called when task is switched to a task in a
+> > > different cgroup.
+> >
+> > I'll take a stab at fixing these:
+>
+> So, tried some 'make -C tools clean', etc but I'm now stuck with:
+>
+>   CLANG   /tmp/build/perf/util/bpf_skel/.tmp/bperf_cgroup.bpf.o
+> util/bpf_skel/bperf_cgroup.bpf.c:4:10: fatal error: 'vmlinux.h' file not found
+> #include "vmlinux.h"
+>          ^~~~~~~~~~~
+> 1 error generated.
+> make[2]: *** [Makefile.perf:1033: /tmp/build/perf/util/bpf_skel/.tmp/bperf_cgroup.bpf.o] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+>   CC      /tmp/build/perf/pmu-events/pmu-events.o
+>   LD      /tmp/build/perf/pmu-events/pmu-events-in.o
+>
+> Auto-detecting system features:
+> ...                        libbfd: [ on  ]
+> ...        disassembler-four-args: [ on  ]
+> ...                          zlib: [ on  ]
+> ...                        libcap: [ on  ]
+> ...               clang-bpf-co-re: [ on  ]
+>
+>
+>   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
+>   MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
+>
+>
+> Have to go errands now, will put what I have at tmp.perf/core now.
+> Please see if you can reproduce, I use this to build:
+>
+>     make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 DEBUG=1 O=/tmp/build/perf -C tools/perf install-bin
+>
+> - Arnaldo
 
-Well, we have preflush for node writes, so I don't think this is the case.
+Oh, sorry about that.  I found the header generation is misplaced
+in the Makefile.perf.  Will fix it in the next version.
 
- fio.op_flags |= REQ_PREFLUSH | REQ_FUA;
-
-> 
-> If SPO is triggered during flush command, inode page can be persisted
-> before data page #0, so that after recovery, inode page can be recovered
-> with new physical block address of data page #0, however there may
-> contains dummy data in new physical block address.
-> 
-> Then what user will see is: after overwrite & fsync + SPO, old data in
-> file was corrupted, if any user do care about such case, we can suggest
-> user to use STRICT fsync mode, in this mode, we will force to trigger
-> preflush command to persist data in device cache in prior to node
-> writeback, it avoids potential data corruption during fsync().
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
-> v2:
-> - fix this by adding additional preflush command rather than using
-> atomic write flow.
->  fs/f2fs/file.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 7d5311d54f63..238ca2a733ac 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -301,6 +301,20 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
->  				f2fs_exist_written_data(sbi, ino, UPDATE_INO))
->  			goto flush_out;
->  		goto out;
-> +	} else {
-> +		/*
-> +		 * for OPU case, during fsync(), node can be persisted before
-> +		 * data when lower device doesn't support write barrier, result
-> +		 * in data corruption after SPO.
-> +		 * So for strict fsync mode, force to trigger preflush to keep
-> +		 * data/node write order to avoid potential data corruption.
-> +		 */
-> +		if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT &&
-> +								!atomic) {
-> +			ret = f2fs_issue_flush(sbi, inode->i_ino);
-> +			if (ret)
-> +				goto out;
-> +		}
->  	}
->  go_write:
->  	/*
-> -- 
-> 2.29.2
+Thanks,
+Namhyung
