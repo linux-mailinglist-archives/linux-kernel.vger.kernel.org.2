@@ -2,250 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66743B9720
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF5B3B972B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhGAUVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:21:24 -0400
-Received: from mail-il1-f181.google.com ([209.85.166.181]:35748 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhGAUVX (ORCPT
+        id S233835AbhGAUYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:24:19 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:42750 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232151AbhGAUYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:21:23 -0400
-Received: by mail-il1-f181.google.com with SMTP id a11so7665347ilf.2;
-        Thu, 01 Jul 2021 13:18:52 -0700 (PDT)
+        Thu, 1 Jul 2021 16:24:18 -0400
+Received: by mail-io1-f52.google.com with SMTP id v3so9058291ioq.9;
+        Thu, 01 Jul 2021 13:21:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jkKNz83v8bTKAmVdHO7nGUak++aeSsOWlXuVgcISOl0=;
-        b=Upels+RW/G8dqi33Nuz8lHusjGDW7ton7n6GAFiUX18hM1gB+kA6+CuEi0QsTrNG1t
-         rcREUJdOMm9rVJVjGxXTjI2NBql/s59IMYyA2pI8/w61sZhF14lTe0yf4xVJJfzP//BX
-         J9koxzJvetZGZnxvxmWMJ7CEOHH83ajcbtRWWwyjPVrtQRo5Q1+2XgTamAdTkwfLWaM7
-         sQ6KeIW4cz0WdIBZPOLyCXwEaC0AF4/VqqzYp7QDWqTQi2A9e5llgcg51ertw/7SiMl1
-         UWoDF7IcpWXCGkZiDKwEQGOMxLm0pBllIJUEwHLbu4DtRKgA7qp0y70pdlISAEMWqMJH
-         B+YQ==
-X-Gm-Message-State: AOAM532T7WOvDlm95YF3VZpRBbgHhGxp33/E0P6dqC8kUv/5Y/WTNztg
-        /16EZrX0g+K/Nrqt/QkWvQ==
-X-Google-Smtp-Source: ABdhPJxtxgEA4kNkOytbyFpCO9NEcYOLLKLdFA7tA79AD7cIrlqW3i8z2e3RRRGjRSL7hT+sxY+b4g==
-X-Received: by 2002:a05:6e02:1292:: with SMTP id y18mr896855ilq.30.1625170732037;
-        Thu, 01 Jul 2021 13:18:52 -0700 (PDT)
+        bh=SZFqor6VUT+2tI4cySm/1psSxonDwYwfdmlsp9lZDbY=;
+        b=Wq6xb285b0dotoySSY3MUFZeM0GH0gT0mNz2c/teCsJV6Jb1j8Za9hLYfjfr8OQck4
+         dGmXO6htLh7Ch8I3XPwT3hAJhp2NxKzCP/RnCdUo871r7PDMLEUQnScbqsMTkT3CPVW1
+         6dOm98I/LrtptCC9bCYWelOhRn81rzNRsPE0NdHWGPB2qrMgLKC/Abnd+EU5gT70FTXH
+         luDnuz3CJmwU8IJ87cMSjR28H5IA88u2zm5DxSRKyLS5Yc54bygA0i5xWKeUXaSPGvb5
+         o2C91KvqKMVs0M+RhU58T/a2PocpQqE2To/dVdTmKqBYWmQ76rhEn6WGoss1EXDRabWv
+         3PsQ==
+X-Gm-Message-State: AOAM531vGlVgRb03zuADKUs4oE//H/HaV5WVTFuJi6aU9TwfWXv5rEYv
+        IPiCvo1K8SAamSVCxSjsfQ==
+X-Google-Smtp-Source: ABdhPJy2OW1If6NtGJSwFvA6qt5W2VGn++818oodI2sfRiSPCgxQPaYdFWDSoZ36dIn6PpCC1gX3Iw==
+X-Received: by 2002:a5d:858b:: with SMTP id f11mr946359ioj.156.1625170905722;
+        Thu, 01 Jul 2021 13:21:45 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u16sm419388iob.41.2021.07.01.13.18.48
+        by smtp.gmail.com with ESMTPSA id f19sm547435ilr.48.2021.07.01.13.21.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 13:18:51 -0700 (PDT)
-Received: (nullmailer pid 2858275 invoked by uid 1000);
-        Thu, 01 Jul 2021 20:18:46 -0000
-Date:   Thu, 1 Jul 2021 14:18:46 -0600
+        Thu, 01 Jul 2021 13:21:45 -0700 (PDT)
+Received: (nullmailer pid 2862921 invoked by uid 1000);
+        Thu, 01 Jul 2021 20:21:41 -0000
+Date:   Thu, 1 Jul 2021 14:21:41 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     broonie@kernel.org, tiwai@suse.com, matthias.bgg@gmail.com,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, bicycle.tsai@mediatek.com,
-        jiaxin.yu@mediatek.com, cychiang@google.com, aaronyu@google.com
-Subject: Re: [PATCH v2 6/8] dt-bindings: mediatek: mt8195: add audio afe
- document
-Message-ID: <20210701201846.GA2783836@robh.at.kernel.org>
-References: <20210629014736.31153-1-trevor.wu@mediatek.com>
- <20210629014736.31153-7-trevor.wu@mediatek.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation for
+ Renesas RZ/G2L A/D converter
+Message-ID: <20210701202141.GA2859816@robh.at.kernel.org>
+References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210629014736.31153-7-trevor.wu@mediatek.com>
+In-Reply-To: <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 09:47:34AM +0800, Trevor Wu wrote:
-> This patch adds mt8195 audio afe document.
+On Tue, Jun 29, 2021 at 11:03:27PM +0100, Lad Prabhakar wrote:
+> Add binding documentation for Renesas RZ/G2L A/D converter block.
 > 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
-> This patch depends on the following series that have not been accepted.
+>  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
+>  1 file changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
 > 
-> [1] Mediatek MT8195 clock support
-> https://patchwork.kernel.org/project/linux-mediatek/list/?series=501923
-> (dt-bindings/clock/mt8195-clk.h is included)
-> 
-> [2] Mediatek MT8195 power domain support
-> https://patchwork.kernel.org/project/linux-mediatek/list/?series=500709
-> (dt-bindings/power/mt8195-power.h is included)
-> ---
->  .../bindings/sound/mt8195-afe-pcm.yaml        | 136 ++++++++++++++++++
->  1 file changed, 136 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
+> diff --git a/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
 > new file mode 100644
-> index 000000000000..a4fb5c7dd022
+> index 000000000000..db935d6d59eb
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/mt8195-afe-pcm.yaml
-> @@ -0,0 +1,136 @@
+> +++ b/Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+> @@ -0,0 +1,121 @@
 > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/sound/mt8195-afe-pcm.yaml#
+> +$id: http://devicetree.org/schemas/iio/adc/renesas,rzg2l-adc.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Mediatek AFE PCM controller for mt8195
+> +title: Renesas RZ/G2L ADC
 > +
 > +maintainers:
-> +  - Trevor Wu <trevor.wu@mediatek.com>
+> +  - Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> +
+> +description: |
+> +  A/D Converter block is a successive approximation analog-to-digital converter
+> +  with a 12-bit accuracy. Up to eight analog input channels can be selected.
+> +  Conversions can be performed in single or repeat mode. Result of the ADC is
+> +  stored in a 32-bit data register corresponding to each channel.
 > +
 > +properties:
 > +  compatible:
-> +    const: mediatek,mt8195-audio
+> +    oneOf:
+
+You can drop oneOf here.
+
+> +      - items:
+> +          - enum:
+> +              - renesas,r9a07g044-adc   # RZ/G2{L,LC}
+> +          - const: renesas,rzg2l-adc
+> +
+> +  reg:
+> +    maxItems: 1
 > +
 > +  interrupts:
 > +    maxItems: 1
 > +
-> +  mediatek,topckgen:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +    description: The phandle of the mediatek topckgen controller
+> +  clocks:
+> +    items:
+> +      - description: converter clock
+> +      - description: peripheral clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: adclk
+> +      - const: pclk
 > +
 > +  power-domains:
 > +    maxItems: 1
 > +
-> +  clocks:
+> +  resets:
+> +    maxItems: 2
+> +
+> +  reset-names:
 > +    items:
-> +      - description: audio 26M clock
-> +      - description: AFE clock
-> +      - description: audio infra sys clock
-> +      - description: audio infra 26M clock
+> +      - const: presetn
+> +      - const: adrst-n
 > +
-> +  clock-names:
+> +  renesas-rzg2l,adc-trigger-mode:
+> +    $ref: /schemas/types.yaml#/definitions/uint8
+> +    description: Trigger mode for A/D converter
+> +    enum:
+> +      - 0 # Software trigger mode (Defaults)
+> +      - 1 # Asynchronous trigger using ADC_TRG trigger input pin
+> +      - 2 # Synchronous trigger (Trigger from MTU3a/GPT)
+> +    default: 0
+> +
+> +  gpios:
+
+A named gpio is preferred. trigger-gpios?
+
+> +    description:
+> +      ADC_TRG trigger input pin
+> +    maxItems: 1
+> +
+> +  renesas-rzg2l,adc-channels:
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    description: Input channels available on platform
+> +    uniqueItems: true
+> +    minItems: 1
+> +    maxItems: 8
 > +    items:
-> +      - const: clk26m
-> +      - const: aud_afe
-> +      - const: infra_ao_audio
-> +      - const: infra_ao_audio_26m_b
+> +      enum: [0, 1, 2, 3, 4, 5, 6, 7]
 > +
-> +  etdm-in1-chn-disabled:
-
-Needs a vendor prefix.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    maxItems: 24
-> +    description: Specify which input channel should be disabled.
-> +
-> +  etdm-in2-chn-disabled:
-
-Needs a vendor prefix.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    maxItems: 16
-> +    description: Specify which input channel should be disabled.
-> +
-> +patternProperties:
-> +  "^etdm-in[1-2]-mclk-source$":
-
-And all these need a vendor prefix.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm in mclk source clock.
-> +    enum:
-> +      - 0 # xtal_26m_ck
-> +      - 1 # apll1_ck
-> +      - 2 # apll2_ck
-> +      - 3 # apll3_ck
-> +      - 4 # apll4_ck
-> +      - 5 # apll5_ck
-> +      - 6 # hdmirx_apll_ck
-> +
-> +  "^etdm-out[1-3]-mclk-source$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm out mclk source clock.
-> +
-> +  "^etdm-in[1-2]-mclk-alwasys-on-rate$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm in mclk output rate for always on case.
-
-Hz? If so, '-hz' unit suffix and drop the type ref.
-
-> +
-> +  "^etdm-out[1-3]-mclk-alwasys-on-rate$":
-
-typo: alwasys
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm out mclk output rate for always on case.
-
-Hz?
-
-> +
-> +  "^etdm-in[1-2]-data-mode$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm in data mode.
-> +    enum:
-> +      - 0 # one pin (TDM)
-> +      - 1 # multi pin (I2S)
-
-Can be boolean?
-
-> +
-> +  "^etdm-out[1-3]-data-mode$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Specify etdm out data mode.
-
-Constraints on values?
-
-> +
-> +  "^etdm-in[1-2]-cowork-source$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      etdm modules can share the same external clock pin. Specify
-> +      which etdm clock source is required by this etdm in moudule.
-> +    enum:
-> +      - 0 # etdm1_in
-> +      - 1 # etdm2_in
-> +      - 2 # etdm1_out
-> +      - 3 # etdm2_out
-> +      - 4 # etdm3_out
-> +
-> +  "^etdm-out[1-3]-cowork-source$":
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      etdm modules can share the same external clock pin. Specify
-> +      which etdm clock source is required by this etdm out moudule.
-
-Constraints?
-
+> +  "#io-channel-cells":
+> +    const: 1
 > +
 > +required:
 > +  - compatible
+> +  - reg
 > +  - interrupts
-> +  - mediatek,topckgen
-> +  - power-domains
 > +  - clocks
 > +  - clock-names
+> +  - power-domains
+> +  - resets
+> +  - reset-names
+> +  - renesas-rzg2l,adc-channels
+> +  - "#io-channel-cells"
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        renesas-rzg2l,adc-trigger-mode:
+> +          const: 1
+> +    then:
+> +      required:
+> +        - gpios
 > +
 > +additionalProperties: false
 > +
 > +examples:
 > +  - |
-> +    #include <dt-bindings/clock/mt8195-clk.h>
+> +    #include <dt-bindings/clock/r9a07g044-cpg.h>
 > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/power/mt8195-power.h>
 > +
-> +    afe: mt8195-afe-pcm {
-> +        compatible = "mediatek,mt8195-audio";
-> +        interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        mediatek,topckgen = <&topckgen>;
-> +        power-domains = <&spm MT8195_POWER_DOMAIN_AUDIO>;
-> +        clocks = <&clk26m>,
-> +                 <&audsys CLK_AUD_AFE>,
-> +                 <&infracfg_ao CLK_INFRA_AO_AUDIO>,
-> +                 <&infracfg_ao CLK_INFRA_AO_AUDIO_26M_B>;
-> +        clock-names = "clk26m",
-> +                      "aud_afe",
-> +                      "infra_ao_audio",
-> +                      "infra_ao_audio_26m_b";
+> +    adc: adc@10059000 {
+> +      compatible = "renesas,r9a07g044-adc", "renesas,rzg2l-adc";
+> +      reg = <0x10059000 0x400>;
+> +      interrupts = <GIC_SPI 347 IRQ_TYPE_EDGE_RISING>;
+> +      clocks = <&cpg CPG_MOD R9A07G044_ADC_ADCLK>,
+> +               <&cpg CPG_MOD R9A07G044_ADC_PCLK>;
+> +      clock-names = "adclk", "pclk";
+> +      power-domains = <&cpg>;
+> +      resets = <&cpg R9A07G044_ADC_PRESETN>,
+> +               <&cpg R9A07G044_ADC_ADRST_N>;
+> +      reset-names = "presetn", "adrst-n";
+> +      #io-channel-cells = <1>;
+> +      renesas-rzg2l,adc-trigger-mode = /bits/ 8 <0>;
+> +      renesas-rzg2l,adc-channels = /bits/ 8 <0 1 2 3 4 5 6>;
 > +    };
-> +
-> +...
 > -- 
-> 2.18.0
+> 2.17.1
 > 
 > 
