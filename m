@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E8F3B949E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882273B94A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhGAQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhGAQWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:22:48 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2DEC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 09:20:16 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id w11so9337902ljh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 09:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=brRBtSWPzl3A8EO3IIUcfNsjS22D/ywhnA28QnZfB6M=;
-        b=d1+9kxcLWBvJSpk3fPYeulpwABLezPQJEk+Zy5DmBCHiV5k8fys4vw9rA6zQazJKc2
-         axsZXI/dx/8bY1setfHEYMO0trSZO9E1jscAwqkUc35Jb6iAXsIo7AKCKK+UvXc4yq3e
-         qiMCd+A5iPA4rWbSxd7fv0SiZp5q2XVbT5RkihF/c9RqhFql0Y9/wfOxBCtfxgXbFAMr
-         Mx7KUZrtHN63OOzj6Yug9Kv/mnaN8sHZt8YTIbHepTjFUeytb0b2nHtfQ8RV40xMkSSe
-         5qtgbQrElgjEnzp0Iq1NHO5GO/OXxxgwKceI1RgUEbvxexDjJYgB8i2ImLpq/VwKKJNu
-         X9Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=brRBtSWPzl3A8EO3IIUcfNsjS22D/ywhnA28QnZfB6M=;
-        b=CfbPzsuFXZSL+wmYaIEi7PF1lctyDJBj13Q4/g0cMeYnP/ojZDt9qXTvish+976/LB
-         uqw1TvfEj0yauRKWQLv0SUtHYT+MJxjjxmrwG8C+Bar0wsT6FI533Q8yzqKeB7sSBYkR
-         LcgWYnn3ZHwe1s9d09fl4ba2F1+ZulQpazu0P/JM+PMH6Wb4Rf4Nozj9UDnV87Eh9o/r
-         wvfTWDk6rtEouBV/jgUXLbdhlrybkcLDhWXne2jF9dMvIjqdHZHycQsSp7MWJ0hrnyeA
-         sGNDoIC4VLWtTDqDcb72RS0hhhmJCfXeP6d9qo7ewigqE30m5ZlEt22D/fZicoy4TXYj
-         1gkg==
-X-Gm-Message-State: AOAM531UTXpFSUDgRz1E682zIi4kqvyjTRrNlywWzA1IFjpt1c3KDlS3
-        54vr40QYFAxPY9TVfS/bi9P5nS2jGnXxMvrhMXKTpQ==
-X-Google-Smtp-Source: ABdhPJzlkFKmKNMzZS30KJjmaWJKGOg+VZfCnW52PNfjtWzIQLq1y7OZwuioLXRe/ssoxTIomnKsV7xS/xJcAu4SAEI=
-X-Received: by 2002:a2e:b4ce:: with SMTP id r14mr319557ljm.76.1625156414497;
- Thu, 01 Jul 2021 09:20:14 -0700 (PDT)
+        id S232364AbhGAQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229664AbhGAQ1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 12:27:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7841B61002;
+        Thu,  1 Jul 2021 16:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625156718;
+        bh=ZmaGe0iXayTRZaJF/nPOquGquNqVUil8wsuyblDFl4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jddlJiix0SdqH9jrizHCWh/mUHvPmjro7TrFB/wNP+yEcUs4kxSTzDTgefVuyIY5H
+         KYhUHwtDSs5yH15LLMiQyCm5NbkIHk/qQQ6jeRu5nxsBZwlofCb/XTXOqu4rUgv0Gg
+         FPTRGgplyRrD/3cN919VbqYW+aJNMrCnAum5uWYwyKBXRZg/CqGAh0ex9yNSnA+cK3
+         pQ/ywFH8kBBDuQPoYAT5eA80cBZcs75oPEws5tYmvXbnEOBCxaLfYmK1pHSWT353Eb
+         CH9MSaD5uko4gYVJ3WmCLnZJHbBA3qTaIAYmtwN3SaFuiQuRU9e0z7Ep/1TpHj/Ge0
+         gk1L5zbFlFCKQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2D55140B1A; Thu,  1 Jul 2021 13:25:14 -0300 (-03)
+Date:   Thu, 1 Jul 2021 13:25:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <James.Clark@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Denis Nikitin <denik@google.com>
+Subject: Re: [PATCH v2 2/3] perf cs-etm: Remove callback
+ cs_etm_find_snapshot()
+Message-ID: <YN3sas8tWPfWjFqE@kernel.org>
+References: <20210701093537.90759-1-leo.yan@linaro.org>
+ <20210701093537.90759-3-leo.yan@linaro.org>
 MIME-Version: 1.0
-References: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <cover.1625118581.git.christophe.jaillet@wanadoo.fr>
-From:   Jeroen de Borst <jeroendb@google.com>
-Date:   Thu, 1 Jul 2021 09:20:03 -0700
-Message-ID: <CAErkTsQLP9_y-Am3MN-O4vZXe3cTKHfYMwkFk-9YWWPLAQM1cw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] gve: Fixes and clean-up
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
-        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
-        willemb@google.com, yangchun@google.com, bcf@google.com,
-        kuozhao@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701093537.90759-3-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 10:58 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> This serie is part of the effort to axe the wrappers in
-> include/linux/pci-dma-compat.h
->
-> While looking at it, I spotted:
->   - a resource leak in an error handling path (patch 1)
->   - an error code that could be propagated. (patch 2)
->     This patch could be ignored. It's only goal is to be more consistent
->     with other drivers.
->
-> These 2 paches are not related to the 'pci-dma-compat.h' stuff, which can
-> be found in patch 3.
->
-> Christophe JAILLET (3):
->   gve: Fix an error handling path in 'gve_probe()'
->   gve: Propagate error codes to caller
->   gve: Simplify code and axe the use of a deprecated API
->
->
+Em Thu, Jul 01, 2021 at 05:35:36PM +0800, Leo Yan escreveu:
+> The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
+> main purpose is to find the correct AUX trace data and returns "head"
+> and "old" (we can call "old" as "old head") to the caller, the caller
+> __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
+> data size.
+> 
+> This patch removes cs_etm_find_snapshot() with below reasons:
+> 
+> - The first thing in cs_etm_find_snapshot() is to check if the head has
+>   wrapped around, if it is not, directly bails out.  The checking is
+>   pointless, this is because the "head" and "old" pointers both are
+>   monotonical increasing so they never wrap around.
+> 
+> - cs_etm_find_snapshot() adjusts the "head" and "old" pointers and
+>   assumes the AUX ring buffer is fully filled with the hardware trace
+>   data, so it always subtracts the difference "mm->len" from "head" to
+>   get "old".  Let's imagine the snapshot is taken in very short
+>   interval, the tracers only fill a small chunk of the trace data into
+>   the AUX ring buffer, in this case, it's wrongly to copy the whole the
+>   AUX ring buffer to perf file.
+> 
+> - As the "head" and "old" pointers are monotonically increased, the
+>   function __auxtrace_mmap__read() handles these two pointers properly.
+>   It calculates the reminders for these two pointers, and the size is
+>   clamped to be never more than "snapshot_size".  We can simply reply on
+>   the function __auxtrace_mmap__read() to calculate the correct result
+>   for data copying, it's not necessary to add Arm CoreSight specific
+>   callback.
 
-Thanks for these patches.
+Thanks, applied.
 
-Can split this into 2 patch series; one for net (with the first 2
-patches) and one for net-next (with the cleanup one)?
-Also the label in the first patch should probably read
-'abort_with_gve_init' instead of 'abort_with_vge_init'.
+- Arnaldo
 
-Jeroen
