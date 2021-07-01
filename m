@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF133B96A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3923B96A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhGATiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 15:38:03 -0400
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:39464 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229894AbhGATiC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 15:38:02 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id C82ED182CF666;
-        Thu,  1 Jul 2021 19:35:30 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 6CD962448B8;
-        Thu,  1 Jul 2021 19:35:30 +0000 (UTC)
+        id S233647AbhGATl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 15:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229894AbhGATl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 15:41:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F3A8613FC;
+        Thu,  1 Jul 2021 19:38:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625168338;
+        bh=UhAkGKW7cUMVGHA+DcsBA8sSxLionOWYHd2rVJtcjk4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PXK1ZWkVa9VIqewj4n7yVblpP5YFnxC+g06A3vNwYtdDHDGdCMxviMlpoEYpxntLu
+         RBYE27Td7Lkf4mBpE3DX+TbYuqpN1JTpDj+J0wI1nXl23zy8NMI+L2SIjoHm8jj6nD
+         0avcNv8aGuTXpnF4zWpMdiJaZUIQEsiXBrA9sbohWdtA/r8JlX02gelvBk8AGSffNd
+         9E/3l+ngXdbWG+7gEhFux9YypWXQoQnu2NNB42ZvJDFzeiLiXp775AXSRzHpG8tppn
+         aMfJXPnUG3KFTIiOjUcscyvkC2SBtnluvJdJTovG+lqj+r/p+VHhhThabV76aZSdfT
+         l0NgWZvSQBpiw==
+Date:   Thu, 1 Jul 2021 14:38:56 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robert Straw <drbawb@fatalsyntax.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com
+Subject: Re: [PATCH v2] PCI: Disable Samsung SM951/PM951 NVMe before FLR
+Message-ID: <20210701193856.GA82535@bjorn-Precision-5520>
 MIME-Version: 1.0
-Date:   Thu, 01 Jul 2021 12:35:29 -0700
-From:   Joe Perches <joe@perches.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Paul Burton <paulburton@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
-In-Reply-To: <20210701142624.44bb4dde@oasis.local.home>
-References: <20210630003406.4013668-1-paulburton@google.com>
- <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
- <YN38D3dg0fLzL0Ia@google.com> <20210701140754.5847a50f@oasis.local.home>
- <YN4Fpl+dhijItkUP@google.com> <20210701142624.44bb4dde@oasis.local.home>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <51babd56c2fe53ba011152700a546151@perches.com>
-X-Sender: joe@perches.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 6CD962448B8
-X-Stat-Signature: 8b1988hbxa8dkbeondchxrn7teat51ri
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19G+PKuYMGNpgor/GEopWJcjhvhoKlY1NU=
-X-HE-Tag: 1625168130-156347
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430230119.2432760-1-drbawb@fatalsyntax.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-01 11:26, Steven Rostedt wrote:
-> [ Added Joe Perches ]
+On Fri, Apr 30, 2021 at 06:01:19PM -0500, Robert Straw wrote:
+> The SM951/PM951, when used in conjunction with the vfio-pci driver and
+> passed to a KVM guest, can exhibit the fatal state addressed by the
+> existing `nvme_disable_and_flr` quirk. If the guest cleanly shuts down
+> the SSD, and vfio-pci attempts an FLR to the device while it is in this
+> state, the nvme driver will fail when it attempts to bind to the device
+> after the FLR due to the frozen config area, e.g:
 > 
-> On Thu, 1 Jul 2021 11:12:54 -0700
-> Paul Burton <paulburton@google.com> wrote:
+>   nvme nvme2: frozen state error detected, reset controller
+>   nvme nvme2: Removing after probe failure status: -12
 > 
->> > not to mention, we don't
->> > use '//' comments in the kernel, so that would have to be changed.
->> 
->> D'oh! Apparently a year away from the kernel melted my internal style
->> checker. Interestingly though, checkpatch didn't complain about this 
->> as
->> I would have expected...
+> By including this older model (Samsung 950 PRO) of the controller in the
+> existing quirk: the device is able to be cleanly reset after being used
+> by a KVM guest.
 > 
-> Joe, should the above be added to checkpatch?
+> Signed-off-by: Robert Straw <drbawb@fatalsyntax.com>
+
+Applied to pci/virtualization for v5.14, thanks!
+
+> ---
+> changes in v2:
+>   - update subject to match style of ffb0863426eb 
 > 
-> I do understand that there are a few cases it's acceptable. Like for
-> SPDX headers.
-
-C99 comments are allowed since about 5 years ago.
-
-And if you really want there's a checkpatch option to disable them.
-
-https://lore.kernel.org/patchwork/patch/1031132/
-
+>  drivers/pci/quirks.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3b..e339ca238 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3920,6 +3920,7 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
+>  		reset_ivb_igd },
+>  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IVB_M2_VGA,
+>  		reset_ivb_igd },
+> +	{ PCI_VENDOR_ID_SAMSUNG, 0xa802, nvme_disable_and_flr },
+>  	{ PCI_VENDOR_ID_SAMSUNG, 0xa804, nvme_disable_and_flr },
+>  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
+>  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+> -- 
+> 2.31.1
+> 
