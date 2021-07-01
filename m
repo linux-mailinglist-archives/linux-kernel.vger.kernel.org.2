@@ -2,51 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E7E3B9469
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5E93B946D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhGAP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:59:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233694AbhGAP7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC429613CB;
-        Thu,  1 Jul 2021 15:57:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625155027;
-        bh=Mvg6KAWXEBQjhq9pM1HR24KRbekHvHVxXc9geIjw5n4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F34Jllbo0DobTWbxH0ElDhdv5RUYvzFuusOb0wZOTy9rYMJCnwBl8wZT70lgIM67H
-         64anJeypI5SRAjnMLsQGDivZIw1RQD1f2NiYcvz6sxTdauOObYEfnj9kF5z/Xpa4a+
-         95dicGzr08RzTW/sekZ3l7p1F8luqrWmGpMXQ28U=
-Date:   Thu, 1 Jul 2021 17:57:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tim Ross <tim.ross@broadcom.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Revert of no-map commits
-Message-ID: <YN3l0OBmCmyRMSm/@kroah.com>
-References: <CAKzR7o9DG0d75RVvC=ENUiFC6Zu3AHknd3uY4HFwP+H2RHpOeA@mail.gmail.com>
+        id S233918AbhGAQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:00:33 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:35373 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233585AbhGAQAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 12:00:31 -0400
+Received: by mail-pl1-f169.google.com with SMTP id b5so3909465plg.2;
+        Thu, 01 Jul 2021 08:58:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y8RJ7NHLUH0UkXZQbqLTPlcYrodTSF7e3TMEWx7woGM=;
+        b=hBSumFy8zhnstzAI41g+4dnLsD7YB10bmQ6//o5vOf9uKmAa5TIAFe0wA35h/ZVGK2
+         o569HGniyobCgsoHJPAVimX3544vYQSUk6WUjQmIdylortz51v1TI+RLzqttyE9bUNEY
+         xdni7lv+pP6YqJ9ZM8Sm0loYXUhCjkvwx7g2qzZ+zBqsFFU7p08f2VAmZ0ioyJH1cwtQ
+         S2+V0kxtfg8TFdtn3y+tJPcNvttqBk4VoUn3ETGwBFsQk+J004UFyg1zqCE7YePjIVKN
+         10I49Qb42I0zsaYzUFnoo4PnReyfiID/3vlkE9niBT5X3MkzsRCgSbQwRV44I/4xMqF/
+         9PXg==
+X-Gm-Message-State: AOAM530FbZsA/rTSKDa1uaPeArcStsXawlASQWMTyS0bA737jd1RJaRe
+        ifjAlrAG7lS3ZRM4NkFGloM=
+X-Google-Smtp-Source: ABdhPJzVG+t6KRlrq32BvCj+MdsP5nTMwJW2oiZ8u2tKUXjf6dvTOkgsc5cIk2jTuqU8K/ihKx43kg==
+X-Received: by 2002:a17:90b:1944:: with SMTP id nk4mr420440pjb.66.1625155080441;
+        Thu, 01 Jul 2021 08:58:00 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:6a75:b07:a0d:8bd5? ([2601:647:4000:d7:6a75:b07:a0d:8bd5])
+        by smtp.gmail.com with ESMTPSA id t6sm9984750pjo.4.2021.07.01.08.57.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 08:57:59 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] scsi: ufs: Optimize host lock on transfer requests
+ send/compl paths
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Stanley Chu <stanley.chu@mediatek.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+ <1621845419-14194-3-git-send-email-cang@codeaurora.org>
+ <c31185f5-e816-937d-25ac-1657b6111ff8@acm.org>
+ <464097469b09752ce4ebb38c08f1a94a@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8971042b-e300-a1b4-7585-be9e0cf43030@acm.org>
+Date:   Thu, 1 Jul 2021 08:57:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKzR7o9DG0d75RVvC=ENUiFC6Zu3AHknd3uY4HFwP+H2RHpOeA@mail.gmail.com>
+In-Reply-To: <464097469b09752ce4ebb38c08f1a94a@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 11:01:34AM -0400, Tim Ross wrote:
-> -- 
-> This electronic communication and the information and any files transmitted 
-> with it, or attached to it, are confidential and are intended solely for 
-> the use of the individual or entity to whom it is addressed and may contain 
-> information that is confidential, legally privileged, protected by privacy 
-> laws, or otherwise restricted from disclosure to anyone else. If you are 
-> not the intended recipient or the person responsible for delivering the 
-> e-mail to the intended recipient, you are hereby notified that any use, 
-> copying, distributing, dissemination, forwarding, printing, or copying of 
-> this e-mail is strictly prohibited. If you received this e-mail in error, 
-> please return the e-mail to the sender, delete it from your computer, and 
-> destroy any printed copy of it.
+On 6/28/21 10:41 PM, Can Guo wrote:
+> I am waiting for more infos/logs/dumps on Buganizor to look into it.
+> With above calltrace snippet, it is hard to figure out what is happening.
+> Besides, we've tested this series before go upstream and we didn't
+> see such problem.
 
-Now deleted :(
+Hi Can,
+
+Jaegeuk has posted a fix as you may have noticed.
+
+Thanks,
+
+Bart.
