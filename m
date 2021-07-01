@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6493B92BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622623B92A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhGAOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:06:17 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:41658 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbhGAOGQ (ORCPT
+        id S232789AbhGAOF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:05:27 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:36616 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhGAOFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:06:16 -0400
-Received: by mail-il1-f182.google.com with SMTP id s11so5191379ilt.8;
-        Thu, 01 Jul 2021 07:03:45 -0700 (PDT)
+        Thu, 1 Jul 2021 10:05:25 -0400
+Received: by mail-io1-f51.google.com with SMTP id u7so5467118ion.3;
+        Thu, 01 Jul 2021 07:02:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=bBAtbGxea4Uyvv49nbdyK4xv/8gJ5gfZXo1vPratG8A=;
-        b=dTQnbTtnEJ/vh4S3MJRFpPhGJo/FMqpxK3speEo/bkf8lukIUXfpCR/CQF2hoUoM1q
-         rYyI0iyL2oEiOCPI48VtNpUER2Ut5BD4BFZ8gv5mzfh5CYYrj8zxmdf/x0dYz8IBVjXQ
-         Mgxk7JViQN6Owtszhf7BZq6VZb8cF8wZnmyRm2wTYCgU8p3PtuSGEmxc457iunU0M0Ed
-         aUrJ8FjASSTX2IqBPxfCtBvoK3AXTAUeM+VKJhfh6GwN0k3iBpTSd+OpUyEQn+CNsjmA
-         toNmQl35lsAfnVapDJXiHw4yM8+5Owtd5PLRMk1lOVU135TNyQPdU7upt+9/hi/uWD4d
-         tiUg==
-X-Gm-Message-State: AOAM533pwI6Bn7LrQ1z/1sVvtu209K7nkZ2HN6r6XrGGO5BzLOOspz9r
-        NhGvXy0OrzJXX6CYI/I13w==
-X-Google-Smtp-Source: ABdhPJyww/o4rG1Xgg5+OFNePM+PG/LX43Ff1V/MH9eSJ83/mWZ4rTI2R7sC49n3N2R3tOttPwHezQ==
-X-Received: by 2002:a05:6e02:174b:: with SMTP id y11mr30453947ill.207.1625148224856;
-        Thu, 01 Jul 2021 07:03:44 -0700 (PDT)
+        bh=mYpWVNkGyyi4+D5Ik3YO8omc3O/tZSWPuO0UlaNpdPE=;
+        b=fAyOVUOcDZSHW58wbxWqW4TAvfLBRU1bsMUNfnY0MSfezl5MchfUJDGivQZnKuVZ1F
+         KitXSDgjX9siYDAEbS7dVfLq5FBKO0t3/nVlKqTg4dypm5+qc2HZ4773O+Q2fR3T1KyA
+         2vq6Nvh2rcpOZqN72dcQyT7xdC/Au2KJ8U4XBBwQ/eefMYD4IajNyGwb7lQutfC0A4Ml
+         n0v8OqeBR+RrEn9xlqaP7/mAqE9Jf8YQ1NmJ0DHDra4LJsmUFi9N2elsboSHfnEFKlku
+         QZJRacqtwKLxPffOeCUFI1lAvfEGeNlq98vzn+R9TW4q6iE3yTdMlpeDiRlQpjqQnrpD
+         l/XA==
+X-Gm-Message-State: AOAM532DMQohQZVFricciUpOwNLlBqjJc8DnoscA1zPUr5TPevWuUkXU
+        v5Vj/HHuULfeRfg7bEzsCw==
+X-Google-Smtp-Source: ABdhPJxvLXDtYCaeHE5BU26+kYkT3YksThGWXzGZkcTWU32ai4Ma0FLwraS4S2gZj5vctoN26xJltA==
+X-Received: by 2002:a05:6602:1846:: with SMTP id d6mr12160079ioi.111.1625148175051;
+        Thu, 01 Jul 2021 07:02:55 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u2sm44406ilm.19.2021.07.01.07.03.38
+        by smtp.gmail.com with ESMTPSA id m12sm32206iln.43.2021.07.01.07.02.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:03:42 -0700 (PDT)
-Received: (nullmailer pid 2278706 invoked by uid 1000);
+        Thu, 01 Jul 2021 07:02:54 -0700 (PDT)
+Received: (nullmailer pid 2278702 invoked by uid 1000);
         Thu, 01 Jul 2021 14:02:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Rob Herring <robh+dt@kernel.org>, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org
-In-Reply-To: <20210630132804.20436-2-chun-jie.chen@mediatek.com>
-References: <20210630132804.20436-1-chun-jie.chen@mediatek.com> <20210630132804.20436-2-chun-jie.chen@mediatek.com>
-Subject: Re: [v11 01/19] dt-bindings: ARM: Mediatek: Add new document bindings of MT8192 clock
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210629220328.13366-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add binding documentation for Renesas RZ/G2L A/D converter
 Date:   Thu, 01 Jul 2021 08:02:43 -0600
-Message-Id: <1625148163.568657.2278705.nullmailer@robh.at.kernel.org>
+Message-Id: <1625148163.546497.2278701.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 21:27:46 +0800, Chun-Jie Chen wrote:
-> This patch adds the new binding documentation for system clock
-> and functional clock on Mediatek MT8192.
+On Tue, 29 Jun 2021 23:03:27 +0100, Lad Prabhakar wrote:
+> Add binding documentation for Renesas RZ/G2L A/D converter block.
 > 
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
->  .../arm/mediatek/mediatek,mt8192-clock.yaml   | 214 ++++++++++++++++++
->  .../mediatek/mediatek,mt8192-sys-clock.yaml   |  64 ++++++
->  2 files changed, 278 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
+>  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 121 ++++++++++++++++++
+>  1 file changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml:18:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
-./Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml:19:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml: properties:compatible: [{'enum': ['mediatek,mt8192-scp_adsp', 'mediatek,mt8192-imp_iic_wrap_c', 'mediatek,mt8192-audsys', 'mediatek,mt8192-imp_iic_wrap_e', 'mediatek,mt8192-imp_iic_wrap_s', 'mediatek,mt8192-imp_iic_wrap_ws', 'mediatek,mt8192-imp_iic_wrap_w', 'mediatek,mt8192-imp_iic_wrap_n', 'mediatek,mt8192-msdc_top', 'mediatek,mt8192-msdc', 'mediatek,mt8192-mfgcfg', 'mediatek,mt8192-mmsys', 'mediatek,mt8192-imgsys', 'mediatek,mt8192-imgsys2', 'mediatek,mt8192-vdecsys_soc', 'mediatek,mt8192-vdecsys', 'mediatek,mt8192-vencsys', 'mediatek,mt8192-camsys', 'mediatek,mt8192-camsys_rawa', 'mediatek,mt8192-camsys_rawb', 'mediatek,mt8192-camsys_rawc', 'mediatek,mt8192-ipesys', 'mediatek,mt8192-mdpsys']}] is not of type 'object', 'boolean'
-	from schema $id: http://json-schema.org/draft-07/schema#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml: properties:compatible: [{'enum': ['mediatek,mt8192-topckgen', 'mediatek,mt8192-infracfg', 'mediatek,mt8192-pericfg', 'mediatek,mt8192-apmixedsys']}, {'const': 'syscon'}] is not of type 'object', 'boolean'
-	from schema $id: http://json-schema.org/draft-07/schema#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml: ignoring, error in schema: properties: compatible
-warning: no schema found in file: ./Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml: ignoring, error in schema: properties: compatible
-warning: no schema found in file: ./Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.example.dt.yaml:0:0: /example-0/syscon@10000000: failed to match any schema with compatible: ['mediatek,mt8192-topckgen', 'syscon']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.example.dt.yaml:0:0: /example-1/syscon@10001000: failed to match any schema with compatible: ['mediatek,mt8192-infracfg', 'syscon']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.example.dt.yaml:0:0: /example-2/syscon@10003000: failed to match any schema with compatible: ['mediatek,mt8192-pericfg', 'syscon']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.example.dt.yaml:0:0: /example-3/syscon@1000c000: failed to match any schema with compatible: ['mediatek,mt8192-apmixedsys', 'syscon']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-0/clock-controller@10720000: failed to match any schema with compatible: ['mediatek,mt8192-scp_adsp']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-1/clock-controller@11007000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_c']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-2/clock-controller@11210000: failed to match any schema with compatible: ['mediatek,mt8192-audsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-3/clock-controller@11cb1000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_e']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-4/clock-controller@11d03000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_s']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-5/clock-controller@11d23000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_ws']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-6/clock-controller@11e01000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_w']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-7/clock-controller@11f02000: failed to match any schema with compatible: ['mediatek,mt8192-imp_iic_wrap_n']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-8/clock-controller@11f10000: failed to match any schema with compatible: ['mediatek,mt8192-msdc_top']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-9/clock-controller@11f60000: failed to match any schema with compatible: ['mediatek,mt8192-msdc']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-10/clock-controller@13fbf000: failed to match any schema with compatible: ['mediatek,mt8192-mfgcfg']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-11/clock-controller@14000000: failed to match any schema with compatible: ['mediatek,mt8192-mmsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-12/clock-controller@15020000: failed to match any schema with compatible: ['mediatek,mt8192-imgsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-13/clock-controller@15820000: failed to match any schema with compatible: ['mediatek,mt8192-imgsys2']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-14/clock-controller@1600f000: failed to match any schema with compatible: ['mediatek,mt8192-vdecsys_soc']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-15/clock-controller@1602f000: failed to match any schema with compatible: ['mediatek,mt8192-vdecsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-16/clock-controller@17000000: failed to match any schema with compatible: ['mediatek,mt8192-vencsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-17/clock-controller@1a000000: failed to match any schema with compatible: ['mediatek,mt8192-camsys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-18/clock-controller@1a04f000: failed to match any schema with compatible: ['mediatek,mt8192-camsys_rawa']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-19/clock-controller@1a06f000: failed to match any schema with compatible: ['mediatek,mt8192-camsys_rawb']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-20/clock-controller@1a08f000: failed to match any schema with compatible: ['mediatek,mt8192-camsys_rawc']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-21/clock-controller@1b000000: failed to match any schema with compatible: ['mediatek,mt8192-ipesys']
-Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.example.dt.yaml:0:0: /example-22/clock-controller@1f000000: failed to match any schema with compatible: ['mediatek,mt8192-mdpsys']
+Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dts:19:18: fatal error: dt-bindings/clock/r9a07g044-cpg.h: No such file or directory
+   19 |         #include <dt-bindings/clock/r9a07g044-cpg.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1498893
+See https://patchwork.ozlabs.org/patch/1498675
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
