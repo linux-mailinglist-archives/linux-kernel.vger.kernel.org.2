@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128A03B96C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3111F3B96CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhGAT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 15:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhGAT5h (ORCPT
+        id S232704AbhGAT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 15:58:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11378 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhGAT6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 15:57:37 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0335BC061762;
-        Thu,  1 Jul 2021 12:55:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a11so13859837lfg.11;
-        Thu, 01 Jul 2021 12:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t0nKk5wGeP0nXftaEotyDurI2+QO28/8HgfwxEwbQLs=;
-        b=iQ3ViSUGNIEiyfhfoK0YqvEg0w77pJJxsrF29DCnwhEX7Z55D4dOQmzRlApBKYnb4y
-         M/QfEjaCsAsE+04FgaHkn1jnY7eyRwfh6MYFmkD/gQgWe0MSvwnANbsrRC5ShTDuY/nP
-         TubFMH5HqzosuO9bEmFgDIZXf6RwiVbsbTHEShHRo8M5PM3QODOCQkAfv0BbeIQ3GC1+
-         f2cFBFgRkGElSrPEfwnuUQnN+yV6IxI1FYHRMkF/NNy+O9MvwCFVFzbm7UF/BGAkrAGF
-         VKfWUSnOKd60yQxXoYSzh/7bkdKQu16aBsa+ebS5pQ6j8N2++zMJv0g/8y1rTBTSuVee
-         IuEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t0nKk5wGeP0nXftaEotyDurI2+QO28/8HgfwxEwbQLs=;
-        b=cQwUHwsZODkYHa83Q+A93TBwOM9gO2TuoOuYKCsSAZP7H7t+vYl++23TDkx9COTr9s
-         urcyQNRUX1T/l34lpCVXReuw9Rt+tLbln1E+zdamqKogNcivQV6l5/ChSpVMYZfwc1uJ
-         QnO0xh3RXP6gzIwAflEOTRaBTPR8ZY6VzUwAO8UUF9OETBS/y7Mk0IDfgfgkzY2srloM
-         I0fx0/DhSznr43kngRIuzD4FsIjzDZ7ElvQR6mBtkdmatZ9JhyP0NSqcAr1N8mN5/t7n
-         AuNhK5fNUt4RD6yl65ZkNpojGbM9RfS/Rqa9pcVmNpTb+pbeYBltXvLKEqABMd1eMPAk
-         /IGw==
-X-Gm-Message-State: AOAM530qfUG54P0nc76TjMptk4Fa2jlZmlzIFvg03r9NCcbXZ85cQsxY
-        v9i/ZMJw+cdld4TUaeeXv+E=
-X-Google-Smtp-Source: ABdhPJxNF6t35ilZGoqlkwBAmqZpOvUoDucPY3L+Ql0seF1BteZ/88TL16d3+taambf5VnTp7mNipA==
-X-Received: by 2002:a05:6512:3406:: with SMTP id i6mr989613lfr.522.1625169303301;
-        Thu, 01 Jul 2021 12:55:03 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id b5sm59616lfv.3.2021.07.01.12.55.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 12:55:02 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     pbonzini@redhat.com, jingzhangos@google.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH next] kvm: debugfs: fix memory leak in kvm_create_vm_debugfs
-Date:   Thu,  1 Jul 2021 22:55:00 +0300
-Message-Id: <20210701195500.27097-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 1 Jul 2021 15:58:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625169350; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=IFO/oYyamqXRdI1X1THDxfCEsA8fh8UxV4ofirhtpNI=; b=b/4Gh89rz32HQAknO6dgFpmhELIcbaYQQvwv/gKbCWcGwCJaWzUup5sfP4Xy9LcCxauxuTkq
+ o/Xxv855FIbprx18DuzUV6h9ktujJ9EIyukTBEbHGx7yMdSAJPJcg1/ONZN6me+FD+sh4oJW
+ 6dR3yQmd4I8rS72MeCpzlgbXuEA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60de1dc5ad0600eedea5f839 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Jul 2021 19:55:49
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 31A9EC43217; Thu,  1 Jul 2021 19:55:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D2C2C433D3;
+        Thu,  1 Jul 2021 19:55:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D2C2C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH] bus: mhi: core: Use mhi_soc_reset() API instead of register write
+Date:   Thu,  1 Jul 2021 12:55:38 -0700
+Message-Id: <1625169338-32026-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit bc9e9e672df9 ("KVM: debugfs: Reuse binary stats descriptors")
-loop for filling debugfs_stat_data was copy-pasted 2 times, but
-in the second loop pointers are saved over pointers allocated
-in the first loop. It causes memory leak. Fix it.
+Currently, register writes are used when ramdump collection in
+panic path occurs. Replace that with new mhi_soc_reset() API such
+that a controller defined reset() function is exercised if one is
+present and the regular SOC reset is done if it is not.
 
-Fixes: bc9e9e672df9 ("KVM: debugfs: Reuse binary stats descriptors")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 ---
- virt/kvm/kvm_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/mhi/core/boot.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7d95126cda9e..986959833d70 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -935,7 +935,7 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- 		stat_data->kvm = kvm;
- 		stat_data->desc = pdesc;
- 		stat_data->kind = KVM_STAT_VCPU;
--		kvm->debugfs_stat_data[i] = stat_data;
-+		kvm->debugfs_stat_data[i + kvm_vm_stats_header.num_desc] = stat_data;
- 		debugfs_create_file(pdesc->name, kvm_stats_debugfs_mode(pdesc),
- 				    kvm->debugfs_dentry, stat_data,
- 				    &stat_fops_per_vm);
+diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+index 8100cf5..10a91df 100644
+--- a/drivers/bus/mhi/core/boot.c
++++ b/drivers/bus/mhi/core/boot.c
+@@ -112,9 +112,7 @@ static int __mhi_download_rddm_in_panic(struct mhi_controller *mhi_cntrl)
+ 			/* Hardware reset so force device to enter RDDM */
+ 			dev_dbg(dev,
+ 				"Did not enter RDDM, do a host req reset\n");
+-			mhi_write_reg(mhi_cntrl, mhi_cntrl->regs,
+-				      MHI_SOC_RESET_REQ_OFFSET,
+-				      MHI_SOC_RESET_REQ);
++			mhi_soc_reset(mhi_cntrl);
+ 			udelay(delayus);
+ 		}
+ 
 -- 
-2.32.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
