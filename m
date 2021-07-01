@@ -2,172 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BB13B95B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1B83B95B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhGARxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:53:49 -0400
-Received: from mga01.intel.com ([192.55.52.88]:27809 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhGARxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:53:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="230241818"
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="230241818"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:51:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
-   d="scan'208";a="558735639"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by orsmga004.jf.intel.com with ESMTP; 01 Jul 2021 10:51:14 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf intel-pt: Add a config for max loops without consuming a packet
-Date:   Thu,  1 Jul 2021 20:51:32 +0300
-Message-Id: <20210701175132.3977-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S232215AbhGARzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhGARzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:55:06 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDBDC061764
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:52:35 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id t11-20020a056902124bb029055a821867baso3544549ybu.14
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=TWNh4NT6Sbv641LYm1mUzBahkZ28Mzb42DLCx2xe0ZA=;
+        b=rorNy/OC3D360vKowzuz0ZoBEw2kDS1Upmd1ElNP0uIi9b26hzxAgHOCj0FS7VKRPu
+         vsw0AVfuOP4sABf7Qi3KMugltLve4mUZBIMCE1nk086fF6eNjR7cT03uc8j3GTZCw8e9
+         4V+j2OebhHSLMTzoPR470rJ8PGEoByuQPQGIKN74rNDMzuAd7W2zPXqE4cSAsNAf1gDv
+         o2Ag6lQcEZDhr6lJgtJ8FhYzzhCWhzk69jxo7iyYfs3MF5a3N27KHGPQhZlkLTpZ2Xdw
+         LzMz43NbR9jLLeka0KB+kdGmGHDgh+GJ+eNG8q8l2fevWYuHFbIdrxTAer4nQkK/e5c6
+         afoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=TWNh4NT6Sbv641LYm1mUzBahkZ28Mzb42DLCx2xe0ZA=;
+        b=qzpw09a76Gci4nyQQB1bfr8R2khj9WDIaedb/Y6qRsek87VCfgsxYXKm+0AHy5yPE0
+         PketpydHI3BatXCe7siPybq9Krts2oMluhSKr78bkXSljKO/Fam2OD4caM3GEOUP5Q1L
+         CesxBX901O4c0cvRh8CYSulZni4YYghhZOcJsKKCYKrym2X/kKfMmWE7v1JJBFznJmjV
+         r3AlipKpIMClv123tdQecMdy85oZEqW0BWEGaWcjgeqLFdU0afsmTFaXmENAVXy9A9E+
+         0NYK/OQ+aguC1QJsfWZjwWKduymbRU50F0rjj1Ltz2Nyzz5+7miTtp0lws1ClxGf2oA2
+         jKOw==
+X-Gm-Message-State: AOAM530PULy2v94UuBhHAUhxFUjgWWvhJ6dnk0W1n7ED9n87wJCbXvOy
+        Ne01pNObnGhMg0BU1Tx7c5HCYc4I3g==
+X-Google-Smtp-Source: ABdhPJwzUH1jDy+ConAfg2kmOkKeATvngbBVRVpd7xyX5m8KKlAAxSJE+3BlxrO0EKHLtG59HlgoRj6tDA==
+X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
+ (user=rmoar job=sendgmr) by 2002:a25:814b:: with SMTP id j11mr1360198ybm.212.1625161954632;
+ Thu, 01 Jul 2021 10:52:34 -0700 (PDT)
+Date:   Thu,  1 Jul 2021 17:52:31 +0000
+Message-Id: <20210701175231.1734589-1-rmoar@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2] kunit: tool: Fix error messages for cases of no tests and
+ wrong TAP header
+From:   Rae Moar <rmoar@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com,
+        dlatypov@google.com, shuah@kernel.org
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel PT decoder limits the number of unconditional branches (e.g.
-jmps) decoded without consuming any trace packets. Generally, a loop
-needs a conditional branch which generates a TNT packet, whereas a
-"ret" instruction will generate a TIP or TNT packet. So exceeding
-the limit is assumed to be a never-ending loop, which can happen if
-there has been a decoding error putting the decoder at the wrong place in
-the code.
+This patch addresses misleading error messages reported by kunit_tool in
+two cases. First, in the case of TAP output having an incorrect header
+format or missing a header, the parser used to output an error message of
+'no tests run!'. Now the parser outputs an error message of 'could not
+parse test results!'.
 
-Up until now, the limit of 10000 has been enough but some analytic
-purposes have been reported to exceed that.
+As an example:
 
-Increase the limit to 100000, and make it configurable via perf config
-intel-pt.max-loops. Also amend the "Never-ending loop" message to
-mention the configuration entry.
+Before:
+$ ./tools/testing/kunit/kunit.py parse /dev/null
+[ERROR] no tests run!
+...
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+After:
+$ ./tools/testing/kunit/kunit.py parse /dev/null
+[ERROR] could not parse test results!
+...
+
+Second, in the case of TAP output with the correct header but no
+tests, the parser used to output an error message of 'could not parse
+test results!'. Now the parser outputs an error message of 'no tests
+run!'.
+
+As an example:
+
+Before:
+$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
+[ERROR] could not parse test results!
+
+After:
+$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
+[ERROR] no tests run!
+
+Additionally, this patch also corrects the tests in kunit_tool_test.py
+and adds a test to check the error in the case of TAP output with the
+correct header but no tests.
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 ---
- tools/perf/Documentation/perf-config.txt            |  6 ++++++
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 13 +++++++++----
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.h |  1 +
- tools/perf/util/intel-pt.c                          |  5 +++++
- 4 files changed, 21 insertions(+), 4 deletions(-)
+V1 -> V2:
+* Simplified log for the test for TAP output with the correct header
+  but no tests
+* Added examples in commit message of error messages before and after
+---
+ tools/testing/kunit/kunit_parser.py              |  6 ++++--
+ tools/testing/kunit/kunit_tool_test.py           | 16 +++++++++++++---
+ ...st_is_test_passed-no_tests_run_no_header.log} |  0
+ ...t_is_test_passed-no_tests_run_with_header.log |  2 ++
+ 4 files changed, 19 insertions(+), 5 deletions(-)
+ rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
+ create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index b0872c801866..3bb75c1f25e8 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -706,6 +706,12 @@ intel-pt.*::
- 		If set, Intel PT decoder will set the mispred flag on all
- 		branches.
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index c3c524b79db8..b88db3f51dc5 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
+ def parse_test_result(lines: LineStream) -> TestResult:
+ 	consume_non_diagnostic(lines)
+ 	if not lines or not parse_tap_header(lines):
+-		return TestResult(TestStatus.NO_TESTS, [], lines)
++		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+ 	expected_test_suite_num = parse_test_plan(lines)
+-	if not expected_test_suite_num:
++	if expected_test_suite_num == 0:
++		return TestResult(TestStatus.NO_TESTS, [], lines)
++	elif expected_test_suite_num is None:
+ 		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+ 	test_suites = []
+ 	for i in range(1, expected_test_suite_num + 1):
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index bdae0e5f6197..75045aa0f8a1 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
+ 			kunit_parser.TestStatus.FAILURE,
+ 			result.status)
  
-+	intel-pt.max-loops::
-+		If set and non-zero, the maximum number of unconditional
-+		branches decoded without consuming any trace packets. If
-+		the maximum is exceeded there will be a "Never-ending loop"
-+		error. The default is 100000.
++	def test_no_header(self):
++		empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
++		with open(empty_log) as file:
++			result = kunit_parser.parse_run_tests(
++				kunit_parser.extract_tap_lines(file.readlines()))
++		self.assertEqual(0, len(result.suites))
++		self.assertEqual(
++			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
++			result.status)
 +
- auxtrace.*::
+ 	def test_no_tests(self):
+-		empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
++		empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
+ 		with open(empty_log) as file:
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(file.readlines()))
+@@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
+ 		with open(crash_log) as file:
+ 			result = kunit_parser.parse_run_tests(
+ 				kunit_parser.extract_tap_lines(file.readlines()))
+-		print_mock.assert_any_call(StrContains('no tests run!'))
++		print_mock.assert_any_call(StrContains('could not parse test results!'))
+ 		print_mock.stop()
+ 		file.close()
  
- 	auxtrace.dumpdir::
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index cb2520abf261..5ab631702769 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -41,8 +41,11 @@
+@@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
+ 			result["sub_groups"][1]["test_cases"][0])
  
- #define INTEL_PT_RETURN 1
+ 	def test_no_tests_json(self):
+-		result = self._json_for('test_is_test_passed-no_tests_run.log')
++		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+ 		self.assertEqual(0, len(result['sub_groups']))
  
--/* Maximum number of loops with no packets consumed i.e. stuck in a loop */
--#define INTEL_PT_MAX_LOOPS 10000
-+/*
-+ * Default maximum number of loops with no packets consumed i.e. stuck in a
-+ * loop.
-+ */
-+#define INTEL_PT_MAX_LOOPS 100000
- 
- struct intel_pt_blk {
- 	struct intel_pt_blk *prev;
-@@ -220,6 +223,7 @@ struct intel_pt_decoder {
- 	uint64_t timestamp_insn_cnt;
- 	uint64_t sample_insn_cnt;
- 	uint64_t stuck_ip;
-+	int max_loops;
- 	int no_progress;
- 	int stuck_ip_prd;
- 	int stuck_ip_cnt;
-@@ -315,6 +319,7 @@ struct intel_pt_decoder *intel_pt_decoder_new(struct intel_pt_params *params)
- 	decoder->vm_tm_corr_dry_run = params->vm_tm_corr_dry_run;
- 	decoder->first_timestamp    = params->first_timestamp;
- 	decoder->last_reliable_timestamp = params->first_timestamp;
-+	decoder->max_loops          = params->max_loops ? params->max_loops : INTEL_PT_MAX_LOOPS;
- 
- 	decoder->flags              = params->flags;
- 
-@@ -483,7 +488,7 @@ static const char *intel_pt_err_msgs[] = {
- 	[INTEL_PT_ERR_OVR]    = "Overflow packet",
- 	[INTEL_PT_ERR_LOST]   = "Lost trace data",
- 	[INTEL_PT_ERR_UNK]    = "Unknown error!",
--	[INTEL_PT_ERR_NELOOP] = "Never-ending loop",
-+	[INTEL_PT_ERR_NELOOP] = "Never-ending loop (refer perf config intel-pt.max-loops)",
- };
- 
- int intel_pt__strerror(int code, char *buf, size_t buflen)
-@@ -1168,7 +1173,7 @@ static int intel_pt_walk_insn(struct intel_pt_decoder *decoder,
- 				decoder->stuck_ip = decoder->state.to_ip;
- 				decoder->stuck_ip_prd = 1;
- 				decoder->stuck_ip_cnt = 1;
--			} else if (cnt > INTEL_PT_MAX_LOOPS ||
-+			} else if (cnt > decoder->max_loops ||
- 				   decoder->state.to_ip == decoder->stuck_ip) {
- 				intel_pt_log_at("ERROR: Never-ending loop",
- 						decoder->state.to_ip);
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-index 714c475808c0..4b5e79fcf557 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
-@@ -270,6 +270,7 @@ struct intel_pt_params {
- 	uint32_t tsc_ctc_ratio_d;
- 	enum intel_pt_param_flags flags;
- 	unsigned int quick;
-+	int max_loops;
- };
- 
- struct intel_pt_decoder;
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 9e0539d3a79c..1073c56a512c 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -124,6 +124,7 @@ struct intel_pt {
- 	u64 noretcomp_bit;
- 	unsigned max_non_turbo_ratio;
- 	unsigned cbr2khz;
-+	int max_loops;
- 
- 	unsigned long num_events;
- 
-@@ -1210,6 +1211,7 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
- 	params.vm_time_correlation = pt->synth_opts.vm_time_correlation;
- 	params.vm_tm_corr_dry_run = pt->synth_opts.vm_tm_corr_dry_run;
- 	params.first_timestamp = pt->first_timestamp;
-+	params.max_loops = pt->max_loops;
- 
- 	if (pt->filts.cnt > 0)
- 		params.pgd_ip = intel_pt_pgd_ip;
-@@ -3508,6 +3510,9 @@ static int intel_pt_perf_config(const char *var, const char *value, void *data)
- 	if (!strcmp(var, "intel-pt.mispred-all"))
- 		pt->mispred_all = perf_config_bool(var, value);
- 
-+	if (!strcmp(var, "intel-pt.max-loops"))
-+		perf_config_int(&pt->max_loops, var, value);
-+
- 	return 0;
- }
- 
+ class StrContains(str):
+diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+similarity index 100%
+rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
+rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
+diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+new file mode 100644
+index 000000000000..5f48ee659d40
+--- /dev/null
++++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+@@ -0,0 +1,2 @@
++TAP version 14
++1..0
 -- 
-2.17.1
+2.32.0.93.g670b81a890-goog
 
