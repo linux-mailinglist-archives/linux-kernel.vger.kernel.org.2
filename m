@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152873B95A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA41D3B95A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhGARpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        id S230053AbhGARso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbhGARpd (ORCPT
+        with ESMTP id S229764AbhGARsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:45:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C94C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:43:02 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id w19so13255144lfk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:43:02 -0700 (PDT)
+        Thu, 1 Jul 2021 13:48:43 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13637C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:46:13 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id m9so12146714ybo.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=e5t/eiICJInDaoPzgCkbGyquWwZQG2z8agCSrrhjkWw=;
-        b=BoZk87HblOIMHhcA3JOWDsn38hVKRcHQUjkhqOV5B1xlLqWV/kZ+R9udPMbCwa87sl
-         6UAyLiXgdH0srcoB9t9t9KQ39Av+nUavAbCdyRRwKurZdJrCo43DSyv0fHbiA6arIRoF
-         jIZ/U1h5Xgo6B91m//GEDty2RQlV30/hu5z4r3ANXUFkZjOGr0tt6im+pKQAw3vSLWwO
-         t2hPfJnQP3/7zYpOJ/hXlCXViKwCaF+LOJweA/FeS0344DL66IHsQvbYEu6MIyQcJyUu
-         GINhw4gAEJJ3sEmkVdzYfYftnQ/1056KDMnrTpsw6fLJy0uzAbLnuVAc8kcVz/I4ooK1
-         /U9Q==
+        bh=YuEQ/0+GfUXuD93+sD0b18biDb2M6pGGHSqSSO1+UuE=;
+        b=LwRldiJ6x3BDPyzWXCUQCVT7w7Nq6ItegVRwz4Hvnijj6RznRtT6uC+9iCLJJYi02f
+         zzHxxy8uov62zs7l+LUOTT2P2/0A3RTfmmDwkwSbdU8OeTFmo3+g/0x6stmjWlYW8iP0
+         E267aJc0D98iMrWtKF0OqHOsfJuyoO2P4Tnr00mVS7NKlj/jCCwAUYv/76rc9PbWfZb+
+         TB92w5TUe9RTMCLYfVSADk2JJ6kpREuyEEXk1uvYzjxbJLOvu/aV47llCbzQX5nsBYk9
+         6yxuTDS8ZD5FvhhC9z+ggI6rYAUJqE4pMLgTU7zHXqRc8gm8ltSTr2yK/aIOmZ0b9hCa
+         4R1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=e5t/eiICJInDaoPzgCkbGyquWwZQG2z8agCSrrhjkWw=;
-        b=dEpybmWpNlPJyeTvZgaS8kx/QRPJYfAyyZIkxQS8/PScyqirW4jl/lWImok7jzrfZd
-         vpM/VicOEO0Rg26D/nVUnFNnfUBDy9Lmjs1lLWxYk6Kp7o7GrQWzCI1F9PM1aVEAKRNa
-         oVgR6/Gr/roRISfF3/1e5bpVpj3aRBgUFE55bzYmoOFUwy21Ek4bjrTSdWYBmDw071FO
-         nuSmYmsrzobKllFbFrMgf8yhkB1+oQ5svMSTCP4lraDnmX7ZfBFOpfkPPbXeOWY1R3fG
-         A+BC3be+kR29fR2Y3dYdZU5GQ+EOyuCW/oPqtJpK1/0M0N48OhFgmy46fYbawSjZpysC
-         Ycmg==
-X-Gm-Message-State: AOAM531LeJI+VGFRR+mTj2TSvlV9B+fAINd0lOu7o3QK98bIHqv+/5vW
-        mnS/a8oFPFrhS3WQfPUhfJqjwzv5tLv7aDCcqTPMv/JH66U=
-X-Google-Smtp-Source: ABdhPJzyu1JesxIKgYX0997DHE64yRPefBgiqP3dkWfIIqKK601FKEdirVgejDjCY82RNvVwazpRhnvL5FFZmhyi+lg=
-X-Received: by 2002:a19:5f04:: with SMTP id t4mr583484lfb.297.1625161380470;
- Thu, 01 Jul 2021 10:43:00 -0700 (PDT)
+        bh=YuEQ/0+GfUXuD93+sD0b18biDb2M6pGGHSqSSO1+UuE=;
+        b=eI+gPVMJz8xm0MLgM2kVxscAoVyotQfIaMJTThOl0KVtckk4ii1pituw2oaqBYmjSu
+         Hf+7Wh5MxAKYeveYESJheCMcChxIsUqpKVRXMBPD/nVbLzsKogDklgorKChqvGLK/mBm
+         3kgPKl52YFaTQBb5fqdC2Ggnj1P3gwZOYET28rbRLBTUkegEjURcVd0SPJHd1LQUaKMS
+         kvAnyt3dBBxCbqwceKCIw7Yi2GAetmzhN83mjydrfoulWk8DfATSopn8xufaPTtJO11y
+         bngZI2o3ZVkdIm2/xJFt2dw8JIERlelgP4TrvOJWbCoExHjwIY4nKUOZxn+CwWf0syOB
+         6Giw==
+X-Gm-Message-State: AOAM531KKhociCW+aqAAAWPVXqySmAevLQZGqScZZMYT5RgD8c/lGp+b
+        iAqT/X46jzsosUsQII7zZbOGjq9P3v6+Z2b0MMJ9Eg==
+X-Google-Smtp-Source: ABdhPJyW+2rNHz7TTh5ZLTxu/vUeNLQKnS5QAbeoiQWOV850EJ4EckVI9IjlgDPCCTSf4VVjHk8r9Cs11z6N8Gfg6qc=
+X-Received: by 2002:a25:2e49:: with SMTP id b9mr1337732ybn.250.1625161571802;
+ Thu, 01 Jul 2021 10:46:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701092841.1419-1-lecopzer.chen@mediatek.com> <20210701092841.1419-2-lecopzer.chen@mediatek.com>
-In-Reply-To: <20210701092841.1419-2-lecopzer.chen@mediatek.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 1 Jul 2021 10:42:49 -0700
-Message-ID: <CAKwvOdkGjz-rH8AHudO3dJmSt+48FSJ8iT-eCacwyeMhWv909w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     keescook@chromium.org, samitolvanen@google.com,
-        linux-kbuild@vger.kernel.org, nathan@kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        yj.chiang@mediatek.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net
+References: <20210630205151.137001-1-surenb@google.com> <YN2DsLlE+WtxK6K9@hirez.programming.kicks-ass.net>
+ <YN3vyvoDwSUepM18@cmpxchg.org>
+In-Reply-To: <YN3vyvoDwSUepM18@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 1 Jul 2021 10:46:00 -0700
+Message-ID: <CAJuCfpFTWUWmr_Zjj9d1rzNvtO9MjD-FQo1-j0aE6XN74b7_Lg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] psi: stop relying on timer_pending for poll_work rescheduling
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 2:28 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+On Thu, Jul 1, 2021 at 9:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> To check the GNU make version. Used by the LTO Kconfig.
+> On Thu, Jul 01, 2021 at 10:58:24AM +0200, Peter Zijlstra wrote:
+> > On Wed, Jun 30, 2021 at 01:51:51PM -0700, Suren Baghdasaryan wrote:
+> > > +   /* cmpxchg should be called even when !force to set poll_scheduled */
+> > > +   if (atomic_cmpxchg(&group->poll_scheduled, 0, 1) && !force)
+> > >             return;
+> >
+> > Why is that a cmpxchg() ?
 >
-> LTO with MODVERSIONS will fail in generating correct CRC because
-> the makefile rule doesn't work for make with version 3.8X.[1]
+> I now realize you had already pointed that out, but I dismissed it in
+> the context of poll_lock not being always taken after all.
 >
-> Thus we need to check make version during selecting on LTO Kconfig.
-> Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
-> for arithmetic comparisons.
+> But you're right, cmpxchg indeed seems inappropriate. xchg will do
+> just fine for this binary toggle.
 >
-> [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> ---
->  Makefile                |  2 +-
->  init/Kconfig            |  4 ++++
->  scripts/make-version.sh | 13 +++++++++++++
->  3 files changed, 18 insertions(+), 1 deletion(-)
->  create mode 100755 scripts/make-version.sh
+> When it comes to ordering, looking at it again, I think we actually
+> need ordering here that the seqcount doesn't provide. We have:
 >
-> diff --git a/Makefile b/Makefile
-> index 88888fff4c62..2402745b2ba9 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -516,7 +516,7 @@ CLANG_FLAGS :=
+> timer:
+> scheduled = 0
+> smp_rmb()
+> x = state
 >
->  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
->  export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
-> -export PERL PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
-> +export PERL PYTHON3 CHECK CHECKFLAGS MAKE MAKE_VERSION UTS_MACHINE HOSTCXX
->  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
->  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+> scheduler:
+> state = y
+> smp_wmb()
+> if xchg(scheduled, 1) == 0
+>   mod_timer()
 >
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 55f9f7738ebb..ecc110504f87 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -86,6 +86,10 @@ config CC_HAS_ASM_INLINE
->  config CC_HAS_NO_PROFILE_FN_ATTR
->         def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+> Again, the requirement is that when the scheduler sees the timer as
+> already or still pending, the timer must observe its state updates -
+> otherwise we miss poll events.
 >
-> +config MAKE_VERSION
-> +       int
-> +       default $(shell,$(srctree)/scripts/make-version.sh $(MAKE_VERSION))
-> +
->  config CONSTRUCTORS
->         bool
+> The seqcount provides the wmb and rmb, but the scheduler-side read of
+> @scheduled mustn't be reordered before the write to @state. Likewise,
+> the timer-side read of @state also mustn't occur before the write to
+> @scheduled.
 >
-> diff --git a/scripts/make-version.sh b/scripts/make-version.sh
-> new file mode 100755
-> index 000000000000..ce5af96696cc
-> --- /dev/null
-> +++ b/scripts/make-version.sh
-> @@ -0,0 +1,13 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Print the linker name and its version in a 5 or 6-digit form.
+> AFAICS this is broken, not just in the patch, but also in the current
+> code when timer_pending() on the scheduler side gets reordered. (Not
+> sure if timer reading state can be reordered before the detach_timer()
+> of its own expiration, but I don't see full ordering between them.)
+>
+> So it seems to me we need the ordered atomic_xchg() on the scheduler
+> side, and on the timer side an smp_mb() after we set scheduled to 0.
 
-The linker?
-
-> +
-> +set -e
-> +
-> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
-> +IFS=.
-> +set -- $1
-> +
-> +# If the 2nd or 3rd field is missing, fill it with a zero.
-> +echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
-> --
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Thanks for the analysis Johannes. Let me dwell on it a bit.
