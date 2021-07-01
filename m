@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37BB3B9631
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5458E3B963A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhGASmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 14:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40620 "EHLO mail.kernel.org"
+        id S233144AbhGASvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 14:51:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34354 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229812AbhGASme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 14:42:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 14B9B6140E;
-        Thu,  1 Jul 2021 18:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625164804;
-        bh=HeVOAPZepgrDMx6AtEfiCdTVaH/t7uVwXubMMHgyAH8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=q6N+nJpODdqAHnevELADfKShU8rG4lfNX/7+aGY29C+FTPXbJ8YLfj4ElP7us7bI7
-         d0h0k8AW6E7RVr6ZKHV3QwKOMTGzCwSLGqG1zZTtVAJ0JBgg57eqiDJZwFJUXj5Y5A
-         gHsnyjC+qsALza0Hvk4ORIMhHpANDZuqWXUGRow4RUZkw5UjNUJclTcsp93RbQ9CRW
-         ERpknHMjUaN7Y05fUnkBZcIxqg7TzeCAG33HMVGG5Mp1IYsQ3HBVk1k2pGxmubFxlw
-         oHaYxTyGiuU3X+13GJty2bXZNGfgeTo/Mb+nz2Hz9Lmgc+/zR3LeCxa/MSTc9TCZdo
-         9GEDJQ9b3NUPQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 053A760A56;
-        Thu,  1 Jul 2021 18:40:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229934AbhGASvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 14:51:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625165358; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=blxOe96Hr8SQcdVl95JnLY5mZV4CcHsOypImKe+oKsg=;
+ b=U25QPp46+nW9zNA02RkqMUNvNsM11J1K46/6N6Xw05xvSn1HijEOjDySzMMK37JJLxftGy2r
+ PKdxiupFAjFN2ULG64+DwaEGNGfEzY42lSJkel2IE0hYcfqmrOTEjNfrfBIAF8fejieB2Ngc
+ LrNnqpn35rp1LtIvbTSAzVsE3EI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60de0e0eec0b18a745fd994b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Jul 2021 18:48:46
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7CA0C43460; Thu,  1 Jul 2021 18:48:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA2A6C433F1;
+        Thu,  1 Jul 2021 18:48:44 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH 0/3] Dynamic LMTST region setup
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162516480401.21656.5714473098578182788.git-patchwork-notify@kernel.org>
-Date:   Thu, 01 Jul 2021 18:40:04 +0000
-References: <20210629170006.722-1-gakula@marvell.com>
-In-Reply-To: <20210629170006.722-1-gakula@marvell.com>
-To:     Geetha sowjanya <gakula@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sbhatta@marvell.com,
-        hkelam@marvell.com, jerinj@marvell.com, lcherian@marvell.com,
-        sgoutham@marvell.com, hkalra@marvell.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 02 Jul 2021 00:18:44 +0530
+From:   okukatla@codeaurora.org
+To:     Mike Tipton <mdtipton@codeaurora.org>
+Cc:     djakov@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        saravanak@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdtipton=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH 3/4] interconnect: qcom: icc-rpmh: Ensure floor BW is
+ enforced for all nodes
+In-Reply-To: <20210625212839.24155-4-mdtipton@codeaurora.org>
+References: <20210625212839.24155-1-mdtipton@codeaurora.org>
+ <20210625212839.24155-4-mdtipton@codeaurora.org>
+Message-ID: <afaf4cb4ccc60a1c7c937a296f199f70@codeaurora.org>
+X-Sender: okukatla@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 29 Jun 2021 22:30:03 +0530 you wrote:
-> This patch series allows RVU PF/VF to allocate memory for
-> LMTST operations instead of using memory reserved by firmware
-> which is mapped as device memory.
-> The LMTST mapping table contains the RVU PF/VF LMTST memory base
-> address entries. This table is used by hardware for LMTST operations.
-> Patch1 introduces new mailbox message to update the LMTST table with
-> the new allocated memory address.
+On 2021-06-26 02:58, Mike Tipton wrote:
+> We currently only enforce BW floors for a subset of nodes in a path.
+> All BCMs that need updating are queued in the pre_aggregate/aggregate
+> phase. The first set() commits all queued BCMs and subsequent set()
+> calls short-circuit without committing anything. Since the floor BW
+> isn't set in sum_avg/max_peak until set(), then some BCMs are committed
+> before their associated nodes reflect the floor.
 > 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/3] octeontx2-af: cn10k: Setting up lmtst map table
-    https://git.kernel.org/netdev/net-next/c/873a1e3d207a
-  - [net-next,2/3] octeontx2-af: cn10k: Support configurable LMTST regions
-    https://git.kernel.org/netdev/net-next/c/893ae97214c3
-  - [net-next,3/3] octeontx2-pf: cn10k: Use runtime allocated LMTLINE region
-    https://git.kernel.org/netdev/net-next/c/5c0512072f65
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> Set the floor as each node is being aggregated. This ensures that all
+> all relevant floors are set before the BCMs are committed.
+> 
+> Fixes: 266cd33b5913 ("interconnect: qcom: Ensure that the floor
+> bandwidth value is enforced")
+> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+> ---
+>  drivers/interconnect/qcom/icc-rpmh.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/interconnect/qcom/icc-rpmh.c
+> b/drivers/interconnect/qcom/icc-rpmh.c
+> index bf01d09dba6c..f118f57eae37 100644
+> --- a/drivers/interconnect/qcom/icc-rpmh.c
+> +++ b/drivers/interconnect/qcom/icc-rpmh.c
+> @@ -57,6 +57,11 @@ int qcom_icc_aggregate(struct icc_node *node, u32
+> tag, u32 avg_bw,
+>  			qn->sum_avg[i] += avg_bw;
+>  			qn->max_peak[i] = max_t(u32, qn->max_peak[i], peak_bw);
+>  		}
+> +
+> +		if (node->init_avg || node->init_peak) {
+> +			qn->sum_avg[i] = max_t(u64, qn->sum_avg[i], node->init_avg);
+> +			qn->max_peak[i] = max_t(u64, qn->max_peak[i], node->init_peak);
+> +		}
+Hi Mike,
+Original problem is BCMs not getting added to commit_list for unused 
+nodes, right? that is solved by moving *_bcm_voter_add() to 
+pre_aggregate().
+I could not get why we need to do above change, we are enforcing node 
+votes with floor votes in framework + below code snippet that you 
+removed.
+How would adding this code in qcom_icc_aggregate() make difference? Is 
+there any other issue that i am not to able to get?
+>  	}
+> 
+>  	*agg_avg += avg_bw;
+> @@ -90,11 +95,6 @@ int qcom_icc_set(struct icc_node *src, struct 
+> icc_node *dst)
+>  	qp = to_qcom_provider(node->provider);
+>  	qn = node->data;
+> 
+> -	qn->sum_avg[QCOM_ICC_BUCKET_AMC] = max_t(u64,
+> qn->sum_avg[QCOM_ICC_BUCKET_AMC],
+> -						 node->avg_bw);
+> -	qn->max_peak[QCOM_ICC_BUCKET_AMC] = max_t(u64,
+> qn->max_peak[QCOM_ICC_BUCKET_AMC],
+> -						  node->peak_bw);
+> -
+>  	qcom_icc_bcm_voter_commit(qp->voter);
+> 
+>  	return 0;
