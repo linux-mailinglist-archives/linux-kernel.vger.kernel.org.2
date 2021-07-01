@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0A53B8BD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 03:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9BC3B8BDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238431AbhGABw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 21:52:29 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50233 "EHLO mga01.intel.com"
+        id S238583AbhGACDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:03:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18903 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238384AbhGABw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 21:52:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="230104049"
+        id S237937AbhGACDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 22:03:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="208407930"
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="yaml'?scan'208";a="230104049"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 18:49:51 -0700
+   d="xz'?yaml'?scan'208";a="208407930"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 19:00:44 -0700
 X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
-   d="yaml'?scan'208";a="457466512"
+   d="xz'?yaml'?scan'208";a="493343678"
 Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 18:49:46 -0700
-Date:   Thu, 1 Jul 2021 10:08:31 +0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 19:00:41 -0700
+Date:   Thu, 1 Jul 2021 10:19:28 +0800
 From:   kernel test robot <oliver.sang@intel.com>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Arthur Williams <taaparthur@gmail.com>
 Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@linux.intel.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: [mm]  c0af5203b9:  will-it-scale.per_process_ops 7.4% improvement
-Message-ID: <20210701020831.GA21279@xsang-OptiPlex-9020>
+        lkp@lists.01.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, Arthur Williams <taaparthur@gmail.com>
+Subject: [fs]  87f196bed3: xfstests.generic.157.fail
+Message-ID: <20210701021928.GB21279@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="J/dobhs11T7y2rNN"
+Content-Type: multipart/mixed; boundary="eAbsdosE1cNLO4uF"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210614110223.133678-2-aneesh.kumar@linux.ibm.com>
+In-Reply-To: <20210619110148.30412-1-taaparthur@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=iso-8859-1
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 
 
 
 Greeting,
 
-FYI, we noticed a 7.4% improvement of will-it-scale.per_process_ops due to commit:
+FYI, we noticed the following commit (built with gcc-9):
 
+commit: 87f196bed33473d8f0d114089b7acf5c1e278cee ("[PATCH] fs: Allow open with O_CREAT to succeed if existing dir is specified")
+url: https://github.com/0day-ci/linux/commits/Arthur-Williams/fs-Allow-open-with-O_CREAT-to-succeed-if-existing-dir-is-specified/20210619-190246
+base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 9ed13a17e38e0537e24d9b507645002bf8d0201f
 
-commit: c0af5203b9dbf4cd8b424298b1cb809f4535802a ("[PATCH 2/2] mm: Change p4d_page_vaddr to return pud_t *")
-url: https://github.com/0day-ci/linux/commits/Aneesh-Kumar-K-V/mm-Change-pud_page_vaddr-to-return-pmd_t/20210617-045835
-base: https://git.kernel.org/cgit/linux/kernel/git/powerpc/linux.git next
-
-in testcase: will-it-scale
-on test machine: 88 threads 2 sockets Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz with 128G memory
+in testcase: xfstests
+version: xfstests-x86_64-76d2a91-1_20210628
 with following parameters:
 
-	nr_task: 16
-	mode: process
-	test: mmap1
-	cpufreq_governor: performance
-	ucode: 0x5003006
+	disk: 4HDD
+	fs: btrfs
+	test: generic-group-07
+	ucode: 0x21
 
-test-description: Will It Scale takes a testcase and runs it from 1 through to n parallel copies to see if the testcase will scale. It builds both a process and threads based test in order to see any differences between the two.
-test-url: https://github.com/antonblanchard/will-it-scale
-
+test-description: xfstests is a regression test suite for xfs and other files ystems.
+test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
 
 
+on test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz with 16G memory
+
+caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
 
-Details are as below:
--------------------------------------------------------------------------------------------------->
+
+
+If you fix the issue, kindly add following tag
+Reported-by: kernel test robot <oliver.sang@intel.com>
+
+2021-12-01 20:44:11 export TEST_DIR=/fs/sdb1
+2021-12-01 20:44:11 export TEST_DEV=/dev/sdb1
+2021-12-01 20:44:11 export FSTYP=btrfs
+2021-12-01 20:44:11 export SCRATCH_MNT=/fs/scratch
+2021-12-01 20:44:11 mkdir /fs/scratch -p
+2021-12-01 20:44:11 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4"
+2021-12-01 20:44:11 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests/generic-group-07
+2021-12-01 20:44:11 ./check generic/140 generic/141 generic/142 generic/143 generic/144 generic/145 generic/146 generic/147 generic/148 generic/149 generic/150 generic/151 generic/152 generic/153 generic/154 generic/155 generic/156 generic/157 generic/158 generic/159
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 lkp-ivb-d01 5.13.0-rc6-00250-g87f196bed334 #1 SMP Mon Jun 21 06:24:48 CST 2021
+MKFS_OPTIONS  -- /dev/sdb2
+MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
+
+generic/140	 1s
+generic/141	 1s
+generic/142	 4s
+generic/143	 5s
+generic/144	 1s
+generic/145	[not run] xfs_io fcollapse  failed (old kernel/wrong fs?)
+generic/146	 1s
+generic/147	[not run] xfs_io finsert  failed (old kernel/wrong fs?)
+generic/148	 1s
+generic/149	 1s
+generic/150	 1s
+generic/151	 1s
+generic/152	 1s
+generic/153	[not run] xfs_io fcollapse  failed (old kernel/wrong fs?)
+generic/154	 2s
+generic/155	 2s
+generic/156	[not run] xfs_io funshare  failed (old kernel/wrong fs?)
+generic/157	- output mismatch (see /lkp/benchmarks/xfstests/results//generic/157.out.bad)
+    --- tests/generic/157.out	2021-06-28 16:41:45.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//generic/157.out.bad	2021-12-01 20:44:35.949001218 +0000
+    @@ -14,7 +14,7 @@
+     Try to reflink a device
+     XFS_IOC_CLONE_RANGE: Invalid argument
+     Try to reflink to a dir
+    -TEST_DIR/test-157/dir1: Is a directory
+    +XFS_IOC_CLONE_RANGE: Is a directory
+     Try to reflink to a device
+     XFS_IOC_CLONE_RANGE: Invalid argument
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/157.out /lkp/benchmarks/xfstests/results//generic/157.out.bad'  to see the entire diff)
+generic/158	- output mismatch (see /lkp/benchmarks/xfstests/results//generic/158.out.bad)
+    --- tests/generic/158.out	2021-06-28 16:41:45.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//generic/158.out.bad	2021-12-01 20:44:37.783001265 +0000
+    @@ -18,7 +18,7 @@
+     Try to dedupe a device
+     XFS_IOC_FILE_EXTENT_SAME: Invalid argument
+     Try to dedupe to a dir
+    -TEST_DIR/test-158/dir1: Is a directory
+    +XFS_IOC_FILE_EXTENT_SAME: Is a directory
+     Try to dedupe to a device
+     XFS_IOC_FILE_EXTENT_SAME: Invalid argument
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/158.out /lkp/benchmarks/xfstests/results//generic/158.out.bad'  to see the entire diff)
+generic/159	 1s
+Ran: generic/140 generic/141 generic/142 generic/143 generic/144 generic/145 generic/146 generic/147 generic/148 generic/149 generic/150 generic/151 generic/152 generic/153 generic/154 generic/155 generic/156 generic/157 generic/158 generic/159
+Not run: generic/145 generic/147 generic/153 generic/156
+Failures: generic/157 generic/158
+Failed 2 of 20 tests
+
+
 
 
 To reproduce:
@@ -87,98 +148,6 @@ To reproduce:
         bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
         bin/lkp run                    generated-yaml-file
 
-=========================================================================================
-compiler/cpufreq_governor/kconfig/mode/nr_task/rootfs/tbox_group/test/testcase/ucode:
-  gcc-9/performance/x86_64-rhel-8.3/process/16/debian-10.4-x86_64-20200603.cgz/lkp-csl-2sp9/mmap1/will-it-scale/0x5003006
-
-commit: 
-  edb4f1ceb1 ("mm: Change pud_page_vaddr to return pmd_t *")
-  c0af5203b9 ("mm: Change p4d_page_vaddr to return pud_t *")
-
-edb4f1ceb161c083 c0af5203b9dbf4cd8b424298b1c 
----------------- --------------------------- 
-         %stddev     %change         %stddev
-             \          |                \  
-  10634491            +7.4%   11422635        will-it-scale.16.processes
-    664655            +7.4%     713914        will-it-scale.per_process_ops
-  10634491            +7.4%   11422635        will-it-scale.workload
-      6236 ± 11%     +34.6%       8391 ± 21%  softirqs.CPU59.RCU
- 2.473e+10            +7.4%  2.656e+10        perf-stat.i.branch-instructions
-      0.46 ±  3%      -6.9%       0.43        perf-stat.i.cpi
- 2.535e+10            +7.6%  2.727e+10        perf-stat.i.dTLB-loads
- 1.149e+10            +7.3%  1.232e+10        perf-stat.i.dTLB-stores
- 1.027e+11            +7.4%  1.103e+11        perf-stat.i.instructions
-      2.21            +6.7%       2.36        perf-stat.i.ipc
-    699.56            +7.5%     751.76        perf-stat.i.metric.M/sec
-      0.45            -6.3%       0.42        perf-stat.overall.cpi
-      2.22            +6.7%       2.37        perf-stat.overall.ipc
- 2.464e+10            +7.4%  2.647e+10        perf-stat.ps.branch-instructions
- 2.526e+10            +7.6%  2.718e+10        perf-stat.ps.dTLB-loads
- 1.145e+10            +7.3%  1.228e+10        perf-stat.ps.dTLB-stores
- 1.024e+11            +7.4%  1.099e+11        perf-stat.ps.instructions
- 3.095e+13            +7.3%  3.321e+13        perf-stat.total.instructions
-     47.73            -4.1       43.67 ±  9%  perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.__munmap
-     47.39            -4.1       43.34 ±  9%  perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe.__munmap
-     46.85            -4.1       42.79 ±  9%  perf-profile.calltrace.cycles-pp.__x64_sys_munmap.do_syscall_64.entry_SYSCALL_64_after_hwframe.__munmap
-     44.68            -4.0       40.64 ±  9%  perf-profile.calltrace.cycles-pp.__do_munmap.__vm_munmap.__x64_sys_munmap.do_syscall_64.entry_SYSCALL_64_after_hwframe
-     46.45            -4.0       42.45 ±  9%  perf-profile.calltrace.cycles-pp.__vm_munmap.__x64_sys_munmap.do_syscall_64.entry_SYSCALL_64_after_hwframe.__munmap
-     37.90            -4.0       33.91 ±  9%  perf-profile.calltrace.cycles-pp.unmap_region.__do_munmap.__vm_munmap.__x64_sys_munmap.do_syscall_64
-     10.29            -2.7        7.55 ±  9%  perf-profile.calltrace.cycles-pp.___might_sleep.unmap_page_range.unmap_vmas.unmap_region.__do_munmap
-     27.98            -2.5       25.48 ±  9%  perf-profile.calltrace.cycles-pp.unmap_vmas.unmap_region.__do_munmap.__vm_munmap.__x64_sys_munmap
-     27.18            -2.5       24.70 ±  9%  perf-profile.calltrace.cycles-pp.unmap_page_range.unmap_vmas.unmap_region.__do_munmap.__vm_munmap
-      6.98            -1.6        5.40 ±  9%  perf-profile.calltrace.cycles-pp.free_pgd_range.unmap_region.__do_munmap.__vm_munmap.__x64_sys_munmap
-     46.86            -4.1       42.80 ±  9%  perf-profile.children.cycles-pp.__x64_sys_munmap
-     44.74            -4.0       40.70 ±  9%  perf-profile.children.cycles-pp.__do_munmap
-     46.47            -4.0       42.46 ±  9%  perf-profile.children.cycles-pp.__vm_munmap
-     37.98            -4.0       33.98 ±  9%  perf-profile.children.cycles-pp.unmap_region
-     11.13            -2.7        8.46 ±  9%  perf-profile.children.cycles-pp.___might_sleep
-     27.26            -2.5       24.75 ±  9%  perf-profile.children.cycles-pp.unmap_page_range
-     28.02            -2.5       25.52 ±  9%  perf-profile.children.cycles-pp.unmap_vmas
-      7.02            -1.6        5.43 ±  9%  perf-profile.children.cycles-pp.free_pgd_range
-      0.71 ±  3%      -0.3        0.42 ± 18%  perf-profile.children.cycles-pp.security_vm_enough_memory_mm
-      0.61 ±  3%      -0.3        0.32 ± 22%  perf-profile.children.cycles-pp.cap_vm_enough_memory
-      0.24 ±  6%      -0.1        0.15 ± 17%  perf-profile.children.cycles-pp.cap_capable
-      0.26 ±  5%      -0.1        0.20 ± 11%  perf-profile.children.cycles-pp.refill_obj_stock
-      0.05 ± 44%      +0.0        0.08 ± 14%  perf-profile.children.cycles-pp.tlb_table_flush
-      0.17 ±  4%      +0.1        0.29 ±  8%  perf-profile.children.cycles-pp.tlb_flush_mmu
-     10.98            -2.6        8.35 ±  9%  perf-profile.self.cycles-pp.___might_sleep
-      6.98            -1.6        5.40 ±  9%  perf-profile.self.cycles-pp.free_pgd_range
-      0.36 ±  5%      -0.2        0.17 ± 27%  perf-profile.self.cycles-pp.cap_vm_enough_memory
-      0.22 ±  7%      -0.1        0.13 ± 19%  perf-profile.self.cycles-pp.cap_capable
-      0.50 ±  5%      -0.1        0.41 ± 10%  perf-profile.self.cycles-pp.security_mmap_file
-      0.24 ±  5%      -0.1        0.18 ± 11%  perf-profile.self.cycles-pp.refill_obj_stock
-      0.10 ±  6%      +0.1        0.23 ±  8%  perf-profile.self.cycles-pp.tlb_flush_mmu
-
-
-                                                                                
-                            will-it-scale.per_process_ops                       
-                                                                                
-  720000 +------------------------------------------------------------------+   
-         |                                            OO O O OO O OO O O OO |   
-  710000 |-+                                                                |   
-  700000 |-+                                                                |   
-         |                                                                  |   
-  690000 |-+                                                                |   
-         |                                                                  |   
-  680000 |-OO O O  O   OO O O OO   O  O   O  O    O                         |   
-         |        O  O           O  O   O  O   O O  O                       |   
-  670000 |.+ .+. .++.+.++.+              .++.+.+.++.+. +.+.+.++.            |   
-  660000 |-++   +          :          +.+             +         +.++.+.+.+  |   
-         |                 :         +                                      |   
-  650000 |-+                :  +.   +                                       |   
-         |                  +.+  +.+                                        |   
-  640000 +------------------------------------------------------------------+   
-                                                                                
-                                                                                
-[*] bisect-good sample
-[O] bisect-bad  sample
-
-
-
-Disclaimer:
-Results have been estimated based on internal Intel analysis and are provided
-for informational purposes only. Any difference in system hardware or software
-design or configuration may affect actual performance.
 
 
 ---
@@ -189,13 +158,13 @@ Thanks,
 Oliver Sang
 
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="config-5.13.0-rc2-00045-gc0af5203b9db"
+Content-Disposition: attachment; filename="config-5.13.0-rc6-00250-g87f196bed334"
 
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86_64 5.13.0-rc2 Kernel Configuration
+# Linux/x86_64 5.13.0-rc6 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="gcc-9 (Debian 9.3.0-22) 9.3.0"
 CONFIG_CC_IS_GCC=y
@@ -296,6 +265,22 @@ CONFIG_CONTEXT_TRACKING=y
 CONFIG_NO_HZ=y
 CONFIG_HIGH_RES_TIMERS=y
 # end of Timers subsystem
+
+CONFIG_BPF=y
+CONFIG_HAVE_EBPF_JIT=y
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+
+#
+# BPF subsystem
+#
+CONFIG_BPF_SYSCALL=y
+CONFIG_BPF_JIT=y
+CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_BPF_JIT_DEFAULT_ON=y
+# CONFIG_BPF_UNPRIV_DEFAULT_OFF is not set
+# CONFIG_BPF_PRELOAD is not set
+# CONFIG_BPF_LSM is not set
+# end of BPF subsystem
 
 # CONFIG_PREEMPT_NONE is not set
 CONFIG_PREEMPT_VOLUNTARY=y
@@ -409,7 +394,6 @@ CONFIG_SYSCTL=y
 CONFIG_HAVE_UID16=y
 CONFIG_SYSCTL_EXCEPTION_TRACE=y
 CONFIG_HAVE_PCSPKR_PLATFORM=y
-CONFIG_BPF=y
 # CONFIG_EXPERT is not set
 CONFIG_UID16=y
 CONFIG_MULTIUSER=y
@@ -440,12 +424,6 @@ CONFIG_KALLSYMS=y
 CONFIG_KALLSYMS_ALL=y
 CONFIG_KALLSYMS_ABSOLUTE_PERCPU=y
 CONFIG_KALLSYMS_BASE_RELATIVE=y
-# CONFIG_BPF_LSM is not set
-CONFIG_BPF_SYSCALL=y
-CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
-CONFIG_BPF_JIT_ALWAYS_ON=y
-CONFIG_BPF_JIT_DEFAULT_ON=y
-# CONFIG_BPF_PRELOAD is not set
 CONFIG_USERFAULTFD=y
 CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE=y
 CONFIG_KCMP=y
@@ -1244,7 +1222,6 @@ CONFIG_ARCH_HAS_PKEYS=y
 # CONFIG_GUP_TEST is not set
 # CONFIG_READ_ONLY_THP_FOR_FS is not set
 CONFIG_ARCH_HAS_PTE_SPECIAL=y
-CONFIG_IO_MAPPING=y
 # end of Memory Management options
 
 CONFIG_NET=y
@@ -1905,7 +1882,6 @@ CONFIG_CGROUP_NET_PRIO=y
 CONFIG_CGROUP_NET_CLASSID=y
 CONFIG_NET_RX_BUSY_POLL=y
 CONFIG_BQL=y
-CONFIG_BPF_JIT=y
 CONFIG_BPF_STREAM_PARSER=y
 CONFIG_NET_FLOW_LIMIT=y
 
@@ -2071,7 +2047,6 @@ CONFIG_NET_DEVLINK=y
 CONFIG_PAGE_POOL=y
 CONFIG_FAILOVER=m
 CONFIG_ETHTOOL_NETLINK=y
-CONFIG_HAVE_EBPF_JIT=y
 
 #
 # Device Drivers
@@ -3444,7 +3419,6 @@ CONFIG_SPI_MASTER=y
 # SPI Master Controller Drivers
 #
 # CONFIG_SPI_ALTERA is not set
-# CONFIG_SPI_ALTERA_CORE is not set
 # CONFIG_SPI_AXI_SPI_ENGINE is not set
 # CONFIG_SPI_BITBANG is not set
 # CONFIG_SPI_BUTTERFLY is not set
@@ -4950,6 +4924,7 @@ CONFIG_HID_PRIMAX=m
 # CONFIG_HID_ROCCAT is not set
 CONFIG_HID_SAITEK=m
 CONFIG_HID_SAMSUNG=m
+# CONFIG_HID_SEMITEK is not set
 # CONFIG_HID_SONY is not set
 CONFIG_HID_SPEEDLINK=m
 # CONFIG_HID_STEAM is not set
@@ -5499,7 +5474,6 @@ CONFIG_INTEL_IDMA64=m
 # CONFIG_INTEL_IDXD is not set
 CONFIG_INTEL_IOATDMA=m
 # CONFIG_PLX_DMA is not set
-# CONFIG_XILINX_ZYNQMP_DPDMA is not set
 # CONFIG_QCOM_HIDMA_MGMT is not set
 # CONFIG_QCOM_HIDMA is not set
 CONFIG_DW_DMAC_CORE=y
@@ -7099,7 +7073,7 @@ CONFIG_ARCH_USE_MEMTEST=y
 # end of Kernel Testing and Coverage
 # end of Kernel hacking
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=job-script
 
@@ -7107,60 +7081,73 @@ Content-Disposition: attachment; filename=job-script
 
 export_top_env()
 {
-	export suite='will-it-scale'
-	export testcase='will-it-scale'
-	export category='benchmark'
-	export nr_task=16
-	export job_origin='will-it-scale-part2.yaml'
-	export queue_cmdline_keys=
-	export queue='vip'
-	export testbox='lkp-csl-2sp9'
-	export tbox_group='lkp-csl-2sp9'
+	export suite='xfstests'
+	export testcase='xfstests'
+	export category='functional'
+	export need_memory='1G'
+	export job_origin='xfstests-generic-part1.yaml'
+	export queue_cmdline_keys='branch
+commit
+queue_at_least_once'
+	export queue='validate'
+	export testbox='lkp-ivb-d01'
+	export tbox_group='lkp-ivb-d01'
 	export kconfig='x86_64-rhel-8.3'
-	export submit_id='60dc1f410b9a939bb5bdcb9b'
-	export job_file='/lkp/jobs/scheduled/lkp-csl-2sp9/will-it-scale-performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2-debian-10.4-x86_64-20200603.cgz-c0af5203b9dbf4cd8b42-20210630-39861-7mhi0o-2.yaml'
-	export id='221447cf2e85f5013658bf467c522aec5056590e'
-	export queuer_version='/lkp/xsang/.src-20210630-101838'
-	export model='Cascade Lake'
-	export nr_node=2
-	export nr_cpu=88
-	export memory='128G'
-	export nr_hdd_partitions=4
+	export submit_id='60dc032cfc291e94ad530f6f'
+	export job_file='/lkp/jobs/scheduled/lkp-ivb-d01/xfstests-4HDD-btrfs-generic-group-07-ucode=0x21-debian-10.4-x86_64-20200603.cgz-87f196bed33473d8f0d114089b7acf5c1e278cee-20210630-38061-1vut57b-4.yaml'
+	export id='8c17ee3036b03e9622beca01955e550fa414a019'
+	export queuer_version='/lkp-src'
+	export model='Ivy Bridge'
+	export nr_node=1
+	export nr_cpu=8
+	export memory='16G'
 	export nr_ssd_partitions=1
-	export hdd_partitions='/dev/disk/by-id/ata-ST4000NM0035-1V4107_ZC13Q1RD-part*'
-	export ssd_partitions='/dev/disk/by-id/ata-INTEL_SSDSC2BB480G7_PHDV723200JX480BGN-part1'
-	export rootfs_partition='/dev/disk/by-id/ata-INTEL_SSDSC2BB480G7_PHDV723200JX480BGN-part2'
-	export brand='Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz'
-	export commit='c0af5203b9dbf4cd8b424298b1cb809f4535802a'
-	export ucode='0x5003006'
-	export need_kconfig_hw='CONFIG_I40E=y
-CONFIG_SATA_AHCI'
-	export enqueue_time='2021-06-30 15:37:37 +0800'
-	export _id='60dc1f420b9a939bb5bdcb9d'
-	export _rt='/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a'
+	export nr_hdd_partitions=4
+	export ssd_partitions='/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_PHWL42040066800RGN-part2'
+	export hdd_partitions='/dev/disk/by-id/ata-WDC_WD10EACS-22D6B0_WD-WCAU45298688-part*'
+	export rootfs_partition='/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_PHWL42040066800RGN-part1'
+	export brand='Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz'
+	export need_kconfig='CONFIG_BLK_DEV_SD
+CONFIG_SCSI
+CONFIG_BLOCK=y
+CONFIG_SATA_AHCI
+CONFIG_SATA_AHCI_PLATFORM
+CONFIG_ATA
+CONFIG_PCI=y
+CONFIG_BTRFS_FS'
+	export commit='87f196bed33473d8f0d114089b7acf5c1e278cee'
+	export netconsole_port=6672
+	export ucode='0x21'
+	export need_kconfig_hw='CONFIG_IGB=y
+CONFIG_E1000E=y
+CONFIG_SATA_AHCI
+CONFIG_DRM_I915'
+	export bisect_dmesg=true
+	export enqueue_time='2021-06-30 13:37:49 +0800'
+	export _id='60dc0340fc291e94ad530f71'
+	export _rt='/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee'
 	export user='lkp'
 	export compiler='gcc-9'
 	export LKP_SERVER='internal-lkp-server'
-	export head_commit='20bcde5734f4be6bedf36c320c842ad9ba56856b'
-	export base_commit='13311e74253fe64329390df80bed3f07314ddd61'
-	export branch='linux-devel/devel-hourly-20210624-183033'
+	export head_commit='e739faa581132f1b616ec5c5a5541dc14a423932'
+	export base_commit='62fb9874f5da54fdb243003b386128037319b219'
+	export branch='linux-review/Arthur-Williams/fs-Allow-open-with-O_CREAT-to-succeed-if-existing-dir-is-specified/20210619-190246'
 	export rootfs='debian-10.4-x86_64-20200603.cgz'
-	export monitor_sha='53a20fa2'
-	export result_root='/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/8'
+	export result_root='/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/3'
 	export scheduler_version='/lkp/lkp/.src-20210629-172335'
 	export arch='x86_64'
 	export max_uptime=2100
 	export initrd='/osimage/debian/debian-10.4-x86_64-20200603.cgz'
 	export bootloader_append='root=/dev/ram0
 user=lkp
-job=/lkp/jobs/scheduled/lkp-csl-2sp9/will-it-scale-performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2-debian-10.4-x86_64-20200603.cgz-c0af5203b9dbf4cd8b42-20210630-39861-7mhi0o-2.yaml
+job=/lkp/jobs/scheduled/lkp-ivb-d01/xfstests-4HDD-btrfs-generic-group-07-ucode=0x21-debian-10.4-x86_64-20200603.cgz-87f196bed33473d8f0d114089b7acf5c1e278cee-20210630-38061-1vut57b-4.yaml
 ARCH=x86_64
 kconfig=x86_64-rhel-8.3
-branch=linux-devel/devel-hourly-20210624-183033
-commit=c0af5203b9dbf4cd8b424298b1cb809f4535802a
-BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/vmlinuz-5.13.0-rc2-00045-gc0af5203b9db
+branch=linux-review/Arthur-Williams/fs-Allow-open-with-O_CREAT-to-succeed-if-existing-dir-is-specified/20210619-190246
+commit=87f196bed33473d8f0d114089b7acf5c1e278cee
+BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/vmlinuz-5.13.0-rc6-00250-g87f196bed334
 max_uptime=2100
-RESULT_ROOT=/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/8
+RESULT_ROOT=/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/3
 LKP_SERVER=internal-lkp-server
 nokaslr
 selinux=0
@@ -7184,18 +7171,19 @@ earlyprintk=ttyS0,115200
 console=ttyS0,115200
 vga=normal
 rw'
-	export modules_initrd='/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/modules.cgz'
-	export bm_initrd='/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/will-it-scale_20210620.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/will-it-scale-x86_64-a34a85c-1_20210620.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/mpstat_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/turbostat_20200721.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/turbostat-x86_64-3.7-4_20200721.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/perf_20210621.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/perf-x86_64-349a2d52ffe5-1_20210630.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/sar-x86_64-34c92ae-1_20200702.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz'
+	export modules_initrd='/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/modules.cgz'
+	export bm_initrd='/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/fs_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/xfstests_20210628.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/xfstests-x86_64-76d2a91-1_20210628.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz'
 	export ucode_initrd='/osimage/ucode/intel-ucode-20210222.cgz'
 	export lkp_initrd='/osimage/user/lkp/lkp-x86_64.cgz'
 	export site='inn'
 	export LKP_CGI_PORT=80
 	export LKP_CIFS_PORT=139
 	export last_kernel='5.13.0'
-	export queue_at_least_once=0
-	export kernel='/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/vmlinuz-5.13.0-rc2-00045-gc0af5203b9db'
-	export dequeue_time='2021-06-30 16:05:05 +0800'
-	export job_initrd='/lkp/jobs/scheduled/lkp-csl-2sp9/will-it-scale-performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2-debian-10.4-x86_64-20200603.cgz-c0af5203b9dbf4cd8b42-20210630-39861-7mhi0o-2.cgz'
+	export repeat_to=6
+	export queue_at_least_once=1
+	export kernel='/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/vmlinuz-5.13.0-rc6-00250-g87f196bed334'
+	export dequeue_time='2021-06-30 14:00:49 +0800'
+	export job_initrd='/lkp/jobs/scheduled/lkp-ivb-d01/xfstests-4HDD-btrfs-generic-group-07-ucode=0x21-debian-10.4-x86_64-20200603.cgz-87f196bed33473d8f0d114089b7acf5c1e278cee-20210630-38061-1vut57b-4.cgz'
 
 	[ -n "$LKP_SRC" ] ||
 	export LKP_SRC=/lkp/${user:-lkp}/src
@@ -7211,39 +7199,17 @@ run_job()
 
 	export_top_env
 
-	run_setup $LKP_SRC/setup/cpufreq_governor 'performance'
+	run_setup nr_hdd=4 $LKP_SRC/setup/disk
+
+	run_setup fs='btrfs' $LKP_SRC/setup/fs
 
 	run_monitor $LKP_SRC/monitors/wrapper kmsg
-	run_monitor $LKP_SRC/monitors/no-stdout/wrapper boot-time
-	run_monitor $LKP_SRC/monitors/wrapper uptime
-	run_monitor $LKP_SRC/monitors/wrapper iostat
 	run_monitor $LKP_SRC/monitors/wrapper heartbeat
-	run_monitor $LKP_SRC/monitors/wrapper vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-numastat
-	run_monitor $LKP_SRC/monitors/wrapper numa-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper numa-meminfo
-	run_monitor $LKP_SRC/monitors/wrapper proc-vmstat
-	run_monitor $LKP_SRC/monitors/wrapper proc-stat
 	run_monitor $LKP_SRC/monitors/wrapper meminfo
-	run_monitor $LKP_SRC/monitors/wrapper slabinfo
-	run_monitor $LKP_SRC/monitors/wrapper interrupts
-	run_monitor $LKP_SRC/monitors/wrapper lock_stat
-	run_monitor lite_mode=1 $LKP_SRC/monitors/wrapper perf-sched
-	run_monitor $LKP_SRC/monitors/wrapper softirqs
-	run_monitor $LKP_SRC/monitors/one-shot/wrapper bdi_dev_mapping
-	run_monitor $LKP_SRC/monitors/wrapper diskstats
-	run_monitor $LKP_SRC/monitors/wrapper nfsstat
-	run_monitor $LKP_SRC/monitors/wrapper cpuidle
-	run_monitor $LKP_SRC/monitors/wrapper cpufreq-stats
-	run_monitor $LKP_SRC/monitors/wrapper turbostat
-	run_monitor $LKP_SRC/monitors/wrapper sched_debug
-	run_monitor $LKP_SRC/monitors/wrapper perf-stat
-	run_monitor $LKP_SRC/monitors/wrapper mpstat
-	run_monitor $LKP_SRC/monitors/no-stdout/wrapper perf-profile
 	run_monitor $LKP_SRC/monitors/wrapper oom-killer
 	run_monitor $LKP_SRC/monitors/plain/watchdog
 
-	run_test mode='process' test='mmap1' $LKP_SRC/tests/wrapper will-it-scale
+	run_test test='generic-group-07' $LKP_SRC/tests/wrapper xfstests
 }
 
 extract_stats()
@@ -7251,32 +7217,11 @@ extract_stats()
 	export stats_part_begin=
 	export stats_part_end=
 
-	env mode='process' test='mmap1' $LKP_SRC/stats/wrapper will-it-scale
+	env test='generic-group-07' $LKP_SRC/stats/wrapper xfstests
 	$LKP_SRC/stats/wrapper kmsg
-	$LKP_SRC/stats/wrapper boot-time
-	$LKP_SRC/stats/wrapper uptime
-	$LKP_SRC/stats/wrapper iostat
-	$LKP_SRC/stats/wrapper vmstat
-	$LKP_SRC/stats/wrapper numa-numastat
-	$LKP_SRC/stats/wrapper numa-vmstat
-	$LKP_SRC/stats/wrapper numa-meminfo
-	$LKP_SRC/stats/wrapper proc-vmstat
 	$LKP_SRC/stats/wrapper meminfo
-	$LKP_SRC/stats/wrapper slabinfo
-	$LKP_SRC/stats/wrapper interrupts
-	$LKP_SRC/stats/wrapper lock_stat
-	env lite_mode=1 $LKP_SRC/stats/wrapper perf-sched
-	$LKP_SRC/stats/wrapper softirqs
-	$LKP_SRC/stats/wrapper diskstats
-	$LKP_SRC/stats/wrapper nfsstat
-	$LKP_SRC/stats/wrapper cpuidle
-	$LKP_SRC/stats/wrapper turbostat
-	$LKP_SRC/stats/wrapper sched_debug
-	$LKP_SRC/stats/wrapper perf-stat
-	$LKP_SRC/stats/wrapper mpstat
-	$LKP_SRC/stats/wrapper perf-profile
 
-	$LKP_SRC/stats/wrapper time will-it-scale.time
+	$LKP_SRC/stats/wrapper time xfstests.time
 	$LKP_SRC/stats/wrapper dmesg
 	$LKP_SRC/stats/wrapper kmsg
 	$LKP_SRC/stats/wrapper last_state
@@ -7286,95 +7231,256 @@ extract_stats()
 
 "$@"
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
+Content-Type: application/x-xz
+Content-Disposition: attachment; filename="dmesg.xz"
+Content-Transfer-Encoding: base64
+
+/Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4IVhFN1dAC2IMAZDEgdCeyKNIZNYTAnCjCqXMM6V
+hzytb0wX3YWOdzCXjtr0n3ggHQU/6or9CDZzFhGtsJGI2BD4CoA/ARk/VZs0BKjwAYqMuILg
+ynlUZjX4yejIZaiUkBYJOx1nrop1oXnx7+xz0fOb5jXvFoG5qNeYqCPCzGUMrL0Jjv0N+OE1
+dnUUz3BjSgbEfLzfJit6mwcTOBMnxX6QFz2B/FNyokmxhMLyN0LmW6cMdAIeLD3s3S30PZQ1
+F0+MzqcK3c4U4IQ6Q0f6ywqoWZ1y14GdNgL+4S3sdFt3W+rofPCJ6iBx57X+GiaL9xjZ2nQm
+SEoiG4oHSDdG4QaPRfmQ8jPbBvrJ9lAu+e9OsYc0NhFICvzmUvwseJQHbE9SLuzA3AxMDb5u
+Yi+8UXm6cH01WhjR+fr55xbX+OlKr4o5iZ4rullGW35RaQ8lyYtn8hKra6bB4X5bK/pCoadi
+YaHgpCXouqDpawAFva2rznv2yel3HTO1jeQovc0+Z+VPDT/KfO/rsqqgIPnp+euZBr3+X4Nr
+2RAdPPBVrjE8rhOmZqvsjtW0HYRBicW3yEDoeQq8ev0al8PBJ8vR6qte6MPRIqR7Lg6eilco
+RZm4M8Y2H3o3UtRQsB51QTHTW11qZsXUXVpc14WSgrMZO23UhzEIwQN1hrdZS8F8CMFmznR6
+s723hGPFLZ9P5pS1H/QSrJOhv9JZU+gPdGCyhS6OJTtxbBnNGtrr039n08J/RDvgtEIznjX9
+HWKtE0QtNrItK+2kuYtAq6M/SewqIurSTLDRQKY6dZeJ8nAPb3irzWTSmGejPZg/UCSLoUon
+dnsel59hIm9anWliH/HpXNL/IJgrF5PKhKSbGSom2GHxwOP325PYXsiugUjJfHWYxZ49iKjH
+bcUoa8txusgbYe6TLSeqWT5IZNqOuxijGIcXOJeiQ6PyY6rtPbTd381ZOWpA2yhlo4RoO6kG
+ytkw7ck7a8JAZG7Inpq5hKaiwTtvRpxA6s41ztU14neEq4Z47z6mJTwX1aWhQRvV1gbR2iTR
+8tGgoN7qH4x0aP6sWtu9wqjMvpiABppNjCOT28VKoxIqlymoLrDCijh5kxoSBzasIvOVlI8x
+iSE93WYL/B6M/Oxyy6sMYsRBq/ot4ZT/bkKy8wF5Kssy8ZNA0shqo78cHd46cSS9KaeqoYyb
+xZdGhyFbty7fSKjq3TtTzM240jXsloHVBynUPcmmJQGx8B6hhPUGEygtW3tiVWiEC+HJSG8i
+Ap4yYQZonOVJdaxuFbzkLMrjQxHk9sk2ULVYnBgdgWdZwjUHY1cGUdThWeCqL0TsmTUhDmX3
+t7KwsRFcqVm8+shbIwGwlU4zdNJP4E2UoJOF5jwROgUYyjr+mspVlj1irnR6ND2vG2+CWKdW
+2TcvnHRhzpN5GViGx2d/xMCsZ/UOBBZtHNytCv+j/fSlIHKywKG6amLsh+hNnbTwBk062ffn
+lVXw9HjX3hpbOykG2ATq9kqTCvi/GdLwiq9eGaEoo+hL6m5AnunNh0f2lFfcAuJGJOThi/RA
+kpRf7JE2LnfiMqn7oaLJZTgW4mo0TPHFgIayJGW/u9Eowiqm5ComF4oh38tv8TsbwfM0SiBw
+3hPg3GZBFId5JmTQySVSMY6VVVnPZFAhu1gU5/NiYfnXQJ4Ysz8VIOBkwubg9lsXUD67hcrq
+ki+O85rG5iYoxwzoxcB6MXv7O2yJdswtwbCnv15lcUM1pdrBZIeS2PysxigOWbOnM5MW4wUA
+UElQWSWIR+6TwEq2kgC7xwl2+y0CleItVe6Q0V4aJJOqgpCRMp4iUtbXT7T0xwu+1k4vaAzz
+8IobvYDM/3XJ9mqNBZtHELlCYJlWhoDvd3Z0OTIoxetzP1CDrxDRRHOsM0jrElS1jivLRcM9
+yVDmSqiMgwD0UzvtfwbDn3oq7a/ck0TBB0AF/81s18uzWk4M66IdQKskLEJw2VjEmdCMNv7p
+C8WaGpH8H4+dmZ71HEFV+zUUWGO0yXV42LRK9O7ES7SHvLbHejosBh3lRpBHeurcqNS2pMtV
+L68+xeDlUFHFkstq1MOOmH5x6heZtUdip5bvIX0NSbmngSvYlIMNGCVI2GM/28d2nx7/NTg5
+u5moZ3kJD5lVquYPe5GzR/EyABg0p/v0WM9BYxx9E2v56vJPJ6blX/lf6xFzr96k4MJKLByw
+uMTWtvNrj354qGy7hGVxbl+hMgHBUd1kbYxJoOIxI44846EEVe8GdznfK8Gd8CSAYhZc5etj
+vMtTg5L4/RTFdAn2zjs+8uBuA3Ogj+v3HCH3tmwr19SmL5oelw8cKGVy0QroIVi+tDKYwuiX
+ud08tMDOcyE2CoX/NbVo7xjN2yyJ62gGAtfzpRGeAK/DLpJkgOJp1RD9Y94DPloZMSi5CIMp
+zNFb/mKD6fNa1DRFzvKUN9dstr+vpVTVaVtBLhMD9NpcqqssA2MQvCJvtNvHLCuNuhQoJCjK
+I9YPpJbk34G0AO3ill1nOS8wICpHhichKflCQ7QgafqiJfTbjty0A9Je1OujLgMFdsdQJ7HE
+Nr/OBFseap4Etqe811rR68yMuvFyG0eDvGVSB5OisafDiTymIE/VqeimC3h0CCMZdhz/Tzv2
+d1R8l38p8tj6Q4pk66zgVGfCuTA12as6e3XCMHk3vXH6wFuuECMEXx3uOgCw2A3b1ZuEa3qC
+Azb5H/l43/vPAzG8gKK0iBUHI3vaqu8Xb3UobxsOg9ZSn4qzyTy+Nn0G1SdyoHwofydy4mAy
+MvvJTvSP+gAAHBeqDfIO+uGoTqxLEM0T+ZUKUy2fEr1nNmGyTGa1NYvbLnlAJCAnjCpKNVjd
+vyKJWrZid3Q72d250QsqbB6sd052RO3sm87rMeQIPk08grmffXZFeIUYFa8TIzaxLkZ8/VeK
+ObXwYmt1AJhAM9r4L/2+fCarPlIzKUvj95N2N+rB37T2cRixDiSmit4d2Ahe0GvN/rG92TVt
+XdR7KmBT3IZ7unWFtWQ+nrIEZpLm788lWAJG+a3Ea6rfevQ68yjy0FuIdRzmSmhuonvV43Mu
+SU9FSCJv5yTs90yF78JaOJYWluFkkLLH0/eVfOJofSsHbshDizIHnv5yKHOKt17fSjH3ShSM
+yqlZv1YezTREyk494F/C2Tl9wrEDvKvxzR5Le+YUAl2uEkCj7ZfhZl9JUJCkND0L2LHTf/cx
+jPG5YommNHV1f6IrJPkS7JeXfhYIgAYcxts05zhFMFVehYH4lP66UFPP7DCtF8LoOg0/UOZ6
+fPyMYG1MYVfJQoTkBLyvBKyZzQmuMs746FPIg44PuzS/dz3Mu9P4x8SPS8H2ABVRDtcC4hRa
+Oa8qkNEoNMuUUFEAMabHcP5VJ03YamolS/BhVqHMzC9WBRvOmtlS6h9VFG8hSwP58K5S/AQz
+KcdJI7G/0SzJmbwwjk5by6HZ9KZ9OzMOsMbajIlBvbQSLgHmR6ANZZE50iPW+wV0mClg1tO7
+6HqLk9Adv5vICSma+gyvpjzpjJoPGCTbmdvqdvLk6nbahzx+zdI12YibriPPlgzkeFygmcUo
+na+grpf5y0TQ2ERcqh1fN+hU0+UV7qN3Ua9tRzvcL1mXSQ/3QMS9/TI35TTV3zUuZiHoql5B
+gR/MzNIbvO9OtrWg7Lfl4EsDqyOrRxBoI1SV7/Rf+esa7+k5EtPOlT8USJs22BGHtdhsRPOe
+4qhGFcTzQ1htvZMI/3VXTggT+672j6tvlkD8WeFAF1H5WX+8ohAwoj20wrzt+oOhpkJaMDOQ
+OYpMmxFllE0fPpFFiXRGsk38D3cg7it5HTHxi4zLqSfau07q5bp+S7c8Q1BHuDujJOWbE3Ar
+WjDxEaeBVQLOItVg63ZPfEqDFziDA900k9kXbooVdSWRmLP9NMraEca+cwPu/WgW9+mEoKW0
+qsKxT98x7HUqOdJUKII7k+FJuT0PbgrLvUbI6OcPK1Hph9eEQXUJBerSba7yml6yN6Q+T+Hs
+JnRIWRHHoAXGfXgXDt3LNEvAEAxhKlJHm8gvjYBheDIThtWripvcbRFPRgUagXf+gtUyYtJV
+QpVnfdRcLSXhJtZdDzE5ET1U9y7JvhyJrVwH3tsupd3qp/N+kXgLWVXEgHLaNCk+EcKy07r1
+VxvNPRo1zDHLe7ztGiMEoQiIHt3WdWnU3rk/W8Ck/xZnhoqb9dBudwhrAFm1XN1CtWNCIi7S
+x+FGUHweNqTilb232JUOnpfE0FysJlq6QCSlBA7pK1byDqKg65nM6xvGzjrFr21+aVhBOQ4h
+h10+haqnL1100d+HN5t9BHEjYnHTd/WsnsWyq8Dn2jBcBqvBx/Hf1KiPrXFD9yC5Ba1hBoaz
+ZgR7ILI4lXGSimmd9WSzToI9b7um0rCgLdlII+aO0nAxulF3CfkBXeWsd1QNj9sBrppE2W1I
+q1RamO0UvDnDR/k87q9perDxVNff9fUvzbbpScerNhYQd5METhJCBZCzJQaR3BUKTXRbKK6f
+Yj/aJPRGwRHz/k3L9FjhRbLmZ4g9ivJDvzmjkvVbawkqZkX8FPu8DDHqUt3eTJf2/euTvaob
+s15UoQive49zJUHBx4R3FX11Dtqt9F0J7Fs7m9ydaIj2QFVuUUkKR10NzdGKbzuKDN6FX7PI
+GjLKHwMZgY/D6PgC49G6S57zdYYuSTYcqW/OpMUlukTOxFIgbifsKwvBIsTTw9wCxiL5orl/
+TnqnrWXyantdxbpy9EM6CQPXfkjOpVZphKk8J8iyZc7mt3BE47tW2UARLi2/lUeinhv0OHyk
+I1ZnvpqI/Nn0UtG6bAtj7z3wPapfxX3qDNVZMbHEvP8Rj4o7KtzxWQRCzHq1qUn5R7yYEied
+QQartfYVUhXvAN6GJsyhmibDJjHQ+XnAmS9HhJ1iatAwUHxUkqVUs8KPrj/HbuSw4E7v6kBc
+5Lq4Ddztx4ePvs5ROL6pEDlVSs5FCfCYfqMlxBIX6tVgcfBTkJLDkSwBi1Eu/48bIaiJPjCp
+JZILNEwyqh60RJUUKtIqChILBGbx1UYEBNEvZYWZSIj9F8gZMG9mz73UOg8SGRBL9nQSRYsu
+Z5SWzN0QFHFLTIjgoYjZWsEGbdppr2i4x5kj3f4g0PJMFv8p+KNecU3LbGBeYqDU7f9ACjE+
+gaDnLQJsGwJDGImOu4AhiMweMRc6zu7au8K5KieV2KH2vkoUskJ35Lb1jGkwSwPwQv5WXSjs
+wc/koRvxtc1iGioJlcyFp4IScdlGe9I25wo/KdDQeMF71giAaMiHmTMlZ9APlLHRaFZfFf1k
+l/RzYQHsbogQ0vmV/mNE8usjh6d7yRTlrJl/yKzu4V/h/kWAM/mOLsAqjTkLgfI7Lc/RxvEc
+wObVNJGYcE7tKdQYtkYPHYwSldhcCJNyyGbBhRXUVa7H3kh8odUp7cw5lhm0avIUq8H6pDUm
+W3aADR0UyyirYiHKGZ/jiEjuCvM81KUR6sPhkOpWAzYg4my7QZJFW5RTxqhImLS08o8/HZNj
+oAlEhTwHdy5iaBbKJ9kuzzeGUaT0TSays3RfKYUG3ntR59fEJGcmwVRBbukQOl2KJtFcNYw7
+PnliBkCwwcdpPqGTm3+NEnAU8O24AqiII9uI2HKU4V+YNh1Tg+szesr5fpEv3GxMfyRNcYEU
+eiN56CJj36LpNvrdZatcxC2xQMZj4BaIwnK88a5nFr2IdbzHqQ/JhxnX9ip65XbiWVIQe5ja
+lvWZAlqHiCsjbu61KtKDdf5ZegialP39ryJXgtiMlcVkSArSG33H/96s20ity4WZWl1pVxYa
+132VewPRGsD1HYhZC6cQxYAI2tGKPoviAej4502/FH6rvauIz7iSD4MTZcyw0ZEbUubs8JGC
+ApU6z3uT41HCWGsBSskzgTZfuIfPsubMfN9BFyt3WzT1e4xXCH5gWpE9wg7ChJE/9DVCdWJj
+8nOrsT+hjwf72fMuklY81owU6MMJKqe8tKES3+0NBFOPDNkSQLojgEexeCJXLq1m8i5L633q
+t31pGVRk5bbJOTbH4BDy8PYECD4RW7ffsCCdHaiA2lIhZLlCUTdVA0crBKq5ARVl4ASK3+jy
+l1x263OglP3GssOHXT5mhRvzKea2gzTjygskrOIE5vS/gdYBUPhQMQB66+afinTQim/AW8lS
+Tu/qjgtnwsDqmsg60fM2GOl2OZxMrASjzsoh5HEmQHJ2WrKLArAwAJlDxXL/UsVfymSu50eP
+MKKVVNfaRSmhVbJoI/ph1d70m+ac18lIJoaVDIr4pmzTHUt/qJdsKkYXQ50Ph5MxasHDiR2U
+mChzymcp++2Qx95uYWGx6Ei1Haux2ipSMCeVr+EX9MoifjuRTzTgaq8F22/R1Fb5TZ9wInv/
+Yw47jm8esqLMJRpOkOxzp3X+9k9SEW/LhKXULxPMLe4QZt9W6TCLH5rXqwXozDZxSKqrH5EH
+66TfEucJepfTf3hABRzXIndOMKHg1GOQiVuvF65/MuQFaB5tAWKrbpuka+M3EF2QKoOJYAfj
+ALJWkPT6snO9AT+8uwxKT4ABur6mKzthtUcn11K3kUHyHHke88hAyXZwEBzzkhFlvC08PF5r
+XoFZaclOeys0+WJ2LItgA9LU1QqOsXZsqgX442Tb+WHHzu3LmLtmNzquKSeEaaMLxVMIfdlr
+5aTsjw50DNhbZK/W7jX6vnvHgucbEFrECXqmfyuqKYuMk03wCG4ZVTrzloW0P1NxwtESKkri
+GCXYPqk2c5zyvdXCDKQjiUKy1fijLbmgGzVWyfhYo0gGCOmrMcngPI9AVJBvsF5V6+nPq3VY
+wXs6eiC031dGxi0dHJ8CZzkL9kiRx/Sh710zijeVr5nVOkB2RWyFbi/Bn4eNpI2YEJlnuike
+4bYMnuXiHce9qXE7Ls6QpuBNckw747Ldd30tXxbpW+RweTmHPa0twf3qIFuCjtfIXWpRa7SP
+Ow7VYUojyWOBgf54FkxG7zi6B1LqGXaFx26zSIBdpdzeJE3x0x6jjxfFvmHqhO1F3dEK3NLW
+hlDr7zc5X26Jv1jLZLDymC5/oTZTatXRx3aQPz80aFT8gcgj8O3YumM3cnIuQy/F3Hk7jTRD
+q3XrCmAeNqm7E/J8zyWTXejGZVM6aflSbAAAAAAAR3QTgII4SEEAAfkp4ooCAB6k+5+xxGf7
+AgAAAAAEWVo=
+
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=xfstests
+
+2021-12-01 20:44:11 export TEST_DIR=/fs/sdb1
+2021-12-01 20:44:11 export TEST_DEV=/dev/sdb1
+2021-12-01 20:44:11 export FSTYP=btrfs
+2021-12-01 20:44:11 export SCRATCH_MNT=/fs/scratch
+2021-12-01 20:44:11 mkdir /fs/scratch -p
+2021-12-01 20:44:11 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4"
+2021-12-01 20:44:11 sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests/generic-group-07
+2021-12-01 20:44:11 ./check generic/140 generic/141 generic/142 generic/143 generic/144 generic/145 generic/146 generic/147 generic/148 generic/149 generic/150 generic/151 generic/152 generic/153 generic/154 generic/155 generic/156 generic/157 generic/158 generic/159
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 lkp-ivb-d01 5.13.0-rc6-00250-g87f196bed334 #1 SMP Mon Jun 21 06:24:48 CST 2021
+MKFS_OPTIONS  -- /dev/sdb2
+MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
+
+generic/140	 1s
+generic/141	 1s
+generic/142	 4s
+generic/143	 5s
+generic/144	 1s
+generic/145	[not run] xfs_io fcollapse  failed (old kernel/wrong fs?)
+generic/146	 1s
+generic/147	[not run] xfs_io finsert  failed (old kernel/wrong fs?)
+generic/148	 1s
+generic/149	 1s
+generic/150	 1s
+generic/151	 1s
+generic/152	 1s
+generic/153	[not run] xfs_io fcollapse  failed (old kernel/wrong fs?)
+generic/154	 2s
+generic/155	 2s
+generic/156	[not run] xfs_io funshare  failed (old kernel/wrong fs?)
+generic/157	- output mismatch (see /lkp/benchmarks/xfstests/results//generic/157.out.bad)
+    --- tests/generic/157.out	2021-06-28 16:41:45.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//generic/157.out.bad	2021-12-01 20:44:35.949001218 +0000
+    @@ -14,7 +14,7 @@
+     Try to reflink a device
+     XFS_IOC_CLONE_RANGE: Invalid argument
+     Try to reflink to a dir
+    -TEST_DIR/test-157/dir1: Is a directory
+    +XFS_IOC_CLONE_RANGE: Is a directory
+     Try to reflink to a device
+     XFS_IOC_CLONE_RANGE: Invalid argument
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/157.out /lkp/benchmarks/xfstests/results//generic/157.out.bad'  to see the entire diff)
+generic/158	- output mismatch (see /lkp/benchmarks/xfstests/results//generic/158.out.bad)
+    --- tests/generic/158.out	2021-06-28 16:41:45.000000000 +0000
+    +++ /lkp/benchmarks/xfstests/results//generic/158.out.bad	2021-12-01 20:44:37.783001265 +0000
+    @@ -18,7 +18,7 @@
+     Try to dedupe a device
+     XFS_IOC_FILE_EXTENT_SAME: Invalid argument
+     Try to dedupe to a dir
+    -TEST_DIR/test-158/dir1: Is a directory
+    +XFS_IOC_FILE_EXTENT_SAME: Is a directory
+     Try to dedupe to a device
+     XFS_IOC_FILE_EXTENT_SAME: Invalid argument
+    ...
+    (Run 'diff -u /lkp/benchmarks/xfstests/tests/generic/158.out /lkp/benchmarks/xfstests/results//generic/158.out.bad'  to see the entire diff)
+generic/159	 1s
+Ran: generic/140 generic/141 generic/142 generic/143 generic/144 generic/145 generic/146 generic/147 generic/148 generic/149 generic/150 generic/151 generic/152 generic/153 generic/154 generic/155 generic/156 generic/157 generic/158 generic/159
+Not run: generic/145 generic/147 generic/153 generic/156
+Failures: generic/157 generic/158
+Failed 2 of 20 tests
+
+
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename="job.yaml"
 
 ---
-:#! jobs/will-it-scale-part2.yaml:
-suite: will-it-scale
-testcase: will-it-scale
-category: benchmark
-nr_task: 16
-will-it-scale:
-  mode: process
-  test: mmap1
-job_origin: will-it-scale-part2.yaml
+:#! jobs/xfstests-generic-part1.yaml:
+suite: xfstests
+testcase: xfstests
+category: functional
+need_memory: 1G
+disk: 4HDD
+fs: btrfs
+xfstests:
+  test: generic-group-07
+job_origin: xfstests-generic-part1.yaml
 :#! queue options:
 queue_cmdline_keys:
 - branch
 - commit
-- queue_at_least_once
 queue: bisect
-testbox: lkp-csl-2sp9
-tbox_group: lkp-csl-2sp9
+testbox: lkp-ivb-d01
+tbox_group: lkp-ivb-d01
 kconfig: x86_64-rhel-8.3
-submit_id: 60db56129a086b6a610106bf
-job_file: "/lkp/jobs/scheduled/lkp-csl-2sp9/will-it-scale-performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2-debian-10.4-x86_64-20200603.cgz-c0af5203b9dbf4cd8b42-20210630-92769-so0vc6-0.yaml"
-id: 0a4aedc36e981e93f7fe01275313f480f98c0bdb
+submit_id: 60dbb652fc291e80d5acc2cd
+job_file: "/lkp/jobs/scheduled/lkp-ivb-d01/xfstests-4HDD-btrfs-generic-group-07-ucode=0x21-debian-10.4-x86_64-20200603.cgz-87f196bed33473d8f0d114089b7acf5c1e278cee-20210630-32981-4hfvlo-0.yaml"
+id: 877657fddacca6bd464ad0b3230feb1a0c91cc19
 queuer_version: "/lkp-src"
-:#! hosts/lkp-csl-2sp9:
-model: Cascade Lake
-nr_node: 2
-nr_cpu: 88
-memory: 128G
-nr_hdd_partitions: 4
+:#! hosts/lkp-ivb-d01:
+model: Ivy Bridge
+nr_node: 1
+nr_cpu: 8
+memory: 16G
 nr_ssd_partitions: 1
-hdd_partitions: "/dev/disk/by-id/ata-ST4000NM0035-1V4107_ZC13Q1RD-part*"
-ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BB480G7_PHDV723200JX480BGN-part1"
-rootfs_partition: "/dev/disk/by-id/ata-INTEL_SSDSC2BB480G7_PHDV723200JX480BGN-part2"
-brand: Intel(R) Xeon(R) Gold 6238M CPU @ 2.10GHz
-:#! include/category/benchmark:
+nr_hdd_partitions: 4
+ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_PHWL42040066800RGN-part2"
+hdd_partitions: "/dev/disk/by-id/ata-WDC_WD10EACS-22D6B0_WD-WCAU45298688-part*"
+rootfs_partition: "/dev/disk/by-id/ata-INTEL_SSDSC2BB800G4_PHWL42040066800RGN-part1"
+brand: Intel(R) Core(TM) i7-3770K CPU @ 3.50GHz
+:#! include/category/functional:
 kmsg:
-boot-time:
-uptime:
-iostat:
 heartbeat:
-vmstat:
-numa-numastat:
-numa-vmstat:
-numa-meminfo:
-proc-vmstat:
-proc-stat:
 meminfo:
-slabinfo:
-interrupts:
-lock_stat:
-perf-sched:
-  lite_mode: 1
-softirqs:
-bdi_dev_mapping:
-diskstats:
-nfsstat:
-cpuidle:
-cpufreq-stats:
-turbostat:
-sched_debug:
-perf-stat:
-mpstat:
-perf-profile:
-:#! include/category/ALL:
-cpufreq_governor: performance
-:#! include/queue/cyclic:
-commit: c0af5203b9dbf4cd8b424298b1cb809f4535802a
-:#! include/testbox/lkp-csl-2sp9:
-ucode: '0x5003006'
-need_kconfig_hw:
-- CONFIG_I40E=y
+:#! include/disk/nr_hdd:
+need_kconfig:
+- CONFIG_BLK_DEV_SD
+- CONFIG_SCSI
+- CONFIG_BLOCK=y
 - CONFIG_SATA_AHCI
-enqueue_time: 2021-06-30 01:19:14.622286167 +08:00
-_id: 60db56129a086b6a610106bf
-_rt: "/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a"
+- CONFIG_SATA_AHCI_PLATFORM
+- CONFIG_ATA
+- CONFIG_PCI=y
+- CONFIG_BTRFS_FS
+:#! include/queue/cyclic:
+commit: 87f196bed33473d8f0d114089b7acf5c1e278cee
+:#! include/testbox/lkp-ivb-d01:
+netconsole_port: 6672
+ucode: '0x21'
+need_kconfig_hw:
+- CONFIG_IGB=y
+- CONFIG_E1000E=y
+- CONFIG_SATA_AHCI
+- CONFIG_DRM_I915
+bisect_dmesg: true
+:#! include/fs/OTHERS:
+enqueue_time: 2021-06-30 08:09:55.214726278 +08:00
+_id: 60dbb652fc291e80d5acc2cd
+_rt: "/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee"
 :#! schedule options:
 user: lkp
 compiler: gcc-9
 LKP_SERVER: internal-lkp-server
-head_commit: 20bcde5734f4be6bedf36c320c842ad9ba56856b
-base_commit: 13311e74253fe64329390df80bed3f07314ddd61
-branch: linux-devel/devel-hourly-20210624-183033
+head_commit: e739faa581132f1b616ec5c5a5541dc14a423932
+base_commit: 62fb9874f5da54fdb243003b386128037319b219
+branch: linux-devel/devel-hourly-20210629-134401
 rootfs: debian-10.4-x86_64-20200603.cgz
-monitor_sha: 53a20fa2
-result_root: "/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/0"
+result_root: "/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/0"
 scheduler_version: "/lkp/lkp/.src-20210629-172335"
 arch: x86_64
 max_uptime: 2100
@@ -7382,14 +7488,14 @@ initrd: "/osimage/debian/debian-10.4-x86_64-20200603.cgz"
 bootloader_append:
 - root=/dev/ram0
 - user=lkp
-- job=/lkp/jobs/scheduled/lkp-csl-2sp9/will-it-scale-performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2-debian-10.4-x86_64-20200603.cgz-c0af5203b9dbf4cd8b42-20210630-92769-so0vc6-0.yaml
+- job=/lkp/jobs/scheduled/lkp-ivb-d01/xfstests-4HDD-btrfs-generic-group-07-ucode=0x21-debian-10.4-x86_64-20200603.cgz-87f196bed33473d8f0d114089b7acf5c1e278cee-20210630-32981-4hfvlo-0.yaml
 - ARCH=x86_64
 - kconfig=x86_64-rhel-8.3
-- branch=linux-devel/devel-hourly-20210624-183033
-- commit=c0af5203b9dbf4cd8b424298b1cb809f4535802a
-- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/vmlinuz-5.13.0-rc2-00045-gc0af5203b9db
+- branch=linux-devel/devel-hourly-20210629-134401
+- commit=87f196bed33473d8f0d114089b7acf5c1e278cee
+- BOOT_IMAGE=/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/vmlinuz-5.13.0-rc6-00250-g87f196bed334
 - max_uptime=2100
-- RESULT_ROOT=/result/will-it-scale/performance-process-16-mmap1-ucode=0x5003006-monitor=53a20fa2/lkp-csl-2sp9/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/0
+- RESULT_ROOT=/result/xfstests/4HDD-btrfs-generic-group-07-ucode=0x21/lkp-ivb-d01/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/0
 - LKP_SERVER=internal-lkp-server
 - nokaslr
 - selinux=0
@@ -7413,44 +7519,55 @@ bootloader_append:
 - console=ttyS0,115200
 - vga=normal
 - rw
-modules_initrd: "/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/modules.cgz"
-bm_initrd: "/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/will-it-scale_20210620.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/will-it-scale-x86_64-a34a85c-1_20210620.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/mpstat_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/turbostat_20200721.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/turbostat-x86_64-3.7-4_20200721.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/perf_20210621.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/perf-x86_64-b7050b242430-1_20210626.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/sar-x86_64-34c92ae-1_20200702.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz"
+modules_initrd: "/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/modules.cgz"
+bm_initrd: "/osimage/deps/debian-10.4-x86_64-20200603.cgz/run-ipconfig_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/lkp_20201211.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/rsync-rootfs_20200608.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/fs_20200714.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/xfstests_20210628.cgz,/osimage/pkg/debian-10.4-x86_64-20200603.cgz/xfstests-x86_64-76d2a91-1_20210628.cgz,/osimage/deps/debian-10.4-x86_64-20200603.cgz/hw_20200715.cgz"
 ucode_initrd: "/osimage/ucode/intel-ucode-20210222.cgz"
 lkp_initrd: "/osimage/user/lkp/lkp-x86_64.cgz"
 site: inn
-:#! /lkp/lkp/.src-20210624-222558/include/site/inn:
+:#! /lkp/lkp/.src-20210629-172335/include/site/inn:
 LKP_CGI_PORT: 80
 LKP_CIFS_PORT: 139
 oom-killer:
 watchdog:
 :#! runtime status:
-last_kernel: 5.13.0
-repeat_to: 3
+last_kernel: 5.13.0-11598-g602e85ae4312
 :#! user overrides:
-queue_at_least_once: 0
-kernel: "/pkg/linux/x86_64-rhel-8.3/gcc-9/c0af5203b9dbf4cd8b424298b1cb809f4535802a/vmlinuz-5.13.0-rc2-00045-gc0af5203b9db"
-dequeue_time: 2021-06-30 01:22:36.381492821 +08:00
-:#! /lkp/lkp/.src-20210629-172335/include/site/inn:
+kernel: "/pkg/linux/x86_64-rhel-8.3/gcc-9/87f196bed33473d8f0d114089b7acf5c1e278cee/vmlinuz-5.13.0-rc6-00250-g87f196bed334"
+dequeue_time: 2021-06-30 08:15:42.556775312 +08:00
 job_state: finished
-loadavg: 13.47 9.95 4.47 1/729 11993
-start_time: '1624958203'
-end_time: '1624958504'
+loadavg: 1.12 0.32 0.11 1/190 9950
+start_time: '1638370750'
+end_time: '1638370778'
 version: "/lkp/lkp/.src-20210629-172406:d4cf76de:387ecda8e"
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: attachment; filename=reproduce
 
+dmsetup remove_all
+wipefs -a --force /dev/sdb1
+wipefs -a --force /dev/sdb2
+wipefs -a --force /dev/sdb3
+wipefs -a --force /dev/sdb4
+mkfs -t btrfs /dev/sdb2
+mkfs -t btrfs /dev/sdb1
+mkfs -t btrfs /dev/sdb3
+mkfs -t btrfs /dev/sdb4
+mkdir -p /fs/sdb1
+mount -t btrfs /dev/sdb1 /fs/sdb1
+mkdir -p /fs/sdb2
+mount -t btrfs /dev/sdb2 /fs/sdb2
+mkdir -p /fs/sdb3
+mount -t btrfs /dev/sdb3 /fs/sdb3
+mkdir -p /fs/sdb4
+mount -t btrfs /dev/sdb4 /fs/sdb4
+export TEST_DIR=/fs/sdb1
+export TEST_DEV=/dev/sdb1
+export FSTYP=btrfs
+export SCRATCH_MNT=/fs/scratch
+mkdir /fs/scratch -p
+export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4"
+sed "s:^:generic/:" //lkp/benchmarks/xfstests/tests/generic-group-07
+./check generic/140 generic/141 generic/142 generic/143 generic/144 generic/145 generic/146 generic/147 generic/148 generic/149 generic/150 generic/151 generic/152 generic/153 generic/154 generic/155 generic/156 generic/157 generic/158 generic/159
 
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
-do
-	online_file="$cpu_dir"/online
-	[ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
-
-	file="$cpu_dir"/cpufreq/scaling_governor
-	[ -f "$file" ] && echo "performance" > "$file"
-done
-
- "/lkp/benchmarks/python3/bin/python3" "./runtest.py" "mmap1" "295" "process" "16"
-
---J/dobhs11T7y2rNN--
+--eAbsdosE1cNLO4uF--
