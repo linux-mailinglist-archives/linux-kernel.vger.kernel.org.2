@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B433B94B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BE23B94B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 18:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhGAQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 12:36:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37668 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhGAQgr (ORCPT
+        id S229954AbhGAQhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 12:37:31 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:52736 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhGAQha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 12:36:47 -0400
-Received: from 111-240-144-27.dynamic-ip.hinet.net ([111.240.144.27] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lyzdj-0000i1-Tp; Thu, 01 Jul 2021 16:34:12 +0000
-From:   chris.chiu@canonical.com
-To:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, code@reto-schneider.ch
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>
-Subject: [PATCH] rtl8xxxu: disable interrupt_in transfer for 8188cu and 8192cu
-Date:   Fri,  2 Jul 2021 00:33:54 +0800
-Message-Id: <20210701163354.118403-1-chris.chiu@canonical.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 1 Jul 2021 12:37:30 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id b44318c53906634a; Thu, 1 Jul 2021 18:34:57 +0200
+Received: from kreacher.localnet (89-64-80-13.dynamic.chello.pl [89.64.80.13])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 29CC9669AED;
+        Thu,  1 Jul 2021 18:34:57 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH] ACPI: Kconfig: Provide help text for the ACPI_PRMT option
+Date:   Thu, 01 Jul 2021 18:34:52 +0200
+Message-ID: <11780652.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.80.13
+X-CLIENT-HOSTNAME: 89-64-80-13.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfeeiiedguddttdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppeekledrieegrdektddrudefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddufedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphesshhushgvrdguvg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-There will be crazy numbers of interrupts triggered by 8188cu and
-8192cu module, around 8000~10000 interrupts per second, on the usb
-host controller. Compare with the vendor driver source code, it's
-mapping to the configuration CONFIG_USB_INTERRUPT_IN_PIPE and it is
-disabled by default.
+Add missing help text for CONFIG_ACPI_PRMT.
 
-Since the interrupt transfer is neither used for TX/RX nor H2C
-commands. Disable it to avoid the confusing interrupts for the
-8188cu and 8192cu module which I only have for verification.
-
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Fixes: cefc7ca46235 ("ACPI: PRM: implement OperationRegion handler for the PlatformRtMechanism subtype")
+Reported-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/Kconfig |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 03c6ed7efe06..6a3dfa71b27f 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -1670,7 +1670,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
- 			priv->rf_paths = 2;
- 			priv->rx_paths = 2;
- 			priv->tx_paths = 2;
--			priv->usb_interrupts = 1;
-+			priv->usb_interrupts = 0;
- 			priv->rtl_chip = RTL8192C;
- 		}
- 		priv->has_wifi = 1;
-@@ -1680,7 +1680,7 @@ static int rtl8xxxu_identify_chip(struct rtl8xxxu_priv *priv)
- 		priv->rx_paths = 1;
- 		priv->tx_paths = 1;
- 		priv->rtl_chip = RTL8188C;
--		priv->usb_interrupts = 1;
-+		priv->usb_interrupts = 0;
- 		priv->has_wifi = 1;
- 	}
- 
--- 
-2.20.1
+Index: linux-pm/drivers/acpi/Kconfig
+===================================================================
+--- linux-pm.orig/drivers/acpi/Kconfig
++++ linux-pm/drivers/acpi/Kconfig
+@@ -548,3 +548,13 @@ config ACPI_PRMT
+ 	bool "Platform Runtime Mechanism Support"
+ 	depends on EFI && X86_64
+ 	default y
++	help
++	  Platform Runtime Mechanism (PRM) is a firmware interface exposing a
++	  set of binary executables that can be called from the AML interpreter
++	  or directly from device drivers.
++
++	  Say Y to enable the AML interpreter to execute the PRM code.
++
++	  While this feature is optional in principle, leaving it out may
++	  substantially increase computational overhead related to the
++	  initialization of some server systems.
+
+
 
