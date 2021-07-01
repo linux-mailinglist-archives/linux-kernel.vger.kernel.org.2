@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFCC3B97F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AFC3B97F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 23:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhGAVJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 17:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbhGAVJW (ORCPT
+        id S234334AbhGAVJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 17:09:51 -0400
+Received: from smtprelay0040.hostedemail.com ([216.40.44.40]:56280 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234151AbhGAVJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 17:09:22 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C378C061762;
-        Thu,  1 Jul 2021 14:06:50 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id v10so5164069qto.1;
-        Thu, 01 Jul 2021 14:06:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JdZfhD8zS8Li7V1IWr5im/Ov0yGZJzdw3SFKa8tmvaA=;
-        b=coFXzdn8+GFRVvzHgAyl5ya90JjlYSnS84Ena2i664mPYGWza2mLyEi8CqvbBO8QoK
-         AMKqkrmx7AB/snglYTmG5VrGh4KFMVa7MmrarR+R6xWquwmAObVhKQrwP0YBpq0OWeXZ
-         ffUGNPzJd2Q0pR2qmS8V2U7qHuxJPArIgljtleqjf3PwLu85WorQ4hrTVQoQLOCZ2fwb
-         zk4mMVfXrcghfDxud6b6JG16Psnajj/rrjufSzS+N1gtQT6TfXL6qfak/ryp5/D0kWmv
-         FB23x9kxBbkg4Gmi16pIJJ5sNRXbfXSlqkeMVKEeD9YZLh0MnFAwgshvw+7RY6IdV8Mt
-         1wFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JdZfhD8zS8Li7V1IWr5im/Ov0yGZJzdw3SFKa8tmvaA=;
-        b=kT8STan2hJsl6HR8nrfeAEga18F/Vu0YCEVNjFphBdsH+q1AruUne+FzsMJ4tNJ1Q2
-         s1ZNZRWIRU+pGaGh+U0ITUAVOquKTuQ8jfJFzuC5YqwLyNGiU3aXMEHIDM5NOAUBbg1C
-         81eYs0BWD9FZ3FcvktNxFL8GE5nuPvtz/lLiWyhaps+g60l9UGHCCfGIU4lhmiUASC0t
-         FZOOw4cjq3JAVYxSLn8w8QrwTF4e6EuB4QPnLeuVLxpMGj1vAfPrwB8vAM172oD2LUee
-         vnl4U0TzdOwKbr8MWRQXR0hX6YxW33b9xephDnhsOySIi3oDNxv6rYJQGHIR2BvRBGOB
-         5JJQ==
-X-Gm-Message-State: AOAM532Wo3nfxKuSyJ9N2IWVAv057evM5MaSWjh1J5EnjKn6TKhnu0Tn
-        9Dmo0Bc3m/JYAwU/aW+PFg==
-X-Google-Smtp-Source: ABdhPJzJZm7Wwvj9JL2Rw3TI6kf2fUOVVJh1b0RQieFYgctpFerkJ6QWAsaYSREJxI0H7Uuwi4ovZg==
-X-Received: by 2002:a05:622a:453:: with SMTP id o19mr1903676qtx.122.1625173609396;
-        Thu, 01 Jul 2021 14:06:49 -0700 (PDT)
-Received: from PWN (104-9-124-193.lightspeed.sntcca.sbcglobal.net. [104.9.124.193])
-        by smtp.gmail.com with ESMTPSA id t62sm431440qkc.26.2021.07.01.14.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 14:06:49 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 17:06:45 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Alexander Larkin <avlarkin82@gmail.com>
-Cc:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: maybe similar bug exists for HCI_EV_INQUIRY_RESULT* like
- [Linux-kernel-mentees] [PATCH v2] net/bluetooth: slab-out-of-bounds read in
- hci_extended_inquiry_result_evt()
-Message-ID: <20210701210645.GA14471@PWN>
-References: <20200709130224.214204-1-yepeilin.cs@gmail.com>
- <20210701153936.2954886-1-avlarkin82@gmail.com>
+        Thu, 1 Jul 2021 17:09:50 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id E3D8F182CED5B;
+        Thu,  1 Jul 2021 21:07:18 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 77068315D74;
+        Thu,  1 Jul 2021 21:07:18 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701153936.2954886-1-avlarkin82@gmail.com>
+Date:   Thu, 01 Jul 2021 14:07:17 -0700
+From:   Joe Perches <joe@perches.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Paul Burton <paulburton@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] tracing: Simplify & fix saved_tgids logic
+In-Reply-To: <20210701155100.3f29ddfb@oasis.local.home>
+References: <20210630003406.4013668-1-paulburton@google.com>
+ <CAJWu+ooRQ6hFtaA4tr3BNs9Btss1yan8taua=VMWMopGmEVhSA@mail.gmail.com>
+ <YN38D3dg0fLzL0Ia@google.com> <20210701140754.5847a50f@oasis.local.home>
+ <YN4Fpl+dhijItkUP@google.com> <20210701142624.44bb4dde@oasis.local.home>
+ <51babd56c2fe53ba011152700a546151@perches.com>
+ <20210701155100.3f29ddfb@oasis.local.home>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <5666edba28107559db23ba0f948c1f82@perches.com>
+X-Sender: joe@perches.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.90
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 77068315D74
+X-Stat-Signature: 7ezs15xuepy81mreabkq3bga6aqa5ixg
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18QJBnlgCIF4CcCd9WYonRkxvguCApxAec=
+X-HE-Tag: 1625173638-534825
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 06:39:36PM +0300, Alexander Larkin wrote:
-> For the net/bluetooth/hci_event.c , maybe similar bug could be inside
-> hci_inquiry_result_with_rssi_evt() that is HCI_EV_INQUIRY_RESULT_WITH_RSSI
-> and inside hci_inquiry_result_evt() that is HCI_EV_INQUIRY_RESULT. 
+On 2021-07-01 12:51, Steven Rostedt wrote:
+> On Thu, 01 Jul 2021 12:35:29 -0700
+> Joe Perches <joe@perches.com> wrote:
+> 
+>> C99 comments are allowed since about 5 years ago.
+> 
+> Really, I thought Linus hated them. Personally, I find them rather ugly
+> myself. The only user of them I see in the kernel/ directory appears to
+> be for RCU. But Paul's on the C/C++ committee, so perhaps he favors 
+> them.
+> 
+> The net/ directory doesn't have any, except perhaps to comment out code
+> (which I sometimes use it for that too).
+> 
+> The block/, arch/x86/ directories don't have them either.
+> 
+> I wouldn't go and change checkpatch, but I still rather avoid them,
+> especially for multi line comments.
+> 
+>  /*
+>   * When it comes to multi line comments I prefer using something
+>   * that denotes a start and an end to the comment, as it makes it
+>   * look like a nice clip of information.
+>   */
+> 
+> Instead of:
+> 
+>   // When it comes to multi line comments I prefer using something
+>   // that denotes a start and an end to the comment, as it makes it
+>   // look like a nice clip of information.
+> 
+> Which just looks like noise. But hey, maybe that's just me because I
+> find "*" as a sign of information and '//' something to ignore. ;-)
 
-Hi Alexander,
+May I suggest using something other than an amber vt220?
 
-Thanks for looking into this, I believe they were handled in commit
-629b49c848ee ("Bluetooth: Prevent out-of-bounds read in
-hci_inquiry_result_with_rssi_evt()") and commit 75bbd2ea50ba ("Bluetooth:
-Prevent out-of-bounds read in hci_inquiry_result_evt()").
 
-Thanks,
-Peilin Ye
 
