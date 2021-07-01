@@ -2,204 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790713B9179
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB193B917A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 14:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhGAMIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 08:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S236365AbhGAMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 08:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbhGAMIL (ORCPT
+        with ESMTP id S236192AbhGAMJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 08:08:11 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281ACC061756
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 05:05:41 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id r3so4355303wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 05:05:41 -0700 (PDT)
+        Thu, 1 Jul 2021 08:09:00 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5ADC0617AD
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 05:06:29 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id j2so7871616wrs.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 05:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DgbewMvI6BnTlboIBSfq2MvWqho668pYPAmBfwyRL7o=;
-        b=JteDJfxM4lf6OPGS2m2LVG7DA/Wuak3Wyt+9C0LYn+7kGQaaMGlg8v/yLgfIpvIB/Y
-         CFmd99JUXdztY5b9iNFi3lMl8pxSYe79cS8B9fl/g7TB8hNvU5cFZbAvT26a+J+LpoTm
-         xup9mxA0OdeOmYFuBQbSlnCaHSQenw0X/tSCQIk+85aGDkAUNxf+laQRbyT4kVH1DOh7
-         wsY0pdQ5ycMkGJscxSJRM3LYsHGND/Lsm2YXNNieRP5OtpeavRyqLi1YKX/DFzfoc/Su
-         IoIaYEnhWTi01O+0DMtoFfpHjnVDpH6TKVP99KzmIub7mNUF4hhbgWQhf7bvf0SlC8iC
-         ne8w==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ejMlxgdCSh7bhcCGOF4QdbrO4C8aMBBUUOFoe2dbFSI=;
+        b=zHMXsVWHe1X0RmiTXlG0eTZ4BhUFs2i1PsHVjP3epKr+4l8+Ufv3pHmtYLPD7OJtGB
+         U1RS6AMTe28j0efpj7b6esouVCNrrJPLVOcQdgLDg4o7YHZaMcBxkyPRL3a+93dkoG6u
+         0AFA033b82v8OBw8f7ngYGYrwQp2m/cz8NskQDbloJI3NQe6GV9qKl2qfHP7LC7fL1RP
+         CcXE/m88rdiP5JFb0hVPWOc2KqUEvz0hql0nIZBIGphcHsoqAzHHYfoF42LsASEDwT8o
+         r4fKFA2W/NO3aErVQmE3B8ZScKnc21SDHUyyaHSwdwTV6VFCIpzZggWVshtiC0Efpt01
+         vuag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DgbewMvI6BnTlboIBSfq2MvWqho668pYPAmBfwyRL7o=;
-        b=TMPwul0prnLJWVNxxNXzQ+QsAfLjpEmUXbBEWtk5xOVrx2JW2ZrRU+mMABVyX5RlPk
-         yixQ7cLCgXG0i25Z1deGVOcgJHc9pj0J8HHPU7FgP7uLExmoxahDBsY6gVoSTIZGEHEy
-         uC5SR8AxZSS3nL2T1RKByyi1K2lwha/czbIJ+ewVbjq0bo1ty7xR0+K7ex91pI9wasv0
-         MweFj7rOZBbo7hnANgnaTk0pIYo3K9OVNxWpBFvzCBpClMG3Z0AwqtXmbE4c6JjSTkpp
-         lh3B0VYVWXVAgmMvRaBkTRx1xsfqBcs4NkXS/enHlDCZ2dVFB8FiRqAWZF+U70JJbg/A
-         Ihyg==
-X-Gm-Message-State: AOAM530To2p4tvH8uj1UDhM4Cyf+Kjk8kQosdNDR512BQ57HbWISq3yS
-        +Tk48Rv+sUbJ0BN+lAjoyvd8sA==
-X-Google-Smtp-Source: ABdhPJxTFqCeqdnbUJrvdX0pLCUNUw1q7ykm6r4W05YwODNfZ68YJvRmk+aZ0yKTPL8bUQoZSuKe3g==
-X-Received: by 2002:a05:600c:254:: with SMTP id 20mr36964wmj.174.1625141139199;
-        Thu, 01 Jul 2021 05:05:39 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id o11sm9260208wmc.2.2021.07.01.05.05.38
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ejMlxgdCSh7bhcCGOF4QdbrO4C8aMBBUUOFoe2dbFSI=;
+        b=r22+1MKZIXHzL/41ZG/doBdKr5TLGneASvJ00r1pqS8IQqPNMy9blGLDjWAb1WhYOS
+         8pu/sdrUg3M1kCxT/OVY/mQ0kjy/MIdzNmBM2wZUPrCaxhDCJnSaOIPvwXwh7QyIZWMU
+         s5zRmuqTrZV8NJxE0RtC+7x6wGiqWhaop8exsKo5zU3DbB3xEAzDe756UW0fLMaKT8/J
+         6/xKBk6YFrJH2g1UKp7v/bpc5ggyo+VOyMdrH+V7AueN/IJxgu98fm86TN2v0M+a840G
+         EgqHSXSddkjM3fdM6TBuWai7coNGv2Fm67tratIPmdQ5zo/3v/oRyei76Qk6iC5m5glH
+         XL/g==
+X-Gm-Message-State: AOAM531Gze639BLa0h+MJUr3HSsvfp4HEJxNWMtlE/x6XzT/rxhYGdJ4
+        tIRJSt7RQSnfe8VOhEmDCedwLw==
+X-Google-Smtp-Source: ABdhPJys7PypARaY3xtb+nlQ97FFK3P13DCY8HLs7RWO3yKhXkY1KjwrlFP/08TgBqCWLe2Xsg31AA==
+X-Received: by 2002:a5d:560c:: with SMTP id l12mr28940568wrv.310.1625141188224;
+        Thu, 01 Jul 2021 05:06:28 -0700 (PDT)
+Received: from dell ([109.180.115.217])
+        by smtp.gmail.com with ESMTPSA id d186sm10449644wmd.14.2021.07.01.05.06.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 05:05:38 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 12:05:35 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH v3 3/3] sched: Introduce RLIMIT_UCLAMP
-Message-ID: <YN2vj8OeZI7PBdzU@google.com>
-References: <20210623123441.592348-1-qperret@google.com>
- <20210623123441.592348-4-qperret@google.com>
- <20210701105014.ewrg4nt5sn3eg57o@e107158-lin.cambridge.arm.com>
+        Thu, 01 Jul 2021 05:06:27 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 13:06:25 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH 2/4] MFD: intel_pmt: Remove OOBMSM device
+Message-ID: <YN2vwT+7sVRvz8iS@dell>
+References: <20210617215408.1412409-1-david.e.box@linux.intel.com>
+ <20210617215408.1412409-3-david.e.box@linux.intel.com>
+ <YNxENGGctLXmifzj@dell>
+ <f590ee871d0527a12b307f1494cb4c8a91c5e3c2.camel@linux.intel.com>
+ <e734a968-818a-380d-0ae5-fee41b3db246@redhat.com>
+ <YN2lmdDAOaykCvHK@dell>
+ <CAHp75Vfn6GKSj6USUPEWiPdhWRYcJbirqhU6aOeB4gruekmocg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210701105014.ewrg4nt5sn3eg57o@e107158-lin.cambridge.arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vfn6GKSj6USUPEWiPdhWRYcJbirqhU6aOeB4gruekmocg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+On Thu, 01 Jul 2021, Andy Shevchenko wrote:
 
-On Thursday 01 Jul 2021 at 11:50:14 (+0100), Qais Yousef wrote:
-> > diff --git a/fs/proc/base.c b/fs/proc/base.c
-> > index 9cbd915025ad..91a78cf1fe79 100644
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -586,6 +586,7 @@ static const struct limit_names lnames[RLIM_NLIMITS] = {
-> >  	[RLIMIT_NICE] = {"Max nice priority", NULL},
-> >  	[RLIMIT_RTPRIO] = {"Max realtime priority", NULL},
-> >  	[RLIMIT_RTTIME] = {"Max realtime timeout", "us"},
-> > +	[RLIMIT_UCLAMP] = {"Max utilization clamp", NULL},
+> On Thursday, July 1, 2021, Lee Jones <lee.jones@linaro.org> wrote:
 > 
-> I think a single RLIMIT_UCLAMP is fine for pure permission control. But if we
-> have to do something with the currently requested values we'd need to split it
-> IMO.
-
-I don't see why we'd need to TBH. Increasing the uclamp min of task will
-request a higher capacity for the task, and increasing the uclamp min
-will _allow_ the task to ask for a higher capacity. So at the end of the
-day, what we want to limit is how much can a task request, no matter
-how it does it. It's all the same thing in my mind, but if you have a
-clear idea of what could go wrong, then I'm happy to think again :)
-
-> >  };
-> >  
-> >  /* Display limits for a process */
-> > diff --git a/include/asm-generic/resource.h b/include/asm-generic/resource.h
-> > index 8874f681b056..53483b7cd4d7 100644
-> > --- a/include/asm-generic/resource.h
-> > +++ b/include/asm-generic/resource.h
-> > @@ -26,6 +26,7 @@
-> >  	[RLIMIT_NICE]		= { 0, 0 },				\
-> >  	[RLIMIT_RTPRIO]		= { 0, 0 },				\
-> >  	[RLIMIT_RTTIME]		= {  RLIM_INFINITY,  RLIM_INFINITY },	\
-> > +	[RLIMIT_UCLAMP]		= {  RLIM_INFINITY,  RLIM_INFINITY },	\
-> >  }
-> >  
-> >  #endif
-> > diff --git a/include/uapi/asm-generic/resource.h b/include/uapi/asm-generic/resource.h
-> > index f12db7a0da64..4d0fe4d564bf 100644
-> > --- a/include/uapi/asm-generic/resource.h
-> > +++ b/include/uapi/asm-generic/resource.h
-> > @@ -46,7 +46,8 @@
-> >  					   0-39 for nice level 19 .. -20 */
-> >  #define RLIMIT_RTPRIO		14	/* maximum realtime priority */
-> >  #define RLIMIT_RTTIME		15	/* timeout for RT tasks in us */
-> > -#define RLIM_NLIMITS		16
-> > +#define RLIMIT_UCLAMP		16	/* maximum utilization clamp */
-> > +#define RLIM_NLIMITS		17
-> >  
-> >  /*
-> >   * SuS says limits have to be unsigned.
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index ad055fb9ed2d..b094da4c5fea 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1430,6 +1430,11 @@ static int uclamp_validate(struct task_struct *p,
-> >  	if (util_min != -1 && util_max != -1 && util_min > util_max)
-> >  		return -EINVAL;
-> >  
-> > +	return 0;
-> > +}
-> > +
-> > +static void uclamp_enable(void)
-> > +{
-> >  	/*
-> >  	 * We have valid uclamp attributes; make sure uclamp is enabled.
-> >  	 *
-> > @@ -1438,8 +1443,20 @@ static int uclamp_validate(struct task_struct *p,
-> >  	 * scheduler locks.
-> >  	 */
-> >  	static_branch_enable(&sched_uclamp_used);
-> > +}
-> >  
-> > -	return 0;
-> > +static bool can_uclamp(struct task_struct *p, int value, enum uclamp_id clamp_id)
-> > +{
-> > +	unsigned long uc_rlimit = task_rlimit(p, RLIMIT_UCLAMP);
-> > +
-> > +	if (value == -1) {
-> > +		if (rt_task(p) && clamp_id == UCLAMP_MIN)
-> > +			value = sysctl_sched_uclamp_util_min_rt_default;
-> > +		else
-> > +			value = uclamp_none(clamp_id);
-> > +	}
-> > +
-> > +	return value <= p->uclamp_req[clamp_id].value || value <= uc_rlimit;
+> > On Thu, 01 Jul 2021, Hans de Goede wrote:
+> >
+> > > Hi,
+> > >
+> > > On 6/30/21 11:11 PM, David E. Box wrote:
+> > > > On Wed, 2021-06-30 at 11:15 +0100, Lee Jones wrote:
+> > > >> On Thu, 17 Jun 2021, David E. Box wrote:
+> > > >>
+> > > >>> Unlike the other devices in intel_pmt, the Out of Band Management
+> > > >>> Services
+> > > >>> Module (OOBMSM) is actually not a PMT dedicated device. It can also
+> > > >>> be used
+> > > >>> to describe non-PMT capabilities. Like PMT, these capabilities are
+> > > >>> also
+> > > >>> enumerated using PCIe Vendor Specific registers in config space. In
+> > > >>> order
+> > > >>> to better support these devices without the confusion of a
+> > > >>> dependency on
+> > > >>> MFD_INTEL_PMT, remove the OOBMSM device from intel_pmt so that it
+> > > >>> can be
+> > > >>> later placed in its own driver. Since much of the same code will be
+> > > >>> used by
+> > > >>> intel_pmt and the new driver, create a new file with symbols to be
+> > > >>> used by
+> > > >>> both.
+> > > >>>
+> > > >>> While performing this split we need to also handle the creation of
+> > > >>> platform
+> > > >>> devices for the non-PMT capabilities. Currently PMT devices are
+> > > >>> named by
+> > > >>> their capability (e.g. pmt_telemetry). Instead, generically name
+> > > >>> them by
+> > > >>> their capability ID (e.g. intel_extnd_cap_2). This allows the IDs
+> > > >>> to be
+> > > >>> created automatically.  However, to ensure that unsupported devices
+> > > >>> aren't
+> > > >>> created, use an allow list to specify supported capabilities.
+> > > >>>
+> > > >>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > >>> ---
+> > > >>>  MAINTAINERS                                |   1 +
+> > > >>>  drivers/mfd/Kconfig                        |   4 +
+> > > >>>  drivers/mfd/Makefile                       |   1 +
+> > > >>>  drivers/mfd/intel_extended_caps.c          | 208
+> > > >>> +++++++++++++++++++++
+> > > >>
+> > > >> Please consider moving this <whatever this is> out to either
+> > > >> drivers/pci or drivers/platform/x86.
+> > > >
+> > > > None of the cell drivers are in MFD, only the PCI drivers from which
+> > > > the cells are created. I understood that these should be in MFD. But
+> > > > moving it to drivers/platform/x86 would be fine with me. That keeps the
+> > > > code together in the same subsystem. Comment from Hans or Andy?
+> > >
+> > > I'm fine with moving everything to drivers/platform/x86, but AFAIK
+> > > usually the actual code which has the MFD cells and creates the
+> > > child devices usually lives under drivers/mfd
+> >
+> > Correct.  It must.
 > 
-> Hmm why do we still need to prevent the task from changing the uclamp value
-> upward?
+> It’s definitely not the first time you are talking about, but it may be the
+> first time I asked why it’s not enforced overall. Last time I have checked
+> it was like 5-7 MFD uses outside the MFD folder. Are you going to fix that?
 
-Because this is exactly how rlimit already works for nice or rt
-priorities. Tasks are always allowed to decrease their 'importance'
-(that is, increase their nice values for ex.), but are limited in how
-they can increase it.
+Because I can't NACK patches that weren't sent to me. :)
 
-See the __sched_setscheduler() permission checks for nice values and
-such.
+I'll probably look into 'fixing' it when I get some free time.
 
-> It just shouldn't be outside the specified limit, no?
-> 
-> And I think there's a bug in this logic. If UCLAMP_MIN was 1024 then the
-> RLIMIT_UCLAMP was lowered to 512, the user will be able to change UCLAMP_MIN to
-> 700 for example because of the
-> 
-> 	return value <= p->uclamp_req[clamp_id].value || ...
+> > No MFD API users outside of drivers/mfd please.
 
-Right, but again this is very much intentional and consistent with the
-existing behaviour for RLIMIT_NICE and friends. I think we should stick
-with that for the new uclamp limit unless there is a good reason to
-change it.
-
-> I think we should just prevent the requested value to be above the limit. But
-> the user can lower and increase it within that range. ie: for RLIMIT_UCLAMP
-> = 512, any request in the [0:512] range is fine.
-> 
-> Also if we set RLIMIT_UCLAMP = 0, then the user will still be able to change
-> the uclamp value to 0, which is not what we want. We need a special value for
-> *all requests are invalid*.
-
-And on this one again this is all for consistency :)
-
-> I'm not against this, but my instinct tells me that the simple sysctl knob to
-> define the paranoia/priviliged level for uclamp is a lot simpler and more
-> straightforward control.
-
-It is indeed simpler, but either way we're committing to a new
-userspace-visible. I feel that the rlimit stuff is going to be a lot
-more future-proof, because it allows for much finer grain configurations
-and as such is likely to cover more use-cases in the long run.
-
-Thanks,
-Quentin
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
