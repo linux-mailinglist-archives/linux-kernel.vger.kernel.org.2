@@ -2,185 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A4B3B8D8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 07:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5023B8D84
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 07:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhGAGAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 02:00:37 -0400
-Received: from mxout70.expurgate.net ([194.37.255.70]:54955 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbhGAGAf (ORCPT
+        id S234104AbhGAFzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 01:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229777AbhGAFzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 02:00:35 -0400
-X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Jul 2021 02:00:35 EDT
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lypbW-0007dN-3f; Thu, 01 Jul 2021 07:51:14 +0200
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lypbV-0006N8-0t; Thu, 01 Jul 2021 07:51:13 +0200
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 5D002240041;
-        Thu,  1 Jul 2021 07:51:12 +0200 (CEST)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id E701B240040;
-        Thu,  1 Jul 2021 07:51:11 +0200 (CEST)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id EDC46201CA;
-        Thu,  1 Jul 2021 07:51:10 +0200 (CEST)
+        Thu, 1 Jul 2021 01:55:47 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B74C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:16 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id k10so9564369lfv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 22:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nTQU7wEFq6JVSvSTnTKC7ide9Twk5SOoZt3/8VCj47g=;
+        b=Zr+6zTRsDmGZAuTZgQ/HaZ1YLyqlzYuLKGv6ZwnVJr60ilZ+fOSmvkTum5b76Tm0Wo
+         FfZVraNlLQERuIEPTZVNRUNxaK5jUlh60YPSv+bKw5rL3FdwUkCwla+slBSoeNvrDJaG
+         fgiU7G5/Kb6z+bjFW5CBFTcZMTgvOQHpC6qeGYjXqcQjC3wv/1D1RJFJjKNGJhoNHg2s
+         miGwSnyyTkP5/FShOITqeNffihR1p88tzp4udypF8dxqa4eeIuD9n+GMo6H1QfKHRWZ5
+         L3I02TzE3jKO+alRfPHN1BkV+nTUW0/fjGVwOL85K1BipfLLlU9kF7F670PgidnYxCts
+         ePXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nTQU7wEFq6JVSvSTnTKC7ide9Twk5SOoZt3/8VCj47g=;
+        b=ExSYijaNbcXTZGgHvRlzFnABu62pB42lVyZt3BiRhJK20rT5yYdjjVmZBViKF1wZ4y
+         iumT9Zvk3Zhu7AQrz/zzqJ166Yss6FRBtKn5btM0vWcD4CAcIaT+ECtYEx3Dt7nssWKx
+         4oEo52wSDPMifMVCCFzz1lCH1htyTCxrQh0J3b0/fLzZLj8CrBanJ9QdQwOhhzjBaHwJ
+         W3dc7CWgmRNVG9/6vUrSxCDhVaPr9Dl6FL4SHOPGjOcMWhUNEzHT16VDPdfLA5/mnQ7f
+         EXBAxnq+7oxwB90PSnBwfC95tEcDyLoPVedK5LpgBvrCIDUbdmupS4EXX5n/shNY8pac
+         NK4Q==
+X-Gm-Message-State: AOAM531dLDd/zCi9LH2D5+Kn4+rDt55SHpyZieC1RsR/2eAKZWxAz+tr
+        fXBowM8BQb6F0ncw8hhro9+obATt5r5Qh1le2gU=
+X-Google-Smtp-Source: ABdhPJz7BhP5K9G0zeAIH4CU8KZ0/vKDwBWFwVLt3Ay7aSmqDTW4JhuZckbx04fBH9geMOrb2AtJlgTi4QZsZ1Yq+yU=
+X-Received: by 2002:a05:6512:32c9:: with SMTP id f9mr25914900lfg.638.1625118795090;
+ Wed, 30 Jun 2021 22:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Jul 2021 07:51:10 +0200
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-x25@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: x25: Optimize the code in
- {compat_}x25_subscr_ioctl()
-Organization: TDT AG
-In-Reply-To: <20210630091521.15568-1-yajun.deng@linux.dev>
-References: <20210630091521.15568-1-yajun.deng@linux.dev>
-Message-ID: <c9af2f27b8459af35c91ec3347a96d6d@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1625118673-00003E95-377AFA87/0/0
-X-purgate-type: clean
-X-purgate: clean
+References: <1625111646-3955-1-git-send-email-u0084500@gmail.com> <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
+In-Reply-To: <CAFRkauCNf6fP8zAz+0gY_Vzb_wCtVyYqLjw8s1T+t2s=bR0RQw@mail.gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Thu, 1 Jul 2021 13:53:03 +0800
+Message-ID: <CADiBU3_dCNvZRwewiztB0UGFvDz3g5sw-q+95sg9akqte1YJsA@mail.gmail.com>
+Subject: Re: [PATCH] regulator: rt5033: Use linear ranges to map all voltage selection
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-30 11:15, Yajun Deng wrote:
-> Combine the redundant return values, make it more concise.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/x25/af_x25.c   | 19 ++++++++-----------
->  net/x25/x25_link.c | 21 ++++++++++-----------
->  2 files changed, 18 insertions(+), 22 deletions(-)
-> 
-> diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-> index 3583354a7d7f..53c40fc7c1fd 100644
-> --- a/net/x25/af_x25.c
-> +++ b/net/x25/af_x25.c
-> @@ -1625,21 +1625,19 @@ static int compat_x25_subscr_ioctl(unsigned int 
-> cmd,
->  	struct net_device *dev;
->  	int rc = -EINVAL;
-> 
-> -	rc = -EFAULT;
-> -	if (copy_from_user(&x25_subscr, x25_subscr32, sizeof(*x25_subscr32)))
-> +	if (copy_from_user(&x25_subscr, x25_subscr32, sizeof(*x25_subscr32))) 
-> {
-> +		rc = -EFAULT;
->  		goto out;
-> +	}
-> 
-> -	rc = -EINVAL;
->  	dev = x25_dev_get(x25_subscr.device);
-> -	if (dev == NULL)
-> +	if (!dev)
->  		goto out;
-> 
->  	nb = x25_get_neigh(dev);
-> -	if (nb == NULL)
-> +	if (!nb)
->  		goto out_dev_put;
-> 
-> -	dev_put(dev);
-> -
->  	if (cmd == SIOCX25GSUBSCRIP) {
->  		read_lock_bh(&x25_neigh_list_lock);
->  		x25_subscr.extended = nb->extended;
-> @@ -1648,7 +1646,6 @@ static int compat_x25_subscr_ioctl(unsigned int 
-> cmd,
->  		rc = copy_to_user(x25_subscr32, &x25_subscr,
->  				sizeof(*x25_subscr32)) ? -EFAULT : 0;
->  	} else {
-> -		rc = -EINVAL;
->  		if (x25_subscr.extended == 0 || x25_subscr.extended == 1) {
->  			rc = 0;
->  			write_lock_bh(&x25_neigh_list_lock);
-> @@ -1658,11 +1655,11 @@ static int compat_x25_subscr_ioctl(unsigned int 
-> cmd,
->  		}
->  	}
->  	x25_neigh_put(nb);
-> -out:
-> -	return rc;
-> +
->  out_dev_put:
->  	dev_put(dev);
-> -	goto out;
-> +out:
-> +	return rc;
->  }
-> 
->  static int compat_x25_ioctl(struct socket *sock, unsigned int cmd,
-> diff --git a/net/x25/x25_link.c b/net/x25/x25_link.c
-> index 5460b9146dd8..01a13ec88ce8 100644
-> --- a/net/x25/x25_link.c
-> +++ b/net/x25/x25_link.c
-> @@ -360,19 +360,19 @@ int x25_subscr_ioctl(unsigned int cmd, void 
-> __user *arg)
->  	if (cmd != SIOCX25GSUBSCRIP && cmd != SIOCX25SSUBSCRIP)
->  		goto out;
-> 
-> -	rc = -EFAULT;
-> -	if (copy_from_user(&x25_subscr, arg, sizeof(x25_subscr)))
-> +	if (copy_from_user(&x25_subscr, arg, sizeof(x25_subscr))) {
-> +		rc = -EFAULT;
->  		goto out;
-> +	}
-> 
-> -	rc = -EINVAL;
-> -	if ((dev = x25_dev_get(x25_subscr.device)) == NULL)
-> +	dev = x25_dev_get(x25_subscr.device);
-> +	if (!dev)
->  		goto out;
-> 
-> -	if ((nb = x25_get_neigh(dev)) == NULL)
-> +	nb = x25_get_neigh(dev);
-> +	if (!nb)
->  		goto out_dev_put;
-> 
-> -	dev_put(dev);
-> -
->  	if (cmd == SIOCX25GSUBSCRIP) {
->  		read_lock_bh(&x25_neigh_list_lock);
->  		x25_subscr.extended	     = nb->extended;
-> @@ -381,7 +381,6 @@ int x25_subscr_ioctl(unsigned int cmd, void __user 
-> *arg)
->  		rc = copy_to_user(arg, &x25_subscr,
->  				  sizeof(x25_subscr)) ? -EFAULT : 0;
->  	} else {
-> -		rc = -EINVAL;
->  		if (!(x25_subscr.extended && x25_subscr.extended != 1)) {
->  			rc = 0;
->  			write_lock_bh(&x25_neigh_list_lock);
-> @@ -391,11 +390,11 @@ int x25_subscr_ioctl(unsigned int cmd, void 
-> __user *arg)
->  		}
->  	}
->  	x25_neigh_put(nb);
-> -out:
-> -	return rc;
-> +
->  out_dev_put:
->  	dev_put(dev);
-> -	goto out;
-> +out:
-> +	return rc;
->  }
+Axel Lin <axel.lin@ingics.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=97=A5 =
+=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8812:41=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+>
+>
+> cy_huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=E6=97=A5=
+ =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:54=E5=AF=AB=E9=81=93=EF=BC=9A
+>>
+>> From: ChiYuan Huang <cy_huang@richtek.com>
+>>
+>> Instead of linear mapping, Use linear range to map all voltage selection=
+.
+>>
+>> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+>> ---
+>> Even though commit 6549c46af855 ("regulator: rt5033: Fix n_voltages sett=
+ings for BUCK and LDO")
+>> can fix the linear mapping to the correct min/max voltage
+>> But there're still non-step ranges for the reserved value.
+>>
+>> To use the linear range can fix it for mapping all voltage selection.
+>> ---
+>>  drivers/regulator/rt5033-regulator.c | 23 +++++++++++++++--------
+>>  1 file changed, 15 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/regulator/rt5033-regulator.c b/drivers/regulator/rt=
+5033-regulator.c
+>> index 0e73116..2ff607c 100644
+>> --- a/drivers/regulator/rt5033-regulator.c
+>> +++ b/drivers/regulator/rt5033-regulator.c
+>> @@ -13,6 +13,16 @@
+>>  #include <linux/mfd/rt5033-private.h>
+>>  #include <linux/regulator/of_regulator.h>
+>>
+>> +static const struct linear_range rt5033_buck_ranges[] =3D {
+>> +       REGULATOR_LINEAR_RANGE(1000000, 0, 20, 100000),
+>> +       REGULATOR_LINEAR_RANGE(3000000, 21, 31, 0),
+>> +};
+>> +
+>> +static const struct linear_range rt5033_ldo_ranges[] =3D {
+>> +       REGULATOR_LINEAR_RANGE(1200000, 0, 18, 100000),
+>> +       REGULATOR_LINEAR_RANGE(3000000, 19, 31, 0),
+>> +};
+>> +
+>>  static const struct regulator_ops rt5033_safe_ldo_ops =3D {
+>>         .is_enabled             =3D regulator_is_enabled_regmap,
+>>         .enable                 =3D regulator_enable_regmap,
+>> @@ -24,8 +34,7 @@ static const struct regulator_ops rt5033_buck_ops =3D =
+{
+>>         .is_enabled             =3D regulator_is_enabled_regmap,
+>>         .enable                 =3D regulator_enable_regmap,
+>>         .disable                =3D regulator_disable_regmap,
+>> -       .list_voltage           =3D regulator_list_voltage_linear,
+>> -       .map_voltage            =3D regulator_map_voltage_linear,
+>> +       .list_voltage           =3D regulator_list_voltage_linear_range,
+>>         .get_voltage_sel        =3D regulator_get_voltage_sel_regmap,
+>>         .set_voltage_sel        =3D regulator_set_voltage_sel_regmap,
+>>  };
+>> @@ -39,9 +48,8 @@ static const struct regulator_desc rt5033_supported_re=
+gulators[] =3D {
+>>                 .ops            =3D &rt5033_buck_ops,
+>>                 .type           =3D REGULATOR_VOLTAGE,
+>>                 .owner          =3D THIS_MODULE,
+>> -               .n_voltages     =3D RT5033_REGULATOR_BUCK_VOLTAGE_STEP_N=
+UM,
+>> -               .min_uV         =3D RT5033_REGULATOR_BUCK_VOLTAGE_MIN,
+>> -               .uV_step        =3D RT5033_REGULATOR_BUCK_VOLTAGE_STEP,
+>> +               .linear_ranges  =3D rt5033_buck_ranges,
+>> +               .n_linear_ranges =3D ARRAY_SIZE(rt5033_buck_ranges),
+>>
+>
+> If you want to use linear range here, you need to change RT5033_REGULATOR=
+_BUCK_VOLTAGE_STEP_NUM back to 32
+> rather than delete the .n_voltages setting.
 
-Looks good to me.
+Sorry, I really forget the N_VOLTAGES.
+>
+> I'm fifty-fifty about the change because I don't see any benefit with con=
+verting to linear range (even though in theory it's correct).
+> The voltage of all entries in the second linear range is the *same* as th=
+e latest selector of the first linear range.
+> When the regulator core to choose the best selector, it will always selec=
+t the latest selector of the first linear range if it meets the requested r=
+ange anyway.
+> (Because the entries in the second linear range are not *better*, it's ju=
+st the same.)
+>
+> If the initial version is this driver is using linear range then it's fin=
+e.
+> But given the initial version is using linear so when I fix the n_voltage=
+s setting I decide to not change it to linear range.
+> This makes it easier to fix older versions if necessary.
+> (I'm not sure if linear range is available in some old kernel versions, t=
+he initial version of this driver was committed in 2014).
+>
+>
+From the regulator register in probe, it will get the current voltage
+from the IC.
+If the vout sel is not is over N_VOLTAGES, it will return the error number.
 
-Acked-by: Martin Schiller <ms@dev.tdt.de>
+But as I think it's the side effect to change the vout step num.
+To use the linear range is just to guarantee all vout sel range are include=
+d.
+
+That's my initial thoughts.
+> Regards,
+> Axel
+>
