@@ -2,426 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7C53B9068
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F3B3B906A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhGAKSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 06:18:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:50518 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235939AbhGAKSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 06:18:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B87BDD6E;
-        Thu,  1 Jul 2021 03:16:23 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 018313F718;
-        Thu,  1 Jul 2021 03:16:19 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 11:16:17 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Peter Hilber <peter.hilber@opensynergy.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        virtio-dev@lists.oasis-open.org, sudeep.holla@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        igor.skalkin@opensynergy.com, alex.bennee@linaro.org,
-        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
-        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
-        Andriy.Tryshnivskyy@opensynergy.com
-Subject: Re: [PATCH v4 04/16] firmware: arm_scmi: Introduce monotonically
- increasing tokens
-Message-ID: <20210701101617.GA17807@e120937-lin>
-References: <20210611165937.701-1-cristian.marussi@arm.com>
- <20210611165937.701-5-cristian.marussi@arm.com>
- <cb7f3259-0ad5-8ce0-15e7-2abee1f704ff@opensynergy.com>
+        id S235939AbhGAKTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 06:19:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236000AbhGAKTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 06:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625134602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A3sKDRuSMeLomK82BHUwYIxcC2r0lOgJd1SJHmFm4GE=;
+        b=fMLrzjOujuoUE7+TqBYA6Tk/Od9MMXuzzDIvbsc0yIwR1wxUC7IhHYGF0RY36qBE7i1030
+        TIODrYJ0sfjCxdw5XXCWfyELtPixpayGokZ33Mhhf9rRC3kUTBxef4+FnrhaSX45m1CZ1d
+        pv5vmJvoAiyV2ZjK5cJ6jgqZFfxq72A=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-vUWK5dDPPXSDLWyclOsWXg-1; Thu, 01 Jul 2021 06:16:41 -0400
+X-MC-Unique: vUWK5dDPPXSDLWyclOsWXg-1
+Received: by mail-ej1-f72.google.com with SMTP id d2-20020a1709072722b02904c99c7e6ddfso1915786ejl.15
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 03:16:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A3sKDRuSMeLomK82BHUwYIxcC2r0lOgJd1SJHmFm4GE=;
+        b=eQqZoab7UlvYel/IcmJGUousqqQkTR8Ea925Nh1xQBH6DBc5LVgrlVItW9TzkLfWnq
+         xHcV4BGvpIwi4jIRSzLoXr0GLt8h87T4i58GPRv6o6z3qf7es6/81gIxkqgOyBQeDjGJ
+         QyswhOVWsnavq97i9ZZBLx4VYQjfzZJ5QrOHMH4l4RoKWT2rykSRxJtQoTn0gD2qEjrp
+         /YoeWx7cgD3iKcboKl8tSXJVObv2AtHOpAMLV4ipVsJ0NTddhyRZaQI/rpnQTe8BDeV0
+         X9wqgF/jC+B6Dz+57vZghNn3/cuyqaEINrd9Sa7+qzpDVD9IppDM/PZNl5iQpESMBaCT
+         aMIw==
+X-Gm-Message-State: AOAM532dI+M+4YPllDeUm+eL2wyqVG44t7no+dF1Rht9nXuDVJsWw54D
+        ncMFNoJTGw8WVOZp6qZiE5Hi8gVo8d/wpXlmpW8hmbz2PArwUkWht+QxniresPOrzMJg/lTDVU7
+        FbJNe2cT7JrrqbvyhTXshxKvS
+X-Received: by 2002:a05:6402:520c:: with SMTP id s12mr54484280edd.357.1625134600316;
+        Thu, 01 Jul 2021 03:16:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRJAZQPIzfqv/EszLsvkJpAG8mWwKTbWPHYsqPS44RT3awO+9ATUYAoKZelnWXnNq29MtqTg==
+X-Received: by 2002:a05:6402:520c:: with SMTP id s12mr54484263edd.357.1625134600168;
+        Thu, 01 Jul 2021 03:16:40 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id b15sm2046767eja.82.2021.07.01.03.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 03:16:39 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 12:16:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     Sandipan Das <sandipan@linux.ibm.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+Message-ID: <YN2WBP9kjGQxHrKS@krava>
+References: <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava>
+ <YNtEcjYvSvk8uknO@krava>
+ <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava>
+ <YNuL442y2yn5RRdc@krava>
+ <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
+ <YNxmwZGtnqiXGnF0@krava>
+ <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cb7f3259-0ad5-8ce0-15e7-2abee1f704ff@opensynergy.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Jul 01, 2021 at 10:42:45AM +0200, Peter Hilber wrote:
-> I find `monotonically increasing tokens' misleading, since the token may
-> wrap around quite often during normal usage. How about `modulo
-> incrementing'?
+On Thu, Jul 01, 2021 at 10:18:39AM +0200, Brendan Jackman wrote:
+> On Wed, 30 Jun 2021 at 14:42, Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Jun 30, 2021 at 12:34:58PM +0200, Brendan Jackman wrote:
+> > > On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> > > > > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > > > > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+> > >
+> > > > > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > hum, I guess not.. will check
+> > > > > > >
+> > > > > > > nope, it locks up the same:
+> > > > > >
+> > > > > > Do you mean it locks up at commit 91c960b0056 too?
+> > >
+> > > Sorry I was being stupid here - the test didn't exist at this commit
+> > >
+> > > > > I tried this one:
+> > > > >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+> > > > >
+> > > > > I will check also 91c960b0056, but I think it's the new test issue
+> > >
+> > > So yeah hard to say whether this was broken on PowerPC all along. How
+> > > hard is it for me to get set up to reproduce the failure? Is there a
+> > > rootfs I can download, and some instructions for running a PowerPC
+> > > QEMU VM? If so if you can also share your config and I'll take a look.
+> > >
+> > > If it's not as simple as that, I'll stare at the code for a while and
+> > > see if anything jumps out.
+> > >
+> >
+> > I have latest fedora ppc server and compile/install latest bpf-next tree
+> > I think it will be reproduced also on vm, I attached my config
 > 
-
-Ok, I'll have a though about a better naming.
-
-> On 11.06.21 18:59, Cristian Marussi wrote:
-> > Tokens are sequence numbers embedded in the each SCMI message header: they
-> > are used to correlate commands with responses (and delayed responses), but
-> > their usage and policy of selection is entirely up to the caller (usually
-> > the OSPM agent), while they are completely opaque to the callee (SCMI
-> > server platform) which merely copies them back from the command into the
-> > response message header.
-> > This also means that the platform does not, can not and should not enforce
-> > any kind of policy on received messages depending on the contained sequence
-> > number: platform can perfectly handle concurrent requests carrying the same
-> > identifiying token if that should happen.
-> > 
-> > Moreover the platform is not required to produce in-order responses to
-> > agent requests, the only constraint in these regards is that in case of
-> > an asynchronous message the delayed response must be sent after the
-> > immediate response for the synchronous part of the command transaction.
-> > 
-> > Currenly the SCMI stack of the OSPM agent selects a token for the egressing
-> > commands picking the lowest possible number which is not already in use by
-> > an existing in-flight transaction, which means, in other words, that we
-> > immediately reuse any token after its transaction has completed or it has
-> > timed out: this policy indeed does simplify management and lookup of tokens
-> > and associated xfers.
-> > 
-> > Under the above assumptions and constraints, since there is really no state
-> > shared between the agent and the platform to let the platform know when a
-> > token and its associated message has timed out, the current policy of early
-> > reuse of tokens can easily lead to the situation in which a spurious or
-> > late received response (or delayed_response), related to an old stale and
-> > timed out transaction, can be wrongly associated to a newer valid in-flight
-> > xfer that just happens to have reused the same token.
-> > 
-> > This misbehaviour on such ghost responses is more easily exposed on those
-> > transports that naturally have an higher level of parallelism in processing
-> > multiple concurrent in-flight messages.
-> > 
-> > This commit introduces a new policy of selection of tokens for the OSPM
-> > agent: each new transfer now gets the next available and monotonically
-> > increasing token, until tokens are exhausted and the counter rolls over.
-> > 
-> > Such new policy mitigates the above issues with ghost responses since the
-> > tokens are now reused as late as possible (when they roll back ideally)
-> > and so it is much easier to identify such ghost responses to stale timed
-> > out transactions: this also helps in simplifying the specific transports
-> > implementation since stale transport messages can be easily identified
-> > and discarded early on in the rx path without the need to cross check
-> > their actual state with the core transport layer.
-> > This mitigation is even more effective when, as is usually the case, the
-> > maximum number of pending messages is capped by the platform to a much
-> > lower number than the whole possible range of tokens values (2^10).
-> > 
-> > This internal policy change in the core SCMI transport layer is fully
-> > transparent to the specific transports so it has not and should not have
-> > any impact on the transports implementation.
-> > 
-> > The empirically observed cost of such new procedure of token selection
-> > amounts in the best case to ~10us out of an observed full transaction cost
-> > of 3ms for the completion of a synchronous sensor reading command on a
-> > platform supporting commands completion interrupts.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >  drivers/firmware/arm_scmi/common.h |  23 +++
-> >  drivers/firmware/arm_scmi/driver.c | 243 +++++++++++++++++++++++++----
-> >  2 files changed, 233 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> > index 6bb734e0e3ac..e64c5ca9ee7c 100644
-> > --- a/drivers/firmware/arm_scmi/common.h
-> > +++ b/drivers/firmware/arm_scmi/common.h
-> > @@ -14,7 +14,10 @@
-> >  #include <linux/device.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/hashtable.h>
-> > +#include <linux/list.h>
-> >  #include <linux/module.h>
-> > +#include <linux/refcount.h>
-> >  #include <linux/scmi_protocol.h>
-> >  #include <linux/types.h>
-> > @@ -127,6 +130,21 @@ struct scmi_msg {
-> >  	size_t len;
-> >  };
-> > +/**
-> > + * An helper macro to lookup an xfer from the @pending_xfers hashtable
-> > + * using the message sequence number token as a key.
-> > + */
-> > +#define XFER_FIND(__ht, __k)					\
-> > +({								\
-> > +	typeof(__k) k_ = __k;					\
-> > +	struct scmi_xfer *xfer_ = NULL;				\
-> > +								\
-> > +	hash_for_each_possible((__ht), xfer_, node, k_)		\
-> > +		if (xfer_->hdr.seq == k_)			\
-> > +			break;					\
-> > +	 xfer_;							\
+> OK, getting set up to boot a PowerPC QEMU isn't practical here unless
+> someone's got commands I can copy-paste (suspect it will need .config
+> hacking too). Looks like you need to build a proper bootloader, and
+> boot an installer disk.
 > 
-> There is an extra space before the return value.
+> Looked at the code for a bit but nothing jumped out. It seems like the
+> verifier is seeing a BPF_ADD | BPF_FETCH, which means it doesn't
+> detect an infinite loop, but then we lose the BPF_FETCH flag somewhere
+> between do_check in verifier.c and bpf_jit_build_body in
+> bpf_jit_comp64.c. That would explain why we don't get the "eBPF filter
+> atomic op code %02x (@%d) unsupported", and would also explain the
+> lockup because a normal atomic add without fetch would leave BPF R1
+> unchanged.
 > 
-
-Ah right.
-
-> > +})
-> > +
-> >  /**
-> >   * struct scmi_xfer - Structure representing a message flow
-> >   *
-> > @@ -138,6 +156,9 @@ struct scmi_msg {
-> >   *	buffer for the rx path as we use for the tx path.
-> >   * @done: command message transmit completion event
-> >   * @async_done: pointer to delayed response message received event completion
-> > + * @users: A refcount to track the active users for this xfer
-> > + * @node: An hlist_node reference used to store this xfer, alternatively, on
-> > + *	  the free list @free_xfers or in the @pending_xfers hashtable
-> >   */
-> >  struct scmi_xfer {
-> >  	int transfer_id;
-> > @@ -146,6 +167,8 @@ struct scmi_xfer {
-> >  	struct scmi_msg rx;
-> >  	struct completion done;
-> >  	struct completion *async_done;
-> > +	refcount_t users;
-> > +	struct hlist_node node;
-> >  };
-> >  struct scmi_xfer_ops;
-> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > index 20f8f0581f3a..f0b20ddb24f4 100644
-> > --- a/drivers/firmware/arm_scmi/driver.c
-> > +++ b/drivers/firmware/arm_scmi/driver.c
-> > @@ -21,6 +21,7 @@
-> >  #include <linux/io.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/ktime.h>
-> > +#include <linux/hashtable.h>
-> >  #include <linux/list.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_address.h>
-> > @@ -65,19 +66,29 @@ struct scmi_requested_dev {
-> >  	struct list_head node;
-> >  };
-> > +#define SCMI_PENDING_XFERS_HT_ORDER_SZ	9
+> We should be able to confirm that theory by disassembling the JITted
+> code that gets hexdumped by bpf_jit_dump when bpf_jit_enable is set to
+> 2... at least for PowerPC 32-bit... maybe you could paste those lines
+> into the 64-bit version too? Here's some notes I made for
+> disassembling the hexdump on x86, I guess you'd just need to change
+> the objdump flags:
 > 
-> Micro-optimization note: This increases struct scmi_info size to > 8 kiB (on
-> 64-bit architectures). A lower size of the hash table would be enough for
-> some transports.
+> -- 
 > 
+> - Enable console JIT output:
+> ```shell
+> echo 2 > /proc/sys/net/core/bpf_jit_enable
+> ```
+> - Load & run the program of interest.
+> - Copy the hex code from the kernel console to `/tmp/jit.txt`. Here's what a
+> short program looks like. This includes a line of context - don't paste the
+> `flen=` line.
+> ```
+> [ 79.381020] flen=8 proglen=54 pass=4 image=000000001af6f390
+> from=test_verifier pid=258
+> [ 79.389568] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
+> [ 79.397411] JIT code: 00000010: 00 00 48 c7 45 f8 64 00 00 00 bf 04 00 00 00 48
+> [ 79.405965] JIT code: 00000020: f7 df f0 48 29 7d f8 8b 45 f8 48 83 f8 60 74 02
+> [ 79.414719] JIT code: 00000030: c9 c3 31 c0 eb fa
+> ```
+> - This incantation will split out and decode the hex, then disassemble the
+> result:
+> ```shell
+> cat /tmp/jit.txt | cut -d: -f2- | xxd -r >/tmp/obj && objdump -D -b
+> binary -m i386:x86-64 /tmp/obj
+> ```
 
-Indeed, I did not like this fixed ht, and I went for it for simplicity
-at first: I would have liked to dynamically size the HT based on the real
-number of pending in-flight messages declared by the transport with
-max_msg (since it should be good enough to approximate an HT with the
-minimum size needed to also minimize collision.) Unfortunately kernel HT
-support above works only with statically sized HT, you cannot just
-allocate dynamically the underlying array, all supporting macros will
-break. (unless I'm missing something)
+that's where I decided to write to list and ask for help before
+googling ppc assembly ;-)
 
-Unless I'll find a solution for this dynamic sizing, I think that sizing
-it down as you proposed will be a good idea.
+I changed the test_verifier to stop before executing the test
+so I can dump the program via bpftool:
 
-> > +
-> >  /**
-> >   * struct scmi_xfers_info - Structure to manage transfer information
-> >   *
-> > - * @xfer_block: Preallocated Message array
-> >   * @xfer_alloc_table: Bitmap table for allocated messages.
-> >   *	Index of this bitmap table is also used for message
-> >   *	sequence identifier.
-> >   * @xfer_lock: Protection for message allocation
-> > + * @last_token: A counter to use as base to generate for monotonically
-> > + *		increasing tokens.
-> > + * @free_xfers: A free list for available to use xfers. It is initialized with
-> > + *		a number of xfers equal to the maximum allowed in-flight
-> > + *		messages.
-> > + * @pending_xfers: An hashtable, indexed by msg_hdr.seq, used to keep all the
-> > + *		   currently in-flight messages.
-> >   */
-> >  struct scmi_xfers_info {
-> > -	struct scmi_xfer *xfer_block;
-> >  	unsigned long *xfer_alloc_table;
-> >  	spinlock_t xfer_lock;
-> > +	atomic_t last_token;
-> > +	struct hlist_head free_xfers;
-> > +	DECLARE_HASHTABLE(pending_xfers, SCMI_PENDING_XFERS_HT_ORDER_SZ);
-> >  };
-> >  /**
-> > @@ -203,6 +214,117 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
-> >  	return info->notify_priv;
-> >  }
-> > +/**
-> > + * scmi_xfer_token_set  - Reserve and set new token for the xfer at hand
-> > + *
-> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @xfer: The xfer to act upon
-> > + *
-> > + * Pick the next unused monotonically increasing token and set it into
-> > + * xfer->hdr.seq: picking a monotonically increasing value avoids immediate
-> > + * reuse of freshly completed or timed-out xfers, thus mitigating the risk
-> > + * of incorrect association of a late and expired xfer with a live in-flight
-> > + * transaction, both happening to re-use the same token identifier.
-> > + *
-> > + * Since platform is NOT required to answer our request in-order we should
-> > + * account for a few rare but possible scenarios:
-> > + *
-> > + *  - exactly 'next_token' may be NOT available so pick xfer_id >= next_token
-> > + *    using find_next_zero_bit() starting from candidate next_token bit
-> > + *
-> > + *  - all tokens ahead upto (MSG_TOKEN_ID_MASK - 1) are used in-flight but we
-> > + *    are plenty of free tokens at start, so try a second pass using
-> > + *    find_next_zero_bit() and starting from 0.
-> > + *
-> > + *  X = used in-flight
-> > + *
-> > + * Normal
-> > + * ------
-> > + *
-> > + *		|- xfer_id picked
-> > + *   -----------+----------------------------------------------------------
-> > + *   | | |X|X|X| | | | | | ... ... ... ... ... ... ... ... ... ... ...|X|X|
-> > + *   ----------------------------------------------------------------------
-> > + *		^
-> > + *		|- next_token
-> > + *
-> > + * Out-of-order pending at start
-> > + * -----------------------------
-> > + *
-> > + *	  |- xfer_id picked, last_token fixed
-> > + *   -----+----------------------------------------------------------------
-> > + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... ... ...|X| |
-> > + *   ----------------------------------------------------------------------
-> > + *    ^
-> > + *    |- next_token
-> > + *
-> > + *
-> > + * Out-of-order pending at end
-> > + * ---------------------------
-> > + *
-> > + *	  |- xfer_id picked, last_token fixed
-> > + *   -----+----------------------------------------------------------------
-> > + *   |X|X| | | | |X|X| ... ... ... ... ... ... ... ... ... ... |X|X|X||X|X|
-> > + *   ----------------------------------------------------------------------
-> > + *								^
-> > + *								|- next_token
-> > + *
-> > + * Context: Assumes to be called with @xfer_lock already acquired.
-> > + *
-> > + * Return: 0 on Success or error
-> > + */
-> > +static int scmi_xfer_token_set(struct scmi_xfers_info *minfo,
-> > +			       struct scmi_xfer *xfer)
-> > +{
-> > +	unsigned long xfer_id, next_token;
-> > +
-> > +	/* Pick a candidate monotonic token in range [0, MSG_TOKEN_MAX - 1] */
-> > +	next_token = (atomic_inc_return(&minfo->last_token) &
-> > +		      (MSG_TOKEN_MAX - 1));
-> > +
-> > +	/* Pick the next available xfer_id >= next_token */
-> > +	xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> > +				     MSG_TOKEN_MAX, next_token);
-> > +	if (xfer_id == MSG_TOKEN_MAX) {
-> > +		/*
-> > +		 * After heavily out-of-order responses, there are no free
-> > +		 * tokens ahead, but only at start of xfer_alloc_table so
-> > +		 * try again from the beginning.
-> > +		 */
-> > +		xfer_id = find_next_zero_bit(minfo->xfer_alloc_table,
-> > +					     MSG_TOKEN_MAX, 0);
-> > +		/*
-> > +		 * Something is wrong if we got here since there can be a
-> > +		 * maximum number of (MSG_TOKEN_MAX - 1) in-flight messages
-> > +		 * but we have not found any free token [0, MSG_TOKEN_MAX - 1].
-> > +		 */
-> > +		if (WARN_ON_ONCE(xfer_id == MSG_TOKEN_MAX))
-> > +			return -ENOMEM;
-> > +	}
-> > +
-> > +	/* Update +/- last_token accordingly if we skipped some hole */
-> > +	if (xfer_id != next_token)
-> > +		atomic_add((int)(xfer_id - next_token), &minfo->last_token);
-> > +
-> > +	/* Set in-flight */
-> > +	set_bit(xfer_id, minfo->xfer_alloc_table);
-> > +	xfer->hdr.seq = (u16)xfer_id;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * scmi_xfer_token_clear  - Release the token
-> > + *
-> > + * @minfo: Pointer to Tx/Rx Message management info based on channel type
-> > + * @xfer: The xfer to act upon
-> > + */
-> > +static inline void scmi_xfer_token_clear(struct scmi_xfers_info *minfo,
-> > +					 struct scmi_xfer *xfer)
-> > +{
-> > +	clear_bit(xfer->hdr.seq, minfo->xfer_alloc_table);
-> > +}
-> > +
-> >  /**
-> >   * scmi_xfer_get() - Allocate one message
-> >   *
-> > @@ -212,36 +334,49 @@ void *scmi_notification_instance_data_get(const struct scmi_handle *handle)
-> >   * Helper function which is used by various message functions that are
-> >   * exposed to clients of this driver for allocating a message traffic event.
-> >   *
-> > - * This function can sleep depending on pending requests already in the system
-> > - * for the SCMI entity. Further, this also holds a spinlock to maintain
-> > - * integrity of internal data structures.
-> > + * Picks an xfer from the free list @free_xfers (if any available), sets a
-> > + * monotonically increasing token and stores the inflight xfer into the
-> > + * @pending_xfers hashtable for later retrieval.
-> > + *
-> > + * The successfully initialized xfer is refcounted.
-> > + *
-> > + * Context: Holds @xfer_lock while manipulating @xfer_alloc_table and
-> > + *	    @free_xfers.
-> >   *
-> >   * Return: 0 if all went fine, else corresponding error.
-> >   */
-> >  static struct scmi_xfer *scmi_xfer_get(const struct scmi_handle *handle,
-> >  				       struct scmi_xfers_info *minfo)
-> >  {
-> > -	u16 xfer_id;
-> > +	int ret;
-> > +	unsigned long flags;
-> >  	struct scmi_xfer *xfer;
-> > -	unsigned long flags, bit_pos;
-> > -	struct scmi_info *info = handle_to_scmi_info(handle);
-> > -	/* Keep the locked section as small as possible */
-> >  	spin_lock_irqsave(&minfo->xfer_lock, flags);
-> > -	bit_pos = find_first_zero_bit(minfo->xfer_alloc_table,
-> > -				      info->desc->max_msg);
-> > -	if (bit_pos == info->desc->max_msg) {
-> > +	if (hlist_empty(&minfo->free_xfers)) {
-> >  		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> >  		return ERR_PTR(-ENOMEM);
-> >  	}
-> > -	set_bit(bit_pos, minfo->xfer_alloc_table);
-> > -	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> > -	xfer_id = bit_pos;
-> > +	/* grab an xfer from the free_list */
-> > +	xfer = hlist_entry(minfo->free_xfers.first, struct scmi_xfer, node);
-> > +	hlist_del_init(&xfer->node);
-> > -	xfer = &minfo->xfer_block[xfer_id];
-> > -	xfer->hdr.seq = xfer_id;
-> > -	xfer->transfer_id = atomic_inc_return(&transfer_last_id);
-> > +	/* Pick and set monotonic token */
-> > +	ret = scmi_xfer_token_set(minfo, xfer);
-> > +	if (!ret) {
-> > +		hash_add(minfo->pending_xfers, &xfer->node, xfer->hdr.seq);
-> > +	} else {
-> > +		dev_err(handle->dev, "Failed to get monotonic token %d\n", ret);
-> > +		hlist_add_head(&xfer->node, &minfo->free_xfers);
-> > +		xfer = ERR_PTR(ret);
-> > +	}
-> > +	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-> > +
-> > +	if (!IS_ERR(xfer)) {
-> > +		refcount_set(&xfer->users, 1);
+	[root@ibm-p9z-07-lp1 bpf-next]# bpftool prog dump xlated id 48
+	   0: (b7) r0 = 0
+	   1: (7b) *(u64 *)(r10 -8) = r0
+	   2: (b7) r1 = 1
+	   3: (db) r1 = atomic64_fetch_add((u64 *)(r10 -8), r1)
+	   4: (55) if r1 != 0x0 goto pc-1
+	   5: (95) exit
+
+	[root@ibm-p9z-07-lp1 bpf-next]# bpftool prog dump jited id 48
+	bpf_prog_a2eb9104e5e8a5bf:
+	   0:   nop
+	   4:   nop
+	   8:   stdu    r1,-112(r1)
+	   c:   std     r31,104(r1)
+	  10:   addi    r31,r1,48
+	  14:   li      r8,0
+	  18:   std     r8,-8(r31)
+	  1c:   li      r3,1
+	  20:   addi    r9,r31,-8
+	  24:   ldarx   r10,0,r9
+	  28:   add     r10,r10,r3
+	  2c:   stdcx.  r10,0,r9
+	  30:   bne     0x0000000000000024
+	  34:   cmpldi  r3,0
+	  38:   bne     0x0000000000000034
+	  3c:   nop
+	  40:   ld      r31,104(r1)
+	  44:   addi    r1,r1,112
+	  48:   mr      r3,r8
+	  4c:   blr
+
+I wanted to also do it through bpf_jit_enable and bpf_jit_dump, but I need to check
+the setup, because I can't set bpf_jit_enable to 2 at the moment.. might take some time
+
+	[root@ibm-p9z-07-lp1 bpf-next]# echo 2 > /proc/sys/net/core/bpf_jit_enable 
+	-bash: echo: write error: Invalid argument
+
+jirka
+
 > 
-> Maybe it would be better to do this inside the lock, so that there is no
-> (unlikely) race with refcount_inc() in scmi_xfer_acquire().
+> --
 > 
-
-I'll check on this.
-
-Thanks,
-Cristian
+> Sandipan, Naveen, do you know of anything in the PowerPC code that
+> might be leading us to drop the BPF_FETCH flag from the atomic
+> instruction in tools/testing/selftests/bpf/verifier/atomic_bounds.c?
+> 
 
