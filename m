@@ -2,183 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A61E3B8AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 01:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF43A3B8B0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 02:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238085AbhF3XnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 19:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236647AbhF3XnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 19:43:06 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78C0C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:40:17 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g3-20020a256b030000b0290551bbd99700so6119879ybc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 16:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=226YhLrtPsM+oDAFsh4aHlKR6GWSTsDUiT3rX/tB3l8=;
-        b=eD0JLp/wThW0X3IZnITyXnsxqyXeQoImKsaL7NfcSau/u6KOKKFJj6lOADaNd717HK
-         0FwFYII0Xd713WO9wlcu3fEAjNe12PVhuuHTjjZQh3V9m4+XgUMLKo32Ix0srIWYJUGT
-         ZPQbZy9TVnL+7nugc0dbBsXCzsA5dmarzVT+94wK/YmVvmOIMhR7D8akx0ucExOD/KmS
-         HZpFj4YItrSDGmcL1OkMpxgAvDT0TFDEy8/jrD59xneMIa7oFTcUHzMkgAVgucjlLV0j
-         I6XuXbvXDFh8BjAoIfsAGYWwuDgSkzkGmLEU8gIDYdaQpeFFI6zQuq8vDnSS74CjhPRg
-         VrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=226YhLrtPsM+oDAFsh4aHlKR6GWSTsDUiT3rX/tB3l8=;
-        b=kxfYWyDgtBo8xIAh9i+NrrXl3am6RoZz45OaYBpCOBuz+MXdyuTKbR+eqlm21HcfHC
-         MmSxLHGUo8aXQc+r39knAS3f0UDw6/+VfqhKEw9KAbTGuM5lyazRMp1XapSapqV7ElQo
-         NdA7BNFeuBRyhFlbB3y7QHYfTUrzIgzRbAa/+Vr+31eXDS4URl/6b+mZRaBY45BJ+P+y
-         JXYMq45neo/W4LIAMAxxli7vLYBV3GH7Fdn/QCdmZ/D1o9i1knd6DhObLcBURgEwNfkd
-         vBTqPwfpfvDtCN+95374ha94XIpLynAivLcQr3Vq5dvqlpqWrgi4RZVosg3+WMBEbmIS
-         QGtQ==
-X-Gm-Message-State: AOAM530Vp04V0Wrl5JSO5BCXd8SPHkI7Z7BdiaRsg+emNY3KJCn2RCfA
-        VG2vzHwxfs0E3Gs3t2G2p0OFz8ssGg==
-X-Google-Smtp-Source: ABdhPJwdDWxjG+0IqPKGg/Uu1HouRogwWvBOpBzlCgr/uXRIFA1xZudcRWzY8hyAbjUb6tfwDcsqs50Ptw==
-X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
- (user=rmoar job=sendgmr) by 2002:a25:f20f:: with SMTP id i15mr47248583ybe.119.1625096416848;
- Wed, 30 Jun 2021 16:40:16 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 23:39:50 +0000
-Message-Id: <20210630233950.1638536-1-rmoar@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] kunit: tool: Fix error messages for cases of no tests and
- wrong TAP header
-From:   Rae Moar <rmoar@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com,
-        dlatypov@google.com, shuah@kernel.org
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238127AbhGAADN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 20:03:13 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51072 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229864AbhGAADM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 20:03:12 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lyk80-0004mk-P0; Thu, 01 Jul 2021 08:00:24 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lyk7j-0007TU-Df; Thu, 01 Jul 2021 08:00:07 +0800
+Date:   Thu, 1 Jul 2021 08:00:07 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     syzbot <syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com>
+Cc:     ardb@kernel.org, bp@alien8.de, dave.hansen@intel.com,
+        davem@davemloft.net, hpa@zytor.com, jpa@git.mail.kapsi.fi,
+        kan.liang@linux.intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [syzbot] BUG: scheduling while atomic: syz-executor/ADDR
+Message-ID: <20210701000007.GA28683@gondor.apana.org.au>
+References: <000000000000459ea305c6000318@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000459ea305c6000318@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch addresses misleading error messages reported by kunit_tool in
-two cases. First, in the case of TAP output having an incorrect header
-format or missing a header, the parser used to output an error message of
-'no tests run!'. Now the parser outputs an error message of 'could not
-parse test results!'.
+On Wed, Jun 30, 2021 at 11:37:20AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ff8744b5 Merge branch '100GbE' of git://git.kernel.org/pub..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=163cc5dc300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7cf9abab1592f017
+> dashboard link: https://syzkaller.appspot.com/bug?extid=20191dc583eff8602d2d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a81190300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1417f5bfd00000
+> 
+> The issue was bisected to:
+> 
+> commit 2481104fe98d5b016fdd95d649b1235f21e491ba
+> Author: Ard Biesheuvel <ardb@kernel.org>
+> Date:   Thu Dec 31 16:41:55 2020 +0000
+> 
+>     crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper
 
-As an example:
+Hi Ard:
 
-Before:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] no tests run!
-...
+This looks like the same issue we discussed yesterday.
 
-After:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] could not parse test results!
-...
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164ee60c300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=154ee60c300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114ee60c300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+> Fixes: 2481104fe98d ("crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper")
 
-Second, in the case of TAP output with the correct header but no
-tests, the parser used to output an error message of 'could not parse
-test results!'. Now the parser outputs an error message of 'no tests
-run!'.
-
-As an example:
-
-Before:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] could not parse test results!
-
-After:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] no tests run!
-
-Additionally, this patch also corrects the tests in kunit_tool_test.py
-and adds a test to check the error in the case of TAP output with the
-correct header but no tests (the log for this test was simplified from
-the first version of this patch).
-
-Signed-off-by: Rae Moar <rmoar@google.com>
----
- tools/testing/kunit/kunit_parser.py              |  6 ++++--
- tools/testing/kunit/kunit_tool_test.py           | 16 +++++++++++++---
- ...st_is_test_passed-no_tests_run_no_header.log} |  0
- ...t_is_test_passed-no_tests_run_with_header.log |  2 ++
- 4 files changed, 19 insertions(+), 5 deletions(-)
- rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
- create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index c3c524b79db8..b88db3f51dc5 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
- def parse_test_result(lines: LineStream) -> TestResult:
- 	consume_non_diagnostic(lines)
- 	if not lines or not parse_tap_header(lines):
--		return TestResult(TestStatus.NO_TESTS, [], lines)
-+		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	expected_test_suite_num = parse_test_plan(lines)
--	if not expected_test_suite_num:
-+	if expected_test_suite_num == 0:
-+		return TestResult(TestStatus.NO_TESTS, [], lines)
-+	elif expected_test_suite_num is None:
- 		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	test_suites = []
- 	for i in range(1, expected_test_suite_num + 1):
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index bdae0e5f6197..75045aa0f8a1 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
- 			kunit_parser.TestStatus.FAILURE,
- 			result.status)
- 
-+	def test_no_header(self):
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
-+		with open(empty_log) as file:
-+			result = kunit_parser.parse_run_tests(
-+				kunit_parser.extract_tap_lines(file.readlines()))
-+		self.assertEqual(0, len(result.suites))
-+		self.assertEqual(
-+			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
-+			result.status)
-+
- 	def test_no_tests(self):
--		empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
- 		with open(empty_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
-@@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
- 		with open(crash_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
--		print_mock.assert_any_call(StrContains('no tests run!'))
-+		print_mock.assert_any_call(StrContains('could not parse test results!'))
- 		print_mock.stop()
- 		file.close()
- 
-@@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
- 			result["sub_groups"][1]["test_cases"][0])
- 
- 	def test_no_tests_json(self):
--		result = self._json_for('test_is_test_passed-no_tests_run.log')
-+		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
- 		self.assertEqual(0, len(result['sub_groups']))
- 
- class StrContains(str):
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-similarity index 100%
-rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
-rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-new file mode 100644
-index 000000000000..5f48ee659d40
---- /dev/null
-+++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-@@ -0,0 +1,2 @@
-+TAP version 14
-+1..0
+Thanks,
 -- 
-2.32.0.93.g670b81a890-goog
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
