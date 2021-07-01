@@ -2,174 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F243B8D9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7983B8DA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234240AbhGAGID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 02:08:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:62893 "EHLO mga05.intel.com"
+        id S234266AbhGAGN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 02:13:26 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1867 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhGAGIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 02:08:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="294113632"
+        id S232797AbhGAGNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 02:13:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="195638111"
 X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="294113632"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 23:05:29 -0700
+   d="scan'208";a="195638111"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 23:10:52 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
-   d="scan'208";a="644336637"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Jun 2021 23:05:26 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lyppF-000AKq-Lu; Thu, 01 Jul 2021 06:05:25 +0000
-Date:   Thu, 01 Jul 2021 14:04:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.06.29a] BUILD SUCCESS
- 24c95d1af15e700c498d51057e2768b8af4f98e2
-Message-ID: <60dd5aef.wpH4WxhTo/Dt9RCa%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="420285841"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.58]) ([10.239.154.58])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Jun 2021 23:10:48 -0700
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+ <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <cb35472d-f79e-f3f8-405f-35c699d897a1@intel.com>
+Date:   Thu, 1 Jul 2021 14:10:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210701040436.p7kega6rzeqz5tlm@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.29a
-branch HEAD: 24c95d1af15e700c498d51057e2768b8af4f98e2  rcu: Remove useless "ret" update in rcu_gp_fqs_loop()
 
-elapsed time: 724m
+On 2021/7/1 12:04, Viresh Kumar wrote:
+> On 01-07-21, 11:24, Jie Deng wrote:
+>> Changes v10 -> v11
+>> 	- Remove vi->adap.class = I2C_CLASS_DEPRECATED.
+>> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
+>> 	- Remove "struct mutex lock" in "struct virtio_i2c".
+>> 	- Support zero-length request.
+>> 	- Remove unnecessary logs.
+>> 	- Remove vi->adap.timeout = HZ / 10, just use the default value.
+>> 	- Use BIT(0) to define VIRTIO_I2C_FLAGS_FAIL_NEXT.
+>> 	- Add the virtio_device index to adapter's naming mechanism.
+> Thanks Jie.
+>
+> I hope you are going to send a fix for specification as well (for the
+> zero-length request) ?
 
-configs tested: 116
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Yes. I will send that fix once this patch get merged.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       aspeed_g4_defconfig
-sh                           se7724_defconfig
-arm                         s5pv210_defconfig
-m68k                        m5272c3_defconfig
-ia64                             alldefconfig
-sh                           se7722_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                     asp8347_defconfig
-arm                         nhk8815_defconfig
-arm                         hackkit_defconfig
-powerpc                   bluestone_defconfig
-mips                       capcella_defconfig
-arm                      pxa255-idp_defconfig
-sh                        edosk7705_defconfig
-powerpc                     pseries_defconfig
-mips                       bmips_be_defconfig
-powerpc                   currituck_defconfig
-mips                          ath25_defconfig
-powerpc                      obs600_defconfig
-mips                           xway_defconfig
-m68k                        mvme147_defconfig
-mips                       lemote2f_defconfig
-sh                          sdk7780_defconfig
-mips                          rm200_defconfig
-s390                             allyesconfig
-mips                        omega2p_defconfig
-mips                  decstation_64_defconfig
-arc                        nsimosci_defconfig
-sh                          kfr2r09_defconfig
-powerpc64                           defconfig
-m68k                          sun3x_defconfig
-powerpc                     ksi8560_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                       eiger_defconfig
-sh                         ecovec24_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210630
-x86_64               randconfig-a001-20210630
-x86_64               randconfig-a004-20210630
-x86_64               randconfig-a005-20210630
-x86_64               randconfig-a006-20210630
-x86_64               randconfig-a003-20210630
-i386                 randconfig-a004-20210630
-i386                 randconfig-a001-20210630
-i386                 randconfig-a003-20210630
-i386                 randconfig-a002-20210630
-i386                 randconfig-a005-20210630
-i386                 randconfig-a006-20210630
-i386                 randconfig-a014-20210630
-i386                 randconfig-a011-20210630
-i386                 randconfig-a016-20210630
-i386                 randconfig-a012-20210630
-i386                 randconfig-a013-20210630
-i386                 randconfig-a015-20210630
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-b001-20210630
-x86_64               randconfig-a012-20210630
-x86_64               randconfig-a015-20210630
-x86_64               randconfig-a016-20210630
-x86_64               randconfig-a013-20210630
-x86_64               randconfig-a011-20210630
-x86_64               randconfig-a014-20210630
+>
+>> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
+>> +static int virtio_i2c_send_reqs(struct virtqueue *vq,
+>> +				struct virtio_i2c_req *reqs,
+>> +				struct i2c_msg *msgs, int nr)
+>> +{
+>> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+>> +	int i, outcnt, incnt, err = 0;
+>> +
+>> +	for (i = 0; i < nr; i++) {
+>> +		/*
+>> +		 * Only 7-bit mode supported for this moment. For the address format,
+>> +		 * Please check the Virtio I2C Specification.
+>> +		 */
+>> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+>> +
+>> +		if (i != nr - 1)
+>> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+>> +
+>> +		outcnt = incnt = 0;
+>> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+>> +		sgs[outcnt++] = &out_hdr;
+>> +
+>> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+>> +		if (!reqs[i].buf)
+>> +			break;
+>> +
+>> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+> The len can be zero here for zero-length transfers.
+>
+>> +
+>> +		if (msgs[i].flags & I2C_M_RD)
+>> +			sgs[outcnt + incnt++] = &msg_buf;
+>> +		else
+>> +			sgs[outcnt++] = &msg_buf;
+>> +
+>> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+>> +		sgs[outcnt + incnt++] = &in_hdr;
+> Why are we still sending the msg_buf if the length is 0? Sending the
+> buffer makes sense if you have some data to send, but otherwise it is
+> just an extra sg element, which isn't required to be sent.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+I think a fixed number of sgs will make things easier to develop backend.
+
+If you prefer to parse the number of descriptors instead of using the 
+msg length to
+
+distinguish the zero-length request from other requests, I'm OK to set a 
+limit.
+
+if (!msgs[i].len) {
+     sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+
+     if (msgs[i].flags & I2C_M_RD)
+         sgs[outcnt + incnt++] = &msg_buf;
+     else
+         sgs[outcnt++] = &msg_buf;
+}
+
+
+
+>
+>> +#ifdef CONFIG_PM_SLEEP
+>> +static int virtio_i2c_freeze(struct virtio_device *vdev)
+>> +{
+>> +	virtio_i2c_del_vqs(vdev);
+>> +	return 0;
+>> +}
+>> +
+>> +static int virtio_i2c_restore(struct virtio_device *vdev)
+>> +{
+>> +	return virtio_i2c_setup_vqs(vdev->priv);
+>> +}
+>> +#endif
+>> +
+>> +static struct virtio_driver virtio_i2c_driver = {
+>> +	.id_table	= id_table,
+>> +	.probe		= virtio_i2c_probe,
+>> +	.remove		= virtio_i2c_remove,
+>> +	.driver	= {
+>> +		.name	= "i2c_virtio",
+>> +	},
+>> +#ifdef CONFIG_PM_SLEEP
+> You could avoid this pair of ifdef by creating dummy versions of below
+> routines for !CONFIG_PM_SLEEP case. Up to you.
+
+
+Thank you. I'd like to keep the same.
+
