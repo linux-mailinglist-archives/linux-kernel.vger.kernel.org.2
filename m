@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFD73B8E00
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBAA3B8E02
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 08:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhGAHBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 03:01:38 -0400
-Received: from mail-mw2nam12on2107.outbound.protection.outlook.com ([40.107.244.107]:1409
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234733AbhGAHBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 03:01:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z39bastWr5QaUyuCGl0HjDdZhvOT6hdUEp++HeJBanN89bXr7dxd+3X/+GBvKZ1mo/Zws1MCezrbsl2eMxobFaQPcZfepckKeeKOP2U38XDu1uQhYbMDMgI9/CEBzbxkIWCVicgDy6NZR7yGgC4/UZjaDP1Edhi1VcQ+NKDZlST+7Ueadqr/7ogq4/wc7Qm81pPkAXRgpy+hhnjl2V01ewltR0t8MayVpVLG9rODuCqRY1teTsGnTVy29t+zWyaZZb4W7JjouvsME+VPX1K0cfxIAKrTlVwGQues8Aj3VZnFD2kdCrOzJ/HzOFLJXyvqeWOXNlv2KcoHsZbixgNiRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ro8M9MArJDrYB2acsF6Jw6ekpScera7w57COwrMtMno=;
- b=hXIh2kxMjkq7uXRPRxOQPRY0bg7EEtAiNJbOUX4dyyNyR4ioKsb95ONdkK0G1TgazS2TIJMKdE+wVYBw7jySC0GhXxqT8ZvORO6SNvumebMlfknpTZObTWOswuY6eLRrO9s17xrt8TRTfIZDQo/xCKEexWc11L9vt/+H0rx988rCqlwnvIk0euNnGVDoe5zqF1ha5aOPwjwv4q78pFNKt/qfgIeNcxnKGA0IyfCUaGB6a3JXwgdfDWhIZf3J31YFtkk7lFcbyYw9khck+0W/ms9jY60HCZyP1Y26favKykw+Xgd4CPQs9E84ZjHLy/W/H2njjUvuLZNGNjRUPdkzwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ro8M9MArJDrYB2acsF6Jw6ekpScera7w57COwrMtMno=;
- b=Zx9AV4pgvbCKF9LQJ/qxgMd2dwcRsmtYOUT3ydPQFpFryDKw8gC/pVbPtN8SbrM2tciVeiP0IjzGs0uF+O4h9dk52Jk/VqIUMJWVG/SFiOJhdY85hiQKKrei+fKB8IYnbPRqx4pMFQXHfWG5o7EbpeJtnvcbq4bQ65JLWnYy+P4=
-Received: from BY5PR21MB1506.namprd21.prod.outlook.com (2603:10b6:a03:23d::12)
- by BYAPR21MB1656.namprd21.prod.outlook.com (2603:10b6:a02:c5::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.3; Thu, 1 Jul
- 2021 06:59:05 +0000
-Received: from BY5PR21MB1506.namprd21.prod.outlook.com
- ([fe80::f126:bfd2:f903:62a3]) by BY5PR21MB1506.namprd21.prod.outlook.com
- ([fe80::f126:bfd2:f903:62a3%5]) with mapi id 15.20.4308.007; Thu, 1 Jul 2021
- 06:59:05 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: RE: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
-Thread-Topic: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
-Thread-Index: AQHXalTR5lVKFlOZkEmq8/y9Kgt/basqingAgAMt6iA=
-Date:   Thu, 1 Jul 2021 06:59:04 +0000
-Message-ID: <BY5PR21MB15064DFA9450916A3AE69D01CE009@BY5PR21MB1506.namprd21.prod.outlook.com>
-References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
- <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
- <YNq83qS24pO9wVJk@kroah.com>
-In-Reply-To: <YNq83qS24pO9wVJk@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b33c5f51-9f35-4a0b-8a17-4d0188e2a58f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-07-01T06:58:40Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cad53ba9-ab63-4da1-f228-08d93c5db714
-x-ms-traffictypediagnostic: BYAPR21MB1656:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR21MB1656D093C25E34A601BDE8C6CE009@BYAPR21MB1656.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kjlE6J8St1wSdANMMgv2fjF/vSbKQn1SgY2Yjb1L3TEMMn17CPl/2o00+Am1BpTbkeG00ma95euoSAu5RaMGcxnPHM7kEdrmGHvkLYuchzhhBdHBy6nXZz+TbkNQr/tkq5Z9ulUi1/txBmpyFooTccfsmyUqunGpOrhDWKJWuY/wDlj5C4KZBWrpE6k8T9QiEHmerWj4j34ejT7Wgu8lNlNlb+AvvbtHGAOO1Azxg3w+dxnrNByxVhBvZiniO6VofRWXGUkDNOgm+7pDRohKW1y8RR8iwK56hJiV53TGtmxYVPYcaKjQyR6lqwo7pPiw5TIepxanR0tYXlz485/m3IPVcprOPDJgq9+yu8HBg6vjFZFkRaLyQjT44rgODUEwUNtdcCe3v/SvuT+UwGgzCQziPV3x2IYl5lim4FA82LzgUzfipUGZukk6pRG7/WBW0HpxY/PvKRybdTbaKUOlwL/7QgNGEAxS8S1BeNSvler9CPcMogoo5ptoaojc+bqTj1xZOQAG1kxpW9fQo7/UYPPh0cIUkwT/eWxnmX85+P51Q5KYpSZQlWeUvE1r6zhHKpBdf2FADL62upBhsMAg0IOivhWeEAJvZVaek5r1k1ICOI/DwkYpcc6pgQusJiXG2gG6V1N3cZOylmSJzSOkxw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1506.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(71200400001)(2906002)(38100700002)(8936002)(122000001)(5660300002)(4744005)(478600001)(10290500003)(8676002)(7696005)(26005)(54906003)(316002)(86362001)(66946007)(6506007)(76116006)(4326008)(33656002)(66476007)(110136005)(64756008)(9686003)(82960400001)(186003)(66556008)(55016002)(82950400001)(66446008)(8990500004)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3Nk07+jNOLftY3EYyJBPXwiIDaC2k/m7U7uqofjCW+kM2IwP8aK/N3EpdNIw?=
- =?us-ascii?Q?dAyjLCeR+RU7np0P37fAHTEcYfACRoU9rOvFHOt/iEQSW4QpIZtjs9qHQRzA?=
- =?us-ascii?Q?OPUrVVioWonEOX3sHTT/idXsw8poJSmMFGsobkgsec1j0RTfoOTegrLzQ7JR?=
- =?us-ascii?Q?Wz/EUmZRVnTeqxDD7mmrSrcCTR64+20iMxrLY4Na5ZqxdolbidfbUvO4y9R9?=
- =?us-ascii?Q?vLbwVBK9XSI7IEbXbEtc1RAKtrrRVXjGFXDTa+rCdtCqbrM8t7r4g3FNG8XS?=
- =?us-ascii?Q?lfn6IkXsUAttx73RZMspZiNxqeJ8ck+hiGGzYRgh1+DbWJO1KAp7Hs/RpjTy?=
- =?us-ascii?Q?A8jsulEIcA1xJ3zyO5yCWXV7CBitmpkhAPuPa9rEZnQ6yMvgOCvEjMlMIqfD?=
- =?us-ascii?Q?0zyMI3OSVT6v1/L+QEew8tMPk871H9WjO6puE5evvOmRtIkOnckOUAUo6+hW?=
- =?us-ascii?Q?Jqo6KIP5F+9CuW11MjknYdtcG1SQk1nZX5tCG0xMvFoIcnc8ACef7d2UWvDr?=
- =?us-ascii?Q?rYrXQ9A8dCUTg5ExsAmMLMDVdnbcx8jpbgPtwL+/6PgxtcURbsAbOGIqJ+i3?=
- =?us-ascii?Q?q8VfKWlMapSxqa8O7q0bP+TYCHr7ZGq7mk3CQT+E1YtuLo9zaDmm+bm+foE+?=
- =?us-ascii?Q?sPj+Ntv3j/Omd9g6r6BhKOalbyGX+pfhXBx/NUzl522vXwMN2D18ePGm4VSq?=
- =?us-ascii?Q?hUYi2TD7d8RAA6oUsn7eR9Jmb8A9lKrQpvohpjdnCrfQv5ND0ESm0yf83+Y/?=
- =?us-ascii?Q?6duz5OgumDSs2Wh1glEP99zRB8QL/zESozN2R29lv/lcXMs3wfsE56ARE6xm?=
- =?us-ascii?Q?nce1BdDemwASx2aeIP9gCU5AkDLxGqP9UgXKqsGYFebTWHZ8qMvVnT6JJrQI?=
- =?us-ascii?Q?OfZvOVxDsjYS3mQu0dc9aU/w5IlhjV69qcIxZa6nDTdaiDRKs+ZP0GZEFyuE?=
- =?us-ascii?Q?Uhqc2qjO687PhQ68EpA0Jh52ifSnIhE4i77QhKjMVBV5Oy7qSZoWdTDShvYC?=
- =?us-ascii?Q?erd5QC1nm3MYtBDxAIf0eCKLdMnyCsUD/27VTOK3TEirO7TWh4O9nufRmwRI?=
- =?us-ascii?Q?TSXos9swOV5bBfofXHpsiIjoyZwWJ+1OV5/2YACsqe7VAryPyBK3zHdL+Soo?=
- =?us-ascii?Q?GkPLAt/BZrGaocAeygOfmEv2LDj1CMqt9ogQWTSr1qyxKw8Soibv0lS253Gh?=
- =?us-ascii?Q?AzmALl+A1VHBTzzsGWRjnfYWck7Yzsf8c130W4NkuMLHh5Tgs00mhdK/DI3y?=
- =?us-ascii?Q?oSu9UB65iQUdBrEqt89WOeBhGkTE7G5FWynLQWtUmt8xUpV7aUF0sqrhjSHY?=
- =?us-ascii?Q?crh0RIYtCNPy6SBKeMIaT5Xq?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234702AbhGAHCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 03:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234529AbhGAHCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 03:02:23 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC24AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 23:59:53 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id u7so4138974ion.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 23:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6WT0ggnc6y+zkQZpmAfY5vcqw6YGgCRdcKPkikOc0Nw=;
+        b=JJDyWO50TjD2JKx8VvF5pj14yk3j1SIQkpONmRgMEcD0EJGWVUrmG2gmr8IKqEaK77
+         HctyKwx9tJK6K+lShpZfc0rFQfwWxrbKyEa0Ljd1itQdHqZFoTvp7/kg4mWRCs2Xy3+7
+         h7sYv7+E2AOnPRJPoEuk7AdQcp6OVlDVnTpf8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6WT0ggnc6y+zkQZpmAfY5vcqw6YGgCRdcKPkikOc0Nw=;
+        b=mTr772RbiK4P9Br+zHfByAuYNmGKNBKQH/PgSVeQ+xvQxUPlIebVql6hRAul1RxN0u
+         6GsWY/uyJHWbuhggn1aUXXW0Zxsqqz7EyJh50+jjpBmNROO9dvWscVqe45+CSeWkvnKf
+         GGTiZqjkGy1DEG3iY1CE5YfYUVzodv7Zn7iK6lIfV0+d0A9aOKEB9uhsmjxYrNB8mGch
+         gad3+sM9zTbBl1PoclJjisiFqK2YV87dlktpZmGXoo2C7+ZmNKuQG4+18CcEurbkR4Ap
+         uodZ6db6xHH5dMOMESukNv9dmPTY3inCSlE19wvBBvaoPj1aZKqHelTQfRO4Y/VgpHmV
+         IXYA==
+X-Gm-Message-State: AOAM531ydPk/hjiatuE/mLaOdkz+QRYGZvsc+w34dZm5QsDj9otaBlHk
+        aTYEAUzJoFUnzacXm0vt+/d+pOf1MyJ+GijsJlw5aw==
+X-Google-Smtp-Source: ABdhPJzHGyqZefwsLiquuhbKyd8kroyqF4uiqAGrTewcKDSPvfkci20FHon3xrv4G+J8c6C5Ms+h7k4fzdXVCt8vD/8=
+X-Received: by 2002:a05:6602:1c4:: with SMTP id w4mr10899930iot.44.1625122793122;
+ Wed, 30 Jun 2021 23:59:53 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1506.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cad53ba9-ab63-4da1-f228-08d93c5db714
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2021 06:59:04.9559
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7WZxTnTnmF1ByV3EnqqRgvoI6FMM+/8oohz+n1xDmXb3Nfx3Tarhf66/SqtOc1kw2wLGVoVZacO7Ftye/c2+oA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1656
+References: <20210630073311.2177374-1-hsinyi@chromium.org>
+In-Reply-To: <20210630073311.2177374-1-hsinyi@chromium.org>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 1 Jul 2021 14:59:27 +0800
+Message-ID: <CAJMQK-gPeepDhNVc0S1Z_FxyDgiSuZZ4We6k8oWbQ_BbLJZxsw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: mt8183: kukui: use generic pin configs for
+ i2c pins
+To:     Matthias Brugger <matthias.bgg@gmail.com>, zhiyong.tao@mediatek.com
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
->=20
-> On Fri, Jun 25, 2021 at 11:30:19PM -0700, longli@linuxonhyperv.com wrote:
-> > @@ -0,0 +1,655 @@
-> > +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
->=20
-> If you _REALLY_ want to do this, please document _WHY_ you are doing this
-> in the changelog comment as dual-licensed Linux kernel code will just cau=
-se
-> you a lot of problems in the long run and we want to be sure you understa=
-nd
-> all of the issues here and your managers agree with it.
->=20
-> thanks,
->=20
-> greg k-h
+On Wed, Jun 30, 2021 at 3:33 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> mt8183 i2c pins don't support PUPD register, so change to use generic
+> pin configs instead of let it fail and fallback.
 
-Will fix this.
+Though PUPD can be skipped, if we set bias-pull-up, we may miss the r0
+r1 set in mtk_pinconf_adv_pull_set().
+Sent another fix to replace this patch here:
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210701065439.2527790-1-hsinyi@chromium.org/
 
-Thanks,
-Long
+>
+> Fixes: cd894e274b74 ("arm64: dts: mt8183: Add krane-sku176 board")
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index ae549d55a94fc..69dc04c3f7fff 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -426,7 +426,7 @@ i2c0_pins: i2c0 {
+>                 pins_bus {
+>                         pinmux = <PINMUX_GPIO82__FUNC_SDA0>,
+>                                  <PINMUX_GPIO83__FUNC_SCL0>;
+> -                       mediatek,pull-up-adv = <3>;
+> +                       bias-pull-up;
+>                         mediatek,drive-strength-adv = <00>;
+>                 };
+>         };
+> @@ -435,7 +435,7 @@ i2c1_pins: i2c1 {
+>                 pins_bus {
+>                         pinmux = <PINMUX_GPIO81__FUNC_SDA1>,
+>                                  <PINMUX_GPIO84__FUNC_SCL1>;
+> -                       mediatek,pull-up-adv = <3>;
+> +                       bias-pull-up;
+>                         mediatek,drive-strength-adv = <00>;
+>                 };
+>         };
+> @@ -453,7 +453,7 @@ i2c3_pins: i2c3 {
+>                 pins_bus {
+>                         pinmux = <PINMUX_GPIO50__FUNC_SCL3>,
+>                                  <PINMUX_GPIO51__FUNC_SDA3>;
+> -                       mediatek,pull-up-adv = <3>;
+> +                       bias-pull-up;
+>                         mediatek,drive-strength-adv = <00>;
+>                 };
+>         };
+> @@ -471,7 +471,7 @@ i2c5_pins: i2c5 {
+>                 pins_bus {
+>                         pinmux = <PINMUX_GPIO48__FUNC_SCL5>,
+>                                  <PINMUX_GPIO49__FUNC_SDA5>;
+> -                       mediatek,pull-up-adv = <3>;
+> +                       bias-pull-up;
+>                         mediatek,drive-strength-adv = <00>;
+>                 };
+>         };
+> --
+> 2.32.0.93.g670b81a890-goog
+>
