@@ -2,110 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5296C3B9563
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ABF3B9564
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhGARYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGARYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:24:02 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DECC061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:21:32 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id a11so13095873lfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vrOIndfEpXpDR3CulNU6X+syK13a8d1317xXG38sabs=;
-        b=HNUrTS/dZWqH1ixKNyoQDUO9L+qqWbqqnPAlBx0DUx9rnz/OKZ0kzWWxZZ4TIsxq6q
-         qLbiucXLKKN23yY8Xy8hbEYh/5ryRpX1gjuVfBmyiwlfMpvQa0t+sOtpiQLcobWzzX3u
-         MOl7XLhioB5tLS5NaQ+6crCQVhswQGDhlCI2BnEtD6HvbacbW+Ubpsn2tV6dOLBcQkcR
-         lAPM0Zn6wS4ozV/J3w8Tx7D8qVD+rLVbPtCDGgQyEHUykNY1IObma+/3UV13obAIHcWM
-         OQLLhXEL9Qtyh+rmixWglh5M5vFLDtZNP/qbkbwpeTCxf8nmf+Z+7kCfHfF7jlkhhepk
-         8DWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vrOIndfEpXpDR3CulNU6X+syK13a8d1317xXG38sabs=;
-        b=dyAinLTl60PzIDdP/HLHja0TxottpnsGMkCoeu14ACsGTDDVKtBq4r1OMDgIQ0pG5r
-         t2NUszPXI9/fWCYM3PlTKwgGyh/ImetCOnqnNY0lhHn5hDH6XwqAprEoBiQg/tQvNJNA
-         nJvUdZBdyTgyLEga29TUnzGa32rPQQojd1djUBOwZwKDizr9ksrhuwytmE5UptSNL1m4
-         RP6Cm2txyCQHONTbd0a7bs5qZQjs0dQ0OWo8o/UKbArbPvNfPMFaG/yxXyTCW9o1kOOq
-         nb+BpwdgIG84hb9gPrGvqGCA/kxxG/CKsIfbmtPY3Ob+efIAPpIcvyKNv/tqzhg/hAyX
-         vZ+Q==
-X-Gm-Message-State: AOAM5332kw4Es8AIR1sH7wU1/hQWc6Yd3/zSTIvPgVtXb8gYIWc1V5wR
-        PD/z/NFmWcrAnTrfKmhD10azZGn1pZxyWwcPk76Fdw==
-X-Google-Smtp-Source: ABdhPJw642ItORxta0qayZ9gTVkoOup3jVT3SWO0EGctey8s13l7YdYikYe2Mz+wWHITZAuTtFGWczvjpyWoOnPJ9rI=
-X-Received: by 2002:ac2:4949:: with SMTP id o9mr542805lfi.254.1625160090454;
- Thu, 01 Jul 2021 10:21:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210624111815.57937-1-odin@uged.al> <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
- <20210701103448.GL3840@techsingularity.net> <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
- <C253482E-0B1E-4F38-92D6-6F00AFFA7DEF@linux.vnet.ibm.com>
-In-Reply-To: <C253482E-0B1E-4F38-92D6-6F00AFFA7DEF@linux.vnet.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 1 Jul 2021 19:21:18 +0200
-Message-ID: <CAKfTPtBKt0Nrr79-v_HGvB-VRnsgntbX0hPx9rt_Ka_xt=RP9w@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     Odin Ugedal <odin@uged.al>,
-        Mel Gorman <mgorman@techsingularity.net>,
+        id S233117AbhGARYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:24:40 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14148 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229949AbhGARYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:24:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10032"; a="195868067"
+X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
+   d="scan'208";a="195868067"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:22:06 -0700
+X-IronPort-AV: E=Sophos;i="5.83,315,1616482800"; 
+   d="scan'208";a="457748026"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.231.202]) ([10.249.231.202])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 10:22:03 -0700
+Subject: Re: [PATCH v8 03/22] perf record: Introduce thread local variable
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
         Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <15e08085a9040209bf13b26239b81b4b52b02d6d.1625065643.git.alexey.v.bayduraev@linux.intel.com>
+ <YNynCbUE/yjkUxcN@kernel.org>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <43cc693f-a032-3648-cd78-88cc7d65bb35@linux.intel.com>
+Date:   Thu, 1 Jul 2021 20:22:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YNynCbUE/yjkUxcN@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 at 13:51, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote:
->
->
->
-> > On 01-Jul-2021, at 4:39 PM, Odin Ugedal <odin@uged.al> wrote:
-> >
-> > tor. 1. jul. 2021 kl. 12:34 skrev Mel Gorman <mgorman@techsingularity.net>:
-> >>
-> >> What was HEAD when you checked this? 1c35b07e6d39 was merged in the
-> >> 5.14-rc1 merge window so would not be in 5.13.
-> >
-> > From the kernel log it looks like he used commit dbe69e433722
-> > (somewhere in Linus' tree), and that should include my patch. I don't
-> > think the patches from Vincent in the previous thread have been posted
-> > properly, and I think those can fix the edge case you are seeing.
-> >
-> Sorry about the confusion. Yes I am using this code level.
->
-> commit dbe69e43372212527abf48609aba7fc39a6daa27 (HEAD -> master, origin/master, origin/HEAD)
-> Merge: a6eaf3850cb1 b6df00789e28
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Wed Jun 30 15:51:09 2021 -0700
->
-> This does contain the patch from Odin.
->
-> > This should mitigate some issues:
-> > https://lore.kernel.org/lkml/20210622143154.GA804@vingu-book/
-> >
-> > while
-> > https://lore.kernel.org/lkml/20210623071935.GA29143@vingu-book/
-> > might also help in some cases as well.
-> >
-> > Both of those are needed to make sure that *_avg is zero whenever *_sum is zero.
->
-> Okay, so additional patches are required to fix this problem completely.
-> I can help test these.
+Hi,
 
-I just sent a clean version of the 1st patch :
-https://lore.kernel.org/lkml/20210701171837.32156-1-vincent.guittot@linaro.org/
+On 30.06.2021 20:16, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Jun 30, 2021 at 06:54:42PM +0300, Alexey Bayduraev escreveu:
+>> Introduce thread local variable and use it for threaded trace streaming.
+[SNIP]
+>>  static void record__adjust_affinity(struct record *rec, struct mmap *map)
+>>  {
+>> +	int ret = 0;
+> 
+> Why you set this to zero here if it is going to be used only insde the
+> if block?
+> 
+>> +
+>>  	if (rec->opts.affinity != PERF_AFFINITY_SYS &&
+>> -	    !bitmap_equal(rec->affinity_mask.bits, map->affinity_mask.bits,
+>> -			  rec->affinity_mask.nbits)) {
+>> -		bitmap_zero(rec->affinity_mask.bits, rec->affinity_mask.nbits);
+>> -		bitmap_or(rec->affinity_mask.bits, rec->affinity_mask.bits,
+>> -			  map->affinity_mask.bits, rec->affinity_mask.nbits);
+>> -		sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&rec->affinity_mask),
+>> -				  (cpu_set_t *)rec->affinity_mask.bits);
+>> -		if (verbose == 2)
+>> -			mmap_cpu_mask__scnprintf(&rec->affinity_mask, "thread");
+>> +	    !bitmap_equal(thread->mask->affinity.bits, map->affinity_mask.bits,
+>> +			  thread->mask->affinity.nbits)) {
+>> +		bitmap_zero(thread->mask->affinity.bits, thread->mask->affinity.nbits);
+>> +		bitmap_or(thread->mask->affinity.bits, thread->mask->affinity.bits,
+>> +			  map->affinity_mask.bits, thread->mask->affinity.nbits);
+>> +		ret = sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&thread->mask->affinity),
+>> +					(cpu_set_t *)thread->mask->affinity.bits);
+>> +		if (ret)
+>> +			pr_err("threads[%d]: sched_setaffinity() call failed: %s\n",
+>> +			       thread->tid, strerror(errno));
+> 
+> Also, if record__adjust_affinity() fails by means of sched_setaffinity
+> not working, shouldn't we propagate this error?
+> 
 
->
-> Thanks
-> -Sachin
->
+I am also in doubt. record__adjust_affinity() is called inside mmap read
+function and I don't think it's a good idea to terminate the data
+collection in the middle. I guess this can be critical only for real-time
+workloads.
+
+Regards,
+Alexey
+
+>> +		if (verbose == 2) {
+>> +			pr_debug("threads[%d]: addr=", thread->tid);
+>> +			mmap_cpu_mask__scnprintf(&thread->mask->affinity, "thread");
+>> +			pr_debug("threads[%d]: on cpu=%d\n", thread->tid, sched_getcpu());
+>> +		}
+>>  	}
+>>  }
+>>  
+>> @@ -1310,14 +1319,17 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+>>  	u64 bytes_written = rec->bytes_written;
+>>  	int i;
+>>  	int rc = 0;
+>> -	struct mmap *maps;
+>> +	int nr_mmaps;
+>> +	struct mmap **maps;
+>>  	int trace_fd = rec->data.file.fd;
+>>  	off_t off = 0;
+>>  
+>>  	if (!evlist)
+>>  		return 0;
+>>  
+>> -	maps = overwrite ? evlist->overwrite_mmap : evlist->mmap;
+>> +	nr_mmaps = thread->nr_mmaps;
+>> +	maps = overwrite ? thread->overwrite_maps : thread->maps;
+>> +
+>>  	if (!maps)
+>>  		return 0;
+>>  
+>> @@ -1327,9 +1339,9 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+>>  	if (record__aio_enabled(rec))
+>>  		off = record__aio_get_pos(trace_fd);
+>>  
+>> -	for (i = 0; i < evlist->core.nr_mmaps; i++) {
+>> +	for (i = 0; i < nr_mmaps; i++) {
+>>  		u64 flush = 0;
+>> -		struct mmap *map = &maps[i];
+>> +		struct mmap *map = maps[i];
+>>  
+>>  		if (map->core.base) {
+>>  			record__adjust_affinity(rec, map);
+>> @@ -1392,6 +1404,15 @@ static int record__mmap_read_all(struct record *rec, bool synch)
+>>  	return record__mmap_read_evlist(rec, rec->evlist, true, synch);
+>>  }
+>>  
+>> +static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
+>> +					   void *arg __maybe_unused)
+>> +{
+>> +	struct perf_mmap *map = fda->priv[fd].ptr;
+>> +
+>> +	if (map)
+>> +		perf_mmap__put(map);
+>> +}
+>> +
+>>  static void record__init_features(struct record *rec)
+>>  {
+>>  	struct perf_session *session = rec->session;
+>> @@ -1836,6 +1857,33 @@ static void record__uniquify_name(struct record *rec)
+>>  	}
+>>  }
+>>  
+>> +static int record__start_threads(struct record *rec)
+>> +{
+>> +	struct thread_data *thread_data = rec->thread_data;
+>> +
+>> +	thread = &thread_data[0];
+>> +
+>> +	pr_debug("threads[%d]: started on cpu=%d\n", thread->tid, sched_getcpu());
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int record__stop_threads(struct record *rec, unsigned long *waking)
+>> +{
+>> +	int t;
+>> +	struct thread_data *thread_data = rec->thread_data;
+>> +
+>> +	for (t = 0; t < rec->nr_threads; t++) {
+>> +		rec->samples += thread_data[t].samples;
+>> +		*waking += thread_data[t].waking;
+>> +		pr_debug("threads[%d]: samples=%lld, wakes=%ld, trasferred=%ld, compressed=%ld\n",
+>> +			 thread_data[t].tid, thread_data[t].samples, thread_data[t].waking,
+>> +			 rec->session->bytes_transferred, rec->session->bytes_compressed);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  {
+>>  	int err;
+>> @@ -1944,7 +1992,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  
+>>  	if (record__open(rec) != 0) {
+>>  		err = -1;
+>> -		goto out_child;
+>> +		goto out_free_threads;
+>>  	}
+>>  	session->header.env.comp_mmap_len = session->evlist->core.mmap_len;
+>>  
+>> @@ -1952,7 +2000,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  		err = record__kcore_copy(&session->machines.host, data);
+>>  		if (err) {
+>>  			pr_err("ERROR: Failed to copy kcore\n");
+>> -			goto out_child;
+>> +			goto out_free_threads;
+>>  		}
+>>  	}
+>>  
+>> @@ -1963,7 +2011,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  		bpf__strerror_apply_obj_config(err, errbuf, sizeof(errbuf));
+>>  		pr_err("ERROR: Apply config to BPF failed: %s\n",
+>>  			 errbuf);
+>> -		goto out_child;
+>> +		goto out_free_threads;
+>>  	}
+>>  
+>>  	/*
+>> @@ -1981,11 +2029,11 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  	if (data->is_pipe) {
+>>  		err = perf_header__write_pipe(fd);
+>>  		if (err < 0)
+>> -			goto out_child;
+>> +			goto out_free_threads;
+>>  	} else {
+>>  		err = perf_session__write_header(session, rec->evlist, fd, false);
+>>  		if (err < 0)
+>> -			goto out_child;
+>> +			goto out_free_threads;
+>>  	}
+>>  
+>>  	err = -1;
+>> @@ -1993,16 +2041,16 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  	    && !perf_header__has_feat(&session->header, HEADER_BUILD_ID)) {
+>>  		pr_err("Couldn't generate buildids. "
+>>  		       "Use --no-buildid to profile anyway.\n");
+>> -		goto out_child;
+>> +		goto out_free_threads;
+>>  	}
+>>  
+>>  	err = record__setup_sb_evlist(rec);
+>>  	if (err)
+>> -		goto out_child;
+>> +		goto out_free_threads;
+>>  
+>>  	err = record__synthesize(rec, false);
+>>  	if (err < 0)
+>> -		goto out_child;
+>> +		goto out_free_threads;
+>>  
+>>  	if (rec->realtime_prio) {
+>>  		struct sched_param param;
+>> @@ -2011,10 +2059,13 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+>>  			pr_err("Could not set realtime priority.\n");
+>>  			err = -1;
+>> -			goto out_child;
+>> +			goto out_free_threads;
+>>  		}
+>>  	}
+>>  
+>> +	if (record__start_threads(rec))
+>> +		goto out_free_threads;
+>> +
+>>  	/*
+>>  	 * When perf is starting the traced process, all the events
+>>  	 * (apart from group members) have enable_on_exec=1 set,
+>> @@ -2085,7 +2136,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  	trigger_ready(&switch_output_trigger);
+>>  	perf_hooks__invoke_record_start();
+>>  	for (;;) {
+>> -		unsigned long long hits = rec->samples;
+>> +		unsigned long long hits = thread->samples;
+>>  
+>>  		/*
+>>  		 * rec->evlist->bkw_mmap_state is possible to be
+>> @@ -2154,20 +2205,24 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  				alarm(rec->switch_output.time);
+>>  		}
+>>  
+>> -		if (hits == rec->samples) {
+>> +		if (hits == thread->samples) {
+>>  			if (done || draining)
+>>  				break;
+>> -			err = evlist__poll(rec->evlist, -1);
+>> +			err = fdarray__poll(&thread->pollfd, -1);
+>>  			/*
+>>  			 * Propagate error, only if there's any. Ignore positive
+>>  			 * number of returned events and interrupt error.
+>>  			 */
+>>  			if (err > 0 || (err < 0 && errno == EINTR))
+>>  				err = 0;
+>> -			waking++;
+>> +			thread->waking++;
+>>  
+>> -			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
+>> +			if (fdarray__filter(&thread->pollfd, POLLERR | POLLHUP,
+>> +					    record__thread_munmap_filtered, NULL) == 0)
+>>  				draining = true;
+>> +
+>> +			evlist__ctlfd_update(rec->evlist,
+>> +				&thread->pollfd.entries[thread->ctlfd_pos]);
+>>  		}
+>>  
+>>  		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
+>> @@ -2220,18 +2275,20 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  		goto out_child;
+>>  	}
+>>  
+>> -	if (!quiet)
+>> -		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
+>> -
+>>  	if (target__none(&rec->opts.target))
+>>  		record__synthesize_workload(rec, true);
+>>  
+>>  out_child:
+>> -	evlist__finalize_ctlfd(rec->evlist);
+>> +	record__stop_threads(rec, &waking);
+>>  	record__mmap_read_all(rec, true);
+>> +out_free_threads:
+>>  	record__free_thread_data(rec);
+>> +	evlist__finalize_ctlfd(rec->evlist);
+>>  	record__aio_mmap_read_sync(rec);
+>>  
+>> +	if (!quiet)
+>> +		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
+>> +
+>>  	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
+>>  		ratio = (float)rec->session->bytes_transferred/(float)rec->session->bytes_compressed;
+>>  		session->header.env.comp_ratio = ratio + 0.5;
+>> @@ -3093,17 +3150,6 @@ int cmd_record(int argc, const char **argv)
+>>  
+>>  	symbol__init(NULL);
+>>  
+>> -	if (rec->opts.affinity != PERF_AFFINITY_SYS) {
+>> -		rec->affinity_mask.nbits = cpu__max_cpu();
+>> -		rec->affinity_mask.bits = bitmap_alloc(rec->affinity_mask.nbits);
+>> -		if (!rec->affinity_mask.bits) {
+>> -			pr_err("Failed to allocate thread mask for %zd cpus\n", rec->affinity_mask.nbits);
+>> -			err = -ENOMEM;
+>> -			goto out_opts;
+>> -		}
+>> -		pr_debug2("thread mask[%zd]: empty\n", rec->affinity_mask.nbits);
+>> -	}
+>> -
+>>  	err = record__auxtrace_init(rec);
+>>  	if (err)
+>>  		goto out;
+>> @@ -3241,7 +3287,6 @@ int cmd_record(int argc, const char **argv)
+>>  
+>>  	err = __cmd_record(&record, argc, argv);
+>>  out:
+>> -	bitmap_free(rec->affinity_mask.bits);
+>>  	evlist__delete(rec->evlist);
+>>  	symbol__exit();
+>>  	auxtrace_record__free(rec->itr);
+> 
+> 
+> Can the following be moved to a separate patch?
+> 
+>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>> index 6ba9664089bd..3d555a98c037 100644
+>> --- a/tools/perf/util/evlist.c
+>> +++ b/tools/perf/util/evlist.c
+>> @@ -2132,6 +2132,22 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>>  	return err;
+>>  }
+>>  
+>> +int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update)
+>> +{
+>> +	int ctlfd_pos = evlist->ctl_fd.pos;
+>> +	struct pollfd *entries = evlist->core.pollfd.entries;
+>> +
+>> +	if (!evlist__ctlfd_initialized(evlist))
+>> +		return 0;
+>> +
+>> +	if (entries[ctlfd_pos].fd != update->fd ||
+>> +	    entries[ctlfd_pos].events != update->events)
+>> +		return -1;
+>> +
+>> +	entries[ctlfd_pos].revents = update->revents;
+>> +	return 0;
+>> +}
+>> +
+>>  struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
+>>  {
+>>  	struct evsel *evsel;
+>> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+>> index 2073cfa79f79..b7aa719c638d 100644
+>> --- a/tools/perf/util/evlist.h
+>> +++ b/tools/perf/util/evlist.h
+>> @@ -358,6 +358,7 @@ void evlist__close_control(int ctl_fd, int ctl_fd_ack, bool *ctl_fd_close);
+>>  int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+>>  int evlist__finalize_ctlfd(struct evlist *evlist);
+>>  bool evlist__ctlfd_initialized(struct evlist *evlist);
+>> +int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update);
+>>  int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+>>  int evlist__ctlfd_ack(struct evlist *evlist);
+>>  
+>> -- 
+>> 2.19.0
+>>
+> 
