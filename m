@@ -2,197 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FE73B8C5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12A23B8C63
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238655AbhGACgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:36:49 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9441 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238056AbhGACgs (ORCPT
+        id S238627AbhGAClA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238056AbhGACk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:36:48 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GFhzK10bQzZlKP;
-        Thu,  1 Jul 2021 10:31:09 +0800 (CST)
-Received: from dggpemm500021.china.huawei.com (7.185.36.109) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 10:34:16 +0800
-Received: from [10.174.177.223] (10.174.177.223) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 10:34:15 +0800
-Subject: Re: [PATCH] lz4: fixs use-after-free Read in
- LZ4_decompress_safe_partial
-To:     Nick Terrell <terrelln@fb.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rajat Asthana <thisisrast7@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yann Collet <yann.collet.73@gmail.com>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>
-References: <20210630032358.949122-1-cy.fan@huawei.com>
- <YNxYqXhw5g7Nl3JP@B-P7TQMD6M-0146.local>
- <CC666AE8-4CA4-4951-B6FB-A2EFDE3AC03B@fb.com>
-From:   Chengyang Fan <cy.fan@huawei.com>
-Message-ID: <d4f67763-2211-bc91-2939-6c5062a3cbfa@huawei.com>
-Date:   Thu, 1 Jul 2021 10:34:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <CC666AE8-4CA4-4951-B6FB-A2EFDE3AC03B@fb.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Wed, 30 Jun 2021 22:40:59 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6E5C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:38:29 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so3007518pjo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 19:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DuvFY1gPxxozd7qXy5qfSaZHOIKcOMsMpJnnW/JJ+sI=;
+        b=KZPgT5/AWPP1IKKRemRHaymL0E9XMI+s0sy4ZnF6fvxcQ3UNafR9ONvDi/27k/Afj9
+         Uq2fpzi69JdTlF1Kh4y6Qy833grEW2xOo0MNt3wuu3/TtfsYBBQaVIoc+dBGelTcDY0b
+         Jkgm4yD1ewl82bVW59EPJoCiQWFjTcuZJJ5043FvvaM3dJIMuGao0fxElA3XmShPNbK0
+         OtwvhIFMTChxOhWbjR8a0zgCTWkPVE7OWaLkgCcvfxVw4Kw4wxPMyQmR9dtjvpw9tryQ
+         kilHELsI6MrhJfNnyJjfHoOLvbzwi3vsJh41EOi8YhmLGoiMC7sV9TffN15P2Js1La79
+         4ruQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=DuvFY1gPxxozd7qXy5qfSaZHOIKcOMsMpJnnW/JJ+sI=;
+        b=bEJrzBSP2OcdIMTbMeJG88drNPOKZwgsJ0FCk4IkxcaXxxn6CHeElTcRoaTqc0kNn/
+         b7G3Q2h7XAi/OTwIvYT1w7KE1Mm39NnWCO9R+4xUieX4grml7eQSnt7fpu6uRdo1FRNv
+         7QtbLLAdXe1LhjzBxYBUzy1ph/p5Gxzm+3iFZdhskLI2Fno8n/ar09pu927jdYBtYI/k
+         liFcBxU4sETHFqliX/gjJh/ZSIV1gri08tWZbHAlYxQqGbEvgB5oYh5twWVZ/dIo3Uo/
+         xf39B8qhY+STdjeRTUMrkmJM4D17bBwpw5Mz8+1Ipy9Ff1wjKaSDrurkUrYDJy8EdSCn
+         32aQ==
+X-Gm-Message-State: AOAM531gQ0MuT3bTNzIUwGkIfLMhuNWKrgyoYSOSjod6ows+9hwZz9+J
+        agZW6O19A2IaKdmDz7SmHx+vGQ==
+X-Google-Smtp-Source: ABdhPJxGRwxXtTva/zQTzn2UIFqbxvTX+jXNDe1uu/VCt2rAXg0/eU01kj2QcxTbgulC46mwzwgzaQ==
+X-Received: by 2002:a17:90a:6605:: with SMTP id l5mr42070512pjj.168.1625107108942;
+        Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g4sm23225456pfu.134.2021.06.30.19.38.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 19:38:28 -0700 (PDT)
+X-Google-Original-Date: Wed, 30 Jun 2021 19:38:04 PDT (-0700)
+Subject:     Re: [PATCH -next v2] riscv: Enable KFENCE for riscv64
+In-Reply-To: <CANpmjNMh9ef30N6LfTrKaAVFR5iKPt_pkKr9p4Ly=-BD7GbTQQ@mail.gmail.com>
+CC:     liushixin2@huawei.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, glider@google.com, dvyukov@google.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     elver@google.com
+Message-ID: <mhng-d63a7488-73a5-451e-9bf8-52ded7f2e15c@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.223]
-X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
- dggpemm500021.china.huawei.com (7.185.36.109)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/7/1 1:49, Nick Terrell wrote:
->
->> On Jun 30, 2021, at 4:42 AM, Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+On Wed, 16 Jun 2021 02:11:53 PDT (-0700), elver@google.com wrote:
+> On Tue, 15 Jun 2021 at 04:35, Liu Shixin <liushixin2@huawei.com> wrote:
+>> Add architecture specific implementation details for KFENCE and enable
+>> KFENCE for the riscv64 architecture. In particular, this implements the
+>> required interface in <asm/kfence.h>.
 >>
->> (also +cc Yann as well as Nick..)
+>> KFENCE requires that attributes for pages from its memory pool can
+>> individually be set. Therefore, force the kfence pool to be mapped at
+>> page granularity.
 >>
->> Hi Chengyang,
+>> Testing this patch using the testcases in kfence_test.c and all passed.
 >>
->> If I understand correctly, is this a manually produced fuzzed
->> EROFS compressed data? If it's just a normal image, could you
->> also share the original image?
->>
->> On Wed, Jun 30, 2021 at 11:23:58AM +0800, Chengyang Fan wrote:
->>> ==================================================================
->>> BUG: KASAN: use-after-free in get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
->>> BUG: KASAN: use-after-free in LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
->>> BUG: KASAN: use-after-free in LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
->>> BUG: KASAN: use-after-free in LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
->>> Read of size 2 at addr ffff888017851000 by task kworker/u12:0/2056
->>>
->>> CPU: 0 PID: 2056 Comm: kworker/u12:0 Not tainted 5.10.40 #2
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
->>> Workqueue: erofs_unzipd z_erofs_decompressqueue_work
->>> Call Trace:
->>> __dump_stack lib/dump_stack.c:77 [inline]
->>> dump_stack+0x137/0x1be lib/dump_stack.c:118
->>> print_address_description+0x6c/0x640 mm/kasan/report.c:385
->>> __kasan_report mm/kasan/report.c:545 [inline]
->>> kasan_report+0x13d/0x1e0 mm/kasan/report.c:562
->>> get_unaligned_le16 include/linux/unaligned/access_ok.h:10 [inline]
->>> LZ4_readLE16 lib/lz4/lz4defs.h:132 [inline]
->>> LZ4_decompress_generic lib/lz4/lz4_decompress.c:281 [inline]
->>> LZ4_decompress_safe_partial+0xf50/0x1480 lib/lz4/lz4_decompress.c:465
->>> z_erofs_lz4_decompress+0x839/0xc90 fs/erofs/decompressor.c:162
->>> z_erofs_decompress_generic fs/erofs/decompressor.c:291 [inline]
->>> z_erofs_decompress+0x57e/0xe10 fs/erofs/decompressor.c:344
->>> z_erofs_decompress_pcluster+0x13d1/0x2310 fs/erofs/zdata.c:880
->>> z_erofs_decompress_queue fs/erofs/zdata.c:958 [inline]
->>> z_erofs_decompressqueue_work+0xde/0x140 fs/erofs/zdata.c:969
->>> process_one_work+0x780/0xfc0 kernel/workqueue.c:2269
->>> worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
->>> kthread+0x39a/0x3c0 kernel/kthread.c:292
->>> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
->>>
->>> The buggy address belongs to the page:
->>> page:00000000a79b76f1 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x17851
->>> flags: 0xfff00000000000()
->>> raw: 00fff00000000000 ffffea000081b9c8 ffffea00006ac6c8 0000000000000000
->>> raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
->>> page dumped because: kasan: bad access detected
->>>
->>> Memory state around the buggy address:
->>> ffff888017850f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>> ffff888017850f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>>> ffff888017851000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>                    ^
->>> ffff888017851080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>> ffff888017851100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>> ==================================================================
->>> erofs: (device loop0): z_erofs_lz4_decompress: failed to decompress -4099 in[4096, 0] out[9000]
->>>
->>> Off-by-one error causes the above issue. In LZ4_decompress_generic(),
->>> `iend = src + srcSize`. It means the valid address range should be
->>> [src, iend - 1]. Therefore, when checking whether the reading is
->>> out-of-bounds, it should be  `>= iend` rather than `> iend`.
-> This isn’t correct. The bounds check is correct for the following memcpy().
-> The problem is the LZ4_readLE16() on line 285 [1].
-Yeah, it's my fault. This fix is incorrect.
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Chengyang Fan <cy.fan@huawei.com>
->>> ---
->>> lib/lz4/lz4_decompress.c | 2 +-
->>> 1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/lib/lz4/lz4_decompress.c b/lib/lz4/lz4_decompress.c
->>> index 926f4823d5ea..ec51837cd31f 100644
->>> --- a/lib/lz4/lz4_decompress.c
->>> +++ b/lib/lz4/lz4_decompress.c
->>> @@ -234,7 +234,7 @@ static FORCE_INLINE int LZ4_decompress_generic(
->>> 					length = oend - op;
->>> 				}
->>> 				if ((endOnInput)
->>> -					&& (ip + length > iend)) {
->>> +					&& (ip + length >= iend)) {
->> I'm not sure it should be fixed as this.
-> Yeah, this is not the correct fix. `ip + length > iend` is correct for the
-> memcpy(). You would instead need to add another check after the
-> memcpy(). E.g. something like this, taken from upstream [2].
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> Acked-by: Marco Elver <elver@google.com>
+>> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 >
-> ```
->
-> 			LZ4_memmove(op, ip, length);
-> 			ip += length;
-> 			op += length;
->
-> 			/* Necessarily EOF, due to parsing restrictions */
-> -			if (!partialDecoding || (cpy == oend))
-> +			if (!partialDecoding || (cpy == oend) || (ip >= (iend-2)))
-> 				break;
-> ```
->
-> This should be enough to fix the out of bounds read you reported.
-> However, I can’t guarantee that this will fix all the issues that have been
-> fixed upstream since v1.8.3.
->
-> The safest and most robust course of action would be to update the version
-> of LZ4 in the kernel to the latest upstream, which is continuously fuzzed, and
-> doesn't have this issue.
->
-> Best,
-> Nick Terrell
+> I can't see this in -next yet. It would be nice if riscv64 could get
+> KFENCE support.
 
-Thanks for pointing this out. I ignored the modifications of LZ4 
-upstream before. So I'll
-
-recheck them and find the right way to fix this error.
-
-
-Thanks,
-
-Chengyang Fan
-
->> The current lz4 decompression code was from lz4 1.8.3, and I saw
->> several following up fixes for incomplete input partial decoding
->> in recent LZ4 upstream, you could check them out together. However,
->> EROFS should never pass incomplete lz4 compressed data to the LZ4
->> side unless it's somewhat a corrupted image on purpose.
->> https://github.com/lz4/lz4/blame/dev/lib/lz4.c
->>
->> Thanks,
->> Gao Xiang
->>
->>> 					/*
->>> 					 * Error :
->>> 					 * read attempt beyond
->>> -- 
->>> 2.18.0.huawei.25
-> [1] https://github.com/torvalds/linux/blob/007b350a58754a93ca9fe50c498cc27780171153/lib/lz4/lz4_decompress.c#L285
-> [2] https://github.com/lz4/lz4/blob/11efc95c3f02b76ab40e7fbd605677ad6eb141d3/lib/lz4.c#L2059
->
->
+Thanks, this is on for-next.  I'm just doing a boot test with 
+CONFIG_KFENCE=y (and whatever that turns on for defconfig), let me know 
+if there's anything more interesting to test on the KFENCE side of 
+things.
