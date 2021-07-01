@@ -2,130 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A3C3B926F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A33B9271
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhGANkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhGANkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:40:46 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA811C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 06:38:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id i5so8533548eds.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 06:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZRgdN0kDk0oQmGi1iFqux6pM8DxSO13sciooIV27VM=;
-        b=Eni4UJnV3HDc6+yTz9Dsf7kD8w8uWPFsXomnFjf1WqVcTZoO59pN/Az+UVySlyEpkt
-         1SF9gvOYRiwwFLPOCJu6ol+AqezKdbBYiqQGVwD6ox+hEBWwqk9EZIuJ+pRFfY3dZnJ5
-         ijTAWi+xTYjHUNSGxlCYYCTOytGLIcU3kb6N8bNNd5jhBde7zg8Xy6t7Inyt6XYTmWfz
-         xwfFfuCvI6AOC6AU3Qj9WJwjWLyuZN+6+UVM6mk8rkHIyAmJcBccJJzXgIyOYmcwwfoq
-         QfVhMB4dy5cPE4zsN/8JBaLHvQpRyxYEedvWKTr7oN3s54byjdbQLk9Hxk3zyrXuSivS
-         vZ0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZRgdN0kDk0oQmGi1iFqux6pM8DxSO13sciooIV27VM=;
-        b=TyAW24HHSaVkapQu79c+/Nw0qYZTNorCzmbmHh8UlgL4OkFkS/7BK0SNZqOXuVlkkU
-         bdKbsBTEQM3m0kVXVvE9wxUITLFWc4s5Xgc2Izu0B9KOCkLxoSI/aOzLRt4jGPBzYfMu
-         Ss7rs3IZISBv1hRaFMdO9n9kuVmsDF9Jb6xYhh0M+P3BnI53SvWaNS/wIR5yuw0XfNKL
-         zVrWyxD8fnWZw9Dt2D9Z0uGB3Ny+R1JsQ1Vm+IH1jdlpM8UAbP5HvHYsABxHyRqXYKB0
-         PNLBxQimaftAs5GXd79I53vNc9qEOBrkn00vSpC5J6hSGChbmn7Gbp8PRxkcMlpyvUbD
-         faag==
-X-Gm-Message-State: AOAM531Rv4jI9zDdFjmoz23V/PPICWADmu1gyRuVd5TXxWxv5/DPvYQS
-        tusju8mxRtMIWmzc7NcpRKc=
-X-Google-Smtp-Source: ABdhPJzIWzaVGqV87jeYsYSUd0rjWq+IrpvzwiQaRdiKQzb1B7l10/u+Zl0RlqD9/K0GVOEHOgXxQA==
-X-Received: by 2002:aa7:dc42:: with SMTP id g2mr53594310edu.362.1625146693291;
-        Thu, 01 Jul 2021 06:38:13 -0700 (PDT)
-Received: from linux.local (host-80-181-152-252.pool80181.interbusiness.it. [80.181.152.252])
-        by smtp.gmail.com with ESMTPSA id z10sm9385378edc.28.2021.07.01.06.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 06:38:12 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: Replace a custom function with crc32_le()
-Date:   Thu,  1 Jul 2021 15:38:09 +0200
-Message-Id: <20210701133809.26534-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S231965AbhGANqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhGANqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 09:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C3F613FD;
+        Thu,  1 Jul 2021 13:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625147013;
+        bh=ETod3zHyxM26eXwPIY06Iw5iSqjkLxUInHPr6G5aHuU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EF+cirrGChqU2nH23thk2UiArxj2bcvPw04gVkjA0eTKIqXA9HbWT+rRwJIVtxkR/
+         XXF2h0fioZ3wN+XIQptP1OvtK8KsreghdIWa+bBK57EsczInVBPL9ctPkvLAt+5vaR
+         Qb0PBCz2hawwiBeoV5zoNGV0dcLWp7M64fCHK+NCr632xuDdelC/9Lzg+CT5qIXHwM
+         hbT3fRzs47h58HDA0CyHVwtZgx2tQxyB+qBBBVH52b3clg5R4XldSH71YeV3mu3kgA
+         vkDucnx0fXFkmmk7i+uHhkVjs65KbRc4dOUjOQTGwnJBx2qjj77/2N1TmCL7NCXPY2
+         N0Qnj3EiXCtRw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D173D40B1A; Thu,  1 Jul 2021 10:43:28 -0300 (-03)
+Date:   Thu, 1 Jul 2021 10:43:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH 4/4] perf stat: Enable BPF counter with --for-each-cgroup
+Message-ID: <YN3GgMUFtMCYpNI7@kernel.org>
+References: <20210625071826.608504-1-namhyung@kernel.org>
+ <20210625071826.608504-5-namhyung@kernel.org>
+ <YNy85M22XZ8Sc/Gz@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNy85M22XZ8Sc/Gz@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use crc32_le in place of the custom getcrc32. This change makes GCC
-to warn about incorrect castings to the restricted type __le32, but
-they can be safely ignored because crc32_le calculates bitwise
-little-endian Ethernet AUTODIN II CRC32.
+Em Wed, Jun 30, 2021 at 03:50:12PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Jun 25, 2021 at 12:18:26AM -0700, Namhyung Kim escreveu:
+> > Recently bperf was added to use BPF to count perf events for various
+> > purposes.  This is an extension for the approach and targetting to
+> > cgroup usages.
+> > 
+> > Unlike the other bperf, it doesn't share the events with other
+> > processes but it'd reduce unnecessary events (and the overhead of
+> > multiplexing) for each monitored cgroup within the perf session.
+> > 
+> > When --for-each-cgroup is used with --bpf-counters, it will open
+> > cgroup-switches event per cpu internally and attach the new BPF
+> > program to read given perf_events and to aggregate the results for
+> > cgroups.  It's only called when task is switched to a task in a
+> > different cgroup.
+> 
+> I'll take a stab at fixing these:
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/rtl8188eu/core/rtw_security.c | 22 ++++---------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+So, tried some 'make -C tools clean', etc but I'm now stuck with:
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index 1b2cb6196463..5f010cb66970 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -111,21 +111,6 @@ static void crc32_init(void)
- 	bcrc32initialized = 1;
- }
+  CLANG   /tmp/build/perf/util/bpf_skel/.tmp/bperf_cgroup.bpf.o
+util/bpf_skel/bperf_cgroup.bpf.c:4:10: fatal error: 'vmlinux.h' file not found
+#include "vmlinux.h"
+         ^~~~~~~~~~~
+1 error generated.
+make[2]: *** [Makefile.perf:1033: /tmp/build/perf/util/bpf_skel/.tmp/bperf_cgroup.bpf.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+  CC      /tmp/build/perf/pmu-events/pmu-events.o
+  LD      /tmp/build/perf/pmu-events/pmu-events-in.o
+
+Auto-detecting system features:
+...                        libbfd: [ on  ]
+...        disassembler-four-args: [ on  ]
+...                          zlib: [ on  ]
+...                        libcap: [ on  ]
+...               clang-bpf-co-re: [ on  ]
+
+
+  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
+  MKDIR   /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
+
+
+Have to go errands now, will put what I have at tmp.perf/core now.
+Please see if you can reproduce, I use this to build:
+
+    make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 DEBUG=1 O=/tmp/build/perf -C tools/perf install-bin
+
+- Arnaldo
  
--static __le32 getcrc32(u8 *buf, int len)
--{
--	u8 *p;
--	u32  crc;
--
--	if (bcrc32initialized == 0)
--		crc32_init();
--
--	crc = 0xffffffff;       /* preload shift register, per CRC-32 spec */
--
--	for (p = buf; len > 0; ++p, --len)
--		crc = crc32_table[(crc ^ *p) & 0xff] ^ (crc >> 8);
--	return cpu_to_le32(~crc);    /* transmit complement, per CRC-32 spec */
--}
--
- /* Need to consider the fragment  situation */
- void rtw_wep_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- {
-@@ -609,14 +594,15 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- 
- 				if ((curfragnum + 1) == pattrib->nr_frags) {	/* 4 the last fragment */
- 					length = pattrib->last_txcmdsz - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
--					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
-+					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
- 
- 					arcfour_init(&mycontext, rc4key, 16);
- 					arcfour_encrypt(&mycontext, payload, payload, length);
- 					arcfour_encrypt(&mycontext, payload + length, crc, 4);
- 				} else {
- 					length = pxmitpriv->frag_len - pattrib->hdrlen - pattrib->iv_len - pattrib->icv_len;
--					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
-+					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
-+
- 					arcfour_init(&mycontext, rc4key, 16);
- 					arcfour_encrypt(&mycontext, payload, payload, length);
- 					arcfour_encrypt(&mycontext, payload + length, crc, 4);
-@@ -682,7 +668,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct recv_frame *precvframe)
- 			arcfour_init(&mycontext, rc4key, 16);
- 			arcfour_encrypt(&mycontext, payload, payload, length);
- 
--			*((__le32 *)crc) = getcrc32(payload, length - 4);
-+			*((__le32 *)crc) = ~crc32_le(~0, payload, length - 4);
- 
- 			if (crc[3] != payload[length - 1] ||
- 			    crc[2] != payload[length - 2] ||
+> ⬢[acme@toolbox perf]$ make -k CORESIGHT=1 BUILD_BPF_SKEL=1 PYTHON=python3 DEBUG=1 O=/tmp/build/perf -C tools/perf install-bin
+> make: Entering directory '/var/home/acme/git/perf/tools/perf'
+>   BUILD:   Doing 'make -j24' parallel build
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
+> diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/mount.h' differs from latest version at 'include/uapi/linux/mount.h'
+> diff -u tools/include/uapi/linux/mount.h include/uapi/linux/mount.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/cpufeatures.h' differs from latest version at 'arch/x86/include/asm/cpufeatures.h'
+> diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
+> diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/kvm.h' differs from latest version at 'arch/x86/include/uapi/asm/kvm.h'
+> diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
+> Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs from latest version at 'arch/x86/include/uapi/asm/svm.h'
+> diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
+> Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
+> diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
+>   DESCEND plugins
+>   GEN     /tmp/build/perf/python/perf.so
+>   INSTALL trace_plugins
+>   CC      /tmp/build/perf/util/bpf_counter_cgroup.o
+>   CC      /tmp/build/perf/util/demangle-java.o
+>   CC      /tmp/build/perf/util/demangle-rust.o
+>   CC      /tmp/build/perf/util/jitdump.o
+>   CC      /tmp/build/perf/util/genelf.o
+>   CC      /tmp/build/perf/util/genelf_debug.o
+>   CC      /tmp/build/perf/util/perf-hooks.o
+>   CC      /tmp/build/perf/util/bpf-event.o
+> util/bpf_counter_cgroup.c: In function ‘bperf_load_program’:
+> util/bpf_counter_cgroup.c:96:23: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
+>    96 |         for (i = 0; i < nr_cpus; i++) {
+>       |                       ^
+> util/bpf_counter_cgroup.c:125:43: error: comparison of integer expressions of different signedness: ‘__u32’ {aka ‘unsigned int’} and ‘int’ [-Werror=sign-compare]
+>   125 |                         for (cpu = 0; cpu < nr_cpus; cpu++) {
+>       |                                           ^
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__load’:
+> util/bpf_counter_cgroup.c:178:65: error: unused parameter ‘target’ [-Werror=unused-parameter]
+>   178 | static int bperf_cgrp__load(struct evsel *evsel, struct target *target)
+>       |                                                  ~~~~~~~~~~~~~~~^~~~~~
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__install_pe’:
+> util/bpf_counter_cgroup.c:195:49: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                   ~~~~~~~~~~~~~~^~~~~
+> util/bpf_counter_cgroup.c:195:60: error: unused parameter ‘cpu’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                                        ~~~~^~~
+> util/bpf_counter_cgroup.c:195:69: error: unused parameter ‘fd’ [-Werror=unused-parameter]
+>   195 | static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
+>       |                                                                 ~~~~^~
+> util/bpf_counter_cgroup.c: In function ‘bperf_cgrp__enable’:
+> util/bpf_counter_cgroup.c:219:45: error: unused parameter ‘evsel’ [-Werror=unused-parameter]
+>   219 | static int bperf_cgrp__enable(struct evsel *evsel)
+>       |                               ~~~~~~~~~~~~~~^~~~~
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter_cgroup.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> make[3]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:139: util] Error 2
+> make[2]: *** [Makefile.perf:655: /tmp/build/perf/perf-in.o] Error 2
+> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> make: *** [Makefile:113: install-bin] Error 2
+> make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+> ⬢[acme@toolbox perf]$
+
 -- 
-2.32.0
 
+- Arnaldo
