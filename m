@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7123B97AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D9D3B97AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhGAUgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
+        id S236433AbhGAUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236866AbhGAUgI (ORCPT
+        with ESMTP id S236370AbhGAUgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:36:08 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3315DC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 13:33:37 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d1so4341189plg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:33:37 -0700 (PDT)
+        Thu, 1 Jul 2021 16:36:49 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791CCC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 13:34:16 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a6so10269233ljq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OJw8rDzzQy3DhiLUvJQW+Qdo9Q9Meb8jwgwdAgUtwaA=;
-        b=tjNf5cxiic1IPqklXIFZcopMA88yLPj7nHk9KKLZZCgnA0o/97EhJzWO3mqfHkg89j
-         kAvRHnAzxJSzeRsj/R1Zs/iQhGksf/npipynnWtszL2uJSpvaki4kcXwIWo7jKepEU9z
-         AkvXC7nruuQI0yxo9nu0Zsq5lpZMHPR9eIKAo33JCgWztrDpK9LqDUDZxTKHqX79Et+0
-         tOVNAqJxr7h0M31yRL/TyIChS9QJCX8yhqqE2EuHgPEvtzYiYLIRGE2d9f5vgNazBLv+
-         /UJF+LPAjXVH2hfPv2RyTYowAdt+Bpf0XiS2sEUhUqR5QCAmXajtoo8vcnACnaYC80CW
-         iRHw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LMMTpunk2rCY31/itiEgvN4IOL4r5+Mqwa9/O4MKcGk=;
+        b=iUtWrJWg8vB/1Z560py1lFcKOiE+AKpkTVqxbYO0senY7UUa+tTV30pIWsx6stA3B8
+         HUSTPJC3htDuwxtdvw3HYctOIW3vxp53ItnI41pKocoqhJ2bxuz3GXfo9lK1Ka1h7zTO
+         EdnrfRt8Gv74bxgHfm+CCZje+pihTV6ZYxCOhlgKkWVsa/amhVi26SaRNCEupQbbHcRf
+         8s3aiOWCxUjzNUupHRPCmCy10jp/ZY+lYdC/y7tuZZm2ESWeaEXq5Y9zChAMiTHU15tE
+         CQR5bJgG1n4HPp/HeyHnsRNLBi28aKqo0dhhyPmy3xbgcFZyCWPBk+eIuwNz5G90xWSe
+         AGzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OJw8rDzzQy3DhiLUvJQW+Qdo9Q9Meb8jwgwdAgUtwaA=;
-        b=PD4YZwJkgXVB89GMZKstQnXaYXR6Cox4DUm8rqh1LuqlemLKaA9DecXf/urZ6R7voT
-         01pVEPloPxFe+AyHKfEXDh1cBIen0q8Fvk1H64HlWLU03yfdK8DjPPj48iND+FtjKLRw
-         g3aEEhcVbl+cFA9ofKOUDDLyVIWSnjHfJw1pS7U6uzj4JTeopMRTNqX+RtBpCA/+fTB0
-         mIEXGT65X3Wn8skBL1Zknu0xAdF3XeF71SLwSOwKpWwQXCxrCt3BEuEq7w9+RjRKAEXU
-         /H5DtW9MRb0/9NCVuDz/LhQcVbyPhdb1qSk9Xh2vM9l+tHaFwa1B7p3rKq3EzZ8MgQYu
-         AUcw==
-X-Gm-Message-State: AOAM533lhUU650CIFNYEhcYnQ72vN4KnDkQ0tjnhA/Aho9ih9JJ8uE4Z
-        q9RT5vlN3STSgKsRkz703GsTMA==
-X-Google-Smtp-Source: ABdhPJxg+Za0ZEhKlCUXAe3lsXSkyHKiJcX76VwoRNv8bPZ+omjAiffeUdkx0JcSCtpRpL5AW22CoA==
-X-Received: by 2002:a17:902:c086:b029:129:3680:32f0 with SMTP id j6-20020a170902c086b0290129368032f0mr1419861pld.47.1625171616680;
-        Thu, 01 Jul 2021 13:33:36 -0700 (PDT)
-Received: from x1 ([2601:1c0:4701:ae70:8fd:ccc0:a9a:cf98])
-        by smtp.gmail.com with ESMTPSA id d3sm501203pjo.31.2021.07.01.13.33.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 13:33:35 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 13:33:33 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-Message-ID: <20210701203333.GA963857@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LMMTpunk2rCY31/itiEgvN4IOL4r5+Mqwa9/O4MKcGk=;
+        b=D6gOA2ZmXFuYHfPgm4NGw13DsV+Dg+r51kkTndRZIT1OccUwblUBD1BkeBTbgzRSmA
+         Z5J7aKWjC9cjXz3jrJh057WzOUQ8XtS45cztgHlQ+nPsmF0rdmNYeIlz2llGTEP5fSgD
+         QEU3iVg+h64/uuiHIWskN/CpW52mmSWgfHuvXNWoVdWBcPZUxkdEFbzJXZXQjjsMl0uu
+         2ZTIBcyZ2JY2i/JKq8Oiqku98XUtfLW9A+B4nVq/3yFMQ09CiI2FaTouZDaEuRKWJl1B
+         jswGGp5MAlzs7p6/SUL96WXETZcxwbUPrLgNB/iwu6Va3QTQ/wG/EKfzt9QejKkHznUB
+         zmyw==
+X-Gm-Message-State: AOAM5337bfIDABW8HXrnmWQi7cFAi1gwRes+8SHSYkyvkdGSxffB+P6L
+        deWSIax6yV7wNYFPCByVrkHvrdqbxAb3yOuMXddI7Q==
+X-Google-Smtp-Source: ABdhPJwq8trRBKUDEGBZw1/PLvi4+9lccj2M21zGmy72qGV+weTWBPo4kUOoRMab4y9/E20e8wEFKIm19jzLq5gf7RE=
+X-Received: by 2002:a05:651c:b12:: with SMTP id b18mr1060720ljr.260.1625171654416;
+ Thu, 01 Jul 2021 13:34:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c59105d32a9936f8806501ecd20e044@walle.cc>
+References: <f5dbb1ed01d13d4eac2b719db42cb02bf8166ceb.1625170569.git.christophe.jaillet@wanadoo.fr>
+ <2a1bcfa7f84f63ab2076175c6a5c0a5a181d3bcb.1625170569.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <2a1bcfa7f84f63ab2076175c6a5c0a5a181d3bcb.1625170569.git.christophe.jaillet@wanadoo.fr>
+From:   Catherine Sullivan <csully@google.com>
+Date:   Thu, 1 Jul 2021 13:33:37 -0700
+Message-ID: <CAH_-1qwt9qjUhrs0nkvu6cg+0K26XR1on2pHf0Q7jLc2V46U7A@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] gve: Propagate error codes to caller
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Sagi Shahar <sagis@google.com>, Jon Olson <jonolson@google.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        David Awogbemila <awogbemila@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Yangchun Fu <yangchun@google.com>,
+        Bailey Forrest <bcf@google.com>, Kuo Zhao <kuozhao@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 08:39:40AM +0200, Michael Walle wrote:
-> Hi Drew,
-> 
-> Am 2021-07-01 02:20, schrieb Drew Fustini:
-> > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
-> > BeagleV Starlight JH7100 board [2].
-> > 
-> > [1] https://github.com/starfive-tech/beaglev_doc/
-> > [2] https://github.com/beagleboard/beaglev-starlight
-> > 
-> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> 
-> Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
-> drivers/gpio/gpio-sl28cpld.c for an example.
-> 
-> -michael
+On Thu, Jul 1, 2021 at 1:18 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> If 'gve_probe()' fails, we should propagate the error code, instead of
+> hard coding a -ENXIO value.
+> Make sure that all error handling paths set a correct value for 'err'.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Thank you for the suggestion.  I am not familiar with GPIO_REGMAP and
-REGMAP_IRQ so I will read about it.  Is the advantage is that is helps
-to reduce code duplication by using an abstraction?
+Reviewed-by: Catherine Sullivan <csully@google.com>
 
-I did notice that the gpio-sifive.c driver used regmap_update_bits() and
-regmap_write().
+> ---
+> v2: Unchanged
+>     The previous serie had 3 patches. Now their are only 2
+> ---
+>  drivers/net/ethernet/google/gve/gve_main.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+> index 44262c9f9ec2..c03984b26db4 100644
+> --- a/drivers/net/ethernet/google/gve/gve_main.c
+> +++ b/drivers/net/ethernet/google/gve/gve_main.c
+> @@ -1469,7 +1469,7 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>
+>         err = pci_enable_device(pdev);
+>         if (err)
+> -               return -ENXIO;
+> +               return err;
+>
+>         err = pci_request_regions(pdev, "gvnic-cfg");
+>         if (err)
+> @@ -1512,6 +1512,7 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>         dev = alloc_etherdev_mqs(sizeof(*priv), max_tx_queues, max_rx_queues);
+>         if (!dev) {
+>                 dev_err(&pdev->dev, "could not allocate netdev\n");
+> +               err = -ENOMEM;
+>                 goto abort_with_db_bar;
+>         }
+>         SET_NETDEV_DEV(dev, &pdev->dev);
+> @@ -1593,7 +1594,7 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>
+>  abort_with_enabled:
+>         pci_disable_device(pdev);
+> -       return -ENXIO;
+> +       return err;
+>  }
+>
+>  static void gve_remove(struct pci_dev *pdev)
+> --
+> 2.30.2
+>
 
-I suppose that is better than writel_relaxed() and iowrite32() which
-this RFC driver does?
-
-thanks,
-drew
+Thanks for the fix!
