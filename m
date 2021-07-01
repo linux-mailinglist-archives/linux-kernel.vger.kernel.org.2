@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169A63B93E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AA43B93E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhGAP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:27:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhGAP1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:27:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E12A96140A;
-        Thu,  1 Jul 2021 15:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625153114;
-        bh=+xwpidjwxHnbYP8ChZRNxTaoNpy++W26pPBlNiZG1Es=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YE1gmcnGC9g80E48RRI74yVfqEgwwBB2bKAeTy4DSkuQhlA9/8EOdAK+quQe0R/fZ
-         QZGdA60OQIAmf8X54geE76/5GIhw2kc8aPAkegkan+nwD+yYdnrOEtLGHngCzXszMi
-         z/8iYsXxwzLtyuUWHEHaNgvnIaIqwYcbmg3uLh+9ukbLGgk8D9/d+WsfqdzShslDRC
-         4E8DyJ+UVGFQSXByxm0ESUjpqZIfzPhXLbe5XTP4BzMppZXitZ5m/4k6rLQCPs31zX
-         8eOwQWjYoLw2uXyx+edD60Yd9zlQEUdA8T2OksazGEWz2WvimcIHL1CKGuKlMRx0Y2
-         h9ro5wQDaYH3g==
-Received: by mail-ej1-f45.google.com with SMTP id bg14so11020110ejb.9;
-        Thu, 01 Jul 2021 08:25:14 -0700 (PDT)
-X-Gm-Message-State: AOAM5321ZNxX9mQ30BQBya0tz6yj0neSExHS0EUuFz0/u+toUPQdhbk4
-        dogHXhxWwkmCMCoVLYOAOrViU96aaOxzBkEY8w==
-X-Google-Smtp-Source: ABdhPJzUEsTvx8EteF/IK3c/gYkviXw1F7trsPeasxSHv8iu+ZIaHLTIVsLiLpAQlbHQOTQVV45g91QrmyohrBAw17o=
-X-Received: by 2002:a17:907:3e8a:: with SMTP id hs10mr372288ejc.359.1625153113214;
- Thu, 01 Jul 2021 08:25:13 -0700 (PDT)
+        id S233564AbhGAP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:28:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65392 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232817AbhGAP2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 11:28:07 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161F4Q4K040717;
+        Thu, 1 Jul 2021 11:25:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oETp4wcH8qi4tT8W+8NM0k2YuYCHdgBjcXm/KqSgA80=;
+ b=cYc7fP6O4k+4NKgbvZS2DLnX58IdX8j/JjASZDelCcYLs32B8yOaZV/m59YSEOO0/kSi
+ 9h2+76ELfSoddigdZEJloiZAo8ZHq96rYQlaegnPCfaeaLjIireUnCz69C7QXYBMzotw
+ 42sjNHjFrDxf3v+x0tpLCPzyaiRZzwjZaSggUI8XHjgCQ92nMLqYEmDmttf6dNJgZiSa
+ uewN0LlUbJMPY/iweJS63JyFgU5uHUkV1YzhM9UAjYcq4cuSVa5qVt0H2fiHrp7T8NMj
+ FVxs6Bdx1y4nS7SiXTwp2fjQQ2rpRfAXKanYhlg+4V0qKH/pi+GRGLiqCGIixc7UE3C3 bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8emec8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 11:25:35 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161F5pBZ048193;
+        Thu, 1 Jul 2021 11:25:34 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8emebd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 11:25:34 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161FFpqf008903;
+        Thu, 1 Jul 2021 15:25:32 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 39h19bgfge-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Jul 2021 15:25:32 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161FNoMC25362728
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 1 Jul 2021 15:23:50 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4841EAE05A;
+        Thu,  1 Jul 2021 15:25:28 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEBF1AE059;
+        Thu,  1 Jul 2021 15:25:27 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.22.223])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  1 Jul 2021 15:25:27 +0000 (GMT)
+Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
+ handler function pointer
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
+ <20210621155714.1198545-3-akrowiak@linux.ibm.com>
+ <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
+Date:   Thu, 1 Jul 2021 17:25:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210630034653.10260-1-manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20210630034653.10260-1-manivannan.sadhasivam@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 1 Jul 2021 09:25:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLHp3kBc1VtGVRxVr_k69GqSC_JX88jo3stdM4W9Qq6AQ@mail.gmail.com>
-Message-ID: <CAL_JsqLHp3kBc1VtGVRxVr_k69GqSC_JX88jo3stdM4W9Qq6AQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Add Qualcomm PCIe Endpoint driver support
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        hemantk@codeaurora.org,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MOmGIV0Y-A3aZdTSZKN-1gxhbSh7WZV4
+X-Proofpoint-GUID: 2fgLdHAGspMhJI5uPIkQtrHpLqAHjBn0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 spamscore=0 phishscore=0
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107010092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 9:47 PM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> Hello,
->
-> This series adds support for Qualcomm PCIe Endpoint controller found
-> in platforms like SDX55. The Endpoint controller is based on the designware
-> core with additional Qualcomm wrappers around the core.
->
-> The driver is added separately unlike other Designware based drivers that
-> combine RC and EP in a single driver. This is done to avoid complexity and
-> to maintain this driver autonomously.
->
-> The driver has been validated with an out of tree MHI function driver on
-> SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
->
-> Thanks,
-> Mani
->
-> Changes in v5:
->
-> * Removed the DBI register settings that are not needed
-> * Used the standard definitions available in pci_regs.h
-> * Added defines for all the register fields
-> * Removed the left over code from previous iteration
->
-> Changes in v4:
->
-> * Removed the active_config settings needed for IPA integration
-> * Switched to writel for couple of relaxed versions that sneaked in
+On 30.06.21 17:18, Tony Krowiak wrote:
+> I assumed that this patch would get queued along with the other one in this series,
+> but it looks like that was an erroneous assumption. Should this also be queued?
 
-I thought we resolved this discussion. Use _relaxed variants unless
-you need the stronger ones.
-
-Rob
-
->
-> Changes in v3:
->
-> * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
-> * Noticeable changes are:
->   - Got rid of _relaxed calls and used readl/writel
->   - Got rid of separate TCSR memory region and used syscon for getting the
->     register offsets for Perst registers
->   - Changed the wake gpio handling logic
->   - Added remove() callback and removed "suppress_bind_attrs"
->   - stop_link() callback now just disables PERST IRQ
-> * Added MMIO region and doorbell interrupt to the binding
-> * Added logic to write MMIO physicall address to MHI base address as it is
->   for the function driver to work
->
-> Changes in v2:
->
-> * Addressed the comments from Rob on bindings patch
-> * Modified the driver as per binding change
-> * Fixed the warnings reported by Kbuild bot
-> * Removed the PERST# "enable_irq" call from probe()
->
-> Manivannan Sadhasivam (3):
->   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
->     controller
->   PCI: dwc: Add Qualcomm PCIe Endpoint controller driver
->   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
->
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 160 ++++
->  MAINTAINERS                                   |  10 +-
->  drivers/pci/controller/dwc/Kconfig            |  10 +
->  drivers/pci/controller/dwc/Makefile           |   1 +
->  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 742 ++++++++++++++++++
->  5 files changed, 922 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
->
-> --
-> 2.25.1
->
+Sorry, this is on my todo list.
