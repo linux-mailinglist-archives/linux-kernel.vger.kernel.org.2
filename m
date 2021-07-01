@@ -2,189 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1B83B95B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9303B95B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 19:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhGARzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 13:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhGARzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 13:55:06 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDBDC061764
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 10:52:35 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id t11-20020a056902124bb029055a821867baso3544549ybu.14
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 10:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=TWNh4NT6Sbv641LYm1mUzBahkZ28Mzb42DLCx2xe0ZA=;
-        b=rorNy/OC3D360vKowzuz0ZoBEw2kDS1Upmd1ElNP0uIi9b26hzxAgHOCj0FS7VKRPu
-         vsw0AVfuOP4sABf7Qi3KMugltLve4mUZBIMCE1nk086fF6eNjR7cT03uc8j3GTZCw8e9
-         4V+j2OebhHSLMTzoPR470rJ8PGEoByuQPQGIKN74rNDMzuAd7W2zPXqE4cSAsNAf1gDv
-         o2Ag6lQcEZDhr6lJgtJ8FhYzzhCWhzk69jxo7iyYfs3MF5a3N27KHGPQhZlkLTpZ2Xdw
-         LzMz43NbR9jLLeka0KB+kdGmGHDgh+GJ+eNG8q8l2fevWYuHFbIdrxTAer4nQkK/e5c6
-         afoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=TWNh4NT6Sbv641LYm1mUzBahkZ28Mzb42DLCx2xe0ZA=;
-        b=qzpw09a76Gci4nyQQB1bfr8R2khj9WDIaedb/Y6qRsek87VCfgsxYXKm+0AHy5yPE0
-         PketpydHI3BatXCe7siPybq9Krts2oMluhSKr78bkXSljKO/Fam2OD4caM3GEOUP5Q1L
-         CesxBX901O4c0cvRh8CYSulZni4YYghhZOcJsKKCYKrym2X/kKfMmWE7v1JJBFznJmjV
-         r3AlipKpIMClv123tdQecMdy85oZEqW0BWEGaWcjgeqLFdU0afsmTFaXmENAVXy9A9E+
-         0NYK/OQ+aguC1QJsfWZjwWKduymbRU50F0rjj1Ltz2Nyzz5+7miTtp0lws1ClxGf2oA2
-         jKOw==
-X-Gm-Message-State: AOAM530PULy2v94UuBhHAUhxFUjgWWvhJ6dnk0W1n7ED9n87wJCbXvOy
-        Ne01pNObnGhMg0BU1Tx7c5HCYc4I3g==
-X-Google-Smtp-Source: ABdhPJwzUH1jDy+ConAfg2kmOkKeATvngbBVRVpd7xyX5m8KKlAAxSJE+3BlxrO0EKHLtG59HlgoRj6tDA==
-X-Received: from sunrae.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2814])
- (user=rmoar job=sendgmr) by 2002:a25:814b:: with SMTP id j11mr1360198ybm.212.1625161954632;
- Thu, 01 Jul 2021 10:52:34 -0700 (PDT)
-Date:   Thu,  1 Jul 2021 17:52:31 +0000
-Message-Id: <20210701175231.1734589-1-rmoar@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2] kunit: tool: Fix error messages for cases of no tests and
- wrong TAP header
-From:   Rae Moar <rmoar@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com,
-        dlatypov@google.com, shuah@kernel.org
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232584AbhGARzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 13:55:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:58842 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229844AbhGARzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 13:55:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61EB76D;
+        Thu,  1 Jul 2021 10:52:52 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF7CA3F5A1;
+        Thu,  1 Jul 2021 10:52:50 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 18:52:48 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Subject: Re: [PATCH v3 3/3] sched: Introduce RLIMIT_UCLAMP
+Message-ID: <20210701175248.qxnoo6cu7ts2dpys@e107158-lin.cambridge.arm.com>
+References: <20210623123441.592348-1-qperret@google.com>
+ <20210623123441.592348-4-qperret@google.com>
+ <20210701105014.ewrg4nt5sn3eg57o@e107158-lin.cambridge.arm.com>
+ <YN2vj8OeZI7PBdzU@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YN2vj8OeZI7PBdzU@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch addresses misleading error messages reported by kunit_tool in
-two cases. First, in the case of TAP output having an incorrect header
-format or missing a header, the parser used to output an error message of
-'no tests run!'. Now the parser outputs an error message of 'could not
-parse test results!'.
+On 07/01/21 12:05, Quentin Perret wrote:
+> Hi Qais,
+> 
+> On Thursday 01 Jul 2021 at 11:50:14 (+0100), Qais Yousef wrote:
+> > > diff --git a/fs/proc/base.c b/fs/proc/base.c
+> > > index 9cbd915025ad..91a78cf1fe79 100644
+> > > --- a/fs/proc/base.c
+> > > +++ b/fs/proc/base.c
+> > > @@ -586,6 +586,7 @@ static const struct limit_names lnames[RLIM_NLIMITS] = {
+> > >  	[RLIMIT_NICE] = {"Max nice priority", NULL},
+> > >  	[RLIMIT_RTPRIO] = {"Max realtime priority", NULL},
+> > >  	[RLIMIT_RTTIME] = {"Max realtime timeout", "us"},
+> > > +	[RLIMIT_UCLAMP] = {"Max utilization clamp", NULL},
+> > 
+> > I think a single RLIMIT_UCLAMP is fine for pure permission control. But if we
+> > have to do something with the currently requested values we'd need to split it
+> > IMO.
+> 
+> I don't see why we'd need to TBH. Increasing the uclamp min of task will
+> request a higher capacity for the task, and increasing the uclamp min
+> will _allow_ the task to ask for a higher capacity. So at the end of the
+> day, what we want to limit is how much can a task request, no matter
+> how it does it. It's all the same thing in my mind, but if you have a
+> clear idea of what could go wrong, then I'm happy to think again :)
 
-As an example:
+There are several thoughts actually. A bit hard to articulate at this time of
+day, but let me try.
 
-Before:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] no tests run!
-...
+/proc/sys/kernel/sched_util_clamp_min/max are system wide limits. RLIMIT_UCLAMP
+seems to want to mimic it, so it makes sense for both to behave similarly.
+Preventing task from requesting a boost (raising UCLAMP_MIN) is different from
+preventing a task going above performance point (raising UCLAMP_MAX). One
+could want to control one without impacting the other.
 
-After:
-$ ./tools/testing/kunit/kunit.py parse /dev/null
-[ERROR] could not parse test results!
-...
+Also I'm not sure about the relationship between RLIMIT_UCLAMP on the effective
+uclamp value. It seems off to me that by default p->uclamp_req[UCLAMP_MAX]
+= 1024, but setting RLIMIT_UCLAMP to 512 will keep all tasks uncapped by
+default (ie: exceeding the limit).
 
-Second, in the case of TAP output with the correct header but no
-tests, the parser used to output an error message of 'could not parse
-test results!'. Now the parser outputs an error message of 'no tests
-run!'.
+> 
+> > >  };
+> > >  
+> > >  /* Display limits for a process */
+> > > diff --git a/include/asm-generic/resource.h b/include/asm-generic/resource.h
+> > > index 8874f681b056..53483b7cd4d7 100644
+> > > --- a/include/asm-generic/resource.h
+> > > +++ b/include/asm-generic/resource.h
+> > > @@ -26,6 +26,7 @@
+> > >  	[RLIMIT_NICE]		= { 0, 0 },				\
+> > >  	[RLIMIT_RTPRIO]		= { 0, 0 },				\
+> > >  	[RLIMIT_RTTIME]		= {  RLIM_INFINITY,  RLIM_INFINITY },	\
+> > > +	[RLIMIT_UCLAMP]		= {  RLIM_INFINITY,  RLIM_INFINITY },	\
+> > >  }
+> > >  
+> > >  #endif
+> > > diff --git a/include/uapi/asm-generic/resource.h b/include/uapi/asm-generic/resource.h
+> > > index f12db7a0da64..4d0fe4d564bf 100644
+> > > --- a/include/uapi/asm-generic/resource.h
+> > > +++ b/include/uapi/asm-generic/resource.h
+> > > @@ -46,7 +46,8 @@
+> > >  					   0-39 for nice level 19 .. -20 */
+> > >  #define RLIMIT_RTPRIO		14	/* maximum realtime priority */
+> > >  #define RLIMIT_RTTIME		15	/* timeout for RT tasks in us */
+> > > -#define RLIM_NLIMITS		16
+> > > +#define RLIMIT_UCLAMP		16	/* maximum utilization clamp */
+> > > +#define RLIM_NLIMITS		17
+> > >  
+> > >  /*
+> > >   * SuS says limits have to be unsigned.
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index ad055fb9ed2d..b094da4c5fea 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -1430,6 +1430,11 @@ static int uclamp_validate(struct task_struct *p,
+> > >  	if (util_min != -1 && util_max != -1 && util_min > util_max)
+> > >  		return -EINVAL;
+> > >  
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void uclamp_enable(void)
+> > > +{
+> > >  	/*
+> > >  	 * We have valid uclamp attributes; make sure uclamp is enabled.
+> > >  	 *
+> > > @@ -1438,8 +1443,20 @@ static int uclamp_validate(struct task_struct *p,
+> > >  	 * scheduler locks.
+> > >  	 */
+> > >  	static_branch_enable(&sched_uclamp_used);
+> > > +}
+> > >  
+> > > -	return 0;
+> > > +static bool can_uclamp(struct task_struct *p, int value, enum uclamp_id clamp_id)
+> > > +{
+> > > +	unsigned long uc_rlimit = task_rlimit(p, RLIMIT_UCLAMP);
+> > > +
+> > > +	if (value == -1) {
+> > > +		if (rt_task(p) && clamp_id == UCLAMP_MIN)
+> > > +			value = sysctl_sched_uclamp_util_min_rt_default;
+> > > +		else
+> > > +			value = uclamp_none(clamp_id);
+> > > +	}
+> > > +
+> > > +	return value <= p->uclamp_req[clamp_id].value || value <= uc_rlimit;
+> > 
+> > Hmm why do we still need to prevent the task from changing the uclamp value
+> > upward?
+> 
+> Because this is exactly how rlimit already works for nice or rt
+> priorities. Tasks are always allowed to decrease their 'importance'
+> (that is, increase their nice values for ex.), but are limited in how
+> they can increase it.
+> 
+> See the __sched_setscheduler() permission checks for nice values and
+> such.
 
-As an example:
+I thought we already established that uclamp doesn't have security or fairness
+implications and tasks are free to change it the way they want? This
+implementation is close to v1 otherwise; we wanted to improve on that?
 
-Before:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] could not parse test results!
+I think RLIMIT_UCLAMP should set an upper bound, and that's it.
 
-After:
-$ echo -e 'TAP version 14\n1..0' | ./tools/testing/kunit/kunit.py parse
-[ERROR] no tests run!
+> 
+> > It just shouldn't be outside the specified limit, no?
+> > 
+> > And I think there's a bug in this logic. If UCLAMP_MIN was 1024 then the
+> > RLIMIT_UCLAMP was lowered to 512, the user will be able to change UCLAMP_MIN to
+> > 700 for example because of the
+> > 
+> > 	return value <= p->uclamp_req[clamp_id].value || ...
+> 
+> Right, but again this is very much intentional and consistent with the
+> existing behaviour for RLIMIT_NICE and friends. I think we should stick
+> with that for the new uclamp limit unless there is a good reason to
+> change it.
 
-Additionally, this patch also corrects the tests in kunit_tool_test.py
-and adds a test to check the error in the case of TAP output with the
-correct header but no tests.
+Like above. I don't see the two limits are the same. Uclamp is managing
+a different resource that doesn't behave like nice IMO. Apps are free to
+lower/raise their uclamp value as long as they don't exceed the limit set by
+RLIMIT_UCLAMP.
 
-Signed-off-by: Rae Moar <rmoar@google.com>
-Reviewed-by: David Gow <davidgow@google.com>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
----
-V1 -> V2:
-* Simplified log for the test for TAP output with the correct header
-  but no tests
-* Added examples in commit message of error messages before and after
----
- tools/testing/kunit/kunit_parser.py              |  6 ++++--
- tools/testing/kunit/kunit_tool_test.py           | 16 +++++++++++++---
- ...st_is_test_passed-no_tests_run_no_header.log} |  0
- ...t_is_test_passed-no_tests_run_with_header.log |  2 ++
- 4 files changed, 19 insertions(+), 5 deletions(-)
- rename tools/testing/kunit/test_data/{test_is_test_passed-no_tests_run.log => test_is_test_passed-no_tests_run_no_header.log} (100%)
- create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
+> 
+> > I think we should just prevent the requested value to be above the limit. But
+> > the user can lower and increase it within that range. ie: for RLIMIT_UCLAMP
+> > = 512, any request in the [0:512] range is fine.
+> > 
+> > Also if we set RLIMIT_UCLAMP = 0, then the user will still be able to change
+> > the uclamp value to 0, which is not what we want. We need a special value for
+> > *all requests are invalid*.
+> 
+> And on this one again this is all for consistency :)
 
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index c3c524b79db8..b88db3f51dc5 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -338,9 +338,11 @@ def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
- def parse_test_result(lines: LineStream) -> TestResult:
- 	consume_non_diagnostic(lines)
- 	if not lines or not parse_tap_header(lines):
--		return TestResult(TestStatus.NO_TESTS, [], lines)
-+		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	expected_test_suite_num = parse_test_plan(lines)
--	if not expected_test_suite_num:
-+	if expected_test_suite_num == 0:
-+		return TestResult(TestStatus.NO_TESTS, [], lines)
-+	elif expected_test_suite_num is None:
- 		return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
- 	test_suites = []
- 	for i in range(1, expected_test_suite_num + 1):
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index bdae0e5f6197..75045aa0f8a1 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -157,8 +157,18 @@ class KUnitParserTest(unittest.TestCase):
- 			kunit_parser.TestStatus.FAILURE,
- 			result.status)
- 
-+	def test_no_header(self):
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_no_header.log')
-+		with open(empty_log) as file:
-+			result = kunit_parser.parse_run_tests(
-+				kunit_parser.extract_tap_lines(file.readlines()))
-+		self.assertEqual(0, len(result.suites))
-+		self.assertEqual(
-+			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
-+			result.status)
-+
- 	def test_no_tests(self):
--		empty_log = test_data_path('test_is_test_passed-no_tests_run.log')
-+		empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
- 		with open(empty_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
-@@ -173,7 +183,7 @@ class KUnitParserTest(unittest.TestCase):
- 		with open(crash_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
--		print_mock.assert_any_call(StrContains('no tests run!'))
-+		print_mock.assert_any_call(StrContains('could not parse test results!'))
- 		print_mock.stop()
- 		file.close()
- 
-@@ -309,7 +319,7 @@ class KUnitJsonTest(unittest.TestCase):
- 			result["sub_groups"][1]["test_cases"][0])
- 
- 	def test_no_tests_json(self):
--		result = self._json_for('test_is_test_passed-no_tests_run.log')
-+		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
- 		self.assertEqual(0, len(result['sub_groups']))
- 
- class StrContains(str):
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-similarity index 100%
-rename from tools/testing/kunit/test_data/test_is_test_passed-no_tests_run.log
-rename to tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_no_header.log
-diff --git a/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-new file mode 100644
-index 000000000000..5f48ee659d40
---- /dev/null
-+++ b/tools/testing/kunit/test_data/test_is_test_passed-no_tests_run_with_header.log
-@@ -0,0 +1,2 @@
-+TAP version 14
-+1..0
--- 
-2.32.0.93.g670b81a890-goog
+But this will break your use case. If android framework decided to boost a task
+to 300, then the task itself decides to set its boost to 0, it'll override that
+setting, no? Isn't against what you want?
 
+We could make 0 actually behave as *all requests are invalid*.
+
+> 
+> > I'm not against this, but my instinct tells me that the simple sysctl knob to
+> > define the paranoia/priviliged level for uclamp is a lot simpler and more
+> > straightforward control.
+> 
+> It is indeed simpler, but either way we're committing to a new
+> userspace-visible. I feel that the rlimit stuff is going to be a lot
+> more future-proof, because it allows for much finer grain configurations
+> and as such is likely to cover more use-cases in the long run.
+
+Yeah as I said I'm not against it in principle. What is tripping me off is
+mainly the relationship between RLIMIT_UCLAMP and the effective uclamp value.
+But maybe I'm overthinking it.
+
+Thanks
+
+--
+Qais Yousef
