@@ -2,256 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1698B3B9702
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0937A3B970D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhGAUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:14:17 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:36530 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbhGAUOO (ORCPT
+        id S233995AbhGAUPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233040AbhGAUPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:14:14 -0400
-Received: by mail-lf1-f42.google.com with SMTP id d16so13978829lfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:11:42 -0700 (PDT)
+        Thu, 1 Jul 2021 16:15:11 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3370BC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Jul 2021 13:12:40 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id j10so3633802qtx.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Jul 2021 13:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IRBdJfZtqdTD8dfu42iDMw+1kiTU/iXVIZE4bw9+r8w=;
+        b=Uxtj/3SQ170QVlNu/SMKZ8EZu0BrxZFF1GQy9XJVD54dMG1+175ytv2DGm3HaKK/sO
+         HcSy0A+klkKcUI+A4u5m5MrKcIOUYO3iBR0ZKKvLhYEWlck6OyygIYPLV57njq4/Y+aF
+         0IN+OO7O5GdjNq7NMjN2pZp8fPOrKcGgEu1Bu7C+EB2RfPJjZUfWkJZh4iDXX/F/8Qm8
+         L6CM/fsyQp4XlqgthNWX2o5SJqMk0mmTbiVLSkwPY9BsPMNRq50FrT6ecxA9XV7ttfsk
+         9QJ9ZSoVpn2gBSd5UCZxWFkhnH+M8qssL177gkTWppJEdJCe1bK8GIO7x3wx0JV/tbgN
+         L/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=75g2PFx7kdnTyLTbpkbeecVRMngGlMc1mxlgm3OY/nE=;
-        b=pQiW4yqM/1t40p6rrppCdZkGjqU7fCF7EA+NBz1NtlG3FRKl07deaggAuuHpzQJlGu
-         Jv6xMrsfXkEHMFUFQNXCyjXWcXaMeUfaP2JV7IkQnvLzPP9uKceIC56dSRjoMe/VfMvo
-         gMDUSIGTRDcJqbwshnUk7fqqMPS6TlURz1bZqLZRPHMJyDv+kc+m6eyey1R0Uyu76rJ7
-         d3i4Rjvc4n1ohB6p74+Fo3e6U951t+dMIJxyWiBYXn+YpWY9U32h5uNYk1gEq89DIPZX
-         6NrnzMLlAxxkqIl6j5lYm0UT+2eCcxRpC7IUJNIlC8vJcU4bCsa/XpD1kSzXbcwhtcT9
-         UD1A==
-X-Gm-Message-State: AOAM532ehoI+S3srRGZY2YCu5ZFWIjRjFRXEMEXxwtgbWyds3nC9RK6b
-        nMRiVuXrYLO71+okzvT8Cmt0cmC+S+yq4TszaOg=
-X-Google-Smtp-Source: ABdhPJw6ucf0OfCWwMykMvqGBv4Pn34O/7hYMslOrUYzNVom5l48M1AE3uZHWAjycrdG4miwU0tbwjeyBKo5vb9Byj0=
-X-Received: by 2002:a19:4916:: with SMTP id w22mr1059868lfa.374.1625170301664;
- Thu, 01 Jul 2021 13:11:41 -0700 (PDT)
+        bh=IRBdJfZtqdTD8dfu42iDMw+1kiTU/iXVIZE4bw9+r8w=;
+        b=nNVJRdw6fjxM/ad0NMIja/3nv/vTwesoN2DCfbEkuHKmCNITI9ZKMQtOfUBqcGDv4F
+         DB86lqrS7vWTFaN+yddVpVniVfRlFTykFk+DNwUdzCXCUZ1OBPcJXR0Xho5BOkvrmLSf
+         UOgLOVxeXx6qMUewxOyE4E3EYej7K0qhbFniB5qJQnBDsxiw7u3JPzTYPUAzylIamIYa
+         vMz2lzLwRQCAqubyBI9Wj0vvkd0OkffKJi1xqEWsGL1M7gCdzcdyxNq5i42pYLRbUmCm
+         L91vWoVxT18p/3Ffte5pKd8h2eAiNvdrTNcUUj9QGUXtgeom0t3bg0UyfX41Ot1UrEnE
+         ECpQ==
+X-Gm-Message-State: AOAM533hAsjP6KG5QvT4ANjzzdoMoRq9ERIYVkO0ELzTP+H+cRQtBPUX
+        kx+4nGWWy35zPT+GQ6SrDKBjYokEmhRv5GCiWSnBwg==
+X-Google-Smtp-Source: ABdhPJw49As8AbIVoei6s0cq92oq3hCWuzSx1MGQeISmA95gFm4I7FY2spyQhoXdh7nHoImLTroCnRgnsNZf+X5rcIk=
+X-Received: by 2002:ac8:688:: with SMTP id f8mr1674302qth.135.1625170359373;
+ Thu, 01 Jul 2021 13:12:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210625071826.608504-1-namhyung@kernel.org> <20210625071826.608504-4-namhyung@kernel.org>
- <YN4S154hd454cAWh@kernel.org>
-In-Reply-To: <YN4S154hd454cAWh@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 1 Jul 2021 13:11:30 -0700
-Message-ID: <CAM9d7ciwDq4dWDNCTdLGrmibsFGA1WY8hkfEX82BzX=S8zyj=Q@mail.gmail.com>
-Subject: Re: [PATCH 3/4] perf tools: Move common bpf functions to bpf_counter.h
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
+References: <20210630133149.3204290-1-dmitry.baryshkov@linaro.org>
+ <20210630133149.3204290-4-dmitry.baryshkov@linaro.org> <YNyHDAHk6ad/XCGl@yoga>
+ <CAA8EJpqf6VyaS7KyhujFgST+S=fua4S-uXia0g7Qh7ogYgWYbw@mail.gmail.com>
+ <YNylqGEi7Q3tFCgy@yoga> <CAA8EJppHQ-XhZWbsPX39wie48JXWvsNerWB9=Q0yxxs7987xxA@mail.gmail.com>
+ <YN1DIwR66JKoFhEZ@yoga>
+In-Reply-To: <YN1DIwR66JKoFhEZ@yoga>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 1 Jul 2021 23:12:27 +0300
+Message-ID: <CAA8EJpr6qrVJY7DdcNagrpaTFW2FMxE-GE8nHyxmiFHCY0A+jA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] clk: qcom: gdsc: enable optional power domain support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Taniya Das <tdas@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 12:09 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Thu, 1 Jul 2021 at 07:23, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
 >
-> Em Fri, Jun 25, 2021 at 12:18:25AM -0700, Namhyung Kim escreveu:
-> > Some helper functions will be used for cgroup counting too.
-> > Move them to a header file for sharing.
+> On Wed 30 Jun 15:29 CDT 2021, Dmitry Baryshkov wrote:
+>
+> > On Wed, 30 Jun 2021 at 20:11, Bjorn Andersson
+> > <bjorn.andersson@linaro.org> wrote:
+> > >
+> > > On Wed 30 Jun 10:47 CDT 2021, Dmitry Baryshkov wrote:
+> > >
+> > > > Hi,
+> > > >
+> > > > On Wed, 30 Jun 2021 at 18:00, Bjorn Andersson
+> > > > <bjorn.andersson@linaro.org> wrote:
+> > > > >
+> > > > > On Wed 30 Jun 08:31 CDT 2021, Dmitry Baryshkov wrote:
+> > > > >
+> > > > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > > > > > domain. Currently we used a regulator to enable this domain on demand,
+> > > > > > however this has some consequences, as genpd code is not reentrant.
+> > > > > >
+> > > > > > Teach Qualcomm clock controller code about setting up power domains and
+> > > > > > using them for gdsc control.
+> > > > > >
+> > > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > >
+> > > > > There's a proposal to add a generic binding for statically assigning a
+> > > > > performance states here:
+> > > > >
+> > > > > https://lore.kernel.org/linux-arm-msm/1622095949-2014-1-git-send-email-rnayak@codeaurora.org/
 > >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/bpf_counter.c | 52 -----------------------------------
-> >  tools/perf/util/bpf_counter.h | 52 +++++++++++++++++++++++++++++++++++
-> >  2 files changed, 52 insertions(+), 52 deletions(-)
+> > I checked this thread. It looks like Rajendra will also switch to the
+> > "required-opps" property. So if that series goes in first, we can drop
+> > the call to set_performance_state. If this one goes in first, we can
+> > drop the set_performance_state call after getting Rajendra's work in.
 > >
-> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> > index 974f10e356f0..1af81e882eb6 100644
-> > --- a/tools/perf/util/bpf_counter.c
-> > +++ b/tools/perf/util/bpf_counter.c
-> > @@ -7,12 +7,8 @@
-> >  #include <unistd.h>
-> >  #include <sys/file.h>
-> >  #include <sys/time.h>
-> > -#include <sys/resource.h>
-> >  #include <linux/err.h>
-> >  #include <linux/zalloc.h>
-> > -#include <bpf/bpf.h>
-> > -#include <bpf/btf.h>
-> > -#include <bpf/libbpf.h>
-> >  #include <api/fs/fs.h>
-> >  #include <perf/bpf_perf.h>
+> > > > >
+> > > > >
+> > > > > But that said, do you really need this?
+> > > > >
+> > > > > The requirement for driving MMCX to LOW_SVS on SM8250 (and NOM on
+> > > > > SM8150/SC8180x) seems to only come from the fact that you push MDP_CLK
+> > > > > to 460MHz in &mdss.
+> > > > >
+> > > > > But then in &mdss_mdp you do the same using an opp-table based on the
+> > > > > actual MDP_CLK, which per its power-domains will scale MMCX accordingly.
+> > > >
+> > > > MDSS and DSI would bump up MMCX performance state requirements on
+> > > > their own, depending on the frequency being selected.
+> > > >
+> > >
+> > > Right, but as I copied things from the sm8250.dtsi to come up with
+> > > sm8150/sc8180x.dtsi I concluded that as soon as the assigned-clockrate
+> > > in &mdss kicks in I need the performance state to be at NOM.
+> > >
+> > > So keeping the assigned-clockrate in &mdss means that MMCX will never go
+> > > below NOM.
 > >
-> > @@ -37,13 +33,6 @@ static inline void *u64_to_ptr(__u64 ptr)
-> >       return (void *)(unsigned long)ptr;
-> >  }
+> > No, because once MDP is fully running, it will lower the clock frequency:
 > >
-> > -static void set_max_rlimit(void)
-> > -{
-> > -     struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-> > -
-> > -     setrlimit(RLIMIT_MEMLOCK, &rinf);
-> > -}
-> > -
-> >  static struct bpf_counter *bpf_counter_alloc(void)
-> >  {
-> >       struct bpf_counter *counter;
-> > @@ -297,33 +286,6 @@ struct bpf_counter_ops bpf_program_profiler_ops = {
-> >       .install_pe = bpf_program_profiler__install_pe,
-> >  };
+> > # grep mdp_clk /sys/kernel/debug/clk/clk_summary
+> >           disp_cc_mdss_mdp_clk_src       1        1        0
+> > 150000000          0     0  50000         ?
+> >              disp_cc_mdss_mdp_clk       2        2        0
+> > 150000000          0     0  50000         Y
 > >
-> > -static __u32 bpf_link_get_id(int fd)
-> > -{
-> > -     struct bpf_link_info link_info = {0};
 >
-> Moving this from bpf_counter.c to the header made this code be compiled
-> in places where it wasn't before, as bpf_counter.c is built only when:
->
-> perf-$(CONFIG_PERF_BPF_SKEL) += bpf_counter.o
->
-> For instance, this got broken:
->
->   23    33.62 debian:9                      : FAIL clang version 3.8.1-24 (tags/RELEASE_381/final)
->     In file included from builtin-stat.c:71:
->     /git/perf-5.13.0/tools/perf/util/bpf_counter.h:92:37: error: missing field 'id' initializer [-Werror,-Wmissing-field-initializers]
->             struct bpf_link_info link_info = {0};
->                                                ^
->     /git/perf-5.13.0/tools/perf/util/bpf_counter.h:101:37: error: missing field 'id' initializer [-Werror,-Wmissing-field-initializers]
->             struct bpf_link_info link_info = {0};
->                                                ^
->     /git/perf-5.13.0/tools/perf/util/bpf_counter.h:110:35: error: missing field 'id' initializer [-Werror,-Wmissing-field-initializers]
->             struct bpf_map_info map_info = {0};
->
-> ITs mostly older systems, but I'll fix it anyway.
+> But won't that just lower the performance state requested by the
+> &mdss_mdp, while the &mdss still votes for NOM - with the outcome being
+> that we maintain NOM even if the clock goes down?
 
-Thanks a lot for fixing all the messes.
-Assuming you're fixed the preparation patches.
-I'll just update the last one next time.
+&mdss doesn't vote on performance state. At least it does not on
+msm/msm-next which I have at hand right now.
+&mdss toggles mdss_gdsc, but does not assign any performance state.
 
-Thanks,
-Namhyung
-
+On the other hand &mdss_mdp and &dsi0 clearly vote on mmcx's performance state.
 
 >
-> > -     __u32 link_info_len = sizeof(link_info);
-> > -
-> > -     bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> > -     return link_info.id;
-> > -}
-> > -
-> > -static __u32 bpf_link_get_prog_id(int fd)
-> > -{
-> > -     struct bpf_link_info link_info = {0};
-> > -     __u32 link_info_len = sizeof(link_info);
-> > -
-> > -     bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> > -     return link_info.prog_id;
-> > -}
-> > -
-> > -static __u32 bpf_map_get_id(int fd)
-> > -{
-> > -     struct bpf_map_info map_info = {0};
-> > -     __u32 map_info_len = sizeof(map_info);
-> > -
-> > -     bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-> > -     return map_info.id;
-> > -}
-> > -
-> >  static bool bperf_attr_map_compatible(int attr_map_fd)
-> >  {
-> >       struct bpf_map_info map_info = {0};
-> > @@ -385,20 +347,6 @@ static int bperf_lock_attr_map(struct target *target)
-> >       return map_fd;
-> >  }
+> > >
+> > > > > So wouldn't it be sufficient to ensure that MDSS_GDSC is parented by
+> > > > > MMCX and then use opp-tables associated with the devices that scales the
+> > > > > clock and thereby actually carries the "required-opps".
+> > > >
+> > > > Actually no. I set the performance state in the qcom_cc_map, so that
+> > > > further register access is possible. Initially I was doing this in the
+> > > > qcom_cc_really_probe() and it was already too late.
+> > > > Just to remind: this patchset is not about MDSS_GDSC being parented by
+> > > > MMCX, it is about dispcc/videocc registers being gated with MMCX.
+> > > >
+> > >
+> > > So you're saying that just enabling MMCX isn't enough to touch the
+> > > dispcc/videocc registers? If that's the case it seems like MMCX's
+> > > definition of "on" needs to be adjusted - because just specifying MMCX
+> > > as the power-domain for dispcc/videocc and enabling pm_runtime should
+> > > ensure that MMCX is enabled when the clock registers are accessed (I
+> > > don't see anything like that for the GDSC part though).
 > >
-> > -/* trigger the leader program on a cpu */
-> > -static int bperf_trigger_reading(int prog_fd, int cpu)
-> > -{
-> > -     DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> > -                         .ctx_in = NULL,
-> > -                         .ctx_size_in = 0,
-> > -                         .flags = BPF_F_TEST_RUN_ON_CPU,
-> > -                         .cpu = cpu,
-> > -                         .retval = 0,
-> > -             );
-> > -
-> > -     return bpf_prog_test_run_opts(prog_fd, &opts);
-> > -}
-> > -
-> >  static int bperf_check_target(struct evsel *evsel,
-> >                             struct target *target,
-> >                             enum bperf_filter_type *filter_type,
-> > diff --git a/tools/perf/util/bpf_counter.h b/tools/perf/util/bpf_counter.h
-> > index d6d907c3dcf9..185555a9c1db 100644
-> > --- a/tools/perf/util/bpf_counter.h
-> > +++ b/tools/perf/util/bpf_counter.h
-> > @@ -3,6 +3,10 @@
-> >  #define __PERF_BPF_COUNTER_H 1
+> > No, it is not enough. If I comment out the set_performance_state call,
+> > the board reboots.
 > >
-> >  #include <linux/list.h>
-> > +#include <sys/resource.h>
-> > +#include <bpf/bpf.h>
-> > +#include <bpf/btf.h>
-> > +#include <bpf/libbpf.h>
-> >
-> >  struct evsel;
-> >  struct target;
-> > @@ -76,4 +80,52 @@ static inline int bpf_counter__install_pe(struct evsel *evsel __maybe_unused,
-> >
-> >  #endif /* HAVE_BPF_SKEL */
-> >
-> > +static inline void set_max_rlimit(void)
-> > +{
-> > +     struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-> > +
-> > +     setrlimit(RLIMIT_MEMLOCK, &rinf);
-> > +}
-> > +
-> > +static inline __u32 bpf_link_get_id(int fd)
-> > +{
-> > +     struct bpf_link_info link_info = {0};
-> > +     __u32 link_info_len = sizeof(link_info);
-> > +
-> > +     bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> > +     return link_info.id;
-> > +}
-> > +
-> > +static inline __u32 bpf_link_get_prog_id(int fd)
-> > +{
-> > +     struct bpf_link_info link_info = {0};
-> > +     __u32 link_info_len = sizeof(link_info);
-> > +
-> > +     bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-> > +     return link_info.prog_id;
-> > +}
-> > +
-> > +static inline __u32 bpf_map_get_id(int fd)
-> > +{
-> > +     struct bpf_map_info map_info = {0};
-> > +     __u32 map_info_len = sizeof(map_info);
-> > +
-> > +     bpf_obj_get_info_by_fd(fd, &map_info, &map_info_len);
-> > +     return map_info.id;
-> > +}
-> > +
-> > +/* trigger the leader program on a cpu */
-> > +static inline int bperf_trigger_reading(int prog_fd, int cpu)
-> > +{
-> > +     DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> > +                         .ctx_in = NULL,
-> > +                         .ctx_size_in = 0,
-> > +                         .flags = BPF_F_TEST_RUN_ON_CPU,
-> > +                         .cpu = cpu,
-> > +                         .retval = 0,
-> > +             );
-> > +
-> > +     return bpf_prog_test_run_opts(prog_fd, &opts);
-> > +}
-> > +
-> >  #endif /* __PERF_BPF_COUNTER_H */
-> > --
-> > 2.32.0.93.g670b81a890-goog
+> > However I can set the opps as low as RET and register access will work.
+> > I'll run more experiments and if everything works as expected, I can
+> > use retention or min_svs level in the next iteration.
+> > Just note that downstream specifies low_svs as minimum voltage level
+> > for MMCX regulator.
 > >
 >
-> --
+> It doesn't make sense to me that a lone power_on on the power-domain
+> wouldn't give us enough juice to poke the registers.
 >
-> - Arnaldo
+> But digging into the rpmhpd implementation answers the question, simply
+> invoking rpmhpd_power_on() is a nop, unless
+> rpmhpd_set_performance_state() has previously been called, because
+> pd->corner is 0. So this explains why enable isn't sufficient.
+>
+> Compare this with the rpmpd implementation that will send an
+> enable request to the RPM in this case.
+
+Do you think that we should change that to:
+
+rpmhpd_aggregate_corner(pd, max(pd->corner, 1)) ?
+
+Or
+
+rpmhpd_aggregate_corner(pd, max(pd->corner, pd->levels[1])) ?
+
+>
+> > > I thought our problem you had was that you need to set a
+> > > performance_state in order to clock up some of the clocks - e.g.
+> > > MDP_CLK.
+> >
+> > No, even register access needs proper perf state.
+> >
+>
+> Per above finding you're right, enabling a rpmhpd power-domain doesn't
+> do anything. And I don't find this intuitive or even in line with the
+> expectations of the api...
+>
+>
+>
+> A quick test booting rb3 and rb5 seems to indicate that it's possible to
+> initialize pd->corner to 1 (to ensure that enable at least gives us the
+> lowest level).
+>
+> set_performance_state(0) will however then result in voting for "off",
+> rather than the lowest enabled level.
+
+Well, set_performance_state(0) means that "the device wouldn't
+participate anymore to find the target performance state of the
+genpd". Strictly speaking it does not specify whether it is ok to turn
+it off or not. (like the regulator with the voltage set to 0V).
+But I'd also like to hear a comment from Stephen here.
+
+
+> Rajendra, Stephen, is this really how rpmhpd is supposed to work?!
+
+
+
+-- 
+With best wishes
+Dmitry
