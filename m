@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED6A3B8FCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD813B8FCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbhGAJd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 05:33:56 -0400
-Received: from antares.kleine-koenig.org ([94.130.110.236]:33732 "EHLO
-        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbhGAJdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 05:33:55 -0400
-Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
-        by antares.kleine-koenig.org (Postfix) with ESMTP id DAC7DBEBD19;
-        Thu,  1 Jul 2021 11:31:19 +0200 (CEST)
-Received: from antares.kleine-koenig.org ([94.130.110.236])
-        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
-        with ESMTP id SDSbjhjav00Y; Thu,  1 Jul 2021 11:31:18 +0200 (CEST)
-Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5c8:7b00:36f3:9aff:fec2:7e46])
-        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
-        Thu,  1 Jul 2021 11:31:18 +0200 (CEST)
+        id S235456AbhGAJfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 05:35:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:49386 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235180AbhGAJfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 05:35:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23C79D6E;
+        Thu,  1 Jul 2021 02:32:35 -0700 (PDT)
+Received: from [10.57.40.45] (unknown [10.57.40.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBB5F3F5A1;
+        Thu,  1 Jul 2021 02:32:33 -0700 (PDT)
+Subject: Re: [PATCH 1/4] arm64: dts: rockchip: helios64: fixup USB setup
 To:     Dennis Gilmore <dgilmore@redhat.com>,
         linux-rockchip@lists.infradead.org
 Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
         "moderated list:ARM/Rockchip SoC support" 
         <linux-arm-kernel@lists.infradead.org>,
         open list <linux-kernel@vger.kernel.org>
 References: <20210701004043.18585-1-dgilmore@redhat.com>
-From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-Subject: Re: [PATCH 1/4] arm64: dts: rockchip: helios64: fixup USB setup
-Message-ID: <01f1b032-14a8-a6fa-9063-23de65fc6f43@kleine-koenig.org>
-Date:   Thu, 1 Jul 2021 11:31:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3fd0bb29-239f-50d7-cf4b-c057bcccf885@arm.com>
+Date:   Thu, 1 Jul 2021 10:32:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
 In-Reply-To: <20210701004043.18585-1-dgilmore@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="BpJ5xrTQirBbIjXcMUHPDnZ3mp4HzW92f"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BpJ5xrTQirBbIjXcMUHPDnZ3mp4HzW92f
-Content-Type: multipart/mixed; boundary="1nWwQQLfYRngiveeI35Jked9SbcM6Pqbw";
- protected-headers="v1"
-From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-To: Dennis Gilmore <dgilmore@redhat.com>, linux-rockchip@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/Rockchip SoC support"
- <linux-arm-kernel@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-Message-ID: <01f1b032-14a8-a6fa-9063-23de65fc6f43@kleine-koenig.org>
-Subject: Re: [PATCH 1/4] arm64: dts: rockchip: helios64: fixup USB setup
-References: <20210701004043.18585-1-dgilmore@redhat.com>
-In-Reply-To: <20210701004043.18585-1-dgilmore@redhat.com>
-
---1nWwQQLfYRngiveeI35Jked9SbcM6Pqbw
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On 7/1/21 2:40 AM, Dennis Gilmore wrote:
+On 2021-07-01 01:40, Dennis Gilmore wrote:
 > Without the usbdrd_dwc3_1 node defined u-boot will throw an error and
-> reset the system.
+> reset the system. All other rk3399 systems use this format
 
-I wonder if this should better be fixed in u-boot then?!
+This doesn't make much sense - the usbdrd_dwc3_1 label is defined in 
+rk3399.dtsi either way, and the compiled DTBs before and after are 
+identical :/
 
-> All other rk3399 systems use this format
+If U-Boot is doing something funny with labels and symbols to give 
+itself some kind of fragile dependency, that probably wants to be fixed 
+in U-Boot.
 
-This is true for the dwc nodes, however for the usb2 nodes there are=20
-several that use this idiom (and even repeat the label name), see for=20
-example the &u2phy0 node in=20
-arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi .
+Robin.
 
-In my eyes it's a bit ugly to have the two nodes as separate entities=20
-and on the same indentation level in the machine dts given that one is=20
-the parent of the other and enabling USB needs both status settings.
-
-Best regards
-Uwe
-
-
---1nWwQQLfYRngiveeI35Jked9SbcM6Pqbw--
-
---BpJ5xrTQirBbIjXcMUHPDnZ3mp4HzW92f
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDdi10ACgkQwfwUeK3K
-7Al/Pwf/fwKvnfatRdAv7KIh3rNNLcGJMdEn2xWYZ6hi1BSCujztTMA1Dwa6yMsy
-HxFEpDWx/dUEi6ZsLKZpKH4RRfB8TFpZX2bT2LhqRs8FsuIdbfr/gipul8dRv6k/
-8HqazpBR+flWTvGs1eaLRGGXOxAhvaZ/jXpihWJDGIX9inaLmUcHjr97yvXUMy7v
-7YU8MSICXSZri0gEp6M8ZiljvXN/Q9RZe1Z034zOwd4NNBpR/nmBd4xLgvotnlJj
-clNn+BwiSEBhfFjuRxaH0jo6hn3mDRmSDgxanuz7uKfFUPBpQ7ST50mMclzTZGyY
-fT3Q+7Frw5I70d/FOvrQRFy6nwY0aQ==
-=zJ9u
------END PGP SIGNATURE-----
-
---BpJ5xrTQirBbIjXcMUHPDnZ3mp4HzW92f--
+> Signed-off-by: Dennis Gilmore <dgilmore@redhat.com>
+> ---
+>   arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> index 738cfd21df3e..aeedf098f67c 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> @@ -490,9 +490,9 @@ &uart2 {
+>   
+>   &usbdrd3_1 {
+>   	status = "okay";
+> +};
+>   
+> -	usb@fe900000 {
+> -		dr_mode = "host";
+> -		status = "okay";
+> -	};
+> +&usbdrd_dwc3_1 {
+> +	dr_mode = "host";
+> +	status = "okay";
+>   };
+> 
