@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F13F3B97CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37D63B97D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhGAUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:53:43 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:44600 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbhGAUxl (ORCPT
+        id S234302AbhGAU6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232637AbhGAU6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:53:41 -0400
-Received: by mail-il1-f180.google.com with SMTP id f12so1425558ils.11;
-        Thu, 01 Jul 2021 13:51:09 -0700 (PDT)
+        Thu, 1 Jul 2021 16:58:15 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BF2C061762;
+        Thu,  1 Jul 2021 13:55:45 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id i13so4344433plb.10;
+        Thu, 01 Jul 2021 13:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=TQW637DJWCb83mxa1TulL3O+huq6X3gVUkozf2I06Ng=;
+        b=gfZSgzXRqgwx54Zblgxw7Xi9NZcW0FpG16mhu1b5ogzLFdIrYmuD6V8X8ax2hz6YdP
+         3s1+mx46q6P3hMQGw1rNAw9t3775zD+SZXrYP9krYeVzI2FIDHeCmWlQFaBKzvYE3EUD
+         4MxbJRqvVZLYPx2r9+02tsEj09Ys1OQS97u04r9IRwLHm4+FEtBZ/MRiM3EY5lXTlpLe
+         /lAIW6fPLkg33RvZdWC5jQyIN5T2zglMEHGdZ5467wV21ekrLDm5ZT+Q6l/7HDJD59WU
+         x+UrMAZildRvNBQx3VeD0z3K+FNKXKekGMd3JOk4XsgVkJBmvCRXt8yBruhzdKDhlJT4
+         KZyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=NipVMUD4AP/oBRzH6hOs82IXgQLck6ND+VgxW1x2fao=;
-        b=i23w40X6FN9c5rysQXeuO8heCsudGMZYXWlUufHc5ROUleIo7yagWCU/OWSyW0uZtQ
-         G8IjebUgxT0BuvqPon6wq3gkXDXp3xP5x8nQ8eWiCafWT0XF7uOEgrN6v0i/mtq3eHUG
-         jy/zRNjfw+AIX9XWVQN8fcO3TTXRUXTb8XKzn+s6VxPMJf+QVhmkHoKhBA+n65ArHrY1
-         1HFiKnIoBHYr1jYknfczOMEArRK+ZtwivAqNKI3qfuJgDIIa/xY8Ee/cO48pgcWDsfkv
-         vDQiZlriTC4s91DlZaYZCI2qCho2AJyEv+73TsQLR8xAzMkGBnVvq6/2pBFySzIfe6oq
-         bgFQ==
-X-Gm-Message-State: AOAM5330udU6VRjQ69oF74Ec540ZnXBlrvtiJEf8IblRckPBk/v7W80E
-        xVHNPEWjSkh9AHLB4Xpy9Q==
-X-Google-Smtp-Source: ABdhPJz1a6iDLhND1/k7nuQxxOfbn+7VdVawF4rSi9HdKdgHYo4uOWS4JwsVA3R8V5i/1llhr06LWQ==
-X-Received: by 2002:a92:d209:: with SMTP id y9mr923348ily.143.1625172668561;
-        Thu, 01 Jul 2021 13:51:08 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id d10sm597106ilc.71.2021.07.01.13.51.06
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=TQW637DJWCb83mxa1TulL3O+huq6X3gVUkozf2I06Ng=;
+        b=b7eYVuUseyCKbf6wXZ2p4DtwOjrMNpoH7eyhSclNhLcyaWm0MGUrbggjCRuYEHU1wI
+         zBHGfCYBnZr6yFJ/DBl3moCpXp0TAQ71ZLPN+MMfDQki0rnWbp8vZS2jhYy4J08snJYp
+         xAGOuyb+z2hmirQM19ewAIufws/2l2mNvxRwavM/dA6NLiN94mbHd8N9ezeOOAojogPP
+         xJyuEriTk4u/ZrSxx4UHUDzyr1ZGx8ndqA41670smDKOOXoAl72sgYuPWLoindQQVjTq
+         79sV+fmtaNV3MVGy0FGsc7MPnIIuZh+I9Crav4PXlAWWQ+SUvvqR4YXUPuIIzIOOmOc2
+         vyrQ==
+X-Gm-Message-State: AOAM531aGO8wTso3QxJRMoB59bYKlRzlzw2LRe9IO06mbWCYV3NtOkN/
+        hABQEVHFMwwnpbGbTdpidwXZhDb/MCuxkw==
+X-Google-Smtp-Source: ABdhPJxjLG8SAhUEhMHCo+vg0dklXUdaMnIKBJCTSuLYDhLQo5H2cxShu3ZD2aAXP0ZBZnxukroLaA==
+X-Received: by 2002:a17:90a:3ccf:: with SMTP id k15mr1464917pjd.226.1625172944439;
+        Thu, 01 Jul 2021 13:55:44 -0700 (PDT)
+Received: from localhost ([2600:380:7547:7ebc:47d6:2ed3:f5f0:d329])
+        by smtp.gmail.com with ESMTPSA id o34sm862453pgm.6.2021.07.01.13.55.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 13:51:07 -0700 (PDT)
-Received: (nullmailer pid 2908607 invoked by uid 1000);
-        Thu, 01 Jul 2021 20:51:01 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, jic23@kernel.org, robh+dt@kernel.org
-In-Reply-To: <20210701141648.131776-1-antoniu.miclaus@analog.com>
-References: <20210701141648.131776-1-antoniu.miclaus@analog.com>
-Subject: Re: [PATCH v3] dt-bindings: iio: frequency: add adrf6780 doc
-Date:   Thu, 01 Jul 2021 14:51:01 -0600
-Message-Id: <1625172661.975476.2908606.nullmailer@robh.at.kernel.org>
+        Thu, 01 Jul 2021 13:55:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 1 Jul 2021 10:55:40 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.14-rc1
+Message-ID: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Jul 2021 17:16:48 +0300, Antoniu Miclaus wrote:
-> Add device tree bindings for the ADRF6780 Upconverter.
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-> ---
-> v3: remove `adi,parity-en` from example after latest changes in v2
->  .../bindings/iio/frequency/adi,adrf6780.yaml  | 122 ++++++++++++++++++
->  1 file changed, 122 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
-> 
+Hello, Linus.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+* cgroup.kill is added which implements atomic killing of the whole subtree.
+  Down the line, this should be able to replace the multiple userland
+  implementations of "keep killing till empty".
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:10:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:101:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
-./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:109:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+* PSI can now be turned off at boot time to avoid overhead for
+  configurations which don't care about PSI.
 
-dtschema/dtc warnings/errors:
-\ndoc reference errors (make refcheckdocs):
+Thank you.
 
-See https://patchwork.ozlabs.org/patch/1499584
+The following changes since commit 08b2b6fdf6b26032f025084ce2893924a0cdb4a2:
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+  cgroup: fix spelling mistakes (2021-05-24 12:45:26 -0400)
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+are available in the Git repository at:
 
-pip3 install dtschema --upgrade
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
 
-Please check and re-submit.
+for you to fetch changes up to 3958e2d0c34e18c41b60dc01832bd670a59ef70f:
 
+  cgroup: make per-cgroup pressure stall tracking configurable (2021-06-08 14:59:02 -0400)
+
+----------------------------------------------------------------
+Christian Brauner (5):
+      cgroup: introduce cgroup.kill
+      docs/cgroup: add entry for cgroup.kill
+      tests/cgroup: use cgroup.kill in cg_killall()
+      tests/cgroup: move cg_wait_for(), cg_prepare_for_wait()
+      tests/cgroup: test cgroup.kill
+
+Roman Gushchin (1):
+      cgroup: inline cgroup_task_freeze()
+
+Suren Baghdasaryan (1):
+      cgroup: make per-cgroup pressure stall tracking configurable
+
+Tejun Heo (1):
+      Merge branch 'for-5.13-fixes' into for-5.14
+
+Yang Li (1):
+      cgroup: Fix kernel-doc
+
+ Documentation/admin-guide/cgroup-v2.rst         |  15 ++
+ Documentation/admin-guide/kernel-parameters.txt |   9 +-
+ include/linux/cgroup-defs.h                     |   4 +
+ include/linux/cgroup.h                          |  25 +-
+ kernel/cgroup/cgroup.c                          | 180 ++++++++++++--
+ kernel/cgroup/rstat.c                           |   2 +-
+ kernel/sched/psi.c                              |  30 +--
+ tools/testing/selftests/cgroup/.gitignore       |   3 +-
+ tools/testing/selftests/cgroup/Makefile         |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c    |  51 ++++
+ tools/testing/selftests/cgroup/cgroup_util.h    |   2 +
+ tools/testing/selftests/cgroup/test_freezer.c   |  57 -----
+ tools/testing/selftests/cgroup/test_kill.c      | 297 ++++++++++++++++++++++++
+ 13 files changed, 569 insertions(+), 108 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_kill.c
+
+-- 
+tejun
