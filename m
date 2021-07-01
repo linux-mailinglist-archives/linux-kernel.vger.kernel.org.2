@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD4F3B9099
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A83B909D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 12:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbhGAKrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 06:47:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6031 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235526AbhGAKrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 06:47:11 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GFvpY5TdlzXmNC;
-        Thu,  1 Jul 2021 18:39:17 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 18:44:38 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 18:44:38 +0800
-Subject: Re: [PATCH 1/3] riscv: Fix memory_limit for 64-bit kernel
-To:     Alexandre Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20210629091349.3802690-1-alex@ghiti.fr>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <6a38fb9a-d658-836b-4ff4-7c47cadb7db0@huawei.com>
-Date:   Thu, 1 Jul 2021 18:44:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S236055AbhGAKrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 06:47:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:15689 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229744AbhGAKrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 06:47:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="208551649"
+X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
+   d="scan'208";a="208551649"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 03:45:15 -0700
+X-IronPort-AV: E=Sophos;i="5.83,313,1616482800"; 
+   d="scan'208";a="408887812"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2021 03:45:12 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lyuBv-006z0C-DF; Thu, 01 Jul 2021 13:45:07 +0300
+Date:   Thu, 1 Jul 2021 13:45:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, yu1.wang@intel.com, shuo.a.liu@intel.com,
+        conghui.chen@intel.com, viresh.kumar@linaro.org,
+        stefanha@redhat.com
+Subject: Re: [PATCH v11] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YN2cs0H+5C892kM4@smile.fi.intel.com>
+References: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210629091349.3802690-1-alex@ghiti.fr>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <510c876952efa693339ab0d6cc78ba7be9ef6897.1625104206.git.jie.deng@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 01, 2021 at 11:24:46AM +0800, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
+> 
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
+> 
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+> 
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
 
-On 2021/6/29 17:13, Alexandre Ghiti wrote:
-> As described in Documentation/riscv/vm-layout.rst, the end of the
-> virtual address space for 64-bit kernel is occupied by the modules/BPF/
-> kernel mappings so this actually reduces the amount of memory we are able
-> to map and then use in the linear mapping. So make sure this limit is
-> correctly set.
->
-> Fixes: c9811e379b21 ("riscv: Add mem kernel parameter support")
+> 	- Use #ifdef CONFIG_PM_SLEEP to replace the "__maybe_unused".
+
+Why is that?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Should the Fixes tag be de043da0b9e7 （“RISC-V: Fix usage of 
-memblock_enforce_memory_limit“）,
-
-The -PAGE_OFFSET is set to the maximal physical memory from this point :)
-
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->   arch/riscv/mm/init.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 12f956b3a674..04a5db3a9788 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -124,10 +124,17 @@ void __init mem_init(void)
->   }
->   
->   /*
-> - * The default maximal physical memory size is -PAGE_OFFSET,
-> - * limit the memory size via mem.
-> + * The default maximal physical memory size is -PAGE_OFFSET for 32-bit kernel,
-> + * whereas for 64-bit kernel, the end of the virtual address space is occupied
-> + * by the modules/BPF/kernel mappings which reduces the available size of the
-> + * linear mapping.
-> + * Limit the memory size via mem.
->    */
-> +#ifdef CONFIG_64BIT
-> +static phys_addr_t memory_limit = -PAGE_OFFSET - SZ_4G;
-> +#else
->   static phys_addr_t memory_limit = -PAGE_OFFSET;
-> +#endif
->   
->   static int __init early_mem(char *p)
->   {
