@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F6D3B9966
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3983B9974
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Jul 2021 01:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbhGAXcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 19:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234219AbhGAXbZ (ORCPT
+        id S234266AbhGAXm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 19:42:59 -0400
+Received: from lilium.sigma-star.at ([109.75.188.150]:36674 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234071AbhGAXm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 19:31:25 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1BCC061765;
-        Thu,  1 Jul 2021 16:28:53 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id f13so10772261ljp.10;
-        Thu, 01 Jul 2021 16:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7DByxmYrfYSoFtOXvgezAULCD+kJQTte6BMf4Jj2BLw=;
-        b=IyY9IJkajgob5/6uiA3dJZZOwAlwoF5a2OenrCfuwzof+vwSxfggxSPUyvrw9HY14p
-         l8WIbQk1JpgXE0UcqFufaMzXTp+N/UTO3zOitpXX4YHj6mVvAmRtyykI2Sdps0lwMpjY
-         WVidEhoF9aEMEDje0jBOIS80MHbcIArPrt7oxRrHBr8SAcUYfZoG5+xebDMw41BJ0Q+i
-         AhiTrICXsOfRiXflvtOhhVhgknBH9KDcj1TOGhctmRiQAa2r/F5TGrOgnfm6pJK3OltJ
-         weA+8YBxHY5EL2bvOGBVZ0qe8voPUKo2F+zwd9/V93g9duJLM0G3RN7ivozWPhQCJCI1
-         yu0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7DByxmYrfYSoFtOXvgezAULCD+kJQTte6BMf4Jj2BLw=;
-        b=I4liqj1321dtByFPIFMTvSKtNOEUmUzjyu2iaIKHUmeaGYYeKaPOOxZAmGGh/NBwqW
-         hXRxwpZykYhBIgzSZdW29DXgbZ/NCCYAtbHfrctQ8ETIf0e3FJb5rxpLsyrH8dPIDMlv
-         tzLZJ5K4k3iZoXTmu01btekNQ/ZniJ8jLdnI+Sr9HL9z8MJ/feIp1ch63G7lcfmqxjCp
-         zLfO7RiEv2OEO0HUo/6/NKZeG8wSi3HcPVKcLSDyG+gq2gyWMuwKXzX63NSunLSWW2LA
-         I4Ai132aB6kTdHKYzFbQEe2utF0V0qbyKsXomYPcYhSkylpcWPdj5X9R/fWzJjcWhuZX
-         B7zg==
-X-Gm-Message-State: AOAM530lZWBMN9BuApElEgD3fSSrWB5ofItxF/g3lSx6mT6v2b0AD0VE
-        8b+seFI/xQF/J90cqbFx3c4=
-X-Google-Smtp-Source: ABdhPJyGD4x3fV5UTZqG8S5sHrMDuLGq4yPbUGaXALPZU5QCVl0twJSS9LvqKKIy27oPC49mFdqm0Q==
-X-Received: by 2002:a2e:b708:: with SMTP id j8mr1524001ljo.285.1625182132342;
-        Thu, 01 Jul 2021 16:28:52 -0700 (PDT)
-Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.gmail.com with ESMTPSA id s20sm102655lfr.39.2021.07.01.16.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 16:28:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v7 37/37] soc/tegra: pmc: Enable core domain support on Tegra20 and Tegra30
-Date:   Fri,  2 Jul 2021 02:27:28 +0300
-Message-Id: <20210701232728.23591-38-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210701232728.23591-1-digetx@gmail.com>
-References: <20210701232728.23591-1-digetx@gmail.com>
+        Thu, 1 Jul 2021 19:42:58 -0400
+X-Greylist: delayed 457 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Jul 2021 19:42:58 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id 5C5391817A0E0;
+        Fri,  2 Jul 2021 01:32:49 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id hLZ-QIHthhxs; Fri,  2 Jul 2021 01:32:49 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0Qx5VUZYvtAF; Fri,  2 Jul 2021 01:32:48 +0200 (CEST)
+From:   David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     richard@sigma-star.at,
+        David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH] Log if a core dump is aborted due to changed file permissions
+Date:   Fri,  2 Jul 2021 01:31:51 +0200
+Message-Id: <20210701233151.102720-1-david.oberhollenzer@sigma-star.at>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All device drivers got runtime PM and OPP support. Flip the core domain
-support status for Tegra20 and Tegra30 SoCs.
+For obvious security reasons, a core dump is aborted if the
+filesystem cannot preserve ownership or permissions of the
+dump file.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+This affects filesystems like e.g. vfat, but also something like
+a 9pfs share in a Qemu test setup, running as a regular user,
+depending on the security model used. In those cases, the result
+is an empty core file and a confused user.
+
+To hopefully safe other people a lot of time figuring out the
+cause, this patch adds a simple log message for those specific
+cases.
+
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 ---
- drivers/soc/tegra/pmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/coredump.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index ebafb818b08e..1f6872f7b211 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -3177,7 +3177,7 @@ static void tegra20_pmc_setup_irq_polarity(struct tegra_pmc *pmc,
- }
- 
- static const struct tegra_pmc_soc tegra20_pmc_soc = {
--	.supports_core_domain = false,
-+	.supports_core_domain = true,
- 	.num_powergates = ARRAY_SIZE(tegra20_powergates),
- 	.powergates = tegra20_powergates,
- 	.num_cpu_powergates = 0,
-@@ -3238,7 +3238,7 @@ static const char * const tegra30_reset_sources[] = {
- };
- 
- static const struct tegra_pmc_soc tegra30_pmc_soc = {
--	.supports_core_domain = false,
-+	.supports_core_domain = true,
- 	.num_powergates = ARRAY_SIZE(tegra30_powergates),
- 	.powergates = tegra30_powergates,
- 	.num_cpu_powergates = ARRAY_SIZE(tegra30_cpu_powergates),
--- 
-2.30.2
+diff --git a/fs/coredump.c b/fs/coredump.c
+index c3d8fc14b993..3e53d3e18b0e 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -782,10 +777,17 @@ void do_coredump(const kernel_siginfo_t *siginfo)
+ 		 * filesystem.
+ 		 */
+ 		mnt_userns =3D file_mnt_user_ns(cprm.file);
+-		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode), current_fsuid()))
++		if (!uid_eq(i_uid_into_mnt(mnt_userns, inode),
++			    current_fsuid())) {
++			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file o=
+wner\n",
++					    cn.corename);
+ 			goto close_fail;
+-		if ((inode->i_mode & 0677) !=3D 0600)
++		}
++		if ((inode->i_mode & 0677) !=3D 0600) {
++			pr_info_ratelimited("Core dump to |%s aborted: cannot preserve file p=
+ermissions\n",
++					    cn.corename);
+ 			goto close_fail;
++		}
+ 		if (!(cprm.file->f_mode & FMODE_CAN_WRITE))
+ 			goto close_fail;
+ 		if (do_truncate(mnt_userns, cprm.file->f_path.dentry,
+--=20
+2.31.1
 
