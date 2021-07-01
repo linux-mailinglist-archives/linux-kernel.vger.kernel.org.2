@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0FB3B920F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037383B9212
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 15:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236641AbhGANOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 09:14:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56528 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236567AbhGANON (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 09:14:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CD0D82286E;
-        Thu,  1 Jul 2021 13:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625145101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cnSVStU4rTgW/IZmz3L5eNtkU/6r5KQl2nbmVYIvWhU=;
-        b=yDLwGR3KgV0H1WbDoO3IatbvlovT2Qf4Gtt9l6gOeKNBdexmZckYkuMZxuAUyyyZ7PAzWb
-        kEpApGfnxjnhknvhPTOS/tcAqx8RVcOf1pCcW7CZD3klkKG/UO105C6l5uPSmWFZFbhX68
-        Lnfnd9hWivcsHhhepqNnhCEwXKlztMY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625145101;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cnSVStU4rTgW/IZmz3L5eNtkU/6r5KQl2nbmVYIvWhU=;
-        b=ypFjY/t6nzqT9Af2mDToScKAibg1vflp0gb0u29h9XYEIbC7bWCdqUmrF2i8yBB+Xq2A67
-        PC5KfCORTq4BY0Dw==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E3134A3B83;
-        Thu,  1 Jul 2021 13:11:40 +0000 (UTC)
-Date:   Thu, 1 Jul 2021 14:11:39 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>
-Subject: Re: [PATCH] nohz: nohz idle balancing per node
-Message-ID: <20210701131139.GD3772@suse.de>
-References: <20210701055323.2199175-1-npiggin@gmail.com>
- <YN2Wav1CSVq+6cS+@hirez.programming.kicks-ass.net>
+        id S236653AbhGANQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 09:16:44 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40240 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236567AbhGANQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 09:16:41 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf0OZv91gKz8bAA--.11066S2;
+        Thu, 01 Jul 2021 21:14:02 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 1/3] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
+Date:   Thu,  1 Jul 2021 21:13:58 +0800
+Message-Id: <20210701131400.4699-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YN2Wav1CSVq+6cS+@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxf0OZv91gKz8bAA--.11066S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3tw4fAw18Zr1DAw48Crg_yoW5Wry5pF
+        Z8Cw43Ar4rWa12gw4fJFyUuFW5Zwn3tFWUuFy2v34UZas8WFZ5J3WUta4FvF9rWr17JFWa
+        qrsYqFW5CF4F9w7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxVWUJVW8JwAv7VC0I7IYx2IY67AKxVWUAV
+        WUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAK
+        I48JMxkIecxEwVAFwVW5GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07b2a0PUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 12:18:18PM +0200, Peter Zijlstra wrote:
-> On Thu, Jul 01, 2021 at 03:53:23PM +1000, Nicholas Piggin wrote:
-> > Currently a single nohz idle CPU is designated to perform balancing on
-> > behalf of all other nohz idle CPUs in the system. Implement a per node
-> > nohz balancer to minimize cross-node memory accesses and runqueue lock
-> > acquisitions.
-> > 
-> > On a 4 node system, this improves performance by 9.3% on a 'pgbench -N'
-> > with 32 clients/jobs (which is about where throughput maxes out due to
-> > IO and contention in postgres).
-> 
-> Hmm, Suresh tried something like this around 2010 and then we ran into
-> trouble that when once node went completely idle and another node was
-> fully busy, the completely idle node would not run ILB and the node
-> would forever stay idle.
-> 
+Add power management register operations to support reboot and poweroff.
 
-An effect like that *might* be visible at
-https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-nohznuma-v1r1/html/network-tbench/hardy2/
-at the CPU usage heatmaps ordered by topology at the very bottom of
-the page.
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-The heatmap covers all client counts so there are "blocks" of activity for
-each client count tested. The third block is for 8 thread counts so a node
-is not fully busy yet. However, with the vanilla kernel, there is some
-load on each node but with the patch all the load is on one node. This
-did not happen on the two other test machines so the observation is not
-reliable and could be a total coincidence.
+v7-v8:
+delete unnecessary pointer casts
+---
+ drivers/platform/mips/Kconfig      |  6 ++++
+ drivers/platform/mips/Makefile     |  1 +
+ drivers/platform/mips/ls2k-reset.c | 53 ++++++++++++++++++++++++++++++
+ 3 files changed, 60 insertions(+)
+ create mode 100644 drivers/platform/mips/ls2k-reset.c
 
-That said, there were some gains but large losses depending on the client
-count across the 3 machines for tbench which is a concern. Other results,
-like pgbench mentioned in the changelog, will not complete until tomorrow
-to see if it is a general pattern or tbench-specific.
-
-https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-nohznuma-v1r1/html/network-tbench/bing2/
-https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-nohznuma-v1r1/html/network-tbench/hardy2/
-https://beta.suse.com/private/mgorman/melt/v5.13/3-perf-test/sched/sched-nohznuma-v1r1/html/network-tbench/marvin2/
-
+diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+index 8ac149173c64..d421e1482395 100644
+--- a/drivers/platform/mips/Kconfig
++++ b/drivers/platform/mips/Kconfig
+@@ -30,4 +30,10 @@ config RS780E_ACPI
+ 	help
+ 	  Loongson RS780E PCH ACPI Controller driver.
+ 
++config LS2K_RESET
++	bool "Loongson-2K1000 Reset Controller"
++	depends on MACH_LOONGSON64 || COMPILE_TEST
++	help
++	  Loongson-2K1000 Reset Controller driver.
++
+ endif # MIPS_PLATFORM_DEVICES
+diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
+index 178149098777..4c71444e453a 100644
+--- a/drivers/platform/mips/Makefile
++++ b/drivers/platform/mips/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
+ obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
++obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
+diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
+new file mode 100644
+index 000000000000..b70e7b8a092c
+--- /dev/null
++++ b/drivers/platform/mips/ls2k-reset.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
++ *  Loongson-2K1000 reset support
++ */
++
++#include <linux/of_address.h>
++#include <linux/pm.h>
++#include <asm/reboot.h>
++
++#define	PM1_STS		0x0c /* Power Management 1 Status Register */
++#define	PM1_CNT		0x14 /* Power Management 1 Control Register */
++#define	RST_CNT		0x30 /* Reset Control Register */
++
++static void __iomem *base;
++
++static void ls2k_restart(char *command)
++{
++	writel(0x1, base + RST_CNT);
++}
++
++static void ls2k_poweroff(void)
++{
++	/* Clear */
++	writel((readl(base + PM1_STS) & 0xffffffff), base + PM1_STS);
++	/* Sleep Enable | Soft Off*/
++	writel(GENMASK(12, 10) | BIT(13), base + PM1_CNT);
++}
++
++static int ls2k_reset_init(void)
++{
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "loongson,ls2k-pm");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	base = of_iomap(np, 0);
++	if (!base) {
++		pr_info("Failed to map PM register base address\n");
++		return -ENOMEM;
++	}
++
++	_machine_restart = ls2k_restart;
++	pm_power_off = ls2k_poweroff;
++
++	of_node_put(np);
++	return 0;
++}
++
++arch_initcall(ls2k_reset_init);
 -- 
-Mel Gorman
-SUSE Labs
+2.31.0
+
