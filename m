@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1853C3B97B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9483B97B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 22:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236482AbhGAUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 16:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234145AbhGAUjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 16:39:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5B89C613FE;
-        Thu,  1 Jul 2021 20:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625171791;
-        bh=uAGKDLcEpEB+FZaOra0XEmDgRe7TPzAvexrUW3Dyxdg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lwjcMh5+QIq4ORFJk5THYscHd+ITl+Q/INV4XvhK2Cax+5/gqxEAQ5wNSCCFBKNxa
-         zGkaqyLBdf/QwKSZtwsVQkokRpNoWktHsWvgmXdO50sKF9iKf0mrA63wXkpz4KCRZ6
-         Hx8qttcmxghjlS/IIUvI3Tm1nu9vhXVokGXs2JSJWMorNzgJ/Q0wxVH66w032icLmE
-         XlCttT3op7C5lLDRPiTt5wViWR3KVpTfp/J9tWyWth/QpVzLcv4BO4a2jS7AYhaAB7
-         wS5d9Nlg0u9TIk8nw14NSyDoa00FH6mS23Bhu4wPjmmflmncwSJXxmHE5xRA2rIrMB
-         UuTNY6yvWgIBQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4EE8F60CD0;
-        Thu,  1 Jul 2021 20:36:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234144AbhGAUn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 16:43:59 -0400
+Received: from out02.smtpout.orange.fr ([193.252.22.211]:36456 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234145AbhGAUn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 16:43:57 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d15 with ME
+        id PwhP2500U21Fzsu03whQxr; Thu, 01 Jul 2021 22:41:24 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 01 Jul 2021 22:41:24 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     csully@google.com, sagis@google.com, jonolson@google.com,
+        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
+        willemb@google.com, yangchun@google.com, bcf@google.com,
+        kuozhao@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH net-next v2] gve: Simplify code and axe the use of a deprecated API
+Date:   Thu,  1 Jul 2021 22:41:19 +0200
+Message-Id: <a8ff6511e4740cff2bb549708b98fb1e6dd7e070.1625172036.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH, resend] net: remove the caif_hsi driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162517179131.24244.3097164117146882726.git-patchwork-notify@kernel.org>
-Date:   Thu, 01 Jul 2021 20:36:31 +0000
-References: <20210701081509.246467-1-hch@lst.de>
-In-Reply-To: <20210701081509.246467-1-hch@lst.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, gregkh@linuxfoundation.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an equivalent
+and less verbose 'dma_set_mask_and_coherent()' call.
 
-On Thu,  1 Jul 2021 10:15:09 +0200 you wrote:
-> The caif_hsi driver relies on a cfhsi_get_ops symbol using symbol_get,
-> but this symbol is not provided anywhere in the kernel tree.  Remove
-> this driver given that it is dead code.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/net/caif/Kconfig    |    9 -
->  drivers/net/caif/Makefile   |    3 -
->  drivers/net/caif/caif_hsi.c | 1454 -----------------------------------
->  include/net/caif/caif_hsi.h |  200 -----
->  4 files changed, 1666 deletions(-)
->  delete mode 100644 drivers/net/caif/caif_hsi.c
->  delete mode 100644 include/net/caif/caif_hsi.h
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 
-Here is the summary with links:
-  - [resend] net: remove the caif_hsi driver
-    https://git.kernel.org/netdev/net/c/ca75bcf0a83b
+v2: Unchanged
+    This patch was previously 3/3 of a serie
+---
+ drivers/net/ethernet/google/gve/gve_main.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index c03984b26db4..099a2bc5ae67 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -1477,19 +1477,12 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err) {
+ 		dev_err(&pdev->dev, "Failed to set dma mask: err=%d\n", err);
+ 		goto abort_with_pci_region;
+ 	}
+ 
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (err) {
+-		dev_err(&pdev->dev,
+-			"Failed to set consistent dma mask: err=%d\n", err);
+-		goto abort_with_pci_region;
+-	}
+-
+ 	reg_bar = pci_iomap(pdev, GVE_REGISTER_BAR, 0);
+ 	if (!reg_bar) {
+ 		dev_err(&pdev->dev, "Failed to map pci bar!\n");
+-- 
+2.30.2
 
