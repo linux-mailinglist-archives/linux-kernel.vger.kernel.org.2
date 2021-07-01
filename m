@@ -2,264 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A868F3B8CB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CB13B8CBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 05:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbhGADuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 23:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        id S233771AbhGAD4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 23:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhGADuX (ORCPT
+        with ESMTP id S232930AbhGAD4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 23:50:23 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B486EC061756;
-        Wed, 30 Jun 2021 20:47:53 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id b2so4736652qka.7;
-        Wed, 30 Jun 2021 20:47:53 -0700 (PDT)
+        Wed, 30 Jun 2021 23:56:44 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B73AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 20:54:13 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id f11so2925807plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Jun 2021 20:54:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FBLy8HhoOQw9pfBLv1qCVmi6SynKDzQv7BxPdiIz/K8=;
-        b=V68wQ3Z7V0VQohcSlj5ylfMwuua5JqDVGeD/WUsl+prrVaaK8mT4erndv3YysAUG1Q
-         iINVvFFenlXGchVxRJ6eo2BgZM1FTQhDCyRgLkPwnnzHl/EQ0ci7FeYpSqv5jdHBnvfz
-         1QmatDB8IbxL2kERGq+f8yIZ94e6tzUeOpi96FKMwt75+iFcNeC2f52TL6RSfw+8lGkD
-         9xME1QeGuA/nKan7V6HF7UB9kzE26WdVe5Bf3ByRPLZbLE6RNfKOrdAyKlizop/H7/4J
-         GlPdks9mugdm0xVETvtjAe8jDOf1I67LBaYPgYskYsnAL2DKK71hT+1SjAuSw3hC8emC
-         zQvA==
+        h=from:to:cc:subject:date:message-id;
+        bh=9Fipkw0HU9MxxxKttH7QXZJ4bpXGnCmniFyP0d8kMzo=;
+        b=OHfB4n3QdKgrO9CyZEDUR85Ddc2qGQmGMemA/w+ee9KJd+8QnilwZ9Ch7Lrh/fdcN/
+         W+Is7x7tQWrniIQ4X0XwBqaU47R/htztEC0QhSew4EGAbm9gXu4+pe9wEdNQcKx+K/yf
+         ybnJp8KLNJx8BFdHEBKUIXOXhHJ14KZ1VNLdVjkrtePPfhKYCxWqQ6o3lOA82r691AD6
+         mDVzNcM6+d2OnutRyPzv0QOlb2ryXsKvi9in/2P5/3llKzRmmZ9f0UI4IJGI/dUlwqJR
+         ClwxnxoS6FaspijX8/t6v/Eu69+MkMPVErIErztNOs7jTX7xZNt9Cf3mZvsMeVsTErcI
+         QOIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FBLy8HhoOQw9pfBLv1qCVmi6SynKDzQv7BxPdiIz/K8=;
-        b=C7I7441cB0WpjvCaxrxHswErDmOC7A7+9BcxIlSQKjQ7Kj9PHvkJ6kDwePQhg34L8E
-         kF0i5G3YcZz23o30arKLhhpC/nUR17YJNHKwnDbOUzUSYR78OiVP4qSrSaI+3rgSUPcf
-         vQDiqITwlJarqZLcns1Xm/9lQ8QlZVeCeBnXVlbBXCzRJssxIhnZ5+MpItjGT+Y8i657
-         Fch+8Kdu6mVlUVX4TfKuuekNkIuddcZsn+lE0U+MvXXyItXxRPeGQUT+TEosredc8ofM
-         M64rUvbn4VNICfsqz2J4Ek+es3OGZzLyd/bA9PV1zBPSktnTQz47LH3J70PZYpc1Bhub
-         WuXw==
-X-Gm-Message-State: AOAM533qoN2uKiVxRybA+YZ8J3QvRob4AR7YBA83SnF914jcenha7jyT
-        11syJM4HrH/3YTZn1ARqy2u1aSrYDh/5Jaof2I4=
-X-Google-Smtp-Source: ABdhPJwnh6wmcTvk9eS5Zbc8gujrbc8tIfSXoqpRvcqaYD0RWPUgwGV3c/oDHTi246Gw6qb+SJmw6SrmnwXQzau2cXM=
-X-Received: by 2002:a05:620a:12b4:: with SMTP id x20mr21252019qki.217.1625111273013;
- Wed, 30 Jun 2021 20:47:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210624032543.101861-1-reniuschengl@gmail.com> <916ea01b-4265-0964-9139-8f50b80ea66e@intel.com>
-In-Reply-To: <916ea01b-4265-0964-9139-8f50b80ea66e@intel.com>
-From:   Renius Chen <reniuschengl@gmail.com>
-Date:   Thu, 1 Jul 2021 11:47:42 +0800
-Message-ID: <CAJU4x8tyO9wG_b3V7V3CDs9OgV7MDQRiYxwHEN4=NXZzC=76OQ@mail.gmail.com>
-Subject: Re: [PATCH] [RESEND] mmc: sdhci-pci-gli: Improve Random 4K Read
- Performance of GL9763E
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <Ben.Chuang@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9Fipkw0HU9MxxxKttH7QXZJ4bpXGnCmniFyP0d8kMzo=;
+        b=a/ACAUccyRvuC5C/RlRf90Gr9tojRLxqQAQZiQavdVELfH/bWbVHLPzjbxRhU9KFHy
+         SBi2DUtG+uju46xJoZcWN9VzBlnsmGB6leePsGTPmkcQCqB65lzLx7WM2028Azc/Si3Z
+         Aic02J/NPo+TBoiGUxp9wh0oLPkH6ScKBRhHzG2F2xUc+ys3TeMc4SUhpdKiI87fyJ3Y
+         0IsmJ3lt0/MRx2qQsDwLgwR133r026SsNQ8mRCp3AgNoJcp4YG3chfWQx7lm8yQ5swE2
+         oe8JL8OZUSIizWsdYYOyEqDES9zHK0R5+XOBXknMABlSZYJiEdq0VVe2mq4kFMMivqkh
+         Wpyw==
+X-Gm-Message-State: AOAM530uTmMzqPYTeKqUidbGN3US+IaPD5gF2KflTHNrdIR0uoHSN/ek
+        kR56ZFVbIsjwVaGkAK6Y6YA=
+X-Google-Smtp-Source: ABdhPJyR6/oynuyfuDZ6SO9Ncj1rkpXKJ1KLn24P8kQWNWHd1IMh1Z689zBR2a+24pI/vIksTG2c5A==
+X-Received: by 2002:a17:90a:4295:: with SMTP id p21mr18778728pjg.149.1625111652744;
+        Wed, 30 Jun 2021 20:54:12 -0700 (PDT)
+Received: from localhost.localdomain (1-171-4-204.dynamic-ip.hinet.net. [1.171.4.204])
+        by smtp.gmail.com with ESMTPSA id g2sm3590295pjd.55.2021.06.30.20.54.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Jun 2021 20:54:11 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org
+Cc:     lgirdwood@gmail.com, axel.lin@ingics.com,
+        linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>
+Subject: [PATCH] regulator: rt5033: Use linear ranges to map all voltage selection
+Date:   Thu,  1 Jul 2021 11:54:06 +0800
+Message-Id: <1625111646-3955-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian Hunter <adrian.hunter@intel.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8830=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:18=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On 24/06/21 6:25 am, Renius Chen wrote:
-> > During a sequence of random 4K read operations, the performance will be
-> > reduced due to spending much time on entering/exiting the low power sta=
-te
-> > between requests. We disable the low power state negotiation of GL9763E
-> > during a sequence of random 4K read operations to improve the performan=
-ce
-> > and enable it again after the operations have finished.
-> >
-> > Signed-off-by: Renius Chen <reniuschengl@gmail.com>
-> > ---
-> >  drivers/mmc/host/sdhci-pci-gli.c | 86 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 86 insertions(+)
-> >
-> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-=
-pci-gli.c
-> > index 302a7579a9b3..0105f728ccc4 100644
-> > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > @@ -88,6 +88,9 @@
-> >  #define PCIE_GLI_9763E_SCR    0x8E0
-> >  #define   GLI_9763E_SCR_AXI_REQ         BIT(9)
-> >
-> > +#define PCIE_GLI_9763E_CFG       0x8A0
-> > +#define   GLI_9763E_CFG_LPSN_DIS   BIT(12)
-> > +
-> >  #define PCIE_GLI_9763E_CFG2      0x8A4
-> >  #define   GLI_9763E_CFG2_L1DLY     GENMASK(28, 19)
-> >  #define   GLI_9763E_CFG2_L1DLY_MID 0x54
-> > @@ -691,6 +694,86 @@ static void sdhci_gl9763e_dumpregs(struct mmc_host=
- *mmc)
-> >       sdhci_dumpregs(mmc_priv(mmc));
-> >  }
-> >
-> > +static void gl9763e_request(struct mmc_host *mmc, struct mmc_request *=
-mrq)
-> > +{
-> > +     struct sdhci_host *host =3D mmc_priv(mmc);
-> > +     struct mmc_command *cmd;
-> > +     struct sdhci_pci_slot *slot =3D sdhci_priv(host);
-> > +     struct pci_dev *pdev =3D slot->chip->pdev;
-> > +     u32 value;
-> > +     static bool start_4k_r;
-> > +     static int  continuous_4k_r;
->
-> Please do not use static variables.  Instead define a struct for them and
-> set .priv_size in sdhci_pci_fixes e.g.
->
-> struct sdhci_pci_gli {
->         static bool start_4k_r;
->         static int  continuous_4k_r;
-> };
->
-> const struct sdhci_pci_fixes sdhci_gl9763e =3D {
->         .quirks         =3D SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC,
->         .probe_slot     =3D gli_probe_slot_gl9763e,
->         .ops            =3D &sdhci_gl9763e_ops,
-> #ifdef CONFIG_PM_SLEEP
->         .resume         =3D sdhci_cqhci_gli_resume,
->         .suspend        =3D sdhci_cqhci_gli_suspend,
-> #endif
->         .add_host       =3D gl9763e_add_host,
->         .priv_size      =3D sizeof(struct sdhci_pci_gli);
-> };
->
-> And then you can get a pointer to it:
->
-> struct sdhci_pci_gli *sdhci_pci_gli =3D sdhci_pci_priv(slot);
->
->
-> > +
-> > +     cmd =3D (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23)) ? mrq->sb=
-c : mrq->cmd;
->
-> mrq->cmd is always the main command, so why look at mrq->sbc?
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-OK, I will just check if mrq->cmd is valid or not instead of looking
-at mrq->sbc.
-I will also modify the other parts by your comments and submit a newer vers=
-ion.
-Thanks for your review.
+Instead of linear mapping, Use linear range to map all voltage selection.
 
->
-> > +
-> > +     if (cmd->opcode =3D=3D MMC_READ_MULTIPLE_BLOCK) {
-> > +             if (cmd->data->blocks =3D=3D 8) {
-> > +                     continuous_4k_r++;
-> > +
-> > +                     if ((!start_4k_r) && (continuous_4k_r >=3D 3)) {
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_VHS, &value);
-> > +                             value &=3D ~GLI_9763E_VHS_REV;
-> > +                             value |=3D FIELD_PREP(GLI_9763E_VHS_REV, =
-GLI_9763E_VHS_REV_W);
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_VHS, value);
-> > +
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_CFG, &value);
-> > +                             value |=3D GLI_9763E_CFG_LPSN_DIS;
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_CFG, value);
-> > +
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_VHS, &value);
-> > +                             value &=3D ~GLI_9763E_VHS_REV;
-> > +                             value |=3D FIELD_PREP(GLI_9763E_VHS_REV, =
-GLI_9763E_VHS_REV_R);
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_VHS, value);
-> > +
-> > +                             start_4k_r =3D true;
-> > +                     }
-> > +             } else {
-> > +                     continuous_4k_r =3D 0;
-> > +
-> > +                     if (start_4k_r) {
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_VHS, &value);
-> > +                             value &=3D ~GLI_9763E_VHS_REV;
-> > +                             value |=3D FIELD_PREP(GLI_9763E_VHS_REV, =
-GLI_9763E_VHS_REV_W);
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_VHS, value);
-> > +
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_CFG, &value);
-> > +                             value &=3D ~GLI_9763E_CFG_LPSN_DIS;
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_CFG, value);
-> > +
-> > +                             pci_read_config_dword(pdev, PCIE_GLI_9763=
-E_VHS, &value);
-> > +                             value &=3D ~GLI_9763E_VHS_REV;
-> > +                             value |=3D FIELD_PREP(GLI_9763E_VHS_REV, =
-GLI_9763E_VHS_REV_R);
-> > +                             pci_write_config_dword(pdev, PCIE_GLI_976=
-3E_VHS, value);
-> > +
-> > +                             start_4k_r =3D false;
-> > +                     }
-> > +             }
-> > +     } else {
-> > +             continuous_4k_r =3D 0;
-> > +
-> > +             if (start_4k_r) {
-> > +                     pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &=
-value);
-> > +                     value &=3D ~GLI_9763E_VHS_REV;
-> > +                     value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763=
-E_VHS_REV_W);
-> > +                     pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, =
-value);
-> > +
-> > +                     pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &=
-value);
-> > +                     value &=3D ~GLI_9763E_CFG_LPSN_DIS;
-> > +                     pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, =
-value);
-> > +
-> > +                     pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &=
-value);
-> > +                     value &=3D ~GLI_9763E_VHS_REV;
-> > +                     value |=3D FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763=
-E_VHS_REV_R);
-> > +                     pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, =
-value);
-> > +
-> > +                     start_4k_r =3D false;
-> > +             }
->
-> The code chunk above is the same as the previous and almost
-> the same as the one before that.  Please make a separate function
->
-> > +     }
-> > +
-> > +     sdhci_request(mmc, mrq);
-> > +}
-> > +
-> > +
-> >  static void sdhci_gl9763e_cqe_pre_enable(struct mmc_host *mmc)
-> >  {
-> >       struct cqhci_host *cq_host =3D mmc->cqe_private;
-> > @@ -848,6 +931,9 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_=
-slot *slot)
-> >       gli_pcie_enable_msi(slot);
-> >       host->mmc_host_ops.hs400_enhanced_strobe =3D
-> >                                       gl9763e_hs400_enhanced_strobe;
-> > +
-> > +     host->mmc_host_ops.request =3D gl9763e_request;
-> > +
-> >       gli_set_gl9763e(slot);
-> >       sdhci_enable_v4_mode(host);
-> >
-> >
->
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+Even though commit 6549c46af855 ("regulator: rt5033: Fix n_voltages settings for BUCK and LDO")
+can fix the linear mapping to the correct min/max voltage
+But there're still non-step ranges for the reserved value.
+
+To use the linear range can fix it for mapping all voltage selection.
+---
+ drivers/regulator/rt5033-regulator.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/regulator/rt5033-regulator.c b/drivers/regulator/rt5033-regulator.c
+index 0e73116..2ff607c 100644
+--- a/drivers/regulator/rt5033-regulator.c
++++ b/drivers/regulator/rt5033-regulator.c
+@@ -13,6 +13,16 @@
+ #include <linux/mfd/rt5033-private.h>
+ #include <linux/regulator/of_regulator.h>
+ 
++static const struct linear_range rt5033_buck_ranges[] = {
++	REGULATOR_LINEAR_RANGE(1000000, 0, 20, 100000),
++	REGULATOR_LINEAR_RANGE(3000000, 21, 31, 0),
++};
++
++static const struct linear_range rt5033_ldo_ranges[] = {
++	REGULATOR_LINEAR_RANGE(1200000, 0, 18, 100000),
++	REGULATOR_LINEAR_RANGE(3000000, 19, 31, 0),
++};
++
+ static const struct regulator_ops rt5033_safe_ldo_ops = {
+ 	.is_enabled		= regulator_is_enabled_regmap,
+ 	.enable			= regulator_enable_regmap,
+@@ -24,8 +34,7 @@ static const struct regulator_ops rt5033_buck_ops = {
+ 	.is_enabled		= regulator_is_enabled_regmap,
+ 	.enable			= regulator_enable_regmap,
+ 	.disable		= regulator_disable_regmap,
+-	.list_voltage		= regulator_list_voltage_linear,
+-	.map_voltage		= regulator_map_voltage_linear,
++	.list_voltage		= regulator_list_voltage_linear_range,
+ 	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
+ 	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
+ };
+@@ -39,9 +48,8 @@ static const struct regulator_desc rt5033_supported_regulators[] = {
+ 		.ops		= &rt5033_buck_ops,
+ 		.type		= REGULATOR_VOLTAGE,
+ 		.owner		= THIS_MODULE,
+-		.n_voltages	= RT5033_REGULATOR_BUCK_VOLTAGE_STEP_NUM,
+-		.min_uV		= RT5033_REGULATOR_BUCK_VOLTAGE_MIN,
+-		.uV_step	= RT5033_REGULATOR_BUCK_VOLTAGE_STEP,
++		.linear_ranges	= rt5033_buck_ranges,
++		.n_linear_ranges = ARRAY_SIZE(rt5033_buck_ranges),
+ 		.enable_reg	= RT5033_REG_CTRL,
+ 		.enable_mask	= RT5033_CTRL_EN_BUCK_MASK,
+ 		.vsel_reg	= RT5033_REG_BUCK_CTRL,
+@@ -55,9 +63,8 @@ static const struct regulator_desc rt5033_supported_regulators[] = {
+ 		.ops		= &rt5033_buck_ops,
+ 		.type		= REGULATOR_VOLTAGE,
+ 		.owner		= THIS_MODULE,
+-		.n_voltages	= RT5033_REGULATOR_LDO_VOLTAGE_STEP_NUM,
+-		.min_uV		= RT5033_REGULATOR_LDO_VOLTAGE_MIN,
+-		.uV_step	= RT5033_REGULATOR_LDO_VOLTAGE_STEP,
++		.linear_ranges	= rt5033_ldo_ranges,
++		.n_linear_ranges = ARRAY_SIZE(rt5033_ldo_ranges),
+ 		.enable_reg	= RT5033_REG_CTRL,
+ 		.enable_mask	= RT5033_CTRL_EN_LDO_MASK,
+ 		.vsel_reg	= RT5033_REG_LDO_CTRL,
+-- 
+2.7.4
+
