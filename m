@@ -2,130 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4A03B9157
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB5C3B9148
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 13:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhGALxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 07:53:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37998 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236306AbhGALxn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 07:53:43 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161BWr4h028347;
-        Thu, 1 Jul 2021 07:51:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type : subject :
- from : in-reply-to : date : cc : message-id : references : to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=CojOA0Cd6D44w89fGful52nUI3MSzEEZZlqaey3DZ9E=;
- b=gOBbk0rP05XSU8lQ5OmAkivFJ6P7Wr+jSVsRakBGY2dRfWEpVdMfPtkjKqT8XENejFRu
- sWiBTeT10Ox0yqpIoclsXVEVzwIa8MOJTFER8L+LFbr3P8gTsY7oB0g7DNgst5elOWV5
- LqkVWJndzXy1cdbcvg60f7U2YcBCcX/tocxVet8u4RiZ5gKnUaMgNBL26km9bPwsStSM
- 5FCQYptFIxPQWLG3KmSJiwBk3K0xLOEZrhhowOQzJRjptuykqZtItw2X/p0QyieddWto
- foKsYdEPaeo7EXP2kvdJWckkRUB0xJ+D3NmaD1I3QPoGgZNDivHouh5gaLbnyWznYR8N 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hc20278q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 07:51:06 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161BX9Lc029817;
-        Thu, 1 Jul 2021 07:51:05 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hc20277x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 07:51:05 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161BldrJ009847;
-        Thu, 1 Jul 2021 11:51:04 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 39h19bgc81-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:51:03 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161Bp1rN25625030
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 11:51:01 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A4ECA235B;
-        Thu,  1 Jul 2021 11:45:34 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.199.58.175])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 31079A2358;
-        Thu,  1 Jul 2021 11:45:33 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Subject: Re: [PATCH] sched/fair: Ensure _sum and _avg values stay consistent
-From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
-In-Reply-To: <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
-Date:   Thu, 1 Jul 2021 17:15:31 +0530
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Message-Id: <C253482E-0B1E-4F38-92D6-6F00AFFA7DEF@linux.vnet.ibm.com>
-References: <20210624111815.57937-1-odin@uged.al>
- <E16E71B3-E941-4522-AFF1-ABDF918FED19@linux.vnet.ibm.com>
- <20210701103448.GL3840@techsingularity.net>
- <CAFpoUr1mpErE1Soa05p36wL1uTeojQ2mqNLJ1GKVnpJ+x-3itw@mail.gmail.com>
-To:     Odin Ugedal <odin@uged.al>,
-        Mel Gorman <mgorman@techsingularity.net>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: TZ7z7bYZq0gtBFQlY98jyY8oklaKIpDi
-X-Proofpoint-ORIG-GUID: CBEB11oueOe_45huybhkWihmbwQs3sF3
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S236226AbhGALsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 07:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236125AbhGALsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Jul 2021 07:48:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADA616128A;
+        Thu,  1 Jul 2021 11:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625139975;
+        bh=ZnjgJHAmKdje4gioA3EdCNPiIw3mg1Qo2HMHG/7N1TI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vR/XGGb9+9dWz460JVd5F96UyZzoBRYNimwcDPqgnAg8+WwS3z94uztgT28nyjCe1
+         X7CiKm7j5iE5XbL4yYk/7lV08af7Q1Hms2VCHD7FIXMyR3CpErZ31QcePMuA8C4cXR
+         ECpf2gmBKCv5IVtiVB8m1hTjUPkx7wI/UM67AFzM=
+Date:   Thu, 1 Jul 2021 13:46:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhenguo Zhao <zhenguo6858@gmail.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tty: n_gsm: delete DISC command frame as requester
+Message-ID: <YN2rBLO4gX0Sei83@kroah.com>
+References: <1625139723-23197-1-git-send-email-zhenguo6858@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_07:2021-06-30,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0
- impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107010075
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625139723-23197-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 01, 2021 at 07:42:03PM +0800, Zhenguo Zhao wrote:
+> From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> 
+> as initiator,it need to send DISC command ,as requester,there is
+> no need to send the DISC control frame,it will cause redundant data.
+> 
+> Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+> ---
+>  drivers/tty/n_gsm.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+> index 5fea02c..1aa87d9 100644
+> --- a/drivers/tty/n_gsm.c
+> +++ b/drivers/tty/n_gsm.c
+> @@ -2050,7 +2050,8 @@ static int gsm_disconnect(struct gsm_mux *gsm)
+>  	del_timer_sync(&gsm->t2_timer);
+>  	/* Now we are sure T2 has stopped */
+>  
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
+>  	wait_event_interruptible(gsm->event,
+>  				dlci->state == DLCI_CLOSED);
+>  
+> @@ -3014,6 +3015,7 @@ static int gsmtty_open(struct tty_struct *tty, struct file *filp)
+>  static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+>  {
+>  	struct gsm_dlci *dlci = tty->driver_data;
+> +	struct gsm_mux *gsm = dlci->gsm;
+>  
+>  	if (dlci == NULL)
+>  		return;
+> @@ -3024,7 +3026,8 @@ static void gsmtty_close(struct tty_struct *tty, struct file *filp)
+>  	mutex_unlock(&dlci->mutex);
+>  	if (tty_port_close_start(&dlci->port, tty, filp) == 0)
+>  		return;
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
+>  	if (tty_port_initialized(&dlci->port) && C_HUPCL(tty))
+>  		tty_port_lower_dtr_rts(&dlci->port);
+>  	tty_port_close_end(&dlci->port, tty);
+> @@ -3038,7 +3041,8 @@ static void gsmtty_hangup(struct tty_struct *tty)
+>  	if (dlci->state == DLCI_CLOSED)
+>  		return;
+>  	tty_port_hangup(&dlci->port);
+> -	gsm_dlci_begin_close(dlci);
+> +	if (gsm->initiator)
+> +		gsm_dlci_begin_close(dlci);
+>  }
+>  
+>  static int gsmtty_write(struct tty_struct *tty, const unsigned char *buf,
+> -- 
+> 1.9.1
+> 
 
+Hi,
 
-> On 01-Jul-2021, at 4:39 PM, Odin Ugedal <odin@uged.al> wrote:
->=20
-> tor. 1. jul. 2021 kl. 12:34 skrev Mel Gorman <mgorman@techsingularity.net=
->:
->>=20
->> What was HEAD when you checked this? 1c35b07e6d39 was merged in the
->> 5.14-rc1 merge window so would not be in 5.13.
->=20
-> From the kernel log it looks like he used commit dbe69e433722
-> (somewhere in Linus' tree), and that should include my patch. I don't
-> think the patches from Vincent in the previous thread have been posted
-> properly, and I think those can fix the edge case you are seeing.
->=20
-Sorry about the confusion. Yes I am using this code level.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-commit dbe69e43372212527abf48609aba7fc39a6daa27 (HEAD -> master, origin/mas=
-ter, origin/HEAD)
-Merge: a6eaf3850cb1 b6df00789e28
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jun 30 15:51:09 2021 -0700
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-This does contain the patch from Odin.
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
-> This should mitigate some issues:
-> https://lore.kernel.org/lkml/20210622143154.GA804@vingu-book/
->=20
-> while
-> https://lore.kernel.org/lkml/20210623071935.GA29143@vingu-book/
-> might also help in some cases as well.
->=20
-> Both of those are needed to make sure that *_avg is zero whenever *_sum i=
-s zero.
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-Okay, so additional patches are required to fix this problem completely.
-I can help test these.
+thanks,
 
-Thanks
--Sachin
-
+greg k-h's patch email bot
