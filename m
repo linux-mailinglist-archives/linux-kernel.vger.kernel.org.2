@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE333B965B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64163B965C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 21:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhGATGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 15:06:37 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:38826 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbhGATGf (ORCPT
+        id S233477AbhGATHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 15:07:41 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:60911 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhGATHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 15:06:35 -0400
-Received: by mail-io1-f45.google.com with SMTP id k11so8833297ioa.5;
-        Thu, 01 Jul 2021 12:04:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zxe6icUK9dg2zwl2+kOjeVvFVYbjyW2nckiV9CTtI7w=;
-        b=QC/Zzroz3Jk2oY/CLOgjxt2yoBnEFCWHPN/xQJGq2HN+kiEo3hie0FX/m/r1ccTo1q
-         pR7/Ial9sqMeqJURNBsRcAMQ5ruEh6FdiXnF6NYheAurBMOxAkjN+zslkelArDUqec8D
-         Yn6Mw+ZtvPElWD5uMo+q8VcEyrwzxN+xaIAc21jpGrIPNmaIX7S26jkznPoiyEXuDHjF
-         PJgyFBEjUmRqDfFWaiXUm8c2GTp0UumoEvHfa4RA15JpKvAW7La3r4fMF5EOzhOH/tJq
-         FqRT5Cc5jSuSNbeM7qDQwA10kTK9vO1b22eevXgyBibDryOfacKd0uX5xhaN7A7Zrnmf
-         hHOQ==
-X-Gm-Message-State: AOAM533jMUmbm2A2+IA1yKfe8b2swA0jKpljSyD7JCCLo8utIn9JqzFz
-        6x0TgZRhOJmBbXdBrEAVnw==
-X-Google-Smtp-Source: ABdhPJzaGG+aYDhjSbVXo8hz+gZPHFEs4M+dIQlCfUSUgKl7xRMnwYRX52RQ3/KVV/+Osw9UC0L/oQ==
-X-Received: by 2002:a02:3c17:: with SMTP id m23mr874544jaa.84.1625166244191;
-        Thu, 01 Jul 2021 12:04:04 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id j4sm322379iom.28.2021.07.01.12.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 12:04:03 -0700 (PDT)
-Received: (nullmailer pid 2742755 invoked by uid 1000);
-        Thu, 01 Jul 2021 19:03:59 -0000
-Date:   Thu, 1 Jul 2021 13:03:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Sibi S <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: soc: qcom: aoss: Add SC8180X compatible
-Message-ID: <20210701190359.GB2736150@robh.at.kernel.org>
-References: <20210625234018.1324681-1-bjorn.andersson@linaro.org>
- <20210625234018.1324681-2-bjorn.andersson@linaro.org>
+        Thu, 1 Jul 2021 15:07:40 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 192381C0009;
+        Thu,  1 Jul 2021 19:05:04 +0000 (UTC)
+Subject: Re: [PATCH 1/3] riscv: Fix memory_limit for 64-bit kernel
+From:   Alex Ghiti <alex@ghiti.fr>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210629091349.3802690-1-alex@ghiti.fr>
+ <6a38fb9a-d658-836b-4ff4-7c47cadb7db0@huawei.com>
+ <8e1bef59-8a65-dfdf-d09d-f578323348be@ghiti.fr>
+Message-ID: <86866409-50a9-1974-6bcd-30d66945b238@ghiti.fr>
+Date:   Thu, 1 Jul 2021 21:04:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210625234018.1324681-2-bjorn.andersson@linaro.org>
+In-Reply-To: <8e1bef59-8a65-dfdf-d09d-f578323348be@ghiti.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 04:40:16PM -0700, Bjorn Andersson wrote:
-> Add compatible for the Qualcomm SC8180x platform to the AOSS QMP
-> binding.
+Le 1/07/2021 à 21:01, Alex Ghiti a écrit :
+> Le 1/07/2021 à 12:44, Kefeng Wang a écrit :
+>>
+>> On 2021/6/29 17:13, Alexandre Ghiti wrote:
+>>> As described in Documentation/riscv/vm-layout.rst, the end of the
+>>> virtual address space for 64-bit kernel is occupied by the modules/BPF/
+>>> kernel mappings so this actually reduces the amount of memory we are 
+>>> able
+>>> to map and then use in the linear mapping. So make sure this limit is
+>>> correctly set.
+>>>
+>>> Fixes: c9811e379b21 ("riscv: Add mem kernel parameter support")
+>>
+>>
+>> Should the Fixes tag be de043da0b9e7 （“RISC-V: Fix usage of 
+>> memblock_enforce_memory_limit“）,
+>>
+>> The -PAGE_OFFSET is set to the maximal physical memory from this point :)
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
-> index 783dc81b0f26..3747032311a4 100644
-> --- a/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
-> @@ -18,10 +18,13 @@ power-domains.
->  	Definition: must be one of:
->  		    "qcom,sc7180-aoss-qmp"
->  		    "qcom,sc7280-aoss-qmp"
-> +		    "qcom,sc8180x-aoss-qmp"
->  		    "qcom,sdm845-aoss-qmp"
->  		    "qcom,sm8150-aoss-qmp"
->  		    "qcom,sm8250-aoss-qmp"
->  		    "qcom,sm8350-aoss-qmp"
-> +		    and:
-> +		    "qcom,aoss-qmp"
+> Oops, thank you!
 
-This was missing from all the existing ones or is an addition?
+Actually the commit you mentioned was merged way before I moved the 
+kernel to the end of the address space, so the proper Fixes tag should be:
 
->  
->  - reg:
->  	Usage: required
-> @@ -70,7 +73,7 @@ The following example represents the AOSS side-channel message RAM and the
->  mechanism exposing the power-domains, as found in SDM845.
->  
->    aoss_qmp: qmp@c300000 {
-> -	  compatible = "qcom,sdm845-aoss-qmp";
-> +	  compatible = "qcom,sdm845-aoss-qmp", "qcom,aoss-qmp";
->  	  reg = <0x0c300000 0x100000>;
->  	  interrupts = <GIC_SPI 389 IRQ_TYPE_EDGE_RISING>;
->  	  mboxes = <&apss_shared 0>;
-> -- 
-> 2.29.2
+Fixes: 2bfc6cd81bd1 ("riscv: Move kernel mapping outside of linear mapping")
+
+Thanks anyway,
+
 > 
+> Alex
 > 
+>>
+>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>>> ---
+>>>   arch/riscv/mm/init.c | 11 +++++++++--
+>>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>>> index 12f956b3a674..04a5db3a9788 100644
+>>> --- a/arch/riscv/mm/init.c
+>>> +++ b/arch/riscv/mm/init.c
+>>> @@ -124,10 +124,17 @@ void __init mem_init(void)
+>>>   }
+>>>   /*
+>>> - * The default maximal physical memory size is -PAGE_OFFSET,
+>>> - * limit the memory size via mem.
+>>> + * The default maximal physical memory size is -PAGE_OFFSET for 
+>>> 32-bit kernel,
+>>> + * whereas for 64-bit kernel, the end of the virtual address space 
+>>> is occupied
+>>> + * by the modules/BPF/kernel mappings which reduces the available 
+>>> size of the
+>>> + * linear mapping.
+>>> + * Limit the memory size via mem.
+>>>    */
+>>> +#ifdef CONFIG_64BIT
+>>> +static phys_addr_t memory_limit = -PAGE_OFFSET - SZ_4G;
+>>> +#else
+>>>   static phys_addr_t memory_limit = -PAGE_OFFSET;
+>>> +#endif
+>>>   static int __init early_mem(char *p)
+>>>   {
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
