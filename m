@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957253B8BE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688EA3B8BEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 04:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhGACLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Jun 2021 22:11:11 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5947 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238580AbhGACLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Jun 2021 22:11:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GFhPS3Wgtz76Rf;
-        Thu,  1 Jul 2021 10:05:16 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 10:08:38 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Jul 2021 10:08:38 +0800
-Subject: Re: [PATCH] riscv: Fix 32-bit RISC-V boot failure
-To:     Bin Meng <bmeng.cn@gmail.com>
-CC:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-References: <20210627135117.28641-1-bmeng.cn@gmail.com>
- <11706f7e-a53a-5640-d713-bc4562db71fa@huawei.com>
- <CAEUhbmV=h3nZ8Aa94_uyjrZ_NGe+9-xAorUMubSPJXu3y60PeQ@mail.gmail.com>
- <aa1f027c-bbc7-92f8-80a6-fe290cd1cdf8@huawei.com>
- <CAEUhbmXeqAsLxm+oCHRPHMZq2mQXPD6fJOFerwp_BRv1kCc7ow@mail.gmail.com>
- <CAEUhbmUvDSocWobb26PcrV6vi6kHjg8o6pNomt9AnGWGbvAuhw@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <94a92009-ce49-bbe4-794c-0631520e4c3d@huawei.com>
-Date:   Thu, 1 Jul 2021 10:08:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S238618AbhGACLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Jun 2021 22:11:50 -0400
+Received: from mga03.intel.com ([134.134.136.65]:21276 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238610AbhGACLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Jun 2021 22:11:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10031"; a="208497863"
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="208497863"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2021 19:09:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,312,1616482800"; 
+   d="scan'208";a="408775909"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 30 Jun 2021 19:09:16 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lym8h-000AD7-P0; Thu, 01 Jul 2021 02:09:15 +0000
+Date:   Thu, 01 Jul 2021 10:08:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 60ab3ed18cf19201d65cfb960a4600e4e7b75df6
+Message-ID: <60dd23a9.v3wUyAOuRjYKWizn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAEUhbmUvDSocWobb26PcrV6vi6kHjg8o6pNomt9AnGWGbvAuhw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 60ab3ed18cf19201d65cfb960a4600e4e7b75df6  Merge branch 'core/rcu'
 
-On 2021/6/30 19:58, Bin Meng wrote:
-> On Mon, Jun 28, 2021 at 11:21 AM Bin Meng <bmeng.cn@gmail.com> wrote:
->> On Mon, Jun 28, 2021 at 10:28 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>>
->>> On 2021/6/28 9:15, Bin Meng wrote:
->>>> On Mon, Jun 28, 2021 at 8:53 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->>>>> Hi， sorry for the mistake，the bug is fixed by
->>>>>
->>>>> https://lore.kernel.org/linux-riscv/20210602085517.127481-2-wangkefeng.wang@huawei.com/
->>>> What are we on the patch you mentioned?
->>>>
->>>> I don't see it applied in the linux/master.
->>>>
->>>> Also there should be a "Fixes" tag and stable@vger.kernel.org cc'ed
->>>> because 32-bit is broken since v5.12.
->>> https://kernel.googlesource.com/pub/scm/linux/kernel/git/riscv/linux/+/c9811e379b211c67ba29fb09d6f644dd44cfcff2
->>>
->>> it's on Palmer' riscv-next.
->> Not sure riscv-next is for which release? This is a regression and
->> should be on 5.13.
->>
->>> Hi Palmer, should I resend or could you help me to add the fixes tag?
-> Your patch mixed 2 things (fix plus one feature) together, so it is
-> not proper to back port your patch.
+elapsed time: 723m
 
-"mem=" will change the range of memblock, so the fix part must be included.
+configs tested: 96
+configs skipped: 4
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Here is my 2 cents:
->
-> 1. Drop your patch from riscv-next
-> 2. Apply my patch as it is a simple fix to previous commit. This
-> allows stable kernel to cherry-pick the fix to v5.12 and v5.13.
-> 3. Rebase your patch against mine, and resend v2
->
-> Let me know if this makes sense.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       aspeed_g4_defconfig
+sh                           se7724_defconfig
+arm                         s5pv210_defconfig
+m68k                        m5272c3_defconfig
+ia64                             alldefconfig
+arm                            zeus_defconfig
+powerpc                       maple_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                          collie_defconfig
+sh                           se7721_defconfig
+mips                           xway_defconfig
+powerpc                     sbc8548_defconfig
+arc                          axs103_defconfig
+sh                           se7722_defconfig
+powerpc                 canyonlands_defconfig
+sh                           se7619_defconfig
+sh                        sh7785lcr_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210630
+x86_64               randconfig-a001-20210630
+x86_64               randconfig-a004-20210630
+x86_64               randconfig-a005-20210630
+x86_64               randconfig-a006-20210630
+x86_64               randconfig-a003-20210630
+i386                 randconfig-a004-20210630
+i386                 randconfig-a001-20210630
+i386                 randconfig-a003-20210630
+i386                 randconfig-a002-20210630
+i386                 randconfig-a005-20210630
+i386                 randconfig-a006-20210630
+i386                 randconfig-a014-20210630
+i386                 randconfig-a011-20210630
+i386                 randconfig-a016-20210630
+i386                 randconfig-a012-20210630
+i386                 randconfig-a013-20210630
+i386                 randconfig-a015-20210630
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-It is not a big problem for me, but I have no right abourt riscv-next,
+clang tested configs:
+x86_64               randconfig-b001-20210630
+x86_64               randconfig-a012-20210630
+x86_64               randconfig-a015-20210630
+x86_64               randconfig-a016-20210630
+x86_64               randconfig-a013-20210630
+x86_64               randconfig-a011-20210630
+x86_64               randconfig-a014-20210630
 
-let's wait Palmer's advise.
-
->
-> Regards,
-> Bin
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
