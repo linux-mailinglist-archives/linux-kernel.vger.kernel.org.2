@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729873B93CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8536C3B93D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 17:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhGAPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 11:18:41 -0400
-Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:40116 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233064AbhGAPSj (ORCPT
+        id S233351AbhGAPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 11:21:38 -0400
+Received: from atlmailgw1.ami.com ([63.147.10.40]:63389 "EHLO
+        atlmailgw1.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232626AbhGAPVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 11:18:39 -0400
-Received: from omf10.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 09FFB182CF670;
-        Thu,  1 Jul 2021 15:16:08 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id E6EFF2351FC;
-        Thu,  1 Jul 2021 15:16:02 +0000 (UTC)
-Message-ID: <59794f7f5a481e670a2490017649a872a8639be2.camel@perches.com>
-Subject: Re: [Patch v2 2/3] Drivers: hv: add Azure Blob driver
-From:   Joe Perches <joe@perches.com>
-To:     Long Li <longli@microsoft.com>, Jiri Slaby <jirislaby@kernel.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Date:   Thu, 01 Jul 2021 08:16:01 -0700
-In-Reply-To: <BY5PR21MB15062914C8301F2EF9C24F15CE009@BY5PR21MB1506.namprd21.prod.outlook.com>
-References: <1624689020-9589-1-git-send-email-longli@linuxonhyperv.com>
-         <1624689020-9589-3-git-send-email-longli@linuxonhyperv.com>
-         <f5155516-4054-459a-c23c-a787fa429e5e@kernel.org>
-         <BY5PR21MB15062914C8301F2EF9C24F15CE009@BY5PR21MB1506.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Thu, 1 Jul 2021 11:21:37 -0400
+X-AuditID: ac1060b2-3edff70000000c56-29-60dddcea2ebe
+Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by atlmailgw1.ami.com (Symantec Messaging Gateway) with SMTP id 9B.86.03158.AECDDD06; Thu,  1 Jul 2021 11:19:06 -0400 (EDT)
+Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
+ atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
+ 14.3.498.0; Thu, 1 Jul 2021 11:19:05 -0400
+From:   Hongwei Zhang <hongweiz@ami.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     Hongwei Zhang <hongweiz@ami.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 1/1] mtd: spi-nor: Add some M45PEx ids
+Date:   Thu, 1 Jul 2021 11:18:39 -0400
+Message-ID: <20210701151839.3011-1-hongweiz@ami.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210629150846.21547-2-hongweiz@ami.com>
+References: <20210629150846.21547-1-hongweiz@ami.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: dsf3h6ga59m8sx4ehmp9tsmrym5oi8tz
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: E6EFF2351FC
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+tjnrxZq5D3ZdkY3toM7Ry7rBvXa0HGQU=
-X-HE-Tag: 1625152562-567931
+Content-Type: text/plain
+X-Originating-IP: [172.16.98.207]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCLMWRmVeSWpSXmKPExsWyRiBhgu6rO3cTDBbe1ra4vGsOm8XupmXs
+        Fm9Pb2C3uPv8B7vFxyUODqwem5fUe9z5sZTR4/iN7UwenzfJeRzY28IWwBrFZZOSmpNZllqk
+        b5fAlfF98jvGgkm8FXMv9zE2MP7n6mLk5JAQMJHYM/MCaxcjF4eQwC4mie2zV0E5Oxkl/hz4
+        zQ5SxSagJrF38xwmEFtEQEXi8ecLjCBFzALbGSU6G76xgSSEBSwlJm58yQpiswAVff93kRnE
+        5gVa8XHXV3aIdfISqzccAItzCphJzG1/ANYrJGAq8WxNDxtEvaDEyZlPWEBsZgEJiYMvXjBD
+        1MhK3Dr0mAlijqLEg1/fWScwCsxC0jILScsCRqZVjEKJJTm5iZk56eWGeom5mXrJ+bmbGCEh
+        u2kHY8tF80OMTByMhxglOJiVRHgnTL+bIMSbklhZlVqUH19UmpNafIhRmoNFSZx3lfvReCGB
+        9MSS1OzU1ILUIpgsEwenVANjmtpPc990n7erOkR+ugVxZ1+pPl5RY6Tto/fRSuvqjC+zoyeY
+        x26/fVJzZvZMXf7ong5Dh6qzK264yT1LmH10qZWxDdcZjs/1Vw49bWJbpsNme+fYHNt7V/Km
+        3ljl47JwDdf5oz7OB2TZ1/9/LzLLab7Zt6leyXxB8Tfqf3zZ8bXwVNxnLdVzSizFGYmGWsxF
+        xYkAbKvRwEcCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-01 at 07:09 +0000, Long Li wrote:
-> > On 26. 06. 21, 8:30, longli@linuxonhyperv.com wrote:
+Hi Michael,
 
-> > Have you fed this patch through checkpatch?
-> 
-> Yes, it didn't throw out any errors.
+Ok, I will separately resubmit a revised patch with update later.
 
-Several warnings and checks though.
+Regards,
+--Hongwei
 
-$ ./scripts/checkpatch.pl 2.patch --strict --terse
-2.patch:68: WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-2.patch:148: WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-2.patch:173: CHECK: spinlock_t definition without comment
-2.patch:220: CHECK: spinlock_t definition without comment
-2.patch:250: CHECK: Alignment should match open parenthesis
-2.patch:255: CHECK: Alignment should match open parenthesis
-2.patch:257: CHECK: Macro argument 'level' may be better as '(level)' to avoid precedence issues
-2.patch:280: CHECK: Alignment should match open parenthesis
-2.patch:283: CHECK: No space is necessary after a cast
-2.patch:287: WARNING: quoted string split across lines
-2.patch:296: CHECK: Blank lines aren't necessary before a close brace '}'
-2.patch:303: CHECK: Please don't use multiple blank lines
-2.patch:308: CHECK: Please don't use multiple blank lines
-2.patch:331: CHECK: Alignment should match open parenthesis
-2.patch:348: CHECK: Alignment should match open parenthesis
-2.patch:362: CHECK: Alignment should match open parenthesis
-2.patch:371: CHECK: Alignment should match open parenthesis
-2.patch:381: CHECK: Alignment should match open parenthesis
-2.patch:404: CHECK: No space is necessary after a cast
-2.patch:426: WARNING: quoted string split across lines
-2.patch:437: WARNING: quoted string split across lines
-2.patch:438: WARNING: quoted string split across lines
-2.patch:458: CHECK: No space is necessary after a cast
-2.patch:459: CHECK: Alignment should match open parenthesis
-2.patch:464: CHECK: No space is necessary after a cast
-2.patch:465: CHECK: Alignment should match open parenthesis
-2.patch:472: CHECK: Alignment should match open parenthesis
-2.patch:472: CHECK: No space is necessary after a cast
-2.patch:482: CHECK: Alignment should match open parenthesis
-2.patch:506: CHECK: Alignment should match open parenthesis
-2.patch:513: CHECK: Alignment should match open parenthesis
-2.patch:519: CHECK: Alignment should match open parenthesis
-2.patch:535: CHECK: Alignment should match open parenthesis
-2.patch:537: WARNING: quoted string split across lines
-2.patch:538: WARNING: quoted string split across lines
-2.patch:539: WARNING: quoted string split across lines
-2.patch:549: CHECK: Alignment should match open parenthesis
-2.patch:549: CHECK: No space is necessary after a cast
-2.patch:565: CHECK: Alignment should match open parenthesis
-2.patch:574: CHECK: Alignment should match open parenthesis
-2.patch:595: CHECK: Alignment should match open parenthesis
-2.patch:634: WARNING: quoted string split across lines
-2.patch:639: CHECK: Alignment should match open parenthesis
-2.patch:643: CHECK: Alignment should match open parenthesis
-2.patch:646: CHECK: Alignment should match open parenthesis
-2.patch:648: CHECK: Alignment should match open parenthesis
-2.patch:650: CHECK: Alignment should match open parenthesis
-2.patch:694: CHECK: braces {} should be used on all arms of this statement
-2.patch:696: CHECK: Alignment should match open parenthesis
-2.patch:703: CHECK: Unbalanced braces around else statement
-2.patch:724: CHECK: Alignment should match open parenthesis
-2.patch:744: CHECK: Alignment should match open parenthesis
-total: 0 errors, 10 warnings, 42 checks, 749 lines checked
-
-
+>Subject:	[EXTERNAL] Re: [PATCH v1 1/1] mtd: spi-nor: Add some M45PEx ids
+>
+>>> Am 2021-06-29 17:08, schrieb Hongwei Zhang:
+>>>> Add some Micron M45PEx flash memeories into the IDs table.
+>>>
+>>> Did you test all these flashes?
+>>>
+>> No, the patch was added in porting drivers related to AST2600 EVB.
+>
+>Please note, that all flashes which are added must be tested.
+>
+>>>> Fixes: dd1e9367157f900616f (ARM: dts: everest: Add phase corrections 
+>>>> for
+>>>> eMMC)
+>>>
+>>> Bogus Fixes tag. First, I cannot find this commit id, which tree is 
+>>> that? Secondly, adding new flash ids don't fix anything, esp not 
+>>> something related to eMMC.
+>>>
+>> Sorry for the confusion, I thought Fixes tag could be also used for 
+>> referencing the revision base for the patch to aplly on.
+>> I used dev-5.10 branch from 
+>> https://nam12.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgith
+>> 
+>ub.com%2Fopenbmc%2Flinux.git&amp;data=04%7C01%7Chongweiz%40ami.com%7C72a7d2569f6a4cb
+>629fe08d93c775f8a%7C27e97857e15f486cb58e86c2b3040f93%7C1%7C0%7C637607305682606148%7
+>CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
+>%3D%7C1000&amp;sdata=h%2BoFfg9m0udXdQgb85oq0NKEIcL1DFNha186lP0HwG8%3D&amp;reserve
+>d=0 , should I use a different repository?
+>
+>AFAIK commits in fixes tags must be relative to Linus Torvalds' tree (or a subtree must not rebase, like 
+>the networking trees, which means they will end up in Torvalds' tree).
+>
+>Anyway, this is not a fix and therefore there must be no Fixes: tag.
+>
+>-michael
