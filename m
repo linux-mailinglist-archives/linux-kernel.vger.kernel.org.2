@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7771F3B92AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259B13B92C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Jul 2021 16:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhGAOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Jul 2021 10:05:47 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:45717 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbhGAOFq (ORCPT
+        id S232847AbhGAOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Jul 2021 10:06:36 -0400
+Received: from mail-il1-f179.google.com ([209.85.166.179]:45833 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232631AbhGAOGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Jul 2021 10:05:46 -0400
-Received: by mail-il1-f180.google.com with SMTP id b5so6430045ilc.12;
-        Thu, 01 Jul 2021 07:03:15 -0700 (PDT)
+        Thu, 1 Jul 2021 10:06:32 -0400
+Received: by mail-il1-f179.google.com with SMTP id b5so6432705ilc.12;
+        Thu, 01 Jul 2021 07:04:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=34pditdGAnkmOoWQm+ofV1mGsalRsMGBBDjdbXOmEes=;
-        b=Cv2JvEXhmiF7Q6xcIlDCPuFDz5JAdT/03VrtXW7NEWUl+vIO1rcyxn/nm7qZ0W77V2
-         H0M4ysxvm+umhf0x0b1cm2BQFWVFYa4r298zjK0RhYsaRWxjIEe3izwk/wkrs2Dnxlq2
-         Yx8ObC83ZzirKhyt01ZZIpTl4c+NhksayH0JnugyRUnW0Ww0EfDxBMIlQhIamvU0rGsb
-         F2uPfKk9W/gZZyTKOxzRi4H7ti/vrq4ro/+vvmGtAKoaMcBKrHtQWnXfB/Z82HX+3hor
-         MjAbiBnZiK0n2kcfnBty6gWVRQ5uc9kZ078lcPz74GPGjo/XXUi0h3UKttFyeqm7XIpf
-         p7LQ==
-X-Gm-Message-State: AOAM533fhZWbdhHUoIAxTeHWFVK4eeEJrO5bu/tpSVDVxDOGIrJ2jCy6
-        oI41POZvf5WpyafVt8IuDjAa0IFN2A==
-X-Google-Smtp-Source: ABdhPJwC7NMLRfHWNQ8AaqlAY9dCRLK5L1h8nMWNBTSc/DgyiB2LGSdA4v3aEPQWf8EYA8dvoeC6YA==
-X-Received: by 2002:a05:6e02:1a02:: with SMTP id s2mr11414787ild.76.1625148194770;
-        Thu, 01 Jul 2021 07:03:14 -0700 (PDT)
+        bh=wbT8Ks1SNmRLlWkzxeU8xdlQA5u/+Yl10JWaWVZb/dQ=;
+        b=XDokCOVNy1sl7UFa44Vwo4YBOQD4rG4FTAf+0i7et9/aqI9j6ayOyHtN1qw8iX+WhJ
+         p5/PnAkYexrrC/nr8kb7pqyzaGxdcLPKh8pKsheO7SJDkBBlXBncfHke1NnPIYi8ubWD
+         ExEgKL/gg8LuPR6vf7tDI6W+dhAUazkU+ui/UBMMr0Ti8O8jGVfSsSjk4jAajBXua5yV
+         JikpNpZXy8xalFOoD+ukKcWZSa6w/DwKq1ntLxglIj/0qKriguZz2wA09LboKikmjK7f
+         nl3ItbmL2h22Isf4rhjT8IGbBOM63Hezg0yST2reKOmkFwfz7cC7x0QtDfFnGhsahoty
+         5j1g==
+X-Gm-Message-State: AOAM533jmrPDEFseWaOO8ngPjR8mhbvHHrDQRN0gg3GWEcMnJgCriCH3
+        pmd9W8eDD6UtftklaFqCh91V4eTZUg==
+X-Google-Smtp-Source: ABdhPJx71za0MYqLZLGjIKph+dBsSeZJNQ43Mf4e2arjbbbCoz00zF0285z+YR4s9PRr63GczYPUfg==
+X-Received: by 2002:a05:6e02:ee2:: with SMTP id j2mr23739395ilk.63.1625148240363;
+        Thu, 01 Jul 2021 07:04:00 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l5sm14245907ion.44.2021.07.01.07.03.11
+        by smtp.gmail.com with ESMTPSA id g14sm14460934ioo.19.2021.07.01.07.03.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:03:13 -0700 (PDT)
-Received: (nullmailer pid 2278694 invoked by uid 1000);
+        Thu, 01 Jul 2021 07:03:58 -0700 (PDT)
+Received: (nullmailer pid 2278716 invoked by uid 1000);
         Thu, 01 Jul 2021 14:02:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, Sibi S <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20210625234018.1324681-3-bjorn.andersson@linaro.org>
-References: <20210625234018.1324681-1-bjorn.andersson@linaro.org> <20210625234018.1324681-3-bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 2/3] dt-bindings: soc: qcom: aoss: Convert to YAML
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     devicetree@vger.kernel.org, jic23@kernel.org,
+        linux-iio@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210701112803.75815-2-antoniu.miclaus@analog.com>
+References: <20210701112803.75815-1-antoniu.miclaus@analog.com> <20210701112803.75815-2-antoniu.miclaus@analog.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: iio: frequency: add adrf6780 doc
 Date:   Thu, 01 Jul 2021 08:02:43 -0600
-Message-Id: <1625148163.508920.2278693.nullmailer@robh.at.kernel.org>
+Message-Id: <1625148163.622224.2278715.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Jun 2021 16:40:17 -0700, Bjorn Andersson wrote:
-> Convert to YAML in order to allow validation.
+On Thu, 01 Jul 2021 14:28:03 +0300, Antoniu Miclaus wrote:
+> Add device tree bindings for the ADRF6780 Upconverter.
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 > ---
-> 
-> I'm aware that this conflicts with Sibi's removal of '#power-domain-cells', but
-> that's a trivial change regardless of which of the two patches gets in first.
-> 
->  .../bindings/soc/qcom/qcom,aoss-qmp.txt       |  90 --------------
->  .../bindings/soc/qcom/qcom,aoss-qmp.yaml      | 115 ++++++++++++++++++
->  2 files changed, 115 insertions(+), 90 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.yaml
+> v2: remove `det-en` and `parity-en` from device tree
+>  .../bindings/iio/frequency/adi,adrf6780.yaml  | 123 ++++++++++++++++++
+>  1 file changed, 123 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.yaml:29:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:10:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:101:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
+./Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml:109:1: [warning] wrong indentation: expected 2 but found 0 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.example.dt.yaml: adrf6780@0: 'adi,parity-en' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/frequency/adi,adrf6780.yaml
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1497468
+See https://patchwork.ozlabs.org/patch/1499502
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
